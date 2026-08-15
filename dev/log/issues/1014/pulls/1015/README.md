@@ -23,15 +23,23 @@ completed. Their stored metadata and logs prove the observations predate this
 fix. `raw-data/branch-initial-diagnostics.txt` is the corresponding diagnostic
 scan.
 
-The archive contains more than 300 files at the time of analysis:
+The archive contains more than 570 files at the time of analysis:
 
 - `ci-logs/run-*.log`: every issue-listed baseline workflow log.
 - `ci-logs/branch-initial/`: all initial pull-request workflow logs.
 - `ci-logs/pushed-head-3e7d64f6/`: the complete first-push Agentic Matrix
   failure and the Desktop VSIX failure, retained because they exposed two
   regressions before finalization.
+- `ci-logs/pushed-head-c5fae9d4/`: all thirteen exact second-candidate workflow
+  logs plus focused copies of the lint and three macOS consumer jobs. They
+  prove twelve unaffected workflows passed while the remaining run exposed a
+  package-only `esbuild` test in the source-only VS Code suite, an
+  argv/process-tree race, and an under-provisioned archive fan-out.
 - `raw-data/run-*-jobs.json`, `run-*-artifacts.json`, and annotations: complete
   GitHub execution metadata.
+- `raw-data/pushed-head-c5fae9d4/`: exact-head metadata for all thirteen
+  second-candidate workflows, their jobs and artifacts, plus all 71 check-run
+  annotation responses.
 - `raw-data/audited-warning-error-excerpts.txt` and
   `key-diagnostics-with-lines.txt`: indexed candidates, not substitutes for
   the complete logs.
@@ -73,6 +81,14 @@ live project; the suffix prevents archived evidence from creating projects.
 | 15:50:04–15:51:35 | All three archive consumers extract to unique temporary directories, but tests invoke compile-time paths under the build workspace; each slice stops on four `NotFound` failures. | `ci-logs/pushed-head-3e7d64f6/CI-CD-Pipeline-31892818297-macos-slice*-job-*.log` |
 | Fresh-CI correction | Playwright is externalized and shipped in the VSIX; browser-commander 0.10 forwards the packaged executable. Lifecycle trust is limited to pinned OpenCode. Historical evidence is excluded from the source-terminology lint, requirements are reassembled, and nextest extracts into the workspace so legacy Cargo binary paths resolve. The extracted-VSIX, OpenCode, and archive-relocation experiments pass. | `local-tests/fresh-ci-regressions/` |
 | 16:16–16:51 | The corrected candidate passes exact registered Rust, wasm, and web gates; desktop 140/140; VS Code 52/52; all five JavaScript lock audits; data 17/17; self-AST 10/10; all-feature shards 488/488 and 2,777 passed with four ignored; and doctests. The main suite takes 1,102 of its 1,200-second budget, so the existing 70% performance warning is retained rather than hidden. | `local-tests/fresh-ci-regressions/*-final.log` |
+| 17:11:32 | Candidate `c5fae9d4` starts thirteen fresh exact-SHA workflows. Twelve finish successfully: Security, stock-install, all auxiliary benchmarks, the VSIX package, Gemini, and all three OpenCode lanes pass; only CI/CD Pipeline fails. | `raw-data/pushed-head-c5fae9d4/branch-runs.json`, complete workflow logs, and GitHub job/check metadata |
+| 17:25:13 | The registered web gate reaches the VS Code suite after installing only root and e2e dependencies. The new bundle test imports package-local `esbuild`, so lint fails with `ERR_MODULE_NOT_FOUND` while the dedicated VSIX job succeeds. | `ci-logs/pushed-head-c5fae9d4/CI-CD-Pipeline-31897604270-lint-job-95043525067.log:4762` |
+| Second fresh-CI correction | Keep the documented 51-test source suite dependency-free; move the real esbuild/Playwright graph check to `test:package` and run it after extension dependencies are installed, immediately before VSIX packaging. A workflow regression and no-`node_modules` execution pin both boundaries. | `local-tests/fresh-ci-regressions/vscode-ci-dependency-boundary-*.log` and `vscode-source-without-node-modules-green.log` |
+| 17:25:22–17:28:13 | The three archive consumers spend 22–171 seconds downloading the same archive and another 31–38 seconds extracting it; that overhead is inside the 10-minute GitHub job cap but outside the advertised 480-second command budget. | `ci-logs/pushed-head-c5fae9d4/CI-CD-Pipeline-31897604270-macos-job-*.log` |
+| 17:29:42 | Slice 2 fails `timeout_terminates_descendant_processes`: the 20 ms timeout reaches command-stream 0.15's shell-string process leader while a fixture descendant is joining/spawning, and `descendant-survived` is written after the one-shot group signal. | `ci-logs/pushed-head-c5fae9d4/CI-CD-Pipeline-31897604270-macos-job-95044719217.log:1486` |
+| 17:34:53–17:35:38 | Slices 1 and 3 are canceled by the unchanged 10-minute job cap after only 518/897 and 737/896 tests. The live command warning had already identified slow 60–148 second tests; neither job failed archive relocation. | `ci-logs/pushed-head-c5fae9d4/CI-CD-Pipeline-31897604270-macos-job-95044719212.log` and `...95044719220.log` |
+| Third fresh-CI correction | Keep one build and the existing 10-minute consumer cap, but fan the archive to five smaller slices. Upgrade command-stream to 0.16 and use its exact-argv constructor so the allowlisted agent executable, not an added shell, leads the Unix process group. | `local-tests/fresh-ci-regressions/macos-fanout-and-exact-argv-{red,green}.log` |
+| 18:08–19:00 | The corrected source-only/package boundary passes without `vscode/node_modules`; the descendant timeout passes ten consecutive 20 ms stress runs; the complete registered Rust stage passes. The first exhaustive run finds only a stale generated runner census after 2,805 passing unit tests. Regenerating that census makes its focused test and the final all-feature run green: 3,755 tests across all harnesses, including 2,806 in the largest unit harness, with four intentional ignores. | `local-tests/fresh-ci-regressions/{vscode-source-without-node-modules-green,descendant-timeout-command-stream-016-stress,registered-rust-stage-after-command-stream-016-final,full-rust-tests-after-command-stream-016,self-ast-census-green,full-rust-tests-final}.log` |
 
 ## 3. Requirement ledger
 
@@ -81,7 +97,7 @@ live project; the suffix prevents archived evidence from creating projects.
 | R1014-1 | Preserve and inspect all twelve named runs plus PR checks, jobs, artifacts, annotations, discussion, and exact SHAs. | Complete; see section 1 and `raw-data/`. |
 | R1014-2 | Find all false positives, false negatives, warnings, and errors; fix every actionable occurrence across the codebase without suppressing true failures. | Complete; see finding ledger below. |
 | R1014-3 | Correct the only failed run at its root while retaining release-integrity enforcement. | Automatic release now defers; manual release remains strict. |
-| R1014-4 | Correct near-timeout macOS warnings structurally and prove the archive is relocatable. | One reusable nextest archive replaces three cold builds; consumers extract to the original workspace and a retained experiment reproduces default-extraction failure before passing with that setting. |
+| R1014-4 | Correct near-timeout macOS warnings structurally and prove the archive is relocatable. | One reusable nextest archive replaces three cold builds; five consumers extract to the original workspace, and a retained experiment reproduces default-extraction failure before passing with that setting. |
 | R1014-5 | Close dependency-audit false negatives for every JS lock, not only the lock that happened to print a warning. | One dynamically discovered fail-closed gate covers both Bun locks plus three npm locks; all advisories are resolved. |
 | R1014-6 | Remove harness and evidence artifacts that make successful CI noisy or misleading. | Gemini environment, Bun lifecycle policy, and archived manifest names corrected everywhere found. |
 | R1014-7 | Compare the full current Rust, JS, and Python template trees and Hive Mind guidance, reuse proven components, and report shared defects upstream. | Complete immutable comparison; seven upstream issues and eight exact report/comment bodies retained. |
@@ -94,7 +110,7 @@ live project; the suffix prevents archived evidence from creating projects.
 | --- | --- | --- |
 | Auto Release error: no eligible Formal AI-authored PR in `v0.345.0..HEAD` | **True policy result, wrong automatic control flow.** PRs #1007, #1011, and #1013 do not put the same canonical PR trailer plus valid session evidence on every introduced non-merge commit. The new issue-#924 check hard-exited before the older report-only release ratchet could run, making immutable main unable to heal itself. | A read-only preflight returns `Deferred` and writes `should_release=false`; automatic publication stops cleanly with a notice. `version-and-commit.rs` still calls the hard gate for manual release. Behavioral and workflow tests pin both halves. |
 | Pipeline Status failure | **True positive.** It correctly propagated Auto Release's failure; changing aggregation would hide a real failed dependency. | No suppression or aggregator weakening. Fix the producer only. |
-| Three `Core test slice took ...` warnings at 999/1,075/1,117 seconds | **True capacity warning.** nextest partitions execution after compilation, so three clean macOS jobs each compile the same all-feature graph. Raising the timeout would preserve waste. The first archive implementation exposed a second root cause: default temporary extraction cannot satisfy compile-time `CARGO_BIN_EXE_*` paths embedded in older tests. | A reusable workflow creates one nextest archive, uploads it, and fans out three archive consumers. Consumers extract into `$GITHUB_WORKSPACE`, restoring the original `target` path while nextest remaps runtime metadata. A minimal retained experiment proves default extraction fails and workspace extraction passes. Each consumer keeps a 10-minute bound; the build retains a 25-minute bound and live 1,200-second warning. |
+| Three `Core test slice took ...` warnings at 999/1,075/1,117 seconds | **True capacity warning.** nextest partitions execution after compilation, so three clean macOS jobs each compile the same all-feature graph. Raising the timeout would preserve waste. The first archive implementation exposed a second root cause: default temporary extraction cannot satisfy compile-time `CARGO_BIN_EXE_*` paths embedded in older tests. The first pushed archive run then measured 2–4 minutes of setup and transfer inside a 10-minute job envelope, while the advertised 480-second command budget started only after that overhead. | A reusable workflow creates one nextest archive, uploads it, and fans out five smaller archive consumers. Consumers extract into `$GITHUB_WORKSPACE`, restoring the original `target` path while nextest remaps runtime metadata. A minimal retained experiment proves default extraction fails and workspace extraction passes. Five-way fan-out preserves the existing 10-minute job bound while leaving the test command its advertised execution room. |
 | npm reports two high advisories twice but succeeds | **True vulnerability, false-negative gate.** Install-time npm audit is advisory output, not a required exit status. Separate audits found 2 high advisories in `tests/e2e`, 10 in each desktop lock, 10 in the VS Code lock, and a moderate DOMPurify issue in the root Bun lock; the experiment Bun lock was already clean. | The fail-closed script discovers and audits all five live locks at moderate-or-higher severity. DOMPurify is 3.4.13; npm locks are refreshed; desktop/VS Code use web-capture 1.11.2 plus scoped Puppeteer 25.7 overrides to remove the stale `extract-zip` chain. All five audits return zero. Routine installs use `--no-audit --no-fund` so findings have one authoritative gate. |
 | `Blocked 2 postinstalls` / `Blocked 1 postinstall` | **Expected Bun security policy, ambiguous noise, with one required exception.** Most global CLIs do not need dependency lifecycle scripts. OpenCode does: `opencode-ai@1.18.4` uses its own postinstall to replace a Windows placeholder with the platform binary. Applying `--ignore-scripts` indiscriminately caused the fresh matrix's Linux `Exec format error`. | Routine installs use `--ignore-scripts`; only the exact lockfile-pinned OpenCode package uses `--trust`. An isolated ignored install reproduces the failure and an isolated trusted install runs version 1.18.4. The regression enumerates every global install and permits no other trusted package. |
 | Gemini true-color warnings | **Harness configuration.** Gemini v0.55.1 checks `COLORTERM` for `truecolor`/`24bit`; `TERM=xterm-256color` alone does not satisfy it. | Export `COLORTERM=truecolor` in the E2E harness. Upstream behavior source is preserved in `gemini-...-compatibility.ts`. |
@@ -105,6 +121,9 @@ live project; the suffix prevents archived evidence from creating projects.
 | Cache restore misses, Codecov notices, skipped change-filtered jobs | **Informational/intentional.** A cache miss is valid cold-state behavior; Codecov reported successful processing; skips match no-change predicates. | No suppression and no change to pass/fail semantics. |
 | npm 11 refuses a regenerated Kreuzberg lock | **Upstream package metadata defect discovered during repair.** `@kreuzberg/html-to-markdown-node@3.7.2` names two musl packages not published at that version. | Locks were generated and clean-installed with CI's npm 10 on glibc. Reported upstream as html-to-markdown #459; do not fabricate absent platform entries. |
 | VSIX esbuild cannot resolve Playwright's `chromium-bidi/lib/cjs/...` imports | **Real fresh-CI packaging regression.** Puppeteer 25 supplies chromium-bidi 17, which removed those private paths; Playwright still carries optional Bidi-over-CDP imports. Playwright maintainers explicitly do not support bundling this server runtime. A source-only smoke check never exercised the actual dependency graph. | A package-time helper externalizes `playwright` and `playwright-core`; the VSIX allowlists those production packages. A new test bundles and loads the real desktop web-tools graph. The 720-file VSIX packages successfully and its extracted artifact launches the shipped Chromium and renders a local page. Existing Playwright issue #33031 is retained rather than duplicated. |
+| Lint cannot import package-local `esbuild` | **Real fresh-CI test-boundary regression.** The dependency-backed bundle test was appended to `npm run vscode:test`, whose documented and CI contract is to read committed source without installing `vscode/node_modules`. Local verification had that directory from packaging, masking the missing prerequisite; the dedicated VSIX job installed dependencies and passed. | Restore the 51-case source-only suite and expose the bundle check as `test:package`. The VSIX job now runs it after `scripts/install-node-dependencies.sh vscode` and before packaging. The regression asserts that ordering, while an explicit run with `vscode/node_modules` moved aside proves the lint suite remains hermetic. Installing the full browser graph in the generic lint job was rejected as duplicated, heavyweight work. |
+| macOS descendant survives a 20 ms agent timeout | **Real fresh-CI process-boundary race.** Formal AI reconstructed exact argv as a quoted shell string for command-stream 0.15. The added `/bin/sh` became the process-group leader; on the loaded Intel runner the timeout's one-shot signal raced the fixture executable/descendant joining that group. | Upgrade to command-stream 0.16 and call `StreamingRunner::from_argv`, preserving exact boundaries and making the allowlisted executable the group leader. The existing descendant behavioral test plus a source/API regression pin the correction; Windows retains its existing direct `std::process` path. |
+| Full local suite reports stale `src/orchestration/runner.lino` | **True generated-artifact failure.** The exact-argv refactor changed the runner's source census, but the checked-in self-AST document still described the prior bytes and symbol lines. | Run the repository's `regenerate_self_ast_census` example, inspect the one-file mechanical diff, and rerun both the exact census regression and all-feature suite. |
 | Packaged browser path ignored | **Upstream dependency-floor defect.** web-capture forwards `executablePath`, but its `browser-commander@^0.8.0` dependency discards it. | Scoped override pins the first forwarding release, 0.10.0. The extracted-VSIX test proves the packaged executable is used. Reported as web-capture #154. |
 | Source terminology lint flags `/v1/knowledge-graph` inside archived PR JSON | **False positive caused by inconsistent historical-data scope.** The lint already excludes docs, experiments, caches, and frozen source corpora but omitted `dev/log`, where immutable third-party responses are required evidence rather than authored API surface. | Exclude `dev/log` consistently; the lint's own directory fixture now proves an in-scope source route still fails while the same text in captured evidence is ignored. |
 | `REQUIREMENTS.md does not match docs/requirements/` | **True derived-artifact failure.** The issue shard was added without running the repository assembler. | Rebuild with the documented `rust-script scripts/assemble-requirements.rs --write` command and retain the gate check. |
@@ -157,6 +176,10 @@ with ecosystem-specific commands rather than copied implementation.
   registry lock, storage location, and tree walker involved in the warnings.
 - Recent Kreuzberg workflow data and package metadata are preserved to
   distinguish the registry publication defect from this repository's lock.
+- command-stream 0.16's published `StreamingRunner::from_argv` API is used in
+  place of the 0.15 shell-string adapter. Its crates.io metadata is preserved
+  in `raw-data/command-stream-0.16.0-crates-io.json`; the exact-argv API avoids
+  introducing an extra shell into Unix process-group ownership.
 
 Upstream reports filed from the retained bodies:
 
@@ -176,7 +199,7 @@ workaround, and a suggested source-level correction.
 | Requirement | Rejected alternative | Why | Selected plan |
 | --- | --- | --- | --- |
 | Release deadlock | Treat missing attribution as eligible or ignore Auto Release in Pipeline Status. | Both weaken a true release-integrity property. | Preserve strict manual enforcement; defer only the non-mutating automatic publisher. |
-| macOS duration | Increase timeout, split into more cold jobs, or mechanically rewrite every historical binary invocation. | The first two preserve/multiply compilation; the third is broad unrelated test churn when archive extraction can preserve Cargo's established paths. | Compile one nextest archive, extract it into the original workspace, then fan out existing slices. |
+| macOS duration | Increase timeout, split into more cold jobs, or mechanically rewrite every historical binary invocation. | The first two preserve/multiply compilation; the third is broad unrelated test churn when archive extraction can preserve Cargo's established paths. | Compile one nextest archive, extract it into the original workspace, then fan out five smaller consumers. |
 | JS advisories | Rely on install summaries, Dependabot, or `npm audit fix --force`. | Summaries do not fail; bots are asynchronous; force can make uncontrolled major upgrades. | Required audit gate plus reviewed direct/scoped updates and affected tests. |
 | Gemini lock warning | Filter warning text. | Conceals a real upstream race and remains fragile. | Stop scanning mutable home; report race upstream. |
 | Evidence dependency graphs | Disable Dependency Graph globally or delete evidence. | Loses a useful service or audit provenance. | Preserve bytes with non-manifest `.snapshot` basenames. |
@@ -201,25 +224,40 @@ The green evidence includes:
   desktop, and VS Code audits all report zero vulnerabilities.
 - `desktop-tests-node20.log`: 140/140 desktop tests pass.
 - `vscode-tests-after-update.log`: the original 51/51 extension tests pass;
-  the fresh-CI regression adds a 52nd real-graph bundle test.
+  the package-stage real-graph bundle test passes separately.
 - `web-build.log`: the vendored web bundle regenerates successfully.
 - `actionlint.log`: both workflow topology and expressions validate.
 - `fresh-ci-regressions/nextest-archive-extract-to-workspace.log`: default
   temporary extraction fails with status 100 and workspace extraction passes.
-- `fresh-ci-regressions/rust-stage-final.log`, `wasm-stage-final.log`, and
-  `web-stage-final.log`: the exact registered CI gate stages pass together.
-- `fresh-ci-regressions/full-rust-tests-final.log`: data integrity passes
-  17/17, the self-AST census passes 10/10, the largest all-feature shards pass
-  488/488 and 2,777 with four ignored, and doctests pass. The command records
-  its existing 70% budget warning and completes in 1,102/1,200 seconds.
+- `fresh-ci-regressions/registered-rust-stage-after-command-stream-016-final.log`,
+  `wasm-stage-final.log`, and `web-stage-final.log`: the exact registered CI
+  gate stages pass together, including strict Clippy, examples, Rustdoc,
+  ShellCheck, generated files, and repository policy checks.
+- `fresh-ci-regressions/full-rust-tests-after-command-stream-016.log`: the
+  first exhaustive run reproduces the stale runner census only after 2,805
+  other unit tests pass; `regenerate-self-ast-census.log` and
+  `self-ast-census-green.log` retain the mechanical repair and focused proof.
+- `fresh-ci-regressions/full-rust-tests-final.log`: all 3,755 tests across the
+  all-feature harnesses pass, including 2,806 in the largest unit harness;
+  four tests are intentionally ignored and doctests pass.
 - `fresh-ci-regressions/desktop-tests-final.log` and
-  `vscode-tests-final.log`: the final affected suites pass 140/140 and 52/52.
+  `vscode-tests-final.log`: the affected suites pass 140/140 and 52/52 before
+  the source/package boundary is separated; the final boundary evidence is in
+  `vscode-source-without-node-modules-green.log` and
+  `vscode-package-graph-test-green.log` (51 source cases plus one real graph).
 - `fresh-ci-regressions/javascript-audits-final.log`: dynamically discovered
   audits of all five tracked JavaScript locks pass with zero advisories at the
   configured moderate threshold.
+- `fresh-ci-regressions/macos-fanout-and-exact-argv-red.log`: both final
+  macOS workflow/process boundaries fail before their implementation; the
+  corresponding `-green.log` passes 14/14 issue checks.
+- `fresh-ci-regressions/descendant-timeout-command-stream-016-stress.log`:
+  the exact 20 ms descendant-termination regression passes ten consecutive
+  runs with command-stream 0.16.
 
 The repository-wide Rust checks also pass: strict all-feature Clippy, all
-examples, 2,804 all-feature tests (plus integration binaries), and doc tests.
+examples, 3,755 all-feature tests across the registered binaries, and doc
+tests.
 Fresh GitHub run IDs are added here only after they execute against the final
 #1015 implementation head; stale green checks are never presented as final
 evidence.

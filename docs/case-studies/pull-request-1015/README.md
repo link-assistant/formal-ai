@@ -21,13 +21,17 @@ The complete immutable input and test evidence is indexed in
 
 - Keep release attribution strict, but represent an ineligible automatic
   release as a clean deferral; retain the hard manual release gate.
-- Reuse one cargo-nextest archive for all three macOS core slices instead of
+- Reuse one cargo-nextest archive for five smaller macOS core slices instead of
   raising timeouts or multiplying cold compilation; extract it into the
   workspace so existing Cargo binary paths remain valid.
 - Dynamically audit both Bun locks and all three npm locks through one required
   gate, then silence duplicate install-time audit output.
 - Upgrade the vulnerable JavaScript chains with focused overrides and run the
   affected desktop, extension, and web tests.
+- Keep the dependency-free VS Code lint suite separate from its real package
+  graph test, which runs after the VSIX job installs extension dependencies.
+- Use command-stream 0.16's exact-argv API for Unix agent runs, avoiding an
+  extra shell at the process-group boundary during timeout termination.
 - Isolate Gemini's mutable home from the scanned project, explicitly prohibit
   unnecessary Bun lifecycle scripts, and prevent archived manifests from being
   treated as live dependency projects.
@@ -37,10 +41,14 @@ The complete immutable input and test evidence is indexed in
 ## Verification and CI
 
 The implementation-facing regression was written first and failed all seven
-checks. After implementation, explicit evidence tests cover every requirement
-and a whole-task test verifies their composition. The evidence archive also
-retains actionlint, release-preflight, zero-vulnerability audit, desktop (140
-tests), VS Code (51 tests), and web-build output.
+checks. Later tests-first regressions capture the fresh-CI package dependency,
+macOS fan-out, and exact-argv boundaries. After implementation, explicit
+evidence tests cover every requirement and a whole-task test verifies their
+composition. The evidence archive also retains actionlint, release-preflight,
+zero-vulnerability audit, desktop (140 tests), VS Code (51 source tests plus
+one package-graph test), web-build output, ten consecutive 20 ms
+descendant-timeout stress runs, the complete registered Rust stage, and a
+3,755-test all-feature run.
 
 Before #1015 is marked ready, the branch is formatted, linted, tested through
 the repository's prescribed checks, reviewed against its full diff, updated

@@ -63,6 +63,23 @@ package in the VSIX. web-capture's browser-commander 0.8 dependency also drops
 the packaged browser's `executablePath`; version 0.10 is the minimum forwarding
 release.
 
+The first test for that real dependency graph was mistakenly appended to the
+source-only lint suite. That suite deliberately runs without extension package
+installation, so fresh CI correctly failed on the package-local `esbuild`
+import even though the dedicated VSIX job passed. The graph check is now a
+separate `test:package` command in the VSIX job, after dependency installation;
+the 51-case lint suite is again proven runnable with no `vscode/node_modules`.
+
+The next exact-SHA macOS run revealed two more hidden boundaries. Artifact
+download and extraction consumed as much as three minutes before the
+480-second test-command budget started, although GitHub's 10-minute job cap
+included both. Two large slices were canceled by that outer cap. The archive
+is therefore fanned to five smaller consumers without increasing the cap.
+One consumer also exposed that command-stream 0.15 reconstructed an exact
+agent argv as a shell string. command-stream 0.16's `from_argv` API removes
+that intermediary, so the allowlisted executable directly leads the Unix
+process group and its timeout reaches descendants reliably.
+
 Complete current Rust, JS, and Python template trees were compared at immutable
 heads. All three had change-time Dependency Review but no ecosystem-native
 scheduled/current-lock audit, so reports were filed as Rust template #132, JS
@@ -74,7 +91,7 @@ The first fresh archive run also confirmed nextest's documented relocation
 boundary: compile-time `CARGO_BIN_EXE_*` paths still name the build workspace,
 while default archive extraction uses a random temporary directory. A minimal
 experiment fails in that default mode and passes when the archive is extracted
-into the checked-out workspace, which is now how all three consumers run.
+into the checked-out workspace, which is now how all five consumers run.
 
 ## 6. Tests-first reproduction
 
@@ -91,7 +108,7 @@ status API.
 Auto Release runs a read-only eligibility preflight and exits successfully with
 a GitHub notice when publication must wait. A reusable macOS workflow creates
 one nextest archive, extracts it at the original workspace target path, and
-feeds three bounded consumers. A new web-stage gate
+feeds five bounded consumers. A new web-stage gate
 discovers and audits all five JavaScript locks; dependencies and bundles are
 updated until every audit is clean, and routine installs no longer duplicate
 audit summaries.
@@ -111,9 +128,10 @@ through the extracted 180.94 MB VSIX, not merely checkout files.
 
 The retained local evidence includes red and green issue suites, a real
 deferred release preflight, five zero-advisory audits, 140 desktop tests, 51 VS
-Code tests (now 52 with the real dependency-graph bundle check), an extracted
-VSIX browser capture, a trusted pinned OpenCode install, the web build,
-actionlint, strict all-feature Clippy, all examples,
-2,804 all-feature tests (plus integration binaries), and doc tests. Fresh GitHub
-run IDs are recorded in the canonical archive only after they run on the final
-PR #1015 implementation head.
+Code source tests plus the separate real dependency-graph bundle check, an
+extracted VSIX browser capture, a trusted pinned OpenCode install, the web
+build, actionlint, strict all-feature Clippy, all examples, 3,755 all-feature
+tests across the registered binaries, and doc tests. The 20 ms descendant
+timeout regression also passes ten consecutive stress runs. Fresh GitHub run
+IDs are recorded in the canonical archive only after they run on the final PR
+#1015 implementation head.
