@@ -28,14 +28,14 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(test.contains("test-suite: specification"));
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-    for shard in 1..=5 {
+    for shard in 1..=8 {
         assert!(
             macos.contains(&format!("- {{ partition: {shard} }}")),
             "missing macOS core shard {shard}"
         );
     }
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/5\""));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
     assert!(macos.contains("timeout-minutes: 25"));
     assert!(macos.contains("timeout-minutes: 10"));
     assert!(!macos.contains("2100"));
