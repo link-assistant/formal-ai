@@ -677,11 +677,8 @@ fn execute_with_command_stream(
     timeout: Duration,
 ) -> Result<ProcessOutput, AgentRunError> {
     ensure_program_available(command, workspace)?;
-    let command_line = std::iter::once(command.program.to_string_lossy().into_owned())
-        .chain(command.args.iter().cloned())
-        .map(|part| command_stream::quote(&part))
-        .collect::<Vec<_>>()
-        .join(" ");
+    let program = command.program.clone();
+    let args = command.args.clone();
     let workspace = workspace.to_path_buf();
     let mut env = command.env.clone().into_iter().collect::<HashMap<_, _>>();
     env.insert("PWD".to_string(), workspace.display().to_string());
@@ -694,7 +691,7 @@ fn execute_with_command_stream(
             .build()
             .map_err(AgentRunError::Process)?;
         runtime.block_on(collect_command_stream(
-            command_stream::StreamingRunner::new(command_line)
+            command_stream::StreamingRunner::from_argv(program, args)
                 .cwd(workspace)
                 .env(env)
                 .kill_signal("SIGKILL"),
@@ -768,9 +765,9 @@ async fn collect_command_stream(
     })
 }
 
-// command-stream's Rust API accepts a shell command string, and its quoting
-// helper currently targets POSIX shells. Keep the existing exact-argv Windows
-// implementation until upstream exposes an argv-safe interface there.
+// Keep the std-process Windows implementation until command-stream provides
+// job-object process-tree termination there. Unix uses its exact-argv stream
+// API and POSIX process-group termination.
 #[cfg(not(unix))]
 fn execute_with_std_process(
     command: &AgentCommand,
