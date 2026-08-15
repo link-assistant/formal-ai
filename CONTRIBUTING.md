@@ -167,6 +167,9 @@ authored a commit. Do not add these trailers to a human-authored or manually
 corrected commit. The pull-request reference counts toward the release floor
 only when Git history proves that the same commit object reached the matching
 GitHub merge commit; a direct commit carrying a claimed PR URL does not count.
+Every non-merge commit introduced by that pull request must satisfy the same
+session, evidence, and pull-request checks. One attributed commit cannot make a
+mixed manually authored pull request count as end-to-end self-development.
 
 Every release cycle must contain at least one such merged contribution. It goes
 through the ordinary pull-request review, CI, and promotion policy without an

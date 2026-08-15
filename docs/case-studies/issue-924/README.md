@@ -27,15 +27,18 @@ contribution or a falling target had to be repaired.
 The release gate walks first-parent GitHub merge commits in the tag-to-HEAD
 range and accepts a contribution only when all of these facts hold:
 
-1. the non-merge commit has valid, committed Formal AI session evidence;
-2. its trailer names a canonical GitHub pull-request URL;
+1. every non-merge commit introduced by the pull request has valid, committed
+   Formal AI session evidence;
+2. every introduced commit's trailer names that canonical GitHub pull-request
+   URL;
 3. the matching `Merge pull request #N` commit contains the same commit object
    on its second-parent branch and not on its first parent; and
 4. at least one qualifying PR exists in the release range.
 
-A fabricated trailer on a direct commit therefore cannot satisfy the floor.
-The ledger writes every qualifying PR URL into the release row beside the
-per-release and trailing changed-line shares.
+A fabricated trailer on a direct commit therefore cannot satisfy the floor,
+and one attributed commit cannot hide a manually authored commit in the same
+pull request. The ledger writes every qualifying PR URL into the release row
+beside the per-release and trailing changed-line shares.
 
 The target for a release is the greater of the prior target and the prior
 comparable trailing share. The candidate release's projected trailing share
@@ -76,13 +79,57 @@ and byte-compares the requested artifact. The committed raw evidence is the
 replay record; generated transcripts do not move the changed-line numerator or
 denominator.
 
+## Incremental self-development execution
+
+The maintainer follow-up asked for more than one isolated Agent-authored file:
+run the same task through Formal AI, use auto-learning, and recursively split
+only what a real attempt proved unsolved. The replay in
+`incremental-self-authorship/` does exactly that through the production
+`formal-ai agent dispatch --incremental --cli agent` path.
+
+The compound task first asked for a coordination effect and two canonical
+self-development contracts. Its exact verifier rejected that whole-task
+attempt, so the shipped task splitter produced three independently verified
+children. Four native Agent sessions are retained: the failed whole attempt and
+the three child attempts. The child effects compose into the real workspace;
+the two Links Notation contracts are copied byte-for-byte into `data/meta/`.
+
+That real run uncovered a general orchestration defect. After every child had
+passed, the controller always invoked the parent agent again. The redundant
+call rewrote a correct composed effect and made the root fail. Incremental
+dispatch now supplies the parent task to its allowlisted verification command
+and records a non-mutating `composed-verifier` replay when the composed
+workspace already passes. If there is no verifier, or composition does not
+pass, the existing parent retry still runs. The verification-only replay has no
+native Agent session and is deliberately excluded from client-learning input;
+the four actual Agent sessions feed the existing proposal-only learner, whose
+output remains `human_gated` and cannot approve itself.
+
+The reviewable decomposition contains six smallest leaves. Formal AI authored
+the two contract leaves through Agent CLI (2/6, or 33%), while the release-gate
+generalization, regressions, replay checks, and documentation remain
+human-reviewed. Reproduce the run after building the release binary and
+installing Agent CLI:
+
+```bash
+experiments/issue_924_self_authoring/run.sh
+```
+
+The runner preserves the dispatch report, every native/replay session, the
+Formal AI server trace, proposal-only learning artifact, and the exact authored
+contracts. A failed run keeps its temporary workspace so its error remains
+available for the next self-development iteration.
+
 ## Verification
 
 - `cargo test --test unit specification::self_hosting_metric` exercises fake
   PR claims, matching merge ancestry, ledger recording, target growth,
   regression refusal, and release-pipeline wiring in fixture repositories.
 - `cargo test --test unit docs_requirements_issue_924` pins the requirement
-  map, contribution protocol, release integration, and exact Agent CLI leaf.
+  map, contribution protocol, release integration, incremental replay,
+  proposal-only learning, and exact Agent CLI-authored contracts.
+- `cargo test --test integration issue_991_incremental_dispatch` proves a
+  passing child composition cannot be regressed by a redundant parent call.
 - `rust-script --test scripts/self-hosting-metric.rs` keeps the standalone
   release script independently executable.
 

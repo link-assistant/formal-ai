@@ -36,6 +36,7 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
             "## Release-cycle contract",
             "## Unchanged gates",
             "## Replayable self-authorship",
+            "## Incremental self-development execution",
             "E69",
             "E74",
             PR_URL,
@@ -67,6 +68,7 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
             "Formal-AI-Evidence: <repo-relative committed evidence path>",
             "Formal-AI-Pull-Request: https://github.com/<owner>/<repo>/pull/<number>",
             "same commit object",
+            "Every non-merge commit introduced by that pull request",
             "must not decrease",
             "git fetch origin --tags",
             "without the latest tag, the check reports a skip",
@@ -113,6 +115,7 @@ fn issue_924_incremental_agent_task_is_replayable_and_learns_from_the_same_sessi
     assert_eq!(steps.first().unwrap()["passed"], false);
     assert_eq!(steps.first().unwrap()["cli"], "agent");
     assert_eq!(steps.last().unwrap()["passed"], true);
+    assert_eq!(steps.last().unwrap()["cli"], "composed-verifier");
     assert_eq!(
         steps.first().unwrap()["task"],
         steps.last().unwrap()["task"]
@@ -126,22 +129,31 @@ fn issue_924_incremental_agent_task_is_replayable_and_learns_from_the_same_sessi
         "no productive split: {splits:#?}"
     );
 
+    let agent_steps = steps.iter().filter(|step| step["cli"] == "agent").count();
+    assert!(agent_steps >= 4, "{steps:#?}");
     for step in steps {
         let relative = step["session_file"].as_str().expect("session path");
         let session: Value =
             serde_json::from_str(&read(evidence.join(relative))).expect("replayable Agent session");
-        assert!(
-            session["native_session"]["id"]
-                .as_str()
-                .is_some_and(|id| id.starts_with("ses_")),
-            "missing native session id: {session:#?}"
-        );
-        assert!(
-            session["native_session"]["resume_command"]
-                .as_str()
-                .is_some_and(|command| command.contains("agent --resume ses_")),
-            "missing native resume command: {session:#?}"
-        );
+        if step["cli"] == "agent" {
+            assert!(
+                session["native_session"]["id"]
+                    .as_str()
+                    .is_some_and(|id| id.starts_with("ses_")),
+                "missing native session id: {session:#?}"
+            );
+            assert!(
+                session["native_session"]["resume_command"]
+                    .as_str()
+                    .is_some_and(|command| command.contains("agent --resume ses_")),
+                "missing native resume command: {session:#?}"
+            );
+        } else {
+            assert_eq!(step["cli"], "composed-verifier");
+            assert_eq!(session["program"], "verification-only");
+            assert!(session["native_session"].is_null(), "{session:#?}");
+            assert_eq!(session["changes"].as_array().unwrap().len(), 0);
+        }
     }
 
     let learning = read(evidence.join("learning.lino"));
@@ -150,7 +162,7 @@ fn issue_924_incremental_agent_task_is_replayable_and_learns_from_the_same_sessi
         &learning,
         &[
             "human_gated \"true\"",
-            &format!("observation_count \"{}\"", steps.len()),
+            &format!("observation_count \"{agent_steps}\""),
         ],
     );
     assert!(!learning.contains("decision \"approved\""), "{learning}");

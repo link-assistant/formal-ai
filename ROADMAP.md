@@ -502,8 +502,12 @@ Issue #924 closes E77 at the release boundary. Every cycle now requires one
 merged, session-backed Formal AI pull request per release cycle. The ledger
 records every qualifying PR, the per-release and trailing shares, and a target
 that can only rise. Git merge ancestry proves the exact attributed commit
-passed through its claimed PR unchanged; normal review, CI, and promotion gates
-remain authoritative. Reproduction and the real Agent CLI-authored leaf are in
+passed through its claimed PR unchanged, and every non-merge commit introduced
+by that PR must carry valid attribution. The same compound task was attempted,
+failure-split, composed, verified, and learned from through Formal AI plus the
+real Agent CLI; two of six smallest leaves (33%) are preserved byte-for-byte as
+Agent-authored contracts. Normal review, CI, and promotion gates remain
+authoritative. Reproduction and replay evidence are in
 `docs/case-studies/issue-924/`.
 
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
