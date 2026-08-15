@@ -139,7 +139,13 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@link-assistant/web-capture": "^1.10.10",
+    "@link-assistant/web-capture": "^1.11.2",
     "@link-assistant/web-search": "^0.10.3"
+  },
+  "overrides": {
+    "@link-assistant/web-capture": {
+      "puppeteer": "^25.7.0",
+      "puppeteer-core": "^25.7.0"
+    }
   }
 }
