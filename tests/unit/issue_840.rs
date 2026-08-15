@@ -596,6 +596,17 @@ fn issue_840_agent_cli_e2e_covers_every_seed_journey_including_russian_reporting
         issue_harness.contains("issue_714_agentic_mode/run_report_e2e.sh"),
         "the Russian report request must reach the real report executor"
     );
+    for timeout_setting in [
+        r#""tool_call_timeout": 120000"#,
+        r#""max_tool_call_timeout": 600000"#,
+        "--mcp-default-tool-call-timeout 120000",
+        "--mcp-max-tool-call-timeout 600000",
+    ] {
+        assert!(
+            issue_harness.contains(timeout_setting),
+            "the Agent CLI harness must set {timeout_setting} explicitly"
+        );
+    }
 
     let report_harness =
         std::fs::read_to_string(root.join("experiments/issue_714_agentic_mode/run_report_e2e.sh"))

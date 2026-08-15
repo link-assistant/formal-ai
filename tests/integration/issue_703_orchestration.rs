@@ -11,9 +11,11 @@ use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 pub const FIXTURE_ENV: &str = "FORMAL_AI_ISSUE_703_FIXTURE";
+pub const FIXTURE_RELEASE_ENV: &str = "FORMAL_AI_ISSUE_703_RELEASE";
+pub const FIXTURE_STARTED_ENV: &str = "FORMAL_AI_ISSUE_703_STARTED";
 const FIXTURE_TEST: &str = "issue_703_orchestration::external_agent_fixture_process";
 const REQUIRED_CLIS: [&str; 6] = ["agent", "claude", "codex", "gemini", "qwen", "opencode"];
 
@@ -809,6 +811,20 @@ fn external_agent_fixture_process() {
         }
         "delayed_success" => {
             std::thread::sleep(Duration::from_millis(150));
+            fs::write("README.md", "fixture change\n").unwrap();
+        }
+        "coordinated_success" => {
+            let started = PathBuf::from(std::env::var_os(FIXTURE_STARTED_ENV).unwrap());
+            let release = PathBuf::from(std::env::var_os(FIXTURE_RELEASE_ENV).unwrap());
+            fs::write(started, "started\n").unwrap();
+            let deadline = Instant::now() + Duration::from_secs(10);
+            while !release.exists() {
+                assert!(
+                    Instant::now() < deadline,
+                    "fixture release was not signalled"
+                );
+                std::thread::sleep(Duration::from_millis(10));
+            }
             fs::write("README.md", "fixture change\n").unwrap();
         }
         "timeout" => std::thread::sleep(Duration::from_millis(250)),

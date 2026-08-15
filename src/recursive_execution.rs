@@ -3,7 +3,7 @@
 //! The meta core already describes a bounded task tree. This module supplies the
 //! missing execution back-edge: try the parent, descend only after failure,
 //! extend the tool at an irreducible unsupported leaf, then climb back up and
-//! retry the parent after every child passes.
+//! validate the parent after every child passes.
 //!
 //! A caller-provided tree is not the only source of children. A task that fails
 //! with no children left to try is asked to *split itself* through
@@ -90,7 +90,10 @@ impl TaskAttempt {
 /// from the failure; returning an empty list declares the task irreducible.
 /// `extend_for` is called only for a failed *irreducible* task; returning
 /// `true` promises that the tool was extended and the same leaf should be
-/// retried once.
+/// retried once. `retry_after_children` validates a parent after all of its
+/// child effects have been composed; its default performs another ordinary
+/// attempt, while executors with an independent verifier may accept the
+/// composition without risking another mutating tool call.
 pub trait TaskExecutor {
     /// Attempt one task and capture its evidence.
     fn attempt(&mut self, task: &RecursiveTask) -> TaskAttempt;
@@ -112,6 +115,15 @@ pub trait TaskExecutor {
         _split_depth: u8,
     ) -> Vec<RecursiveTask> {
         Vec::new()
+    }
+
+    /// Validate a parent after every child passed and its effects were composed.
+    ///
+    /// The default preserves the original climb-back-up protocol. Executors
+    /// with a trustworthy acceptance test can override this to verify the
+    /// composition before deciding whether another mutating attempt is needed.
+    fn retry_after_children(&mut self, task: &RecursiveTask) -> TaskAttempt {
+        self.attempt(task)
     }
 }
 
@@ -206,11 +218,11 @@ pub const DEFAULT_SPLIT_DEPTH_BOUND: u8 = 4;
 /// Execute the shrink-on-failure protocol over `root`.
 ///
 /// Every node is attempted before descent. A failed branch executes its smaller
-/// children and is retried only if all of them pass. A failed node with no
+/// children and is validated only if all of them pass. A failed node with no
 /// children is asked to split itself from its own failure; the children it
-/// yields are executed by this same protocol and the node is retried when they
-/// all pass. Only a node that cannot be split -- an irreducible task -- gets one
-/// extension opportunity and one retry, which keeps execution bounded.
+/// yields are executed by this same protocol and the node is validated when
+/// they all pass. Only a node that cannot be split -- an irreducible task --
+/// gets one extension opportunity and one retry, which keeps execution bounded.
 ///
 /// Splitting stops at [`DEFAULT_SPLIT_DEPTH_BOUND`]; use
 /// [`solve_recursively_within`] to choose another bound.
@@ -286,7 +298,7 @@ fn execute<E: TaskExecutor>(
         .collect::<Vec<_>>();
     let mut attempts = vec![first];
     if children.iter().all(RecursiveRun::is_passed) {
-        attempts.push(executor.attempt(root));
+        attempts.push(executor.retry_after_children(root));
     }
     let status = terminal_state(&attempts);
     RecursiveRun {
