@@ -19,21 +19,28 @@ jobs:
     runs-on: ubuntu-latest
     container: rust:1.96-slim-bookworm
     timeout-minutes: 40
+    env:
+      CARGO_INSTALL_ROOT: /tmp/formal-ai-install
     steps:
       - uses: actions/checkout@v6
       - name: Reject a system OpenSSL dependency
         run: |
-          if cargo tree --locked -i openssl-sys; then
+          set -eu
+          cargo tree --locked --prefix none --format '{p}' > /tmp/formal-ai-dependency-tree.txt
+          if grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt; then
             echo "openssl-sys unexpectedly remains in the default dependency graph" >&2
             exit 1
           fi
       - name: Install on the unmodified stock image
-        run: cargo install --path . --locked --root /tmp/formal-ai-install
+        run: |
+          echo "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"
+          export PATH="$CARGO_INSTALL_ROOT/bin:$PATH"
+          cargo install --path . --locked
       - name: Verify the installed binary has no OpenSSL runtime link
         run: |
-          ldd /tmp/formal-ai-install/bin/formal-ai | tee /tmp/formal-ai-ldd.txt
+          ldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt
           if grep -Eq 'libssl|libcrypto' /tmp/formal-ai-ldd.txt; then
             echo "formal-ai unexpectedly links a system OpenSSL library" >&2
             exit 1
           fi
-          /tmp/formal-ai-install/bin/formal-ai --version
+          formal-ai --version

@@ -31,6 +31,21 @@ impl TempConfigDir {
         })
     }
 
+    /// Create an ephemeral HOME below the real user home rather than the OS
+    /// temporary directory. Codex refuses to install helper PATH aliases when
+    /// its home is below `/tmp`, which otherwise warns on every successful run.
+    pub(super) fn new_home(tool: &str) -> Result<Self, Box<dyn Error>> {
+        let nanos = SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos();
+        let path = user_home_dir()?
+            .join(".cache/formal-ai/ephemeral")
+            .join(format!("{tool}-home-{}-{nanos}", std::process::id()));
+        fs::create_dir_all(&path)?;
+        Ok(Self {
+            path,
+            remove_on_drop: true,
+        })
+    }
+
     pub(super) fn preserve(mut self) {
         self.remove_on_drop = false;
     }

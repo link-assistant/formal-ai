@@ -19,3 +19,14 @@ runs:
       run: |
         echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
         echo "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"
+
+    - name: Enable opt-in sccache diagnostics
+      if: env.FORMAL_AI_CI_VERBOSE == 'true'
+      shell: bash
+      run: |
+        # Keep this disabled in normal runs. When issue triage needs the actual
+        # cache-backend response, set the FORMAL_AI_CI_VERBOSE repository
+        # variable to true and rerun the affected workflow.
+        echo "SCCACHE_LOG=debug" >> "$GITHUB_ENV"
+        echo "SCCACHE_LOG_MILLIS=1" >> "$GITHUB_ENV"
+        echo "sccache backend debug logging enabled by FORMAL_AI_CI_VERBOSE"

@@ -110,6 +110,11 @@ jobs:
 
       - name: Download formal-ai binary
         uses: actions/download-artifact@v8
+        env:
+          # v8's bundled unzip dependency still calls Buffer(); suppress only
+          # that reviewed upstream diagnostic, never all Node warnings:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: formal-ai-binary
           path: target/release
@@ -224,12 +229,18 @@ jobs:
     steps:
       - name: Download formal-ai binary
         uses: actions/download-artifact@v8
+        env:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: formal-ai-binary
           path: target/release
 
       - name: Download every real-client observation
         uses: actions/download-artifact@v8
+        env:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           pattern: transcripts-*
           path: matrix-evidence

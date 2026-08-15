@@ -111,7 +111,11 @@ case "$installer" in
     # An editor with no OpenCode extension is not the client this row names: the
     # leg would launch a bare editor and prove nothing about our server. The
     # extension is what talks to the base URL the wrapper configures.
-    "$dest/bin/code" --install-extension sst-dev.opencode --force \
+    # VS Code's bundled CLI still calls the deprecated legacy url.parse API.
+    # Suppress only that upstream diagnostic for this child process:
+    # https://github.com/microsoft/vscode/issues/319867
+    NODE_OPTIONS=--disable-warning=DEP0169 \
+      "$dest/bin/code" --install-extension sst-dev.opencode --force \
       --user-data-dir "$dest/user-data" --extensions-dir "$dest/extensions" \
       || matrix_fail "installing the sst-dev.opencode VS Code extension failed"
     ;;
