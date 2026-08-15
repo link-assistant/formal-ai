@@ -28,7 +28,7 @@ jobs:
           no-cache: true
       - name: Install the real Agent CLI
         run: |
-          bun add -g @link-assistant/agent
+          bun add -g --ignore-scripts @link-assistant/agent
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       - name: Build formal-ai
         run: cargo build --release --bin formal-ai

@@ -1,0 +1,56 @@
+TAP version 13
+# ✘ [ERROR] Could not resolve "chromium-bidi/lib/cjs/bidiMapper/BidiMapper"
+#     desktop/node_modules/playwright-core/lib/coreBundle.js:43139:33:
+#       43139 │ ..._toESM(require("chromium-bidi/lib/cjs/bidiMapper/BidiMapper"));
+#             ╵                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   You can mark the path "chromium-bidi/lib/cjs/bidiMapper/BidiMapper" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle. You can also surround this "require" call with a try/catch block to handle this failure at run-time instead of bundle-time.
+# ✘ [ERROR] Could not resolve "chromium-bidi/lib/cjs/cdp/CdpConnection"
+#     desktop/node_modules/playwright-core/lib/coreBundle.js:43140:40:
+#       43140 │ ... = __toESM(require("chromium-bidi/lib/cjs/cdp/CdpConnection"));
+#             ╵                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   You can mark the path "chromium-bidi/lib/cjs/cdp/CdpConnection" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle. You can also surround this "require" call with a try/catch block to handle this failure at run-time instead of bundle-time.
+# Subtest: desktop web tools can be bundled for the VSIX
+not ok 1 - desktop web tools can be bundled for the VSIX
+  ---
+  duration_ms: 1359.622347
+  location: '/tmp/gh-issue-solver-1786801324779/vscode/scripts/bundle-web-tools.test.mjs:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted rejection.
+    Actual message: "Build failed with 2 errors:
+    desktop/node_modules/playwright-core/lib/coreBundle.js:43139:33: ERROR: Could not resolve "chromium-bidi/lib/cjs/bidiMapper/BidiMapper"
+    desktop/node_modules/playwright-core/lib/coreBundle.js:43140:40: ERROR: Could not resolve "chromium-bidi/lib/cjs/cdp/CdpConnection""
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: |-
+    Build failed with 2 errors:
+    desktop/node_modules/playwright-core/lib/coreBundle.js:43139:33: ERROR: Could not resolve "chromium-bidi/lib/cjs/bidiMapper/BidiMapper"
+    desktop/node_modules/playwright-core/lib/coreBundle.js:43140:40: ERROR: Could not resolve "chromium-bidi/lib/cjs/cdp/CdpConnection"
+  stack: |-
+    failureErrorWithLog (/tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:1752:15)
+    /tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:1211:25
+    /tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:1163:52
+    buildResponseToResult (/tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:1209:7)
+    /tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:1236:16
+    responseCallbacks.<computed> (/tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:886:9)
+    handleIncomingPacket (/tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:941:12)
+    Socket.readFromStdout (/tmp/gh-issue-solver-1786801324779/vscode/node_modules/esbuild/lib/main.js:864:7)
+    Socket.emit (node:events:524:28)
+    addChunk (node:internal/streams/readable:561:12)
+  operator: 'doesNotReject'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async TestContext.<anonymous> (file:///tmp/gh-issue-solver-1786801324779/vscode/scripts/bundle-web-tools.test.mjs:21:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1656.669118

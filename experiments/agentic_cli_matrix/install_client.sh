@@ -38,7 +38,17 @@ case "$installer" in
       installed="$prefix/node_modules/.bin/$command_name"
     else
       # bun installs onto $HOME/.bun/bin, which the workflow adds to PATH.
-      bun add -g "$spec" || matrix_fail "bun add -g $spec failed"
+      if [ "$CLIENT" = opencode ]; then
+        # opencode-ai's pinned launcher is replaced with the platform binary by
+        # its postinstall. Without this explicit trust Bun leaves a Windows PE
+        # placeholder at bin/opencode.exe, which Linux later reports as
+        # "Exec format error". Trust only this reviewed, lockfile-pinned package.
+        bun add -g --trust "$spec" \
+          || matrix_fail "bun add -g --trust $spec failed"
+      else
+        bun add -g --ignore-scripts "$spec" \
+          || matrix_fail "bun add -g --ignore-scripts $spec failed"
+      fi
       installed="${BUN_INSTALL:-$HOME/.bun}/bin/$command_name"
     fi
     ;;

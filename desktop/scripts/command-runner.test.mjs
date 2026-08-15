@@ -20,7 +20,7 @@ test("production manifests and focused fallback limitations stay mapped", () => 
 
   assert.equal(desktopManifest.dependencies["command-stream"], "0.18.0");
   assert.equal(vscodeManifest.dependencies["command-stream"], undefined);
-  assert.match(cargoManifest, /^command-stream = "=0\.15\.0"$/m);
+  assert.match(cargoManifest, /^command-stream = "=0\.16\.0"$/m);
   const componentEntry = fs.readFileSync(
     require.resolve("command-stream"),
     "utf8",

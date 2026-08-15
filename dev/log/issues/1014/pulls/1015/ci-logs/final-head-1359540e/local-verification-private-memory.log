@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 05s
+     Running tests/integration/mod.rs (target/debug/deps/integration-c4d6e4288837cde3)
+
+running 1 test
+test http_server::spawned_server_does_not_wait_for_the_callers_shared_memory_lock ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 345 filtered out; finished in 10.52s
+

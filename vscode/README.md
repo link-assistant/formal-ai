@@ -41,6 +41,7 @@ The opt-in local server and Docker code execution only run in trusted desktop wi
 
 ```bash
 npm run vscode:test     # node:test unit suite + static smoke check (from the repo root)
+npm --prefix vscode run test:package  # real dependency graph (after the package dependency install)
 npm run vscode:dev      # launch in a browser host via @vscode/test-web
 npm run vscode:package  # produce a .vsix (runs prepare-resources first)
 ```

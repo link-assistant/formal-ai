@@ -12,6 +12,7 @@ dev/log/issues/999/pulls/1000/ci-logs/** whitespace=-blank-at-eol,-blank-at-eof
 dev/log/issues/999/pulls/1000/github/** whitespace=-blank-at-eol,-blank-at-eof
 dev/log/issues/999/pulls/1000/research/** whitespace=-blank-at-eol,-blank-at-eof
 dev/log/issues/1012/pulls/1013/** whitespace=-blank-at-eol,-blank-at-eof
+dev/log/issues/1014/pulls/1015/** whitespace=-blank-at-eol,-blank-at-eof
 
 # Issue #991 merge-conflict policy. `data/meta/merge-conflict-policy.lino` is the
 # reviewed registry; `rust-script scripts/check-merge-conflict-policy.rs` fails

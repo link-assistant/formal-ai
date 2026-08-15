@@ -1,0 +1,1 @@
+[{"createdAt":"2026-04-23T20:47:31Z","number":25885,"state":"closed","title":"fix(core): prevent ENOENT crash due to proper-lockfile race condition","updatedAt":"2026-06-02T05:10:09Z","url":"https://github.com/google-gemini/gemini-cli/pull/25885"}]

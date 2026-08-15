@@ -186,12 +186,18 @@ requireIncludes("scripts/prepare-resources.mjs", read("scripts/prepare-resources
   "vendor",
   "tool-router.cjs",
   "memory-sync.cjs",
+  "bundleWebTools",
+]);
+
+requireIncludes("scripts/bundle-web-tools.mjs", read("scripts/bundle-web-tools.mjs"), [
   "esbuild",
   "bundle: true",
 ]);
 
 requireIncludes(".vscodeignore", read(".vscodeignore"), [
   "node_modules/**",
+  "!node_modules/playwright/**",
+  "!node_modules/playwright-core/**",
 ]);
 
 console.log("formal-ai vscode smoke checks passed");

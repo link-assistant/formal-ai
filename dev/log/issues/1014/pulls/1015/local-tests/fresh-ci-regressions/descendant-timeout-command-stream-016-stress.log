@@ -1,0 +1,70 @@
+iteration 1
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.29s
+
+iteration 2
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.29s
+
+iteration 3
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.30s
+
+iteration 4
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.29s
+
+iteration 5
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.30s
+
+iteration 6
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.32s
+
+iteration 7
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.31s
+
+iteration 8
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.31s
+
+iteration 9
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.29s
+
+iteration 10
+
+running 1 test
+test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.29s
+

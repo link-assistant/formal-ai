@@ -1,0 +1,120 @@
+name: macOS Core Tests
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+
+jobs:
+  build-archive:
+    name: Build macOS test archive
+    runs-on: macos-15-intel
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@nextest
+      - uses: ./.github/actions/setup-sccache
+      - name: Restore cargo registry cache
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      - name: Build one portable nextest archive
+        env:
+          TEST_BUDGET_SECONDS: 1200
+          TEST_WARN_RATIO_PERCENT: 80
+        run: |
+          mkdir -p "$RUNNER_TEMP/macos-core-tests"
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "macOS test archive build" \
+            cargo nextest archive --lib --bins --tests --all-features \
+            --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst"
+          git rev-parse 'HEAD^{tree}' > "$RUNNER_TEMP/macos-core-tests/tree"
+      - name: Run doc tests
+        run: cargo test --doc --verbose
+      - name: Upload macOS test archive
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/macos-core-tests
+          retention-days: 1
+
+  test-archive:
+    name: Run macOS core slice ${{ matrix.partition }}/12
+    needs: [build-archive]
+    runs-on: macos-15-intel
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { partition: 1 }
+          - { partition: 2 }
+          - { partition: 3 }
+          - { partition: 4 }
+          - { partition: 5 }
+          - { partition: 6 }
+          - { partition: 7 }
+          - { partition: 8 }
+          - { partition: 9 }
+          - { partition: 10 }
+          - { partition: 11 }
+          - { partition: 12 }
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@nextest
+      - name: Download macOS test archive
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/macos-core-tests
+      - name: Verify archive source tree
+        run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
+      - name: Run core test slice from archive
+        env:
+          TEST_BUDGET_SECONDS: 480
+          TEST_WARN_RATIO_PERCENT: 75
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Core test slice" \
+            cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
+            --extract-to "$GITHUB_WORKSPACE" \
+            --workspace-remap "$GITHUB_WORKSPACE" \
+            --partition "slice:${{ matrix.partition }}/12" \
+            -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'
