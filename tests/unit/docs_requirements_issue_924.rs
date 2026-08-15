@@ -1,6 +1,8 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use serde_json::Value;
+
 const SESSION_ID: &str = "ses_0020cec63ffe7RIFkQ1qH9YZcY";
 const PR_URL: &str = "https://github.com/link-assistant/formal-ai/pull/1007";
 const INVARIANT: &str = "Every Formal AI release cycle includes a reviewed pull request whose session-backed workspace effect passes unchanged review, CI, promotion, and a non-decreasing self-hosting target.";
@@ -18,6 +20,12 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
             "| R924-3 ",
             "| R924-4 ",
             "| R924-5 ",
+            "| R924-6 ",
+            "| R924-7 ",
+            "| R924-8 ",
+            "| R924-9 ",
+            "| R924-10 ",
+            "| R924-11 ",
         ],
     );
     assert_contains_all(
@@ -36,7 +44,10 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
     assert_contains_all(
         "issue 924 requirement map",
         &read(root.join("docs/case-studies/issue-924/requirements.md")),
-        &["R924-1", "R924-2", "R924-3", "R924-4", "R924-5"],
+        &[
+            "R924-1", "R924-2", "R924-3", "R924-4", "R924-5", "R924-6", "R924-7",
+            "R924-8", "R924-9", "R924-10", "R924-11",
+        ],
     );
     assert_contains_all(
         "self-development roadmap",
@@ -83,6 +94,122 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
         "issue 924 release metadata",
         &release_notes,
         &["self-development", "pull request", "#924"],
+    );
+}
+
+#[test]
+fn issue_924_incremental_agent_task_is_replayable_and_learns_from_the_same_sessions() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let evidence = root.join("docs/case-studies/issue-924/incremental-self-authorship");
+    let report: Value = serde_json::from_str(&read(evidence.join("dispatch-report.json")))
+        .expect("captured incremental dispatch report");
+    assert_eq!(report["mode"], "incremental");
+    let trace = &report["incremental"];
+    assert_eq!(trace["solved"], true);
+    assert!(trace["split_depth_reached"].as_u64().unwrap_or(0) >= 1);
+
+    let steps = trace["steps"].as_array().expect("incremental steps");
+    assert!(steps.len() >= 4, "{steps:#?}");
+    assert_eq!(steps.first().unwrap()["passed"], false);
+    assert_eq!(steps.first().unwrap()["cli"], "agent");
+    assert_eq!(steps.last().unwrap()["passed"], true);
+    assert_eq!(steps.first().unwrap()["task"], steps.last().unwrap()["task"]);
+
+    let splits = trace["splits"].as_array().expect("failure-driven splits");
+    assert!(
+        splits
+            .iter()
+            .any(|split| split["children"].as_array().is_some_and(|children| children.len() >= 2)),
+        "no productive split: {splits:#?}"
+    );
+
+    for step in steps {
+        let relative = step["session_file"].as_str().expect("session path");
+        let session: Value = serde_json::from_str(&read(evidence.join(relative)))
+            .expect("replayable Agent session");
+        assert!(
+            session["native_session"]["id"]
+                .as_str()
+                .is_some_and(|id| id.starts_with("ses_")),
+            "missing native session id: {session:#?}"
+        );
+        assert!(
+            session["native_session"]["resume_command"]
+                .as_str()
+                .is_some_and(|command| command.contains("agent --resume ses_")),
+            "missing native resume command: {session:#?}"
+        );
+    }
+
+    let learning = read(evidence.join("learning.lino"));
+    assert_contains_all(
+        "proposal-only learning",
+        &learning,
+        &[
+            "human_gated \"true\"",
+            &format!("observation_count \"{}\"", steps.len()),
+        ],
+    );
+    assert!(!learning.contains("decision \"approved\""), "{learning}");
+    assert!(evidence.join("proposals.lino").is_file());
+}
+
+#[test]
+fn issue_924_agent_authored_contracts_are_canonical_and_cover_twenty_percent_of_leaves() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let evidence = root.join("docs/case-studies/issue-924/incremental-self-authorship");
+    for contract in [
+        "self-development-execution-contract.lino",
+        "self-development-pull-request-contract.lino",
+    ] {
+        assert_eq!(
+            read(root.join("data/meta").join(contract)).as_bytes(),
+            read(evidence.join(contract)).as_bytes(),
+            "Formal AI-authored {contract} must be preserved byte for byte"
+        );
+    }
+
+    let execution = read(root.join("data/meta/self-development-execution-contract.lino"));
+    assert_contains_all(
+        "self-development execution contract",
+        &execution,
+        &[
+            "task_execution \"formal_ai_via_agent_cli\"",
+            "strategy \"attempt_whole_then_split_only_after_failure\"",
+            "recursion \"split_until_solvable_or_bounded_irreducible\"",
+            "learning \"same_sessions_to_proposal_only_learning\"",
+            "promotion \"human_review_required\"",
+        ],
+    );
+    let pull_request = read(root.join("data/meta/self-development-pull-request-contract.lino"));
+    assert_contains_all(
+        "end-to-end pull request contract",
+        &pull_request,
+        &[
+            "authorship \"end_to_end\"",
+            "commit_coverage \"every_non_merge_commit_introduced_by_pull_request\"",
+            "review_ci_promotion \"unchanged\"",
+        ],
+    );
+
+    let decomposition = read(evidence.join("decomposition.lino"));
+    assert_contains_all(
+        "issue 924 decomposition",
+        &decomposition,
+        &[
+            "leaf_count \"6\"",
+            "formal_ai_authored_leaf_count \"2\"",
+            "formal_ai_authored_percent \"33\"",
+        ],
+    );
+    assert_eq!(decomposition.matches("owner \"formal_ai_agent_cli\"").count(), 2);
+    assert_eq!(decomposition.matches("record_type \"smallest_leaf\"").count(), 6);
+
+    let recipe = read(root.join("experiments/issue_924_self_authoring/run.sh"));
+    assert_contains_all(
+        "issue 924 incremental replay",
+        &recipe,
+        &["agent dispatch", "--incremental", "--cli agent", "--verify", "learning.lino"],
     );
 }
 

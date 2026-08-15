@@ -136,6 +136,60 @@ fn release_cycle_requires_a_session_backed_merged_pull_request() {
 }
 
 #[test]
+fn release_cycle_rejects_a_partially_attributed_pull_request() {
+    let repo = fixture_repo();
+    let branch = "issue-42";
+    let session = "fixture-session-42";
+    let evidence = "docs/evidence/42/session.txt";
+    let pull_request = "https://github.com/example/formal-ai/pull/42";
+
+    git(&repo, &["switch", "-c", branch]);
+    fs::write(repo.join("human-first.txt"), "unattributed change\n")
+        .expect("human fixture must be written");
+    commit(&repo, "human-authored part of the pull request");
+
+    fs::create_dir_all(repo.join("docs/evidence/42"))
+        .expect("evidence directory must be created");
+    fs::write(repo.join(evidence), format!("formal-ai session {session}\n"))
+        .expect("session evidence must be written");
+    fs::write(repo.join("formal-ai-42.txt"), "session-backed change\n")
+        .expect("generated fixture must be written");
+    commit(
+        &repo,
+        &format!(
+            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
+        ),
+    );
+    git(&repo, &["switch", "main"]);
+    git(
+        &repo,
+        &[
+            "merge",
+            "--no-ff",
+            branch,
+            "-m",
+            "Merge pull request #42 from example/issue-42",
+        ],
+    );
+
+    let error = metric_script::ensure_self_development_release(
+        &repo,
+        &repo.join("data/meta/self-hosting-ledger.lino"),
+        "v1.1.0",
+        "v1.0.0",
+        "HEAD",
+        3,
+    )
+    .expect_err("one attributed commit must not make a mixed-authorship PR end-to-end");
+    assert!(
+        error.contains("end-to-end Formal AI-authored pull request"),
+        "unexpected error: {error}"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+#[test]
 fn release_target_ratchets_and_records_each_self_authored_pull_request() {
     let repo = fixture_repo();
     let first_pull_request = merge_formal_ai_pull_request(&repo, 51);
