@@ -105,6 +105,7 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Core test slice" \
             cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
+            --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
             --partition "slice:${{ matrix.partition }}/3" \
             -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'
