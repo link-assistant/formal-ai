@@ -45,8 +45,8 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
         "issue 924 requirement map",
         &read(root.join("docs/case-studies/issue-924/requirements.md")),
         &[
-            "R924-1", "R924-2", "R924-3", "R924-4", "R924-5", "R924-6", "R924-7",
-            "R924-8", "R924-9", "R924-10", "R924-11",
+            "R924-1", "R924-2", "R924-3", "R924-4", "R924-5", "R924-6", "R924-7", "R924-8",
+            "R924-9", "R924-10", "R924-11",
         ],
     );
     assert_contains_all(
@@ -113,20 +113,23 @@ fn issue_924_incremental_agent_task_is_replayable_and_learns_from_the_same_sessi
     assert_eq!(steps.first().unwrap()["passed"], false);
     assert_eq!(steps.first().unwrap()["cli"], "agent");
     assert_eq!(steps.last().unwrap()["passed"], true);
-    assert_eq!(steps.first().unwrap()["task"], steps.last().unwrap()["task"]);
+    assert_eq!(
+        steps.first().unwrap()["task"],
+        steps.last().unwrap()["task"]
+    );
 
     let splits = trace["splits"].as_array().expect("failure-driven splits");
     assert!(
-        splits
-            .iter()
-            .any(|split| split["children"].as_array().is_some_and(|children| children.len() >= 2)),
+        splits.iter().any(|split| split["children"]
+            .as_array()
+            .is_some_and(|children| children.len() >= 2)),
         "no productive split: {splits:#?}"
     );
 
     for step in steps {
         let relative = step["session_file"].as_str().expect("session path");
-        let session: Value = serde_json::from_str(&read(evidence.join(relative)))
-            .expect("replayable Agent session");
+        let session: Value =
+            serde_json::from_str(&read(evidence.join(relative))).expect("replayable Agent session");
         assert!(
             session["native_session"]["id"]
                 .as_str()
@@ -202,14 +205,30 @@ fn issue_924_agent_authored_contracts_are_canonical_and_cover_twenty_percent_of_
             "formal_ai_authored_percent \"33\"",
         ],
     );
-    assert_eq!(decomposition.matches("owner \"formal_ai_agent_cli\"").count(), 2);
-    assert_eq!(decomposition.matches("record_type \"smallest_leaf\"").count(), 6);
+    assert_eq!(
+        decomposition
+            .matches("owner \"formal_ai_agent_cli\"")
+            .count(),
+        2
+    );
+    assert_eq!(
+        decomposition
+            .matches("record_type \"smallest_leaf\"")
+            .count(),
+        6
+    );
 
     let recipe = read(root.join("experiments/issue_924_self_authoring/run.sh"));
     assert_contains_all(
         "issue 924 incremental replay",
         &recipe,
-        &["agent dispatch", "--incremental", "--cli agent", "--verify", "learning.lino"],
+        &[
+            "agent dispatch",
+            "--incremental",
+            "--cli agent",
+            "--verify",
+            "learning.lino",
+        ],
     );
 }
 

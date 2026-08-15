@@ -148,10 +148,12 @@ fn release_cycle_rejects_a_partially_attributed_pull_request() {
         .expect("human fixture must be written");
     commit(&repo, "human-authored part of the pull request");
 
-    fs::create_dir_all(repo.join("docs/evidence/42"))
-        .expect("evidence directory must be created");
-    fs::write(repo.join(evidence), format!("formal-ai session {session}\n"))
-        .expect("session evidence must be written");
+    fs::create_dir_all(repo.join("docs/evidence/42")).expect("evidence directory must be created");
+    fs::write(
+        repo.join(evidence),
+        format!("formal-ai session {session}\n"),
+    )
+    .expect("session evidence must be written");
     fs::write(repo.join("formal-ai-42.txt"), "session-backed change\n")
         .expect("generated fixture must be written");
     commit(

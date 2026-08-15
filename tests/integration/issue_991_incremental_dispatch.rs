@@ -15,6 +15,7 @@ use std::path::Path;
 
 use formal_ai::orchestration::{
     dispatch_agents, AgentCommand, AgentRunPermission, DispatchConfig, DispatchMode,
+    VerificationCommand,
 };
 
 use super::issue_703_orchestration::TestWorkspace;
@@ -66,6 +67,30 @@ fn capable_cli(directory: &Path, name: &str) -> AgentCommand {
         directory,
         name,
         "#!/bin/sh\nprintf '%s\\n' \"$1\" >> done.txt\n",
+    )
+}
+
+/// A CLI whose parent retry destroys effects that its children composed.
+fn composition_regressing_cli(directory: &Path, name: &str) -> AgentCommand {
+    script(
+        directory,
+        name,
+        concat!(
+            "#!/bin/sh\n",
+            "task=\"$1\"\n",
+            "printf '%s\\n' \"$task\" > .current-task\n",
+            "case \"$task\" in\n",
+            "  *' and '*)\n",
+            "    if [ -f left.done ] && [ -f right.done ]; then\n",
+            "      rm -f left.done\n",
+            "      printf 'parent retry regressed composed effects\\n' > regressed.txt\n",
+            "    fi\n",
+            "    ;;\n",
+            "  *paths-ignore*) printf 'left\\n' > left.done ;;\n",
+            "  *docs-changed*) printf 'right\\n' > right.done ;;\n",
+            "  *) exit 9 ;;\n",
+            "esac\n",
+        ),
     )
 }
 
@@ -172,6 +197,62 @@ fn a_task_too_big_for_the_cli_is_split_from_its_failure_and_composed_back_up() {
             || learning.contains("decision \"no_reviewable_change\""),
         "{learning}"
     );
+}
+
+#[test]
+fn verified_child_composition_is_not_regressed_by_a_redundant_parent_retry() {
+    let bin = TestWorkspace::new("incremental-composition-bin");
+    let workspace = TestWorkspace::new("incremental-composition");
+    fs::write(
+        workspace.path().join("verify.sh"),
+        concat!(
+            "#!/bin/sh\n",
+            "task=${FORMAL_AI_VERIFICATION_TASK:-$(cat .current-task)}\n",
+            "case \"$task\" in\n",
+            "  *' and '*) test -f left.done && test -f right.done ;;\n",
+            "  *paths-ignore*) test -f left.done ;;\n",
+            "  *docs-changed*) test -f right.done ;;\n",
+            "  *) exit 9 ;;\n",
+            "esac\n",
+        ),
+    )
+    .unwrap();
+    let mut config = incremental_config(
+        COMPOUND_TASK,
+        &workspace,
+        &[("codex", composition_regressing_cli(bin.path(), "codex"))],
+    );
+    config.allowlisted_commands.insert("sh".to_string());
+    config
+        .verification
+        .push(VerificationCommand::new("sh", ["verify.sh"]));
+
+    let report = dispatch_agents(&config).expect("incremental dispatch");
+
+    let trace = report.incremental.as_ref().expect("an incremental trace");
+    assert!(trace.solved, "{trace:#?}");
+    assert_eq!(trace.steps.len(), 4, "{:?}", trace.steps);
+    assert_eq!(trace.steps.last().unwrap().task, COMPOUND_TASK);
+    assert_eq!(trace.steps.last().unwrap().cli, "composed-verifier");
+    assert!(trace.steps.last().unwrap().passed);
+    assert!(workspace.path().join("left.done").is_file());
+    assert!(workspace.path().join("right.done").is_file());
+    assert!(!workspace.path().join("regressed.txt").exists());
+
+    let replay: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(
+            config
+                .output_dir
+                .join(&trace.steps.last().unwrap().session_file),
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    assert!(replay["native_session"].is_null(), "{replay:#?}");
+    assert_eq!(replay["program"], "verification-only");
+
+    let learning = fs::read_to_string(config.output_dir.join("learning.lino")).unwrap();
+    assert!(learning.contains("observation_count \"3\""), "{learning}");
 }
 
 #[test]
