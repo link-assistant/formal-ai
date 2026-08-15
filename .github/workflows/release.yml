@@ -955,7 +955,11 @@ jobs:
           bun add -g --ignore-scripts @link-assistant/agent
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       - name: Install external agent CLIs
-        run: bun add -g --ignore-scripts opencode-ai @anthropic-ai/claude-code @openai/codex @google/gemini-cli
+        run: |
+          # OpenCode's pinned postinstall selects its platform binary. Trust
+          # only that reviewed package; suppress lifecycle scripts elsewhere.
+          bun add -g --trust opencode-ai@1.18.4
+          bun add -g --ignore-scripts @anthropic-ai/claude-code @openai/codex @google/gemini-cli
       - name: Build formal-ai (release)
         run: cargo build --release --bin formal-ai
       - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
