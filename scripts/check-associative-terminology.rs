@@ -58,6 +58,7 @@ const EXCLUDE_PATTERNS: &[&str] = &[
     "/.git/",
     "/node_modules/",
     "/data/cache/",
+    "/dev/log/",
     "/tests/source/",
     "/docs/",
     "/experiments/",
@@ -590,6 +591,10 @@ mod tests {
             "let r = \"/v1/knowledge-graph\";\n",
         );
         write(&repo.join("docs/notes.md"), "planned: /v1/link-graph\n");
+        write(
+            &repo.join("dev/log/issues/664/raw-response.json"),
+            "{\"route\":\"/v1/knowledge-graph\"}\n",
+        );
 
         let result = check_directory(&repo);
 
