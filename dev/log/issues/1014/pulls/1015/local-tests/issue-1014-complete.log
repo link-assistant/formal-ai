@@ -1,0 +1,20 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 48s
+     Running tests/unit/mod.rs (target/debug/deps/unit-02722cd9de722a1b)
+
+running 12 tests
+test ci_cd::issue_1014::diagnostic_ledger_classifies_every_observed_signal_without_weakening_failures ... ok
+test ci_cd::issue_1014::every_javascript_lock_surface_has_one_explicit_advisory_gate ... ok
+test ci_cd::issue_1014::issue_and_pull_request_delivery_documents_target_the_prepared_pull_request ... ok
+test ci_cd::issue_1014::every_named_baseline_and_initial_pull_request_run_has_preserved_evidence ... ok
+test ci_cd::issue_1014::macos_core_shards_reuse_one_nextest_archive ... ok
+test ci_cd::issue_1014::tests_first_record_contains_the_failing_and_passing_composed_regression ... ok
+test ci_cd::issue_1014::template_comparison_and_upstream_reports_cover_each_ecosystem ... ok
+test ci_cd::issue_1014::routine_javascript_installs_do_not_duplicate_advisory_or_lifecycle_noise ... ok
+test ci_cd::issue_1014::gemini_e2e_declares_true_color_and_keeps_mutable_home_outside_the_scanned_project ... ok
+test ci_cd::issue_1014::automatic_release_defers_an_ineligible_cycle_without_weakening_the_manual_gate ... ok
+test ci_cd::issue_1014::whole_issue_contract_composes_all_nine_requirements ... ok
+test ci_cd::issue_1014::captured_dependency_manifests_cannot_be_discovered_as_live_projects ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 2796 filtered out; finished in 0.14s
+

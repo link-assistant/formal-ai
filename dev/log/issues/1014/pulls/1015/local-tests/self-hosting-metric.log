@@ -1,0 +1,25 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 39s
+     Running tests/unit/mod.rs (target/debug/deps/unit-02722cd9de722a1b)
+
+running 13 tests
+test specification::self_hosting_metric::captured_artifacts_and_lockfiles_do_not_move_the_metric ... ok
+test specification::self_hosting_metric::a_committed_evidence_directory_resolves_its_nested_transcripts ... ok
+warning: not attributing a5ca9615b10b63d505e3c014c6aeb5f55e38240d: no committed Formal-AI-Evidence in a5ca9615b10b63d505e3c014c6aeb5f55e38240d records session orphan-session
+test specification::self_hosting_metric::release_cycle_rejects_a_partially_attributed_pull_request ... ok
+test specification::self_hosting_metric::release_pipeline_and_ledger_remain_pinned_to_the_metric ... ok
+warning: not attributing a5ca9615b10b63d505e3c014c6aeb5f55e38240d: no committed Formal-AI-Evidence in a5ca9615b10b63d505e3c014c6aeb5f55e38240d records session orphan-session
+test specification::self_hosting_metric::a_malformed_historical_evidence_record_cannot_deadlock_a_release ... ok
+notice: self-hosting ratchet would fall from 100.00% to 6.67% for v1.2.0
+::notice title=Self-hosting ratchet fell::self-hosting ratchet would fall from 100.00% to 6.67% for v1.2.0
+test specification::self_hosting_metric::a_falling_ratchet_reports_at_release_time_instead_of_blocking_it ... ok
+test specification::self_hosting_metric::rows_from_an_older_measurement_epoch_are_never_compared ... ok
+test specification::self_hosting_metric::recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet ... ok
+test specification::self_hosting_metric::release_cycle_requires_a_session_backed_merged_pull_request ... ok
+test specification::self_hosting_metric::trailers_are_recognized_even_when_separated_by_blank_lines ... ok
+test specification::self_hosting_metric::release_eligibility_retry_excludes_the_existing_tag ... ok
+test specification::self_hosting_metric::release_target_ratchets_and_records_each_self_authored_pull_request ... ok
+test specification::self_hosting_metric::the_pull_request_gate_only_judges_the_branchs_own_delta ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 2795 filtered out; finished in 1.52s
+
