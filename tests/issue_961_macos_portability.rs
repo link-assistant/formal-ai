@@ -23,8 +23,9 @@ fn seed_array_guard_precedes_expansion() -> bool {
 fn supported_macos_test_shards_are_complete() -> bool {
     RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
-        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 8
-        && (1..=8).all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
+        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 12
+        && (1..=12)
+            .all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
         && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
 
