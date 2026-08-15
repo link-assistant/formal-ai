@@ -22,7 +22,8 @@ The complete immutable input and test evidence is indexed in
 - Keep release attribution strict, but represent an ineligible automatic
   release as a clean deferral; retain the hard manual release gate.
 - Reuse one cargo-nextest archive for all three macOS core slices instead of
-  raising timeouts or multiplying cold compilation.
+  raising timeouts or multiplying cold compilation; extract it into the
+  workspace so existing Cargo binary paths remain valid.
 - Dynamically audit both Bun locks and all three npm locks through one required
   gate, then silence duplicate install-time audit output.
 - Upgrade the vulnerable JavaScript chains with focused overrides and run the
@@ -30,8 +31,8 @@ The complete immutable input and test evidence is indexed in
 - Isolate Gemini's mutable home from the scanned project, explicitly prohibit
   unnecessary Bun lifecycle scripts, and prevent archived manifests from being
   treated as live dependency projects.
-- File reproducible upstream reports for all six defects that are shared with
-  dependencies or current templates.
+- File seven reproducible upstream issues and retain eight exact report/comment
+  bodies for defects shared with dependencies or current templates.
 
 ## Verification and CI
 

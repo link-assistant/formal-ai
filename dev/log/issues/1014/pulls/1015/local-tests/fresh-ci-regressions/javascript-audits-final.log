@@ -1,0 +1,12 @@
+Auditing bun.lock
+[0m[1mbun audit [0m[2mv1.3.14 (0d9b296a)[0m
+No vulnerabilities found
+Auditing experiments/agent_cli_e2e/issue_819_tui/bun.lock
+[0m[1mbun audit [0m[2mv1.3.14 (0d9b296a)[0m
+No vulnerabilities found
+Auditing desktop/package-lock.json
+found 0 vulnerabilities
+Auditing tests/e2e/package-lock.json
+found 0 vulnerabilities
+Auditing vscode/package-lock.json
+found 0 vulnerabilities

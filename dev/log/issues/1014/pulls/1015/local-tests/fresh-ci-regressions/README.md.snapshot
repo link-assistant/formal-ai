@@ -1,0 +1,23 @@
+# Issue 1014 fresh-CI correction logs
+
+This directory preserves the failures exposed by the first implementation
+push, the minimal reproduction experiments, and the final local verification.
+
+- `before-fix.log` / `after-fix.log`: the real VSIX dependency graph fails to
+  bundle before Playwright is externalized and passes afterward.
+- `opencode-ignore-scripts.log` / `opencode-trusted-install.log`: a blanket
+  lifecycle denial installs a non-runnable placeholder, while trust limited to
+  pinned OpenCode selects and runs the Linux binary.
+- `nextest-archive-extract-to-workspace.log`: default archive relocation fails;
+  extraction at the original workspace passes.
+- `package-with-runtime.log` and `runtime-smoke-browser-commander-0.10.log`:
+  the 720-file VSIX includes the browser runtime and production Playwright
+  packages, then launches its packaged Chromium against a local page.
+- `rust-stage-final.log`, `wasm-stage-final.log`, `web-stage-final.log`, and
+  `full-rust-tests-final.log`: exact final repository gate/test commands.
+- `desktop-tests-final.log`, `vscode-tests-final.log`,
+  `javascript-audits-final.log`, and both `*-npm-ls-final.log` files: affected
+  JavaScript verification and resolved dependency trees.
+
+Intermediate failed logs are retained deliberately. Their filenames and the
+root evidence README distinguish reproductions from final acceptance results.

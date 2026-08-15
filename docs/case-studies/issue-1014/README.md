@@ -42,8 +42,9 @@ exit status, and two other npm locks plus the root Bun lock were unaudited false
 negatives; a second Bun lock was clean but also ungated. The Gemini harness
 scanned its mutable home and under-declared its terminal capabilities. Exact
 manifests inside archived evidence were mistaken for live Dependency Graph
-projects. Bun's default lifecycle blocking was safe but left ambiguous
-instructions in logs.
+projects. Bun's default lifecycle blocking was safe for routine packages, but
+OpenCode's pinned package requires its own postinstall to select a Linux
+binary; disabling it caused a fresh-CI `Exec format error`.
 
 ## 5. Research and prior art
 
@@ -55,11 +56,25 @@ Registry research identified Puppeteer 25 as the maintained path beyond the
 vulnerable `extract-zip` chain, and uncovered missing musl packages in
 Kreuzberg 3.7.2 metadata.
 
+Fresh packaging also exposed an interaction hidden by source-only tests:
+Playwright retains optional imports to private chromium-bidi paths and its
+maintainers do not support bundling it. It must remain an external production
+package in the VSIX. web-capture's browser-commander 0.8 dependency also drops
+the packaged browser's `executablePath`; version 0.10 is the minimum forwarding
+release.
+
 Complete current Rust, JS, and Python template trees were compared at immutable
 heads. All three had change-time Dependency Review but no ecosystem-native
 scheduled/current-lock audit, so reports were filed as Rust template #132, JS
-template #134, and Python template #58. Gemini #28826, web-capture #153, and
-html-to-markdown #459 contain the other reproducible upstream defects.
+template #134, and Python template #58. Gemini #28826, web-capture #153/#154,
+and html-to-markdown #459 contain the other reproducible upstream defects;
+Playwright's existing #33031 documents its bundling limitation.
+
+The first fresh archive run also confirmed nextest's documented relocation
+boundary: compile-time `CARGO_BIN_EXE_*` paths still name the build workspace,
+while default archive extraction uses a random temporary directory. A minimal
+experiment fails in that default mode and passes when the archive is extracted
+into the checked-out workspace, which is now how all three consumers run.
 
 ## 6. Tests-first reproduction
 
@@ -75,21 +90,30 @@ status API.
 
 Auto Release runs a read-only eligibility preflight and exits successfully with
 a GitHub notice when publication must wait. A reusable macOS workflow creates
-one nextest archive and feeds three bounded consumers. A new web-stage gate
+one nextest archive, extracts it at the original workspace target path, and
+feeds three bounded consumers. A new web-stage gate
 discovers and audits all five JavaScript locks; dependencies and bundles are
 updated until every audit is clean, and routine installs no longer duplicate
 audit summaries.
 
 The Gemini E2E uses sibling project/home directories and declares true color.
-Global Bun installs explicitly disallow lifecycle scripts. Twenty-one archived
-manifests use `.snapshot` names so scanners cannot discover evidence as a live
-application.
+Global Bun installs explicitly disallow lifecycle scripts except the exact
+lockfile-pinned OpenCode package, whose platform-selection script is explicitly
+trusted. Twenty-one archived manifests use `.snapshot` names so scanners
+cannot discover evidence as a live application.
+
+The real VSIX graph is now a package test: Playwright stays external and its
+two production packages are included in the artifact. browser-commander 0.10
+forwards the bundled Chromium path. A retained experiment opens a local page
+through the extracted 180.94 MB VSIX, not merely checkout files.
 
 ## 8. Verification
 
 The retained local evidence includes red and green issue suites, a real
 deferred release preflight, five zero-advisory audits, 140 desktop tests, 51 VS
-Code tests, the web build, actionlint, strict all-feature Clippy, all examples,
+Code tests (now 52 with the real dependency-graph bundle check), an extracted
+VSIX browser capture, a trusted pinned OpenCode install, the web build,
+actionlint, strict all-feature Clippy, all examples,
 2,804 all-feature tests (plus integration binaries), and doc tests. Fresh GitHub
 run IDs are recorded in the canonical archive only after they run on the final
 PR #1015 implementation head.
