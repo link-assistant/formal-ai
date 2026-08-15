@@ -856,6 +856,7 @@ The VS Code extension lives in [`vscode/`](vscode/) and embeds the same web chat
 
 ```bash
 npm run vscode:test     # node:test unit suite + static smoke check (no install needed)
+npm --prefix vscode run test:package  # real dependency graph (after the package dependency install)
 npm run vscode:dev      # launch in a browser host via @vscode/test-web
 npm run vscode:smoke    # static manifest/contract smoke check
 npm run vscode:package  # produce a .vsix (runs prepare-resources first)
