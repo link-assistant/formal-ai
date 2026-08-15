@@ -1,0 +1,1 @@
+CI diagnostics are classified, actionable causes are fixed, and uncertain cache backends expose opt-in tracing
