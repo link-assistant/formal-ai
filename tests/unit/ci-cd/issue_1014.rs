@@ -99,9 +99,11 @@ fn macos_core_shards_reuse_one_nextest_archive() {
     assert!(macos.contains("actions/upload-artifact@v7"));
     assert!(macos.contains("actions/download-artifact@v8"));
     assert!(macos.contains("cargo nextest run --archive-file"));
+    assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));
     assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/3\""));
     assert!(macos.contains("git rev-parse 'HEAD^{tree}'"));
     assert!(macos.contains("macos-core-tests/tree"));
+    assert!(repository_path("experiments/issue_1014_nextest_archive/run.sh").is_file());
 }
 
 #[test]
@@ -179,7 +181,7 @@ fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
 }
 
 #[test]
-fn routine_javascript_installs_do_not_duplicate_advisory_or_lifecycle_noise() {
+fn javascript_installs_apply_a_scoped_lifecycle_policy() {
     let workflow = release_workflow();
     for line in workflow.lines().filter(|line| line.contains("npm ci")) {
         assert!(
@@ -194,13 +196,34 @@ fn routine_javascript_installs_do_not_duplicate_advisory_or_lifecycle_noise() {
         "experiments/agentic_cli_matrix/install_client.sh",
     ] {
         let source = repository_file(path);
-        for line in source
-            .lines()
-            .filter(|line| line.contains("bun add -g") && !line.trim_start().starts_with('#'))
-        {
-            assert!(line.contains("--ignore-scripts"), "{path}: {line}");
+        for line in source.lines().filter(|line| {
+            let command = line.trim_start();
+            command.starts_with("bun add -g") || command.starts_with("run: bun add -g")
+        }) {
+            assert!(
+                line.contains("--ignore-scripts") || line.contains("--trust"),
+                "{path}: {line}"
+            );
+            if line.contains("--trust") {
+                assert!(
+                    (path == ".github/workflows/release.yml"
+                        && line.contains("opencode-ai@1.18.4"))
+                        || (path == "experiments/agentic_cli_matrix/install_client.sh"
+                            && line.contains("\"$spec\"")),
+                    "{path}: {line}"
+                );
+            }
         }
     }
+
+    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.4"));
+    let installer = repository_file("experiments/agentic_cli_matrix/install_client.sh");
+    assert!(installer.contains("[ \"$CLIENT\" = opencode ]"));
+    assert!(installer.contains("bun add -g --trust \"$spec\""));
+    assert!(
+        repository_file("experiments/agentic_cli_matrix/clients.lock")
+            .contains("opencode-ai@1.18.4")
+    );
 }
 
 #[test]
@@ -239,6 +262,8 @@ fn template_comparison_and_upstream_reports_cover_each_ecosystem() {
         "upstream-gemini-28826.json",
         "upstream-web-capture-153.json",
         "upstream-html-to-markdown-459.json",
+        "related/playwright-33031.json",
+        "related/web-capture-154.json",
     ] {
         assert!(
             raw.join(source).is_file(),
@@ -248,16 +273,33 @@ fn template_comparison_and_upstream_reports_cover_each_ecosystem() {
 
     let reports = repository_path("dev/log/issues/1014/pulls/1015/upstream-reports");
     let report_files = direct_files_with(&reports, "", ".md");
-    assert_eq!(report_files.len(), 6);
+    assert_eq!(report_files.len(), 8);
     for report in report_files {
         let body = fs::read_to_string(&report).expect("upstream report body");
-        for section in ["## Reproduction", "## Workaround", "## Suggested code fix"] {
-            assert!(
-                body.contains(section),
-                "{} lacks {section}",
-                report.display()
-            );
+        if report
+            .file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| name.ends_with("-follow-up.md"))
+        {
+            assert!(body.contains("validated downstream workaround"));
+            assert!(body.contains("issues/154"));
+            continue;
         }
+        assert!(
+            body.contains("## Reproduction") || body.contains("## Minimal reproduction"),
+            "{} lacks a reproduction section",
+            report.display()
+        );
+        assert!(
+            body.contains("## Workaround"),
+            "{} lacks ## Workaround",
+            report.display()
+        );
+        assert!(
+            body.contains("## Suggested code fix") || body.contains("## Suggested source fix"),
+            "{} lacks a suggested code fix",
+            report.display()
+        );
     }
 }
 
