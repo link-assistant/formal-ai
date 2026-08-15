@@ -1,0 +1,9 @@
+bun.lock
+desktop/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/examples/universal-app/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/package-lock.json
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/examples/universal-app/package-lock.json
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/package-lock.json
+experiments/agent_cli_e2e/issue_819_tui/bun.lock
+tests/e2e/package-lock.json
+vscode/package-lock.json

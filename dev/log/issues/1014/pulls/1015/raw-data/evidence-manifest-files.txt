@@ -1,0 +1,16 @@
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/examples/universal-app/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/examples/universal-app/package.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/package.json
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/docs/requirements.txt
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/pyproject.toml
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/Cargo.lock
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/Cargo.toml
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/examples/universal-app/package-lock.json
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/examples/universal-app/package.json
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/package-lock.json
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/package.json
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/docs/requirements.txt
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/pyproject.toml
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/Cargo.lock
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/Cargo.toml
