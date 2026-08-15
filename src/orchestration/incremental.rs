@@ -33,7 +33,7 @@ use super::dispatch::{
 };
 use super::observe_orchestration_session;
 use super::replay::write_session;
-use super::runner::{run_agent, AgentSession};
+use super::runner::{run_agent, verify_workspace, AgentSession};
 use super::workspace::{apply_changes, copy_workspace, WorkspaceChange};
 use crate::client_contract_learning::learn_client_contracts;
 use crate::links_format::push_lino_node;
@@ -41,6 +41,8 @@ use crate::recursive_execution::{
     solve_recursively, RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor,
 };
 use crate::task_decomposition::SplittingExecutor;
+
+const COMPOSED_VERIFIER: &str = "composed-verifier";
 
 /// One attempted task, in execution order. The index into
 /// [`DispatchReport::sessions`] is this step's position in `steps`.
@@ -50,7 +52,8 @@ pub struct IncrementalStep {
     pub task_id: String,
     /// The task text handed to the CLI.
     pub task: String,
-    /// CLI that ran this attempt.
+    /// CLI that ran this attempt, or `composed-verifier` when the controller
+    /// accepted already-composed child effects without another agent call.
     pub cli: String,
     /// Whether the session and its verification passed.
     pub passed: bool,
@@ -207,6 +210,7 @@ fn write_learning(
     let observations = steps
         .iter()
         .zip(sessions)
+        .filter(|(step, _)| step.cli != COMPOSED_VERIFIER)
         .map(|(step, session)| observe_orchestration_session(session, &step.session_file))
         .collect::<Vec<_>>();
     let learning = learn_client_contracts(&observations, &crate::seed::client_integrations());
@@ -347,6 +351,35 @@ impl<'config> AgentExecutor<'config> {
             self.error = Some(error);
         }
     }
+
+    fn preserve_session(
+        &mut self,
+        task: &RecursiveTask,
+        cli: String,
+        session: AgentSession,
+    ) -> TaskAttempt {
+        let passed = session.passed();
+        let index = self.sessions.len();
+        let session_file = format!("sessions/{index:03}-{}.json", safe_name(&cli));
+        if let Err(error) = write_session(&self.config.output_dir.join(&session_file), &session) {
+            self.record(DispatchError::Replay(error));
+            return TaskAttempt::failed("controller_aborted");
+        }
+        let evidence = evidence_of(&cli, &session);
+        self.steps.push(IncrementalStep {
+            task_id: task.id.clone(),
+            task: task.goal.clone(),
+            cli,
+            passed,
+            session_file,
+        });
+        self.sessions.push(session);
+        if passed {
+            TaskAttempt::passed(evidence)
+        } else {
+            TaskAttempt::failed(evidence)
+        }
+    }
 }
 
 impl TaskExecutor for AgentExecutor<'_> {
@@ -387,25 +420,7 @@ impl TaskExecutor for AgentExecutor<'_> {
                 self.changes.push(change.clone());
             }
         }
-        let session_file = format!("sessions/{index:03}-{}.json", safe_name(&cli));
-        if let Err(error) = write_session(&self.config.output_dir.join(&session_file), &session) {
-            self.record(DispatchError::Replay(error));
-            return TaskAttempt::failed("controller_aborted");
-        }
-        let evidence = evidence_of(&cli, &session);
-        self.steps.push(IncrementalStep {
-            task_id: task.id.clone(),
-            task: task.goal.clone(),
-            cli,
-            passed,
-            session_file,
-        });
-        self.sessions.push(session);
-        if passed {
-            TaskAttempt::passed(evidence)
-        } else {
-            TaskAttempt::failed(evidence)
-        }
+        self.preserve_session(task, cli, session)
     }
 
     fn extend_for(&mut self, task: &RecursiveTask, _failure: &TaskAttempt) -> bool {
@@ -419,5 +434,26 @@ impl TaskExecutor for AgentExecutor<'_> {
         }
         self.escalations.insert(task.id.clone(), next);
         true
+    }
+
+    fn retry_after_children(&mut self, task: &RecursiveTask) -> TaskAttempt {
+        if self.error.is_some() {
+            return TaskAttempt::failed("controller_aborted");
+        }
+        if self.config.verification.is_empty() {
+            return self.attempt(task);
+        }
+        let cli = self.cli_for(task);
+        let run = candidate_run_config(self.config, &cli, task.goal.clone(), &self.workspace);
+        match verify_workspace(&run) {
+            Ok(session) if session.passed() => {
+                self.preserve_session(task, COMPOSED_VERIFIER.to_string(), session)
+            }
+            Ok(_) => self.attempt(task),
+            Err(error) => {
+                self.record(DispatchError::Run(error));
+                TaskAttempt::failed("controller_aborted")
+            }
+        }
     }
 }
