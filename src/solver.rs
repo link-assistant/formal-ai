@@ -709,6 +709,9 @@ impl UniversalSolver {
         log.append("intent", intent.clone());
 
         if let SelectedRule::WriteProgram(spec) = &rule {
+            if log.first_of("rule_synthesis_candidate").is_none() {
+                crate::coding::record_algorithm_construction(&mut log);
+            }
             log.append(
                 "execution_status",
                 spec.language.execution.status.label().to_owned(),

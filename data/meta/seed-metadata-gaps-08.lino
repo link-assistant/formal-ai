@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 8
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_c5825230f7285618
+    source "data/seed/closure-generated-01.lino"
+    record "derive_surfaces"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_87454eb4b3bc3f88
     source "data/seed/closure-generated-01.lino"
     record "lexeme_import_cannot_install"
@@ -138,6 +142,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_ff25f220b1d61368
     source "data/seed/closure-generated-03.lino"
     record "response_clarification_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f55c82a74888b3f8
+    source "data/seed/closure-generated-03.lino"
+    record "response_coding_meta_algorithm_stage_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_46fb91493175b3f8
     source "data/seed/closure-generated-03.lino"
@@ -482,6 +490,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_340bf7643e2228e8
     source "data/seed/closure-generated-11.lino"
     record "prose"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_29fca62bb45be068
+    source "data/seed/closure-generated-11.lino"
+    record "response_coding_meta_algorithm_heading_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fb1049f014d24c28
     source "data/seed/closure-generated-11.lino"

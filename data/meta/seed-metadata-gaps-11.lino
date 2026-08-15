@@ -27,6 +27,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "pattern_sequence_aperiodic"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_093ac2a8ad6e2bfb
+    source "data/seed/closure-generated-01.lino"
+    record "response_coding_meta_algorithm_surface_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_10fca8777f6119cb
     source "data/seed/closure-generated-01.lino"
     record "response_coding_source_equality_test_rust"
@@ -126,6 +130,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_2db63d3eef95712b
     source "data/seed/closure-generated-03.lino"
     record "context_harness_unavailable"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_127d7943f46d828b
+    source "data/seed/closure-generated-03.lino"
+    record "installation_conversion"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8dd4702649598c4b
     source "data/seed/closure-generated-03.lino"
@@ -311,6 +319,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "task_first_step_lead"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fcb4822a88f3f9cb
+    source "data/seed/closure-generated-07.lino"
+    record "extract_ir"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_51c47156d5babbbb
     source "data/seed/closure-generated-07.lino"
     record "pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi"
@@ -318,6 +330,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_2c6087cca4ec198b
     source "data/seed/closure-generated-07.lino"
     record "remix-icon"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f9fc654ed0c848db
+    source "data/seed/closure-generated-07.lino"
+    record "response_coding_meta_algorithm_surface_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_ef74ead5827e447b
     source "data/seed/closure-generated-07.lino"

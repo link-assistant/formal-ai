@@ -212,16 +212,10 @@ function installationEvidence(conversion) {
   const evidence = [
     "formalization:install_steps_ir",
     `meaning:${stableBehaviorRuleId("installation_conversion_request", installationMeaningKey(conversion))}`,
-    "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    ...metaAlgorithmConstructionEvidence("installation_conversion"),
     `installation_conversion:source_format:${conversion.sourceFormat}`,
     `installation_conversion:project:${conversion.project}`,
   ];
-  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
-    evidence.push(`algorithm_construction:stage:${stage.id}:output=${stage.output}:verifier=${stage.verifier}`);
-  }
-  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
-    evidence.push(`algorithm_construction:coding_surface:${surface.slug}:projection=${surface.projection}`);
-  }
   for (const target of conversion.targetFormats) {
     evidence.push(`installation_conversion:target_format:${target}`);
   }
@@ -239,18 +233,7 @@ function renderInstallationLino(conversion) {
   lines.push(`  project ${linoString(conversion.project)}`);
   lines.push(`  validation ${linoString("ordered_commands_preserved")}`);
   lines.push(`  validation ${linoString("single_ir_renders_markdown_shell_powershell")}`);
-  lines.push(
-    `  meta_algorithm ${linoString("problem_class_to_shared_ir_to_renderers_to_verification")}`,
-  );
-  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
-    lines.push(`  construction_stage ${linoString(stage.id)}`);
-    lines.push(`  stage_output ${linoString(stage.output)}`);
-    lines.push(`  stage_verifier ${linoString(stage.verifier)}`);
-  }
-  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
-    lines.push(`  coding_surface ${linoString(surface.slug)}`);
-    lines.push(`  surface_projection ${linoString(surface.projection)}`);
-  }
+  appendMetaAlgorithmConstructionLino(lines, "installation_conversion");
   for (const step of conversion.steps) {
     lines.push(`  step ${linoString(step.id)}`);
     lines.push(`  description ${linoString(step.description)}`);
@@ -260,18 +243,32 @@ function renderInstallationLino(conversion) {
 }
 
 function renderInstallationMetaAlgorithm() {
-  const lines = ["Meta algorithm for constructing conversion algorithms:"];
-  INSTALL_ALGORITHM_CONSTRUCTION_STAGES.forEach((stage, index) => {
-    lines.push(
-      `${index + 1}. ${stage.id} -> ${stage.output}; verification fixture: ${stage.verifier}.`,
-    );
-  });
-  lines.push("");
-  lines.push("Existing coding solutions producible by the same meta algorithm:");
-  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
-    lines.push(`- ${surface.slug}: ${surface.projection}.`);
+  const definition = metaAlgorithmDefinition();
+  const lines = [answerFor("coding_meta_algorithm_heading", "en")];
+  definition.stages.forEach((stage, index) => lines.push(renderMetaAlgorithmTemplate(
+    answerFor("coding_meta_algorithm_stage", "en"),
+    { index: index + 1, stage: stage.id, output: stage.output, verifier: stage.verifier },
+  )));
+  lines.push("", answerFor("coding_meta_algorithm_solutions_heading", "en"));
+  for (const surface of definition.surfaces) {
+    lines.push(renderMetaAlgorithmTemplate(
+      answerFor("coding_meta_algorithm_surface", "en"),
+      {
+        surface: surface.slug,
+        active: surface.slug === "installation_conversion" ? definition.activeMarker : "",
+        projection: surface.projection,
+      },
+    ));
   }
   return lines.join("\n");
+}
+
+function activeMetaAlgorithmSurface(trace) {
+  const hasCandidate = trace.some((entry) => entry.startsWith("rule_synthesis_candidate:"));
+  const verified = trace.some(
+    (entry) => entry.startsWith("rule_verification:") && entry.includes("status passed"),
+  );
+  return hasCandidate && verified ? "rule_synthesis" : "coding_catalog";
 }
 
 function renderInstallationMarkdownGuide(conversion) {

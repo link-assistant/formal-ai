@@ -63,6 +63,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "response_agentic_action_generic_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_94a8450c613f6781
+    source "data/seed/closure-generated-02.lino"
+    record "response_coding_meta_algorithm_heading_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b0690a53b6fa7701
     source "data/seed/closure-generated-02.lino"
     record "response_lexeme_import_missing_label_en"
@@ -314,6 +318,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_cb5ed461e17d3661
     source "data/seed/closure-generated-06.lino"
     record "pattern_x_kaise_kaam_karti_suffix_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_56c48bdc9aadeea1
+    source "data/seed/closure-generated-06.lino"
+    record "response_coding_meta_algorithm_surface_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_cb42e0ae46ca8221
     source "data/seed/closure-generated-06.lino"
@@ -615,6 +623,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "external_benchmark_not_swe_case"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_2b014a5ccc1ab4e1
+    source "data/seed/closure-generated-13.lino"
+    record "response_coding_meta_algorithm_solutions_heading_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b684ffff5585fbc1
     source "data/seed/closure-generated-13.lino"
     record "response_coding_source_module_registration_rust"
@@ -674,6 +686,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_0c36dfceb1d73ee1
     source "data/seed/closure-generated-14.lino"
     record "response_agent_suggestion_active_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fb5ba27cb5454821
+    source "data/seed/closure-generated-14.lino"
+    record "response_coding_meta_algorithm_stage_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_21b6790ca356cd81
     source "data/seed/closure-generated-14.lino"

@@ -459,3 +459,40 @@ coding_idioms
       case
         for "maximum"
         code "        if ({list}[i] > {reduced}) {reduced} = {list}[i];"
+  coding_meta_algorithm problem_class_to_shared_ir_to_renderers_to_verification
+    stage_evidence "{stage} output={output} verifier={verifier}"
+    surface_evidence "{surface} projection={projection}"
+    active_marker " [active]"
+    stage collect_corpus
+      output "representative problem-class examples"
+      verifier "case-study corpus preserved"
+    stage derive_surfaces
+      output "input and output surface ontology"
+      verifier "handler-specific surface recognition fixture"
+    stage extract_ir
+      output "shared intermediate representation"
+      verifier "domain invariants preserved"
+    stage synthesize_operations
+      output "recognizers, extractors, renderers, and validators"
+      verifier "operation composition invariants"
+    stage project_targets
+      output "target-specific code, document, or rule projections"
+      verifier "per-target rendering or execution fixture"
+    stage mirror_runtimes
+      output "Rust and browser-worker projections of the same algorithm"
+      verifier "cross-runtime parity checks"
+    stage promote_capability
+      output "reusable coding-task construction pattern"
+      verifier "shared-symbol and trace-shape compatibility"
+    surface coding_catalog
+      projection "task spec -> parameterized template -> CST/compile check"
+    surface program_synthesis
+      projection "semantic function tree -> source program -> sandbox tests"
+    surface program_blueprint
+      projection "capability set -> blueprint recipe -> honest code projection"
+    surface numeric_list
+      projection "operation/data/language IR -> generated code plus evaluated result"
+    surface rule_synthesis
+      projection "operation/target binding -> candidate rule -> verification fixture"
+    surface installation_conversion
+      projection "installation surfaces -> install-step IR -> target renderers"

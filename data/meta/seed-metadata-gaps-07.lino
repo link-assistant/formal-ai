@@ -147,6 +147,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "response_agent_procedure_executed_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_54ed6b4a64fed227
+    source "data/seed/closure-generated-04.lino"
+    record "response_coding_meta_algorithm_solutions_heading_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_01c0c9bdb8fefe27
     source "data/seed/closure-generated-04.lino"
     record "response_general_plan_unverified_hi"

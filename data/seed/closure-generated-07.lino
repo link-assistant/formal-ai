@@ -69,6 +69,11 @@ meanings
     lexeme en
       surface
         text "external benchmark unavailable observation"
+  extract_ir
+    defined-by concept
+    lexeme en
+      surface
+        text "extract ir"
   general_plan_command_capture_action
     defined-by intent
     lexeme en
@@ -344,6 +349,16 @@ meanings
     lexeme en
       surface
         text "response client global config probe started es"
+  response_coding_meta_algorithm_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading zh"
+  response_coding_meta_algorithm_surface_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface es"
   response_coding_workspace_written_unverified_ru
     defined-by response_template
     lexeme en
@@ -849,6 +864,11 @@ meanings
     lexeme en
       surface
         text "rg"
+  rule_synthesis
+    defined-by concept
+    lexeme en
+      surface
+        text "rule synthesis"
   screenshot
     defined-by word_surface
     lexeme en
@@ -924,6 +944,11 @@ meanings
     lexeme en
       surface
         text "supported languages"
+  synthesize_operations
+    defined-by concept
+    lexeme en
+      surface
+        text "synthesize operations"
   task_decomposition_atomic
     defined-by intent
     lexeme en

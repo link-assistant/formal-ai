@@ -1,9 +1,8 @@
-use std::fmt::Write as _;
-use std::time::Duration;
+use std::{fmt::Write as _, time::Duration};
 
 use crate::agent::{AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
-use crate::engine::SymbolicAnswer;
-use crate::event_log::EventLog;
+use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
+use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
 use super::finalize_simple;
 
@@ -244,6 +243,7 @@ pub fn try_program_synthesis(
         "execution_environment",
         "isolated bounded agent workspace; env cleared; 5 second command budget".to_owned(),
     );
+    MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
 
     let body = render_python_answer(&candidate);
     Some(finalize_simple(

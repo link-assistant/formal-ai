@@ -2,59 +2,53 @@ self_ast_census
   target src/solver_handlers/installation_conversion.rs
   language rust
   fidelity signature
-  byte_len 33722
-  line_count 999
-  content_id source_module_dd241b1030c80967
-  symbol_count 51
+  byte_len 29236
+  line_count 866
+  content_id source_module_f30175457e746fb3
+  symbol_count 45
   symbols
-    enum InstallFormat 16 20
-    function label 23 29
-    struct InstallStep 33 37
-    struct InstallationConversion 40 45
-    struct AlgorithmConstructionStage 48 52
-    struct CodingSurfaceProjection 55 58
-    const ALGORITHM_CONSTRUCTION_STAGES 60 65
-    const CODING_SURFACE_PROJECTIONS 98 102
-    function try_installation_conversion 125 141
-    function from_prompt 144 164
-    function canonical_key 166 179
-    function meaning_id 181 183
-    function is_install_conversion_request 189 257
-    function contains_any 259 261
-    function detect_source_format 263 322
-    function detect_target_formats 324 389
-    function push_target 391 395
-    struct FencedBlock 398 401
-    function fenced_blocks 403 432
-    function extract_source_text 434 451
-    function is_shell_fence 453 455
-    function is_powershell_fence 457 459
-    function extract_install_steps 461 486
-    function collect_inline_commands 488 507
-    function collect_bullet_commands 509 529
-    function collect_script_commands 531 540
-    function normalize_script_line 542 548
-    function should_skip_script_line 550 558
-    enum Provenance 565 570
-    function push_command 572 580
-    function looks_like_command 586 631
-    function is_executable_head 636 649
-    function has_shell_operator 652 657
-    function reads_as_prose 662 671
-    const FUNCTION_WORDS 663 666
-    function describe_command 678 683
-    struct ParsedCommand 688 692
-    function parse 695 743
-    function action 746 766
-    function synthesized_description 770 775
-    function classify_verb 782 796
-    function extract_project 798 814
-    function record_conversion 816 844
-    function record_algorithm_construction 846 866
-    function render_conversion 868 894
-    function render_lino 896 937
-    function render_meta_algorithm 939 955
-    function render_markdown_guide 957 966
-    function render_shell_script 968 975
-    function render_powershell_script 977 984
-    function lino_string 986 999
+    enum InstallFormat 17 21
+    function label 24 30
+    struct InstallStep 34 38
+    struct InstallationConversion 41 46
+    function try_installation_conversion 48 64
+    function from_prompt 67 87
+    function canonical_key 89 102
+    function meaning_id 104 106
+    function is_install_conversion_request 112 180
+    function contains_any 182 184
+    function detect_source_format 186 245
+    function detect_target_formats 247 312
+    function push_target 314 318
+    struct FencedBlock 321 324
+    function fenced_blocks 326 355
+    function extract_source_text 357 374
+    function is_shell_fence 376 378
+    function is_powershell_fence 380 382
+    function extract_install_steps 384 409
+    function collect_inline_commands 411 430
+    function collect_bullet_commands 432 452
+    function collect_script_commands 454 463
+    function normalize_script_line 465 471
+    function should_skip_script_line 473 481
+    enum Provenance 488 493
+    function push_command 495 503
+    function looks_like_command 509 554
+    function is_executable_head 559 572
+    function has_shell_operator 575 580
+    function reads_as_prose 585 594
+    const FUNCTION_WORDS 586 589
+    function describe_command 601 606
+    struct ParsedCommand 611 615
+    function parse 618 666
+    function action 669 689
+    function synthesized_description 693 698
+    function classify_verb 705 719
+    function extract_project 721 737
+    function record_conversion 739 767
+    function render_conversion 769 796
+    function render_lino 798 822
+    function render_markdown_guide 824 833
+    function render_shell_script 835 842
+    function render_powershell_script 844 851
+    function lino_string 853 866

@@ -19,6 +19,11 @@ meanings
     lexeme en
       surface
         text "awk"
+  coding_meta_algorithm_solutions_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "coding meta algorithm solutions heading"
   configure_thinking_detail
     defined-by intent
     lexeme en
@@ -309,6 +314,11 @@ meanings
     lexeme en
       surface
         text "response client contract parse transcript error ru"
+  response_coding_meta_algorithm_stage_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage en"
   response_completion_recovery_name_target_artifact_en
     defined-by response_template
     lexeme en

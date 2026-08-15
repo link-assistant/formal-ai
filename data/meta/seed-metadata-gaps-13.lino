@@ -395,6 +395,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "assistant_free_time"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_4c3ee567d173080d
+    source "data/seed/closure-generated-09.lino"
+    record "coding_meta_algorithm_stage"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_38777c4db28d66fd
     source "data/seed/closure-generated-09.lino"
     record "outdent_lines"

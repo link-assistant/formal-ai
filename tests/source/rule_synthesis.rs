@@ -13,6 +13,7 @@ use crate::event_log::EventLog;
 use crate::intent_formalization::{
     active_program_context, detected_program_modifiers, ActiveProgramContext,
 };
+use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::program_coreference::looks_like_bare_program_artifact_follow_up;
 use crate::program_plan::ProgramPlan;
 use crate::solver::ConversationTurn;
@@ -47,6 +48,7 @@ pub fn try_construct_unknown_rule(
         return rule;
     };
 
+    MetaAlgorithmBuilder::for_surface(CodingSurface::RuleSynthesis).record(log);
     log.append(
         "write_program_coreference_rewrite",
         construction.coreference_trace,

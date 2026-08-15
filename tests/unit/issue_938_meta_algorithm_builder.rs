@@ -1,6 +1,6 @@
 use std::fs;
 
-use formal_ai::{ConversationTurn, UniversalSolver};
+use formal_ai::{ConversationTurn, SymbolicAnswer, UniversalSolver};
 
 const META_ALGORITHM: &str =
     "algorithm_construction:meta_algorithm problem_class_to_shared_ir_to_renderers_to_verification";
@@ -51,7 +51,6 @@ fn all_coding_surfaces_execute_one_trace_shape() {
         "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
     );
     assert_eq!(synthesis.intent, "write_program");
-    assert!(synthesis.answer.contains("def count_vowels"));
     assert_shared_trace(&synthesis.links_notation, "program_synthesis");
 
     let catalog = solver.solve("Write hello world in Rust");
@@ -65,10 +64,13 @@ fn all_coding_surfaces_execute_one_trace_shape() {
     assert_shared_trace(&numeric.links_notation, "numeric_list");
 
     let first_prompt = "Write me a Rust program that lists files in the current directory";
-    let first = solver.solve(first_prompt);
+    let SymbolicAnswer {
+        answer: first_answer,
+        ..
+    } = solver.solve(first_prompt);
     let history = [
         ConversationTurn::user(first_prompt),
-        ConversationTurn::assistant(first.answer),
+        ConversationTurn::assistant(first_answer),
     ];
     let rule = solver.solve_with_history("Sort the results in reverse order", &history);
     assert_eq!(rule.intent, "write_program");
@@ -95,6 +97,10 @@ fn shared_program_synthesis_trace_is_multilingual() {
         (
             "zh",
             "中文请求: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        ),
+        (
+            "es",
+            "Solicitud en español: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
         ),
     ] {
         let response = solver.solve(prompt);

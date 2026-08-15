@@ -34,13 +34,12 @@
 
 mod codegen;
 
-use std::cmp::Ordering;
-use std::fmt::Write as _;
+use std::{cmp::Ordering, fmt::Write as _};
 
 use crate::coding::ProgramLanguage;
-use crate::engine::SymbolicAnswer;
-use crate::event_log::EventLog;
+use crate::{engine::SymbolicAnswer, event_log::EventLog};
 use crate::language::{detect as detect_language, Language};
+use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::seed::parser::{parse_lino, LinoNode};
 use crate::seed::NUMERIC_LIST_OPERATIONS_LINO;
 use crate::solver::{ConversationRole, ConversationTurn};
@@ -202,6 +201,7 @@ pub fn try_numeric_list_with_history(
     } else {
         solve_numeric_list(prompt)?
     };
+    MetaAlgorithmBuilder::for_surface(CodingSurface::NumericList).record(log);
     if has_inheritance {
         log.append(
             "numeric_list_coreference",

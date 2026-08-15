@@ -1,7 +1,5 @@
 //! Universal problem-solving algorithm.
-//!
-//! Every prompt the assistant ever receives walks the same 11-step loop
-//! described in `VISION.md` and `REQUIREMENTS.md`:
+//! Every prompt walks the same 11-step loop from `VISION.md` and `REQUIREMENTS.md`:
 //!
 //! 1. **Impulse** — append the raw user message to the event log.
 //! 2. **Formalization** — derive an intent (the smallest formal requirement).
@@ -630,6 +628,9 @@ impl UniversalSolver {
         log.append("intent", intent.clone());
 
         if let SelectedRule::WriteProgram(spec) = &rule {
+            if log.first_of("rule_synthesis_candidate").is_none() {
+                crate::coding::record_algorithm_construction(&mut log);
+            }
             log.append(
                 "execution_status",
                 spec.language.execution.status.label().to_owned(),
@@ -985,9 +986,8 @@ impl UniversalSolver {
     }
 }
 
-/// Convenience entry point that mirrors [`UniversalSolver::solve`] using the
-/// environment-derived [`SolverConfig`]. The deterministic-projection
-/// guarantee from `NON-GOALS.md` is preserved.
+/// Mirrors [`UniversalSolver::solve`] with the environment-derived [`SolverConfig`]
+/// while preserving the deterministic-projection guarantee from `NON-GOALS.md`.
 #[must_use]
 pub fn solve(prompt: &str) -> SymbolicAnswer {
     UniversalSolver::default().solve(prompt)

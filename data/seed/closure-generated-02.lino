@@ -44,6 +44,11 @@ meanings
     lexeme en
       surface
         text "client server did not listen"
+  collect_corpus
+    defined-by concept
+    lexeme en
+      surface
+        text "collect corpus"
   comment_lines
     defined-by operation
     lexeme en
@@ -359,6 +364,16 @@ meanings
     lexeme en
       surface
         text "response client global config requirement missing hi"
+  response_coding_meta_algorithm_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading en"
+  response_coding_meta_algorithm_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading es"
   response_coding_workspace_effect_observed_ru
     defined-by response_template
     lexeme en

@@ -21,6 +21,9 @@ mod templates_core;
 mod templates_extended;
 mod types;
 
+use crate::event_log::EventLog;
+use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
+
 pub use languages::PROGRAM_LANGUAGES;
 pub use tasks::PROGRAM_TASKS;
 pub use types::{
@@ -28,6 +31,10 @@ pub use types::{
 };
 
 pub const WRITE_PROGRAM_INTENT: &str = "write_program";
+
+pub fn record_algorithm_construction(log: &mut EventLog) {
+    MetaAlgorithmBuilder::for_surface(CodingSurface::CodingCatalog).record(log);
+}
 
 /// Every program template, grouped by source file. The groups are split purely
 /// to keep each file under the repository's per-file line limit; semantically

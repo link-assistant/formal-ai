@@ -103,6 +103,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "how_to_guide_citation"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_31b5fa133c56c099
+    source "data/seed/closure-generated-03.lino"
+    record "problem_class_to_shared_ir_to_renderers_to_verification"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e30d7a5c7c13d7d9
     source "data/seed/closure-generated-03.lino"
     record "response_agentic_report_contents_question_zh"
@@ -294,6 +298,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_fb84818482003ad9
     source "data/seed/closure-generated-07.lino"
     record "response_thinking_step_group_by_conversation_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_99d619c2228be7c9
+    source "data/seed/closure-generated-07.lino"
+    record "rule_synthesis"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bd6860cf924c43d9
     source "data/seed/closure-generated-07.lino"

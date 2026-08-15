@@ -295,6 +295,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "pattern_wellbeing_phrase_zuijin_zenmeyang_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f2099ebd2a8ec67f
+    source "data/seed/closure-generated-06.lino"
+    record "program_blueprint"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0d69b8d024f5b76f
     source "data/seed/closure-generated-06.lino"
     record "response_agentic_action_list_desktop_hi"
@@ -486,6 +490,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_31506f4920906fdf
     source "data/seed/closure-generated-10.lino"
     record "response_agent_procedure_readback_unavailable_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3c4c46c10347c09f
+    source "data/seed/closure-generated-10.lino"
+    record "response_coding_meta_algorithm_stage_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fe30049980dec06f
     source "data/seed/closure-generated-10.lino"
@@ -778,6 +786,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_c4480e513154870f
     source "data/seed/closure-generated-15.lino"
     record "arrange"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_4375204b5c2b533f
+    source "data/seed/closure-generated-15.lino"
+    record "coding_catalog"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a4560f65b68561bf
     source "data/seed/closure-generated-15.lino"

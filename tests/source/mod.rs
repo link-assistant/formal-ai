@@ -29,6 +29,7 @@ pub(crate) mod links_format;
 pub mod links_query;
 pub mod memory;
 pub mod memory_sync;
+pub(crate) mod meta_algorithm_builder;
 pub mod normal_markov;
 pub mod probability;
 pub(crate) mod program_coreference;
