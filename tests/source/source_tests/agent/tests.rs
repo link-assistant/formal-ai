@@ -33,15 +33,11 @@ fn python_path_resolution_prefers_interpreter_names_before_launcher() {
 }
 
 #[test]
-fn windows_python_commands_have_platform_budget_floor() {
+fn python_commands_have_cross_platform_startup_budget_floor() {
     let configured = Duration::from_secs(5);
     let effective = effective_command_time_budget("python3", configured);
 
-    if cfg!(windows) {
-        assert_eq!(effective, WINDOWS_PYTHON_TIME_BUDGET_FLOOR);
-    } else {
-        assert_eq!(effective, configured);
-    }
+    assert_eq!(effective, Duration::from_secs(15));
     assert_eq!(effective_command_time_budget("cat", configured), configured);
 }
 
