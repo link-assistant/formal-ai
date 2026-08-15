@@ -17,6 +17,7 @@ templates, the Hive Mind guide, upstream issue data, and local red/green tests.
 | --- | --- |
 | `ci-logs/main-run-*.log` | Complete logs for all ten issue-listed default-branch runs. |
 | `ci-logs/initial-pr/` | Complete logs for the five workflows on prepared PR head `d4e8488`. |
+| `ci-logs/final/` | Complete logs, metadata, jobs and annotations for every non-passing check on the first implementation head, including the successful link-check retry. |
 | `raw-data/main-run-*.json` and `raw-data/main-run-jobs/` | Run and per-job timestamps, conclusions, steps, and head SHAs. |
 | `raw-data/check-annotations/` | GitHub check annotations, retained separately from textual logs. |
 | `raw-data/issue-*` and `raw-data/pr-*` | Issue, PR, timelines, files, commits, comments, reviews, initial diff and status. |
@@ -50,6 +51,21 @@ All times are UTC on 2026-08-15.
     debt, proving that green conclusions alone were not an adequate audit.
 11. `08:32`: exact shared `download-artifact@v8` defects were reported to the
     Rust and JavaScript templates as issues 131 and 133.
+12. `10:27`: implementation head `37c127b` was pushed and thirteen fresh
+    workflow runs were created for that exact SHA.
+13. `10:29`-`10:58`: all five exhaustive test jobs passed. The Intel macOS
+    specification lane completed in 9m57s and the three core partitions in
+    16m41s, 22m13s, and 19m30s; Ubuntu completed in 21m12s. The longer
+    partitions emitted their live 70% budget warning at 14 minutes, proving
+    that telemetry survives while the test process is still running.
+14. `10:31`: Broken Link Checker failed after 1,235 successful links when a
+    GitHub Docs endpoint reset one connection. The same URL returned HTTP 200
+    immediately afterward and the unchanged workflow retry passed in 2m14s.
+15. `10:35`: CI/CD's language-coverage policy rejected the `solver.rs` refactor
+    because no changed test exercised every registered locale. All five test
+    jobs and every other gate passed; Pipeline Status correctly propagated the
+    lint failure. A registry-driven test was added and both the exact policy
+    command and the complete web gate then passed locally.
 
 ## Requirements inventory
 
@@ -60,7 +76,7 @@ All times are UTC on 2026-08-15.
 | R1012-3 | Compare the complete workflow/CI script tree with current Rust, JS/TS, and Python templates. | Full trees and source snapshots are archived; all 32 Rust, 42 JS and 18 Python workflow/script files were inventoried and searched, not only similarly named files. |
 | R1012-4 | Apply relevant template and Hive Mind CI/CD practices. | Preserved status aggregation, permissions, pinned actions, safe concurrency and retry boundaries; added bounded sharding, live budget telemetry, shared immutable build output and focused diagnostic policy. |
 | R1012-5 | Report defects that also exist in templates. | Filed Rust template #131 and JS template #133 with reproduction, workaround, and source fix. Python has no affected v8 download step. Existing actions/download-artifact#484 and microsoft/vscode#319867 were reused rather than duplicated. |
-| R1012-6 | Reproduce problems with automated tests before fixing them and verify the composition. | `local-tests/regression-red.log` records eight failures before implementation. A ninth invariant pins the later sccache finding; a tenth verifies the required Formal AI / real Agent CLI self-authorship evidence. The final issue suite passes 10/10 and CI/CD passes 207/207. |
+| R1012-6 | Reproduce problems with automated tests before fixing them and verify the composition. | `local-tests/regression-red.log` records eight failures before implementation. A ninth invariant pins the later sccache finding; a tenth verifies the required Formal AI / real Agent CLI self-authorship evidence. The post-push locale regression brings the final issue suite to 11/11 and CI/CD to 208/208. |
 | R1012-7 | Preserve research, reconstruct the sequence, identify root causes, alternatives, known components and per-requirement plans. | This document plus the primary-source archive provide the durable analysis. |
 | R1012-8 | If evidence cannot establish an exact root cause, add verbose diagnostics disabled by default. | `FORMAL_AI_CI_VERBOSE` defaults to `false`; setting the repository variable to `true` enables millisecond sccache backend debug logs through the shared action. |
 | R1012-9 | Apply requirements across the whole codebase and finish in the single prepared PR. | All v8 download steps and all affected agent-matrix consumers are covered by enumerating regressions; PR #1013 is the sole delivery vehicle. |
@@ -84,6 +100,8 @@ All times are UTC on 2026-08-15.
 | CodeQL `expect-error` / deprecated schema strings | **Source/test vocabulary, not emitted diagnostics.** Searches hit analyzer fixtures and schemas in successful CodeQL output. | No change; retain coverage. |
 | Coverage action source containing `::error` | **Downloaded script text, not an annotation.** No corresponding check annotation or failed command exists. | No change. |
 | Codecov notice | **Informational optional integration.** Coverage generation and artifact upload succeeded; no required token or failed gate was present. | No change to security or coverage enforcement. |
+| First implementation link-check reset | **Transient external failure.** One GitHub Docs connection reset after 1,235 successful checks; direct retrieval and the unchanged retry both succeeded. | Preserve the failed attempt and successful retry. Do not weaken link validation for a one-off network reset. |
+| First implementation language-coverage failure | **True policy failure.** Moving language-facing configuration out of `solver.rs` changed a protected path, but the issue test file did not demonstrate all registered locales. The narrower local Rust gate did not execute this web-stage policy. | Add a registry-driven regression that constructs `SolverConfig` for every registered language, then run the exact language policy and the complete web stage locally. |
 
 No reviewed real test assertion failed before the timeout. Conversely, the
 successful jobs contained reproducible error-shaped output and a masked cache
@@ -182,8 +200,27 @@ upstream report already existed.
   issue #988 4/4, issue #961 12/12, and Codex model-metadata integration 1/1
   pass.
 - `local-tests/regression-self-hosting-green.log`: the final issue suite passes
-  10/10, including deterministic replay of both self-authored leaves.
+  10/10 before the post-push locale coverage correction, including
+  deterministic replay of both self-authored leaves.
 - `local-tests/ci-cd-final-green.log`: the complete CI/CD module passes 207/207.
+- `local-tests/issue-1012-final-11-tests.log`: the final issue suite passes
+  11/11, including the registry-driven response-language regression.
+- `local-tests/language-test-coverage-after-ci-failure.log`: the exact policy
+  that failed remotely now recognizes coverage for `en`, `ru`, `hi`, `zh`, and
+  `es`.
+- `local-tests/ci-cd-followup-green.log`: the complete CI/CD module passes
+  208/208 after that correction.
+- `local-tests/web-gates-followup-missing-root-dependency.log` records the
+  initial local web-stage attempt, whose sole failure was the uninstalled root
+  `lino-i18n` package; `bun-install-followup.log` records the repository's
+  frozen-lockfile installation and `web-gates-followup-green.log` records all
+  web gates passing afterward.
+- `ci-logs/final/broken-link-checker-31879541182.log` and its attempt-2 peer
+  preserve the transient failure and successful retry; the associated JSON,
+  job and annotation files establish their timestamps and unchanged SHA.
+- `ci-logs/final/ci-cd-pipeline-31879541216.log` preserves the complete first
+  implementation CI/CD run. Its job log and annotations isolate the one lint
+  failure; its job metadata records every test lane passing under 25 minutes.
 - `local-tests/cargo-test.log`: the first full run correctly found only the two
   stale self-AST census expectations introduced by the new `solver_config.rs`
   module (2,788 other tests passed). The canonical census generator then
@@ -194,6 +231,8 @@ upstream report already existed.
 - The downloaded cargo-nextest 0.9.143 binary was additionally used to compile
   and validate the exact partition/filter command locally.
 
-Final full-suite, lint, formatting, documentation, actionlint and remote-run
-results are appended to this archive after the final clean commit so their
-reported SHA cannot become stale.
+The definitive post-correction workflow cycle is verified against the final
+commit and reported on PR #1013. Its successful logs are not committed back to
+the branch, because doing so would create a new head SHA and make that evidence
+self-invalidating; this archive instead retains complete logs for every
+non-passing attempt and the locally reproducible correction.

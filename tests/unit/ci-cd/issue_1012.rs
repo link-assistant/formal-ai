@@ -162,6 +162,23 @@ fn audited_warning_band_sources_stay_below_their_limits() {
 }
 
 #[test]
+fn solver_configuration_keeps_every_registered_response_language() {
+    let registered_languages = formal_ai::language::registered_languages();
+    assert!(
+        !registered_languages.is_empty(),
+        "the response-language registry must not be empty"
+    );
+
+    for language in registered_languages {
+        let config = formal_ai::SolverConfig {
+            forced_response_language: Some(language.slug()),
+            ..formal_ai::SolverConfig::default()
+        };
+        assert_eq!(config.forced_response_language, Some(language.slug()));
+    }
+}
+
+#[test]
 fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
     const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
     const SMALLEST_REQUIREMENT_LEAVES: usize = 9;

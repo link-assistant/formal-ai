@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786781432917)
+    Finished `test` profile [unoptimized] target(s) in 1m 28s
+     Running tests/unit/mod.rs (target/debug/deps/unit-02722cd9de722a1b)
+
+running 11 tests
+test ci_cd::issue_1012::agentic_matrix_consumes_search_output_and_tolerates_closed_tui_input ... ok
+test ci_cd::issue_1012::box_language_matrix_reuses_one_release_binary ... ok
+test ci_cd::issue_1012::audited_warning_band_sources_stay_below_their_limits ... ok
+test ci_cd::issue_1012::sccache_backend_diagnostics_are_available_but_off_by_default ... ok
+test ci_cd::issue_1012::download_artifact_deprecation_is_suppressed_only_on_affected_steps ... ok
+test ci_cd::issue_1012::stock_rust_workflow_uses_a_quiet_dependency_probe_and_installed_path ... ok
+test ci_cd::issue_1012::solver_configuration_keeps_every_registered_response_language ... ok
+test ci_cd::issue_1012::macos_core_tests_are_sliced_and_warn_before_the_job_timeout ... ok
+test ci_cd::issue_1012::third_party_cli_noise_has_narrow_documented_mitigations ... ok
+test ci_cd::issue_1012::formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves ... ok
+test ci_cd::issue_1012::budget_warning_is_live_instead_of_post_process ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 2785 filtered out; finished in 2.03s
+
