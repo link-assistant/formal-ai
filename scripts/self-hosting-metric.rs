@@ -26,7 +26,10 @@ const DEFAULT_TRAILING_WINDOW: usize = 3;
 
 #[path = "self-development-loop.rs"]
 mod self_development_loop;
-pub use self_development_loop::ensure_self_development_release;
+#[allow(unused_imports)]
+pub use self_development_loop::{
+    ensure_self_development_release, self_development_release_status, SelfDevelopmentReleaseStatus,
+};
 
 /// Measurement-definition epoch of the rows this build writes.
 ///

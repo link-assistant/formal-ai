@@ -290,7 +290,7 @@ jobs:
           cache: npm
           cache-dependency-path: tests/e2e/package-lock.json
       - name: Install web test dependencies
-        run: npm ci --prefix tests/e2e
+        run: npm ci --prefix tests/e2e --no-audit --no-fund
       - name: Run registered gates (stage web)
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
@@ -316,9 +316,6 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, test-suite: full }
-          - { os: macos-15-intel, test-suite: core-1, partition: 1 }
-          - { os: macos-15-intel, test-suite: core-2, partition: 2 }
-          - { os: macos-15-intel, test-suite: core-3, partition: 3 }
           - { os: macos-15-intel, test-suite: specification }
     steps:
       - uses: actions/checkout@v6
@@ -333,9 +330,6 @@ jobs:
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-      - name: Install cargo-nextest
-        if: startsWith(matrix.test-suite, 'core-')
-        uses: taiki-e/install-action@nextest
       - uses: ./.github/actions/setup-sccache
       - name: Restore cargo registry cache
         uses: actions/cache/restore@v5
@@ -363,17 +357,6 @@ jobs:
             cargo test --lib --bins --tests --all-features --verbose -- \
             --skip data_files:: \
             --skip self_ast_census
-      - name: Run core test slice
-        if: startsWith(matrix.test-suite, 'core-')
-        env:
-          TEST_BUDGET_SECONDS: 1200
-          TEST_WARN_RATIO_PERCENT: 70
-        run: |
-          scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "Core test slice" \
-            cargo nextest run --lib --bins --tests --all-features \
-            --partition "slice:${{ matrix.partition }}/3" \
-            -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'
       - name: Run specification tests
         if: matrix.test-suite == 'specification'
         env:
@@ -384,8 +367,22 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
             cargo test --test unit --all-features --verbose specification::
       - name: Run doc tests
-        if: matrix.test-suite == 'full' || matrix.test-suite == 'core-1'
+        if: matrix.test-suite == 'full'
         run: cargo test --doc --verbose
+  macos-core-tests:
+    name: macOS Core Tests
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    uses: ./.github/workflows/macos-core-tests.yml
+    permissions:
+      contents: read
   build:
     name: Build Package
     runs-on: ubuntu-latest
@@ -393,8 +390,8 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [lint, test]
-    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
+    needs: [lint, test, macos-core-tests]
+    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && needs.macos-core-tests.result == 'success' }}
     steps:
       - uses: actions/checkout@v6
       - name: Setup Rust
@@ -462,21 +459,27 @@ jobs:
           HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
+      - name: Apply self-development release gate
+        id: release_gate
+        if: steps.check.outputs.should_release == 'true'
+        env:
+          SKIP_BUMP: ${{ steps.check.outputs.skip_bump }}
+        run: rust-script scripts/check-self-development-release.rs
       - name: Collect changelog and bump version
         id: version
-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
         run: |
           rust-script scripts/version-and-commit.rs \
             --bump-type "${{ steps.bump_type.outputs.bump_type }}"
       - name: Get current version
         id: current_version
-        if: steps.check.outputs.should_release == 'true'
+        if: steps.release_gate.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
       - name: Build release
-        if: steps.check.outputs.should_release == 'true'
+        if: steps.release_gate.outputs.should_release == 'true'
         run: cargo build --release
       - name: Publish to Crates.io
-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
@@ -484,28 +487,28 @@ jobs:
         run: rust-script scripts/publish-crate.rs
       - name: Wait for Crate availability on Crates.io
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
       - name: Smoke test the published crate
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
       - name: Free up runner disk space
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/free-runner-disk.sh
       - name: Log in to GitHub Container Registry
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -516,14 +519,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: ./.github/actions/setup-buildx-resilient
       - name: Extract GHCR Docker metadata
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -538,7 +541,7 @@ jobs:
             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to GHCR
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -552,14 +555,14 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Verify the published GHCR image is anonymously pullable
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -594,7 +597,7 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Create GitHub Release
         if: |
-          steps.check.outputs.should_release == 'true' && (
+          steps.release_gate.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -867,7 +870,7 @@ jobs:
       - name: Install Playwright and dependencies
         run: |
           cd tests/e2e
-          npm ci
+          npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v5
@@ -949,10 +952,10 @@ jobs:
           no-cache: true
       - name: Install @link-assistant/agent CLI
         run: |
-          bun add -g @link-assistant/agent
+          bun add -g --ignore-scripts @link-assistant/agent
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       - name: Install external agent CLIs
-        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex @google/gemini-cli
+        run: bun add -g --ignore-scripts opencode-ai @anthropic-ai/claude-code @openai/codex @google/gemini-cli
       - name: Build formal-ai (release)
         run: cargo build --release --bin formal-ai
       - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
@@ -1407,7 +1410,7 @@ jobs:
       - name: Install Playwright and dependencies
         run: |
           cd tests/e2e
-          npm ci
+          npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v5
@@ -1448,7 +1451,7 @@ jobs:
     timeout-minutes: 5
     if: always()
     needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
-            version-check, lint, test, build, auto-release, manual-release,
+            version-check, lint, test, macos-core-tests, build, auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
             build-box-language-binary, box-language-projects, deploy-pages,
             test-e2e-pages]

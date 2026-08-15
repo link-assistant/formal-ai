@@ -118,6 +118,15 @@ fn release_cycle_requires_a_session_backed_merged_pull_request() {
     );
 
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let status = metric_script::self_development_release_status(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("policy ineligibility must not be confused with an operational error");
+    assert!(matches!(
+        status,
+        metric_script::SelfDevelopmentReleaseStatus::Deferred(ref reason)
+            if reason.contains("merged Formal AI-authored pull request")
+    ));
     let error = metric_script::ensure_self_development_release(
         &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
     )

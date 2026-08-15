@@ -14,6 +14,12 @@ pub struct ReleaseEligibility {
     pub projected_percentage_basis_points: u64,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum SelfDevelopmentReleaseStatus {
+    Eligible(ReleaseEligibility),
+    Deferred(String),
+}
+
 /// Validate an optional PR trailer without requiring one on legacy commits.
 ///
 /// The release gate proves the referenced PR actually introduced the commit;
@@ -139,6 +145,43 @@ pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
         })
 }
 
+pub fn self_development_release_status(
+    repo: &Path,
+    ledger: &Path,
+    tag: &str,
+    since: &str,
+    until: &str,
+    trailing_window: usize,
+) -> Result<SelfDevelopmentReleaseStatus, String> {
+    let pull_requests =
+        merged_self_authored_pull_requests(repo, since, until, EvidencePolicy::Lenient)?;
+    if pull_requests.is_empty() {
+        return Ok(SelfDevelopmentReleaseStatus::Deferred(format!(
+            "release cycle {since}..{until} has no merged Formal AI-authored pull request; an \
+             end-to-end Formal AI-authored pull request requires valid session evidence and the \
+             same canonical PR trailer on every introduced non-merge commit"
+        )));
+    }
+    let mut rows = read_release_rows(ledger)?;
+    rows.retain(|row| row.tag != tag);
+    let target = target_from_rows(&rows);
+    let projected =
+        super::project_trailing_share(repo, ledger, since, until, trailing_window, Some(tag))?;
+    if projected < target {
+        return Ok(SelfDevelopmentReleaseStatus::Deferred(format!(
+            "self-hosting target would fall from {} to {} for {since}..{until}; merge additional \
+             reviewed Formal AI-authored work before cutting the release",
+            super::format_percentage(target),
+            super::format_percentage(projected),
+        )));
+    }
+    Ok(SelfDevelopmentReleaseStatus::Eligible(ReleaseEligibility {
+        pull_requests,
+        target_percentage_basis_points: target,
+        projected_percentage_basis_points: projected,
+    }))
+}
+
 pub fn ensure_self_development_release(
     repo: &Path,
     ledger: &Path,
@@ -147,31 +190,8 @@ pub fn ensure_self_development_release(
     until: &str,
     trailing_window: usize,
 ) -> Result<ReleaseEligibility, String> {
-    let pull_requests =
-        merged_self_authored_pull_requests(repo, since, until, EvidencePolicy::Lenient)?;
-    if pull_requests.is_empty() {
-        return Err(format!(
-            "release cycle {since}..{until} has no merged Formal AI-authored pull request; an \
-             end-to-end Formal AI-authored pull request requires valid session evidence and the \
-             same canonical PR trailer on every introduced non-merge commit"
-        ));
+    match self_development_release_status(repo, ledger, tag, since, until, trailing_window)? {
+        SelfDevelopmentReleaseStatus::Eligible(eligibility) => Ok(eligibility),
+        SelfDevelopmentReleaseStatus::Deferred(reason) => Err(reason),
     }
-    let mut rows = read_release_rows(ledger)?;
-    rows.retain(|row| row.tag != tag);
-    let target = target_from_rows(&rows);
-    let projected =
-        super::project_trailing_share(repo, ledger, since, until, trailing_window, Some(tag))?;
-    if projected < target {
-        return Err(format!(
-            "self-hosting target would fall from {} to {} for {since}..{until}; merge additional \
-             reviewed Formal AI-authored work before cutting the release",
-            super::format_percentage(target),
-            super::format_percentage(projected),
-        ));
-    }
-    Ok(ReleaseEligibility {
-        pull_requests,
-        target_percentage_basis_points: target,
-        projected_percentage_basis_points: projected,
-    })
 }

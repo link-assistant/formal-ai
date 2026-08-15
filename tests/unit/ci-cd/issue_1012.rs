@@ -22,20 +22,25 @@ fn action_step<'a>(workflow: &'a str, action: &str) -> Vec<&'a str> {
 fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     let workflow = release_workflow();
     let test = job_block(&workflow, "test");
+    let macos_call = job_block(&workflow, "macos-core-tests");
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
 
-    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
+    assert_eq!(test.matches("os: macos-15-intel").count(), 1);
+    assert!(test.contains("test-suite: specification"));
+    assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
     for shard in 1..=3 {
         assert!(
-            test.contains(&format!("test-suite: core-{shard}, partition: {shard}")),
+            macos.contains(&format!("- {{ partition: {shard} }}")),
             "missing macOS core shard {shard}"
         );
     }
-    assert!(test.contains("--partition \"slice:${{ matrix.partition }}/3\""));
-    assert!(test.contains("timeout-minutes: 25"));
-    assert!(!test.contains("2100"));
-    assert!(!test.contains("timeout-minutes: ${{ matrix.os"));
-    assert!(test.contains("taiki-e/install-action@nextest"));
-    assert!(test.contains("scripts/run-with-budget-warning.sh"));
+    assert_eq!(macos.matches("cargo nextest archive").count(), 1);
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/3\""));
+    assert!(macos.contains("timeout-minutes: 25"));
+    assert!(macos.contains("timeout-minutes: 10"));
+    assert!(!macos.contains("2100"));
+    assert!(macos.contains("taiki-e/install-action@nextest"));
+    assert!(macos.contains("scripts/run-with-budget-warning.sh"));
 }
 
 #[test]
@@ -63,6 +68,7 @@ fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
     for path in [
         ".github/workflows/agentic-cli-matrix.yml",
         ".github/workflows/desktop-release.yml",
+        ".github/workflows/macos-core-tests.yml",
         ".github/workflows/release.yml",
     ] {
         let workflow = repository_file(path);

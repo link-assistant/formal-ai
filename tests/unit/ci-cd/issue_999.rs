@@ -14,21 +14,24 @@ fn repository_file(path: &str) -> String {
 fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     let workflow = release_workflow();
     let test = job_block(&workflow, "test");
+    let macos_call = job_block(&workflow, "macos-core-tests");
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
 
     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
     assert!(test.contains("test-suite: full"));
     for shard in 1..=3 {
-        assert!(test.contains(&format!("test-suite: core-{shard}")));
+        assert!(macos.contains(&format!("- {{ partition: {shard} }}")));
     }
     assert!(test.contains("test-suite: specification"));
-    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
-    assert!(test.contains("timeout-minutes: 25"));
-    assert!(test.contains("cargo nextest run"));
-    assert!(test.contains("--partition \"slice:${{ matrix.partition }}/3\""));
+    assert_eq!(test.matches("os: macos-15-intel").count(), 1);
+    assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
+    assert!(macos.contains("timeout-minutes: 25"));
+    assert!(macos.contains("cargo nextest archive"));
+    assert!(macos.contains("cargo nextest run --archive-file"));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/3\""));
     assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
-    assert!(test.contains("test(specification::)"));
+    assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));
-    assert!(test.contains("startsWith(matrix.test-suite, 'core-')"));
     assert!(test.contains("matrix.test-suite == 'specification'"));
 }
 

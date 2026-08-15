@@ -422,7 +422,12 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
     let full_suite = workflow_step_block(test_job, "Run tests");
-    let core_suite = workflow_step_block(test_job, "Run core test slice");
+    let macos = fs::read_to_string(format!(
+        "{}/.github/workflows/macos-core-tests.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("macOS core workflow");
+    let core_suite = workflow_step_block(&macos, "Run core test slice from archive");
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
@@ -620,6 +625,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1012 partitions the macOS core suite so every slice retains
         // this baseline rather than extending a monolithic timeout.
         ("test", 25),
+        // Issue #1014 compiles one nextest archive and fans it out to three
+        // macOS runners. The reusable workflow owns both internal timeouts.
+        ("macos-core-tests", 0),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.
@@ -667,6 +675,21 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
+        if timeout_minutes == 0 {
+            assert!(job.contains("uses: ./.github/workflows/macos-core-tests.yml"));
+            let reusable = fs::read_to_string(format!(
+                "{}/.github/workflows/macos-core-tests.yml",
+                env!("CARGO_MANIFEST_DIR")
+            ))
+            .expect("macOS core reusable workflow");
+            for inner_job in workflow_job_names(&reusable) {
+                assert!(
+                    job_block(&reusable, inner_job).contains("    timeout-minutes:"),
+                    "{inner_job} should declare an explicit timeout"
+                );
+            }
+            continue;
+        }
         let expected = format!("    timeout-minutes: {timeout_minutes}\n");
         assert!(
             job.contains(&expected),
