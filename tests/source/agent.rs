@@ -18,7 +18,7 @@ use std::time::{Duration, Instant};
 use crate::engine::stable_id;
 
 const DEFAULT_AGENT_TIME_BUDGET: Duration = Duration::from_secs(2);
-const WINDOWS_PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
+const PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
 
 #[derive(Debug, Clone)]
 pub struct AgentWorkspaceConfig {
@@ -638,8 +638,8 @@ fn is_blocked_execution_alias(candidate: &Path) -> bool {
 }
 
 fn effective_command_time_budget(program: &str, configured: Duration) -> Duration {
-    if cfg!(windows) && program == "python3" && configured < WINDOWS_PYTHON_TIME_BUDGET_FLOOR {
-        WINDOWS_PYTHON_TIME_BUDGET_FLOOR
+    if program == "python3" && configured < PYTHON_TIME_BUDGET_FLOOR {
+        PYTHON_TIME_BUDGET_FLOOR
     } else {
         configured
     }
