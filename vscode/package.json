@@ -130,7 +130,7 @@
     "vscode:prepublish": "node scripts/prepare-resources.mjs",
     "package": "vsce package",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs scripts/bundle-web-tools.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
     "@vscode/test-web": "^0.0.81",
@@ -140,10 +140,12 @@
   },
   "dependencies": {
     "@link-assistant/web-capture": "^1.11.2",
-    "@link-assistant/web-search": "^0.10.3"
+    "@link-assistant/web-search": "^0.10.3",
+    "playwright": "^1.62.1"
   },
   "overrides": {
     "@link-assistant/web-capture": {
+      "browser-commander": "0.10.0",
       "puppeteer": "^25.7.0",
       "puppeteer-core": "^25.7.0"
     }
