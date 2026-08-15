@@ -1,5 +1,6 @@
 use std::fs;
 use std::process::{Child, Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use crate::http_server::{
@@ -313,12 +314,14 @@ fn wait_for_proxy_health(port: u16, child: &mut Child) {
 }
 
 fn proxy_log_path() -> std::path::PathBuf {
+    static NEXT_LOG: AtomicU64 = AtomicU64::new(0);
+    let sequence = NEXT_LOG.fetch_add(1, Ordering::Relaxed);
     let stamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("clock should be after epoch")
         .as_nanos();
     std::env::temp_dir().join(format!(
-        "formal-ai-proxy-{}-{stamp}.jsonl",
+        "formal-ai-proxy-{}-{stamp}-{sequence}.jsonl",
         std::process::id()
     ))
 }
