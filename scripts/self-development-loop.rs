@@ -107,12 +107,21 @@ pub(super) fn merged_self_authored_pull_requests(
             repo,
             &["rev-list", "--no-merges", parents[2], &exclude_first_parent],
         )?;
-        for commit in branch_commits.lines() {
-            let Some(reference) = attributed.get(commit) else {
-                continue;
-            };
-            if pull_request_number(reference) == Some(number) && !pull_requests.contains(reference)
-            {
+        let introduced = branch_commits
+            .lines()
+            .filter(|commit| !commit.is_empty())
+            .collect::<Vec<_>>();
+        let end_to_end = !introduced.is_empty()
+            && introduced.iter().all(|commit| {
+                attributed
+                    .get(*commit)
+                    .is_some_and(|reference| pull_request_number(reference) == Some(number))
+            });
+        if end_to_end {
+            let reference = attributed
+                .get(introduced[0])
+                .expect("end-to-end attribution checked every introduced commit");
+            if !pull_requests.contains(reference) {
                 pull_requests.push(reference.clone());
             }
         }
@@ -142,8 +151,9 @@ pub fn ensure_self_development_release(
         merged_self_authored_pull_requests(repo, since, until, EvidencePolicy::Lenient)?;
     if pull_requests.is_empty() {
         return Err(format!(
-            "release cycle {since}..{until} has no merged Formal AI-authored pull request with \
-             valid session evidence"
+            "release cycle {since}..{until} has no merged Formal AI-authored pull request; an \
+             end-to-end Formal AI-authored pull request requires valid session evidence and the \
+             same canonical PR trailer on every introduced non-merge commit"
         ));
     }
     let mut rows = read_release_rows(ledger)?;
