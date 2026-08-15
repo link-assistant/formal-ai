@@ -26,6 +26,36 @@ const TRADITIONAL_INIT_COMMANDS: &[(&str, &str)] = &[
     ("ruby", "bundle init"),
 ];
 
+fn expected_program(language: &str) -> &'static str {
+    match language {
+        "rust" => {
+            r#"fn main() {
+    println!("Hello, world!");
+}"#
+        }
+        "python" => r#"print("Hello, world!")"#,
+        "javascript" | "typescript" => r#"console.log("Hello, world!");"#,
+        "go" => {
+            r#"package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, world!")
+}"#
+        }
+        "java" => {
+            r#"public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, world!");
+    }
+}"#
+        }
+        "ruby" => r#"puts "Hello, world!""#,
+        other => panic!("no documented program for {other}"),
+    }
+}
+
 #[test]
 fn contract_maps_every_language_to_a_matching_box_image() {
     let contract = box_language_contract();
@@ -191,6 +221,12 @@ fn generated_programs_are_identical_across_prompt_locales() {
                         project.language, project.code_fence, response.answer
                     )
                 });
+            assert_eq!(
+                fenced_block(&response.answer, &project.code_fence).as_deref(),
+                Some(expected_program(&project.language)),
+                "{}/{locale} must show the canonical program exactly",
+                project.language
+            );
             assert!(
                 program.contains(&contract.expected_output),
                 "{}/{locale} program never prints {}: {program}",

@@ -1,0 +1,228 @@
+greeting	en	hi
+greeting	en	hello
+greeting	en	hey
+greeting	en	good morning
+greeting	en	good evening
+greeting	en	hi there
+greeting	en	hello there
+greeting	en	howdy
+greeting	en	greetings
+greeting	ru	привет
+greeting	ru	здравствуйте
+greeting	ru	здравствуй
+greeting	ru	доброе утро
+greeting	ru	добрый день
+greeting	ru	добрый вечер
+greeting	ru	приветствую
+greeting	ru	шалом
+greeting	hi	नमस्ते
+greeting	hi	नमस्कार
+greeting	hi	सलाम
+greeting	hi	हाय
+greeting	hi	राम राम
+greeting	hi	शुभ प्रभात
+greeting	zh	你好
+greeting	zh	您好
+greeting	zh	嗨
+greeting	zh	哈喽
+greeting	zh	早上好
+greeting	zh	早安
+greeting	zh	大家好
+wellbeing	en	how are you?
+wellbeing	en	how are you doing?
+wellbeing	en	how do you do?
+wellbeing	en	how are things?
+wellbeing	en	how's it going?
+wellbeing	ru	как дела?
+wellbeing	ru	как твои дела?
+wellbeing	ru	как у тебя дела?
+wellbeing	ru	как поживаешь?
+wellbeing	ru	как вы поживаете?
+wellbeing	ru	как ваши дела?
+wellbeing	hi	कैसे हो?
+wellbeing	hi	आप कैसे हैं?
+wellbeing	hi	तुम कैसे हो?
+wellbeing	hi	क्या हाल है?
+wellbeing	hi	आपका क्या हाल है?
+wellbeing	hi	सब कैसा चल रहा है?
+wellbeing	zh	你好吗?
+wellbeing	zh	你还好吗?
+wellbeing	zh	你怎么样?
+wellbeing	zh	您怎么样?
+wellbeing	zh	最近怎么样?
+wellbeing	zh	过得怎么样?
+farewell	en	bye
+farewell	en	goodbye
+farewell	en	ciao
+farewell	en	see you
+farewell	en	see you later
+farewell	en	take care
+farewell	en	so long
+farewell	en	farewell
+farewell	ru	пока
+farewell	ru	до свидания
+farewell	ru	до скорого
+farewell	ru	увидимся
+farewell	ru	всего доброго
+farewell	ru	прощай
+farewell	ru	до встречи
+farewell	hi	अलविदा
+farewell	hi	विदा
+farewell	hi	बाय
+farewell	hi	टाटा
+farewell	hi	फिर मिलेंगे
+farewell	zh	再见
+farewell	zh	拜拜
+farewell	zh	回见
+farewell	zh	改天见
+farewell	zh	后会有期
+courtesy_response	en	thanks
+courtesy_response	en	thank you
+courtesy_response	en	i am fine thank you
+courtesy_response	en	fine thanks
+courtesy_response	en	good thanks
+courtesy_response	en	doing well thanks
+courtesy_response	ru	спасибо
+courtesy_response	ru	благодарю
+courtesy_response	ru	всё хорошо спасибо
+courtesy_response	ru	хорошо спасибо
+courtesy_response	ru	нормально спасибо
+courtesy_response	hi	धन्यवाद
+courtesy_response	hi	शुक्रिया
+courtesy_response	hi	मैं ठीक हूँ धन्यवाद
+courtesy_response	hi	ठीक हूँ धन्यवाद
+courtesy_response	hi	मैं अच्छा हूँ धन्यवाद
+courtesy_response	zh	谢谢
+courtesy_response	zh	我很好谢谢
+courtesy_response	zh	好的谢谢
+courtesy_response	zh	多谢
+courtesy_response	zh	非常感谢
+identity	en	who are you?
+identity	en	what are you?
+identity	en	tell me about yourself
+identity	en	introduce yourself
+identity	en	let's get acquainted
+identity	en	what is formal-ai?
+identity	ru	кто ты?
+identity	ru	что ты?
+identity	ru	расскажи о себе
+identity	ru	опиши себя
+identity	ru	представься
+identity	ru	давай знакомиться
+identity	hi	तुम कौन हो?
+identity	hi	आप कौन हैं?
+identity	hi	अपना परिचय दो
+identity	hi	अपने बारे में बताओ
+identity	hi	चलो परिचय करते हैं
+identity	hi	आइए परिचय करें
+identity	zh	你是谁?
+identity	zh	你是什么?
+identity	zh	介绍一下你自己
+identity	zh	告诉我你自己
+identity	zh	我们认识一下吧
+identity	zh	让我们认识一下
+capabilities	en	what can you do?
+capabilities	en	what you can do?
+capabilities	en	what are your capabilities?
+capabilities	en	show me what you can do
+capabilities	en	how can you help?
+capabilities	en	what features do you have?
+capabilities	ru	что ты умеешь?
+capabilities	ru	что ты можешь?
+capabilities	ru	твои возможности
+capabilities	ru	в чём ты можешь быть полезен
+capabilities	ru	чем ты можешь помочь?
+capabilities	hi	आप क्या कर सकते हैं?
+capabilities	hi	तुम क्या कर सकते हो?
+capabilities	hi	क्या क्या कर सकते हो?
+capabilities	hi	आपकी क्षमताएं क्या हैं?
+capabilities	hi	आप कैसे मदद कर सकते हैं?
+capabilities	zh	你能做什么?
+capabilities	zh	你会做什么?
+capabilities	zh	你有什么功能?
+capabilities	zh	你能干什么?
+capabilities	zh	你可以帮我做什么?
+test_status	en	test
+test_status	en	ping
+test_status	en	testing
+test_status	en	test passed
+test_status	en	are you there?
+test_status	en	i am here
+test_status	en	testing 123
+test_status	ru	тест
+test_status	ru	пинг
+test_status	ru	тест пройден
+test_status	ru	я здесь
+test_status	ru	ты здесь?
+test_status	ru	я тут
+test_status	hi	टेस्ट
+test_status	hi	परीक्षण
+test_status	hi	परीक्षण सफल रहा
+test_status	hi	मैं यहाँ हूँ
+test_status	hi	क्या आप वहाँ हैं?
+test_status	zh	测试
+test_status	zh	测试通过
+test_status	zh	我在这里
+test_status	zh	你在吗?
+test_status	zh	您在吗?
+assistant_free_time	en	what do you do in your free time?
+assistant_free_time	en	how do you spend your free time?
+assistant_free_time	en	what do you do when you are not working?
+assistant_free_time	en	what do you do in free time?
+assistant_free_time	en	how do you spend your spare time?
+assistant_free_time	ru	что делаешь в свободное время?
+assistant_free_time	ru	чем занимаешься в свободное время?
+assistant_free_time	ru	что делаешь когда свободен?
+assistant_free_time	ru	чем ты занимаешься в свободное время?
+assistant_free_time	ru	как проводишь свободное время?
+assistant_free_time	hi	खाली समय में क्या करते हो?
+assistant_free_time	hi	आप खाली समय में क्या करते हैं?
+assistant_free_time	hi	फुर्सत में क्या करते हो?
+assistant_free_time	hi	खाली वक्त में क्या करते हो?
+assistant_free_time	hi	जब आप काम नहीं करते तो क्या करते हैं?
+assistant_free_time	zh	你空闲时间做什么?
+assistant_free_time	zh	你有空的时候做什么?
+assistant_free_time	zh	你业余时间做什么?
+assistant_free_time	zh	你休息的时候做什么?
+assistant_free_time	zh	你不工作的时候做什么?
+assistant_name	en	what is your name?
+assistant_name	en	do you have a name?
+assistant_name	en	what should i call you?
+assistant_name	en	tell me your name
+assistant_name	en	may i know your name?
+assistant_name	ru	как тебя зовут?
+assistant_name	ru	как твоё имя?
+assistant_name	ru	у тебя есть имя?
+assistant_name	ru	как вас зовут?
+assistant_name	ru	назови своё имя
+assistant_name	hi	आपका नाम क्या है?
+assistant_name	hi	तुम्हारा नाम क्या है?
+assistant_name	hi	क्या तुम्हारा कोई नाम है?
+assistant_name	hi	मैं तुम्हें क्या कहूँ?
+assistant_name	hi	अपना नाम बताओ
+assistant_name	zh	你叫什么名字?
+assistant_name	zh	您叫什么名字?
+assistant_name	zh	你的名字是什么?
+assistant_name	zh	你有名字吗?
+assistant_name	zh	告诉我你的名字
+calculation	en	two plus two
+calculation	en	three plus five
+calculation	en	seven minus four
+calculation	en	six times seven
+calculation	en	ten divided by two
+calculation	en	eight modulo three
+calculation	ru	два плюс два
+calculation	ru	три плюс пять
+calculation	ru	семь минус четыре
+calculation	ru	шесть умножить на семь
+calculation	ru	десять разделить на два
+calculation	hi	दो जोड़ दो
+calculation	hi	दो जमा दो
+calculation	hi	सात घटा चार
+calculation	hi	छह गुणा सात
+calculation	hi	दस भाग दो
+calculation	zh	二 加上 二
+calculation	zh	七 减去 四
+calculation	zh	六 乘以 七
+calculation	zh	十 除以 二
+calculation	zh	八 取模 三

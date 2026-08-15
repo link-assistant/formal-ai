@@ -1,0 +1,47 @@
+$ cargo run --example issue_933_question_stripping_probe   # fixed engine
+agentic_report_target_question	hi	text
+  seed:     "आप क\u{94d}या रिपोर\u{94d}ट करना चाह\u{947}\u{902}ग\u{947}? एक या अधिक विकल\u{94d}प च\u{941}न\u{947}\u{902}।"
+  enforced: "एक या अधिक विकल\u{94d}प च\u{941}न\u{947}\u{902}।"
+agentic_report_target_question	zh	text
+  seed:     "您想报告什么？请选择一个或多个选项。"
+  enforced: "请选择一个或多个选项。"
+agentic_report_contents_question	en	text
+  seed:     "Which context should the GitHub issue include?"
+  enforced: ""
+agentic_report_contents_question	ru	text
+  seed:     "Какой контекст включить в задачу GitHub?"
+  enforced: ""
+agentic_report_contents_question	hi	text
+  seed:     "GitHub समस\u{94d}या म\u{947}\u{902} कौन सा स\u{902}दर\u{94d}भ शामिल हो?"
+  enforced: ""
+agentic_report_contents_question	zh	text
+  seed:     "GitHub 问题应包含哪些上下文?"
+  enforced: ""
+unknown_reasoning_question	en	text
+  seed:     "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+  enforced: "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+unknown_reasoning_question	ru	text
+  seed:     "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Какой один источник или факт нужно использовать?\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
+  enforced: "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
+unknown_reasoning_question	hi	text
+  seed:     "म\u{948}\u{902} `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब\u{94d}ध sources स\u{947} निर\u{94d}धारित नही\u{902} कर सका. कौन सा एक source या missing fact इस\u{94d}त\u{947}माल कर\u{942}\u{901}?\n\nअगर reasoning क\u{947} बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace क\u{947} साथ Report issue उपयोग कर\u{947}\u{902}. इस dialog को टिकाऊ बनान\u{947} क\u{947} लिए memory export कर\u{947}\u{902} या `When I say ... answer ...` सिखाए\u{901}; routes द\u{947}खन\u{947} क\u{947} लिए `List behavior rules` और `Show behavior rule unknown`."
+  enforced: "म\u{948}\u{902} `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब\u{94d}ध sources स\u{947} निर\u{94d}धारित नही\u{902} कर सका.\n\nअगर reasoning क\u{947} बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace क\u{947} साथ Report issue उपयोग कर\u{947}\u{902}. इस dialog को टिकाऊ बनान\u{947} क\u{947} लिए memory export कर\u{947}\u{902} या `When I say ... answer ...` सिखाए\u{901}; routes द\u{947}खन\u{947} क\u{947} लिए `List behavior rules` और `Show behavior rule unknown`."
+unknown_reasoning_question	zh	text
+  seed:     "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。应该使用哪一个来源或缺失事实?\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
+  enforced: "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
+unknown_reasoning_question	unknown	text
+  seed:     "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+  enforced: "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+agent_suggestion	en	text
+  seed:     "It looks like you want to run a terminal command: `{command}`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\nSwitch to Agent mode and grant the `shell` capability so I can run `{command}`? Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically)."
+  enforced: "It looks like you want to run a terminal command: `{command}`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\n Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically)."
+agent_suggestion	ru	text
+  seed:     "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\nЧтобы выполнять команды оболочки, нужен режим агента (Agent). В режиме чата (Chat) я только рассуждаю и не запускаю команды.\n\nВключить режим агента и выдать доступ к оболочке (shell), чтобы я мог выполнить `{command}`? Переключите режим на «Agent» на панели инструментов (или «Full Auto» для автоматического выполнения)."
+  enforced: "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\nЧтобы выполнять команды оболочки, нужен режим агента (Agent). В режиме чата (Chat) я только рассуждаю и не запускаю команды.\n\n Переключите режим на «Agent» на панели инструментов (или «Full Auto» для автоматического выполнения)."
+agent_suggestion	hi	text
+  seed:     "ऐसा लगता ह\u{948} कि आप टर\u{94d}मिनल म\u{947}\u{902} एक कमा\u{902}ड चलाना चाहत\u{947} ह\u{948}\u{902}: `{command}`।\n\nश\u{947}ल कमा\u{902}ड चलान\u{947} क\u{947} लिए एज\u{947}\u{902}ट (Agent) मोड चाहिए। च\u{948}ट (Chat) मोड म\u{947}\u{902} म\u{948}\u{902} क\u{947}वल आपक\u{947} अन\u{941}रोध पर विचार करता ह\u{942}\u{901} और कमा\u{902}ड नही\u{902} चलाता।\n\nएज\u{947}\u{902}ट मोड चाल\u{942} कर\u{947}\u{902} और `shell` क\u{94d}षमता प\u{94d}रदान कर\u{947}\u{902} ताकि म\u{948}\u{902} `{command}` चला सक\u{942}\u{901}? ट\u{942}लबार म\u{947}\u{902} मोड र\u{947}डियो स\u{947} \"Agent\" च\u{941}न\u{947}\u{902} (या स\u{94d}वचालित निष\u{94d}पादन क\u{947} लिए \"Full Auto\")।"
+  enforced: "ऐसा लगता ह\u{948} कि आप टर\u{94d}मिनल म\u{947}\u{902} एक कमा\u{902}ड चलाना चाहत\u{947} ह\u{948}\u{902}: `{command}`।\n\nश\u{947}ल कमा\u{902}ड चलान\u{947} क\u{947} लिए एज\u{947}\u{902}ट (Agent) मोड चाहिए। च\u{948}ट (Chat) मोड म\u{947}\u{902} म\u{948}\u{902} क\u{947}वल आपक\u{947} अन\u{941}रोध पर विचार करता ह\u{942}\u{901} और कमा\u{902}ड नही\u{902} चलाता।\n\n ट\u{942}लबार म\u{947}\u{902} मोड र\u{947}डियो स\u{947} \"Agent\" च\u{941}न\u{947}\u{902} (या स\u{94d}वचालित निष\u{94d}पादन क\u{947} लिए \"Full Auto\")।"
+agent_suggestion	zh	text
+  seed:     "看起来您想在终端中运行一个命令：`{command}`。\n\n运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会分析您的请求，而不会执行命令。\n\n切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？请在工具栏的模式单选框中选择 \"Agent\"（或选择 \"Full Auto\" 自动运行命令）。"
+  enforced: "看起来您想在终端中运行一个命令：`{command}`。\n\n运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会分析您的请求，而不会执行命令。\n\n请在工具栏的模式单选框中选择 \"Agent\"（或选择 \"Full Auto\" 自动运行命令）。"
+15 seed value(s) rewritten by the question-necessity pass

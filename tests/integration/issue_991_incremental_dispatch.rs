@@ -156,6 +156,22 @@ fn a_task_too_big_for_the_cli_is_split_from_its_failure_and_composed_back_up() {
             step.session_file
         );
     }
+
+    // The same sessions are learning input, not dead-end execution logs. The
+    // learner may only propose a contract amendment; the run cannot approve
+    // its own observation or silently mutate the client registry.
+    let learning = fs::read_to_string(config.output_dir.join("learning.lino"))
+        .expect("incremental execution must emit its proposal-only learning artifact");
+    assert!(learning.contains("human_gated \"true\""), "{learning}");
+    assert!(
+        learning.contains(&format!("observation_count \"{}\"", trace.steps.len())),
+        "{learning}"
+    );
+    assert!(
+        learning.contains("decision \"awaiting_human_review\"")
+            || learning.contains("decision \"no_reviewable_change\""),
+        "{learning}"
+    );
 }
 
 #[test]

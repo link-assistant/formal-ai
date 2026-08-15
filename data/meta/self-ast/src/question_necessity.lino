@@ -2,10 +2,10 @@ self_ast_census
   target src/question_necessity.rs
   language rust
   fidelity signature
-  byte_len 22630
-  line_count 713
-  content_id source_module_8cca3416893262e8
-  symbol_count 42
+  byte_len 24162
+  line_count 749
+  content_id source_module_087ac5f34c2ce25e
+  symbol_count 45
   symbols
     const POLICY_SEED 14 14
     enum QuestionClass 17 20
@@ -38,14 +38,17 @@ self_ast_census
     function question_candidates 386 427
     function punctuation_candidates 429 454
     function punctuation_candidates_in_line 456 519
-    function closing_quote 521 531
-    function is_equation_placeholder 533 545
-    function is_equation_operator 547 549
-    function sentence_start 551 569
-    function looks_like_url 571 576
-    function is_replayed_question 578 598
-    function requirement_section_ranges 600 631
-    function is_follow_up_item 633 639
-    function strip_follow_up_prefix 641 647
-    function remove_ranges 649 681
-    function remove_empty_question_sections 683 713
+    function closing_quote 521 539
+    function is_equation_placeholder 541 553
+    function is_equation_operator 555 557
+    function sentence_start 559 577
+    function is_sentence_terminator 581 586
+    function opens_next_sentence 593 595
+    function is_ideographic 597 605
+    function looks_like_url 607 612
+    function is_replayed_question 614 634
+    function requirement_section_ranges 636 667
+    function is_follow_up_item 669 675
+    function strip_follow_up_prefix 677 683
+    function remove_ranges 685 717
+    function remove_empty_question_sections 719 749

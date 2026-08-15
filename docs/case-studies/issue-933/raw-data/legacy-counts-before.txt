@@ -1,0 +1,19 @@
+tests/unit/multilingual_variations.rs: distinct wordings per case per language (floor: 5)
+  case                  en  ru  hi  zh
+  assistant_free_time    6   4   3   3
+  calculation           16   8  10  11
+  farewell               5   2   5   5
+  greeting               6   4   5   6
+  identity              11   7   6   6
+  wellbeing              5   3   3   3
+
+- case assistant_free_time has 4 ru variation(s); the floor is 5
+- case assistant_free_time has 3 hi variation(s); the floor is 5
+- case assistant_free_time has 3 zh variation(s); the floor is 5
+- case farewell has 2 ru variation(s); the floor is 5
+- case greeting has 4 ru variation(s); the floor is 5
+- case wellbeing has 3 ru variation(s); the floor is 5
+- case wellbeing has 3 hi variation(s); the floor is 5
+- case wellbeing has 3 zh variation(s); the floor is 5
+
+8 of 24 groups are below the floor.

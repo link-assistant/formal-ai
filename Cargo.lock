@@ -1446,7 +1446,7 @@ dependencies = [
 
 [[package]]
 name = "formal-ai"
-version = "0.344.0"
+version = "0.345.0"
 dependencies = [
  "async-trait",
  "base64 0.23.0",
@@ -1472,6 +1472,8 @@ dependencies = [
  "tokio",
  "toml_edit",
  "tungstenite",
+ "unicode-general-category",
+ "unicode-normalization",
  "walkdir",
  "web-capture",
  "web-search",
@@ -5251,6 +5253,12 @@ name = "unicode-blocks"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "328edfd6d0bb91a22e592bed3a3b54c7b1f5c92a517f5a7aca24a2caef10c363"
+
+[[package]]
+name = "unicode-general-category"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b993bddc193ae5bd0d623b49ec06ac3e9312875fdae725a975c51db1cc1677f"
 
 [[package]]
 name = "unicode-ident"
