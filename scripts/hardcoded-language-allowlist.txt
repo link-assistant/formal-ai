@@ -981,12 +981,8 @@ src/solver_handlers/installation_conversion.rs	2. Extract command-like install/d
 src/solver_handlers/installation_conversion.rs	3. Render every target from the same install-step IR.\n
 src/solver_handlers/installation_conversion.rs	4. Preserve commands verbatim so the conversion can round-trip.\n
 src/solver_handlers/installation_conversion.rs	Converted installation instructions for {}.
-src/solver_handlers/installation_conversion.rs	Meta algorithm for constructing conversion algorithms:\n
 src/solver_handlers/installation_conversion.rs	README.md installation guide:\n\n
 src/solver_handlers/installation_conversion.rs	Run the {} {} step
-src/solver_handlers/installation_conversion.rs	\nExisting coding solutions producible by the same meta algorithm:\n
-src/solver_handlers/installation_conversion.rs	{} output={} verifier={}
-src/solver_handlers/installation_conversion.rs	{}. {} -> {}; verification fixture: {}.
 src/solver_handlers/meta_explanation.rs	I am not an LLM runtime and I do not perform neural inference. Current environment: {} (`{}`). Runtime: {}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory ({}) first; web search is used only when this environment allows it: {}. The whole internet is not preloaded into local rules.
 src/solver_handlers/meta_explanation.rs	I answered that way because the prompt matched a deterministic Links Notation rule. The evidence links and trace events are appended to the log; see the trace link for the full chain.
 src/solver_handlers/meta_explanation.rs	I work by matching your prompt against deterministic Links Notation rules stored in memory. Each rule maps a recognized pattern to a fixed response. When no rule matches, I report intent: unknown. There is no neural inference — every answer is fully traceable to a symbolic rule.

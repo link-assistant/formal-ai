@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "client server health invalid"
+  coding_meta_algorithm_stage
+    defined-by intent
+    lexeme en
+      surface
+        text "coding meta algorithm stage"
   command-stream
     defined-by name
     lexeme en
@@ -314,6 +319,11 @@ meanings
     lexeme en
       surface
         text "process"
+  project_targets
+    defined-by concept
+    lexeme en
+      surface
+        text "project targets"
   relative-meta-logic
     defined-by term
     lexeme en
@@ -404,6 +414,16 @@ meanings
     lexeme en
       surface
         text "response client global config auth refusal es"
+  response_coding_meta_algorithm_solutions_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading en"
+  response_coding_meta_algorithm_surface_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface hi"
   response_coding_workspace_written_unverified_zh
     defined-by response_template
     lexeme en

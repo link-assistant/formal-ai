@@ -20,6 +20,8 @@ pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-procedure.lino");
 pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-pattern.lino");
+pub const MULTILINGUAL_RESPONSES_SYNTHESIS_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-synthesis.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-thinking.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
@@ -30,6 +32,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
+    MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
     MULTILINGUAL_RESPONSES_THINKING_LINO,
     MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
 ];

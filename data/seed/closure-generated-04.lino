@@ -414,6 +414,21 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped en"
+  response_coding_meta_algorithm_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading hi"
+  response_coding_meta_algorithm_solutions_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading ru"
+  response_coding_meta_algorithm_stage_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage hi"
   response_compiled_procedure_explanation_hi
     defined-by response_template
     lexeme en

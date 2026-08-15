@@ -334,6 +334,11 @@ meanings
     lexeme en
       surface
         text "process report"
+  promote_capability
+    defined-by concept
+    lexeme en
+      surface
+        text "promote capability"
   prose
     defined-by concept
     lexeme en
@@ -419,6 +424,11 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting ru"
+  response_coding_meta_algorithm_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading ru"
   response_coding_workspace_effect_observed_en
     defined-by response_template
     lexeme en

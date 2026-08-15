@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "curl"
+  derive_surfaces
+    defined-by concept
+    lexeme en
+      surface
+        text "derive surfaces"
   external_benchmark_provenance_write_error
     defined-by intent
     lexeme en
@@ -219,6 +224,11 @@ meanings
     lexeme en
       surface
         text "notes"
+  numeric_list
+    defined-by concept
+    lexeme en
+      surface
+        text "numeric list"
   one_paragraph
     defined-by concept
     lexeme en
@@ -409,6 +419,16 @@ meanings
     lexeme en
       surface
         text "response client global config probe started zh"
+  response_coding_meta_algorithm_stage_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage zh"
+  response_coding_meta_algorithm_surface_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface zh"
   response_coding_source_equality_test_rust
     defined-by response_template
     lexeme en

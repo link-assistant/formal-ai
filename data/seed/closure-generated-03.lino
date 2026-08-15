@@ -49,6 +49,11 @@ meanings
     lexeme en
       surface
         text "client server exited before listening"
+  coding_meta_algorithm_surface
+    defined-by intent
+    lexeme en
+      surface
+        text "coding meta algorithm surface"
   coding_source_string_constant
     defined-by intent
     lexeme en
@@ -134,6 +139,11 @@ meanings
     lexeme en
       surface
         text "how to guide copy"
+  installation_conversion
+    defined-by concept
+    lexeme en
+      surface
+        text "installation conversion"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -294,6 +304,11 @@ meanings
     lexeme en
       surface
         text "preferred"
+  problem_class_to_shared_ir_to_renderers_to_verification
+    defined-by concept
+    lexeme en
+      surface
+        text "problem class to shared ir to renderers to verification"
   protocol
     defined-by concept
     lexeme en
@@ -364,6 +379,11 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped ru"
+  response_coding_meta_algorithm_stage_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage es"
   response_coding_source_string_constant_rust
     defined-by response_template
     lexeme en

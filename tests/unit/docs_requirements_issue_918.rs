@@ -41,7 +41,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
         &[
             "Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)",
             "46 recursive handler sources",
-            "19,731 outside-core lines",
+            "19,543 outside-core lines",
             "3,447 remaining metadata-gap records",
         ],
     );

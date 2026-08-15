@@ -26,6 +26,24 @@ function solve(prompt, options = {}) {
   return worker.solve(prompt, options.history ?? [], options.preferences ?? {}, options.userContext ?? {}, options.memory ?? [], options.options ?? {});
 }
 
+function assertSharedConstructionEvidence(answer, surface) {
+  assert.ok(
+    answer.evidence.includes(
+      "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    ),
+    `${surface} executes the shared meta-algorithm`,
+  );
+  assert.ok(
+    answer.evidence.includes(`algorithm_construction:active_surface:${surface}`),
+    `${surface} is the active construction surface`,
+  );
+  assert.equal(
+    answer.evidence.filter((entry) => entry.startsWith("algorithm_construction:stage:")).length,
+    7,
+    `${surface} executes the common seven-stage trace exactly once`,
+  );
+}
+
 test("the committed module list is exactly the worker mirror directory", () => {
   const files = workerMirrorFiles();
   assert.ok(files.length > 0, "the mirror has modules");
@@ -68,6 +86,41 @@ test("worker modules are named after their subject, and the numbered prefix stay
     Array.from({ length: FROZEN_PREFIX_MAX + 1 }, (_, index) => index),
     `the frozen numbered modules are 00..${FROZEN_PREFIX_MAX}; name a new module after its subject instead`,
   );
+});
+
+test("every coding handler executes the shared meta-algorithm", async () => {
+  const installation = await solve(
+    "Convert this README installation guide into a sh script: run `npm install`.",
+  );
+  assert.equal(installation.intent, "installation_conversion");
+  assertSharedConstructionEvidence(installation, "installation_conversion");
+
+  const synthesis = await solve(
+    "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+  );
+  assert.equal(synthesis.intent, "write_program");
+  assertSharedConstructionEvidence(synthesis, "program_synthesis");
+
+  const catalog = await solve("Write hello world in Rust");
+  assert.equal(catalog.intent, "write_program");
+  assertSharedConstructionEvidence(catalog, "coding_catalog");
+
+  const numeric = await solve(
+    "I have numbers 5, 3, 8, 1, 9 — sort them in JavaScript, give me the code and the result",
+  );
+  assert.equal(numeric.intent, "write_program");
+  assertSharedConstructionEvidence(numeric, "numeric_list");
+
+  const firstPrompt = "Write me a Rust program that lists files in the current directory";
+  const first = await solve(firstPrompt);
+  const rule = await solve("Sort the results in reverse order", {
+    history: [
+      { role: "user", content: firstPrompt },
+      { role: "assistant", content: first.content },
+    ],
+  });
+  assert.equal(rule.intent, "write_program");
+  assertSharedConstructionEvidence(rule, "rule_synthesis");
 });
 
 test("prompt normalization collapses whitespace and case", () => {

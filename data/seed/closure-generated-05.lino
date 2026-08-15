@@ -434,6 +434,11 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped hi"
+  response_coding_meta_algorithm_solutions_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading zh"
   response_coding_workspace_written_unverified_hi
     defined-by response_template
     lexeme en

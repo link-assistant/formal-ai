@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 4
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_5f7c8dbebbb5b9a4
+    source "data/seed/closure-generated-01.lino"
+    record "numeric_list"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9d21588b361ad384
     source "data/seed/closure-generated-01.lino"
     record "owlbear"
@@ -510,6 +514,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_3baade90e8dbf934
     source "data/seed/closure-generated-12.lino"
     record "response_assistant_name_en"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f57bf4676e6eb234
+    source "data/seed/closure-generated-12.lino"
+    record "response_coding_meta_algorithm_surface_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0cf542bcb4b5e644
     source "data/seed/closure-generated-12.lino"

@@ -59,6 +59,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "pattern_wellbeing_phrase_aapka_kya_haal_hai_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_94a8300c613f43d2
+    source "data/seed/closure-generated-02.lino"
+    record "response_coding_meta_algorithm_heading_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_467fddee78394ce2
     source "data/seed/closure-generated-02.lino"
     record "response_lexeme_import_cannot_create_hi"
@@ -258,6 +262,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_604a32aaf9881812
     source "data/seed/closure-generated-07.lino"
     record "response_client_global_config_auth_refusal_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ed919d633dfc3672
+    source "data/seed/closure-generated-07.lino"
+    record "response_coding_meta_algorithm_heading_zh"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2a8af3b836948c32
     source "data/seed/closure-generated-07.lino"
