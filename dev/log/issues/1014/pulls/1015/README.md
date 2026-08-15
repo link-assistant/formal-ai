@@ -253,6 +253,10 @@ The green evidence includes:
   to five macOS consumers after 3,754 other tests passed. Updating those
   codebase-wide contracts to eight makes the focused topology suite pass
   10/10.
+- `fresh-ci-regressions/macos-portability-exact-topology-green.log`: final
+  source review found one additional permissive portability helper that only
+  required the first five slices and therefore passed an eight-slice workflow.
+  It now requires exactly slices 1–8, and its 12-test contract passes.
 - `fresh-ci-regressions/full-rust-tests-after-exact-ci-corrections-final.log`:
   all 3,756 tests across the all-feature harnesses pass, including 2,806 in
   the largest unit harness; four tests are intentionally ignored and doctests
