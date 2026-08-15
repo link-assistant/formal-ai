@@ -86,8 +86,10 @@ outer job cap. The same run exposed shared integration-helper state: concurrent
 server children inherited one `$HOME/.formal-ai/memory.lino`, so an otherwise
 healthy proxy request exhausted its 30-second response budget waiting for the
 memory lock. Server helpers now receive private memory and dialog-log paths,
-proxy log filenames include an atomic sequence, and eight archive consumers
-provide setup and skew margin without weakening the 10-minute cap. Desktop's
+and proxy log filenames include an atomic sequence. Exact eight-way CI then
+isolated one remaining capacity outlier: slice 7 reached 290/336 tests before
+the unchanged 10-minute cap canceled it. Twelve archive consumers provide
+roughly one-third fewer tests per slice without weakening that cap. Desktop's
 six release lanes also found one stale test assertion for the already-upgraded
 command-stream version; the production manifests were correct and the
 regression now matches them.
@@ -103,7 +105,7 @@ The first fresh archive run also confirmed nextest's documented relocation
 boundary: compile-time `CARGO_BIN_EXE_*` paths still name the build workspace,
 while default archive extraction uses a random temporary directory. A minimal
 experiment fails in that default mode and passes when the archive is extracted
-into the checked-out workspace, which is now how all eight consumers run.
+into the checked-out workspace, which is now how all twelve consumers run.
 
 ## 6. Tests-first reproduction
 
@@ -120,7 +122,7 @@ status API.
 Auto Release runs a read-only eligibility preflight and exits successfully with
 a GitHub notice when publication must wait. A reusable macOS workflow creates
 one nextest archive, extracts it at the original workspace target path, and
-feeds eight bounded consumers. Each integration server gets a private memory
+feeds twelve bounded consumers. Each integration server gets a private memory
 store and dialog-log directory, and concurrent proxy log paths are unique. A
 new web-stage gate
 discovers and audits all five JavaScript locks; dependencies and bundles are

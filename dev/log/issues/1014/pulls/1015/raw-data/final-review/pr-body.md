@@ -1,7 +1,7 @@
 ## Summary
 
 - Preserve strict self-development evidence for manual releases while cleanly deferring an ineligible automatic release.
-- Build the all-feature macOS nextest archive once, extract it at the original workspace path, and fan it out to eight bounded consumers without increasing the existing timeout limits.
+- Build the all-feature macOS nextest archive once, extract it at the original workspace path, and fan it out to twelve bounded consumers without increasing the existing timeout limits.
 - Discover and fail closed on every tracked Bun/npm lock; resolve all five lock audits and remove duplicate install-time advisory noise.
 - Keep the dependency-free VS Code lint suite separate from the installed package-graph test; ship Playwright in the VSIX and verify browser capture from the extracted artifact.
 - Isolate Gemini mutable state, limit lifecycle trust to pinned OpenCode, use exact argv for Unix process-tree ownership, and prevent archived manifests/diagnostics from becoming live projects.
@@ -21,6 +21,7 @@ Fresh exact-SHA runs exposed integration boundaries that local state had masked:
 - artifact transfer/extraction consumed part of the ten-minute macOS job envelope before the 480-second test budget began.
 - command-stream 0.15 inserted a shell between Formal AI's exact argv and the Unix process group, exposing a descendant-termination race at the 20 ms timeout boundary.
 - five archive consumers still left 434–502 seconds of test execution plus setup inside the ten-minute cap, canceling three slices.
+- eight consumers exposed one remaining skewed slice that reached 290/336 tests before the unchanged ten-minute cap canceled it.
 - helper-owned integration servers inherited one real home memory file, serializing concurrent response recording on its advisory lock.
 - desktop release tests retained a stale command-stream 0.15 assertion after the intentional production upgrade to 0.16.
 

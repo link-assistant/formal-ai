@@ -21,7 +21,7 @@ The complete immutable input and test evidence is indexed in
 
 - Keep release attribution strict, but represent an ineligible automatic
   release as a clean deferral; retain the hard manual release gate.
-- Reuse one cargo-nextest archive for five smaller macOS core slices instead of
+- Reuse one cargo-nextest archive for twelve smaller macOS core slices instead of
   raising timeouts or multiplying cold compilation; extract it into the
   workspace so existing Cargo binary paths remain valid.
 - Dynamically audit both Bun locks and all three npm locks through one required
@@ -48,7 +48,7 @@ composition. The evidence archive also retains actionlint, release-preflight,
 zero-vulnerability audit, desktop (140 tests), VS Code (51 source tests plus
 one package-graph test), web-build output, ten consecutive 20 ms
 descendant-timeout stress runs, the complete registered Rust stage, and a
-3,755-test all-feature run.
+3,756-test all-feature run.
 
 Before #1015 is marked ready, the branch is formatted, linted, tested through
 the repository's prescribed checks, reviewed against its full diff, updated
