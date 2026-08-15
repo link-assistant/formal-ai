@@ -2,14 +2,14 @@ self_ast_census
   target src/agent.rs
   language rust
   fidelity signature
-  byte_len 22698
+  byte_len 22657
   line_count 681
-  content_id source_module_759665c9fcfafddb
+  content_id source_module_fbbed893ae3dd888
   symbol_count 51
   symbols
     static WORKSPACE_SEQ 23 23
     const DEFAULT_AGENT_TIME_BUDGET 25 25
-    const WINDOWS_PYTHON_TIME_BUDGET_FLOOR 26 26
+    const PYTHON_TIME_BUDGET_FLOOR 26 26
     struct AgentWorkspaceConfig 29 32
     function default 35 40
     struct AgentRun 44 49
