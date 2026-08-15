@@ -18,7 +18,7 @@ use std::time::{Duration, Instant};
 use crate::engine::stable_id;
 
 const DEFAULT_AGENT_TIME_BUDGET: Duration = Duration::from_secs(2);
-const WINDOWS_PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
+const PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
 
 #[derive(Debug, Clone)]
 pub struct AgentWorkspaceConfig {
@@ -313,7 +313,7 @@ impl AgentWorkspace {
             .stderr(Stdio::piped())
             .spawn()?;
         let started = Instant::now();
-        let timed_out = loop {
+        let deadline_reached = loop {
             if child.try_wait()?.is_some() {
                 break false;
             }
@@ -324,6 +324,12 @@ impl AgentWorkspace {
             thread::sleep(Duration::from_millis(10));
         };
         let output = child.wait_with_output()?;
+        // The child can exit after `try_wait` observes it running but before
+        // `kill` reaches the kernel. On macOS, killing that unreaped process
+        // can still return success even though its eventual status is exit 0.
+        // The reaped status is authoritative: a successful child was not
+        // terminated by our deadline.
+        let timed_out = command_timed_out(deadline_reached, output.status.success());
         Ok(AgentCommandResult {
             command: command_line.to_owned(),
             status_code: output.status.code(),
@@ -632,11 +638,15 @@ fn is_blocked_execution_alias(candidate: &Path) -> bool {
 }
 
 fn effective_command_time_budget(program: &str, configured: Duration) -> Duration {
-    if cfg!(windows) && program == "python3" && configured < WINDOWS_PYTHON_TIME_BUDGET_FLOOR {
-        WINDOWS_PYTHON_TIME_BUDGET_FLOOR
+    if program == "python3" && configured < PYTHON_TIME_BUDGET_FLOOR {
+        PYTHON_TIME_BUDGET_FLOOR
     } else {
         configured
     }
+}
+
+const fn command_timed_out(deadline_reached: bool, status_success: bool) -> bool {
+    deadline_reached && !status_success
 }
 
 fn looks_like_workspace_path(argument: &str) -> bool {

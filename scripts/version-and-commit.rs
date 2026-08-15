@@ -519,6 +519,19 @@ fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<Pa
     )?;
     let tag = format!("{tag_prefix}{new_version}");
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    // Issue #924: unlike an immutable malformed historical record, a release
+    // cycle without its required reviewed Formal AI contribution is actionable:
+    // leave the range open, merge a session-backed PR, then retry the release.
+    let eligibility = self_hosting_metric::ensure_self_development_release(
+        &repo, &ledger, &tag, &since, "HEAD", 3,
+    )?;
+    println!(
+        "Self-development release gate passed at {} with {} reviewed Formal AI pull request(s)",
+        self_hosting_metric::format_percentage(
+            eligibility.projected_percentage_basis_points
+        ),
+        eligibility.pull_requests.len(),
+    );
     // `Report`, not `Enforce`: by the time a release runs, every commit in the
     // range is immutable history on `main`, so a hard failure here can only
     // deadlock the release (issue #812). The ratchet is enforced at the

@@ -46,9 +46,9 @@ impl RecordedSplit {
 
 /// Adapter that gives any [`TaskExecutor`] the repository's real splitter.
 ///
-/// `attempt` and `extend_for` are delegated untouched: this type adds the
-/// ability to shrink a failure, and changes nothing about how a task is run or
-/// how the tool is extended.
+/// `attempt`, `retry_after_children`, and `extend_for` are delegated untouched:
+/// this type adds the ability to shrink a failure, and changes nothing about
+/// how a task is run or how the tool is extended.
 #[derive(Debug, Clone)]
 pub struct SplittingExecutor<E> {
     inner: E,
@@ -111,6 +111,10 @@ impl<E: TaskExecutor> TaskExecutor for SplittingExecutor<E> {
 
     fn extend_for(&mut self, task: &RecursiveTask, failure: &TaskAttempt) -> bool {
         self.inner.extend_for(task, failure)
+    }
+
+    fn retry_after_children(&mut self, task: &RecursiveTask) -> TaskAttempt {
+        self.inner.retry_after_children(task)
     }
 
     fn split(

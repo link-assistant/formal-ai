@@ -69,8 +69,13 @@ write_config() {
     "issue840": {
       "type": "local",
       "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-grounded-action-mcp.mjs"],
-      "enabled": true
+      "enabled": true,
+      "tool_call_timeout": 120000
     }
+  },
+  "mcp_defaults": {
+    "tool_call_timeout": 120000,
+    "max_tool_call_timeout": 600000
   },
   "tools": {
     "websearch": false,
@@ -111,6 +116,8 @@ run_agent_case() {
       cd "$WORKDIR"
       timeout "$AGENT_TIMEOUT_SECONDS" "$AGENT" \
         --prompt "$prompt" \
+        --mcp-default-tool-call-timeout 120000 \
+        --mcp-max-tool-call-timeout 600000 \
         --disable-stdin \
         --model formal-ai/formal-ai \
         --no-summarize-session \
