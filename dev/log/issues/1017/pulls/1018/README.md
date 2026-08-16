@@ -300,12 +300,44 @@ recorded here rather than silenced — the pin removed 98.3 % of the analysis
 loss and made the residue visible, which is the whole point of treating these
 as coverage rather than noise.
 
-### 8.2 Local verification
+### 8.2 Measured effect of the deadline fix on the macOS slices
+
+`CI/CD Pipeline` run `31967180643` on head `c71de5a4` is the first run of the
+sixteen-slice matrix under the 900-second cap; its complete failed-job log is
+archived at
+`ci-logs/c71de5a40a7e396a99db8f18e71cbb056960c1d8/run-31967180643-ci-cd-pipeline-failed.log`.
+No slice was killed by `timeout-minutes` and no budget warning was emitted. The
+longest slice occupied 516 seconds of its 900-second cap — 57 % — against the
+incident's 600-second cap that the 480-second budget could not fit under, and
+the round-robin skew that produced a 467-second slice at twelve slices now
+spreads across a 164–516-second range at sixteen.
+
+That run still reported `failure`, on `Test (ubuntu-latest / full)` and on
+slices 1 and 15. All three are the *same* defect, and it is this pull request's
+own: `tests/issue_961_macos_portability.rs` had frozen the macOS matrix at
+twelve slices and the archive cap at 25 minutes. It is recorded here rather
+than omitted because the run is the evidence that the deadline fix works, and
+because the failure is exactly what a contract test is supposed to do when a
+matrix changes underneath it.
+
+### 8.3 Local verification
 
 Verification run locally on the final branch: `cargo fmt --check`,
 `cargo clippy --lib --bins --tests --all-features`,
 `cargo check --examples --all-features`,
 `rust-script scripts/check-file-size.rs`,
 `rust-script scripts/check-hardcoded-language.rs` (1288/1288 allowlisted),
-`bash scripts/lint-shell-scripts.sh` (33 scripts), and
-`cargo test --test unit --all-features ci_cd::` — 235 passed, 0 failed.
+`bash scripts/lint-shell-scripts.sh` (33 scripts),
+`actionlint`, `rust-script scripts/run-ci-gates.rs --stage rust`, and the
+complete `cargo test --tests --all-features` — 2,825 unit, 345 integration, 488
+source and every per-issue harness, 0 failures. The full suite is the
+requirement, not the `ci_cd::` module alone: the first push verified only
+`cargo test --test unit ci_cd::` and `Coverage` then failed on
+`tests/issue_961_macos_portability.rs`.
+
+Two local-environment caveats, both confirmed not to be defects in this branch:
+the `wasm32-unknown-unknown` target must be installed for
+`issue_936_substitution_compiler` (CI installs it; commit `29576b38`), and six
+loopback HTTP tests can fail with `WouldBlock` under a saturated sandbox — they
+pass on a repeat run and pass in CI, and this pull request changes no `src/`
+file at all (`git diff --stat main -- src/` is empty).
