@@ -485,3 +485,55 @@ fn link_report_parser_is_unit_tested_before_it_is_trusted() {
         "the parser test file must exist"
     );
 }
+
+/// A `CodeQL` run that reports success while 1,023 files were "extracted with
+/// errors" is the worst kind of false negative: the dashboard is green because
+/// nothing was analysed. Run 31937348308 emitted 20,725 `macro expansion
+/// failed` diagnostics, every one of them for a macro defined in `std`/`core`
+/// or in a dependency and none defined here, because the extractor had no
+/// sysroot override and the ambient `std` outran the rust-analyzer the `CodeQL`
+/// bundle vendors (github/codeql#19982).
+///
+/// Both variables are load-bearing. Setting only `_SYSROOT_SRC` takes
+/// rust-analyzer's `discover_with_src_override` path, which keeps the
+/// discovered binary sysroot and leaves the failures in place — so a future
+/// edit that drops one of them would silently restore the false negative.
+#[test]
+fn codeql_rust_lane_pins_the_extractor_sysroot() {
+    let security = repository_file(".github/workflows/security.yml");
+    let job = job_block(&security, "codeql");
+
+    for variable in [
+        "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT=",
+        "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT_SRC=",
+    ] {
+        assert!(
+            job.contains(variable),
+            "the CodeQL job must export {variable} into $GITHUB_ENV, or `std` \
+             macros stay unexpanded and their call sites go unanalysed \
+             (issue #1017, github/codeql#19982)"
+        );
+    }
+
+    assert!(
+        job.contains("CODEQL_RUST_SYSROOT_TOOLCHAIN:"),
+        "the pinned toolchain must be declared once, as a named variable, so \
+         raising it as CodeQL vendors a newer rust-analyzer is a one-line edit"
+    );
+    assert!(
+        job.contains("if: matrix.language == 'rust'"),
+        "the sysroot pin costs a toolchain install and only affects the Rust \
+         extractor, so it must not run in the `actions` lane"
+    );
+    assert!(
+        job.contains("--component rust-src"),
+        "`_SYSROOT_SRC` points into `rust-src`; without the component the \
+         directory does not exist and the pin silently does nothing"
+    );
+    assert!(
+        job.contains("::warning title=CodeQL sysroot pin unavailable::"),
+        "losing the pin must be visible: it is a mitigation for an upstream \
+         defect, so it warns instead of failing, and a silent fallback would \
+         let the 20,725 diagnostics return unnoticed"
+    );
+}
