@@ -88,9 +88,11 @@ was filed under:
 `cargo fmt --check`, `cargo clippy --lib --bins --tests --all-features`,
 `cargo check --examples --all-features`, `rust-script scripts/check-file-size.rs`,
 `rust-script scripts/check-hardcoded-language.rs`,
-`bash scripts/lint-shell-scripts.sh`, `actionlint`, and `cargo test --tests
---all-features` — the whole integration suite, not only the `ci_cd::` module
-that holds the thirteen tests in `tests/unit/ci-cd/issue_1017.rs`.
+`bash scripts/lint-shell-scripts.sh`, `actionlint`,
+`rust-script scripts/run-ci-gates.rs --stage rust`, and `cargo test --tests
+--all-features` — the whole suite (2,825 unit, 345 integration, 488 source and
+every per-issue harness, 0 failures), not only the `ci_cd::` module that holds
+the thirteen tests in `tests/unit/ci-cd/issue_1017.rs`.
 
 That last distinction was learned here rather than assumed. The first push
 verified only `cargo test --test unit ci_cd::`, and `Coverage` then failed on
