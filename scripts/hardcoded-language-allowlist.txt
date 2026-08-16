@@ -683,7 +683,11 @@ src/repair_strategy.rs	Why did the reverse-sort answer change between releases?
 src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
 src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
 src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
+src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
+src/rule_synthesis.rs	rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
+src/rule_synthesis.rs	rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm
+src/rule_synthesis.rs	rustc --edition=2021 {primary} -o substitution_program
 src/rule_synthesis.rs	write_program task={} language={}
 src/seed.rs	formal_ai_seed_bundle\n
 src/seed/meanings/parse.rs	{surface} denotes {parent_meaning}
@@ -1244,6 +1248,10 @@ src/statement_verification.rs	{} is contradicted: {} reports {} {} daily candles
 src/statement_verification.rs	{} is within the recorded {} {} daily candle range for {} (${:.2} to ${:.2}).
 src/substitution.rs	expected `from -> to`, got `{text}`
 src/substitution.rs	invalid variable in `{raw}`
+src/substitution_compiler/mod.rs	substitution_compilation {identity}\n  target {}\n  source_rule_set {}\n  ir_rule_count {}\n  stage lower_to_target_neutral_ir\n  stage emit_from_rust_owned_compiler\n  execution {execution}\n  verification executable_parity_required\n  doctrine javascript_interface_only
+src/substitution_compiler/rust_runtime.rs	    Rule { conditions: &[\n
+src/substitution_compiler/rust_runtime.rs	Pattern {{ from: {}, to: {} }}
+src/substitution_compiler/webassembly.rs	// Generated JavaScript interop; substitution semantics remain in Rust/WASM.\n// Compile {wasm_source} to a WebAssembly module before loading this file.\n{WASM_INTEROP}
 src/summarization/file.rs	Defines {symbol}.
 src/summarization/file.rs	It has embedded grammar blocks: {}.
 src/summarization/file.rs	Key content: {content_summary}

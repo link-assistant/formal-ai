@@ -547,6 +547,16 @@ roles
     kind meaning
   statement_negation_cue
     kind meaning
+  substitution_compiler_concept
+    kind predicate
+  substitution_export_action
+    kind predicate
+  substitution_export_intent
+    kind predicate
+  substitution_export_response
+    kind predicate
+  substitution_export_target
+    kind predicate
   subtask_enumeration_cue
     kind meaning
   subtask_unit_noun

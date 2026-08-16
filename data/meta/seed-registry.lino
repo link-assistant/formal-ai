@@ -257,6 +257,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-substitution-compiler
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-summary
     bundle true
     lexicon meaning
@@ -342,6 +346,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-procedure
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-substitution-compiler
     bundle true
     lexicon response
     web true

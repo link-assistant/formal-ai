@@ -570,6 +570,56 @@ operation_vocabulary
       combo 排序+倒序
       combo 反转+排序
       combo 颠倒+排序
+  operation export_substitution_rule
+    language en
+      phrase "export the substitution rule"
+      phrase "export substitution rule"
+      combo export+substitution+rule
+    language ru
+      phrase "экспортируй правило подстановки"
+      phrase "экспортировать правило подстановки"
+      combo экспорт+правил+подстанов
+    language hi
+      phrase "प्रतिस्थापन नियम को निर्यात"
+      combo प्रतिस्थापन+नियम+निर्यात
+    language zh
+      phrase 导出替换规则
+      combo 导出+替换+规则
+  operation target_rust
+    language en
+      combo rust+export
+    language ru
+      combo rust+экспорт
+    language hi
+      combo rust+निर्यात
+    language zh
+      combo rust+导出
+  operation target_javascript
+    language en
+      combo javascript+export
+      combo js+export
+    language ru
+      combo javascript+экспорт
+      combo js+экспорт
+    language hi
+      combo javascript+निर्यात
+      combo js+निर्यात
+    language zh
+      combo javascript+导出
+      combo js+导出
+  operation target_webassembly
+    language en
+      combo webassembly+export
+      combo wasm+export
+    language ru
+      combo webassembly+экспорт
+      combo wasm+экспорт
+    language hi
+      combo webassembly+निर्यात
+      combo wasm+निर्यात
+    language zh
+      combo webassembly+导出
+      combo wasm+导出
   operation cancel_reverse_sort
     inverse reverse_sort
     language en

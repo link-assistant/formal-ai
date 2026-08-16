@@ -38,23 +38,31 @@ pub fn plan_symbolic_command_reroute(
     let run_tool = tool_for(tool_names, Capability::Run)?;
     let progress = RecipeProgress::after_latest_user(messages, write_tool);
 
+    let next_file = || {
+        if progress.files_written == 0 {
+            Some((&recipe.path, &recipe.source))
+        } else {
+            recipe
+                .supporting_files
+                .get(progress.files_written - 1)
+                .map(|file| (&file.path, &file.source))
+        }
+    };
     if let Some(failure) = &progress.failure {
         let step = failure
             .from_run
             .then(|| recipe.commands.get(progress.commands_done))
             .flatten()
             .map_or(write_tool, String::as_str);
+        let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
         return Some(AgenticPlan::Final(failure.report(
             messages,
-            &recipe.path,
+            failed_path,
             step,
         )));
     }
-    if !progress.write_done {
-        return Some(one_call(
-            write_tool,
-            write_arguments(&recipe.path, &recipe.source),
-        ));
+    if let Some((path, source)) = next_file() {
+        return Some(one_call(write_tool, write_arguments(path, source)));
     }
     if let Some(command) = recipe.commands.get(progress.commands_done) {
         return Some(one_call(
@@ -81,6 +89,13 @@ impl ExecutionRecipe {
             "Created and verified `{}` through the agentic CLI harness.\n\n```{}\n{}\n```\n\nCommands executed by the harness:\n",
             self.path, self.language, self.source
         );
+        for file in &self.supporting_files {
+            let _ = write!(
+                answer,
+                "\n`{}`\n\n```text\n{}\n```\n",
+                file.path, file.source
+            );
+        }
         for command in &self.commands {
             let _ = writeln!(answer, "- `{command}`");
         }
@@ -96,7 +111,7 @@ impl ExecutionRecipe {
 
 #[derive(Default)]
 struct RecipeProgress {
-    write_done: bool,
+    files_written: usize,
     commands_done: usize,
     command_outputs: Vec<String>,
     failure: Option<StepFailure>,
@@ -177,7 +192,7 @@ impl RecipeProgress {
             }
             match capability {
                 _ if result_tool.is_some_and(|name| name.eq_ignore_ascii_case(write_tool)) => {
-                    progress.write_done = true;
+                    progress.files_written += 1;
                 }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
