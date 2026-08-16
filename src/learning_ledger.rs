@@ -319,6 +319,25 @@ pub fn canonical_ledger() -> LearningLedger {
     ledger
 }
 
+/// The failure prompts [`canonical_ledger`] can possibly answer, read straight
+/// off the canonical failure trace the ledger is promoted from.
+///
+/// Issue #1017: building the ledger runs the whole self-healing pass, and that
+/// pass round-trips the pinned module's entire CST/AST — a one-time cost of over
+/// ten seconds on a `dev` build, which is what CI runs. That work is only ever
+/// *useful* for a prompt the ledger actually holds a lesson for, and which
+/// prompts those are is decided by the trace, not by the round-trip. Deriving
+/// the answerable set from the same trace lets [`approved_lesson_for`] prove a
+/// miss before paying for the parse, without weakening a single promotion gate:
+/// the ledger is still built, still gated, and still consulted for a hit.
+///
+/// `issue_1017_ledger_recall.rs` asserts this set equals the failure prompts of
+/// the ledger that is actually built, so the two cannot drift apart.
+#[must_use]
+pub fn canonical_ledger_failure_prompts() -> Vec<String> {
+    vec![crate::self_healing::canonical_failure_trace().prompt]
+}
+
 /// Recall an approved, committed lesson for the live solver path.
 ///
 /// Returning an owned entry keeps the runtime caller independent of the
@@ -327,6 +346,17 @@ pub fn canonical_ledger() -> LearningLedger {
 #[must_use]
 pub fn approved_lesson_for(prompt: &str) -> Option<LedgerEntry> {
     static APPROVED_LEDGER: OnceLock<LearningLedger> = OnceLock::new();
+
+    // Cheap miss check first — see `canonical_ledger_failure_prompts`. Matching
+    // is on the same normalised form `lesson_for` uses, so the guard admits
+    // exactly the prompts the ledger would answer.
+    let needle = normalise(prompt);
+    if !canonical_ledger_failure_prompts()
+        .iter()
+        .any(|failure_prompt| normalise(failure_prompt) == needle)
+    {
+        return None;
+    }
     APPROVED_LEDGER
         .get_or_init(canonical_ledger)
         .lesson_for(prompt)

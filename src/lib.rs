@@ -263,8 +263,8 @@ pub use learning_cycle::{
     LearningCycleRun,
 };
 pub use learning_ledger::{
-    approved_lesson_for, canonical_ledger, HumanApproval, LearningLedger, LedgerEntry,
-    PromotionRejected,
+    approved_lesson_for, canonical_ledger, canonical_ledger_failure_prompts, HumanApproval,
+    LearningLedger, LedgerEntry, PromotionRejected,
 };
 #[cfg(feature = "doublets-native")]
 pub use link_store::{

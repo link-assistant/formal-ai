@@ -21,6 +21,7 @@
 //! approved by a human before anything is adopted.
 
 use std::fmt::Write as _;
+use std::sync::OnceLock;
 
 use crate::agentic_coding::self_ast;
 use crate::engine::stable_id;
@@ -68,9 +69,21 @@ impl SourceRoundTrip {
     /// Map a failure onto the pinned self-inspection target (the deterministic
     /// planner — the module that routes inputs, so the natural site for a routing
     /// repair). Uses the source embedded at build time.
+    ///
+    /// Both inputs are compile-time constants, so this round-trip is a constant of
+    /// the build — but deriving it parses the whole pinned module, which issue
+    /// #1017 measured at over ten seconds on the `dev` profile CI tests run under.
+    /// Computing it once per process keeps the value identical while making every
+    /// repeat call free; anything that needs a fresh parse of arbitrary source
+    /// still calls [`Self::for_module`] directly.
     #[must_use]
     pub fn for_pinned_target() -> Self {
-        Self::for_module(self_ast::TARGET_MODULE_PATH, self_ast::target_source())
+        static PINNED_ROUND_TRIP: OnceLock<SourceRoundTrip> = OnceLock::new();
+        PINNED_ROUND_TRIP
+            .get_or_init(|| {
+                Self::for_module(self_ast::TARGET_MODULE_PATH, self_ast::target_source())
+            })
+            .clone()
     }
 }
 

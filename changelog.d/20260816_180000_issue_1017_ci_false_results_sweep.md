@@ -16,3 +16,13 @@ bump: patch
   report parser and no longer reports links it never checked; every read-only
   job belongs to a concurrency group that never cancels the default branch; and
   nested CI evidence is no longer silently excluded by `.gitignore`.
+- Answer the first request in a process without round-tripping a whole module's
+  CST/AST. Rule recall built the canonical learning ledger — and therefore parsed
+  the pinned planner module — before checking whether the ledger could answer the
+  prompt at all, which cost over ten seconds inside the *first* HTTP response and
+  timed out two macOS integration tests at the harness's thirty-second limit.
+  The lookup now proves a miss from the canonical failure trace before building
+  anything, and the pinned round-trip is computed once per process. Recall
+  behaviour is unchanged and no promotion gate is relaxed. Set
+  `FORMAL_AI_TRACE_SLOW_INIT=1` (off by default) to report each whole-source
+  parse with its size and duration.

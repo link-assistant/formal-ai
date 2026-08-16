@@ -23,9 +23,43 @@
 #[cfg(feature = "meta-language")]
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 #[cfg(feature = "meta-language")]
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
+
+/// How many whole-source CST/AST parses [`ast_census`] has run in this process.
+static AST_CENSUS_RUNS: AtomicU64 = AtomicU64::new(0);
+
+/// The number of whole-source CST/AST parses this process has run so far.
+///
+/// A census parses an entire module through tree-sitter and walks every node, so
+/// it is by far the most expensive primitive the solver can reach. Issue #1017
+/// traced a thirty-second integration-test timeout to exactly one such parse
+/// happening inside a request. Exposing the count lets a test state the
+/// invariant structurally — *ordinary solving parses no module* — instead of
+/// asserting on a wall-clock budget that differs per runner.
+#[must_use]
+pub fn ast_census_runs() -> u64 {
+    AST_CENSUS_RUNS.load(Ordering::Relaxed)
+}
+
+/// Record one census run, and — only when `FORMAL_AI_TRACE_SLOW_INIT=1` — report
+/// what it cost and how big the source was.
+///
+/// Off by default: this is diagnostic output for locating a slow first request,
+/// in the same opt-in style as `FORMAL_AI_TRACE_REQUESTS`.
+#[cfg(feature = "meta-language")]
+fn record_census_run(source_len: usize, elapsed: std::time::Duration) {
+    AST_CENSUS_RUNS.fetch_add(1, Ordering::Relaxed);
+    if std::env::var("FORMAL_AI_TRACE_SLOW_INIT").as_deref() == Ok("1") {
+        eprintln!(
+            "[slow-init] ast_census: {source_len} bytes in {} ms (run #{})",
+            elapsed.as_millis(),
+            ast_census_runs()
+        );
+    }
+}
 
 /// The meta-language grammar label for Rust (matches
 /// `data/seed/program-cst-grammars.lino`).
@@ -112,6 +146,7 @@ pub struct AstCensus {
 #[must_use]
 #[cfg(feature = "meta-language")]
 pub fn ast_census(source: &str) -> AstCensus {
+    let started = std::time::Instant::now();
     let network = LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default());
 
     // The AST proper: named syntax links in the abstract-syntax projection, which
@@ -134,13 +169,15 @@ pub fn ast_census(source: &str) -> AstCensus {
         .map(|(kind, count)| AstNodeCount { kind, count })
         .collect();
 
-    AstCensus {
+    let census = AstCensus {
         total_link_count: network.len(),
         named_node_count,
         text_preserved: network.reconstruct_text() == source,
         clean: network.verify_full_match(None).is_clean(),
         node_kinds,
-    }
+    };
+    record_census_run(source.len(), started.elapsed());
+    census
 }
 
 /// Return an unavailable census when the optional parsing engine is disabled.
