@@ -17,7 +17,12 @@ jobs:
   build-archive:
     name: Build macOS test archive
     runs-on: macos-15-intel
-    timeout-minutes: 25
+    # Issue #1017: `timeout-minutes` is the backstop, never the deadline. The
+    # step budget below (1200s) plus its SIGTERM grace has to expire first, or
+    # an overrun reports as a cancelled job instead of a failed one, so the job
+    # cap stays at least a third above the budget it guards.
+    # Worst observed on main: 629s (run 31937348472).
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
         with:
@@ -64,10 +69,18 @@ jobs:
           retention-days: 1
 
   test-archive:
-    name: Run macOS core slice ${{ matrix.partition }}/12
+    name: Run macOS core slice ${{ matrix.partition }}/16
     needs: [build-archive]
     runs-on: macos-15-intel
-    timeout-minutes: 10
+    # Issue #1017: at 12 slices the round-robin `slice:` partitioner -- which
+    # balances by test index, never by test duration -- gave slice 10 a 467s+
+    # test phase against a 185s minimum. With 133s of per-slice setup that
+    # exceeded the 600s job cap, and GitHub reports a `timeout-minutes` kill as
+    # `cancelled`, so the whole pipeline reported `cancelled` and skipped the
+    # release. 16 slices cut the worst measured slice to roughly 410s, and the
+    # cap sits a half above the 600s budget so the budget always expires first
+    # (600s budget + 133s setup + 15s grace = 748s against a 900s cap).
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -84,6 +97,10 @@ jobs:
           - { partition: 10 }
           - { partition: 11 }
           - { partition: 12 }
+          - { partition: 13 }
+          - { partition: 14 }
+          - { partition: 15 }
+          - { partition: 16 }
     steps:
       - uses: actions/checkout@v6
         with:
@@ -110,7 +127,7 @@ jobs:
         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
       - name: Run core test slice from archive
         env:
-          TEST_BUDGET_SECONDS: 480
+          TEST_BUDGET_SECONDS: 600
           TEST_WARN_RATIO_PERCENT: 75
         run: |
           scripts/run-with-budget-warning.sh \
@@ -118,5 +135,5 @@ jobs:
             cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
-            --partition "slice:${{ matrix.partition }}/12" \
+            --partition "slice:${{ matrix.partition }}/16" \
             -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'

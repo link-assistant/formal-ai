@@ -272,6 +272,11 @@ jobs:
     name: Matrix summary
     needs: [matrix, replay, learn]
     runs-on: ubuntu-latest
+    # Issue #1017: the only job in the repository without a cap. It inherits
+    # GitHub's 360-minute default, so a runner that wedges while evaluating this
+    # gate holds a billable job for six hours and reports `cancelled` at the end.
+    # Three string comparisons need seconds.
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Fail if any leg failed

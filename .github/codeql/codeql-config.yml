@@ -1,0 +1,17 @@
+# CodeQL analysis configuration shared by every language in `security.yml`.
+#
+# Issue #1017: the Rust extractor runs in `build-mode: none`, so it parses every
+# `.rs` file it can find, not just the crate targets Cargo builds. That pulled in
+# the archived evidence trees, where `docs/case-studies/issue-96/raw-data/
+# link-calculator-lib-excerpt.rs` is a truncated 220-line excerpt that ends
+# mid-expression and produced hard parse diagnostics (`expected R_CURLY`,
+# `expected SEMICOLON`) on every single run. Those directories hold captured
+# evidence and scratch experiments, never shipped code, so analysing them adds
+# noise without adding coverage.
+#
+# `examples/` is deliberately *not* excluded: those are real Cargo example
+# targets that the workspace compiles, so they stay in scope.
+paths-ignore:
+  - docs/**
+  - dev/**
+  - experiments/**

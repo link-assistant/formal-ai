@@ -298,7 +298,12 @@ jobs:
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    # Issue #1017: this job was the next `cancelled`-instead-of-`failed` waiting
+    # to happen. On run 31937348472 it took 1415s of its 1500s cap, and 455s of
+    # that is spent outside the budgeted step (checkout, disk cleanup, the
+    # data-file and self-AST census gates, doc tests), so the 1200s budget could
+    # never expire first. The cap is the backstop; the budget is the deadline.
+    timeout-minutes: 35
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}

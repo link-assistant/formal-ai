@@ -1,0 +1,443 @@
+//! Regression coverage for issue #1017: the second generation of timeouts that
+//! hid as cancellations, plus the audit of every remaining CI diagnostic.
+//!
+//! Issue #977 established the rule: a job killed by `timeout-minutes` is
+//! reported by GitHub as **cancelled**, not **failed**. Run 31937348472 hit the
+//! same wall from the other side. `macOS Core Tests / Run macOS core slice
+//! 10/12` had a 480s step budget under a 600s job cap, but 133s of that job was
+//! spent on checkout, toolchain and artifact download *outside* the budgeted
+//! step, so the job clock always won: the slice was killed at 600s with 467s of
+//! testing done, reported `cancelled`, and the whole pipeline inherited that
+//! conclusion -- no release was published for the merge of pull request #1016.
+//!
+//! The invariant these tests pin: **`timeout-minutes` is a backstop, never the
+//! deadline.** The step budget plus the job's unbudgeted setup plus the SIGTERM
+//! grace must expire first, so an overrun is a `failure` with an `::error`
+//! annotation that names what ran long. The reconstruction is in
+//! `dev/log/issues/1017/pulls/1018/README.md`.
+
+use std::fs;
+use std::process::Command;
+use std::time::Instant;
+
+use super::workflow_fixtures::{job_block, workflow_job_names};
+
+/// The share of a job's cap a single step budget may claim. The remainder pays
+/// for checkout, toolchain install, cache restore, artifact transfer and the
+/// wrapper's SIGTERM grace -- 133s of the 600s cap on the slice that failed.
+const MAX_BUDGET_SHARE_PERCENT: u64 = 70;
+
+fn repository_file(path: &str) -> String {
+    fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
+        .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
+        .replace("\r\n", "\n")
+}
+
+fn workflow_files() -> Vec<(String, String)> {
+    let dir = format!("{}/.github/workflows", env!("CARGO_MANIFEST_DIR"));
+    let mut files: Vec<(String, String)> = fs::read_dir(&dir)
+        .expect("workflows directory")
+        .map(|entry| entry.expect("workflow entry").path())
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|ext| ext == "yml" || ext == "yaml")
+        })
+        .map(|path| {
+            let name = path.file_name().unwrap().to_string_lossy().into_owned();
+            (
+                name,
+                fs::read_to_string(&path).unwrap().replace("\r\n", "\n"),
+            )
+        })
+        .collect();
+    files.sort();
+    assert!(!files.is_empty(), "no workflow files found");
+    files
+}
+
+/// `timeout-minutes:` as written, which may be a `${{ ... }}` expression when a
+/// matrix leg needs a different cap than its siblings.
+fn job_timeout(job: &str) -> Option<&str> {
+    job.lines()
+        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+        .map(str::trim)
+}
+
+fn run_budget_wrapper(env: &[(&str, &str)], arguments: &[&str]) -> (std::process::Output, u64) {
+    let mut command = Command::new("bash");
+    command
+        .arg(format!(
+            "{}/scripts/run-with-budget-warning.sh",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .args(arguments);
+    for (key, value) in env {
+        command.env(key, value);
+    }
+
+    let started = Instant::now();
+    let output = command.output().expect("run the budget wrapper");
+    (output, started.elapsed().as_secs())
+}
+
+/// The core invariant. Every budgeted step must be able to blow its budget --
+/// and be reported for it -- while the job clock still has room to spare.
+#[test]
+fn every_step_budget_expires_before_the_job_clock_it_guards() {
+    let mut checked = 0;
+
+    for (name, body) in workflow_files() {
+        for job_name in workflow_job_names(&body) {
+            let job = job_block(&body, job_name);
+
+            for budget_seconds in job.lines().filter_map(|line| {
+                line.trim()
+                    .strip_prefix("TEST_BUDGET_SECONDS:")
+                    .and_then(|value| value.trim().parse::<u64>().ok())
+            }) {
+                let cap_minutes: u64 = job_timeout(job)
+                    .unwrap_or_else(|| {
+                        panic!("{name}: job `{job_name}` budgets a step but declares no cap")
+                    })
+                    .parse()
+                    .unwrap_or_else(|_| {
+                        panic!(
+                            "{name}: job `{job_name}` budgets a step under a cap this test \
+                             cannot compare against; write the cap as a plain number of minutes"
+                        )
+                    });
+                checked += 1;
+                let cap_seconds = cap_minutes * 60;
+                let share = budget_seconds * 100 / cap_seconds;
+                assert!(
+                    share <= MAX_BUDGET_SHARE_PERCENT,
+                    "{name}: job `{job_name}` gives a step a {budget_seconds}s \
+                     budget under a {cap_minutes}m cap ({share}% of it). Setup \
+                     outside the budgeted step -- checkout, toolchain, cache, \
+                     artifacts -- has to fit in the remainder, or the job clock \
+                     expires first and the overrun is reported as `cancelled` \
+                     instead of `failure` (issue #977, issue #1017). Keep the \
+                     budget at or below {MAX_BUDGET_SHARE_PERCENT}% of the cap."
+                );
+            }
+        }
+    }
+
+    assert!(
+        checked >= 4,
+        "expected to check at least the macOS archive build, the macOS slice \
+         and both release test suites, checked {checked}"
+    );
+}
+
+/// A job with no cap inherits GitHub's 360-minute default: six billable hours,
+/// and a `cancelled` conclusion at the end of them.
+#[test]
+fn every_job_declares_a_timeout_or_delegates_to_one_that_does() {
+    for (name, body) in workflow_files() {
+        for job_name in workflow_job_names(&body) {
+            let job = job_block(&body, job_name);
+            // `timeout-minutes` is not a valid key on a reusable-workflow call;
+            // the caps live on the jobs of the called workflow.
+            if job
+                .lines()
+                .any(|line| line.trim().starts_with("uses: ./.github/workflows/"))
+            {
+                continue;
+            }
+            assert!(
+                job_timeout(job).is_some(),
+                "{name}: job `{job_name}` declares no timeout-minutes, so it \
+                 inherits the 360-minute default (issue #1017)"
+            );
+        }
+    }
+}
+
+/// The wrapper owns the deadline: it must kill what it wraps and exit non-zero,
+/// or the job clock gets there first and the failure is mislabelled.
+#[test]
+fn budget_wrapper_terminates_the_overrun_and_reports_it_as_an_error() {
+    let (output, elapsed) = run_budget_wrapper(
+        &[("TEST_WARN_RATIO_PERCENT", "50")],
+        &["2", "Runaway slice", "bash", "-c", "sleep 120"],
+    );
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(
+        output.status.code(),
+        Some(124),
+        "an overrun must exit 124 like `timeout(1)`, not {:?}: {stderr}",
+        output.status.code()
+    );
+    assert!(
+        stderr.contains("::error title=Runaway slice exceeded its execution budget::"),
+        "the overrun must leave an ::error annotation naming the step: {stderr}"
+    );
+    assert!(
+        elapsed < 60,
+        "the wrapper waited {elapsed}s to enforce a 2s budget; it must not \
+         depend on the job clock to stop a runaway command"
+    );
+}
+
+/// The warning has to arrive while the command is still running -- a
+/// post-mortem warning on a killed job is exactly the diagnostic that was
+/// missing from run 31937348472.
+#[test]
+fn budget_wrapper_warns_while_the_command_is_still_alive() {
+    let (output, _) = run_budget_wrapper(
+        &[("TEST_WARN_RATIO_PERCENT", "30")],
+        &["4", "Slow regression test", "bash", "-c", "sleep 2"],
+    );
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        output.status.success(),
+        "a command that finishes inside its budget must still succeed: {stderr}"
+    );
+    assert!(
+        stderr.contains("::warning title=Slow regression test is approaching its timeout::"),
+        "warning should be emitted while the wrapped command is still alive: {stderr}"
+    );
+}
+
+/// Enforcement is what CI needs and what a laptop does not: running the same
+/// command locally must not be killed for being slower than a runner.
+#[test]
+fn budget_enforcement_has_a_documented_escape_hatch() {
+    let (output, _) = run_budget_wrapper(
+        &[
+            ("TEST_BUDGET_ENFORCE", "false"),
+            ("TEST_WARN_RATIO_PERCENT", "10"),
+        ],
+        &["1", "Local run", "bash", "-c", "sleep 2"],
+    );
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        output.status.success(),
+        "TEST_BUDGET_ENFORCE=false must warn without killing: {stderr}"
+    );
+    assert!(
+        stderr.contains("::warning title=Local run is approaching its timeout::"),
+        "the warning must survive the escape hatch: {stderr}"
+    );
+}
+
+/// The heartbeat that would have shown *which* test was running when the slice
+/// was killed. Default off, per the repository's `FORMAL_AI_CI_VERBOSE`
+/// convention, so an ordinary green run stays quiet.
+#[test]
+fn budget_wrapper_heartbeat_is_available_but_off_by_default() {
+    let quiet = run_budget_wrapper(
+        &[("TEST_BUDGET_HEARTBEAT_SECONDS", "1")],
+        &["30", "Quiet run", "bash", "-c", "sleep 2"],
+    )
+    .0;
+    let quiet_stderr = String::from_utf8_lossy(&quiet.stderr);
+    assert!(quiet.status.success(), "{quiet_stderr}");
+    assert!(
+        !quiet_stderr.contains("[budget]"),
+        "the heartbeat must stay off unless FORMAL_AI_CI_VERBOSE=true: {quiet_stderr}"
+    );
+
+    let verbose = run_budget_wrapper(
+        &[
+            ("FORMAL_AI_CI_VERBOSE", "true"),
+            ("TEST_BUDGET_HEARTBEAT_SECONDS", "1"),
+        ],
+        &["30", "Verbose run", "bash", "-c", "sleep 2"],
+    )
+    .0;
+    let verbose_stderr = String::from_utf8_lossy(&verbose.stderr);
+    assert!(verbose.status.success(), "{verbose_stderr}");
+    assert!(
+        verbose_stderr.contains("[budget]"),
+        "FORMAL_AI_CI_VERBOSE=true must trace elapsed-versus-budget so the next \
+         overrun says which command was still running: {verbose_stderr}"
+    );
+}
+
+/// A `slice:` denominator that disagrees with the matrix silently *drops*
+/// tests: at `slice:N/16` with twelve matrix entries, four slices' worth of
+/// tests are never run and CI is green anyway. That is a false negative, not a
+/// timeout, and it is the failure mode a partition-count change invites.
+#[test]
+fn macos_slices_cover_every_partition_of_their_denominator() {
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
+
+    let denominator: usize = macos
+        .split("--partition \"slice:${{ matrix.partition }}/")
+        .nth(1)
+        .expect("the slice step must declare a denominator")
+        .split('"')
+        .next()
+        .unwrap()
+        .parse()
+        .expect("numeric slice denominator");
+
+    let mut partitions: Vec<usize> = macos
+        .split("- { partition: ")
+        .skip(1)
+        .map(|entry| {
+            entry
+                .split(&[' ', '}'][..])
+                .next()
+                .unwrap()
+                .parse()
+                .expect("numeric partition")
+        })
+        .collect();
+    partitions.sort_unstable();
+
+    assert_eq!(
+        partitions,
+        (1..=denominator).collect::<Vec<_>>(),
+        "the matrix must list exactly partitions 1..={denominator}; any gap \
+         means those tests never run and CI stays green anyway (issue #1017)"
+    );
+    assert!(
+        denominator >= 16,
+        "run 31937348472 measured a 467s+ test phase on the worst of twelve \
+         round-robin slices; `slice:` balances by test index and never by \
+         duration, so the count has to stay high enough to keep the worst slice \
+         inside its budget"
+    );
+}
+
+/// The `CodeQL` run emitted parse diagnostics on every single invocation because
+/// the Rust extractor, in `build-mode: none`, parses every `.rs` file on disk --
+/// including a deliberately truncated documentation excerpt.
+#[test]
+fn codeql_skips_archived_evidence_but_still_analyses_compiled_code() {
+    let security = repository_file(".github/workflows/security.yml");
+    assert!(
+        security.contains("config-file: ./.github/codeql/codeql-config.yml"),
+        "the CodeQL init step must load the shared config"
+    );
+
+    let config = repository_file(".github/codeql/codeql-config.yml");
+    let excluded_paths: Vec<&str> = config
+        .lines()
+        .filter(|line| !line.trim_start().starts_with('#'))
+        .filter_map(|line| line.trim().strip_prefix("- "))
+        .collect();
+
+    for excluded in ["docs/**", "dev/**", "experiments/**"] {
+        assert!(
+            excluded_paths.contains(&excluded),
+            "{excluded} holds archived evidence and scratch reproductions; \
+             parsing it only produces diagnostics (issue #1017)"
+        );
+    }
+    assert!(
+        !excluded_paths
+            .iter()
+            .any(|path| path.starts_with("examples")),
+        "`examples/` are real Cargo targets the workspace compiles, so they \
+         must stay in scope: {excluded_paths:?}"
+    );
+
+    // The file that produced the diagnostics is still archived, so the
+    // exclusion above is load-bearing rather than historical.
+    let excerpt = "docs/case-studies/issue-96/raw-data/link-calculator-lib-excerpt.rs";
+    assert!(
+        fs::metadata(format!("{}/{excerpt}", env!("CARGO_MANIFEST_DIR"))).is_ok(),
+        "{excerpt} is the truncated excerpt the exclusion exists for"
+    );
+}
+
+/// An audit is only worth having if it cannot be silenced. Every ignored
+/// advisory carries a proof line that `scripts/check-rust-dependencies.sh`
+/// re-derives from the dependency graph on every run.
+#[test]
+fn every_ignored_advisory_carries_a_proof_that_ci_rechecks() {
+    let config = repository_file(".cargo/audit.toml");
+    let security = repository_file(".github/workflows/security.yml");
+
+    assert!(
+        security.contains("bash scripts/check-rust-dependencies.sh"),
+        "the Cargo audit job must go through the script that checks the \
+         ignore proofs, not call `cargo audit` directly"
+    );
+    assert!(
+        security.contains("schedule:"),
+        "a lockfile that stops changing must still be re-audited: an advisory \
+         published against an unchanged dependency has to surface on its own"
+    );
+
+    let ignored: Vec<&str> = config
+        .lines()
+        .find(|line| line.trim_start().starts_with("ignore ="))
+        .expect("the audit config must declare an ignore list")
+        .split('"')
+        .skip(1)
+        .step_by(2)
+        .collect();
+
+    for advisory in ignored {
+        assert!(
+            config.contains(&format!("# {advisory} unreachable = \"")),
+            "{advisory} is ignored without a `# {advisory} unreachable = \
+             \"<crate>@<version>\"` proof line; \
+             scripts/check-rust-dependencies.sh re-derives that proof with \
+             `cargo tree --invert`, so an ignore expires the moment the crate \
+             enters the build graph (issue #1017)"
+        );
+    }
+}
+
+/// `hashFiles('**/Cargo.lock')` keys five caches. If the lockfile ever stopped
+/// being committed, `hashFiles` would return the same empty-set hash on every
+/// run: a permanently warm-looking, permanently wrong cache key, and a build
+/// that no longer resolves the versions the tests ran against.
+#[test]
+fn cargo_lock_is_committed_so_cache_keys_stay_meaningful() {
+    let tracked = Command::new("git")
+        .args(["ls-files", "--error-unmatch", "Cargo.lock"])
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .expect("run git ls-files");
+
+    assert!(
+        tracked.status.success(),
+        "Cargo.lock must be committed: it is the input to every \
+         `hashFiles('**/Cargo.lock')` cache key, and an untracked lockfile \
+         degrades all of them to one constant hash (issue #1017)"
+    );
+
+    let release = repository_file(".github/workflows/release.yml");
+    assert!(
+        release.contains("hashFiles('**/Cargo.lock')"),
+        "the cache keys this protects must still exist"
+    );
+}
+
+/// The link check parses lychee's Markdown report with a hand-written parser.
+/// A regression there either invents broken links or swallows real ones, and
+/// neither shows up as a test failure unless the parser itself is tested.
+#[test]
+fn link_report_parser_is_unit_tested_before_it_is_trusted() {
+    let links = repository_file(".github/workflows/links.yml");
+
+    assert!(
+        links.contains("node --test scripts/check-web-archive.test.mjs"),
+        "links.yml must run the parser's unit tests before lychee (issue #1017)"
+    );
+    assert_eq!(
+        links.matches("scripts/check-web-archive.test.mjs").count(),
+        3,
+        "the test file must be in both `paths:` filters as well as the step, \
+         or editing it would not re-run the check it guards"
+    );
+    assert!(
+        links.contains("if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}"),
+        "a cancelled link check must not append a `broken links` error to a run \
+         that never finished checking them"
+    );
+    assert!(
+        !repository_file("scripts/check-web-archive.test.mjs").is_empty(),
+        "the parser test file must exist"
+    );
+}

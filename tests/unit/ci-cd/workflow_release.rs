@@ -399,9 +399,13 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
 
+    // Issue #1017: the cap has to clear the budget by more than the job's
+    // unbudgeted setup -- checkout, disk cleanup, the data-file and self-AST
+    // census gates and the doc tests measured 455s on run 31937348472 -- or the
+    // job clock still wins and the overrun is reported as `cancelled`.
     assert!(
-        test_job.contains("timeout-minutes: 25"),
-        "every slice must retain the measured 25min job budget"
+        test_job.contains("timeout-minutes: 35"),
+        "every slice must retain a job budget above the measured 25min suite"
     );
     assert!(
         test_job.contains("TEST_BUDGET_SECONDS: 1200"),
@@ -627,7 +631,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
         // Issue #1012 partitions the macOS core suite so every slice retains
         // this baseline rather than extending a monolithic timeout.
-        ("test", 25),
+        // Issue #1017 raised this from 25: 455s of the job runs outside the
+        // budgeted step, so a 20-minute budget under a 25-minute cap could
+        // never expire first.
+        ("test", 35),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
         ("macos-core-tests", 0),

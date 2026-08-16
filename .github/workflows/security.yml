@@ -6,6 +6,9 @@ on:
   pull_request:
   schedule:
     - cron: '0 6 * * 1'
+  # Issue #1017: the js pipeline template exposes a manual trigger so a security
+  # sweep can be re-run without waiting for Monday's cron or pushing a commit.
+  workflow_dispatch:
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -20,6 +23,9 @@ jobs:
       group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     permissions:
+      # `actions: read` is what the `actions` language extractor needs to read
+      # workflow run metadata; the templates set it on the CodeQL job.
+      actions: read
       contents: read
       security-events: write
     strategy:
@@ -32,10 +38,47 @@ jobs:
       - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
+          # Issue #1017: keeps archived evidence trees out of the extractor so a
+          # truncated documentation excerpt stops emitting parse diagnostics.
+          config-file: ./.github/codeql/codeql-config.yml
 
       - uses: github/codeql-action/autobuild@v4
 
       - uses: github/codeql-action/analyze@v4
+
+  cargo-audit:
+    name: Cargo audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-cargo-audit
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Issue #1017: the rust pipeline template audits the committed lockfile on
+      # every push and pull request; this repository only had CodeQL and the
+      # pull-request-only dependency review, so an advisory landing in a
+      # transitive dependency of `Cargo.lock` went unreported on `main`. The
+      # weekly `schedule:` trigger above is what makes this job worth its own
+      # workflow: an advisory published against an unchanged lockfile surfaces
+      # on Monday instead of waiting for the next dependency bump.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit@0.22.2
+
+      - name: Audit committed Cargo.lock
+        run: bash scripts/check-rust-dependencies.sh
+
+  # The JavaScript side deliberately has no job here: the js pipeline template's
+  # `npm-audit` matrix is already superseded by `scripts/check-javascript-
+  # dependencies.sh`, which discovers *every* committed lockfile with `git
+  # ls-files` (so a new workspace cannot be forgotten), audits `bun.lock` as well
+  # as each `package-lock.json`, and fails at `--audit-level=moderate` instead of
+  # `high`. Adding the template's job back would be strictly weaker duplication.
 
   dependency-review:
     name: Dependency Review
