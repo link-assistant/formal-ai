@@ -95,6 +95,8 @@ jobs:
         run: bash scripts/simulate-fresh-merge.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
       - name: Install cargo-nextest
         uses: taiki-e/install-action@nextest
       - name: Download macOS test archive
