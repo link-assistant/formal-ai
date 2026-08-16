@@ -572,7 +572,6 @@ operation_vocabulary
       combo 颠倒+排序
     language es
       phrase "orden inverso"
-      combo ordenar+inverso
   operation export_substitution_rule
     language en
       phrase "export the substitution rule"
@@ -591,7 +590,6 @@ operation_vocabulary
     language es
       phrase "exporta la regla de sustitución"
       phrase "exportar la regla de sustitución"
-      combo export+regla+sustitución
   operation target_rust
     language en
       combo rust+export
