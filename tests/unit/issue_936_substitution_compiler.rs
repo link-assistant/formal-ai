@@ -304,7 +304,7 @@ fn exact_export_answer(intro: &str, recipe: &ExecutionRecipe) -> String {
 }
 
 #[test]
-fn verified_program_plan_exports_are_seeded_in_four_languages() {
+fn verified_program_plan_exports_are_seeded_in_all_supported_languages() {
     let solver = UniversalSolver::default();
     let cases = [
         MultilingualExportCase {
@@ -340,6 +340,14 @@ fn verified_program_plan_exports_are_seeded_in_four_languages() {
             target: "rust",
             primary_file: "program_plan_rules.rs",
             localized_intro: "经过验证的替换规则程序已生成，可用于 rust。请按所示名称保存每个文件。输入格式为每行一个 `from<TAB>to` 链接；然后运行下面的命令。主文件：program_plan_rules.rs。",
+        },
+        MultilingualExportCase {
+            language: "Spanish",
+            initial: "Write me a Rust program that lists the files in the current directory",
+            follow_up: "Por favor, ordena los resultados en orden inverso y exporta la regla de sustitución a JavaScript",
+            target: "javascript",
+            primary_file: "program_plan_rules.mjs",
+            localized_intro: "El programa verificado de reglas de sustitución está listo para javascript. Guarda cada archivo con el nombre indicado. El formato de entrada es un enlace `from<TAB>to` por línea; luego ejecuta los comandos siguientes. Archivo principal: program_plan_rules.mjs.",
         },
     ];
 
