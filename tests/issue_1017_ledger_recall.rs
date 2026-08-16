@@ -33,6 +33,15 @@ use formal_ai::{
 /// prompt at 12.08 s on a cold process and 0.16 s on a warm one.
 const UNKNOWN_PROMPT: &str = "look up the latest news about renewable energy";
 
+/// What the solver answers offline, exactly — recorded here so the test doubles
+/// as documentation (R234-2) and so a change in the answer is a decision rather
+/// than a silent drift. Live fetching is off by default, so the request is
+/// reported as an unexecuted plan naming the sources it would have used.
+const EXPECTED_ANSWER: &str = "No captured provider response is available for `renewable energy`. \
+Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
+The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
+Wikinews.";
+
 #[test]
 fn ordinary_recall_never_parses_the_pinned_module() {
     // Ordering matters: every miss must be observed *before* anything is allowed
@@ -53,9 +62,10 @@ fn ordinary_recall_never_parses_the_pinned_module() {
 
     // The whole solve, end to end — the shape the failing request actually had.
     let answer = solve(UNKNOWN_PROMPT);
-    assert!(
-        !answer.answer.is_empty(),
-        "the solver still answers; the point is what it does not do first"
+    assert_eq!(
+        answer.answer, EXPECTED_ANSWER,
+        "the solver still answers, and answers the same thing; the point is what \
+         it does not do first"
     );
     assert_eq!(
         ast_census_runs(),
