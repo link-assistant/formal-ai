@@ -71,7 +71,16 @@ pub struct ExecutionRecipe {
     pub language: String,
     pub source: String,
     pub path: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub supporting_files: Vec<ExecutionRecipeFile>,
     pub commands: Vec<String>,
+}
+
+/// An additional file required by a typed execution recipe.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ExecutionRecipeFile {
+    pub path: String,
+    pub source: String,
 }
 
 #[derive(Debug, Default, Clone, Copy)]

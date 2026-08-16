@@ -2,83 +2,83 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 10272
-  line_count 290
-  content_id source_module_74c29965892830cb
+  byte_len 10845
+  line_count 305
+  content_id source_module_082ffe9d90026890
   symbol_count 18
   symbols
-    function plan_symbolic_command_reroute 26 69
-    function one_call 71 76
-    function final_answer 79 94
-    struct RecipeProgress 98 103
-    struct StepFailure 108 112
-    function report 121 143
-    const STEP_PLACEHOLDER 122 122
-    const PATH_PLACEHOLDER 123 123
-    const CODE_PLACEHOLDER 124 124
-    const REPORT_PLACEHOLDER 125 125
-    function latest_user_text 146 153
-    function after_latest_user 156 194
-    const EXIT_CODE_LABELS 198 198
-    const ABSENT_FIELD_VALUES 206 206
-    function reported_exit_code 221 231
-    function from_result 242 255
-    function reports_failure_in_prose 259 281
-    function tool_from_call_id 283 290
+    function plan_symbolic_command_reroute 26 77
+    function one_call 79 84
+    function final_answer 87 109
+    struct RecipeProgress 113 118
+    struct StepFailure 123 127
+    function report 136 158
+    const STEP_PLACEHOLDER 137 137
+    const PATH_PLACEHOLDER 138 138
+    const CODE_PLACEHOLDER 139 139
+    const REPORT_PLACEHOLDER 140 140
+    function latest_user_text 161 168
+    function after_latest_user 171 209
+    const EXIT_CODE_LABELS 213 213
+    const ABSENT_FIELD_VALUES 221 221
+    function reported_exit_code 236 246
+    function from_result 257 270
+    function reports_failure_in_prose 274 296
+    function tool_from_call_id 298 305
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6944
-    named_node_count 1408
-    distinct_node_kinds 83
+    total_link_count 7462
+    named_node_count 1508
+    distinct_node_kinds 84
     node_kinds
-      arguments 109
+      arguments 116
       array_expression 4
       array_type 9
-      assignment_expression 2
+      assignment_expression 1
       attribute 2
       attribute_item 2
-      binary_expression 9
-      block 28
-      boolean_literal 2
+      binary_expression 11
+      block 32
+      boolean_literal 1
       break_expression 1
-      call_expression 109
+      call_expression 116
       char_literal 1
-      closure_expression 25
-      closure_parameters 25
-      compound_assignment_expr 1
+      closure_expression 28
+      closure_parameters 28
+      compound_assignment_expr 2
       const_item 6
       continue_expression 1
       crate 4
       declaration_list 4
       doc_comment 36
-      else_clause 1
-      escape_sequence 12
-      expression_statement 21
+      else_clause 2
+      escape_sequence 18
+      expression_statement 23
       field_declaration 7
       field_declaration_list 2
-      field_expression 115
-      field_identifier 124
+      field_expression 124
+      field_identifier 133
       field_initializer 2
       field_initializer_list 2
-      for_expression 2
+      for_expression 3
       function_item 10
       generic_function 1
       generic_type 8
-      identifier 277
-      if_expression 8
+      identifier 302
+      if_expression 9
       impl_item 4
       index_expression 1
       inner_doc_comment_marker 7
-      integer_literal 6
-      let_condition 4
-      let_declaration 21
+      integer_literal 9
+      let_condition 5
+      let_declaration 24
       lifetime 3
       lifetime_parameter 1
       line_comment 41
-      macro_invocation 5
+      macro_invocation 6
       match_arm 3
       match_block 1
       match_expression 1
@@ -90,29 +90,30 @@ self_ast_census
       parenthesized_expression 2
       primitive_type 24
       range_expression 1
-      reference_expression 14
+      reference_expression 16
       reference_type 23
       return_expression 5
       scoped_identifier 27
       scoped_type_identifier 1
       scoped_use_list 2
-      self 9
+      self 10
       self_parameter 2
       shorthand_field_initializer 4
       source_file 1
-      string_content 38
-      string_literal 32
+      string_content 42
+      string_literal 33
       struct_expression 2
       struct_item 2
       super 4
-      token_tree 9
+      token_tree 10
       try_expression 5
-      tuple_pattern 1
-      tuple_struct_pattern 5
+      tuple_expression 2
+      tuple_pattern 3
+      tuple_struct_pattern 6
       type_arguments 9
       type_identifier 36
       type_parameters 1
-      unary_expression 5
+      unary_expression 4
       use_as_clause 1
       use_declaration 6
       use_list 2

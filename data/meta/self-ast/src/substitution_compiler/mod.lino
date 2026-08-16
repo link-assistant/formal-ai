@@ -1,0 +1,29 @@
+self_ast_census
+  target src/substitution_compiler/mod.rs
+  language rust
+  fidelity signature
+  byte_len 7030
+  line_count 212
+  content_id source_module_301519e97c30ecfd
+  symbol_count 20
+  symbols
+    module javascript 7 7
+    module rust 8 8
+    module rust_runtime 9 9
+    module webassembly 10 10
+    enum SubstitutionCompilationTarget 21 25
+    function slug 29 35
+    function fmt 39 41
+    struct CompiledSubstitutionFile 46 49
+    struct CompiledSubstitutionProgram 53 59
+    struct SubstitutionProgramIr 63 67
+    struct SubstitutionRuleIr 71 77
+    struct SubstitutionActionIr 81 84
+    struct SubstitutionPatternIr 88 91
+    enum SubstitutionPatternNodeIr 96 100
+    function lower 104 127
+    function compile_substitution_rules 132 155
+    function lower_pattern 157 162
+    function lower_node 164 177
+    function safe_file_stem 179 195
+    function compilation_trace 197 212

@@ -155,6 +155,7 @@ pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
 pub mod substitution;
+pub mod substitution_compiler;
 pub mod summarization;
 pub mod task_decomposition;
 pub mod telegram;
@@ -295,6 +296,7 @@ pub use probability::{
     ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
     RankedProbabilityCandidate, SimilarEvidence,
 };
+pub use program_plan::ProgramPlanCompilationError;
 pub use promotion::{
     apply_promotions, demonstration_promotion_proposals, demonstration_promotion_run,
     parse_promotion_proposals, promotions_from_learning_run, render_promotion_proposals,
@@ -431,6 +433,11 @@ pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,
     SubstitutionRule, SubstitutionRuleError, SubstitutionRuleSet, SubstitutionTrace,
     SubstitutionTraceReport,
+};
+pub use substitution_compiler::{
+    compile_substitution_rules, CompiledSubstitutionFile, CompiledSubstitutionProgram,
+    SubstitutionActionIr, SubstitutionCompilationTarget, SubstitutionPatternIr,
+    SubstitutionPatternNodeIr, SubstitutionProgramIr, SubstitutionRuleIr,
 };
 pub use summarization::{
     apply_compound_words, apply_semantic_primes, classify_sentence, deduplicate, deformalize,

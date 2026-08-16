@@ -110,6 +110,8 @@ pub const MEANINGS_SOFTWARE_PROJECT_LINO: &str =
     include_str!("../../data/seed/meanings-software-project.lino");
 pub const MEANINGS_STATEMENT_MERGE_LINO: &str =
     include_str!("../../data/seed/meanings-statement-merge.lino");
+pub const MEANINGS_SUBSTITUTION_COMPILER_LINO: &str =
+    include_str!("../../data/seed/meanings-substitution-compiler.lino");
 pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../data/seed/meanings-summary.lino");
 pub const MEANINGS_TOOL_ACCESS_LINO: &str =
     include_str!("../../data/seed/meanings-tool-access.lino");
@@ -150,6 +152,8 @@ pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-pattern.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-procedure.lino");
+pub const MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-substitution-compiler.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-summarization.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO: &str =
@@ -257,6 +261,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-skill-procedure.lino", MEANINGS_SKILL_PROCEDURE_LINO),
         ("data/seed/meanings-software-project.lino", MEANINGS_SOFTWARE_PROJECT_LINO),
         ("data/seed/meanings-statement-merge.lino", MEANINGS_STATEMENT_MERGE_LINO),
+        ("data/seed/meanings-substitution-compiler.lino", MEANINGS_SUBSTITUTION_COMPILER_LINO),
         ("data/seed/meanings-summary.lino", MEANINGS_SUMMARY_LINO),
         ("data/seed/meanings-tool-access.lino", MEANINGS_TOOL_ACCESS_LINO),
         ("data/seed/meanings-translation.lino", MEANINGS_TRANSLATION_LINO),
@@ -298,6 +303,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/multilingual-responses-pattern.lino", MULTILINGUAL_RESPONSES_PATTERN_LINO),
         ("data/seed/multilingual-responses-procedure.lino", MULTILINGUAL_RESPONSES_PROCEDURE_LINO),
+        (
+            "data/seed/multilingual-responses-substitution-compiler.lino",
+            MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
+        ),
         (
             "data/seed/multilingual-responses-summarization.lino",
             MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
@@ -350,6 +359,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
     MULTILINGUAL_RESPONSES_SYMBOLIC_LINO,
@@ -406,6 +416,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_SKILL_PROCEDURE_LINO,
     MEANINGS_SOFTWARE_PROJECT_LINO,
     MEANINGS_STATEMENT_MERGE_LINO,
+    MEANINGS_SUBSTITUTION_COMPILER_LINO,
     MEANINGS_SUMMARY_LINO,
     MEANINGS_TOOL_ACCESS_LINO,
     MEANINGS_TRANSLATION_LINO,

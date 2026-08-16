@@ -2,23 +2,28 @@ self_ast_census
   target src/rule_synthesis.rs
   language rust
   fidelity signature
-  byte_len 11576
-  line_count 333
-  content_id source_module_eac6981cffb1dca4
-  symbol_count 15
+  byte_len 17847
+  line_count 507
+  content_id source_module_1b15424726ce8805
+  symbol_count 20
   symbols
-    struct UnknownRuleConstruction 21 30
-    function try_construct_unknown_rule 32 69
-    function try_recall_approved_rule 77 102
-    function construct_rule_from_unknown 105 149
-    function operation_hits 151 155
-    function primary_modifier 157 163
-    function candidate_rule_id 165 175
-    function synthesis_request 177 194
-    function synthesis_candidate 196 215
-    struct DecompositionParts 217 222
-    function decomposition_parts 224 253
-    struct VerificationTrace 255 258
-    function verification_trace 260 309
-    function template_has_descending_order 311 329
-    function push_field 331 333
+    struct UnknownRuleConstruction 27 37
+    function try_export_substitution_program 41 121
+    function record_construction 123 140
+    function execution_commands 142 168
+    function render_export 170 189
+    function code_fence 191 202
+    function try_construct_unknown_rule 204 241
+    function try_recall_approved_rule 249 274
+    function construct_rule_from_unknown 277 323
+    function operation_hits 325 329
+    function primary_modifier 331 337
+    function candidate_rule_id 339 349
+    function synthesis_request 351 368
+    function synthesis_candidate 370 389
+    struct DecompositionParts 391 396
+    function decomposition_parts 398 427
+    struct VerificationTrace 429 432
+    function verification_trace 434 483
+    function template_has_descending_order 485 503
+    function push_field 505 507

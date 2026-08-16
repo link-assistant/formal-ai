@@ -510,6 +510,18 @@ Agent-authored contracts. Normal review, CI, and promotion gates remain
 authoritative. Reproduction and replay evidence are in
 `docs/case-studies/issue-924/`.
 
+## Issue #936 Substitution-Rule Compilation (PR #1016)
+
+Issue [#936](https://github.com/link-assistant/formal-ai/issues/936) delivers
+E84 without reviving #331's dropped execution-stack requirement. Parsed
+substitution rules now lower once to a target-neutral IR and emit standalone
+Rust, Rust-to-WASM, or JavaScript interop artifacts. A verified finite
+`ProgramPlan` is the solver export gate; seeded English, Russian, Hindi, and
+Chinese requests can select a target and receive an executable recipe. The
+cross-target counter/loop regression requires byte-identical output from the
+interpreter and all three exports. Design, red/green evidence, and manual
+execution are recorded in `docs/case-studies/issue-936/`.
+
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
 
 Issue [#982](https://github.com/link-assistant/formal-ai/issues/982) closes the

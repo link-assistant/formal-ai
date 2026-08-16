@@ -33,7 +33,9 @@ use crate::intent_formalization::{
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
-use crate::rule_synthesis::{try_construct_unknown_rule, try_recall_approved_rule};
+use crate::rule_synthesis::{
+    try_construct_unknown_rule, try_export_substitution_program, try_recall_approved_rule,
+};
 use crate::rule_synthesis_portfolio::try_portfolio_rule;
 use crate::seed;
 pub use crate::solver_config::{BlueprintComposition, ExecutionSurface};
@@ -433,6 +435,10 @@ impl UniversalSolver {
         let sub_results =
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
+        if let Some(answer) = try_export_substitution_program(prompt, history, &mut log) {
+            return answer;
+        }
+
         let selected_rule = select_rule_for_intent(&intent_formalization);
         // Issue #704: with a portfolio configured, the ledger recall and the
         // vocabulary derivation stop being an ordered fallback chain and become
@@ -668,6 +674,7 @@ impl UniversalSolver {
                     *spec,
                 ),
                 path: spec.language.save_as.to_owned(),
+                supporting_files: Vec::new(),
                 commands: spec
                     .language
                     .execution

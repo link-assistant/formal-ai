@@ -1,0 +1,12 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786841584737)
+error[E0432]: unresolved imports `formal_ai::compile_substitution_rules`, `formal_ai::CompiledSubstitutionProgram`, `formal_ai::SubstitutionCompilationTarget`
+ --> tests/unit/issue_936_substitution_compiler.rs:8:5
+  |
+8 |     compile_substitution_rules, CompiledSubstitutionProgram, CrudEvent, SubstitutionCompilationTarget,
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no `SubstitutionCompilationTarget` in the root
+  |     |                           |
+  |     |                           no `CompiledSubstitutionProgram` in the root
+  |     no `compile_substitution_rules` in the root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "unit") due to 1 previous error

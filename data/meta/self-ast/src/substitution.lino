@@ -2,9 +2,9 @@ self_ast_census
   target src/substitution.rs
   language rust
   fidelity signature
-  byte_len 25206
+  byte_len 25250
   line_count 807
-  content_id source_module_cc0ff76aad03d096
+  content_id source_module_2ea8a46a8d774a10
   symbol_count 62
   symbols
     const DEFAULT_MAX_APPLICATIONS 20 20

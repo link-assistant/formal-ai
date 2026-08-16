@@ -330,6 +330,8 @@ jobs:
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
       - name: Restore cargo registry cache
         uses: actions/cache/restore@v5
@@ -1050,6 +1052,10 @@ jobs:
             rustc main.rs -o main
             ./main
         run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — compile and execute a resumed substitution export (issue #936)"
+        timeout-minutes: 5
+        env: { PORT: 8936 }
+        run: experiments/agent_cli_e2e/run_issue_936.sh
       - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
         env:
           PORT: 8777

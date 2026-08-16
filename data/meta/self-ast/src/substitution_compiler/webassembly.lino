@@ -1,0 +1,38 @@
+self_ast_census
+  target src/substitution_compiler/webassembly.rs
+  language rust
+  fidelity signature
+  byte_len 5076
+  line_count 147
+  content_id source_module_957e96112db8cd0d
+  symbol_count 29
+  symbols
+    function emit 6 19
+    function rust_file 21 35
+    function interop_module 37 41
+    const WASM_PRELUDE 43 46
+    const INPUT_CAPACITY 57 57
+    const OUTPUT_CAPACITY 58 58
+    const HEAP_CAPACITY 59 59
+    static INPUT 61 61
+    static OUTPUT 62 62
+    struct Heap 64 64
+    static HEAP 66 66
+    static OFFSET 67 67
+    struct Allocator 68 68
+    function alloc 71 82
+    function dealloc 83 83
+    static ALLOCATOR 87 87
+    function panic 90 90
+    const WASM_ENTRY_POINTS 94 96
+    function input_ptr 96 96
+    function output_ptr 99 99
+    function input_capacity 102 102
+    function run 105 116
+    const WASM_INTEROP 119 136
+    const bytes 123 123
+    const outputLength 128 128
+    const output 129 133
+    const wasmPath 139 139
+    const chunks 142 142
+    const runSubstitution 144 144

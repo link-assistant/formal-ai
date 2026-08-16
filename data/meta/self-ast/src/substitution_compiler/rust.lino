@@ -1,0 +1,11 @@
+self_ast_census
+  target src/substitution_compiler/rust.rs
+  language rust
+  fidelity signature
+  byte_len 1044
+  line_count 41
+  content_id source_module_2c359fd62f402b4c
+  symbol_count 2
+  symbols
+    function emit 6 41
+    function main 27 31

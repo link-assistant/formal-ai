@@ -90,6 +90,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: llvm-tools-preview
+          targets: wasm32-unknown-unknown
 
       - uses: ./.github/actions/setup-sccache
 

@@ -3,7 +3,7 @@
 use std::fs;
 use std::process::Command;
 
-use super::workflow_fixtures::{job_block, release_workflow};
+use super::workflow_fixtures::{job_block, release_workflow, workflow_step_block};
 
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
@@ -41,6 +41,21 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     assert!(!macos.contains("2100"));
     assert!(macos.contains("taiki-e/install-action@nextest"));
     assert!(macos.contains("scripts/run-with-budget-warning.sh"));
+}
+
+/// The issue #936 parity test invokes a WASM-targeted `rustc` at runtime. The
+/// nextest archive does not include that target's standard library, so each
+/// independent slice runner must install it.
+#[test]
+fn macos_core_slices_install_wasm_target_for_runtime_compiler_tests() {
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
+    let test_archive = job_block(&macos, "test-archive");
+    let setup_rust = workflow_step_block(test_archive, "Setup Rust");
+
+    assert!(
+        setup_rust.contains("targets: wasm32-unknown-unknown"),
+        "each macOS slice must install the target used by runtime compiler tests"
+    );
 }
 
 #[test]

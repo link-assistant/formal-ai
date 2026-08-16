@@ -28,6 +28,11 @@ meanings
     lexeme zh
       surface
         text 结果
+    lexeme es
+      surface
+        text resultado
+      surface
+        text resultados
   output
     defined-by result
     defined-by program
@@ -177,6 +182,13 @@ meanings
     lexeme zh
       surface
         text 排序
+    lexeme es
+      surface
+        text ordena
+      surface
+        text ordenar
+      surface
+        text ordenado
   order
     defined-by sort
     role program_artifact
@@ -199,6 +211,9 @@ meanings
     lexeme zh
       surface
         text 顺序
+    lexeme es
+      surface
+        text orden
   reverse
     defined-by order
     role program_modification
@@ -228,6 +243,11 @@ meanings
         text 相反
       surface
         text 倒序
+    lexeme es
+      surface
+        text inverso
+      surface
+        text inversa
   cancel
     defined-by reverse
     defined-by modify

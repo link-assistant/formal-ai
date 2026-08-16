@@ -17,7 +17,7 @@ use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::push_lino_node;
 use crate::seed::parser::{parse_lino, LinoNode};
 
-const DEFAULT_MAX_APPLICATIONS: usize = 64;
+pub(crate) const DEFAULT_MAX_APPLICATIONS: usize = 64;
 
 /// CRUD event that can trigger substitution rules.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -85,8 +85,8 @@ impl SubstitutionLink {
 /// variables (`$node`), or prefix variables (`assignee:$person`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LinkPattern {
-    from: PatternNode,
-    to: PatternNode,
+    pub(crate) from: PatternNode,
+    pub(crate) to: PatternNode,
 }
 
 impl LinkPattern {
@@ -135,7 +135,7 @@ impl fmt::Display for LinkPattern {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-enum PatternNode {
+pub(crate) enum PatternNode {
     Literal(String),
     Variable(String),
     PrefixVariable { prefix: String, variable: String },

@@ -599,9 +599,12 @@ fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
     .unwrap();
 
     assert_eq!(
-        harness.matches("\n    --no-summarize-session \\\n").count(),
-        1,
-        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
+        harness
+            .matches("\n        --no-summarize-session \\\n")
+            .count()
+            + harness.matches("\n    --no-summarize-session \\\n").count(),
+        2,
+        "both the initial and resumed Agent CLI turns must disable summarization"
     );
 }
 
