@@ -49,6 +49,21 @@ were never in the repository.
   `cancel-in-progress` is forbidden here: these workflows contain write jobs,
   and cancelling `main` would restore the exact blind spot
   `scripts/check-pipeline-status.sh` exists to close.
+- **Fix the timeout the deadline fix exposed, rather than raising the harness's
+  limit.** With the deadline structural, two macOS slices failed cleanly instead
+  of degrading into `cancelled` — and what they exposed was a runtime defect,
+  not a CI one: the *first* request to a fresh server built the canonical
+  learning ledger before checking whether the ledger could answer at all, and
+  building it round-trips a 39 KB module through a parser that is quadratic in
+  input size. Raising `RESPONSE_TIMEOUT` would have hidden a ten-second
+  first-response for every user. The lookup now proves a miss before it builds
+  anything, which is a property of the lookup rather than a tuned constant.
+- **Report the algorithm upstream and work around it here.** The quadratic scan
+  lives in `meta-language`; nothing in this repository can fix it, only avoid
+  calling it on a request path. Both are done —
+  [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193)
+  carries a standalone reproducer and a patch, and this branch stops paying for
+  the parse.
 - **Document the single-architecture container deviation instead of rewriting
   the publish path.** The Rust template's multi-arch `docker-publish` /
   `docker-merge-manifest` pair cannot be exercised outside a real release, so a
@@ -58,7 +73,7 @@ were never in the repository.
 
 ## Upstream reports
 
-Five exact report bodies are retained verbatim under
+Six exact report bodies are retained verbatim under
 `dev/log/issues/1017/pulls/1018/upstream-reports/`, each recording the URL it
 was filed under:
 
@@ -81,7 +96,15 @@ was filed under:
   showing every failing macro is external, the extractor configuration dump,
   the confirmed workaround on CLI 2.26.3, and three suggestions — chiefly that
   the extractor should emit one diagnostic naming the `std` version it cannot
-  parse instead of one warning per call site.
+  parse instead of one warning per call site;
+- the quadratic `point_at_byte` scan in `meta-language`'s tree-sitter adapter —
+  filed as
+  [meta-language#193](https://github.com/link-foundation/meta-language/issues/193)
+  with a standalone reproducer crate whose only dependency is `meta-language`,
+  release- and dev-profile scaling tables showing the per-byte cost doubling
+  every time the input doubles, `gdb` attribution putting 12 of 12 samples in
+  that one function, a line-start-table patch that turns each lookup into
+  `O(log lines)`, and the consumer workaround this pull request applies.
 
 ## Verification
 

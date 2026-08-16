@@ -74,6 +74,24 @@ it never checked, two jobs in no concurrency group at any level, and a
 `.gitignore` negation that reached only one directory level and therefore
 silently dropped every nested evidence log while `git add` reported success.
 
+**What the fix uncovered underneath itself.** With the deadline structural, the
+next run failed *cleanly* — and on something else entirely. Two macOS slices
+panicked at `tests/integration/http_server.rs:185` with
+`Os { code: 35, kind: WouldBlock }` after 30.08 s and 30.27 s: the harness's own
+30-second per-request limit, to the millisecond. Both failing tests send the
+**first** request to a freshly spawned server, and that request reached rule
+recall, which built the canonical learning ledger before asking whether the
+ledger could answer the prompt at all. Building it round-trips a 39 195-byte
+module through `meta-language`'s parser, whose `point_at_byte` rescans the
+source from byte 0 for every span — `O(nodes × bytes)`. Measured cost: over ten
+seconds on the `dev` profile CI runs under, with 12 of 12 `gdb` samples inside
+that one function. On a 3-core Intel runner with four tests in flight, that
+constant crossed 30 s; which slices it hits depends on how the round-robin
+partitioner happens to group the heavy tests, which is why it looked like
+flakiness. It is the same false-negative shape as the rest of this issue — a
+real ten-second first response that a "retry and it passes" reading would have
+buried.
+
 ## 5. Research and prior art
 
 GitHub documents the `cancelled`-not-`failed` behaviour as design; there is no
@@ -105,11 +123,26 @@ whose query-side consequence is `github/codeql#22244`. This is an analysis-cover
 noise: a file whose macros do not expand is extracted with errors and its
 bodies are not analysed, yet the run still reports success.
 
+The quadratic parse is also someone else's defect, and the function is
+byte-for-byte identical in the pinned 0.54.0 and the latest 0.58.1, so it was
+reported with a standalone reproducer crate, both scaling tables, the `gdb`
+attribution and a line-start-table patch that turns each lookup into
+`O(log lines)`:
+[meta-language#193](https://github.com/link-foundation/meta-language/issues/193).
+No prior issue existed for it. Nothing in this repository can change the
+algorithm — only stop calling it on a request path, which is what the fix does.
+
 ## 6. Tests-first reproduction
 
 Thirteen tests in `tests/unit/ci-cd/issue_1017.rs` pin every fix, and each one
 sweeps *all* workflows rather than the single file that failed — that is the
 mechanism by which the same defect cannot survive elsewhere.
+
+The runtime timeout is pinned separately by `tests/issue_1017_ledger_recall.rs`,
+which counts whole-source parses through a process-wide counter and asserts an
+ordinary request performs none. It is its own test binary precisely because the
+counter is global. With the guard removed it fails (`left: 1, right: 0`), so it
+reproduces the defect rather than describing it.
 
 ## 7. Implemented fix
 
@@ -131,6 +164,16 @@ from `cargo tree --invert` on every run, so the ignore expires by itself. The
 link check tests its report parser before trusting it and no longer reports
 broken links for a run it did not finish. Every read-only job now belongs to a
 concurrency group that never cancels `main`.
+
+On the runtime side, `learning_ledger::approved_lesson_for` now derives the
+prompts the canonical ledger can possibly answer from the same canonical failure
+trace the ledger is promoted from, and refuses a miss before building anything;
+the match uses the same normalised form the ledger itself uses, so recall
+behaviour is unchanged and no promotion gate is relaxed. The one round-trip
+whose inputs are compile-time constants is memoised per process. A cold
+`plan_chat_step` fell from 9.96–12.6 s to 579 ms and a cold POST from ~13 s to
+274 ms. `FORMAL_AI_TRACE_SLOW_INIT=1`, off by default, reports each
+whole-source parse with its size and duration so a regression names itself.
 
 ## 8. Verification
 

@@ -22,6 +22,7 @@ GitHub access:
 | `ci-logs/main-head-1858b338/run-*.log` | Complete logs for those ten runs (`.stderr` retained even when empty, so a silent download failure is distinguishable from a silent run). |
 | `ci-logs/main-head-1858b338/job-95142504446-macos-slice-10-cancelled.log` | The single job that cancelled the pipeline, isolated for line-level citation. |
 | `ci-logs/main-head-1858b338/job-95144536035-pipeline-status-failure.log` | The `pipeline-status` job that turned that cancellation red. |
+| `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/` | This pull request's own run 31969845523: all sixteen macOS slice jobs (not only the two that failed, so "why these two and not the others" is answerable) plus `Test (ubuntu-latest / full)`, which passed. Evidence for D13. |
 | `annotations/all-annotations.tsv` | Every annotation GitHub attached to any job of any run, one row per annotation. |
 | `analysis/soft-warnings.txt` | Every warning-shaped and error-shaped line across all ten logs (20,766 lines). |
 | `analysis/template-diffs/*.diff` | Per-file diffs of this repository against the current `rust-ai-driven-development-pipeline-template`. |
@@ -69,6 +70,28 @@ decided the outcome, `macOS Core Tests / Run macOS core slice 10/12`
 The whole defect is that 1.3-second gap. Everything else in this pull request
 follows from making that gap structural instead of accidental.
 
+### 2.1 Second timeline — the failure this pull request's own CI found
+
+The deadline fix worked exactly as designed and then exposed a *different*
+defect underneath it (D13). Run **31969845523** on head `3f35c383`:
+
+| Time (UTC) | Event | Source |
+| --- | --- | --- |
+| 20:30:57.5 | `macOS core slice 16/16` (job 95222223150) starts. | `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/job-95222223150-macos-slice16-16-failed.log:1` |
+| 20:32:11.5 | `macOS core slice 7/16` (job 95222223157) starts. | `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/job-95222223157-macos-slice7-16-failed.log:1` |
+| 20:34:34.6 | Slice 16/16: `issue_712_intent_routing::gemini_update_request_routes_to_edit` FAILED — `finished in 30.08s`. | `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/job-95222223150-macos-slice16-16-failed.log:1490` |
+| 20:34:34.8 | `panicked at tests/integration/http_server.rs:185:69` — `POST should complete: Os { code: 35, kind: WouldBlock }`. errno 35 on macOS is `EWOULDBLOCK`: the harness's own 30 s `RESPONSE_TIMEOUT` elapsing, not a refused connection. | `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/job-95222223150-macos-slice16-16-failed.log:1494–1495` |
+| 20:34:35.1 | `Cancelling due to test failure: 3 tests still running` — four tests were in flight on a 3-core runner. | `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/job-95222223150-macos-slice16-16-failed.log:1498` |
+| 20:36:19.1 | Slice 7/16: `issue_680_intent_routing::chat_completions_routes_web_search_intent_to_tool_call` FAILED — `finished in 30.27s`, same panic site, same errno. | `ci-logs/3f35c3832e91ffab5a9ce8dfc1800435543a866c/job-95222223157-macos-slice7-16-failed.log:1496,1500` |
+| 20:35:01.6 / 20:36:29.2 | Both jobs exit **100** — a `failure`, reported as one. The D1 class is gone: nothing here degrades into `cancelled`. | `…:1508`, `…:1514` |
+
+Two facts separate this from D1/D2 and point at the runtime rather than the
+budget. First, the two durations are `30.08s` and `30.27s` — the *harness's*
+per-request limit, not a step budget or a job cap. Second, the suite routinely
+passes tests far longer than that (`153.813s`, `151.864s`, `133.640s` across
+the sixteen slices), because those tests make many short requests; only the
+**first** request in a process was slow. Section 4.1 D13 carries the cause.
+
 ## 3. Requirement ledger
 
 The canonical ledger is the requirements shard
@@ -86,8 +109,8 @@ this archive.
 | R1017-6 | Stop diagnostics manufactured by a run's own cancellation, and test the parsers behind them. | D8, D9. |
 | R1017-7 | Put every read-only job in a concurrency group, without ever cancelling `main`. | D10. |
 | R1017-8 | Compare the full file tree against all three templates and the Hive Mind guidance; state each deviation. | Section 5, `analysis/template-diffs/`, `references/templates/`. |
-| R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — five exact bodies, retained verbatim; each file records the URL it was filed under (rust template [#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135), js template [#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137), python template [#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60), and [`codeql#19982` comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141) plus the measured follow-up [comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)). |
-| R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. |
+| R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — five exact bodies, retained verbatim; each file records the URL it was filed under (rust template [#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135), js template [#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137), python template [#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60), and [`codeql#19982` comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141) plus the measured follow-up [comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)). A sixth was added for D13: [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193), filed with a standalone reproducer crate (`experiments/issue-1017-meta-language-quadratic/`), both measured scaling tables, `gdb` attribution, a line-start-table patch, and the consumer workaround this pull request applies. |
+| R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. For D13, `FORMAL_AI_TRACE_SLOW_INIT=1` reports every whole-source parse with its byte count, duration and run index — the instrumentation that turned "a request sometimes exceeds 30 s" into "one 39 195-byte parse costs 12.08 s". Default off; the counter behind it (`ast_census_runs()`) is always live and is what the regression test asserts on. |
 | R1017-11 | Apply each fix everywhere the defect occurs, not only where it was observed. | Every fix is pinned by a test that sweeps *all* workflow files rather than the one that failed; see section 8. |
 | R1017-12 | Retain the evidence so every claim is re-derivable, and deliver everything in this single pull request. | This archive; D11 is the `.gitignore` defect that would otherwise have silently dropped half of it. PR #1018. |
 
@@ -113,6 +136,7 @@ Sources: `annotations/all-annotations.tsv` (25 annotations) and
 | D10 | Two jobs belonged to **no** concurrency group at any level: `release.yml::macos-core-tests` (one archive build + sixteen Intel macOS slices, billed at 10× Linux) and `proactive-failure-report-e2e.yml::agent-cli-failure-report` (a 20-minute release build). | Oversight; the group was never added when these jobs were introduced. A second push kept the superseded runners to completion *and* started a second copy. | Both get `check-${{ github.workflow }}-${{ github.ref }}-<job>` with `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}`. `superseded_read_only_work_releases_its_runners` sweeps every job in every workflow and forces any future exception to be argued in the test rather than left implicit in the YAML. |
 | D11 | Nested per-head CI logs were never committed, while `git add` reported success. | `.gitignore` negated `!dev/log/**/ci-logs/*.log`, which reaches only files *directly* inside `ci-logs/`. This archive groups logs one level deeper (`ci-logs/<head>/run-*.log`), so `*.log` at line 65 still matched. Found with `git check-ignore -v`. | Added `!dev/log/**/ci-logs/**/*.log`. This is a silent evidence-loss bug: every analysis citing a nested log would have cited a file that was never in the repository. |
 | D12 | `security.yml` had no manual trigger. | Not a defect in itself, but it meant a security sweep could not be re-run without waiting for Monday's cron or pushing a commit. | `workflow_dispatch:`, matching the js template. |
+| D13 | **Found by this pull request's own CI** (run 31969845523): `macOS core slice 7/16` and `16/16` both failed with `POST should complete: Os { code: 35, kind: WouldBlock }` at `tests/integration/http_server.rs:185:69`, after `30.27s` and `30.08s` — the harness's `RESPONSE_TIMEOUT` to the millisecond, not a network fault. | Both failing tests send the **first** request to a freshly spawned agent-mode server. That request reaches rule recall → `learning_ledger::approved_lesson_for`, which built the canonical ledger *before* asking whether the ledger could answer the prompt. Building it runs the self-healing pass, which round-trips the pinned planner module (39 195 bytes) through `LinkNetwork::parse`. That parse is quadratic upstream — `meta-language`'s `point_at_byte` rescans from byte 0 for every span, twice per node — measured at 189 902 → 2 690 767 ns/byte as the input doubles from 11 KB to 187 KB, with 12 of 12 `gdb` samples inside that one function. Cost: ~10–13 s on the `dev` profile, inside the response. On a 3-core Intel runner with four tests in flight (`Cancelling … 3 tests still running`), contention pushed that constant past 30 s — which is why it hits *some* slices and not others, and why the partition assignment changes which. | `approved_lesson_for` now proves a miss from the same canonical failure trace the ledger is promoted from, before building anything, using the same normalised match `lesson_for` uses; recall behaviour is unchanged and no promotion gate is relaxed. The pinned round-trip is memoised per process (both inputs are compile-time constants). Cold `plan_chat_step` 9.96–12.6 s → 579 ms; cold POST ~13 s → 274 ms. `tests/issue_1017_ledger_recall.rs` pins it against the process-wide `ast_census_runs()` counter; with the guard removed it fails (`left: 1, right: 0`). The algorithm itself is upstream and unfixable here: reported as [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193). |
 
 ### 4.2 Diagnostics deliberately left alone, with reasons
 
@@ -274,6 +298,20 @@ that is the mechanism behind R1017-11:
 | `link_report_parser_is_unit_tested_before_it_is_trusted` | D9. |
 | `superseded_read_only_work_releases_its_runners` | D10 — every read-only job has a group; the two exemptions are argued in the test. |
 
+D13 is pinned by `tests/issue_1017_ledger_recall.rs`, which is its own test
+binary because it counts a **process-wide** static (`ast_census_runs()`) and a
+sibling test parsing on another thread would perturb the count:
+
+| Assertion | Invariant |
+| --- | --- |
+| `approved_lesson_for(UNKNOWN_PROMPT).is_none()` leaves the counter unchanged | D13 — refusing a prompt the ledger cannot answer must not parse a module. |
+| `solve(UNKNOWN_PROMPT)` leaves the counter unchanged | D13 — an ordinary request must not round-trip the pinned module's CST/AST. The prompt is byte-identical to the one `issue_680_intent_routing::chat_completions_routes_web_search_intent_to_tool_call` sends. |
+| `approved_lesson_for(canonical_failure_trace().prompt)` still returns its lesson | The fast miss-path did not turn a hit into a miss; recall is unchanged. |
+| `canonical_ledger_failure_prompts() == canonical_ledger()`'s prompts | The cheap answerable set and the built ledger cannot drift apart — the guard can never start hiding a real lesson. |
+
+With the guard removed the first assertion fails (`left: 1, right: 0`), so the
+test demonstrably reproduces the defect rather than merely describing it.
+
 ### 8.1 Measured effect of the CodeQL sysroot pin
 
 The pin was introduced as a mitigation for someone else's defect, so it was
@@ -335,9 +373,19 @@ requirement, not the `ci_cd::` module alone: the first push verified only
 `cargo test --test unit ci_cd::` and `Coverage` then failed on
 `tests/issue_961_macos_portability.rs`.
 
-Two local-environment caveats, both confirmed not to be defects in this branch:
-the `wasm32-unknown-unknown` target must be installed for
-`issue_936_substitution_compiler` (CI installs it; commit `29576b38`), and six
-loopback HTTP tests can fail with `WouldBlock` under a saturated sandbox — they
-pass on a repeat run and pass in CI, and this pull request changes no `src/`
-file at all (`git diff --stat main -- src/` is empty).
+One local-environment caveat, confirmed not to be a defect in this branch: the
+`wasm32-unknown-unknown` target must be installed for
+`issue_936_substitution_compiler` (CI installs it; commit `29576b38`).
+
+A second caveat recorded at the first push has since been **corrected**. Six
+loopback HTTP tests failing locally with `WouldBlock` were written off as
+sandbox saturation, on the reasoning that they passed on a repeat run and that
+the branch changed no `src/` file. Both halves were wrong. `WouldBlock` at
+`http_server.rs:185` is the harness's own 30-second `RESPONSE_TIMEOUT`, not a
+saturated socket; "passes on a repeat run" is the signature of a cold, once-per
+-process cost, not of flakiness; and CI reproduced it on slices 7/16 and 16/16.
+That is D13. The branch now *does* change `src/` — `learning_ledger.rs`,
+`self_healing.rs`, `self_ast.rs`, `lib.rs` — so `git diff --stat main -- src/`
+is no longer empty and must not be cited as a reason to dismiss a runtime
+failure. The episode is left in the record because dismissing a reproducible
+timeout as environmental is the same false-negative habit this issue is about.
