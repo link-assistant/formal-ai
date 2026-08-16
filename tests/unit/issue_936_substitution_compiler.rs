@@ -1,3 +1,4 @@
+use std::fmt::Write as _;
 use std::fs;
 use std::io::Write as _;
 use std::path::{Path, PathBuf};
@@ -5,6 +6,7 @@ use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
+use formal_ai::engine::ExecutionRecipe;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::{
     compile_substitution_rules, CompiledSubstitutionProgram, ConversationTurn, CrudEvent,
@@ -271,6 +273,36 @@ struct MultilingualExportCase {
     localized_intro: &'static str,
 }
 
+fn export_code_fence(path: &str) -> &'static str {
+    match Path::new(path).extension().and_then(|value| value.to_str()) {
+        Some("rs") => "rust",
+        Some("mjs") => "javascript",
+        Some("tsv") => "text",
+        _ => "json",
+    }
+}
+
+fn exact_export_answer(intro: &str, recipe: &ExecutionRecipe) -> String {
+    let mut answer = intro.to_owned();
+    for (path, source) in std::iter::once((recipe.path.as_str(), recipe.source.as_str())).chain(
+        recipe
+            .supporting_files
+            .iter()
+            .map(|file| (file.path.as_str(), file.source.as_str())),
+    ) {
+        let _ = write!(
+            answer,
+            "\n\n`{path}`\n```{}\n{}\n```",
+            export_code_fence(path),
+            source.trim_end()
+        );
+    }
+    answer.push_str("\n\n```sh\n");
+    answer.push_str(&recipe.commands.join("\n"));
+    answer.push_str("\n```");
+    answer
+}
+
 #[test]
 fn verified_program_plan_exports_are_seeded_in_four_languages() {
     let solver = UniversalSolver::default();
@@ -282,7 +314,7 @@ fn verified_program_plan_exports_are_seeded_in_four_languages() {
                 "Sort the results in reverse order and export the substitution rule to Rust",
             target: "rust",
             primary_file: "program_plan_rules.rs",
-            localized_intro: "The verified substitution-rule program",
+            localized_intro: "The verified substitution-rule program is ready for rust. Save each named file exactly as shown. The input format is one `from<TAB>to` link per line; then run the commands below. Primary file: program_plan_rules.rs.",
         },
         MultilingualExportCase {
             language: "Russian",
@@ -291,7 +323,7 @@ fn verified_program_plan_exports_are_seeded_in_four_languages() {
             follow_up: "Сделай сортировку результатов в обратном порядке и экспортируй правило подстановки в JavaScript",
             target: "javascript",
             primary_file: "program_plan_rules.mjs",
-            localized_intro: "Проверенная программа правил подстановки",
+            localized_intro: "Проверенная программа правил подстановки готова для javascript. Сохраните каждый файл точно под указанным именем. Формат входных данных: одна связь `from<TAB>to` на строку; затем выполните команды ниже. Основной файл: program_plan_rules.mjs.",
         },
         MultilingualExportCase {
             language: "Hindi",
@@ -299,7 +331,7 @@ fn verified_program_plan_exports_are_seeded_in_four_languages() {
             follow_up: "परिणामों को उल्टे क्रम में क्रमबद्ध करो और प्रतिस्थापन नियम को WebAssembly में निर्यात करो",
             target: "webassembly",
             primary_file: "program_plan_rules_wasm.rs",
-            localized_intro: "सत्यापित प्रतिस्थापन-नियम प्रोग्राम",
+            localized_intro: "सत्यापित प्रतिस्थापन-नियम प्रोग्राम webassembly के लिए तैयार है। हर फ़ाइल को दिखाए गए नाम से सहेजें। इनपुट प्रारूप में हर पंक्ति पर एक `from<TAB>to` लिंक होता है; फिर नीचे दिए आदेश चलाएँ। मुख्य फ़ाइल: program_plan_rules_wasm.rs।",
         },
         MultilingualExportCase {
             language: "Chinese",
@@ -307,7 +339,7 @@ fn verified_program_plan_exports_are_seeded_in_four_languages() {
             follow_up: "把结果按相反顺序排序，并将替换规则导出为 Rust",
             target: "rust",
             primary_file: "program_plan_rules.rs",
-            localized_intro: "经过验证的替换规则程序",
+            localized_intro: "经过验证的替换规则程序已生成，可用于 rust。请按所示名称保存每个文件。输入格式为每行一个 `from<TAB>to` 链接；然后运行下面的命令。主文件：program_plan_rules.rs。",
         },
     ];
 
@@ -339,6 +371,12 @@ fn verified_program_plan_exports_are_seeded_in_four_languages() {
         let recipe = exported
             .execution_recipe
             .expect("export should carry an executable primary artifact");
+        assert_eq!(
+            exported.answer,
+            exact_export_answer(case.localized_intro, &recipe),
+            "{} exact export transcript changed",
+            case.language
+        );
         assert_eq!(recipe.language, case.target);
         assert_eq!(recipe.path, case.primary_file);
         assert!(!recipe.source.is_empty());
@@ -381,9 +419,13 @@ fn agentic_recipe_writes_every_export_file_before_execution() {
     let solver = UniversalSolver::default();
     let initial_prompt = "Write me a Rust program that lists the files in the current directory";
     let initial = solver.solve(initial_prompt);
+    let formal_ai::SymbolicAnswer {
+        answer: initial_answer,
+        ..
+    } = initial;
     let history = [
         ConversationTurn::user(initial_prompt),
-        ConversationTurn::assistant(initial.answer),
+        ConversationTurn::assistant(initial_answer),
     ];
     let follow_up =
         "Sort the results in reverse order and export the substitution rule to JavaScript";
