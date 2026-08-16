@@ -13,11 +13,17 @@
 #   TASK          The user prompt for the CLI (default: the canonical #538 seed)
 #   EXPECT_FILE   File the CLI is expected to write inside the sandbox workdir
 #                 (default: meanings-tomato-detail.lino)
+#   EXPECT_FILES  Optional newline-separated additional files that must exist.
 #   EXPECT_TEXT   A string that must appear inside EXPECT_FILE (default: `томаты`,
 #                 the previously missing Russian plural — the issue's canary)
+#   FOLLOW_UP     Optional second prompt. When set, the harness resumes the
+#                 first prompt's session without forking before asserting files.
 #   EXPECT_SERVER_TEXTS
 #                 Optional newline-separated strings that must appear in the
 #                 server trace (useful for proving exact harness-side commands).
+#   EXPECT_AGENT_TEXTS
+#                 Optional newline-separated strings that must appear in the
+#                 Agent trace (useful for proving exact command output).
 #   ARTIFACT_DIR  Optional directory receiving the server log, Agent CLI log,
 #                 and generated file after a successful live replay.
 #   RESEARCH_MCP_FIXTURE
@@ -50,8 +56,11 @@ AGENT="${AGENT:-agent}"
 DEFAULT_TASK="Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат."
 TASK="${TASK:-$DEFAULT_TASK}"
 EXPECT_FILE="${EXPECT_FILE:-meanings-tomato-detail.lino}"
+EXPECT_FILES="${EXPECT_FILES:-}"
 EXPECT_TEXT="${EXPECT_TEXT:-томаты}"
+FOLLOW_UP="${FOLLOW_UP:-}"
 EXPECT_SERVER_TEXTS="${EXPECT_SERVER_TEXTS:-}"
+EXPECT_AGENT_TEXTS="${EXPECT_AGENT_TEXTS:-}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 RESEARCH_MCP_FIXTURE="${RESEARCH_MCP_FIXTURE:-}"
 research_mcp_path=""
@@ -74,6 +83,8 @@ MIN_POSTS="${MIN_POSTS:-4}"
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
+AGENT_SETUP_LOG="/tmp/agent-setup-$PORT.log"
+AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
 WORKDIR="$(mktemp -d)"
 
 echo "== workdir: $WORKDIR =="
@@ -169,19 +180,56 @@ ATTEMPTS="${ATTEMPTS:-5}"
 RC=1
 for attempt in $(seq 1 "$ATTEMPTS"); do
   echo "== agent attempt $attempt/$ATTEMPTS =="
+  rm -f "$AGENT_LOG" "$AGENT_SETUP_LOG" "$AGENT_FOLLOW_UP_LOG"
   timeout 180 "$AGENT" run \
     --prompt "$TASK" \
     --disable-stdin \
     --no-summarize-session \
     --compaction-model same \
     --model "formal-ai/formal-ai" \
-    > "$AGENT_LOG" 2>&1
+    > "$AGENT_SETUP_LOG" 2>&1
   RC=$?
+  cp "$AGENT_SETUP_LOG" "$AGENT_LOG"
+  if [ "$RC" -eq 0 ] && [ -n "$FOLLOW_UP" ]; then
+    session="$(grep -m1 -o 'ses_[A-Za-z0-9]*' "$AGENT_SETUP_LOG" || true)"
+    if [ -z "$session" ]; then
+      RC=1
+      echo "!! first turn did not report a resumable session id" >> "$AGENT_LOG"
+    else
+      echo "== resuming session $session =="
+      timeout 180 "$AGENT" run \
+        --resume "$session" \
+        --no-fork \
+        --prompt "$FOLLOW_UP" \
+        --disable-stdin \
+        --no-summarize-session \
+        --compaction-model same \
+        --model "formal-ai/formal-ai" \
+        > "$AGENT_FOLLOW_UP_LOG" 2>&1
+      RC=$?
+      {
+        echo
+        echo "== resumed follow-up: $session =="
+        cat "$AGENT_FOLLOW_UP_LOG"
+      } >> "$AGENT_LOG"
+    fi
+  fi
   echo "== agent exit: $RC =="
-  if [ "$RC" -eq 0 ] && [ -f "$WORKDIR/$EXPECT_FILE" ]; then
+  missing_file=""
+  if [ ! -f "$WORKDIR/$EXPECT_FILE" ]; then
+    missing_file="$EXPECT_FILE"
+  fi
+  while IFS= read -r expected_file; do
+    [ -z "$expected_file" ] && continue
+    if [ ! -f "$WORKDIR/$expected_file" ]; then
+      missing_file="$expected_file"
+      break
+    fi
+  done <<< "$EXPECT_FILES"
+  if [ "$RC" -eq 0 ] && [ -z "$missing_file" ]; then
     break
   fi
-  echo "== attempt $attempt produced no $EXPECT_FILE (external CLI stalled?); retrying =="
+  echo "== attempt $attempt did not complete $missing_file (external CLI stalled?); retrying =="
 done
 
 echo "== agent stderr/out tail =="
@@ -201,6 +249,11 @@ fail() {
 # The four hard assertions the round-trip has to satisfy.
 [ "$RC" -eq 0 ] || fail "agent CLI exited $RC (see $AGENT_LOG)"
 [ -f "$WORKDIR/$EXPECT_FILE" ] || fail "expected file $EXPECT_FILE not in workdir"
+while IFS= read -r expected_file; do
+  [ -z "$expected_file" ] && continue
+  [ -f "$WORKDIR/$expected_file" ] \
+    || fail "expected file $expected_file not in workdir"
+done <<< "$EXPECT_FILES"
 grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
   || fail "expected text \"$EXPECT_TEXT\" missing from $EXPECT_FILE"
 
@@ -220,6 +273,12 @@ while IFS= read -r expected; do
     || fail "expected server trace to contain: $expected"
 done <<< "$EXPECT_SERVER_TEXTS"
 
+while IFS= read -r expected; do
+  [ -z "$expected" ] && continue
+  grep -Fq "$expected" "$AGENT_LOG" \
+    || fail "expected Agent trace to contain: $expected"
+done <<< "$EXPECT_AGENT_TEXTS"
+
 echo "== E2E OK: $EXPECT_FILE written, contains \"$EXPECT_TEXT\", $posts chat rounds =="
 head -5 "$WORKDIR/$EXPECT_FILE"
 if [ -n "$ARTIFACT_DIR" ]; then
@@ -227,4 +286,9 @@ if [ -n "$ARTIFACT_DIR" ]; then
   cp "$LOG" "$ARTIFACT_DIR/formal-ai.log"
   cp "$AGENT_LOG" "$ARTIFACT_DIR/agent-cli.log"
   cp "$WORKDIR/$EXPECT_FILE" "$ARTIFACT_DIR/$EXPECT_FILE"
+  while IFS= read -r expected_file; do
+    [ -z "$expected_file" ] && continue
+    mkdir -p "$ARTIFACT_DIR/$(dirname "$expected_file")"
+    cp "$WORKDIR/$expected_file" "$ARTIFACT_DIR/$expected_file"
+  done <<< "$EXPECT_FILES"
 fi
