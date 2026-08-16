@@ -154,6 +154,50 @@ fn every_job_declares_a_timeout_or_delegates_to_one_that_does() {
     }
 }
 
+/// Every read-only job must belong to a concurrency group, so a superseded
+/// push releases its runners instead of holding them to completion. The two
+/// jobs listed here are deliberate exceptions with a stated reason; a third
+/// exception has to be argued in this list, not left implicit in the YAML.
+#[test]
+fn superseded_read_only_work_releases_its_runners() {
+    // `pipeline-status` is the run's verdict, and it is what converts a hidden
+    // `cancelled` into a red failure (issue #977, `scripts/check-pipeline-status.sh`).
+    // Cancelling the reporter would restore exactly the blind spot it exists to
+    // close. `cycle` is the scheduled learning writer: its workflow-level group
+    // already sets `cancel-in-progress: false` so a running writer finishes.
+    const EXEMPT: &[(&str, &str)] = &[
+        ("release.yml", "pipeline-status"),
+        ("learning-cycle.yml", "cycle"),
+    ];
+
+    let mut checked = 0_usize;
+    for (name, body) in workflow_files() {
+        let header = body.split("\njobs:\n").next().unwrap_or_default();
+        // A reusable workflow has no trigger of its own; it is cancelled with
+        // the caller's job, which carries the group.
+        if header.contains("workflow_call:") {
+            continue;
+        }
+        let workflow_level = header.lines().any(|line| line == "concurrency:");
+        for job_name in workflow_job_names(&body) {
+            if EXEMPT.contains(&(name.as_str(), job_name)) {
+                continue;
+            }
+            let job = job_block(&body, job_name);
+            let job_level = job
+                .lines()
+                .any(|line| line.trim_end() == "    concurrency:");
+            checked += 1;
+            assert!(
+                workflow_level || job_level,
+                "{name}: job `{job_name}` belongs to no concurrency group, so a \
+                 superseded push runs it twice (issue #1017)"
+            );
+        }
+    }
+    assert!(checked >= 40, "expected every workflow job, saw {checked}");
+}
+
 /// The wrapper owns the deadline: it must kill what it wraps and exit non-zero,
 /// or the job clock gets there first and the failure is mislabelled.
 #[test]

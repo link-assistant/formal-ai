@@ -379,6 +379,16 @@ jobs:
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes]
+    # Issue #1017: the heaviest lane in the repository -- one archive build plus
+    # sixteen Intel macOS slices, each billed at ten times the Linux rate -- was
+    # the one read-only job in this workflow with no concurrency group. A second
+    # push to the same pull request started seventeen more macOS runners while
+    # the superseded seventeen kept running to completion. `main` still never
+    # cancels (`cancel-in-progress` is false there), so the issue-#977 rule that
+    # a cancelled job on `main` is a hidden timeout keeps its meaning.
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
