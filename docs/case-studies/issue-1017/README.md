@@ -180,7 +180,12 @@ whole-source parse with its size and duration so a regression names itself.
 `cargo fmt --check`, `cargo clippy --lib --bins --tests --all-features`,
 `cargo check --examples --all-features`, `rust-script scripts/check-file-size.rs`,
 `rust-script scripts/check-hardcoded-language.rs`,
-`bash scripts/lint-shell-scripts.sh`, and the full `ci_cd::` suite. The
+`bash scripts/lint-shell-scripts.sh`, `actionlint`,
+`rust-script scripts/run-ci-gates.rs --stage rust`, and the complete
+`cargo test --tests --all-features` — not the `ci_cd::` module alone. The
 budget wrapper's termination path is exercised directly rather than asserted
 about: the test runs a command that outlives its budget and checks for exit
-code 124 and the `::error` annotation.
+code 124 and the `::error` annotation. Running everything is what caught the
+two consequences of the runtime fix that the targeted suites cannot see — a
+stale committed self-AST census for the four edited `src/` files, and a new
+test that asserted on an engine answer without showing it.

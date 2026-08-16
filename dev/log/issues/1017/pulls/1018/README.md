@@ -366,12 +366,35 @@ Verification run locally on the final branch: `cargo fmt --check`,
 `rust-script scripts/check-file-size.rs`,
 `rust-script scripts/check-hardcoded-language.rs` (1288/1288 allowlisted),
 `bash scripts/lint-shell-scripts.sh` (33 scripts),
-`actionlint`, `rust-script scripts/run-ci-gates.rs --stage rust`, and the
-complete `cargo test --tests --all-features` — 2,825 unit, 345 integration, 488
-source and every per-issue harness, 0 failures. The full suite is the
-requirement, not the `ci_cd::` module alone: the first push verified only
-`cargo test --test unit ci_cd::` and `Coverage` then failed on
-`tests/issue_961_macos_portability.rs`.
+`actionlint`, `rust-script scripts/run-ci-gates.rs --stage rust` (25 gates, all
+passed), and the complete `cargo test --tests
+--all-features` — 2,825 unit, 345 integration, 488 source, the new
+`issue_1017_ledger_recall` binary and every other per-issue harness, `EXIT=0`.
+The full suite is the requirement, not the `ci_cd::` module alone: the first
+push verified only `cargo test --test unit ci_cd::` and `Coverage` then failed
+on `tests/issue_961_macos_portability.rs`.
+
+That requirement paid for itself twice more on the runtime fix, and both would
+have been red CI:
+
+| Caught by | What was stale | Repair |
+| --- | --- | --- |
+| `cargo test --tests --all-features` | `issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render` failed: editing four `src/` files makes their committed census documents (`byte_len`, `line_count`, `content_id`, symbol line ranges) stale. | `cargo run --example regenerate_self_ast_census` — `479 documents (4 rewritten, 0 removed)`, exactly the four files this branch edits. Commit `42c78409`. |
+| `rust-script scripts/run-ci-gates.rs --stage rust` | `check_tests_as_docs` (R234-2) flagged the new `tests/issue_1017_ledger_recall.rs`: it asserted `!answer.answer.is_empty()`, which asserts on an engine answer without ever showing it. | The test now pins the exact offline answer as `EXPECTED_ANSWER`, so it documents what the solver says as well as what it must not do. Commit `11724735`. |
+
+The off-by-default verbose mode was exercised in both states rather than
+assumed: `FORMAL_AI_TRACE_SLOW_INIT=1 cargo run --example
+issue_1017_parse_scaling` prints
+
+```
+[slow-init] ast_census: 11416 bytes in 1776 ms (run #1)
+[slow-init] ast_census: 22984 bytes in 7427 ms (run #2)
+```
+
+and the same command without the variable prints zero `slow-init` lines. On the
+request path the trace stays silent even when enabled — `FORMAL_AI_TRACE_SLOW_INIT=1
+cargo run --example issue_1017_cold_request_profile` emits no `[slow-init]` line
+at all, which is the fix stated as an observation: the parse no longer happens.
 
 One local-environment caveat, confirmed not to be a defect in this branch: the
 `wasm32-unknown-unknown` target must be installed for
