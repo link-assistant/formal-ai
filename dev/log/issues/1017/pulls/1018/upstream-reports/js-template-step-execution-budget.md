@@ -1,5 +1,7 @@
 # link-foundation/js-ai-driven-development-pipeline-template
 
+Filed as <https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137>.
+
 **Title:** `timeout-minutes` alone lets a slow job report `cancelled` instead of
 `failed`; `bun test --timeout` bounds a test, not the suite
 

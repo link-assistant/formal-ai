@@ -86,7 +86,7 @@ this archive.
 | R1017-6 | Stop diagnostics manufactured by a run's own cancellation, and test the parsers behind them. | D8, D9. |
 | R1017-7 | Put every read-only job in a concurrency group, without ever cancelling `main`. | D10. |
 | R1017-8 | Compare the full file tree against all three templates and the Hive Mind guidance; state each deviation. | Section 5, `analysis/template-diffs/`, `references/templates/`. |
-| R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — four exact bodies, retained verbatim. |
+| R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — five exact bodies, retained verbatim; each file records the URL it was filed under (rust template [#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135), js template [#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137), python template [#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60), and [`codeql#19982` comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141) plus the measured follow-up [comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)). |
 | R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. |
 | R1017-11 | Apply each fix everywhere the defect occurs, not only where it was observed. | Every fix is pinned by a test that sweeps *all* workflow files rather than the one that failed; see section 8. |
 | R1017-12 | Retain the evidence so every claim is re-derivable, and deliver everything in this single pull request. | This archive; D11 is the `.gitignore` defect that would otherwise have silently dropped half of it. PR #1018. |
@@ -273,6 +273,34 @@ that is the mechanism behind R1017-11:
 | `cargo_lock_is_committed_so_cache_keys_stay_meaningful` | Cache keys stay meaningful. |
 | `link_report_parser_is_unit_tested_before_it_is_trusted` | D9. |
 | `superseded_read_only_work_releases_its_runners` | D10 — every read-only job has a group; the two exemptions are argued in the test. |
+
+### 8.1 Measured effect of the CodeQL sysroot pin
+
+The pin was introduced as a mitigation for someone else's defect, so it was
+verified against a real run rather than asserted. `Security` run
+`31967180539` on head `c71de5a4` is the first run with it, and its complete log
+is archived at
+`ci-logs/c71de5a40a7e396a99db8f18e71cbb056960c1d8/run-31967180539-security-codeql-sysroot-pinned.log`:
+
+| Diagnostic | Baseline (run 31937348308) | With the pin (run 31967180539) |
+| --- | ---: | ---: |
+| `macro expansion failed` | 20,725 | **0** |
+| `proc-macro not yet built` | 0 | 355 |
+| `` `OUT_DIR` not set `` | 0 | 3 |
+
+The extractor configuration dump now reads `sysroot: Some(…)`,
+`sysroot_src: Some(…)` where it previously read `None`, and the step logged
+`Pinned the Rust extractor to /home/runner/.rustup/toolchains/1.94.0-x86_64-unknown-linux-gnu`.
+
+The 358 remaining diagnostics are a **different and much smaller class that the
+old failure masked**: with `proc_macro_server: None` the extractor cannot run
+derive macros (`#[derive(Serialize)]` and friends), and three files read
+`OUT_DIR` from a build script that `build-mode: none` never runs. They are
+recorded here rather than silenced — the pin removed 98.3 % of the analysis
+loss and made the residue visible, which is the whole point of treating these
+as coverage rather than noise.
+
+### 8.2 Local verification
 
 Verification run locally on the final branch: `cargo fmt --check`,
 `cargo clippy --lib --bins --tests --all-features`,

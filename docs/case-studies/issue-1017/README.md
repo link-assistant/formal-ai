@@ -89,15 +89,19 @@ All three `link-foundation` pipeline templates were compared file by file.
 None has any step-execution-budget concept: every long step runs unbounded
 under its job clock, so each is exposed to exactly this failure. That shared
 defect was reported to all three with reproductions, workarounds and code-level
-suggestions.
+suggestions —
+[rust#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135),
+[js#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137),
+[python#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60).
 
 The 20,725 `macro expansion failed` diagnostics turned out not to be this
 repository's defect at all. Every one of the 25 distinct failing macros is
 defined in `std`/`core` or in a dependency; none is defined here. The CodeQL
 Rust extractor resolves `std` from the runner's ambient toolchain using the
 rust-analyzer it vendors, and cannot parse a `std` that new — the open upstream
-issue `github/codeql#19982`, whose query-side consequence is
-`github/codeql#22244`. This is an analysis-coverage false negative rather than
+issue `github/codeql#19982` (this repository's measurements are
+[comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141)),
+whose query-side consequence is `github/codeql#22244`. This is an analysis-coverage false negative rather than
 noise: a file whose macros do not expand is extracted with errors and its
 bodies are not analysed, yet the run still reports success.
 

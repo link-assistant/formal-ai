@@ -1,0 +1,1175 @@
+Code Coverage	Generate code coverage	﻿2026-08-16T18:29:39.3612605Z ##[group]Run cargo llvm-cov --all-features --lcov --output-path lcov.info
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3613358Z ^[[36;1mcargo llvm-cov --all-features --lcov --output-path lcov.info^[[0m
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3654144Z shell: /usr/bin/bash -e {0}
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3654538Z env:
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3654842Z   CARGO_NET_RETRY: 10
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3655216Z   CARGO_HTTP_MULTIPLEXING: false
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3655639Z   CARGO_TERM_COLOR: always
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3656011Z   RUSTFLAGS: -Dwarnings
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3656380Z   CARGO_HOME: /home/runner/.cargo
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3656801Z   CARGO_INCREMENTAL: 0
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3657270Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3657816Z   ACTIONS_CACHE_SERVICE_V2: on
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3658470Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3721909Z   ACTIONS_RUNTIME_TOKEN: ***
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3722341Z   SCCACHE_GHA_ENABLED: true
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3722701Z   RUSTC_WRAPPER: sccache
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.3723102Z ##[endgroup]
+Code Coverage	Generate code coverage	2026-08-16T18:29:39.4622040Z info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.1251590Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.24
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.1252264Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.107
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.1252706Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.47
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.1253105Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.189
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.2960055Z ^[[1m^[[92m   Compiling^[[0m shlex v2.0.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.5465717Z ^[[1m^[[92m   Compiling^[[0m find-msvc-tools v0.1.9
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.7455696Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.8520750Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-language v0.1.7
+Code Coverage	Generate code coverage	2026-08-16T18:29:40.9575753Z ^[[1m^[[92m   Compiling^[[0m version_check v0.9.5
+Code Coverage	Generate code coverage	2026-08-16T18:29:41.2515526Z ^[[1m^[[92m   Compiling^[[0m typenum v1.20.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:41.9975093Z ^[[1m^[[92m   Compiling^[[0m jobserver v0.1.35
+Code Coverage	Generate code coverage	2026-08-16T18:29:42.0699809Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.119
+Code Coverage	Generate code coverage	2026-08-16T18:29:42.3567266Z ^[[1m^[[92m   Compiling^[[0m syn v3.0.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:42.3751937Z ^[[1m^[[92m   Compiling^[[0m cc v1.2.67
+Code Coverage	Generate code coverage	2026-08-16T18:29:42.7990715Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:43.6245165Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.2.17
+Code Coverage	Generate code coverage	2026-08-16T18:29:43.8512159Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.229
+Code Coverage	Generate code coverage	2026-08-16T18:29:44.0105983Z ^[[1m^[[92m   Compiling^[[0m generic-array v0.14.7
+Code Coverage	Generate code coverage	2026-08-16T18:29:44.1325250Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.6.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:44.4045021Z ^[[1m^[[92m   Compiling^[[0m autocfg v1.5.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:44.7995010Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.229
+Code Coverage	Generate code coverage	2026-08-16T18:29:45.0244835Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.13.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:45.5665033Z ^[[1m^[[92m   Compiling^[[0m subtle v2.6.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:45.9035066Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.229
+Code Coverage	Generate code coverage	2026-08-16T18:29:46.1358655Z ^[[1m^[[92m   Compiling^[[0m writeable v0.6.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:46.6075766Z ^[[1m^[[92m   Compiling^[[0m litemap v0.8.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:46.6186640Z ^[[1m^[[92m   Compiling^[[0m utf8_iter v1.0.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:46.6271451Z ^[[1m^[[92m   Compiling^[[0m synstructure v0.13.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:46.8275627Z ^[[1m^[[92m   Compiling^[[0m zeroize_derive v1.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:46.8475496Z ^[[1m^[[92m   Compiling^[[0m displaydoc v0.2.6
+Code Coverage	Generate code coverage	2026-08-16T18:29:47.1715010Z ^[[1m^[[92m   Compiling^[[0m zerofrom-derive v0.1.7
+Code Coverage	Generate code coverage	2026-08-16T18:29:47.2154984Z ^[[1m^[[92m   Compiling^[[0m zeroize v1.9.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:47.3375209Z ^[[1m^[[92m   Compiling^[[0m yoke-derive v0.8.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.0354769Z ^[[1m^[[92m   Compiling^[[0m zerofrom v0.1.8
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.2191992Z ^[[1m^[[92m   Compiling^[[0m zerovec-derive v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.3575021Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.4150195Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.1.7
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.5948937Z ^[[1m^[[92m   Compiling^[[0m smallvec v1.15.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.6110786Z ^[[1m^[[92m   Compiling^[[0m stable_deref_trait v1.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.7335707Z ^[[1m^[[92m   Compiling^[[0m bytes v1.12.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.8744949Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer_data v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:48.9965039Z ^[[1m^[[92m   Compiling^[[0m icu_properties_data v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.2172525Z ^[[1m^[[92m   Compiling^[[0m const-oid v0.9.6
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.2408488Z ^[[1m^[[92m   Compiling^[[0m percent-encoding v2.3.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.3610588Z ^[[1m^[[92m   Compiling^[[0m yoke v0.8.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.4255721Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.4352369Z ^[[1m^[[92m   Compiling^[[0m untrusted v0.9.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.4460372Z ^[[1m^[[92m   Compiling^[[0m pin-project-lite v0.2.17
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.5845046Z ^[[1m^[[92m   Compiling^[[0m thiserror v2.0.19
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.6177938Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.10.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.6244588Z ^[[1m^[[92m   Compiling^[[0m zerovec v0.11.6
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.6975155Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v2.0.19
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.8015053Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.10.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.8780677Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.2.17
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.9578079Z ^[[1m^[[92m   Compiling^[[0m digest v0.10.7
+Code Coverage	Generate code coverage	2026-08-16T18:29:49.9935172Z ^[[1m^[[92m   Compiling^[[0m form_urlencoded v1.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.2095426Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.2774966Z ^[[1m^[[92m   Compiling^[[0m futures-core v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.3514440Z ^[[1m^[[92m   Compiling^[[0m tinystr v0.8.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.4858106Z ^[[1m^[[92m   Compiling^[[0m potential_utf v0.1.5
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.5941474Z ^[[1m^[[92m   Compiling^[[0m zerotrie v0.2.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.6024737Z ^[[1m^[[92m   Compiling^[[0m icu_locale_core v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.6349010Z ^[[1m^[[92m   Compiling^[[0m base64ct v1.8.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.6845563Z ^[[1m^[[92m   Compiling^[[0m log v0.4.33
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.9181331Z ^[[1m^[[92m   Compiling^[[0m cfg_aliases v0.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.9336610Z ^[[1m^[[92m   Compiling^[[0m pem-rfc7468 v0.7.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:50.9522072Z ^[[1m^[[92m   Compiling^[[0m icu_collections v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.0485082Z ^[[1m^[[92m   Compiling^[[0m block-padding v0.3.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.1967008Z ^[[1m^[[92m   Compiling^[[0m der v0.7.10
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.2369695Z ^[[1m^[[92m   Compiling^[[0m inout v0.1.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.4315123Z ^[[1m^[[92m   Compiling^[[0m num-traits v0.2.19
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.4885435Z ^[[1m^[[92m   Compiling^[[0m time-core v0.1.9
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.5295187Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.4.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.6855315Z ^[[1m^[[92m   Compiling^[[0m num-conv v0.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.6975317Z ^[[1m^[[92m   Compiling^[[0m icu_provider v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.8935222Z ^[[1m^[[92m   Compiling^[[0m time-macros v0.2.32
+Code Coverage	Generate code coverage	2026-08-16T18:29:51.9145021Z ^[[1m^[[92m   Compiling^[[0m cipher v0.4.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.0865071Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.2055892Z ^[[1m^[[92m   Compiling^[[0m icu_properties v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.5395006Z ^[[1m^[[92m   Compiling^[[0m spki v0.7.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.6914796Z ^[[1m^[[92m   Compiling^[[0m hmac v0.12.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.8425478Z ^[[1m^[[92m   Compiling^[[0m deranged v0.5.8
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.8896879Z ^[[1m^[[92m   Compiling^[[0m powerfmt v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:52.8955024Z ^[[1m^[[92m   Compiling^[[0m pkcs8 v0.10.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:53.4235072Z ^[[1m^[[92m   Compiling^[[0m ff v0.13.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:53.6185194Z ^[[1m^[[92m   Compiling^[[0m ring v0.17.14
+Code Coverage	Generate code coverage	2026-08-16T18:29:53.7575583Z ^[[1m^[[92m   Compiling^[[0m idna_adapter v1.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:53.9335388Z ^[[1m^[[92m   Compiling^[[0m base16ct v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:53.9628786Z ^[[1m^[[92m   Compiling^[[0m idna v1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.1091419Z ^[[1m^[[92m   Compiling^[[0m time v0.3.55
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.1104835Z ^[[1m^[[92m   Compiling^[[0m sec1 v0.7.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.4155286Z ^[[1m^[[92m   Compiling^[[0m group v0.13.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.4536893Z ^[[1m^[[92m   Compiling^[[0m hkdf v0.12.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.5825738Z ^[[1m^[[92m   Compiling^[[0m universal-hash v0.5.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.6133424Z ^[[1m^[[92m   Compiling^[[0m crypto-bigint v0.5.5
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.8514838Z ^[[1m^[[92m   Compiling^[[0m equivalent v1.0.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:54.9663179Z ^[[1m^[[92m   Compiling^[[0m opaque-debug v0.3.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:55.3265141Z ^[[1m^[[92m   Compiling^[[0m url v2.5.8
+Code Coverage	Generate code coverage	2026-08-16T18:29:55.8645115Z ^[[1m^[[92m   Compiling^[[0m elliptic-curve v0.13.8
+Code Coverage	Generate code coverage	2026-08-16T18:29:55.9629834Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.0895127Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.17.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.2925492Z ^[[1m^[[92m   Compiling^[[0m rfc6979 v0.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.3685038Z ^[[1m^[[92m   Compiling^[[0m signature v2.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.4509004Z ^[[1m^[[92m   Compiling^[[0m aead v0.5.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.5272368Z ^[[1m^[[92m   Compiling^[[0m rustls-pki-types v1.15.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.6118519Z ^[[1m^[[92m   Compiling^[[0m memoffset v0.9.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.6985100Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.23
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.8635168Z ^[[1m^[[92m   Compiling^[[0m ecdsa v0.16.9
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.8695110Z ^[[1m^[[92m   Compiling^[[0m primeorder v0.13.6
+Code Coverage	Generate code coverage	2026-08-16T18:29:56.9735076Z ^[[1m^[[92m   Compiling^[[0m chacha20 v0.10.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.2662296Z ^[[1m^[[92m   Compiling^[[0m polyval v0.6.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.2736987Z ^[[1m^[[92m   Compiling^[[0m ctr v0.9.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.4485348Z ^[[1m^[[92m   Compiling^[[0m nix v0.31.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.5112777Z ^[[1m^[[92m   Compiling^[[0m sha2 v0.10.9
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.6355108Z ^[[1m^[[92m   Compiling^[[0m ptr_meta_derive v0.3.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.7615242Z ^[[1m^[[92m   Compiling^[[0m substring v1.4.5
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.8390374Z ^[[1m^[[92m   Compiling^[[0m cmake v0.1.58
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.8469076Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.9041037Z ^[[1m^[[92m   Compiling^[[0m dunce v1.0.5
+Code Coverage	Generate code coverage	2026-08-16T18:29:57.9825097Z ^[[1m^[[92m   Compiling^[[0m pkg-config v0.3.33
+Code Coverage	Generate code coverage	2026-08-16T18:29:58.0346239Z ^[[1m^[[92m   Compiling^[[0m fs_extra v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:58.3411303Z ^[[1m^[[92m   Compiling^[[0m ptr_meta v0.3.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:58.3544692Z ^[[1m^[[92m   Compiling^[[0m ghash v0.5.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:58.3937045Z ^[[1m^[[92m   Compiling^[[0m aws-lc-sys v0.43.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:58.4923948Z ^[[1m^[[92m   Compiling^[[0m rand v0.10.2
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.0856477Z ^[[1m^[[92m   Compiling^[[0m yasna v0.6.0
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.1121755Z ^[[1m^[[92m   Compiling^[[0m aes v0.8.4
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.2473310Z ^[[1m^[[92m   Compiling^[[0m pem v3.0.6
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.5604931Z ^[[1m^[[92m   Compiling^[[0m tokio-macros v2.7.1
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.7585668Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.7749373Z ^[[1m^[[92m   Compiling^[[0m siphasher v1.0.3
+Code Coverage	Generate code coverage	2026-08-16T18:29:59.9804965Z ^[[1m^[[92m   Compiling^[[0m aes-gcm v0.10.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:00.0315252Z ^[[1m^[[92m   Compiling^[[0m phf_shared v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:00.6846983Z ^[[1m^[[92m   Compiling^[[0m rancor v0.1.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:01.1025222Z ^[[1m^[[92m   Compiling^[[0m rcgen v0.14.9
+Code Coverage	Generate code coverage	2026-08-16T18:30:01.1335318Z ^[[1m^[[92m   Compiling^[[0m p256 v0.13.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:01.4806645Z ^[[1m^[[92m   Compiling^[[0m bytecheck_derive v0.8.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:01.6344661Z ^[[1m^[[92m   Compiling^[[0m byteorder v1.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:01.8536869Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:01.9228733Z ^[[1m^[[92m   Compiling^[[0m simdutf8 v0.1.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:02.1330238Z ^[[1m^[[92m   Compiling^[[0m rtc-shared v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:02.2115062Z ^[[1m^[[92m   Compiling^[[0m rand v0.8.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:02.6045171Z ^[[1m^[[92m   Compiling^[[0m aws-lc-rs v1.17.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:02.7619298Z ^[[1m^[[92m   Compiling^[[0m crossbeam-utils v0.8.22
+Code Coverage	Generate code coverage	2026-08-16T18:30:02.8297754Z ^[[1m^[[92m   Compiling^[[0m linux-raw-sys v0.12.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:02.9223095Z ^[[1m^[[92m   Compiling^[[0m phf_generator v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:03.2914832Z ^[[1m^[[92m   Compiling^[[0m http v1.4.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:03.5645326Z ^[[1m^[[92m   Compiling^[[0m socket2 v0.6.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:03.9714828Z ^[[1m^[[92m   Compiling^[[0m mio v1.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:04.0574808Z ^[[1m^[[92m   Compiling^[[0m minimal-lexical v0.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:04.1284830Z ^[[1m^[[92m   Compiling^[[0m parking_lot_core v0.9.12
+Code Coverage	Generate code coverage	2026-08-16T18:30:04.2381021Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:04.3246515Z ^[[1m^[[92m   Compiling^[[0m nom v7.1.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:04.4405020Z ^[[1m^[[92m   Compiling^[[0m tokio v1.53.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:05.7798803Z ^[[1m^[[92m   Compiling^[[0m indexmap v2.14.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:06.1839740Z ^[[1m^[[92m   Compiling^[[0m munge_macro v0.4.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:06.4675153Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:06.5255322Z ^[[1m^[[92m   Compiling^[[0m include_dir_macros v0.7.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:06.7615132Z ^[[1m^[[92m   Compiling^[[0m httparse v1.10.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:06.9244442Z ^[[1m^[[92m   Compiling^[[0m semver v1.0.28
+Code Coverage	Generate code coverage	2026-08-16T18:30:07.2555098Z ^[[1m^[[92m   Compiling^[[0m scopeguard v1.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:07.3945050Z ^[[1m^[[92m   Compiling^[[0m fnv v1.0.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:07.7541587Z ^[[1m^[[92m   Compiling^[[0m ident_case v1.0.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:07.8063980Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:07.8818388Z ^[[1m^[[92m   Compiling^[[0m darling_core v0.20.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:08.6855227Z ^[[1m^[[92m   Compiling^[[0m lock_api v0.4.14
+Code Coverage	Generate code coverage	2026-08-16T18:30:08.9182225Z ^[[1m^[[92m   Compiling^[[0m rustc_version v0.4.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:09.2265118Z ^[[1m^[[92m   Compiling^[[0m include_dir v0.7.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:09.4465218Z ^[[1m^[[92m   Compiling^[[0m munge v0.4.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:09.8953704Z ^[[1m^[[92m   Compiling^[[0m http-body v1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:10.0934341Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.16
+Code Coverage	Generate code coverage	2026-08-16T18:30:10.1059097Z ^[[1m^[[92m   Compiling^[[0m rkyv_derive v0.8.17
+Code Coverage	Generate code coverage	2026-08-16T18:30:10.1415073Z ^[[1m^[[92m   Compiling^[[0m rustversion v1.0.23
+Code Coverage	Generate code coverage	2026-08-16T18:30:10.3415009Z ^[[1m^[[92m   Compiling^[[0m slab v0.4.12
+Code Coverage	Generate code coverage	2026-08-16T18:30:10.5481317Z ^[[1m^[[92m   Compiling^[[0m futures-task v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:30:11.0209229Z ^[[1m^[[92m   Compiling^[[0m rustls v0.23.42
+Code Coverage	Generate code coverage	2026-08-16T18:30:11.1052055Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-shared v0.2.126
+Code Coverage	Generate code coverage	2026-08-16T18:30:11.1658729Z ^[[1m^[[92m   Compiling^[[0m futures-util v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:30:11.2870893Z ^[[1m^[[92m   Compiling^[[0m darling_macro v0.20.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:12.9149549Z ^[[1m^[[92m   Compiling^[[0m regex v1.13.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.0065162Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.151
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.1010945Z ^[[1m^[[92m   Compiling^[[0m anyhow v1.0.104
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.3911866Z ^[[1m^[[92m   Compiling^[[0m tower-service v0.3.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.3912983Z ^[[1m^[[92m   Compiling^[[0m try-lock v0.2.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.5241066Z ^[[1m^[[92m   Compiling^[[0m want v0.3.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.7194915Z ^[[1m^[[92m   Compiling^[[0m darling v0.20.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:13.8577678Z ^[[1m^[[92m   Compiling^[[0m futures-channel v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.0714912Z ^[[1m^[[92m   Compiling^[[0m tracing-core v0.1.36
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.1390540Z ^[[1m^[[92m   Compiling^[[0m rustix v1.1.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.1458536Z ^[[1m^[[92m   Compiling^[[0m atomic-waker v1.1.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.2925630Z ^[[1m^[[92m   Compiling^[[0m zerocopy v0.8.55
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.3078502Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.3.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.4893167Z ^[[1m^[[92m   Compiling^[[0m futures-sink v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.5658754Z ^[[1m^[[92m   Compiling^[[0m tracing v0.1.44
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.6134073Z ^[[1m^[[92m   Compiling^[[0m hyper v1.11.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:14.8829018Z ^[[1m^[[92m   Compiling^[[0m derive_builder_core v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.0397866Z ^[[1m^[[92m   Compiling^[[0m phf_codegen v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.1825617Z ^[[1m^[[92m   Compiling^[[0m bytecheck v0.8.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.4744967Z ^[[1m^[[92m   Compiling^[[0m num-integer v0.1.46
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.8588338Z ^[[1m^[[92m   Compiling^[[0m sync_wrapper v1.0.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.8867777Z ^[[1m^[[92m   Compiling^[[0m futures-macro v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.9002353Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:16.9935228Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.2.21
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.0242516Z ^[[1m^[[92m   Compiling^[[0m ryu v1.0.23
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.2485140Z ^[[1m^[[92m   Compiling^[[0m futures-io v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.3207987Z ^[[1m^[[92m   Compiling^[[0m ipnet v2.12.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.4238331Z ^[[1m^[[92m   Compiling^[[0m openssl-probe v0.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.6002196Z ^[[1m^[[92m   Compiling^[[0m tower-layer v0.3.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.6064595Z ^[[1m^[[92m   Compiling^[[0m bumpalo v3.20.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.7364777Z ^[[1m^[[92m   Compiling^[[0m crc32fast v1.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.7984537Z ^[[1m^[[92m   Compiling^[[0m tower v0.5.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.8854431Z ^[[1m^[[92m   Compiling^[[0m hyper-util v0.1.20
+Code Coverage	Generate code coverage	2026-08-16T18:30:17.8965939Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro-support v0.2.126
+Code Coverage	Generate code coverage	2026-08-16T18:30:19.1756115Z ^[[1m^[[92m   Compiling^[[0m rustls-native-certs v0.8.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:19.4374198Z ^[[1m^[[92m   Compiling^[[0m num-bigint v0.4.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:21.0405467Z ^[[1m^[[92m   Compiling^[[0m rend v0.5.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:21.0619041Z ^[[1m^[[92m   Compiling^[[0m derive_builder_macro v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:23.4574407Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen v0.2.126
+Code Coverage	Generate code coverage	2026-08-16T18:30:23.5838449Z ^[[1m^[[92m   Compiling^[[0m parking_lot v0.12.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:23.9425682Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.28.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:25.1347023Z ^[[1m^[[92m   Compiling^[[0m csv-core v0.1.13
+Code Coverage	Generate code coverage	2026-08-16T18:30:25.3645561Z ^[[1m^[[92m   Compiling^[[0m encoding_rs v0.8.35
+Code Coverage	Generate code coverage	2026-08-16T18:30:25.3890693Z ^[[1m^[[92m   Compiling^[[0m sansio v1.0.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:25.5185593Z ^[[1m^[[92m   Compiling^[[0m lazy_static v1.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:25.6621489Z ^[[1m^[[92m   Compiling^[[0m adler2 v2.0.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:25.8345064Z ^[[1m^[[92m   Compiling^[[0m simd-adler32 v0.3.10
+Code Coverage	Generate code coverage	2026-08-16T18:30:26.0860050Z ^[[1m^[[92m   Compiling^[[0m new_debug_unreachable v1.0.6
+Code Coverage	Generate code coverage	2026-08-16T18:30:26.2065499Z ^[[1m^[[92m   Compiling^[[0m glob v0.3.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:26.2992603Z ^[[1m^[[92m   Compiling^[[0m miniz_oxide v0.8.9
+Code Coverage	Generate code coverage	2026-08-16T18:30:26.5889301Z ^[[1m^[[92m   Compiling^[[0m csv v1.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:26.9787833Z ^[[1m^[[92m   Compiling^[[0m encoding_rs_io v0.1.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:27.2055497Z ^[[1m^[[92m   Compiling^[[0m rkyv v0.8.17
+Code Coverage	Generate code coverage	2026-08-16T18:30:27.2315070Z ^[[1m^[[92m   Compiling^[[0m strum v0.28.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:27.4065217Z ^[[1m^[[92m   Compiling^[[0m xattr v1.6.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:27.6785153Z ^[[1m^[[92m   Compiling^[[0m tower-http v0.6.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:28.1445557Z ^[[1m^[[92m   Compiling^[[0m derive_builder v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:28.3015096Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro v0.2.126
+Code Coverage	Generate code coverage	2026-08-16T18:30:28.8664790Z ^[[1m^[[92m   Compiling^[[0m http-body-util v0.1.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:29.3539117Z ^[[1m^[[92m   Compiling^[[0m rusticata-macros v4.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:29.7185042Z ^[[1m^[[92m   Compiling^[[0m phf_macros v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:30.1774847Z ^[[1m^[[92m   Compiling^[[0m asn1-rs-derive v0.5.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:30.3845095Z ^[[1m^[[92m   Compiling^[[0m asn1-rs-impl v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:30.6156992Z ^[[1m^[[92m   Compiling^[[0m filetime v0.2.29
+Code Coverage	Generate code coverage	2026-08-16T18:30:31.0425376Z ^[[1m^[[92m   Compiling^[[0m crossbeam-epoch v0.9.20
+Code Coverage	Generate code coverage	2026-08-16T18:30:31.0609205Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.1.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:31.1195054Z ^[[1m^[[92m   Compiling^[[0m daachorse v2.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:31.2689860Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.15.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:31.6957129Z ^[[1m^[[92m   Compiling^[[0m tar v0.4.46
+Code Coverage	Generate code coverage	2026-08-16T18:30:31.9100069Z ^[[1m^[[92m   Compiling^[[0m asn1-rs v0.6.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:32.5154850Z ^[[1m^[[92m   Compiling^[[0m phf v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:32.7202507Z ^[[1m^[[92m   Compiling^[[0m flate2 v1.1.9
+Code Coverage	Generate code coverage	2026-08-16T18:30:33.2255514Z ^[[1m^[[92m   Compiling^[[0m crc32c v0.6.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:33.3450957Z ^[[1m^[[92m   Compiling^[[0m curve25519-dalek v4.1.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:33.4825193Z ^[[1m^[[92m   Compiling^[[0m string_cache_codegen v0.5.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:33.9128425Z ^[[1m^[[92m   Compiling^[[0m memmap2 v0.9.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.1745429Z ^[[1m^[[92m   Compiling^[[0m num_cpus v1.17.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.4718327Z ^[[1m^[[92m   Compiling^[[0m precomputed-hash v0.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.5185888Z ^[[1m^[[92m   Compiling^[[0m ucd-trie v0.1.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.5511404Z ^[[1m^[[92m   Compiling^[[0m crossbeam-deque v0.8.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.5886174Z ^[[1m^[[92m   Compiling^[[0m md5 v0.8.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.6652384Z ^[[1m^[[92m   Compiling^[[0m crc-catalog v2.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.7536370Z ^[[1m^[[92m   Compiling^[[0m oid-registry v0.7.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.8254951Z ^[[1m^[[92m   Compiling^[[0m either v1.17.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.8293936Z ^[[1m^[[92m   Compiling^[[0m mac v0.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.9302652Z ^[[1m^[[92m   Compiling^[[0m crc v3.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:34.9429977Z ^[[1m^[[92m   Compiling^[[0m futf v0.1.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:35.0815344Z ^[[1m^[[92m   Compiling^[[0m pest v2.8.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:35.1146321Z ^[[1m^[[92m   Compiling^[[0m markup5ever v0.14.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:35.6934845Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v1.0.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:35.8982864Z ^[[1m^[[92m   Compiling^[[0m rtc-rtp v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:36.4695580Z ^[[1m^[[92m   Compiling^[[0m md-5 v0.10.6
+Code Coverage	Generate code coverage	2026-08-16T18:30:36.6292141Z ^[[1m^[[92m   Compiling^[[0m curve25519-dalek-derive v0.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:36.6664993Z ^[[1m^[[92m   Compiling^[[0m hybrid-array v0.4.14
+Code Coverage	Generate code coverage	2026-08-16T18:30:36.9505200Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.1884749Z ^[[1m^[[92m   Compiling^[[0m arrayvec v0.7.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.2472494Z ^[[1m^[[92m   Compiling^[[0m data-encoding v2.11.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.3365083Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.4401028Z ^[[1m^[[92m   Compiling^[[0m parking v2.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.4654305Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.6071687Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.7315021Z ^[[1m^[[92m   Compiling^[[0m utf-8 v0.7.6
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.7684509Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.8470020Z ^[[1m^[[92m   Compiling^[[0m rayon-core v1.13.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.8994926Z ^[[1m^[[92m   Compiling^[[0m cfg_aliases v0.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.9245074Z ^[[1m^[[92m   Compiling^[[0m rustc-hash v2.1.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:37.9386547Z ^[[1m^[[92m   Compiling^[[0m dtoa v1.0.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.0094805Z ^[[1m^[[92m   Compiling^[[0m nix v0.28.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.0794814Z ^[[1m^[[92m   Compiling^[[0m tendril v0.4.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.1325858Z ^[[1m^[[92m   Compiling^[[0m dtoa-short v0.3.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.2045310Z ^[[1m^[[92m   Compiling^[[0m anstream v1.0.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.2796579Z ^[[1m^[[92m   Compiling^[[0m event-listener v5.4.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.5215149Z ^[[1m^[[92m   Compiling^[[0m rtc-stun v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:38.5470479Z ^[[1m^[[92m   Compiling^[[0m pest_meta v2.8.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:39.8209101Z ^[[1m^[[92m   Compiling^[[0m string_cache v0.8.9
+Code Coverage	Generate code coverage	2026-08-16T18:30:39.8458642Z ^[[1m^[[92m   Compiling^[[0m js-sys v0.3.103
+Code Coverage	Generate code coverage	2026-08-16T18:30:40.0589227Z ^[[1m^[[92m   Compiling^[[0m der-parser v9.0.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:40.1604728Z ^[[1m^[[92m   Compiling^[[0m ppv-lite86 v0.2.21
+Code Coverage	Generate code coverage	2026-08-16T18:30:40.5832788Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.9.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:40.6312636Z ^[[1m^[[92m   Compiling^[[0m selectors v0.26.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:40.8105550Z ^[[1m^[[92m   Compiling^[[0m rtc-rtcp v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:40.8561172Z ^[[1m^[[92m   Compiling^[[0m rustls-webpki v0.103.13
+Code Coverage	Generate code coverage	2026-08-16T18:30:41.7015330Z ^[[1m^[[92m   Compiling^[[0m poly1305 v0.8.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:41.7113077Z ^[[1m^[[92m   Compiling^[[0m chacha20 v0.9.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:41.9852605Z ^[[1m^[[92m   Compiling^[[0m sha1 v0.10.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:42.0652405Z ^[[1m^[[92m   Compiling^[[0m cssparser-macros v0.6.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:42.2462526Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:42.2754951Z ^[[1m^[[92m   Compiling^[[0m errno v0.3.14
+Code Coverage	Generate code coverage	2026-08-16T18:30:42.7355231Z ^[[1m^[[92m   Compiling^[[0m ahash v0.8.12
+Code Coverage	Generate code coverage	2026-08-16T18:30:42.8385200Z ^[[1m^[[92m   Compiling^[[0m tinyvec_macros v0.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:42.9555019Z ^[[1m^[[92m   Compiling^[[0m html-escape v0.2.14
+Code Coverage	Generate code coverage	2026-08-16T18:30:43.6545222Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:43.8935207Z ^[[1m^[[92m   Compiling^[[0m fst v0.4.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:44.0670318Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.6.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:44.9610588Z ^[[1m^[[92m   Compiling^[[0m tinyvec v1.12.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:45.4317375Z ^[[1m^[[92m   Compiling^[[0m lindera-dictionary v3.0.7
+Code Coverage	Generate code coverage	2026-08-16T18:30:46.7005156Z ^[[1m^[[92m   Compiling^[[0m signal-hook-registry v1.4.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:46.9855103Z ^[[1m^[[92m   Compiling^[[0m cssparser v0.34.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:47.9989456Z ^[[1m^[[92m   Compiling^[[0m chacha20poly1305 v0.10.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:48.1425445Z ^[[1m^[[92m   Compiling^[[0m rand_chacha v0.9.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:48.1835097Z ^[[1m^[[92m   Compiling^[[0m x509-parser v0.16.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:49.4745342Z ^[[1m^[[92m   Compiling^[[0m rtc-sctp v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:49.6624940Z ^[[1m^[[92m   Compiling^[[0m pest_generator v2.8.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:50.4025472Z ^[[1m^[[92m   Compiling^[[0m x25519-dalek v2.0.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:50.8815190Z ^[[1m^[[92m   Compiling^[[0m event-listener-strategy v0.5.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:51.2975316Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:51.3515084Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.12.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:51.6745070Z ^[[1m^[[92m   Compiling^[[0m rtc-mdns v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:51.6854850Z ^[[1m^[[92m   Compiling^[[0m tree-sitter v0.25.10
+Code Coverage	Generate code coverage	2026-08-16T18:30:51.8157711Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.6.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:52.2235501Z ^[[1m^[[92m   Compiling^[[0m fxhash v0.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:52.3140434Z ^[[1m^[[92m   Compiling^[[0m p384 v0.13.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:52.4196086Z ^[[1m^[[92m   Compiling^[[0m ccm v0.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:52.6692901Z ^[[1m^[[92m   Compiling^[[0m platform-num v0.8.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:52.9215140Z ^[[1m^[[92m   Compiling^[[0m uuid v1.24.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:52.9512589Z ^[[1m^[[92m   Compiling^[[0m cbc v0.1.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.0222727Z ^[[1m^[[92m   Compiling^[[0m nix v0.29.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.1493117Z ^[[1m^[[92m   Compiling^[[0m quinn-udp v0.6.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.2414954Z ^[[1m^[[92m   Compiling^[[0m servo_arc v0.4.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.3332387Z ^[[1m^[[92m   Compiling^[[0m rtc-interceptor-derive v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.3394089Z ^[[1m^[[92m   Compiling^[[0m derive_more v0.99.20
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.4805264Z ^[[1m^[[92m   Compiling^[[0m match_token v0.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.5880176Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-toml-ng v0.7.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.7371013Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-scala v0.25.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.7373823Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-proto v0.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.7815711Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-graphql v0.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.8526948Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-cpp v0.23.4
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.8576057Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-typescript v0.23.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.8925388Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-go v0.25.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.9558238Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-java v0.23.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:53.9621412Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-php v0.24.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.0113165Z ^[[1m^[[92m   Compiling^[[0m ts-parser-perl v1.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.0877207Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-r v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.0926193Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-swift v0.7.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.1492720Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c-sharp v0.23.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.1898755Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-javascript v0.25.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.1945895Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-rust v0.24.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.2895198Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-vb-dotnet v0.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.2945479Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-html v0.23.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.3066806Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ruby v0.23.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.4186699Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-lua v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.4187760Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ini v1.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.4241007Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-yaml v0.7.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.5280443Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c v0.24.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.5281198Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-pascal v0.10.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.5336362Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-python v0.25.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.6426684Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-json v0.24.8
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.6485411Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-sequel v0.3.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.6685114Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-css v0.25.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.7568993Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-xml v0.7.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.7599516Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-kotlin-ng v1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.8636834Z ^[[1m^[[92m   Compiling^[[0m vte_generate_state_changes v0.1.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:54.8695495Z ^[[1m^[[92m   Compiling^[[0m rust_decimal v1.42.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.0213012Z ^[[1m^[[92m   Compiling^[[0m unsafe-libyaml v0.2.11
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.0297351Z ^[[1m^[[92m   Compiling^[[0m iana-time-zone v0.1.65
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.2502400Z ^[[1m^[[92m   Compiling^[[0m const-oid v0.10.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.2620113Z ^[[1m^[[92m   Compiling^[[0m bitflags v1.3.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.3837571Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.4925060Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.14.5
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.5480702Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.7345228Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.2.2
+Code Coverage	Generate code coverage	2026-08-16T18:30:55.8125229Z ^[[1m^[[92m   Compiling^[[0m serde_yaml_ng v0.10.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:56.0854394Z ^[[1m^[[92m   Compiling^[[0m getopts v0.2.24
+Code Coverage	Generate code coverage	2026-08-16T18:30:56.1338882Z ^[[1m^[[92m   Compiling^[[0m dashmap v6.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:56.4244996Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.16.1
+Code Coverage	Generate code coverage	2026-08-16T18:30:56.5527189Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Code Coverage	Generate code coverage	2026-08-16T18:30:56.6835053Z ^[[1m^[[92m   Compiling^[[0m digest v0.11.3
+Code Coverage	Generate code coverage	2026-08-16T18:30:56.9135377Z ^[[1m^[[92m   Compiling^[[0m kanaria v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:30:57.1246473Z ^[[1m^[[92m   Compiling^[[0m chrono v0.4.45
+Code Coverage	Generate code coverage	2026-08-16T18:30:57.3092397Z ^[[1m^[[92m   Compiling^[[0m vte v0.11.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:13.8445093Z ^[[1m^[[92m   Compiling^[[0m html5ever v0.29.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:14.4085014Z ^[[1m^[[92m   Compiling^[[0m rtc-interceptor v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:14.8795036Z ^[[1m^[[92m   Compiling^[[0m rtc-ice v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:14.9515470Z ^[[1m^[[92m   Compiling^[[0m rtc-dtls v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:15.7555017Z ^[[1m^[[92m   Compiling^[[0m clap v4.6.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:17.3325427Z ^[[1m^[[92m   Compiling^[[0m rayon v1.12.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:17.6055295Z ^[[1m^[[92m   Compiling^[[0m rtc-datachannel v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:17.6476268Z ^[[1m^[[92m   Compiling^[[0m tokio-rustls v0.26.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:17.9375143Z ^[[1m^[[92m   Compiling^[[0m hyper-rustls v0.27.9
+Code Coverage	Generate code coverage	2026-08-16T18:31:17.9452240Z ^[[1m^[[92m   Compiling^[[0m rustls-platform-verifier v0.7.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:18.1701141Z ^[[1m^[[92m   Compiling^[[0m pest_derive v2.8.8
+Code Coverage	Generate code coverage	2026-08-16T18:31:18.2185567Z ^[[1m^[[92m   Compiling^[[0m reqwest v0.13.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:18.3745786Z ^[[1m^[[92m   Compiling^[[0m rand v0.9.5
+Code Coverage	Generate code coverage	2026-08-16T18:31:19.1966667Z ^[[1m^[[92m   Compiling^[[0m unicode-normalization v0.1.25
+Code Coverage	Generate code coverage	2026-08-16T18:31:19.3855045Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:19.7356789Z ^[[1m^[[92m   Compiling^[[0m parse-hyperlinks v0.23.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:20.0905123Z ^[[1m^[[92m   Compiling^[[0m rtc-srtp v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:20.5559785Z ^[[1m^[[92m   Compiling^[[0m rtc-turn v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:20.6644979Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.27.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:20.8465687Z ^[[1m^[[92m   Compiling^[[0m rtc-media v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:21.2054954Z ^[[1m^[[92m   Compiling^[[0m itertools v0.14.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:21.2855059Z ^[[1m^[[92m   Compiling^[[0m hashlink v0.10.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:21.3632236Z ^[[1m^[[92m   Compiling^[[0m futures-executor v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:31:21.6325347Z ^[[1m^[[92m   Compiling^[[0m lingua-arabic-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:21.6699906Z ^[[1m^[[92m   Compiling^[[0m lingua-russian-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:21.9764811Z ^[[1m^[[92m   Compiling^[[0m lingua-french-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.0415212Z ^[[1m^[[92m   Compiling^[[0m lingua-english-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.2325317Z ^[[1m^[[92m   Compiling^[[0m lingua-portuguese-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.3085235Z ^[[1m^[[92m   Compiling^[[0m lingua-urdu-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.4995138Z ^[[1m^[[92m   Compiling^[[0m lingua-hindi-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.7574886Z ^[[1m^[[92m   Compiling^[[0m lingua-spanish-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.8429747Z ^[[1m^[[92m   Compiling^[[0m lingua-chinese-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:22.9245195Z ^[[1m^[[92m   Compiling^[[0m lingua-bengali-language-model v1.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.0554056Z ^[[1m^[[92m   Compiling^[[0m lindera-jieba v3.0.7
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.0670567Z ^[[1m^[[92m   Compiling^[[0m concurrent-queue v2.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.0962404Z ^[[1m^[[92m   Compiling^[[0m abnf-core v0.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.1027116Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.27.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.2804923Z ^[[1m^[[92m   Compiling^[[0m rtc-sdp v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.3505035Z ^[[1m^[[92m   Compiling^[[0m filedescriptor v0.8.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.6122181Z ^[[1m^[[92m   Compiling^[[0m counter v0.7.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.8361684Z ^[[1m^[[92m   Compiling^[[0m async-trait v0.1.92
+Code Coverage	Generate code coverage	2026-08-16T18:31:23.8755054Z ^[[1m^[[92m   Compiling^[[0m raw-cpuid v11.6.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:24.4904967Z ^[[1m^[[92m   Compiling^[[0m serial2 v0.2.38
+Code Coverage	Generate code coverage	2026-08-16T18:31:24.5475345Z ^[[1m^[[92m   Compiling^[[0m downcast-rs v1.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:24.6865057Z ^[[1m^[[92m   Compiling^[[0m shell-words v1.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:24.8415255Z ^[[1m^[[92m   Compiling^[[0m unicode-segmentation v1.13.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:24.8795651Z ^[[1m^[[92m   Compiling^[[0m maplit v1.0.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:25.0175377Z ^[[1m^[[92m   Compiling^[[0m winnow v1.0.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:25.3172755Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:25.7485348Z ^[[1m^[[92m   Compiling^[[0m beef v0.5.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:25.9234013Z ^[[1m^[[92m   Compiling^[[0m strum v0.27.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.1545356Z ^[[1m^[[92m   Compiling^[[0m unicase v2.9.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.1946198Z ^[[1m^[[92m   Compiling^[[0m unicode-blocks v0.1.10
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.3430351Z ^[[1m^[[92m   Compiling^[[0m hex v0.4.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.3920091Z ^[[1m^[[92m   Compiling^[[0m streaming-iterator v0.1.9
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.3985342Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.5675149Z ^[[1m^[[92m   Compiling^[[0m env_home v0.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.6386037Z ^[[1m^[[92m   Compiling^[[0m ego-tree v0.9.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.7147573Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.1.14
+Code Coverage	Generate code coverage	2026-08-16T18:31:26.8936519Z ^[[1m^[[92m   Compiling^[[0m scraper v0.21.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:27.0455495Z ^[[1m^[[92m   Compiling^[[0m vt100 v0.15.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:27.3535190Z ^[[1m^[[92m   Compiling^[[0m which v7.0.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:27.7664987Z ^[[1m^[[92m   Compiling^[[0m rtc v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:27.7931234Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:27.9485622Z ^[[1m^[[92m   Compiling^[[0m toml_parser v1.1.2+spec-1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:27.9844791Z ^[[1m^[[92m   Compiling^[[0m quanta v0.12.6
+Code Coverage	Generate code coverage	2026-08-16T18:31:28.2845998Z ^[[1m^[[92m   Compiling^[[0m lingua v1.8.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:28.5725052Z ^[[1m^[[92m   Compiling^[[0m platform-data v2.0.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:28.8125248Z ^[[1m^[[92m   Compiling^[[0m platform-mem v0.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:29.0785120Z ^[[1m^[[92m   Compiling^[[0m portable-pty v0.9.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:29.7845388Z ^[[1m^[[92m   Compiling^[[0m async-channel v2.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:29.8285464Z ^[[1m^[[92m   Compiling^[[0m abnf v0.13.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:30.0315560Z ^[[1m^[[92m   Compiling^[[0m json5_nodes v2.0.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:30.3614752Z ^[[1m^[[92m   Compiling^[[0m futures v0.3.34
+Code Coverage	Generate code coverage	2026-08-16T18:31:30.6004818Z ^[[1m^[[92m   Compiling^[[0m ebnf v0.1.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:30.9168501Z ^[[1m^[[92m   Compiling^[[0m bnf v0.6.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:33.7614976Z ^[[1m^[[92m   Compiling^[[0m sha1 v0.11.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:33.8004851Z ^[[1m^[[92m   Compiling^[[0m platform-trees v0.3.4
+Code Coverage	Generate code coverage	2026-08-16T18:31:33.9925264Z ^[[1m^[[92m   Compiling^[[0m async-broadcast v0.7.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.0259124Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-futures v0.4.76
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.1517573Z ^[[1m^[[92m   Compiling^[[0m web-sys v0.3.103
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.2736921Z ^[[1m^[[92m   Compiling^[[0m serde-wasm-bindgen v0.6.5
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.3038351Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.4455499Z ^[[1m^[[92m   Compiling^[[0m symbol_table v0.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.6864973Z ^[[1m^[[92m   Compiling^[[0m whatlang v0.18.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:34.7169627Z ^[[1m^[[92m   Compiling^[[0m num-rational v0.4.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:35.2915321Z ^[[1m^[[92m   Compiling^[[0m env_logger v0.9.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:35.7235236Z ^[[1m^[[92m   Compiling^[[0m tap v1.0.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:35.8002237Z ^[[1m^[[92m   Compiling^[[0m same-file v1.0.6
+Code Coverage	Generate code coverage	2026-08-16T18:31:35.8756812Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:35.9815922Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.1225344Z ^[[1m^[[92m   Compiling^[[0m toml_datetime v1.1.1+spec-1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.3175357Z ^[[1m^[[92m   Compiling^[[0m mutate_once v0.1.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.3851627Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.345.0 (/home/runner/work/formal-ai/formal-ai)
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.4715833Z ^[[1m^[[92m   Compiling^[[0m symbolic_expressions v5.0.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.5555530Z ^[[1m^[[92m   Compiling^[[0m toml_writer v1.1.2+spec-1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.8145340Z ^[[1m^[[92m   Compiling^[[0m leak_slice v0.2.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.8468138Z ^[[1m^[[92m   Compiling^[[0m unicode-bidi v0.3.18
+Code Coverage	Generate code coverage	2026-08-16T18:31:36.9438655Z ^[[1m^[[92m   Compiling^[[0m doublets v0.4.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:37.1525720Z ^[[1m^[[92m   Compiling^[[0m link-calculator v0.20.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:37.3654828Z ^[[1m^[[92m   Compiling^[[0m egg v0.11.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:37.6905060Z ^[[1m^[[92m   Compiling^[[0m toml_edit v0.25.13+spec-1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:38.6473992Z ^[[1m^[[92m   Compiling^[[0m kamadak-exif v0.6.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:38.6742490Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:39.0075227Z ^[[1m^[[92m   Compiling^[[0m walkdir v2.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:39.3039268Z ^[[1m^[[92m   Compiling^[[0m command-stream v0.16.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:39.4700372Z ^[[1m^[[92m   Compiling^[[0m webrtc v0.20.2
+Code Coverage	Generate code coverage	2026-08-16T18:31:40.3618088Z ^[[1m^[[92m   Compiling^[[0m tungstenite v0.30.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:41.4524933Z ^[[1m^[[92m   Compiling^[[0m web-capture v0.3.36
+Code Coverage	Generate code coverage	2026-08-16T18:31:41.6227728Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:42.1079743Z ^[[1m^[[92m   Compiling^[[0m thread-priority v3.1.1
+Code Coverage	Generate code coverage	2026-08-16T18:31:42.1424618Z ^[[1m^[[92m   Compiling^[[0m web-search v0.5.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:42.5055501Z ^[[1m^[[92m   Compiling^[[0m fs2 v0.4.3
+Code Coverage	Generate code coverage	2026-08-16T18:31:42.5418259Z ^[[1m^[[92m   Compiling^[[0m base64 v0.23.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:42.6845089Z ^[[1m^[[92m   Compiling^[[0m unicode-general-category v1.1.0
+Code Coverage	Generate code coverage	2026-08-16T18:31:46.6714599Z ^[[1m^[[92m   Compiling^[[0m lindera v3.0.7
+Code Coverage	Generate code coverage	2026-08-16T18:31:47.4425124Z ^[[1m^[[92m   Compiling^[[0m meta-language v0.54.0
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.1374915Z ^[[1m^[[92m    Finished^[[0m `test` profile [unoptimized] target(s) in 3m 01s
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.2987579Z ^[[1m^[[92m     Running^[[0m unittests src/lib.rs (target/llvm-cov-target/debug/deps/formal_ai-4e94a6c433bdb00b)
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3007444Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3007642Z running 0 tests
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3007873Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3008482Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3009056Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3014636Z ^[[1m^[[92m     Running^[[0m unittests src/main.rs (target/llvm-cov-target/debug/deps/formal_ai-eaf9e1b43b6021f3)
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3031300Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3031453Z running 0 tests
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3033429Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3034254Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3034824Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3037029Z ^[[1m^[[92m     Running^[[0m unittests src/bin/with-formal-ai.rs (target/llvm-cov-target/debug/deps/with_formal_ai-c289959bcc009177)
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3052283Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3052415Z running 0 tests
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3052724Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3056624Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3057193Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3057910Z ^[[1m^[[92m     Running^[[0m tests/integration/mod.rs (target/llvm-cov-target/debug/deps/integration-00a19e21c174b108)
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3097161Z 
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3097418Z running 346 tests
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.3642534Z test formal_ai_cli::cli_bundle_export_includes_seed_and_memory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.4857774Z test formal_ai_cli::cli_bundle_import_recovers_memory_into_local_log ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.6344842Z test formal_ai_cli::cli_chat_command_can_emit_chat_completion_json ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.6524407Z test formal_ai_cli::cli_environments_command_lists_every_supported_surface ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.6684349Z test formal_ai_cli::cli_github_logs_plan_prints_reproducible_capture_commands ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.7504688Z test formal_ai_cli::cli_memory_export_import_show_round_trips_events ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.7606128Z test formal_ai_cli::cli_chat_command_prints_text_response ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.8265785Z test formal_ai_cli::cli_memory_purge_deleted_requires_confirmation_and_can_backup ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.8694363Z test formal_ai_cli::cli_memory_export_to_stdout_returns_links_notation ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:41.9264498Z test formal_ai_cli::cli_memory_reset_requires_confirmation_and_can_backup ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:42.0794763Z test formal_ai_cli::cli_memory_query_answers_natural_language_recall_from_persisted_memory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:42.0964312Z test formal_ai_cli::cli_shared_dialog_convert_accepts_web_capture_adapter_json ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:42.1184287Z test formal_ai_cli::cli_shared_dialog_convert_chatgpt_share_writes_demo_memory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:42.1294543Z test formal_ai_cli::cli_version_flag_prints_crate_version ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:42.4440091Z test http_client::a_response_that_never_arrives_still_fails ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:42.6914606Z test formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:44.9474649Z test http_client::a_response_that_pauses_mid_body_is_read_in_full ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:53.1255084Z test formal_ai_cli::cli_chat_definition_fusion_option_merges_plain_definition_prompt ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:55.0424724Z test formal_ai_cli::cli_chat_definition_fusion_env_var_merges_plain_definition_prompt ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:55.5671474Z test issue_349_reverse_sort::issue_360_diagnostic_mode_marks_program_traces_for_supported_languages ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:56.0994831Z test http_server::spawned_server_records_only_in_private_scratch_memory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:56.8781878Z test issue_349_reverse_sort::issue_349_reverse_sort_follow_up_must_not_be_unknown ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:56.8794671Z test issue_349_reverse_sort::issue_349_diagnostic_mode_emits_full_turn_5_reasoning_chain ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:56.9875516Z test issue_386_cancel_sort::issue_386_cancel_sort_follow_up_must_not_be_unknown ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:57.3384844Z test issue_386_cancel_sort::issue_386_diagnostic_mode_emits_full_cancel_reasoning_chain ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:57.4457837Z test issue_395_sort_numbers::issue_395_handler_defers_without_language_or_numbers ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:58.1944673Z test issue_395_sort_numbers::issue_395_english_javascript_computes_sorted_result ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:58.2328088Z test issue_386_cancel_sort::issue_386_cancel_sort_is_undone_in_every_supported_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:58.4035501Z test issue_395_sort_numbers::issue_395_multilingual_sort_verbs_are_recognized ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:58.6434877Z test issue_395_sort_numbers::issue_395_russian_javascript_prompt_is_not_unknown ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:58.8208643Z test issue_412_followup_sort::issue_412_bare_followup_inherits_language_and_is_not_unknown ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.0427309Z test issue_395_sort_numbers::issue_395_python_descending_uses_reverse_sort ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.0716671Z test issue_412_followup_sort::issue_412_bare_prompt_without_context_does_not_fabricate_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.2310676Z test issue_412_followup_sort::issue_412_chinese_followup_inherits_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.3454923Z test issue_412_followup_sort::issue_412_english_followup_inherits_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.3944618Z test issue_412_oracle_languages::catalogued_languages_still_use_the_verified_catalog ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.4344621Z test issue_395_sort_numbers::issue_395_string_list_sort_uses_cst_validated_code_path ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.4414364Z test issue_412_oracle_languages::kotlin_hello_world_resolves_from_the_oracle ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.4918078Z test issue_412_followup_sort::issue_412_hindi_followup_inherits_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.5024347Z test issue_412_followup_sort::issue_412_reduction_followup_inherits_code_request ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.5340483Z test issue_412_oracle_languages::swift_and_php_hello_world_resolve_from_the_oracle ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.5895198Z test issue_427_invert_sort::issue_427_chinese_invert_sort_followup_inherits_language_and_list ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.6386292Z test issue_427_invert_sort::issue_427_english_invert_sort_followup_inherits_language_and_list ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.6414625Z test issue_457_self_source_metrics::issue_457_language_coverage_markers_cover_supported_surfaces ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.6482698Z test issue_427_invert_sort::issue_427_hindi_invert_sort_followup_inherits_language_and_list ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.6894627Z test issue_427_invert_sort::issue_427_invert_sort_followup_is_not_unknown ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:32:59.7543698Z test issue_427_invert_sort::issue_427_invert_sort_without_context_does_not_fabricate ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:00.0394812Z test issue_461_php_followup::russian_capabilities_follow_up_can_request_php_hello_world ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:00.3445215Z test issue_457_self_source_metrics::issue_457_rust_self_source_metrics_request_returns_blueprint_program ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:00.6895197Z test issue_558_change_request::agent_mode_routes_change_request_to_a_reviewable_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:00.7414067Z test issue_458_crypto_portfolio::issue_458_crypto_portfolio_tracker_returns_python_blueprint ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:01.3204825Z test issue_558_repair_strategy::agent_mode_routes_repair_strategy_to_a_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:01.3883770Z test issue_558_rebuild_plan::agent_mode_routes_rebuild_to_a_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:02.8073017Z test issue_558_self_explanation::agent_mode_routes_explain_request_to_a_grounded_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:05.4074900Z test issue_458_crypto_portfolio::issue_458_crypto_portfolio_tracker_covers_supported_languages ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:19.3233275Z test issue_624_agent_mode::agent_mode_routes_natural_language_directory_listing_to_bash_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:21.1464918Z test issue_656_improve::improve_apply_with_confirm_materializes_only_promoted_edit ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:21.1791295Z test issue_656_improve::improve_apply_without_confirm_refuses ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:21.2364672Z test issue_656_improve::improve_promote_dry_run_touches_no_files ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:21.2654327Z test issue_656_improve::improve_without_promote_prints_guidance ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:21.3054821Z test issue_661_statement_audit::statement_audit_cli_scans_a_repository_and_replays_evidence ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:21.9004672Z test issue_664_network_alias::canonical_network_endpoint_is_not_marked_deprecated ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:22.4062153Z test issue_664_network_alias::graph_alias_advertises_deprecation_over_the_wire ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:22.9274940Z test issue_664_network_alias::network_endpoint_and_graph_alias_serve_identical_payloads ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:23.7336274Z test issue_671_absolute_path_projection::a_client_that_accepts_relative_paths_keeps_the_requested_spelling ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:24.4915014Z test issue_671_absolute_path_projection::a_declaration_that_no_longer_exists_falls_back_to_the_server ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:25.2510829Z test issue_671_absolute_path_projection::a_declared_working_directory_wins_over_the_servers_own ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:25.3649324Z test issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:26.0124990Z test issue_671_absolute_path_projection::agent_read_absolutises_when_only_the_tool_description_says_so ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:26.1444948Z test issue_671_absolute_path_projection::codex_environment_context_declares_the_directory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:26.8232170Z test issue_671_absolute_path_projection::gemini_workspace_directory_list_declares_the_directory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:26.9314679Z test issue_558_learning_ledger::agent_mode_routes_ledger_request_to_a_promotion_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:26.9694139Z test issue_671_absolute_path_projection::opencode_read_absolutises_a_relative_request_path ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:27.0921748Z test issue_671_aider_system_echo::a_request_that_merely_quotes_the_system_prompt_is_untouched ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:27.5329440Z test issue_671_aider_system_echo::an_appended_system_echo_does_not_become_the_request ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:27.6184785Z test issue_671_supplied_file_bytes::a_toolless_client_gets_the_bytes_it_supplied_itself ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:27.6794894Z test issue_671_absolute_path_projection::qwen_read_file_absolutises_a_relative_request_path ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:28.1684988Z test issue_671_supplied_file_bytes::prose_that_merely_mentions_a_filename_is_not_a_file_listing ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:28.2554712Z test issue_671_supplied_file_bytes::the_answer_is_not_shaped_like_an_edit_block ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:28.2801948Z test issue_671_aider_system_echo::the_request_itself_still_reaches_the_planner ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:28.3284879Z test issue_671_supplied_file_bytes::the_refusal_that_shipped_before_is_gone ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:28.8324875Z test issue_671_supplied_file_bytes::the_headings_are_seeded_in_every_supported_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:40.4174614Z test issue_680_intent_routing::chat_completions_routes_shell_intent_to_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:40.8094671Z test issue_680_intent_routing::chat_completions_routes_edit_intent_to_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:41.2146492Z test issue_680_intent_routing::chat_completions_routes_write_intent_to_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:41.6994862Z test issue_680_intent_routing::chat_completions_routes_web_fetch_intent_to_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:42.2079527Z test issue_558_source_links::agent_mode_routes_source_links_request_to_a_projection_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:52.4059728Z test issue_680_intent_routing::chat_completions_routes_web_search_intent_to_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:53.2560254Z test issue_680_intent_routing::gemini_routes_edit_intent_to_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:53.7415526Z test issue_680_intent_routing::gemini_routes_shell_intent_to_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:53.7644656Z test issue_703_orchestration::a_registered_cli_label_does_not_bypass_the_custom_program_grant ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:53.8404740Z test issue_703_orchestration::all_required_seed_adapters_capture_process_and_workspace_events ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:55.1371142Z test issue_703_orchestration::all_six_cli_entrypoints_run_a_scripted_repo_task_through_the_real_wrapper ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:55.1604642Z test issue_703_orchestration::arbitrary_agent_program_requires_a_separate_explicit_grant ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:55.1694846Z test issue_680_intent_routing::gemini_routes_web_fetch_intent_to_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:55.1945211Z test issue_703_orchestration::comparison_cli_succeeds_when_one_verified_winner_passes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:55.3222972Z test issue_703_orchestration::direct_vendor_entrypoints_keep_editing_and_prompt_arguments ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:55.7954778Z test issue_703_orchestration::exact_readme_badge_task_adapts_to_geminis_file_tools ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1114892Z test issue_703_orchestration::exact_readme_badge_task_routes_to_the_real_codex_run_surface ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1293407Z test issue_703_orchestration::exact_readme_badge_task_discovers_qwens_deferred_shell_tool ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1299096Z test issue_703_orchestration::external_agent_fixture_process ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1302395Z test issue_703_orchestration::external_agent_exports_the_canonical_workspace_as_pwd ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1304233Z test issue_703_orchestration::external_agent_run_requires_an_explicit_permission_grant ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1305764Z test issue_703_orchestration::external_slow_verification_fixture ... ignored, spawned explicitly by the verification-timeout test
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1307286Z test issue_703_orchestration::external_agent_permission_is_scoped_to_one_workspace ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.1675156Z test issue_703_orchestration::public_cli_compares_multiple_explicitly_granted_bash_agents ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2134720Z test issue_703_orchestration::public_cli_runs_an_explicitly_granted_agent_through_bash ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2164304Z test issue_703_orchestration::qwen_orchestration_uses_noninteractive_auto_edit_config ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2224654Z test issue_703_orchestration::seed_registry_pins_each_clients_exact_native_resume_contract ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2486641Z test issue_703_orchestration::public_cli_resumes_the_recorded_vendor_session_with_correction_evidence ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2525063Z test issue_703_orchestration_followup::committed_parallel_comparison_ledger_records_the_selected_winner ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2784487Z test issue_703_orchestration_followup::comparison_refuses_to_overwrite_workspace_drift_after_candidates_fork ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.2814262Z test issue_703_orchestration_followup::comparison_rejects_duplicate_cli_identities_before_creating_candidates ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.3223398Z test issue_703_orchestration_followup::a_proven_false_claim_resumes_the_same_native_session_with_parent_evidence ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.3905002Z test issue_703_orchestration_followup::continuation_rejects_a_client_that_reports_a_different_native_session ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.5165930Z test issue_703_orchestration_followup::council_results_are_formalized_summarized_and_cross_checked ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.5364745Z test issue_703_orchestration_followup::custom_output_directory_inside_workspace_is_excluded_from_candidate_copies ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.7066428Z test issue_703_orchestration_followup::cross_agent_correction_evidence_is_seeded_in_every_supported_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.8804086Z test issue_703_orchestration_followup::dispatch_joins_every_worker_before_returning_an_error ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.8824360Z test issue_703_orchestration_followup::dispatch_output_cannot_escape_the_granted_workspace ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.9044863Z test issue_703_orchestration_followup::documentation_traces_the_maintainer_followup_without_overclaiming_fact_or_learning_gates ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.9236670Z test issue_703_orchestration_followup::failed_external_process_is_visible_in_the_session ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.9238491Z test issue_703_orchestration_followup::formal_ai_authored_invariant_is_byte_pinned_to_its_session_evidence ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:56.9452467Z test issue_703_orchestration_followup::parallel_comparison_records_a_ledger_and_composes_the_winner ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.1244932Z test issue_703_orchestration_followup::decomposition_never_composes_changes_from_a_failed_agent ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.1304334Z test issue_703_orchestration_followup::real_formal_ai_controller_agent_run_replays_from_committed_bytes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.1544684Z test issue_703_orchestration_followup::real_formal_ai_correction_chain_resumes_one_native_session_and_pins_the_artifact ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.1714358Z test issue_703_orchestration_followup::recorded_session_replays_byte_for_byte ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.2035098Z test issue_703_orchestration_followup::repeated_orchestration_sessions_feed_human_gated_adapter_learning ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.2164198Z test issue_703_orchestration_followup::replay_rejects_valid_but_noncanonical_json ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.2184892Z test issue_703_orchestration_followup::synthesis_extracts_the_final_answer_without_promoting_agent_diagnostics ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.2254484Z test issue_703_orchestration_followup::public_cli_synthesizes_translates_and_proposes_learned_adapter_updates ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.2442683Z test issue_703_orchestration_followup::timeout_is_recorded_without_an_implicit_retry ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.5050536Z test issue_703_orchestration_followup::timeout_terminates_descendant_processes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.5074638Z test issue_703_orchestration_followup::verification_commands_must_be_explicitly_allowlisted ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.5475117Z test issue_703_orchestration_followup::verification_timeout_is_recorded_and_fails_the_session ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.5534574Z test issue_703_orchestration_followup::winner_selection_is_deterministic_for_a_recorded_ledger ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.5777453Z test issue_703_orchestration_followup::universal_decomposition_dispatches_independent_leaves_in_parallel ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:33:57.6489549Z test issue_703_orchestration_languages::unix::vendor_orchestration_preserves_tasks_in_every_supported_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:01.5124595Z test issue_680_intent_routing::responses_routes_web_search_intent_to_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:02.7899824Z test issue_680_intent_routing::responses_routes_edit_intent_to_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:07.1504672Z test issue_712_intent_routing::all_reported_capability_classes_route_in_one_matrix ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:14.0533019Z test issue_712_intent_routing::chat_completions_get_contents_routes_to_web_fetch ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:14.3093910Z test issue_712_intent_routing::declarative_new_file_routes_to_write_and_never_read ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:15.0021911Z test issue_714_agentic_mode::chat_completions_routes_report_to_bash_not_websearch ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:15.6510224Z test issue_714_agentic_mode::gemini_continues_after_the_client_returns_a_function_response ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:16.3361629Z test issue_714_agentic_mode::gemini_routes_localized_report_to_shell_alias ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:17.0181941Z test issue_714_agentic_mode::responses_routes_report_to_any_run_capability_alias ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:17.1965437Z test issue_716_agentic_execution::anthropic_messages_routes_program_creation_to_the_advertised_cli_write_tool ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:17.3736204Z test issue_716_agentic_execution::chat_completions_routes_program_creation_to_the_advertised_cli_write_tool ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:17.5506265Z test issue_716_agentic_execution::gemini_routes_program_creation_to_the_advertised_cli_write_tool ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:17.7558135Z test issue_716_agentic_execution::responses_routes_program_creation_to_the_advertised_cli_write_tool ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:17.9558856Z test issue_744_qwen_tool_schema::anthropic_strict_read_schema_gets_only_file_path ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:18.1290135Z test issue_744_qwen_tool_schema::codex_responses_shell_uses_advertised_cmd_key ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:18.1291763Z test issue_744_qwen_tool_schema::committed_agent_cli_session_replays_proof_file_byte_for_byte ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:18.2962267Z test issue_744_qwen_tool_schema::qwen_code_search_uses_pattern_instead_of_query ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:19.7060621Z test issue_744_qwen_tool_schema::qwen_fetch_schema_is_language_independent ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:19.9011203Z test issue_744_qwen_tool_schema::qwen_read_file_receives_an_absolute_path_only ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:20.0642941Z test issue_744_qwen_tool_schema::qwen_shell_receives_required_background_flag ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:20.3076411Z test issue_744_qwen_tool_schema::qwen_startup_reminders_do_not_override_the_actual_fetch_request ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:20.5510629Z test issue_744_qwen_tool_schema::qwen_web_fetch_receives_every_required_argument_and_no_undeclared_keys ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:20.6880091Z test issue_746_hosted_tools::anthropic_server_web_search_type_routes_to_tool_use ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:20.9837918Z test issue_712_intent_routing::gemini_update_request_routes_to_edit ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:21.5575318Z test issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:21.7665110Z test issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:22.0549018Z test issue_746_hosted_tools::gemini_url_context_routes_as_web_fetch ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:22.4165250Z test issue_746_hosted_tools::qwen_discovers_a_deferred_web_tool_instead_of_searching_local_files ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:22.5901613Z test issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:22.5984842Z test issue_746_hosted_tools::responses_prefers_client_executed_tools_inside_an_mcp_namespace ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:22.8374749Z test issue_746_hosted_tools::responses_stream_uses_native_web_search_lifecycle_events ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:22.8423823Z test issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:23.6684856Z test issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:23.9894663Z test issue_749_shell_routing::codex_responses_preserves_arbitrary_commands_and_uses_cmd ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:24.0144615Z test issue_749_shell_routing::opencode_chat_prompt_quotes_preserve_every_argument ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:25.8304811Z test issue_749_shell_routing::strict_shell_schema_gets_required_extras_for_every_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.1249722Z test issue_749_shell_routing::whole_shell_task_matrix_routes_without_web_search ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.3517869Z test issue_751_token_usage::responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.4975045Z test issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.4994721Z test issue_751_token_usage::token_count_is_one_per_unicode_scalar_for_every_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.5027897Z test issue_754_cursor::cursor_is_seeded_as_cursor_agent_with_mcp_configuration ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.5460026Z test issue_754_cursor::formal_ai_with_cursor_global_config_is_merge_preserving_and_reversible ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.7044853Z test issue_751_token_usage::streaming_client_surfaces_preserve_exact_usage ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.7660529Z test issue_754_cursor::formal_ai_with_cursor_runs_both_modes_through_launch_scoped_mcp_config ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.9421172Z test issue_754_cursor::mcp_endpoint_enforces_authentication_and_origin_checks ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:26.9432389Z test issue_754_cursor::mcp_endpoint_returns_json_rpc_errors_for_bad_requests ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:27.2734643Z test issue_754_cursor::mcp_descriptions_cover_english_russian_hindi_and_chinese ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:27.3245058Z test issue_754_cursor::mcp_endpoint_supports_initialize_list_and_formal_ai_chat ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:27.3272469Z test issue_754_cursor::mcp_method_errors_keep_their_status_on_the_http_wire ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:27.8183726Z test issue_755_file_read_write::a_failed_plan_write_never_blocks_the_users_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:28.9394889Z test issue_755_file_read_write::a_read_never_answers_from_a_previous_turns_tool_result ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:29.1261091Z test issue_755_file_read_write::a_multi_turn_lifecycle_reads_back_the_current_content_each_time ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:29.7830094Z test issue_755_file_read_write::repeated_read_turns_are_deterministic ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:30.4787083Z test issue_755_file_read_write::read_emits_only_the_advertised_parameter_name ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:30.7518340Z test issue_755_file_read_write::the_users_content_reaches_the_users_file_in_every_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:30.8658808Z test issue_712_intent_routing::leading_edit_action_is_language_general ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:30.8964912Z test issue_755_file_read_write::the_whole_write_read_task_persists_and_reads_back_the_users_content ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:31.2054987Z test issue_755_file_read_write::write_emits_only_the_advertised_parameter_names ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:32.3815290Z test issue_758_capability_routing::specialized_tools_precede_shell_and_shell_is_the_navigation_fallback ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:32.6294228Z test issue_758_capability_routing::local_search_aliases_never_turn_into_web_search_calls ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:32.6314345Z test issue_776_translation::proposition_survives_every_supported_language_round_trip ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:32.8504945Z test issue_776_translation::reported_source_first_prompt_translates_to_english ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:33.1912289Z test issue_758_capability_routing::shared_capabilities_honor_strict_advertised_schemas ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:33.5895028Z test issue_819_local_path_search::claude_anthropic_schema_receives_the_local_find_command ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:33.5983404Z test issue_819_local_path_search::agent_and_opencode_chat_schemas_receive_the_local_find_command ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:33.9884440Z test issue_819_narration::desktop_find_is_explained_without_printing_the_command ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:33.9989729Z test issue_819_local_path_search::codex_responses_schema_receives_the_local_find_command ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:34.0334722Z test issue_758_capability_routing::todo_and_multi_edit_arguments_are_recursively_schema_valid ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:34.3756951Z test issue_819_narration::open_web_search_is_explained_as_a_web_search ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:34.4014325Z test issue_819_narration::fetch_narration_names_the_source_url ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:34.7725102Z test issue_819_narration::opencode_run_shell_schema_still_gets_a_command_free_explanation ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:35.0056242Z test issue_819_narration::desktop_find_narration_is_localized_and_command_free ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:35.2524079Z test issue_819_report_flow::opencode_desktop_find_is_narrated_naturally_and_runs_find ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:35.4304888Z test issue_819_report_flow::opencode_desktop_listing_narration_does_not_expose_the_internal_root ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:35.7655389Z test issue_819_report_flow::opencode_empty_exact_find_result_widens_without_command_leakage ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:35.8844862Z test issue_819_report_flow::opencode_report_asks_one_multiselect_question_without_a_command ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:36.5394719Z test issue_819_report_flow::the_report_command_never_invents_a_session_identifier ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.4784946Z test issue_819_report_flow::opencode_report_selection_runs_one_command_per_destination ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.4827483Z test issue_822_complete_transcript::export_collects_responses_gemini_and_direct_assistant_envelopes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.4854498Z test issue_822_complete_transcript::export_merges_incremental_and_cumulative_requests_with_every_response ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.4884284Z test issue_822_complete_transcript::export_reconstructs_the_final_streamed_assistant_message ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.5004469Z test issue_822_context::general_json_converter_defaults_to_links_notation ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.6861166Z test issue_822_context::issue_989_report_body_uploads_harness_server_and_merged_contexts_separately ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.7065156Z test issue_822_context::local_context_learning_uses_the_dialog_log_without_a_server ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.7345224Z test issue_822_context::local_report_body_builds_complete_context_without_invoking_github ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:40.9765519Z test issue_822_context::opencode_export_is_complete_native_read_only_and_deterministic ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.0367300Z test issue_822_context::oversized_local_report_body_links_the_full_gist_and_keeps_a_bounded_excerpt ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.1584708Z test issue_822_context::report_context_filenames_cannot_escape_the_temp_directory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.1769388Z test issue_822_context::verbose_is_global_default_and_silent_is_available ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.1989155Z test issue_832_server_compatibility::incompatible_existing_server_is_rejected ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.2235293Z test issue_832_server_compatibility::legacy_server_without_a_version_is_rejected ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.4144877Z test issue_832_server_compatibility::matching_existing_server_is_reused ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.4974406Z test issue_712_intent_routing::responses_google_request_routes_to_web_search ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.5224538Z test issue_839_context_export::an_empty_export_fails_instead_of_reporting_success ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.5550471Z test issue_839_context_export::conversations_sharing_a_first_message_do_not_collide ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.6009353Z test issue_839_context_export::both_merges_harness_and_server_records_into_one_document ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.6875481Z test issue_839_context_export::harness_source_fails_loudly_instead_of_returning_the_server_log ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.7041647Z test issue_839_context_export::server_export_carries_conversation_turns_not_only_proxy_frames ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8034938Z test issue_839_context_export::latest_falls_back_to_the_session_the_server_recorded ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8054637Z test issue_839_report_format::a_byte_slice_of_the_same_export_loses_the_record_boundaries ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8083452Z test issue_839_report_format::a_single_subject_is_quoted_on_its_own ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8084804Z test issue_839_report_format::an_answered_report_request_can_still_be_a_subject ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8086108Z test issue_839_report_format::an_oversize_subject_is_cut_by_characters_in_every_supported_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8087349Z test issue_839_report_format::an_oversize_subject_is_truncated_on_a_word_boundary ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8088611Z test issue_839_report_format::the_default_title_is_never_used_when_a_user_turn_exists ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8089779Z test issue_839_report_format::the_title_quotes_the_subject_in_every_supported_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8091043Z test issue_839_report_format::truncation_never_splits_a_links_notation_record ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8092220Z test issue_839_report_format::two_subjects_are_titled_first_plus_last ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:41.8246503Z test issue_839_context_export::the_session_subcommand_resolves_the_session_this_shell_is_inside ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:42.0015171Z test issue_839_report_parity::web_and_agentic_bodies_are_identical_for_the_same_conversation ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:42.0571999Z test issue_839_report_parity::web_and_agentic_bodies_are_identical_when_earlier_turns_were_dropped ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:42.0644342Z test issue_839_report_parity::web_and_agentic_record_truncation_are_identical ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:42.2264487Z test issue_839_report_parity::web_and_agentic_titles_are_identical ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:43.4661687Z test issue_839_report_script::a_missing_command_fails_loudly_and_files_nothing ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:43.6865219Z test issue_839_report_script::a_request_without_a_session_header_asks_the_cli_to_resolve_it ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:44.9514799Z test issue_839_report_script::an_unexportable_session_fails_before_gh_is_reached ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:45.3324917Z test issue_839_report_script::the_filed_body_links_three_contexts_for_a_multi_turn_conversation ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:45.7604828Z test issue_819_report_flow::a_report_without_an_issue_url_is_narrated_as_a_failure ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:46.4685128Z test issue_839_report_script::the_generated_script_files_the_full_conversation_in_all_six_sections ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:46.9354009Z test issue_839_report_script::the_scratch_template_is_expanded_before_anything_is_written ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:47.1548483Z test issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:47.4144997Z test issue_840_grounded_action::exact_observation_widens_then_reports_the_verified_directory_and_discrepancy ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:47.4770257Z test issue_845_fact_checking::an_empty_dialogue_reports_that_there_are_no_statements_to_check ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:47.4784890Z test issue_845_fact_checking::world_model_audit_runs_proof_probability_jtms_and_permission_boundaries ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:48.8085023Z test issue_839_report_script::two_conversations_sharing_a_first_message_file_different_contexts ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:49.0464719Z test issue_845_fact_checking::solver_fact_checks_every_current_dialogue_statement_in_every_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:49.4904868Z test issue_859_codex::codex_report_issue_asks_for_structured_details_instead_of_searching_the_web ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:49.7854783Z test issue_859_codex::codex_streams_native_custom_patch_events ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.0610573Z test issue_879_completion::corrective_retry_reuses_the_native_session_and_can_complete ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.2648943Z test issue_879_completion::public_vendor_endpoint_diversion_fails_closed ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.3019464Z test issue_879_completion::authoring_prompts_in_every_supported_language_require_workspace_effects ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.3044864Z test issue_879_completion::seeded_contract_is_complete_and_bounded ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.4785191Z test issue_840_grounded_action::followup_local_tasks_verify_type_contents_and_scope_listing ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.6024840Z test issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.6234683Z test issue_885_document_audit::statement_audit_cli_persists_resolved_references_and_contextual_probability ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.8480626Z test issue_879_completion::software_authoring_cannot_succeed_without_an_artifact ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:50.9113980Z test issue_879_completion::recovery_order_is_learned_from_what_actually_produced_artifacts ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3200094Z test issue_932_box_language_projects::generated_projects_build_and_run_in_their_box_images ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3210629Z test issue_982_memory_upgrade::first_write_to_a_new_store_uses_the_target_schema ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3537138Z test issue_982_memory_upgrade::fixtures_cover_every_readable_schema ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3761862Z test issue_982_memory_upgrade::future_schema_is_refused_nonzero_and_never_modified ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3803070Z test issue_982_memory_upgrade::health_exposes_schema_compatibility_without_triggering_migration ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3850735Z test issue_982_memory_upgrade::interrupted_migration_keeps_original_byte_identical_and_retryable ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.3969380Z test issue_982_memory_upgrade::live_writer_lock_causes_machine_readable_refusal_without_modification ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4188434Z test issue_982_memory_upgrade::malformed_memory_is_refused_nonzero_and_never_modified ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4438814Z test issue_879_completion::six_supported_coding_clients_share_the_completion_contract ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4446152Z test issue_982_memory_upgrade::ordinary_server_write_preserves_released_schema_and_unknown_metadata ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4475848Z test issue_982_memory_upgrade::released_writer_escapes_are_valid_upgrade_input_and_round_trip_losslessly ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4504449Z test issue_982_memory_upgrade::released_zero_byte_store_is_readable_and_upgradeable ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4658710Z test issue_982_memory_upgrade::upgrade_status_detects_released_schema_without_mutating_memory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.4809392Z test issue_982_memory_upgrade::upgrade_status_for_missing_path_creates_nothing ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:51.7314830Z test issue_982_memory_upgrade::migration_is_atomic_lossless_receipted_idempotent_and_rollback_safe ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:52.1288109Z test issue_931_local_transports::issue_931_whole_task_uses_the_same_cli_as_server_and_client ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:52.2113327Z test issue_982_self_hosting::formal_ai_agent_authored_leaves_and_sessions_replay_byte_for_byte ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:56.8285898Z test issue_931_local_transports::issue_931_websocket_and_webrtc_answers_match_http_byte_for_byte ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:56.8464427Z test issue_991_incremental_dispatch::a_solved_run_writes_an_empty_proposal_document_rather_than_none_at_all ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:56.8694660Z test issue_991_incremental_dispatch::a_task_no_cli_can_solve_is_reported_blocked_with_all_of_its_evidence ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:56.9114691Z test issue_991_incremental_dispatch::a_task_too_big_for_the_cli_is_split_from_its_failure_and_composed_back_up ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:56.9354473Z test issue_991_incremental_dispatch::an_irreducible_failure_escalates_to_the_next_cli_instead_of_stopping ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:34:56.9804686Z test issue_991_incremental_dispatch::verified_child_composition_is_not_regressed_by_a_redundant_parent_retry ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:03.6335064Z test issue_991_how_to_http::chat_completions_reports_insufficient_evidence_instead_of_inventing_steps ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:05.1116962Z test issue_991_how_to_http::chat_completions_answers_a_how_to_request_from_the_committed_captures ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:05.2387297Z test issue_991_how_to_http::chat_completions_honours_a_service_opt_out ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:08.9064722Z test logging_proxy::proxy_forwards_gemini_generate_content_and_logs_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:09.4034624Z test memory_query::cli_memory_query_can_append_natural_language_memory ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:09.9034600Z test memory_query::cli_memory_query_records_substitution_style_memory_write ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:10.9064673Z test multi_protocol_api::cli_serve_exposes_namespaced_protocols_over_loopback_http ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:11.4200014Z test openai_chat_streaming::cli_serve_streams_chat_completion_chunks_over_loopback_http ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:11.9397421Z test openai_responses_streaming::cli_serve_streams_responses_events_over_legacy_loopback_http_route ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:11.9414343Z test pty::bsd_script_receives_a_transcript_then_a_command_argv ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:12.1466336Z test pty::interaction_keeps_stdin_open_until_the_pty_command_exits ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:12.1477115Z test pty::interaction_sends_input_after_the_readiness_marker ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:12.1494827Z test pty::util_linux_script_receives_a_quoted_shell_command ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:12.3495212Z test with_formal_ai::model_metadata::codex_ephemeral_uses_seeded_responses_provider_and_model_catalog ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:12.5895378Z test with_formal_ai::standalone_with_formal_ai_binary_uses_same_wrapper ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:12.7813161Z test with_formal_ai::with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:14.3574694Z test with_formal_ai::with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:14.5994606Z test with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:15.5464846Z test logging_proxy::proxy_forwards_gemini_stream_generate_content_and_logs_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:15.7414919Z test with_formal_ai::with_formal_ai_gemini_ephemeral_sets_native_protocol_environment ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:15.9344895Z test with_formal_ai::with_formal_ai_gemini_protocol_vertex_sets_vertex_base_url ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.0014681Z test with_formal_ai::with_formal_ai_global_configures_idempotently_and_undo_restores_backups ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.0224208Z test with_formal_ai::with_formal_ai_globally_alias_is_accepted ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.2164775Z test with_formal_ai::with_formal_ai_no_start_server_runs_without_a_listener ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.2825092Z test with_formal_ai::with_formal_ai_default_interactive_mode_launches_every_tool_in_a_pty ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.4130923Z test with_formal_ai::with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.5494545Z test logging_proxy::proxy_forwards_streaming_chat_and_logs_tool_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.5985095Z test with_formal_ai::with_formal_ai_value_taking_interactive_flags_have_prompt_values ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.6075522Z test with_formal_ai::with_formal_ai_summarize_restores_agent_default ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.8034459Z test with_formal_ai_argv::with_formal_ai_keeps_a_positional_subcommand_in_place ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.8464552Z test logging_proxy::proxy_forwards_responses_and_logs_function_call ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.9924186Z test with_formal_ai_argv::with_formal_ai_keeps_an_already_qualified_model_selector ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:16.9975236Z test with_formal_ai_argv::with_formal_ai_forwards_caller_delimited_and_repeated_unknown_flags ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.0354640Z test with_formal_ai_argv::with_formal_ai_reads_a_prompt_that_precedes_trailing_client_flags ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.0994795Z test with_formal_ai_global::with_formal_ai_global_writes_a_configuration_the_client_can_start_from ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.1414463Z test with_formal_ai_grok::with_formal_ai_grok_global_settings_and_undo_use_native_json ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.3454873Z test with_formal_ai_grok::with_formal_ai_grok_reaches_configured_openai_endpoint ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.3774942Z test with_formal_ai_argv::with_formal_ai_retries_with_the_caller_passthrough_flags_intact ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.4218877Z test with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.4832867Z test with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.5064325Z test with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.6406690Z test with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.6634342Z test with_formal_ai_headless_global::verify_is_rejected_without_global ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.7939991Z test with_formal_ai_headless_global::verify_succeeds_when_the_configured_client_starts ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:17.8925014Z test with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:18.4594894Z test with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2086939Z test with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2087480Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2087753Z test result: ok. 345 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 157.90s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2088144Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2128096Z ^[[1m^[[92m     Running^[[0m tests/issue_660_cli.rs (target/llvm-cov-target/debug/deps/issue_660_cli-cbfdf4090d100444)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2145069Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2145233Z running 1 test
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2979108Z test rejected_import_is_durable_and_leaves_existing_shards_untouched ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2979718Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2979977Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2980341Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.2984730Z ^[[1m^[[92m     Running^[[0m tests/issue_707_computer_use.rs (target/llvm-cov-target/debug/deps/issue_707_computer_use-12d77234f8084d3d)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3017581Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3017745Z running 11 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3029170Z test external_agent_mcp_prefix_resolves_every_primitive ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3030178Z test every_seeded_primitive_advertises_verification_isolation_and_permission ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3031293Z test every_primitive_is_agent_mode_permission_and_confirmation_gated ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3257999Z test native_cli_requires_permissions_and_can_replay_a_verified_plan ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3260946Z test real_agent_cli_record_replay_is_a_required_ci_gate ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3263441Z test rendering_capability_gap_is_explicit_in_all_supported_languages ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3390549Z test ten_seeded_tasks_execute_and_replay_with_every_step_verified ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.3395715Z test workspace_paths_cannot_escape_the_isolation_boundary ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4174314Z test planner_scopes_progress_to_the_latest_user_turn_and_stops_after_failed_verification ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4180589Z test planner_resolves_openai_tool_results_through_their_call_id ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4460265Z test planner_emits_the_same_seeded_plan_to_an_external_tool_client ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4460769Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4461152Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4461673Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4489027Z ^[[1m^[[92m     Running^[[0m tests/issue_707_generalization.rs (target/llvm-cov-target/debug/deps/issue_707_generalization-8882c29148f0c3bf)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4508545Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4508781Z running 7 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.4576251Z test every_held_out_prompt_is_absent_from_the_recorded_corpus ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.5905134Z test literal_payload_inside_a_request_is_not_read_as_a_computer_use_plan ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.5914667Z test out_of_boundary_requests_are_refused_honestly_in_all_four_languages ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.5915780Z test the_suite_holds_at_least_the_ratcheted_number_of_four_language_cases ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6097954Z test every_held_out_request_synthesizes_the_expected_resource_and_operations ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6108594Z test the_four_languages_of_a_case_agree_on_one_plan ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6342305Z test every_synthesized_plan_executes_with_every_step_verified ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6342776Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6343157Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6343856Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6364379Z ^[[1m^[[92m     Running^[[0m tests/issue_707_learning.rs (target/llvm-cov-target/debug/deps/issue_707_learning-c56dcd3fe7d0c913)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6383451Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.6383728Z running 8 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7447762Z test prefers_the_most_specific_resource ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7450816Z test recognises_a_capability_gap_in_every_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7453385Z test recognises_operations_in_prompt_order ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7755193Z test every_resource_binding_is_supported_by_a_recorded_task ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7756011Z test every_operation_the_corpus_demonstrates_is_explained_and_none_are_rejected ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7756770Z test the_committed_schema_snapshot_matches_a_fresh_induction ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7757451Z test unexplained_steps_are_reported_rather_than_invented ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7769684Z test no_synthesized_plan_inherits_a_path_from_another_resource ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7770214Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7770605Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7771009Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7786873Z ^[[1m^[[92m     Running^[[0m tests/issue_707_mcp.rs (target/llvm-cov-target/debug/deps/issue_707_mcp-3eef60411a634942)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7820544Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7820767Z running 3 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.7835153Z test mcp_rejects_a_primitive_call_without_verification_context ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8528814Z test mcp_executes_and_verifies_all_ten_plans_in_agent_mode ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8607365Z test mcp_advertises_the_complete_computer_use_taxonomy_with_schemas ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8607807Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8608078Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8608445Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8625103Z ^[[1m^[[92m     Running^[[0m tests/issue_707_mcp_denial.rs (target/llvm-cov-target/debug/deps/issue_707_mcp_denial-88dcce857de4ca3f)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8659020Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8659172Z running 1 test
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8685573Z test mcp_refuses_computer_effects_without_agent_mode ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8685983Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8686374Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8686903Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8699158Z ^[[1m^[[92m     Running^[[0m tests/issue_707_seed_taxonomy.rs (target/llvm-cov-target/debug/deps/issue_707_seed_taxonomy-cf9801227ce979d5)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8714863Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8715005Z running 1 test
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8729353Z test computer_use_primitive_taxonomy_is_seeded ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8729729Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8730131Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8730687Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8733839Z ^[[1m^[[92m     Running^[[0m tests/issue_712.rs (target/llvm-cov-target/debug/deps/issue_712-2b2708b216469375)
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8763710Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:19.8763874Z running 7 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:20.0534523Z test declarative_new_file_routes_to_write_not_read ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:20.1194494Z test seeded_write_parser_is_the_single_write_routing_gate ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:27.1246745Z test failed_web_search_phrasings_route_by_research_intent ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:27.2114507Z test source_frames_require_whole_seeded_source_markers ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:27.8888261Z test unseen_web_search_paraphrases_route_by_semantic_frame ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:28.2987377Z test failed_web_fetch_phrasings_route_by_url_intent ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3535747Z test failed_edit_phrasings_route_by_replacement_shape ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3536232Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3536617Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.48s
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3537474Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3571306Z ^[[1m^[[92m     Running^[[0m tests/issue_715.rs (target/llvm-cov-target/debug/deps/issue_715-a078199397b99e0d)
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3604528Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.3604693Z running 11 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.5852834Z test contextual_code_change_reads_then_writes_the_active_file ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.7410920Z test code_generation_writes_a_real_workspace_file_for_every_catalog_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.7836704Z test explicit_old_new_change_can_rewrite_an_arbitrary_code_fragment ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.8554666Z test mutation_trace_publishes_the_substitution_query_and_effects ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.8984371Z test nonempty_pattern_can_be_deleted ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:29.9394321Z test ordered_substitutions_apply_as_one_general_rewrite_program ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.0744908Z test contextual_change_rewrites_workspace_source_for_every_catalog_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.1374852Z test contextual_change_is_language_independent_across_ten_phrasings_each ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.1626951Z test substitution_query_lowers_identically_on_every_harness_vocabulary ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3134157Z test substitution_query_is_accepted_as_the_request_itself ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3134813Z test empty_pattern_creates_content ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3135103Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3135505Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3136068Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3172082Z ^[[1m^[[92m     Running^[[0m tests/issue_715_notation.rs (target/llvm-cov-target/debug/deps/issue_715_notation-6ae3db7599592763)
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3205076Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.3205231Z running 1 test
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5420393Z test published_mutation_trace_parses_as_links_notation ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5420800Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5421061Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5421401Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5445822Z ^[[1m^[[92m     Running^[[0m tests/issue_715_rewrite_variations.rs (target/llvm-cov-target/debug/deps/issue_715_rewrite_variations-8e33c301511019a7)
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5478391Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.5478529Z running 5 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.7393043Z test a_single_self_containing_substitution_is_terminal ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.7394462Z test a_concise_quoted_rule_is_not_mistaken_for_transport_framing ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.7407095Z test active_artifacts_are_not_restricted_by_a_programming_extension_catalog ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:30.7680970Z test a_cyclic_program_reaches_the_bound_without_writing_partial_bytes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5110995Z test creation_and_deletion_execute_across_ten_phrasings_in_each_natural_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5111480Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5111739Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5112093Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5150038Z ^[[1m^[[92m     Running^[[0m tests/issue_752.rs (target/llvm-cov-target/debug/deps/issue_752-00cea40aaf810312)
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5183344Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5183647Z running 2 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:31.5186228Z test configured_utf8_average_scales_capacity_and_usage ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6334239Z test models_report_real_disk_context_and_memory_usage ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6334746Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6335155Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.11s
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6335710Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6362856Z ^[[1m^[[92m     Running^[[0m tests/issue_756.rs (target/llvm-cov-target/debug/deps/issue_756-96740ae1c55ef073)
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6395122Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6395620Z running 2 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6400889Z test shared_memory_path_honors_override_and_platform_defaults ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6407469Z test fresh_default_store_is_created_securely_and_shared_between_surfaces ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6408014Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6408418Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6409237Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6418998Z ^[[1m^[[92m     Running^[[0m tests/issue_757_session_files.rs (target/llvm-cov-target/debug/deps/issue_757_session_files-6256db3b5e664861)
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6434847Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.6435295Z running 2 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:37.8007687Z test prints_persistent_session_file_after_one_shot_and_interactive_runs ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3544264Z test reports_every_requested_tool_session_and_proxy_log ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3544744Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3545005Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3545406Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3549545Z ^[[1m^[[92m     Running^[[0m tests/issue_760.rs (target/llvm-cov-target/debug/deps/issue_760-cb2dd9126e85a714)
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3566260Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.3566411Z running 4 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.4464916Z test unix::global_and_all_setup_include_t3code_for_both_protocols ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.5092863Z test unix::anthropic_protocol_supplies_local_claude_auth ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.5649367Z test unix::launch_mode_controls_browser_opening ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6652832Z test unix::aliases_launch_t3_with_isolated_openai_provider ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6653374Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6653823Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6654275Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6658525Z ^[[1m^[[92m     Running^[[0m tests/issue_761_docs.rs (target/llvm-cov-target/debug/deps/issue_761_docs-c570e5c1a40bdc6a)
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6674625Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6674769Z running 6 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6682605Z test each_requested_surface_has_setup_and_shared_memory_guidance ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6683928Z test memory_server_output_and_language_contracts_are_documented ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6684702Z test guide_is_discoverable_and_has_copy_paste_setup_for_each_os ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6687034Z test agentic_cli_page_covers_every_registry_entry_and_mode ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6692793Z test whole_configuration_guide_covers_issue_761 ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6716113Z test modes_and_tools_are_documented_from_capability_to_fallback ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6716591Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6716984Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6717535Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6721247Z ^[[1m^[[92m     Running^[[0m tests/issue_762.rs (target/llvm-cov-target/debug/deps/issue_762-9e1da282b5a3fe21)
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6737087Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6737236Z running 3 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.6772554Z test desktop_registry_has_cross_platform_launch_metadata ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.7257064Z test unix::permanent_desktop_setup_participates_in_all_and_undoes_exactly ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.7991588Z test unix::desktop_launch_uses_an_isolated_shared_provider_config ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.7992155Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.7992567Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.7993149Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.7998862Z ^[[1m^[[92m     Running^[[0m tests/issue_763.rs (target/llvm-cov-target/debug/deps/issue_763-93a2f0b15aa077f1)
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.8015207Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.8015388Z running 3 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.8028381Z test unix::docs_and_matrix_cover_the_whole_extension_flow ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:38.8310575Z test unix::global_setup_uses_shared_opencode_config_and_undo_restores_it ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0367217Z test unix::aliases_launch_vscode_with_isolated_opencode_provider ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0367808Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0368211Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0368752Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0372194Z ^[[1m^[[92m     Running^[[0m tests/issue_835_cli.rs (target/llvm-cov-target/debug/deps/issue_835_cli-05787e8aa3d16433)
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0389387Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0389538Z running 2 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0514140Z test file_legality_cli_accepts_provider_receipts_and_emits_safe_json ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0515015Z test whole_file_legality_task_runs_documented_sidecar_end_to_end ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0515477Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0515862Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0516455Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0519762Z ^[[1m^[[92m     Running^[[0m tests/issue_874_docs.rs (target/llvm-cov-target/debug/deps/issue_874_docs-2807c7606861187a)
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0536230Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0536514Z running 4 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0540950Z test associative_stack_guide_is_a_separate_discoverable_document ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0542543Z test related_repositories_are_linked_without_overstating_runtime_integration ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0543131Z test whole_guide_explains_the_associative_stack_end_to_end ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0544175Z test every_direct_associative_dependency_has_a_repository_and_usage_boundary ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0544607Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0545149Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0545706Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0548692Z ^[[1m^[[92m     Running^[[0m tests/issue_885_docs.rs (target/llvm-cov-target/debug/deps/issue_885_docs-5f8128d7efefb66c)
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0564759Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0564908Z running 11 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0569621Z test agent_cli_evidence_script_uses_tools_available_on_the_ci_runner ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0570670Z test context_aware_audit_is_documented_as_bounded_and_inspectable ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0576003Z test formal_ai_and_real_agent_cli_evidence_covers_authorship_and_audit ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0576945Z test issue_case_study_preserves_requirements_research_and_solution_artifacts ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0577890Z test dataset_shortlist_has_ten_versioned_candidates_and_no_blanket_approval ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0578923Z test model_shortlist_has_ten_distinct_families_and_route_specific_caveats ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0579526Z test public_domain_guide_separates_ownership_from_permission_and_clearance ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0580073Z test legal_guides_distinguish_symbolic_formal_ai_from_language_model_services ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0580616Z test philosophy_guide_marks_metaphors_and_mathematical_claims_precisely ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0581133Z test shared_conversation_research_preserves_only_accessible_metadata ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0585976Z test whole_solution_is_linked_and_has_release_notes ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0586397Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0586787Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0587347Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0591250Z ^[[1m^[[92m     Running^[[0m tests/issue_889_thinking_surfaces.rs (target/llvm-cov-target/debug/deps/issue_889_thinking_surfaces-0fd30721b1fad586)
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0620886Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:39.0621073Z running 5 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:46.4919791Z test step_summaries_are_localized_while_trace_keys_stay_neutral ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:46.4920438Z test chat_completion_reasoning_is_written_in_the_answer_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:46.4921919Z test anthropic_thinking_block_is_written_in_the_answer_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:46.4922400Z test the_language_matrix_covers_every_registered_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0201920Z test cli_thinking_trace_is_written_in_the_answer_language ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0202301Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0202569Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.96s
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0202918Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0229379Z ^[[1m^[[92m     Running^[[0m tests/issue_902.rs (target/llvm-cov-target/debug/deps/issue_902-d4f604b378afe42f)
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0248139Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.0248574Z running 1 test
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1458415Z test unix::codex_provider_config_survives_caller_overrides ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1458953Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1459354Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1460204Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1464300Z ^[[1m^[[92m     Running^[[0m tests/issue_961_macos_portability.rs (target/llvm-cov-target/debug/deps/issue_961_macos_portability-299633fc56778c37)
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1480138Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1480284Z running 12 tests
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1488076Z test macos_test_bootstrap_uses_portable_df_syntax ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1488918Z test package_log_uses_a_bsd_portable_mktemp_template ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1489579Z test complete_macos_portability_contract_holds ... FAILED
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1490231Z test full_test_matrix_runs_on_a_supported_macos_image ... FAILED
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1509023Z test proxy_log_expectation_matches_the_canonicalized_product_path ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1524468Z test pty_input_waits_for_tui_readiness_before_writing ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1525408Z test pty_tests_do_not_embed_util_linux_only_script_flags ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1526267Z test seed_sync_guards_an_empty_destination_array ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1527179Z test formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1618445Z test requirement_matrix_and_case_studies_cover_the_complete_issue ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1619570Z test seed_sync_reaches_the_orphan_pass_with_an_empty_destination ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1739025Z test runner_disk_cleanup_accepts_a_bsd_shaped_df ... ok
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1739470Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1739591Z failures:
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1739757Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1740001Z ---- complete_macos_portability_contract_holds stdout ----
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1740288Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1740641Z thread 'complete_macos_portability_contract_holds' (23157) panicked at tests/issue_961_macos_portability.rs:277:5:
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1741270Z assertion `left == right` failed
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1741777Z   left: ["the test matrix must include every supported macOS core slice"]
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1742295Z  right: []
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1742746Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1743167Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1743399Z ---- full_test_matrix_runs_on_a_supported_macos_image stdout ----
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1743928Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1744438Z thread 'full_test_matrix_runs_on_a_supported_macos_image' (23159) panicked at tests/issue_961_macos_portability.rs:95:5:
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1745351Z assertion failed: supported_macos_test_shards_are_complete()
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1745732Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1745738Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1745843Z failures:
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1746145Z     complete_macos_portability_contract_holds
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1746602Z     full_test_matrix_runs_on_a_supported_macos_image
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1746930Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1747325Z test result: FAILED. 10 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1747836Z 
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1748410Z ^[[1m^[[91merror^[[0m: test failed, to rerun pass `--test issue_961_macos_portability`
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1847243Z error: process didn't exit successfully: `/home/runner/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --tests --manifest-path /home/runner/work/formal-ai/formal-ai/Cargo.toml --target-dir /home/runner/work/formal-ai/formal-ai/target/llvm-cov-target --all-features` (exit status: 101)
+Code Coverage	Generate code coverage	2026-08-16T18:35:47.1864693Z ##[error]Process completed with exit code 101.

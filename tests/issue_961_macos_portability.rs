@@ -20,11 +20,31 @@ fn seed_array_guard_precedes_expansion() -> bool {
     matches!((guard, expansion), (Some(guard), Some(expansion)) if guard < expansion)
 }
 
+/// The denominator the slice step actually passes to `cargo nextest
+/// --partition`. Issue #961 froze it at twelve; issue #1017 raised it to
+/// sixteen because the round-robin partitioner balances by test index and never
+/// by duration. Reading it from the step instead of repeating a literal keeps
+/// #961's contract -- every supported shard runs -- true at any slice count,
+/// and still catches the failure it was written for: a matrix that disagrees
+/// with the denominator silently drops those tests while CI stays green.
+fn macos_core_slice_denominator() -> usize {
+    MACOS_CORE_WORKFLOW
+        .split("--partition \"slice:${{ matrix.partition }}/")
+        .nth(1)
+        .expect("the slice step must declare a denominator")
+        .split('"')
+        .next()
+        .unwrap()
+        .parse()
+        .expect("numeric slice denominator")
+}
+
 fn supported_macos_test_shards_are_complete() -> bool {
+    let slices = macos_core_slice_denominator();
     RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
-        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 12
-        && (1..=12)
+        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == slices
+        && (1..=slices)
             .all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
         && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
@@ -93,7 +113,22 @@ fn seed_sync_guards_an_empty_destination_array() {
 #[test]
 fn full_test_matrix_runs_on_a_supported_macos_image() {
     assert!(supported_macos_test_shards_are_complete());
-    assert!(MACOS_CORE_WORKFLOW.contains("timeout-minutes: 25"));
+    // Issue #961 needed 25 minutes for the archive build and froze that literal;
+    // issue #1017 raised it to 30 so the 1200s step budget expires before the
+    // job cap rather than after it. The floor is the contract -- the archive
+    // build must still be allowed at least the 25 minutes it was measured to
+    // need -- so assert the floor instead of an exact value that a later
+    // headroom increase would break again.
+    let longest_cap = MACOS_CORE_WORKFLOW
+        .split("timeout-minutes: ")
+        .skip(1)
+        .filter_map(|rest| rest.split('\n').next()?.trim().parse::<u64>().ok())
+        .max()
+        .expect("the macOS core workflow must declare job timeouts");
+    assert!(
+        longest_cap >= 25,
+        "the archive build needs at least 25 minutes (issue #961); found {longest_cap}"
+    );
     assert!(MACOS_CORE_WORKFLOW.contains("TEST_BUDGET_SECONDS: 1200"));
     assert!(MACOS_CORE_WORKFLOW.contains("taiki-e/install-action@nextest"));
     assert_eq!(

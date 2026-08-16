@@ -1,5 +1,7 @@
 # link-foundation/python-ai-driven-development-pipeline-template
 
+Filed as <https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60>.
+
 **Title:** `timeout-minutes` alone lets a slow job report `cancelled` instead of
 `failed`, and no step in the pipeline owns a deadline
 

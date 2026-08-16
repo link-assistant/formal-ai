@@ -41,6 +41,10 @@ were never in the repository.
   hidden the fact that 1,023 files of live code were being extracted with
   errors. The extractor's sysroot is pinned instead, and losing that pin warns
   loudly rather than failing the scan — it mitigates someone else's defect.
+  Because it mitigates someone else's defect, it was measured rather than
+  assumed: `Security` run 31967180539 took `macro expansion failed` from 20,725
+  to zero, and the 358 smaller diagnostics it uncovered are recorded rather than
+  silenced.
 - **Per-job concurrency groups that never cancel `main`.** Workflow-level
   `cancel-in-progress` is forbidden here: these workflows contain write jobs,
   and cancelling `main` would restore the exact blind spot
@@ -54,15 +58,25 @@ were never in the repository.
 
 ## Upstream reports
 
-Four exact report bodies are retained verbatim under
-`dev/log/issues/1017/pulls/1018/upstream-reports/`:
+Five exact report bodies are retained verbatim under
+`dev/log/issues/1017/pulls/1018/upstream-reports/`, each recording the URL it
+was filed under:
 
 - the missing step-execution budget in each of the three `link-foundation`
   pipeline templates — each with a one-minute reproduction, the real-world
   instance with its 1.3-second margin, a workaround, and a code-level fix
   including why `timeout(1)`, `bun test --timeout` and `pytest-timeout` are not
-  substitutes;
-- a repository-scale data point for the open `github/codeql#19982`, with the
+  substitutes — filed as
+  [rust#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135),
+  [js#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137)
+  and
+  [python#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60);
+- a repository-scale data point for the open `github/codeql#19982`
+  ([comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141)),
+  and a follow-up carrying the measured before/after counts once the workaround
+  had actually been run here
+  ([comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)),
+  with the
   20,725-diagnostic breakdown across 1,023 files, the per-macro histogram
   showing every failing macro is external, the extractor configuration dump,
   the confirmed workaround on CLI 2.26.3, and three suggestions — chiefly that
@@ -74,5 +88,19 @@ Four exact report bodies are retained verbatim under
 `cargo fmt --check`, `cargo clippy --lib --bins --tests --all-features`,
 `cargo check --examples --all-features`, `rust-script scripts/check-file-size.rs`,
 `rust-script scripts/check-hardcoded-language.rs`,
-`bash scripts/lint-shell-scripts.sh`, and the full `ci_cd::` unit suite
-including the thirteen tests in `tests/unit/ci-cd/issue_1017.rs`.
+`bash scripts/lint-shell-scripts.sh`, `actionlint`, and `cargo test --tests
+--all-features` — the whole integration suite, not only the `ci_cd::` module
+that holds the thirteen tests in `tests/unit/ci-cd/issue_1017.rs`.
+
+That last distinction was learned here rather than assumed. The first push
+verified only `cargo test --test unit ci_cd::`, and `Coverage` then failed on
+`tests/issue_961_macos_portability.rs`, which froze the macOS matrix at twelve
+slices and the archive cap at 25 minutes. Raising the slice count is exactly
+the kind of change that contract was written to catch, so the contract was
+repaired rather than relaxed: it now reads the denominator out of the
+`--partition slice:N/M` argument and asserts the matrix lists 1..=N, and it
+asserts the archive cap is *at least* the 25 minutes issue #961 measured as
+necessary instead of exactly 25. Both forms are strictly stronger than the
+literals they replace — a matrix that disagrees with its denominator silently
+drops those tests while CI stays green, which is the same class of false
+negative this pull request exists to remove.

@@ -11,6 +11,14 @@ warning.
 
 ---
 
+Posted as
+<https://github.com/github/codeql/issues/19982#issuecomment-5309221141>, with a
+follow-up carrying the measured before/after counts once the workaround had been
+run here rather than only quoted:
+<https://github.com/github/codeql/issues/19982#issuecomment-5309264165>. The
+follow-up body is `codeql-rust-sysroot-pin-measured-result.md` in this
+directory.
+
 ## Comment body
 
 Another data point at repository scale, on **CodeQL CLI 2.26.3** (one patch

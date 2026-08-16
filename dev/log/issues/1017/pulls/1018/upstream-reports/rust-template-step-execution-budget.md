@@ -1,5 +1,7 @@
 # link-foundation/rust-ai-driven-development-pipeline-template
 
+Filed as <https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135>.
+
 **Title:** `timeout-minutes` alone lets a slow job report `cancelled` instead of
 `failed`, and `check-pipeline-status.sh` only catches it on `main`
 
