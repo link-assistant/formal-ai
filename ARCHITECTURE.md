@@ -849,6 +849,24 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
+Issue #936 adds the executable path for pure substitution rules. The
+Rust-owned compiler first lowers `SubstitutionRuleSet` into one serializable,
+target-neutral `SubstitutionProgramIr`: ordered rules, `when` conditions,
+`replace` actions, literal/whole-node/prefix patterns, and the interpreter's
+bounded application limit. Emitters may only consume that IR. The canonical
+Rust target embeds the generated runtime directly; WebAssembly compiles the
+same generated Rust runtime; the JavaScript target is only an ES-module bridge
+to that generated WASM and contains no rule matching or rewrite logic. Every
+artifact also carries the JSON IR and an auditable compilation trace.
+
+`ProgramPlan::compile` is the proof boundary. It refuses an unchanged plan or
+a plan that reached its termination guard. The solver's seeded
+`export_substitution_rule` route first reuses rule synthesis's semantic fixture,
+then crosses that boundary and returns the named source/support files plus an
+`ExecutionRecipe`. Thus natural-language export cannot bypass the existing
+verified plan, while direct library callers can compile any parsed rule set via
+`compile_substitution_rules` and compare its output with the interpreter.
+
 `src/skill_compiler.rs` implements the deterministic compiler subset. The
 legacy `When ... answer ...` form still lowers into a `CompiledSkillPackage`
 with a trigger rule, a deterministic compiled handler, an E1-style

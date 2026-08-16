@@ -31,7 +31,6 @@
   },
   "message": "Agent configuration resolved"
 }
-
 {
   "type": "log",
   "level": "info",
@@ -4720,4 +4719,3 @@
   "uptimeSeconds": 9,
   "message": "Agent exiting"
 }
-
