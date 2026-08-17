@@ -105,15 +105,88 @@ turns either probe green.
 - `experiments/issue_921_hive_mind_full_circle/run.sh OUTPUT` regenerates both
   directions using installed Hive Mind and Agent CLIs. It refuses a non-empty
   output directory so stale evidence cannot produce a false pass.
-- `.github/workflows/release.yml` installs pinned Hive Mind 2.12.2, runs the
+- `.github/workflows/release.yml` installs pinned Hive Mind 2.12.5, runs the
   full-circle harness after the E69-dependent invariant gates, and uploads its
-  raw logs when any step fails.
+  raw logs when any step fails. The committed evidence below was captured
+  against 2.12.2; the pin moved to 2.12.5 because that is the first release
+  carrying [hive-mind#2159](https://github.com/link-assistant/hive-mind/pull/2159),
+  the boundary fix this gate must run against (see section 6).
 
 The committed artifacts include exact task/result bytes, full fixture commit
 IDs and patches, the Hive Mind-native Agent session ID, compressed executor and
 public preparation logs, the prepared command, the canonical Formal AI success
 and failure sessions, replay result, and both failure summaries. The sixth
 clean local capture passed both directions and both failure probes.
+
+## 6. The Two Defects The Gate Was Not Enough To Catch
+
+A gate proves the *transport* works: Hive Mind selects Formal AI, the Agent CLI
+runs, a workspace effect lands, and a failure propagates. Everything in sections
+3 to 5 passed while Formal AI still could not do the work Hive Mind dispatched
+to it. That is the gap [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158)
+reported, with a 21-log production bundle preserved in
+[hive-mind#2159](https://github.com/link-assistant/hive-mind/pull/2159):
+
+| Client / language | Observed | Requested artifact |
+| --- | --- | --- |
+| Agent + Scala | every attempt ended `planned_not_executed` | never created |
+| Claude + Kotlin | first attempt ran `pwd`, later attempts `planned_not_executed` | never created |
+| Codex + Rust | every attempt ran bare `sudo` | never created |
+
+All three pull requests were still empty after five automatic restarts each.
+Hive Mind fixed its own side in #2159 — a bounded repository objective, and
+`planned_not_executed` classified as a terminal tool failure — and reported the
+two remaining Formal AI defects upstream. Both are fixed on this branch.
+
+### 6.1 The objective boundary (#907, follow-up)
+
+The shipped #907 fix separates the caller from the user by the *markup* a client
+wraps its framing in: `<session_context>`, `<environment_context>`, `<env>`.
+Hive Mind's adapters wrapped theirs in nothing — workflow policy and objective
+arrived concatenated into one untagged `user` message — so there was no markup
+left to key on, and the whole message reached intent routing:
+
+| Preamble line | Matched | Planned |
+| --- | --- | --- |
+| `Your prepared working directory: /tmp/example` | the `pwd` intent cue *working directory* | `pwd` |
+| `When running sudo commands, run them in the background.` | a run verb plus the `sudo` shell token | `sudo` |
+
+Neither sentence asks for anything. The tell that replaces the markup is the
+delimiter the caller itself wrote: `objective_text` already cut a line-anchored
+`Issue to solve:` / `Task:` / `Goal:` lead for the general planner (that is the
+original #904 fix), but the router reached `shell_command_for_task` with the raw
+message. `plan_chat_step` now narrows the task the same way, so one boundary
+serves every route rather than one recipe.
+
+The second row survives even with no delimiter present, so it needed its own
+rule: a seed-declared `policy_lead` (`when`, `if`, `never`, `когда`, `如果`, …)
+marks a clause as *governing* a class of commands rather than requesting one,
+and `named_shell_command` reads one sentence at a time so run context can only
+license the command sharing its sentence.
+
+Rungs `R916-09` and `R916-10` in the write-effect ladder judge both from a real
+workspace, and `tests/unit/issue_907.rs` pins the boundary, the seed data, and
+the inverse case where an imperative naming `sudo` still selects it.
+
+### 6.2 Reading the work item (#904, follow-up)
+
+The `planned_not_executed` terminal state introduced by the original #904 fix is
+truthful and stayed truthful. It was also every repository run's outcome, because
+`finish_general_change` returned it unconditionally for
+`GeneralPlanMode::RepositoryWorkItem`.
+
+The reason is in the plan: a work item names an *issue*, and an issue URL names
+no artifact. Recording the reference was the only honest end available, because
+the run never read the one document that says what to build. So the fix is not to
+loosen the terminal state — it is to read the work item first. The composed plan
+opens with a `Fetch` step for the URL it named; once that text arrives, the plan
+is re-composed from what the issue actually says and the existing literal-file
+and source routes execute it against the artifact the issue names.
+
+`planned_not_executed` survives exactly where #2158's point 3 reserves it: the
+client advertises no fetch capability, the fetch came back empty, or the work
+item names no artifact — which is never invented into one.
+`tests/unit/issue_904.rs` pins all four cases.
 
 ## Related Work
 
@@ -127,3 +200,10 @@ clean local capture passed both directions and both failure probes.
   [PR #2108](https://github.com/link-assistant/hive-mind/pull/2108), and
   [PR #2147](https://github.com/link-assistant/hive-mind/pull/2147) — upstream
   model acceptance and native dispatch implementation.
+- [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158) and
+  [PR #2159](https://github.com/link-assistant/hive-mind/pull/2159) — the
+  production evidence that the transport worked while the work did not, the
+  Hive Mind-side boundary fix, and the two upstream reports section 6 closes.
+- [formal-ai#904](https://github.com/link-assistant/formal-ai/issues/904) and
+  [formal-ai#907](https://github.com/link-assistant/formal-ai/issues/907) — the
+  two reopened defects, fixed in section 6.

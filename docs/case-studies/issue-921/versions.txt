@@ -1,3 +1,4 @@
 formal-ai=formal-ai 0.339.3
 agent=0.26.0
 hive-mind=2.12.2
+hive-mind-ci-pin=2.12.5
