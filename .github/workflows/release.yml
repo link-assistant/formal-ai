@@ -371,6 +371,12 @@ jobs:
       - name: Run doc tests
         if: matrix.test-suite == 'full'
         run: cargo test --doc --verbose
+      - name: Prune build cache to the latest build
+        # The cargo cache is restored on the next run, so it should carry one
+        # build's artifacts rather than accumulating every earlier one. Runs on
+        # failure too: a red suite still leaves a cache behind to be saved.
+        if: always()
+        run: scripts/prune-build-cache.sh
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes]

@@ -398,6 +398,29 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
 
 ## Testing Guidelines
 
+- Run the suite through `scripts/cargo-test.sh` rather than `cargo test`
+  directly. It takes the same arguments and adds two things a workstation
+  needs:
+
+  ```bash
+  scripts/cargo-test.sh                          # whole suite
+  scripts/cargo-test.sh --test unit issue_907    # one module
+  ```
+
+  **Half the CPUs locally, all of them on CI.** A bare `cargo test` starts one
+  compile job *and* one test thread per core, which pins the whole machine for
+  the length of the run. The wrapper caps both at half the cores unless `CI` is
+  set, so an ephemeral runner still uses everything it is paying for. Override
+  with `CARGO_TEST_JOBS=<n>`.
+
+  **The cache keeps one build, not every build.** Cargo never removes anything,
+  so `target/` accumulates artifacts from every branch and dependency version
+  and reaches several gigabytes within days. The wrapper prunes to the artifacts
+  the latest build produced, and CI does the same after its test step so the
+  saved actions cache carries one build rather than a growing pile. Run
+  `scripts/prune-build-cache.sh` on its own to reclaim space at any time, or set
+  `CARGO_TEST_NO_PRUNE=1` to keep everything for a debugging session.
+
 - Write tests for all new features
 - Maintain or improve test coverage — this is enforced, not requested. CI
   measures two separate denominators, Rust and browser, against the reviewed
