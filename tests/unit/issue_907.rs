@@ -549,5 +549,3 @@ fn the_gemini_cli_session_context_no_longer_hijacks_the_request() {
         "{call}"
     );
 }
-
-
