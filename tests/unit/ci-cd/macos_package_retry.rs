@@ -256,6 +256,165 @@ fn invalid_packaging_budget_is_rejected() {
     );
 }
 
+fn epoch_in(seconds: i64) -> String {
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("the clock must be after the epoch")
+        .as_secs() as i64;
+    (now + seconds).to_string()
+}
+
+#[test]
+fn retry_is_skipped_when_the_job_deadline_is_too_close() {
+    let root = sandbox("deadline");
+    // The workflow passes the epoch second by which the job must be finished;
+    // one second from now leaves no room for the ~2s second attempt.
+    let output = run_wrapper_with(
+        &root,
+        "slow-transient",
+        &[("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", &epoch_in(1))],
+    );
+    let count = attempt_count(&root);
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert_eq!(
+        output.status.code(),
+        Some(37),
+        "electron-builder's own status must survive the skipped retry"
+    );
+    assert_eq!(
+        count, "1",
+        "a retry that cannot finish before the job deadline must not be started"
+    );
+    assert!(
+        stdout.contains("derived from the job deadline"),
+        "the derived budget must be reported; stdout: {stdout}"
+    );
+}
+
+#[test]
+fn a_deadline_already_past_still_refuses_the_retry() {
+    let root = sandbox("deadline-past");
+    // A deadline in the past must not underflow into a disabled guard: the
+    // wrapper floors the budget at one second, which refuses every retry.
+    let output = run_wrapper_with(
+        &root,
+        "slow-transient",
+        &[("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", &epoch_in(-3600))],
+    );
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert_eq!(
+        output.status.code(),
+        Some(37),
+        "electron-builder's own status must survive the skipped retry"
+    );
+    assert_eq!(
+        count, "1",
+        "an elapsed deadline must not be read as an unlimited budget"
+    );
+}
+
+#[test]
+fn a_distant_job_deadline_still_allows_the_retry() {
+    let root = sandbox("deadline-ample");
+    let output = run_wrapper_with(
+        &root,
+        "transient-then-success",
+        &[("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", &epoch_in(3600))],
+    );
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert!(
+        output.status.success(),
+        "a distant deadline must not suppress the hdiutil retry; stdout: {}",
+        String::from_utf8_lossy(&output.stdout)
+    );
+    assert_eq!(count, "2", "the successful retry should be attempt two");
+}
+
+#[test]
+fn an_explicit_budget_wins_over_the_derived_deadline() {
+    let root = sandbox("deadline-override");
+    let output = run_wrapper_with(
+        &root,
+        "transient-then-success",
+        &[
+            ("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", &epoch_in(1)),
+            ("FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS", "3600"),
+        ],
+    );
+    let count = attempt_count(&root);
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert!(
+        output.status.success(),
+        "the explicit override must take precedence; stdout: {stdout}"
+    );
+    assert_eq!(count, "2", "the successful retry should be attempt two");
+    assert!(
+        stdout.contains("set explicitly"),
+        "the override must say where the budget came from; stdout: {stdout}"
+    );
+}
+
+#[test]
+fn an_absent_deadline_leaves_the_guard_disabled() {
+    let root = sandbox("deadline-absent");
+    // Local runs pass neither variable; the wrapper must behave exactly as it
+    // did before the guard existed rather than inventing a ceiling. Attempts
+    // here cost two seconds each, which any accidental default would refuse.
+    let output = run_wrapper_with(&root, "slow-transient", &[]);
+    let count = attempt_count(&root);
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert_eq!(
+        output.status.code(),
+        Some(37),
+        "the persistent transient must still fail with electron-builder's status"
+    );
+    assert_eq!(
+        count, "3",
+        "without a ceiling every attempt must still be taken"
+    );
+    assert!(
+        !stdout.contains("macOS packaging budget:"),
+        "no budget line should be printed when none was configured; stdout: {stdout}"
+    );
+}
+
+#[test]
+fn invalid_job_deadline_is_rejected() {
+    let root = sandbox("deadline-invalid");
+    let output = run_wrapper_with(
+        &root,
+        "transient-then-success",
+        &[("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", "not-a-number")],
+    );
+    let attempts_recorded = root.join("attempts").exists();
+    let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert_eq!(
+        output.status.code(),
+        Some(2),
+        "a malformed deadline must be a usage error, not a silent default"
+    );
+    assert!(
+        !attempts_recorded,
+        "electron-builder must not run with a malformed deadline"
+    );
+    assert!(
+        stderr.contains("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH"),
+        "the rejection must name the offending variable; stderr: {stderr}"
+    );
+}
+
 #[test]
 fn unrelated_packaging_failure_is_not_retried() {
     let root = sandbox("unrelated");

@@ -21,7 +21,16 @@ retry_delay_seconds="${FORMAL_AI_MACOS_PACKAGE_RETRY_DELAY_SECONDS:-5}"
 # and GitHub reports that kill as **cancelled**, not failed — the same false
 # negative issue #1017 exists to remove (D1). Failing now with electron-builder's
 # own status keeps the job red for the reason it actually failed.
-package_budget_seconds="${FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:-0}"
+#
+# The ceiling is normally *derived*, not guessed: the caller passes the epoch
+# second by which the job must be finished (`…_DEADLINE_EPOCH`) and the wrapper
+# subtracts the time already spent. A fixed number cannot do that job — the same
+# packaging step starts 26 minutes into one run and 33 into another, so any
+# constant is either too small to allow the hdiutil retry this wrapper was
+# written for, or too large to prevent the cancellation it must prevent.
+# `…_BUDGET_SECONDS` stays as an explicit override and wins when both are set.
+package_budget_seconds="${FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:-}"
+package_deadline_epoch="${FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH:-}"
 
 # Signatures that are worth another attempt. Everything else — signing,
 # notarization, dependency and arbitrary builder failures — fails on its first
@@ -37,9 +46,28 @@ if ! [[ "$retry_delay_seconds" =~ ^[0-9]+$ ]]; then
   echo "FORMAL_AI_MACOS_PACKAGE_RETRY_DELAY_SECONDS must be a non-negative integer" >&2
   exit 2
 fi
-if ! [[ "$package_budget_seconds" =~ ^[0-9]+$ ]]; then
+if [ -n "$package_budget_seconds" ] && ! [[ "$package_budget_seconds" =~ ^[0-9]+$ ]]; then
   echo "FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS must be a non-negative integer" >&2
   exit 2
+fi
+if [ -n "$package_deadline_epoch" ] && ! [[ "$package_deadline_epoch" =~ ^[0-9]+$ ]]; then
+  echo "FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH must be a non-negative integer" >&2
+  exit 2
+fi
+if [ -z "$package_budget_seconds" ]; then
+  if [ -n "$package_deadline_epoch" ]; then
+    package_budget_seconds=$((package_deadline_epoch - $(date +%s)))
+    # A deadline already in the past still yields a live guard rather than a
+    # disabled one: 1 second refuses every retry a failing attempt could ask for.
+    if [ "$package_budget_seconds" -lt 1 ]; then
+      package_budget_seconds=1
+    fi
+    echo "macOS packaging budget: ${package_budget_seconds}s, derived from the job deadline"
+  else
+    package_budget_seconds=0
+  fi
+elif [ "$package_budget_seconds" -gt 0 ]; then
+  echo "macOS packaging budget: ${package_budget_seconds}s, set explicitly"
 fi
 if [ "$#" -eq 0 ]; then
   echo "usage: $0 <electron-builder arguments...>" >&2

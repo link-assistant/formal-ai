@@ -601,16 +601,52 @@ fn macos_packaging_retry_is_bounded_by_a_budget() {
     let workflow = repository_file(".github/workflows/desktop-release.yml");
     let build = job_block(&workflow, "build");
 
-    let budgets = build
-        .matches("FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:")
+    let deadlines = build
+        .matches("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}")
         .count();
     let wrappers = build
         .matches("bash scripts/package-macos-with-retry.sh")
         .count();
     assert_eq!(
-        budgets, wrappers,
-        "every macOS packaging step must declare its retry budget, or a retry \
-         can outlive the job clock and report `cancelled` instead of `failure`"
+        deadlines, wrappers,
+        "every macOS packaging step must pass the job deadline, or a retry can \
+         outlive the job clock and report `cancelled` instead of `failure`"
+    );
+
+    // The deadline is only trustworthy while it is computed from the *same* cap
+    // that kills the job. A literal here and a literal in `timeout-minutes`
+    // would drift, and a guard derived from a stale cap is worse than none.
+    assert!(
+        build.contains("timeout-minutes: ${{ matrix.capmin }}"),
+        "the job cap must come from the matrix so the deadline can reuse it"
+    );
+    assert!(
+        build.contains("FORMAL_AI_JOB_DEADLINE_EPOCH=") && build.contains("$GITHUB_ENV"),
+        "the build job must publish its deadline through $GITHUB_ENV"
+    );
+    let deadline_step = build
+        .find("- name: Record the job deadline")
+        .expect("the build job must record its own deadline");
+    let deadline_body = &build[deadline_step..];
+    let deadline_body = &deadline_body[..deadline_body
+        .find("\n      - ")
+        .unwrap_or(deadline_body.len())];
+    assert!(
+        deadline_body.contains("${{ matrix.capmin }}"),
+        "the deadline must be derived from the matrix cap, not from a second \
+         copy of the same number"
+    );
+    assert!(
+        deadline_body.contains("POST_PACKAGING_RESERVE_SECONDS"),
+        "the deadline must reserve time for the steps that follow packaging \
+         (smoke test, checksums, uploads), not just for packaging itself"
+    );
+    let packaging_step = build
+        .find("bash scripts/package-macos-with-retry.sh")
+        .expect("a macOS packaging step must exist");
+    assert!(
+        deadline_step < packaging_step,
+        "the deadline must be recorded before packaging consumes it"
     );
 
     let wrapper = repository_file("desktop/scripts/package-macos-with-retry.sh");
@@ -621,8 +657,9 @@ fn macos_packaging_retry_is_bounded_by_a_budget() {
          why that run was never retried"
     );
     assert!(
-        wrapper.contains("FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:-0"),
-        "the budget must default to disabled so the wrapper keeps working \
-         outside this workflow"
+        wrapper.contains("FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:-}")
+            && wrapper.contains("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH:-}"),
+        "both inputs must be optional so the wrapper keeps working outside this \
+         workflow, where neither a budget nor a deadline exists"
     );
 }
