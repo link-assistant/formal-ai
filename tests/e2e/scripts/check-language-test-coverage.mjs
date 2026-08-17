@@ -150,6 +150,14 @@ function changedLinesTouchLanguage(baseRef, relativePath) {
 function isLanguageFacingChange(baseRef, relativePath) {
   if (!isLanguageFacingPath(relativePath)) return false;
   if (!lineLevelPrefixes.some((prefix) => relativePath.startsWith(prefix))) return true;
+
+  // Adding or removing a whole handler is a structural change, not a reworded
+  // line: fail closed and let the line test narrow only genuine edits.
+  const status = runGit(['diff', '--name-status', baseRef, '--', relativePath])
+    .stdout.trim()
+    .charAt(0);
+  if (status === 'A' || status === 'D' || status === 'R') return true;
+
   return changedLinesTouchLanguage(baseRef, relativePath);
 }
 
