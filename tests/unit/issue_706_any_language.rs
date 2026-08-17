@@ -147,6 +147,15 @@ fn language_coverage_gate_judges_handler_changes_by_line_not_by_path() {
         guard.contains("python|rust|javascript"),
         "programming-language names must not pull in the multilingual matrix"
     );
+    // A file that appears or disappears wholesale has no prior lines to reword,
+    // so the narrowing must not apply to it.
+    assert!(
+        guard.contains("status === 'A'")
+            && guard.contains("status === 'D'")
+            && guard.contains("status === 'R'"),
+        "adding, deleting or renaming a handler must keep the file-level demand"
+    );
+
     // Seed and translation data are localized content line for line, so they
     // must never be narrowed to the line-level test.
     for prefix in ["data/seed/", "src/translation/"] {
