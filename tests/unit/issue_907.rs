@@ -400,7 +400,11 @@ fn every_policy_lead_suppresses_its_command_in_every_language() {
         "Когда запускаешь sudo, делай это в фоне",
         "Никогда не запускай rm вне рабочей папки",
         "如果 运行 docker，请加 --rm",
+        "当 运行 sudo 时，请在后台执行",
+        "जब sudo चलाओ, तो उसे पृष्ठभूमि में रखो",
+        "कभी भी कार्यस्थान के बाहर rm मत चलाओ",
         "Nunca ejecutes rm fuera del espacio de trabajo",
+        "Siempre ejecuta docker con --rm",
     ] {
         assert_eq!(
             planned_command(policy),

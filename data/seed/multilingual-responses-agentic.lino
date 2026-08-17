@@ -847,6 +847,10 @@ multilingual_responses
     intent general_plan_repository_read
     language zh
     text "在规划任何更改之前先读取 {target} 处引用的工作项"
+  response response_general_plan_repository_read_es
+    intent general_plan_repository_read
+    language es
+    text "leer el elemento de trabajo referenciado en {target} antes de planificar cualquier cambio"
   response response_general_plan_repository_read_evidence_en
     intent general_plan_repository_read_evidence
     language en
@@ -863,6 +867,10 @@ multilingual_responses
     intent general_plan_repository_read_evidence
     language zh
     text "指明该更改必须产出的工件的工作项文本"
+  response response_general_plan_repository_read_evidence_es
+    intent general_plan_repository_read_evidence
+    language es
+    text "el texto del elemento de trabajo que nombra el artefacto que el cambio debe producir"
   response response_general_plan_repository_evidence_en
     intent general_plan_repository_evidence
     language en
