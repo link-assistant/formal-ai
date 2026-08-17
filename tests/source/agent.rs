@@ -2,8 +2,10 @@
 //!
 //! The core solver stays deterministic and permissioned: agent mode receives a
 //! fresh temp workspace, validates every path before touching the filesystem,
-//! runs only allowlisted commands without inheriting host environment
-//! variables, and records each step for projection into Links Notation.
+//! runs only allowlisted commands without inheriting host environment variables
+//! (the private `command_environment` builds the one constructed variable a
+//! command does receive), and records each step for projection into Links
+//! Notation.
 
 use std::error::Error;
 use std::ffi::OsString;
@@ -18,7 +20,28 @@ use std::time::{Duration, Instant};
 use crate::engine::stable_id;
 
 const DEFAULT_AGENT_TIME_BUDGET: Duration = Duration::from_secs(2);
-const PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
+
+/// Wall-clock floor for `python3`, the one allowlisted program whose *start-up*
+/// can cost far more than its work.
+///
+/// On macOS `/usr/bin/python3` is not an interpreter but a stub that calls
+/// `_xcselect_invoke_xcrun` in `/usr/lib/libxcselect.dylib`; that resolution is
+/// cached in an `xcrun_db` file kept in `$TMPDIR`, and when the cache cannot be
+/// used the lookup is re-done — code-signature verification through `syspolicyd`
+/// included — at a cost measured in tens of seconds
+/// (<https://lapcatsoftware.com/articles/xcrun.html>). Windows has the same
+/// shape through the `py.exe` launcher, which is where the original
+/// fifteen-second value came from (commit `af282cac`, "stabilize windows python
+/// agent runs").
+///
+/// One minute is a *backstop*, not the expected cost: [`command_environment`]
+/// removes the reason for the slow path. The floor only has to be wide enough
+/// that start-up latency never decides whether a command that would have
+/// succeeded is instead reported as a timeout — which is exactly what the
+/// fifteen-second value did in issue #1017, where the same `python3 script.py`
+/// costs 0.14 s on Linux and 5.977 s on an idle `macos-15-intel` runner, but
+/// exceeded 15 s on a loaded one and failed the run.
+const PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_mins(1);
 
 #[derive(Debug, Clone)]
 pub struct AgentWorkspaceConfig {
@@ -304,14 +327,18 @@ impl AgentWorkspace {
         }
         let command_budget = effective_command_time_budget(program, self.time_budget);
         let program_path = resolve_allowed_program(program)?;
-        let mut child = Command::new(program_path)
+        let mut command = Command::new(&program_path);
+        command
             .args(args)
             .current_dir(&self.root)
             .env_clear()
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()?;
+            .stderr(Stdio::piped());
+        for (name, value) in command_environment() {
+            command.env(name, value);
+        }
+        let mut child = command.spawn()?;
         let started = Instant::now();
         let deadline_reached = loop {
             if child.try_wait()?.is_some() {
@@ -330,6 +357,7 @@ impl AgentWorkspace {
         // The reaped status is authoritative: a successful child was not
         // terminated by our deadline.
         let timed_out = command_timed_out(deadline_reached, output.status.success());
+        trace_command(&program_path, command_budget, started.elapsed(), timed_out);
         Ok(AgentCommandResult {
             command: command_line.to_owned(),
             status_code: output.status.code(),
@@ -642,6 +670,43 @@ fn effective_command_time_budget(program: &str, configured: Duration) -> Duratio
         PYTHON_TIME_BUDGET_FLOOR
     } else {
         configured
+    }
+}
+
+/// The complete environment a spawned command receives: nothing from the host,
+/// plus a temporary directory.
+///
+/// Clearing the environment is the isolation property — a command cannot read a
+/// host credential out of `env`. On macOS it also removed the one variable the
+/// platform's *own* tool stubs need: `/usr/bin/python3` resolves the real binary
+/// through `xcrun`, whose resolution cache (`xcrun_db`) lives in `$TMPDIR`, so an
+/// unset `$TMPDIR` makes every invocation pay a full re-resolution instead of
+/// only the first one on the machine. That is the measured difference between
+/// 0.14 s on Linux and seconds per call on a macOS runner (issue #1017).
+///
+/// The child is handed one *constructed* variable rather than an inherited
+/// environment: the same temporary root the workspace itself is created under,
+/// which a command can already reach by absolute path, so nothing new is exposed.
+fn command_environment() -> [(&'static str, PathBuf); 1] {
+    [("TMPDIR", std::env::temp_dir())]
+}
+
+/// Report what a command actually cost — only when `FORMAL_AI_TRACE_COMMANDS=1`.
+///
+/// Off by default, in the same opt-in style as `FORMAL_AI_TRACE_REQUESTS` and
+/// `FORMAL_AI_TRACE_SLOW_INIT`. A timeout tells you a deadline was reached but
+/// not *why*: this names the path that was actually executed (an interpreter or
+/// a resolver stub is the difference), the budget it was measured against, and
+/// how long it ran, so the next occurrence on a runner nobody can attach a
+/// debugger to still identifies itself.
+fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed_out: bool) {
+    if std::env::var("FORMAL_AI_TRACE_COMMANDS").as_deref() == Ok("1") {
+        eprintln!(
+            "[agent-command] {} ran {} ms of a {} ms budget (timed_out={timed_out})",
+            program_path.display(),
+            elapsed.as_millis(),
+            budget.as_millis()
+        );
     }
 }
 

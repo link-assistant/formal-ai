@@ -81,6 +81,11 @@ ci-logs/
 # (see dev/log/issues/*/pulls/*/ci-logs/README.md).
 !dev/log/**/ci-logs/
 !dev/log/**/ci-logs/*.log
+# Issue #1017: evidence is grouped per head SHA (`ci-logs/<head>/run-*.log`), one
+# directory deeper than the rule above reaches. Without this line the archive
+# silently keeps only the `.stderr` halves -- `git add` reports success while the
+# logs the analysis cites are never committed.
+!dev/log/**/ci-logs/**/*.log
 
 # Playwright MCP scratch output (browser cache snapshots, etc.)
 .playwright-mcp/

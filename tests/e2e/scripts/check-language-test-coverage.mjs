@@ -103,10 +103,62 @@ function changedFiles(baseRef) {
     .filter(Boolean);
 }
 
-function isLanguageFacingChange(relativePath) {
+function isLanguageFacingPath(relativePath) {
   if (languageNeutralFiles.has(relativePath)) return false;
   if (languageFacingFiles.has(relativePath)) return true;
   return languageFacingPrefixes.some((prefix) => relativePath.startsWith(prefix));
+}
+
+// A path under a language-facing prefix is necessary but not sufficient. The
+// guard exists to stop a *localized* behaviour changing in one language and not
+// the rest, so a changed line only counts when it can carry per-language
+// meaning: it names a language or locale, reaches the translation/seed layer, or
+// carries non-Latin script. Editing an English-only diagnostic string in an
+// otherwise language-independent handler has no per-language counterpart to
+// keep in step, so demanding en/ru/hi/zh/es test evidence for it is a false
+// result -- the kind issue #1017 exists to remove. Seed and translation data
+// stay file-level, because there every line is localized content by definition.
+const lineLevelPrefixes = ['src/solver_handlers/', 'src/web/worker/'];
+
+const languageRelevantLine =
+  /\b(?:language|locale|lang|i18n|translat|localiz|localis|Language|Locale)/u;
+
+function changedLinesTouchLanguage(baseRef, relativePath) {
+  const diff = gitDiffFromBase(baseRef, ['--unified=0', '--no-ext-diff'], [relativePath]);
+  const changed = diff
+    .split(/\r?\n/)
+    .filter(
+      (line) =>
+        (line.startsWith('+') || line.startsWith('-')) &&
+        !line.startsWith('+++') &&
+        !line.startsWith('---'),
+    );
+
+  return changed.some((line) => {
+    // `language=python` and friends name a *programming* language; they carry no
+    // natural-language meaning and must not pull in the multilingual matrix.
+    const withoutCodeLanguages = line.replace(
+      /\blanguage\s*=\s*(?:python|rust|javascript|typescript|go|java|ruby|c|cpp|kotlin|scala)\b/giu,
+      '',
+    );
+    if (languageRelevantLine.test(withoutCodeLanguages)) return true;
+    if (Object.values(scriptMarkers).some((marker) => marker.test(line))) return true;
+    return supportedLanguages.some((language) => lineCoversLanguage(line, language));
+  });
+}
+
+function isLanguageFacingChange(baseRef, relativePath) {
+  if (!isLanguageFacingPath(relativePath)) return false;
+  if (!lineLevelPrefixes.some((prefix) => relativePath.startsWith(prefix))) return true;
+
+  // Adding or removing a whole handler is a structural change, not a reworded
+  // line: fail closed and let the line test narrow only genuine edits.
+  const status = runGit(['diff', '--name-status', baseRef, '--', relativePath])
+    .stdout.trim()
+    .charAt(0);
+  if (status === 'A' || status === 'D' || status === 'R') return true;
+
+  return changedLinesTouchLanguage(baseRef, relativePath);
 }
 
 function isChangedTestFile(relativePath) {
@@ -150,7 +202,9 @@ if (!baseRef) {
 }
 
 const files = changedFiles(baseRef);
-const languageFacingChanges = files.filter(isLanguageFacingChange);
+const languageFacingChanges = files.filter((file) =>
+  isLanguageFacingChange(baseRef, file),
+);
 
 if (languageFacingChanges.length === 0) {
   console.log(`Language test coverage OK: no language-facing changes against ${baseRef}.`);
