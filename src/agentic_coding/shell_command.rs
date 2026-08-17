@@ -691,14 +691,49 @@ fn sentence_spans(prompt: &str) -> Vec<&str> {
 /// command to run now, so no token inside it may become one.
 fn states_a_command_policy(sentence: &str) -> bool {
     let lower = sentence.to_lowercase();
-    seed::caller_context_vocabulary()
+    let opens_with_lead = seed::caller_context_vocabulary()
         .policy_leads
         .iter()
         .any(|lead| {
             lower
                 .strip_prefix(lead.as_str())
                 .is_some_and(|rest| rest.starts_with(' '))
-        })
+        });
+    // A conditional opener alone does not make a sentence policy — plenty of
+    // real requests carry one, and treating them as policy answers nothing at
+    // all, which is strictly worse than answering imperfectly.
+    //
+    // The separator is *where* a command is named. A conditional clause runs to
+    // its comma; whatever follows is the order the condition qualifies. So
+    // *"If the build fails, run cargo test."* orders `cargo test` after the
+    // condition and routes, while *"When running sudo commands, run them in the
+    // background."* names only a pronoun there — it is telling the agent how to
+    // treat a class of commands, not asking for one. A rule with no comma at all
+    // (*"Never run rm outside the workspace."*) governs throughout and orders
+    // nothing.
+    opens_with_lead
+        && lower
+            .split_once(',')
+            .is_none_or(|(_, ordered)| !orders_a_named_command(ordered))
+}
+
+/// Whether `clause` orders a concrete command: a run verb immediately followed
+/// by a known shell token. This is the difference between asking for a command
+/// and talking about commands.
+fn orders_a_named_command(clause: &str) -> bool {
+    let vocab = seed::terminal_command_vocabulary();
+    let words: Vec<&str> = clause.split_whitespace().collect();
+    words.iter().enumerate().any(|(index, word)| {
+        let is_verb = vocab
+            .run_verbs
+            .iter()
+            .any(|verb| verb == &normalize_command_word(word));
+        is_verb
+            && words.get(index + 1).is_some_and(|next| {
+                let token = normalize_command_word(next);
+                vocab.shell_tokens.iter().any(|known| known == &token)
+            })
+    })
 }
 
 /// Whether every sentence of `prompt` is caller policy, so nothing in it asks
@@ -711,13 +746,11 @@ fn states_a_command_policy(sentence: &str) -> bool {
 /// request that arrives alongside one — *"Never run rm outside the workspace.
 /// Now run git status."* — reaching the router through its second sentence.
 ///
-/// The known cost is a single-sentence request whose only clause opens with a
-/// lead: *"If the build fails, run cargo test."* is suppressed. Splitting on the
-/// comma to rescue it also rescues *"When running sudo commands, run them in the
-/// background."*, which is the reported defect itself, so the two cannot be
-/// separated by punctuation alone. The suppression is the conservative side of
-/// that trade — a command not run, rather than one run unasked — and rephrasing
-/// without the conditional recovers it.
+/// A conditional request keeps working, because [`states_a_command_policy`]
+/// asks whether the sentence names a command rather than only how it opens:
+/// *"If the build fails, run cargo test."* names `cargo` and routes, while the
+/// reported *"When running sudo commands, run them in the background."* names
+/// only a pronoun and does not.
 fn governs_commands_rather_than_requesting_one(prompt: &str) -> bool {
     let sentences = sentence_spans(prompt);
     !sentences.is_empty() && sentences.iter().all(|sentence| states_a_command_policy(sentence))

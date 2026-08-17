@@ -391,10 +391,10 @@ fn a_request_beside_a_policy_sentence_still_routes() {
 #[test]
 fn every_policy_lead_suppresses_its_command_in_every_language() {
     for policy in [
-        "If you run rm, ask first",
-        "After you run docker, clean up",
+        "If you run rm, ask the operator first",
+        "After you run docker, clean up the containers",
         "While running chmod, stay inside the workspace",
-        "Unless asked, never run sudo",
+        "Unless asked, never touch the workspace root",
         "Always run docker with --rm",
         "Do not run rm outside the workspace",
         "Когда запускаешь sudo, делай это в фоне",
@@ -406,6 +406,30 @@ fn every_policy_lead_suppresses_its_command_in_every_language() {
             planned_command(policy),
             None,
             "policy planned a command: {policy:?}",
+        );
+    }
+}
+
+/// The other half of the same rule, and the one that matters most to a user: a
+/// request is still a request when it carries a condition. An earlier version of
+/// this filter keyed on the opening word alone and answered these with nothing
+/// at all, which is worse than answering imperfectly — the user asked for
+/// something and got silence.
+///
+/// The separator is where the command is named. A conditional clause ends at its
+/// comma; what follows is the order the condition qualifies.
+#[test]
+fn a_conditional_request_still_selects_the_command_it_orders() {
+    for (request, expected) in [
+        ("If the build fails, run cargo test", "cargo test"),
+        ("After you finish, run git status", "git status"),
+        ("When you are ready, execute pwd", "pwd"),
+        ("Before anything else, run ls", "ls"),
+    ] {
+        assert_eq!(
+            planned_command(request).as_deref(),
+            Some(expected),
+            "{request:?} orders {expected} after its condition and must select it",
         );
     }
 }
