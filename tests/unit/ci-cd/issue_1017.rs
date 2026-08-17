@@ -755,6 +755,10 @@ fn every_installed_node_project_records_its_install_scripts_by_name() {
         "the projects installed through the classifier changed; the review \
          record below has to follow them"
     );
+    // The third npm project, `tests/e2e`, installs with plain `npm ci` under
+    // node 24 (npm 11) and reported no pending install scripts at all
+    // (`npm approve-scripts --allow-scripts-pending --json` -> `[]`), so it has
+    // nothing to record and is intentionally absent from this list.
 
     for project in projects {
         let manifest: serde_json::Value =
