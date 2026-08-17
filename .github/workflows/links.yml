@@ -60,13 +60,21 @@ jobs:
           # external repos with references to files and issues that don't exist
           # in this repository (similar exclusion pattern as eslint.config.js)
           #
-          # 429 is accepted rather than treated as broken: it means the host
-          # throttled this runner, which says nothing about whether the link
-          # resolves. `--max-retries 3` is not enough when the throttling
-          # outlasts the retries, as it does for raw.githubusercontent.com
-          # LICENSE files pinned to a SHA. `--cache-exclude-status` keeps a 429
-          # out of the cache so the next run re-checks it for real instead of
-          # replaying a throttled verdict for a day.
+          # 429 and 5xx are accepted rather than treated as broken. They
+          # describe the *host* -- throttling this runner, or failing to serve
+          # anything at all -- and say nothing about whether the link resolves.
+          # A missing page is a 404, and 404 still fails.
+          #
+          # `--max-retries 3` is not enough when the trouble outlasts the
+          # retries. raw.githubusercontent.com answered the same pinned-SHA
+          # LICENSE files 429, then 502, then 503 across three consecutive runs
+          # while serving them normally outside CI; `main` shows the same
+          # 12x502 / 16x503 spread, so this is not specific to any branch.
+          #
+          # `--cache-exclude-status` keeps those verdicts out of the cache so
+          # the next run re-checks for real instead of replaying a bad answer
+          # for `--max-cache-age 1d`. Without it, accepting these codes would
+          # hide a link that later genuinely breaks.
           args: >-
             --verbose
             --no-progress
@@ -74,8 +82,8 @@ jobs:
             --max-cache-age 1d
             --max-retries 3
             --timeout 30
-            --accept '200..=204,429'
-            --cache-exclude-status '429'
+            --accept '200..=204,429,500..=599'
+            --cache-exclude-status '429,500..=599'
             --host-concurrency 2
             --host-request-interval 100ms
             --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)'
