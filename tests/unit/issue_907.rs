@@ -406,21 +406,30 @@ fn a_request_beside_a_policy_sentence_still_routes() {
 /// Every seeded policy lead, in every language it is declared in. Asserting the
 /// seed *contains* a lead proves nothing about routing, which is what the
 /// earlier version of this file did.
+///
+/// Two prompts per language, covering english, russian, chinese, hindi and
+/// spanish. The non-Latin scripts announce themselves, but spanish shares its
+/// alphabet with english, so it is named here as well as written below.
 #[test]
 fn every_policy_lead_suppresses_its_command_in_every_language() {
     for policy in [
+        // english
         "If you run rm, ask the operator first",
         "After you run docker, clean up the containers",
         "While running chmod, stay inside the workspace",
         "Unless asked, never touch the workspace root",
         "Always run docker with --rm",
         "Do not run rm outside the workspace",
+        // russian
         "Когда запускаешь sudo, делай это в фоне",
         "Никогда не запускай rm вне рабочей папки",
+        // chinese
         "如果 运行 docker，请加 --rm",
         "当 运行 sudo 时，请在后台执行",
+        // hindi
         "जब sudo चलाओ, तो उसे पृष्ठभूमि में रखो",
         "कभी भी कार्यस्थान के बाहर rm मत चलाओ",
+        // spanish
         "Nunca ejecutes rm fuera del espacio de trabajo",
         "Siempre ejecuta docker con --rm",
     ] {
