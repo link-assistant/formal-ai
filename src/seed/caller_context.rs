@@ -81,6 +81,12 @@ pub struct CallerContextVocabulary {
     /// them in the background"). Such a clause is caller policy: nothing inside
     /// it names an action to take now, so no command token it mentions may be
     /// selected (issue #907, follow-up).
+    ///
+    /// Only words that are *unambiguously* conditional, temporal, or
+    /// prohibitive belong here — a bare negation particle (Russian `не`) or a
+    /// word that doubles as an affirmation (Spanish `si`) opens direct
+    /// instructions too, and silencing those would cost the user a command they
+    /// really did ask for.
     pub policy_leads: Vec<String>,
 }
 

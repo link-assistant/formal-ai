@@ -110,7 +110,6 @@ caller_context
       lead "после"
       lead "всегда"
       lead "никогда"
-      lead "не"
     language hi
       lead "जब"
       lead "यदि"
@@ -125,7 +124,6 @@ caller_context
       lead "从不"
     language es
       lead "cuando"
-      lead "si"
       lead "antes"
       lead "después"
       lead "siempre"
