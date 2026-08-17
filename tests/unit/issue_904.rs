@@ -441,14 +441,15 @@ fn a_work_item_naming_no_artifact_is_not_invented_into_one() {
 /// shape [`formal_ai::agentic_coding::plan_chat_step`] reads results back from.
 fn work_item_transcript(body: &str) -> Vec<ChatMessage> {
     let plan = compose_general_change_plan(HARNESS_PROMPT).expect("repository work-item plan");
+    const CALL_ID: &str = "call_work_item";
     let call = formal_ai::protocol::ToolCall::function(
-        "call_work_item",
+        CALL_ID,
         "fetch_url",
         serde_json::json!({ "url": plan.target }).to_string(),
     );
-    let assistant = ChatMessage::assistant_tool_calls(vec![call.clone()]);
+    let assistant = ChatMessage::assistant_tool_calls(vec![call]);
     let mut result = ChatMessage::user(body);
     result.role = String::from("tool");
-    result.tool_call_id = Some(call.id.clone());
+    result.tool_call_id = Some(String::from(CALL_ID));
     vec![ChatMessage::user(HARNESS_PROMPT), assistant, result]
 }
