@@ -595,6 +595,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_external_benchmark_upstream_missing_start_es"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_720bd82f85bb7c1e
+    source "data/seed/closure-generated-12.lino"
+    record "response_general_plan_repository_read_evidence_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fadb5c1a2e11f70e
     source "data/seed/closure-generated-12.lino"
     record "response_general_plan_unverified_en"

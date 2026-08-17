@@ -595,6 +595,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "response_fact_check_statement_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1122c0d3f8d239b5
+    source "data/seed/closure-generated-14.lino"
+    record "response_general_plan_repository_read_evidence_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_22f3e3164d834d05
     source "data/seed/closure-generated-14.lino"
     record "response_lexeme_import_cannot_write_json_hi"

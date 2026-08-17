@@ -123,6 +123,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "response_draft_comparison_explanation_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_93628829628b9271
+    source "data/seed/closure-generated-03.lino"
+    record "response_general_plan_repository_read_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a810abbc9dee7551
     source "data/seed/closure-generated-03.lino"
     record "response_memory_program_permission_refused_ru"
