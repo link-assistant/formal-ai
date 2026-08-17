@@ -256,12 +256,19 @@ fn invalid_packaging_budget_is_rejected() {
     );
 }
 
-fn epoch_in(seconds: i64) -> String {
-    let now = SystemTime::now()
+fn now_epoch() -> u64 {
+    SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("the clock must be after the epoch")
-        .as_secs() as i64;
-    (now + seconds).to_string()
+        .as_secs()
+}
+
+fn epoch_in(seconds: u64) -> String {
+    (now_epoch() + seconds).to_string()
+}
+
+fn epoch_ago(seconds: u64) -> String {
+    now_epoch().saturating_sub(seconds).to_string()
 }
 
 #[test]
@@ -301,7 +308,7 @@ fn a_deadline_already_past_still_refuses_the_retry() {
     let output = run_wrapper_with(
         &root,
         "slow-transient",
-        &[("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", &epoch_in(-3600))],
+        &[("FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH", &epoch_ago(3600))],
     );
     let count = attempt_count(&root);
     fs::remove_dir_all(&root).expect("sandbox must be removed");
