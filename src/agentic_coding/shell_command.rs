@@ -97,24 +97,43 @@ fn strip_balanced_outer_quotes(prompt: &str) -> &str {
 /// surrounding whitespace). Explicit execution is an intent boundary: the
 /// command need not appear in a maintained binary allowlist because the client
 /// still owns its normal sandbox and permission decision.
+///
+/// The remainder must still *look* like a command line rather than a sentence
+/// about one. `run`/`execute` are ordinary English verbs, so "Run all tests in
+/// the background" and "Execute nothing without asking the operator first"
+/// reach this function exactly like "run cargo test" does — and passing their
+/// prose through produced commands such as `all tests in the background`. The
+/// allowlist stays absent: an unknown binary (`mytool --flag`, `./build.sh`) is
+/// accepted, and only prose is refused.
 fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let prompt = prompt.trim();
     let lower = prompt.to_lowercase();
-    if let Some(prefix) = vocab
+    let prefix = vocab
         .passthrough_prefixes
         .iter()
         .filter(|prefix| prefix_boundary(&lower, prefix))
-        .max_by_key(|prefix| prefix.chars().count())
-    {
-        let remainder = prompt.get(prefix.len()..)?.trim_start();
-        let remainder = remainder
-            .strip_prefix(':')
-            .unwrap_or(remainder)
-            .trim_start();
-        return (!remainder.is_empty()).then(|| strip_balanced_outer_quotes(remainder).to_owned());
-    }
+        .max_by_key(|prefix| prefix.chars().count())?;
+    let remainder = prompt.get(prefix.len()..)?.trim_start();
+    let remainder = remainder
+        .strip_prefix(':')
+        .unwrap_or(remainder)
+        .trim_start();
+    let remainder = strip_balanced_outer_quotes(remainder);
+    (!remainder.is_empty() && !reads_as_prose(remainder)).then(|| remainder.to_owned())
+}
 
-    None
+/// Whether a recovered command line is really a sentence describing an action.
+///
+/// Two tells, either of which is enough: the first word — the command position —
+/// is a natural-language word, or the words after it carry two or more function
+/// words. A genuine command line spends its arguments on paths and flags, not on
+/// *in the*, *without asking*, or *so that*.
+fn reads_as_prose(remainder: &str) -> bool {
+    let mut words = remainder.split_whitespace();
+    let Some(first) = words.next() else {
+        return true;
+    };
+    is_prose_word(first) || words.filter(|word| is_prose_word(word)).count() >= 2
 }
 
 fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
@@ -887,6 +906,18 @@ fn is_prose_word(word: &str) -> bool {
         "also",
         "just",
         "now",
+        // Quantifiers a described action opens with. "Execute nothing without
+        // asking" and "Run all tests in the background" are sentences about
+        // commands, not commands.
+        "nothing",
+        "anything",
+        "everything",
+        "something",
+        "all",
+        "any",
+        "every",
+        "each",
+        "no",
     ];
     let normalized = word
         .trim_matches(|c: char| !c.is_ascii_alphanumeric())

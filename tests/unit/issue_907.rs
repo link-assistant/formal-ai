@@ -434,6 +434,45 @@ fn a_conditional_request_still_selects_the_command_it_orders() {
     }
 }
 
+/// `run` and `execute` are ordinary English verbs, so a sentence *about*
+/// commands reaches the passthrough branch exactly like a real command does.
+/// Passing its prose through produced commands such as `all tests in the
+/// background`.
+#[test]
+fn a_sentence_about_commands_is_not_passed_through_as_one() {
+    for sentence in [
+        "Run all tests in the background",
+        "Execute nothing without asking the operator first",
+        "Run commands with sudo only when necessary",
+        "Execute everything in the workspace",
+    ] {
+        assert_eq!(
+            planned_command(sentence),
+            None,
+            "prose was passed through as a command: {sentence:?}",
+        );
+    }
+}
+
+/// The guard may not become a binary allowlist: the passthrough exists so a
+/// client can run a command this crate has never heard of, and the sandbox — not
+/// a maintained list — decides whether it may.
+#[test]
+fn an_unknown_binary_still_passes_through() {
+    for (request, expected) in [
+        ("run mytool --flag", "mytool --flag"),
+        ("execute ./build.sh", "./build.sh"),
+        ("run npm run build", "npm run build"),
+        ("run git log --oneline -10", "git log --oneline -10"),
+    ] {
+        assert_eq!(
+            planned_command(request).as_deref(),
+            Some(expected),
+            "{request:?} names a command line and must pass through verbatim",
+        );
+    }
+}
+
 /// Requirement 5, seed side: the policy leads are data, so a maintainer adds the
 /// next conditional form by editing `data/seed/caller-context.lino` rather than
 /// this crate.
