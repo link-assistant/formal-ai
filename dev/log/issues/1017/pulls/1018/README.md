@@ -115,6 +115,36 @@ implicated. A single test spent `16.223s` against a `15 s` floor written into
 `python3` path executes — is *functional*, not about latency. Section 4.1 D14
 carries the cause.
 
+### 2.3 Fourth timeline — a build that produced every artifact and then failed
+
+With D14 fixed, run **31984111384** on head `5f623742` left exactly one red job:
+`Build macos-x64` (job 95255998673). The interesting property of this failure is
+that **nothing was actually missing** when the job went red.
+
+| Time (UTC) | Event | Source |
+| --- | --- | --- |
+| 01:09:27 | Job starts on `macos-15-intel`; the cap is 50 minutes. | `ci-logs/5f6237428fa50799be94522a4718965b1ed34d5c/job-95255998673-macos-x64-failed.log:1` |
+| 01:10:49.9 → 01:36:49.8 | `cargo build --release` — **26m00s** of the 50-minute cap. | `…:2648`, `…:2655` |
+| 01:37:51.6 | The packaging step starts. | `…:2656` |
+| 01:40:46.375 / .376 | `building target=macOS zip` and `building target=DMG` — two concurrent target tasks. | `…:6085`, `…:6087` |
+| 01:40:46.392 / .444 | `downloading file=7zip-darwin-x86_64.tar.gz` and `downloading file=dmgbuild-bundle-x86_64-75c8a6c.tar.gz`. | `…:6090`, `…:6095` |
+| 01:40:46.793 | 7-Zip finishes: `progress=100%`. The dmgbuild archive does not. | `…:6096` |
+| 01:50:46.8669 / .8671 | `• async task error error=Timeout awaiting 'request' for 600000ms`, logged **twice** — two `AsyncTaskManager` instances each recorded the same rejection. | `…:6097`, `…:6098` |
+| 01:50:49.012 | dmgbuild `progress=100%` — the download **succeeded 2.1 s later**, matching `retry`'s `interval: 2000`. | `…:6099` |
+| 01:50:54.4 → 01:52:39.1 | dmgbuild runs to completion. | `…:6100`–`…:6103` |
+| 01:53:10.61 | `building block map`, then **two** `artifactBuildCompleted` events: the DMG, the ZIP and both blockmaps exist on disk. | `…:6104`–`…:6106` |
+| 01:53:10.8 | `⨯ Timeout awaiting 'request' for 600000ms  failedTask=build`, with a `got` stack (`core/index.js:970:65` ← `core/utils/timed-out.js:36:25`). | `…:6107`, `…:6122` |
+| 01:53:15 | Job ends red after 43m48s of its 50-minute cap. | `…` (step footer) |
+
+Two facts decide the diagnosis. First, the failure is reported **after** both
+artifacts complete, so it is not a packaging failure at all — it is a recorded
+rejection being rethrown, and `AsyncTaskManager.errors` has no path by which a
+later success clears it. Second, the download reached `100%` at 01:50:49.012,
+2.1 s after the rejection at 01:50:46.867 — one `builder-util-runtime`
+`retry({interval: 2000})` apart. The build therefore failed over a stall that
+the toolset had already got past. Section 4.1 D15 carries the mechanism, quoted
+from the shipped sources, and marks the one step the log cannot settle.
+
 ## 3. Requirement ledger
 
 The canonical ledger is the requirements shard
@@ -132,9 +162,9 @@ this archive.
 | R1017-6 | Stop diagnostics manufactured by a run's own cancellation, and test the parsers behind them. | D8, D9. |
 | R1017-7 | Put every read-only job in a concurrency group, without ever cancelling `main`. | D10. |
 | R1017-8 | Compare the full file tree against all three templates and the Hive Mind guidance; state each deviation. | Section 5, `analysis/template-diffs/`, `references/templates/`. |
-| R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — five exact bodies, retained verbatim; each file records the URL it was filed under (rust template [#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135), js template [#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137), python template [#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60), and [`codeql#19982` comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141) plus the measured follow-up [comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)). A sixth was added for D13: [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193), filed with a standalone reproducer crate (`experiments/issue-1017-meta-language-quadratic/`), both measured scaling tables, `gdb` attribution, a line-start-table patch, and the consumer workaround this pull request applies. D14 is deliberately **not** a seventh: the slow path is Apple's documented `xcrun` stub behaviour, already publicly analysed and measured ([lapcatsoftware.com/articles/xcrun.html](https://lapcatsoftware.com/articles/xcrun.html)), and the bug that turned it into a red build is this repository's own — an `env_clear()` that dropped `TMPDIR`. `std::process::Command::env_clear` behaves exactly as documented. Filing a report would be filing against correct behaviour in two projects at once, so the reasoning is recorded here instead. |
-| R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. For D13, `FORMAL_AI_TRACE_SLOW_INIT=1` reports every whole-source parse with its byte count, duration and run index — the instrumentation that turned "a request sometimes exceeds 30 s" into "one 39 195-byte parse costs 12.08 s". Default off; the counter behind it (`ast_census_runs()`) is always live and is what the regression test asserts on. For D14, `FORMAL_AI_TRACE_COMMANDS=1` reports the resolved program path, the effective budget, the elapsed time and whether the deadline fired — the four facts the slice-3 log did *not* contain, which is why the first diagnosis had to be reconstructed from a timestamp. Default off; demonstrated in both states by `experiments/issue_1017_agent_command_trace.sh` (section 8.4). |
-| R1017-11 | Apply each fix everywhere the defect occurs, not only where it was observed. | Every fix is pinned by a test that sweeps *all* workflow files rather than the one that failed; see section 8. For D14 the same defect existed in two files — `src/agent.rs` and its `tests/source/agent.rs` mirror, which is the copy CI actually compiled and failed on — and all five changes were applied to both. |
+| R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — five exact bodies, retained verbatim; each file records the URL it was filed under (rust template [#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135), js template [#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137), python template [#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60), and [`codeql#19982` comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141) plus the measured follow-up [comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)). A sixth was added for D13: [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193), filed with a standalone reproducer crate (`experiments/issue-1017-meta-language-quadratic/`), both measured scaling tables, `gdb` attribution, a line-start-table patch, and the consumer workaround this pull request applies. D14 is deliberately **not** a seventh: the slow path is Apple's documented `xcrun` stub behaviour, already publicly analysed and measured ([lapcatsoftware.com/articles/xcrun.html](https://lapcatsoftware.com/articles/xcrun.html)), and the bug that turned it into a red build is this repository's own — an `env_clear()` that dropped `TMPDIR`. `std::process::Command::env_clear` behaves exactly as documented. Filing a report would be filing against correct behaviour in two projects at once, so the reasoning is recorded here instead. D15 **is** a seventh: [`electron-builder#10091`](https://github.com/electron-userland/electron-builder/issues/10091), filed with the two shipped sources quoted, the two behaviours measured (`experiments/issue-1017-electron-builder-stale-error/run.mjs`, section 8.5), the archive-cache workaround this branch applies, and three code-level suggestions — and with the one thing the log cannot settle stated as a question to the maintainers rather than as a claim. |
+| R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. For D13, `FORMAL_AI_TRACE_SLOW_INIT=1` reports every whole-source parse with its byte count, duration and run index — the instrumentation that turned "a request sometimes exceeds 30 s" into "one 39 195-byte parse costs 12.08 s". Default off; the counter behind it (`ast_census_runs()`) is always live and is what the regression test asserts on. For D14, `FORMAL_AI_TRACE_COMMANDS=1` reports the resolved program path, the effective budget, the elapsed time and whether the deadline fired — the four facts the slice-3 log did *not* contain, which is why the first diagnosis had to be reconstructed from a timestamp. Default off; demonstrated in both states by `experiments/issue_1017_agent_command_trace.sh` (section 8.4). For D15, `FORMAL_AI_PREFETCH_VERBOSE=1` reports each toolset's cache decision and every download attempt with its outcome — the difference between "the DMG toolset came from the seeded cache" and "it was fetched over the network again", which the run that failed had no way to state. Default off, and pinned in both states by `desktop/scripts/prefetch-builder-toolsets.test.mjs` → "per-attempt tracing is available but off by default"; the wrapper's own `macOS packaging budget: Ns, derived from the job deadline` line is always printed, because a retry that silently declines to run is the failure mode D15b is about. |
+| R1017-11 | Apply each fix everywhere the defect occurs, not only where it was observed. | Every fix is pinned by a test that sweeps *all* workflow files rather than the one that failed; see section 8. For D14 the same defect existed in two files — `src/agent.rs` and its `tests/source/agent.rs` mirror, which is the copy CI actually compiled and failed on — and all five changes were applied to both. For D15 the stall was observed on `macos-x64` only, but 7-Zip is downloaded on every platform, so the prefetch runs before **every** packaging invocation in the matrix and the test counts invocations rather than checking the one that failed: `deadlines == wrappers`, not `deadlines >= 1`. |
 | R1017-12 | Retain the evidence so every claim is re-derivable, and deliver everything in this single pull request. | This archive; D11 is the `.gitignore` defect that would otherwise have silently dropped half of it. PR #1018. |
 
 ## 4. Complete diagnostic and root-cause ledger
@@ -161,6 +191,8 @@ Sources: `annotations/all-annotations.tsv` (25 annotations) and
 | D12 | `security.yml` had no manual trigger. | Not a defect in itself, but it meant a security sweep could not be re-run without waiting for Monday's cron or pushing a commit. | `workflow_dispatch:`, matching the js template. |
 | D13 | **Found by this pull request's own CI** (run 31969845523): `macOS core slice 7/16` and `16/16` both failed with `POST should complete: Os { code: 35, kind: WouldBlock }` at `tests/integration/http_server.rs:185:69`, after `30.27s` and `30.08s` — the harness's `RESPONSE_TIMEOUT` to the millisecond, not a network fault. | Both failing tests send the **first** request to a freshly spawned agent-mode server. That request reaches rule recall → `learning_ledger::approved_lesson_for`, which built the canonical ledger *before* asking whether the ledger could answer the prompt. Building it runs the self-healing pass, which round-trips the pinned planner module (39 195 bytes) through `LinkNetwork::parse`. That parse is quadratic upstream — `meta-language`'s `point_at_byte` rescans from byte 0 for every span, twice per node — measured at 189 902 → 2 690 767 ns/byte as the input doubles from 11 KB to 187 KB, with 12 of 12 `gdb` samples inside that one function. Cost: ~10–13 s on the `dev` profile, inside the response. On a 3-core Intel runner with four tests in flight (`Cancelling … 3 tests still running`), contention pushed that constant past 30 s — which is why it hits *some* slices and not others, and why the partition assignment changes which. | `approved_lesson_for` now proves a miss from the same canonical failure trace the ledger is promoted from, before building anything, using the same normalised match `lesson_for` uses; recall behaviour is unchanged and no promotion gate is relaxed. The pinned round-trip is memoised per process (both inputs are compile-time constants). Cold `plan_chat_step` 9.96–12.6 s → 579 ms; cold POST ~13 s → 274 ms. `tests/issue_1017_ledger_recall.rs` pins it against the process-wide `ast_census_runs()` counter; with the guard removed it fails (`left: 1, right: 0`). The algorithm itself is upstream and unfixable here: reported as [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193). |
 | D14 | **Found by this pull request's own CI** (run 31978695394, head `c413c32f`): `macOS core slice 3/16` failed `agent::tests::python3_command_runs_from_allowlisted_resolved_path` after `16.223s` with `status_code: None`, empty stdout/stderr and `timed_out: true`. The slice used 83 s of its 600 s budget, so no budget, cap or concurrency change is implicated. | `run_command_inner` spawns with `.env_clear()`, so the child gets **no `TMPDIR`**. On macOS `/usr/bin/python3` is not an interpreter but a stub that calls `_xcselect_invoke_xcrun` in `/usr/lib/libxcselect.dylib`; that resolution is cached in an `xcrun_db` file kept in `$TMPDIR`, and without a usable cache the lookup is re-done every single invocation — code-signature verification through `syspolicyd` included — at a cost measured in tens of seconds ([lapcatsoftware.com/articles/xcrun.html](https://lapcatsoftware.com/articles/xcrun.html)). That is why the *same* `python3 script.py` costs 0.14 s on Linux and 5.977 s / 7.296 s on an **idle** `macos-15-intel` runner; with four tests in flight on 3 cores it crossed the 15 s `PYTHON_TIME_BUDGET_FLOOR` and the run was reported as a functional failure. The test asserts that an allowlisted resolved path *executes* — start-up latency had been given a vote on that question. | Three layers. (a) Root cause: the child now receives exactly one **constructed** variable, `TMPDIR = std::env::temp_dir()`, and still inherits nothing from the host — `command_environment()` is the single place that is decided, and `spawned_commands_receive_only_a_constructed_temporary_directory` pins its whole contents. (b) Backstop: `PYTHON_TIME_BUDGET_FLOOR` is `Duration::from_mins(1)`, documented against the measurements above rather than left as a bare literal. (c) Evidence: `FORMAL_AI_TRACE_COMMANDS=1` (off by default) reports the executed path, the budget and the elapsed time. The contract test no longer freezes the number — it asserts the *relation* `PYTHON_TIME_BUDGET_FLOOR >= OBSERVED_PYTHON_STARTUP * 4` (7.296 s × 4 = 29.2 s ≤ 60 s), that a small budget is raised and a generous one is never lowered, and that non-`python3` programs are untouched. Applied identically to `src/agent.rs` and the `tests/source/agent.rs` mirror. |
+| D15 | **Found by this pull request's own CI** (run 31984111384, head `5f623742`): `Build macos-x64` failed with `⨯ Timeout awaiting 'request' for 600000ms  failedTask=build` **after** the DMG, the ZIP and both blockmaps had been written and both `artifactBuildCompleted` events had fired (section 2.3). A false negative in the strict sense: the build succeeded and was reported as failed. | Two shipped behaviours, one of them still open upstream. (a) **The stall is unbounded except by a single total deadline.** `dmg-builder`'s `getDmgVendorPath()` fetches `dmgbuild-bundle-x86_64-75c8a6c.tar.gz` through `downloadBuilderToolset` → `downloadAndExtract` → `downloadArtifactToFile`, whose only deadline is `timeout: { request: 10 * 60 * 1000 }` (`app-builder-lib/out/util/electronGet.js:290`, comment: "prevent indefinite hang on stalled connections"). That is a *total* deadline with no `socket` or `response` sub-timeout, so a connection that goes silent immediately still burns the full 600 s before anything notices — which is exactly what the timestamps show (request at 01:40:46.4, `TimeoutError` at 01:50:46.87). (b) **A recorded rejection is terminal even when the work succeeds.** `builder-util/out/asyncTaskManager.js` does `promise.catch(it => { log.debug(…, "async task error"); this.errors.push(it); return Promise.resolve(null) })`, and `awaitTasks()` → `checkErrors()` → `throwError(this.errors)` → `throw errors[0]`. `errors[]` is **append-only**: there is no path by which a later success clears it, so once the timeout was recorded (twice, 0.2 ms apart — one rejection object reaching two managers) the build was already doomed regardless of what the download did next. The rejection is logged at `debug` level, which is why this only surfaced under `DEBUG=electron-builder`. **What the log cannot settle** is *which* promise rejected: `downloadArtifactToFile` wraps the request in `retry({retries: 3, interval: 2000, shouldRetry: … 'ETIMEDOUT' …})`, and a recovered retry should not reject at all, yet the artifact completed 2.1 s after the rejection — precisely one `interval`. That reconciliation is the question put to upstream rather than a claim made here. | Two layers, because the upstream half cannot be fixed here. (a) Primary: `desktop/scripts/prefetch-builder-toolsets.mjs` seeds `<cacheDir>/<releaseName>/<filenameWithExt>` — the checksum-validated archive cache `downloadAndExtract` consults at `electronGet.js:451–452` *before* any network call — using an impatient fetch (30 s stall deadline, 4 attempts). Every failure degrades to a `::warning` and today's behaviour, so the prefetch can never be the reason a build fails. `desktop_packaging_seeds_the_builder_toolset_cache_first` pins that it runs before **every** packaging invocation on every platform (7-Zip is downloaded everywhere, not just on macOS). (b) Backstop for archives it could not seed: `package-macos-with-retry.sh` treats `Timeout awaiting 'request' for [0-9]+ms` as transient. Reported upstream as `upstream-reports/electron-builder-async-task-manager-stale-error.md`. |
+| D15b | The D15 backstop retry could itself manufacture a **cancelled** run — the D1 false-negative class — by starting an attempt the job clock cannot finish. | The first fix used a fixed `FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS: "600"`. That constant is wrong in both directions, because packaging does not start at a fixed point: in run 95255998673 it began 28 min into the job, while run 30788311906 spent 33m21s in `cargo build` first. At 600 s the guard would have **refused a retry after a healthy ~320 s attempt** (320 + 320 > 600), silently removing the `hdiutil` retry the wrapper was written for — a regression, not a fix. | The ceiling is derived, not guessed. A `Record the job deadline` step publishes `FORMAL_AI_JOB_DEADLINE_EPOCH` = now + `matrix.capmin` × 60 − 360 s of reserve for the smoke test, checksums and uploads that follow packaging; the wrapper subtracts the time already spent. `matrix.capmin` is the *same* value `timeout-minutes` uses, so the guard cannot be computed from a stale cap. On the observed run this yields ≈936 s (a 640 s healthy retry allowed, the 1838 s stalled one refused); after a 33 m compile it yields ≈495 s and correctly declines any retry. `…_BUDGET_SECONDS` remains an explicit override, and with neither variable set the guard stays disabled so the wrapper still works outside this workflow. |
 
 ### 4.2 Diagnostics deliberately left alone, with reasons
 
@@ -302,7 +334,7 @@ merge rather than after each digest push, and add the template's
 
 ## 8. Tests-first and verification record
 
-Every fix is pinned by a test in `tests/unit/ci-cd/issue_1017.rs` (13 tests),
+Every fix is pinned by a test in `tests/unit/ci-cd/issue_1017.rs` (15 tests),
 and each one sweeps **all** workflows rather than the single file that failed —
 that is the mechanism behind R1017-11:
 
@@ -321,6 +353,8 @@ that is the mechanism behind R1017-11:
 | `cargo_lock_is_committed_so_cache_keys_stay_meaningful` | Cache keys stay meaningful. |
 | `link_report_parser_is_unit_tested_before_it_is_trusted` | D9. |
 | `superseded_read_only_work_releases_its_runners` | D10 — every read-only job has a group; the two exemptions are argued in the test. |
+| `desktop_packaging_seeds_the_builder_toolset_cache_first` | D15 — the prefetch runs before **every** packaging invocation, on every platform, and is not restricted to the leg where the stall was observed (R1017-11). |
+| `macos_packaging_retry_is_bounded_by_a_budget` | D15b — every macOS packaging step receives the job deadline; the deadline is recorded before packaging and derived from the same `matrix.capmin` that `timeout-minutes` uses; both wrapper inputs stay optional. |
 
 D13 is pinned by `tests/issue_1017_ledger_recall.rs`, which is its own test
 binary because it counts a **process-wide** static (`ast_census_runs()`) and a
@@ -476,3 +510,64 @@ red CI rather than a local inconvenience:
 Editing `src/agent.rs` also made its committed census document stale, exactly as
 in section 8.3; `cargo run --example regenerate_self_ast_census` reported
 `479 documents (1 rewritten, 0 removed)` — the one file this change touches.
+
+### 8.5 D15, measured rather than argued
+
+The two upstream behaviours behind D15 are not inferences from a log. Both are
+reproduced, with numbers, by
+`node experiments/issue-1017-electron-builder-stale-error/run.mjs`, which
+installs `builder-util@26.15.3`, `builder-util-runtime@9.7.0` and `got@11.8.6`
+(the versions `desktop/package-lock.json` resolves for electron-builder 26.15.7)
+into a scratch directory and prints:
+
+```
+== part 1: a recorded rejection outlives the success that followed it ==
+rejected: Timeout awaiting 'request' for 600000ms
+== part 2: a total deadline cannot see a dead connection early ==
+request-only deadline: 3024 ms (ETIMEDOUT) -- Timeout awaiting 'request' for 3000ms
+with socket sub-timeout: 1009 ms (ETIMEDOUT) -- Timeout awaiting 'socket' for 1000ms
+OK: both behaviours reproduce as reported upstream
+```
+
+Part 1 gives an `AsyncTaskManager` one rejection and one success; `awaitTasks()`
+rejects anyway, because `errors[]` is append-only. Part 2 points `got` at a
+`net.createServer(() => {})` listener — a socket that is accepted and then never
+written to, the CI condition — and measures the same dead connection twice: a
+`request`-only deadline notices after the whole budget (3024 ms of 3000), a
+`socket` sub-timeout after 1009 ms. At electron-builder's production numbers that
+is the difference between spending 600 s of a job's clock and a few seconds. The
+script **asserts** both (exit 1 otherwise), so it turns into a regression alarm
+the day an upstream release changes either.
+
+Filed as
+<https://github.com/electron-userland/electron-builder/issues/10091>, with both
+snippets, the archive-cache workaround this branch uses, and three code-level
+suggestions: sub-timeouts on `downloadOptions`, letting a success retract its own
+recorded rejection, and raising `async task error` above `debug`. A duplicate
+search first confirmed the only nearby report is the closed
+[#9750](https://github.com/electron-userland/electron-builder/issues/9750),
+which is a different failure (there the download is aborted; here it completes).
+
+D15b — the second defect, found while fixing the first — was verified the same
+way. A static `FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS: "600"` would have
+*removed* the pre-existing hdiutil retry on a healthy runner: the successful
+macos-x64 packaging in run 95255998673 took ~320 s, and 320 + 320 > 600, so the
+wrapper would have declined the second attempt it exists to make. The budget is
+now derived from the job's own clock (`matrix.capmin` × 60 − a 360 s
+post-packaging reserve, recorded into `$GITHUB_ENV` by the job's first step), and
+the two observed runs bracket the behaviour: ≈936 s left when packaging began
+28 min into the 50-minute cap (a retry after a healthy attempt fits; one after
+the 919 s stalled attempt does not), and ≈495 s in run 30788311906, where 33m21s
+of `cargo build` came first and the wrapper correctly declines to retry at all.
+
+Local gates for this slice: `cargo test --test unit macos_package_retry` (14
+tests), `cargo test --test unit ci_cd::issue_1017` (15 tests),
+`bash scripts/lint-shell-scripts.sh` (33 scripts),
+`actionlint` with the same `-ignore 'unexpected key "queue" for "concurrency"
+section'` CI itself passes (`.github/workflows/release.yml:265–267`; the key is
+valid, actionlint's schema lags — [rhysd/actionlint#657](https://github.com/rhysd/actionlint/issues/657)),
+`cargo fmt --check`, and `cargo clippy --lib --bins --tests --all-features -- -D
+warnings`. Clippy caught one real defect in the first draft: the test helper
+`epoch_in(-3600)` cast a `u64` epoch to `i64` (`cast_possible_wrap`). Rewritten
+as `now_epoch`/`epoch_in`/`epoch_ago` with `saturating_sub`, which also reads
+better than a negative offset.

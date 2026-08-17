@@ -364,3 +364,57 @@ test("prefetch failures warn and never fail packaging", async () => {
   );
   fs.rmSync(bare, { recursive: true, force: true });
 });
+
+// The run that motivated this script had no way to say whether the DMG toolset
+// came from the cache or was fetched again, which is why the tracing exists at
+// all. It must be available and it must stay off unless it is asked for: a
+// prefetch that narrates every attempt by default would bury the `::warning`
+// lines that are the script's only real output.
+test("per-attempt tracing is available but off by default", async () => {
+  const root = scratch("verbose");
+  const payload = Buffer.from("7za payload");
+  const toolsets = requiredToolsets("linux", "x64").map((toolset) => ({
+    ...toolset,
+    sha256: sha256(payload),
+  }));
+  fakeInstall(root, toolsets);
+  const server = await serve((request, response) => {
+    response.writeHead(200, { "content-length": payload.length });
+    response.end(payload);
+  });
+
+  const run = async (env, cacheDir) => {
+    const lines = [];
+    await prefetchToolsets({
+      env,
+      platform: "linux",
+      arch: "x64",
+      baseDir: root,
+      cacheDir,
+      logger: { log: (message) => lines.push(message), warn: (message) => lines.push(message) },
+      toolsets,
+      fetchImpl: (url, init) => fetch(server.origin, init),
+      downloadOptions: { attempts: 2, retryDelayMs: 0, stallTimeoutMs: 5000, totalTimeoutMs: 20000 },
+    });
+    return lines.join("\n");
+  };
+
+  try {
+    const quiet = await run({}, path.join(root, "quiet"));
+    assert.ok(
+      !quiet.includes("[prefetch]"),
+      `tracing must stay off unless FORMAL_AI_PREFETCH_VERBOSE=1: ${quiet}`,
+    );
+    assert.match(quiet, /Prefetched 7zip-linux-x64\.tar\.gz/);
+
+    const verbose = await run({ FORMAL_AI_PREFETCH_VERBOSE: "1" }, path.join(root, "verbose"));
+    assert.match(
+      verbose,
+      /\[prefetch] 7zip: \{.*"status":"downloaded"/,
+      `FORMAL_AI_PREFETCH_VERBOSE=1 must report each toolset's outcome: ${verbose}`,
+    );
+  } finally {
+    await server.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
