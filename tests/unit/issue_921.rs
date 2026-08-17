@@ -19,6 +19,10 @@ fn issue_921_both_directions_are_committed_and_traceable() {
             "| R921-3 ",
             "| R921-4 ",
             "| R921-5 ",
+            // The two defects the gate proved nothing about: a working
+            // transport carrying no work (hive-mind#2158).
+            "| R921-6 ",
+            "| R921-7 ",
         ],
     );
     assert_contains_all(
@@ -30,9 +34,11 @@ fn issue_921_both_directions_are_committed_and_traceable() {
             "## 3. Reproduction And Root Cause",
             "## 4. Implemented Gate",
             "## 5. Verification",
+            "## 6. The Two Defects The Gate Was Not Enough To Catch",
             "Hive Mind -> Agent CLI -> Formal AI",
             "Formal AI -> external Agent CLI",
             "E69",
+            "hive-mind/issues/2158",
         ],
     );
     assert_contains_all(
