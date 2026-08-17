@@ -205,6 +205,51 @@ Add a greeting file
 
 Create file greeting.txt containing Hello from the work item";
 
+/// The bounded objective Hive Mind 2.12.5 actually sends, byte-for-byte from
+/// `buildFormalAiRepositoryPrompt` in
+/// [hive-mind#2159](https://github.com/link-assistant/hive-mind/pull/2159).
+///
+/// The #2158 fix stripped Hive Mind's workflow policy out of this request, so
+/// there is no preamble left to separate and no delimiter to lean on — which is
+/// exactly why the remaining defect is Formal AI's. This shape is what
+/// production sends, so it is what the follow-up has to be measured against.
+const HIVE_MIND_BOUNDED_OBJECTIVE: &str = "\
+Resolve the GitHub issue at https://github.com/example/example/issues/1 in this repository.
+Keep the solution on branch issue-1-example.
+Update the pull request at https://github.com/example/example/pull/2.
+
+Implement and verify the solution before reporting completion.
+Proceed.
+";
+
+/// The production request routes to a repository work item and reads it, with
+/// no objective delimiter involved.
+#[test]
+fn the_bounded_hive_mind_objective_reads_the_issue_it_names() {
+    let plan = compose_general_change_plan(HIVE_MIND_BOUNDED_OBJECTIVE)
+        .expect("the bounded Hive Mind objective must compose a repository work-item plan");
+
+    assert_eq!(plan.mode, GeneralPlanMode::RepositoryWorkItem);
+    assert_eq!(
+        plan.target, "https://github.com/example/example/issues/1",
+        "the work item is the issue, not the branch or the pull request",
+    );
+
+    let AgenticPlan::ToolCalls(calls) = formal_ai::agentic_coding::plan_chat_step(
+        &[ChatMessage::user(HIVE_MIND_BOUNDED_OBJECTIVE)],
+        &["fetch_url", "write_file", "run_command"],
+    )
+    .expect("the production request must have an agentic plan") else {
+        panic!("the production request must read the issue it names")
+    };
+    assert_eq!(calls[0].tool, "fetch_url");
+    assert!(
+        calls[0].arguments.contains(&plan.target),
+        "the fetch must address the issue Hive Mind named: {}",
+        calls[0].arguments,
+    );
+}
+
 /// Requirement 1 of the follow-up: reading the work item comes before concluding
 /// that nothing can be executed.
 #[test]
