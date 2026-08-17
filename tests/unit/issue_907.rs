@@ -369,13 +369,18 @@ fn a_declared_absolute_path_is_not_a_request() {
 /// A request may punctuate itself with a colon, and a great many do. Earlier
 /// attempts at this guard keyed on the colon alone, then on a four-verb request
 /// list, then on subject position, and each one silently swallowed some of
-/// these. None of them carries a `show`/`tell`/`print`/`give` verb, and
-/// `count`/`search`/`create` are verbs no seed list knows.
+/// these.
+///
+/// The first two rows are the load-bearing ones: `count` and `create` belong to
+/// no request-verb list, so a guard keyed on such a list drops them while the
+/// `print`/`show` rows below sail through. Keeping both kinds here is what makes
+/// the case adversarial rather than self-confirming — the value after the colon
+/// is the only signal that separates all four from a caller declaration.
 #[test]
 fn a_request_that_punctuates_itself_with_a_colon_still_routes() {
     for request in [
         "count lines: Cargo.toml",
-        "create a directory: build",
+        "create a directory called: build",
         "print the current directory: I need the absolute path",
         "show me the working directory: then list its files",
     ] {
@@ -544,3 +549,5 @@ fn the_gemini_cli_session_context_no_longer_hijacks_the_request() {
         "{call}"
     );
 }
+
+

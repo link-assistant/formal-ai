@@ -120,6 +120,7 @@ terminal_commands
     token uname
     token export
     token which
+    token file
     token sudo
     token ssh
     token tar

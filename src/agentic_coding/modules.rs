@@ -50,6 +50,7 @@ pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;
 mod shell_command;
+mod shell_command_policy;
 mod shell_file_fallback;
 pub mod source_links;
 pub mod statement_audit;
