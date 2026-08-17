@@ -131,6 +131,54 @@ fn every_step_budget_expires_before_the_job_clock_it_guards() {
     );
 }
 
+/// The budget sweep above can only judge a job that *declares* a budget, so a
+/// job with none is invisible to it -- 44 of the 47 capped jobs, when this was
+/// measured. `E2E (opencode-vscode)` was one of them: in run 32050028114 it sat
+/// in an unbudgeted `apt-get update` until the 25-minute job cap killed it, and
+/// GitHub reported that kill as `cancelled`, so a hung Ubuntu mirror surfaced as
+/// a benign-looking cancellation instead of a failure. That is issue #1017's own
+/// false negative, in a workflow the original sweep never reached.
+///
+/// Budgeting all 44 would be churn. The rule pinned here is narrower and is the
+/// one the incident actually establishes: a step whose runtime is decided by a
+/// *remote* host -- a package mirror, a registry -- must own a deadline, because
+/// it is the class that hangs indefinitely and converts into a cancellation.
+#[test]
+fn network_installs_under_a_job_cap_own_a_deadline() {
+    // Package-manager fetches whose duration depends on a remote mirror.
+    const UNBOUNDED_NETWORK_COMMANDS: &[&str] = &["apt-get update", "apt-get install"];
+
+    let mut checked = 0_usize;
+    for (name, body) in workflow_files() {
+        for job_name in workflow_job_names(&body) {
+            let job = job_block(&body, job_name);
+            if job_timeout(job).is_none() {
+                continue; // no cap: a different contract governs it
+            }
+            for command in UNBOUNDED_NETWORK_COMMANDS {
+                if !job.contains(command) {
+                    continue;
+                }
+                checked += 1;
+                assert!(
+                    job.contains("run-with-budget-warning.sh"),
+                    "{name}: job `{job_name}` runs `{command}` under a job cap \
+                     but budgets nothing. A hung mirror then burns the whole cap \
+                     and GitHub reports the kill as `cancelled`, not `failure` \
+                     -- the issue #977 false negative, one level down. Wrap it in \
+                     scripts/run-with-budget-warning.sh so the deadline is owned \
+                     by the step and an overrun says so (issue #1017)."
+                );
+            }
+        }
+    }
+
+    assert!(
+        checked >= 1,
+        "expected at least the agentic matrix's Xvfb install, checked {checked}"
+    );
+}
+
 /// A job with no cap inherits GitHub's 360-minute default: six billable hours,
 /// and a `cancelled` conclusion at the end of them.
 #[test]
