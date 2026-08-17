@@ -59,6 +59,14 @@ jobs:
           # Exclude case-studies directory - these are research documents from
           # external repos with references to files and issues that don't exist
           # in this repository (similar exclusion pattern as eslint.config.js)
+          #
+          # 429 is accepted rather than treated as broken: it means the host
+          # throttled this runner, which says nothing about whether the link
+          # resolves. `--max-retries 3` is not enough when the throttling
+          # outlasts the retries, as it does for raw.githubusercontent.com
+          # LICENSE files pinned to a SHA. `--cache-exclude-status` keeps a 429
+          # out of the cache so the next run re-checks it for real instead of
+          # replaying a throttled verdict for a day.
           args: >-
             --verbose
             --no-progress
@@ -66,6 +74,8 @@ jobs:
             --max-cache-age 1d
             --max-retries 3
             --timeout 30
+            --accept '200..=204,429'
+            --cache-exclude-status '429'
             --host-concurrency 2
             --host-request-interval 100ms
             --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)'
