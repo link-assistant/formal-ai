@@ -22,3 +22,27 @@ https://app\.docker\.com/settings/personal-access-tokens
 # The HTML is stamped and served from src/web/, so this build-time relative
 # asset is not resolvable from src/web/app/index.html in the checkout.
 styles\.css\?v=__FORMAL_AI_ASSET_VERSION__
+
+# GitHub issue and pull-request pages, which CI cannot verify.
+#
+# GitHub answers anonymous requests for these pages from CI address ranges with
+# a flat 404 -- not a redirect, not a 429 -- so an unauthenticated checker
+# reports every one of them as broken. On 2026-08-17 this was 500 of 533 errors
+# here, and a `workflow_dispatch` run on `main` failed identically (488 of 523),
+# so it is not specific to any branch. `rust-lang/rust/issues/1` also 404s
+# anonymously from the same network, confirming the behaviour is GitHub-wide.
+# The check had stayed green only because `--max-cache-age 1d` kept serving
+# verdicts recorded before GitHub started refusing these requests.
+#
+# Passing lychee a GITHUB_TOKEN does not help: it was tried as both the action's
+# `token:` input and the `env:` variable, and the 404s were unchanged, so lychee
+# checks these by HTTP rather than through the API that does answer 200.
+#
+# The same refusal covers /blob/: `formal-ai/blob/main/LICENSE` 404s
+# anonymously while the file plainly exists, so file-view links are skipped too.
+#
+# Scoped to the page types GitHub refuses. Bare repository URLs, /tree/ and
+# /releases/ are still checked, so a mistyped or deleted repository is still
+# caught.
+https://github\.com/[^/]+/[^/]+/(issues|pull)/[0-9]+
+https://github\.com/[^/]+/[^/]+/blob/

@@ -227,7 +227,7 @@ upstream payloads vendored). The full list, in fixture order:
 | HellaSwag | commonsense completion | <https://rowanzellers.com/hellaswag/> |
 | TruthfulQA | truthfulness | <https://github.com/sylinrl/TruthfulQA> |
 | WinoGrande | commonsense coreference | <https://github.com/allenai/winogrande> |
-| DROP | reading comprehension | <https://allennlp.org/drop> |
+| DROP | reading comprehension | <https://arxiv.org/abs/1903.00161> |
 | SQuAD | reading comprehension | <https://rajpurkar.github.io/SQuAD-explorer/> |
 | Natural Questions | open-domain QA | <https://ai.google.com/research/NaturalQuestions> |
 | TriviaQA | reading comprehension | <https://nlp.cs.washington.edu/triviaqa/> |
