@@ -14,6 +14,16 @@
 #
 # Set `CARGO_TEST_NO_PRUNE=1` to skip pruning entirely.
 #
+# On CI this runs as a step of the `test` job in .github/workflows/release.yml,
+# gated on `!cancelled()` so a red suite is still pruned -- it leaves the same
+# stale artifacts a green one does. That gate is `!cancelled()` rather than the
+# unconditional status function because issue #808 and CI-CD-BEST-PRACTICES.md
+# section 10 forbid the latter anywhere in that job: it also fires when the run
+# itself is cancelled, and pruning a half-written tree is pointless.
+# `ci_cd::workflow_release::test_job_skips_non_code_changes` pins the rule by
+# substring across the whole job block, so the forbidden name must not appear
+# there even inside a comment.
+#
 # Usage:
 #   scripts/prune-build-cache.sh [marker-file]
 set -euo pipefail
