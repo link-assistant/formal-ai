@@ -625,6 +625,7 @@ fn is_safe_path(token: &str) -> bool {
 /// conditional clause never licenses the token it mentions.
 fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     sentence_spans(prompt)
+        .into_iter()
         .filter(|sentence| !states_a_command_policy(sentence))
         .find_map(|sentence| named_shell_command_in_sentence(sentence, vocab))
 }
@@ -632,17 +633,38 @@ fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Optio
 /// The prompt split into sentences, each as a slice of the original text.
 ///
 /// Splitting keeps the original case and spacing, because a recovered command
-/// carries its arguments through verbatim.
-fn sentence_spans(prompt: &str) -> impl Iterator<Item = &str> {
-    prompt
-        .split(|character: char| {
-            matches!(
-                character,
-                '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
-            )
-        })
-        .map(str::trim)
-        .filter(|sentence| !sentence.is_empty())
+/// carries its arguments through verbatim — `run cat notes.txt` has to survive
+/// as one sentence, so a dot inside a token ends nothing, exactly as in
+/// [`sentences_with_mood`].
+fn sentence_spans(prompt: &str) -> Vec<&str> {
+    let mut sentences = Vec::new();
+    let mut start = 0;
+    for (index, character) in prompt.char_indices() {
+        if !matches!(
+            character,
+            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
+        ) {
+            continue;
+        }
+        if character == '.'
+            && prompt[index + character.len_utf8()..]
+                .chars()
+                .next()
+                .is_some_and(char::is_alphanumeric)
+        {
+            continue;
+        }
+        let text = prompt[start..index].trim();
+        if !text.is_empty() {
+            sentences.push(text);
+        }
+        start = index + character.len_utf8();
+    }
+    let tail = prompt[start..].trim();
+    if !tail.is_empty() {
+        sentences.push(tail);
+    }
+    sentences
 }
 
 /// Whether `sentence` states a *rule about* running commands rather than asking
