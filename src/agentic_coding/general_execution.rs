@@ -23,7 +23,17 @@ pub(super) fn plan_general_change_step(
     plan: &GeneralChangePlan,
 ) -> AgenticPlan {
     let progress = Progress::scan(messages);
-    if let Some(failure) = progress.latest_failure() {
+    // Reading the work item is an attempt to find out whether anything *can* be
+    // executed, not a step the request named. A read that comes back missing or
+    // empty therefore answers that question — the capability is unavailable —
+    // and the run continues to record the reference. Reporting the fetch as the
+    // run's failure would replace the honest terminal state of issue #904 with
+    // a transport message about a URL the user never asked to see.
+    let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && progress
+            .latest_failure()
+            .is_some_and(|failure| failure.capability == Capability::Fetch);
+    if let Some(failure) = progress.latest_failure().filter(|_| !work_item_unreadable) {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
             if let (Some(path), Some(read_tool)) =
@@ -174,18 +184,29 @@ pub(super) fn plan_general_change_step(
 /// Plan the next step from what the fetched work item actually asks for.
 ///
 /// The real corpus decides the shape here. The issues Hive Mind dispatches say
-/// things like *"implement a Hello World program in Scala"* and *"create a
-/// GitHub Actions workflow"* — a described artifact, not literal bytes — so the
-/// seed-backed source route gets first refusal and the literal-file composer
-/// follows it. Returning [`None`] means the work item named nothing this
-/// sandbox can produce, which keeps `planned_not_executed` truthful rather than
-/// inventing an artifact the issue never asked for.
+/// *"implement a Hello World program in Scala"* — a described artifact in a
+/// named language, not literal bytes — so the same coding catalog that answers
+/// that request when a user types it directly answers it here, through the
+/// execution recipe its [`SymbolicAnswer`](crate::solver::SymbolicAnswer)
+/// carries. The literal-file composer follows, for a work item that does spell
+/// out a path and its contents.
+///
+/// Returning [`None`] means the work item named nothing this sandbox can
+/// produce — an unsupported language, or prose with no artifact in it at all —
+/// which keeps `planned_not_executed` truthful rather than inventing an
+/// artifact the issue never asked for.
 fn plan_work_item_execution(
     objective: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    if let Some(step) = super::code_task::plan_generated_source_step(objective, messages, tool_names)
+    let solver = crate::solver::UniversalSolver::new(crate::solver::SolverConfig {
+        agent_mode: true,
+        ..crate::solver::SolverConfig::default()
+    });
+    let answer = solver.solve(objective);
+    if let Some(step) =
+        super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
     {
         return Some(step);
     }

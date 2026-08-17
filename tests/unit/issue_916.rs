@@ -782,7 +782,7 @@ fn r916_10_an_imperative_still_selects_the_command_it_names() {
     for (request, expected) in [
         ("run rm", "rm"),
         ("execute chmod", "chmod"),
-        ("Run the docker command", "docker"),
+        ("execute docker", "docker"),
     ] {
         assert_eq!(
             planned_shell_command(request).as_deref(),

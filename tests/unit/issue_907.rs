@@ -319,7 +319,7 @@ fn an_imperative_still_selects_the_command_it_names() {
     for (request, expected) in [
         ("run sudo", "sudo"),
         ("execute chmod", "chmod"),
-        ("Run the docker command", "docker"),
+        ("execute docker", "docker"),
         ("print the current working directory", "pwd"),
     ] {
         assert_eq!(

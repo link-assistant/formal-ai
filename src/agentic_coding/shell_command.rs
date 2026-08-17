@@ -372,6 +372,9 @@ fn is_fact_statement(
     if interrogative || vocab.asks_a_question(sentence) {
         return false;
     }
+    if labels_a_value(sentence, cue) {
+        return true;
+    }
     // The cue may or may not carry the determiner itself ("the current time" vs
     // "current date"), so the subject is tried with and without its lead.
     let Some(rest) = sentence
@@ -391,6 +394,27 @@ fn is_fact_statement(
         return words.len() > 1 || head.chars().count() > copula.chars().count();
     }
     words.len() > 1 && vocab.copula_in(last).is_some()
+}
+
+/// Whether `sentence` *labels* a value with `cue` rather than asking for it:
+/// the cue is followed by a colon and something after it.
+///
+/// A copula is not the only way to state a fact. Agent harnesses prefer the
+/// label form — Hive Mind sent `Your prepared working directory: /tmp/example`,
+/// which supplies the working directory exactly as *"the working directory is
+/// /tmp/example"* would, and answering it planned `pwd` for every run
+/// (issue #907, follow-up). The colon has to follow the cue itself, so
+/// *"print the working directory: I need the path"* keeps routing.
+fn labels_a_value(sentence: &str, cue: &str) -> bool {
+    let Some(start) = sentence.find(cue) else {
+        return false;
+    };
+    let after = &sentence[start + cue.len()..];
+    let mut characters = after.chars().skip_while(|character| *character == ' ');
+    characters
+        .next()
+        .is_some_and(|character| matches!(character, ':' | '：'))
+        && characters.any(|character| !character.is_whitespace())
 }
 
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
