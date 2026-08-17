@@ -960,7 +960,7 @@ jobs:
       # for hive-mind#2158. The full-circle gate runs against that boundary, so
       # the pin may not fall back below it.
       - name: Install @link-assistant/hive-mind CLI
-        run: bun add -g @link-assistant/hive-mind@2.12.5
+        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.12.5
       - name: Install external agent CLIs
         run: |
           # OpenCode's pinned postinstall selects its platform binary. Trust
