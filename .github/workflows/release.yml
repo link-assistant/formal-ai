@@ -373,9 +373,17 @@ jobs:
         run: cargo test --doc --verbose
       - name: Prune build cache to the latest build
         # The cargo cache is restored on the next run, so it should carry one
-        # build's artifacts rather than accumulating every earlier one. Runs on
-        # failure too: a red suite still leaves a cache behind to be saved.
-        if: always()
+        # build's artifacts rather than accumulating every earlier one. Runs
+        # after a failed suite too: a red run leaves the same stale artifacts.
+        #
+        # The condition is `!cancelled()` on purpose. Issue #808 and
+        # CI-CD-BEST-PRACTICES.md section 10 rule out the unconditional
+        # status function here, because it also runs steps when the *run* is
+        # cancelled, and pruning a cancelled run's half-written tree is
+        # pointless. `ci_cd::workflow_release::test_job_skips_non_code_changes`
+        # pins that rule across this whole job block by substring, so the
+        # forbidden name must not appear even inside a comment.
+        if: ${{ !cancelled() }}
         run: scripts/prune-build-cache.sh
   macos-core-tests:
     name: macOS Core Tests
