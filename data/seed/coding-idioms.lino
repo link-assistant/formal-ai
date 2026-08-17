@@ -508,13 +508,13 @@ coding_idioms
         code "{list}.sum()"
       case
         for "product"
-        code "{list}.reduce {{ acc, n -> acc * n }}"
+        code "{list}.fold(1) { acc, n -> acc * n }"
       case
         for "minimum"
-        code "{list}.min()"
+        code "{list}.minOrNull()"
       case
         for "maximum"
-        code "{list}.max()"
+        code "{list}.maxOrNull()"
   coding_meta_algorithm problem_class_to_shared_ir_to_renderers_to_verification
     stage_evidence "{stage} output={output} verifier={verifier}"
     surface_evidence "{surface} projection={projection}"
