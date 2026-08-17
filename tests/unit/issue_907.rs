@@ -349,37 +349,63 @@ fn an_imperative_still_selects_the_command_it_names() {
     }
 }
 
-/// A `cue:` label states a fact as surely as a copula does, so a harness line
-/// that *supplies* the working directory must not be answered with `pwd`.
+/// A request may punctuate itself with a colon, and a great many do. An earlier
+/// attempt at this fix read every `cue:` as a caller declaration and silently
+/// swallowed all of these — none carries a `show`/`tell`/`print`/`give` verb, so
+/// no request-verb guard rescues them either.
+///
+/// The colon rule was removed rather than narrowed, because the framing it
+/// targeted (*"Your prepared working directory: /tmp/example"*) sits before the
+/// objective delimiter and is already dropped with the rest of the preamble.
+/// This test is what keeps the cheaper, broader rule from coming back.
 #[test]
-fn a_labelled_value_is_a_declaration_not_a_request() {
-    for declaration in [
-        "Your prepared working directory: /tmp/example",
-        "current directory: /tmp",
-        "Workspace path: /srv/app",
+fn a_request_that_punctuates_itself_with_a_colon_still_routes() {
+    for request in [
+        "count lines: Cargo.toml",
+        "create a directory: build",
+        "print the current directory: I need the absolute path",
+        "show me the working directory: then list its files",
     ] {
-        assert_eq!(
-            planned_command(declaration),
-            None,
-            "a labelled value planned a command: {declaration:?}",
+        assert!(
+            planned_command(request).is_some(),
+            "{request:?} is a request, not a caller declaration",
         );
     }
 }
 
-/// The other side of the same rule, and the one a colon-based guard gets wrong
-/// most easily: a request may punctuate itself with a colon too. Every prompt
-/// here carries a seed-declared request verb or question word, which is what
-/// separates it from the declarations above.
+/// Policy filtering is whole-prompt, so a request arriving *alongside* policy
+/// still reaches the router. Without this, the conservative filter would silence
+/// every turn a caller prefixed with its rules.
 #[test]
-fn a_request_that_carries_a_colon_still_routes() {
-    for (request, expected) in [
-        ("print the current directory: I need the absolute path", "pwd"),
-        ("show me the working directory: then list its files", "pwd"),
+fn a_request_beside_a_policy_sentence_still_routes() {
+    assert_eq!(
+        planned_command("Never run rm outside the workspace. Now execute pwd.").as_deref(),
+        Some("pwd"),
+        "policy in one sentence must not silence the request in the next",
+    );
+}
+
+/// Every seeded policy lead, in every language it is declared in. Asserting the
+/// seed *contains* a lead proves nothing about routing, which is what the
+/// earlier version of this file did.
+#[test]
+fn every_policy_lead_suppresses_its_command_in_every_language() {
+    for policy in [
+        "If you run rm, ask first",
+        "After you run docker, clean up",
+        "While running chmod, stay inside the workspace",
+        "Unless asked, never run sudo",
+        "Always run docker with --rm",
+        "Do not run rm outside the workspace",
+        "Когда запускаешь sudo, делай это в фоне",
+        "Никогда не запускай rm вне рабочей папки",
+        "如果 运行 docker，请加 --rm",
+        "Nunca ejecutes rm fuera del espacio de trabajo",
     ] {
         assert_eq!(
-            planned_command(request).as_deref(),
-            Some(expected),
-            "{request:?} is an imperative and must still select {expected}",
+            planned_command(policy),
+            None,
+            "policy planned a command: {policy:?}",
         );
     }
 }

@@ -31,6 +31,14 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// natural language in the solver.
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
+    // Caller policy is filtered here, not inside one strategy, because
+    // `prefixed_shell_command` below runs first and matches on the whole prompt:
+    // a rule applied only to `named_shell_command` would leave
+    // "Run commands with sudo only when necessary." passing straight through as
+    // an explicitly introduced command (issue #907, follow-up).
+    if governs_commands_rather_than_requesting_one(prompt) {
+        return None;
+    }
     let vocab = seed::terminal_command_vocabulary();
     let intent_vocab = seed::shell_intent_vocabulary();
     let intent = intent_shell_command(prompt, &intent_vocab);
@@ -372,9 +380,13 @@ fn is_fact_statement(
     if interrogative || vocab.asks_a_question(sentence) {
         return false;
     }
-    if labels_a_value(sentence, cue, vocab) {
-        return true;
-    }
+    // A `cue:` label was tried here and removed. Hive Mind's
+    // "Your prepared working directory: /tmp/example" is caller framing, but it
+    // sits *before* the objective delimiter, so `plan_chat_step` already drops
+    // it with the whole preamble — while a colon rule cost real requests
+    // ("delete the file: old.log", "count lines: src/main.rs", "search for:
+    // TODO"), none of which carries a request verb to be rescued by. The
+    // narrower fix is the one that keeps them.
     // The cue may or may not carry the determiner itself ("the current time" vs
     // "current date"), so the subject is tried with and without its lead.
     let Some(rest) = sentence
@@ -394,37 +406,6 @@ fn is_fact_statement(
         return words.len() > 1 || head.chars().count() > copula.chars().count();
     }
     words.len() > 1 && vocab.copula_in(last).is_some()
-}
-
-/// Whether `sentence` *labels* a value with `cue` rather than asking for it:
-/// the cue is followed by a colon and a value, and nothing in the sentence asks
-/// for anything.
-///
-/// A copula is not the only way to state a fact. Agent harnesses prefer the
-/// label form — Hive Mind sent `Your prepared working directory: /tmp/example`,
-/// which supplies the working directory exactly as *"the working directory is
-/// /tmp/example"* would, and answering it planned `pwd` for every run
-/// (issue #907, follow-up).
-///
-/// The colon alone is not enough to call a sentence a label, because a request
-/// may punctuate itself the same way: *"print the current directory: I need the
-/// absolute path"* is an imperative that happens to carry a colon. A sentence
-/// carrying a seed-declared request verb or question word is therefore never a
-/// label — the same rule [`is_fact_statement`] already applies before testing
-/// for a copula.
-fn labels_a_value(sentence: &str, cue: &str, vocab: &seed::CallerContextVocabulary) -> bool {
-    if vocab.asks_a_question(sentence) {
-        return false;
-    }
-    let Some(start) = sentence.find(cue) else {
-        return false;
-    };
-    let after = &sentence[start + cue.len()..];
-    let mut characters = after.chars().skip_while(|character| *character == ' ');
-    characters
-        .next()
-        .is_some_and(|character| matches!(character, ':' | '：'))
-        && characters.any(|character| !character.is_whitespace())
 }
 
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
@@ -718,6 +699,28 @@ fn states_a_command_policy(sentence: &str) -> bool {
                 .strip_prefix(lead.as_str())
                 .is_some_and(|rest| rest.starts_with(' '))
         })
+}
+
+/// Whether every sentence of `prompt` is caller policy, so nothing in it asks
+/// for a command to run now.
+///
+/// The check is whole-prompt because `prefixed_shell_command` claims a message
+/// that merely *starts* with `run`/`execute` before any sentence-level rule is
+/// consulted; a policy filter applied only to `named_shell_command` would leave
+/// that branch open. Requiring *every* sentence to be policy keeps a genuine
+/// request that arrives alongside one — *"Never run rm outside the workspace.
+/// Now run git status."* — reaching the router through its second sentence.
+///
+/// The known cost is a single-sentence request whose only clause opens with a
+/// lead: *"If the build fails, run cargo test."* is suppressed. Splitting on the
+/// comma to rescue it also rescues *"When running sudo commands, run them in the
+/// background."*, which is the reported defect itself, so the two cannot be
+/// separated by punctuation alone. The suppression is the conservative side of
+/// that trade — a command not run, rather than one run unasked — and rephrasing
+/// without the conditional recovers it.
+fn governs_commands_rather_than_requesting_one(prompt: &str) -> bool {
+    let sentences = sentence_spans(prompt);
+    !sentences.is_empty() && sentences.iter().all(|sentence| states_a_command_policy(sentence))
 }
 
 fn named_shell_command_in_sentence(
