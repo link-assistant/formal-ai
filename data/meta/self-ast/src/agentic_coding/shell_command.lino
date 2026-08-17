@@ -2,130 +2,131 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 40569
-  line_count 997
-  content_id source_module_1cbece48ef3a9818
-  symbol_count 42
+  byte_len 42311
+  line_count 1038
+  content_id source_module_15023e2377969836
+  symbol_count 43
   symbols
     const REPORT_ISSUE_ACTION 13 13
     function shell_command_for_task 32 75
     function semantic_shell_command_for_task 83 85
     function strip_balanced_outer_quotes 87 94
     function prefixed_shell_command 108 123
-    function reads_as_prose 131 137
-    function bare_shell_command 139 155
-    function prefix_boundary 157 163
-    function code_search_query_for_task 170 192
-    function literal_code_search_query 194 200
-    function shaped_code_search_token 202 216
-    function adjacent_code_search_token 218 242
-    function search_tokens 244 250
-    function search_tokens_with_offsets 252 263
-    function valid_search_identifier 265 275
-    function sentences_with_mood 295 326
-    function requesting_sentences 336 350
-    function carries_authoring_task 360 367
-    function strip_subject_lead 371 382
-    function is_fact_statement 393 428
-    function intent_shell_command 430 482
-    function path_arguments 484 500
-    function collect_path_arguments 502 530
-    function local_search_query 532 558
-    function resolve_shell_command 560 566
-    function workspace_command 568 579
-    function remainder_argument 582 590
-    function path_argument 595 605
-    function name_lead_argument 610 625
-    function is_safe_path 629 636
-    function named_shell_command 660 665
-    function sentence_spans 673 702
-    function states_a_command_policy 711 737
-    function orders_a_named_command 742 756
-    function governs_commands_rather_than_requesting_one 773 776
-    function named_shell_command_in_sentence 778 821
-    function collect_command 825 838
-    function normalize_command_word 843 849
-    function is_prose_word 854 926
-    const PROSE_WORDS 855 921
-    function asks_for_directory_listing 932 993
-    function contains_any 995 997
+    function reads_as_prose 135 145
+    function bare_shell_command 147 163
+    function prefix_boundary 165 171
+    function code_search_query_for_task 178 200
+    function literal_code_search_query 202 208
+    function shaped_code_search_token 210 224
+    function adjacent_code_search_token 226 250
+    function search_tokens 252 258
+    function search_tokens_with_offsets 260 271
+    function valid_search_identifier 273 283
+    function sentences_with_mood 303 334
+    function requesting_sentences 344 358
+    function carries_authoring_task 368 375
+    function strip_subject_lead 379 390
+    function labels_a_value 416 432
+    function is_fact_statement 434 465
+    function intent_shell_command 467 519
+    function path_arguments 521 537
+    function collect_path_arguments 539 567
+    function local_search_query 569 595
+    function resolve_shell_command 597 603
+    function workspace_command 605 616
+    function remainder_argument 619 627
+    function path_argument 632 642
+    function name_lead_argument 647 662
+    function is_safe_path 666 673
+    function named_shell_command 697 702
+    function sentence_spans 710 739
+    function states_a_command_policy 748 778
+    function orders_a_named_command 783 797
+    function governs_commands_rather_than_requesting_one 814 817
+    function named_shell_command_in_sentence 819 862
+    function collect_command 866 879
+    function normalize_command_word 884 890
+    function is_prose_word 895 967
+    const PROSE_WORDS 896 962
+    function asks_for_directory_listing 973 1034
+    function contains_any 1036 1038
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26422
-    named_node_count 5467
+    total_link_count 27445
+    named_node_count 5691
     distinct_node_kinds 73
     node_kinds
       abstract_type 2
-      arguments 500
-      array_expression 7
+      arguments 517
+      array_expression 8
       array_type 6
       assignment_expression 3
-      binary_expression 119
-      block 104
-      boolean_literal 5
+      binary_expression 124
+      block 110
+      boolean_literal 10
       break_expression 3
-      call_expression 500
-      char_literal 98
-      closure_expression 123
-      closure_parameters 123
+      call_expression 517
+      char_literal 101
+      closure_expression 124
+      closure_parameters 124
       compound_assignment_expr 1
       const_item 2
       continue_expression 6
       crate 4
-      doc_comment 175
+      doc_comment 194
       else_clause 1
-      expression_statement 67
-      field_expression 448
-      field_identifier 448
+      expression_statement 74
+      field_expression 464
+      field_identifier 464
       for_expression 6
-      function_item 40
+      function_item 41
       generic_function 4
       generic_type 34
-      identifier 1059
-      if_expression 28
-      index_expression 11
+      identifier 1095
+      if_expression 30
+      index_expression 12
       inner_doc_comment_marker 9
       integer_literal 23
       let_condition 4
-      let_declaration 99
+      let_declaration 104
       lifetime 9
       lifetime_parameter 3
-      line_comment 219
-      macro_invocation 19
+      line_comment 234
+      macro_invocation 20
       match_arm 11
       match_block 2
       match_expression 2
       match_pattern 11
-      mutable_specifier 9
-      outer_doc_comment_marker 166
-      parameter 83
-      parameters 40
-      parenthesized_expression 11
-      primitive_type 100
-      range_expression 14
-      reference_expression 41
-      reference_type 86
-      return_expression 14
-      scoped_identifier 47
+      mutable_specifier 10
+      outer_doc_comment_marker 185
+      parameter 86
+      parameters 41
+      parenthesized_expression 12
+      primitive_type 103
+      range_expression 15
+      reference_expression 43
+      reference_type 89
+      return_expression 19
+      scoped_identifier 48
       scoped_type_identifier 3
       scoped_use_list 2
       self 1
       source_file 1
-      string_content 122
-      string_literal 123
+      string_content 124
+      string_literal 125
       super 2
-      token_tree 21
+      token_tree 22
       try_expression 11
       tuple_expression 11
       tuple_pattern 21
-      tuple_struct_pattern 8
+      tuple_struct_pattern 11
       tuple_type 3
       type_arguments 38
       type_binding 2
-      type_identifier 76
+      type_identifier 77
       type_parameters 3
       unary_expression 63
       use_declaration 2

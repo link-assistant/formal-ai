@@ -349,15 +349,28 @@ fn an_imperative_still_selects_the_command_it_names() {
     }
 }
 
-/// A request may punctuate itself with a colon, and a great many do. An earlier
-/// attempt at this fix read every `cue:` as a caller declaration and silently
-/// swallowed all of these — none carries a `show`/`tell`/`print`/`give` verb, so
-/// no request-verb guard rescues them either.
-///
-/// The colon rule was removed rather than narrowed, because the framing it
-/// targeted (*"Your prepared working directory: /tmp/example"*) sits before the
-/// objective delimiter and is already dropped with the rest of the preamble.
-/// This test is what keeps the cheaper, broader rule from coming back.
+/// A harness declares where the workspace is; a user asks for something. Both
+/// use a colon, so the value decides which is which — a declaration names one
+/// absolute path, because that is the only kind worth stating.
+#[test]
+fn a_declared_absolute_path_is_not_a_request() {
+    for declaration in [
+        "Your prepared working directory: /tmp/example",
+        "current directory: /srv/app",
+    ] {
+        assert_eq!(
+            planned_command(declaration),
+            None,
+            "a declared workspace path planned a command: {declaration:?}",
+        );
+    }
+}
+
+/// A request may punctuate itself with a colon, and a great many do. Earlier
+/// attempts at this guard keyed on the colon alone, then on a four-verb request
+/// list, then on subject position, and each one silently swallowed some of
+/// these. None of them carries a `show`/`tell`/`print`/`give` verb, and
+/// `count`/`search`/`create` are verbs no seed list knows.
 #[test]
 fn a_request_that_punctuates_itself_with_a_colon_still_routes() {
     for request in [

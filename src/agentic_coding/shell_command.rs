@@ -119,20 +119,28 @@ fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Op
         .unwrap_or(remainder)
         .trim_start();
     let remainder = strip_balanced_outer_quotes(remainder);
-    (!remainder.is_empty() && !reads_as_prose(remainder)).then(|| remainder.to_owned())
+    (!remainder.is_empty() && !reads_as_prose(remainder, vocab)).then(|| remainder.to_owned())
 }
 
 /// Whether a recovered command line is really a sentence describing an action.
 ///
-/// Two tells, either of which is enough: the first word — the command position —
-/// is a natural-language word, or the words after it carry two or more function
-/// words. A genuine command line spends its arguments on paths and flags, not on
-/// *in the*, *without asking*, or *so that*.
-fn reads_as_prose(remainder: &str) -> bool {
+/// Two tells, either of which is enough: the command position holds a
+/// natural-language word, or the arguments carry two or more function words. A
+/// genuine command line spends its arguments on paths and flags, not on *in
+/// the*, *without asking*, or *so that*.
+///
+/// A known shell token in command position settles it outright, because the two
+/// vocabularies overlap: `file` is both a Unix command and an ordinary English
+/// word, so `execute file Cargo.toml` must stay a command.
+fn reads_as_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> bool {
     let mut words = remainder.split_whitespace();
     let Some(first) = words.next() else {
         return true;
     };
+    let command = normalize_command_word(first);
+    if vocab.shell_tokens.iter().any(|token| token == &command) {
+        return false;
+    }
     is_prose_word(first) || words.filter(|word| is_prose_word(word)).count() >= 2
 }
 
@@ -390,6 +398,39 @@ fn strip_subject_lead<'a>(sentence: &'a str, vocab: &seed::CallerContextVocabula
 /// seed-declared question word ("我的用户名**是什么**") — and a cue that does not
 /// open the sentence is not its subject, so
 /// *"tell me what the current time is"* and *"what is the date?"* keep routing.
+/// Whether `sentence` *declares where something lives*: the cue is followed by a
+/// colon and a single absolute path.
+///
+/// A copula is not the only way to state a fact — agent harnesses prefer the
+/// label form, and Hive Mind's *"Your prepared working directory: /tmp/example"*
+/// supplies the working directory exactly as a copula would, which made every
+/// production run answer with `pwd` (issue #907, follow-up).
+///
+/// The value is what separates this from a request, and it has to be: earlier
+/// attempts keyed on the colon (which swallowed *"delete the file: old.log"*),
+/// on request verbs (a four-word list that rescued nothing), and on subject
+/// position (which cannot see that *"count"* and *"search"* are verbs). A
+/// harness declares an **absolute** path — that is the only kind worth stating —
+/// while a request's argument after a colon is a relative path, a search term,
+/// or prose. Every row of the table above stays a request under this rule.
+fn labels_a_value(sentence: &str, cue: &str) -> bool {
+    let Some(head_end) = sentence.to_lowercase().find(cue) else {
+        return false;
+    };
+    let Some(value) = sentence[head_end + cue.len()..]
+        .trim_start()
+        .strip_prefix([':', '：'])
+        .map(str::trim)
+    else {
+        return false;
+    };
+    let mut words = value.split_whitespace();
+    let Some(path) = words.next() else {
+        return false;
+    };
+    words.next().is_none() && (path.starts_with('/') || path.starts_with("~/"))
+}
+
 fn is_fact_statement(
     sentence: &str,
     interrogative: bool,
@@ -399,13 +440,9 @@ fn is_fact_statement(
     if interrogative || vocab.asks_a_question(sentence) {
         return false;
     }
-    // A `cue:` label was tried here and removed. Hive Mind's
-    // "Your prepared working directory: /tmp/example" is caller framing, but it
-    // sits *before* the objective delimiter, so `plan_chat_step` already drops
-    // it with the whole preamble — while a colon rule cost real requests
-    // ("delete the file: old.log", "count lines: src/main.rs", "search for:
-    // TODO"), none of which carries a request verb to be rescued by. The
-    // narrower fix is the one that keeps them.
+    if labels_a_value(sentence, cue) {
+        return true;
+    }
     // The cue may or may not carry the determiner itself ("the current time" vs
     // "current date"), so the subject is tried with and without its lead.
     let Some(rest) = sentence
@@ -710,13 +747,17 @@ fn sentence_spans(prompt: &str) -> Vec<&str> {
 /// command to run now, so no token inside it may become one.
 fn states_a_command_policy(sentence: &str) -> bool {
     let lower = sentence.to_lowercase();
-    let opens_with_lead = seed::caller_context_vocabulary()
+    // A lead opens the rule, or qualifies it from the middle: *"Run commands
+    // with sudo only when necessary"* is as much a rule as *"When running sudo
+    // commands, …"*, and both name a class rather than an instance.
+    let carries_lead = seed::caller_context_vocabulary()
         .policy_leads
         .iter()
         .any(|lead| {
             lower
                 .strip_prefix(lead.as_str())
                 .is_some_and(|rest| rest.starts_with(' '))
+                || lower.contains(&format!(" {lead} "))
         });
     // A conditional opener alone does not make a sentence policy — plenty of
     // real requests carry one, and treating them as policy answers nothing at
@@ -730,7 +771,7 @@ fn states_a_command_policy(sentence: &str) -> bool {
     // treat a class of commands, not asking for one. A rule with no comma at all
     // (*"Never run rm outside the workspace."*) governs throughout and orders
     // nothing.
-    opens_with_lead
+    carries_lead
         && lower
             .split_once(',')
             .is_none_or(|(_, ordered)| !orders_a_named_command(ordered))
