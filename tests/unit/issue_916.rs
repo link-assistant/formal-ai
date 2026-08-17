@@ -727,9 +727,7 @@ fn planned_shell_command(prompt: &str) -> Option<String> {
     else {
         return None;
     };
-    let call = calls
-        .iter()
-        .find(|call| call.tool == "run_shell_command")?;
+    let call = calls.iter().find(|call| call.tool == "run_shell_command")?;
     let arguments: serde_json::Value = serde_json::from_str(&call.arguments).ok()?;
     arguments
         .get("command")
