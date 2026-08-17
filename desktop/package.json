@@ -112,5 +112,10 @@
     "portable": {
       "artifactName": "formal-ai-desktop-windows-portable-${arch}-${version}.${ext}"
     }
+  },
+  "allowScripts": {
+    "electron-winstaller": true,
+    "node-pty": true,
+    "puppeteer": true
   }
 }

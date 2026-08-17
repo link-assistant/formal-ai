@@ -20,6 +20,7 @@ use std::fs;
 use std::process::Command;
 use std::time::Instant;
 
+use super::issue_796::{run_classifier, sandbox};
 use super::workflow_fixtures::{job_block, workflow_job_names};
 
 /// The share of a job's cap a single step budget may claim. The remainder pays
@@ -662,4 +663,151 @@ fn macos_packaging_retry_is_bounded_by_a_budget() {
         "both inputs must be optional so the wrapper keeps working outside this \
          workflow, where neither a budget nor a deadline exists"
     );
+}
+
+/// The npm 11.17.0 advisory as emitted verbatim by `npm install` in `vscode/`
+/// on 2026-08-17, kept whole (banner, entries, blank line, closing advice) so
+/// the classifier is exercised against the shape npm actually prints.
+const NPM_ALLOW_SCRIPTS_WARNING: &str = "\
+npm warn allow-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn allow-scripts   electron-winstaller@5.4.0 (postinstall: node ./lib/postinstall.js)
+npm warn allow-scripts   node-pty@1.2.0-beta.15 (install: node scripts/install.js)
+npm warn allow-scripts   puppeteer@25.7.0 (postinstall: node install.mjs)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.";
+
+/// A latent copy of issue #796, found by running the gate locally rather than
+/// by waiting for it to fire. npm 11.17.0 prints an `allow-scripts` advisory
+/// that today's runner image (npm 10.9.x -- run 95255998673 installed 495
+/// packages with a clean stderr) does not, and
+/// `scripts/install-node-dependencies.sh` classified every one of those lines
+/// as an unexpected diagnostic: the next runner-image bump would have failed
+/// both install steps of the Desktop Release workflow over a warning about
+/// scripts that had already run successfully.
+///
+/// The gate itself is right to fail -- a dependency that gained an install
+/// script is a supply-chain change worth a human -- so this pins the part that
+/// was wrong: the report has to name the packages and the command that clears
+/// them, instead of the bare "Unexpected npm stderr".
+#[test]
+fn unreviewed_install_scripts_are_reported_with_the_command_that_clears_them() {
+    let dir = sandbox(NPM_ALLOW_SCRIPTS_WARNING);
+    let output = run_classifier(&dir);
+    fs::remove_dir_all(&dir).expect("sandbox must be removed");
+    let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+
+    assert!(
+        !output.status.success(),
+        "an install script nobody has reviewed must still stop the build; \
+         stderr: {stderr}"
+    );
+    for entry in [
+        "electron-winstaller@5.4.0 (postinstall: node ./lib/postinstall.js)",
+        "node-pty@1.2.0-beta.15 (install: node scripts/install.js)",
+        "puppeteer@25.7.0 (postinstall: node install.mjs)",
+    ] {
+        assert!(
+            stderr.contains(entry),
+            "the report must name what runs, not just that something does: \
+             {entry} missing from {stderr}"
+        );
+    }
+    assert!(
+        stderr.contains(
+            "approve-scripts --no-allow-scripts-pin electron-winstaller node-pty puppeteer"
+        ),
+        "the report must hand over a runnable command whose package list is \
+         name-only -- a pinned version unreviews itself on the next float, \
+         which is exactly how issue #796 broke CI; stderr: {stderr}"
+    );
+    assert!(
+        !stderr.contains("Unexpected npm stderr"),
+        "an advisory the script understands must not also be reported as one \
+         it does not; stderr: {stderr}"
+    );
+}
+
+/// npm's advisory is a preview of an enforced check: "A future release will
+/// block unreviewed install scripts." When that lands, an undeclared
+/// `allowScripts` stops `node-pty`, `keytar` and `esbuild` from building their
+/// native halves and stops `puppeteer`/`@playwright/browser-chromium` from
+/// fetching their browsers -- a much quieter failure than a warning. Declaring
+/// the field now is what makes the two install steps forward-compatible, and
+/// it removes the advisory today: both projects reinstall with an empty stderr
+/// once the field is present.
+#[test]
+fn every_installed_node_project_records_its_install_scripts_by_name() {
+    let mut projects: Vec<String> = Vec::new();
+    for (_, workflow) in workflow_files() {
+        for line in workflow.lines() {
+            if let Some(tail) = line.split("scripts/install-node-dependencies.sh ").nth(1) {
+                let directory = tail.trim().trim_end_matches('"');
+                if !directory.is_empty() && !projects.iter().any(|seen| seen == directory) {
+                    projects.push(directory.to_string());
+                }
+            }
+        }
+    }
+    projects.sort();
+    assert_eq!(
+        projects,
+        vec!["desktop".to_string(), "vscode".to_string()],
+        "the projects installed through the classifier changed; the review \
+         record below has to follow them"
+    );
+
+    for project in projects {
+        let manifest: serde_json::Value =
+            serde_json::from_str(&repository_file(&format!("{project}/package.json")))
+                .unwrap_or_else(|error| panic!("{project}/package.json must parse: {error}"));
+        let allow_scripts = manifest
+            .get("allowScripts")
+            .and_then(serde_json::Value::as_object)
+            .unwrap_or_else(|| {
+                panic!(
+                    "{project}/package.json must declare an `allowScripts` object recording \
+                     which dependencies may run install scripts (issue #1017); write it with \
+                     `npm --prefix {project} approve-scripts --no-allow-scripts-pin <package>`"
+                )
+            });
+        assert!(
+            !allow_scripts.is_empty(),
+            "{project} installs packages with install scripts, so the record cannot be empty"
+        );
+        for (package, decision) in allow_scripts {
+            assert_eq!(
+                decision,
+                &serde_json::Value::Bool(true),
+                "{project}/package.json pins `{package}` to {decision}; a version range here \
+                 unreviews itself the moment the dependency floats, which is issue #796 \
+                 rewritten as a supply-chain gate -- record the name only"
+            );
+            assert!(
+                !package.trim_start_matches('@').contains('@'),
+                "{package} carries a version; `allowScripts` keys are package names"
+            );
+        }
+    }
+
+    // The packages behind the advisory measured on 2026-08-17. They are all
+    // build-essential: native compilation (node-pty, keytar), prebuilt binary
+    // extraction (esbuild, @vscode/vsce-sign), browser downloads (puppeteer,
+    // @playwright/browser-chromium) and the Windows installer builder.
+    for (project, package) in [
+        ("desktop", "electron-winstaller"),
+        ("desktop", "node-pty"),
+        ("desktop", "puppeteer"),
+        ("vscode", "@playwright/browser-chromium"),
+        ("vscode", "@vscode/vsce-sign"),
+        ("vscode", "esbuild"),
+        ("vscode", "keytar"),
+        ("vscode", "puppeteer"),
+    ] {
+        assert!(
+            repository_file(&format!("{project}/package.json"))
+                .contains(&format!("\"{package}\": true")),
+            "{package} runs an install script during `{project}`'s install and must stay \
+             recorded, or the next npm release blocks it"
+        );
+    }
 }
