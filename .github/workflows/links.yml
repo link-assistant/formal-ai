@@ -80,6 +80,13 @@ jobs:
           output: lychee/out.md
           # Write a job summary
           jobSummary: true
+          # Check github.com links through the GitHub API instead of scraping the
+          # HTML pages. GitHub answers anonymous issue-page requests from CI
+          # ranges with 404 -- not a redirect or a 429, a flat 404 -- so an
+          # unauthenticated run reports every own-repository issue link as
+          # broken. This is the action's documented input; the `env:` entry below
+          # alone did not reach lychee inside its container.
+          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
