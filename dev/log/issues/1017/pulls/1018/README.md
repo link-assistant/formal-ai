@@ -429,8 +429,10 @@ Verification run locally on the final branch: `cargo fmt --check`,
 `bash scripts/lint-shell-scripts.sh` (33 scripts),
 `actionlint`, `rust-script scripts/run-ci-gates.rs --stage rust` (25 gates, all
 passed), and the complete `cargo test --tests
---all-features` — 2,825 unit, 345 integration, 488 source, the new
-`issue_1017_ledger_recall` binary and every other per-issue harness, `EXIT=0`.
+--all-features --no-fail-fast` — 3,791 tests across 32 binaries (2,839 unit, 489
+source, 345 integration), the new `issue_1017_ledger_recall` binary and every
+other per-issue harness, `EXIT=0`, plus both node suites the workflows run
+(`desktop` 151/151, `vscode` 51/51).
 The full suite is the requirement, not the `ci_cd::` module alone: the first
 push verified only `cargo test --test unit ci_cd::` and `Coverage` then failed
 on `tests/issue_961_macos_portability.rs`.
