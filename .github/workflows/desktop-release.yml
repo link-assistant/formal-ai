@@ -141,6 +141,8 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-base
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     uses: ./.github/workflows/pin-base-commit.yml
+    permissions:
+      contents: read
 
   build:
     name: Build ${{ matrix.label }}

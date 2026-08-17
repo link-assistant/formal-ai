@@ -213,6 +213,8 @@ jobs:
       group: check-${{ github.workflow }}-${{ github.ref }}-base
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     uses: ./.github/workflows/pin-base-commit.yml
+    permissions:
+      contents: read
 
   lint:
     name: Lint and Format Check
