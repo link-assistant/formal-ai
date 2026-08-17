@@ -435,7 +435,7 @@ The full suite is the requirement, not the `ci_cd::` module alone: the first
 push verified only `cargo test --test unit ci_cd::` and `Coverage` then failed
 on `tests/issue_961_macos_portability.rs`.
 
-That requirement paid for itself twice more on the runtime fix, and both would
+That requirement paid for itself four more times, and every one of them would
 have been red CI:
 
 | Caught by | What was stale | Repair |
@@ -443,6 +443,7 @@ have been red CI:
 | `cargo test --tests --all-features` | `issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render` failed: editing four `src/` files makes their committed census documents (`byte_len`, `line_count`, `content_id`, symbol line ranges) stale. | `cargo run --example regenerate_self_ast_census` — `479 documents (4 rewritten, 0 removed)`, exactly the four files this branch edits. Commit `42c78409`. |
 | `rust-script scripts/run-ci-gates.rs --stage rust` | `check_tests_as_docs` (R234-2) flagged the new `tests/issue_1017_ledger_recall.rs`: it asserted `!answer.answer.is_empty()`, which asserts on an engine answer without ever showing it. | The test now pins the exact offline answer as `EXPECTED_ANSWER`, so it documents what the solver says as well as what it must not do. Commit `11724735`. |
 | `cargo test --tests --all-features` | `ci_cd::issue_730::desktop_build_budget_covers_the_measured_windows_arm64_path` failed: it pinned the *spelling* of the old `timeout-minutes: ${{ (matrix.label == 'macos-x64' \|\| startsWith(matrix.label, 'windows-')) && 50 \|\| 40 }}` expression, which D15b replaced with `matrix.capmin`. The guarantee was intact; only the literal it was written against was gone. | The test now asserts the guarantee against the matrix values themselves — every `capmin` entry parsed, `macos-x64` and both Windows legs required to be 50, the rest 40, and all six targets required to carry one — so a future refactor of the expression cannot break it and a change to the *numbers* still does. Commit `cf427884`. |
+| `cargo test --tests --all-features --no-fail-fast` | A **second** copy of the same stale literal, in a different harness: `issue_896_component_boundaries::desktop_budget_bounds_the_published_component_cold_build` pinned the identical expression for its own reason — the published crates' unconditional dependency graph makes the macOS x64 and both Windows cold builds the expensive ones. The first full run stopped at the `unit` binary, so this only became visible once the `issue_730` copy had been repaired; that is why the rerun uses `--no-fail-fast`. | Repaired to the guarantee issue #896 actually needs, and deliberately *not* to the same assertion as `issue_730`: the job must be bounded by `${{ matrix.capmin }}`, all three heavy legs must declare a cap, and the smallest heavy cap must be strictly greater than the largest of the rest. It therefore holds if the numbers are re-measured and fails if the headroom is flattened, which is the property, while `issue_730` keeps pinning the measured values. Commit `a9a9330e`. |
 
 The off-by-default verbose mode was exercised in both states rather than
 assumed: `FORMAL_AI_TRACE_SLOW_INIT=1 cargo run --example
