@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 14843
+  byte_len 15037
   line_count 339
-  content_id source_module_64d9a426192be7a5
+  content_id source_module_f2ee60ce41130709
   symbol_count 14
   symbols
     const EXPECTED_PLACEHOLDER 15 15
@@ -26,41 +26,37 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9389
-    named_node_count 1905
-    distinct_node_kinds 65
+    total_link_count 9315
+    named_node_count 1886
+    distinct_node_kinds 60
     node_kinds
-      arguments 145
+      arguments 144
       array_expression 1
       array_type 4
       assignment_expression 6
-      base_field_initializer 1
       binary_expression 40
       block 48
-      boolean_literal 1
-      call_expression 145
+      call_expression 144
       closure_expression 12
       closure_parameters 12
       const_item 4
-      crate 12
+      crate 10
       doc_comment 24
       else_clause 2
       expression_statement 57
       field_expression 138
-      field_identifier 139
-      field_initializer 1
-      field_initializer_list 1
+      field_identifier 138
       function_item 10
       function_modifiers 1
       generic_type 3
-      identifier 496
+      identifier 490
       if_expression 32
       inner_doc_comment_marker 1
       integer_literal 8
       let_condition 14
-      let_declaration 20
+      let_declaration 19
       lifetime 1
-      line_comment 52
+      line_comment 56
       macro_invocation 9
       match_arm 17
       match_block 2
@@ -76,13 +72,12 @@ self_ast_census
       reference_expression 34
       reference_type 23
       return_expression 19
-      scoped_identifier 98
-      scoped_type_identifier 2
+      scoped_identifier 94
+      scoped_type_identifier 1
       scoped_use_list 2
       source_file 1
       string_content 45
       string_literal 45
-      struct_expression 1
       super 6
       token_tree 14
       try_expression 2
@@ -90,7 +85,7 @@ self_ast_census
       tuple_pattern 4
       tuple_struct_pattern 16
       type_arguments 3
-      type_identifier 25
+      type_identifier 24
       unary_expression 10
       use_declaration 6
       use_list 2
