@@ -207,6 +207,39 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-version-modification.rs
+  # Issue #1017: `lint`, `test` and the macOS lane each merge the base branch
+  # into the pull request head, and each used to resolve `origin/$BASE_REF` at
+  # its own start time. Jobs in this workflow start minutes to an hour apart, so
+  # a push to the base branch mid-run silently gave them different merged trees:
+  # one gate could pass on a tree no other gate ever saw. Resolving the tip once
+  # here and passing the commit down makes "every gate checked the same tree" a
+  # property of the workflow instead of a race against the base branch.
+  base:
+    name: Pin base commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-base
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    # Only pull requests merge a base branch; a push build has nothing to pin.
+    if: github.event_name == 'pull_request'
+    outputs:
+      commit: ${{ steps.pin.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Resolve the base branch tip once for the whole workflow
+        id: pin
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$BASE_REF"
+          commit="$(git rev-parse "origin/$BASE_REF")"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "Every job in this workflow will merge $BASE_REF = $commit"
+
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
@@ -214,7 +247,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes]
+    needs: [detect-changes, base]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -232,6 +265,9 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
+          # Issue #1017: the commit `base` resolved, so every gate in this
+          # workflow checks the same merged tree.
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}
         run: bash scripts/simulate-fresh-merge.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -307,7 +343,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes]
+    needs: [detect-changes, base]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -330,6 +366,8 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
+          # Issue #1017: same pinned commit `lint` merges.
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}
         run: bash scripts/simulate-fresh-merge.sh
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
@@ -378,7 +416,7 @@ jobs:
         run: cargo test --doc --verbose
   macos-core-tests:
     name: macOS Core Tests
-    needs: [detect-changes]
+    needs: [detect-changes, base]
     # Issue #1017: the heaviest lane in the repository -- one archive build plus
     # sixteen Intel macOS slices, each billed at ten times the Linux rate -- was
     # the one read-only job in this workflow with no concurrency group. A second
@@ -398,6 +436,10 @@ jobs:
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     uses: ./.github/workflows/macos-core-tests.yml
+    # Issue #1017: the archive job and the sixteen slices must merge the same
+    # base commit, or they build and run against different trees.
+    with:
+      base-commit: ${{ needs.base.outputs.commit }}
     permissions:
       contents: read
   build:

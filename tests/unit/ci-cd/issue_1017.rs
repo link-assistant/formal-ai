@@ -361,39 +361,14 @@ fn macos_slices_cover_every_partition_of_their_denominator() {
 /// failed. Fifteen red slices, no defect in the pull request. That is a false
 /// result of exactly the class issue #1017 is about, so the base commit is
 /// recorded once by the archive and merged by every slice.
+/// Every job that merges the base branch must merge the *same* commit. Any job
+/// resolving `origin/$BASE_REF` for itself reintroduces the race, and outside
+/// the macOS lane -- which compares trees across jobs -- the divergence would be
+/// silent: run 31993872684 packaged `linux-x64` and `macos-arm64` from `main` =
+/// `1858b3386` and `windows-arm64` from `d1439e557`, and shipped six installers
+/// built from two source trees as one release set with nothing to catch it.
 #[test]
-fn macos_slices_merge_the_base_commit_the_archive_was_built_against() {
-    let macos = repository_file(".github/workflows/macos-core-tests.yml");
-
-    assert!(
-        macos.contains("macos-core-tests/base"),
-        "the archive job must record the base commit it merged, or the slices \
-         have nothing to pin to and the tree guard stays a race (issue #1017)"
-    );
-    assert!(
-        macos.contains("BASE_COMMIT=\"$(cat \"$RUNNER_TEMP/macos-core-tests/base\")\""),
-        "the slices must merge the recorded base commit, not re-resolve the \
-         branch tip at their own start time"
-    );
-
-    // The merge has to happen after the download, because the commit it merges
-    // is read out of the artifact.
-    let download = macos
-        .find("Download macOS test archive")
-        .expect("slices download the archive");
-    let merge = macos[download..]
-        .find("Simulate fresh merge")
-        .map(|offset| download + offset)
-        .expect("the slice job must still simulate the merge");
-    let verify = macos[merge..]
-        .find("- name: Verify archive source tree")
-        .map(|offset| merge + offset)
-        .expect("the tree guard must survive");
-    assert!(
-        merge < verify,
-        "the pinned merge must run before the tree guard checks its result"
-    );
-
+fn every_base_branch_merge_uses_one_pinned_commit_per_workflow() {
     let script = repository_file("scripts/simulate-fresh-merge.sh");
     assert!(
         script.contains("BASE_COMMIT"),
@@ -403,6 +378,54 @@ fn macos_slices_merge_the_base_commit_the_archive_was_built_against() {
         script.contains("git merge \"$BASE_SHA\""),
         "the merge must use the resolved base commit so the pinned and unpinned \
          paths cannot diverge"
+    );
+
+    for (name, body) in workflow_files() {
+        // Count real invocations only: the script is also named in prose, and a
+        // comment that mentions it does not merge anything.
+        let invocations = body
+            .lines()
+            .filter(|line| {
+                let trimmed = line.trim_start();
+                !trimmed.starts_with('#') && trimmed.contains("simulate-fresh-merge.sh")
+            })
+            .count();
+        if invocations == 0 {
+            continue;
+        }
+        let pinned = body.matches("BASE_COMMIT:").count();
+        assert_eq!(
+            pinned, invocations,
+            "{name} runs the fresh-merge simulation {invocations} time(s) but \
+             pins the base commit {pinned} time(s); an unpinned invocation \
+             resolves the base branch tip at its own start time, so two jobs \
+             minutes apart merge different commits (issue #1017)"
+        );
+
+        // The pinned value has to come from one resolver shared by the whole
+        // workflow -- either a `base` job's output, or the caller's input.
+        let from_one_source =
+            body.contains("needs.base.outputs.commit") || body.contains("inputs.base-commit");
+        assert!(
+            from_one_source,
+            "{name} must take its pinned commit from a single per-workflow \
+             resolver (a `base` job output, or a `base-commit` input), not from \
+             a per-job lookup"
+        );
+    }
+
+    // The reusable macOS lane must accept the pin rather than resolve its own,
+    // because its archive job and its slices are separate jobs.
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
+    assert!(
+        macos.contains("base-commit:") && macos.contains("inputs.base-commit"),
+        "the macOS lane must take the base commit from its caller so the archive \
+         and every slice merge the same one"
+    );
+    let release = repository_file(".github/workflows/release.yml");
+    assert!(
+        release.contains("base-commit: ${{ needs.base.outputs.commit }}"),
+        "release.yml must pass its pinned commit into the macOS lane"
     );
 }
 
