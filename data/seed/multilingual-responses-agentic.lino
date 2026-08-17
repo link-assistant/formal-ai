@@ -831,6 +831,38 @@ multilingual_responses
     intent general_plan_repository_action
     language zh
     text "将有界仓库工作项计划追加到 {target}"
+  response response_general_plan_repository_read_en
+    intent general_plan_repository_read
+    language en
+    text "read the referenced work item at {target} before planning any change"
+  response response_general_plan_repository_read_ru
+    intent general_plan_repository_read
+    language ru
+    text "прочитать указанную задачу по адресу {target} до планирования изменений"
+  response response_general_plan_repository_read_hi
+    intent general_plan_repository_read
+    language hi
+    text "कोई भी परिवर्तन नियोजित करने से पहले {target} पर संदर्भित कार्य पढ़ें"
+  response response_general_plan_repository_read_zh
+    intent general_plan_repository_read
+    language zh
+    text "在规划任何更改之前先读取 {target} 处引用的工作项"
+  response response_general_plan_repository_read_evidence_en
+    intent general_plan_repository_read_evidence
+    language en
+    text "the work-item text naming the artifact the change must produce"
+  response response_general_plan_repository_read_evidence_ru
+    intent general_plan_repository_read_evidence
+    language ru
+    text "текст задачи, называющий артефакт, который должно создать изменение"
+  response response_general_plan_repository_read_evidence_hi
+    intent general_plan_repository_read_evidence
+    language hi
+    text "कार्य का पाठ जो उस कलाकृति का नाम देता है जिसे परिवर्तन को बनाना है"
+  response response_general_plan_repository_read_evidence_zh
+    intent general_plan_repository_read_evidence
+    language zh
+    text "指明该更改必须产出的工件的工作项文本"
   response response_general_plan_repository_evidence_en
     intent general_plan_repository_evidence
     language en

@@ -15,6 +15,25 @@
 //! followed by the whole-task test: the report's exact gemini request, over the
 //! real Gemini surface, must write the requested program.
 //!
+//! # The unmarked-preamble variant
+//!
+//! Reported against 0.339.1 and 0.345.0 after the fix above shipped
+//! ([comment](https://github.com/link-assistant/formal-ai/issues/907#issuecomment-5302919925),
+//! upstream [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158)).
+//! The fix above separates the caller from the user by the *markup* the client
+//! wraps its framing in. Hive Mind's Agent/Codex/Gemini/OpenCode adapters wrapped
+//! theirs in nothing: workflow policy and objective arrived concatenated into one
+//! untagged `user` message. Production then observed Codex receive
+//! `/bin/bash -lc pwd` and exit 0, and five Codex attempts run bare `sudo`, with
+//! no requested repository file created in any of them.
+//!
+//! Two more requirements, from the same comment:
+//!
+//! 4. a later explicit objective delimiter outranks an earlier unmarked
+//!    preamble — the objective is the request, the preamble is framing;
+//! 5. a policy sentence that merely *mentions* a privileged command does not
+//!    authorize it; an imperative naming it still does.
+//!
 //! Each case uses a *different* phrasing so a passing run proves the routing is
 //! general rather than memorised (CONTRIBUTING rule 4).
 
@@ -222,6 +241,132 @@ fn a_turn_that_carries_a_task_gets_the_task() {
             "{prompt} planned {call}"
         );
     }
+}
+
+/// The Hive Mind preamble shape, verbatim from the reproduction in the #907
+/// follow-up comment: workflow policy, a workspace path, then the objective —
+/// all in one `user` message with no markup separating them.
+const HIVE_MIND_PREAMBLE: &str = "\
+You are an AI issue solver.
+When running sudo commands, run them in the background.
+Your prepared working directory: /tmp/example
+
+Issue to solve: https://github.com/example/example/issues/1
+Your prepared branch: issue-1-example
+Your prepared Pull Request: https://github.com/example/example/pull/2
+
+Proceed.";
+
+/// Requirement 4: an unmarked preamble is still the caller talking. Everything
+/// before the explicit objective delimiter is framing; the objective after it is
+/// the request.
+///
+/// The production reproduction is the assertion: this exact message made Codex
+/// receive `/bin/bash -lc pwd` and exit 0 without planning the repository work.
+/// Nothing in the preamble may become the command, and neither of the two
+/// commands the corpus recorded — `pwd` from *"working directory"*, `sudo` from
+/// the policy sentence — may be planned at all.
+#[test]
+fn an_unmarked_caller_preamble_does_not_outrank_a_later_objective() {
+    let planned = planned_command(HIVE_MIND_PREAMBLE);
+
+    assert_ne!(
+        planned.as_deref(),
+        Some("pwd"),
+        "the caller's workspace path is not a request for the working directory",
+    );
+    assert_ne!(
+        planned.as_deref(),
+        Some("sudo"),
+        "the caller's sudo policy is not a request to run sudo",
+    );
+    assert_eq!(
+        formal_ai::agentic_coding::general_planner::objective_text(HIVE_MIND_PREAMBLE),
+        "https://github.com/example/example/issues/1\n\
+         Your prepared branch: issue-1-example\n\
+         Your prepared Pull Request: https://github.com/example/example/pull/2\n\n\
+         Proceed.",
+        "the objective is the text after the delimiter, not the preamble before it",
+    );
+}
+
+/// Requirement 4, the boundary itself: the delimiter is what separates them, so
+/// the same preamble with the objective removed still plans no command from the
+/// framing alone. A guard keyed to the preamble's exact words would pass the
+/// test above and fail this one.
+#[test]
+fn caller_framing_alone_never_becomes_a_command() {
+    for framing in [
+        "You are an AI issue solver.\nWhen running sudo commands, run them in the background.",
+        "Before you execute rm, ask the operator first.",
+        "Whenever you run docker, pass --rm so containers are not left behind.",
+        "Never run chmod on files outside the workspace.",
+        "Your prepared working directory: /tmp/example",
+    ] {
+        assert_eq!(
+            planned_command(framing),
+            None,
+            "caller framing planned a command: {framing:?}",
+        );
+    }
+}
+
+/// Requirement 5, the other direction: a user who actually asks for one of these
+/// commands still gets it. A guard that simply refused every privileged token
+/// would pass the two tests above while breaking the feature.
+#[test]
+fn an_imperative_still_selects_the_command_it_names() {
+    for (request, expected) in [
+        ("run sudo", "sudo"),
+        ("execute chmod", "chmod"),
+        ("Run the docker command", "docker"),
+        ("print the current working directory", "pwd"),
+    ] {
+        assert_eq!(
+            planned_command(request).as_deref(),
+            Some(expected),
+            "{request:?} names {expected} and must still select it",
+        );
+    }
+}
+
+/// Requirement 5, seed side: the policy leads are data, so a maintainer adds the
+/// next conditional form by editing `data/seed/caller-context.lino` rather than
+/// this crate.
+#[test]
+fn policy_leads_live_in_seed_data() {
+    let leads = seed::caller_context_vocabulary().policy_leads;
+    for lead in ["when", "if", "never", "когда", "如果"] {
+        assert!(
+            leads.iter().any(|known| known == lead),
+            "policy lead {lead:?} should be declared in seed data: {leads:?}",
+        );
+    }
+}
+
+/// The command the Gemini surface plans for `prompt`, or [`None`] when it plans
+/// something other than a shell call.
+fn planned_command(prompt: &str) -> Option<String> {
+    let request: GeminiGenerateContentRequest = serde_json::from_value(serde_json::json!({
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "tools": function_declarations(),
+    }))
+    .expect("valid Gemini generateContent request");
+
+    let response = create_gemini_generate_content_response_with_solver_and_memory(
+        &request,
+        "formal-ai",
+        &agent_solver(),
+        &[],
+    );
+    response["candidates"][0]["content"]["parts"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|part| part.get("functionCall"))
+        .find(|call| call["name"] == TOOLS[0])
+        .and_then(|call| call["args"]["command"].as_str())
+        .map(str::to_owned)
 }
 
 /// The whole task: the report's request, over the real Gemini surface, with the

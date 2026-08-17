@@ -245,27 +245,46 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
         ),
         mode: GeneralPlanMode::RepositoryWorkItem,
         goal: intent.source_text,
-        target,
+        target: target.clone(),
         content: String::new(),
-        // Recording the work item is the only thing this sandbox can honestly
-        // do. It deliberately names no verification command: the sole artifact
-        // the run touches is the plan record itself, and `cat`-ing that record
-        // back would observe nothing but the write that just happened
-        // (issue #904).
-        steps: vec![GeneralPlanStep {
-            capability: Capability::Write,
-            action: command_plan_text(
-                "general_plan_repository_action",
-                response_language,
-                PLAN_PATH,
-            ),
-            expected_evidence: command_plan_text(
-                "general_plan_repository_evidence",
-                response_language,
-                PLAN_PATH,
-            ),
-            command: None,
-        }],
+        // A work item names an issue, not an artifact, so the first step reads
+        // the issue: that text is where the artifact the change must produce is
+        // named, and planning a change without it would be fabricating one
+        // (issue #904, follow-up). Recording the reference stays the second
+        // step, and the plan still names no verification command — a command
+        // that reads back the record this run wrote would observe nothing but
+        // its own write. Whether the run can go further than the record is
+        // decided by execution, from what the fetched work item actually says.
+        steps: vec![
+            GeneralPlanStep {
+                capability: Capability::Fetch,
+                action: command_plan_text(
+                    "general_plan_repository_read",
+                    response_language,
+                    &target,
+                ),
+                expected_evidence: command_plan_text(
+                    "general_plan_repository_read_evidence",
+                    response_language,
+                    &target,
+                ),
+                command: None,
+            },
+            GeneralPlanStep {
+                capability: Capability::Write,
+                action: command_plan_text(
+                    "general_plan_repository_action",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                expected_evidence: command_plan_text(
+                    "general_plan_repository_evidence",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                command: None,
+            },
+        ],
         verification_command: String::new(),
         terminal_state: PlanTerminalState::PlannedNotExecuted,
     })

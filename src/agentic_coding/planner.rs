@@ -13,7 +13,9 @@ use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalization_recipe;
 use super::general_execution::plan_general_change_step;
-use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
+use super::general_planner::{
+    compose_general_change_plan, has_authoritative_literal_write, objective_text,
+};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::intent_router;
@@ -146,7 +148,24 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 /// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
-    let task = latest_user_text(messages)?;
+    let received = latest_user_text(messages)?;
+    trace_route("agentic_received", &received);
+    // An *unmarked* harness preamble is still the caller talking (issue #907,
+    // follow-up). `<session_context>`-style markup is stripped upstream in
+    // `crate::protocol`, but Hive Mind's adapters concatenated their workflow
+    // policy and the objective into one untagged user message, so the tell has
+    // to be the objective delimiter the caller wrote instead of a tag:
+    // everything before a line-anchored `Issue to solve:` / `Task:` / `Goal:`
+    // lead is the caller's framing, and only the text after it is the request.
+    //
+    // Routing the whole message let the preamble win: "When running sudo
+    // commands, run them in the background." paired a run verb with the `sudo`
+    // shell token and planned bare `sudo`, and "Your prepared working
+    // directory: …" planned `pwd`, in both cases dropping the repository work
+    // that followed. The general planner already read the objective this way
+    // (issue #904); every other route now reads it the same way, so one
+    // boundary serves the whole router rather than one recipe.
+    let task = objective_text(&received).to_owned();
     trace_route("agentic_task", &task);
     if is_conversation_control_prompt(&task) || looks_like_skill_description(&task) {
         return None;

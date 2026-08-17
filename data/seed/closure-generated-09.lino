@@ -514,6 +514,11 @@ meanings
     lexeme en
       surface
         text "response general plan repository evidence zh"
+  response_general_plan_repository_read_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read hi"
   response_general_plan_verification_mismatch_en
     defined-by response_template
     lexeme en

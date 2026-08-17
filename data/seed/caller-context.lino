@@ -90,6 +90,46 @@ caller_context
       word "dónde"
       word "quién"
       word "cómo"
+  policy_leads
+    language en
+      lead "when"
+      lead "whenever"
+      lead "if"
+      lead "before"
+      lead "after"
+      lead "while"
+      lead "unless"
+      lead "always"
+      lead "never"
+      lead "do not"
+      lead "don't"
+    language ru
+      lead "когда"
+      lead "если"
+      lead "перед"
+      lead "после"
+      lead "всегда"
+      lead "никогда"
+      lead "не"
+    language hi
+      lead "जब"
+      lead "यदि"
+      lead "अगर"
+      lead "हमेशा"
+      lead "कभी"
+    language zh
+      lead "当"
+      lead "如果"
+      lead "每当"
+      lead "总是"
+      lead "从不"
+    language es
+      lead "cuando"
+      lead "si"
+      lead "antes"
+      lead "después"
+      lead "siempre"
+      lead "nunca"
   request_verbs
     language en
       verb "show"

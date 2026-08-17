@@ -615,7 +615,59 @@ fn is_safe_path(token: &str) -> bool {
 /// * **Mentioned** (`Run the ls command to list files`): the token appears with run
 ///   context but is not directly after the verb, so only the single token is emitted
 ///   (`ls`) — the surrounding words are prose describing the request, not arguments.
+///
+/// Both shapes are read **one sentence at a time** (issue #907, follow-up). Run
+/// context is only context for the command that shares its sentence: a caller
+/// policy clause — *"When running sudo commands, run them in the background."* —
+/// pairs a run verb with the `sudo` token across the whole message, and matching
+/// them message-wide planned a bare `sudo` for every Codex run through Hive Mind.
+/// A sentence that only *governs* commands is also not a request for one, so a
+/// conditional clause never licenses the token it mentions.
 fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
+    sentence_spans(prompt)
+        .filter(|sentence| !states_a_command_policy(sentence))
+        .find_map(|sentence| named_shell_command_in_sentence(sentence, vocab))
+}
+
+/// The prompt split into sentences, each as a slice of the original text.
+///
+/// Splitting keeps the original case and spacing, because a recovered command
+/// carries its arguments through verbatim.
+fn sentence_spans(prompt: &str) -> impl Iterator<Item = &str> {
+    prompt
+        .split(|character: char| {
+            matches!(
+                character,
+                '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
+            )
+        })
+        .map(str::trim)
+        .filter(|sentence| !sentence.is_empty())
+}
+
+/// Whether `sentence` states a *rule about* running commands rather than asking
+/// for one to run.
+///
+/// The tell is a seed-declared conditional lead opening the clause: Hive Mind's
+/// *"When running sudo commands, run them in the background"* tells the agent how
+/// to treat a class of commands it may later choose to run. Nothing in it names a
+/// command to run now, so no token inside it may become one.
+fn states_a_command_policy(sentence: &str) -> bool {
+    let lower = sentence.to_lowercase();
+    seed::caller_context_vocabulary()
+        .policy_leads
+        .iter()
+        .any(|lead| {
+            lower
+                .strip_prefix(lead.as_str())
+                .is_some_and(|rest| rest.starts_with(' '))
+        })
+}
+
+fn named_shell_command_in_sentence(
+    prompt: &str,
+    vocab: &TerminalCommandVocabulary,
+) -> Option<String> {
     let lower = prompt.to_ascii_lowercase();
     let has_phrase = vocab.terminal_phrases.iter().any(|p| lower.contains(p));
     let has_cjk_verb = vocab.cjk_run_verbs.iter().any(|v| lower.contains(v));

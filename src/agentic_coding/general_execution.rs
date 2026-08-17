@@ -2,8 +2,12 @@
 
 use serde_json::json;
 
-use super::general_planner::{GeneralChangePlan, GeneralPlanMode, PLAN_PATH};
-use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
+use super::general_planner::{
+    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+};
+use super::planner::{
+    fetch_arguments, plan_one, tool_for, write_arguments, AgenticPlan, Capability,
+};
 use super::progress::Progress;
 use super::tool_result;
 use crate::protocol::ChatMessage;
@@ -102,6 +106,28 @@ pub(super) fn plan_general_change_step(
             return plan_one(tool, arguments.to_owned());
         }
     }
+    // A repository work item names an issue, not an artifact. Recording the
+    // reference and stopping is what issue #904 reported: nothing the request
+    // asked for was ever produced. The issue itself is where the artifact is
+    // named, so read it before concluding that nothing can be executed — the
+    // capability is only genuinely unavailable once the fetch has been tried.
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        if let Some(fetched) = repository_work_item_objective(plan, &progress) {
+            if let Some(executable) = compose_general_change_plan(&fetched) {
+                if executable.mode != GeneralPlanMode::RepositoryWorkItem {
+                    return plan_general_change_step(messages, tool_names, &executable);
+                }
+            }
+        } else if let Some(tool) = tool_for(tool_names, Capability::Fetch) {
+            if !progress
+                .attempted_fetches
+                .iter()
+                .any(|url| url == &plan.target)
+            {
+                return plan_one(tool, fetch_arguments(&plan.target));
+            }
+        }
+    }
     if let Some(tool) = tool_for(tool_names, Capability::Write) {
         let plan_attempted = progress.attempted_write_for(PLAN_PATH);
         let plan_written = progress.successful_write_for(PLAN_PATH);
@@ -145,6 +171,20 @@ pub(super) fn plan_general_change_step(
         }
     }
     finish_general_change(plan, &progress)
+}
+
+/// The text of the issue this work item names, once the client has fetched it.
+///
+/// Only the page fetched from the plan's own target counts. A repository work
+/// item carries one URL, and answering it with whatever page happened to be
+/// fetched for some other reason this turn would plan against the wrong issue.
+fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+    progress
+        .fetched_pages
+        .iter()
+        .find(|(url, _)| url == &plan.target)
+        .map(|(_, text)| text.clone())
+        .filter(|text| !text.trim().is_empty())
 }
 
 fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> AgenticPlan {
