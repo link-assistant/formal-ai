@@ -180,7 +180,9 @@ src/coding/catalog/languages.rs	1 iteration completed under the 1 minute executi
 src/coding/catalog/languages.rs	The C# seed is returned with this warning until a dotnet-backed execution profile is available.
 src/coding/catalog/languages.rs	The C++ seed is returned with this warning until a g++-backed execution profile is available.
 src/coding/catalog/languages.rs	The Java seed is returned with this warning until a javac-backed execution profile is available.
+src/coding/catalog/languages.rs	The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.
 src/coding/catalog/languages.rs	The Ruby seed is returned with this warning until a ruby-backed execution profile is available.
+src/coding/catalog/languages.rs	The Scala seed is returned with this warning until a scalac-backed execution profile is available.
 src/coding/catalog/languages.rs	The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.
 src/coding/catalog/tasks.rs	Hello, world!
 src/coding/catalog/types.rs	write_program(language={}, task={})

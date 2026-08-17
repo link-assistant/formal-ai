@@ -767,6 +767,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "reverse_string"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a9cc3ce94fb67aec
+    source "data/seed/closure-generated-14.lino"
+    record "scala"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_50852c918a64ae2c
     source "data/seed/closure-generated-14.lino"
     record "there"

@@ -188,28 +188,34 @@ client advertises no fetch capability, the fetch came back empty, or the work
 item names no artifact — which is never invented into one.
 `tests/unit/issue_904.rs` pins all four cases.
 
-### 6.3 What this branch does not close: language coverage
+### 6.3 The third gap: the languages the matrix actually asked for
 
-The three reproduction issues linked from #2158 ask for a Hello World program in
-a named language. The coding catalog
-(`src/coding/catalog/languages.rs`) covers ten: Rust, Python, JavaScript,
+The two fixes above close the *routing* defects, and finding them exposed a
+third gap that neither report named. The three reproduction issues linked from
+#2158 ask for a Hello World program in a named language, and the catalog
+(`src/coding/catalog/languages.rs`) covered ten: Rust, Python, JavaScript,
 TypeScript, Go, C, C++, Java, C#, and Ruby. The production matrix asked for
-**Scala** (Agent leg) and **Kotlin** (Claude leg), and covers neither. Only the
-Codex leg's Rust was in the catalog — which is consistent with it being the leg
-that got furthest before the separate `sudo` hijack stopped it.
+**Scala** (Agent leg) and **Kotlin** (Claude leg), and covered neither. Only the
+Codex leg's Rust was in the catalog — consistent with it being the leg that got
+furthest before the `sudo` hijack stopped it.
 
-So the two fixes above close the *routing* defects: the objective now reaches
-the router intact, and the work item is read before its execution is judged
-impossible. A Scala or Kotlin work item still ends `planned_not_executed`,
-because reading an issue cannot invent a language the catalog does not have.
-That is the truthful outcome and the reason #2158's point 3 keeps the state, but
-it is not the same as being able to solve those three issues.
+Routing a work item to a language the catalog does not have would only have
+moved the failure one step later, so this branch adds both. Each carries the
+eleven task templates every other language carries, its `program_language_*`
+alias meaning with en/ru/hi/zh surfaces, and a mirror in the JS worker the web
+surface runs.
+
+Their `ExecutionStatus` is `Unavailable`, not `Verified`: no `scalac` or
+`kotlinc` was available to compile the templates, and the catalog already
+reserves `Unavailable` for exactly that — a seed returned with a warning rather
+than a verification claim nobody made. Five existing languages carry the same
+status for the same reason. Marking them `Verified` would have been the
+narrated-success failure this whole epic is about, one layer down.
 
 `an_uncovered_language_is_not_invented_into_an_artifact` in
-`tests/unit/issue_904.rs` records the boundary rather than assuming it: the test
-fails the day the catalog gains Scala or Kotlin, which is exactly when this
-section stops being accurate. Growing that coverage is separate work and is not
-claimed here.
+`tests/unit/issue_904.rs` keeps the underlying rule honest with a language that
+really is absent: a work item naming a language the catalog does not have is
+still never invented into an artifact.
 
 ## Related Work
 

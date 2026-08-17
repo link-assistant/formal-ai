@@ -2,6 +2,13 @@
 bump: minor
 ---
 
+### Added
+
+- Support Scala and Kotlin in the coding catalog, with the full task-template
+  set, multilingual language aliases, and a browser-worker mirror. Both are
+  marked as having no verified execution profile, because no `scalac` or
+  `kotlinc` compiled them.
+
 ### Fixed
 
 - Read the referenced work item before concluding a repository task cannot be

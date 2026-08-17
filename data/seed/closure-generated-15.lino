@@ -214,6 +214,11 @@ meanings
     lexeme en
       surface
         text "joe biden"
+  kt
+    defined-by word_surface
+    lexeme en
+      surface
+        text "kt"
   learn_from_source
     defined-by intent
     lexeme en

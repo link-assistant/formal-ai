@@ -331,20 +331,20 @@ fn a_read_work_item_describing_a_program_reaches_an_authoring_route() {
     );
 }
 
-/// The honest half of the same corpus: the Agent leg asked for Scala and the
-/// Claude leg for Kotlin, and the coding catalog covers neither. Reading the
-/// work item cannot invent a language the catalog does not have, so those legs
-/// still end `planned_not_executed` — truthfully, and for the reason
+/// The honest half of the same corpus: reading a work item cannot invent a
+/// language the catalog does not have, so one naming an absent language still
+/// ends `planned_not_executed` — truthfully, and for the reason
 /// [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158)
 /// point 3 reserves that state for.
 ///
-/// Language coverage is a separate gap from the one this branch closes. This
-/// test exists so the boundary between the two is recorded rather than assumed:
-/// it fails the day the catalog gains Scala or Kotlin, which is exactly when
-/// the claim above stops being true.
+/// The production matrix's own two languages, Scala and Kotlin, were absent
+/// when this was written and are covered now, so the rule is checked against
+/// languages that really are missing. Adding either of these is what should
+/// make this test fail — the failure is the signal to move it on, not to
+/// weaken it.
 #[test]
 fn an_uncovered_language_is_not_invented_into_an_artifact() {
-    for language in ["Scala", "Kotlin"] {
+    for language in ["Haskell", "Elixir"] {
         let messages = work_item_transcript(&hello_world_work_item(language));
         let plan = formal_ai::agentic_coding::plan_chat_step(
             &messages,

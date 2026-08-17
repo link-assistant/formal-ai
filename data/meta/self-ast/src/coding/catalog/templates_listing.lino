@@ -1,0 +1,30 @@
+self_ast_census
+  target src/coding/catalog/templates_listing.rs
+  language rust
+  fidelity signature
+  byte_len 12805
+  line_count 472
+  content_id source_module_988b4e05f4ae04f6
+  symbol_count 21
+  symbols
+    const TEMPLATES_LISTING 9 30
+    function main 18 29
+    const names 48 52
+    const names 63 67
+    static int 110 112
+    struct dirent 121 121
+    struct stat 123 123
+    static void 168 181
+    static void 192 199
+    function main 236 248
+    const path 272 272
+    const dir 274 274
+    const names 275 279
+    const dir 291 291
+    const names 292 296
+    static int 343 345
+    const char 348 348
+    struct dirent 355 355
+    struct stat 359 359
+    static void 405 419
+    static void 430 438

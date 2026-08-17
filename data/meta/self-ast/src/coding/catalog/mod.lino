@@ -2,31 +2,32 @@ self_ast_census
   target src/coding/catalog/mod.rs
   language rust
   fidelity signature
-  byte_len 7920
-  line_count 196
-  content_id source_module_331798a9865f7335
-  symbol_count 23
+  byte_len 8009
+  line_count 198
+  content_id source_module_c4761cc994f3993b
+  symbol_count 24
   symbols
     module languages 18 18
     module tasks 19 19
     module templates_core 20 20
     module templates_extended 21 21
-    module types 22 22
-    const WRITE_PROGRAM_INTENT 33 33
-    function record_algorithm_construction 35 37
-    const TEMPLATE_GROUPS 42 45
-    function program_templates 48 50
-    function program_template_count 54 56
-    function program_language_by_slug 59 63
-    function program_task_by_slug 66 68
-    function program_template 71 74
-    function program_spec 77 83
-    function alias_surfaces 94 99
-    function program_language_by_alias 102 107
-    function program_task_by_alias 110 114
-    function supported_program_languages 117 123
-    function supported_program_tasks 126 132
-    function contains_cjk 140 149
-    function contains_devanagari 157 160
-    function contains_token 162 186
-    function contains_phrase 188 196
+    module templates_listing 22 22
+    module types 23 23
+    const WRITE_PROGRAM_INTENT 34 34
+    function record_algorithm_construction 36 38
+    const TEMPLATE_GROUPS 43 47
+    function program_templates 50 52
+    function program_template_count 56 58
+    function program_language_by_slug 61 65
+    function program_task_by_slug 68 70
+    function program_template 73 76
+    function program_spec 79 85
+    function alias_surfaces 96 101
+    function program_language_by_alias 104 109
+    function program_task_by_alias 112 116
+    function supported_program_languages 119 125
+    function supported_program_tasks 128 134
+    function contains_cjk 142 151
+    function contains_devanagari 159 162
+    function contains_token 164 188
+    function contains_phrase 190 198

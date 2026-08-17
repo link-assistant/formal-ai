@@ -1,162 +1,17 @@
-//! Templates for the original coding tasks — hello world, count to three, and
-//! the two directory-listing variants — in every supported language. Split from
-//! [`super::templates_extended`] only to keep each file well under the
-//! repository's per-file line limit; the two groups are concatenated in
-//! [`super`].
+//! Templates for the reverse-sorted directory-listing tasks
+//! (`list_files_reverse_sort`, `list_files_arg_reverse_sort`) in every
+//! supported language. Split from [`super::templates_core`] only to keep each
+//! file well under the repository's per-file line limit; the groups are
+//! concatenated in [`super`].
 
 use super::types::ProgramTemplate;
 
-pub(super) const TEMPLATES_CORE: &[ProgramTemplate] = &[
+pub(super) const TEMPLATES_LISTING: &[ProgramTemplate] = &[
+    // Issue #358: reverse-sort variants are ordinary catalog tasks reached by
+    // data-defined program-plan modifiers. The templates keep the same file
+    // filtering as `list_files` / `list_files_arg`, but emit descending names.
     ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "rust",
-        code: r#"fn main() {
-    println!("Hello, world!");
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "python",
-        code: r#"print("Hello, world!")"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "javascript",
-        code: r#"console.log("Hello, world!");"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "typescript",
-        code: r#"console.log("Hello, world!");"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "go",
-        code: r#"package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("Hello, world!")
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "c",
-        code: r#"#include <stdio.h>
-
-int main(void) {
-    puts("Hello, world!");
-    return 0;
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "cpp",
-        code: r#"#include <iostream>
-
-int main() {
-    std::cout << "Hello, world!" << std::endl;
-    return 0;
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "java",
-        code: r#"public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, world!");
-    }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "csharp",
-        code: r#"using System;
-
-class Program {
-    static void Main() {
-        Console.WriteLine("Hello, world!");
-    }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "ruby",
-        code: r#"puts "Hello, world!""#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "scala",
-        code: r#"object Main {
-  def main(args: Array[String]): Unit = {
-    println("Hello, world!")
-  }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "kotlin",
-        code: r#"fun main() {
-    println("Hello, world!")
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "count_to_three",
-        language_slug: "rust",
-        code: r#"fn main() {
-    for number in 1..=3 {
-        println!("{number}");
-    }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "count_to_three",
-        language_slug: "python",
-        code: r"for number in range(1, 4):
-    print(number)",
-    },
-    ProgramTemplate {
-        task_slug: "count_to_three",
-        language_slug: "javascript",
-        code: r"for (let number = 1; number <= 3; number += 1) {
-    console.log(number);
-}",
-    },
-    ProgramTemplate {
-        task_slug: "count_to_three",
-        language_slug: "typescript",
-        code: r"for (let number = 1; number <= 3; number += 1) {
-    console.log(number);
-}",
-    },
-    ProgramTemplate {
-        task_slug: "count_to_three",
-        language_slug: "go",
-        code: r#"package main
-
-import "fmt"
-
-func main() {
-    for number := 1; number <= 3; number++ {
-        fmt.Println(number)
-    }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "count_to_three",
-        language_slug: "c",
-        code: r#"#include <stdio.h>
-
-int main(void) {
-    for (int number = 1; number <= 3; number++) {
-        printf("%d\n", number);
-    }
-    return 0;
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "rust",
         code: r#"use std::fs;
 
@@ -166,7 +21,7 @@ fn main() -> std::io::Result<()> {
         .filter(|entry| entry.path().is_file())
         .map(|entry| entry.file_name().to_string_lossy().into_owned())
         .collect();
-    names.sort();
+    names.sort_by(|a, b| b.cmp(a));
     for name in names {
         println!("{name}");
     }
@@ -174,44 +29,49 @@ fn main() -> std::io::Result<()> {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "python",
         code: r#"import os
 
-names = sorted(name for name in os.listdir(".") if os.path.isfile(name))
+names = sorted(
+    (name for name in os.listdir(".") if os.path.isfile(name)),
+    reverse=True,
+)
 for name in names:
     print(name)"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
 
 const names = fs
   .readdirSync(".")
   .filter((name) => fs.statSync(name).isFile())
-  .sort();
+  .sort()
+  .reverse();
 
 for (const name of names) {
   console.log(name);
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
 
 const names: string[] = fs
   .readdirSync(".")
   .filter((name) => fs.statSync(name).isFile())
-  .sort();
+  .sort()
+  .reverse();
 
 for (const name of names) {
   console.log(name);
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "go",
         code: r#"package main
 
@@ -232,14 +92,14 @@ func main() {
             names = append(names, entry.Name())
         }
     }
-    sort.Strings(names)
+    sort.Sort(sort.Reverse(sort.StringSlice(names)))
     for _, name := range names {
         fmt.Println(name)
     }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "c",
         code: r#"#include <dirent.h>
 #include <stdio.h>
@@ -247,8 +107,8 @@ func main() {
 #include <string.h>
 #include <sys/stat.h>
 
-static int compare(const void *a, const void *b) {
-    return strcmp(*(const char *const *)a, *(const char *const *)b);
+static int compare_desc(const void *a, const void *b) {
+    return strcmp(*(const char *const *)b, *(const char *const *)a);
 }
 
 int main(void) {
@@ -266,7 +126,7 @@ int main(void) {
         }
     }
     closedir(dir);
-    qsort(names, count, sizeof(char *), compare);
+    qsort(names, count, sizeof(char *), compare_desc);
     for (size_t i = 0; i < count; i++) {
         printf("%s\n", names[i]);
         free(names[i]);
@@ -275,7 +135,7 @@ int main(void) {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "cpp",
         code: r#"#include <algorithm>
 #include <filesystem>
@@ -291,17 +151,18 @@ int main() {
             names.push_back(entry.path().filename().string());
         }
     }
-    std::sort(names.begin(), names.end());
+    std::sort(names.rbegin(), names.rend());
     for (const auto &name : names) {
         std::cout << name << '\n';
     }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "java",
         code: r#"import java.io.File;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Main {
     public static void main(String[] args) {
@@ -312,7 +173,7 @@ public class Main {
         String[] names = Arrays.stream(entries)
             .filter(File::isFile)
             .map(File::getName)
-            .sorted()
+            .sorted(Comparator.reverseOrder())
             .toArray(String[]::new);
         for (String name : names) {
             System.out.println(name);
@@ -321,7 +182,7 @@ public class Main {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "csharp",
         code: r#"using System;
 using System.IO;
@@ -331,7 +192,7 @@ class Program {
     static void Main() {
         var names = Directory.GetFiles(".")
             .Select(Path.GetFileName)
-            .OrderBy(name => name, StringComparer.Ordinal);
+            .OrderByDescending(name => name, StringComparer.Ordinal);
         foreach (var name in names) {
             Console.WriteLine(name);
         }
@@ -339,39 +200,35 @@ class Program {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "ruby",
-        code: r#"names = Dir.entries(".").select { |name| File.file?(name) }.sort
+        code: r#"names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse
 names.each { |name| puts name }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "scala",
         code: r#"import java.io.File
 
 object Main {
   def main(args: Array[String]): Unit = {
     val entries = Option(new File(".").listFiles()).getOrElse(Array.empty[File])
-    entries.filter(_.isFile).map(_.getName).sorted.foreach(println)
+    entries.filter(_.isFile).map(_.getName).sorted.reverse.foreach(println)
   }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files",
+        task_slug: "list_files_reverse_sort",
         language_slug: "kotlin",
         code: r#"import java.io.File
 
 fun main() {
     val entries = File(".").listFiles() ?: return
-    entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }
+    entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }
 }"#,
     },
-    // Issue #324 follow-up: list files in the directory passed as the first
-    // command-line argument, defaulting to "." when none is supplied. Each
-    // template sorts names in byte order, so the verified output matches
-    // `list_files` for the documented sample directory.
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "rust",
         code: r#"use std::env;
 use std::fs;
@@ -384,27 +241,32 @@ fn main() {
         .filter(|entry| entry.path().is_file())
         .map(|entry| entry.file_name().to_string_lossy().into_owned())
         .collect();
-    names.sort();
+    names.sort_by(|a, b| b.cmp(a));
     for name in names {
         println!("{name}");
     }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "python",
         code: r#"import os
 import sys
 
 path = sys.argv[1] if len(sys.argv) > 1 else "."
 names = sorted(
-    name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))
+    (
+        name
+        for name in os.listdir(path)
+        if os.path.isfile(os.path.join(path, name))
+    ),
+    reverse=True,
 )
 for name in names:
     print(name)"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
 const path = require("path");
@@ -413,14 +275,15 @@ const dir = process.argv[2] || ".";
 const names = fs
   .readdirSync(dir)
   .filter((name) => fs.statSync(path.join(dir, name)).isFile())
-  .sort();
+  .sort()
+  .reverse();
 
 for (const name of names) {
   console.log(name);
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
 import * as path from "path";
@@ -429,14 +292,15 @@ const dir: string = process.argv[2] ?? ".";
 const names: string[] = fs
   .readdirSync(dir)
   .filter((name) => fs.statSync(path.join(dir, name)).isFile())
-  .sort();
+  .sort()
+  .reverse();
 
 for (const name of names) {
   console.log(name);
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "go",
         code: r#"package main
 
@@ -461,14 +325,14 @@ func main() {
             names = append(names, entry.Name())
         }
     }
-    sort.Strings(names)
+    sort.Sort(sort.Reverse(sort.StringSlice(names)))
     for _, name := range names {
         fmt.Println(name)
     }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "c",
         code: r#"#include <dirent.h>
 #include <stdio.h>
@@ -476,8 +340,8 @@ func main() {
 #include <string.h>
 #include <sys/stat.h>
 
-static int compare(const void *a, const void *b) {
-    return strcmp(*(const char *const *)a, *(const char *const *)b);
+static int compare_desc(const void *a, const void *b) {
+    return strcmp(*(const char *const *)b, *(const char *const *)a);
 }
 
 int main(int argc, char *argv[]) {
@@ -498,7 +362,7 @@ int main(int argc, char *argv[]) {
         }
     }
     closedir(dir);
-    qsort(names, count, sizeof(char *), compare);
+    qsort(names, count, sizeof(char *), compare_desc);
     for (size_t i = 0; i < count; i++) {
         printf("%s\n", names[i]);
         free(names[i]);
@@ -507,7 +371,7 @@ int main(int argc, char *argv[]) {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "cpp",
         code: r#"#include <algorithm>
 #include <filesystem>
@@ -524,17 +388,18 @@ int main(int argc, char *argv[]) {
             names.push_back(entry.path().filename().string());
         }
     }
-    std::sort(names.begin(), names.end());
+    std::sort(names.rbegin(), names.rend());
     for (const auto &name : names) {
         std::cout << name << '\n';
     }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "java",
         code: r#"import java.io.File;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Main {
     public static void main(String[] args) {
@@ -546,7 +411,7 @@ public class Main {
         String[] names = Arrays.stream(entries)
             .filter(File::isFile)
             .map(File::getName)
-            .sorted()
+            .sorted(Comparator.reverseOrder())
             .toArray(String[]::new);
         for (String name : names) {
             System.out.println(name);
@@ -555,7 +420,7 @@ public class Main {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "csharp",
         code: r#"using System;
 using System.IO;
@@ -566,7 +431,7 @@ class Program {
         var path = args.Length > 0 ? args[0] : ".";
         var names = Directory.GetFiles(path)
             .Select(Path.GetFileName)
-            .OrderBy(name => name, StringComparer.Ordinal);
+            .OrderByDescending(name => name, StringComparer.Ordinal);
         foreach (var name in names) {
             Console.WriteLine(name);
         }
@@ -574,14 +439,14 @@ class Program {
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "ruby",
         code: r#"path = ARGV[0] || "."
-names = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort
+names = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse
 names.each { |name| puts name }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "scala",
         code: r#"import java.io.File
 
@@ -589,19 +454,19 @@ object Main {
   def main(args: Array[String]): Unit = {
     val path = if (args.nonEmpty) args(0) else "."
     val entries = Option(new File(path).listFiles()).getOrElse(Array.empty[File])
-    entries.filter(_.isFile).map(_.getName).sorted.foreach(println)
+    entries.filter(_.isFile).map(_.getName).sorted.reverse.foreach(println)
   }
 }"#,
     },
     ProgramTemplate {
-        task_slug: "list_files_arg",
+        task_slug: "list_files_arg_reverse_sort",
         language_slug: "kotlin",
         code: r#"import java.io.File
 
 fun main(args: Array<String>) {
     val path = if (args.isNotEmpty()) args[0] else "."
     val entries = File(path).listFiles() ?: return
-    entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }
+    entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }
 }"#,
     },
 ];

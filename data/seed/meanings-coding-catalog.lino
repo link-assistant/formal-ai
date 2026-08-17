@@ -250,6 +250,48 @@ meanings
     lexeme zh
       surface
         text ruby
+  program_language_scala
+    grounded-in Q460584
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Scala"
+    unit "not applicable"
+    example "scala"
+    lexeme en
+      surface
+        text scala
+    lexeme ru
+      surface
+        text скала
+    lexeme hi
+      surface
+        text स्काला
+    lexeme zh
+      surface
+        text scala
+  program_language_kotlin
+    grounded-in Q3816639
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Kotlin"
+    unit "not applicable"
+    example "kotlin"
+    lexeme en
+      surface
+        text kotlin
+      surface
+        text kt
+    lexeme ru
+      surface
+        text котлин
+    lexeme hi
+      surface
+        text कोटलिन
+    lexeme zh
+      surface
+        text kotlin
   program_task
     defined-by program
     role program_task

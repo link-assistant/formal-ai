@@ -367,6 +367,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "decompose_into_leaf"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b15d7b535db773f5
+    source "data/seed/closure-generated-09.lino"
+    record "kotlin"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d05f9d5d710d4a35
     source "data/seed/closure-generated-09.lino"
     record "narrated"
