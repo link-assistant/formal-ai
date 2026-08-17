@@ -67,6 +67,8 @@ THE RUNGS
   R916-07  #907  a declarative statement of fact is not a request
   R916-08a #909  --global writes a gemini configuration that starts headlessly
   R916-08b #909  --global writes the complete OpenAI triple for qwen
+  R916-09  #907  an unmarked caller preamble does not outrank the objective
+  R916-10  #907  a policy sentence naming a command does not authorize it
 
 The same identifiers name the in-process regression tests in
 tests/unit/issue_916.rs, so a defect, its fix, its unit test and its ladder rung
@@ -92,6 +94,16 @@ a recorded reason, each fix tied to a named ladder rung. This is that record.
         CLOSED before this branch. The `planned_not_executed` terminal state is
         what R916-04 now builds on: a plan is not an effect, and completion is
         only claimed when the workspace is observed.
+        REOPENED because honest is not the same as done: three production
+        matrices later, every repository run still ended `planned_not_executed`
+        with an empty pull request.  A work item names an issue, and an issue
+        URL names no artifact, so recording the reference was the only end
+        available.  The issue #921 branch reads the work item first — that
+        document is where the artifact is named — and keeps
+        `planned_not_executed` for a genuinely unavailable capability.  The
+        rungs here judge workspace effects from a prompt, so this one is pinned
+        by tests/unit/issue_904.rs instead: its effect depends on a fetched
+        document rather than on the prompt alone.
   #905  "Completed ... and verified it with `cat hello.txt`" after exit 1
         FIXED here.  R916-01, R916-04, R916-05.
   #906  language router takes the word after "in" as the target language
@@ -100,6 +112,16 @@ a recorded reason, each fix tied to a named ladder rung. This is that record.
         rung.
   #907  caller framing hijacks intent routing
         FIXED here.  R916-06, R916-07.
+        REOPENED for the unmarked-prefix variant and fixed again on the issue
+        #921 branch.  R916-09, R916-10.  The fix above keys on the markup a
+        client wraps its framing in; Hive Mind's adapters used none, so workflow
+        policy and objective arrived concatenated in one untagged user message.
+        Production observed Codex run `/bin/bash -lc pwd` and five Codex
+        attempts run bare `sudo`, with no requested file created
+        (hive-mind#2158, evidence in hive-mind#2159).  Two tells replace the
+        markup: the explicit objective delimiter the caller wrote, and the
+        conditional lead that marks a clause as governing commands rather than
+        requesting one.
   #908  step verification ignores the exit code
         CLOSED during this branch's work; the rungs that keep it closed are
         R916-02 (exit 0 with no output is success) and R916-03 (the report names

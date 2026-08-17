@@ -15,6 +15,8 @@
 //! | `R916-06` | #907 fix 1 | caller context blocks do not hijack intent routing |
 //! | `R916-07` | #907 fix 2 | a declarative statement of fact is not a request |
 //! | `R916-08` | #909 | `--global` writes a complete headless config |
+//! | `R916-09` | #907 follow-up | an unmarked preamble does not outrank the objective after it |
+//! | `R916-10` | #907 follow-up | a policy sentence naming a command does not authorize it |
 
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
 use formal_ai::agentic_coding::tool_result::{step_outcome, StepOutcome};
@@ -695,6 +697,97 @@ fn r916_08_global_configuration_completes_the_openai_triple_for_qwen() {
                 .iter()
                 .any(|env| env.key == key),
             "qwen selects the OpenAI auth path only from the complete triple; {key} is missing"
+        );
+    }
+}
+
+// ---------------------------------------------------------------------------
+// R916-09 / R916-10 — #907 follow-up: an unmarked caller preamble
+// ---------------------------------------------------------------------------
+//
+// The #907 fix separates the caller from the user by the markup a client wraps
+// its framing in. Hive Mind's Agent/Codex/Gemini/OpenCode adapters wrapped
+// theirs in nothing, concatenating workflow policy and objective into a single
+// untagged `user` message, so there was no markup left to key on. Production
+// then observed Codex receive `/bin/bash -lc pwd` and exit 0, and five Codex
+// attempts run bare `sudo`, with no requested repository file created in any of
+// them (hive-mind#2158, evidence in hive-mind#2159).
+//
+// Two tells replace the markup, one per rung: the explicit objective delimiter
+// the caller wrote (R916-09), and the conditional lead that marks a clause as
+// governing commands rather than requesting one (R916-10).
+
+/// The command the planner selects for `prompt`, or [`None`] when it plans
+/// something other than a shell call.
+fn planned_shell_command(prompt: &str) -> Option<String> {
+    let AgenticPlan::ToolCalls(calls) = plan_chat_step(
+        &[ChatMessage::user(prompt)],
+        &["write_file", "run_shell_command"],
+    )?
+    else {
+        return None;
+    };
+    let call = calls
+        .iter()
+        .find(|call| call.tool == "run_shell_command")?;
+    let arguments: serde_json::Value = serde_json::from_str(&call.arguments).ok()?;
+    arguments
+        .get("command")
+        .and_then(serde_json::Value::as_str)
+        .map(str::to_owned)
+}
+
+#[test]
+fn r916_09_an_unmarked_preamble_does_not_outrank_the_objective_after_it() {
+    const PREAMBLE: &str = "You are an AI issue solver.\n\
+         When running sudo commands, run them in the background.\n\
+         Your prepared working directory: /tmp/example\n\n\
+         Issue to solve: write a hello world program in Python.\n\n\
+         Proceed.";
+
+    let planned = planned_shell_command(PREAMBLE);
+    assert_ne!(
+        planned.as_deref(),
+        Some("pwd"),
+        "the caller's workspace path is not a request for the working directory",
+    );
+    assert_ne!(
+        planned.as_deref(),
+        Some("sudo"),
+        "the caller's sudo policy is not a request to run sudo",
+    );
+}
+
+#[test]
+fn r916_10_a_policy_sentence_naming_a_command_does_not_authorize_it() {
+    // A different command, a different lead, and no objective delimiter to lean
+    // on, so passing proves the rule rather than the phrasing of R916-09.
+    for policy in [
+        "Never run rm on files outside the workspace.",
+        "Before you execute chmod, ask the operator first.",
+        "Whenever you run docker, pass --rm so containers are not left behind.",
+    ] {
+        assert_eq!(
+            planned_shell_command(policy),
+            None,
+            "a policy clause planned a command: {policy:?}",
+        );
+    }
+}
+
+#[test]
+fn r916_10_an_imperative_still_selects_the_command_it_names() {
+    // The inverse guard: refusing every privileged token would pass the test
+    // above while removing the capability the user is entitled to ask for.
+    for (request, expected) in [
+        ("run rm", "rm"),
+        ("execute chmod", "chmod"),
+        ("Run the docker command", "docker"),
+    ] {
+        assert_eq!(
+            planned_shell_command(request).as_deref(),
+            Some(expected),
+            "{request:?} names {expected} and must still select it",
         );
     }
 }
