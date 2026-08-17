@@ -69,31 +69,42 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     let AgenticPlan::ToolCalls(calls) =
         plan_chat_step(&messages, &tools).expect("compound work item must have an agentic plan")
     else {
-        panic!("the first work-item step must persist its plan")
+        panic!("the first work-item step must read the work item")
     };
 
     assert_eq!(calls.len(), 1);
-    assert_eq!(calls[0].tool, "write_file");
-    assert!(calls[0].arguments.contains(PLAN_PATH));
+    // A work item names an issue, and an issue URL names no artifact, so the
+    // run reads the work item before deciding what it can execute (issue #904,
+    // follow-up). The plan record is still written; it is no longer the first
+    // and only thing the run does.
+    assert_eq!(calls[0].tool, "web_fetch");
+
+    let write_only = plan_chat_step(&messages, &["write_file", "run_command"]);
+    let Some(AgenticPlan::ToolCalls(write_only)) = write_only else {
+        panic!("a write-only client still records the reference")
+    };
+    assert_eq!(write_only[0].tool, "write_file");
+    assert!(write_only[0].arguments.contains(PLAN_PATH));
     assert!(
-        calls[0].arguments.contains("repository_work_item"),
+        write_only[0].arguments.contains("repository_work_item"),
         "the plan must preserve the work-item execution boundary"
     );
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
-    // One step, not two: the run records the work item and stops. Issue #904
-    // removed the `cat .formal-ai/general-change-plan.lino` step, which verified
-    // nothing but the write the same run had just performed.
+    // Two steps, not three: the run reads the work item and records it. Issue
+    // #904 removed the `cat .formal-ai/general-change-plan.lino` step, which
+    // verified nothing but the write the same run had just performed, and that
+    // step has not come back.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["write_file"]
+        ["web_fetch", "write_file"]
     );
-    assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
+    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
     assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }
