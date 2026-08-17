@@ -537,3 +537,92 @@ fn codeql_rust_lane_pins_the_extractor_sysroot() {
          let the 20,725 diagnostics return unnoticed"
     );
 }
+
+/// The same false negative from a third direction. In run 95255998673 the
+/// `macos-x64` leg wrote a complete DMG, ZIP and both blockmaps and then failed,
+/// because electron-builder's download of `dmgbuild-bundle-x86_64-75c8a6c.tar.gz`
+/// stalled for the whole 600 000 ms `got` request timeout: its own retry
+/// recovered two seconds later, but `AsyncTaskManager.awaitTasks()` rethrew the
+/// timeout it had already recorded. Ten of the job's 43.7 minutes were that one
+/// stalled socket, against a 50-minute cap.
+///
+/// The prefetch seeds the checksum-validated archive cache `downloadAndExtract`
+/// reads before it touches the network, so it only helps if it runs before
+/// **every** packaging step, on every platform -- the toolset is not
+/// macOS-specific.
+#[test]
+fn desktop_packaging_seeds_the_builder_toolset_cache_first() {
+    let workflow = repository_file(".github/workflows/desktop-release.yml");
+    let build = job_block(&workflow, "build");
+
+    let prefetch = build
+        .find("- name: Prefetch electron-builder toolsets")
+        .expect(
+            "the packaging job must prefetch electron-builder's toolsets; without it a stalled \
+             toolset download fails a build that produced every artifact (issue #1017)",
+        );
+
+    for invocation in [
+        "npx --no-install electron-builder",
+        "bash scripts/package-macos-with-retry.sh",
+    ] {
+        let mut searched = 0;
+        while let Some(offset) = build[searched..].find(invocation) {
+            let at = searched + offset;
+            assert!(
+                at > prefetch,
+                "`{invocation}` at byte {at} runs before the toolset prefetch at byte {prefetch}; \
+                 an unseeded cache leaves the ten-minute stall in place"
+            );
+            searched = at + invocation.len();
+        }
+        assert!(searched > 0, "`{invocation}` must still package the app");
+    }
+
+    let step = &build[prefetch..];
+    let step_body = &step[..step.find("\n      - name:").unwrap_or(step.len())];
+    assert!(
+        !step_body.contains("if:"),
+        "7-Zip is downloaded on every platform, so the prefetch must not be \
+         restricted to one leg (issue #1017 requirement R1017-11)"
+    );
+    assert!(
+        !repository_file("desktop/scripts/prefetch-builder-toolsets.mjs").is_empty(),
+        "the prefetch script must exist"
+    );
+}
+
+/// A retry is only an improvement while it can finish. Packaging is the last
+/// expensive step of the job, so an attempt started too late is killed by
+/// `timeout-minutes` -- and GitHub reports that as **cancelled**, which is the
+/// exact false negative this issue exists to remove.
+#[test]
+fn macos_packaging_retry_is_bounded_by_a_budget() {
+    let workflow = repository_file(".github/workflows/desktop-release.yml");
+    let build = job_block(&workflow, "build");
+
+    let budgets = build
+        .matches("FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:")
+        .count();
+    let wrappers = build
+        .matches("bash scripts/package-macos-with-retry.sh")
+        .count();
+    assert_eq!(
+        budgets, wrappers,
+        "every macOS packaging step must declare its retry budget, or a retry \
+         can outlive the job clock and report `cancelled` instead of `failure`"
+    );
+
+    let wrapper = repository_file("desktop/scripts/package-macos-with-retry.sh");
+    assert!(
+        wrapper.contains("Timeout awaiting 'request' for [0-9]+ms"),
+        "the wrapper must recognise the toolset download timeout observed in \
+         run 95255998673 as transient; matching only `hdiutil` signatures is \
+         why that run was never retried"
+    );
+    assert!(
+        wrapper.contains("FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:-0"),
+        "the budget must default to disabled so the wrapper keeps working \
+         outside this workflow"
+    );
+}

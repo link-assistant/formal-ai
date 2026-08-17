@@ -247,6 +247,20 @@ jobs:
         working-directory: desktop
         run: node scripts/prepare-resources.mjs
 
+      # Issue #1017: electron-builder fetches its 7-Zip toolset -- and, on
+      # macOS, the dmgbuild bundle -- with a single `got` request whose only
+      # deadline is 600 000 ms. In run 95255998673 that request stalled for the
+      # full ten minutes on macos-15-intel: the retry underneath recovered, the
+      # DMG, ZIP and both blockmaps were written, and the build still failed
+      # because AsyncTaskManager.awaitTasks() rethrew the timeout it had already
+      # recorded. Seeding the checksum-validated archive cache that
+      # `downloadAndExtract` consults before it touches the network removes the
+      # request itself. Every failure here is a warning only, so packaging falls
+      # back to downloading the toolset exactly as it does today.
+      - name: Prefetch electron-builder toolsets
+        working-directory: desktop
+        run: node scripts/prefetch-builder-toolsets.mjs
+
       - name: Check macOS signing secrets
         if: matrix.ebflag == '--mac'
         id: mac_secrets
@@ -292,6 +306,10 @@ jobs:
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           DEBUG: electron-builder,electron-notarize*
+          # Packaging normally takes about five minutes; the retry wrapper uses
+          # this ceiling to refuse an attempt the job cannot finish. See the
+          # comment on the ad-hoc step below.
+          FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS: "600"
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
 
       # Issue #479: electron-builder 26 changed macOS signing control flow. Its
@@ -322,6 +340,14 @@ jobs:
           CSC_FOR_PULL_REQUEST: "true"
           FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
+          # Wall-clock ceiling for packaging including retries. Run 95255998673
+          # spent 43.7 min of its 50-minute cap, 26 of them in `cargo build`, so
+          # a blind second attempt after a stalled one would land near the cap --
+          # and `timeout-minutes` reports that as **cancelled**, not failed,
+          # which is the false negative this issue exists to remove. A healthy
+          # attempt takes about five minutes, so 600s still leaves room for one
+          # retry after a fast failure while refusing one after a slow failure.
+          FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS: "600"
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
 
       - name: Normalize desktop artifact names
