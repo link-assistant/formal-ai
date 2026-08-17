@@ -1,13 +1,44 @@
 #!/usr/bin/env bash
-# Retry only the transient hdiutil failures observed on GitHub-hosted macOS
-# runners. See https://github.com/actions/runner-images/issues/7522.
+# Retry only the transient host failures observed on GitHub-hosted macOS
+# runners:
+#
+#   1. hdiutil create/attach failing against the runner's disk-image service.
+#      See https://github.com/actions/runner-images/issues/7522.
+#   2. electron-builder's toolset download stalling for the whole of its
+#      600 000 ms `got` request timeout. Issue #1017: the build produced a
+#      complete DMG, ZIP and both blockmaps and *then* failed, because the
+#      stalled request had been recorded by an AsyncTaskManager whose
+#      `awaitTasks()` rethrew it after the retry underneath had already
+#      succeeded. `scripts/prefetch-builder-toolsets.mjs` removes the download
+#      itself; this pattern is the backstop for the archives it could not seed.
 set -euo pipefail
 
 readonly max_attempts=3
 retry_delay_seconds="${FORMAL_AI_MACOS_PACKAGE_RETRY_DELAY_SECONDS:-5}"
+# Wall-clock ceiling for this wrapper, retries included; 0 disables the check.
+# A retry that would run past the ceiling is not started: packaging is the last
+# expensive step in the job, so an overrun would be killed by `timeout-minutes`,
+# and GitHub reports that kill as **cancelled**, not failed — the same false
+# negative issue #1017 exists to remove (D1). Failing now with electron-builder's
+# own status keeps the job red for the reason it actually failed.
+package_budget_seconds="${FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS:-0}"
+
+# Signatures that are worth another attempt. Everything else — signing,
+# notarization, dependency and arbitrary builder failures — fails on its first
+# attempt, so a retry can never turn a real defect into a green build.
+readonly transient_signatures=(
+  # The runner's disk-image service, documented in actions/runner-images#7522.
+  'hdiutil: (create|attach) failed - (Device not configured|Resource busy|No child processes)'
+  # got's request timeout inside electron-builder's toolset download (#1017).
+  "Timeout awaiting 'request' for [0-9]+ms"
+)
 
 if ! [[ "$retry_delay_seconds" =~ ^[0-9]+$ ]]; then
   echo "FORMAL_AI_MACOS_PACKAGE_RETRY_DELAY_SECONDS must be a non-negative integer" >&2
+  exit 2
+fi
+if ! [[ "$package_budget_seconds" =~ ^[0-9]+$ ]]; then
+  echo "FORMAL_AI_MACOS_PACKAGE_BUDGET_SECONDS must be a non-negative integer" >&2
   exit 2
 fi
 if [ "$#" -eq 0 ]; then
@@ -23,30 +54,40 @@ trap cleanup_log EXIT
 
 attempt=1
 while [ "$attempt" -le "$max_attempts" ]; do
+  attempt_started="$SECONDS"
   set +e
   npx --no-install electron-builder "$@" 2>&1 | tee "$package_log"
   package_status="${PIPESTATUS[0]}"
   set -e
+  attempt_seconds=$((SECONDS - attempt_started))
 
   if [ "$package_status" -eq 0 ]; then
     exit 0
   fi
 
-  # Do not hide signing, notarization, dependency, or arbitrary builder
-  # failures. These create/attach errors are the runner disk-image service
-  # signatures documented in actions/runner-images#7522; everything else fails
-  # on its first attempt.
-  if ! grep -Eq \
-    'hdiutil: (create|attach) failed - (Device not configured|Resource busy|No child processes)' \
-    "$package_log"; then
+  matched_signature=""
+  for signature in "${transient_signatures[@]}"; do
+    if grep -Eq "$signature" "$package_log"; then
+      matched_signature="$signature"
+      break
+    fi
+  done
+  if [ -z "$matched_signature" ]; then
     exit "$package_status"
   fi
   if [ "$attempt" -eq "$max_attempts" ]; then
-    echo "macOS DMG creation still failed after ${max_attempts} attempts" >&2
+    echo "macOS packaging still failed after ${max_attempts} attempts" >&2
+    exit "$package_status"
+  fi
+  # Never start an attempt the job cannot finish: the previous attempt is the
+  # best available estimate of the next one's cost.
+  if [ "$package_budget_seconds" -gt 0 ] &&
+    [ "$((SECONDS + attempt_seconds))" -gt "$package_budget_seconds" ]; then
+    echo "::warning title=macOS packaging retry skipped::Another ~${attempt_seconds}s attempt would exceed the ${package_budget_seconds}s packaging budget after ${SECONDS}s; failing with electron-builder's own status instead of risking a timeout-minutes cancellation"
     exit "$package_status"
   fi
 
-  echo "::warning title=Transient macOS DMG creation failure::Retrying electron-builder after hdiutil failed on attempt ${attempt}/${max_attempts}"
+  echo "::warning title=Transient macOS packaging failure::Retrying electron-builder after a transient failure (${matched_signature}) on attempt ${attempt}/${max_attempts}"
   # Preserve completed ZIP/app output while removing only an incomplete
   # top-level disk image that would otherwise collide with the next attempt.
   if [ -d release ]; then
