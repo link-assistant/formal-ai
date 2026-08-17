@@ -311,6 +311,25 @@ fn caller_framing_alone_never_becomes_a_command() {
     }
 }
 
+/// Sentence scoping is what stops run context leaking across a boundary, and
+/// this pins the boundary itself: an explicitly introduced command still passes
+/// through whole, because the passthrough prefix claims it before sentence
+/// matching is ever consulted.
+#[test]
+fn an_explicitly_introduced_command_survives_sentence_scoping() {
+    for (request, expected) in [
+        ("run git status", "git status"),
+        ("execute pwd", "pwd"),
+        ("run cat notes.txt", "cat notes.txt"),
+    ] {
+        assert_eq!(
+            planned_command(request).as_deref(),
+            Some(expected),
+            "{request:?} names its command explicitly and must pass through",
+        );
+    }
+}
+
 /// Requirement 5, the other direction: a user who actually asks for one of these
 /// commands still gets it. A guard that simply refused every privileged token
 /// would pass the two tests above while breaking the feature.
@@ -326,6 +345,41 @@ fn an_imperative_still_selects_the_command_it_names() {
             planned_command(request).as_deref(),
             Some(expected),
             "{request:?} names {expected} and must still select it",
+        );
+    }
+}
+
+/// A `cue:` label states a fact as surely as a copula does, so a harness line
+/// that *supplies* the working directory must not be answered with `pwd`.
+#[test]
+fn a_labelled_value_is_a_declaration_not_a_request() {
+    for declaration in [
+        "Your prepared working directory: /tmp/example",
+        "current directory: /tmp",
+        "Workspace path: /srv/app",
+    ] {
+        assert_eq!(
+            planned_command(declaration),
+            None,
+            "a labelled value planned a command: {declaration:?}",
+        );
+    }
+}
+
+/// The other side of the same rule, and the one a colon-based guard gets wrong
+/// most easily: a request may punctuate itself with a colon too. Every prompt
+/// here carries a seed-declared request verb or question word, which is what
+/// separates it from the declarations above.
+#[test]
+fn a_request_that_carries_a_colon_still_routes() {
+    for (request, expected) in [
+        ("print the current directory: I need the absolute path", "pwd"),
+        ("show me the working directory: then list its files", "pwd"),
+    ] {
+        assert_eq!(
+            planned_command(request).as_deref(),
+            Some(expected),
+            "{request:?} is an imperative and must still select {expected}",
         );
     }
 }

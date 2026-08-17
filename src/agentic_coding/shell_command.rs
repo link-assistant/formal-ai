@@ -372,7 +372,7 @@ fn is_fact_statement(
     if interrogative || vocab.asks_a_question(sentence) {
         return false;
     }
-    if labels_a_value(sentence, cue) {
+    if labels_a_value(sentence, cue, vocab) {
         return true;
     }
     // The cue may or may not carry the determiner itself ("the current time" vs
@@ -397,15 +397,25 @@ fn is_fact_statement(
 }
 
 /// Whether `sentence` *labels* a value with `cue` rather than asking for it:
-/// the cue is followed by a colon and something after it.
+/// the cue is followed by a colon and a value, and nothing in the sentence asks
+/// for anything.
 ///
 /// A copula is not the only way to state a fact. Agent harnesses prefer the
 /// label form — Hive Mind sent `Your prepared working directory: /tmp/example`,
 /// which supplies the working directory exactly as *"the working directory is
 /// /tmp/example"* would, and answering it planned `pwd` for every run
-/// (issue #907, follow-up). The colon has to follow the cue itself, so
-/// *"print the working directory: I need the path"* keeps routing.
-fn labels_a_value(sentence: &str, cue: &str) -> bool {
+/// (issue #907, follow-up).
+///
+/// The colon alone is not enough to call a sentence a label, because a request
+/// may punctuate itself the same way: *"print the current directory: I need the
+/// absolute path"* is an imperative that happens to carry a colon. A sentence
+/// carrying a seed-declared request verb or question word is therefore never a
+/// label — the same rule [`is_fact_statement`] already applies before testing
+/// for a copula.
+fn labels_a_value(sentence: &str, cue: &str, vocab: &seed::CallerContextVocabulary) -> bool {
+    if vocab.asks_a_question(sentence) {
+        return false;
+    }
     let Some(start) = sentence.find(cue) else {
         return false;
     };
