@@ -351,6 +351,61 @@ fn macos_slices_cover_every_partition_of_their_denominator() {
     );
 }
 
+/// The archive and the slices each ran `simulate-fresh-merge.sh`, and each
+/// resolved `origin/$BASE_REF` *at its own start time*. The macOS runner pool
+/// serializes sixteen slices across roughly forty minutes, so a single push to
+/// the base branch mid-run gave the archive one merged tree and the later slices
+/// another: run 31993872931 built its archive at 04:54Z, `main` gained a commit
+/// at 05:23:29Z, and every slice that started after that failed `Verify archive
+/// source tree` -- slice 9 started 05:20Z and passed, slice 3 started 05:24Z and
+/// failed. Fifteen red slices, no defect in the pull request. That is a false
+/// result of exactly the class issue #1017 is about, so the base commit is
+/// recorded once by the archive and merged by every slice.
+#[test]
+fn macos_slices_merge_the_base_commit_the_archive_was_built_against() {
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
+
+    assert!(
+        macos.contains("macos-core-tests/base"),
+        "the archive job must record the base commit it merged, or the slices \
+         have nothing to pin to and the tree guard stays a race (issue #1017)"
+    );
+    assert!(
+        macos.contains("BASE_COMMIT=\"$(cat \"$RUNNER_TEMP/macos-core-tests/base\")\""),
+        "the slices must merge the recorded base commit, not re-resolve the \
+         branch tip at their own start time"
+    );
+
+    // The merge has to happen after the download, because the commit it merges
+    // is read out of the artifact.
+    let download = macos
+        .find("Download macOS test archive")
+        .expect("slices download the archive");
+    let merge = macos[download..]
+        .find("Simulate fresh merge")
+        .map(|offset| download + offset)
+        .expect("the slice job must still simulate the merge");
+    let verify = macos[merge..]
+        .find("- name: Verify archive source tree")
+        .map(|offset| merge + offset)
+        .expect("the tree guard must survive");
+    assert!(
+        merge < verify,
+        "the pinned merge must run before the tree guard checks its result"
+    );
+
+    let script = repository_file("scripts/simulate-fresh-merge.sh");
+    assert!(
+        script.contains("BASE_COMMIT"),
+        "simulate-fresh-merge.sh must accept a pinned base commit"
+    );
+    assert!(
+        script.contains("git merge \"$BASE_SHA\""),
+        "the merge must use the resolved base commit so the pinned and unpinned \
+         paths cannot diverge"
+    );
+}
+
 /// The `CodeQL` run emitted parse diagnostics on every single invocation because
 /// the Rust extractor, in `build-mode: none`, parses every `.rs` file on disk --
 /// including a deliberately truncated documentation excerpt.

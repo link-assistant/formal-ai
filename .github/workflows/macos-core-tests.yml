@@ -52,6 +52,7 @@ jobs:
         env:
           TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 80
+          BASE_REF: ${{ github.base_ref }}
         run: |
           mkdir -p "$RUNNER_TEMP/macos-core-tests"
           scripts/run-with-budget-warning.sh \
@@ -59,6 +60,21 @@ jobs:
             cargo nextest archive --lib --bins --tests --all-features \
             --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst"
           git rev-parse 'HEAD^{tree}' > "$RUNNER_TEMP/macos-core-tests/tree"
+          # Issue #1017: the slices re-run `simulate-fresh-merge.sh` against
+          # `origin/$BASE_REF` *as of their own start time*, which is minutes to
+          # an hour after this one. When the base branch moves in that window the
+          # two merges produce different trees and every slice that started after
+          # the push fails `Verify archive source tree` -- a false result, since
+          # nothing about the pull request changed. Record the base commit this
+          # archive was actually built against so the slices merge the same one.
+          # Only pull requests merge a base branch; on a push build there is
+          # nothing to pin, and the slices only read this file under the same
+          # `pull_request` condition.
+          if [ -n "${BASE_REF:-}" ]; then
+            git rev-parse "origin/$BASE_REF" > "$RUNNER_TEMP/macos-core-tests/base"
+          else
+            git rev-parse HEAD > "$RUNNER_TEMP/macos-core-tests/base"
+          fi
       - name: Run doc tests
         run: cargo test --doc --verbose
       - name: Upload macOS test archive
@@ -105,11 +121,6 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Simulate fresh merge with base branch (PR only)
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: bash scripts/simulate-fresh-merge.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -123,6 +134,19 @@ jobs:
         with:
           name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/macos-core-tests
+      # Issue #1017: merge the base commit the archive was built against, not
+      # whatever `origin/$BASE_REF` points at now. The slices are serialized by
+      # the macOS runner pool and start up to an hour apart, so resolving the
+      # base per slice made the tree a function of when the slice happened to
+      # start. This step therefore runs *after* the download, because the commit
+      # it merges is read out of the archive.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          BASE_COMMIT="$(cat "$RUNNER_TEMP/macos-core-tests/base")" \
+            bash scripts/simulate-fresh-merge.sh
       - name: Verify archive source tree
         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
       - name: Run core test slice from archive

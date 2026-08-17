@@ -115,6 +115,52 @@ fn ci_contract_discovers_every_registered_language_from_the_ledger() {
     );
 }
 
+/// A path under `src/solver_handlers/` was enough to demand test evidence in
+/// every registered language, whatever the change actually was. Pull request
+/// #1018 edited one English-only sentence describing workspace isolation -- a
+/// string with no localized counterpart, in a handler whose meanings live in
+/// seed data -- and the gate demanded en/ru/hi/zh/es tests for it. Blocking a
+/// pull request over a change that cannot regress any language is a false
+/// result, so the decision is taken per changed *line* under those prefixes.
+/// The gate must not lose its teeth: seed and translation data stay file-level,
+/// and a line naming a locale or carrying non-Latin script still counts.
+#[test]
+fn language_coverage_gate_judges_handler_changes_by_line_not_by_path() {
+    let guard = read("tests/e2e/scripts/check-language-test-coverage.mjs");
+
+    assert!(
+        guard.contains("lineLevelPrefixes"),
+        "the guard must decide handler changes per changed line, not per path"
+    );
+    for prefix in ["src/solver_handlers/", "src/web/worker/"] {
+        assert!(
+            guard.contains(&format!("'{prefix}'")),
+            "{prefix} carries language-independent code and must be judged by line"
+        );
+    }
+    assert!(
+        guard.contains("scriptMarkers"),
+        "a changed line carrying non-Latin script must still count as localized"
+    );
+    // `language=python` names a programming language, never a natural one.
+    assert!(
+        guard.contains("python|rust|javascript"),
+        "programming-language names must not pull in the multilingual matrix"
+    );
+    // Seed and translation data are localized content line for line, so they
+    // must never be narrowed to the line-level test.
+    for prefix in ["data/seed/", "src/translation/"] {
+        assert!(
+            guard.contains(&format!("'{prefix}'")),
+            "{prefix} must stay a file-level trigger"
+        );
+        assert!(
+            !guard.contains(&format!("lineLevelPrefixes = ['{prefix}'")),
+            "{prefix} must not be narrowed to the line-level test"
+        );
+    }
+}
+
 #[test]
 fn detection_registry_is_seed_data_not_rust_constants() {
     // Every language the detector knows must come from the seed registry, and

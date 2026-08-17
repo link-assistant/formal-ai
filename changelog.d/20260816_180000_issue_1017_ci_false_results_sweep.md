@@ -54,3 +54,20 @@ bump: patch
   native halves. An unreviewed install script still fails the install, but the
   report now names each one and the exact `npm approve-scripts
   --no-allow-scripts-pin` command that clears it.
+- Stop a push to the base branch from failing macOS core slices that have
+  nothing wrong with them. The archive job and each of the sixteen slices ran
+  the fresh-merge simulation separately, and each resolved the base branch tip
+  *at its own start time*; because the runner pool serializes the slices across
+  roughly forty minutes, one commit landing on `main` mid-run gave the archive
+  one merged tree and the later slices another, so every slice that started
+  after the push failed its archive tree check. The archive now records the base
+  commit it merged and every slice merges that same commit, which is the
+  property the tree check was always asserting.
+- Stop the language test coverage gate from demanding evidence in five
+  languages for a change that cannot regress any of them. Any edit under
+  `src/solver_handlers/` counted as language-facing, so rewording one
+  English-only diagnostic string — in a handler whose meanings live in seed data
+  and which has no localized counterpart — blocked the pull request. Changes
+  under the language-independent code prefixes are now judged per changed line,
+  while seed and translation data stay file-level and a line naming a locale or
+  carrying non-Latin script still counts.
