@@ -440,8 +440,8 @@ fn a_work_item_naming_no_artifact_is_not_invented_into_one() {
 /// A transcript in which the client has already fetched the work item, in the
 /// shape [`formal_ai::agentic_coding::plan_chat_step`] reads results back from.
 fn work_item_transcript(body: &str) -> Vec<ChatMessage> {
-    let plan = compose_general_change_plan(HARNESS_PROMPT).expect("repository work-item plan");
     const CALL_ID: &str = "call_work_item";
+    let plan = compose_general_change_plan(HARNESS_PROMPT).expect("repository work-item plan");
     let call = formal_ai::protocol::ToolCall::function(
         CALL_ID,
         "fetch_url",
