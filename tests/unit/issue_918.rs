@@ -332,7 +332,10 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
             }
         }
     }
-    assert_eq!(coding_records, 37, "coding-path regression floor");
+    // Scala and Kotlin joined the coding catalog for the hive-mind#2158
+    // language matrix (issue #921), so the complete-source floor rises with
+    // them: 25 catalog records + 14 task records.
+    assert_eq!(coding_records, 39, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
-    assert_eq!(expected_gaps.len(), 3_704);
+    assert_eq!(expected_gaps.len(), 3_719);
 }
