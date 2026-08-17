@@ -198,7 +198,7 @@ Sources: `annotations/all-annotations.tsv` (25 annotations) and
 
 ### 4.2 Diagnostics deliberately left alone, with reasons
 
-Classifying these matters as much as fixing D1–D12: silencing them would create
+Classifying these matters as much as fixing D1–D16: silencing them would create
 exactly the false negatives the issue asks to remove.
 
 | Diagnostic | Disposition |
