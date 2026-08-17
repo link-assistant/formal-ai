@@ -188,6 +188,29 @@ client advertises no fetch capability, the fetch came back empty, or the work
 item names no artifact — which is never invented into one.
 `tests/unit/issue_904.rs` pins all four cases.
 
+### 6.3 What this branch does not close: language coverage
+
+The three reproduction issues linked from #2158 ask for a Hello World program in
+a named language. The coding catalog
+(`src/coding/catalog/languages.rs`) covers ten: Rust, Python, JavaScript,
+TypeScript, Go, C, C++, Java, C#, and Ruby. The production matrix asked for
+**Scala** (Agent leg) and **Kotlin** (Claude leg), and covers neither. Only the
+Codex leg's Rust was in the catalog — which is consistent with it being the leg
+that got furthest before the separate `sudo` hijack stopped it.
+
+So the two fixes above close the *routing* defects: the objective now reaches
+the router intact, and the work item is read before its execution is judged
+impossible. A Scala or Kotlin work item still ends `planned_not_executed`,
+because reading an issue cannot invent a language the catalog does not have.
+That is the truthful outcome and the reason #2158's point 3 keeps the state, but
+it is not the same as being able to solve those three issues.
+
+`an_uncovered_language_is_not_invented_into_an_artifact` in
+`tests/unit/issue_904.rs` records the boundary rather than assuming it: the test
+fails the day the catalog gains Scala or Kotlin, which is exactly when this
+section stops being accurate. Growing that coverage is separate work and is not
+claimed here.
+
 ## Related Work
 
 - [formal-ai#655](https://github.com/link-assistant/formal-ai/issues/655) — the

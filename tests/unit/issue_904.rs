@@ -282,6 +282,88 @@ fn a_repository_work_item_is_read_before_anything_is_concluded() {
     );
 }
 
+/// The three work items the production matrix was dispatched against, abridged
+/// from the reproduction repositories linked in
+/// [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158).
+///
+/// This is what an issue really looks like: a described artifact in a named
+/// language, not literal bytes. Reading it is worth nothing if the text cannot
+/// then be routed, so the corpus decides which route runs first — the
+/// seed-backed source route, then the literal-file composer.
+fn hello_world_work_item(language: &str) -> String {
+    format!(
+        "Implement Hello World in {language}\n\n\
+         ## Task\n\
+         Please implement a \"Hello World\" program in {language}.\n\n\
+         ## Expected Output\n\
+         When the program runs, it should output:\n\n\
+         Hello, World!"
+    )
+}
+
+/// Requirement 2 of the follow-up, against the real corpus: a described
+/// artifact in a *supported* language reaches a route that authors it instead
+/// of stopping at the plan record.
+///
+/// Rust is the Codex leg of the production matrix — the one whose language the
+/// catalog already covers, and the leg that got furthest before the separate
+/// #907 `sudo` hijack stopped it.
+#[test]
+fn a_read_work_item_describing_a_program_reaches_an_authoring_route() {
+    let messages = work_item_transcript(&hello_world_work_item("Rust"));
+    let plan = formal_ai::agentic_coding::plan_chat_step(
+        &messages,
+        &["fetch_url", "write_file", "run_command"],
+    )
+    .expect("a read work item must have a plan");
+
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        panic!("a described program must be authored, not narrated")
+    };
+    assert_eq!(
+        calls[0].tool, "write_file",
+        "the run must write the program the work item described",
+    );
+    assert!(
+        !calls[0].arguments.contains(PLAN_PATH),
+        "the plan record is not the artifact the work item asked for: {}",
+        calls[0].arguments,
+    );
+}
+
+/// The honest half of the same corpus: the Agent leg asked for Scala and the
+/// Claude leg for Kotlin, and the coding catalog covers neither. Reading the
+/// work item cannot invent a language the catalog does not have, so those legs
+/// still end `planned_not_executed` — truthfully, and for the reason
+/// [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158)
+/// point 3 reserves that state for.
+///
+/// Language coverage is a separate gap from the one this branch closes. This
+/// test exists so the boundary between the two is recorded rather than assumed:
+/// it fails the day the catalog gains Scala or Kotlin, which is exactly when
+/// the claim above stops being true.
+#[test]
+fn an_uncovered_language_is_not_invented_into_an_artifact() {
+    for language in ["Scala", "Kotlin"] {
+        let messages = work_item_transcript(&hello_world_work_item(language));
+        let plan = formal_ai::agentic_coding::plan_chat_step(
+            &messages,
+            &["fetch_url", "write_file", "run_command"],
+        );
+
+        if let Some(AgenticPlan::ToolCalls(calls)) = plan {
+            for call in &calls {
+                assert!(
+                    call.arguments.contains(PLAN_PATH),
+                    "{language} is not in the coding catalog, so the only file this run may \
+                     write is its own plan record: {}",
+                    call.arguments,
+                );
+            }
+        }
+    }
+}
+
 /// Requirement 2 of the follow-up: once the work item has been read, the run
 /// executes what it names — the artifact, not another plan record.
 #[test]

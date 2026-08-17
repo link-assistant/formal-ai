@@ -113,10 +113,8 @@ pub(super) fn plan_general_change_step(
     // capability is only genuinely unavailable once the fetch has been tried.
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         if let Some(fetched) = repository_work_item_objective(plan, &progress) {
-            if let Some(executable) = compose_general_change_plan(&fetched) {
-                if executable.mode != GeneralPlanMode::RepositoryWorkItem {
-                    return plan_general_change_step(messages, tool_names, &executable);
-                }
+            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
+                return step;
             }
         } else if let Some(tool) = tool_for(tool_names, Capability::Fetch) {
             if !progress
@@ -171,6 +169,29 @@ pub(super) fn plan_general_change_step(
         }
     }
     finish_general_change(plan, &progress)
+}
+
+/// Plan the next step from what the fetched work item actually asks for.
+///
+/// The real corpus decides the shape here. The issues Hive Mind dispatches say
+/// things like *"implement a Hello World program in Scala"* and *"create a
+/// GitHub Actions workflow"* — a described artifact, not literal bytes — so the
+/// seed-backed source route gets first refusal and the literal-file composer
+/// follows it. Returning [`None`] means the work item named nothing this
+/// sandbox can produce, which keeps `planned_not_executed` truthful rather than
+/// inventing an artifact the issue never asked for.
+fn plan_work_item_execution(
+    objective: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    if let Some(step) = super::code_task::plan_generated_source_step(objective, messages, tool_names)
+    {
+        return Some(step);
+    }
+    let executable = compose_general_change_plan(objective)
+        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
+    Some(plan_general_change_step(messages, tool_names, &executable))
 }
 
 /// The text of the issue this work item names, once the client has fetched it.
