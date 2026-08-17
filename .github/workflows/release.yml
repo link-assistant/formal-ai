@@ -207,38 +207,12 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-version-modification.rs
-  # Issue #1017: `lint`, `test` and the macOS lane each merge the base branch
-  # into the pull request head, and each used to resolve `origin/$BASE_REF` at
-  # its own start time. Jobs in this workflow start minutes to an hour apart, so
-  # a push to the base branch mid-run silently gave them different merged trees:
-  # one gate could pass on a tree no other gate ever saw. Resolving the tip once
-  # here and passing the commit down makes "every gate checked the same tree" a
-  # property of the workflow instead of a race against the base branch.
+  # Issue #1017 (D19): one commit for every base-branch merge in this run.
   base:
-    name: Pin base commit
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-base
+      group: check-${{ github.workflow }}-${{ github.ref }}-base
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    # Only pull requests merge a base branch; a push build has nothing to pin.
-    if: github.event_name == 'pull_request'
-    outputs:
-      commit: ${{ steps.pin.outputs.commit }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Resolve the base branch tip once for the whole workflow
-        id: pin
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-          git fetch origin "$BASE_REF"
-          commit="$(git rev-parse "origin/$BASE_REF")"
-          echo "commit=$commit" >> "$GITHUB_OUTPUT"
-          echo "Every job in this workflow will merge $BASE_REF = $commit"
+    uses: ./.github/workflows/pin-base-commit.yml
 
   lint:
     name: Lint and Format Check
@@ -265,9 +239,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
-          # Issue #1017: the commit `base` resolved, so every gate in this
-          # workflow checks the same merged tree.
-          BASE_COMMIT: ${{ needs.base.outputs.commit }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -334,11 +306,9 @@ jobs:
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
     runs-on: ${{ matrix.os }}
-    # Issue #1017: this job was the next `cancelled`-instead-of-`failed` waiting
-    # to happen. On run 31937348472 it took 1415s of its 1500s cap, and 455s of
-    # that is spent outside the budgeted step (checkout, disk cleanup, the
-    # data-file and self-AST census gates, doc tests), so the 1200s budget could
-    # never expire first. The cap is the backstop; the budget is the deadline.
+    # Issue #1017: run 31937348472 used 1415s of a 1500s cap with 455s outside
+    # the budgeted step, so the 1200s budget could never expire first. The cap
+    # is the backstop; the budget is the deadline.
     timeout-minutes: 35
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
@@ -366,8 +336,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
-          # Issue #1017: same pinned commit `lint` merges.
-          BASE_COMMIT: ${{ needs.base.outputs.commit }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
@@ -417,13 +386,9 @@ jobs:
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes, base]
-    # Issue #1017: the heaviest lane in the repository -- one archive build plus
-    # sixteen Intel macOS slices, each billed at ten times the Linux rate -- was
-    # the one read-only job in this workflow with no concurrency group. A second
-    # push to the same pull request started seventeen more macOS runners while
-    # the superseded seventeen kept running to completion. `main` still never
-    # cancels (`cancel-in-progress` is false there), so the issue-#977 rule that
-    # a cancelled job on `main` is a hidden timeout keeps its meaning.
+    # Issue #1017: the heaviest lane here (one archive build plus sixteen Intel
+    # macOS slices at 10x the Linux rate) had no concurrency group, so a second
+    # push doubled it. `main` never cancels, keeping issue #977's rule intact.
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -436,8 +401,7 @@ jobs:
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     uses: ./.github/workflows/macos-core-tests.yml
-    # Issue #1017: the archive job and the sixteen slices must merge the same
-    # base commit, or they build and run against different trees.
+    # Issue #1017: archive and slices must merge the same base commit.
     with:
       base-commit: ${{ needs.base.outputs.commit }}
     permissions:
@@ -1518,7 +1482,7 @@ jobs:
     timeout-minutes: 5
     if: always()
     needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
-            version-check, lint, test, macos-core-tests, build, auto-release, manual-release,
+            version-check, base, lint, test, macos-core-tests, build, auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
             build-box-language-binary, box-language-projects, deploy-pages,
             test-e2e-pages]

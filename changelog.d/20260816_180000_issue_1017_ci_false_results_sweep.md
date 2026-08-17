@@ -69,10 +69,10 @@ bump: patch
   divergence the macOS lane reports was silent there: in one run the `linux-x64`
   and `macos-arm64` installers were built against one base commit and
   `windows-arm64`, starting an hour later, against another, and all six were
-  published as one release set. A single `base` job now resolves the base branch
-  tip once per workflow and every merge — the six packaging legs, the `.vsix`
-  job, `lint`, `test`, and the macOS archive and its sixteen slices through a
-  new `base-commit` input — merges that one commit.
+  published as one release set. A reusable `pin-base-commit.yml` now resolves the
+  base branch tip once per workflow and every merge — the six packaging legs, the
+  `.vsix` job, `lint`, `test`, and the macOS archive and its sixteen slices
+  through a new `base-commit` input — merges that one commit.
 - Stop the language test coverage gate from demanding evidence in five
   languages for a change that cannot regress any of them. Any edit under
   `src/solver_handlers/` counted as language-facing, so rewording one

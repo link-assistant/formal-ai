@@ -131,45 +131,16 @@ jobs:
         # emits verbose ::group:: diagnostics for future debugging.
         run: bash scripts/desktop-release-resolve.sh
 
-  # Issue #1017: every job below merges the base branch into the pull request
-  # head, and each used to resolve `origin/$BASE_REF` at its own start time. The
-  # six packaging legs run on six runner pools and do not start together -- in
-  # run 31993872684 the first began 04:54:06Z and the last 05:56:03Z, a 62-minute
-  # spread -- so a single push to the base branch inside that window splits the
-  # matrix across two source trees. It is not hypothetical: in that run
-  # `linux-x64` and `macos-arm64` merged `main` = 1858b3386 ("no simulation
-  # needed") while `windows-arm64` merged d1439e557, and six installers built
-  # from two different trees were published as one release set. The macOS core
-  # lane catches this with an archive tree check; here nothing did, so the
-  # divergence was silent. Resolving the base commit once, before any packaging
-  # starts, makes every leg merge the same commit by construction.
+  # Issue #1017 (D19): the six packaging legs of run 31993872684 started across
+  # 62 minutes, and each resolved the base branch tip itself -- `linux-x64` and
+  # `macos-arm64` merged 1858b3386 while `windows-arm64` merged d1439e557, so
+  # six installers built from two source trees shipped as one release set with
+  # nothing comparing them. One commit for every merge in this run.
   base:
-    name: Pin base commit
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-base
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    permissions:
-      contents: read
-    # Only pull requests merge a base branch; a tag build has nothing to pin.
-    if: github.event_name == 'pull_request'
-    outputs:
-      commit: ${{ steps.pin.outputs.commit }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Resolve the base branch tip once for the whole workflow
-        id: pin
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-          git fetch origin "$BASE_REF"
-          commit="$(git rev-parse "origin/$BASE_REF")"
-          echo "commit=$commit" >> "$GITHUB_OUTPUT"
-          echo "Every job in this workflow will merge $BASE_REF = $commit"
+    uses: ./.github/workflows/pin-base-commit.yml
 
   build:
     name: Build ${{ matrix.label }}

@@ -289,8 +289,15 @@ fn test_job_skips_non_code_changes() {
         "test job should be decoupled from the changelog check and gate on the \
          change detector instead (issue #442)"
     );
+    // Issue #1017 added `base`, which resolves the base-branch commit once so
+    // every gate merges the same one. Assert the dependency rather than the
+    // exact list, so adding a dependency cannot break a contract that is about
+    // `detect-changes`.
     assert!(
-        test.contains("needs: [detect-changes]"),
+        test.contains("needs: [detect-changes")
+            && test.lines().any(|line| {
+                line.trim().starts_with("needs:") && line.contains("detect-changes")
+            }),
         "test job should depend on detect-changes so it can gate on its outputs"
     );
     assert!(
@@ -624,6 +631,12 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),
+        // Issue #1017: resolves the base-branch commit once so `lint`, `test`
+        // and the macOS lane all merge the same one instead of each resolving
+        // the tip at its own start time. A reusable workflow, so it owns its
+        // own cap -- and so `release.yml` does not pay lines for it against the
+        // 1500-line band this same file pins below.
+        ("base", 0),
         // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
         ("lint", 15),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
@@ -686,12 +699,19 @@ fn release_workflow_jobs_have_explicit_timeouts() {
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
         if timeout_minutes == 0 {
-            assert!(job.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-            let reusable = fs::read_to_string(format!(
-                "{}/.github/workflows/macos-core-tests.yml",
-                env!("CARGO_MANIFEST_DIR")
-            ))
-            .expect("macOS core reusable workflow");
+            // A reusable call declares no cap of its own; the called workflow's
+            // jobs own them. Read whichever workflow this job actually calls,
+            // so a second delegating job cannot be checked against the first
+            // one's file (issue #1017 added `base`).
+            let called = job
+                .lines()
+                .find_map(|line| line.trim().strip_prefix("uses: ./"))
+                .unwrap_or_else(|| {
+                    panic!("{job_name} is listed as delegating but calls no reusable workflow")
+                })
+                .trim();
+            let reusable = fs::read_to_string(format!("{}/{called}", env!("CARGO_MANIFEST_DIR")))
+                .unwrap_or_else(|error| panic!("read {called}: {error}"));
             for inner_job in workflow_job_names(&reusable) {
                 assert!(
                     job_block(&reusable, inner_job).contains("    timeout-minutes:"),
