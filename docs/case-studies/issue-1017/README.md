@@ -92,6 +92,23 @@ flakiness. It is the same false-negative shape as the rest of this issue — a
 real ten-second first response that a "retry and it passes" reading would have
 buried.
 
+**And once more, one layer further down.** With the runtime fix in, the next run
+reduced to a single red job in the whole matrix: `macOS core slice 3/16` failed
+`agent::tests::python3_command_runs_from_allowlisted_resolved_path` after
+`16.223s` with `timed_out: true`, empty stdout and stderr, while the slice used
+83 seconds of its 600-second budget. Nothing about budgets was involved. The
+agent sandbox spawns commands with `env_clear()` — deliberately, so a command
+inherits nothing from the host — and on macOS that also removes `TMPDIR`.
+`/usr/bin/python3` there is not an interpreter but a stub that calls
+`_xcselect_invoke_xcrun`; its resolution is cached in an `xcrun_db` file kept in
+`$TMPDIR`, and without a usable cache every invocation re-does the lookup,
+code-signature verification through `syspolicyd` included, at a cost measured in
+tens of seconds. That is the whole platform gap: the same `python3 script.py`
+costs 0.14 s on Linux and 5.977 s on an *idle* macOS runner, and on a loaded one
+it crossed the 15-second floor. The assertion that failed is functional — that an
+allowlisted resolved path executes — so start-up latency had been given a vote on
+a question it has no business answering.
+
 ## 5. Research and prior art
 
 GitHub documents the `cancelled`-not-`failed` behaviour as design; there is no
@@ -132,6 +149,16 @@ attribution and a line-start-table patch that turns each lookup into
 No prior issue existed for it. Nothing in this repository can change the
 algorithm — only stop calling it on a request path, which is what the fix does.
 
+The `python3` start-up cost is documented rather than folklore. Jeff Johnson's
+[analysis of the `xcrun` stubs](https://lapcatsoftware.com/articles/xcrun.html)
+disassembles `/usr/bin/python3` to the `_xcselect_invoke_xcrun` call in
+`/usr/lib/libxcselect.dylib`, identifies the `xcrun_db` cache in `$TMPDIR`, and
+measures the cold path — full re-resolution with `syspolicyd` code-signature
+verification — at over ten seconds against an instantaneous warm path. That is
+also the shape behind the original fifteen-second floor, which was introduced
+for Windows' `py.exe` launcher (commit `af282cac`); the constant was right about
+the phenomenon and wrong about the size, and it was never written down why.
+
 ## 6. Tests-first reproduction
 
 Thirteen tests in `tests/unit/ci-cd/issue_1017.rs` pin every fix, and each one
@@ -143,6 +170,15 @@ which counts whole-source parses through a process-wide counter and asserts an
 ordinary request performs none. It is its own test binary precisely because the
 counter is global. With the guard removed it fails (`left: 1, right: 0`), so it
 reproduces the defect rather than describing it.
+
+The `python3` budget has a contract test too, and the interesting part is what it
+stopped asserting. It used to freeze the literal `15`, which is why the failure
+had no repair other than re-freezing a bigger number: the constant *was* the
+contract, so it could never be reasoned about. It now asserts relations — that
+the floor stays at least four times clear of the slowest start-up ever measured
+here (7.296 s), that a small budget is raised and a generous one is never
+lowered, and that a non-`python3` program is untouched — plus the exact contents
+of the environment a spawned command receives.
 
 ## 7. Implemented fix
 
@@ -175,6 +211,19 @@ whose inputs are compile-time constants is memoised per process. A cold
 274 ms. `FORMAL_AI_TRACE_SLOW_INIT=1`, off by default, reports each
 whole-source parse with its size and duration so a regression names itself.
 
+In the agent sandbox the fix is to grant one variable rather than to widen a
+timeout. A spawned command still inherits nothing from the host; it now receives
+exactly one **constructed** entry, `TMPDIR = std::env::temp_dir()`, which is what
+lets the `xcrun` stub find its cache and removes the reason for the slow path
+altogether. The floor moved to one minute as a *backstop* — documented against
+the measurements instead of left as a bare literal — because a start-up cost must
+never be able to decide whether a working command reports a timeout.
+`FORMAL_AI_TRACE_COMMANDS=1`, off by default, reports the resolved program path,
+the budget, the elapsed time and whether the deadline fired: the four facts the
+failing log did not contain. All five changes were applied to both `src/agent.rs`
+and the `tests/source/agent.rs` mirror, which is the copy CI compiled and failed
+on.
+
 ## 8. Verification
 
 `cargo fmt --check`, `cargo clippy --lib --bins --tests --all-features`,
@@ -189,3 +238,14 @@ code 124 and the `::error` annotation. Running everything is what caught the
 two consequences of the runtime fix that the targeted suites cannot see — a
 stale committed self-AST census for the four edited `src/` files, and a new
 test that asserted on an engine answer without showing it.
+
+The same chain caught two more on the sandbox fix: `Duration::from_secs(60)`
+trips `clippy::duration_suboptimal_units` where the repository already writes
+`Duration::from_mins(1)`, and a module doc that linked to a *private* function
+failed both rustdoc gates with `-D rustdoc::private-intra-doc-links`. Each
+verbose mode is exercised in both states rather than assumed to exist:
+`experiments/issue_1017_agent_command_trace.sh` runs the same test twice and
+shows zero trace lines by default against
+`/usr/bin/python3 ran 41 ms of a 60000 ms budget` when enabled — 41 ms on Linux
+next to the 16 223 ms the identical command took on the macOS runner, which is
+the platform gap stated by the instrumentation itself.

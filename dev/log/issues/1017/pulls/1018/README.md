@@ -92,6 +92,29 @@ passes tests far longer than that (`153.813s`, `151.864s`, `133.640s` across
 the sixteen slices), because those tests make many short requests; only the
 **first** request in a process was slow. Section 4.1 D13 carries the cause.
 
+### 2.2 Third timeline — a start-up cost decides a functional assertion
+
+With D13 fixed, run **31978695394** on head `c413c32f` reduced to a single red
+job out of the whole matrix: `macOS core slice 3/16` (job 95243737484). Every
+other slice, and all twelve other workflows, were green.
+
+| Time (UTC) | Event | Source |
+| --- | --- | --- |
+| 23:32:40.9 | Slice 3/16 starts on `macos-15` 15.7.7, image `20260727.0377.1`. | `ci-logs/c413c32f157cc7f54500791c706823c25a990e91/job-95243737484-macos-slice3-16-failed.log:1,12,17` |
+| 23:35:51.7 | `FAIL [ 16.223s] ( 92/170) formal-ai::source agent::tests::python3_command_runs_from_allowlisted_resolved_path`. | `…:1548` |
+| 23:35:52.6 | `panicked at tests/source/source_tests/agent/tests.rs:112:5`, `left: Failed / right: Completed`. | `…:1563`, `…:1583–1584` |
+| 23:35:53.7 | The recorded result names the mechanism outright: `status_code: None`, `stdout: ""`, `stderr: ""`, **`timed_out: true`**. Nothing ran and failed — the deadline fired. | `…:1574–1587` |
+| 23:35:53.8 | `Cancelling due to test failure: 3 tests still running` — again four tests in flight on a 3-core runner. | `…:1588` |
+| 23:36:11.4 | `Summary [ 42.702s] 95/170 tests run: 94 passed, 1 failed`. | `…:1601` |
+| 23:36:12.0 | `Core test slice took 83s of its 600s execution budget.` Exit **100**. | `…:1604–1605` |
+
+The last line is what rules out the budget work as the cause: the slice used
+**83 s of 600 s**. No step budget, no job cap and no concurrency group is
+implicated. A single test spent `16.223s` against a `15 s` floor written into
+`src/agent.rs`, and the assertion it failed — that an allowlisted resolved
+`python3` path executes — is *functional*, not about latency. Section 4.1 D14
+carries the cause.
+
 ## 3. Requirement ledger
 
 The canonical ledger is the requirements shard
@@ -110,8 +133,8 @@ this archive.
 | R1017-7 | Put every read-only job in a concurrency group, without ever cancelling `main`. | D10. |
 | R1017-8 | Compare the full file tree against all three templates and the Hive Mind guidance; state each deviation. | Section 5, `analysis/template-diffs/`, `references/templates/`. |
 | R1017-9 | Report shared and upstream defects with reproductions, workarounds and code-level fix suggestions. | `upstream-reports/*.md` — five exact bodies, retained verbatim; each file records the URL it was filed under (rust template [#135](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135), js template [#137](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137), python template [#60](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60), and [`codeql#19982` comment 5309221141](https://github.com/github/codeql/issues/19982#issuecomment-5309221141) plus the measured follow-up [comment 5309264165](https://github.com/github/codeql/issues/19982#issuecomment-5309264165)). A sixth was added for D13: [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193), filed with a standalone reproducer crate (`experiments/issue-1017-meta-language-quadratic/`), both measured scaling tables, `gdb` attribution, a line-start-table patch, and the consumer workaround this pull request applies. |
-| R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. For D13, `FORMAL_AI_TRACE_SLOW_INIT=1` reports every whole-source parse with its byte count, duration and run index — the instrumentation that turned "a request sometimes exceeds 30 s" into "one 39 195-byte parse costs 12.08 s". Default off; the counter behind it (`ast_census_runs()`) is always live and is what the regression test asserts on. |
-| R1017-11 | Apply each fix everywhere the defect occurs, not only where it was observed. | Every fix is pinned by a test that sweeps *all* workflow files rather than the one that failed; see section 8. |
+| R1017-10 | Add debug output and an off-by-default verbose mode where evidence was insufficient. | `FORMAL_AI_CI_VERBOSE` heartbeat in `scripts/run-with-budget-warning.sh`, pinned off-by-default by `budget_wrapper_heartbeat_is_available_but_off_by_default`. For D13, `FORMAL_AI_TRACE_SLOW_INIT=1` reports every whole-source parse with its byte count, duration and run index — the instrumentation that turned "a request sometimes exceeds 30 s" into "one 39 195-byte parse costs 12.08 s". Default off; the counter behind it (`ast_census_runs()`) is always live and is what the regression test asserts on. For D14, `FORMAL_AI_TRACE_COMMANDS=1` reports the resolved program path, the effective budget, the elapsed time and whether the deadline fired — the four facts the slice-3 log did *not* contain, which is why the first diagnosis had to be reconstructed from a timestamp. Default off; demonstrated in both states by `experiments/issue_1017_agent_command_trace.sh` (section 8.4). |
+| R1017-11 | Apply each fix everywhere the defect occurs, not only where it was observed. | Every fix is pinned by a test that sweeps *all* workflow files rather than the one that failed; see section 8. For D14 the same defect existed in two files — `src/agent.rs` and its `tests/source/agent.rs` mirror, which is the copy CI actually compiled and failed on — and all five changes were applied to both. |
 | R1017-12 | Retain the evidence so every claim is re-derivable, and deliver everything in this single pull request. | This archive; D11 is the `.gitignore` defect that would otherwise have silently dropped half of it. PR #1018. |
 
 ## 4. Complete diagnostic and root-cause ledger
@@ -137,6 +160,7 @@ Sources: `annotations/all-annotations.tsv` (25 annotations) and
 | D11 | Nested per-head CI logs were never committed, while `git add` reported success. | `.gitignore` negated `!dev/log/**/ci-logs/*.log`, which reaches only files *directly* inside `ci-logs/`. This archive groups logs one level deeper (`ci-logs/<head>/run-*.log`), so `*.log` at line 65 still matched. Found with `git check-ignore -v`. | Added `!dev/log/**/ci-logs/**/*.log`. This is a silent evidence-loss bug: every analysis citing a nested log would have cited a file that was never in the repository. |
 | D12 | `security.yml` had no manual trigger. | Not a defect in itself, but it meant a security sweep could not be re-run without waiting for Monday's cron or pushing a commit. | `workflow_dispatch:`, matching the js template. |
 | D13 | **Found by this pull request's own CI** (run 31969845523): `macOS core slice 7/16` and `16/16` both failed with `POST should complete: Os { code: 35, kind: WouldBlock }` at `tests/integration/http_server.rs:185:69`, after `30.27s` and `30.08s` — the harness's `RESPONSE_TIMEOUT` to the millisecond, not a network fault. | Both failing tests send the **first** request to a freshly spawned agent-mode server. That request reaches rule recall → `learning_ledger::approved_lesson_for`, which built the canonical ledger *before* asking whether the ledger could answer the prompt. Building it runs the self-healing pass, which round-trips the pinned planner module (39 195 bytes) through `LinkNetwork::parse`. That parse is quadratic upstream — `meta-language`'s `point_at_byte` rescans from byte 0 for every span, twice per node — measured at 189 902 → 2 690 767 ns/byte as the input doubles from 11 KB to 187 KB, with 12 of 12 `gdb` samples inside that one function. Cost: ~10–13 s on the `dev` profile, inside the response. On a 3-core Intel runner with four tests in flight (`Cancelling … 3 tests still running`), contention pushed that constant past 30 s — which is why it hits *some* slices and not others, and why the partition assignment changes which. | `approved_lesson_for` now proves a miss from the same canonical failure trace the ledger is promoted from, before building anything, using the same normalised match `lesson_for` uses; recall behaviour is unchanged and no promotion gate is relaxed. The pinned round-trip is memoised per process (both inputs are compile-time constants). Cold `plan_chat_step` 9.96–12.6 s → 579 ms; cold POST ~13 s → 274 ms. `tests/issue_1017_ledger_recall.rs` pins it against the process-wide `ast_census_runs()` counter; with the guard removed it fails (`left: 1, right: 0`). The algorithm itself is upstream and unfixable here: reported as [`meta-language#193`](https://github.com/link-foundation/meta-language/issues/193). |
+| D14 | **Found by this pull request's own CI** (run 31978695394, head `c413c32f`): `macOS core slice 3/16` failed `agent::tests::python3_command_runs_from_allowlisted_resolved_path` after `16.223s` with `status_code: None`, empty stdout/stderr and `timed_out: true`. The slice used 83 s of its 600 s budget, so no budget, cap or concurrency change is implicated. | `run_command_inner` spawns with `.env_clear()`, so the child gets **no `TMPDIR`**. On macOS `/usr/bin/python3` is not an interpreter but a stub that calls `_xcselect_invoke_xcrun` in `/usr/lib/libxcselect.dylib`; that resolution is cached in an `xcrun_db` file kept in `$TMPDIR`, and without a usable cache the lookup is re-done every single invocation — code-signature verification through `syspolicyd` included — at a cost measured in tens of seconds ([lapcatsoftware.com/articles/xcrun.html](https://lapcatsoftware.com/articles/xcrun.html)). That is why the *same* `python3 script.py` costs 0.14 s on Linux and 5.977 s / 7.296 s on an **idle** `macos-15-intel` runner; with four tests in flight on 3 cores it crossed the 15 s `PYTHON_TIME_BUDGET_FLOOR` and the run was reported as a functional failure. The test asserts that an allowlisted resolved path *executes* — start-up latency had been given a vote on that question. | Three layers. (a) Root cause: the child now receives exactly one **constructed** variable, `TMPDIR = std::env::temp_dir()`, and still inherits nothing from the host — `command_environment()` is the single place that is decided, and `spawned_commands_receive_only_a_constructed_temporary_directory` pins its whole contents. (b) Backstop: `PYTHON_TIME_BUDGET_FLOOR` is `Duration::from_mins(1)`, documented against the measurements above rather than left as a bare literal. (c) Evidence: `FORMAL_AI_TRACE_COMMANDS=1` (off by default) reports the executed path, the budget and the elapsed time. The contract test no longer freezes the number — it asserts the *relation* `PYTHON_TIME_BUDGET_FLOOR >= OBSERVED_PYTHON_STARTUP * 4` (7.296 s × 4 = 29.2 s ≤ 60 s), that a small budget is raised and a generous one is never lowered, and that non-`python3` programs are untouched. Applied identically to `src/agent.rs` and the `tests/source/agent.rs` mirror. |
 
 ### 4.2 Diagnostics deliberately left alone, with reasons
 
@@ -412,3 +436,43 @@ That is D13. The branch now *does* change `src/` — `learning_ledger.rs`,
 is no longer empty and must not be cited as a reason to dismiss a runtime
 failure. The episode is left in the record because dismissing a reproducible
 timeout as environmental is the same false-negative habit this issue is about.
+
+### 8.4 The D14 verbose mode, exercised in both states
+
+`FORMAL_AI_TRACE_COMMANDS` is demonstrated rather than asserted to exist.
+`bash experiments/issue_1017_agent_command_trace.sh` runs the same test twice:
+
+```
+== default (trace off) ==
+[agent-command] lines: 0
+
+== FORMAL_AI_TRACE_COMMANDS=1 ==
+[agent-command] /usr/bin/python3 ran 41 ms of a 60000 ms budget (timed_out=false)
+```
+
+Two things are worth reading off that one line. The default really is off — zero
+lines, not "quiet" ones. And on Linux the command costs **41 ms**, against the
+`16 223 ms` the same command took on the macOS runner before this fix: the
+platform gap D14 is about, stated by the instrumentation itself rather than
+inferred from a failing assertion.
+
+The D14 change was verified with the full local chain, not a targeted subset:
+`cargo fmt --check`, `cargo clippy --lib --bins --tests --all-features -- -D
+warnings`, `cargo check --examples --all-features`,
+`rust-script scripts/check-file-size.rs`,
+`rust-script scripts/check-hardcoded-language.rs`,
+`bash scripts/lint-shell-scripts.sh` (33 scripts, including the new
+experiment), `rust-script scripts/run-ci-gates.rs --stage rust` (25 gates, all
+passed) and the complete `cargo test --tests --all-features`.
+
+Two of those caught real breakage in the first draft, and both would have been
+red CI rather than a local inconvenience:
+
+| Caught by | What was wrong | Repair |
+| --- | --- | --- |
+| `cargo clippy … -D warnings` | `Duration::from_secs(60)` trips `clippy::duration_suboptimal_units`; the repository already spells this `Duration::from_mins(1)` in `src/local_transport.rs:38` and `src/client_integrations/global_verify.rs:32`. | `Duration::from_mins(1)`, matching the existing idiom. |
+| `check_rust_api_documentation` and `check_docs_rs_dependency_profile` | The module doc linked `[`command_environment`]`, a **private** function: `error: public documentation for `agent` links to private item`, `-D rustdoc::private-intra-doc-links`. Two gates, one cause. | The module doc names the function in prose without an intra-doc link; the `PYTHON_TIME_BUDGET_FLOOR` doc, itself private, keeps its link. |
+
+Editing `src/agent.rs` also made its committed census document stale, exactly as
+in section 8.3; `cargo run --example regenerate_self_ast_census` reported
+`479 documents (1 rewritten, 0 removed)` — the one file this change touches.

@@ -26,3 +26,12 @@ bump: patch
   behaviour is unchanged and no promotion gate is relaxed. Set
   `FORMAL_AI_TRACE_SLOW_INIT=1` (off by default) to report each whole-source
   parse with its size and duration.
+- Stop a `python3` agent command's *start-up* from deciding whether it succeeded.
+  Commands run with a cleared environment, which on macOS also removed `TMPDIR` —
+  where `/usr/bin/python3`'s `xcrun` stub keeps the resolution cache — so every
+  invocation paid a full re-resolution and a loaded runner exceeded the
+  fifteen-second floor while the command itself was fine. The child now receives
+  one constructed `TMPDIR` and nothing else, the floor is a sixty-second backstop
+  documented against measurements rather than a frozen literal, and
+  `FORMAL_AI_TRACE_COMMANDS=1` (off by default) reports the executed path, the
+  budget and the elapsed time.
