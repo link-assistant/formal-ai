@@ -100,17 +100,35 @@ export function extractBrokenUrls(content) {
  * Check if a URL has an archived version in the Wayback Machine
  * Uses the Wayback Machine Availability API:
  * https://archive.org/help/wayback_api.php
+ *
+ * The result distinguishes three outcomes, because only one of them is a
+ * statement about the link itself:
+ *   - 'archived'   the API answered and a snapshot exists
+ *   - 'unarchived' the API answered and no snapshot exists
+ *   - 'unknown'    the API could not answer (5xx, rate limit, timeout,
+ *                  network failure, malformed body)
+ * Treating 'unknown' as 'unarchived' would let an archive.org outage fail a
+ * build over links that are perfectly fine, so callers must keep them apart.
+ *
  * @param {string} url - The URL to check
- * @returns {Promise<{available: boolean, archiveUrl: string|null, timestamp: string|null}>}
+ * @param {typeof fetch} [fetchImpl] - Injectable fetch, for tests
+ * @returns {Promise<{status: 'archived'|'unarchived'|'unknown', archiveUrl: string|null, timestamp: string|null, reason: string|null}>}
  */
-async function checkWaybackMachine(url) {
+export async function checkWaybackMachine(url, fetchImpl = fetch) {
   const apiUrl = `${WAYBACK_API}${encodeURIComponent(url)}`;
 
   const controller = new AbortController();
   const timeoutId = globalThis.setTimeout(() => controller.abort(), 10000);
 
+  const unknown = (reason) => ({
+    status: 'unknown',
+    archiveUrl: null,
+    timestamp: null,
+    reason,
+  });
+
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetchImpl(apiUrl, {
       headers: {
         'User-Agent': 'broken-link-checker/1.0 (GitHub Actions CI)',
       },
@@ -118,28 +136,48 @@ async function checkWaybackMachine(url) {
     });
 
     if (!response.ok) {
+      // A 4xx/5xx from archive.org describes archive.org, not the link.
       console.warn(`  Wayback API returned ${response.status} for ${url}`);
-      return { available: false, archiveUrl: null, timestamp: null };
+      return unknown(`Wayback API returned ${response.status}`);
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      console.warn(`  Wayback API returned an unreadable body for ${url}`);
+      return unknown(`unreadable Wayback response: ${error.message}`);
+    }
 
-    if (data.archived_snapshots?.closest?.available === true) {
+    if (data?.archived_snapshots?.closest?.available === true) {
       const snapshot = data.archived_snapshots.closest;
       const archiveUrl = snapshot.url.replace(/^http:\/\//, 'https://');
       return {
-        available: true,
+        status: 'archived',
         archiveUrl,
         timestamp: snapshot.timestamp,
+        reason: null,
       };
     }
 
-    return { available: false, archiveUrl: null, timestamp: null };
+    if (!data || typeof data.archived_snapshots !== 'object') {
+      console.warn(`  Wayback API returned an unexpected shape for ${url}`);
+      return unknown('unexpected Wayback response shape');
+    }
+
+    return {
+      status: 'unarchived',
+      archiveUrl: null,
+      timestamp: null,
+      reason: null,
+    };
   } catch (error) {
-    console.warn(
-      `  Failed to check Wayback Machine for ${url}: ${error.message}`
-    );
-    return { available: false, archiveUrl: null, timestamp: null };
+    const reason =
+      error.name === 'AbortError'
+        ? 'Wayback API timed out'
+        : `Wayback API unreachable: ${error.message}`;
+    console.warn(`  Failed to check Wayback Machine for ${url}: ${reason}`);
+    return unknown(reason);
   } finally {
     globalThis.clearTimeout(timeoutId);
   }
@@ -190,18 +228,22 @@ async function main() {
 
   const withArchive = [];
   const withoutArchive = [];
+  const undetermined = [];
 
   for (const url of brokenUrls) {
     console.log(`Checking: ${url}`);
     const result = await checkWaybackMachine(url);
 
-    if (result.available) {
+    if (result.status === 'archived') {
       const date = formatTimestamp(result.timestamp);
       console.log(`  ✓ Archived on ${date}: ${result.archiveUrl}`);
       withArchive.push({ url, archiveUrl: result.archiveUrl, date });
-    } else {
+    } else if (result.status === 'unarchived') {
       console.log('  ✗ Not found in Web Archive');
       withoutArchive.push(url);
+    } else {
+      console.log(`  ? Undetermined (${result.reason})`);
+      undetermined.push({ url, reason: result.reason });
     }
 
     // Small delay to avoid rate-limiting the Wayback API
@@ -255,8 +297,30 @@ async function main() {
     }
   }
 
+  if (undetermined.length > 0) {
+    console.log(
+      `? ${undetermined.length} broken link(s) could not be checked against the Web Archive:`
+    );
+    for (const { url, reason } of undetermined) {
+      console.log(`  ${url} (${reason})`);
+    }
+    console.log('');
+
+    // A warning, never an error: archive.org being unreachable says nothing
+    // about these links, so it must not gate the build.
+    for (const { url, reason } of undetermined) {
+      console.log(
+        `::warning title=Web Archive unreachable::` +
+          `Could not determine a Web Archive fallback for ${url} (${reason}).\n` +
+          `This does not fail the check: the Wayback Machine was unavailable, ` +
+          `which is a statement about archive.org and not about the link.`
+      );
+    }
+  }
+
   const allArchived = withoutArchive.length === 0;
   setOutput('all_archived', allArchived ? 'true' : 'false');
+  setOutput('undetermined', String(undetermined.length));
 
   if (!allArchived) {
     console.log(
@@ -266,6 +330,13 @@ async function main() {
       'For links with Web Archive versions, you can replace them with the suggested archive.org URLs.'
     );
     process.exit(1);
+  } else if (undetermined.length > 0) {
+    console.log(
+      `\nNo link was proven unarchived, but ${undetermined.length} could not be checked ` +
+        'because the Wayback Machine was unavailable. Passing rather than ' +
+        'failing the build on an archive.org outage.'
+    );
+    process.exit(0);
   } else {
     console.log(
       '\nAll broken links have Web Archive versions. Consider replacing them with the suggested archive.org URLs.'
