@@ -200,11 +200,11 @@ fn plan_work_item_execution(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    let solver = crate::solver::UniversalSolver::new(crate::solver::SolverConfig {
-        agent_mode: true,
-        ..crate::solver::SolverConfig::default()
-    });
-    let answer = solver.solve(objective);
+    // The default configuration is the right one: the recipe wanted here is the
+    // same `write_program` answer a user typing this request directly would get,
+    // and the client — not this solver — owns execution. Opting into agent mode
+    // would only add the policy branches that answer *about* agent actions.
+    let answer = crate::solver::UniversalSolver::default().solve(objective);
     if let Some(step) =
         super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
     {
