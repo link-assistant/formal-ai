@@ -35,3 +35,22 @@ bump: patch
   documented against measurements rather than a frozen literal, and
   `FORMAL_AI_TRACE_COMMANDS=1` (off by default) reports the executed path, the
   budget and the elapsed time.
+- Stop a *successful* macOS desktop package from being reported as a failure.
+  electron-builder downloads its toolsets with a single request whose only
+  deadline is ten minutes, and a stalled one is recorded in an append-only error
+  list that `awaitTasks()` rethrows even after the DMG, the ZIP and both
+  blockmaps have been written. Packaging now seeds the checksum-validated
+  toolset cache before every build on every platform — every prefetch failure
+  degrades to a warning, so it can never be the reason a build fails — and the
+  retry wrapper treats the stall as transient while refusing any attempt the
+  job clock cannot finish, so the backstop cannot manufacture a `cancelled` run
+  of its own. `FORMAL_AI_PREFETCH_VERBOSE=1` (off by default) reports each
+  toolset's cache decision and every download attempt.
+- Record the reviewed npm install scripts of the `desktop` and `vscode` projects
+  by package name in `allowScripts`. npm 11 warns about install scripts that are
+  not recorded and documents that a future release will block them, which would
+  have failed every desktop and `.vsix` build on the next runner-image bump and,
+  later, silently stopped `node-pty`, `keytar` and `esbuild` building their
+  native halves. An unreviewed install script still fails the install, but the
+  report now names each one and the exact `npm approve-scripts
+  --no-allow-scripts-pin` command that clears it.
