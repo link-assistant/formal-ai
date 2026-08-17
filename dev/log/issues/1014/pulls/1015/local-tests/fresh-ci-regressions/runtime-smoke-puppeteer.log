@@ -1,0 +1,19 @@
+/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:215757
+          throw new Error(`Could not find ${getBrowserTypeDisplayName(browserType)} (ver. ${browserVersion}). This can occur if either
+                ^
+
+Error: Could not find Chrome (ver. 152.0.7977.42). This can occur if either
+ 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install chrome`) or
+ 2. your cache path is incorrectly configured (which is: /home/box/.cache/puppeteer).
+For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.
+    at ChromeLauncher.resolveExecutablePath (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:215757:17)
+    at async ChromeLauncher.computeLaunchArguments (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:215885:77)
+    at async ChromeLauncher.launch (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:215497:28)
+    at async ChromeLauncher.launch (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:215840:16)
+    at async PuppeteerNode.launch (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:216260:16)
+    at async launchBrowser (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:217524:16)
+    at async Object.createBrowser (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:217713:52)
+    at async Object.fetchRendered [as fetch] (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:353919:22)
+    at async file:///tmp/gh-issue-solver-1786801324779/experiments/issue_1014_vscode_package/runtime-smoke.mjs:30:18
+
+Node.js v20.20.2

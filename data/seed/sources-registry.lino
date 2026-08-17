@@ -38,6 +38,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceWikihow
     default_enabled true
+    how_to_role primary
+    source_tier independent_corroboration
     api "https://www.wikihow.com/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-NC-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-nc-sa/3.0/"
@@ -49,6 +51,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceStackExchange
     default_enabled true
+    how_to_role secondary
+    source_tier independent_corroboration
     api "https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q={query}&site=stackoverflow&filter=withbody"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -60,6 +64,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceMediawikiFamily
     default_enabled true
+    how_to_role secondary
+    source_tier independent_corroboration
     api "https://www.wikifunctions.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
     license_name "CC0 1.0 (function definitions); Apache-2.0 (implementations)"
     license_url "https://www.wikifunctions.org/wiki/Wikifunctions:FAQ"
@@ -71,6 +77,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceMediawikiFamily
     default_enabled true
+    how_to_role secondary
+    source_tier independent_corroboration
     api "https://rosettacode.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
     license_name "GNU Free Documentation License 1.2"
     license_url "https://www.gnu.org/licenses/old-licenses/fdl-1.2.html"
@@ -82,6 +90,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceMediawikiFamily
     default_enabled true
+    how_to_role secondary
+    source_tier independent_corroboration
     api "https://en.wikibooks.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -93,6 +103,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceMediawikiFamily
     default_enabled true
+    how_to_role secondary
+    source_tier independent_corroboration
     api "https://en.wikiversity.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -104,6 +116,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceMediawikiFamily
     default_enabled true
+    how_to_role secondary
+    source_tier independent_corroboration
     api "https://en.wikivoyage.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -115,6 +129,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceGithub
     default_enabled true
+    how_to_role secondary
+    source_tier original_first_party
     api "https://api.github.com/repos/{owner}/{repo}/readme"
     license_name "Varies (per repository)"
     license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
@@ -126,6 +142,8 @@ sources_registry
     service_group external_trusted
     settings_key externalServiceMediawikiFamily
     default_enabled true
+    how_to_role none
+    source_tier original_journalism
     api "https://en.wikinews.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY 2.5"
     license_url "https://creativecommons.org/licenses/by/2.5/"

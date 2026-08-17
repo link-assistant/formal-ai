@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "curl"
+  derive_surfaces
+    defined-by concept
+    lexeme en
+      surface
+        text "derive surfaces"
   external_benchmark_provenance_write_error
     defined-by intent
     lexeme en
@@ -219,6 +224,11 @@ meanings
     lexeme en
       surface
         text "notes"
+  numeric_list
+    defined-by concept
+    lexeme en
+      surface
+        text "numeric list"
   one_paragraph
     defined-by concept
     lexeme en
@@ -344,6 +354,11 @@ meanings
     lexeme en
       surface
         text "program plan rules"
+  proof_equality_conclusion
+    defined-by intent
+    lexeme en
+      surface
+        text "proof equality conclusion"
   registered
     defined-by concept
     lexeme en
@@ -404,6 +419,16 @@ meanings
     lexeme en
       surface
         text "response client global config probe started zh"
+  response_coding_meta_algorithm_stage_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage zh"
+  response_coding_meta_algorithm_surface_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface zh"
   response_coding_source_equality_test_rust
     defined-by response_template
     lexeme en
@@ -444,11 +469,21 @@ meanings
     lexeme en
       surface
         text "response external benchmark failure observation en"
+  response_external_benchmark_proof_query_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query es"
   response_external_benchmark_swe_slice_write_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe slice write error en"
+  response_external_benchmark_upstream_missing_start_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start ru"
   response_fact_check_arithmetic_counterexample_zh
     defined-by response_template
     lexeme en
@@ -479,6 +514,16 @@ meanings
     lexeme en
       surface
         text "response greeting en"
+  response_how_to_guide_bounds_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds zh"
+  response_how_to_guide_sources_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide sources heading ru"
   response_http_fetch_curated_project_zh
     defined-by response_template
     lexeme en
@@ -624,6 +669,11 @@ meanings
     lexeme en
       surface
         text "response physical action question zh"
+  response_proof_datalog_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample zh"
   response_summarization_criterion_size_reported_ru
     defined-by response_template
     lexeme en

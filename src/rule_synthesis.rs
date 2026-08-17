@@ -6,16 +6,23 @@
 //! verify it, and only then hand the solver a concrete rule to answer with.
 
 use std::fmt::Write as _;
+use std::path::Path;
 
 use crate::coding::{program_spec, ProgramSpec};
-use crate::engine::{normalize_prompt, SelectedRule};
+use crate::engine::{
+    normalize_prompt, ExecutionRecipe, ExecutionRecipeFile, SelectedRule, SymbolicAnswer,
+};
 use crate::event_log::EventLog;
 use crate::intent_formalization::{
     active_program_context, detected_program_modifiers, ActiveProgramContext,
 };
+use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::program_coreference::looks_like_bare_program_artifact_follow_up;
 use crate::program_plan::ProgramPlan;
 use crate::solver::ConversationTurn;
+use crate::substitution_compiler::{
+    CompiledSubstitutionFile, CompiledSubstitutionProgram, SubstitutionCompilationTarget,
+};
 
 pub struct UnknownRuleConstruction {
     pub rule: SelectedRule,
@@ -26,6 +33,172 @@ pub struct UnknownRuleConstruction {
     pub candidate: String,
     pub verification: String,
     pub plan: String,
+    pub program_plan: ProgramPlan,
+}
+
+/// Export a semantically verified program-modification rule to one requested
+/// compiler target. The operation and target names come from seed data.
+pub fn try_export_substitution_program(
+    prompt: &str,
+    history: &[ConversationTurn],
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let normalized = normalize_prompt(prompt);
+    let vocabulary = crate::seed::operation_vocabulary();
+    if !vocabulary.matches("export_substitution_rule", &normalized) {
+        return None;
+    }
+    let targets = [
+        ("target_rust", SubstitutionCompilationTarget::Rust),
+        (
+            "target_javascript",
+            SubstitutionCompilationTarget::JavaScript,
+        ),
+        (
+            "target_webassembly",
+            SubstitutionCompilationTarget::WebAssembly,
+        ),
+    ]
+    .into_iter()
+    .filter_map(|(operation, target)| vocabulary.matches(operation, &normalized).then_some(target))
+    .collect::<Vec<_>>();
+    let [target] = targets.as_slice() else {
+        return None;
+    };
+
+    log.append(
+        "selected_rule",
+        "initial unknown reason export_requires_verified_rule_synthesis".to_owned(),
+    );
+    let construction = construct_rule_from_unknown(prompt, history)?;
+    let mut artifact = construction.program_plan.compile(*target).ok()?;
+    artifact.supporting_files.push(CompiledSubstitutionFile {
+        name: String::from("input.tsv"),
+        contents: construction.program_plan.compiler_input_tsv(),
+    });
+    record_construction(log, &construction);
+    MetaAlgorithmBuilder::for_surface(CodingSurface::RuleSynthesis).record(log);
+    log.append("substitution_compilation", artifact.trace.clone());
+    for file in std::iter::once(&artifact.primary_file).chain(&artifact.supporting_files) {
+        log.append("substitution_export_file", file.name.clone());
+    }
+
+    let language = crate::language::detect(prompt);
+    let intro = crate::seed::render_response(
+        "substitution_rule_export",
+        language.slug(),
+        &[
+            ("target", target.slug()),
+            ("primary_file", &artifact.primary_file.name),
+        ],
+    )?;
+    let commands = execution_commands(*target, &artifact.primary_file.name);
+    let body = render_export(&intro, &artifact, &commands);
+    let supporting_files = artifact
+        .supporting_files
+        .iter()
+        .map(|file| ExecutionRecipeFile {
+            path: file.name.clone(),
+            source: file.contents.clone(),
+        })
+        .collect();
+    let mut answer = crate::solver_handlers::finalize_simple(
+        prompt,
+        log,
+        "substitution_rule_export",
+        "response:substitution_rule_export",
+        &body,
+        1.0,
+    );
+    answer.execution_recipe = Some(Box::new(ExecutionRecipe {
+        language: target.slug().to_owned(),
+        source: artifact.primary_file.contents,
+        path: artifact.primary_file.name,
+        supporting_files,
+        commands,
+    }));
+    Some(answer)
+}
+
+fn record_construction(log: &mut EventLog, construction: &UnknownRuleConstruction) {
+    log.append(
+        "write_program_coreference_rewrite",
+        construction.coreference_trace.clone(),
+    );
+    log.append(
+        "rule_synthesis_operation_vocabulary",
+        construction.operation_hits.clone(),
+    );
+    log.append("rule_synthesis_request", construction.request.clone());
+    log.append("rule_synthesis_candidate", construction.candidate.clone());
+    log.append("rule_verification", construction.verification.clone());
+    log.append(
+        "write_program_context_recovery",
+        construction.recovery_trace.clone(),
+    );
+    log.append("write_program_plan", construction.plan.clone());
+}
+
+fn execution_commands(target: SubstitutionCompilationTarget, primary: &str) -> Vec<String> {
+    match target {
+        SubstitutionCompilationTarget::Rust => vec![
+            format!("rustc --edition=2021 {primary} -o substitution_program"),
+            String::from("./substitution_program < input.tsv"),
+        ],
+        SubstitutionCompilationTarget::JavaScript => {
+            let stem = primary.strip_suffix(".mjs").unwrap_or(primary);
+            vec![
+                String::from("rustup target add wasm32-unknown-unknown"),
+                format!(
+                    "rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm"
+                ),
+                format!("node {primary} {stem}.wasm < input.tsv"),
+            ]
+        }
+        SubstitutionCompilationTarget::WebAssembly => vec![
+            String::from("rustup target add wasm32-unknown-unknown"),
+            format!(
+                "rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm"
+            ),
+            String::from(
+                "node run_substitution_wasm.mjs substitution_program.wasm < input.tsv",
+            ),
+        ],
+    }
+}
+
+fn render_export(
+    intro: &str,
+    artifact: &CompiledSubstitutionProgram,
+    commands: &[String],
+) -> String {
+    let mut output = String::from(intro);
+    for file in std::iter::once(&artifact.primary_file).chain(&artifact.supporting_files) {
+        let _ = write!(
+            output,
+            "\n\n`{}`\n```{}\n{}\n```",
+            file.name,
+            code_fence(file),
+            file.contents.trim_end()
+        );
+    }
+    output.push_str("\n\n```sh\n");
+    output.push_str(&commands.join("\n"));
+    output.push_str("\n```");
+    output
+}
+
+fn code_fence(file: &CompiledSubstitutionFile) -> &'static str {
+    let extension = Path::new(&file.name).extension();
+    if extension.is_some_and(|value| value.eq_ignore_ascii_case("rs")) {
+        "rust"
+    } else if extension.is_some_and(|value| value.eq_ignore_ascii_case("mjs")) {
+        "javascript"
+    } else if extension.is_some_and(|value| value.eq_ignore_ascii_case("tsv")) {
+        "text"
+    } else {
+        "json"
+    }
 }
 
 pub fn try_construct_unknown_rule(
@@ -47,6 +220,7 @@ pub fn try_construct_unknown_rule(
         return rule;
     };
 
+    MetaAlgorithmBuilder::for_surface(CodingSurface::RuleSynthesis).record(log);
     log.append(
         "write_program_coreference_rewrite",
         construction.coreference_trace,
@@ -128,6 +302,7 @@ pub fn construct_rule_from_unknown(
         return None;
     }
 
+    let plan_trace = plan.links_notation();
     Some(UnknownRuleConstruction {
         rule: SelectedRule::WriteProgram(spec),
         coreference_trace: format!(
@@ -142,7 +317,8 @@ pub fn construct_rule_from_unknown(
         request: synthesis_request(&context, follow_up, primary_modifier),
         candidate: synthesis_candidate(&candidate_id, &context, &plan, primary_modifier),
         verification: verification.links_notation,
-        plan: plan.links_notation(),
+        plan: plan_trace,
+        program_plan: plan,
     })
 }
 

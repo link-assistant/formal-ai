@@ -131,3 +131,83 @@ multilingual_responses
     intent write_program_request_unspecified
     language es
     text "No voy a adivinar qué escribir. Esto se lee como una solicitud de programa, pero no nombra ni lo que el programa debe hacer ni en qué lenguaje de programación escribirlo.\n\nDi qué debe hacer el programa y en qué lenguaje debe escribirse, y lo derivaré."
+  response response_coding_meta_algorithm_heading_en
+    intent coding_meta_algorithm_heading
+    language en
+    text "Meta algorithm for constructing conversion algorithms:"
+  response response_coding_meta_algorithm_heading_ru
+    intent coding_meta_algorithm_heading
+    language ru
+    text "Метаалгоритм построения алгоритмов преобразования:"
+  response response_coding_meta_algorithm_heading_hi
+    intent coding_meta_algorithm_heading
+    language hi
+    text "रूपांतरण एल्गोरिदम बनाने के लिए मेटा एल्गोरिदम:"
+  response response_coding_meta_algorithm_heading_zh
+    intent coding_meta_algorithm_heading
+    language zh
+    text "用于构建转换算法的元算法："
+  response response_coding_meta_algorithm_heading_es
+    intent coding_meta_algorithm_heading
+    language es
+    text "Metaalgoritmo para construir algoritmos de conversión:"
+  response response_coding_meta_algorithm_stage_en
+    intent coding_meta_algorithm_stage
+    language en
+    text "{index}. {stage} -> {output}; verification fixture: {verifier}."
+  response response_coding_meta_algorithm_stage_ru
+    intent coding_meta_algorithm_stage
+    language ru
+    text "{index}. {stage} -> {output}; проверочный пример: {verifier}."
+  response response_coding_meta_algorithm_stage_hi
+    intent coding_meta_algorithm_stage
+    language hi
+    text "{index}. {stage} -> {output}; सत्यापन उदाहरण: {verifier}।"
+  response response_coding_meta_algorithm_stage_zh
+    intent coding_meta_algorithm_stage
+    language zh
+    text "{index}. {stage} -> {output}；验证样例：{verifier}。"
+  response response_coding_meta_algorithm_stage_es
+    intent coding_meta_algorithm_stage
+    language es
+    text "{index}. {stage} -> {output}; caso de verificación: {verifier}."
+  response response_coding_meta_algorithm_surface_en
+    intent coding_meta_algorithm_surface
+    language en
+    text "- {surface}{active}: {projection}."
+  response response_coding_meta_algorithm_surface_ru
+    intent coding_meta_algorithm_surface
+    language ru
+    text "- {surface}{active}: {projection}."
+  response response_coding_meta_algorithm_surface_hi
+    intent coding_meta_algorithm_surface
+    language hi
+    text "- {surface}{active}: {projection}।"
+  response response_coding_meta_algorithm_surface_zh
+    intent coding_meta_algorithm_surface
+    language zh
+    text "- {surface}{active}：{projection}。"
+  response response_coding_meta_algorithm_surface_es
+    intent coding_meta_algorithm_surface
+    language es
+    text "- {surface}{active}: {projection}."
+  response response_coding_meta_algorithm_solutions_heading_en
+    intent coding_meta_algorithm_solutions_heading
+    language en
+    text "Coding solutions using the same meta algorithm:"
+  response response_coding_meta_algorithm_solutions_heading_ru
+    intent coding_meta_algorithm_solutions_heading
+    language ru
+    text "Решения для программирования, использующие тот же метаалгоритм:"
+  response response_coding_meta_algorithm_solutions_heading_hi
+    intent coding_meta_algorithm_solutions_heading
+    language hi
+    text "उसी मेटा एल्गोरिदम का उपयोग करने वाले कोडिंग समाधान:"
+  response response_coding_meta_algorithm_solutions_heading_zh
+    intent coding_meta_algorithm_solutions_heading
+    language zh
+    text "使用同一元算法的编程解决方案："
+  response response_coding_meta_algorithm_solutions_heading_es
+    intent coding_meta_algorithm_solutions_heading
+    language es
+    text "Soluciones de programación que usan el mismo metaalgoritmo:"

@@ -1,0 +1,23 @@
+self_ast_census
+  target src/meta_algorithm_builder.rs
+  language rust
+  fidelity signature
+  byte_len 8390
+  line_count 247
+  content_id source_module_ed4b4151744e12c9
+  symbol_count 14
+  symbols
+    enum CodingSurface 15 22
+    function slug 26 35
+    struct AlgorithmConstructionStage 39 43
+    struct MetaAlgorithmDefinition 46 53
+    const CODING_SURFACES 55 62
+    function definition 64 106
+    static DEFINITION 65 65
+    function render_template 108 114
+    function projection_for 116 122
+    struct MetaAlgorithmBuilder 125 127
+    function for_surface 131 133
+    function record 135 169
+    function write_lino 171 193
+    function write_explanation 195 246

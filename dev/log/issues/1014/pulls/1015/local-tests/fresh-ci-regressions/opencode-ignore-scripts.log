@@ -1,0 +1,22 @@
+bun add v1.3.14 (0d9b296a)
+Resolving dependencies
+Resolved, downloaded and extracted [32]
+Saved lockfile
+
+installed opencode-ai@1.18.4 with binaries:
+ - opencode
+
+5 packages installed [8.94s]
+install_status=0
+../install/global/node_modules/opencode-ai/bin/opencode.exe
+ 65 63 68 6f
+Error: opencode-ai's postinstall script was not run.
+
+This occurs when using --ignore-scripts during installation, or when using a
+package manager like pnpm that does not run postinstall scripts by default.
+
+To fix this, run the postinstall script manually:
+  cd node_modules/opencode-ai && node postinstall.mjs
+
+Or reinstall opencode-ai without the --ignore-scripts flag.
+run_status=1

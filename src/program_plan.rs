@@ -29,12 +29,17 @@
 //! [`ProgramPlan::links_notation`].
 
 use std::collections::BTreeSet;
+use std::error::Error;
+use std::fmt;
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionRule,
     SubstitutionRuleSet, SubstitutionTraceReport,
+};
+use crate::substitution_compiler::{
+    compile_substitution_rules, CompiledSubstitutionProgram, SubstitutionCompilationTarget,
 };
 
 /// Graph node naming the task currently planned.
@@ -195,7 +200,65 @@ impl ProgramPlan {
         }
         out.trim_end().to_owned()
     }
+
+    /// Render the initial graph accepted by a compiled plan as sorted TSV.
+    #[must_use]
+    pub fn compiler_input_tsv(&self) -> String {
+        let mut graph = SubstitutionGraph::new().with_link(TASK_NODE, &self.base_task);
+        for modifier in &self.modifiers {
+            graph = graph.with_link(MODIFIER_NODE, modifier);
+        }
+        let mut output = String::new();
+        for link in graph.links() {
+            let _ = writeln!(output, "{}\t{}", link.from, link.to);
+        }
+        output
+    }
+
+    /// Compile the embedded program-plan rule set after this plan has proved
+    /// that a rewrite applied and terminated normally.
+    pub fn compile(
+        &self,
+        target: SubstitutionCompilationTarget,
+    ) -> Result<CompiledSubstitutionProgram, ProgramPlanCompilationError> {
+        self.compile_with_rules(rules(), target)
+    }
+
+    /// Compile the explicit rule set that produced this plan.
+    pub fn compile_with_rules(
+        &self,
+        rules: &SubstitutionRuleSet,
+        target: SubstitutionCompilationTarget,
+    ) -> Result<CompiledSubstitutionProgram, ProgramPlanCompilationError> {
+        if self.report.terminated_by_guard {
+            return Err(ProgramPlanCompilationError::TerminationGuardReached);
+        }
+        if !self.was_modified() || self.report.applied_count() == 0 {
+            return Err(ProgramPlanCompilationError::NoVerifiedRewrite);
+        }
+        Ok(compile_substitution_rules(rules, target))
+    }
 }
+
+/// A program plan must prove a finite rewrite before it can be exported.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProgramPlanCompilationError {
+    NoVerifiedRewrite,
+    TerminationGuardReached,
+}
+
+impl fmt::Display for ProgramPlanCompilationError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::NoVerifiedRewrite => formatter.write_str("program plan has no verified rewrite"),
+            Self::TerminationGuardReached => {
+                formatter.write_str("program plan reached its termination guard")
+            }
+        }
+    }
+}
+
+impl Error for ProgramPlanCompilationError {}
 
 /// Lower a `(base_task, modifiers)` request using the embedded program-plan
 /// rules.

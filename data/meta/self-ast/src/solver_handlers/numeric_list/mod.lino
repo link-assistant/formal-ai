@@ -2,24 +2,24 @@ self_ast_census
   target src/solver_handlers/numeric_list/mod.rs
   language rust
   fidelity signature
-  byte_len 34797
+  byte_len 34934
   line_count 855
-  content_id source_module_36489201ff44caf8
+  content_id source_module_5513dfa07a3e1516
   symbol_count 39
   symbols
     module codegen 35 35
-    struct InheritedCoding 61 71
-    enum Transform 76 83
-    enum Reduce 87 92
-    enum Operation 97 100
-    function canonical 107 117
-    enum ListValue 122 125
-    struct ParsedListItem 130 133
-    function numeric_value 136 141
-    function is_text 143 145
-    struct NumericListSolution 151 171
-    function try_numeric_list 179 185
-    function try_numeric_list_with_history 191 257
+    struct InheritedCoding 60 70
+    enum Transform 75 82
+    enum Reduce 86 91
+    enum Operation 96 99
+    function canonical 106 116
+    enum ListValue 121 124
+    struct ParsedListItem 129 132
+    function numeric_value 135 140
+    function is_text 142 144
+    struct NumericListSolution 150 170
+    function try_numeric_list 178 184
+    function try_numeric_list_with_history 190 257
     function solve_numeric_list 267 269
     function solve_numeric_list_with_context 276 353
     function numeric_list_history_context 361 396

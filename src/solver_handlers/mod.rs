@@ -1,44 +1,6 @@
 //! Specialized free-function handlers extracted from `solver.rs`: each receives
 //! the prompt, normalized prompt, and event log, then returns `Some` on a match.
-mod agent_workspace;
-mod behavior_rule_followups;
-mod behavior_rule_matching;
-mod behavior_rules;
-mod benchmark_prompts;
-mod calculator_rate;
-mod calendar;
-mod calendar_ics;
-mod compound_interest;
-mod conversation_memory;
-mod curated_project_fetch;
-mod document_originality;
-mod document_request;
-mod fact_checking;
-mod feature_capability;
-mod github_repository_traffic;
-mod installation_conversion;
-mod meta_explanation;
-mod natural_language_tools;
-mod numeric_list;
-mod pattern_inference;
-mod playwright_script;
-mod procedure_rules;
-mod program_blueprint;
-mod program_synthesis;
-mod research_table;
-mod response_language_followup;
-mod self_awareness;
-mod shell_command_transform;
-mod software_project;
-mod software_project_code;
-mod software_project_followup;
-mod task_decomposition;
-mod text_edit_ops;
-mod text_manipulation;
-mod user_intent;
-mod web_requests;
-mod web_search_intent;
-mod world_state;
+include!("modules.rs");
 
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
@@ -58,7 +20,7 @@ pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use github_repository_traffic::try_github_repository_traffic;
-pub use installation_conversion::try_installation_conversion;
+pub use installation_conversion::{is_install_conversion_request, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
@@ -954,6 +916,7 @@ pub fn finalize_simple(
     body: &str,
     confidence: f32,
 ) -> SymbolicAnswer {
+    let body = crate::question_necessity::enforce_questions(body, log);
     log.append("intent", intent.to_owned());
     if log.first_of("candidate").is_none() {
         log.append("candidate", intent.to_owned());
@@ -970,15 +933,14 @@ pub fn finalize_simple(
     }
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
-    let links_notation = answer_links_notation(prompt, intent, body, log, &trace_id);
-    let thinking_steps = log.thinking_steps_for_answer(body);
+    let links_notation = answer_links_notation(prompt, intent, &body, log, &trace_id);
     SymbolicAnswer {
         intent: intent.to_owned(),
-        answer: body.to_owned(),
+        thinking_steps: log.thinking_steps_for_answer(&body),
+        answer: body,
         execution_recipe: None,
         confidence,
         evidence_links,
-        thinking_steps,
         links_notation,
     }
 }

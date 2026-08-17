@@ -1,0 +1,3 @@
+formal-ai: session files for debugging:
+  agent: /home/box/.cache/formal-ai/ephemeral/agent-home-14897-1786842945562252729/.local/share/link-assistant-agent/storage/session/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b/ses_ff7dc60a0ffe3haPTTmx6PbzSd.json   (resume: agent --resume ses_ff7dc60a0ffe3haPTTmx6PbzSd --no-fork)
+formal-ai: orchestration-session-json:{"id":"ses_ff7dc60a0ffe3haPTTmx6PbzSd","resume_command":"agent --resume ses_ff7dc60a0ffe3haPTTmx6PbzSd --no-fork"}

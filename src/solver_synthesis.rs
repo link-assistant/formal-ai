@@ -551,6 +551,7 @@ fn finalize_composed_candidate(
     log: &mut EventLog,
     candidate: &ComposedCandidate,
 ) -> SymbolicAnswer {
+    let answer = crate::question_necessity::enforce_questions(&candidate.answer, log);
     log.append("intent", candidate.intent.clone());
     if log.first_of("validation").is_none() {
         log.append(
@@ -562,12 +563,11 @@ fn finalize_composed_candidate(
     log.append("trace:simplification", "smallest_sufficient".to_owned());
     let trace_id = log.append("trace", candidate.intent.clone());
     let evidence_links = build_evidence_links(prompt, log, &candidate.response_link);
-    let links_notation =
-        answer_links_notation(prompt, &candidate.intent, &candidate.answer, log, &trace_id);
-    let thinking_steps = log.thinking_steps_for_answer(&candidate.answer);
+    let links_notation = answer_links_notation(prompt, &candidate.intent, &answer, log, &trace_id);
+    let thinking_steps = log.thinking_steps_for_answer(&answer);
     SymbolicAnswer {
         intent: candidate.intent.clone(),
-        answer: candidate.answer.clone(),
+        answer,
         execution_recipe: None,
         confidence: candidate.confidence,
         evidence_links,

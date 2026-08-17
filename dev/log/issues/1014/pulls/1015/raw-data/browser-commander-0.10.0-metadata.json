@@ -1,0 +1,180 @@
+{
+  "_id": "browser-commander@0.10.0",
+  "_rev": "21-7fb5db1271c94c3298d5d36bd81f5c42",
+  "name": "browser-commander",
+  "dist-tags": {
+    "latest": "0.16.1"
+  },
+  "versions": [
+    "0.2.0",
+    "0.2.1",
+    "0.3.0",
+    "0.4.0",
+    "0.5.2",
+    "0.5.3",
+    "0.5.4",
+    "0.6.0",
+    "0.7.0",
+    "0.8.0",
+    "0.8.1",
+    "0.9.0",
+    "0.9.1",
+    "0.10.0",
+    "0.11.0",
+    "0.12.0",
+    "0.13.0",
+    "0.14.0",
+    "0.15.0",
+    "0.16.0",
+    "0.16.1"
+  ],
+  "time": {
+    "created": "2025-12-28T03:41:48.812Z",
+    "modified": "2026-08-02T14:39:37.709Z",
+    "0.2.0": "2025-12-28T03:41:49.088Z",
+    "0.2.1": "2025-12-28T03:48:25.504Z",
+    "0.3.0": "2025-12-28T04:14:43.574Z",
+    "0.4.0": "2025-12-28T05:13:30.336Z",
+    "0.5.2": "2026-01-10T01:11:35.452Z",
+    "0.5.3": "2026-01-10T13:40:05.789Z",
+    "0.5.4": "2026-01-13T20:37:26.106Z",
+    "0.6.0": "2026-04-06T09:52:07.880Z",
+    "0.7.0": "2026-04-06T18:42:39.064Z",
+    "0.8.0": "2026-04-06T19:01:55.903Z",
+    "0.8.1": "2026-05-10T11:57:50.154Z",
+    "0.9.0": "2026-06-28T14:56:50.783Z",
+    "0.9.1": "2026-06-28T21:29:50.075Z",
+    "0.10.0": "2026-08-01T13:32:08.076Z",
+    "0.11.0": "2026-08-01T16:29:40.062Z",
+    "0.12.0": "2026-08-02T01:41:09.974Z",
+    "0.13.0": "2026-08-02T04:24:54.530Z",
+    "0.14.0": "2026-08-02T05:50:27.187Z",
+    "0.15.0": "2026-08-02T06:32:52.487Z",
+    "0.16.0": "2026-08-02T07:56:32.690Z",
+    "0.16.1": "2026-08-02T14:39:37.423Z"
+  },
+  "bugs": {
+    "url": "https://github.com/link-foundation/browser-commander/issues"
+  },
+  "license": "UNLICENSE",
+  "homepage": "https://github.com/link-foundation/browser-commander#readme",
+  "keywords": [
+    "browser",
+    "automation",
+    "playwright",
+    "puppeteer",
+    "testing",
+    "e2e"
+  ],
+  "repository": {
+    "url": "git+https://github.com/link-foundation/browser-commander.git",
+    "type": "git"
+  },
+  "description": "Universal browser automation library that supports both Playwright and Puppeteer with a unified API",
+  "maintainers": [
+    "konard <drakonard@gmail.com>"
+  ],
+  "readmeFilename": "README.md",
+  "_contentLength": 96803,
+  "version": "0.10.0",
+  "author": "",
+  "dist": {
+    "shasum": "ad16c9b14081e7c49bd8177a5938881372b15e13",
+    "tarball": "https://registry.npmjs.org/browser-commander/-/browser-commander-0.10.0.tgz",
+    "fileCount": 100,
+    "integrity": "sha512-W3k5A+oqg6uyzdAKKjcs8J0NSzQbxVnqFqmsukBqIFgZCgf+DHW9YSqoWz7tTDsPsUiRMi0tuj54yuv6Rm2Zxw==",
+    "signatures": [
+      {
+        "sig": "MEQCIFVmuNnD5DkXyY4jrpo+5T+dL7FJAbeTGbtaLCKQbRU7AiAY0UOc4LhOFMWu2TOXakZm7RI0yRI3AwA22t6dGKT2pA==",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/browser-commander@0.10.0",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "unpackedSize": 607394
+  },
+  "main": "src/index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./tests": "./src/tests/index.js"
+  },
+  "gitHead": "3af1e155b23c55be0ab8bfa46b0a8e081cf0b926",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node scripts/run-tests.mjs --reporter spec tests/unit",
+    "check": "npm run lint && npm run format:check && npm run check:duplication",
+    "format": "prettier --write .",
+    "prepare": "husky || true",
+    "docs:api": "jsdoc -c jsdoc.json",
+    "lint:fix": "eslint . --fix",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "test:e2e": "node scripts/run-tests.mjs --env RUN_E2E=true tests/e2e",
+    "changeset": "changeset",
+    "test:unit": "node scripts/run-tests.mjs --reporter spec tests/unit",
+    "format:check": "prettier --check .",
+    "test:coverage": "node scripts/run-tests.mjs --coverage tests/unit",
+    "changeset:status": "changeset status --since=origin/main",
+    "changeset:publish": "changeset publish",
+    "changeset:version": "node scripts/changeset-version.mjs",
+    "check:duplication": "jscpd .",
+    "test:e2e:puppeteer": "node scripts/run-tests.mjs --env RUN_E2E=true tests/e2e/puppeteer.e2e.test.js",
+    "test:e2e:playwright": "node scripts/run-tests.mjs --env RUN_E2E=true tests/e2e/playwright.e2e.test.js"
+  },
+  "_npmUser": "GitHub Actions <npm-oidc-no-reply@github.com>",
+  "_npmVersion": "12.0.2",
+  "directories": {},
+  "lint-staged": {
+    "*.md": [
+      "prettier --write",
+      "prettier --check"
+    ],
+    "*.{js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write",
+      "prettier --check"
+    ]
+  },
+  "_nodeVersion": "24.18.0",
+  "dependencies": {
+    "log-lazy": "^1.0.4",
+    "test-anywhere": "^0.9.1"
+  },
+  "_hasShrinkwrap": false,
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "jscpd": "^4.0.5",
+    "jsdoc": "^4.0.4",
+    "eslint": "^9.39.0",
+    "prettier": "^3.6.2",
+    "puppeteer": "^24.27.0",
+    "playwright": "^1.56.1",
+    "lint-staged": "^16.2.6",
+    "@changesets/cli": "^2.29.7",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4"
+  },
+  "peerDependencies": {
+    "puppeteer": ">=21.0.0",
+    "playwright": ">=1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "puppeteer": {
+      "optional": true
+    },
+    "playwright": {
+      "optional": true
+    }
+  },
+  "_npmOperationalInternal": {
+    "tmp": "tmp/browser-commander_0.10.0_1785591127930_0.6801434886483637",
+    "host": "s3://npm-registry-packages-npm-production"
+  }
+}

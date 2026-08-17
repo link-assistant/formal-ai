@@ -9,6 +9,7 @@ const WITH_FORMAL_AI_TEST: &str = include_str!("integration/with_formal_ai.rs");
 const SYNC_SEED: &str = include_str!("../scripts/sync-seed.sh");
 const RUNNER_DISK_CLEANUP: &str = include_str!("../scripts/free-runner-disk.sh");
 const RELEASE_WORKFLOW: &str = include_str!("../.github/workflows/release.yml");
+const MACOS_CORE_WORKFLOW: &str = include_str!("../.github/workflows/macos-core-tests.yml");
 const REQUIREMENTS: &str = include_str!("../REQUIREMENTS.md");
 const ISSUE_CASE_STUDY: &str = include_str!("../docs/case-studies/issue-961/README.md");
 const PR_CASE_STUDY: &str = include_str!("../docs/case-studies/pull-request-987/README.md");
@@ -20,8 +21,11 @@ fn seed_array_guard_precedes_expansion() -> bool {
 }
 
 fn supported_macos_test_shards_are_complete() -> bool {
-    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 2
-        && RELEASE_WORKFLOW.contains("test-suite: core")
+    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
+        && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
+        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 12
+        && (1..=12)
+            .all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
         && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
 
@@ -47,7 +51,7 @@ fn macos_portability_failures() -> Vec<&'static str> {
         failures.push("the empty destination array must be guarded before expansion");
     }
     if !supported_macos_test_shards_are_complete() {
-        failures.push("the test matrix must include both supported macOS shards");
+        failures.push("the test matrix must include every supported macOS core slice");
     }
 
     failures
@@ -89,10 +93,13 @@ fn seed_sync_guards_an_empty_destination_array() {
 #[test]
 fn full_test_matrix_runs_on_a_supported_macos_image() {
     assert!(supported_macos_test_shards_are_complete());
-    assert!(RELEASE_WORKFLOW
-        .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
-    assert!(RELEASE_WORKFLOW
-        .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"));
+    assert!(MACOS_CORE_WORKFLOW.contains("timeout-minutes: 25"));
+    assert!(MACOS_CORE_WORKFLOW.contains("TEST_BUDGET_SECONDS: 1200"));
+    assert!(MACOS_CORE_WORKFLOW.contains("taiki-e/install-action@nextest"));
+    assert_eq!(
+        MACOS_CORE_WORKFLOW.matches("cargo nextest archive").count(),
+        1
+    );
 }
 
 #[test]

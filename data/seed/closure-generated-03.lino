@@ -49,6 +49,11 @@ meanings
     lexeme en
       surface
         text "client server exited before listening"
+  coding_meta_algorithm_surface
+    defined-by intent
+    lexeme en
+      surface
+        text "coding meta algorithm surface"
   coding_source_string_constant
     defined-by intent
     lexeme en
@@ -89,6 +94,11 @@ meanings
     lexeme en
       surface
         text "expression language"
+  external_benchmark_ascent_missing_rule
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark ascent missing rule"
   external_benchmark_swe_missing_report
     defined-by intent
     lexeme en
@@ -119,6 +129,21 @@ meanings
     lexeme en
       surface
         text "general plan command verification evidence"
+  how_to_guide_citation
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide citation"
+  how_to_guide_copy
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide copy"
+  installation_conversion
+    defined-by concept
+    lexeme en
+      surface
+        text "installation conversion"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -279,6 +304,11 @@ meanings
     lexeme en
       surface
         text "preferred"
+  problem_class_to_shared_ir_to_renderers_to_verification
+    defined-by concept
+    lexeme en
+      surface
+        text "problem class to shared ir to renderers to verification"
   protocol
     defined-by concept
     lexeme en
@@ -349,6 +379,11 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped ru"
+  response_coding_meta_algorithm_stage_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage es"
   response_coding_source_string_constant_rust
     defined-by response_template
     lexeme en
@@ -374,6 +409,36 @@ meanings
     lexeme en
       surface
         text "response draft comparison explanation ru"
+  response_external_benchmark_ascent_missing_rule_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent missing rule en"
+  response_external_benchmark_ascent_prompt_prefix_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix en"
+  response_external_benchmark_egg_too_few_laws_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws en"
+  response_external_benchmark_proof_query_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query en"
+  response_external_benchmark_proof_status_detail_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail ru"
+  response_external_benchmark_rust_adapter_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing en"
   response_fact_check_current_dialogue_zh
     defined-by response_template
     lexeme en
@@ -384,6 +449,31 @@ meanings
     lexeme en
       surface
         text "response general plan command capture action zh"
+  response_how_to_guide_copy_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy es"
+  response_how_to_guide_copy_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy hi"
+  response_how_to_guide_insufficient_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence zh"
+  response_how_to_guide_source_outcome_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome en"
+  response_how_to_guide_source_outcome_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome ru"
   response_lexeme_import_cannot_create_zh
     defined-by response_template
     lexeme en
@@ -504,6 +594,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence repetition zh"
+  response_proof_equality_conclusion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion ru"
   response_summarization_cli_baseline_write_failed_ru
     defined-by response_template
     lexeme en

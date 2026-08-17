@@ -849,6 +849,24 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
+Issue #936 adds the executable path for pure substitution rules. The
+Rust-owned compiler first lowers `SubstitutionRuleSet` into one serializable,
+target-neutral `SubstitutionProgramIr`: ordered rules, `when` conditions,
+`replace` actions, literal/whole-node/prefix patterns, and the interpreter's
+bounded application limit. Emitters may only consume that IR. The canonical
+Rust target embeds the generated runtime directly; WebAssembly compiles the
+same generated Rust runtime; the JavaScript target is only an ES-module bridge
+to that generated WASM and contains no rule matching or rewrite logic. Every
+artifact also carries the JSON IR and an auditable compilation trace.
+
+`ProgramPlan::compile` is the proof boundary. It refuses an unchanged plan or
+a plan that reached its termination guard. The solver's seeded
+`export_substitution_rule` route first reuses rule synthesis's semantic fixture,
+then crosses that boundary and returns the named source/support files plus an
+`ExecutionRecipe`. Thus natural-language export cannot bypass the existing
+verified plan, while direct library callers can compile any parsed rule set via
+`compile_substitution_rules` and compare its output with the interpreter.
+
 `src/skill_compiler.rs` implements the deterministic compiler subset. The
 legacy `When ... answer ...` form still lowers into a `CompiledSkillPackage`
 with a trigger rule, a deterministic compiled handler, an E1-style
@@ -1461,6 +1479,14 @@ the table in Section 2 and link the new module.
   `src/proof_engine/decision/sat.rs`; wide claims are
   [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
   in `src/proof_engine/decision/boolean.rs` before being handed to it.
+- Issue #923 widens the same decision boundary with bounded equality saturation
+  in `src/proof_engine/decision/equality.rs` and a bounded, function-free
+  Datalog least-fixed-point evaluator in `src/proof_engine/decision/rules.rs`.
+  Equality uses the optional MIT-licensed `egg` dependency behind the default
+  `equality-saturation` feature; an exhausted e-graph search remains
+  inconclusive rather than being reported as a disproof. Rule programs carry
+  explicit `facts`, `rules`, and a ground `query`; resource ceilings turn into
+  an inconclusive result instead of an incomplete-model counterexample.
 
 ### Symbolic world models and contexts (issue #649)
 
@@ -1501,3 +1527,24 @@ the table in Section 2 and link the new module.
   `docs/case-studies/issue-686/persistence-mapping.md`. It generalizes the
   read-count LFU precursor already present in `src/dreaming.rs` (`usage_counts`) and
   bridges to the issue #649 world model via `AssociativeMemory::from_context`.
+
+## Formal AI self-development release loop
+
+Issue #924 composes the existing session-backed self-hosting metric with the
+normal GitHub merge topology. A contribution is still attributed from its
+committed session and evidence trailers; an additional canonical PR trailer is
+eligible for the release floor only when a matching first-parent GitHub merge
+contains that exact non-merge commit on its second-parent branch. This keeps a
+direct or rewritten claim from masquerading as reviewed work.
+
+Before version mutation, the release path requires one qualifying PR and
+projects the existing three-release changed-line share. The next target is
+`max(previous target, previous comparable trailing share)`, so the ledger is a
+monotonic floor as well as a report. Each new row records the target and all
+qualifying PR URLs. A failed floor leaves the release range open for additional
+reviewed work instead of writing an impossible historical row.
+
+This layer observes merged ancestry; it does not add an AI-only authority.
+Review, CI, and the #656 trusted promotion protocol remain outside and above
+the authorship measurement. E69 supplies the write-effect foundation and E74
+supplies the replayable Hive Mind/Agent CLI route used to produce candidates.

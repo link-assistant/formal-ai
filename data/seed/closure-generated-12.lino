@@ -109,6 +109,16 @@ meanings
     lexeme en
       surface
         text "how it works"
+  how_to_guide_sources_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide sources heading"
+  independent_corroboration
+    defined-by concept
+    lexeme en
+      surface
+        text "independent corroboration"
   intent_assistant_free_time
     defined-by intent
     lexeme en
@@ -259,6 +269,11 @@ meanings
     lexeme en
       surface
         text "pip"
+  proof_datalog_conclusion
+    defined-by intent
+    lexeme en
+      surface
+        text "proof datalog conclusion"
   pytest
     defined-by concept
     lexeme en
@@ -369,6 +384,16 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting hi"
+  response_coding_meta_algorithm_solutions_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading es"
+  response_coding_meta_algorithm_surface_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface ru"
   response_coding_source_function_return_rust
     defined-by response_template
     lexeme en
@@ -389,11 +414,26 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present en"
+  response_external_benchmark_proof_query_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query ru"
+  response_external_benchmark_proof_status_detail_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail es"
   response_external_benchmark_swe_inspect_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe inspect error en"
+  response_external_benchmark_upstream_missing_start_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start es"
   response_fact_check_current_dialogue_ru
     defined-by response_template
     lexeme en
@@ -434,6 +474,41 @@ meanings
     lexeme en
       surface
         text "response greeting ru"
+  response_how_to_guide_conflict_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict ru"
+  response_how_to_guide_conflicts_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading es"
+  response_how_to_guide_conflicts_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading hi"
+  response_how_to_guide_copy_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy en"
+  response_how_to_guide_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading es"
+  response_how_to_guide_insufficient_evidence_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence es"
+  response_how_to_guide_step_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step ru"
   response_lexeme_import_cache_budget_reached_zh
     defined-by response_template
     lexeme en
@@ -574,6 +649,16 @@ meanings
     lexeme en
       surface
         text "response pattern sequence no compression ru"
+  response_proof_datalog_conclusion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion en"
+  response_proof_datalog_counterexample_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample es"
   response_statement_audit_temperature_range_en
     defined-by response_template
     lexeme en

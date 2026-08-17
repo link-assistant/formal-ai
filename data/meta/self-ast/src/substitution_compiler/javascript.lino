@@ -1,0 +1,10 @@
+self_ast_census
+  target src/substitution_compiler/javascript.rs
+  language rust
+  fidelity signature
+  byte_len 477
+  line_count 16
+  content_id source_module_31e39bfdf1bbcd6a
+  symbol_count 1
+  symbols
+    function emit 4 16

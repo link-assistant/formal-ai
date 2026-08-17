@@ -393,7 +393,7 @@ function tryNumericList(prompt, history) {
   const body = `${parts.intro(canonical, languageInfo.name, givenText, program.valueType.label)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
 
   const evidence = [
-    `response:write_program:numeric_list:${canonical}:${slug}`,
+    `response:write_program:numeric_list:${canonical}:${slug}`, ...metaAlgorithmConstructionEvidence("numeric_list"),
   ];
   // Issue #412: record when the language / code request was recovered from the
   // conversation, mirroring the `numeric_list_coreference` event the Rust
@@ -441,7 +441,7 @@ function tryProgramSynthesis(prompt, normalized) {
   const syntaxTree = pythonFunctionLinks(candidate.functionTree);
   const code = renderPythonFunction(candidate.functionTree);
   const evidence = [
-    `response:write_program:synthesized:python:${candidate.id}`,
+    `response:write_program:synthesized:python:${candidate.id}`, ...metaAlgorithmConstructionEvidence("program_synthesis"),
     `synthesis:spec:language=python function=${candidate.functionName}`,
     `synthesis:syntax_tree:${syntaxTree}`,
     ...candidate.fragments.map((fragment) => `composition:code_fragment:${fragment}`),

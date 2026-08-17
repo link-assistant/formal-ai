@@ -1,0 +1,1962 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.701Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.708Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.CE5kadAZGp",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.709Z",
+  "service": "default",
+  "directory": "/tmp/tmp.CE5kadAZGp",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.710Z",
+  "service": "project",
+  "directory": "/tmp/tmp.CE5kadAZGp",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.861Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.862Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.865Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.870Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.871Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.871Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.873Z",
+  "service": "config",
+  "path": "/tmp/tmp.CE5kadAZGp/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.924Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 97082,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:14.925Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.087Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.190Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.191Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.191Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.191Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.191Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.191Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.191Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 326,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.202Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.202Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.203Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-08-15T10:04:15.203Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.300Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.300Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.307Z",
+  "service": "session",
+  "id": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.CE5kadAZGp",
+  "title": "New session - 2026-08-15T10:04:15.307Z",
+  "time": {
+    "created": 1786788255307,
+    "updated": 1786788255307
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.312Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 12,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.348Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.366Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_ffb1ee9b4ffedIt26xRyh8FEDy/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.366Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_ffb1ee9b4ffedIt26xRyh8FEDy/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.401Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 35,
+  "method": "POST",
+  "path": "/session/ses_ffb1ee9b4ffedIt26xRyh8FEDy/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.475Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.492Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.529Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.529Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.533Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.535Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.535Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.536Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.536Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.540Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.540Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.540Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.540Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.540Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.540Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.541Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:15.541Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.572Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.583Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.584Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.681Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.814Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.814Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.815Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:16.815Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.752Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786788257752,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e11fcd0014120H9Iv29K97w",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e11b42001vIk1sIioTsUhTp",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.754Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788257756,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e11fda001Tu6Kh5SyrcKBen",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e11b42001vIk1sIioTsUhTp",
+    "type": "tool",
+    "callID": "call_475a2c183ad8aa13",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.757Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786788257757,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e11fd8001Jft8RrsEsp44tc",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e11b42001vIk1sIioTsUhTp",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1786788257757,
+      "end": 1786788257757
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.759Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788257759,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e11fda001Tu6Kh5SyrcKBen",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e11b42001vIk1sIioTsUhTp",
+    "type": "tool",
+    "callID": "call_475a2c183ad8aa13",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_a6460225cf2f47af\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream\"\n  target \"ci-template-comparison-invariant.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_ae120f81922edc4d\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to ci-template-comparison-invariant.md\"\n    expected_evidence \"workspace file ci-template-comparison-invariant.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"Template audits compare immutable workflow and script trees and report shared defects upstream\"\n    command \"cat ci-template-comparison-invariant.md\"\n  verification_command \"cat ci-template-comparison-invariant.md\"\n",
+        "filePath": "/tmp/tmp.CE5kadAZGp/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1786788257757
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.779Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788257779,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e11fda001Tu6Kh5SyrcKBen",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e11b42001vIk1sIioTsUhTp",
+    "type": "tool",
+    "callID": "call_475a2c183ad8aa13",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_a6460225cf2f47af\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream\"\n  target \"ci-template-comparison-invariant.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_ae120f81922edc4d\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to ci-template-comparison-invariant.md\"\n    expected_evidence \"workspace file ci-template-comparison-invariant.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"Template audits compare immutable workflow and script trees and report shared defects upstream\"\n    command \"cat ci-template-comparison-invariant.md\"\n  verification_command \"cat ci-template-comparison-invariant.md\"\n",
+        "filePath": "/tmp/tmp.CE5kadAZGp/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.CE5kadAZGp/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.CE5kadAZGp/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1786788257757,
+        "end": 1786788257777
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.788Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786788257788,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e11ff8001BSOPCvPdCwnqLx",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e11b42001vIk1sIioTsUhTp",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8596,
+      "output": 1222,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9818,
+      "headroom": 29038,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.789Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.789Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.795Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.795Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.801Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.820Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.821Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.913Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.913Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.920Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.920Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 9818,
+  "providerTokens": 9818,
+  "estimatedInputTokens": 37,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8596,
+    "cacheRead": 0,
+    "output": 1222
+  },
+  "overflow": false,
+  "headroom": 41990,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.921Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:17.921Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.045Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.063Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.417Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786788258420,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e122680016iao0GtgzGsEMi",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e120800011s9IO4vtaHebnV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.427Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788258427,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e1227a001dKb22AuxoDpMgR",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e120800011s9IO4vtaHebnV",
+    "type": "tool",
+    "callID": "call_85bc126380ca100b",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.428Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786788258428,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12275001kTwnyyrEoUVBsx",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e120800011s9IO4vtaHebnV",
+    "type": "text",
+    "text": "Let me update ci-template-comparison-invariant.md for you.",
+    "time": {
+      "start": 1786788258427,
+      "end": 1786788258427
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788258433,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e1227a001dKb22AuxoDpMgR",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e120800011s9IO4vtaHebnV",
+    "type": "tool",
+    "callID": "call_85bc126380ca100b",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "Template audits compare immutable workflow and script trees and report shared defects upstream",
+        "filePath": "/tmp/tmp.CE5kadAZGp/ci-template-comparison-invariant.md"
+      },
+      "time": {
+        "start": 1786788258429
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788258441,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e1227a001dKb22AuxoDpMgR",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e120800011s9IO4vtaHebnV",
+    "type": "tool",
+    "callID": "call_85bc126380ca100b",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "Template audits compare immutable workflow and script trees and report shared defects upstream",
+        "filePath": "/tmp/tmp.CE5kadAZGp/ci-template-comparison-invariant.md"
+      },
+      "output": "",
+      "title": "tmp/tmp.CE5kadAZGp/ci-template-comparison-invariant.md",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.CE5kadAZGp/ci-template-comparison-invariant.md",
+        "exists": false
+      },
+      "time": {
+        "start": 1786788258429,
+        "end": 1786788258440
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786788258444,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12289001Tmf7STHYomi35w",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e120800011s9IO4vtaHebnV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8654,
+      "output": 240,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8894,
+      "headroom": 29962,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.451Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.555Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.556Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.556Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.556Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.562Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.562Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.562Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.562Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 8894,
+  "providerTokens": 8894,
+  "estimatedInputTokens": 50,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8654,
+    "cacheRead": 0,
+    "output": 240
+  },
+  "overflow": false,
+  "headroom": 42914,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.563Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.563Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.591Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.934Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786788258934,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12457001PUCj2MhWaVbWeo",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e12303001sn7XmVszBJk4Ps",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.936Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788258943,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12478001OImvUO36cUBMBq",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e12303001sn7XmVszBJk4Ps",
+    "type": "tool",
+    "callID": "call_e19956872f8994e6",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786788258943,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12477001COR9Mzxc5PyT3P",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e12303001sn7XmVszBJk4Ps",
+    "type": "text",
+    "text": "Let me run the requested command to get that for you.",
+    "time": {
+      "start": 1786788258943,
+      "end": 1786788258943
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:18.944Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788258944,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12478001OImvUO36cUBMBq",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e12303001sn7XmVszBJk4Ps",
+    "type": "tool",
+    "callID": "call_e19956872f8994e6",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat ci-template-comparison-invariant.md"
+      },
+      "time": {
+        "start": 1786788258944
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.045Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786788259045,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12478001OImvUO36cUBMBq",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e12303001sn7XmVszBJk4Ps",
+    "type": "tool",
+    "callID": "call_e19956872f8994e6",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat ci-template-comparison-invariant.md"
+      },
+      "output": "Template audits compare immutable workflow and script trees and report shared defects upstream",
+      "title": "cat ci-template-comparison-invariant.md",
+      "metadata": {
+        "output": "Template audits compare immutable workflow and script trees and report shared defects upstream",
+        "exit": 0
+      },
+      "time": {
+        "start": 1786788258944,
+        "end": 1786788259044
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786788259049,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e124e5001sjMnPH4vhE9fWa",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e12303001sn7XmVszBJk4Ps",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8712,
+      "output": 110,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8822,
+      "headroom": 30034,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.055Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.293Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.294Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.294Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.294Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.299Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.299Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.300Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.300Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 8822,
+  "providerTokens": 8822,
+  "estimatedInputTokens": 74,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8712,
+    "cacheRead": 0,
+    "output": 110
+  },
+  "overflow": false,
+  "headroom": 42986,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.300Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.301Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.403Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.410Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786788259931,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12855001UbqGS7gF5wEXiY",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e125e4001CzCLgaGcnutblc",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.939Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786788259939,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e1285b0016kgiPP4kjJ4gFm",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e125e4001CzCLgaGcnutblc",
+    "type": "text",
+    "text": "Completed the general change request for ci-template-comparison-invariant.md and verified it with `cat ci-template-comparison-invariant.md`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\n```lino\ngeneral_change_plan\n  id \"general_change_plan_a6460225cf2f47af\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream\"\n  target \"ci-template-comparison-invariant.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_ae120f81922edc4d\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to ci-template-comparison-invariant.md\"\n    expected_evidence \"workspace file ci-template-comparison-invariant.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"Template audits compare immutable workflow and script trees and report shared defects upstream\"\n    command \"cat ci-template-comparison-invariant.md\"\n  verification_command \"cat ci-template-comparison-invariant.md\"\n```",
+    "time": {
+      "start": 1786788259938,
+      "end": 1786788259938
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.940Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786788259940,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "part": {
+    "id": "prt_004e12864001LBow7aWYSl34x3",
+    "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+    "messageID": "msg_004e125e4001CzCLgaGcnutblc",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8859,
+      "output": 1228,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10087,
+      "headroom": 28769,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.945Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.957Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.992Z",
+  "service": "session.prompt",
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:19.992Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.080Z",
+  "service": "session.prompt",
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.080Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.080Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1786788260080,
+  "sessionID": "ses_ffb1ee9b4ffedIt26xRyh8FEDy"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.082Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.087Z",
+  "service": "default",
+  "directory": "/tmp/tmp.CE5kadAZGp",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.088Z",
+  "service": "state",
+  "key": "/tmp/tmp.CE5kadAZGp",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.089Z",
+  "service": "state",
+  "key": "/tmp/tmp.CE5kadAZGp",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-15T10:04:20.089Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

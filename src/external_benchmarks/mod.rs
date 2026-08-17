@@ -14,6 +14,7 @@ pub mod learning;
 pub mod ledger;
 pub mod manifest;
 pub mod ratchet;
+pub mod upstream_rust;
 pub mod vocabulary;
 
 use std::fmt::Write as _;
@@ -139,10 +140,14 @@ pub fn run_suite(
 
     let workspace = cache_root.join("run").join(manifest.id);
     let solver = benchmark_solver();
-    let answers: Vec<String> = cases
+    let responses = cases
         .iter()
-        .map(|case| solver.solve(&case.prompt).answer)
-        .collect();
+        .map(|case| solver.solve(&case.prompt))
+        .collect::<Vec<_>>();
+    let answers = responses
+        .iter()
+        .map(|response| response.answer.clone())
+        .collect::<Vec<_>>();
     let outcomes = if manifest.grading == Grading::SweBenchTests {
         match grade::grade_swebench(&cases, &answers, &workspace) {
             Ok(outcomes) => outcomes,
@@ -161,8 +166,16 @@ pub fn run_suite(
     } else {
         cases
             .iter()
-            .zip(&answers)
-            .map(|(case, answer)| grade::grade_case(case, manifest.grading, answer, &workspace))
+            .zip(&responses)
+            .map(|(case, response)| {
+                grade::grade_case_with_trace(
+                    case,
+                    manifest.grading,
+                    &response.answer,
+                    &response.links_notation,
+                    &workspace,
+                )
+            })
             .collect()
     };
 

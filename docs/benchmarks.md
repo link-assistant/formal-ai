@@ -21,13 +21,15 @@ source provenance for download-on-test integration. Only permissive licenses
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
 | Held-out algorithm discovery | #531 | [`issue-531-algorithm-traces.lino`](../data/benchmarks/issue-531-algorithm-traces.lino) | `repeated_event_sequences_become_a_validated_parameterized_algorithm` | 1 |
-| External (upstream) harness | #698 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
+| External (upstream) harness | #698, #923 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
+| Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
+| Conversational wording variations | #933 (from #123) | [`conversational-variations-suite.lino`](../data/benchmarks/conversational-variations-suite.lino) | `conversational_variation_benchmark_routes_every_case` | 228 (and ≥5 wordings per case per language) |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -151,6 +153,27 @@ to keep failing *loudly*, never with a fabricated answer):
 | Named-unknown declarations | formal-ai | `What is x if x + 7 = 12?` | `calculation_error` (the `x if …` declaration is not stripped) |
 | Command-shaped prompts | formal-ai | `Find x: 5 * x = 45` | `agent_suggestion` (`find` is claimed by the shell router) |
 
+### Question necessity — issue #920
+
+Five self-authored tasks cover required clarification, autonomous factual
+research, proof follow-up reduction, and answerable arithmetic. The ratchet
+counts only questions with a replayable `question_necessity:asked` event and
+caps the frequency at 60 per 100 tasks; future changes may lower but not raise
+that seed-defined maximum. No third-party benchmark payload is imported.
+
+### Conversational wording variations — issue #933 (requirement from #123)
+
+Records 228 self-authored prompts: at least five distinct wordings for each of
+ten conversational cases in each of English, Russian, Hindi and Chinese, split
+into one partition file per language. Each case records the intent, the evidence
+link and the exact answer that wording produces, and every prompt was verified
+against the engine before it was committed. Two prompts count as one wording
+unless they differ in more than case, punctuation, symbols or spacing, so
+re-punctuating a phrase cannot fill a group. The floor is enforced outside the
+Rust suite as well, by the `check:variation-floor` CI gate. No third-party
+benchmark payload is imported. See
+[`docs/case-studies/issue-933/`](./case-studies/issue-933/README.md).
+
 ### Multilingual local-path discovery — issue #819
 
 Records 56 self-authored prompts spanning English, Russian, Hindi, and Chinese,
@@ -252,9 +275,9 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-Recorded `2026-08-03`, solver version `0.323.0`, slice `20` upstream cases per
-core suite and a separately bounded one-case SWE-bench slice, offline
-deterministic solver (`temperature = 0.0`):
+The core corpus rows below were most recently refreshed on `2026-08-10`; issue
+#923 adds symbolic-reasoning rows recorded on `2026-08-14` with solver version
+`0.342.0`. All use the offline deterministic solver (`temperature = 0.0`):
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
@@ -264,13 +287,17 @@ deterministic solver (`temperature = 0.0`):
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
 | CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
+| egg math rewrite laws | MIT | structured `proof_outcome proven` | 20 | 20 |
+| Ascent transitive graph closure | MIT | structured `proof_outcome proven` | 5 | 5 |
 | SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
-`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on
-SWE-bench Lite are the real measurements of the current offline solver against
-unmodified upstream cases. They are recorded exactly as measured; the ratchet
-makes them the floor these numbers may never fall below.
+`20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
+symbolic kernel against mechanically adapted declarations and assertions from
+the pinned upstream Rust sources. The existing corpus rows remain recorded
+exactly as measured: `2 / 20` on GSM8K, `0 / 20` on the other scored core
+suites, and `0 / 1` on SWE-bench Lite. The ratchet makes every number a floor
+that may never fall below.
 
 The original SWE-bench row was withdrawn: it compared output with the gold
 patch, which is not the SWE-bench pass criterion. Scheduled runs now use the
@@ -358,6 +385,10 @@ cargo test --test unit only_a_green_named_review_promotes_and_replays_the_held_o
 
 # Equation-type corpus (#891)
 cargo test --test unit issue_891_equation_corpus -- --nocapture
+
+# Conversational wording variations (#933)
+cargo test --test unit conversational_variation_benchmark_routes_every_case -- --nocapture
+npm run --prefix tests/e2e check:variation-floor   # the per-language floor
 ```
 
 ## Conventions

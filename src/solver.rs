@@ -33,9 +33,12 @@ use crate::intent_formalization::{
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
-use crate::rule_synthesis::{try_construct_unknown_rule, try_recall_approved_rule};
+use crate::rule_synthesis::{
+    try_construct_unknown_rule, try_export_substitution_program, try_recall_approved_rule,
+};
 use crate::rule_synthesis_portfolio::try_portfolio_rule;
 use crate::seed;
+pub use crate::solver_config::{BlueprintComposition, ExecutionSurface};
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handler_oracle::try_unsupported_write_program;
@@ -52,102 +55,6 @@ use crate::translation::{
     formalize_prompt_candidates, select_formalization_candidate_with_policy, FormalizationDecision,
     FormalizationSelectionConfig,
 };
-
-/// Runtime surface where the solver is embedded.
-///
-/// Self-awareness answers use this to avoid claiming browser-only, CLI-only, or
-/// server-only affordances in the wrong environment.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-pub enum ExecutionSurface {
-    #[default]
-    RustLibrary,
-    Cli,
-    HttpServer,
-    Browser,
-    Telegram,
-    DockerMicroservice,
-}
-
-impl ExecutionSurface {
-    #[must_use]
-    pub const fn slug(self) -> &'static str {
-        match self {
-            Self::RustLibrary => "rust_library",
-            Self::Cli => "cli",
-            Self::HttpServer => "http_server",
-            Self::Browser => "browser",
-            Self::Telegram => "telegram",
-            Self::DockerMicroservice => "docker_microservice",
-        }
-    }
-
-    pub(crate) fn from_env_value(raw: &str) -> Option<Self> {
-        match raw.trim().to_ascii_lowercase().as_str() {
-            "rust" | "rust_library" | "library" | "lib" => Some(Self::RustLibrary),
-            "cli" | "terminal" | "shell" => Some(Self::Cli),
-            "http" | "http_server" | "server" | "api" => Some(Self::HttpServer),
-            "browser" | "web" | "wasm" | "demo" => Some(Self::Browser),
-            "telegram" | "telegram_bot" | "bot" => Some(Self::Telegram),
-            "docker" | "docker_microservice" | "container" => Some(Self::DockerMicroservice),
-            _ => None,
-        }
-    }
-}
-
-/// How the composite-program `blueprint` synthesizer
-/// turns its annotated recipe template into the program shown to the user.
-///
-/// Issue #340 asked the engine to "try all directions" of program synthesis and
-/// let the user switch between them. A blueprint recipe is stored as an annotated
-/// template whose optional sub-tasks (error handling, comments, …) are wrapped in
-/// `region:<capability>` markers; every emitted program is a *projection* of that
-/// template (never the raw, marker-bearing string — markers are always stripped).
-/// This knob selects which projection to emit:
-///
-/// - [`Composed`](Self::Composed) (default, the most promising direction): the
-///   program is assembled from exactly the capabilities the request decomposed
-///   into — optional regions whose capability the prompt did not ask for are
-///   dropped, and when comments were not requested the documentation is stripped
-///   too. The same recipe therefore yields genuinely different programs for
-///   different requests, which is the honest, anti-memoization demonstration that
-///   the code is composed from the decomposition (`NON-GOALS.md`).
-/// - [`Documented`](Self::Documented): always emit the fully documented program
-///   with every optional region present, regardless of which sub-tasks the
-///   request named. Useful as a stable reference and for users who want the
-///   maximal annotated program every time.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-pub enum BlueprintComposition {
-    /// Project the program from the detected capabilities (default).
-    #[default]
-    Composed,
-    /// Always emit the fully documented program with every region present.
-    Documented,
-}
-
-impl BlueprintComposition {
-    /// Stable slug used in the event log and the demo preference value.
-    #[must_use]
-    pub const fn slug(self) -> &'static str {
-        match self {
-            Self::Composed => "composed",
-            Self::Documented => "documented",
-        }
-    }
-
-    /// Parse a configuration value (env var or demo preference). Accepts the
-    /// canonical slugs plus a few intuitive aliases; returns `None` for anything
-    /// unrecognized so callers keep the default.
-    #[must_use]
-    pub fn from_value(raw: &str) -> Option<Self> {
-        match raw.trim().to_ascii_lowercase().as_str() {
-            "composed" | "compose" | "projection" | "project" | "decomposed" => {
-                Some(Self::Composed)
-            }
-            "documented" | "document" | "full" | "verbatim" | "curated" => Some(Self::Documented),
-            _ => None,
-        }
-    }
-}
 
 /// Runtime configuration for the universal solver.
 ///
@@ -169,9 +76,9 @@ pub struct SolverConfig {
     /// proof inputs before final execution.
     ///
     /// Independent of `guess_probability`. When this is high the proof engine
-    /// appends a "Clarifying questions" section listing every input the user
-    /// still has to confirm (axiom set, definitions, proof technique) so the
-    /// final research execution is unambiguous.
+    /// appends a "Clarifying questions" section. The question-necessity policy
+    /// then keeps only the smallest requirement-level input the user still has
+    /// to confirm so the final research execution is unambiguous.
     pub follow_up_probability: f32,
     /// `0.0` = ignore surrounding context, `1.0` = use all available context.
     pub context_sensitivity: f32,
@@ -528,6 +435,10 @@ impl UniversalSolver {
         let sub_results =
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
+        if let Some(answer) = try_export_substitution_program(prompt, history, &mut log) {
+            return answer;
+        }
+
         let selected_rule = select_rule_for_intent(&intent_formalization);
         // Issue #704: with a portfolio configured, the ledger recall and the
         // vocabulary derivation stop being an ordered fallback chain and become
@@ -709,6 +620,9 @@ impl UniversalSolver {
         log.append("intent", intent.clone());
 
         if let SelectedRule::WriteProgram(spec) = &rule {
+            if log.first_of("rule_synthesis_candidate").is_none() {
+                crate::coding::record_algorithm_construction(&mut log);
+            }
             log.append(
                 "execution_status",
                 spec.language.execution.status.label().to_owned(),
@@ -737,6 +651,7 @@ impl UniversalSolver {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
             _ => language_aware_answer_for(&rule, language, prompt, prior),
         };
+        let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
 
         let response_link = response_link_for_intent(&rule, &intent);
         log.append("response", response_link.clone());
@@ -759,6 +674,7 @@ impl UniversalSolver {
                     *spec,
                 ),
                 path: spec.language.save_as.to_owned(),
+                supporting_files: Vec::new(),
                 commands: spec
                     .language
                     .execution

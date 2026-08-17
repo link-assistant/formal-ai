@@ -28,6 +28,7 @@ SERVER_LOG="/tmp/formal-ai-issue-907-$PORT.log"
 TASK_LOG="/tmp/gemini-issue-907-task-$PORT.log"
 QUESTION_LOG="/tmp/gemini-issue-907-question-$PORT.log"
 WORKDIR="$(mktemp -d)"
+PROJECT_DIR="$WORKDIR/project"
 
 # The report's own request, and a differently-worded question that must keep
 # routing to the intent (CONTRIBUTING rule 4).
@@ -42,16 +43,20 @@ cleanup() {
 }
 trap cleanup EXIT
 
-cd "$WORKDIR"
-
 # Isolate the CLI from any cached OAuth state and select API-key auth, so the
-# run is headless and talks only to the local server
+# run is headless and talks only to the local server. Keep the mutable Gemini
+# home beside the project, not inside it: the CLI recursively scans its working
+# tree while proper-lockfile creates and removes `.gemini/projects.json.lock`,
+# which otherwise creates a readdir/unlink race and a spurious ENOENT warning.
 # (docs/testing/agentic-cli-tools.md § Gemini CLI).
 export GEMINI_CLI_HOME="$WORKDIR/home"
-mkdir -p "$GEMINI_CLI_HOME/.gemini"
-printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}}}' \
+mkdir -p "$PROJECT_DIR" "$GEMINI_CLI_HOME/.gemini"
+printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}},"model":{"name":"formal-ai"},"tools":{"useRipgrep":false}}' \
   > "$GEMINI_CLI_HOME/.gemini/settings.json"
 export HOME="$GEMINI_CLI_HOME"
+export TERM=xterm-256color
+# Gemini checks COLORTERM, not only TERM, before enabling its true-color theme.
+export COLORTERM=truecolor
 export GEMINI_API_KEY="sk-local-issue-907"
 export GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key
 export GEMINI_CLI_TRUST_WORKSPACE=true
@@ -59,6 +64,8 @@ export GEMINI_CLI_TRUST_WORKSPACE=true
 # integration declares (data/seed/client-integrations.lino, `endpoint_gemini`)
 # and the one README.md documents; the CLI appends /v1beta/models/… to it.
 export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:$PORT/api/gemini"
+
+cd "$PROJECT_DIR"
 
 # Private, empty memory per run (issue #828) and no background compaction, so
 # this leg's planning is independent of what other E2E scripts recorded.
@@ -80,10 +87,10 @@ timeout 180 "$GEMINI" -p "$TASK" --yolo < /dev/null > "$TASK_LOG" 2>&1
 tail -40 "$TASK_LOG"
 LEG1_END="$(wc -l < "$SERVER_LOG")"
 
-if [ ! -f "$WORKDIR/$EXPECT_FILE" ]; then
+if [ ! -f "$PROJECT_DIR/$EXPECT_FILE" ]; then
   echo "issue #907: $EXPECT_FILE was never written — the request was dropped" >&2
   RC=1
-elif ! grep -Fq "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE"; then
+elif ! grep -Fq "$EXPECT_TEXT" "$PROJECT_DIR/$EXPECT_FILE"; then
   echo "issue #907: $EXPECT_FILE does not carry $EXPECT_TEXT" >&2
   RC=1
 fi

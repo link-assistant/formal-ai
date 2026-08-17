@@ -1,0 +1,93 @@
+# Issue 922 Case Study
+
+Issue [#922](https://github.com/link-assistant/formal-ai/issues/922) closes
+E75's missing lifecycle bridge: recurring operation sequences in real
+recursive-core event logs can now become reviewable method abstractions, but
+cannot modify the registry until held-out validation, canonical benchmark
+replay, explicit confirmation, and human review all succeed.
+
+## 1. Collected Data
+
+`raw-data/github/` preserves the issue, its empty comment stream, the prepared
+PR, and all three PR feedback channels. `raw-data/online-research.md` records
+the DreamCoder and `stitch_core` design references and the repository prior
+art. The issue and comments contain no screenshots or image attachments.
+
+## 2. Reproduction And Root Cause
+
+Before this change, `algorithm_discovery` could compress generic execution
+traces and validate candidates against a held-out occurrence. Separately,
+`promotion` could replay trusted benchmark gates and materialize a confirmed
+seed edit. The method registry knew only compiled handlers. Nothing normalized
+the recipe's real `EventLog` records into discovery traces, projected a
+candidate into the promotion protocol, or loaded a promoted abstraction as
+registry link data.
+
+The red regression initially failed to compile because
+`formal_ai::method_learning` and learned-registry records did not exist. It now
+executes `RecipeProgram::from_repo()` for a translation, a composed coding
+request, and an unknown request. The first two are support observations and the
+third is withheld from inference.
+
+## 3. Implemented Lifecycle
+
+`src/method_learning.rs` normalizes real append-only event logs to event-kind
+sequences. Problem payloads are deliberately excluded: they contain
+request-specific prose and the current registry serialization, so including
+them would make the abstraction prompt-specific and its identity
+self-referential after adoption. Existing link-native sequence compression and
+held-out validation in `algorithm_discovery` remain the sole inference engine.
+
+The run exposes every candidate and every held-out rejection reason. Only a
+validated projection can become a `PromotionProposal`, and it supplies no gate
+commands, floors, or claimed results. The #656 replay layer replaces those
+fields with fresh canonical evidence. The production registry reads only
+`data/seed/learned-methods.lino`, never an open proposal document.
+
+The adopted entry remains separate from the compiled `Method` catalogue. It is
+observable registry knowledge in recursive-core event logs, but cannot pretend
+that an executable Rust handler exists. Later construction work may interpret
+or compile such knowledge behind its own trust boundary.
+
+## 4. Real Proposal And Promotion Evidence
+
+The strongest validated abstraction is
+`learned_recursive_core_740155f4b5796f69`: a twelve-operation recursive-core
+tail inferred from `solve-translation` and `solve-composed`, then reproduced in
+the held-out `solve-unknown` trace. The reviewed input is
+`examples/issue-922-method-learning/open-proposals.lino`; a regression compares
+its source and exact 738-byte seed edit with the live learner's first proposal.
+
+`examples/issue-922-method-learning/run.sh` exercised the production
+human-confirmed path. Promotion run `promotion_run_21bc44690947f221` cleared:
+
+- coding modification: 4/4 at floor 4;
+- permissive industry slice: 13/13 at floor 13;
+- unit specifications: 12/12 at floor 1.
+
+Formal AI session `promotion_agent_session_13a49fd18a6f7f54` materialized the
+738-byte adopted seed on local review branch
+`promotion/promotion_run_21bc44690947f221`. The real
+external Agent CLI (version 0.26.0) independently created the same final bytes;
+the script rejects either output unless `cmp` matches the checked-in seed.
+Raw streams, stderr, Formal AI server trace, session JSON, branch plan,
+promotion decision, and diff are preserved in `agent-cli-run/`.
+
+## 5. Verification
+
+`tests/unit/issue_922_method_learning.rs` pins the real-trace proposal,
+inert-before-promotion boundary, reviewed artifact identity, promoted registry
+adoption, non-executable learned-record boundary, and durable benchmark
+rejection reasons. The production recipe/source parity suite remains unchanged
+and passes after adoption. `tests/unit/docs_requirements_issue_922.rs` keeps the
+requirements, design, evidence, roadmap, and release metadata traceable.
+
+Reproduce the focused paths with:
+
+```sh
+cargo run --example issue_922_method_learning
+cargo test --test unit issue_922_method_learning
+cargo test --test unit specification::recursive_core_recipe
+cargo build --bin formal-ai
+examples/issue-922-method-learning/run.sh
+```

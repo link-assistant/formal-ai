@@ -576,3 +576,52 @@ fn prose_rejection_holds_across_supported_languages() {
         );
     }
 }
+
+/// Issue #932: `go mod init` is Go's traditional project-init command, and a
+/// README that carries it must still convert into a shell script.
+///
+/// The guide's own words ("Create the project directory", "Build the project")
+/// plus the `mod` artifact surface inside the quoted markdown used to formalize
+/// the impulse as a software-project request, which dispatch then promoted ahead
+/// of the whole precedence table — so `installation_conversion` never ran even
+/// though `data/seed/handler-precedence.lino` ranks it above `software_project`.
+#[test]
+fn go_module_install_guide_converts_to_a_script() {
+    let prompt = r"Convert this README.md installation guide into a sh script:
+
+```markdown
+## Installation
+1. Create the project directory.
+   `mkdir -p hello-formal-ai`
+2. Enter the project directory.
+   `cd hello-formal-ai`
+3. Create the module.
+   `go mod init hello-formal-ai`
+4. Build the project.
+   `go build ./...`
+5. Run the project.
+   `go run main.go`
+```
+";
+
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "installation_conversion",
+        "answer: {}",
+        response.answer
+    );
+    for command in [
+        "mkdir -p hello-formal-ai",
+        "cd hello-formal-ai",
+        "go mod init hello-formal-ai",
+        "go build ./...",
+        "go run main.go",
+    ] {
+        assert!(
+            response.answer.contains(command),
+            "command {command} dropped: {}",
+            response.answer
+        );
+    }
+}

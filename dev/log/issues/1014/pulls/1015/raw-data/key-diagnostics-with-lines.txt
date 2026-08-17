@@ -1,0 +1,15 @@
+2710:E2E Tests (local web app)	UNKNOWN STEP	2026-08-15T12:35:46.4708367Z 2 high severity vulnerabilities
+2713:E2E Tests (local web app)	UNKNOWN STEP	2026-08-15T12:35:46.4709128Z   npm audit fix
+2715:E2E Tests (local web app)	UNKNOWN STEP	2026-08-15T12:35:46.4709441Z Run `npm audit` for details.
+9776:Lint and Format Check	Install web test dependencies	2026-08-15T12:45:33.8792470Z 2 high severity vulnerabilities
+9779:Lint and Format Check	Install web test dependencies	2026-08-15T12:45:33.8793161Z   npm audit fix
+9781:Lint and Format Check	Install web test dependencies	2026-08-15T12:45:33.8793433Z Run `npm audit` for details.
+11902:E2E Tests (agent CLI ↔ formal-ai)	Install @link-assistant/agent CLI	2026-08-15T12:35:54.8856138Z Blocked 2 postinstalls. Run `bun pm -g untrusted` for details.
+11945:E2E Tests (agent CLI ↔ formal-ai)	Install external agent CLIs	2026-08-15T12:36:11.5976298Z Blocked 1 postinstall. Run `bun pm -g untrusted` for details.
+14315:E2E Tests (agent CLI ↔ formal-ai)	Run gemini CLI E2E — caller framing does not hijack the request (issue #907)	2026-08-15T12:45:37.5187108Z Warning: True color (24-bit) support not detected. Using a terminal with true color enabled will result in a better visual experience.
+14336:E2E Tests (agent CLI ↔ formal-ai)	Run gemini CLI E2E — caller framing does not hijack the request (issue #907)	2026-08-15T12:45:39.8095535Z Warning: True color (24-bit) support not detected. Using a terminal with true color enabled will result in a better visual experience.
+14339:E2E Tests (agent CLI ↔ formal-ai)	Run gemini CLI E2E — caller framing does not hijack the request (issue #907)	2026-08-15T12:45:39.8100300Z Warning: Could not read directory /tmp/tmp.1M6lqoBUqm/home/.gemini/projects.json.lock: ENOENT: no such file or directory, scandir '/tmp/tmp.1M6lqoBUqm/home/.gemini/projects.json.lock'
+32221:Test (macos-15-intel / core-3)	UNKNOWN STEP	2026-08-15T12:53:07.8516100Z Core test slice took 999s of its 1200s execution budget.
+35945:Test (macos-15-intel / core-1)	UNKNOWN STEP	2026-08-15T12:55:03.4096330Z Core test slice took 1117s of its 1200s execution budget.
+41285:Test (macos-15-intel / core-2)	UNKNOWN STEP	2026-08-15T12:54:33.9448670Z Core test slice took 1075s of its 1200s execution budget.
+52702:Auto Release	Collect changelog and bump version	2026-08-15T13:08:44.2946461Z Error recording self-hosting release metric: release cycle v0.345.0..HEAD has no merged Formal AI-authored pull request; an end-to-end Formal AI-authored pull request requires valid session evidence and the same canonical PR trailer on every introduced non-merge commit

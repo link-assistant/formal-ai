@@ -123,7 +123,7 @@ Status legend:
 | 4 | Temperature-based interpretation selection plus clarify-vs-guess | Built | `src/translation/selection.rs`, `SolverConfig::temperature`, active tests | None in the E1-E14 backlog. |
 | 5 | Public knowledge as a cache with provenance | Built | `src/solver.rs` and `src/solver_handlers/mod.rs` source-cache handling, active `source_cache` specs; `src/knowledge.rs` adds the coding oracle that treats Rosetta Code / Wikifunctions / the Hello World Collection / Stack Overflow as cached external APIs under a `min(1%, 512)` per-source cap ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | None in the E1-E14 backlog; the oracle's gated live-refresh path follows the existing `FORMAL_AI_LIVE_API` discipline. |
 | 6 | Translation through link-native meanings | Built | `src/translation/`, active `translation_via_links` specs, issue #526 `translation_round_trip` matrix, and `docs/case-studies/issue-526/` | None in the E1-E14 backlog; issue #526 now pins round-trip survival as the quality guard. |
-| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs, Rust <-> JavaScript code-meaning round-trip coverage in `translation_via_links`; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | A task-agnostic meta-builder ("algorithm that builds algorithms", R7) is the tracked next step in [`docs/case-studies/issue-412`](docs/case-studies/issue-412/README.md). |
+| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs, Rust <-> JavaScript code-meaning round-trip coverage in `translation_via_links`; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)); #938 unifies the coding-task handler family behind one executable meta-builder | Generalizing the shared builder beyond coding tasks remains tracked work. |
 | 8 | Formal reasoning beyond a fixed answer table | Built | `src/proof_engine/decision.rs`, boolean and linear decision modules | Optional future backends can build on this, but #253 closed the planned requirement. |
 | 9 | Chat over experience: why, facts, export, retraction | Built | `src/event_log.rs`, active `transparent_state` specs | None in the E1-E14 backlog. |
 | 10 | Links-network invariants and dynamic type system | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | Native physical-store default is tracked separately in [#278](https://github.com/link-assistant/formal-ai/issues/278). |
@@ -418,9 +418,9 @@ Requirement-level status by area, updated:
 | Area (standing requirement) | Status 2026-08-03 |
 | --- | --- |
 | Universal 11-step solver runs for every prompt | Done (pillar 2); the recipe is data (`data/meta/recursive-core-recipe.lino`) executed by `src/recipe_interpreter.rs` |
-| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies all 46 mixed handler sources as migration debt and ratchets their 19,731 outside-core lines; dedicated generic interpreter modules remain core, while this debt must now shrink |
+| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies all 46 mixed handler sources as migration debt and ratchets their 19,543 outside-core lines; #938 removes duplicated construction ownership from installation conversion, program synthesis, coding catalog, numeric-list, and rule synthesis by making one executable builder and trace shape authoritative in Rust and the browser worker; remaining handler logic must still migrate into generic interpreters |
 | Real upstream benchmarks with honest scores | Done for #698 (was stale "Not done"): `src/external_benchmarks/` and `tests/unit/specification/external_benchmarks.rs` score external corpora with results in `data/benchmarks/external-results.lino` |
-| Self-improvement that compounds | Partial: #656/#657/#701 closed (gated promotion, release self-hosting metric, generalized adoption for one class); anticipatory learning #705 remains open; making the loop routinely produce merged work is E77 |
+| Self-improvement that compounds | Partial: #656/#657/#701/#924 closed (gated promotion, release self-hosting metric, generalized adoption for one class, and a self-development loop requiring one merged, session-backed Formal AI pull request per release cycle); anticipatory learning #705 remains open |
 | Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `tests/unit/issue_649_world_model.rs` |
 | Agentic-CLI server correctness | Reopened as Partial: #671/#681/#682/#687 closed, but the #848 coding ladder (2 of 13 rungs, zero write effects) exposed the new defect cluster [#902](https://github.com/link-assistant/formal-ai/issues/902)-[#909](https://github.com/link-assistant/formal-ai/issues/909); consolidated behind the ladder ratchet as E69 |
 | Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703 and #921: release CI now crosses the real Hive Mind -> Agent CLI -> Formal AI boundary and the Formal AI -> external Agent CLI boundary, commits both fixture effects, replays the hash-chained session, and fails on nonzero child exits |
@@ -434,11 +434,11 @@ Requirement-level status by area, updated:
 | Silently-dropped requirements re-verified | Not done — [#710](https://github.com/link-assistant/formal-ai/issues/710) |
 | Data-is-the-interface hygiene | Done for #659/#663/#664; ratchet scripts keep enforcing the burn-down |
 | Delivery breadth | Not done for PWA, npm engine, VS Code Marketplace, debugger, WebVM, cloud sync — [#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670); shareable packages (#658) closed |
-| Self-coding chain | Mechanics Done (#673 census, #656 gated promotion, #657 release metric); the measured self-authored share is still near its baseline, owned by E77 |
+| Self-coding chain | Done for the recurring release loop: #673 census, #656 gated promotion, #657 release metric, and the self-development loop (delivered by #924) with a non-decreasing target |
 | Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
 | Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
-| Learning the universal algorithm itself | Partial: `src/research_learning.rs` now versions meta-algorithm candidates through the same immutable promotion and stable recovery gate as facts/procedures; routine proposal generation and adoption remains E75 |
-| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
+| Learning the universal algorithm itself | E75 first lifecycle delivered by #922: production recipe event logs now produce held-out-validated, proposal-only method abstractions; one abstraction cleared canonical promotion and is registry-visible link data. Broader method construction and recipe mutation remain incremental work |
+| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Done for E76/#923: bounded e-graph equality saturation plus bounded function-free Datalog, measured at 20/20 egg laws and 5/5 Ascent assertions |
 
 **Open planning batch E69-E77**
 ([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924)).
@@ -448,16 +448,33 @@ over agent-harness fixes (foundation blocker), E70 general natural-formal
 translation (delivered by #917 for the seeded FOL statement slice), E71
 minimal-core boundary and seed-metadata audit (delivered by #918), E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
-hive-mind end-to-end integration gate (delivered by #921), E75 method learning for the
-universal algorithm, E76 formal-reasoning coverage growth, E77
-self-development loop. Issue URLs are recorded in
+hive-mind end-to-end integration gate (delivered by #921), E75 method learning
+for the universal algorithm (first real-trace proposal-to-registry lifecycle
+delivered by #922), E76 formal-reasoning coverage growth, E77 self-development
+loop (delivered by #924). Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
+
+## Issue #923 Symbolic-Kernel Coverage Growth (PR #1006)
+
+Issue #923 completes E76 with two deterministic proof-engine paths. An optional
+MIT-licensed `egg` 0.11 dependency provides bounded e-graph saturation over
+generic symbolic S-expressions. A native bounded evaluator derives the least
+fixed point of function-free positive Datalog programs. Both paths emit
+structured proof certificates, refuse to turn exhausted search into a false
+disproof, and leave the existing SAT and linear paths intact.
+
+The external benchmark harness now mechanically adapts pinned Rust sources:
+the first 20 unconditional rewrite laws in egg's `tests/math.rs` score 20/20,
+and the five asserted consequences in Ascent's transitive graph closure example
+score 5/5. Provenance, permissive licenses, scores, ratchet floors, and replay
+commands live in `data/benchmarks/external-results.lino` and
+`docs/case-studies/issue-923/`.
 
 ## Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)
 
 Issue #918 completes E71's audit and enforcement layer. A recursive ledger now
 covers 46 recursive handler sources. Every current handler is mixed, so all 46
-files and 19,731 outside-core lines remain explicit migration debt under
+files and 19,543 outside-core lines remain explicit migration debt under
 shrink-only file and line ceilings; dedicated generic interpreter modules live
 outside the specialized handler tree. The seed audit defines
 role, precondition, effect, unit, and example shapes; all 37 coding-path
@@ -465,6 +482,45 @@ concepts satisfy them. The audit preserves 3,447 remaining metadata-gap records.
 Future handler migration and metadata enrichment
 can lower these ceilings, but cannot silently add debt. Evidence is in
 `docs/case-studies/issue-918/`.
+
+## Issue #922 Method Learning From Experience (PR #1005)
+
+Issue #922 delivers E75's first complete method-learning lifecycle. Three real
+recursive-recipe runs feed the existing symbolic algorithm-discovery engine;
+two support traces infer recurring operation sequences and an unseen third
+trace validates them. Candidates remain proposal-only. The strongest method
+cleared fresh canonical coding (4/4), industry (13/13), and unit (12/12)
+ratchets before explicit `--apply --confirm` materialized it into
+`data/seed/learned-methods.lino`. The live registry now records the adopted
+abstraction without claiming an executable Rust handler, so existing dispatch
+and recipe/source parity remain intact. Evidence is in
+`docs/case-studies/issue-922/`.
+
+## Issue #924 Formal AI Self-Development Loop (PR #1007)
+
+Issue #924 closes E77 at the release boundary. Every cycle now requires one
+merged, session-backed Formal AI pull request per release cycle. The ledger
+records every qualifying PR, the per-release and trailing shares, and a target
+that can only rise. Git merge ancestry proves the exact attributed commit
+passed through its claimed PR unchanged, and every non-merge commit introduced
+by that PR must carry valid attribution. The same compound task was attempted,
+failure-split, composed, verified, and learned from through Formal AI plus the
+real Agent CLI; two of six smallest leaves (33%) are preserved byte-for-byte as
+Agent-authored contracts. Normal review, CI, and promotion gates remain
+authoritative. Reproduction and replay evidence are in
+`docs/case-studies/issue-924/`.
+
+## Issue #936 Substitution-Rule Compilation (PR #1016)
+
+Issue [#936](https://github.com/link-assistant/formal-ai/issues/936) delivers
+E84 without reviving #331's dropped execution-stack requirement. Parsed
+substitution rules now lower once to a target-neutral IR and emit standalone
+Rust, Rust-to-WASM, or JavaScript interop artifacts. A verified finite
+`ProgramPlan` is the solver export gate; seeded English, Russian, Hindi, and
+Chinese requests can select a target and receive an executable recipe. The
+cross-target counter/loop regression requires byte-identical output from the
+interpreter and all three exports. Design, red/green evidence, and manual
+execution are recorded in `docs/case-studies/issue-936/`.
 
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
 

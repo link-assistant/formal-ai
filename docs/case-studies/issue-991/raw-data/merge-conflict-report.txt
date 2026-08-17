@@ -1,0 +1,39 @@
+884 merge commits scanned; 1914 conflict-resolution events across 423 paths.
+
+By structural cause:
+    715   37.4%  shared-source
+    481   25.1%  derived-artifact
+    411   21.5%  append-only-list
+    126    6.6%  append-only-document
+     60    3.1%  lockfile-or-manifest
+     44    2.3%  automation-placeholder
+     36    1.9%  ci-workflow
+     30    1.6%  other
+     11    0.6%  sequential-file-name
+
+Top 25 paths:
+    102  append-only-list        tests/unit/mod.rs
+     99  append-only-list        src/web/formal_ai_worker.js
+     64  append-only-document    REQUIREMENTS.md
+     59  append-only-list        src/lib.rs
+     59  derived-artifact        data/meta/self-ast/index.lino
+     44  automation-placeholder  .gitkeep
+     37  derived-artifact        data/seed/closure-generated-03.lino
+     36  derived-artifact        data/seed/closure-generated-02.lino
+     36  derived-artifact        data/seed/closure-generated-04.lino
+     36  derived-artifact        data/seed/closure-generated-05.lino
+     35  ci-workflow             .github/workflows/release.yml
+     35  append-only-document    README.md
+     35  shared-source           src/seed.rs
+     35  append-only-list        src/solver_handlers/mod.rs
+     33  shared-source           src/solver.rs
+     32  derived-artifact        data/seed/closure-generated-06.lino
+     31  shared-source           tests/e2e/playwright.local.config.js
+     30  lockfile-or-manifest    Cargo.lock
+     30  lockfile-or-manifest    Cargo.toml
+     29  derived-artifact        data/meta/self-ast/src/lib.lino
+     29  derived-artifact        data/seed/closure-generated-01.lino
+     28  shared-source           tests/e2e/tests/multilingual.spec.js
+     27  append-only-list        src/seed/embedded.rs
+     25  derived-artifact        data/seed/closure-generated-07.lino
+     25  shared-source           src/web/app.js

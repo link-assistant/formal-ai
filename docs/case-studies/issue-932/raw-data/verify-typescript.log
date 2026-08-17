@@ -1,0 +1,45 @@
+corpus: typescript -> /tmp/gh-issue-solver-1786703126334/target/box-language-corpus/typescript
+== typescript project generated from the zh prompt, image konard/box-js:2.4.0
+== program (hello.ts):
+console.log("Hello, world!");
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the mkdir hello-formal-ai step
+mkdir -p hello-formal-ai
+# Run the cp hello.ts step
+cp hello.ts hello-formal-ai/hello.ts
+# Enter the project directory
+cd hello-formal-ai
+# Run the npm init step
+npm init -y
+# Install dependencies
+npm install --no-audit --no-fund --save-dev typescript
+# Run the npx tsc step
+npx tsc hello.ts
+# Run the node hello.js step
+node hello.js
+== running the init script
+   | Wrote to /tmp/box-language-project/hello-formal-ai/package.json:
+   | 
+   | {
+   |   "name": "hello-formal-ai",
+   |   "version": "1.0.0",
+   |   "description": "",
+   |   "main": "index.js",
+   |   "scripts": {
+   |     "test": "echo \"Error: no test specified\" && exit 1"
+   |   },
+   |   "keywords": [],
+   |   "author": "",
+   |   "license": "ISC",
+   |   "type": "commonjs"
+   | }
+   | 
+   | 
+   | 
+   | added 2 packages in 7s
+   | Hello, world!
+ok: typescript project built and printed Hello, world! inside konard/box-js:2.4.0
+ok: box language projects verified for: typescript

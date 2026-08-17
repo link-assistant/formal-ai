@@ -8,6 +8,7 @@ pub mod arithmetic;
 pub mod associative_package;
 pub mod associative_persistence;
 pub mod attachment_context;
+pub mod box_language_projects;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
@@ -46,6 +47,8 @@ pub mod gemini;
 pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+pub mod how_to_capture_manifest;
+pub mod how_to_guide;
 pub mod implementation_language;
 pub mod intent_formalization;
 pub mod issue_report;
@@ -62,17 +65,21 @@ pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
 pub mod links_substitution_query;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod local_transport;
 pub(crate) mod mcp;
 pub mod memory;
 pub mod memory_program;
 pub mod memory_query_language;
 pub mod memory_sync;
+pub(crate) mod meta_algorithm_builder;
 pub mod meta_construction;
 pub(crate) mod meta_core;
 pub mod meta_frame;
 pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
+pub mod method_learning;
 pub mod method_registry;
 pub(crate) mod network_endpoint;
 pub mod normal_markov;
@@ -93,6 +100,7 @@ pub(crate) mod protocol_policy;
 pub(crate) mod protocol_responses;
 pub mod proxy;
 pub mod question_generation;
+pub mod question_necessity;
 pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod recursive_execution;
@@ -117,6 +125,7 @@ pub mod self_improvement;
 pub mod self_source_links;
 pub mod sequences;
 pub mod server;
+pub mod service_accessibility;
 pub mod shared_dialog;
 pub mod shared_memory;
 pub mod skill_compiler;
@@ -124,11 +133,13 @@ pub mod skill_ledger;
 pub mod skill_procedure;
 pub mod solution_evidence;
 pub mod solver;
+pub(crate) mod solver_config;
 pub(crate) mod solver_diagnostics;
 pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
+pub(crate) mod solver_handler_how_synthesis;
 pub(crate) mod solver_handler_oracle;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
@@ -144,12 +155,14 @@ pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
 pub mod substitution;
+pub mod substitution_compiler;
 pub mod summarization;
 pub mod task_decomposition;
 pub mod telegram;
 pub mod telegram_runtime;
 pub mod thinking;
 pub mod thinking_prose;
+pub mod trace_record;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
@@ -254,11 +267,10 @@ pub use learning_ledger::{
     PromotionRejected,
 };
 #[cfg(feature = "doublets-native")]
-pub use link_store::DoubletsLinkStore;
 pub use link_store::{
     default_native_link_store, memory_event_to_link_record, memory_events_to_link_records,
     selected_link_store_backend, validate_memory_links_notation, DefaultNativeLinkStore,
-    DoubletLink, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
+    DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
 };
 pub use links_query::{
     parse_links_query, run_links_query, run_links_query_against, EdgePattern, Field, Filter,
@@ -284,6 +296,7 @@ pub use probability::{
     ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
     RankedProbabilityCandidate, SimilarEvidence,
 };
+pub use program_plan::ProgramPlanCompilationError;
 pub use promotion::{
     apply_promotions, demonstration_promotion_proposals, demonstration_promotion_run,
     parse_promotion_proposals, promotions_from_learning_run, render_promotion_proposals,
@@ -389,6 +402,10 @@ pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
     ExecutionSurface, SolverConfig, UniversalSolver,
 };
+pub use solver_handler_how_synthesis::{
+    service_preferences_from_env, try_how_to_procedure_with_client,
+    try_how_to_procedure_with_offline, DISABLED_SERVICES_ENV,
+};
 pub use solver_handlers::{
     answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
     try_web_search_with_client, MemoryQueryExecution,
@@ -417,32 +434,35 @@ pub use substitution::{
     SubstitutionRule, SubstitutionRuleError, SubstitutionRuleSet, SubstitutionTrace,
     SubstitutionTraceReport,
 };
-pub use summarization::{
-    apply_compound_words, apply_semantic_primes, classify_sentence, deduplicate, deformalize,
-    describe_project, describe_readme, execute_captured_gathering, execute_multi_source_summary,
-    formalize, formalize_dialog, formalize_markdown, formalize_repository_directory,
-    formalize_repository_file, formalize_repository_resource, gather, generate_chat_title,
-    is_valid_identifier, label_for_mode, merge_into_context, merge_into_formal_context, rank,
-    recheck, strip_markdown_noise, summarize, summarize_dialog, summarize_repository_file,
-    summarize_repository_resource, to_identifier, to_topic, CapturedGatheringFailure,
-    CapturedGatheringReport, CapturedSourceMetadata, CapturedSourceObservation, Contradiction,
-    DedupReport, DialogTurn, EmbeddedGrammarFormalization, FetchRecord, FetchedSource,
-    GatheringPlan, GatheringReport, IdentifierBudget, ImportanceScore, MergeLink, MergedContext,
-    MergedStatement, MetaLanguageFormalization, MultiSourceSummaryExecution, NamingConvention,
-    Polarity, RankedStatement, RecheckReport, RecheckedStatement, RepositoryDirectoryFormalization,
-    RepositoryEntry, RepositoryFileFormalization, RepositoryResourceFormalization, SourceCache,
-    SourceProvider, SourcedStatement, Statement, StatementKind, StatementSignature,
-    StatementVariant, SummarizationConfig, SummarizationMode, Verdict,
-    DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, DEFAULT_MAX_STATEMENTS,
+pub use substitution_compiler::{
+    compile_substitution_rules, CompiledSubstitutionFile, CompiledSubstitutionProgram,
+    SubstitutionActionIr, SubstitutionCompilationTarget, SubstitutionPatternIr,
+    SubstitutionPatternNodeIr, SubstitutionProgramIr, SubstitutionRuleIr,
 };
 pub use summarization::{
-    evaluate_file, quality_sentence, ratchet_violations, validate_repository_summarization,
-    CorpusFile, Criterion, CriterionOutcome, FileQualityReport, IterationReport, QualityBaseline,
-    QualityScore, SamplingProtocol, ValidationReport, BASELINE_PATH, BASELINE_RECORD,
-    COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
-    DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_TOLERANCE_PERCENT,
-    DEFAULT_STABILITY_WINDOW, HONESTY_POLICY, QUALITY_RATCHET_PERCENT, RATCHET_POLICY,
-    RATCHET_RUNNER,
+    apply_compound_words, apply_semantic_primes, classify_sentence, deduplicate, deformalize,
+    describe_project, describe_readme, evaluate_file, execute_captured_gathering,
+    execute_multi_source_summary, formalize, formalize_dialog, formalize_markdown,
+    formalize_repository_directory, formalize_repository_file, formalize_repository_resource,
+    gather, generate_chat_title, is_valid_identifier, label_for_mode, merge_into_context,
+    merge_into_formal_context, quality_sentence, rank, ratchet_violations, recheck,
+    strip_markdown_noise, summarize, summarize_dialog, summarize_repository_file,
+    summarize_repository_resource, to_identifier, to_topic, validate_repository_summarization,
+    CapturedGatheringFailure, CapturedGatheringReport, CapturedSourceMetadata,
+    CapturedSourceObservation, Contradiction, CorpusFile, Criterion, CriterionOutcome, DedupReport,
+    DialogTurn, EmbeddedGrammarFormalization, FetchRecord, FetchedSource, FileQualityReport,
+    GatheringPlan, GatheringReport, IdentifierBudget, ImportanceScore, IterationReport, MergeLink,
+    MergedContext, MergedStatement, MetaLanguageFormalization, MultiSourceSummaryExecution,
+    NamingConvention, Polarity, QualityBaseline, QualityScore, RankedStatement, RecheckReport,
+    RecheckedStatement, RepositoryDirectoryFormalization, RepositoryEntry,
+    RepositoryFileFormalization, RepositoryResourceFormalization, SamplingProtocol, SourceCache,
+    SourceProvider, SourcedStatement, Statement, StatementKind, StatementSignature,
+    StatementVariant, SummarizationConfig, SummarizationMode, ValidationReport, Verdict,
+    BASELINE_PATH, BASELINE_RECORD, COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION,
+    DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, DEFAULT_MAX_ITERATIONS,
+    DEFAULT_MAX_STATEMENTS, DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED,
+    DEFAULT_STABILITY_TOLERANCE_PERCENT, DEFAULT_STABILITY_WINDOW, HONESTY_POLICY,
+    QUALITY_RATCHET_PERCENT, RATCHET_POLICY, RATCHET_RUNNER,
 };
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,

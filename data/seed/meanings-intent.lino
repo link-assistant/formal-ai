@@ -505,6 +505,12 @@ meanings
         text "तुम क्या कर सकते"
       surface
         text "क्या क्या कर सकते"
+      surface
+        text "आपकी क्षमताएं क्या हैं"
+      surface
+        text "आप कैसे मदद कर सकते हैं"
+      surface
+        text "आपकी विशेषताएं क्या हैं"
     lexeme zh
       surface
         text 你能做什么
@@ -514,6 +520,10 @@ meanings
         text 你有什么功能
       surface
         text 你能干什么
+      surface
+        text "你可以帮我做什么"
+      surface
+        text "你有哪些功能"
   capability_query_more
     defined-by capability_query
     defined-by capability

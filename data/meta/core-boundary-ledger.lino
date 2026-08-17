@@ -2,9 +2,9 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 46
-  source_lines_max 19711
+  source_lines_max 19543
   outside_core_file_count_max 46
-  outside_core_lines_max 19711
+  outside_core_lines_max 19543
   source src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
@@ -107,7 +107,7 @@ core_boundary_ledger
     reason "Provider-specific metric vocabulary belongs in data over a network surface."
   source src/solver_handlers/installation_conversion.rs
     disposition migrate
-    baseline_lines 996
+    baseline_lines 866
     data_target "installation conversion recipes"
     reason "Package-manager and platform conversion policy is domain knowledge."
   source src/solver_handlers/meta_explanation.rs
@@ -117,7 +117,7 @@ core_boundary_ledger
     reason "Descriptions of the meta algorithm belong in inspectable seed knowledge."
   source src/solver_handlers/mod.rs
     disposition migrate
-    baseline_lines 984
+    baseline_lines 946
     data_target "handler routing, response, and domain rules"
     reason "This mixed dispatcher embeds specialized behavior and must be split before any primitive is promoted."
   source src/solver_handlers/natural_language_tools.rs

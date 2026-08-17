@@ -1,0 +1,4 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `dev` profile [unoptimized] target(s) in 1m 04s
+     Running `target/debug/examples/regenerate_self_ast_census`
+self-AST census: 474 documents (1 rewritten, 0 removed)

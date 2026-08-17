@@ -30,7 +30,7 @@ step_rename_agentic_source_module
   order "4"
   id "rename_agentic_source_module"
   title "Rename src/agentic_coding/source_graph.rs to source_links.rs"
-  detail "The agentic-coding source projection module is renamed from `source_graph` to `source_links`, with `pub mod source_links;` and its re-exports in src/agentic_coding/mod.rs updated. Its task recogniser is_source_links_task drives the whole-repository source-to-links round-trip through the agentic interface, so the module keeps links-network vocabulary end to end."
+  detail "The agentic-coding source projection module is renamed from `source_graph` to `source_links`, with `pub mod source_links;` and its re-exports in src/agentic_coding/modules.rs updated. Its task recogniser is_source_links_task drives the whole-repository source-to-links round-trip through the agentic interface, so the module keeps links-network vocabulary end to end."
   seed_file "src/agentic_coding/source_links.rs"
 step_ui_sweep_links_network_view
   record_type "meta_step"
@@ -58,8 +58,8 @@ step_ci_wiring
   order "8"
   id "ci_wiring"
   title "Wire the hygiene lint into the release workflow Lint job"
-  detail "The Lint job in .github/workflows/release.yml runs `rust-script scripts/check-associative-terminology.rs`, and the script's embedded unit tests are registered in the ci-cd unit suite (tests/unit/ci-cd/mod.rs) so both the live scan and the fixture assertions run in CI. A new `/v1/knowledge-graph` route fails the build."
-  seed_file ".github/workflows/release.yml"
+  detail "`data/meta/ci-gates/check-associative-terminology.lino` registers `rust-script scripts/check-associative-terminology.rs` as a rust-stage gate, the Lint job in .github/workflows/release.yml runs that stage, and the script's embedded unit tests are registered in the ci-cd unit suite (tests/unit/ci-cd/mod.rs) so both the live scan and the fixture assertions run in CI. A new `/v1/knowledge-graph` route fails the build. Issue #991 moved the command into a shard of its own because the Lint job's step list was append-only, and an append-only list is what made the workflow the repository's third most conflicted file."
+  seed_file "data/meta/ci-gates/check-associative-terminology.lino"
 fn_handle_network_request
   record_type "meta_function"
   function "handle_network_request"
@@ -111,7 +111,7 @@ rename_agentic_source
   record_type "meta_rename"
   from_file "src/agentic_coding/source_graph.rs"
   to_file "src/agentic_coding/source_links.rs"
-  declaration_file "src/agentic_coding/mod.rs"
+  declaration_file "src/agentic_coding/modules.rs"
   new_module "source_links"
   purpose "The agentic-coding source projection speaks links-network vocabulary in its module name."
 allowlist_deprecated_alias
@@ -131,10 +131,12 @@ allowlist_citation_host
   reason "The codecov coverage badge and external graph-API citations legitimately contain a `graph` path segment."
 ci_lint_wiring
   record_type "meta_ci"
+  gate_file "data/meta/ci-gates/check-associative-terminology.lino"
   workflow_file ".github/workflows/release.yml"
+  workflow_needle "run-ci-gates.rs --stage rust"
   needle "check-associative-terminology"
   suite_file "tests/unit/ci-cd/mod.rs"
-  purpose "The live terminology scan and its embedded fixture tests both run in CI so the cleanup cannot silently regress."
+  purpose "The live terminology scan and its embedded fixture tests both run in CI so the cleanup cannot silently regress. Issue #991 moved the scan out of the workflow into its own gate shard, so the wiring is now two links: the gate registers the command, and the workflow runs the gate's stage."
 test_integration_network_alias
   record_type "meta_test"
   suite "issue_664_network_alias"

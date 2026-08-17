@@ -410,9 +410,10 @@ matrix_strip_ansi() {
 # Search stripped output *without* building a pipeline — every log assertion in
 # this harness goes through these three.
 #
-# `set -o pipefail` and `grep -q` do not mix. grep exits at its first match and
-# closes the pipe, `sed` is killed by SIGPIPE, and the pipeline's status becomes
-# 141 — a failure — precisely when the needle was found *early* in a long log.
+# `set -o pipefail` and an early-closing search do not mix. If grep exits at its
+# first match, it closes the pipe, `sed` reports EPIPE, and CI gains a scary
+# `couldn't write` line even though the assertion passed. Let grep consume the
+# complete stripped stream and discard its output instead.
 # The failure is therefore length-dependent, which is why it looked like a client
 # defect: `agent` rendered ALPHA_MARKER_11111 three times into a 31 KB TUI log
 # and its leg still reported "client output never contained" it, while the same
@@ -423,15 +424,15 @@ matrix_strip_ansi() {
 # Process substitution keeps grep's own exit status, which is the one that means
 # "found".
 matrix_log_matches() {
-  grep -qF -- "$2" < <(matrix_strip_ansi "$1")
+  grep -F -- "$2" > /dev/null < <(matrix_strip_ansi "$1")
 }
 
 matrix_log_matches_ci() {
-  grep -qiF -- "$2" < <(matrix_strip_ansi "$1")
+  grep -iF -- "$2" > /dev/null < <(matrix_strip_ansi "$1")
 }
 
 matrix_log_matches_re() {
-  grep -qiE -- "$2" < <(matrix_strip_ansi "$1")
+  grep -iE -- "$2" > /dev/null < <(matrix_strip_ansi "$1")
 }
 
 # --- recorded transcripts -----------------------------------------------------
@@ -566,12 +567,16 @@ matrix_keystrokes() {
         # launches in "manual mode" and asks before each Read — so Enter is how
         # a human answers it, and on an idle composer Enter is the same harmless
         # empty submission issue #650 defect 2 was about.
-        [ $((waited % ${MATRIX_TUI_POKE:-15})) -eq 0 ] && printf '\r' || true
+        if [ $((waited % ${MATRIX_TUI_POKE:-15})) -eq 0 ]; then
+          # A TUI may exit as soon as it has produced its answer. A closed
+          # consumer is normal here, not a harness failure worth logging.
+          printf '\r' 2> /dev/null || return 0
+        fi
       done
       continue
     fi
     sleep "${step%%:*}"
-    printf '%b' "${step#*:}"
+    printf '%b' "${step#*:}" 2> /dev/null || return 0
   done
   sleep "${MATRIX_TUI_SETTLE:-10}"
 }

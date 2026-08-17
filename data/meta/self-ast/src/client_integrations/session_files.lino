@@ -2,25 +2,26 @@ self_ast_census
   target src/client_integrations/session_files.rs
   language rust
   fidelity signature
-  byte_len 7286
-  line_count 240
-  content_id source_module_bf73a9e540f76a0d
-  symbol_count 17
+  byte_len 7956
+  line_count 255
+  content_id source_module_80936634390ba764
+  symbol_count 18
   symbols
     struct TempConfigDir 15 18
     function new 21 32
-    function preserve 34 36
-    function drop 40 44
-    type SessionSnapshot 47 47
-    function user_home_dir 49 54
-    function session_file_snapshot 56 64
-    function collect_session_files 66 91
-    function visit 67 86
-    function newest_changed_session_file 93 110
-    function print_session_files 112 156
-    function native_session_id 158 160
-    struct OrchestrationSessionEvidence 163 166
-    function query_session_id 168 186
-    function session_id 188 212
-    function find_session_id 214 229
-    function looks_like_uuid 231 240
+    function new_home 37 47
+    function preserve 49 51
+    function drop 55 59
+    type SessionSnapshot 62 62
+    function user_home_dir 64 69
+    function session_file_snapshot 71 79
+    function collect_session_files 81 106
+    function visit 82 101
+    function newest_changed_session_file 108 125
+    function print_session_files 127 171
+    function native_session_id 173 175
+    struct OrchestrationSessionEvidence 178 181
+    function query_session_id 183 201
+    function session_id 203 227
+    function find_session_id 229 244
+    function looks_like_uuid 246 255

@@ -36,11 +36,15 @@ fn stock_rust_ci_installs_and_inspects_the_binary_without_apt() {
 
     for required in [
         "container: rust:1.96-slim-bookworm",
-        "cargo tree --locked -i openssl-sys",
+        "cargo tree --locked --prefix none --format '{p}'",
+        "> /tmp/formal-ai-dependency-tree.txt",
+        "grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt",
+        "CARGO_INSTALL_ROOT: /tmp/formal-ai-install",
+        "export PATH=\"$CARGO_INSTALL_ROOT/bin:$PATH\"",
         "cargo install --path . --locked",
-        "ldd /tmp/formal-ai-install/bin/formal-ai",
+        "ldd \"$(command -v formal-ai)\"",
         "libssl|libcrypto",
-        "/tmp/formal-ai-install/bin/formal-ai --version",
+        "formal-ai --version",
     ] {
         assert!(
             workflow.contains(required),
@@ -50,6 +54,10 @@ fn stock_rust_ci_installs_and_inspects_the_binary_without_apt() {
     assert!(
         !workflow.contains("apt-get"),
         "the stock-image regression must not install system packages"
+    );
+    assert!(
+        !workflow.contains("<<<"),
+        "the stock container uses POSIX sh, so the probe must not use Bash here-strings"
     );
 }
 

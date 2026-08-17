@@ -233,12 +233,15 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
         ],
     );
 
-    let workflow = read(root.join(".github/workflows/release.yml"));
+    // Since issue #991 took the step list out of the workflow, this check is
+    // `data/meta/ci-gates/check-i18n-catalog-coverage.lino`, so the traceable link
+    // is the CI surface: workflow plus registered gates. The gate's name, not the
+    // prose step title it replaced, is what CI now prints and what R140 cites.
     assert_contains_all(
-        ".github/workflows/release.yml",
-        &workflow,
+        "the CI surface",
+        &crate::ci_gates::ci_surface(),
         &[
-            "Check i18n catalog coverage",
+            "check_i18n_catalog_coverage",
             "npm run --prefix tests/e2e check:i18n",
         ],
     );
@@ -660,7 +663,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "Cargo.toml",
         &cargo,
         &[
-            "default = [\"doublets-native\", \"meta-language\"]",
+            "default = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]",
             "dep:doublets",
             "dep:mem",
         ],

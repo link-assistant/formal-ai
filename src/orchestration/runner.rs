@@ -19,6 +19,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
+const VERIFICATION_TASK_ENV: &str = "FORMAL_AI_VERIFICATION_TASK";
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -375,6 +376,71 @@ pub fn run_agent(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError>
     })
 }
 
+/// Verify already-composed workspace effects without invoking another agent.
+///
+/// This is intentionally an orchestration session rather than native agent
+/// evidence: it records the exact acceptance commands and their output, but
+/// leaves `native_session` empty because no external agent authored work in
+/// this step.
+pub(super) fn verify_workspace(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError> {
+    if !config.permission.permits(&config.workspace) {
+        return Err(AgentRunError::PermissionDenied);
+    }
+    validate_verification(config)?;
+    let workspace = config
+        .workspace
+        .canonicalize()
+        .map_err(AgentRunError::Workspace)?;
+    if !workspace.is_dir() {
+        return Err(AgentRunError::Workspace(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "workspace_not_directory",
+        )));
+    }
+
+    let mut events = EventChain::default();
+    events.push("permission_granted", ".");
+    events.push("composition_verification_started", &config.task);
+    let started = Instant::now();
+    let verification = run_verification(config, &workspace, &mut events)?;
+    let wall_time_ms = u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX);
+    let passed = verification.iter().all(|result| result.passed);
+    events.push(
+        if passed {
+            "composition_verification_passed"
+        } else {
+            "composition_verification_failed"
+        },
+        &config.task,
+    );
+
+    Ok(AgentSession {
+        schema: "formal-ai-agent-session-v1".to_string(),
+        cli: "composed-verifier".to_string(),
+        target: config.target,
+        task: config.task.clone(),
+        model: config.model.clone(),
+        base_url: config.base_url.clone(),
+        workspace: ".".to_string(),
+        program: "verification-only".to_string(),
+        args: Vec::new(),
+        status: if passed {
+            AgentStatus::Succeeded
+        } else {
+            AgentStatus::Failed
+        },
+        exit_code: Some(i32::from(!passed)),
+        wall_time_ms,
+        stdout: String::new(),
+        stderr: String::new(),
+        changes: Vec::new(),
+        verification,
+        events: events.events,
+        native_session: None,
+        continuation: None,
+    })
+}
+
 /// Continue the exact external session that produced a disproved claim.
 ///
 /// The caller supplies the correction goal. This function embeds that goal,
@@ -611,11 +677,8 @@ fn execute_with_command_stream(
     timeout: Duration,
 ) -> Result<ProcessOutput, AgentRunError> {
     ensure_program_available(command, workspace)?;
-    let command_line = std::iter::once(command.program.to_string_lossy().into_owned())
-        .chain(command.args.iter().cloned())
-        .map(|part| command_stream::quote(&part))
-        .collect::<Vec<_>>()
-        .join(" ");
+    let program = command.program.clone();
+    let args = command.args.clone();
     let workspace = workspace.to_path_buf();
     let mut env = command.env.clone().into_iter().collect::<HashMap<_, _>>();
     env.insert("PWD".to_string(), workspace.display().to_string());
@@ -628,7 +691,7 @@ fn execute_with_command_stream(
             .build()
             .map_err(AgentRunError::Process)?;
         runtime.block_on(collect_command_stream(
-            command_stream::StreamingRunner::new(command_line)
+            command_stream::StreamingRunner::from_argv(program, args)
                 .cwd(workspace)
                 .env(env)
                 .kill_signal("SIGKILL"),
@@ -702,9 +765,9 @@ async fn collect_command_stream(
     })
 }
 
-// command-stream's Rust API accepts a shell command string, and its quoting
-// helper currently targets POSIX shells. Keep the existing exact-argv Windows
-// implementation until upstream exposes an argv-safe interface there.
+// Keep the std-process Windows implementation until command-stream provides
+// job-object process-tree termination there. Unix uses its exact-argv stream
+// API and POSIX process-group termination.
 #[cfg(not(unix))]
 fn execute_with_std_process(
     command: &AgentCommand,
@@ -784,7 +847,7 @@ fn run_verification(
         let command = AgentCommand {
             program: PathBuf::from(&verification.program),
             args: verification.args.clone(),
-            env: BTreeMap::new(),
+            env: BTreeMap::from([(VERIFICATION_TASK_ENV.to_string(), config.task.clone())]),
         };
         let output = execute(&command, workspace, config.timeout)?;
         let passed = !output.timed_out && output.exit_code == Some(0);

@@ -1,0 +1,26 @@
+node:internal/modules/cjs/loader:1207
+  const err = new Error(message);
+              ^
+
+Error: Cannot find module '/tmp/gh-issue-solver-1786801324779/vscode/src/lib/package.json'
+Require stack:
+- /tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs
+- /tmp/gh-issue-solver-1786801324779/experiments/issue_1014_vscode_package/runtime-smoke.mjs
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at packages/playwright-core/src/package.ts (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:105315:23)
+    at __init (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:94209:62)
+    at packages/playwright-core/src/cli/program.ts (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:167440:9)
+    at __init (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:94209:62)
+    at packages/playwright-core/src/coreBundle.ts (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:169136:9)
+    at __init (/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs:94209:62) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor/web-tools.cjs',
+    '/tmp/gh-issue-solver-1786801324779/experiments/issue_1014_vscode_package/runtime-smoke.mjs'
+  ]
+}
+
+Node.js v20.20.2

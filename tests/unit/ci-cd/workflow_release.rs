@@ -400,16 +400,15 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     let test_job = job_block(&workflow, "test");
 
     assert!(
-        test_job.contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"),
-        "Linux must retain the measured 25min budget while the macOS parity leg gets 35min"
+        test_job.contains("timeout-minutes: 25"),
+        "every slice must retain the measured 25min job budget"
     );
     assert!(
-        test_job
-            .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"),
-        "each warning threshold must be derived from its platform's declared budget"
+        test_job.contains("TEST_BUDGET_SECONDS: 1200"),
+        "the execution warning must leave setup and teardown headroom inside the job budget"
     );
     assert!(
-        test_job.contains("::warning title=Test suite is approaching its timeout"),
+        test_job.contains("scripts/run-with-budget-warning.sh"),
         "creeping back toward the cap must be visible in the run summary rather \
          than resurfacing as a mystery cancellation (issue #812)"
     );
@@ -423,7 +422,12 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
     let full_suite = workflow_step_block(test_job, "Run tests");
-    let core_suite = workflow_step_block(test_job, "Run core tests");
+    let macos = fs::read_to_string(format!(
+        "{}/.github/workflows/macos-core-tests.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("macOS core workflow");
+    let core_suite = workflow_step_block(&macos, "Run core test slice from archive");
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
@@ -432,9 +436,9 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
         "the full suite must skip integrity groups already exercised by their focused gates"
     );
     assert!(
-        core_suite.contains("--skip data_files::")
-            && core_suite.contains("--skip self_ast_census")
-            && core_suite.contains("--skip specification::"),
+        core_suite.contains("test(data_files::)")
+            && core_suite.contains("test(self_ast_census)")
+            && core_suite.contains("test(specification::)"),
         "the macOS core shard must skip focused gates and the separately executed specification shard"
     );
 }
@@ -472,7 +476,10 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
 /// is set to `warn` -- so clippy printed findings and exited 0.
 #[test]
 fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
-    let workflow = release_workflow();
+    // Clippy and the shell lint are registered gates since issue #991; the
+    // actionlint step is still a workflow step because it installs a pinned
+    // binary of its own.
+    let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
     assert!(
@@ -592,9 +599,12 @@ fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
     .unwrap();
 
     assert_eq!(
-        harness.matches("\n    --no-summarize-session \\\n").count(),
-        1,
-        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
+        harness
+            .matches("\n        --no-summarize-session \\\n")
+            .count()
+            + harness.matches("\n    --no-summarize-session \\\n").count(),
+        2,
+        "both the initial and resumed Agent CLI turns must disable summarization"
     );
 }
 
@@ -615,9 +625,12 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
-        // Issue #961 keeps this Linux baseline and selects a 35-minute macOS
-        // budget through the matrix expression checked below.
+        // Issue #1012 partitions the macOS core suite so every slice retains
+        // this baseline rather than extending a monolithic timeout.
         ("test", 25),
+        // Issue #1014 compiles one nextest archive and fans it out to five
+        // macOS runners. The reusable workflow owns both internal timeouts.
+        ("macos-core-tests", 0),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.
@@ -635,6 +648,14 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // 31097339962 tipped over into a *cancelled* job that looked like a
         // regression but was only variance.
         ("test-agent-cli-e2e", 32),
+        // Issue #1012: the shared release binary is built once before the seven
+        // Box image legs, avoiding seven identical cache restores and builds.
+        ("build-box-language-binary", 20),
+        // Issue #932: per-language matrix leg that pulls one link-foundation/box
+        // image, generates the project from solver answers and runs the
+        // language's traditional init commands inside it. The budget covers a
+        // cold release build plus the image pull.
+        ("box-language-projects", 30),
         // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
         // Raised from 20 (PR #965 review): the budget also has to cover the
@@ -657,11 +678,22 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
-        let expected = if job_name == "test" {
-            "    timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}\n".to_string()
-        } else {
-            format!("    timeout-minutes: {timeout_minutes}\n")
-        };
+        if timeout_minutes == 0 {
+            assert!(job.contains("uses: ./.github/workflows/macos-core-tests.yml"));
+            let reusable = fs::read_to_string(format!(
+                "{}/.github/workflows/macos-core-tests.yml",
+                env!("CARGO_MANIFEST_DIR")
+            ))
+            .expect("macOS core reusable workflow");
+            for inner_job in workflow_job_names(&reusable) {
+                assert!(
+                    job_block(&reusable, inner_job).contains("    timeout-minutes:"),
+                    "{inner_job} should declare an explicit timeout"
+                );
+            }
+            continue;
+        }
+        let expected = format!("    timeout-minutes: {timeout_minutes}\n");
         assert!(
             job.contains(&expected),
             "{job_name} should declare {expected:?}"

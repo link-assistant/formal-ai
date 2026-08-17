@@ -151,20 +151,37 @@ either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
 ### Recording self-authorship
 
 The release metric counts a commit as Formal AI-authored only when its commit
-message records both trailers below:
+message records the first two trailers below. A contribution intended to
+satisfy the per-release self-development floor must record all three:
 
 ```text
 Formal-AI-Session: <session-id>
 Formal-AI-Evidence: <repo-relative committed evidence path>
+Formal-AI-Pull-Request: https://github.com/<owner>/<repo>/pull/<number>
 ```
 
 The evidence path must exist in that commit. It may name one evidence file or a
 directory bundle; one file at or below the path must contain both `formal-ai`
 and the exact session id. Add one pair per session when multiple sessions
 authored a commit. Do not add these trailers to a human-authored or manually
-corrected commit; an honest 0% release is valid. The metric counts additions
-plus deletions from non-merge commits and ignores binary files. Reproduce it
-with `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+corrected commit. The pull-request reference counts toward the release floor
+only when Git history proves that the same commit object reached the matching
+GitHub merge commit; a direct commit carrying a claimed PR URL does not count.
+Every non-merge commit introduced by that pull request must satisfy the same
+session, evidence, and pull-request checks. One attributed commit cannot make a
+mixed manually authored pull request count as end-to-end self-development.
+
+Every release cycle must contain at least one such merged contribution. It goes
+through the ordinary pull-request review, CI, and promotion policy without an
+AI-specific bypass. The next release's target is the greater of the previous
+target and previous comparable trailing share, so it must not decrease. If the
+floor or target is missing, merge more reviewed Formal AI-authored work before
+retrying the release. The metric counts additions plus deletions from non-merge
+commits and ignores binary files. Reproduce it with
+`rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+
+Before checking the pull-request ratchet locally, fetch annotated release tags
+with `git fetch origin --tags`; without the latest tag, the check reports a skip.
 
 ## Contribution rights and external material
 
@@ -630,6 +647,60 @@ hardcoded prompt→answer tables.
     burn-down ratchet: existing loose-only tests are recorded in
     `scripts/tests-as-docs-allowlist.txt`, new ones fail the build, and a row
     that has been made explicit must be pruned (`--write` regenerates the list).
+
+## Merge conflicts are a layout bug (issue #991)
+
+`python3 scripts/analyze-merge-conflicts.py` replays every merge in this
+repository's history with `git merge-tree` and counts what git could not merge on
+its own. Of 1914 conflict-resolution events across 884 merges, only 37.4% were
+two people changing the same behaviour. The rest conflicted because of *where the
+content sat*: an appended list entry, a regenerated artifact, a numbered file
+name. Those are bugs in the layout, and the layout is what we fix.
+
+The measurement is in
+[`docs/case-studies/issue-991/merge-conflict-analysis.md`](docs/case-studies/issue-991/merge-conflict-analysis.md),
+the mechanisms are declared in
+[`data/meta/merge-conflict-policy.lino`](data/meta/merge-conflict-policy.lino),
+and `rust-script scripts/check-merge-conflict-policy.rs` fails the build when a
+path that has actually been conflicting is neither mechanized nor deferred with
+a written reason. **You never need to run `git config` for any of this**: every
+mechanism uses git's built-in `merge=union` driver or a committed generator, so a
+fresh clone is already conflict-proof.
+
+**What to do when you add something.**
+
+| You are adding | Do this | Do *not* |
+| --- | --- | --- |
+| a Rust module or test module | append the `mod` line anywhere in the list file; `rust-script scripts/normalize-ordered-lists.rs --write` sorts it | edit the list by hand to keep it sorted — the union driver will reorder it anyway |
+| a CI check | write one file in `data/meta/ci-gates/`, named after the check | add a `- name:`/`- run:` step to `.github/workflows/release.yml` |
+| a `data/seed/*.lino` file | add one `seed <name>` entry to `data/meta/seed-registry.lino` and run `rust-script scripts/generate-seed-registry.rs --write` | edit `src/seed/embedded.rs`, `src/seed/embedded_registry.rs`, `src/web/seed-files.js`, or the loader's file list |
+| a requirement | write `docs/requirements/issue-NNNN-*.md` and run `rust-script scripts/assemble-requirements.rs --write` | append a section to `REQUIREMENTS.md` |
+| a worker module | name the file after its subject (`formal_ai_worker_<subject>.js`) | claim the next free number |
+| generated data | commit it and register its regenerate + verify commands in the policy | leave it un-verified: a union merge of an artifact lands silently |
+
+**The two rules behind the table.**
+
+1. **A list belongs in a file of its own.** A list that shares a file with logic
+   cannot be union merged, because a union of two logic edits can compile and
+   still be wrong. Move the list to a sibling file that contains nothing else —
+   `modules.rs`, `worker-modules.js`, `seed-registry.lino` — and union merge only
+   that file. Adding an item then stops being an edit anyone else can collide
+   with.
+2. **Every union-merged file has a verifier.** A union never blocks a merge, so
+   without a checker a stale or duplicated union lands silently. Each
+   union-merged path registers a `verify` command that fails while the unioned
+   result is not canonical, or declares `union_is_terminal true` because every
+   possible union of it is already correct content (only `.gitkeep` qualifies).
+
+**Regenerating everything after a merge.** `bash
+scripts/regenerate-derived-artifacts.sh` runs every registered generator in one
+pass; run it after resolving a merge and commit whatever it changes.
+
+If you hit a conflict that none of this covers, that is data. Add the path to the
+policy — as a mechanism if it has a shape, or as a `deferred` entry with an
+honest reason if the collision is genuinely semantic. A deferral with a stated
+reason is a decision; an uncovered path is an omission, and CI treats them
+differently.
 
 ## Pull Request Process
 

@@ -5,8 +5,51 @@ docs/case-studies/issue-730/**/*.diff whitespace=-blank-at-eol,-blank-at-eof
 docs/case-studies/issue-730/**/*.jsonl whitespace=-blank-at-eof
 docs/case-studies/issue-730/**/*.log whitespace=-blank-at-eol,-blank-at-eof
 docs/case-studies/issue-742/raw-data/*.html whitespace=-blank-at-eol,-blank-at-eof
+docs/case-studies/issue-1012/self-hosting-authorship/**/*.log whitespace=-blank-at-eol,-blank-at-eof
 experiments/issue_746*.patch whitespace=-blank-at-eol
 dev/log/issues/781/pulls/803/** whitespace=-blank-at-eol,-blank-at-eof
 dev/log/issues/999/pulls/1000/ci-logs/** whitespace=-blank-at-eol,-blank-at-eof
 dev/log/issues/999/pulls/1000/github/** whitespace=-blank-at-eol,-blank-at-eof
 dev/log/issues/999/pulls/1000/research/** whitespace=-blank-at-eol,-blank-at-eof
+dev/log/issues/1012/pulls/1013/** whitespace=-blank-at-eol,-blank-at-eof
+dev/log/issues/1014/pulls/1015/** whitespace=-blank-at-eol,-blank-at-eof
+
+# Issue #991 merge-conflict policy. `data/meta/merge-conflict-policy.lino` is the
+# reviewed registry; `rust-script scripts/check-merge-conflict-policy.rs` fails
+# when this file and that registry disagree.
+#
+# `merge=union` is built into git, so a fresh clone is conflict-proof without
+# running any `git config`. A union is a superset of both sides: it never loses an
+# entry, and every path below has a checker that fails while the union result is
+# not yet canonical.
+
+# Ordered lists — `rust-script scripts/normalize-ordered-lists.rs --write`
+# restores the canonical order and drops the repeats.
+src/agentic_coding/modules.rs merge=union
+src/lib.rs merge=union
+src/solver_handlers/modules.rs merge=union
+src/web/worker-modules.js merge=union
+tests/integration/mod.rs merge=union
+tests/source/mod.rs merge=union
+tests/unit/ci-cd/mod.rs merge=union
+tests/unit/mod.rs merge=union
+tests/unit/specification/mod.rs merge=union
+
+# Branch-creation placeholder — keeping both provenance lines is the right result.
+.gitkeep merge=union
+
+# Derived artifacts — `bash scripts/regenerate-derived-artifacts.sh` rebuilds them
+# from the merged sources, and each one's own verifier fails until it is rerun.
+REQUIREMENTS.md merge=union
+data/meta/seed-metadata-gaps-*.lino merge=union
+data/meta/self-ast.lino merge=union
+data/meta/self-ast/** merge=union
+data/seed/closure-generated-*.lino merge=union
+scripts/hardcoded-language-allowlist.txt merge=union
+
+# The seed inventory and the two files generated from it —
+# `rust-script scripts/generate-seed-registry.rs --write` sorts the registry,
+# merges the flags of any entry a union left twice, and rewrites both projections.
+data/meta/seed-registry.lino merge=union
+src/seed/embedded_registry.rs merge=union
+src/web/seed-files.js merge=union

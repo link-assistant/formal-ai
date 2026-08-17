@@ -38,7 +38,17 @@ case "$installer" in
       installed="$prefix/node_modules/.bin/$command_name"
     else
       # bun installs onto $HOME/.bun/bin, which the workflow adds to PATH.
-      bun add -g "$spec" || matrix_fail "bun add -g $spec failed"
+      if [ "$CLIENT" = opencode ]; then
+        # opencode-ai's pinned launcher is replaced with the platform binary by
+        # its postinstall. Without this explicit trust Bun leaves a Windows PE
+        # placeholder at bin/opencode.exe, which Linux later reports as
+        # "Exec format error". Trust only this reviewed, lockfile-pinned package.
+        bun add -g --trust "$spec" \
+          || matrix_fail "bun add -g --trust $spec failed"
+      else
+        bun add -g --ignore-scripts "$spec" \
+          || matrix_fail "bun add -g --ignore-scripts $spec failed"
+      fi
       installed="${BUN_INSTALL:-$HOME/.bun}/bin/$command_name"
     fi
     ;;
@@ -111,7 +121,11 @@ case "$installer" in
     # An editor with no OpenCode extension is not the client this row names: the
     # leg would launch a bare editor and prove nothing about our server. The
     # extension is what talks to the base URL the wrapper configures.
-    "$dest/bin/code" --install-extension sst-dev.opencode --force \
+    # VS Code's bundled CLI still calls the deprecated legacy url.parse API.
+    # Suppress only that upstream diagnostic for this child process:
+    # https://github.com/microsoft/vscode/issues/319867
+    NODE_OPTIONS=--disable-warning=DEP0169 \
+      "$dest/bin/code" --install-extension sst-dev.opencode --force \
       --user-data-dir "$dest/user-data" --extensions-dir "$dest/extensions" \
       || matrix_fail "installing the sst-dev.opencode VS Code extension failed"
     ;;

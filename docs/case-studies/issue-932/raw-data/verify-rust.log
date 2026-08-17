@@ -1,0 +1,28 @@
+corpus: rust -> /tmp/gh-issue-solver-1786703126334/target/box-language-corpus/rust
+== rust project generated from the en prompt, image konard/box-rust:2.4.0
+== program (main.rs):
+fn main() {
+    println!("Hello, world!");
+}
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the cargo new step
+cargo new --vcs none hello-formal-ai
+# Run the cp main.rs step
+cp main.rs hello-formal-ai/src/main.rs
+# Enter the project directory
+cd hello-formal-ai
+# Build the project
+cargo build --offline
+# Start the application
+cargo run --offline --quiet
+== running the init script
+   |     Creating binary (application) `hello-formal-ai` package
+   | note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+   |    Compiling hello-formal-ai v0.1.0 (/tmp/box-language-project/hello-formal-ai)
+   |     Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.58s
+   | Hello, world!
+ok: rust project built and printed Hello, world! inside konard/box-rust:2.4.0
+ok: box language projects verified for: rust

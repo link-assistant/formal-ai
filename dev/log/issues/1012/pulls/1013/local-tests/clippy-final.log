@@ -1,0 +1,33 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786781432917)
+error: assigning the result of `ToOwned::to_owned()` may be inefficient
+  --> examples/issue_933_question_stripping_probe.rs:45:25
+   |
+45 |             "intent" => intent = raw.trim().trim_matches('"').to_owned(),
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_into()`: `raw.trim().trim_matches('"').clone_into(&mut intent)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#assigning_clones
+   = note: `-D clippy::assigning-clones` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::assigning_clones)]`
+
+error: assigning the result of `ToOwned::to_owned()` may be inefficient
+  --> examples/issue_933_question_stripping_probe.rs:46:27
+   |
+46 |             "language" => language = raw.trim().trim_matches('"').to_owned(),
+   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use `clone_into()`: `raw.trim().trim_matches('"').clone_into(&mut language)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#assigning_clones
+
+error: could not compile `formal-ai` (example "issue_933_question_stripping_probe") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: this assertion has a constant value
+   --> tests/unit/ci-cd/issue_1012.rs:185:5
+    |
+185 |     assert!(FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES >= 20);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: consider moving this into a const block: `const { assert!(..) }`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#assertions_on_constants
+    = note: `-D clippy::assertions-on-constants` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::assertions_on_constants)]`
+
+error: could not compile `formal-ai` (test "unit") due to 1 previous error

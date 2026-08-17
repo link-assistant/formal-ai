@@ -2,60 +2,65 @@ self_ast_census
   target src/summarization/file.rs
   language rust
   fidelity signature
-  byte_len 24408
-  line_count 766
-  content_id source_module_efe985531d10e186
-  symbol_count 52
+  byte_len 26015
+  line_count 812
+  content_id source_module_2631a5891f360cf6
+  symbol_count 57
   symbols
     const MAX_META_LANGUAGE_PARSE_BYTES 26 26
-    struct MetaLanguageFormalization 30 36
-    function is_valid 42 44
-    struct EmbeddedGrammarFormalization 49 54
-    struct RepositoryFileFormalization 58 66
-    function summary 76 78
-    function links_notation 82 118
-    function formalize_repository_file 124 154
-    function summarize_repository_file 158 164
-    function render_repository_file_summary 166 198
-    function statements_for_file 200 211
-    function markdown_file_statements 213 221
-    function code_statements 223 240
-    function structured_statements 242 257
-    function formalize_markdown_embedded_grammars 259 287
-    function formalize_fenced_block 289 307
-    struct FencedBlock 310 314
-    struct FencedMarker 317 320
-    function opening_fence_marker 322 332
-    function is_closing_fence 334 343
-    function fence_language 345 361
-    function parse_with_meta_language_if_bounded 364 369
-    function parse_with_meta_language 372 386
-    function detect_repository_file_format 388 427
-    function normalize_language_label 429 442
-    function meta_language_label_for_format 444 465
-    function is_code_format 467 481
-    function is_structured_format 483 488
-    function display_file_format 490 515
-    function extract_code_symbols 517 529
-    function symbol_from_line 531 546
-    function rust_symbol 548 568
-    function js_symbol 570 583
-    function class_like_symbol 585 601
-    function c_like_symbol 603 610
-    function prefixed_symbol 612 614
-    function first_identifier 616 623
-    function strip_leading_words 625 641
-    function extract_structural_keys 643 655
-    function quoted_key 657 664
-    function bare_key 666 674
-    function embedded_language_list 676 682
-    function push_unique 684 688
-    function line_count 690 696
-    function looks_like_heading_fragment 698 700
-    function has_terminal_punctuation 702 706
-    function is_identifier 708 712
-    function is_identifier_start 714 716
-    function statement_kind_label 718 730
-    function push_meta_language 732 755
-    function push_field 757 760
-    function write_indent 762 766
+    const MAX_PLAIN_TEXT_FORMALIZATION_BYTES 34 34
+    const MAX_PLAIN_TEXT_STATEMENTS 35 35
+    struct MetaLanguageFormalization 39 45
+    function is_valid 51 53
+    struct EmbeddedGrammarFormalization 58 63
+    struct RepositoryFileFormalization 67 75
+    function summary 85 87
+    function links_notation 91 127
+    function formalize_repository_file 133 163
+    function summarize_repository_file 167 173
+    function render_repository_file_summary 175 207
+    function statements_for_file 209 220
+    function plain_text_statements 222 241
+    function prefix_at_char_boundary 243 249
+    function suffix_at_char_boundary 251 257
+    function markdown_file_statements 259 267
+    function code_statements 269 286
+    function structured_statements 288 303
+    function formalize_markdown_embedded_grammars 305 333
+    function formalize_fenced_block 335 353
+    struct FencedBlock 356 360
+    struct FencedMarker 363 366
+    function opening_fence_marker 368 378
+    function is_closing_fence 380 389
+    function fence_language 391 407
+    function parse_with_meta_language_if_bounded 410 415
+    function parse_with_meta_language 418 432
+    function detect_repository_file_format 434 473
+    function normalize_language_label 475 488
+    function meta_language_label_for_format 490 511
+    function is_code_format 513 527
+    function is_structured_format 529 534
+    function display_file_format 536 561
+    function extract_code_symbols 563 575
+    function symbol_from_line 577 592
+    function rust_symbol 594 614
+    function js_symbol 616 629
+    function class_like_symbol 631 647
+    function c_like_symbol 649 656
+    function prefixed_symbol 658 660
+    function first_identifier 662 669
+    function strip_leading_words 671 687
+    function extract_structural_keys 689 701
+    function quoted_key 703 710
+    function bare_key 712 720
+    function embedded_language_list 722 728
+    function push_unique 730 734
+    function line_count 736 742
+    function looks_like_heading_fragment 744 746
+    function has_terminal_punctuation 748 752
+    function is_identifier 754 758
+    function is_identifier_start 760 762
+    function statement_kind_label 764 776
+    function push_meta_language 778 801
+    function push_field 803 806
+    function write_indent 808 812

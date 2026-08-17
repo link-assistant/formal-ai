@@ -1,0 +1,252 @@
+Resolve target release	Set up job	﻿2026-08-15T13:09:17.1815083Z Current runner version: '2.336.0'
+Resolve target release	Set up job	2026-08-15T13:09:17.1841762Z ##[group]Runner Image Provisioner
+Resolve target release	Set up job	2026-08-15T13:09:17.1842625Z Hosted Compute Agent
+Resolve target release	Set up job	2026-08-15T13:09:17.1843336Z Version: 20260729.566
+Resolve target release	Set up job	2026-08-15T13:09:17.1843970Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+Resolve target release	Set up job	2026-08-15T13:09:17.1844703Z Build Date: 2026-07-29T19:17:02Z
+Resolve target release	Set up job	2026-08-15T13:09:17.1845507Z Worker ID: {cd076f2a-52c9-4f6d-9591-c2ce368dc9bb}
+Resolve target release	Set up job	2026-08-15T13:09:17.1846229Z Azure Region: northcentralus
+Resolve target release	Set up job	2026-08-15T13:09:17.1847384Z ##[endgroup]
+Resolve target release	Set up job	2026-08-15T13:09:17.1850190Z ##[group]Operating System
+Resolve target release	Set up job	2026-08-15T13:09:17.1850860Z Ubuntu
+Resolve target release	Set up job	2026-08-15T13:09:17.1851531Z 24.04.4
+Resolve target release	Set up job	2026-08-15T13:09:17.1852045Z LTS
+Resolve target release	Set up job	2026-08-15T13:09:17.1852533Z ##[endgroup]
+Resolve target release	Set up job	2026-08-15T13:09:17.1853215Z ##[group]Runner Image
+Resolve target release	Set up job	2026-08-15T13:09:17.1853813Z Image: ubuntu-24.04
+Resolve target release	Set up job	2026-08-15T13:09:17.1854415Z Version: 20260810.271.1
+Resolve target release	Set up job	2026-08-15T13:09:17.1855778Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+Resolve target release	Set up job	2026-08-15T13:09:17.1857850Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+Resolve target release	Set up job	2026-08-15T13:09:17.1858807Z ##[endgroup]
+Resolve target release	Set up job	2026-08-15T13:09:17.1859931Z ##[group]GITHUB_TOKEN Permissions
+Resolve target release	Set up job	2026-08-15T13:09:17.1862059Z Contents: read
+Resolve target release	Set up job	2026-08-15T13:09:17.1862699Z Metadata: read
+Resolve target release	Set up job	2026-08-15T13:09:17.1863356Z ##[endgroup]
+Resolve target release	Set up job	2026-08-15T13:09:17.1865414Z Secret source: Actions
+Resolve target release	Set up job	2026-08-15T13:09:17.1866868Z Prepare workflow directory
+Resolve target release	Set up job	2026-08-15T13:09:17.2281121Z Prepare all required actions
+Resolve target release	Set up job	2026-08-15T13:09:17.2330392Z Getting action download info
+Resolve target release	Set up job	2026-08-15T13:09:17.4714740Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+Resolve target release	Set up job	2026-08-15T13:09:17.6947997Z Complete job name: Resolve target release
+Resolve target release	Run actions/checkout@v6	﻿2026-08-15T13:09:17.7715063Z ##[group]Run actions/checkout@v6
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7715989Z with:
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7716664Z   repository: link-assistant/formal-ai
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7720390Z   token: ***
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7720828Z   ssh-strict: true
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7721290Z   ssh-user: git
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7721737Z   persist-credentials: true
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7722219Z   clean: true
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7722662Z   sparse-checkout-cone-mode: true
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7723187Z   fetch-depth: 1
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7723622Z   fetch-tags: false
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7724071Z   show-progress: true
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7724530Z   lfs: false
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7724951Z   submodules: false
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7725412Z   set-safe-directory: true
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7725938Z   allow-unsafe-pr-checkout: false
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7726965Z env:
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7727420Z   GIT_CONFIG_COUNT: 1
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7727915Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7728469Z   GIT_CONFIG_VALUE_0: main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7729008Z   CARGO_NET_RETRY: 10
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7729479Z   CARGO_HTTP_MULTIPLEXING: false
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7730013Z   RUSTFLAGS: -Dwarnings
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.7730477Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8751594Z Syncing repository: link-assistant/formal-ai
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8754347Z ##[group]Getting Git version info
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8755530Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8757557Z [command]/usr/bin/git version
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8833396Z git version 2.54.0
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8859961Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8875115Z Temporarily overriding HOME='/home/runner/work/_temp/16753a5b-fd89-4c85-905e-463c3f20084c' before making global git config changes
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8877795Z Adding repository directory to the temporary git global config as a safe directory
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8882927Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8957625Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8961482Z ##[group]Determining repository object format
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8963608Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8964871Z ##[group]Initializing the repository
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.8968320Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9107829Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9119561Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9169341Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9170737Z ##[group]Disabling automatic garbage collection
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9173356Z [command]/usr/bin/git config --local gc.auto 0
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9214221Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9215384Z ##[group]Setting up auth
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9216197Z Removing SSH command configuration
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9217753Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9267937Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9671402Z Removing HTTP extra header
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9678374Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9715767Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9935799Z Removing includeIf entries pointing to credentials config files
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9942914Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:17.9980134Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0243753Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0285843Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0322396Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0430814Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0437240Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0456818Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0457790Z ##[group]Fetching the repository
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:18.0469905Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +98cb3c803a72161a880968647330358c65d9b83f:refs/remotes/origin/main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2504633Z From https://github.com/link-assistant/formal-ai
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2506671Z  * [new ref]         98cb3c803a72161a880968647330358c65d9b83f -> origin/main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2568207Z [command]/usr/bin/git branch --list --remote origin/main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2603984Z   origin/main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2612633Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2640542Z 98cb3c803a72161a880968647330358c65d9b83f
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2644206Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2644821Z ##[group]Determining the checkout info
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2645806Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2650681Z [command]/usr/bin/git sparse-checkout disable
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2700437Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2732012Z ##[group]Checking out the ref
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:30.2736005Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.4277917Z Updating files:  37% (5131/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.5300049Z Updating files:  38% (5197/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.5461268Z Updating files:  39% (5334/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.5599695Z Updating files:  40% (5470/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.5694065Z Updating files:  41% (5607/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.6205642Z Updating files:  42% (5744/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.7297779Z Updating files:  43% (5881/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.7417788Z Updating files:  44% (6017/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.7583254Z Updating files:  45% (6154/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.8053661Z Updating files:  46% (6291/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.8339840Z Updating files:  47% (6428/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.8876135Z Updating files:  48% (6564/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.9051115Z Updating files:  49% (6701/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.9128742Z Updating files:  50% (6838/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.9261118Z Updating files:  51% (6975/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.9496193Z Updating files:  52% (7111/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.9595150Z Updating files:  53% (7248/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:31.9719916Z Updating files:  54% (7385/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.0065533Z Updating files:  55% (7522/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.0415410Z Updating files:  56% (7658/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.0597525Z Updating files:  57% (7795/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.0952257Z Updating files:  58% (7932/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.1326370Z Updating files:  59% (8069/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.1585709Z Updating files:  60% (8205/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.2488320Z Updating files:  61% (8342/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.2702426Z Updating files:  62% (8479/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.2884372Z Updating files:  63% (8616/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.2885166Z Updating files:  63% (8750/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.3240357Z Updating files:  64% (8752/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.3398568Z Updating files:  65% (8889/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.3524031Z Updating files:  66% (9026/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.3653344Z Updating files:  67% (9163/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.3773861Z Updating files:  68% (9299/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4034386Z Updating files:  69% (9436/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4252414Z Updating files:  70% (9573/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4376712Z Updating files:  71% (9710/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4519001Z Updating files:  72% (9846/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4681679Z Updating files:  73% (9983/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4803390Z Updating files:  74% (10120/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4866107Z Updating files:  75% (10257/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.4944128Z Updating files:  76% (10393/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.5149465Z Updating files:  77% (10530/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.5399756Z Updating files:  78% (10667/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.5505821Z Updating files:  79% (10804/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.5605962Z Updating files:  80% (10940/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.5856228Z Updating files:  81% (11077/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.5961250Z Updating files:  82% (11214/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6068429Z Updating files:  83% (11351/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6458638Z Updating files:  84% (11487/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6530587Z Updating files:  85% (11624/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6609671Z Updating files:  86% (11761/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6702500Z Updating files:  87% (11898/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6798808Z Updating files:  88% (12034/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.6905670Z Updating files:  89% (12171/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7020934Z Updating files:  90% (12308/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7152311Z Updating files:  91% (12445/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7279000Z Updating files:  92% (12581/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7560408Z Updating files:  93% (12718/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7644069Z Updating files:  94% (12855/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7735817Z Updating files:  95% (12992/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7860860Z Updating files:  96% (13128/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.7953709Z Updating files:  97% (13265/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8056435Z Updating files:  98% (13402/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8163012Z Updating files:  99% (13539/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8164097Z Updating files: 100% (13675/13675)
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8164674Z Updating files: 100% (13675/13675), done.
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8313771Z Reset branch 'main'
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8317477Z branch 'main' set up to track 'origin/main'.
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8418810Z ##[endgroup]
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8468152Z [command]/usr/bin/git log -1 --format=%H
+Resolve target release	Run actions/checkout@v6	2026-08-15T13:09:32.8496794Z 98cb3c803a72161a880968647330358c65d9b83f
+Resolve target release	Resolve tag and whether desktop assets are needed	﻿2026-08-15T13:09:32.8715181Z ##[group]Run bash scripts/desktop-release-resolve.sh
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8715680Z ^[[36;1mbash scripts/desktop-release-resolve.sh^[[0m
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8757993Z shell: /usr/bin/bash -e {0}
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8758306Z env:
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8758544Z   GIT_CONFIG_COUNT: 1
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8758834Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8759172Z   GIT_CONFIG_VALUE_0: main
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8759457Z   CARGO_NET_RETRY: 10
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8759736Z   CARGO_HTTP_MULTIPLEXING: false
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8760046Z   RUSTFLAGS: -Dwarnings
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8763549Z   GH_TOKEN: ***
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8763813Z   EVENT: workflow_run
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8764073Z   INPUT_TAG: 
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8764312Z   RELEASE_TAG: 
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8764575Z   REPO: link-assistant/formal-ai
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8764975Z   WORKFLOW_RUN_HEAD_SHA: 98cb3c803a72161a880968647330358c65d9b83f
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8765386Z ##[endgroup]
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8860083Z ##[group]desktop-release resolve inputs
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8860846Z [desktop-release-resolve] event                 = workflow_run
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8861539Z [desktop-release-resolve] input_tag             = <none>
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8862234Z [desktop-release-resolve] release_tag           = <none>
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8863046Z [desktop-release-resolve] repo                  = link-assistant/formal-ai
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8863941Z [desktop-release-resolve] workflow_run_head_sha = 98cb3c803a72161a880968647330358c65d9b83f
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8865477Z ##[endgroup]
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:32.8866873Z ##[group]Tier 1: exact tag on head SHA 98cb3c803a72161a880968647330358c65d9b83f
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:34.9188572Z [desktop-release-resolve] exact-match tag: <none>
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:34.9190953Z ##[endgroup]
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:34.9192184Z ##[group]Tier 2: latest published release (auto-release child commit)
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:35.4093282Z [desktop-release-resolve] latest release tag: v0.345.0
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:35.8100350Z [desktop-release-resolve] note: v0.345.0 commit parent='12a3a706b4c7d242c9e3fb5ca408311109a3c678' != head SHA; using latest release as self-healing fallback.
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:35.8102373Z ##[endgroup]
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.3579079Z [desktop-release-resolve] Resolved release tag: v0.345.0
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.3580394Z ##[group]Idempotency guard: required desktop assets on v0.345.0
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7176101Z [desktop-release-resolve] release version: 0.345.0
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7177182Z [desktop-release-resolve] existing desktop assets: 23
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7177973Z [desktop-release-resolve] required desktop assets: 17
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7178714Z [desktop-release-resolve] all required desktop assets are present.
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7179628Z ##[endgroup]
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7180238Z [desktop-release-resolve] Release v0.345.0 already has the complete desktop asset set; skipping automatic build.
+Resolve target release	Resolve tag and whether desktop assets are needed	2026-08-15T13:09:36.7181384Z [desktop-release-resolve] result: tag='v0.345.0' should_build='false' resolution='workflow_run-latest-fallback+already-has-all-assets'
+Resolve target release	Post Run actions/checkout@v6	﻿2026-08-15T13:09:36.7398655Z Post job cleanup.
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8279888Z [command]/usr/bin/git version
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8323920Z git version 2.54.0
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8369886Z Temporarily overriding HOME='/home/runner/work/_temp/ebd798e5-5c28-4f5d-ba9e-3059898db67d' before making global git config changes
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8371531Z Adding repository directory to the temporary git global config as a safe directory
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8375972Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8415475Z Removing SSH command configuration
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8423373Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8461689Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8741247Z Removing HTTP extra header
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8748429Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.8786932Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9064995Z Removing includeIf entries pointing to credentials config files
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9072299Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9103969Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9105026Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9105958Z includeif.gitdir:/github/workspace/.git.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9107178Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9115655Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9143051Z /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9158782Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9203192Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9234121Z /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9258278Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9288324Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9321101Z /github/runner_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9331121Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9367944Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9392077Z /github/runner_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9404710Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9446225Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve target release	Post Run actions/checkout@v6	2026-08-15T13:09:36.9689732Z Removing credentials config '/home/runner/work/_temp/git-credentials-86aae603-b46d-44d2-bcc6-f03d504498b4.config'
+Resolve target release	Complete job	﻿2026-08-15T13:09:36.9834721Z Evaluate and set job outputs
+Resolve target release	Complete job	2026-08-15T13:09:36.9841109Z Set output 'tag'
+Resolve target release	Complete job	2026-08-15T13:09:36.9842767Z Set output 'should_build'
+Resolve target release	Complete job	2026-08-15T13:09:36.9843425Z Cleaning up orphan processes

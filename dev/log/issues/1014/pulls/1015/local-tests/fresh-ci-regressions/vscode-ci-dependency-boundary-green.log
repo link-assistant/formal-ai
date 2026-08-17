@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 35s
+     Running tests/unit/mod.rs (target/debug/deps/unit-02722cd9de722a1b)
+
+running 1 test
+test ci_cd::issue_1014::vscode_dependency_graph_test_runs_after_its_dependencies_are_installed ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2808 filtered out; finished in 0.00s
+

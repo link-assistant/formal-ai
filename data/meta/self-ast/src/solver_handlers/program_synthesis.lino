@@ -2,25 +2,25 @@ self_ast_census
   target src/solver_handlers/program_synthesis.rs
   language rust
   fidelity signature
-  byte_len 21923
+  byte_len 22065
   line_count 658
-  content_id source_module_681d648dadbec66c
+  content_id source_module_ba0978a8c74ec82f
   symbol_count 33
   symbols
-    struct PythonCandidate 10 15
-    struct PythonFunctionTree 17 20
-    enum PythonStatement 22 43
-    function new 46 48
-    function render 50 54
-    function links_notation 56 67
-    function render_statements 69 73
-    function assign 77 87
-    function return_expr 89 94
-    function if_return 96 106
-    function for_loop 108 120
-    function render 122 149
-    function links_line 151 198
-    function try_program_synthesis 201 257
+    struct PythonCandidate 9 14
+    struct PythonFunctionTree 16 19
+    enum PythonStatement 21 42
+    function new 45 47
+    function render 49 53
+    function links_notation 55 66
+    function render_statements 68 72
+    function assign 76 86
+    function return_expr 88 93
+    function if_return 95 105
+    function for_loop 107 119
+    function render 121 148
+    function links_line 150 197
+    function try_program_synthesis 200 257
     function looks_like_python_function_request 266 273
     function synthesis_task_evidenced 280 299
     function match_synthesis_task 304 309

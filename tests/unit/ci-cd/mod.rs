@@ -14,6 +14,8 @@ mod desktop_release_resolve;
 #[path = "../../../scripts/detect-code-changes.rs"]
 mod detect_code_changes;
 mod issue_1001;
+mod issue_1012;
+mod issue_1014;
 mod issue_717;
 mod issue_730;
 mod issue_739;
@@ -21,6 +23,7 @@ mod issue_742;
 mod issue_796;
 mod issue_798;
 mod issue_846;
+mod issue_932;
 mod issue_977;
 mod issue_980;
 mod issue_999;

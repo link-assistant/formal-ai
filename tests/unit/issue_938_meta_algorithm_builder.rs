@@ -1,0 +1,110 @@
+use std::fs;
+
+use formal_ai::{ConversationTurn, SymbolicAnswer, UniversalSolver};
+
+const META_ALGORITHM: &str =
+    "algorithm_construction:meta_algorithm problem_class_to_shared_ir_to_renderers_to_verification";
+
+fn assert_shared_trace(links: &str, surface: &str) {
+    assert!(
+        links.contains(META_ALGORITHM),
+        "missing shared builder: {links}"
+    );
+    assert_eq!(
+        links.matches("algorithm_construction:stage").count(),
+        7,
+        "every coding surface must execute the same seven stages: {links}"
+    );
+    assert!(
+        links.contains(&format!("algorithm_construction:active_surface {surface}")),
+        "missing active surface {surface}: {links}"
+    );
+}
+
+#[test]
+fn every_coding_handler_imports_the_shared_builder() {
+    for path in [
+        "src/solver_handlers/installation_conversion.rs",
+        "src/solver_handlers/program_synthesis.rs",
+        "src/coding/catalog/mod.rs",
+        "src/rule_synthesis.rs",
+        "src/solver_handlers/numeric_list/mod.rs",
+    ] {
+        let source = fs::read_to_string(path).unwrap_or_else(|error| panic!("{path}: {error}"));
+        assert!(
+            source.contains("meta_algorithm_builder"),
+            "{path} still owns bespoke construction logic"
+        );
+    }
+}
+
+#[test]
+fn all_coding_surfaces_execute_one_trace_shape() {
+    let solver = UniversalSolver::default();
+
+    let installation =
+        solver.solve("Convert this README installation guide into a sh script: run `npm install`.");
+    assert_eq!(installation.intent, "installation_conversion");
+    assert_shared_trace(&installation.links_notation, "installation_conversion");
+
+    let synthesis = solver.solve(
+        "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+    );
+    assert_eq!(synthesis.intent, "write_program");
+    assert_shared_trace(&synthesis.links_notation, "program_synthesis");
+
+    let catalog = solver.solve("Write hello world in Rust");
+    assert_eq!(catalog.intent, "write_program");
+    assert_shared_trace(&catalog.links_notation, "coding_catalog");
+
+    let numeric = solver.solve(
+        "I have numbers 5, 3, 8, 1, 9 — sort them in JavaScript, give me the code and the result",
+    );
+    assert_eq!(numeric.intent, "write_program");
+    assert_shared_trace(&numeric.links_notation, "numeric_list");
+
+    let first_prompt = "Write me a Rust program that lists files in the current directory";
+    let SymbolicAnswer {
+        answer: first_answer,
+        ..
+    } = solver.solve(first_prompt);
+    let history = [
+        ConversationTurn::user(first_prompt),
+        ConversationTurn::assistant(first_answer),
+    ];
+    let rule = solver.solve_with_history("Sort the results in reverse order", &history);
+    assert_eq!(rule.intent, "write_program");
+    assert!(rule.links_notation.contains("rule_synthesis_candidate"));
+    assert_shared_trace(&rule.links_notation, "rule_synthesis");
+}
+
+#[test]
+fn shared_program_synthesis_trace_is_multilingual() {
+    let solver = UniversalSolver::default();
+    for (language, prompt) in [
+        (
+            "en",
+            "English request: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        ),
+        (
+            "ru",
+            "Русский запрос: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        ),
+        (
+            "hi",
+            "हिंदी अनुरोध: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        ),
+        (
+            "zh",
+            "中文请求: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        ),
+        (
+            "es",
+            "Solicitud en español: Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+        ),
+    ] {
+        let response = solver.solve(prompt);
+        assert_eq!(response.intent, "write_program", "{language}: {}", response.answer);
+        assert_shared_trace(&response.links_notation, "program_synthesis");
+    }
+}
