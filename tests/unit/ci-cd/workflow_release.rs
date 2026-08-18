@@ -563,6 +563,34 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
     }
 }
 
+/// A research harness that declares no MCP tool-call timeout makes the Agent
+/// CLI compute its per-tool deadline as `NaN`, so a call the mock answers in
+/// milliseconds aborts with `timed out after NaN seconds`. Run 32107664418
+/// failed exactly that way: `run_issue_781.sh` ended after one fetch and
+/// tripped its own `[ "$fetches" -ge 3 ]` assertion.
+///
+/// The three research harnesses drive the Agent CLI against a local MCP
+/// server, so all three need the timeouts the other harnesses already carry.
+#[test]
+fn research_harnesses_declare_an_mcp_tool_call_timeout() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    for script in ["run_issue_687.sh", "run_issue_771.sh", "run_issue_781.sh"] {
+        let harness =
+            fs::read_to_string(format!("{manifest_dir}/experiments/agent_cli_e2e/{script}"))
+                .expect("research E2E harness should be readable");
+
+        assert!(
+            harness.contains(r#""tool_call_timeout": 120000"#),
+            "{script} must give its MCP server an explicit tool-call timeout, \
+             or the Agent CLI computes it as NaN and aborts the call"
+        );
+        assert!(
+            harness.contains(r#""max_tool_call_timeout": 600000"#),
+            "{script} must declare mcp_defaults.max_tool_call_timeout"
+        );
+    }
+}
+
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
 /// between tool turns. If that unrelated provider is unavailable, the client
 /// exits before returning the tool result to Formal AI.
