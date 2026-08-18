@@ -12,13 +12,14 @@
 //! The catalog is split into cohesive, focused files to stay well under the
 //! repository's per-file line limit: [`types`] (the records), [`languages`]
 //! ([`PROGRAM_LANGUAGES`]), [`tasks`] ([`PROGRAM_TASKS`]), and the template
-//! tables in [`templates_core`] / [`templates_extended`], concatenated here as
-//! [`TEMPLATE_GROUPS`].
+//! tables in [`templates_core`] / [`templates_listing`] / [`templates_extended`],
+//! concatenated here as [`TEMPLATE_GROUPS`].
 
 mod languages;
 mod tasks;
 mod templates_core;
 mod templates_extended;
+mod templates_listing;
 mod types;
 
 use crate::event_log::EventLog;
@@ -41,6 +42,7 @@ pub fn record_algorithm_construction(log: &mut EventLog) {
 /// they form a single flat catalog, iterated via [`program_templates`].
 const TEMPLATE_GROUPS: &[&[ProgramTemplate]] = &[
     templates_core::TEMPLATES_CORE,
+    templates_listing::TEMPLATES_LISTING,
     templates_extended::TEMPLATES_EXTENDED,
 ];
 

@@ -464,6 +464,16 @@ meanings
     lexeme en
       surface
         text "response fact check statement ru"
+  response_general_plan_repository_read_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read evidence en"
+  response_general_plan_repository_read_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read evidence zh"
   response_how_to_guide_citation_en
     defined-by response_template
     lexeme en
@@ -844,6 +854,11 @@ meanings
     lexeme en
       surface
         text "reverse string"
+  scala
+    defined-by programming_language
+    lexeme en
+      surface
+        text "scala"
   sed
     defined-by token
     lexeme en

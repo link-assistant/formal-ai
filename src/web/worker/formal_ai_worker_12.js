@@ -781,6 +781,24 @@ const WRITE_PROGRAM_LANGUAGES = {
     checkCommand: "ruby -c main.rb",
     runCommand: "ruby main.rb",
   },
+  scala: {
+    name: "Scala",
+    fence: "scala",
+    saveAs: "Main.scala",
+    setupHint:
+      "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)",
+    checkCommand: "scalac Main.scala",
+    runCommand: "scala Main",
+  },
+  kotlin: {
+    name: "Kotlin",
+    fence: "kotlin",
+    saveAs: "Main.kt",
+    setupHint:
+      "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
+    checkCommand: "kotlinc Main.kt -include-runtime -d Main.jar",
+    runCommand: "java -jar Main.jar",
+  },
 };
 
 const WRITE_PROGRAM_TASKS = {
@@ -860,6 +878,9 @@ const WRITE_PROGRAM_TEMPLATES = {
     csharp:
       'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, world!");\n    }\n}',
     ruby: 'puts "Hello, world!"',
+    scala:
+      'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}',
+    kotlin: 'fun main() {\n    println("Hello, world!")\n}',
   },
   count_to_three: {
     rust:

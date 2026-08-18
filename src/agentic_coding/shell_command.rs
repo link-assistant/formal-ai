@@ -4,10 +4,16 @@
 //! only the hardcoded `ls`, so `execute pwd` and every other seed shell token fell
 //! through to the *unknown* fallback. The two data-driven strategies here — a named
 //! command backed by `data/seed/terminal-commands.lino`, and a natural-language
-//! directory-listing request — make the whole seed vocabulary reachable. Keeping the
-//! matching prose (`PROSE_WORDS`, listing phrases) in one module also keeps the
-//! planner file under the repository line budget.
+//! directory-listing request — make the whole seed vocabulary reachable.
+//!
+//! Sentence scoping and command-policy classification live next door in
+//! [`super::shell_command_policy`], which keeps both files under the repository
+//! line budget.
 
+use super::shell_command_policy::{
+    governs_commands_rather_than_requesting_one, is_prose_word, named_shell_command_in_sentence,
+    normalize_command_word, sentence_spans, states_a_command_policy,
+};
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
@@ -31,6 +37,14 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// natural language in the solver.
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
+    // Caller policy is filtered here, not inside one strategy, because
+    // `prefixed_shell_command` below runs first and matches on the whole prompt:
+    // a rule applied only to `named_shell_command` would leave
+    // "Run commands with sudo only when necessary." passing straight through as
+    // an explicitly introduced command (issue #907, follow-up).
+    if governs_commands_rather_than_requesting_one(prompt) {
+        return None;
+    }
     let vocab = seed::terminal_command_vocabulary();
     let intent_vocab = seed::shell_intent_vocabulary();
     let intent = intent_shell_command(prompt, &intent_vocab);
@@ -89,24 +103,51 @@ fn strip_balanced_outer_quotes(prompt: &str) -> &str {
 /// surrounding whitespace). Explicit execution is an intent boundary: the
 /// command need not appear in a maintained binary allowlist because the client
 /// still owns its normal sandbox and permission decision.
+///
+/// The remainder must still *look* like a command line rather than a sentence
+/// about one. `run`/`execute` are ordinary English verbs, so "Run all tests in
+/// the background" and "Execute nothing without asking the operator first"
+/// reach this function exactly like "run cargo test" does — and passing their
+/// prose through produced commands such as `all tests in the background`. The
+/// allowlist stays absent: an unknown binary (`mytool --flag`, `./build.sh`) is
+/// accepted, and only prose is refused.
 fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let prompt = prompt.trim();
     let lower = prompt.to_lowercase();
-    if let Some(prefix) = vocab
+    let prefix = vocab
         .passthrough_prefixes
         .iter()
         .filter(|prefix| prefix_boundary(&lower, prefix))
-        .max_by_key(|prefix| prefix.chars().count())
-    {
-        let remainder = prompt.get(prefix.len()..)?.trim_start();
-        let remainder = remainder
-            .strip_prefix(':')
-            .unwrap_or(remainder)
-            .trim_start();
-        return (!remainder.is_empty()).then(|| strip_balanced_outer_quotes(remainder).to_owned());
-    }
+        .max_by_key(|prefix| prefix.chars().count())?;
+    let remainder = prompt.get(prefix.len()..)?.trim_start();
+    let remainder = remainder
+        .strip_prefix(':')
+        .unwrap_or(remainder)
+        .trim_start();
+    let remainder = strip_balanced_outer_quotes(remainder);
+    (!remainder.is_empty() && !reads_as_prose(remainder, vocab)).then(|| remainder.to_owned())
+}
 
-    None
+/// Whether a recovered command line is really a sentence describing an action.
+///
+/// Two tells, either of which is enough: the command position holds a
+/// natural-language word, or the arguments carry two or more function words. A
+/// genuine command line spends its arguments on paths and flags, not on *in
+/// the*, *without asking*, or *so that*.
+///
+/// A known shell token in command position settles it outright, because the two
+/// vocabularies overlap: `file` is both a Unix command and an ordinary English
+/// word, so `execute file Cargo.toml` must stay a command.
+fn reads_as_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> bool {
+    let mut words = remainder.split_whitespace();
+    let Some(first) = words.next() else {
+        return true;
+    };
+    let command = normalize_command_word(first);
+    if vocab.shell_tokens.iter().any(|token| token == &command) {
+        return false;
+    }
+    is_prose_word(first) || words.filter(|word| is_prose_word(word)).count() >= 2
 }
 
 fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
@@ -363,6 +404,39 @@ fn strip_subject_lead<'a>(sentence: &'a str, vocab: &seed::CallerContextVocabula
 /// seed-declared question word ("我的用户名**是什么**") — and a cue that does not
 /// open the sentence is not its subject, so
 /// *"tell me what the current time is"* and *"what is the date?"* keep routing.
+/// Whether `sentence` *declares where something lives*: the cue is followed by a
+/// colon and a single absolute path.
+///
+/// A copula is not the only way to state a fact — agent harnesses prefer the
+/// label form, and Hive Mind's *"Your prepared working directory: /tmp/example"*
+/// supplies the working directory exactly as a copula would, which made every
+/// production run answer with `pwd` (issue #907, follow-up).
+///
+/// The value is what separates this from a request, and it has to be: earlier
+/// attempts keyed on the colon (which swallowed *"delete the file: old.log"*),
+/// on request verbs (a four-word list that rescued nothing), and on subject
+/// position (which cannot see that *"count"* and *"search"* are verbs). A
+/// harness declares an **absolute** path — that is the only kind worth stating —
+/// while a request's argument after a colon is a relative path, a search term,
+/// or prose. Every row of the table above stays a request under this rule.
+fn labels_a_value(sentence: &str, cue: &str) -> bool {
+    let Some(head_end) = sentence.to_lowercase().find(cue) else {
+        return false;
+    };
+    let Some(value) = sentence[head_end + cue.len()..]
+        .trim_start()
+        .strip_prefix([':', '：'])
+        .map(str::trim)
+    else {
+        return false;
+    };
+    let mut words = value.split_whitespace();
+    let Some(path) = words.next() else {
+        return false;
+    };
+    words.next().is_none() && (path.starts_with('/') || path.starts_with("~/"))
+}
+
 fn is_fact_statement(
     sentence: &str,
     interrogative: bool,
@@ -371,6 +445,9 @@ fn is_fact_statement(
 ) -> bool {
     if interrogative || vocab.asks_a_question(sentence) {
         return false;
+    }
+    if labels_a_value(sentence, cue) {
+        return true;
     }
     // The cue may or may not carry the determiner itself ("the current time" vs
     // "current date"), so the subject is tried with and without its lead.
@@ -615,140 +692,21 @@ fn is_safe_path(token: &str) -> bool {
 /// * **Mentioned** (`Run the ls command to list files`): the token appears with run
 ///   context but is not directly after the verb, so only the single token is emitted
 ///   (`ls`) — the surrounding words are prose describing the request, not arguments.
+///
+/// Both shapes are read **one sentence at a time** (issue #907, follow-up). Run
+/// context is only context for the command that shares its sentence: a caller
+/// policy clause — *"When running sudo commands, run them in the background."* —
+/// pairs a run verb with the `sudo` token across the whole message, and matching
+/// them message-wide planned a bare `sudo` for every Codex run through Hive Mind.
+/// A sentence that only *governs* commands is also not a request for one, so a
+/// conditional clause never licenses the token it mentions.
 fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    let has_phrase = vocab.terminal_phrases.iter().any(|p| lower.contains(p));
-    let has_cjk_verb = vocab.cjk_run_verbs.iter().any(|v| lower.contains(v));
-
-    // Word tokens of the original prompt, preserving case so command arguments
-    // (paths, flags, filenames) survive intact.
-    let words: Vec<&str> = prompt
-        .split(|c: char| c.is_whitespace())
-        .filter(|w| !w.is_empty())
-        .collect();
-
-    let is_run_verb = |word: &str| {
-        let normalized = normalize_command_word(word);
-        vocab.run_verbs.iter().any(|v| v == &normalized)
-    };
-    let is_shell_token = |word: &str| {
-        let normalized = normalize_command_word(word);
-        !normalized.is_empty() && vocab.shell_tokens.iter().any(|t| t == &normalized)
-    };
-    let has_verb = words.iter().any(|w| is_run_verb(w)) || has_cjk_verb;
-
-    // Shape 1: a shell token directly after a run verb — the command plus its arguments.
-    for (index, word) in words.iter().enumerate() {
-        if index == 0 || !is_shell_token(word) {
-            continue;
-        }
-        if is_run_verb(words[index - 1]) {
-            return Some(collect_command(&words[index..]));
-        }
-    }
-
-    // Shape 2: a shell token mentioned anywhere, given run context — the token alone.
-    if has_verb || has_phrase {
-        if let Some(word) = words.iter().find(|w| is_shell_token(w)) {
-            return Some(normalize_command_word(word));
-        }
-    }
-
-    None
+    sentence_spans(prompt)
+        .into_iter()
+        .filter(|sentence| !states_a_command_policy(sentence))
+        .find_map(|sentence| named_shell_command_in_sentence(sentence, vocab))
 }
 
-/// Assemble a command from a token slice that starts at the command word: keep the
-/// command and every following argument until a natural-language word ends it.
-fn collect_command(words: &[&str]) -> String {
-    let mut parts = vec![normalize_command_word(words[0])];
-    for word in &words[1..] {
-        if is_prose_word(word) {
-            break;
-        }
-        let trimmed = word.trim_matches(|c: char| c == '`' || c == ',' || c == '.');
-        if trimmed.is_empty() {
-            break;
-        }
-        parts.push(trimmed.to_owned());
-    }
-    parts.join(" ")
-}
-
-/// Normalize a raw prompt word to a bare command token: lowercase, keeping only the
-/// leading run of command-name characters (so ``` `pwd` ```, `pwd.` and `pwd,` all
-/// normalize to `pwd`).
-fn normalize_command_word(word: &str) -> String {
-    word.trim_matches('`')
-        .chars()
-        .take_while(|c| c.is_ascii_alphanumeric() || *c == '_' || *c == '-')
-        .collect::<String>()
-        .to_ascii_lowercase()
-}
-
-/// Whether a word is natural-language prose rather than a command argument. Used to
-/// stop argument collection at the boundary between a command and the sentence around
-/// it (e.g. `git status` stops before `in the current directory`).
-fn is_prose_word(word: &str) -> bool {
-    const PROSE_WORDS: &[&str] = &[
-        "command",
-        "commands",
-        "to",
-        "in",
-        "into",
-        "on",
-        "the",
-        "a",
-        "an",
-        "and",
-        "then",
-        "please",
-        "for",
-        "of",
-        "that",
-        "which",
-        "so",
-        "this",
-        "these",
-        "those",
-        "here",
-        "there",
-        "me",
-        "us",
-        "you",
-        "it",
-        "from",
-        "at",
-        "with",
-        "will",
-        "would",
-        "can",
-        "could",
-        "should",
-        "using",
-        "via",
-        "inside",
-        "within",
-        "output",
-        "result",
-        "results",
-        "contents",
-        "content",
-        "directory",
-        "folder",
-        "folders",
-        "file",
-        "files",
-        "currently",
-        "again",
-        "also",
-        "just",
-        "now",
-    ];
-    let normalized = word
-        .trim_matches(|c: char| !c.is_ascii_alphanumeric())
-        .to_ascii_lowercase();
-    PROSE_WORDS.contains(&normalized.as_str())
-}
 
 /// Whether `prompt` asks, in natural language, to list the files in the current place.
 ///

@@ -81,12 +81,21 @@ fn quoted_string_lists_render_valid_cst_for_every_language() {
         let code = program
             .render()
             .unwrap_or_else(|| panic!("{} must compose from coding idioms", language.slug));
-        let cst = crate::coding::validated_program_cst(language.slug, &code).unwrap_or_else(|| {
-            panic!(
-                "{} string-list source must parse as a valid CST:\n{}",
-                language.slug, code
-            )
-        });
+        // Composition is required of every catalog language; CST validation is
+        // only possible for the ones meta-language ships a grammar for. Scala
+        // and Kotlin joined the catalog for the hive-mind#2158 matrix (issue
+        // #921) and have no shipped grammar, so `validated_program_cst` returns
+        // `None` for them by design rather than by failure — the uncovered set
+        // is pinned in `coding::cst::tests`.
+        let Some(cst) = crate::coding::validated_program_cst(language.slug, &code) else {
+            assert!(
+                crate::coding::cst::grammar_metadata(language.slug).is_none(),
+                "{} declares a CST grammar, so its string-list source must parse:\n{}",
+                language.slug,
+                code
+            );
+            continue;
+        };
         assert!(!cst.has_error, "{cst:#?}");
     }
 }

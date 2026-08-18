@@ -1070,6 +1070,28 @@ request and crosses the WASM boundary. Both surfaces expose the stable meaning
 natural -> FOL -> natural without a direct pair path. Formal output is not
 executed as code, leaving issue #917 independent of E69's execution gate.
 
+Issue #921 closes the external orchestration loop without introducing another
+adapter. In one direction, Hive Mind's public `solve` parser selects its shipped
+Agent executor, which starts the native Agent CLI against the candidate Formal
+AI server. In the other, Formal AI's existing `agent run` adapter starts that
+same external CLI and records its exit, verified workspace delta, native
+session, and hash-chained orchestration events. The release gate saves exact
+fixture commits and replays the canonical session; a child-process failure is a
+failed gate in both directions. CI prepares the public Hive Mind command but
+suppresses the GitHub-writing portion, then calls the same production executor
+directly, keeping the integration real without mutating issue state. A scoped
+permission-response shim lets Hive Mind 2.12.2 reach its no-write preparation
+exit under the workflow's read-only token; it is absent from execution. Lazy
+Hive Mind helper installs use an isolated, writable npm prefix owned by the
+gate, rather than relying on machine-global package permissions. Hive Mind's
+identity preflight is satisfied with repository-local config in the disposable
+prepare clone plus process-local config on the prepare-only command, never with
+runner-global Git config. The disposable clone materializes its candidate HEAD
+as a local branch as well, making Hive Mind's current-branch preflight
+independent of GitHub Actions' detached checkout shape. A matching local
+`origin/main` ref lets Hive Mind create its temporary solution branch without
+fetching or changing the candidate commit.
+
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
 directly because of browser CORS restrictions, so it keeps a small

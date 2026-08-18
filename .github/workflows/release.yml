@@ -1200,6 +1200,11 @@ jobs:
         run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
       - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
         run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
+      - name: Install @link-assistant/hive-mind CLI
+        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.12.5
+      - name: "Run Hive Mind full-circle integration gate (issue #921)"
+        timeout-minutes: 5
+        run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
       - name: "Run agent CLI E2E — promoted method learning (issue #922)"
         run: PORT=8922 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence examples/issue-922-method-learning/run.sh
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
@@ -1217,6 +1222,7 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
             /tmp/formal-ai-issue-707-evidence
+            /tmp/formal-ai-issue-921-evidence
             /tmp/formal-ai-issue-922-evidence
           retention-days: 7
       - name: Upload TUI transcripts and replay artifacts

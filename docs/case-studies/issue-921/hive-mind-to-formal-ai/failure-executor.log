@@ -1,0 +1,56 @@
+
+🤖 Executing Agent: FORMAL-AI
+   Model: formal-ai
+   Working directory: /tmp/formal-ai-issue-921.jaHtfE/hive-failure-workspace
+   Branch: issue-921-fixture
+   Prompt length: 94 chars
+   System prompt length: 0 chars
+   Feedback info included: No
+📈 System resources before execution:
+   Memory: MemFree: 0 kB
+   Load: 0.00 0.00 0.00
+🧠 Formal AI: version 0.339.3 (minimum 0.336.0)
+🧠 Formal AI: using the configured server http://127.0.0.1:8921
+🧠 Formal AI: protocol openai, endpoint http://127.0.0.1:8921/api/openai/v1
+🧠 Formal AI: config XDG_CONFIG_HOME=/home/box/.cache/hive-mind/formal-ai/agent-ixKVC8/.config, seeded /home/box/.config/link-assistant-agent → .config/link-assistant-agent
+🧠 Formal AI: environment FORMAL_AI_API_KEY, XDG_CONFIG_HOME
+
+📝 Raw command:
+(cd "/tmp/formal-ai-issue-921.jaHtfE/hive-failure-workspace" && cat "/tmp/agent_prompt_1786655528174_20872.txt" | /tmp/gh-issue-solver-1786653210347/experiments/issue_921_hive_mind_full_circle/failure-agent.sh --model formalai/formal-ai --verbose)
+
+📋 Command details:
+📂 Working directory: /tmp/formal-ai-issue-921.jaHtfE/hive-failure-workspace 2
+🌿 Branch: issue-921-fixture 2
+🤖 Model: Agent FORMAL-AI 2
+
+▶️ Streaming output:
+
+{
+  "type": "error",
+  "sessionID": "ses_issue921_failure",
+  "error": "issue 921 injected agent failure"
+}
+📌 Session ID: ses_issue921_failure
+⚠️  Error event detected in stream: issue 921 injected agent failure
+   Raw error record: {"type":"error","sessionID":"ses_issue921_failure","error":"issue 921 injected agent failure"}
+
+
+❌ Agent reported error: issue 921 injected agent failure
+
+📋 Error details (JSON):
+{
+  "type": "error",
+  "exitCode": 23,
+  "errorDetectedInOutput": true,
+  "errorType": "AgentError",
+  "errorMatch": "issue 921 injected agent failure",
+  "message": "Agent reported error: issue 921 injected agent failure",
+  "sessionId": "ses_issue921_failure",
+  "limitReached": false,
+  "limitResetTime": null
+}
+
+📈 System resources after execution:
+   Memory: MemFree: 0 kB
+   Load: 0.00 0.00 0.00
+hive-executor-result={"success":false,"sessionId":"ses_issue921_failure","limitReached":false,"limitResetTime":null,"errorInfo":{"type":"error","exitCode":23,"errorDetectedInOutput":true,"errorType":"AgentError","errorMatch":"issue 921 injected agent failure","message":"Agent reported error: issue 921 injected agent failure","sessionId":"ses_issue921_failure","limitReached":false,"limitResetTime":null},"tokenUsage":{"inputTokens":0,"outputTokens":0,"reasoningTokens":0,"cacheReadTokens":0,"cacheWriteTokens":0,"totalCost":0,"stepCount":0,"requestedModelId":null,"respondedModelId":null,"contextLimit":null,"outputLimit":null,"contextFillInputTokens":0,"peakContextUsage":0,"tokenFieldAvailability":{"inputTokens":false,"outputTokens":false,"reasoningTokens":false,"cacheReadTokens":false,"cacheWriteTokens":false}},"pricingInfo":{"modelName":"formalai/formal-ai","totalCostUSD":null,"breakdown":null},"publicPricingEstimate":null,"resultSummary":null}

@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 40365
-  line_count 893
-  content_id source_module_73f1fdd3df01a727
-  symbol_count 45
+  byte_len 40863
+  line_count 900
+  content_id source_module_ed5632665e9d2d2f
+  symbol_count 46
   symbols
     const PLAN_PATH 14 14
     const TARGET_PLACEHOLDER 15 15
@@ -21,57 +21,58 @@ self_ast_census
     function objective_text 126 132
     function line_anchored 136 142
     function compose_general_change_plan 144 233
-    function compose_repository_work_plan 234 272
-    function repository_work_reference 277 298
-    function parse_command_output_request 306 360
-    function mentions_bare_role 361 388
-    function shell_quote 389 391
-    function command_plan_text 392 396
-    function has_file_write_intent 409 411
-    function has_authoritative_literal_write 418 427
-    function parse_write_request 452 532
-    function is_literal_content 538 540
-    function is_non_referential_content 547 553
-    function resolve_census_target 572 579
-    function compose_edit_request 605 677
-    struct Token 679 683
-    function tokens 685 702
-    function bare_surfaces 704 711
-    function clean_path_token 717 720
-    function looks_like_file_path 729 735
-    function clean_cue_token 737 740
-    function first_content_lead_end 744 746
-    function first_prefix_lead_end 747 786
-    function first_action_cue_end 788 793
-    function clean_content 800 816
-    function strip_clause_lead 825 836
-    function strip_leading_qualifier 841 852
-    function safe_relative_path 853 860
-    function capability_slug 861 878
-    function language 879 881
-    function escape 882 887
-    function field 888 890
-    function field_nested 891 893
+    function compose_repository_work_plan 234 263
+    function work_item_step 267 279
+    function repository_work_reference 284 305
+    function parse_command_output_request 313 367
+    function mentions_bare_role 368 395
+    function shell_quote 396 398
+    function command_plan_text 399 403
+    function has_file_write_intent 416 418
+    function has_authoritative_literal_write 425 434
+    function parse_write_request 459 539
+    function is_literal_content 545 547
+    function is_non_referential_content 554 560
+    function resolve_census_target 579 586
+    function compose_edit_request 612 684
+    struct Token 686 690
+    function tokens 692 709
+    function bare_surfaces 711 718
+    function clean_path_token 724 727
+    function looks_like_file_path 736 742
+    function clean_cue_token 744 747
+    function first_content_lead_end 751 753
+    function first_prefix_lead_end 754 793
+    function first_action_cue_end 795 800
+    function clean_content 807 823
+    function strip_clause_lead 832 843
+    function strip_leading_qualifier 848 859
+    function safe_relative_path 860 867
+    function capability_slug 868 885
+    function language 886 888
+    function escape 889 894
+    function field 895 897
+    function field_nested 898 900
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24027
-    named_node_count 4883
+    total_link_count 24405
+    named_node_count 4956
     distinct_node_kinds 89
     node_kinds
-      arguments 380
+      arguments 383
       array_expression 4
       array_type 2
       assignment_expression 4
       attribute 11
       attribute_item 11
-      binary_expression 96
-      block 96
+      binary_expression 97
+      block 99
       boolean_literal 2
       break_expression 1
-      call_expression 380
+      call_expression 383
       char_literal 66
       closure_expression 60
       closure_parameters 60
@@ -80,8 +81,8 @@ self_ast_census
       continue_expression 5
       crate 10
       declaration_list 3
-      doc_comment 176
-      else_clause 10
+      doc_comment 179
+      else_clause 11
       enum_item 2
       enum_variant 5
       enum_variant_list 2
@@ -89,40 +90,40 @@ self_ast_census
       expression_statement 69
       field_declaration 15
       field_declaration_list 3
-      field_expression 316
-      field_identifier 355
-      field_initializer 24
-      field_initializer_list 6
+      field_expression 317
+      field_identifier 360
+      field_initializer 28
+      field_initializer_list 7
       for_expression 3
-      function_item 37
+      function_item 38
       function_modifiers 3
       generic_type 20
-      identifier 1073
-      if_expression 31
+      identifier 1086
+      if_expression 32
       impl_item 3
       index_expression 21
       inner_doc_comment_marker 6
       integer_literal 29
       let_condition 7
-      let_declaration 116
+      let_declaration 117
       lifetime 11
       lifetime_parameter 2
-      line_comment 229
+      line_comment 233
       loop_expression 1
-      macro_invocation 20
+      macro_invocation 21
       match_arm 19
       match_block 3
       match_expression 3
       match_pattern 19
       mutable_specifier 19
-      outer_doc_comment_marker 170
-      parameter 48
-      parameters 37
+      outer_doc_comment_marker 173
+      parameter 52
+      parameters 38
       parenthesized_expression 13
-      primitive_type 73
+      primitive_type 76
       range_expression 22
-      reference_expression 59
-      reference_type 54
+      reference_expression 60
+      reference_type 57
       return_expression 13
       scoped_identifier 86
       scoped_use_list 2
@@ -130,9 +131,9 @@ self_ast_census
       self_parameter 4
       shorthand_field_initializer 7
       source_file 1
-      string_content 71
-      string_literal 71
-      struct_expression 6
+      string_content 75
+      string_literal 75
+      struct_expression 7
       struct_item 3
       super 2
       token_tree 39
@@ -142,7 +143,7 @@ self_ast_census
       tuple_struct_pattern 10
       tuple_type 6
       type_arguments 20
-      type_identifier 70
+      type_identifier 73
       type_parameters 2
       unary_expression 29
       use_as_clause 1

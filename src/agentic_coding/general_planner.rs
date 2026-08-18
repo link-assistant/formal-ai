@@ -245,30 +245,37 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
         ),
         mode: GeneralPlanMode::RepositoryWorkItem,
         goal: intent.source_text,
-        target,
+        target: target.clone(),
         content: String::new(),
-        // Recording the work item is the only thing this sandbox can honestly
-        // do. It deliberately names no verification command: the sole artifact
-        // the run touches is the plan record itself, and `cat`-ing that record
-        // back would observe nothing but the write that just happened
-        // (issue #904).
-        steps: vec![GeneralPlanStep {
-            capability: Capability::Write,
-            action: command_plan_text(
-                "general_plan_repository_action",
-                response_language,
-                PLAN_PATH,
-            ),
-            expected_evidence: command_plan_text(
-                "general_plan_repository_evidence",
-                response_language,
-                PLAN_PATH,
-            ),
-            command: None,
-        }],
+        // A work item names an issue, not an artifact, so step one reads the
+        // issue — that text is where the artifact is named, and planning
+        // without it would fabricate one (issue #904, follow-up). Recording the
+        // reference stays step two, and the plan still names no verification
+        // command: reading back the record this run wrote observes only its own
+        // write.
+        steps: vec![
+            work_item_step(Capability::Fetch, "read", response_language, &target),
+            work_item_step(Capability::Write, "action", response_language, PLAN_PATH),
+        ],
         verification_command: String::new(),
         terminal_state: PlanTerminalState::PlannedNotExecuted,
     })
+}
+/// One step of a repository work-item plan, with its seeded action and
+/// evidence. `slug` is `read` (the fetch of the work item) or `action` (the
+/// record written afterwards).
+fn work_item_step(capability: Capability, slug: &str, lang: &str, target: &str) -> GeneralPlanStep {
+    let evidence = if slug == "read" {
+        "general_plan_repository_read_evidence"
+    } else {
+        "general_plan_repository_evidence"
+    };
+    GeneralPlanStep {
+        capability,
+        action: command_plan_text(&format!("general_plan_repository_{slug}"), lang, target),
+        expected_evidence: command_plan_text(evidence, lang, target),
+        command: None,
+    }
 }
 /// Extract a concrete GitHub issue or pull-request URL structurally.
 ///

@@ -439,6 +439,11 @@ meanings
     lexeme en
       surface
         text "response external benchmark swe report error en"
+  response_general_plan_repository_read_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read en"
   response_github_repository_traffic_hi
     defined-by response_template
     lexeme en

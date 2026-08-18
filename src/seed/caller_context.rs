@@ -21,7 +21,11 @@
 //!   current date is 2026-08-02"* is read as the same subject as *"current
 //!   date"*;
 //! * **request verbs** — the verbs that make a sentence an order rather than a
-//!   statement (*"**print** the current directory"*, *"**покажи** дату"*).
+//!   statement (*"**print** the current directory"*, *"**покажи** дату"*);
+//! * **policy leads** — the words that open a clause governing *how* a class of
+//!   actions is handled rather than requesting one (*"**when** running sudo
+//!   commands, run them in the background"*). Caller workflow policy is not the
+//!   user's request, so nothing inside such a clause may become a command.
 //!
 //! This is the single home for *"is this sentence asking, or telling?"*: every
 //! router that has to tell a request from the framing around it reads these
@@ -72,6 +76,18 @@ pub struct CallerContextVocabulary {
     /// Verbs that make a sentence an order rather than a statement
     /// ("**print** the current directory").
     pub request_verbs: Vec<String>,
+    /// Words that open a clause governing *how* a class of actions is to be
+    /// treated rather than asking for one ("**when** running sudo commands, run
+    /// them in the background"). Such a clause is caller policy: nothing inside
+    /// it names an action to take now, so no command token it mentions may be
+    /// selected (issue #907, follow-up).
+    ///
+    /// Only words that are *unambiguously* conditional, temporal, or
+    /// prohibitive belong here — a bare negation particle (Russian `не`) or a
+    /// word that doubles as an affirmation (Spanish `si`) opens direct
+    /// instructions too, and silencing those would cost the user a command they
+    /// really did ask for.
+    pub policy_leads: Vec<String>,
 }
 
 impl CallerContextVocabulary {
@@ -160,6 +176,9 @@ pub fn caller_context_vocabulary() -> CallerContextVocabulary {
             }
             "request_verbs" => {
                 vocab.request_verbs = collect_language_values(group, "verb");
+            }
+            "policy_leads" => {
+                vocab.policy_leads = collect_language_values(group, "lead");
             }
             _ => {}
         }

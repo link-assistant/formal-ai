@@ -2,8 +2,12 @@
 
 use serde_json::json;
 
-use super::general_planner::{GeneralChangePlan, GeneralPlanMode, PLAN_PATH};
-use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
+use super::general_planner::{
+    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+};
+use super::planner::{
+    fetch_arguments, plan_one, tool_for, write_arguments, AgenticPlan, Capability,
+};
 use super::progress::Progress;
 use super::tool_result;
 use crate::protocol::ChatMessage;
@@ -19,7 +23,17 @@ pub(super) fn plan_general_change_step(
     plan: &GeneralChangePlan,
 ) -> AgenticPlan {
     let progress = Progress::scan(messages);
-    if let Some(failure) = progress.latest_failure() {
+    // Reading the work item is an attempt to find out whether anything *can* be
+    // executed, not a step the request named. A read that comes back missing or
+    // empty therefore answers that question — the capability is unavailable —
+    // and the run continues to record the reference. Reporting the fetch as the
+    // run's failure would replace the honest terminal state of issue #904 with
+    // a transport message about a URL the user never asked to see.
+    let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && progress
+            .latest_failure()
+            .is_some_and(|failure| failure.capability == Capability::Fetch);
+    if let Some(failure) = progress.latest_failure().filter(|_| !work_item_unreadable) {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
             if let (Some(path), Some(read_tool)) =
@@ -102,6 +116,26 @@ pub(super) fn plan_general_change_step(
             return plan_one(tool, arguments.to_owned());
         }
     }
+    // A repository work item names an issue, not an artifact. Recording the
+    // reference and stopping is what issue #904 reported: nothing the request
+    // asked for was ever produced. The issue itself is where the artifact is
+    // named, so read it before concluding that nothing can be executed — the
+    // capability is only genuinely unavailable once the fetch has been tried.
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        if let Some(fetched) = repository_work_item_objective(plan, &progress) {
+            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
+                return step;
+            }
+        } else if let Some(tool) = tool_for(tool_names, Capability::Fetch) {
+            if !progress
+                .attempted_fetches
+                .iter()
+                .any(|url| url == &plan.target)
+            {
+                return plan_one(tool, fetch_arguments(&plan.target));
+            }
+        }
+    }
     if let Some(tool) = tool_for(tool_names, Capability::Write) {
         let plan_attempted = progress.attempted_write_for(PLAN_PATH);
         let plan_written = progress.successful_write_for(PLAN_PATH);
@@ -145,6 +179,54 @@ pub(super) fn plan_general_change_step(
         }
     }
     finish_general_change(plan, &progress)
+}
+
+/// Plan the next step from what the fetched work item actually asks for.
+///
+/// The real corpus decides the shape here. The issues Hive Mind dispatches say
+/// *"implement a Hello World program in Scala"* — a described artifact in a
+/// named language, not literal bytes — so the same coding catalog that answers
+/// that request when a user types it directly answers it here, through the
+/// execution recipe its [`SymbolicAnswer`](crate::solver::SymbolicAnswer)
+/// carries. The literal-file composer follows, for a work item that does spell
+/// out a path and its contents.
+///
+/// Returning [`None`] means the work item named nothing this sandbox can
+/// produce — an unsupported language, or prose with no artifact in it at all —
+/// which keeps `planned_not_executed` truthful rather than inventing an
+/// artifact the issue never asked for.
+fn plan_work_item_execution(
+    objective: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    // The default configuration is the right one: the recipe wanted here is the
+    // same `write_program` answer a user typing this request directly would get,
+    // and the client — not this solver — owns execution. Opting into agent mode
+    // would only add the policy branches that answer *about* agent actions.
+    let answer = crate::solver::UniversalSolver::default().solve(objective);
+    if let Some(step) =
+        super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+    {
+        return Some(step);
+    }
+    let executable = compose_general_change_plan(objective)
+        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
+    Some(plan_general_change_step(messages, tool_names, &executable))
+}
+
+/// The text of the issue this work item names, once the client has fetched it.
+///
+/// Only the page fetched from the plan's own target counts. A repository work
+/// item carries one URL, and answering it with whatever page happened to be
+/// fetched for some other reason this turn would plan against the wrong issue.
+fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+    progress
+        .fetched_pages
+        .iter()
+        .find(|(url, _)| url == &plan.target)
+        .map(|(_, text)| text.clone())
+        .filter(|text| !text.trim().is_empty())
 }
 
 fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> AgenticPlan {

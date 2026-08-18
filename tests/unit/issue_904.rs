@@ -152,14 +152,19 @@ fn repository_work_item_run_reports_planned_not_executed_instead_of_success() {
 
     let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
     assert!(!outcome.hit_turn_cap);
+    // The driver advertises a fetch tool, so the run reads the work item before
+    // concluding anything (the follow-up below). Its offline corpus holds no
+    // such issue, so the read comes back empty and the record is still the only
+    // honest end — but no step reads that record back, which is the defect this
+    // test was opened for.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["write_file"],
-        "the run must not add a step that only reads its own plan back",
+        ["web_fetch", "write_file"],
+        "the run must read the work item, then record it — and never read its own plan back",
     );
     assert!(
         !outcome.final_answer.contains("Recorded and verified"),
@@ -175,4 +180,276 @@ fn repository_work_item_run_reports_planned_not_executed_instead_of_success() {
         !outcome.final_answer.contains("You are an AI issue solver"),
         "the answer must restate the objective, not the caller's preamble",
     );
+}
+
+// ---------------------------------------------------------------------------
+// The follow-up: honest is not the same as done
+// ---------------------------------------------------------------------------
+//
+// The terminal state above is truthful, and it stayed truthful — but three
+// production matrices later, no repository work had ever been executed
+// ([comment](https://github.com/link-assistant/formal-ai/issues/904#issuecomment-5302919859)):
+// Agent + Scala, Claude + Kotlin and Codex + Rust each ended `planned_not_executed`
+// with an empty pull request after five automatic restarts.
+//
+// The reason is visible in the plan: a work item names an *issue*, and an issue
+// URL names no artifact. Recording the reference and stopping was the only honest
+// end available, because the run never read the one document that says what to
+// build. So the fix is not to loosen the terminal state — it is to read the work
+// item first, and keep `planned_not_executed` for the case the comment's point 3
+// reserves it for: the required capability is genuinely unavailable.
+
+/// The work item the fetch step retrieves, in the shape a client returns it.
+const FETCHED_WORK_ITEM: &str = "\
+Add a greeting file
+
+Create file greeting.txt containing Hello from the work item";
+
+/// The bounded objective Hive Mind 2.12.5 actually sends, byte-for-byte from
+/// `buildFormalAiRepositoryPrompt` in
+/// [hive-mind#2159](https://github.com/link-assistant/hive-mind/pull/2159).
+///
+/// The #2158 fix stripped Hive Mind's workflow policy out of this request, so
+/// there is no preamble left to separate and no delimiter to lean on — which is
+/// exactly why the remaining defect is Formal AI's. This shape is what
+/// production sends, so it is what the follow-up has to be measured against.
+const HIVE_MIND_BOUNDED_OBJECTIVE: &str = "\
+Resolve the GitHub issue at https://github.com/example/example/issues/1 in this repository.
+Keep the solution on branch issue-1-example.
+Update the pull request at https://github.com/example/example/pull/2.
+
+Implement and verify the solution before reporting completion.
+Proceed.
+";
+
+/// The production request routes to a repository work item and reads it, with
+/// no objective delimiter involved.
+#[test]
+fn the_bounded_hive_mind_objective_reads_the_issue_it_names() {
+    let plan = compose_general_change_plan(HIVE_MIND_BOUNDED_OBJECTIVE)
+        .expect("the bounded Hive Mind objective must compose a repository work-item plan");
+
+    assert_eq!(plan.mode, GeneralPlanMode::RepositoryWorkItem);
+    assert_eq!(
+        plan.target, "https://github.com/example/example/issues/1",
+        "the work item is the issue, not the branch or the pull request",
+    );
+
+    let AgenticPlan::ToolCalls(calls) = formal_ai::agentic_coding::plan_chat_step(
+        &[ChatMessage::user(HIVE_MIND_BOUNDED_OBJECTIVE)],
+        &["fetch_url", "write_file", "run_command"],
+    )
+    .expect("the production request must have an agentic plan") else {
+        panic!("the production request must read the issue it names")
+    };
+    assert_eq!(calls[0].tool, "fetch_url");
+    assert!(
+        calls[0].arguments.contains(&plan.target),
+        "the fetch must address the issue Hive Mind named: {}",
+        calls[0].arguments,
+    );
+}
+
+/// Requirement 1 of the follow-up: reading the work item comes before concluding
+/// that nothing can be executed.
+#[test]
+fn a_repository_work_item_is_read_before_anything_is_concluded() {
+    let plan = compose_general_change_plan(HARNESS_PROMPT).expect("repository work-item plan");
+
+    assert_eq!(
+        plan.steps.first().map(|step| step.capability),
+        Some(formal_ai::agentic_coding::planner::Capability::Fetch),
+        "the first step must read the work item the request named",
+    );
+    assert!(
+        plan.steps[0].action.contains(&plan.target),
+        "the read step must name the work item it reads: {}",
+        plan.steps[0].action,
+    );
+
+    let AgenticPlan::ToolCalls(calls) = formal_ai::agentic_coding::plan_chat_step(
+        &[ChatMessage::user(HARNESS_PROMPT)],
+        &["fetch_url", "write_file", "run_command"],
+    )
+    .expect("the harness prompt must have an agentic plan") else {
+        panic!("the first step must read the work item")
+    };
+    assert_eq!(calls[0].tool, "fetch_url");
+    assert!(
+        calls[0].arguments.contains(&plan.target),
+        "the fetch must address the work item, not some other page: {}",
+        calls[0].arguments,
+    );
+}
+
+/// The three work items the production matrix was dispatched against, abridged
+/// from the reproduction repositories linked in
+/// [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158).
+///
+/// This is what an issue really looks like: a described artifact in a named
+/// language, not literal bytes. Reading it is worth nothing if the text cannot
+/// then be routed, so the corpus decides which route runs first — the
+/// seed-backed source route, then the literal-file composer.
+fn hello_world_work_item(language: &str) -> String {
+    format!(
+        "Implement Hello World in {language}\n\n\
+         ## Task\n\
+         Please implement a \"Hello World\" program in {language}.\n\n\
+         ## Expected Output\n\
+         When the program runs, it should output:\n\n\
+         Hello, World!"
+    )
+}
+
+/// Requirement 2 of the follow-up, against the real corpus: a described
+/// artifact in a *supported* language reaches a route that authors it instead
+/// of stopping at the plan record.
+///
+/// Rust is the Codex leg of the production matrix — the one whose language the
+/// catalog already covers, and the leg that got furthest before the separate
+/// #907 `sudo` hijack stopped it.
+#[test]
+fn a_read_work_item_describing_a_program_reaches_an_authoring_route() {
+    let messages = work_item_transcript(&hello_world_work_item("Rust"));
+    let plan = formal_ai::agentic_coding::plan_chat_step(
+        &messages,
+        &["fetch_url", "write_file", "run_command"],
+    )
+    .expect("a read work item must have a plan");
+
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        panic!("a described program must be authored, not narrated")
+    };
+    assert_eq!(
+        calls[0].tool, "write_file",
+        "the run must write the program the work item described",
+    );
+    assert!(
+        !calls[0].arguments.contains(PLAN_PATH),
+        "the plan record is not the artifact the work item asked for: {}",
+        calls[0].arguments,
+    );
+}
+
+/// The honest half of the same corpus: reading a work item cannot invent a
+/// language the catalog does not have, so one naming an absent language still
+/// ends `planned_not_executed` — truthfully, and for the reason
+/// [hive-mind#2158](https://github.com/link-assistant/hive-mind/issues/2158)
+/// point 3 reserves that state for.
+///
+/// The production matrix's own two languages, Scala and Kotlin, were absent
+/// when this was written and are covered now, so the rule is checked against
+/// languages that really are missing. Adding either of these is what should
+/// make this test fail — the failure is the signal to move it on, not to
+/// weaken it.
+#[test]
+fn an_uncovered_language_is_not_invented_into_an_artifact() {
+    for language in ["Haskell", "Elixir"] {
+        let messages = work_item_transcript(&hello_world_work_item(language));
+        let plan = formal_ai::agentic_coding::plan_chat_step(
+            &messages,
+            &["fetch_url", "write_file", "run_command"],
+        );
+
+        if let Some(AgenticPlan::ToolCalls(calls)) = plan {
+            for call in &calls {
+                assert!(
+                    call.arguments.contains(PLAN_PATH),
+                    "{language} is not in the coding catalog, so the only file this run may \
+                     write is its own plan record: {}",
+                    call.arguments,
+                );
+            }
+        }
+    }
+}
+
+/// Requirement 2 of the follow-up: once the work item has been read, the run
+/// executes what it names — the artifact, not another plan record.
+#[test]
+fn a_read_work_item_produces_the_artifact_it_names() {
+    let messages = work_item_transcript(FETCHED_WORK_ITEM);
+    let AgenticPlan::ToolCalls(calls) = formal_ai::agentic_coding::plan_chat_step(
+        &messages,
+        &["fetch_url", "write_file", "run_command"],
+    )
+    .expect("a read work item must have an executable plan") else {
+        panic!("the run must act on the artifact the work item named")
+    };
+
+    assert_eq!(calls[0].tool, "write_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("write arguments");
+    let path = ["path", "file_path", "filePath"]
+        .iter()
+        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
+        .expect("the write must name a path");
+    assert!(
+        path == PLAN_PATH || path == "greeting.txt",
+        "the run must address the work item's own artifact, got {path}",
+    );
+}
+
+/// Requirement 3 of the follow-up, and the guard on it: `planned_not_executed`
+/// survives exactly where the comment says it should — the capability needed to
+/// read the work item is not available — and nowhere else.
+#[test]
+fn planned_not_executed_remains_only_when_the_work_item_cannot_be_read() {
+    let AgenticPlan::ToolCalls(calls) = formal_ai::agentic_coding::plan_chat_step(
+        &[ChatMessage::user(HARNESS_PROMPT)],
+        &["write_file"],
+    )
+    .expect("a write-only client still records the reference") else {
+        panic!("the plan record is still written")
+    };
+    assert_eq!(
+        calls[0].tool, "write_file",
+        "with no way to read the work item, recording it is still the honest end",
+    );
+
+    let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
+    assert!(
+        outcome.final_answer.contains("Planned"),
+        "a run that could not read the work item must still say so: {}",
+        outcome.final_answer,
+    );
+}
+
+/// A work item that names no artifact is not turned into one. Fabricating a file
+/// the issue never asked for would be the failure #904 opened against, in the
+/// opposite direction.
+#[test]
+fn a_work_item_naming_no_artifact_is_not_invented_into_one() {
+    let messages = work_item_transcript("Investigate why the nightly job is slow.");
+    let plan = formal_ai::agentic_coding::plan_chat_step(
+        &messages,
+        &["fetch_url", "write_file", "run_command"],
+    );
+
+    if let Some(AgenticPlan::ToolCalls(calls)) = plan {
+        for call in &calls {
+            assert!(
+                !call.arguments.contains("greeting.txt"),
+                "no artifact may be invented for a work item that names none: {}",
+                call.arguments,
+            );
+        }
+    }
+}
+
+/// A transcript in which the client has already fetched the work item, in the
+/// shape [`formal_ai::agentic_coding::plan_chat_step`] reads results back from.
+fn work_item_transcript(body: &str) -> Vec<ChatMessage> {
+    const CALL_ID: &str = "call_work_item";
+    let plan = compose_general_change_plan(HARNESS_PROMPT).expect("repository work-item plan");
+    let call = formal_ai::protocol::ToolCall::function(
+        CALL_ID,
+        "fetch_url",
+        serde_json::json!({ "url": plan.target }).to_string(),
+    );
+    let assistant = ChatMessage::assistant_tool_calls(vec![call]);
+    let mut result = ChatMessage::user(body);
+    result.role = String::from("tool");
+    result.tool_call_id = Some(String::from(CALL_ID));
+    vec![ChatMessage::user(HARNESS_PROMPT), assistant, result]
 }

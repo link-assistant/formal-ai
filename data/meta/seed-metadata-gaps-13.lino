@@ -351,6 +351,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "response_agentic_report_target_options_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_450d43baf8a5255d
+    source "data/seed/closure-generated-08.lino"
+    record "response_general_plan_repository_read_evidence_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_49f8674e1c4fb1bd
     source "data/seed/closure-generated-08.lino"
     record "response_pattern_sequence_next_en"

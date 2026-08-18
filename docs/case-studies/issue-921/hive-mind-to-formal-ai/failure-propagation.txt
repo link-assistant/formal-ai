@@ -1,0 +1,3 @@
+agent_exit=23
+hive_exit=23
+workspace_commit=absent

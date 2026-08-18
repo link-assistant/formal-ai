@@ -459,6 +459,62 @@ coding_idioms
       case
         for "maximum"
         code "        if ({list}[i] > {reduced}) {reduced} = {list}[i];"
+  language "scala"
+    scaffold "list_transformation"
+      code 'object Main {\n  def main(args: Array[String]): Unit = {\n    val {list} = List({literal})\n    val {transformed} = {action}\n    println({transformed}.mkString(", "))\n  }\n}'
+    scaffold "list_reduction"
+      code 'object Main {\n  def main(args: Array[String]): Unit = {\n    val {list} = List({literal})\n    val {reduced} = {expression}\n    println({reduced})\n  }\n}'
+    idiom "action"
+      case
+        for "sort"
+        code "{list}.sorted"
+      case
+        for "reverse_sort"
+        code "{list}.sorted.reverse"
+      case
+        for "reverse"
+        code "{list}.reverse"
+    idiom "expression"
+      case
+        for "sum"
+        code "{list}.sum"
+      case
+        for "product"
+        code "{list}.product"
+      case
+        for "minimum"
+        code "{list}.min"
+      case
+        for "maximum"
+        code "{list}.max"
+  language "kotlin"
+    scaffold "list_transformation"
+      code 'fun main() {\n    val {list} = listOf({literal})\n    val {transformed} = {action}\n    println({transformed}.joinToString(", "))\n}'
+    scaffold "list_reduction"
+      code 'fun main() {\n    val {list} = listOf({literal})\n    val {reduced} = {expression}\n    println({reduced})\n}'
+    idiom "action"
+      case
+        for "sort"
+        code "{list}.sorted()"
+      case
+        for "reverse_sort"
+        code "{list}.sortedDescending()"
+      case
+        for "reverse"
+        code "{list}.reversed()"
+    idiom "expression"
+      case
+        for "sum"
+        code "{list}.sum()"
+      case
+        for "product"
+        code "{list}.fold(1) { acc, n -> acc * n }"
+      case
+        for "minimum"
+        code "{list}.minOrNull()"
+      case
+        for "maximum"
+        code "{list}.maxOrNull()"
   coding_meta_algorithm problem_class_to_shared_ir_to_renderers_to_verification
     stage_evidence "{stage} output={output} verifier={verifier}"
     surface_evidence "{surface} projection={projection}"

@@ -2,7 +2,7 @@ write_program
   intent write_program
   parameters "language, task"
   tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci")
-  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby")
+  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby" "scala" "kotlin")
   source "local public-domain seed templates"
 task_hello_world
   task hello_world
@@ -108,6 +108,18 @@ template_hello_world_ruby
   task hello_world
   code_fence ruby
   code 'puts "Hello, world!"'
+template_hello_world_scala
+  intent write_program
+  language scala
+  task hello_world
+  code_fence scala
+  code 'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}'
+template_hello_world_kotlin
+  intent write_program
+  language kotlin
+  task hello_world
+  code_fence kotlin
+  code 'fun main() {\n    println("Hello, world!")\n}'
 template_count_to_three_python
   intent write_program
   language python
@@ -204,6 +216,18 @@ template_list_files_ruby
   task list_files
   code_fence ruby
   code 'names = Dir.entries(".").select { |name| File.file?(name) }.sort\nnames.each { |name| puts name }'
+template_list_files_scala
+  intent write_program
+  language scala
+  task list_files
+  code_fence scala
+  code 'import java.io.File\n\nobject Main {\n  def main(args: Array[String]): Unit = {\n    val entries = Option(new File(".").listFiles()).getOrElse(Array.empty[File])\n    entries.filter(_.isFile).map(_.getName).sorted.foreach(println)\n  }\n}'
+template_list_files_kotlin
+  intent write_program
+  language kotlin
+  task list_files
+  code_fence kotlin
+  code 'import java.io.File\n\nfun main() {\n    val entries = File(".").listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }\n}'
 template_list_files_arg_rust
   intent write_program
   language rust
@@ -264,6 +288,18 @@ template_list_files_arg_ruby
   task list_files_arg
   code_fence ruby
   code 'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }'
+template_list_files_arg_scala
+  intent write_program
+  language scala
+  task list_files_arg
+  code_fence scala
+  code 'import java.io.File\n\nobject Main {\n  def main(args: Array[String]): Unit = {\n    val path = if (args.nonEmpty) args(0) else "."\n    val entries = Option(new File(path).listFiles()).getOrElse(Array.empty[File])\n    entries.filter(_.isFile).map(_.getName).sorted.foreach(println)\n  }\n}'
+template_list_files_arg_kotlin
+  intent write_program
+  language kotlin
+  task list_files_arg
+  code_fence kotlin
+  code 'import java.io.File\n\nfun main(args: Array<String>) {\n    val path = if (args.isNotEmpty()) args[0] else "."\n    val entries = File(path).listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }\n}'
 template_list_files_reverse_sort_rust
   intent write_program
   language rust
@@ -324,6 +360,18 @@ template_list_files_reverse_sort_ruby
   task list_files_reverse_sort
   code_fence ruby
   code 'names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse\nnames.each { |name| puts name }'
+template_list_files_reverse_sort_scala
+  intent write_program
+  language scala
+  task list_files_reverse_sort
+  code_fence scala
+  code 'import java.io.File\n\nobject Main {\n  def main(args: Array[String]): Unit = {\n    val entries = Option(new File(".").listFiles()).getOrElse(Array.empty[File])\n    entries.filter(_.isFile).map(_.getName).sorted.reverse.foreach(println)\n  }\n}'
+template_list_files_reverse_sort_kotlin
+  intent write_program
+  language kotlin
+  task list_files_reverse_sort
+  code_fence kotlin
+  code 'import java.io.File\n\nfun main() {\n    val entries = File(".").listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }\n}'
 template_list_files_arg_reverse_sort_rust
   intent write_program
   language rust
@@ -384,6 +432,18 @@ template_list_files_arg_reverse_sort_ruby
   task list_files_arg_reverse_sort
   code_fence ruby
   code 'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse\nnames.each { |name| puts name }'
+template_list_files_arg_reverse_sort_scala
+  intent write_program
+  language scala
+  task list_files_arg_reverse_sort
+  code_fence scala
+  code 'import java.io.File\n\nobject Main {\n  def main(args: Array[String]): Unit = {\n    val path = if (args.nonEmpty) args(0) else "."\n    val entries = Option(new File(path).listFiles()).getOrElse(Array.empty[File])\n    entries.filter(_.isFile).map(_.getName).sorted.reverse.foreach(println)\n  }\n}'
+template_list_files_arg_reverse_sort_kotlin
+  intent write_program
+  language kotlin
+  task list_files_arg_reverse_sort
+  code_fence kotlin
+  code 'import java.io.File\n\nfun main(args: Array<String>) {\n    val path = if (args.isNotEmpty()) args[0] else "."\n    val entries = File(path).listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }\n}'
 template_fizzbuzz_rust
   intent write_program
   language rust
@@ -444,6 +504,18 @@ template_fizzbuzz_ruby
   task fizzbuzz
   code_fence ruby
   code '(1..15).each do |number|\n  if (number % 15).zero?\n    puts "FizzBuzz"\n  elsif (number % 3).zero?\n    puts "Fizz"\n  elsif (number % 5).zero?\n    puts "Buzz"\n  else\n    puts number\n  end\nend'
+template_fizzbuzz_scala
+  intent write_program
+  language scala
+  task fizzbuzz
+  code_fence scala
+  code 'object Main {\n  def main(args: Array[String]): Unit = {\n    for (number <- 1 to 15) {\n      if (number % 15 == 0) {\n        println("FizzBuzz")\n      } else if (number % 3 == 0) {\n        println("Fizz")\n      } else if (number % 5 == 0) {\n        println("Buzz")\n      } else {\n        println(number)\n      }\n    }\n  }\n}'
+template_fizzbuzz_kotlin
+  intent write_program
+  language kotlin
+  task fizzbuzz
+  code_fence kotlin
+  code 'fun main() {\n    for (number in 1..15) {\n        when {\n            number % 15 == 0 -> println("FizzBuzz")\n            number % 3 == 0 -> println("Fizz")\n            number % 5 == 0 -> println("Buzz")\n            else -> println(number)\n        }\n    }\n}'
 template_factorial_rust
   intent write_program
   language rust
@@ -504,6 +576,18 @@ template_factorial_ruby
   task factorial
   code_fence ruby
   code "result = (1..5).reduce(1, :*)\nputs result"
+template_factorial_scala
+  intent write_program
+  language scala
+  task factorial
+  code_fence scala
+  code 'object Main {\n  def main(args: Array[String]): Unit = {\n    var result: Long = 1\n    for (number <- 1 to 5) {\n      result *= number\n    }\n    println(result)\n  }\n}'
+template_factorial_kotlin
+  intent write_program
+  language kotlin
+  task factorial
+  code_fence kotlin
+  code 'fun main() {\n    var result = 1L\n    for (number in 1..5) {\n        result *= number\n    }\n    println(result)\n}'
 template_reverse_string_rust
   intent write_program
   language rust
@@ -564,6 +648,18 @@ template_reverse_string_ruby
   task reverse_string
   code_fence ruby
   code 'text = "hello"\nputs text.reverse'
+template_reverse_string_scala
+  intent write_program
+  language scala
+  task reverse_string
+  code_fence scala
+  code 'object Main {\n  def main(args: Array[String]): Unit = {\n    val text = "hello"\n    println(text.reverse)\n  }\n}'
+template_reverse_string_kotlin
+  intent write_program
+  language kotlin
+  task reverse_string
+  code_fence kotlin
+  code 'fun main() {\n    val text = "hello"\n    println(text.reversed())\n}'
 template_sum_to_ten_rust
   intent write_program
   language rust
@@ -624,6 +720,18 @@ template_sum_to_ten_ruby
   task sum_to_ten
   code_fence ruby
   code "total = (1..10).sum\nputs total"
+template_sum_to_ten_scala
+  intent write_program
+  language scala
+  task sum_to_ten
+  code_fence scala
+  code 'object Main {\n  def main(args: Array[String]): Unit = {\n    val total = (1 to 10).sum\n    println(total)\n  }\n}'
+template_sum_to_ten_kotlin
+  intent write_program
+  language kotlin
+  task sum_to_ten
+  code_fence kotlin
+  code 'fun main() {\n    val total = (1..10).sum()\n    println(total)\n}'
 template_fibonacci_rust
   intent write_program
   language rust
@@ -684,3 +792,15 @@ template_fibonacci_ruby
   task fibonacci
   code_fence ruby
   code "def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)"
+template_fibonacci_scala
+  intent write_program
+  language scala
+  task fibonacci
+  code_fence scala
+  code 'object Main {\n  def fibonacci(n: Int): Long =\n    if (n <= 2) 1 else fibonacci(n - 1) + fibonacci(n - 2)\n\n  def main(args: Array[String]): Unit = {\n    println(fibonacci(10))\n  }\n}'
+template_fibonacci_kotlin
+  intent write_program
+  language kotlin
+  task fibonacci
+  code_fence kotlin
+  code 'fun fibonacci(n: Int): Long =\n    if (n <= 2) 1 else fibonacci(n - 1) + fibonacci(n - 2)\n\nfun main() {\n    println(fibonacci(10))\n}'

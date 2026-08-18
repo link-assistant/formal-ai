@@ -194,6 +194,11 @@ meanings
     lexeme en
       surface
         text "kebab"
+  kotlin
+    defined-by programming_language
+    lexeme en
+      surface
+        text "kotlin"
   lexeme_import_missing_label
     defined-by intent
     lexeme en
@@ -514,6 +519,11 @@ meanings
     lexeme en
       surface
         text "response general plan repository evidence zh"
+  response_general_plan_repository_read_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read hi"
   response_general_plan_verification_mismatch_en
     defined-by response_template
     lexeme en

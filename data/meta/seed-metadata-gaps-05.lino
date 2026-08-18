@@ -367,6 +367,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "decompose_into_leaf"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b15d7b535db773f5
+    source "data/seed/closure-generated-09.lino"
+    record "kotlin"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d05f9d5d710d4a35
     source "data/seed/closure-generated-09.lino"
     record "narrated"
@@ -594,6 +598,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_2a65400698cea205
     source "data/seed/closure-generated-14.lino"
     record "response_fact_check_statement_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1122c0d3f8d239b5
+    source "data/seed/closure-generated-14.lino"
+    record "response_general_plan_repository_read_evidence_zh"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_22f3e3164d834d05
     source "data/seed/closure-generated-14.lino"
