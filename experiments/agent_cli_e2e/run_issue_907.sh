@@ -65,7 +65,7 @@ export GEMINI_CLI_TRUST_WORKSPACE=true
 # and the one README.md documents; the CLI appends /v1beta/models/… to it.
 export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:$PORT/api/gemini"
 
-cd "$PROJECT_DIR"
+cd "$PROJECT_DIR" || exit 1
 
 # Private, empty memory per run (issue #828) and no background compaction, so
 # this leg's planning is independent of what other E2E scripts recorded.

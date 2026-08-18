@@ -32,7 +32,7 @@ GIST_DIR="$WORKDIR/gists"
 GITHUB_BODY_LIMIT=65536
 
 mkdir -p "$FAKE_BIN" "$GIST_DIR"
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 # The MCP timeouts below are load-bearing: without `tool_call_timeout`/
 # `mcp_defaults` the Agent CLI computes its per-tool deadline as `NaN` and a
