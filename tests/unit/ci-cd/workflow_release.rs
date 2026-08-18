@@ -575,9 +575,9 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
 /// them -- so they are left as they are rather than "fixed" against a fault
 /// they do not have.
 ///
-/// `mcp_defaults` is added for the Agent CLI only. OpenCode reads the same
+/// `mcp_defaults` is added for the Agent CLI only. `OpenCode` reads the same
 /// file and validates it against its own schema, which rejects that key
-/// outright ("Configuration is invalid ... Unrecognized key: mcp_defaults"),
+/// outright ("Configuration is invalid ... Unrecognized key: `mcp_defaults`"),
 /// so writing it unconditionally trades one red client for another.
 #[test]
 fn the_research_harness_declares_an_mcp_tool_call_timeout() {
