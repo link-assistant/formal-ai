@@ -34,11 +34,6 @@ GITHUB_BODY_LIMIT=65536
 mkdir -p "$FAKE_BIN" "$GIST_DIR"
 cd "$WORKDIR" || exit 1
 
-# The MCP timeouts below are load-bearing: without `tool_call_timeout`/
-# `mcp_defaults` the Agent CLI computes its per-tool deadline as `NaN` and a
-# call that would return in milliseconds aborts with `timed out after NaN
-# seconds`. Observed on run_issue_781.sh in CI run 32107664418; the same shape
-# is fixed here before it can fire. Values match run_issue_707.sh.
 cat > opencode.json <<EOF
 {
   "\$schema": "https://opencode.ai/config.json",
@@ -59,13 +54,8 @@ cat > opencode.json <<EOF
     "issue771": {
       "type": "local",
       "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
-      "enabled": true,
-      "tool_call_timeout": 120000
+      "enabled": true
     }
-  },
-  "mcp_defaults": {
-    "tool_call_timeout": 120000,
-    "max_tool_call_timeout": 600000
   },
   "tools": {
     "websearch": false,
