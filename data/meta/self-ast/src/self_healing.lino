@@ -2,25 +2,26 @@ self_ast_census
   target src/self_healing.rs
   language rust
   fidelity signature
-  byte_len 13305
-  line_count 310
-  content_id source_module_444e90593e01e8e0
-  symbol_count 17
+  byte_len 13981
+  line_count 323
+  content_id source_module_086537aa1b190421
+  symbol_count 18
   symbols
-    struct SourceRoundTrip 40 49
-    function for_module 55 66
-    function for_pinned_target 72 74
-    enum RepairOutcome 80 90
-    function slug 95 101
-    function has_reviewable_proposal 105 107
-    struct RepairCase 118 131
-    function from_trace 137 165
-    function is_human_gated 171 173
-    function summary 177 199
-    function links_notation 204 232
-    function canonical_failure_trace 242 262
-    function canonical_case 272 278
-    function field 280 282
-    function nested 284 286
-    function push_indented 292 301
-    function quote 303 310
+    struct SourceRoundTrip 41 50
+    function for_module 56 67
+    function for_pinned_target 80 87
+    static PINNED_ROUND_TRIP 81 81
+    enum RepairOutcome 93 103
+    function slug 108 114
+    function has_reviewable_proposal 118 120
+    struct RepairCase 131 144
+    function from_trace 150 178
+    function is_human_gated 184 186
+    function summary 190 212
+    function links_notation 217 245
+    function canonical_failure_trace 255 275
+    function canonical_case 285 291
+    function field 293 295
+    function nested 297 299
+    function push_indented 305 314
+    function quote 316 323

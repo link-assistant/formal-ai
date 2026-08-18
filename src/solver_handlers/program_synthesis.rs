@@ -552,7 +552,7 @@ fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
 fn render_python_answer(candidate: &PythonCandidate) -> String {
     let code = candidate.function.render();
     format!(
-        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.",
+        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.",
         code,
         candidate.tests.len(),
         candidate.tests.len()

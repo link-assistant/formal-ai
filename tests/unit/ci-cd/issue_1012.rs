@@ -28,16 +28,19 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(test.contains("test-suite: specification"));
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-    for shard in 1..=12 {
+    // Issue #1017 raised the slice count from 12 to 16 and both caps with it;
+    // `issue_1017::macos_slices_cover_every_partition_of_their_denominator`
+    // keeps the matrix and the `slice:` denominator in step from here on.
+    for shard in 1..=16 {
         assert!(
             macos.contains(&format!("- {{ partition: {shard} }}")),
             "missing macOS core shard {shard}"
         );
     }
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/12\""));
-    assert!(macos.contains("timeout-minutes: 25"));
-    assert!(macos.contains("timeout-minutes: 10"));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
+    assert!(macos.contains("timeout-minutes: 30"));
+    assert!(macos.contains("timeout-minutes: 15"));
     assert!(!macos.contains("2100"));
     assert!(macos.contains("taiki-e/install-action@nextest"));
     assert!(macos.contains("scripts/run-with-budget-warning.sh"));
@@ -64,9 +67,14 @@ fn budget_warning_is_live_instead_of_post_process() {
         "{}/scripts/run-with-budget-warning.sh",
         env!("CARGO_MANIFEST_DIR")
     );
+    // Issue #1017 made the wrapper enforce the budget it warns about, so the
+    // command has to stay inside it for this case to be about the warning
+    // alone: warn at 30% of 4s, finish at 2s. Enforcement has its own coverage
+    // in `issue_1017::budget_wrapper_terminates_the_overrun_and_reports_it_as_an_error`.
     let output = Command::new("bash")
         .arg(script)
-        .args(["1", "Slow regression test", "bash", "-c", "sleep 2"])
+        .env("TEST_WARN_RATIO_PERCENT", "30")
+        .args(["4", "Slow regression test", "bash", "-c", "sleep 2"])
         .output()
         .expect("run budget warning wrapper");
 

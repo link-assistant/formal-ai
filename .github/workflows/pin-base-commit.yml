@@ -1,0 +1,43 @@
+name: Pin base commit
+
+# Issue #1017 (D19): every job that merges the base branch must merge the SAME
+# commit. `scripts/simulate-fresh-merge.sh` merges `origin/$BASE_REF`, and each
+# job used to resolve that reference at its own start time. Jobs in one run
+# start minutes to an hour apart -- the six desktop packaging legs of run
+# 31993872684 started across 62 minutes -- so a single push to the base branch
+# mid-run gave them different merged trees. A gate could then pass against a
+# tree no other gate ever saw, and a release set could mix artifacts built from
+# different sources. Only the macOS lane compared trees across jobs, so only
+# there was the divergence visible at all.
+#
+# This lives in its own reusable workflow rather than as a job in each caller so
+# the two callers share one definition, and so `release.yml` -- which sits
+# against the 1500-line warning band that issue #999 and issue #1012 both pin --
+# does not have to pay for it.
+
+on:
+  workflow_call:
+    outputs:
+      commit:
+        description: The base-branch commit every job in the calling run must merge.
+        value: ${{ jobs.pin.outputs.commit }}
+
+permissions:
+  contents: read
+
+jobs:
+  pin:
+    name: Pin base commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only pull requests merge a base branch; a push or tag build has nothing
+    # to pin, and the callers guard their merge steps the same way.
+    if: github.event_name == 'pull_request'
+    outputs:
+      commit: ${{ steps.pin.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: pin
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/pin-base-commit.sh

@@ -52,10 +52,43 @@ fn desktop_build_budget_covers_the_measured_windows_arm64_path() {
         .and_then(|tail| tail.split("\n  vscode:\n").next())
         .expect("desktop build job");
 
+    // Issue #1017 moved the cap into the matrix (`capmin`) so the packaging
+    // retry guard can be derived from the same number instead of a second copy
+    // of it. The guarantee this test exists for is unchanged and is asserted
+    // against the values themselves rather than against one expression's
+    // spelling: every target keeps headroom above the repeated 30-minute
+    // Windows ARM64 path, and the three targets that were cancelled at 40
+    // minutes keep the 50 they were raised to.
     assert!(
-        build.contains("    timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}\n"),
-        "the desktop matrix must keep headroom above the repeated 30-minute Windows ARM64 path"
+        build.contains("    timeout-minutes: ${{ matrix.capmin }}\n"),
+        "the desktop build job must stay bounded by its matrix cap"
     );
+
+    let mut seen = 0;
+    for entry in build.lines().filter(|line| line.contains("capmin:")) {
+        let label = entry
+            .split("label: \"")
+            .nth(1)
+            .and_then(|tail| tail.split('"').next())
+            .unwrap_or_else(|| panic!("matrix entry without a label: {entry}"));
+        let capmin: u32 = entry
+            .split("capmin:")
+            .nth(1)
+            .map(|tail| tail.trim_start().trim_end_matches([' ', '}']).trim())
+            .and_then(|value| value.parse().ok())
+            .unwrap_or_else(|| panic!("matrix entry without a numeric capmin: {entry}"));
+        let expected = if label == "macos-x64" || label.starts_with("windows-") {
+            50
+        } else {
+            40
+        };
+        assert_eq!(
+            capmin, expected,
+            "{label} must keep its measured headroom above the 30-minute path"
+        );
+        seen += 1;
+    }
+    assert_eq!(seen, 6, "every packaged target must carry an explicit cap");
 }
 
 #[test]

@@ -2,59 +2,61 @@ self_ast_census
   target src/agent.rs
   language rust
   fidelity signature
-  byte_len 22657
-  line_count 681
-  content_id source_module_fbbed893ae3dd888
-  symbol_count 51
+  byte_len 26191
+  line_count 746
+  content_id source_module_beb4cffa72ca90cd
+  symbol_count 53
   symbols
-    static WORKSPACE_SEQ 23 23
-    const DEFAULT_AGENT_TIME_BUDGET 25 25
-    const PYTHON_TIME_BUDGET_FLOOR 26 26
-    struct AgentWorkspaceConfig 29 32
-    function default 35 40
-    struct AgentRun 44 49
-    enum AgentRunStatus 52 55
-    struct AgentAction 58 63
-    function event_kind 67 74
-    function evidence_payload 77 79
-    enum AgentActionKind 83 88
-    enum AgentActionStatus 91 94
-    function slug 98 103
-    struct AgentCommandResult 107 113
-    enum PlannedAgentAction 116 121
-    enum AgentError 124 129
-    function fmt 132 143
-    function from 149 151
-    struct AgentWorkspace 154 160
-    function for_prompt 163 184
-    function root 187 189
-    function last_command_result 198 200
-    function create_file 202 205
-    function modify_file 207 210
-    function delete_file 212 217
-    function run_command 219 252
-    function finish 255 266
-    function write_file 268 275
-    function record_fs_action 277 300
-    function workspace_path 302 313
-    function run_command_inner 315 363
-    function run_builtin_command 365 385
-    function read_command_files 387 396
-    function list_command_directory 398 415
-    function parse_agent_plan 419 428
-    function run_agent_plan 430 450
-    function collect_create_actions 452 483
-    function collect_modify_actions 485 519
-    function collect_delete_actions 521 549
-    function collect_command_actions 551 582
-    function backticked_after 584 589
-    function delete_path_len 591 599
-    function split_command 601 608
-    function resolve_allowed_program 610 625
-    function resolve_allowed_program_from_path 627 630
-    function resolve_program_from_path_names 632 645
-    function path_search_names 647 653
-    function is_blocked_execution_alias 655 661
-    function effective_command_time_budget 663 669
-    function command_timed_out 671 673
-    function looks_like_workspace_path 675 681
+    static WORKSPACE_SEQ 25 25
+    const DEFAULT_AGENT_TIME_BUDGET 27 27
+    const PYTHON_TIME_BUDGET_FLOOR 49 49
+    struct AgentWorkspaceConfig 52 55
+    function default 58 63
+    struct AgentRun 67 72
+    enum AgentRunStatus 75 78
+    struct AgentAction 81 86
+    function event_kind 90 97
+    function evidence_payload 100 102
+    enum AgentActionKind 106 111
+    enum AgentActionStatus 114 117
+    function slug 121 126
+    struct AgentCommandResult 130 136
+    enum PlannedAgentAction 139 144
+    enum AgentError 147 152
+    function fmt 155 166
+    function from 172 174
+    struct AgentWorkspace 177 183
+    function for_prompt 186 207
+    function root 210 212
+    function last_command_result 221 223
+    function create_file 225 228
+    function modify_file 230 233
+    function delete_file 235 240
+    function run_command 242 275
+    function finish 278 289
+    function write_file 291 298
+    function record_fs_action 300 323
+    function workspace_path 325 336
+    function run_command_inner 338 391
+    function run_builtin_command 393 413
+    function read_command_files 415 424
+    function list_command_directory 426 443
+    function parse_agent_plan 447 456
+    function run_agent_plan 458 478
+    function collect_create_actions 480 511
+    function collect_modify_actions 513 547
+    function collect_delete_actions 549 577
+    function collect_command_actions 579 610
+    function backticked_after 612 617
+    function delete_path_len 619 627
+    function split_command 629 636
+    function resolve_allowed_program 638 653
+    function resolve_allowed_program_from_path 655 658
+    function resolve_program_from_path_names 660 673
+    function path_search_names 675 681
+    function is_blocked_execution_alias 683 689
+    function effective_command_time_budget 691 697
+    function command_environment 713 713
+    function trace_command 725 734
+    function command_timed_out 736 738
+    function looks_like_workspace_path 740 746

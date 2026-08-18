@@ -207,6 +207,15 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-version-modification.rs
+  # Issue #1017 (D19): one commit for every base-branch merge in this run.
+  base:
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-base
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    uses: ./.github/workflows/pin-base-commit.yml
+    permissions:
+      contents: read
+
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
@@ -214,7 +223,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes]
+    needs: [detect-changes, base]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -232,6 +241,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -298,11 +308,14 @@ jobs:
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    # Issue #1017: run 31937348472 used 1415s of a 1500s cap with 455s outside
+    # the budgeted step, so the 1200s budget could never expire first. The cap
+    # is the backstop; the budget is the deadline.
+    timeout-minutes: 35
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes]
+    needs: [detect-changes, base]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -325,6 +338,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
@@ -378,7 +392,13 @@ jobs:
         run: scripts/prune-build-cache.sh
   macos-core-tests:
     name: macOS Core Tests
-    needs: [detect-changes]
+    needs: [detect-changes, base]
+    # Issue #1017: the heaviest lane here (one archive build plus sixteen Intel
+    # macOS slices at 10x the Linux rate) had no concurrency group, so a second
+    # push doubled it. `main` never cancels, keeping issue #977's rule intact.
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -388,6 +408,9 @@ jobs:
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     uses: ./.github/workflows/macos-core-tests.yml
+    # Issue #1017: archive and slices must merge the same base commit.
+    with:
+      base-commit: ${{ needs.base.outputs.commit }}
     permissions:
       contents: read
   build:
@@ -1480,7 +1503,7 @@ jobs:
     timeout-minutes: 5
     if: always()
     needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
-            version-check, lint, test, macos-core-tests, build, auto-release, manual-release,
+            version-check, base, lint, test, macos-core-tests, build, auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
             build-box-language-binary, box-language-projects, deploy-pages,
             test-e2e-pages]

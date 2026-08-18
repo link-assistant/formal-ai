@@ -19,16 +19,17 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
 
     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
     assert!(test.contains("test-suite: full"));
-    for shard in 1..=12 {
+    // Issue #1017 raised the slice count to 16 and the caps with it.
+    for shard in 1..=16 {
         assert!(macos.contains(&format!("- {{ partition: {shard} }}")));
     }
     assert!(test.contains("test-suite: specification"));
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-    assert!(macos.contains("timeout-minutes: 25"));
+    assert!(macos.contains("timeout-minutes: 30"));
     assert!(macos.contains("cargo nextest archive"));
     assert!(macos.contains("cargo nextest run --archive-file"));
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/12\""));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
     assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
     assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));
@@ -101,7 +102,10 @@ fn current_template_security_and_link_gates_are_present() {
     assert!(links.contains("--exclude-path docs/case-studies"));
     assert!(links.contains("--exclude-path dev/log"));
     assert!(links.contains("node scripts/check-web-archive.mjs"));
-    assert!(links.contains("if: always() && steps.lychee.outputs.exit_code != 0"));
+    // Issue #1017 narrowed this from `always()`: a cancelled link check has no
+    // verdict to report, so it must not append a "broken links" error to a run
+    // that never finished checking them.
+    assert!(links.contains("if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}"));
     assert!(!links.contains("steps.webarchive.outputs.all_archived != 'true'"));
     assert!(
         repository_file("scripts/check-web-archive.mjs").contains("archive.org/wayback/available")

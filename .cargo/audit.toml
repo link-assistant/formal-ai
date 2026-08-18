@@ -1,0 +1,25 @@
+# Configuration for `cargo audit`, run by `scripts/check-rust-dependencies.sh`.
+# Every entry in `ignore` must be paired with an `unreachable` proof line of the
+# form
+#
+#     # <ADVISORY-ID> unreachable = "<crate>@<version>"
+#
+# `scripts/check-rust-dependencies.sh` re-derives that proof on every run with
+# `cargo tree --invert`, so an ignore expires by itself the moment the crate
+# enters the build graph. An ignore without a proof line is a hard error.
+#
+# RUSTSEC-2026-0235 unreachable = "rkyv@0.7.46"
+#   `rkyv` 0.7.46 is listed in `Cargo.lock` only because `rust_decimal` 1.42.1
+#   declares it as `optional = true` behind its `rkyv` feature, which nothing in
+#   this workspace enables. `cargo audit` reads the lockfile, which records
+#   optional dependencies whether or not any feature activates them, so the
+#   advisory is a false positive here: the vulnerable code is never compiled or
+#   linked. Verified with
+#
+#       cargo tree --locked --target all --all-features --edges all \
+#         --invert rkyv@0.7.46      # -> "warning: nothing to print."
+#
+#   The workspace's own `rkyv` is 0.8.17 (via `lindera-dictionary` and
+#   `rtc-dtls`), which is past the advisory's `>=0.8.17` fix.
+[advisories]
+ignore = ["RUSTSEC-2026-0235"]

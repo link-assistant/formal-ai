@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/program_synthesis.rs
   language rust
   fidelity signature
-  byte_len 22065
+  byte_len 22111
   line_count 658
-  content_id source_module_ba0978a8c74ec82f
+  content_id source_module_b0d1595299170fa0
   symbol_count 33
   symbols
     struct PythonCandidate 9 14

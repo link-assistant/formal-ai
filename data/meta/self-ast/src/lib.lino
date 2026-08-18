@@ -2,9 +2,9 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 22735
+  byte_len 22769
   line_count 501
-  content_id source_module_5ce779179b3e3e55
+  content_id source_module_e30d4c5603175594
   symbol_count 173
   symbols
     module agent 3 3

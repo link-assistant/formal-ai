@@ -1,0 +1,6 @@
+      2 run-31937348472.log	##[warning]The command is still running after 360s (75% of its 480s execution budget). Speed up or repartition it before the job reports a timeout as a cancellation.
+      1 run-31937348472.log	##[warning]The command is still running after 840s (70% of its 1200s execution budget). Speed up or repartition it before the job reports a timeout as a cancellation.
+      1 run-31937348472.log	##[warning]Rust file has 904 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+      1 run-31937348472.log	##[error]The operation was canceled.
+      1 run-31937348472.log	##[error]Process completed with exit code 1.
+      1 run-31937348472.log	##[error]Pipeline has cancelled jobs on main: macos-core-tests. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded t

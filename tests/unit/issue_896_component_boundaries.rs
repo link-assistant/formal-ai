@@ -217,10 +217,51 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
     ))
     .expect("desktop release workflow");
 
+    // Issue #1017 moved the cap out of an inline expression and into the matrix
+    // (`capmin`), so the macOS packaging retry guard can be derived from the same
+    // number instead of a second copy of it. The guarantee issue #896 needs is
+    // unchanged, so it is asserted against the values rather than against one
+    // expression's spelling: the job is bounded by its matrix cap, every packaged
+    // target carries one, and the three legs that pay for the published crates'
+    // unconditional graph carry strictly more headroom than the rest.
     assert!(
-        workflow.contains("timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}"),
+        workflow.contains("    timeout-minutes: ${{ matrix.capmin }}\n"),
+        "the desktop build job must stay bounded by a cap it declares"
+    );
+
+    let mut heavy = Vec::new();
+    let mut light = Vec::new();
+    for entry in workflow.lines().filter(|line| line.contains("capmin:")) {
+        let label = entry
+            .split("label: \"")
+            .nth(1)
+            .and_then(|tail| tail.split('"').next())
+            .unwrap_or_else(|| panic!("matrix entry without a label: {entry}"));
+        let capmin: u32 = entry
+            .split("capmin:")
+            .nth(1)
+            .map(|tail| tail.trim_start().trim_end_matches([' ', '}']).trim())
+            .and_then(|value| value.parse().ok())
+            .unwrap_or_else(|| panic!("matrix entry without a numeric capmin: {entry}"));
+        if label == "macos-x64" || label.starts_with("windows-") {
+            heavy.push((label.to_string(), capmin));
+        } else {
+            light.push((label.to_string(), capmin));
+        }
+    }
+
+    assert_eq!(
+        heavy.len(),
+        3,
+        "macOS x64 and both Windows targets must each declare a cap"
+    );
+    assert!(!light.is_empty(), "the remaining targets must declare caps");
+    let smallest_heavy = heavy.iter().map(|(_, cap)| *cap).min().expect("heavy caps");
+    let largest_light = light.iter().map(|(_, cap)| *cap).max().expect("light caps");
+    assert!(
+        smallest_heavy > largest_light,
         "macOS x64 and both Windows targets need bounded headroom for the published crates' \
-         unconditional graph"
+         unconditional graph, but the caps are {heavy:?} against {light:?}"
     );
 }
 

@@ -127,7 +127,23 @@ jobs:
         # The GUI clients (VS Code extension host, OpenCode Desktop's Electron
         # shell, Cursor) need a display server. docs/case-studies/issue-762
         # records the same setup for the desktop AppImage.
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb
+        #
+        # Issue #1017: budgeted because this step is a *network* operation with
+        # no deadline of its own. In run 32050028114 `E2E (opencode-vscode)`
+        # sat in `apt-get update` until the 25-minute job cap killed it, and
+        # GitHub reports that kill as `cancelled` -- so a hung mirror surfaced
+        # as a benign-looking cancellation rather than a failure, which is the
+        # exact false negative this issue exists to remove. The sibling GUI
+        # legs (`cursor`, `opencode-desktop`) ran the same step successfully in
+        # the same run, so the hang is transient and upstream; what was missing
+        # is a deadline that expires before the job clock and says so.
+        env:
+          TEST_BUDGET_SECONDS: 300
+          TEST_WARN_RATIO_PERCENT: 60
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Install Xvfb"
+          bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq xvfb'
 
       - name: Pin Node for clients with native addons
         if: matrix.installer == 'npm-native'
@@ -272,6 +288,11 @@ jobs:
     name: Matrix summary
     needs: [matrix, replay, learn]
     runs-on: ubuntu-latest
+    # Issue #1017: the only job in the repository without a cap. It inherits
+    # GitHub's 360-minute default, so a runner that wedges while evaluating this
+    # gate holds a billable job for six hours and reports `cancelled` at the end.
+    # Three string comparisons need seconds.
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Fail if any leg failed

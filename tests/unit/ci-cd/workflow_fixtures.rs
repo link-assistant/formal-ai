@@ -87,7 +87,13 @@ pub fn workflow_job_names(workflow: &str) -> Vec<&str> {
         .lines()
         .filter_map(|line| {
             let starts_at_job_indent = line.starts_with("  ") && !line.starts_with("    ");
-            (starts_at_job_indent && line.trim_end().ends_with(':'))
+            // A comment at job indentation is not a job. Issue #1017: a prose
+            // line that happened to end in a colon was parsed as one, which
+            // made every job-sweeping contract fail against a phantom job whose
+            // "name" was the sentence -- an error that points at the wrong
+            // thing entirely and takes a CI round trip to see.
+            let is_comment = line.trim_start().starts_with('#');
+            (starts_at_job_indent && !is_comment && line.trim_end().ends_with(':'))
                 .then(|| line.trim().trim_end_matches(':'))
         })
         .collect()

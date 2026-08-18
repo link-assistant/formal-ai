@@ -1062,7 +1062,7 @@ src/solver_handlers/playwright_script.rs	\nУточните URL, действи�
 src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-пример по документации Playwright.\n\n
 src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
 src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
-src/solver_handlers/program_synthesis.rs	Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.
+src/solver_handlers/program_synthesis.rs	Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.
 src/solver_handlers/program_synthesis.rs	\n\nif __name__ == \"__main__\":\n
 src/solver_handlers/program_synthesis.rs	command={} exit={:?} timed_out={} stdout_bytes={} stderr_bytes={}
 src/solver_handlers/program_synthesis.rs	language=python function={function_name}

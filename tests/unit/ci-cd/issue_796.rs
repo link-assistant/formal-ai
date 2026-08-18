@@ -24,7 +24,10 @@ fn script() -> String {
 
 /// Builds a sandbox holding a fake `npm` that emits `stderr_lines`, so the
 /// classifier can be exercised without touching the network.
-fn sandbox(stderr_lines: &str) -> PathBuf {
+///
+/// Shared with issue #1017, which drives the same classifier with npm 11's
+/// `allow-scripts` advisory.
+pub(super) fn sandbox(stderr_lines: &str) -> PathBuf {
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("clock must be after epoch")
@@ -50,7 +53,7 @@ fn sandbox(stderr_lines: &str) -> PathBuf {
     dir
 }
 
-fn run_classifier(dir: &Path) -> std::process::Output {
+pub(super) fn run_classifier(dir: &Path) -> std::process::Output {
     let path = format!(
         "{}:{}",
         dir.display(),
