@@ -571,9 +571,14 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
 ///
 /// Pinned for `run_issue_781.sh` only, which is where the fault was observed.
 /// `run_issue_687.sh` and `run_issue_771.sh` look similarly exposed but have
-/// never produced a `NaN` deadline, and adding the same keys to them made
-/// `run_issue_771.sh` hang before its first request -- so they are left as
-/// they are rather than "fixed" against a fault they do not have.
+/// never produced a `NaN` deadline, and adding the same keys to them broke
+/// them -- so they are left as they are rather than "fixed" against a fault
+/// they do not have.
+///
+/// `mcp_defaults` is added for the Agent CLI only. OpenCode reads the same
+/// file and validates it against its own schema, which rejects that key
+/// outright ("Configuration is invalid ... Unrecognized key: mcp_defaults"),
+/// so writing it unconditionally trades one red client for another.
 #[test]
 fn the_research_harness_declares_an_mcp_tool_call_timeout() {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
@@ -588,8 +593,13 @@ fn the_research_harness_declares_an_mcp_tool_call_timeout() {
          timeout, or the Agent CLI computes it as NaN and aborts the call"
     );
     assert!(
-        harness.contains(r#""max_tool_call_timeout": 600000"#),
+        harness.contains("max_tool_call_timeout: 600000"),
         "run_issue_781.sh must declare mcp_defaults.max_tool_call_timeout"
+    );
+    assert!(
+        harness.contains(r#"if [ "$for_client" = agent ]"#),
+        "mcp_defaults must be written only for the Agent CLI: OpenCode reads \
+         the same file and its schema rejects that key"
     );
 }
 
