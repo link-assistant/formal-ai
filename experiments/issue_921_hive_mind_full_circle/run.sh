@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# Issue #921: drive a real Hive Mind `solve` against a formal-ai server and
+# assert the full circle closes -- the gate for hive-mind#2158's vision.
+#
+# The CI caller pins `@link-assistant/hive-mind@2.12.5` because that is the
+# first release carrying hive-mind#2159, the boundary fix for hive-mind#2158.
+# This gate runs against that boundary, so the pin may not fall back below it.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

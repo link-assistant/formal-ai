@@ -385,11 +385,6 @@ jobs:
       - name: Run doc tests
         if: matrix.test-suite == 'full'
         run: cargo test --doc --verbose
-      # Keep the saved cache at one build's artifacts; see the script's header.
-      # `!cancelled()` is required here, not a preference: issue #808.
-      - name: Prune build cache to the latest build
-        if: ${{ !cancelled() }}
-        run: scripts/prune-build-cache.sh
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes, base]
@@ -984,11 +979,6 @@ jobs:
         run: |
           bun add -g --ignore-scripts @link-assistant/agent
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
-      # 2.12.5 is the first release carrying hive-mind#2159, the boundary fix
-      # for hive-mind#2158. The full-circle gate runs against that boundary, so
-      # the pin may not fall back below it.
-      - name: Install @link-assistant/hive-mind CLI
-        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.12.5
       - name: Install external agent CLIs
         run: |
           # OpenCode's pinned postinstall selects its platform binary. Trust
@@ -1210,14 +1200,11 @@ jobs:
         run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
       - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
         run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
+      - name: Install @link-assistant/hive-mind CLI
+        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.12.5
       - name: "Run Hive Mind full-circle integration gate (issue #921)"
         timeout-minutes: 5
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PORT: 8921
-          BIN: ${{ github.workspace }}/target/release/formal-ai
-          OUT: /tmp/formal-ai-issue-921-evidence
-        run: experiments/issue_921_hive_mind_full_circle/run.sh
+        run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
       - name: "Run agent CLI E2E — promoted method learning (issue #922)"
         run: PORT=8922 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence examples/issue-922-method-learning/run.sh
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
