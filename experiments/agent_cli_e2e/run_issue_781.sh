@@ -40,8 +40,17 @@ fail() {
   exit 1
 }
 
+# Both the Agent CLI and OpenCode read this file. The MCP timeouts are not
+# optional decoration: without `tool_call_timeout`/`mcp_defaults` the Agent CLI
+# computes its per-tool deadline as `NaN`, and a tool call that would otherwise
+# return in milliseconds aborts with
+# `MCP tool "issue781_webfetch" timed out after NaN seconds`. The turn then ends
+# after one fetch and the `[ "$fetches" -ge 3 ]` assertion below fails. The
+# values match the sibling harnesses that already carry them (run_issue_707.sh,
+# run_issue_707_generalization.sh, run_issue_840.sh).
 write_opencode_config() {
   local config_port="$1"
+  local for_client="${2:-agent}"
   cat > "$WORKDIR/opencode.json" <<EOF
 {
   "\$schema": "https://opencode.ai/config.json",
@@ -62,7 +71,8 @@ write_opencode_config() {
     "issue781": {
       "type": "local",
       "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
-      "enabled": true
+      "enabled": true,
+      "tool_call_timeout": 120000
     }
   },
   "tools": {
@@ -71,6 +81,23 @@ write_opencode_config() {
   }
 }
 EOF
+
+  # `mcp_defaults` is an Agent CLI key. OpenCode validates this same file
+  # against its own schema and rejects it outright -- "Configuration is invalid
+  # ... Unrecognized key: mcp_defaults" -- so it is added only for the client
+  # that understands it.
+  if [ "$for_client" = agent ]; then
+    node -e '
+      const fs = require("fs");
+      const path = process.argv[1];
+      const config = JSON.parse(fs.readFileSync(path, "utf8"));
+      config.mcp_defaults = {
+        tool_call_timeout: 120000,
+        max_tool_call_timeout: 600000,
+      };
+      fs.writeFileSync(path, JSON.stringify(config, null, 2) + "\n");
+    ' "$WORKDIR/opencode.json"
+  fi
 }
 
 cat > "$WORKDIR/claude-mcp.json" <<EOF
@@ -109,7 +136,7 @@ run_client() {
     || fail "server never came up on port $client_port" "$client_log" "$server_log"
 
   if [ "$client" = agent ] || [ "$client" = opencode ]; then
-    write_opencode_config "$client_port"
+    write_opencode_config "$client_port" "$client"
   fi
 
   case "$client" in

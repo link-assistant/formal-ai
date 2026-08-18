@@ -17,7 +17,7 @@ FAKE_BIN="$WORKDIR/fake-bin"
 GH_LOG="$WORKDIR/gh-invocations.log"
 
 mkdir -p "$FAKE_BIN"
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 # The context limit below is a HARNESS knob (the server never enforces it) and is
 # deliberately far larger than the deterministic fixture transcript. This keeps

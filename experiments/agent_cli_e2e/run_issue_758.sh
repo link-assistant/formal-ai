@@ -28,7 +28,7 @@ mkdir -p "$WORKDIR/bin"
 printf '%s\n' '#!/usr/bin/env sh' 'echo "external gh disabled in issue #758 E2E" >&2' 'exit 1' \
   > "$WORKDIR/bin/gh"
 chmod +x "$WORKDIR/bin/gh"
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 cat > opencode.json <<EOF
 {

@@ -88,7 +88,7 @@ AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
 WORKDIR="$(mktemp -d)"
 
 echo "== workdir: $WORKDIR =="
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 # opencode.json wires the CLI to our OpenAI-compatible server under a custom
 # provider id (`formal-ai`). `npm: "@ai-sdk/openai-compatible"` picks Vercel's

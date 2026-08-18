@@ -32,7 +32,7 @@ GIST_DIR="$WORKDIR/gists"
 GITHUB_BODY_LIMIT=65536
 
 mkdir -p "$FAKE_BIN" "$GIST_DIR"
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 cat > opencode.json <<EOF
 {

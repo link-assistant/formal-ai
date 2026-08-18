@@ -563,6 +563,46 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
     }
 }
 
+/// A research harness that declares no MCP tool-call timeout makes the Agent
+/// CLI compute its per-tool deadline as `NaN`, so a call the mock answers in
+/// milliseconds aborts with `timed out after NaN seconds`. Run 32107664418
+/// failed exactly that way: `run_issue_781.sh` ended after one fetch and
+/// tripped its own `[ "$fetches" -ge 3 ]` assertion.
+///
+/// Pinned for `run_issue_781.sh` only, which is where the fault was observed.
+/// `run_issue_687.sh` and `run_issue_771.sh` look similarly exposed but have
+/// never produced a `NaN` deadline, and adding the same keys to them broke
+/// them -- so they are left as they are rather than "fixed" against a fault
+/// they do not have.
+///
+/// `mcp_defaults` is added for the Agent CLI only. `OpenCode` reads the same
+/// file and validates it against its own schema, which rejects that key
+/// outright ("Configuration is invalid ... Unrecognized key: `mcp_defaults`"),
+/// so writing it unconditionally trades one red client for another.
+#[test]
+fn the_research_harness_declares_an_mcp_tool_call_timeout() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_issue_781.sh"
+    ))
+    .expect("research E2E harness should be readable");
+
+    assert!(
+        harness.contains(r#""tool_call_timeout": 120000"#),
+        "run_issue_781.sh must give its MCP server an explicit tool-call \
+         timeout, or the Agent CLI computes it as NaN and aborts the call"
+    );
+    assert!(
+        harness.contains("max_tool_call_timeout: 600000"),
+        "run_issue_781.sh must declare mcp_defaults.max_tool_call_timeout"
+    );
+    assert!(
+        harness.contains(r#"if [ "$for_client" = agent ]"#),
+        "mcp_defaults must be written only for the Agent CLI: OpenCode reads \
+         the same file and its schema rejects that key"
+    );
+}
+
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
 /// between tool turns. If that unrelated provider is unavailable, the client
 /// exits before returning the tool result to Formal AI.
