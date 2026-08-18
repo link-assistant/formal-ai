@@ -23,6 +23,11 @@ cd "$WORKDIR"
 # deliberately far larger than the deterministic fixture transcript. This keeps
 # client-side compaction from replacing the pending report prompt, which would
 # test Agent's session maintenance instead of Formal AI's continued conversation.
+# The MCP timeouts below are load-bearing: without `tool_call_timeout`/
+# `mcp_defaults` the Agent CLI computes its per-tool deadline as `NaN` and a
+# call that would return in milliseconds aborts with `timed out after NaN
+# seconds`. Observed on run_issue_781.sh in CI run 32107664418; the same shape
+# is fixed here before it can fire. Values match run_issue_707.sh.
 cat > opencode.json <<EOF
 {
   "\$schema": "https://opencode.ai/config.json",
@@ -46,8 +51,13 @@ cat > opencode.json <<EOF
     "issue687": {
       "type": "local",
       "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
-      "enabled": true
+      "enabled": true,
+      "tool_call_timeout": 120000
     }
+  },
+  "mcp_defaults": {
+    "tool_call_timeout": 120000,
+    "max_tool_call_timeout": 600000
   },
   "tools": {
     "websearch": false,
