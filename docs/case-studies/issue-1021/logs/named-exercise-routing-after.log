@@ -1,0 +1,38 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1787114586826)
+    Finished `dev` profile [unoptimized] target(s) in 53.94s
+     Running `/tmp/target-cc/debug/examples/issue_1021_named_exercise_probe`
+=== Give me example of how to do copy stdin to stdout in Rust
+-- intent: web_search
+Web search requested for `Give me example of how to do copy stdin to stdout`.
+
+In the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an "other sources" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.
+
+Provider: duckduckgo (default)
+Providers considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews
+Combined ranking: reciprocal rank fusion (k = 60)
+
+=== Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust
+-- intent: web_search
+Web search requested for `Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout`.
+
+In the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an "other sources" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.
+
+Provider: duckduckgo (default)
+Providers considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews
+Combined ranking: reciprocal rank fusion (k = 60)
+
+=== write a program that copies stdin to stdout
+-- intent: write_program_request_unspecified
+I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.
+
+Say what the program should do and which language it should be written in, and I will derive it.
+
+=== write a Rust program that copies stdin to stdout
+-- intent: write_program_skill_gap
+I cannot write this program: no synthesis route reaches this request in language "rust".
+
+I decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.
+
+Nothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `rust`, or restate the task in steps I can already compile.
+
+exit=0

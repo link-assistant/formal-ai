@@ -76,6 +76,14 @@ ci-logs/
 # Real Agent CLI ↔ formal-ai E2E capture, committed as case-study evidence
 # (see CONTRIBUTING.md rule 8 — "Real logs in the case study, not synthesized").
 !docs/case-studies/**/*.log
+# ...and the directories that hold them. Git never descends into an excluded
+# directory, so the rule above cannot rescue a file under one: without these,
+# `git add docs/case-studies/<issue>/logs/` reports success while committing
+# nothing, and the analysis ships citing evidence no reviewer can open. Issue
+# #1021 lost a CI run to exactly that; `!dev/log/**/ci-logs/` is the same fix
+# for the same trap one directory over.
+!docs/case-studies/**/logs/
+!docs/case-studies/**/ci-logs/
 
 # Development-log CI evidence, committed alongside the analysis that cites it
 # (see dev/log/issues/*/pulls/*/ci-logs/README.md).
