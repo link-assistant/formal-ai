@@ -839,6 +839,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "external_benchmark_swe_exit_error"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_46f9751d00f3c3bf
+    source "data/seed/closure-generated-16.lino"
+    record "listar"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_16f0eb1f43196a2f
     source "data/seed/closure-generated-16.lino"
     record "pattern_concept_prefix_who_was"

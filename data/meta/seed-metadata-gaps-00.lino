@@ -23,6 +23,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "lexeme_import_invalid_slug"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ee49f6061dd09370
+    source "data/seed/closure-generated-01.lino"
+    record "mostrar"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_82824bdc60445860
     source "data/seed/closure-generated-01.lino"
     record "pattern_concept_prefix_shenmejiao"
@@ -818,6 +822,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_02543a26d1a88ba0
     source "data/seed/closure-generated-15.lino"
     record "mkdir"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3aca05d72790c950
+    source "data/seed/closure-generated-15.lino"
+    record "muestra"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a288648f3a132830
     source "data/seed/closure-generated-15.lino"

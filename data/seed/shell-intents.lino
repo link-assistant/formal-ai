@@ -307,6 +307,18 @@ shell_intents
         verb 查看
         verb 给出
         verb 扫描
+      language es
+        verb lista
+        verb listar
+        verb muestra
+        verb muéstrame
+        verb muestrame
+        verb mostrar
+        verb enseña
+        verb imprime
+        verb enumera
+        verb dame
+        verb ver
     questions
       language en
         question what
@@ -323,6 +335,11 @@ shell_intents
       language zh
         question 哪些
         question 什么
+      language es
+        question qué
+        question cuáles
+        question cuales
+        question cuál
     objects
       language en
         object files
@@ -343,6 +360,12 @@ shell_intents
       language zh
         object 文件
         object 内容
+      language es
+        object archivos
+        object ficheros
+        object contenido
+        object contenidos
+        object entradas
     scopes
       language en
         scope here
@@ -379,6 +402,16 @@ shell_intents
         scope 当前文件夹
         scope 这个文件夹
         scope 本地文件
+      language es
+        scope aquí
+        scope aqui
+        scope "directorio actual"
+        scope "este directorio"
+        scope "el directorio"
+        scope "carpeta actual"
+        scope "esta carpeta"
+        scope "la carpeta"
+        scope "archivos locales"
   intents
     intent
       command "formal-ai:report-issue"

@@ -159,6 +159,11 @@ meanings
     lexeme en
       surface
         text "human"
+  imprime
+    defined-by concept
+    lexeme en
+      surface
+        text "imprime"
   intent_concept_lookup
     defined-by intent
     lexeme en

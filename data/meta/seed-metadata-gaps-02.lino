@@ -547,6 +547,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "summarization_ratchet_below_committed"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e0532dd78c445752
+    source "data/seed/closure-generated-13.lino"
+    record "cuales"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_58bdbb4dc3133372
     source "data/seed/closure-generated-13.lino"
     record "path_argument"

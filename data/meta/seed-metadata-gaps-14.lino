@@ -647,9 +647,17 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "strings"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_59fa66eac3fc697e
+    source "data/seed/closure-generated-13.lino"
+    record "contenido"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_85419f698200122e
     source "data/seed/closure-generated-13.lino"
     record "external_benchmark_egg_too_few_laws"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_32dcbfb0410364de
+    source "data/seed/closure-generated-13.lino"
+    record "lista"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4e02aecbf7a0fb4e
     source "data/seed/closure-generated-13.lino"

@@ -275,6 +275,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "general_plan_repository_evidence"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_01a9d550615dc047
+    source "data/seed/closure-generated-07.lino"
+    record "muestrame"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5d5416a361e9baf7
     source "data/seed/closure-generated-07.lino"
     record "pattern_behavior_rules_list_liechu_xingwei_guize_zh"

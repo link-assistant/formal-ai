@@ -154,6 +154,11 @@ meanings
     lexeme en
       surface
         text "memory program interpreter gap"
+  muestrame
+    defined-by concept
+    lexeme en
+      surface
+        text "muestrame"
   ninguno
     defined-by word_surface
     lexeme en

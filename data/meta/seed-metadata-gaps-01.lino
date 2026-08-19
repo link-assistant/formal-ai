@@ -479,6 +479,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "thinking_step_agent_plan"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_91023eb6e5620ed1
+    source "data/seed/closure-generated-10.lino"
+    record "ficheros"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a1c5ff4fa67284d1
     source "data/seed/closure-generated-10.lino"
     record "issue_report_source_label"

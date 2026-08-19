@@ -54,6 +54,11 @@ meanings
     lexeme en
       surface
         text "customers"
+  dame
+    defined-by concept
+    lexeme en
+      surface
+        text "dame"
   deduplication
     defined-by term
     lexeme en
@@ -979,6 +984,11 @@ meanings
     lexeme en
       surface
         text "two paths"
+  ver
+    defined-by concept
+    lexeme en
+      surface
+        text "ver"
   wikibooks
     defined-by source
     lexeme en

@@ -443,6 +443,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "response_thinking_step_invoke_tool_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_63c88a34a87f5835
+    source "data/seed/closure-generated-11.lino"
+    record "contenidos"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1a39edaec9b9bdd5
     source "data/seed/closure-generated-11.lino"
     record "filled"

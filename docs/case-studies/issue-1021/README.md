@@ -287,3 +287,22 @@ by lowering it.
     "Hello World Collection" attribution line, which has no source to attribute
     once the program comes from a template this repository verified itself with
     `php -l` and executed.
+
+11. **Spanish was registered but had no listing vocabulary, and that was found
+    by a gate rather than by reading.** `check_language_test_coverage` requires
+    that a change touching language-facing data carry test evidence for every
+    language in `data/seed/languages.lino` — en, ru, hi, zh, **es** — and this
+    branch had none for Spanish. Probing it showed why: `directory_listing` in
+    `data/seed/shell-intents.lino` had `language` blocks for four languages and
+    no `es` block at all, so every Spanish phrasing fell through to web search
+    exactly the way the reported English *"List me files here"* did in #865. The
+    fix is the seed data alone — verbs, question words, objects and scopes — and
+    no Rust changed, because the detector combines parts and is never told which
+    language it is reading. Four held-out Spanish word orders now route to `ls`,
+    and `lista los procesos en ejecución` still does not, so the parts still have
+    to combine. Measured output is in `logs/spanish-listing-routing-after.log`;
+    the probe is `examples/issue_1021_spanish_probe.rs`.
+
+    This is the shape R1021-2 asked for, arriving from an unexpected direction:
+    a gate the repository already had caught a language gap that no prompt in
+    issue #1021 mentions, and the gap closed with data rather than a rule.

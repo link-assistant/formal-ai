@@ -79,6 +79,17 @@ fn a_prose_listing_request_routes_to_ls_in_any_word_order() {
         ("ru", "перечисли мне файлы здесь"),
         ("ru", "покажи мне файлы в этой папке"),
         ("hi", "यहाँ फ़ाइलें दिखाओ"),
+        // Spanish (es) is registered in `data/seed/languages.lino` but carried
+        // no listing vocabulary at all, so every Spanish phrasing fell through
+        // to web search the way the reported English one did. Adding the parts
+        // to `data/seed/shell-intents.lino` -- verbs, question words, objects,
+        // scopes -- is the whole fix: the detector combines parts and is not
+        // told which language it is reading, so español routes on the same
+        // rule as English, held-out word orders included.
+        ("es", "lista los archivos aquí"),
+        ("es", "muéstrame los archivos de la carpeta actual"),
+        ("es", "aquí, enseña los ficheros"),
+        ("es", "¿cuáles archivos hay en este directorio?"),
     ] {
         assert_eq!(
             shell_command(prompt).as_deref(),
