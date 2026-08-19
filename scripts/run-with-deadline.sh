@@ -38,13 +38,17 @@ shift
 }
 
 grace_seconds="${FORMAL_AI_DEADLINE_GRACE_SECONDS:-10}"
+[[ "$grace_seconds" =~ ^[0-9]+$ ]] || {
+  echo "the grace period must be a non-negative number of seconds, got ${grace_seconds}" >&2
+  exit 2
+}
 
 # The poll interval is the accuracy of the deadline: the command is killed at
 # the first check past it, and again at the first check past the grace period.
-# A one-second poll measured 4.2s on a 3s deadline
-# (`experiments/issue-1021-deadline-precision/measure.sh`) -- a whole extra
-# second, because a command signalled at the deadline is still alive at the next
-# check and costs another full interval. Sub-second sleeps are not in POSIX, so
+# A one-second poll measured 4.26-4.41s on a 3s deadline
+# (`experiments/issue-1021-deadline-precision/compare-clocks.sh`) -- a whole
+# extra second, because a command signalled at the deadline is still alive at
+# the next check and costs another full interval. Sub-second sleeps are not in POSIX, so
 # ask this `sleep` rather than assume: GNU and BSD both accept them, and a
 # `sleep` that does not just makes the deadline coarser, never wrong.
 poll_seconds="${FORMAL_AI_DEADLINE_POLL_SECONDS:-}"
@@ -66,10 +70,10 @@ decimal, got ${poll_seconds}" >&2
 #     is a minute, enough to break the budget guard in
 #     `scripts/apt-install-with-retry.sh` that this deadline exists to serve.
 #   * `SECONDS` does not drift, but it is a difference of whole-second clock
-#     readings, so it can read a second high: it reached 3 just 2.6s into a 3s
-#     deadline once the polling got fast enough to expose it
-#     (`experiments/issue-1021-deadline-precision/measure.sh`). Subtracting that
-#     second turns it back into a bound that is never early.
+#     readings, so it can read a second high: it expired a 3s deadline in
+#     2.54-3.01s once the polling got fast enough to expose it
+#     (`experiments/issue-1021-deadline-precision/compare-clocks.sh`).
+#     Subtracting that second turns it back into a bound that is never early.
 #
 # Their maximum is never early and never more than a fork's-worth or two
 # seconds late, whichever is smaller.
