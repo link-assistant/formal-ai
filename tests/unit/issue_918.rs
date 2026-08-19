@@ -340,7 +340,11 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
-    // new prose pulled into the total closure (74 of them), and the seed files
-    // written by hand still carry their metadata.
-    assert_eq!(expected_gaps.len(), 3_793);
+    // new prose pulled into the total closure -- 74 for the contribution
+    // artifacts, then 16 more when the listing detector was given its Spanish
+    // vocabulary (`lista`, `ficheros`, `archivos`, `aqui`, ...) -- and the seed
+    // files written by hand still carry their metadata. A new language's words
+    // arriving as generated closure records rather than as hand-written gaps is
+    // the shape this floor exists to show.
+    assert_eq!(expected_gaps.len(), 3_809);
 }
