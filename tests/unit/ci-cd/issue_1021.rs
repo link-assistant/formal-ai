@@ -16,6 +16,7 @@
 use super::workflow_fixtures::release_workflow;
 use std::fs;
 use std::path::Path;
+use std::process::Command;
 
 /// Packages the project publishes itself. Tracking these at latest is the
 /// point -- an E2E leg that pinned our own client would stop reporting whether
@@ -137,5 +138,38 @@ fn the_codex_pin_names_the_upstream_defect_and_the_bisect_that_would_lift_it() {
             .join("experiments/issue_1021_codex_tui_version/codex_trust_dialog_probe.py")
             .is_file(),
         "the wrapper-free reproduction the upstream report cites must exist"
+    );
+}
+
+/// Evidence a case study cites has to be in the repository, not merely in the
+/// working copy that produced it. `.gitignore`'s `logs/` rule swallowed
+/// `docs/case-studies/issue-1021/logs/`, and the `!docs/case-studies/**/*.log`
+/// re-include could not undo it, because git never descends into an excluded
+/// directory. `git add` reported success, committed nothing, and the test that
+/// asserts the probe output exists went on passing for the author while failing
+/// for every checkout that was not theirs. Only git knows the difference, so
+/// this asks git.
+#[test]
+fn no_case_study_evidence_is_hidden_from_the_repository_by_gitignore() {
+    let hidden = Command::new("git")
+        .args([
+            "ls-files",
+            "--others",
+            "--ignored",
+            "--exclude-standard",
+            "--",
+            "docs/case-studies",
+        ])
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .expect("run git ls-files");
+
+    assert!(hidden.status.success(), "git ls-files should succeed");
+    let hidden = String::from_utf8_lossy(&hidden.stdout);
+    assert!(
+        hidden.trim().is_empty(),
+        "these case-study files exist on disk but are ignored, so `git add` \
+         will report success and commit nothing -- re-include their directory \
+         in .gitignore the way `!docs/case-studies/**/logs/` does:\n{hidden}"
     );
 }

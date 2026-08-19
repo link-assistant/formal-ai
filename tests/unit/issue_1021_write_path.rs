@@ -32,14 +32,18 @@ fn write_path() -> WritePathVocabulary {
     contribution_artifact_vocabulary().write_path
 }
 
-/// Run `body` with the opt-in set, then restore whatever was there before, so a
-/// failure inside `body` cannot leave the ladder unlocked for the rest of the
-/// suite.
-fn with_opt_in(body: impl FnOnce()) {
+/// Run `body` with the opt-in forced to `value` -- `Some` to set it, `None` to
+/// clear it -- holding the lock throughout and restoring whatever was there
+/// before, so a failure inside `body` cannot leave the ladder in either state
+/// for the rest of the suite.
+fn with_opt_in_variable(value: Option<&str>, body: impl FnOnce()) {
     let vocab = write_path();
     let _guard = opt_in_lock();
     let previous = env::var(&vocab.opt_in_variable).ok();
-    env::set_var(&vocab.opt_in_variable, &vocab.opt_in_value);
+    match value {
+        Some(value) => env::set_var(&vocab.opt_in_variable, value),
+        None => env::remove_var(&vocab.opt_in_variable),
+    }
     let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(body));
     match previous {
         Some(value) => env::set_var(&vocab.opt_in_variable, value),
@@ -48,6 +52,21 @@ fn with_opt_in(body: impl FnOnce()) {
     if let Err(payload) = outcome {
         std::panic::resume_unwind(payload);
     }
+}
+
+/// Run `body` in the opted-in state.
+fn with_opt_in(body: impl FnOnce()) {
+    let value = write_path().opt_in_value;
+    with_opt_in_variable(Some(&value), body);
+}
+
+/// Run `body` in the default state, and hold the lock while doing it. Asserting
+/// the refusal *without* the lock is what CI caught on issue #1021: the
+/// variable is process-wide while the harness is thread-wide, so a bare read
+/// can see the value another test set for its own opted-in case and report a
+/// permitted publication that neither test asked for.
+fn without_opt_in(body: impl FnOnce()) {
+    with_opt_in_variable(None, body);
 }
 
 fn shell_command(prompt: &str) -> Option<String> {
@@ -249,16 +268,19 @@ fn publishing_a_contribution_is_planned_only_under_the_opt_in() {
     );
 
     // And through the environment, which is how an operator actually opts in.
-    assert_eq!(
-        plan_publication(&publication),
-        Err(WritePathRefusal::OptInAbsent)
-    );
-    with_opt_in(|| {
-        assert!(plan_publication(&publication).is_ok());
-        // The rung no opt-in reaches stays refused while the first one is open.
+    without_opt_in(|| {
+        assert_eq!(
+            plan_publication(&publication),
+            Err(WritePathRefusal::OptInAbsent)
+        );
+        // The rung no opt-in reaches is refused with the ladder shut...
         assert!(!permits("gh issue create --title x"));
     });
-    assert!(!permits("gh issue create --title x"));
+    with_opt_in(|| {
+        assert!(plan_publication(&publication).is_ok());
+        // ...and stays refused while the first one is open.
+        assert!(!permits("gh issue create --title x"));
+    });
 }
 
 /// The ladder governs the path Formal AI takes on its own initiative, not a
@@ -267,10 +289,12 @@ fn publishing_a_contribution_is_planned_only_under_the_opt_in() {
 /// ladder that swallowed a delegated command would be that bug again.
 #[test]
 fn a_command_the_operator_named_is_not_the_ladders_business() {
-    assert_eq!(
-        shell_command("execute git push").as_deref(),
-        Some("git push")
-    );
+    without_opt_in(|| {
+        assert_eq!(
+            shell_command("execute git push").as_deref(),
+            Some("git push")
+        );
+    });
     with_opt_in(|| {
         assert_eq!(
             shell_command("execute git push").as_deref(),

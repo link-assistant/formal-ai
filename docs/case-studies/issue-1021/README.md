@@ -347,3 +347,37 @@ by lowering it.
     today's client works against today's server. `experiments/issue_1021_codex_tui_version`
     holds the bisect and the wrapper-free reproduction, and is what a future
     bump has to pass before the pin moves.
+
+13. **Three more red jobs, and none of them was the change under review
+    either.** The same CI run that proved the client pin (finding 12) failed
+    for three unrelated reasons, each worth more than its fix.
+
+    *A ratchet the fix walked into.* `.github/workflows/release.yml` sits in the
+    warning band `tests/unit/ci-cd/issue_999.rs` guards at 1,510 lines, and the
+    eight-line comment explaining the pin made it 1,511. Issue #1021 says the
+    bar is not to be met by lowering it, so the limit stayed and the comment
+    shrank to five lines — the URL, the rule, and the bisect to run before
+    bumping — with the full account left where it belongs, in
+    `experiments/issue_1021_codex_tui_version/README.md`. 1,508 lines.
+
+    *Evidence that was never committed.* `docs_requirements_issue_1021` asserts
+    the probe logs the analysis cites are in the repository, and it failed in CI
+    while passing locally: `.gitignore`'s `logs/` rule had swallowed
+    `docs/case-studies/issue-1021/logs/`. The `!docs/case-studies/**/*.log`
+    re-include below it cannot help, because git never descends into an excluded
+    directory — the same trap issue #1017 hit one directory over in
+    `dev/log/**/ci-logs/`. `git add` reported success and committed nothing;
+    only a checkout that was not this working copy could tell. The directories
+    are now re-included beside the files, and the six logs are in the tree.
+
+    *A race that a green local run cannot disprove.* The write-path test read
+    the opt-in — a process-wide environment variable — outside the lock its own
+    comment says "every test that touches it holds", so while a sibling test was
+    inside its opted-in window the refusal under test did not happen. The
+    failure looks like a bug in the ladder (`left: Ok([...git push...]), right:
+    Err(OptInAbsent)`) and is a bug in the test. It reproduces locally 33 times
+    in 200 rounds of the compiled binary, and 0 times once both states are
+    entered through one locked helper:
+    `experiments/issue_1021_opt_in_race/run.sh`, with both runs preserved under
+    `logs/`. A flake that is merely re-run is a defect the suite has agreed to
+    keep; measuring it is what turns "it passed this time" into a claim.
