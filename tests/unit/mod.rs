@@ -68,6 +68,7 @@ mod formal_ai;
 mod github_logs;
 mod installation_conversion;
 mod issue_1021_behaviour_range;
+mod issue_1021_contribution_artifacts;
 mod issue_1963;
 mod issue_337;
 mod issue_403;

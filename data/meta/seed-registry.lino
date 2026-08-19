@@ -49,6 +49,8 @@ seed_registry
   seed concepts
     bundle true
     web true
+  seed contribution-artifacts
+    bundle true
   seed coreference
     bundle true
     web true

@@ -1,0 +1,48 @@
+# The process artifacts a contribution carries, as data rather than as strings in
+# the solver (R379). Issue #1021 observed that Formal AI produces none of them --
+# no changelog fragment, no pull-request body that closes its issue -- so a change
+# it authors cannot pass the repository's own gates without a human writing the
+# paperwork by hand.
+#
+# `scripts/check-changelog-fragment.rs` and `changelog.d/README.md` fix the
+# fragment's shape; `scripts/check-pull-request-link.rs` fixes the body's. Both
+# are mirrored here so `src/contribution_artifacts.rs` composes an artifact those
+# very gates accept, and so a maintainer retunes the wording by editing seed data.
+contribution_artifacts
+  changelog
+    directory changelog.d
+    extension md
+    fence "---"
+    bump_field bump
+    entry_marker "-"
+    heading_marker "###"
+    issue_token issue
+    bumps
+      bump major
+      bump minor
+      bump patch
+    categories
+      category added
+        heading Added
+      category changed
+        heading Changed
+      category deprecated
+        heading Deprecated
+      category fixed
+        heading Fixed
+      category removed
+        heading Removed
+  pull_request
+    closing_keyword Fixes
+    issue_url "https://github.com/{repository}/issues/{issue}"
+    heading_marker "##"
+    sections
+      section problem
+        heading "What is broken"
+      section cause
+        heading "Why"
+      section change
+        heading "The fix"
+      section verification
+        heading "Verification"
+    verification_lead "Automated coverage, all of it runnable from a clean checkout"

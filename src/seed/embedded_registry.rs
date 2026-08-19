@@ -23,6 +23,8 @@ pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms
 pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
+pub const CONTRIBUTION_ARTIFACTS_LINO: &str =
+    include_str!("../../data/seed/contribution-artifacts.lino");
 pub const COREFERENCE_LINO: &str = include_str!("../../data/seed/coreference.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../../data/seed/demo-dialogs.lino");
 pub const DRAFT_STRATEGIES_LINO: &str = include_str!("../../data/seed/draft-strategies.lino");
@@ -203,6 +205,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
+        ("data/seed/contribution-artifacts.lino", CONTRIBUTION_ARTIFACTS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),

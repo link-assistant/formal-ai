@@ -21,6 +21,7 @@ pub mod coding_research_learning;
 pub mod computer_use;
 pub(crate) mod concepts;
 pub mod context_capacity;
+pub mod contribution_artifacts;
 pub mod conversation_context;
 pub(crate) mod conversation_control;
 pub mod cue_lexicon;
