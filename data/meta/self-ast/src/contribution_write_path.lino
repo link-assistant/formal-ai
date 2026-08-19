@@ -1,0 +1,22 @@
+self_ast_census
+  target src/contribution_write_path.rs
+  language rust
+  fidelity signature
+  byte_len 8191
+  line_count 204
+  content_id source_module_30570ad976e0615e
+  symbol_count 13
+  symbols
+    enum WritePathDecision 34 41
+    enum WritePathRefusal 45 50
+    function slug 55 60
+    function opted_in 65 67
+    function opted_in_with 71 74
+    function decide 78 81
+    function decide_with 86 107
+    function permits 112 114
+    function names 121 129
+    struct Publication 133 142
+    function plan_publication 154 158
+    function plan_publication_with 165 185
+    function as_one_argument 197 204

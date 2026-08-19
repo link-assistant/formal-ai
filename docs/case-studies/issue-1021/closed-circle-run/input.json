@@ -1,0 +1,134 @@
+{
+  "issue": 1021,
+  "repository": "link-assistant/formal-ai",
+  "branch": "issue-1021-bdff51c09742",
+  "body_file": "docs/case-studies/issue-1021/closed-circle-run/pull-request-body.md",
+  "pull_request": {
+    "slug": "issue_1021",
+    "timestamp": "20260819_060500",
+    "bump": "minor",
+    "category": "added",
+    "title": "Code the full reported range and carry the paperwork a contribution needs (issue #1021)",
+    "problem": "Formal AI answered seven of the prompts issue #1021 collects wrongly — a bare `ls` was refused, `Execute ls command` ran `ls command`, `List me files here` reached web search, a copy-stdin-to-stdout request ran `cp stdin stdout`, a Rosetta Code URL became a `cp` of its slug, a filesystem move matched nothing at all, and a PHP request fell to the uncatalogued-language fallback — and it produced none of the process artifacts a change needs to land: no changelog fragment, and no pull-request body linking the issue it answers.",
+    "cause": "Every wrong answer had its own rule behind it, each written for the phrasing that was in front of it rather than for the structure of the request, so an unseen word order could not match. And nothing in the solver knew the shape of the two artifacts the repository's own gates read, or decided whether a command that publishes a change may run at all.",
+    "change": "The rules are corrected where they were wrong and their vocabulary moved into seed data, so the fix generalizes past the reported wording; PHP joins the coding catalog with the templates every other catalogued language carries; `src/contribution_artifacts.rs` composes the changelog fragment and the pull-request body from `data/seed/contribution-artifacts.lino`; and `src/contribution_write_path.rs` puts the publishing commands on a ladder that refuses by default, with `gh issue create` refused in both states. The whole loop is captured as a replayable session.",
+    "verification": [
+      "cargo test --test unit -- issue_1021",
+      "cargo test --test unit",
+      "cargo test --test source",
+      "cargo test --test integration",
+      "rust-script scripts/run-ci-gates.rs --stage rust",
+      "node tests/e2e/scripts/check-multilingual-intent-coverage.mjs"
+    ]
+  },
+  "range": [
+    {
+      "issue": 868,
+      "mode": "command",
+      "prompt": "ls"
+    },
+    {
+      "issue": 866,
+      "mode": "command",
+      "prompt": "Execute ls command"
+    },
+    {
+      "issue": 867,
+      "mode": "command",
+      "prompt": "Execute ls"
+    },
+    {
+      "issue": 865,
+      "mode": "command",
+      "prompt": "List me files here"
+    },
+    {
+      "issue": 865,
+      "mode": "intent",
+      "prompt": "Hello"
+    },
+    {
+      "issue": 863,
+      "mode": "intent",
+      "prompt": "Give me example of how to do copy stdin to stdout in Rust"
+    },
+    {
+      "issue": 862,
+      "mode": "intent",
+      "prompt": "Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust"
+    },
+    {
+      "issue": 824,
+      "mode": "command",
+      "prompt": "Move /Users/konard/Code/link-assistant/hive-control-center to ~/Code/Archive/link-assistant"
+    },
+    {
+      "issue": 723,
+      "mode": "intent",
+      "prompt": "напиши мне код на PHP Laravel"
+    },
+    {
+      "issue": 723,
+      "mode": "intent",
+      "prompt": "write me PHP Laravel code"
+    }
+  ],
+  "write_path_probe": [
+    "git push --set-upstream origin issue-1021-bdff51c09742",
+    "gh pr create --repo link-assistant/formal-ai --title Example --body-file body.md",
+    "gh pr edit 1027 --body-file body.md",
+    "gh pr ready 1027",
+    "gh pr merge 1027 --squash",
+    "gh issue create --repo link-assistant/formal-ai --title Example",
+    "cargo test --test unit"
+  ],
+  "contributions": [
+    {
+      "slug": "behaviour_range",
+      "timestamp": "20260819_060200",
+      "bump": "patch",
+      "category": "fixed",
+      "title": "Answer the reported behaviour range of issue #1021 — a bare `ls`, `Execute ls command`, `List me files here`, a copy-stdin-to-stdout request, a Rosetta Code URL, a filesystem move, and a Laravel request in Russian — by fixing the rule that was wrong rather than the prompt that exposed it.",
+      "problem": "Seven prompts a user typed were answered wrongly. A bare `ls` was refused; `Execute ls command` ran `ls command`; `List me files here` reached web search; `copy stdin to stdout in Rust` ran `cp stdin stdout`; a Rosetta Code URL became `cp _stdin_to_stdout Rust`; a filesystem move matched nothing at all; and a PHP request was answered from the uncatalogued-language fallback.",
+      "cause": "Each prompt had its own rule behind it. `bare_shell_tokens` listed only the multi-word tools, so an argument-free command was not a request. The passthrough short-circuited on a known head token, so the noun *naming* a command became its argument. The listing detector matched whole phrases, so no unseen word order could match. Every absolute and home-relative operand was rejected before any policy saw it. A cue that names its own object licensed any word as an operand. And the minimal-script route was hoisted to the front of method selection by the bare tokens \"script\" and \"code\", so a named task was answered with a hello world.",
+      "change": "Each rule is corrected where it was wrong and its vocabulary moved into seed data: `data/seed/shell-intents.lino` and `data/seed/terminal-commands.lino` declare the parts of a listing request and the command-naming nouns in four languages, `src/agentic_coding/directory_listing.rs` composes them in any word order, operands are filtered by how paths are written rather than by where they point, and the minimal-script route stands aside for a task it cannot render.",
+      "verification": [
+        "cargo test --test unit -- issue_1021_behaviour_range",
+        "cargo test --test unit -- issue_1021_closed_circle",
+        "cargo test --test source",
+        "node tests/e2e/scripts/check-multilingual-intent-coverage.mjs"
+      ]
+    },
+    {
+      "slug": "php_catalog",
+      "timestamp": "20260819_060300",
+      "bump": "minor",
+      "category": "added",
+      "title": "Catalogue PHP: the eleven verified task templates every other catalogued language carries, so a PHP or Laravel request is answered with code and its result instead of the uncatalogued-language fallback.",
+      "problem": "Issue #723 reported `напиши мне код на PHP Laravel` being answered as if PHP were a language Formal AI does not template, and a numeric task named in PHP fell back to a generic snippet.",
+      "cause": "PHP was only in the coding oracle — the reviewed-snippet fallback for languages the catalog does not template — so none of the parametric task routes could render it.",
+      "change": "PHP joins the catalog with the same eleven task templates, grammar record and execution metadata as the other catalogued languages, verified with `php -l` and executed in the issue-8 harness, and it graduates out of the oracle the way Kotlin did under issue #921.",
+      "verification": [
+        "cargo test --test integration -- issue_412_oracle_languages",
+        "cargo test --test unit -- issue_1021_behaviour_range",
+        "cargo test --test unit -- issue_918"
+      ]
+    },
+    {
+      "slug": "contribution_artifacts",
+      "timestamp": "20260819_060400",
+      "bump": "minor",
+      "category": "added",
+      "title": "Compose the process artifacts a contribution carries — a changelog fragment and a pull-request body that closes its issue — and put the commands that publish them on a mutating-action ladder that is refused by default.",
+      "problem": "Formal AI wrote code and stopped: no changelog fragment, no pull-request body linking the issue it answers, so every change it authored stalled at gates a human then had to satisfy by hand.",
+      "cause": "Nothing in the solver knew the shape those two artifacts have to take, and nothing decided whether an action that publishes a change may run at all — which is what issue #943 records the cost of, a harness filing issues nobody asked for.",
+      "change": "`src/contribution_artifacts.rs` composes both artifacts from `data/seed/contribution-artifacts.lino`, so the module holds no prose of its own, and `src/contribution_write_path.rs` decides the publishing commands: refused unless the operator sets the opt-in, with `gh issue create` and `gh pr merge` refused in both states.",
+      "verification": [
+        "cargo test --test unit -- issue_1021_contribution_artifacts",
+        "cargo test --test unit -- issue_1021_write_path",
+        "cargo test --test unit -- issue_1021_closed_circle",
+        "rust-script scripts/check-changelog-fragment.rs"
+      ]
+    }
+  ]
+}

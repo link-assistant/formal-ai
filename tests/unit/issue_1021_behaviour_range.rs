@@ -12,7 +12,7 @@
 //! run is evidence of generalization rather than of a memorised seed.
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::ChatMessage;
+use formal_ai::{ChatMessage, UniversalSolver};
 
 /// The shell command the agentic planner resolves for `prompt`, or `None` when
 /// it routes somewhere other than a command execution tool.
@@ -212,5 +212,168 @@ fn a_cue_that_names_its_object_still_takes_a_plain_name() {
             Some(expected),
             "prompt: {prompt}"
         );
+    }
+}
+
+/// The intent `UniversalSolver` resolves for `prompt`.
+fn intent(prompt: &str) -> String {
+    UniversalSolver::default().solve(prompt).intent
+}
+
+/// Issue #723: *"напиши мне код на PHP Laravel"* — "write me PHP Laravel code" —
+/// was answered with the unspecified-request refusal, because PHP was one of the
+/// few languages the catalog did not template. The same sentence about Ruby on
+/// Rails or Python Django was already answered, so the gap was the language, not
+/// the framework or the wording.
+///
+/// The generalization is cataloguing PHP the way every other catalogued language
+/// is catalogued — the eleven task templates, the CST grammar, the coding idioms,
+/// the worker mirror — so a framework name keeps being what it always was here,
+/// an alias surface of its language.
+#[test]
+fn a_framework_named_coding_request_is_answered_in_that_frameworks_language() {
+    for (language, prompt, expected) in [
+        // Reported.
+        ("ru", "напиши мне код на PHP Laravel", "write_script_php"),
+        // Held out: the same request in the other project languages, and a
+        // second PHP framework nobody wrote a seed phrase for.
+        ("en", "write me PHP Laravel code", "write_script_php"),
+        ("en", "write me PHP Symfony code", "write_script_php"),
+        ("en", "write me some PHP code", "write_script_php"),
+        ("hi", "PHP में कोड लिखें", "write_script_php"),
+        ("zh", "用 PHP 写代码", "write_script_php"),
+        // Controls: the routes this request should have taken all along keep
+        // taking it, so PHP joined a rule rather than acquiring one.
+        ("en", "write me Ruby on Rails code", "write_script_ruby"),
+        (
+            "ru",
+            "напиши мне код на Python Django",
+            "write_script_python",
+        ),
+    ] {
+        assert_eq!(intent(prompt), expected, "{language}: {prompt}");
+    }
+}
+
+/// Asking for code is not only *writing* it. Probing paraphrases of the #723
+/// prompt found that every asking verb other than *write* — "I need", "I want",
+/// "give me", and their Russian, Hindi and Chinese equivalents — fell through
+/// the coding path into a web search, in every language, for every language.
+/// The verb family is seed data (`request` in `data/seed/meanings.lino`), so
+/// naming it once fixes the whole family rather than the reported sentence.
+#[test]
+fn asking_for_code_is_a_coding_request_whatever_the_asking_verb() {
+    for (language, prompt, expected) in [
+        ("ru", "мне нужен код на пхп", "write_script_php"),
+        ("ru", "дай мне код на php", "write_script_php"),
+        ("ru", "мне нужен код на python", "write_script_python"),
+        ("en", "I need PHP code", "write_script_php"),
+        ("en", "I want PHP code", "write_script_php"),
+        ("en", "give me python code", "write_script_python"),
+        ("hi", "मुझे php कोड चाहिए", "write_script_php"),
+        ("zh", "我需要 php 代码", "write_script_php"),
+    ] {
+        assert_eq!(intent(prompt), expected, "{language}: {prompt}");
+    }
+}
+
+/// The asking verbs must not swallow the requests that merely contain them: the
+/// coding route needs a code artifact *and* a language, so a question about a
+/// language, or a search for something written in one, keeps its own route.
+#[test]
+fn an_asking_verb_alone_is_not_a_coding_request() {
+    for prompt in [
+        "I need information about Rust",
+        "I need to find a python tutorial",
+        "give me the code of this repository",
+        "I need a code review",
+    ] {
+        assert!(
+            !intent(prompt).starts_with("write_"),
+            "prompt: {prompt} routed to {}",
+            intent(prompt)
+        );
+    }
+}
+
+/// PHP graduating from the coding oracle to the catalog is what makes the #723
+/// answer a real one: the templates are `php -l`-checked and executed by the
+/// issue-8 harness, so the answer carries the verified execution status the
+/// other catalogued languages carry rather than a borrowed claim.
+#[test]
+fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
+    let response = UniversalSolver::default().solve("write a hello world program in php");
+    assert_eq!(response.intent, "write_program", "{}", response.answer);
+    assert!(response.answer.contains("```php"), "{}", response.answer);
+    assert!(response.answer.contains("<?php"), "{}", response.answer);
+    assert!(
+        response.answer.contains("compiled and ran"),
+        "{}",
+        response.answer
+    );
+
+    // Held out: a catalogued task, and a numeric-list task the universal
+    // composer derives from `data/seed/coding-idioms.lino` rather than from a
+    // template — both must reach PHP now that the language is catalogued.
+    let fizzbuzz = UniversalSolver::default().solve("write a fizzbuzz program in php");
+    assert_eq!(fizzbuzz.intent, "write_program", "{}", fizzbuzz.answer);
+    assert!(fizzbuzz.answer.contains("```php"), "{}", fizzbuzz.answer);
+
+    let sorted =
+        UniversalSolver::default().solve("Sort the numbers 3, 1, 2 in PHP, give me the code");
+    assert_eq!(sorted.intent, "write_program", "{}", sorted.answer);
+    assert!(
+        sorted.answer.contains("sort($numbers);"),
+        "{}",
+        sorted.answer
+    );
+    assert!(
+        sorted.answer.contains("Result: 1, 2, 3"),
+        "{}",
+        sorted.answer
+    );
+}
+
+/// The minimal-script route renders one thing: the hello-world template for the
+/// language it recognizes. It was claiming any prompt that merely *mentioned*
+/// code, because `data/meta/cue-lexicon.lino` hoists `handler:write_script` onto
+/// the front of method selection for the bare tokens "script" and "code" — ahead
+/// of the task routes `data/seed/handler-precedence.lino` ranks above it
+/// (`numeric_list` is line 29, `write_script` line 43). So "sort these numbers in
+/// Python, write me the code" answered with a Python *hello world*: a named task
+/// silently replaced by a greeting.
+///
+/// This predates the asking verbs above — "write me the code" hit it too — and it
+/// is fixed where it is wrong rather than where it was noticed: the route now
+/// declines a prompt whose task it cannot render, which is a property of the
+/// route, not of a phrase. The paraphrases below hold out three operations, four
+/// languages of implementation, three asking verbs and two prompt languages.
+#[test]
+fn a_named_task_is_not_answered_with_a_minimal_script() {
+    for prompt in [
+        "Sort the numbers 3, 1, 2 in PHP, write me the code",
+        "Sort the numbers 3, 1, 2 in PHP, give me the code",
+        "Sort the numbers 3, 1, 2 in Python, I need the code",
+        "Reverse the numbers 1, 2, 3 in Ruby, give me the code",
+        "Sum the numbers 3, 5, 6 in JavaScript, write me the code",
+        "отсортируй числа 3, 1, 2 на python, дай мне код",
+    ] {
+        let response = UniversalSolver::default().solve(prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "prompt: {prompt} — answer was: {}",
+            response.answer
+        );
+    }
+
+    // Control: with no task of its own to answer, the same asking verbs keep
+    // reaching the minimal script. The route lost the prompts it cannot serve,
+    // not the ones it exists for.
+    for (prompt, expected) in [
+        ("write me some code in Python", "write_script_python"),
+        ("give me python code", "write_script_python"),
+        ("дай мне код на php", "write_script_php"),
+    ] {
+        assert_eq!(intent(prompt), expected, "prompt: {prompt}");
     }
 }

@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q59": {
+      "type": "item",
+      "id": "Q59",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "PHP"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पीएचपी"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "scripting language focused on web development"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "脚本语言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "PHP programming language"
+          },
+          {
+            "language": "en",
+            "value": "PHP Hypertext Preprocessor"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पीऍचपी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "超级文本预处理语言"
+          },
+          {
+            "language": "zh",
+            "value": "PHP超级文本预处理语言"
+          },
+          {
+            "language": "zh",
+            "value": "個人的主頁"
+          },
+          {
+            "language": "zh",
+            "value": "超文本預處理器"
+          },
+          {
+            "language": "zh",
+            "value": "超文本预处理器"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "configure preferred language"
+  contents
+    defined-by concept
+    lexeme en
+      surface
+        text "contents"
   context_bsd_operating_systems
     defined-by context
     lexeme en
@@ -254,6 +259,11 @@ meanings
     lexeme en
       surface
         text "parse"
+  pass
+    defined-by concept
+    lexeme en
+      surface
+        text "pass"
   path_argument_list_files_reverse_sort
     defined-by rule
     lexeme en
@@ -954,6 +964,11 @@ meanings
     lexeme en
       surface
         text "supplied file first line"
+  takes
+    defined-by concept
+    lexeme en
+      surface
+        text "takes"
   task_decomposition_lead
     defined-by intent
     lexeme en
@@ -989,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "thinking step program plan"
+  those
+    defined-by concept
+    lexeme en
+      surface
+        text "those"
   thurs
     defined-by word_surface
     lexeme en

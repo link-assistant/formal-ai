@@ -698,7 +698,7 @@ pub fn try_write_script(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !is_write_script_request(normalized) {
+    if !is_write_script_request(prompt, normalized) {
         return None;
     }
     let program = hello_world_program_by_alias(normalized)?;

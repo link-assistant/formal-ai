@@ -19,6 +19,11 @@ meanings
     lexeme en
       surface
         text "agentic report target options"
+  artifacts
+    defined-by concept
+    lexeme en
+      surface
+        text "artifacts"
   brainstorm_project_ideas
     defined-by intent
     lexeme en
@@ -165,7 +170,7 @@ meanings
       surface
         text "files"
   first
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "first"
@@ -269,6 +274,16 @@ meanings
     lexeme en
       surface
         text "pascal case"
+  passthrough
+    defined-by concept
+    lexeme en
+      surface
+        text "passthrough"
+  patch
+    defined-by concept
+    lexeme en
+      surface
+        text "patch"
   pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
     defined-by prompt_pattern
     lexeme en

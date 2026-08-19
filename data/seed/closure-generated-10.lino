@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "general plan repository read evidence"
+  give
+    defined-by concept
+    lexeme en
+      surface
+        text "give"
   hive-mind
     defined-by name
     lexeme en
@@ -264,6 +269,16 @@ meanings
     lexeme en
       surface
         text "pattern wikipedia article question exact zh"
+  php
+    defined-by programming_language
+    lexeme en
+      surface
+        text "php"
+  pinned
+    defined-by concept
+    lexeme en
+      surface
+        text "pinned"
   project-docs
     defined-by source_kind
     lexeme en
@@ -824,6 +839,11 @@ meanings
     lexeme en
       surface
         text "run agent"
+  rung
+    defined-by concept
+    lexeme en
+      surface
+        text "rung"
   rust_library
     defined-by environment
     lexeme en
@@ -884,6 +904,11 @@ meanings
     lexeme en
       surface
         text "truthfulness"
+  typing
+    defined-by concept
+    lexeme en
+      surface
+        text "typing"
   uname
     defined-by token
     lexeme en

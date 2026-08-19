@@ -2,31 +2,31 @@ self_ast_census
   target src/coding/catalog/templates_core.rs
   language rust
   fidelity signature
-  byte_len 15505
-  line_count 607
-  content_id source_module_75b35084d0842ffe
+  byte_len 16394
+  line_count 646
+  content_id source_module_50f01a79216bb8ea
   symbol_count 23
   symbols
     const TEMPLATES_CORE 9 15
     static void 67 69
     static void 78 80
-    function main 163 174
-    const names 190 193
-    const names 204 207
-    static int 250 252
-    struct dirent 261 261
-    struct stat 263 263
-    static void 307 320
-    static void 331 338
-    function main 379 391
-    const path 410 410
-    const dir 412 412
-    const names 413 416
-    const dir 428 428
-    const names 429 432
-    static int 479 481
-    const char 484 484
-    struct dirent 491 491
-    struct stat 495 495
-    static void 540 554
-    static void 565 573
+    function main 179 190
+    const names 206 209
+    const names 220 223
+    static int 266 268
+    struct dirent 277 277
+    struct stat 279 279
+    static void 323 336
+    static void 347 354
+    function main 406 418
+    const path 437 437
+    const dir 439 439
+    const names 440 443
+    const dir 455 455
+    const names 456 459
+    static int 506 508
+    const char 511 511
+    struct dirent 518 518
+    struct stat 522 522
+    static void 567 581
+    static void 592 600

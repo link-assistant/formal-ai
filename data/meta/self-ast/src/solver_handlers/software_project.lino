@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/software_project.rs
   language rust
   fidelity signature
-  byte_len 34156
-  line_count 915
-  content_id source_module_3cbe66bc76240243
+  byte_len 34125
+  line_count 911
+  content_id source_module_54ced6a2b016a7f1
   symbol_count 49
   symbols
     struct ArtifactMatch 21 24
@@ -45,14 +45,14 @@ self_ast_census
     function subtask_title 632 646
     function detect_delivery_mode 654 659
     function detect_implementation_language 664 669
-    function implementation_language_from_slug 674 681
-    function approval_gates 683 706
-    function push_unique 708 712
-    function sentence_case 714 721
-    function is_game_unit_tracker 727 731
-    function is_approval_prompt 739 748
-    function reasoning_steps 750 783
-    function plan_steps 785 828
-    function render_plan_response 830 871
-    function render_implementation_response 873 906
-    function lino_string 908 915
+    function implementation_language_from_slug 675 677
+    function approval_gates 679 702
+    function push_unique 704 708
+    function sentence_case 710 717
+    function is_game_unit_tracker 723 727
+    function is_approval_prompt 735 744
+    function reasoning_steps 746 779
+    function plan_steps 781 824
+    function render_plan_response 826 867
+    function render_implementation_response 869 902
+    function lino_string 904 911

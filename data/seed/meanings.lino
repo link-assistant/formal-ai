@@ -433,6 +433,38 @@ meanings
         text 编写
       surface
         text 写
+  request
+    defined-by program
+    defined-by code
+    role script_authoring_verb
+    lexeme en
+      surface
+        text need
+      surface
+        text want
+      surface
+        text "give me"
+    lexeme ru
+      surface
+        text нужен
+      surface
+        text нужна
+      surface
+        text нужно
+      surface
+        text дай
+      surface
+        text дайте
+    lexeme hi
+      surface
+        text चाहिए
+      surface
+        text "मुझे दो"
+    lexeme zh
+      surface
+        text 需要
+      surface
+        text 给我
   create
     defined-by make
     defined-by program

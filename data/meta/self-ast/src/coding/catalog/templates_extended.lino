@@ -2,22 +2,22 @@ self_ast_census
   target src/coding/catalog/templates_extended.rs
   language rust
   fidelity signature
-  byte_len 18773
-  line_count 782
-  content_id source_module_f1136c6645b4511e
+  byte_len 19973
+  line_count 839
+  content_id source_module_f7f9f196c338804f
   symbol_count 14
   symbols
     const TEMPLATES_EXTENDED 9 29
     static void 139 151
     static void 160 172
-    static void 307 313
-    static void 322 328
-    static void 440 443
-    static void 452 456
-    static void 562 568
-    static void 577 583
-    function main 625 627
-    static long 719 724
-    static void 726 728
-    static long 737 742
-    static void 744 746
+    static void 324 330
+    static void 339 345
+    static void 465 468
+    static void 477 481
+    static void 595 601
+    static void 610 616
+    function main 666 668
+    static long 760 765
+    static void 767 769
+    static long 778 783
+    static void 785 787

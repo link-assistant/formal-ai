@@ -187,4 +187,19 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         save_as: "Main.kt",
         setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
     },
+    ProgramLanguage {
+        slug: "php",
+        name: "PHP",
+        code_fence: "php",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-8 local verification harness (isolated sandbox)",
+            check_command: Some("php -l main.php"),
+            run_command: "php main.php",
+            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "main.php",
+        setup_hint: "PHP from https://www.php.net/downloads",
+    },
 ];

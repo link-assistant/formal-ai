@@ -147,6 +147,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "compiled_procedure"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9e1c8d79e35bbf8e
+    source "data/seed/closure-generated-04.lino"
+    record "deprecated"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bc12521e3f91875e
     source "data/seed/closure-generated-04.lino"
     record "how_to_guide_bounds"
@@ -214,6 +218,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_0d688c16c7530a7e
     source "data/seed/closure-generated-04.lino"
     record "thinking_step_impulse"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ecb38738fd90185e
+    source "data/seed/closure-generated-05.lino"
+    record "artifact"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d665ce25a95da3ae
     source "data/seed/closure-generated-05.lino"
@@ -298,6 +306,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_6af172c05e188fce
     source "data/seed/closure-generated-07.lino"
     record "concept_lookup_in_context_no_alias"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ecf91f85d6fab8be
+    source "data/seed/closure-generated-07.lino"
+    record "inspect"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4bb7a4d6b932c63e
     source "data/seed/closure-generated-07.lino"
@@ -475,6 +487,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "response_thinking_step_user_context_plain_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1347073a20b54eee
+    source "data/seed/closure-generated-09.lino"
+    record "stays"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_15f5cb0eb0a25d8e
     source "data/seed/closure-generated-09.lino"
     record "under"
@@ -575,6 +591,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "response_pattern_grid_no_symmetry_es"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_97cc3a576a4a50de
+    source "data/seed/closure-generated-11.lino"
+    record "symfony"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a32770146aa1c71e
     source "data/seed/closure-generated-11.lino"
     record "than"
@@ -622,6 +642,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_eb83d1d8bd124fde
     source "data/seed/closure-generated-12.lino"
     record "rule"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f51ca0c5097ffcce
+    source "data/seed/closure-generated-12.lino"
+    record "strings"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_85419f698200122e
     source "data/seed/closure-generated-13.lino"

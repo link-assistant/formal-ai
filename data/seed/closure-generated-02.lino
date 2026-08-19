@@ -105,7 +105,7 @@ meanings
       surface
         text "fontawesome"
   for
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "for"
@@ -184,6 +184,11 @@ meanings
     lexeme en
       surface
         text "local search mismatch requested file"
+  maintainer
+    defined-by concept
+    lexeme en
+      surface
+        text "maintainer"
   mathematics
     defined-by category
     lexeme en
@@ -229,6 +234,11 @@ meanings
     lexeme en
       surface
         text "now"
+  on
+    defined-by concept
+    lexeme en
+      surface
+        text "on"
   passage
     defined-by word_surface
     lexeme en
@@ -319,6 +329,11 @@ meanings
     lexeme en
       surface
         text "primary"
+  print
+    defined-by concept
+    lexeme en
+      surface
+        text "print"
   rather
     defined-by concept
     lexeme en
@@ -809,6 +824,11 @@ meanings
     lexeme en
       surface
         text "self improvement loop"
+  sets
+    defined-by concept
+    lexeme en
+      surface
+        text "sets"
   software_project_plan
     defined-by concept
     lexeme en

@@ -156,6 +156,7 @@ fn meta_language_handles_every_covered_language() {
             "cpp" => "int main() { return 0; }\n",
             "go" => "package main\n\nfunc main() {}\n",
             "ruby" => "puts 1\n",
+            "php" => "<?php\n\necho 1;\n",
             other => panic!("no snippet for meta-language language `{other}`"),
         };
         let cst = parse_program_cst(&grammar.language_slug, snippet)

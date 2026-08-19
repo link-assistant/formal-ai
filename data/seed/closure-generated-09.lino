@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "assistant free time"
+  authors
+    defined-by concept
+    lexeme en
+      surface
+        text "authors"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -144,11 +149,26 @@ meanings
     lexeme en
       surface
         text "extract number"
+  fix
+    defined-by concept
+    lexeme en
+      surface
+        text "fix"
   forbids
     defined-by concept
     lexeme en
       surface
         text "forbids"
+  fragment
+    defined-by concept
+    lexeme en
+      surface
+        text "fragment"
+  governs
+    defined-by concept
+    lexeme en
+      surface
+        text "governs"
   head
     defined-by token
     lexeme en
@@ -165,7 +185,7 @@ meanings
       surface
         text "intent http fetch"
   issue
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "issue"
@@ -199,6 +219,11 @@ meanings
     lexeme en
       surface
         text "kotlin"
+  laravel
+    defined-by word_surface
+    lexeme en
+      surface
+        text "laravel"
   lexeme_import_missing_label
     defined-by intent
     lexeme en
@@ -214,6 +239,11 @@ meanings
     lexeme en
       surface
         text "locate"
+  merging
+    defined-by concept
+    lexeme en
+      surface
+        text "merging"
   meta_explanation
     defined-by intent
     lexeme en
@@ -320,7 +350,7 @@ meanings
       surface
         text "political adjective"
   process
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "process"
@@ -964,6 +994,11 @@ meanings
     lexeme en
       surface
         text "sequential compose"
+  solver
+    defined-by concept
+    lexeme en
+      surface
+        text "solver"
   standard
     defined-by concept
     lexeme en
@@ -979,6 +1014,11 @@ meanings
     lexeme en
       surface
         text "stay"
+  stays
+    defined-by concept
+    lexeme en
+      surface
+        text "stays"
   strip_empty_lines
     defined-by operation
     lexeme en

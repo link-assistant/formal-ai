@@ -167,6 +167,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "coding_workspace_verification_failed"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3c3cc5af24107e0d
+    source "data/seed/closure-generated-04.lino"
+    record "contribution"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_57d7ff8e307ed02d
     source "data/seed/closure-generated-04.lino"
     record "coverage_group"
@@ -194,6 +198,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_2f1527841b1ffb6d
     source "data/seed/closure-generated-04.lino"
     record "periodic_or_manual"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_424061c097f0231d
+    source "data/seed/closure-generated-04.lino"
+    record "refused"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_339c35f5330fa03d
     source "data/seed/closure-generated-04.lino"
@@ -402,6 +410,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_4c3ee567d173080d
     source "data/seed/closure-generated-09.lino"
     record "coding_meta_algorithm_stage"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_89116a6f065ad22d
+    source "data/seed/closure-generated-09.lino"
+    record "laravel"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_38777c4db28d66fd
     source "data/seed/closure-generated-09.lino"

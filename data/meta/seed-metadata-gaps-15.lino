@@ -91,6 +91,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "human-language"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_05d3c98157a178df
+    source "data/seed/closure-generated-02.lino"
+    record "maintainer"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_882a11d9195f333f
     source "data/seed/closure-generated-02.lino"
     record "passage"
@@ -270,6 +274,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_de72c157b297723f
     source "data/seed/closure-generated-05.lino"
     record "thinking_step_rule_verification_plain"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1b90b83655c194df
+    source "data/seed/closure-generated-05.lino"
+    record "verification"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_82d39cfe376b6b4f
     source "data/seed/closure-generated-05.lino"

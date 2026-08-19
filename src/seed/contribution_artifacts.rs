@@ -32,6 +32,22 @@ pub struct PullRequestSection {
     pub heading: String,
 }
 
+/// The mutating actions the write-path ladder knows, by rung.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct WritePathVocabulary {
+    /// Environment variable that carries the operator's opt-in.
+    pub opt_in_variable: String,
+    /// Value that variable must hold for the opt-in to count.
+    pub opt_in_value: String,
+    /// Actions permitted once the opt-in is present.
+    pub opt_in: Vec<String>,
+    /// Actions refused whether or not the opt-in is present.
+    pub refused: Vec<String>,
+    /// The steps that publish a contribution, in order, each with
+    /// `{repository}`, `{branch}`, `{title}` and `{body_file}` slots.
+    pub publication: Vec<String>,
+}
+
 /// Everything the process-artifact generator needs that is natural language.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ContributionArtifactVocabulary {
@@ -63,6 +79,8 @@ pub struct ContributionArtifactVocabulary {
     pub sections: Vec<PullRequestSection>,
     /// Sentence that introduces the verification list.
     pub verification_lead: String,
+    /// The mutating actions the write-path ladder knows.
+    pub write_path: WritePathVocabulary,
 }
 
 /// Parse `data/seed/contribution-artifacts.lino`.
@@ -77,6 +95,7 @@ pub fn contribution_artifact_vocabulary() -> ContributionArtifactVocabulary {
         match group.name.as_str() {
             "changelog" => read_changelog(group, &mut vocab),
             "pull_request" => read_pull_request(group, &mut vocab),
+            "write_path" => read_write_path(group, &mut vocab),
             _ => {}
         }
     }
@@ -138,6 +157,29 @@ fn read_pull_request(group: &LinoNode, vocab: &mut ContributionArtifactVocabular
             heading: node.find_child_value("heading").to_owned(),
         })
         .collect();
+}
+
+fn read_write_path(group: &LinoNode, vocab: &mut ContributionArtifactVocabulary) {
+    let write_path = &mut vocab.write_path;
+    group
+        .find_child_value("opt_in_variable")
+        .clone_into(&mut write_path.opt_in_variable);
+    group
+        .find_child_value("opt_in_value")
+        .clone_into(&mut write_path.opt_in_value);
+    write_path.opt_in = actions(group, "opt_in");
+    write_path.refused = actions(group, "refused");
+    write_path.publication = children_of(group, "publication")
+        .filter(|node| node.name == "step")
+        .map(|node| node.id.clone())
+        .collect();
+}
+
+fn actions(group: &LinoNode, rung: &str) -> Vec<String> {
+    children_of(group, rung)
+        .filter(|node| node.name == "action")
+        .map(|node| node.id.to_lowercase())
+        .collect()
 }
 
 fn children_of<'a>(group: &'a LinoNode, name: &str) -> impl Iterator<Item = &'a LinoNode> {

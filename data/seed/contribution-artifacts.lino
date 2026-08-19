@@ -8,6 +8,19 @@
 # fragment's shape; `scripts/check-pull-request-link.rs` fixes the body's. Both
 # are mirrored here so `src/contribution_artifacts.rs` composes an artifact those
 # very gates accept, and so a maintainer retunes the wording by editing seed data.
+#
+# `write_path` is the mutating-action ladder issue #944 asks for, at the two rungs
+# issue #1021 pins. An action that publishes a change is refused unless the
+# operator sets the opt-in variable, and an action nobody delegated is refused
+# either way. `gh issue create` is on the second rung because issue #943 records
+# what the first rung costs when it is missing -- a harness filing issues nobody
+# asked for -- and `gh pr merge` is there because merging stays a human decision.
+#
+# The ladder governs the write path Formal AI takes on its own behalf -- the
+# `publication` steps below -- and not a command an operator names. Issue #749
+# pinned `execute git push` as explicit passthrough and issue #687 pinned
+# "report this on GitHub" as `gh issue create`; both are delegated by the person
+# typing them, and refusing them would be the over-refusal issue #824 reports.
 contribution_artifacts
   changelog
     directory changelog.d
@@ -46,3 +59,19 @@ contribution_artifacts
       section verification
         heading "Verification"
     verification_lead "Automated coverage, all of it runnable from a clean checkout"
+  write_path
+    opt_in_variable FORMAL_AI_CONTRIBUTION_WRITE
+    opt_in_value 1
+    opt_in
+      action "gh pr create"
+      action "gh pr edit"
+      action "gh pr ready"
+      action "git push"
+    refused
+      action "gh pr merge"
+      action "gh issue create"
+      action "gh issue delete"
+      action "gh repo delete"
+    publication
+      step "git push --set-upstream origin {branch}"
+      step "gh pr create --repo {repository} --title {title} --body-file {body_file}"

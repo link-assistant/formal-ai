@@ -1,0 +1,19 @@
+self_ast_census
+  target src/seed/contribution_artifacts.rs
+  language rust
+  fidelity signature
+  byte_len 7461
+  line_count 192
+  content_id source_module_3a1df98b6bf29087
+  symbol_count 10
+  symbols
+    struct ChangelogCategory 19 24
+    struct PullRequestSection 28 33
+    struct WritePathVocabulary 37 49
+    struct ContributionArtifactVocabulary 53 84
+    function contribution_artifact_vocabulary 88 103
+    function read_changelog 105 138
+    function read_pull_request 140 160
+    function read_write_path 162 176
+    function actions 178 183
+    function children_of 185 192

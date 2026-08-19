@@ -10,7 +10,7 @@ meanings
       surface
         text "append memory"
   below
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "below"
@@ -24,6 +24,11 @@ meanings
     lexeme en
       surface
         text "browser indexeddb"
+  bump
+    defined-by concept
+    lexeme en
+      surface
+        text "bump"
   bundle_root_header
     defined-by field
     lexeme en
@@ -964,6 +969,11 @@ meanings
     lexeme en
       surface
         text "trim"
+  very
+    defined-by concept
+    lexeme en
+      surface
+        text "very"
   views
     defined-by word_surface
     lexeme en

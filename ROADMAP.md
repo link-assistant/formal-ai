@@ -536,6 +536,31 @@ write, preflight, migration, load/query/export, rollback, and released-image
 reopen. Evidence and design analysis are in
 `docs/case-studies/issue-982/` and `docs/case-studies/pull-request-985/`.
 
+## Issue #1021 Full-Range Coding And Contribution Artifacts (PR #1027)
+
+Issue [#1021](https://github.com/link-assistant/formal-ai/issues/1021) collects
+the range of prompts Formal AI answered wrongly — a bare `ls` (#868), `Execute
+ls command` (#866, #867), `List me files here` and `Hello` (#865), a
+copy-stdin-to-stdout request (#863), a Rosetta Code task (#862), a Laravel
+request written in Russian (#723), and a filesystem move it refused (#824) —
+and asks for them to be fixed by generalization rather than per-prompt rules.
+Each rule is corrected where it was wrong and its vocabulary moved into seed
+data, so held-out paraphrases route the same way as the reported wording. PHP
+joins the coding catalog with the same eleven task templates every other
+catalogued language carries. `src/contribution_artifacts.rs` composes the two
+process artifacts a change has to carry — a changelog fragment and a
+pull-request body that closes its issue — from
+`data/seed/contribution-artifacts.lino`, and the committed artifacts are that
+generator's output rather than hand-written fixtures.
+`src/contribution_write_path.rs` puts the publishing commands on a ladder that
+refuses by default and refuses `gh issue create` in both states, which is the
+E91 guard issue #943 asked for after the harness filed issues nobody wanted.
+The whole loop replays as a session capture. Remaining work: E94 versioned
+recoverable memory (#946) and E95 bounded autonomy (#947) are untouched, and
+the issue's definition of done — a pull request opened against this repository
+by a real `solve` run — is not met by this branch, which a human opened.
+Evidence and the honest gap list are in `docs/case-studies/issue-1021/`.
+
 ## Verification Contract
 
 When any roadmap item changes, the PR should update the corresponding rows in

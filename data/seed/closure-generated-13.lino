@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "canonical"
+  changed
+    defined-by category
+    lexeme en
+      surface
+        text "changed"
   client_contract_parse_transcript_error
     defined-by intent
     lexeme en
@@ -59,6 +64,11 @@ meanings
     lexeme en
       surface
         text "contributor fact count summary"
+  costs
+    defined-by concept
+    lexeme en
+      surface
+        text "costs"
   cp
     defined-by concept
     lexeme en
@@ -199,6 +209,11 @@ meanings
     lexeme en
       surface
         text "mcp prompt description"
+  minor
+    defined-by concept
+    lexeme en
+      surface
+        text "minor"
   move_note
     defined-by task
     lexeme en
@@ -214,6 +229,11 @@ meanings
     lexeme en
       surface
         text "mv"
+  over-refusal
+    defined-by concept
+    lexeme en
+      surface
+        text "over refusal"
   path_argument
     defined-by operation
     lexeme en
@@ -310,7 +330,7 @@ meanings
       surface
         text "programming task catalog"
   ps
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "ps"
@@ -814,6 +834,16 @@ meanings
     lexeme en
       surface
         text "retract contributed facts"
+  reveal
+    defined-by concept
+    lexeme en
+      surface
+        text "reveal"
+  steps
+    defined-by concept
+    lexeme en
+      surface
+        text "steps"
   summarization_criterion_content_grounded
     defined-by intent
     lexeme en

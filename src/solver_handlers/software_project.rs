@@ -659,25 +659,21 @@ fn detect_delivery_mode(normalized: &str) -> DeliveryMode {
 }
 
 /// Resolve the target language by walking the `software_implementation_language`
-/// meanings in declaration order (python → rust → javascript) and taking the
-/// first one named in the request. The default is TypeScript.
+/// meanings in declaration order (python → rust → javascript → php) and taking
+/// the first one named in the request. The default is TypeScript.
 fn detect_implementation_language(normalized: &str) -> &'static str {
     seed::lexicon()
         .first_role_match(seed::ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE, normalized)
-        .and_then(|meaning| implementation_language_from_slug(&meaning.slug))
+        .and_then(|meaning| implementation_language_from_slug(meaning.slug.as_str()))
         .unwrap_or("typescript")
 }
 
 /// Map a `software_implementation_language` meaning slug to its canonical target
-/// label. The recognition vocabulary lives in data while the rendered output
-/// label stays stable in code (the calendar `from_slug` precedent).
-fn implementation_language_from_slug(slug: &str) -> Option<&'static str> {
-    match slug {
-        "language_python" => Some("python"),
-        "language_rust" => Some("rust"),
-        "language_javascript" => Some("javascript"),
-        _ => None,
-    }
+/// label. The slug already carries the label — `language_php` is PHP — so the
+/// mapping is the prefix rather than a table, and cataloguing a language stays a
+/// data-only change (issue #1021: generalize instead of adding a case).
+fn implementation_language_from_slug(slug: &'static str) -> Option<&'static str> {
+    slug.strip_prefix("language_")
 }
 
 fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static str> {

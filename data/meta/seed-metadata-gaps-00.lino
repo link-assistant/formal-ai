@@ -67,6 +67,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "response_tool_result_empty_generic_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f6b2b7a1f0458a30
+    source "data/seed/closure-generated-01.lino"
+    record "takes"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6f0b9ed9d2abdec0
     source "data/seed/closure-generated-01.lino"
     record "thinking_step_compute_engine"
@@ -515,6 +519,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "pattern_grid_symmetry"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_40c5e1aa346406f0
+    source "data/seed/closure-generated-10.lino"
+    record "pinned"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e9ecdc465e320480
     source "data/seed/closure-generated-10.lino"
     record "project_ideas"
@@ -635,6 +643,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "memory_program_iteration_limit"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ca5d512cc214fe60
+    source "data/seed/closure-generated-12.lino"
+    record "missing"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_39669fab6f6ed1e0
     source "data/seed/closure-generated-12.lino"
     record "pattern_concept_suffix_se_kya_matlab"
@@ -698,6 +710,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_166acf106e51ed10
     source "data/seed/closure-generated-13.lino"
     record "home"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_cd6a3fe287c02730
+    source "data/seed/closure-generated-13.lino"
+    record "over-refusal"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2d4b51f5203643a0
     source "data/seed/closure-generated-13.lino"

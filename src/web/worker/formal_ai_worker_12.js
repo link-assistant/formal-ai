@@ -799,6 +799,14 @@ const WRITE_PROGRAM_LANGUAGES = {
     checkCommand: "kotlinc Main.kt -include-runtime -d Main.jar",
     runCommand: "java -jar Main.jar",
   },
+  php: {
+    name: "PHP",
+    fence: "php",
+    saveAs: "main.php",
+    setupHint: "PHP from https://www.php.net/downloads",
+    checkCommand: "php -l main.php",
+    runCommand: "php main.php",
+  },
 };
 
 const WRITE_PROGRAM_TASKS = {
@@ -881,6 +889,7 @@ const WRITE_PROGRAM_TEMPLATES = {
     scala:
       'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}',
     kotlin: 'fun main() {\n    println("Hello, world!")\n}',
+    php: '<?php\n\necho "Hello, world!", PHP_EOL;',
   },
   count_to_three: {
     rust:
@@ -894,6 +903,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       'package main\n\nimport "fmt"\n\nfunc main() {\n    for number := 1; number <= 3; number++ {\n        fmt.Println(number)\n    }\n}',
     c:
       '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 3; number++) {\n        printf("%d\\n", number);\n    }\n    return 0;\n}',
+    php: '<?php\n\nforeach (range(1, 3) as $number) {\n    echo $number, PHP_EOL;\n}',
   },
   list_files: {
     rust:
@@ -916,6 +926,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'names = Dir.entries(".").select { |name| File.file?(name) }.sort\nnames.each { |name| puts name }',
+    php: '<?php\n\n$names = array_filter(scandir("."), "is_file");\nsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}',
   },
   // Issue #324 follow-up: list files in the directory passed as the first
   // command-line argument, defaulting to "." when none is supplied. Mirrors the
@@ -941,6 +952,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }',
+    php: '<?php\n\n$path = $argv[1] ?? ".";\n$names = array_filter(scandir($path), fn($name) => is_file($path . DIRECTORY_SEPARATOR . $name));\nsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}',
   },
   list_files_reverse_sort: {
     rust:
@@ -963,6 +975,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse\nnames.each { |name| puts name }',
+    php: '<?php\n\n$names = array_filter(scandir("."), "is_file");\nrsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}',
   },
   list_files_arg_reverse_sort: {
     rust:
@@ -985,6 +998,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}',
     ruby:
       'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse\nnames.each { |name| puts name }',
+    php: '<?php\n\n$path = $argv[1] ?? ".";\n$names = array_filter(scandir($path), fn($name) => is_file($path . DIRECTORY_SEPARATOR . $name));\nrsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}',
   },
   fizzbuzz: {
     rust:
@@ -1007,6 +1021,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       "using System;\n\nclass Program {\n    static void Main() {\n        for (int number = 1; number <= 15; number++) {\n            if (number % 15 == 0) {\n                Console.WriteLine(\"FizzBuzz\");\n            } else if (number % 3 == 0) {\n                Console.WriteLine(\"Fizz\");\n            } else if (number % 5 == 0) {\n                Console.WriteLine(\"Buzz\");\n            } else {\n                Console.WriteLine(number);\n            }\n        }\n    }\n}",
     ruby:
       "(1..15).each do |number|\n  if (number % 15).zero?\n    puts \"FizzBuzz\"\n  elsif (number % 3).zero?\n    puts \"Fizz\"\n  elsif (number % 5).zero?\n    puts \"Buzz\"\n  else\n    puts number\n  end\nend",
+    php: '<?php\n\nforeach (range(1, 15) as $number) {\n    if ($number % 15 === 0) {\n        echo "FizzBuzz", PHP_EOL;\n    } elseif ($number % 3 === 0) {\n        echo "Fizz", PHP_EOL;\n    } elseif ($number % 5 === 0) {\n        echo "Buzz", PHP_EOL;\n    } else {\n        echo $number, PHP_EOL;\n    }\n}',
   },
   factorial: {
     rust:
@@ -1029,6 +1044,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       "using System;\n\nclass Program {\n    static void Main() {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        Console.WriteLine(result);\n    }\n}",
     ruby:
       "result = (1..5).reduce(1, :*)\nputs result",
+    php: '<?php\n\n$result = array_product(range(1, 5));\necho $result, PHP_EOL;',
   },
   reverse_string: {
     rust:
@@ -1051,6 +1067,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       "using System;\n\nclass Program {\n    static void Main() {\n        var text = \"hello\".ToCharArray();\n        Array.Reverse(text);\n        Console.WriteLine(new string(text));\n    }\n}",
     ruby:
       "text = \"hello\"\nputs text.reverse",
+    php: '<?php\n\n$text = "hello";\necho strrev($text), PHP_EOL;',
   },
   sum_to_ten: {
     rust:
@@ -1073,6 +1090,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       "using System;\n\nclass Program {\n    static void Main() {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        Console.WriteLine(total);\n    }\n}",
     ruby:
       "total = (1..10).sum\nputs total",
+    php: '<?php\n\n$total = array_sum(range(1, 10));\necho $total, PHP_EOL;',
   },
   // Issue #334: recursive `fibonacci` function evaluated at the 10th term (55).
   fibonacci: {
@@ -1096,6 +1114,7 @@ const WRITE_PROGRAM_TEMPLATES = {
       "using System;\n\nclass Program {\n    static long Fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n\n    static void Main() {\n        Console.WriteLine(Fibonacci(10));\n    }\n}",
     ruby:
       "def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)",
+    php: '<?php\n\nfunction fibonacci(int $n): int\n{\n    if ($n <= 2) {\n        return 1;\n    }\n\n    return fibonacci($n - 1) + fibonacci($n - 2);\n}\n\necho fibonacci(10), PHP_EOL;',
   },
 };
 

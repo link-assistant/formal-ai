@@ -77,7 +77,12 @@ fn a_composed_fragment_is_one_the_changelog_gate_accepts() {
 
     // The gate's own predicate, transcribed from `is_changelog_fragment`.
     assert!(path.starts_with("changelog.d/"), "{path}");
-    assert!(path.ends_with(".md"), "{path}");
+    // The gate matches the extension byte for byte, so this does too; clippy's
+    // case-insensitive suggestion would accept a name the gate rejects.
+    assert!(
+        std::path::Path::new(path).extension() == Some(std::ffi::OsStr::new("md")),
+        "{path}"
+    );
     assert!(!path.ends_with("README.md"), "{path}");
 
     // The name carries the timestamp README.md asks for, and the issue it
@@ -274,7 +279,7 @@ fn the_generator_composes_prose_without_containing_any() {
 /// String literals on one line of Rust source, without their quotes.
 fn string_literals(line: &str) -> Vec<String> {
     let mut literals = Vec::new();
-    let mut characters = line.chars().peekable();
+    let mut characters = line.chars();
     while let Some(character) = characters.next() {
         if character != '"' {
             continue;

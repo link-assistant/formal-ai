@@ -229,6 +229,11 @@ meanings
     lexeme en
       surface
         text "memory program permission refused"
+  mirrored
+    defined-by concept
+    lexeme en
+      surface
+        text "mirrored"
   normalize
     defined-by concept
     lexeme en
@@ -914,6 +919,11 @@ meanings
     lexeme en
       surface
         text "response write program skill gap name task unspecified zh"
+  retunes
+    defined-by concept
+    lexeme en
+      surface
+        text "retunes"
   rule_english
     defined-by rule
     lexeme en
@@ -944,6 +954,11 @@ meanings
     lexeme en
       surface
         text "summarize conversation"
+  symfony
+    defined-by word_surface
+    lexeme en
+      surface
+        text "symfony"
   test_status
     defined-by intent
     lexeme en
@@ -1035,7 +1050,7 @@ meanings
       surface
         text "wget"
   whoami
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "whoami"

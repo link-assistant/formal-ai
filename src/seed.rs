@@ -67,7 +67,7 @@ pub use client_integrations::{
 };
 pub use contribution_artifacts::{
     contribution_artifact_vocabulary, ChangelogCategory, ContributionArtifactVocabulary,
-    PullRequestSection,
+    PullRequestSection, WritePathVocabulary,
 };
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use draft_strategies::{draft_strategies, draft_strategies_from};

@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_helpers/mod.rs
   language rust
   fidelity signature
-  byte_len 26043
-  line_count 734
-  content_id source_module_85b5a39f3b718f1d
-  symbol_count 48
+  byte_len 27633
+  line_count 766
+  content_id source_module_a3c125cef18213d7
+  symbol_count 49
   symbols
     module code 13 13
     struct DecomposedSubImpulse 23 27
@@ -47,11 +47,12 @@ self_ast_census
     function hex_nibble 508 515
     function is_reserved_uri_delimiter 517 522
     function extract_fenced_block 527 547
-    function is_write_script_request 565 581
-    function format_write_script_execution 583 609
-    function env_definition_fusion_by_default 612 618
-    function env_bool 621 623
-    function env_bool_with_extra_truthy 626 639
-    function env_bounded_f32 642 649
-    function env_truthy 652 661
-    function config_from_env 666 734
+    function is_write_script_request 568 588
+    function names_no_task_beyond_the_minimal_script 602 613
+    function format_write_script_execution 615 641
+    function env_definition_fusion_by_default 644 650
+    function env_bool 653 655
+    function env_bool_with_extra_truthy 658 671
+    function env_bounded_f32 674 681
+    function env_truthy 684 693
+    function config_from_env 698 766

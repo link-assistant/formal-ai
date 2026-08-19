@@ -22,6 +22,7 @@ pub mod computer_use;
 pub(crate) mod concepts;
 pub mod context_capacity;
 pub mod contribution_artifacts;
+pub mod contribution_write_path;
 pub mod conversation_context;
 pub(crate) mod conversation_control;
 pub mod cue_lexicon;

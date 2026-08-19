@@ -4,6 +4,11 @@ meanings
     lexeme en
       surface
         text "rule"
+  added
+    defined-by category
+    lexeme en
+      surface
+        text "added"
   agent_procedure_write_unavailable
     defined-by intent
     lexeme en
@@ -59,6 +64,11 @@ meanings
     lexeme en
       surface
         text "data structure"
+  delegated
+    defined-by concept
+    lexeme en
+      surface
+        text "delegated"
   detailed
     defined-by concept
     lexeme en
@@ -104,6 +114,11 @@ meanings
     lexeme en
       surface
         text "grep"
+  harness
+    defined-by concept
+    lexeme en
+      surface
+        text "harness"
   how_it_works
     defined-by intent
     lexeme en
@@ -179,6 +194,11 @@ meanings
     lexeme en
       surface
         text "memory program iteration limit"
+  missing
+    defined-by concept
+    lexeme en
+      surface
+        text "missing"
   name_target_artifact
     defined-by concept
     lexeme en
@@ -929,6 +949,11 @@ meanings
     lexeme en
       surface
         text "spanish"
+  strings
+    defined-by concept
+    lexeme en
+      surface
+        text "strings"
   submission
     defined-by word_surface
     lexeme en
@@ -1014,3 +1039,8 @@ meanings
     lexeme en
       surface
         text "web search unavailable"
+  wording
+    defined-by concept
+    lexeme en
+      surface
+        text "wording"

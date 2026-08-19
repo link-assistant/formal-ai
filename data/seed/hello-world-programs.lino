@@ -2,7 +2,7 @@ write_program
   intent write_program
   parameters "language, task"
   tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci")
-  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby" "scala" "kotlin")
+  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby" "scala" "kotlin" "php")
   source "local public-domain seed templates"
 task_hello_world
   task hello_world
@@ -120,6 +120,12 @@ template_hello_world_kotlin
   task hello_world
   code_fence kotlin
   code 'fun main() {\n    println("Hello, world!")\n}'
+template_hello_world_php
+  intent write_program
+  language php
+  task hello_world
+  code_fence php
+  code '<?php\n\necho "Hello, world!", PHP_EOL;'
 template_count_to_three_python
   intent write_program
   language python
@@ -156,6 +162,12 @@ template_count_to_three_c
   task count_to_three
   code_fence c
   code '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 3; number++) {\n        printf("%d\\n", number);\n    }\n    return 0;\n}'
+template_count_to_three_php
+  intent write_program
+  language php
+  task count_to_three
+  code_fence php
+  code '<?php\n\nforeach (range(1, 3) as $number) {\n    echo $number, PHP_EOL;\n}'
 template_list_files_rust
   intent write_program
   language rust
@@ -228,6 +240,12 @@ template_list_files_kotlin
   task list_files
   code_fence kotlin
   code 'import java.io.File\n\nfun main() {\n    val entries = File(".").listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }\n}'
+template_list_files_php
+  intent write_program
+  language php
+  task list_files
+  code_fence php
+  code '<?php\n\n$names = array_filter(scandir("."), "is_file");\nsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}'
 template_list_files_arg_rust
   intent write_program
   language rust
@@ -300,6 +318,12 @@ template_list_files_arg_kotlin
   task list_files_arg
   code_fence kotlin
   code 'import java.io.File\n\nfun main(args: Array<String>) {\n    val path = if (args.isNotEmpty()) args[0] else "."\n    val entries = File(path).listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }\n}'
+template_list_files_arg_php
+  intent write_program
+  language php
+  task list_files_arg
+  code_fence php
+  code '<?php\n\n$path = $argv[1] ?? ".";\n$names = array_filter(scandir($path), fn($name) => is_file($path . DIRECTORY_SEPARATOR . $name));\nsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}'
 template_list_files_reverse_sort_rust
   intent write_program
   language rust
@@ -372,6 +396,12 @@ template_list_files_reverse_sort_kotlin
   task list_files_reverse_sort
   code_fence kotlin
   code 'import java.io.File\n\nfun main() {\n    val entries = File(".").listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }\n}'
+template_list_files_reverse_sort_php
+  intent write_program
+  language php
+  task list_files_reverse_sort
+  code_fence php
+  code '<?php\n\n$names = array_filter(scandir("."), "is_file");\nrsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}'
 template_list_files_arg_reverse_sort_rust
   intent write_program
   language rust
@@ -444,6 +474,12 @@ template_list_files_arg_reverse_sort_kotlin
   task list_files_arg_reverse_sort
   code_fence kotlin
   code 'import java.io.File\n\nfun main(args: Array<String>) {\n    val path = if (args.isNotEmpty()) args[0] else "."\n    val entries = File(path).listFiles() ?: return\n    entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }\n}'
+template_list_files_arg_reverse_sort_php
+  intent write_program
+  language php
+  task list_files_arg_reverse_sort
+  code_fence php
+  code '<?php\n\n$path = $argv[1] ?? ".";\n$names = array_filter(scandir($path), fn($name) => is_file($path . DIRECTORY_SEPARATOR . $name));\nrsort($names);\nforeach ($names as $name) {\n    echo $name, PHP_EOL;\n}'
 template_fizzbuzz_rust
   intent write_program
   language rust
@@ -516,6 +552,12 @@ template_fizzbuzz_kotlin
   task fizzbuzz
   code_fence kotlin
   code 'fun main() {\n    for (number in 1..15) {\n        when {\n            number % 15 == 0 -> println("FizzBuzz")\n            number % 3 == 0 -> println("Fizz")\n            number % 5 == 0 -> println("Buzz")\n            else -> println(number)\n        }\n    }\n}'
+template_fizzbuzz_php
+  intent write_program
+  language php
+  task fizzbuzz
+  code_fence php
+  code '<?php\n\nforeach (range(1, 15) as $number) {\n    if ($number % 15 === 0) {\n        echo "FizzBuzz", PHP_EOL;\n    } elseif ($number % 3 === 0) {\n        echo "Fizz", PHP_EOL;\n    } elseif ($number % 5 === 0) {\n        echo "Buzz", PHP_EOL;\n    } else {\n        echo $number, PHP_EOL;\n    }\n}'
 template_factorial_rust
   intent write_program
   language rust
@@ -588,6 +630,12 @@ template_factorial_kotlin
   task factorial
   code_fence kotlin
   code 'fun main() {\n    var result = 1L\n    for (number in 1..5) {\n        result *= number\n    }\n    println(result)\n}'
+template_factorial_php
+  intent write_program
+  language php
+  task factorial
+  code_fence php
+  code '<?php\n\n$result = array_product(range(1, 5));\necho $result, PHP_EOL;'
 template_reverse_string_rust
   intent write_program
   language rust
@@ -660,6 +708,12 @@ template_reverse_string_kotlin
   task reverse_string
   code_fence kotlin
   code 'fun main() {\n    val text = "hello"\n    println(text.reversed())\n}'
+template_reverse_string_php
+  intent write_program
+  language php
+  task reverse_string
+  code_fence php
+  code '<?php\n\n$text = "hello";\necho strrev($text), PHP_EOL;'
 template_sum_to_ten_rust
   intent write_program
   language rust
@@ -732,6 +786,12 @@ template_sum_to_ten_kotlin
   task sum_to_ten
   code_fence kotlin
   code 'fun main() {\n    val total = (1..10).sum()\n    println(total)\n}'
+template_sum_to_ten_php
+  intent write_program
+  language php
+  task sum_to_ten
+  code_fence php
+  code '<?php\n\n$total = array_sum(range(1, 10));\necho $total, PHP_EOL;'
 template_fibonacci_rust
   intent write_program
   language rust
@@ -804,3 +864,9 @@ template_fibonacci_kotlin
   task fibonacci
   code_fence kotlin
   code 'fun fibonacci(n: Int): Long =\n    if (n <= 2) 1 else fibonacci(n - 1) + fibonacci(n - 2)\n\nfun main() {\n    println(fibonacci(10))\n}'
+template_fibonacci_php
+  intent write_program
+  language php
+  task fibonacci
+  code_fence php
+  code '<?php\n\nfunction fibonacci(int $n): int\n{\n    if ($n <= 2) {\n        return 1;\n    }\n\n    return fibonacci($n - 1) + fibonacci($n - 2);\n}\n\necho fibonacci(10), PHP_EOL;'

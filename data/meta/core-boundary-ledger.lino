@@ -2,9 +2,9 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 46
-  source_lines_max 19543
+  source_lines_max 19539
   outside_core_file_count_max 46
-  outside_core_lines_max 19543
+  outside_core_lines_max 19539
   source src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
@@ -182,7 +182,7 @@ core_boundary_ledger
     reason "Command transformation policy and shell idioms are data over a process surface."
   source src/solver_handlers/software_project.rs
     disposition migrate
-    baseline_lines 915
+    baseline_lines 911
     data_target "software-project planning recipes"
     reason "Project structure, framework choices, and planning policy are coding-domain knowledge."
   source src/solver_handlers/software_project_code.rs
