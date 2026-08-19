@@ -306,3 +306,44 @@ by lowering it.
     This is the shape R1021-2 asked for, arriving from an unexpected direction:
     a gate the repository already had caught a language gap that no prompt in
     issue #1021 mentions, and the gap closed with data rather than a rule.
+
+12. **One CI job went red for a reason that was not in this branch, and saying
+    so needed a bisect rather than an assertion.** `E2E Tests (agent CLI <->
+    formal-ai)` failed on the pull request while passing on `main`, on a branch
+    that changed nothing the Codex TUI startup path reads. The difference was
+    the client: `.github/workflows/release.yml` installed `@openai/codex`
+    unpinned, and `0.148.0` was published at 2026-08-18T22:30Z — after `main`'s
+    last green run (11:13Z, codex 0.147.0) and before the branch's first red one
+    (06:02Z the next morning, codex 0.148.0).
+
+    From 0.148.0 on, the ENTER that answers Codex's first-run "Do you trust the
+    contents of this directory?" screen is dropped if it arrives as soon as that
+    screen renders. The failing artifact shows the keystroke *was* delivered
+    (`interactionCount: 1`) and that `formal-ai.log` recorded only `GET /health`:
+    the harness never got far enough to ask the server anything. A bare `codex`
+    in a pseudo terminal under a throwaway `HOME` — no wrapper, no config —
+    reproduces it, which is what rules Formal AI out as the cause. Reported as
+    <https://github.com/openai/codex/issues/39487>; still present in
+    `0.149.0-alpha.1`.
+
+    The interesting part is the fix that was rejected. The harness could in
+    principle answer the dialog "once the screen stops moving" —
+    `command-stream` exposes a per-interaction `idleMilliseconds` for exactly
+    that. Measuring first showed why it cannot work: the trust screen animates,
+    repainting about every 80 ms in 0.147.0 and 0.148.0 alike, so the idle
+    window never opens. Setting it made the Codex leg fail on **0.147.0 too**,
+    because the ENTER was then never sent at all. Every workaround that does
+    clear the dialog needs a wall-clock delay the driver cannot express.
+
+    So the change is a pin, and the repository had already written down why:
+    "Versions are pinned rather than floating so a matrix leg fails because our
+    server changed, not because an upstream CLI shipped overnight"
+    (`experiments/agentic_cli_matrix/clients.lock`). `release.yml` was following
+    that rule only for the one package `--trust` forced someone to name.
+    `tests/unit/ci-cd/issue_1021.rs` now holds it for every third-party CLI any
+    workflow installs, so the next floating install fails review instead of a
+    job; packages in the `@link-assistant/` scope stay unpinned on purpose,
+    since an E2E leg that pinned our own client would stop reporting whether
+    today's client works against today's server. `experiments/issue_1021_codex_tui_version`
+    holds the bisect and the wrapper-free reproduction, and is what a future
+    bump has to pass before the pin moves.

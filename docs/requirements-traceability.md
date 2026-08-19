@@ -782,5 +782,5 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R1021-23 | 2292 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/issue_918.rs::minimal_core_ledger_covers_every_recursive_handler_source; ::coding_path_has_complete_metadata_and_every_other_gap_is_data | not yet confirmed |
 | R1021-24 | 2293 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/docs_requirements_issue_1021.rs | not yet confirmed |
 | R1021-25 | 2294 | PR #1027 (issue #1021), 2026-08-19 | none -- the probes are examples, run by hand | run 2026-08-19; output preserved under docs/case-studies/issue-1021/logs/ |
-| R1021-26 | 2295 | PR #1027 (issue #1021), 2026-08-19 | none -- a negative finding | confirmed 2026-08-19 by tracing every root cause in the case study back into this repository |
+| R1021-26 | 2295 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/ci-cd/issue_1021.rs::the_codex_pin_names_the_upstream_defect_and_the_bisect_that_would_lift_it | measured 2026-08-19: `python3 experiments/issue_1021_codex_tui_version/codex_trust_dialog_probe.py 0.148.0 enter-now` leaves a bare `codex` on its trust dialog after 20 s while 0.147.0 clears it; filed as openai/codex#39487 and pinned in .github/workflows/release.yml -- see finding 12 |
 | R1021-27 | 2296 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/docs_requirements_issue_1021.rs | not yet confirmed |
