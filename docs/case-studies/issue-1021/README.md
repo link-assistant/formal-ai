@@ -270,3 +270,20 @@ by lowering it.
    capability, and out of scope for this branch. Adding a `copy_stdin_to_stdout`
    template for Rust alone would be exactly the specialization R1021-2 forbids,
    so it was not done.
+
+10. **Cataloguing PHP moved two existing tests, and neither was weakened.**
+    `write a hello world program in php` and the Russian follow-up of issue #461
+    both used to resolve through the coding oracle — the cached Hello World
+    Collection entry the fallback supplies for a language the catalog does not
+    template. Catalogued, PHP takes the catalog route, so
+    `issue_412_oracle_languages.rs` and `issue_461_php_followup.rs` now assert
+    `write_program` where they asserted `write_program_oracle_hello_world_php`.
+    That is the graduation Kotlin already made under issue #921, and the oracle's
+    own module doc calls it correct: the handler fires only when the catalog
+    "does not template" a language. The guarantee each test was written for is
+    kept — #412 still pins Swift on the fallback, and #461 still pins that a
+    follow-up naming only a language inherits the advertised Hello World task
+    instead of dead-ending on unknown. What the catalog route drops is the
+    "Hello World Collection" attribution line, which has no source to attribute
+    once the program comes from a template this repository verified itself with
+    `php -l` and executed.
