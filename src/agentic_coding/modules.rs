@@ -19,6 +19,7 @@ mod comparison;
 mod conversation_recall;
 pub mod corpus;
 pub mod diagram;
+mod directory_listing;
 pub mod dreaming_audit;
 pub mod driver;
 pub mod execution_learning;

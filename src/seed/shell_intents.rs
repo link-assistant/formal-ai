@@ -87,6 +87,25 @@ pub struct LocalPathSearchKind {
     pub cues: Vec<String>,
 }
 
+/// The parts a prose directory-listing request is composed of.
+///
+/// Issue #865 reported *"List me files here"* reaching web search: the listing
+/// detector matched whole phrases, and no phrase had that word order. The parts
+/// are declared separately so any request that combines a listing verb (or a
+/// question word) with a file/directory object and a local scope is recognised,
+/// in whatever order the user writes them.
+#[derive(Debug, Clone, Default)]
+pub struct DirectoryListingVocabulary {
+    /// Verbs that ask for something to be listed or shown.
+    pub verbs: Vec<String>,
+    /// Question words that open a *which files are here?* request.
+    pub questions: Vec<String>,
+    /// Nouns naming what is listed: files, contents, a directory.
+    pub objects: Vec<String>,
+    /// Phrases that scope the request to the current place.
+    pub scopes: Vec<String>,
+}
+
 /// The semantic shell-intent vocabulary: the ordered intent table plus the
 /// name-lead cue words that introduce a `NameLead` argument.
 #[derive(Debug, Clone, Default)]
@@ -108,6 +127,15 @@ pub struct ShellIntentVocabulary {
     pub local_path_search_kinds: Vec<LocalPathSearchKind>,
     /// Workspace marker → test/install/build mappings in preference order.
     pub workspace_commands: Vec<WorkspaceCommands>,
+    /// Nouns that name the filesystem object a path argument refers to.
+    ///
+    /// A cue carrying one of these (*"copy the file"*) says what its operands
+    /// are, so a plain name (`build`) is a legitimate operand. A cue that
+    /// carries none (*"copy"*) says nothing, so its operands must look like
+    /// paths — see `shell_command::collect_path_arguments` (issue #863).
+    pub path_objects: Vec<String>,
+    /// Parts that compose a prose directory-listing request.
+    pub directory_listing: DirectoryListingVocabulary,
     /// Intent → command mappings in declaration (most-specific-first) order.
     pub intents: Vec<ShellIntent>,
 }
@@ -189,6 +217,33 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
                         build: node.find_child_value("build").to_owned(),
                     })
                     .collect();
+            }
+            "path_objects" => {
+                vocab.path_objects = collect_language_values(group, "object")
+                    .into_iter()
+                    .map(|object| object.to_lowercase())
+                    .collect();
+            }
+            "directory_listing" => {
+                let part = |name: &str, child: &str| {
+                    group
+                        .children
+                        .iter()
+                        .find(|node| node.name == name)
+                        .map(|node| {
+                            collect_language_values(node, child)
+                                .into_iter()
+                                .map(|value| value.to_lowercase())
+                                .collect()
+                        })
+                        .unwrap_or_default()
+                };
+                vocab.directory_listing = DirectoryListingVocabulary {
+                    verbs: part("verbs", "verb"),
+                    questions: part("questions", "question"),
+                    objects: part("objects", "object"),
+                    scopes: part("scopes", "scope"),
+                };
             }
             "intents" => {
                 vocab.intents = group

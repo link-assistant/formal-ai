@@ -118,8 +118,8 @@ pub use release_timelines::{
 // under the 1000-line limit as new roles land).
 pub use roles::*;
 pub use shell_intents::{
-    shell_intent_vocabulary, LocalPathSearchKind, LocalPathSearchScope, ShellIntent,
-    ShellIntentArgument, ShellIntentVocabulary,
+    shell_intent_vocabulary, DirectoryListingVocabulary, LocalPathSearchKind, LocalPathSearchScope,
+    ShellIntent, ShellIntentArgument, ShellIntentVocabulary,
 };
 pub use sources::{
     external_service_settings_keys, external_trusted_sources, percent_encode, source_record,

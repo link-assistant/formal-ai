@@ -1,0 +1,71 @@
+self_ast_census
+  target src/agentic_coding/directory_listing.rs
+  language rust
+  fidelity full_ast
+  byte_len 3810
+  line_count 76
+  content_id source_module_c1384b76895e48d8
+  symbol_count 4
+  symbols
+    function asks_for_directory_listing 20 24
+    function composes_a_listing_request 38 43
+    function mentions 52 71
+    function is_unspaced_script 74 76
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1806
+    named_node_count 387
+    distinct_node_kinds 49
+    node_kinds
+      arguments 24
+      array_type 1
+      assignment_expression 1
+      binary_expression 7
+      block 8
+      boolean_literal 3
+      call_expression 24
+      char_literal 4
+      closure_expression 2
+      closure_parameters 2
+      crate 1
+      doc_comment 36
+      expression_statement 8
+      field_expression 22
+      field_identifier 22
+      function_item 4
+      function_modifiers 1
+      identifier 69
+      if_expression 3
+      index_expression 3
+      inner_doc_comment_marker 15
+      integer_literal 2
+      let_condition 1
+      let_declaration 8
+      line_comment 36
+      macro_invocation 1
+      mutable_specifier 1
+      outer_doc_comment_marker 21
+      parameter 7
+      parameters 4
+      parenthesized_expression 1
+      primitive_type 9
+      range_expression 3
+      reference_expression 6
+      reference_type 6
+      return_expression 3
+      scoped_identifier 4
+      scoped_use_list 1
+      self 1
+      source_file 1
+      super 1
+      token_tree 1
+      tuple_struct_pattern 1
+      type_identifier 2
+      unary_expression 2
+      use_declaration 1
+      use_list 1
+      visibility_modifier 1
+      while_expression 1
