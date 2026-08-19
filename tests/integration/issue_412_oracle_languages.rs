@@ -57,13 +57,34 @@ fn kotlin_graduated_from_the_oracle_to_the_catalog() {
 
 /// Swift is still uncatalogued, so it still resolves from the oracle: the
 /// fallback keeps its job for every language the catalog does not template.
+///
+/// PHP shared this test until issue #1021 catalogued it, and rewriting what was
+/// left was the chance to show the answer rather than a substring of it (R234-2,
+/// issue #960): the oracle route is the one place an answer carries an external
+/// attribution, and a reader cannot check that the attribution is honest -- a
+/// cached snippet, credited to where it came from -- from `contains("```swift")`.
 #[test]
 fn swift_hello_world_resolves_from_the_oracle() {
     let solver = UniversalSolver::default();
 
     let swift = solver.solve("write me a hello world program in swift");
     assert_eq!(swift.intent, "write_program_oracle_hello_world_swift");
-    assert!(swift.answer.contains("```swift"), "got: {}", swift.answer);
+    assert_eq!(
+        swift.answer,
+        "Here is a minimal Swift program (hello world):\n\
+         \n\
+         ```swift\n\
+         print(\"Hello, World!\")\n\
+         ```\n\
+         \n\
+         Output:\n\
+         ```text\n\
+         Hello, World!\n\
+         ```\n\
+         Source: Hello World Collection \
+         (http://helloworldcollection.de/#Swift), cached locally as a popular \
+         example."
+    );
 }
 
 /// PHP shared this file's fallback example with Swift until issue #1021, which
