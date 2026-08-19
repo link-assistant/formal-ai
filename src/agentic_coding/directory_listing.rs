@@ -65,7 +65,10 @@ fn mentions(text: &str, phrase: &str) -> bool {
         if !before.is_some_and(char::is_alphanumeric) && !after.is_some_and(char::is_alphanumeric) {
             return true;
         }
-        searched = start + phrase.len().min(1);
+        // Advance by one *character*, not one byte: a phrase that starts with a
+        // multi-byte letter (Cyrillic, Devanagari) would otherwise leave
+        // `searched` inside that letter and panic on the next slice.
+        searched = start + phrase.chars().next().map_or(1, char::len_utf8);
     }
     false
 }
