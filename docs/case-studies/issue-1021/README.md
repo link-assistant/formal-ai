@@ -381,3 +381,37 @@ by lowering it.
     `experiments/issue_1021_opt_in_race/run.sh`, with both runs preserved under
     `logs/`. A flake that is merely re-run is a defect the suite has agreed to
     keep; measuring it is what turns "it passed this time" into a claim.
+
+14. **A budget that reports a stall is not a budget that survives one.** The
+    next run failed again in a place the branch does not touch:
+    `E2E (opencode-desktop)` spent its full 300s `Install Xvfb` budget inside
+    `apt-get` and was terminated (run 32272689026, job 96135410333, `logs/xvfb-install-budget-terminated.log`),
+    while `opencode-vscode` and `cursor` installed the same package from the
+    same commit in 52s. That budget is issue #1017's own fix: before it, the
+    same hang ran to the 25-minute job cap and GitHub reported the kill as
+    `cancelled`, a false negative. The budget converted the false negative into
+    a true one — and then spent the whole of itself on a single attempt.
+
+    So the attempt is bounded too, not only the step.
+    `scripts/apt-install-with-retry.sh` gives each attempt its own deadline
+    inside the step's, kills a stalled one while there is still room for
+    another, and — the part that makes it more than a retry loop — refuses to
+    start when `attempts x per-attempt + delays` exceeds the budget above it,
+    because a retry that outlives its budget recreates the terminated step it
+    was added to prevent. `desktop/scripts/package-macos-with-retry.sh` learned
+    the same rule one runner family over. `timeout` is placed *inside* `sudo`
+    so the signal reaches `apt-get` rather than an unprivileged parent; a kill
+    that missed apt would leave root holding the dpkg lock and fail every
+    remaining attempt with a lock error instead of the stall that caused it.
+    Verified with a stand-in `apt-get` that stalls, that refuses, and that
+    recovers: `tests/unit/ci-cd/issue_1021.rs`. The step also drops `-qq` for
+    `-q`, because the terminated step logged nothing about which phase was
+    stuck — the standing instruction to add output where a root cause is not
+    visible, applied to CI.
+
+    Three findings in a row (12, 13, 14) are the same shape: a red job whose
+    cause is upstream or environmental, and whose fix is a rule the repository
+    can hold rather than a re-run. The definition of done asks for a pull
+    request with all checks green and no human edits; every re-run that is
+    quietly repeated instead of explained is a hole in that claim.
+

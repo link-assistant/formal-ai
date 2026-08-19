@@ -145,8 +145,15 @@ fn every_step_budget_expires_before_the_job_clock_it_guards() {
 /// it is the class that hangs indefinitely and converts into a cancellation.
 #[test]
 fn network_installs_under_a_job_cap_own_a_deadline() {
-    // Package-manager fetches whose duration depends on a remote mirror.
-    const UNBOUNDED_NETWORK_COMMANDS: &[&str] = &["apt-get update", "apt-get install"];
+    // Package-manager fetches whose duration depends on a remote mirror. The
+    // wrapper is listed beside the raw commands because issue #1021 moved the
+    // matrix's `apt-get` behind it: the rule follows the fetch, not its
+    // spelling, or hiding a mirror call inside a script would exempt it.
+    const UNBOUNDED_NETWORK_COMMANDS: &[&str] = &[
+        "apt-get update",
+        "apt-get install",
+        "scripts/apt-install-with-retry.sh",
+    ];
 
     let mut checked = 0_usize;
     for (name, body) in workflow_files() {
