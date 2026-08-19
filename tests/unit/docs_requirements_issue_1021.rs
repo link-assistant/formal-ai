@@ -10,9 +10,9 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-/// The requirement IDs issue #1021 assigns, R1021-1 through R1021-28.
+/// The requirement IDs issue #1021 assigns, R1021-1 through R1021-29.
 fn requirement_ids() -> Vec<String> {
-    (1..=28).map(|index| format!("R1021-{index}")).collect()
+    (1..=29).map(|index| format!("R1021-{index}")).collect()
 }
 
 #[test]

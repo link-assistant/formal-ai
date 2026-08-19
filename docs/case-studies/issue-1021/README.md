@@ -415,3 +415,51 @@ by lowering it.
     request with all checks green and no human edits; every re-run that is
     quietly repeated instead of explained is a hole in that claim.
 
+15. **A file that has not been written yet is not proof of a dead process.**
+    The same run's `CI/CD Pipeline` was red for a different reason:
+    `macOS Core Tests / Run macOS core slice 8/16` failed
+    `issue_703_orchestration_followup::timeout_terminates_descendant_processes`
+    on `assertion failed: !workspace.path().join("descendant-survived").exists()`
+    (run 32272689475, job 96137354605,
+    `logs/descendant-timeout-macos-slice8.log`). Nothing in this branch touches
+    `run_agent` or its fixture; the test dates from #703 and the same assertion
+    failed the same way during PR #1015, which answered it by upgrading
+    command-stream so the allowlisted executable, not an added `/bin/sh`, leads
+    the process group.
+
+    That answer removed one process from the window without removing the
+    window, because the assertion was never about the process at all. The test
+    gave the agent a 20 ms timeout, spawned a descendant that wrote
+    `descendant-survived` after 150 ms, and read the file 250 ms later. An
+    absent file means *either* the descendant was terminated *or* it is alive
+    and has not reached its write, so the test passed for the right reason only
+    while the kill kept beating a 130 ms head start. On a runner slicing
+    sixteen ways it did not: the failing test took 464 ms where the same test
+    takes ~280 ms here.
+
+    The question the test wants to ask is whether a process is running, so it
+    now asks the kernel. The fixture records the descendant's pid; the test
+    polls `ps -o state=` for it and separates the three ways this can go wrong,
+    each with its own message: never spawned (the timeout was too short for the
+    fixture to reach its `spawn`), still running after 5s (the kill did not
+    reach the process group), and gone but having outlived the 20s its file
+    costs (the kill arrived far later than the 2s it was given). The 2s timeout
+    and the 20s descendant are margins, not behaviour: they make the descendant
+    certainly exist when the kill lands and certainly outlive any honest delay
+    in observing it.
+
+    Two measurements were needed to get this right, and both contradicted a
+    plausible first answer. `kill -0` looked like the way to ask the kernel, and
+    it is wrong: it succeeds for a process that has already terminated but
+    whose exit status nobody collected, and this repository's own container runs
+    PID 1 as a `node` process holding 384 such entries, so the first version of
+    the fixed test reported a descendant that had been dead for ten seconds as
+    alive. And the group kill itself was never broken: `ps` taken every 250 ms
+    through a run shows the fixture, its `sh` and its `sleep` sharing one pgid
+    and all three vanishing together at the 2s timeout. The upstream one-shot
+    `kill(-pgid)` was the suspect and the evidence acquitted it, which is why no
+    upstream issue was filed for this one. The mutation that does make the test
+    fail is a descendant spawned with `process_group(0)` — outside the group the
+    kill addresses — and the test names it exactly: `descendant … was still
+    running 5s after the agent timed out, so the timeout did not reach the
+    process group`.

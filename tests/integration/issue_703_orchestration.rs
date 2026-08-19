@@ -830,12 +830,28 @@ fn external_agent_fixture_process() {
         "timeout" => std::thread::sleep(Duration::from_millis(250)),
         #[cfg(unix)]
         "descendant_timeout" => {
+            // The descendant proves it is alive by writing a file, but only
+            // after a delay far longer than any plausible lateness in the
+            // timeout that is supposed to kill it, and far longer than the
+            // window the test waits for it to disappear. Issue #1021: the
+            // previous 150 ms delay made that assertion a race with the
+            // runner's scheduler, and a loaded macOS runner won it (CI/CD
+            // Pipeline run 32272689475, job 96137354605).
             let mut descendant = Command::new("sh")
-                .args(["-c", "sleep 0.15; printf escaped > descendant-survived"])
+                .args(["-c", "sleep 20; printf escaped > descendant-survived"])
                 .spawn()
                 .unwrap();
-            std::thread::sleep(Duration::from_secs(1));
-            let _ = descendant.wait();
+            // Record the pid before waiting: it lets the test ask the kernel
+            // whether the descendant outlived the group kill instead of
+            // inferring termination from a file that may simply not have been
+            // written yet.
+            fs::write("descendant-pid", descendant.id().to_string()).unwrap();
+            std::thread::sleep(Duration::from_secs(30));
+            // Unreachable while the behaviour under test holds -- the timeout
+            // kills this fixture long before the sleep above returns. It is
+            // here so the child is reaped on the paths where the timeout does
+            // not arrive, which is what `clippy::zombie_processes` asks for.
+            descendant.wait().unwrap();
         }
         "failed" => std::process::exit(7),
         "failed_change" => {

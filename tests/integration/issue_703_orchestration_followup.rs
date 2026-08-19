@@ -219,18 +219,73 @@ fn timeout_is_recorded_without_an_implicit_retry() {
     );
 }
 
+/// Is a process the agent left behind still running once the agent timed out?
+///
+/// Issue #1021: the file this test used to read answers a different question.
+/// `descendant-survived` is absent both when the descendant was terminated and
+/// when it is alive but has not reached its write yet, so the old assertion
+/// passed for the right reason only when the timings lined up, and a loaded
+/// macOS runner lined them up the other way (run 32272689475, job
+/// 96137354605). The kernel is asked instead, and each of the three ways this
+/// can go wrong is named separately: never spawned, still alive, or already
+/// finished before the kill arrived.
 #[cfg(unix)]
 #[test]
 fn timeout_terminates_descendant_processes() {
     let workspace = TestWorkspace::new("descendant-timeout");
     let mut config = fixture_config("codex", workspace.path(), "descendant_timeout");
-    config.timeout = Duration::from_millis(20);
+    // Not the behaviour under test: the margin that makes the descendant
+    // certainly exist when the timeout reaches it. Without it a kill that
+    // lands before the fixture has spawned anything would pass this test
+    // while proving nothing.
+    config.timeout = Duration::from_secs(2);
 
     let session = run_agent(&config).expect("timeout is recorded");
-    std::thread::sleep(Duration::from_millis(250));
 
     assert_eq!(session.status, AgentStatus::TimedOut);
-    assert!(!workspace.path().join("descendant-survived").exists());
+    let recorded_pid = fs::read_to_string(workspace.path().join("descendant-pid")).expect(
+        "the fixture spawned a descendant and recorded it before the 2s timeout reached it",
+    );
+    let descendant = recorded_pid.trim().to_string();
+    // Well short of the 20s the descendant would live on its own: a descendant
+    // that escaped the kill is unmistakably still running when this expires,
+    // and one that received it is gone within milliseconds.
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while process_is_running(&descendant) {
+        assert!(
+            Instant::now() < deadline,
+            "descendant {descendant} was still running 5s after the agent timed out, so the \
+             timeout did not reach the process group"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        !workspace.path().join("descendant-survived").exists(),
+        "the descendant is gone now, but it stayed alive for the 20s its file costs, so the \
+         timeout reached the process group far later than the 2s it was given"
+    );
+}
+
+/// Is this pid still a running process?
+///
+/// `kill -0` cannot answer that: it succeeds for a terminated process whose
+/// exit status nobody has collected yet, and an orphaned descendant is
+/// reparented to a PID 1 that may never collect it — in this repository's own
+/// container, PID 1 is a `node` process holding hundreds of such entries. The
+/// state column separates the two: `Z` is a process that has already
+/// terminated, which is what this test wants to see.
+#[cfg(unix)]
+fn process_is_running(pid: &str) -> bool {
+    let observation = Command::new("ps")
+        .args(["-o", "state=", "-p", pid])
+        .output()
+        .expect("ps is available");
+    if !observation.status.success() {
+        return false;
+    }
+    let state = String::from_utf8_lossy(&observation.stdout);
+    let state = state.trim();
+    !state.is_empty() && !state.starts_with('Z')
 }
 
 #[test]
