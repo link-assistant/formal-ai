@@ -985,13 +985,10 @@ jobs:
           # only that reviewed package; suppress lifecycle scripts elsewhere.
           bun add -g --trust opencode-ai@1.18.4
           # Pinned for the reason experiments/agentic_cli_matrix/clients.lock
-          # states: a leg must fail because our server changed, not because an
-          # upstream CLI shipped overnight. @openai/codex@0.148.0 (published
-          # 2026-08-18T22:30Z) drops the ENTER that answers its first-run trust
-          # dialog the moment that dialog renders, so the TUI leg hangs before
-          # any request reaches formal-ai — https://github.com/openai/codex/issues/39487.
-          # Bumping a pin here is a deliberate commit; experiments/issue_1021_codex_tui_version
-          # is the bisect that tells you whether a bump is safe.
+          # gives: a leg must fail because our server changed, not because a CLI
+          # shipped overnight — @openai/codex@0.148.0 drops the ENTER answering
+          # its first-run trust dialog (https://github.com/openai/codex/issues/39487).
+          # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.234 @openai/codex@0.147.0 @google/gemini-cli@0.55.1
       - name: Build formal-ai (release)
         run: cargo build --release --bin formal-ai
