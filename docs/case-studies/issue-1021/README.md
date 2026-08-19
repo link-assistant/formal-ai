@@ -24,6 +24,8 @@ below is built on.
 | `logs/php-numeric-list-verification.log` | `php -l` and `php` over the rendered programs | The toolchain check behind the "compiles and runs" claim |
 | `logs/macos-timeout-not-found.log` | run 32282461075, jobs 96170638546 and 96170638704 | The macOS red that `scripts/run-with-deadline.sh` answers |
 | `logs/deadline-precision-measurements.log` | `experiments/issue-1021-deadline-precision/compare-clocks.sh` | Three drafts of the deadline against the same 3s budget |
+| `logs/macos-deadline-tests-green.log` | run 32294252392, all sixteen macOS core slices | The same eleven tests passing on the runner family that reported the gap |
+| `logs/apt-mirror-outage-every-attempt.log` | run 32294252072, job 96206598860 | An outage the per-attempt deadline retries and still cannot rescue |
 | `closed-circle-run/input.json` | authored with the change | The half of the session a replay cannot derive |
 | `closed-circle-run/session.json` | `cargo test --test unit -- issue_1021_closed_circle` | The replayable capture of the whole circle |
 | `closed-circle-run/pull-request-body.md` | `formal_ai::contribution_artifacts::compose` | The body this pull request uses, composed rather than typed |
@@ -199,6 +201,15 @@ rust-script scripts/check-changelog-fragment.rs
 rust-script scripts/run-ci-gates.rs --stage rust
 node tests/e2e/scripts/check-multilingual-intent-coverage.mjs
 ```
+
+The deadline is checked where the gap was, not only where the tests are easy to
+run. All eleven `ci_cd::issue_1021` tests passed on the macOS core slices of run
+32294252392, including the two — 15/16 and 16/16 — that reported
+`timeout: command not found` in run 32282461075
+(`logs/macos-deadline-tests-green.log`). On that runner the lower-bound test
+measured 3.835s against its 3s deadline and the two-attempt stall finished in
+3.826s, so the accuracy the Linux measurements claim holds on the family that
+has no `timeout(1)` to compare against.
 
 Two ratchets moved, both in the direction their gates allow without review:
 
@@ -546,3 +557,33 @@ by lowering it.
     against the clock — 300s of stall must finish in under 45s. Lowering a bar
     is weakening what is required; this raised what is checked while dropping a
     coincidence of formatting.
+
+18. **The retry rescues a mirror that is hung, not one that is merely slow.**
+    The first CI run to carry the portable deadline still turned
+    `E2E (opencode-desktop)` red (run 32294252072, job 96206598860,
+    `logs/apt-mirror-outage-every-attempt.log`). The deadline itself behaved
+    exactly as written — each of the three attempts was killed at 91s of its 90s
+    budget, one second late and never early, and each was retried — and the step
+    failed anyway, on an upstream outage: `azure.archive.ubuntu.com` returned
+    `Ign` for every index while `archive.ubuntu.com` served them.
+
+    The timings say why, and they are not about the deadline. Inside one
+    attempt: 30s for apt to time out the dead mirror, ~8s of backoff, then a
+    fallback that fetched the `InRelease` files in a second and was still
+    downloading package indices 53s later when the deadline killed it. Every
+    attempt re-paid the same fixed 38s and had the remainder for progress that
+    was never kept. Three attempts of 90s inside a 300s budget spend the budget
+    on the attempts *least* likely to succeed: the last one, the only one with
+    nothing to retry after it, gets no more time than the first.
+
+    That is a real defect in `scripts/apt-install-with-retry.sh` and it is ours,
+    not upstream — but it is a different defect from the one this branch fixes,
+    it predates this branch (the wrapper's 3×90s shape comes from #1017), and
+    the same commit was green on the same job two hours earlier
+    (run 32282460920), so it is the mirror that changed and not the code. The
+    honest shape of the fix is to let the deadlines grow across attempts inside
+    the budget rather than repeat — a short first probe catches a hung mirror
+    cheaply, and the last attempt takes what is left, because killing it
+    converts a slow success into a certain failure. Left for its own issue
+    rather than folded in here, where it would arrive without the reproduction a
+    stand-in mirror that is slow rather than stalled would need.
