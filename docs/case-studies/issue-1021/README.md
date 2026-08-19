@@ -22,6 +22,8 @@ below is built on.
 | `logs/php-laravel-after.log` | the same example on this branch | The same prompts after PHP was catalogued |
 | `logs/php-numeric-list-generation.log` | `cargo run --example issue_1021_php_numeric_list` | Numeric tasks rendered in PHP |
 | `logs/php-numeric-list-verification.log` | `php -l` and `php` over the rendered programs | The toolchain check behind the "compiles and runs" claim |
+| `logs/macos-timeout-not-found.log` | run 32282461075, jobs 96170638546 and 96170638704 | The macOS red that `scripts/run-with-deadline.sh` answers |
+| `logs/deadline-precision-measurements.log` | `experiments/issue-1021-deadline-precision/compare-clocks.sh` | Three drafts of the deadline against the same 3s budget |
 | `closed-circle-run/input.json` | authored with the change | The half of the session a replay cannot derive |
 | `closed-circle-run/session.json` | `cargo test --test unit -- issue_1021_closed_circle` | The replayable capture of the whole circle |
 | `closed-circle-run/pull-request-body.md` | `formal_ai::contribution_artifacts::compose` | The body this pull request uses, composed rather than typed |
@@ -463,3 +465,84 @@ by lowering it.
     kill addresses — and the test names it exactly: `descendant … was still
     running 5s after the agent timed out, so the timeout did not reach the
     process group`.
+
+16. **The fix for a red job was itself only tested where it runs.** The commit
+    that added `scripts/apt-install-with-retry.sh` bounded each attempt with
+    GNU `timeout`. Its own job — Linux — installed Xvfb on attempt 1 in 9s and
+    went green, and two macOS core slices went red on the *tests* that drive
+    the wrapper (run 32282461075, jobs 96170638546 and 96170638704):
+
+        scripts/apt-install-with-retry.sh: line 91: timeout: command not found
+        left: Some(127), right: Some(100)
+
+    (`logs/macos-timeout-not-found.log`).
+
+    macOS ships no `timeout`; coreutils installs it as `gtimeout` and neither is
+    guaranteed on a hosted runner. The script only ever runs on Linux, so a
+    reviewer reading it in isolation sees nothing wrong — but a test is code
+    that runs everywhere the suite runs, and the suite is sliced across both
+    runner families. A wrapper written to keep a transient failure from turning
+    a pipeline red had turned it red on a second platform.
+
+    Branching on whichever binary is present (`timeout` here, `gtimeout` there)
+    would have made the failure go away while leaving the tested path and the
+    shipped path different on the two families, which is exactly how the gap got
+    in. `scripts/run-with-deadline.sh` is one deadline that runs on both: the
+    command is started in its own process group, signalled whole at the
+    deadline, and reported with `timeout`'s own 124 so the retry wrapper can
+    still tell a stalled mirror from apt's own failure by that number. The same
+    technique already bounds a whole CI step in `run-with-budget-warning.sh`,
+    which is why the macOS slices could run *that* one all along.
+
+    Two tests pin the primitive — an expired deadline kills a stall that lives
+    in a *child* of the command, and a command that answers in time keeps its
+    own exit status — and a third generalizes the defect instead of the
+    instance: `no_committed_script_reaches_for_a_timeout_binary_macos_does_not_have`
+    reads every tracked script and workflow, because the next script to reach
+    for a GNU-only binary will not be this one. That guard needed a second
+    version. The first asked what followed the word `timeout` — a number or a
+    flag — and a quoted `timeout "$attempt_seconds"` walked straight through it:
+    the mutation run reported the guard *passing* on the exact line that had
+    just failed CI. It now asks where the token stands rather than what follows
+    it, and the same mutation fails with
+    `scripts/apt-install-with-retry.sh:90: timeout is GNU coreutils and the macOS runners do not have it`.
+
+17. **Writing the deadline meant owning its accuracy, and the first draft
+    expired early.** Replacing `timeout(1)` replaces a promise, not just a
+    binary: a command given 3s must get 3s. The first draft polled once a second
+    and read elapsed time from bash's `SECONDS`, and every test still passed —
+    because every assertion about it was an *upper* bound. Measuring instead of
+    asserting (`experiments/issue-1021-deadline-precision/measure.sh`) showed
+    two defects in one primitive (`logs/deadline-precision-measurements.log`,
+    five runs of each draft against the same 3s deadline):
+
+        draft 1: 1s poll, SECONDS clock      expired after 4.26-4.41s
+        draft 2: 0.1s poll, SECONDS clock    expired after 2.54-3.01s
+        shipped: 0.1s poll, both bounds      expired after 3.42-3.56s
+
+    The first is a full extra second spent in the grace loop, because a command
+    signalled at the deadline is still alive at the next check. The second is
+    the one that mattered: `SECONDS` is a difference of whole-second clock
+    readings, so it reaches 3 as little as 2.01s after the shell starts, and a
+    deadline that expires early converts work that was going to finish into a
+    failure — the exact flake the retry exists to remove. Sharpening the poll is
+    what exposed it; the coarse poll had been hiding it behind its own lateness.
+
+    The elapsed time is now the larger of two lower bounds — counted poll
+    intervals, exact at the short end but drifting by a fork per iteration, and
+    the `SECONDS` reading minus the second it may be reading high — so it is
+    never early, and never late by more than a fork's-worth or two seconds,
+    whichever is smaller. Measured: 3.4-3.6s on a 3s deadline and 10.8s on a
+    10s one, and early on none of the runs above.
+    `the_deadline_never_expires_before_the_time_it_was_given` is the assertion
+    that was missing; restoring the `SECONDS`-only reading fails it with
+    `a 3s deadline expired after 2.480484781s`.
+
+    One assertion in the suite had to be *loosened* to say something true. It
+    read `Attempt 1 exited 124 after 3s of its 3s deadline`, and it failed
+    against a deadline that had done its job in 3.6s. Pinning the rounding of a
+    duration is not testing the duration: it now parses the reported seconds,
+    requires them inside `3..=6`, and separately holds the whole two-attempt run
+    against the clock — 300s of stall must finish in under 45s. Lowering a bar
+    is weakening what is required; this raised what is checked while dropping a
+    coincidence of formatting.

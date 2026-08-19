@@ -18,7 +18,7 @@ use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /// A scratch directory for one test's stand-in binaries.
 fn temp_dir(name: &str) -> PathBuf {
@@ -242,7 +242,9 @@ fn run_apt_retry(failures: u32, mode: &str, attempts: u32) -> std::process::Outp
 /// no commit in it caused.
 #[test]
 fn a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds() {
+    let started = SystemTime::now();
     let output = run_apt_retry(1, "stall", 2);
+    let elapsed = started.elapsed().expect("read the clock");
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
 
@@ -250,10 +252,30 @@ fn a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds(
         output.status.success(),
         "a transient stall must not fail the step: {stdout}{stderr}"
     );
-    // 124 is `timeout`'s own status: the attempt was killed, not answered.
+    // 124 is the deadline's own status: the attempt was killed, not answered.
     assert!(
-        stderr.contains("Attempt 1 exited 124 after 3s of its 3s deadline"),
+        stderr.contains("Attempt 1 exited 124 after") && stderr.contains("of its 3s deadline"),
         "the log must name the killed attempt and its deadline: {stderr}"
+    );
+    // The claim is that the 300s stall was cut at the 3s deadline, so check the
+    // clock, not the wording. The reported figure is whole seconds either side
+    // of a poll interval, and pinning it to exactly `3s` is how this assertion
+    // failed on a deadline that had done its job in 3.6s -- a test that reads a
+    // rounding is not reading the behaviour.
+    let reported: u64 = stderr
+        .split("Attempt 1 exited 124 after ")
+        .nth(1)
+        .and_then(|rest| rest.split('s').next())
+        .and_then(|seconds| seconds.parse().ok())
+        .unwrap_or_else(|| panic!("the attempt must report how long it ran: {stderr}"));
+    assert!(
+        (3..=6).contains(&reported),
+        "the attempt must be killed at its 3s deadline, not before and not much \
+         after; it reported {reported}s: {stderr}"
+    );
+    assert!(
+        elapsed < Duration::from_secs(45),
+        "two 3s attempts against a 300s stall must not take {elapsed:?}"
     );
     assert!(
         stdout.contains("apt install of xvfb succeeded on attempt 2/2"),
@@ -349,5 +371,209 @@ fn every_budgeted_retry_in_a_workflow_fits_the_budget_it_runs_under() {
     assert_eq!(
         checked, 1,
         "expected the agentic matrix's Xvfb install to be the one budgeted retry"
+    );
+}
+
+/// The wrapper's per-attempt deadline was GNU `timeout` until the macOS core
+/// slices ran these tests: macOS ships no `timeout`, so every attempt exited
+/// 127 and the two tests above failed on a script whose own job was green
+/// (run 32282461075, jobs 96170638546 and 96170638704). The replacement lives
+/// in `scripts/run-with-deadline.sh` and has to keep `timeout`'s contract --
+/// 124 when the deadline expires, the command's own status otherwise -- because
+/// the wrapper's log tells a stalled mirror from apt's own failure by that
+/// number.
+#[test]
+fn the_deadline_exits_124_and_kills_the_whole_stalled_tree() {
+    let directory = temp_dir("deadline-stall");
+    let pid_file = directory.join("descendant-pid");
+    let started = std::time::Instant::now();
+    let output = Command::new("bash")
+        .arg(format!(
+            "{}/scripts/run-with-deadline.sh",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .arg("1")
+        // The stall is in a *child* of the command, which is where `apt-get`
+        // spends one: a deadline that signals only the root leaves it running.
+        .arg("bash")
+        .arg("-c")
+        .arg(format!(
+            "sleep 120 & echo $! > {}; wait",
+            pid_file.display()
+        ))
+        .output()
+        .expect("run the deadline wrapper");
+    let elapsed = started.elapsed();
+
+    assert_eq!(
+        output.status.code(),
+        Some(124),
+        "an expired deadline reports `timeout`'s own status: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        elapsed < Duration::from_secs(30),
+        "the deadline must expire long before the command would finish, took {elapsed:?}"
+    );
+    let descendant = fs::read_to_string(&pid_file).expect("the command recorded its child");
+    let descendant = descendant.trim();
+    assert!(
+        !process_is_running(descendant),
+        "the stalled child {descendant} outlived the deadline, so the signal \
+         reached only the root of the tree"
+    );
+}
+
+/// A deadline that expires early is a worse defect than one that expires late:
+/// it converts work that was going to finish into a failure, which is the shape
+/// of flake this whole retry exists to remove.
+///
+/// This is not hypothetical. The first draft read elapsed time from bash's
+/// `SECONDS`, which is a difference of whole-second clock readings, and killed a
+/// 3s deadline after 2.6s (`experiments/issue-1021-deadline-precision`). Nothing
+/// in the suite noticed, because every other assertion here is an upper bound.
+#[test]
+fn the_deadline_never_expires_before_the_time_it_was_given() {
+    let started = std::time::Instant::now();
+    let output = Command::new("bash")
+        .arg(format!(
+            "{}/scripts/run-with-deadline.sh",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .arg("3")
+        .arg("bash")
+        .arg("-c")
+        .arg("sleep 120")
+        .output()
+        .expect("run the deadline wrapper");
+    let elapsed = started.elapsed();
+
+    assert_eq!(
+        output.status.code(),
+        Some(124),
+        "the stall must still be killed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        elapsed >= Duration::from_secs(3),
+        "a 3s deadline expired after {elapsed:?}, so a command with 3s of work \
+         to do would have been killed doing it"
+    );
+    // Late is allowed, but only by the polling and the fork it costs.
+    assert!(
+        elapsed < Duration::from_secs(15),
+        "a 3s deadline took {elapsed:?}, which is no longer a 3s deadline"
+    );
+}
+
+/// A command that answers inside its deadline is untouched by it -- including
+/// its exit status, which is how `apt-install-with-retry.sh` reports a mirror
+/// that is refusing rather than stalling.
+#[test]
+fn a_command_that_beats_its_deadline_keeps_its_own_status() {
+    for expected in [0, 100] {
+        let output = Command::new("bash")
+            .arg(format!(
+                "{}/scripts/run-with-deadline.sh",
+                env!("CARGO_MANIFEST_DIR")
+            ))
+            .arg("30")
+            .arg("bash")
+            .arg("-c")
+            .arg(format!("exit {expected}"))
+            .output()
+            .expect("run the deadline wrapper");
+        assert_eq!(output.status.code(), Some(expected));
+    }
+}
+
+/// Is this pid still a running process? `kill -0` says yes for a terminated
+/// process nobody has reaped yet, and a killed descendant is reparented to a
+/// PID 1 that may never reap it, so the state column is read instead: `Z` is a
+/// process that has already terminated.
+fn process_is_running(pid: &str) -> bool {
+    let observation = Command::new("ps")
+        .args(["-o", "state=", "-p", pid])
+        .output()
+        .expect("ps is available");
+    if !observation.status.success() {
+        return false;
+    }
+    let state = String::from_utf8_lossy(&observation.stdout);
+    let state = state.trim();
+    !state.is_empty() && !state.starts_with('Z')
+}
+
+/// The defect generalized: `timeout` is a GNU coreutils binary, and half this
+/// repository's CI runs on macOS, which does not ship it. One script reaching
+/// for it passed review because the job it ships in is Linux; the tests that
+/// drive that script are not. So the rule is held for every committed script
+/// and workflow rather than for the one that was caught, the way the version
+/// pin above is held for every third-party CLI.
+#[test]
+fn no_committed_script_reaches_for_a_timeout_binary_macos_does_not_have() {
+    let tracked = Command::new("git")
+        .args(["ls-files", "*.sh", ".github/workflows/*.yml"])
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .expect("run git ls-files");
+    assert!(tracked.status.success(), "git ls-files should succeed");
+    let tracked = String::from_utf8_lossy(&tracked.stdout);
+    let mut checked = 0_usize;
+
+    for path in tracked.lines() {
+        if path.starts_with("dev/log/")
+            || path.starts_with("docs/case-studies/")
+            || path.starts_with("experiments/")
+        {
+            continue;
+        }
+        checked += 1;
+        let contents =
+            fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join(path)).expect(path);
+        for (number, line) in contents.lines().enumerate() {
+            let code = line.trim_start();
+            if code.starts_with('#') {
+                continue;
+            }
+            let tokens: Vec<&str> = code.split_whitespace().collect();
+            for (index, token) in tokens.iter().enumerate() {
+                // The word alone is not the defect -- prose says "timeout" too.
+                // What matters is `timeout` standing where a command starts,
+                // whatever follows it: the first version of this guard asked
+                // what came next instead, and a quoted
+                // `timeout "$attempt_seconds"` walked straight through it.
+                let starts_a_command = index == 0
+                    || matches!(
+                        tokens[index - 1],
+                        "|" | "||"
+                            | "&&"
+                            | ";"
+                            | "("
+                            | "{"
+                            | "-"
+                            | "!"
+                            | "sudo"
+                            | "then"
+                            | "do"
+                            | "else"
+                            | "exec"
+                            | "command"
+                            | "env"
+                            | "run:"
+                    );
+                assert!(
+                    *token != "timeout" || !starts_a_command,
+                    "{path}:{}: `timeout` is GNU coreutils and the macOS runners \
+                     do not have it -- use scripts/run-with-deadline.sh, which \
+                     keeps the same 124-on-expiry contract",
+                    number + 1
+                );
+            }
+        }
+    }
+    assert!(
+        checked > 30,
+        "expected the tracked scripts and workflows to be read, saw {checked}"
     );
 }

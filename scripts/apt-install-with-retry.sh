@@ -31,6 +31,14 @@
 #                                   when already root, as tests are
 set -euo pipefail
 
+# The per-attempt deadline is `scripts/run-with-deadline.sh`, not GNU `timeout`:
+# macOS ships no `timeout`, so the tests that drive this wrapper on the macOS
+# core slices died with `timeout: command not found` while the Linux job it
+# ships on passed (issue #1021, run 32282461075). An absolute path because
+# `sudo` resets PATH to its own secure_path.
+script_directory=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+deadline="$script_directory/run-with-deadline.sh"
+
 [ "$#" -gt 0 ] || {
   echo "at least one package name is required" >&2
   exit 2
@@ -73,13 +81,13 @@ fi
 status=0
 for ((attempt = 1; attempt <= attempts; attempt++)); do
   started=$SECONDS
-  # `timeout` runs *inside* the privilege escalation so it signals apt-get
+  # The deadline runs *inside* the privilege escalation so it signals apt-get
   # itself; killing an unprivileged parent would leave root's apt holding the
   # dpkg lock and fail every remaining attempt with a lock error instead of the
   # stall that caused it. `DPkg::Lock::Timeout` covers the leftovers anyway.
   # shellcheck disable=SC2016  # `$0`/`$@` are the inner shell's, deliberately
   attempt_command=(
-    timeout "$attempt_seconds" bash -c '
+    "$deadline" "$attempt_seconds" bash -c '
       set -e
       "$0" -o DPkg::Lock::Timeout=60 update -q
       "$0" -o DPkg::Lock::Timeout=60 install -y -q "$@"
