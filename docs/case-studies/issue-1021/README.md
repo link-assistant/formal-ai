@@ -584,6 +584,8 @@ by lowering it.
     honest shape of the fix is to let the deadlines grow across attempts inside
     the budget rather than repeat — a short first probe catches a hung mirror
     cheaply, and the last attempt takes what is left, because killing it
-    converts a slow success into a certain failure. Left for its own issue
-    rather than folded in here, where it would arrive without the reproduction a
-    stand-in mirror that is slow rather than stalled would need.
+    converts a slow success into a certain failure. Filed as #1028 rather than
+    folded in here, where it would arrive without the reproduction it needs: the
+    stand-in `apt-get` these tests drive models a mirror that hangs, and this
+    one was slow. Re-running the job passed, which is what confirms the mirror
+    changed and not the code.
