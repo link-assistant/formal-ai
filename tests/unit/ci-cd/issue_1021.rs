@@ -22,13 +22,38 @@ use std::path::Path;
 /// today's client still works against today's server.
 const OWN_SCOPE: &str = "@link-assistant/";
 
-fn workflow_file(name: &str) -> String {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join(".github/workflows")
-        .join(name);
-    fs::read_to_string(&path)
-        .unwrap_or_else(|error| panic!("read {}: {error}", path.display()))
-        .replace("\r\n", "\n")
+/// Every workflow in the repository, read as `(file name, contents)`. Reading
+/// the directory rather than a list is the point: a rule that only holds for
+/// the workflows installing a CLI today is a rule the next one escapes.
+fn workflows() -> Vec<(String, String)> {
+    let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join(".github/workflows");
+    let mut found: Vec<(String, String)> = fs::read_dir(&directory)
+        .unwrap_or_else(|error| panic!("read {}: {error}", directory.display()))
+        .map(|entry| entry.expect("a readable directory entry").path())
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|extension| extension == "yml" || extension == "yaml")
+        })
+        .map(|path| {
+            let contents = fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("read {}: {error}", path.display()))
+                .replace("\r\n", "\n");
+            (
+                path.file_name()
+                    .expect("a file inside the workflow directory")
+                    .to_string_lossy()
+                    .into_owned(),
+                contents,
+            )
+        })
+        .collect();
+    found.sort();
+    assert!(
+        !found.is_empty(),
+        "no workflows found under {}",
+        directory.display()
+    );
+    found
 }
 
 /// Split a `bun add -g` command into the package specs it installs, dropping
@@ -55,12 +80,7 @@ fn is_pinned(spec: &str) -> bool {
 #[test]
 fn every_third_party_cli_a_workflow_installs_globally_carries_an_explicit_version() {
     let mut checked = Vec::new();
-    for name in [
-        "release.yml",
-        "proactive-failure-report-e2e.yml",
-        "agentic-cli-matrix.yml",
-    ] {
-        let workflow = workflow_file(name);
+    for (name, workflow) in workflows() {
         for line in workflow.lines().filter(|line| {
             line.trim()
                 .trim_start_matches("run:")
