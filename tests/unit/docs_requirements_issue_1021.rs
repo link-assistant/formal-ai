@@ -104,9 +104,14 @@ fn the_case_study_records_the_data_the_analysis_rests_on() {
     }
 }
 
-/// The four requirements this branch does not deliver are named in the case
+/// The two requirements this branch does not deliver are named in the case
 /// study *and* in the requirement shard, with the issue that keeps tracking
 /// them. Silence about them would read as delivery.
+///
+/// The set used to be four. E94 and E95 left it by being implemented, not by
+/// being reworded, so the rows that once read "not delivered" are held to the
+/// opposite standard here: each must cite the test that exercises it, and the
+/// cited test must be one the traceability gate can already find on disk.
 #[test]
 fn the_undelivered_requirements_are_reported_rather_than_dropped() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
@@ -116,7 +121,7 @@ fn the_undelivered_requirements_are_reported_rather_than_dropped() {
     );
     let traceability = read(root.join("docs/requirements-traceability.md"));
 
-    for id in ["R1021-12", "R1021-13", "R1021-14", "R1021-22"] {
+    for id in ["R1021-14", "R1021-22"] {
         assert!(
             shard.contains(id),
             "the shard should state the undelivered requirement {id}"
@@ -128,6 +133,48 @@ fn the_undelivered_requirements_are_reported_rather_than_dropped() {
         assert!(
             row.contains("not delivered") || row.contains("not achieved"),
             "{id} must not claim confirmation it does not have: {row}"
+        );
+    }
+
+    for (id, cited) in [
+        (
+            "R1021-12",
+            "a_version_that_does_not_compile_leaves_the_previous_one_in_place",
+        ),
+        (
+            "R1021-13",
+            "a_loop_that_never_resolves_stops_at_the_limit_and_asks",
+        ),
+    ] {
+        let shard_row = shard
+            .lines()
+            .find(|line| line.starts_with(&format!("| {id} |")))
+            .unwrap_or_else(|| panic!("{id} should have a shard row"));
+        assert!(
+            !shard_row.contains("Not delivered"),
+            "{id} is delivered and the row should say so: {shard_row}"
+        );
+        assert!(
+            shard_row.contains(cited),
+            "{id} should name the test that pins the behaviour: {shard_row}"
+        );
+        let row = traceability
+            .lines()
+            .find(|line| line.starts_with(&format!("| {id} |")))
+            .unwrap_or_else(|| panic!("{id} should have a traceability row"));
+        assert!(
+            !row.contains("not delivered"),
+            "{id} should carry the same reading in the traceability table: {row}"
+        );
+        assert!(
+            row.contains(cited),
+            "{id} should cite the test behind the claim: {row}"
+        );
+        // The manual column stays honest: the machinery is tested, and nobody
+        // has yet watched it run unattended.
+        assert!(
+            row.contains("not yet confirmed"),
+            "{id} should not claim a manual confirmation it does not have: {row}"
         );
     }
 

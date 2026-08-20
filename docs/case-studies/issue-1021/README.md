@@ -28,6 +28,7 @@ below is built on.
 | `logs/languageless-followup.log` | `cargo run --example issue_1021_languageless_followup` | The same request answered from the catalog once the follow-up turn supplies the missing half |
 | `logs/spanish-code-boundary-before.log` | `cargo run --example issue_1021_spanish_code_boundary` before the fix | Every Spanish request naming `código` read as a request for C |
 | `logs/spanish-code-boundary-after.log` | the same example after it | The same prompts once word boundaries stopped being an ASCII question |
+| `logs/bounded-recovery.log` | `cargo run --example issue_1021_bounded_recovery` | A run stopped by its own limit, a candidate version that does not compile and is rolled back, and a delegated choice |
 | `experiments/issue-1021-laravel/` | `composer create-project laravel/laravel`, `php artisan` | The real application the Laravel template was verified inside, and the browser-mirror check |
 | `logs/macos-timeout-not-found.log` | run 32282461075, jobs 96170638546 and 96170638704 | The macOS red that `scripts/run-with-deadline.sh` answers |
 | `logs/deadline-precision-measurements.log` | `experiments/issue-1021-deadline-precision/compare-clocks.sh` | Three drafts of the deadline against the same 3s budget |
@@ -62,7 +63,7 @@ changelog fragment and a linked pull-request body (R1021-15, R1021-16); the
 commands that publish it must sit on a ladder that refuses by default, with
 `gh issue create` refused in both states (R1021-10, R1021-11); and all of it must
 be test-covered, including the closed circle as a replayable session (R1021-18 …
-R1021-21). Four requirements are reported **not delivered** — see §9.
+R1021-21). Two requirements are reported **not delivered** — see §9.
 
 ## 4. Root causes
 
@@ -227,6 +228,29 @@ and deliberately not a command an operator names — #749 pinned `execute git pu
 as explicit passthrough and #687 pinned "report this on GitHub"; refusing those
 would be the over-refusal #824 reports.
 
+**A version of itself it can take back.** `src/memory_revision.rs` gives the
+self-modifying half of the loop something to fall back to: `BaselinePin` records
+the digest of every specification a version is judged against, `MemoryRevision`
+captures the bytes of every tracked file *before* a candidate is written, and a
+candidate is adopted only on a verdict that compiled and passed a non-empty
+baseline — the same "positive evidence, or no" rule `PromotionProposal` already
+applies to promotions. A candidate that edited a pinned file is rolled back
+before its verdict is even consulted, because a judge the defendant rewrote
+decides nothing. Every attempt leaves `MemoryEvent`s, so the trail travels the
+bundle path with the rest of memory.
+
+**A loop that stops on its own.** `src/bounded_autonomy.rs` takes its clock as a
+parameter — `Clock`, with `SystemClock` in production and a hand-advanced
+`ManualClock` in tests — so the one-hour stuck-recovery limit is exercised in
+microseconds against the arithmetic that ships, rather than being the one
+constant nobody tests. `RecoveryLoop` answers `Continue` until the limit is
+spent, then presents the plan it accumulated and asks; granting an extension
+resumes from where it stopped rather than restarting the budget. Per-command
+permission is the default and full trust is a separate opt-in, so delegating the
+commands is not the same act as delegating the choices, and a choice whose two
+best options weigh the same goes back to the operator instead of being decided
+by tie-break.
+
 **The circle** is captured by `examples/issue_1021_write_contribution_artifacts.rs`
 (which writes the committed fragments and body) and
 `tests/unit/issue_1021_closed_circle.rs` (which replays everything and fails if
@@ -249,12 +273,13 @@ cargo run --example issue_1021_named_exercise_probe
 cargo run --example issue_1021_languageless_probe
 cargo run --example issue_1021_languageless_followup
 cargo run --example issue_1021_spanish_code_boundary
+cargo run --example issue_1021_bounded_recovery
 cargo run --example issue_1021_php_laravel
 bash experiments/issue-1021-laravel/run.sh
 node experiments/issue-1021-laravel/worker_check.mjs
 ```
 
-The eight commands below the gates are the measurements the delivery claims rest
+The nine commands below the gates are the measurements the delivery claims rest
 on, and each writes a log committed under `logs/`. `issue_1021_copy_stdin_harness` compiles and runs
 the `copy_stdin_to_stdout` template in every catalogued language, feeding each
 one the task's own fixture and comparing what comes back:
@@ -319,9 +344,25 @@ by lowering it.
    wearing the framework's name. The sparseness is the deliberate half; the gap
    is that eleven verified Laravel templates would each need their own run
    inside that application, and only one has had it.
-4. **E94 and E95 are untouched (R1021-12, R1021-13).** Versioned recoverable
-   memory and a stuck-recovery limit are properties of an unattended run;
-   nothing here runs unattended, so there was no honest way to test them.
+4. **E94 and E95 are delivered as machinery, and the machinery has not yet
+   driven a real unattended run (R1021-12, R1021-13).** The earlier draft of
+   this case study called both untouched, on the reasoning that a stuck-recovery
+   limit is a property of an unattended run and nothing here runs unattended.
+   The review was right that this deferred the wrong half. Both are implemented
+   and tested now: `src/memory_revision.rs` pins the baseline by digest,
+   snapshots the tracked bytes before a candidate is written, and restores them
+   when the candidate fails — the test fails a compile on purpose with a real
+   `rustc` and then compares the workspace byte-for-byte, because a rollback
+   that is only *reported* is not a rollback. `src/bounded_autonomy.rs` takes
+   its clock as a parameter, so the pathological run that never resolves is
+   exercised against the same arithmetic the default hour uses, in
+   microseconds instead of an hour. What is still missing is narrower than
+   "untouched" and worth naming precisely: no unattended `solve` run has yet
+   been driven through `RecoveryLoop`, so the limit is confirmed against a
+   hand-advanced clock rather than against a wall clock in production, and no
+   version of this repository has yet been adopted or rolled back by
+   `RevisionLedger` — that is the same gap as R1021-14 and R1021-22, and it
+   closes with the run, not with more tests.
 5. **The ladder does not govern operator-named commands**, by design — see §7.
 6. **`мне нужен код` is recognised as a coding request, and is still not
    answered with code (R1021-31).** It no longer reaches web search: eleven bare
