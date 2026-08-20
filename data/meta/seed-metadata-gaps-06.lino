@@ -651,6 +651,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "thinking_narrative_identity"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_56c14ba2b0b9be26
+    source "data/seed/closure-generated-14.lino"
+    record "we"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_35db918b593af996
     source "data/seed/closure-generated-15.lino"
     record "issue_report_context_excerpt_note"

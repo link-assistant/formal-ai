@@ -227,6 +227,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "csv"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a6482ac4deefef27
+    source "data/seed/closure-generated-06.lino"
+    record "just"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_da5afa1a4dfbf257
     source "data/seed/closure-generated-06.lino"
     record "pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh"

@@ -1,7 +1,3 @@
-    Blocking waiting for file lock on build directory
-   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1787114586826)
-    Finished `dev` profile [unoptimized] target(s) in 2m 04s
-     Running `target/debug/examples/issue_1021_php_laravel`
 === write me a Rust program
 -- intent: write_program_skill_gap
 I cannot write this program: no synthesis route reaches this request in language "rust".
@@ -36,23 +32,39 @@ I decomposed the request and tried every synthesis route I have, in order — ca
 Nothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `php`, or restate the task in steps I can already compile.
 
 === write me PHP Laravel code
--- intent: write_script_php
-Here is a minimal PHP script:
+-- intent: write_script_laravel
+Here is a minimal Laravel script:
 
 ```php
 <?php
 
-echo "Hello, world!", PHP_EOL;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+
+class HelloWorld extends Command
+{
+    protected $signature = 'hello:world';
+
+    protected $description = 'Print a greeting';
+
+    public function handle(): int
+    {
+        $this->line('Hello, world!');
+
+        return self::SUCCESS;
+    }
+}
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
-Check command: `php -l main.php`
-Run command: `php main.php`
+Execution status: compiled and ran in issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh).
+Check command: `php -l app/Console/Commands/HelloWorld.php`
+Run command: `php artisan hello:world`
 Output:
 ```text
 Hello, world!
 ```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.
 
 === write me Ruby on Rails code
 -- intent: write_script_ruby

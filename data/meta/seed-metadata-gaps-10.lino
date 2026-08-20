@@ -939,6 +939,10 @@ seed_metadata_gaps
     source "data/seed/meanings-web-search.lino"
     record "github_repository_traffic_signal"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_e9f7081a025320da
+    source "data/seed/meanings.lino"
+    record "request_function_word"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_aa5cb1d40cc111aa
     source "data/seed/meanings.lino"
     record "update"

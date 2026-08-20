@@ -231,6 +231,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "response_who_is_unknown_entity_suggestion_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b8ffe6e32821d4a3
+    source "data/seed/closure-generated-06.lino"
+    record "copy_stdin_to_stdout"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1bf62d096bd33db3
     source "data/seed/closure-generated-06.lino"
     record "gui_rendering"

@@ -303,6 +303,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "sdk"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_52e65f2cca70f842
+    source "data/seed/closure-generated-07.lino"
+    record "some"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d22c64fe3f0cef12
     source "data/seed/closure-generated-07.lino"
     record "substitute"

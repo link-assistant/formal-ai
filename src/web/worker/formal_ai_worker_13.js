@@ -194,7 +194,15 @@ function programLanguageFromPrompt(normalized) {
   // Each language's alias surfaces live in its `program_language_<slug>` meaning,
   // not inline on WRITE_PROGRAM_LANGUAGES — read them by slug (issue #386). Names
   // are single tokens, matched on whitespace boundaries exactly as in Rust.
-  for (const slug of Object.keys(WRITE_PROGRAM_LANGUAGES)) {
+  //
+  // Framework targets are consulted first, mirroring `program_language_by_alias`:
+  // a request that names both a framework and the language it is written in —
+  // `напиши мне код на PHP Laravel`, issue #723 — names the framework, and
+  // answering in the base language throws away the part of the request that was
+  // hardest to satisfy.
+  const slugs = Object.keys(WRITE_PROGRAM_LANGUAGES);
+  const isFramework = (slug) => Boolean(WRITE_PROGRAM_LANGUAGES[slug].frameworkOf);
+  for (const slug of slugs.filter(isFramework).concat(slugs.filter((s) => !isFramework(s)))) {
     const surfaces = wordsForMeaning(`program_language_${slug}`);
     if (surfaces.some((alias) => containsProgramToken(delimited, alias))) return slug;
   }

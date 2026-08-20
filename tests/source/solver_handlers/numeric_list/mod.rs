@@ -301,7 +301,7 @@ fn solve_numeric_list_with_context(
 
     // The target language may come from this turn or, for a bare follow-up, from
     // the most recent numeric-list coding turn in the conversation.
-    let language = crate::coding::program_language_by_alias(normalized).or(inherited.language)?;
+    let language = crate::coding::composition_language(normalized, inherited.language)?;
     let items = parse_list_items(prompt, operation);
     if items.len() < 2 {
         return None;

@@ -807,6 +807,20 @@ const WRITE_PROGRAM_LANGUAGES = {
     checkCommand: "php -l main.php",
     runCommand: "php main.php",
   },
+  // `frameworkOf` mirrors `ProgramLanguage::framework_of`: a catalog row is an
+  // implementation target, and a target may be a framework of another target
+  // (issue #723). Only the fields the request actually asked for are the
+  // framework's own; the grammar and idioms belong to `frameworkOf`.
+  laravel: {
+    name: "Laravel",
+    fence: "php",
+    frameworkOf: "php",
+    saveAs: "app/Console/Commands/HelloWorld.php",
+    setupHint:
+      "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)",
+    checkCommand: "php -l app/Console/Commands/HelloWorld.php",
+    runCommand: "php artisan hello:world",
+  },
 };
 
 const WRITE_PROGRAM_TASKS = {
@@ -890,6 +904,8 @@ const WRITE_PROGRAM_TEMPLATES = {
       'object Main {\n  def main(args: Array[String]): Unit = {\n    println("Hello, world!")\n  }\n}',
     kotlin: 'fun main() {\n    println("Hello, world!")\n}',
     php: '<?php\n\necho "Hello, world!", PHP_EOL;',
+    laravel:
+      "<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = 'hello:world';\n\n    protected $description = 'Print a greeting';\n\n    public function handle(): int\n    {\n        $this->line('Hello, world!');\n\n        return self::SUCCESS;\n    }\n}",
   },
   count_to_three: {
     rust:

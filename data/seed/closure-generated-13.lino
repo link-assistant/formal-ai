@@ -889,6 +889,11 @@ meanings
     lexeme en
       surface
         text "task plan stage regression"
+  these
+    defined-by word_surface
+    lexeme en
+      surface
+        text "these"
   thinking_narrative_greeting
     defined-by intent
     lexeme en

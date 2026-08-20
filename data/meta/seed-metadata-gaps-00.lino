@@ -771,6 +771,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "committed"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_567647a2b079cbe0
+    source "data/seed/closure-generated-14.lino"
+    record "me"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b817e76ad8718240
     source "data/seed/closure-generated-14.lino"
     record "narrative"

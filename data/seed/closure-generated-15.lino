@@ -309,6 +309,11 @@ meanings
     lexeme en
       surface
         text "muestra"
+  my
+    defined-by word_surface
+    lexeme en
+      surface
+        text "my"
   next
     defined-by concept
     lexeme en

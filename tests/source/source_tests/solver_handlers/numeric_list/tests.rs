@@ -77,6 +77,11 @@ fn quoted_string_lists_render_valid_cst_for_every_language() {
     );
 
     for language in crate::coding::PROGRAM_LANGUAGES {
+        // Composing a list program out of catalogued idioms is a question about
+        // the language, not about the implementation target, so a framework
+        // composes as the language it is written in — exactly what the handler
+        // does with the target it resolved (issue #723).
+        let language = language.base_language();
         let program = codegen::build(language, &items, operation, false);
         let code = program
             .render()

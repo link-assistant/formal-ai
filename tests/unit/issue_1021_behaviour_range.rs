@@ -206,6 +206,143 @@ fn a_named_exercise_is_not_a_file_operation() {
     }
 }
 
+/// Refusing to run it as a file copy is only half of #863: the exercise then has
+/// to be *answered*. The catalog could not express it, because every task in it
+/// produced its output from nothing — `output` described a task completely, so a
+/// task whose subject is a stream had no way to say what stream. Naming the
+/// input the task is defined against (`ProgramTask::input`) is the general
+/// change: the fixture travels with the task into the run command the answer
+/// prints, so what the reader is told to type is what was checked
+/// (`experiments/issue-1021-copy-stdin`).
+#[test]
+fn a_named_exercise_is_answered_as_a_program() {
+    for (natural_language, prompt, program_language) in [
+        // Reported (#863), now with the language it names.
+        (
+            "en",
+            "Give me example of how to do copy stdin to stdout in Rust",
+            "rust",
+        ),
+        // Held out: paraphrases, and languages no phrase was written against.
+        (
+            "en",
+            "write a program that copies stdin to stdout in Python",
+            "python",
+        ),
+        (
+            "en",
+            "Write a Go program that copies standard input to standard output",
+            "go",
+        ),
+        (
+            "ru",
+            "напиши программу на C, которая копирует стандартный ввод в стандартный вывод",
+            "c",
+        ),
+        ("ru", "скопировать stdin в stdout на php", "php"),
+        ("hi", "मानक इनपुट को मानक आउटपुट में कॉपी करें python", "python"),
+        ("zh", "用 Java 将标准输入复制到标准输出", "java"),
+        ("es", "copiar stdin a stdout en JavaScript", "javascript"),
+    ] {
+        let response = UniversalSolver::default().solve(prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "{natural_language}: {prompt}"
+        );
+        assert!(
+            response.evidence_links.iter().any(|link| link
+                == &format!("response:write_program:copy_stdin_to_stdout:{program_language}")),
+            "{natural_language}: {prompt} -> {:?}",
+            response.evidence_links
+        );
+    }
+}
+
+/// A program that reads standard input is not run by naming it: with no
+/// redirection the reader gets a process waiting on a terminal, and the
+/// "expected output" above it never appears. So the answer prints the fixture
+/// piped in, in the execution report *and* in the numbered test steps — the two
+/// places a reader copies from — and both come from the same task data.
+#[test]
+fn the_stdin_answer_prints_the_input_it_was_verified_against() {
+    // The whole answer, so a reader can see that the fixture appears in the run
+    // command, in the reproduction steps and in the output block, and nowhere
+    // it does not belong.
+    const EXPECTED: &str = "Here is a minimal Rust copy standard input to standard output program:\n\
+         \n\
+         ```rust\n\
+         use std::io::{self, Read, Write};\n\
+         \n\
+         fn main() -> io::Result<()> {\n\
+         \x20   let mut input = Vec::new();\n\
+         \x20   io::stdin().read_to_end(&mut input)?;\n\
+         \x20   io::stdout().write_all(&input)\n\
+         }\n\
+         ```\n\
+         \n\
+         Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\n\
+         Check command: `rustc main.rs -o main`\n\
+         Run command: `printf 'hello\\nworld\\n' | ./main`\n\
+         Output:\n\
+         ```text\n\
+         hello\n\
+         world\n\
+         ```\n\
+         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\
+         \n\
+         How it works:\n\
+         The program performs the requested task and prints its result to standard output.\n\
+         \n\
+         How to test it yourself:\n\
+         1. Install the Rust toolchain from https://rustup.rs.\n\
+         2. Save the code above to a file named `main.rs`.\n\
+         3. Check that it compiles: `rustc main.rs -o main`.\n\
+         4. Run it: `printf 'hello\\nworld\\n' | ./main`.\n\
+         5. Compare the output with the expected output shown above.";
+
+    let response = UniversalSolver::default().solve("copy stdin to stdout in Rust");
+    assert_eq!(response.answer, EXPECTED);
+}
+
+/// And a task that reads no input keeps the plain command it always had, so the
+/// fixture is a property of the task rather than a new decoration on every
+/// answer.
+#[test]
+fn a_task_that_reads_no_input_keeps_its_plain_run_command() {
+    // The same answer shape as above with the pipe absent everywhere, which is
+    // the whole claim: the fixture belongs to the task, not to the renderer.
+    const EXPECTED: &str = "Here is a minimal Rust hello world program:\n\
+         \n\
+         ```rust\n\
+         fn main() {\n\
+         \x20   println!(\"Hello, world!\");\n\
+         }\n\
+         ```\n\
+         \n\
+         Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\n\
+         Check command: `rustc main.rs -o main`\n\
+         Run command: `./main`\n\
+         Output:\n\
+         ```text\n\
+         Hello, world!\n\
+         ```\n\
+         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\
+         \n\
+         How it works:\n\
+         The program prints the text `Hello, world!` to standard output and then exits.\n\
+         \n\
+         How to test it yourself:\n\
+         1. Install the Rust toolchain from https://rustup.rs.\n\
+         2. Save the code above to a file named `main.rs`.\n\
+         3. Check that it compiles: `rustc main.rs -o main`.\n\
+         4. Run it: `./main`.\n\
+         5. Compare the output with the expected output shown above.";
+
+    let response = UniversalSolver::default().solve("write me hello world program in Rust");
+    assert_eq!(response.answer, EXPECTED);
+    assert!(!response.answer.contains("printf"), "{}", response.answer);
+}
+
 /// The same guard must not cost the file operations that were already routed: a
 /// cue that names the object it acts on (*"remove the directory build"*) still
 /// accepts a plain name as its operand.
@@ -233,22 +370,37 @@ fn intent(prompt: &str) -> String {
 
 /// Issue #723: *"напиши мне код на PHP Laravel"* — "write me PHP Laravel code" —
 /// was answered with the unspecified-request refusal, because PHP was one of the
-/// few languages the catalog did not template. The same sentence about Ruby on
-/// Rails or Python Django was already answered, so the gap was the language, not
-/// the framework or the wording.
+/// few languages the catalog did not template. Cataloguing PHP stopped the
+/// refusal, but it answered a request for Laravel with plain PHP: the catalog
+/// had a single axis where the sentence names two things, so `laravel` could
+/// only be carried as an alias surface of `php`.
 ///
-/// The generalization is cataloguing PHP the way every other catalogued language
-/// is catalogued — the eleven task templates, the CST grammar, the coding idioms,
-/// the worker mirror — so a framework name keeps being what it always was here,
-/// an alias surface of its language.
+/// The generalization widens that axis instead of adding a rule about Laravel.
+/// A catalog row is an *implementation target*, and a target may be a framework
+/// of another target (`framework_of`). What belongs to the language — its
+/// grammar, its composable idioms — is read through
+/// `ProgramLanguage::base_language`, so a framework inherits it without
+/// restating it; what the request actually asked for — the template, the file
+/// to save it in, the command that runs it — is the framework's own. A
+/// framework nobody catalogued still answers in the language it is written in,
+/// which is the honest answer rather than a refusal.
 #[test]
-fn a_framework_named_coding_request_is_answered_in_that_frameworks_language() {
+fn a_framework_named_coding_request_is_answered_in_that_framework() {
     for (language, prompt, expected) in [
         // Reported.
-        ("ru", "напиши мне код на PHP Laravel", "write_script_php"),
-        // Held out: the same request in the other project languages, and a
-        // second PHP framework nobody wrote a seed phrase for.
-        ("en", "write me PHP Laravel code", "write_script_php"),
+        (
+            "ru",
+            "напиши мне код на PHP Laravel",
+            "write_script_laravel",
+        ),
+        // Held out: the same request in the other project languages.
+        ("en", "write me PHP Laravel code", "write_script_laravel"),
+        ("hi", "PHP Laravel में कोड लिखें", "write_script_laravel"),
+        ("zh", "用 PHP Laravel 写代码", "write_script_laravel"),
+        // Held out: a second PHP framework nobody catalogued, and the bare
+        // language. Both answer in PHP — an uncatalogued framework falls back
+        // to the language it is written in rather than to a refusal, and the
+        // Laravel row does not capture requests that never named it.
         ("en", "write me PHP Symfony code", "write_script_php"),
         ("en", "write me some PHP code", "write_script_php"),
         ("hi", "PHP में कोड लिखें", "write_script_php"),
@@ -298,6 +450,12 @@ fn an_asking_verb_alone_is_not_a_coding_request() {
         "I need to find a python tutorial",
         "give me the code of this repository",
         "I need a code review",
+        // Held out, and the reason the language-less rule is a subtraction:
+        // each of these names a *subject* beyond the artefact, so something is
+        // left over once the verb, the artefact and the function words go.
+        "дай мне код этого репозитория",
+        "I need the code of this file",
+        "give me a code example for sorting",
     ] {
         assert!(
             !intent(prompt).starts_with("write_"),
@@ -305,6 +463,95 @@ fn an_asking_verb_alone_is_not_a_coding_request() {
             intent(prompt)
         );
     }
+}
+
+/// A coding request that names no language at all is still a coding request.
+///
+/// `мне нужен код` — "I need code" — carries the asking verb and the artefact
+/// and nothing else, and it reached a **web search**: the router only accepted a
+/// program request when a language resolved, so the shortest possible coding
+/// request was the one it could not see. The rule that fixes it is a
+/// subtraction, not a phrase list: once the authoring verb, the code artefact
+/// and the closed-class function words (`request_function_word` in
+/// `data/seed/meanings.lino`) are taken out of the prompt, a bare code request
+/// has nothing left. That makes the answer the honest dead end
+/// (`program_skill_gap::Shape::RequestUnspecified`), which names the two
+/// missing parameters and asks for them, instead of a search for the words.
+#[test]
+fn a_coding_request_naming_no_language_is_a_coding_request() {
+    for (language, prompt) in [
+        // Reported shape: the #723 prompt with its language dropped.
+        ("ru", "мне нужен код"),
+        // Held out: the same request through every other asking verb and every
+        // supported language, none of them written down as a phrase anywhere.
+        ("ru", "дай мне код"),
+        ("ru", "напиши мне код"),
+        ("ru", "мне нужна программа"),
+        ("en", "I need code"),
+        ("en", "give me code"),
+        ("en", "I want code"),
+        ("en", "write me a program"),
+        ("hi", "मुझे कोड चाहिए"),
+        ("zh", "我需要代码"),
+        ("zh", "给我代码"),
+        ("es", "necesito código"),
+    ] {
+        assert_eq!(
+            intent(prompt),
+            "write_program_request_unspecified",
+            "{language}: {prompt}"
+        );
+    }
+}
+
+/// A one-letter language alias must not match inside an accented word.
+///
+/// Found while covering the request above. `contains_token` asked
+/// `is_ascii_alphanumeric` of the character following a match to decide whether
+/// it was a word boundary, and `ó` is not ASCII — so the `c` of the Spanish
+/// `código` read as an isolated token and every Spanish request that mentions
+/// code named the language C. Word boundaries are a property of letters, not of
+/// ASCII, which is what the fix says; the scripts written without word spaces
+/// stay boundaries, as `contains_cjk` and `contains_devanagari` already had it.
+///
+/// Restoring the ASCII test fails this with `write_script_c`.
+#[test]
+fn a_one_letter_alias_does_not_match_inside_an_accented_word() {
+    for prompt in ["escribe código", "necesito código", "dame código"] {
+        assert_eq!(
+            intent(prompt),
+            "write_program_request_unspecified",
+            "the c of código is not the language C: {prompt}"
+        );
+    }
+    // The boundary is not simply switched off: an accented word that really
+    // does name a language still resolves, and so does a bare `c`.
+    assert_eq!(intent("escribe código en Python"), "write_script_python");
+    assert_eq!(
+        intent("write me a C program that counts to three"),
+        "write_program"
+    );
+}
+
+/// The dead end has to be an answer, not a shrug: it names both parameters it
+/// is missing and asks for them, in the language the request arrived in.
+#[test]
+fn the_languageless_coding_request_is_answered_in_its_own_language() {
+    let english = UniversalSolver::default().solve("I need code");
+    assert_eq!(
+        english.intent, "write_program_request_unspecified",
+        "{}",
+        english.answer
+    );
+    assert!(english.answer.contains("language"), "{}", english.answer);
+
+    let russian = UniversalSolver::default().solve("мне нужен код");
+    assert_eq!(
+        russian.intent, "write_program_request_unspecified",
+        "{}",
+        russian.answer
+    );
+    assert!(russian.answer.contains("язык"), "{}", russian.answer);
 }
 
 /// PHP graduating from the coding oracle to the catalog is what makes the #723

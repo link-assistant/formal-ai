@@ -177,6 +177,7 @@ src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙
 src/coding/blueprint.rs	执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：`{run_command}`。
 src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。我已将您的请求分解为以下子任务：
 src/coding/catalog/languages.rs	1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+src/coding/catalog/languages.rs	Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.
 src/coding/catalog/languages.rs	The C# seed is returned with this warning until a dotnet-backed execution profile is available.
 src/coding/catalog/languages.rs	The C++ seed is returned with this warning until a g++-backed execution profile is available.
 src/coding/catalog/languages.rs	The Java seed is returned with this warning until a javac-backed execution profile is available.
@@ -185,6 +186,7 @@ src/coding/catalog/languages.rs	The Ruby seed is returned with this warning unti
 src/coding/catalog/languages.rs	The Scala seed is returned with this warning until a scalac-backed execution profile is available.
 src/coding/catalog/languages.rs	The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.
 src/coding/catalog/tasks.rs	Hello, world!
+src/coding/catalog/types.rs	printf '{}' | {run_command}
 src/coding/catalog/types.rs	write_program(language={}, task={})
 src/coding/guidance.rs	Check that it compiles: `{check_command}`.
 src/coding/guidance.rs	Compare the output with the expected output shown above.
@@ -254,10 +256,10 @@ src/dreaming.rs	duplicate recomputable event; retained {} with usage {}
 src/dreaming/learning.rs	learned standing requirement ({topic}):
 src/dreaming_application.rs	Learned standing requirement ({}): {}
 src/dreaming_application.rs	Standing requirement ({}): {}
-src/engine.rs	Check command: `{check_command}`\nRun command: `{}`
+src/engine.rs	Check command: `{check_command}`\nRun command: `{run_command}`
 src/engine.rs	Execution status: {status_phrase} in {}.
 src/engine.rs	Here is a minimal {language_name} {task_label} program:
-src/engine.rs	Run command: `{}`
+src/engine.rs	Run command: `{run_command}`
 src/engine.rs	Write-program template catalog is unavailable.
 src/engine.rs	rule_assistant_free_time answer={}
 src/engine.rs	rule_assistant_name answer={}

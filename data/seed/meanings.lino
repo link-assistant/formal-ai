@@ -78,6 +78,9 @@ meanings
     lexeme zh
       surface
         text 程序
+    lexeme es
+      surface
+        text programa
   script
     defined-by program
     defined-by code
@@ -96,6 +99,9 @@ meanings
     lexeme zh
       surface
         text 脚本
+    lexeme es
+      surface
+        text guion
   code
     grounded-in Q128751
     defined-by program
@@ -118,6 +124,11 @@ meanings
     lexeme zh
       surface
         text 代码
+    lexeme es
+      surface
+        text código
+      surface
+        text codigo
   hello_world
     defined-by program
     defined-by code
@@ -433,6 +444,13 @@ meanings
         text 编写
       surface
         text 写
+    lexeme es
+      surface
+        text escribe
+      surface
+        text escribir
+      surface
+        text escríbeme
   request
     defined-by program
     defined-by code
@@ -465,6 +483,289 @@ meanings
         text 需要
       surface
         text 给我
+    lexeme es
+      surface
+        text necesito
+      surface
+        text quiero
+      surface
+        text dame
+  request_function_word
+    defined-by concept
+    role request_function_word
+    lexeme en
+      surface
+        text i
+      surface
+        text me
+      surface
+        text my
+      surface
+        text we
+      surface
+        text us
+      surface
+        text our
+      surface
+        text you
+      surface
+        text a
+      surface
+        text an
+      surface
+        text the
+      surface
+        text some
+      surface
+        text any
+      surface
+        text this
+      surface
+        text that
+      surface
+        text these
+      surface
+        text those
+      surface
+        text it
+      surface
+        text please
+      surface
+        text to
+      surface
+        text for
+      surface
+        text of
+      surface
+        text in
+      surface
+        text on
+      surface
+        text with
+      surface
+        text and
+      surface
+        text or
+      surface
+        text just
+      surface
+        text now
+      surface
+        text here
+    lexeme ru
+      surface
+        text я
+      surface
+        text мне
+      surface
+        text меня
+      surface
+        text мой
+      surface
+        text моя
+      surface
+        text мои
+      surface
+        text мы
+      surface
+        text нам
+      surface
+        text нас
+      surface
+        text наш
+      surface
+        text вы
+      surface
+        text вам
+      surface
+        text это
+      surface
+        text этот
+      surface
+        text этого
+      surface
+        text эта
+      surface
+        text эти
+      surface
+        text тот
+      surface
+        text пожалуйста
+      surface
+        text и
+      surface
+        text или
+      surface
+        text в
+      surface
+        text во
+      surface
+        text к
+      surface
+        text ко
+      surface
+        text для
+      surface
+        text из
+      surface
+        text на
+      surface
+        text с
+      surface
+        text со
+      surface
+        text просто
+      surface
+        text сейчас
+      surface
+        text здесь
+    lexeme hi
+      surface
+        text मुझे
+      surface
+        text मैं
+      surface
+        text मेरा
+      surface
+        text मेरी
+      surface
+        text हम
+      surface
+        text हमें
+      surface
+        text हमारा
+      surface
+        text आप
+      surface
+        text यह
+      surface
+        text वह
+      surface
+        text ये
+      surface
+        text वे
+      surface
+        text कृपया
+      surface
+        text को
+      surface
+        text के
+      surface
+        text का
+      surface
+        text की
+      surface
+        text में
+      surface
+        text से
+      surface
+        text और
+      surface
+        text या
+      surface
+        text बस
+      surface
+        text अभी
+      surface
+        text यहाँ
+    lexeme zh
+      surface
+        text 我们
+      surface
+        text 我的
+      surface
+        text 我
+      surface
+        text 你
+      surface
+        text 这个
+      surface
+        text 那个
+      surface
+        text 这里
+      surface
+        text 这
+      surface
+        text 那
+      surface
+        text 请
+      surface
+        text 的
+      surface
+        text 和
+      surface
+        text 或
+      surface
+        text 给
+      surface
+        text 一些
+      surface
+        text 就
+      surface
+        text 现在
+    lexeme es
+      surface
+        text yo
+      surface
+        text me
+      surface
+        text mi
+      surface
+        text mis
+      surface
+        text nosotros
+      surface
+        text nos
+      surface
+        text nuestro
+      surface
+        text usted
+      surface
+        text un
+      surface
+        text una
+      surface
+        text unos
+      surface
+        text unas
+      surface
+        text el
+      surface
+        text la
+      surface
+        text los
+      surface
+        text las
+      surface
+        text algo
+      surface
+        text esto
+      surface
+        text este
+      surface
+        text esta
+      surface
+        text eso
+      surface
+        text ese
+      surface
+        text "por favor"
+      surface
+        text de
+      surface
+        text para
+      surface
+        text en
+      surface
+        text con
+      surface
+        text y
+      surface
+        text o
+      surface
+        text ya
+      surface
+        text aquí
   create
     defined-by make
     defined-by program

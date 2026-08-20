@@ -9,9 +9,9 @@
     "bump": "minor",
     "category": "added",
     "title": "Code the full reported range and carry the paperwork a contribution needs (issue #1021)",
-    "problem": "Formal AI answered seven of the prompts issue #1021 collects wrongly — a bare `ls` was refused, `Execute ls command` ran `ls command`, `List me files here` reached web search, a copy-stdin-to-stdout request ran `cp stdin stdout`, a Rosetta Code URL became a `cp` of its slug, a filesystem move matched nothing at all, and a PHP request fell to the uncatalogued-language fallback — and it produced none of the process artifacts a change needs to land: no changelog fragment, and no pull-request body linking the issue it answers.",
+    "problem": "Formal AI answered seven of the prompts issue #1021 collects wrongly — a bare `ls` was refused, `Execute ls command` ran `ls command`, `List me files here` reached web search, a copy-stdin-to-stdout request ran `cp stdin stdout`, a Rosetta Code URL became a `cp` of its slug, a filesystem move matched nothing at all, and a request naming PHP Laravel fell to the uncatalogued-language fallback — and it produced none of the process artifacts a change needs to land: no changelog fragment, and no pull-request body linking the issue it answers.",
     "cause": "Every wrong answer had its own rule behind it, each written for the phrasing that was in front of it rather than for the structure of the request, so an unseen word order could not match. And nothing in the solver knew the shape of the two artifacts the repository's own gates read, or decided whether a command that publishes a change may run at all.",
-    "change": "The rules are corrected where they were wrong and their vocabulary moved into seed data, so the fix generalizes past the reported wording; PHP joins the coding catalog with the templates every other catalogued language carries; `src/contribution_artifacts.rs` composes the changelog fragment and the pull-request body from `data/seed/contribution-artifacts.lino`; and `src/contribution_write_path.rs` puts the publishing commands on a ladder that refuses by default, with `gh issue create` refused in both states. The whole loop is captured as a replayable session.",
+    "change": "The rules are corrected where they were wrong and their vocabulary moved into seed data, so the fix generalizes past the reported wording; PHP joins the coding catalog with the templates every other catalogued language carries, copying standard input to standard output becomes a catalogued task templated in all thirteen of them, and Laravel joins as an implementation target so a request naming a framework is answered in that framework; `src/contribution_artifacts.rs` composes the changelog fragment and the pull-request body from `data/seed/contribution-artifacts.lino`; and `src/contribution_write_path.rs` puts the publishing commands on a ladder that refuses by default, with `gh issue create` refused in both states. The whole loop is captured as a replayable session.",
     "verification": [
       "cargo test --test unit -- issue_1021",
       "cargo test --test unit",
@@ -128,6 +128,24 @@
         "cargo test --test unit -- issue_1021_write_path",
         "cargo test --test unit -- issue_1021_closed_circle",
         "rust-script scripts/check-changelog-fragment.rs"
+      ]
+    },
+    {
+      "slug": "full_range_coding",
+      "timestamp": "20260820_040000",
+      "bump": "minor",
+      "category": "added",
+      "title": "Answer the rest of the reported coding range: a catalogued copy-stdin-to-stdout task in every catalogued language, a framework named beside its language answered in that framework, and a request that names code and no language read as a coding request.",
+      "problem": "Three reported prompts were still answered wrongly. `Give me example of how to do copy stdin to stdout in Rust` and `Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust` (#863, #862) reached web search. `напиши мне код на PHP Laravel` (#723) was answered in PHP-in-general, which is not the framework the request named. And `мне нужен код`, which names code as the artefact and names nothing else, reached web search instead of being read as a coding request.",
+      "cause": "Each gap was a missing generalization rather than a missing phrase. The catalog had no task for copying standard input to standard output, so a request naming one had nothing to resolve to. The language axis held languages only, so a framework could be named but never answered — Laravel had no row to reach, and the more specific half of the request was the half thrown away. And the request classifier required a language before it would call a prompt a coding request, so naming the artefact alone was not enough.",
+      "change": "`copy_stdin_to_stdout` joins `PROGRAM_TASKS` with a verified template in each of the thirteen catalogued languages, and a task that consumes input carries the input it was verified against into its run command while a task that reads nothing keeps its plain one. The language axis becomes an implementation-target axis: `ProgramLanguage::framework_of` records the language a framework is written in, framework rows are consulted before language rows so the more specific target wins, and `base_language` keeps composition a question about the language. And a prompt whose every word is an authoring verb, an artefact noun, a program genus or a function word names code and nothing else, so it is a coding request that asks which language — in the language it was asked in.",
+      "verification": [
+        "cargo test --test unit -- issue_1021_behaviour_range",
+        "cargo test --test unit -- issue_1021_closed_circle",
+        "cargo run --example issue_1021_copy_stdin_harness",
+        "cargo run --example issue_1021_languageless_probe",
+        "bash experiments/issue-1021-laravel/run.sh",
+        "node experiments/issue-1021-laravel/worker_check.mjs"
       ]
     }
   ]

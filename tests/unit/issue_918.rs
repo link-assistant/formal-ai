@@ -334,17 +334,29 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     }
     // Scala and Kotlin joined the coding catalog for the hive-mind#2158
     // language matrix (issue #921), and PHP followed them under issue #1021, so
-    // the complete-source floor rises with each: 26 catalog records + 14 task
-    // records.
-    assert_eq!(coding_records, 40, "coding-path regression floor");
+    // the complete-source floor rises with each: 27 catalog records + 15 task
+    // records. The fifteenth task is `program_task_copy_stdin_to_stdout`, the
+    // task issue #863 reported (see `tests/unit/issue_1021_behaviour_range.rs`);
+    // the twenty-seventh catalog record is `program_language_laravel`, the
+    // framework issue #723 asked for, which is a catalog row of its own rather
+    // than an alias surface of PHP. Either way a new target is a new
+    // complete-source record, never a new gap.
+    assert_eq!(coding_records, 42, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
     // new prose pulled into the total closure -- 74 for the contribution
     // artifacts, then 16 more when the listing detector was given its Spanish
-    // vocabulary (`lista`, `ficheros`, `archivos`, `aqui`, ...) -- and the seed
-    // files written by hand still carry their metadata. A new language's words
-    // arriving as generated closure records rather than as hand-written gaps is
-    // the shape this floor exists to show.
-    assert_eq!(expected_gaps.len(), 3_809);
+    // vocabulary (`lista`, `ficheros`, `archivos`, `aqui`, ...), then 8 more
+    // for the closed-class words the language-less coding request subtracts
+    // (`me`, `my`, `our`, `we`, `some`, `these`, `just`) plus the Spanish
+    // `guion`, and one more for `copy_stdin_to_stdout` once the portable seed
+    // bundle started naming the task issue #863 reported. A new language's
+    // words arriving as generated closure records rather than as hand-written
+    // gaps is the shape this floor exists to show; `request_function_word`
+    // joins the count as a hand-written record because every meaning in
+    // `data/seed/meanings.lino` -- all 22 of them, not just the new one --
+    // carries its lexemes without the five-field metadata that file has never
+    // supplied.
+    assert_eq!(expected_gaps.len(), 3_818);
 }

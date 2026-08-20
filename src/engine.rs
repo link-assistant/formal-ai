@@ -818,7 +818,12 @@ fn write_program_answer(
         write_program_intro(spec.language.name, spec.task.label, language),
         spec.language.code_fence,
         spec.template.code,
-        execution_report(&spec.language.execution, &expected_output, language),
+        execution_report(
+            &spec.language.execution,
+            &spec.run_command_line(),
+            &expected_output,
+            language,
+        ),
         program_explanation_section(spec, language),
         program_test_instructions(spec, language, prior_code_response),
     )
@@ -837,8 +842,13 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
     }
 }
 
-fn execution_report(execution: &ProgramExecution, output: &str, language: Language) -> String {
-    let command_lines = execution_command_lines(execution);
+fn execution_report(
+    execution: &ProgramExecution,
+    run_command: &str,
+    output: &str,
+    language: Language,
+) -> String {
+    let command_lines = execution_command_lines(execution, run_command);
     let verified = matches!(execution.status, ExecutionStatus::Verified);
     let status_phrase = execution_status_phrase(execution.status, language);
     let output_label = execution_output_label(verified, language);
@@ -891,14 +901,15 @@ fn execution_output_label(verified: bool, language: Language) -> &'static str {
     }
 }
 
-fn execution_command_lines(execution: &ProgramExecution) -> String {
+/// The commands a reader types, verbatim.
+///
+/// `run_command` is passed in rather than read off `execution` because a task
+/// that reads standard input is run with its fixture piped in
+/// ([`crate::coding::ProgramSpec::run_command_line`], issue #863); for every
+/// other task it is `execution.run_command` unchanged.
+fn execution_command_lines(execution: &ProgramExecution, run_command: &str) -> String {
     execution.check_command.map_or_else(
-        || format!("Run command: `{}`", execution.run_command),
-        |check_command| {
-            format!(
-                "Check command: `{check_command}`\nRun command: `{}`",
-                execution.run_command
-            )
-        },
+        || format!("Run command: `{run_command}`"),
+        |check_command| format!("Check command: `{check_command}`\nRun command: `{run_command}`"),
     )
 }

@@ -21,6 +21,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.rs",
         setup_hint: "the Rust toolchain from https://rustup.rs",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "python",
@@ -36,6 +37,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.py",
         setup_hint: "Python 3 from https://www.python.org/downloads/",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "javascript",
@@ -51,6 +53,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.js",
         setup_hint: "Node.js from https://nodejs.org/",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "typescript",
@@ -66,6 +69,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "hello.ts",
         setup_hint: "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "go",
@@ -81,6 +85,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.go",
         setup_hint: "Go from https://go.dev/dl/",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "c",
@@ -96,6 +101,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.c",
         setup_hint: "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "cpp",
@@ -111,6 +117,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.cpp",
         setup_hint: "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "java",
@@ -126,6 +133,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "Main.java",
         setup_hint: "a JDK from https://adoptium.net/",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "csharp",
@@ -141,6 +149,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "Program.cs",
         setup_hint: "the .NET SDK from https://dotnet.microsoft.com/download",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "ruby",
@@ -156,6 +165,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.rb",
         setup_hint: "Ruby from https://www.ruby-lang.org/en/downloads/",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "scala",
@@ -171,6 +181,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "Main.scala",
         setup_hint: "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "kotlin",
@@ -186,6 +197,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "Main.kt",
         setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
+        framework_of: None,
     },
     ProgramLanguage {
         slug: "php",
@@ -201,5 +213,31 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         source: "local Links Notation write-program seed",
         save_as: "main.php",
         setup_hint: "PHP from https://www.php.net/downloads",
+        framework_of: None,
+    },
+    // Issue #723 reported `напиши мне код на PHP Laravel` and got an answer that
+    // named no language at all; issue #1021 then answered it in PHP, which is
+    // the language Laravel is written in but not the thing that was asked for.
+    // The row below is the difference: an implementation target that is a
+    // framework of `php`, carrying the file a Laravel application actually keeps
+    // its code in and the command Artisan actually runs. Nothing else in the
+    // catalog changed shape — a framework is resolved, rendered and verified by
+    // the same code paths as a language, which is why the fix is one row and not
+    // a rule about Laravel.
+    ProgramLanguage {
+        slug: "laravel",
+        name: "Laravel",
+        code_fence: "php",
+        execution: ProgramExecution {
+            status: ExecutionStatus::Verified,
+            environment: "issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh)",
+            check_command: Some("php -l app/Console/Commands/HelloWorld.php"),
+            run_command: "php artisan hello:world",
+            notes: "Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: "app/Console/Commands/HelloWorld.php",
+        setup_hint: "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)",
+        framework_of: Some("php"),
     },
 ];

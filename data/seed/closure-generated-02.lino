@@ -230,7 +230,7 @@ meanings
       surface
         text "non deterministic"
   now
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "now"

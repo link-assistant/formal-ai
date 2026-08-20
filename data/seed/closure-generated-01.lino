@@ -249,6 +249,11 @@ meanings
     lexeme en
       surface
         text "orchestration correction prompt"
+  our
+    defined-by word_surface
+    lexeme en
+      surface
+        text "our"
   owlbear
     defined-by word_surface
     lexeme en

@@ -751,6 +751,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "lino-objects-codec"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_2d828010f47b255b
+    source "data/seed/closure-generated-15.lino"
+    record "my"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c5ead9ea8c0ab2fb
     source "data/seed/closure-generated-15.lino"
     record "pattern_wellbeing_phrase_kak_pozhivaesh"

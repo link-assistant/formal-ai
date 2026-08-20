@@ -22,6 +22,13 @@ below is built on.
 | `logs/php-laravel-after.log` | the same example on this branch | The same prompts after PHP was catalogued |
 | `logs/php-numeric-list-generation.log` | `cargo run --example issue_1021_php_numeric_list` | Numeric tasks rendered in PHP |
 | `logs/php-numeric-list-verification.log` | `php -l` and `php` over the rendered programs | The toolchain check behind the "compiles and runs" claim |
+| `logs/named-exercise-routing-after.log` | `cargo run --example issue_1021_named_exercise_probe` | Where the #862 and #863 prompts land now, prose and URL alike |
+| `logs/copy-stdin-harness.log` | `cargo run --example issue_1021_copy_stdin_harness` | Each answer's program written out, compiled and run with the fixture piped in |
+| `logs/languageless-request-after.log` | `cargo run --example issue_1021_languageless_probe` | A coding request with nothing but the artefact named, and the four subjects that must not be one |
+| `logs/languageless-followup.log` | `cargo run --example issue_1021_languageless_followup` | The same request answered from the catalog once the follow-up turn supplies the missing half |
+| `logs/spanish-code-boundary-before.log` | `cargo run --example issue_1021_spanish_code_boundary` before the fix | Every Spanish request naming `código` read as a request for C |
+| `logs/spanish-code-boundary-after.log` | the same example after it | The same prompts once word boundaries stopped being an ASCII question |
+| `experiments/issue-1021-laravel/` | `composer create-project laravel/laravel`, `php artisan` | The real application the Laravel template was verified inside, and the browser-mirror check |
 | `logs/macos-timeout-not-found.log` | run 32282461075, jobs 96170638546 and 96170638704 | The macOS red that `scripts/run-with-deadline.sh` answers |
 | `logs/deadline-precision-measurements.log` | `experiments/issue-1021-deadline-precision/compare-clocks.sh` | Three drafts of the deadline against the same 3s budget |
 | `logs/macos-deadline-tests-green.log` | run 32294252392, all sixteen macOS core slices | The same eleven tests passing on the runner family that reported the gap |
@@ -45,7 +52,7 @@ below is built on.
 
 The full list, with IDs, lives in
 [`docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`](../../requirements/issue-1021-full-range-coding-and-contribution-artifacts.md)
-(assembled into `REQUIREMENTS.md` as R1021-1 … R1021-27) and each row has a
+(assembled into `REQUIREMENTS.md` as R1021-1 … R1021-31) and each row has a
 traceability entry in
 [`docs/requirements-traceability.md`](../../requirements-traceability.md).
 
@@ -168,6 +175,43 @@ carry, and graduates out of the oracle exactly as Kotlin did under #921.
 Cataloguing, not scaffolding, is the generalizing move: every parametric task
 route gains PHP at once.
 
+**The implementation target.** #723 does not name PHP, it names *PHP Laravel*,
+and the framework is the more specific half of that request — answering in the
+base language throws away the half that was hardest to satisfy. So the axis is
+widened rather than a rule added: `ProgramLanguage::framework_of`
+(`src/coding/catalog/types.rs`) records the language a row is a framework of,
+`program_language_by_alias` consults framework rows before language rows so the
+more specific target wins, and `composition_language` resolves a target through
+`base_language`, keeping composition a question about the language while the
+template, the file to save and the command to run stay the framework's own. A
+framework earns a task template only once that task has been run inside a real
+application of that framework, so `write me PHP Laravel code` answers with an
+Artisan command class saved where Artisan looks for it, run by
+`php artisan hello:world`.
+
+**A task whose subject is its input.** Every task before this one produced its
+output from nothing, so `ProgramTask` described one completely with `output`
+alone — which is why #863 and #862 had nothing to resolve to. `ProgramTask`
+gains `input`, the standard input the task is defined against, and
+`ProgramSpec::run_command_line` carries that fixture into the answer's run
+command (`printf 'hello\nworld\n' | ./main`) while a task that reads nothing
+keeps its plain one. `copy_stdin_to_stdout` then joins `PROGRAM_TASKS` with a
+template in each of the thirteen catalogued languages, so the prose request, its
+paraphrases and the Rosetta Code URL that names the same exercise all reach one
+catalogued task.
+
+**A request that names code and nothing else.** `мне нужен код` names the
+artefact and no language, no task and no framework. Rather than a phrase list,
+`src/intent_formalization/write_program_request.rs` subtracts: a prompt is a
+coding request naming nothing else when every one of its surfaces is an
+authoring verb, an artefact noun, a program genus or a request function word —
+the last a new role, `request_function_word`, in `src/seed/roles/intent.rs`, so
+the words stay seed data in all five languages. What is left over is what the
+request is really about, which is why `give me the code of this repository` and
+`I need a code review` still route to search. The answer is the honest dead end
+`write_program_request_unspecified`: it asks what the program should do and
+which language to write it in, in the language the request was written in.
+
 **The minimal-script route** stands aside for a task it cannot render.
 `names_no_task_beyond_the_minimal_script` in `src/solver_helpers/mod.rs` declines
 when the prompt names a catalogued task other than the hello world, or one
@@ -200,7 +244,34 @@ rust-script scripts/check-hardcoded-language.rs
 rust-script scripts/check-changelog-fragment.rs
 rust-script scripts/run-ci-gates.rs --stage rust
 node tests/e2e/scripts/check-multilingual-intent-coverage.mjs
+cargo run --example issue_1021_copy_stdin_harness
+cargo run --example issue_1021_named_exercise_probe
+cargo run --example issue_1021_languageless_probe
+cargo run --example issue_1021_languageless_followup
+cargo run --example issue_1021_spanish_code_boundary
+cargo run --example issue_1021_php_laravel
+bash experiments/issue-1021-laravel/run.sh
+node experiments/issue-1021-laravel/worker_check.mjs
 ```
+
+The eight commands below the gates are the measurements the delivery claims rest
+on, and each writes a log committed under `logs/`. `issue_1021_copy_stdin_harness` compiles and runs
+the `copy_stdin_to_stdout` template in every catalogued language, feeding each
+one the task's own fixture and comparing what comes back:
+`pass=10 fail=0 skip=3` on this machine, the three skips being the toolchains it
+does not have (`tsc`, `dotnet`, `scalac`) rather than failures
+(`logs/copy-stdin-harness.log`). `experiments/issue-1021-laravel/run.sh` creates
+a real Laravel application with `composer create-project laravel/laravel`,
+installs the composed command class into it and runs `php artisan hello:world` —
+Laravel Framework 13.26.1 on PHP 8.3.31, printing `Hello, world!` exactly. And
+`worker_check.mjs` loads all 26 browser-worker shards into one VM context,
+hydrates the lexicon from `data/seed/` the way the worker does at init, and
+checks seventeen assertions about the mirror: the reported prompt resolves to
+`laravel` in all four reported natural languages, `write me some PHP code` still
+resolves to `php`, the uncatalogued `write me PHP Symfony code` falls back to
+`php` rather than inventing a target, and the two last assertions record what the
+mirror does *not* carry — eleven tasks against the engine's twelve, without
+`copy_stdin_to_stdout` (finding 21).
 
 The deadline is checked where the gap was, not only where the tests are easy to
 run. All eleven `ci_cd::issue_1021` tests passed on the macOS core slices of run
@@ -238,51 +309,71 @@ by lowering it.
    the artifact generator: `src/contribution_artifacts.rs` contains no
    natural-language literal, all wording living in seed data. It is not a proof
    about arbitrary code Formal AI generates in future.
-3. **#723 is answered in PHP, not in Laravel (R1021-8).** A framework scaffold is
-   a different capability from a language template, and inventing one to satisfy
-   the reported prompt would be exactly the specialization the issue forbids.
+3. **Laravel is catalogued for one task, not for twelve (R1021-8).** #723 is
+   answered in Laravel now — an Artisan command class, saved where Artisan looks
+   for it, run by `php artisan hello:world` — but `TEMPLATES_FRAMEWORK` holds
+   exactly one row, because a framework earns a task template only once that
+   task has been run inside a real application of that framework
+   (`experiments/issue-1021-laravel/run.sh`). Ask Laravel for fizzbuzz and the
+   answer is the honest dead end `write_program_skill_gap`, not a PHP snippet
+   wearing the framework's name. The sparseness is the deliberate half; the gap
+   is that eleven verified Laravel templates would each need their own run
+   inside that application, and only one has had it.
 4. **E94 and E95 are untouched (R1021-12, R1021-13).** Versioned recoverable
    memory and a stuck-recovery limit are properties of an unattended run;
    nothing here runs unattended, so there was no honest way to test them.
 5. **The ladder does not govern operator-named commands**, by design — see §7.
-6. **`мне нужен код` with no language named still reaches web search.** The
-   asking verb is now grounded, but a coding request with no artifact and no
-   language named is not yet recognised as one. It is outside the reported range
-   and is left as found.
+6. **`мне нужен код` is recognised as a coding request, and is still not
+   answered with code (R1021-31).** It no longer reaches web search: eleven bare
+   requests across five languages reach `write_program_request_unspecified`,
+   while `give me the code of this repository`, `I need a code review`,
+   `I need to find a python tutorial` and `дай мне код этого репозитория` still
+   route to search, and `I need information about Rust` to concept lookup
+   (`logs/languageless-request-after.log`). What comes back is a question — what
+   should the program do, and in which language — asked in the language the
+   request was written in. That is the correct answer to a request that names
+   neither, and it is still not a program: nothing here picks a default language
+   or a default task, because guessing one is the specialization R1021-2
+   forbids. A conversational follow-up that supplies the missing half is
+   answered from the catalog; a single prompt that supplies neither cannot be.
 7. **`src/coding/catalog/mod.rs` has pre-existing drift from its `tests/source`
    mirror**, which is why the mirror compiles green while differing from `src/`.
    Not introduced here, not fixed here.
 8. **No upstream defect was found (R1021-26).** Every root cause traced back into
    this repository; the one third-party constraint met — Links Notation having no
    comment syntax — is documented behaviour, not a defect.
-9. **#863 and #862 are half delivered (R1021-6, R1021-7).** The misrouting they
-   reported is gone: neither prompt reaches `cp` any more. Neither is *answered
-   with code* either — both reach web search, measured and preserved in
-   `logs/named-exercise-routing-after.log`:
+9. **#863 and #862 are delivered, and three of the thirteen languages were not
+   run here (R1021-6, R1021-7).** The prose request, its held-out paraphrases in
+   five languages and the Rosetta Code URL that names the same exercise all reach
+   the catalogued `copy_stdin_to_stdout` task and are answered with a program
+   (`logs/named-exercise-routing-after.log`):
 
    ```
    === Give me example of how to do copy stdin to stdout in Rust
-   -- intent: web_search
+   -- intent: write_program
    === Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust
-   -- intent: web_search
-   === write a Rust program that copies stdin to stdout
-   -- intent: write_program_skill_gap
+   -- intent: write_program
    ```
 
-   The third line is the honest half: asked directly, Formal AI says it cannot
-   derive the program rather than guessing one. The blocker is structural, not a
-   missing phrasing rule. `ProgramTask` in `src/coding/catalog/types.rs:31` is
-   `{ slug, label, output }` — a task's verified output is a function of its
-   source alone — and every path that runs a generated program sets
-   `.stdin(Stdio::null())` (`src/agent.rs:358`,
-   `src/client_integrations/global_verify.rs:305`,
-   `src/orchestration/runner.rs:783`). A program whose output *is* its input
-   cannot be stated, let alone verified, under that contract. Delivering it means
-   giving `ProgramTask` an input fixture and threading it through the execution
-   harness, then rendering the task in all thirteen catalogued languages — a
-   capability, and out of scope for this branch. Adding a `copy_stdin_to_stdout`
-   template for Rust alone would be exactly the specialization R1021-2 forbids,
-   so it was not done.
+   The blocker named in the earlier draft of this finding was real and is what
+   the fix removed rather than worked around. `ProgramTask` was
+   `{ slug, label, output }` — a task's verified output being a function of its
+   source alone — and every path that runs a generated program set
+   `.stdin(Stdio::null())`. A program whose output *is* its input could not be
+   stated under that contract, so the task gained the input it is defined
+   against, `ProgramSpec::run_command_line` carries that fixture into the
+   answer, and the harness pipes the same bytes. Adding the template for Rust
+   alone would have been the specialization R1021-2 forbids, so all thirteen
+   catalogued languages have one.
+
+   What is *not* claimed is that all thirteen were run on this machine.
+   `cargo run --example issue_1021_copy_stdin_harness` writes each program out,
+   compiles it, pipes the task's fixture in and compares what comes back:
+   `pass=10 fail=0 skip=3` (`logs/copy-stdin-harness.log`). The three skips are
+   TypeScript, C# and Scala, whose toolchains (`tsc`, `dotnet`, `scalac`) are
+   absent here — a gap in this machine rather than in the templates, and the
+   honest way to say so is that they are unverified until a machine that has
+   them runs the same harness.
 
 10. **Cataloguing PHP moved two existing tests, and neither was weakened.**
     `write a hello world program in php` and the Russian follow-up of issue #461
@@ -589,3 +680,116 @@ by lowering it.
     stand-in `apt-get` these tests drive models a mirror that hangs, and this
     one was slow. Re-running the job passed, which is what confirms the mirror
     changed and not the code.
+
+19. **The catalog understates four toolchains, and this machine proved it.**
+    `ExecutionStatus::Unavailable` is what a catalogued language carries when
+    this repository has no execution profile for it, and the rendered answer
+    says so: *"not compiled or run in … is not configured in this repository
+    runtime"*. Seven of the thirteen languages carry it. The copy-stdin harness
+    ran them anyway, and four of the seven — C++, Java, Ruby and Kotlin —
+    compiled and produced the fixture back, byte for byte
+    (`logs/copy-stdin-harness.log`). Only TypeScript, C# and Scala really have
+    no toolchain here.
+
+    They were not flipped to `Verified`. That status is a claim about the
+    repository's own verification harness rather than about whichever machine
+    happens to run a probe, and flipping four languages would rewrite every
+    answer they give — far outside the reported range, on the strength of one
+    container. What is honest to say is that the label is now known to be
+    conservative for four of them, and that the harness in
+    `examples/issue_1021_copy_stdin_harness.rs` is what a future change should
+    run on CI's own image before moving any of them.
+
+20. **A one-letter language alias was matching inside a Spanish word, and the
+    languageless request is what exposed it.** `contains_token` decided word
+    boundaries by asking `is_ascii_alphanumeric` of the neighbouring character.
+    `ó` is not ASCII, so the `c` of `código` — Spanish for *code* — read as an
+    isolated token and matched the alias of the language C. Every Spanish
+    request that mentions code was a request for a C program:
+
+        escribe código                                -> write_script_c
+        necesito código                               -> write_script_c
+        dame código                                   -> write_script_c
+
+    (`logs/spanish-code-boundary-before.log`; after the fix all three reach
+    `write_program_request_unspecified`, in `…-after.log`.) A word boundary is
+    a property of letters rather than of ASCII, which is what the rule now says,
+    with the scripts written without word spaces kept as boundaries exactly as
+    `contains_cjk` and `contains_devanagari` already had them. `escribe código
+    en Python` and a bare `C` still resolve, so nothing was switched off.
+
+    This is the second time in this branch that a defect in a language nobody
+    reported was found by covering something else (finding 11 was the first).
+    Both were reachable only because the fix was written for the structure of
+    the request rather than for the reported wording — the argument R1021-2
+    makes, arriving as evidence rather than as an assertion.
+
+21. **The browser mirror carries the framework target and not the stdin task.**
+    `src/web/worker/` is a hand-maintained mirror of the Rust solver, and this
+    branch widens the two sides unequally on purpose. `formal_ai_worker_13.js`
+    gained the framework-first resolution order, so the reported prompt resolves
+    to `laravel` in the browser in all four reported languages, and
+    `formal_ai_worker_12.js` gained the `laravel` target with its template. The
+    `copy_stdin_to_stdout` task was not mirrored: `WRITE_PROGRAM_TASKS` in the
+    worker holds the same eleven tasks it held before, against twelve in
+    `PROGRAM_TASKS`.
+
+    That is the sparse-coverage precedent the mirror already runs on rather than
+    an oversight — the worker has never carried every task — but it is a real
+    difference in what a user is answered depending on where they ask, and the
+    reason it is defensible for this task in particular is that the answer's
+    value is its *run command*, `printf 'hello\nworld\n' | ./main`, which is
+    the one part of the answer a browser cannot run. Verified with
+    two assertions added to `experiments/issue-1021-laravel/worker_check.mjs`:
+    the mirror's task table has no `copy_stdin_to_stdout` key and holds eleven
+    entries.
+
+22. **Two worker ceilings moved, and both bought something measured.**
+    `data/meta/worker-line-budget/` caps each mirror shard, and the caps rise
+    here: `formal_ai_worker_12.js` from 1,235 to 1,251 (+16, the `laravel`
+    target and its template) and `formal_ai_worker_13.js` from 1,388 to 1,396
+    (+8, of which six lines are the comment explaining why framework rows are
+    consulted first). A raised ceiling with a rationale nobody checked is a
+    lowered bar, so the rationale is checked: `worker_check.mjs` loads all 26
+    shards into one VM context, hydrates the lexicon from `data/seed/` the way
+    the worker does at init, and passes seventeen assertions — the four reported
+    prompts resolving to `laravel`, `write me some PHP code` still resolving to
+    `php`, the uncatalogued `write me PHP Symfony code` falling back to `php`,
+    and the mirrored template being the Artisan command class rather than a
+    plain PHP script, and the two that record the missing stdin task.
+
+    Getting that evidence took two corrections worth recording. The lexicon is
+    not installed by any function named for installing it; it is hydrated by
+    `hydrateLinoSeedText(raw)` with a `{path: text}` map, at
+    `formal_ai_worker_00.js:222`. And every assertion has to be *evaluated
+    inside* the context: a top-level `const` in a script run through
+    `vm.runInContext` lives in the realm's global lexical environment and is not
+    a property of the sandbox object, so reading `sandbox.WRITE_PROGRAM_LANGUAGES`
+    from Node returns `undefined` while the same expression evaluated in the
+    context returns the table. A harness that had stopped at the first reading
+    would have reported the mirror broken when it was not.
+
+23. **Two tests this branch cited as evidence had never been written, and the
+    traceability gate could not tell.** `an_example_request_is_not_a_command_to_run`
+    and `a_web_address_is_a_resource_not_a_program` were named as the automated
+    evidence for R1021-6 and R1021-7 in `REQUIREMENTS.md`, in
+    `docs/requirements/issue-1021-…md` and in `docs/requirements-traceability.md`.
+    Neither function exists. `git log -S` puts the citations in commit
+    `53bf9c5d1` — a commit on this branch, so this is not inherited drift but a
+    defect written here on 2026-08-19 and found on 2026-08-20 while rewriting
+    those two rows for the delivery they now record.
+
+    The reason it survived a day is the more useful half. `docs_requirements_issue_1021`
+    checked that every `R1021-N` has a row and that the undelivered ones are
+    named; it never checked that a row is *true*. A table whose evidence cannot
+    be run is precisely the failure the table exists to prevent, so the gate now
+    reads the citations back: `every_test_the_traceability_rows_cite_exists`
+    parses each row's `<path>::<test>` and `; ::<test>` continuations and
+    requires the file to exist and to define the function, across all
+    thirty-odd citations the issue's rows carry. Restoring either name fails it.
+
+    The parser refuses to guess rather than skipping what it does not
+    understand: a `::` preceded by anything other than a test path, a
+    continuation marker or a prose code span such as `` `ci_cd::issue_1021` ``
+    fails the test outright. A citation quietly passed over would leave exactly
+    the hole that was just closed.
