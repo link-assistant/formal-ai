@@ -11,8 +11,8 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::seed;
 use formal_ai::FormalAiEngine;
+use formal_ai::seed;
 
 /// Handler modules only: `mod.rs` and the generated `modules.rs` are excluded
 /// from the count, so the ceiling dropped by one when they stopped counting.

@@ -5,20 +5,23 @@ self_ast_census
   byte_len 8331
   line_count 277
   content_id source_module_0f57a43a56af2f86
+  byte_len 8303
+  line_count 276
+  content_id source_module_971e1dc8e4e82f97
   symbol_count 15
   symbols
-    enum WorkspaceChangeKind 11 15
-    struct WorkspaceChange 18 24
-    struct Snapshot 27 29
-    struct FileState 32 35
-    function snapshot 37 71
-    function changes 73 104
-    function copy_workspace 106 143
-    function apply_changes 145 170
-    function validate_changes 172 194
-    function validate_change_shape 196 215
-    function require_hash 217 242
-    function ignored 244 253
-    function relative_path 255 258
-    function safe_relative 260 273
-    function sha256 275 277
+    enum WorkspaceChangeKind 10 14
+    struct WorkspaceChange 17 23
+    struct Snapshot 26 28
+    struct FileState 31 34
+    function snapshot 36 70
+    function changes 72 103
+    function copy_workspace 105 142
+    function apply_changes 144 169
+    function validate_changes 171 193
+    function validate_change_shape 195 214
+    function require_hash 216 241
+    function ignored 243 252
+    function relative_path 254 257
+    function safe_relative 259 272
+    function sha256 274 276

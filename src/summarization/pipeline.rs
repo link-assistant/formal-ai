@@ -16,9 +16,9 @@
 
 use std::collections::BTreeSet;
 
-use super::context::{merge_into_formal_context, MergedContext};
+use super::context::{MergedContext, merge_into_formal_context};
 use super::gathering::{
-    execute_captured_gathering, CapturedGatheringReport, CapturedSourceMetadata, GatheringPlan,
+    CapturedGatheringReport, CapturedSourceMetadata, GatheringPlan, execute_captured_gathering,
 };
 use super::importance::RankedStatement;
 use crate::event_log::EventLog;

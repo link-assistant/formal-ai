@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_13.js"
-  ceiling 1388
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into src/web/wasm-worker."
+  ceiling 1396
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into src/web/wasm-worker. The +8 lines over the previous 1388 ceiling are the only logic the framework-target widening needed anywhere in the mirror (issue #723): programLanguageFromPrompt consults framework rows before language rows, mirroring program_language_by_alias, so a request that names both -- `напиши мне код на PHP Laravel` -- resolves to the framework rather than to the language it is written in. Six of the eight lines are the comment saying why. This ordering moves to src/web/wasm-worker with the rest of the write-program surface."

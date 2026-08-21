@@ -1,7 +1,7 @@
 [package]
 name = "formal-ai"
 version = "0.345.0"
-edition = "2021"
+edition = "2024"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
 license = "Unlicense"
@@ -45,32 +45,32 @@ command-stream = "=0.16.0"
 doublets = { version = "0.4.0", optional = true }
 egg = { version = "0.11.0", default-features = false, features = ["deterministic"], optional = true }
 lino-arguments = "0.3"
-lino-objects-codec = "0.2.1"
-links-notation = "0.13.0"
+lino-objects-codec = "0.4.1"
+links-notation = "0.14.0"
 link-calculator = "0.20.3"
 # CST/AST engine: the link-foundation meta-language links network. It ships
 # real tree-sitter grammars for every language we target and exposes a single
 # mutable links-network representation, so it is the sole CST/AST engine here
 # (https://github.com/link-foundation/meta-language).
-meta-language = { version = "0.54.0", optional = true }
+meta-language = { version = "0.58.2", optional = true }
 mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 kamadak-exif = "0.6.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sha2 = "0.10"
+sha2 = "0.11"
 fs2 = "0.4"
 thread-priority = "3.1.1"
 toml_edit = "0.25.13"
 tokio = { version = "1", features = ["rt", "time"] }
 walkdir = "2"
-which = "7"
+which = "8"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 async-trait = "0.1"
 bytes = "1"
 tungstenite = "0.30"
-web-capture = { version = "0.3.36", default-features = false, features = ["search"] }
+web-capture = { version = "0.3.37", default-features = false, features = ["search"] }
 web-search = { version = "0.5.0", default-features = false }
 webrtc = "0.20"
 
@@ -83,8 +83,9 @@ meta-language = ["dep:meta-language"]
 [dev-dependencies]
 # The same codec the library encodes with, so tests can hold published
 # artifacts to the notation they claim to be written in.
-lino-objects-codec = "0.2.1"
+lino-objects-codec = "0.4.1"
 regex = "1"
+temp-env = "0.3.6"
 unicode-general-category = "1.1"
 unicode-normalization = "0.1"
 

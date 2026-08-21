@@ -23,15 +23,16 @@
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, ExecutionRecipe, SelectedRule, SymbolicAnswer,
+    ExecutionRecipe, SelectedRule, SymbolicAnswer, answer_links_notation,
+    language_aware_answer_for, language_aware_intent_for, normalize_prompt,
+    response_link_for_intent,
 };
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::{
-    record_intent_formalization, recover_write_program_rule, rewrite_bare_program_coreference_rule,
-    select_rule_for_intent, IntentFormalizationCache, IntentFormalizationCacheEntry,
+    IntentFormalizationCache, IntentFormalizationCacheEntry, record_intent_formalization,
+    recover_write_program_rule, rewrite_bare_program_coreference_rule, select_rule_for_intent,
 };
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
 use crate::rule_synthesis::{
     try_construct_unknown_rule, try_export_substitution_program, try_recall_approved_rule,
@@ -50,10 +51,10 @@ use crate::solver_helpers::{
     requires_external_lookup,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
-use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
+use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
 use crate::translation::{
-    formalize_prompt_candidates, select_formalization_candidate_with_policy, FormalizationDecision,
-    FormalizationSelectionConfig,
+    FormalizationDecision, FormalizationSelectionConfig, formalize_prompt_candidates,
+    select_formalization_candidate_with_policy,
 };
 
 /// Runtime configuration for the universal solver.
@@ -554,16 +555,16 @@ impl UniversalSolver {
         // name ("Rust") as an encyclopedia definition instead of returning the
         // requested program. Policy guards still run for these prompts below.
         let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
-        if !is_concrete_write_program {
-            if let Some(answer) = crate::meta_method_dispatch::try_dispatch(
+        if !is_concrete_write_program
+            && let Some(answer) = crate::meta_method_dispatch::try_dispatch(
                 self,
                 prompt,
                 &intent_formalization,
                 history,
                 &mut log,
-            ) {
-                return answer;
-            }
+            )
+        {
+            return answer;
         }
 
         if let Some(answer) = self.handle_policy(prompt, &mut log, language) {
@@ -804,10 +805,10 @@ impl UniversalSolver {
             // the caller sees no tool call and cannot audit or approve it. API
             // requests therefore stay declarative; `protocol` routes concrete
             // actions through the tools advertised by the client.
-            if self.config.execution_surface != ExecutionSurface::HttpServer {
-                if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
-                    return Some(answer);
-                }
+            if self.config.execution_surface != ExecutionSurface::HttpServer
+                && let Some(answer) = try_agent_workspace_task(prompt, &normalized, log)
+            {
+                return Some(answer);
             }
             log.append("agent_mode:opted_in", prompt.to_owned());
             log.append("agent_mode:active", prompt.to_owned());

@@ -16,12 +16,12 @@ use std::process::Command;
 use clap::{Args, Subcommand, ValueEnum};
 use formal_ai::conversation_context::conversation_context_to_lino;
 use formal_ai::issue_report::{
-    truncate_records, ReportAttachment, ReportBody, ReportField, ReportLabels, ReportTurn,
-    COUNT_PLACEHOLDER,
+    COUNT_PLACEHOLDER, ReportAttachment, ReportBody, ReportField, ReportLabels, ReportTurn,
+    truncate_records,
 };
 use serde_json::Value;
 
-use crate::cli_context::{exported_context, write_output, ContextSource};
+use crate::cli_context::{ContextSource, exported_context, write_output};
 
 /// Largest context attached inline before the full copy moves elsewhere.
 ///

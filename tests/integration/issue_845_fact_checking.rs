@@ -55,16 +55,20 @@ fn world_model_audit_runs_proof_probability_jtms_and_permission_boundaries() {
         current.statement(&false_premise).unwrap().probability_basis,
         ProbabilityBasis::EvidenceWeighted
     );
-    assert!(current
-        .recalculation
-        .checked_links
-        .iter()
-        .any(|link| link.statement_id == dependent && link.depends_on == false_premise));
+    assert!(
+        current
+            .recalculation
+            .checked_links
+            .iter()
+            .any(|link| link.statement_id == dependent && link.depends_on == false_premise)
+    );
     assert!(current.links_notation().contains("counterexample"));
 
-    assert!(checker
-        .audit_world_model(&mut model, AuditScope::GeneralMemory, None)
-        .is_err());
+    assert!(
+        checker
+            .audit_world_model(&mut model, AuditScope::GeneralMemory, None)
+            .is_err()
+    );
     let general = checker
         .audit_world_model(
             &mut model,

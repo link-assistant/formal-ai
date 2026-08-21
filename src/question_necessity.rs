@@ -9,7 +9,7 @@ use std::sync::OnceLock;
 
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
 const POLICY_SEED: &str = include_str!("../data/seed/question-necessity.lino");
 

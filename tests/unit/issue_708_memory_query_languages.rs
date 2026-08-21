@@ -2,8 +2,8 @@ use formal_ai::links_substitution_query::link_substitution_effect;
 use formal_ai::memory::{MemoryEvent, MemoryStore};
 use formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};
 use formal_ai::memory_query_language::{
-    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,
-    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,
+    AggregateFunction, MemoryField, MemoryQueryCompiler, MemoryQueryValue, QueryDialect,
+    compile_memory_query, execute_memory_query,
 };
 use formal_ai::substitution::CrudEvent;
 
@@ -37,11 +37,13 @@ fn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {
         assert_eq!(parsed.parser.engine, "meta_language");
         assert!(parsed.parser.full_match);
         assert!(parsed.parser.text_preserved);
-        assert!(parsed
-            .link_program
-            .rules
-            .iter()
-            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));
+        assert!(
+            parsed
+                .link_program
+                .rules
+                .iter()
+                .any(|rule| link_substitution_effect(rule) == CrudEvent::Read)
+        );
         assert!(parsed.links_notation().contains("effect read"));
     }
 }
@@ -166,8 +168,10 @@ fn a_learned_natural_language_template_reuses_the_exact_sql_plan() {
     );
 
     assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());
-    assert!(compiler
-        .learning_links_notation()
-        .contains("natural_language_template"));
+    assert!(
+        compiler
+            .learning_links_notation()
+            .contains("natural_language_template")
+    );
     assert!(learned.links_notation().contains("learned_from"));
 }

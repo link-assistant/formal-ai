@@ -2,8 +2,8 @@
 
 use std::sync::OnceLock;
 
-use super::parser::parse_lino;
 use super::PROOF_PROGRAM_TEMPLATES_LINO;
+use super::parser::parse_lino;
 
 /// Seed-defined projections for one programming language.
 #[derive(Debug, Clone, PartialEq, Eq)]

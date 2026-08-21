@@ -1,8 +1,8 @@
 //! Natural-language access to prior dialog turns (issue #509).
 
 use formal_ai::{
-    answer_memory_recall, create_chat_completion, solve_with_history, ChatCompletionRequest,
-    ChatMessage, ConversationTurn, MemoryEvent, SymbolicAnswer,
+    ChatCompletionRequest, ChatMessage, ConversationTurn, MemoryEvent, SymbolicAnswer,
+    answer_memory_recall, create_chat_completion, solve_with_history,
 };
 
 fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {

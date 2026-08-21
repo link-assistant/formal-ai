@@ -6,7 +6,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
-use super::{err, escape, Parser, SubstitutionQueryError, TWO_SIDES};
+use super::{Parser, SubstitutionQueryError, TWO_SIDES, err, escape};
 use crate::link_store::DoubletLink;
 use crate::normal_markov::RewriteHalt;
 use crate::substitution::CrudEvent;

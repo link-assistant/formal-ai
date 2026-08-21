@@ -21,8 +21,8 @@
 //! The first antecedent whose aliases match is returned, and the caller
 //! emits the response body verbatim.
 
-use super::parser::parse_lino;
 use super::COREFERENCE_LINO;
+use super::parser::parse_lino;
 
 /// A pronoun and the contexts that opt prompts into coreference mode.
 #[derive(Debug, Clone, Default)]

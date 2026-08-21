@@ -2,9 +2,9 @@ self_ast_census
   target src/web/wasm-worker/src/lib.rs
   language rust
   fidelity signature
-  byte_len 29081
+  byte_len 29281
   line_count 916
-  content_id source_module_fbb7bda18d9ed772
+  content_id source_module_1a1f6162ee1dc45b
   symbol_count 77
   symbols
     module language 15 15

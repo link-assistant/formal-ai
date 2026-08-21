@@ -62,8 +62,8 @@ pub mod wiktionary;
 
 pub use cache::CachedHttpClient;
 pub use formalization::{
-    formalize_prompt, formalize_prompt_candidates, FormalizationAnchor, FormalizationAnchorKind,
-    FormalizationCandidate, FormalizationRole, FormalizationSlot,
+    FormalizationAnchor, FormalizationAnchorKind, FormalizationCandidate, FormalizationRole,
+    FormalizationSlot, formalize_prompt, formalize_prompt_candidates,
 };
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
@@ -72,10 +72,9 @@ pub(crate) use pipeline::seed_meaning_for_surface;
 pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;
 pub use selection::{
-    formalization_probability_target, select_formalization_candidate,
-    select_formalization_candidate_with_probability_store, softmax_formalization_scores,
     FormalizationDecision, FormalizationSelection, FormalizationSelectionConfig,
-    FormalizationSelectionReason,
+    FormalizationSelectionReason, formalization_probability_target, select_formalization_candidate,
+    select_formalization_candidate_with_probability_store, softmax_formalization_scores,
 };
 
 /// Process-wide cached HTTP client used by the default pipeline.

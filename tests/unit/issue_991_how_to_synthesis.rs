@@ -19,11 +19,11 @@ use std::path::{Path, PathBuf};
 
 use formal_ai::event_log::EventLog;
 use formal_ai::how_to_capture_manifest::{
-    drift, parse_manifest, read_captures, verify_bodies, CAPTURE_MANIFEST_FILE,
+    CAPTURE_MANIFEST_FILE, drift, parse_manifest, read_captures, verify_bodies,
 };
 use formal_ai::how_to_guide::{
-    select_sources, synthesize_how_to_guide, GuideBounds, HowToGuide, ServicePreferences,
-    MIN_ACCEPTED_STEPS,
+    GuideBounds, HowToGuide, MIN_ACCEPTED_STEPS, ServicePreferences, select_sources,
+    synthesize_how_to_guide,
 };
 use formal_ai::service_accessibility::{ServiceAccessibilityCache, ServiceStatus};
 use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};

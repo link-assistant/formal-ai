@@ -224,13 +224,11 @@ const fn is_path_character(character: char) -> bool {
 
 fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<String> {
     let normalized = task.to_lowercase();
-    if kind != RustItemKind::Constant {
-        if let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT) {
-            if valid_identifier(&name) {
+    if kind != RustItemKind::Constant
+        && let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT)
+            && valid_identifier(&name) {
                 return Some(name);
             }
-        }
-    }
     let without_path = task.replacen(path, "", 1);
     let mut candidates = identifier_tokens(&without_path)
         .filter(|candidate| valid_identifier(candidate))

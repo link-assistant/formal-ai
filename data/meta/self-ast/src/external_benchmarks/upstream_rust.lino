@@ -5,6 +5,9 @@ self_ast_census
   byte_len 8294
   line_count 259
   content_id source_module_ccf700637b64e69b
+  byte_len 8293
+  line_count 259
+  content_id source_module_07c443c3a78f29b7
   symbol_count 11
   symbols
     function adapt_records 7 16

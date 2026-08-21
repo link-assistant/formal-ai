@@ -1,7 +1,7 @@
 use formal_ai::agentic_coding::{
-    google_trends_catalog as recipe, is_google_trends_catalog_task, plan_chat_step,
-    run_agentic_task, AgenticPlan, PlannedToolCall, DRIVER_TOOLS, GOOGLE_TRENDS_CATALOG_PATH,
-    GOOGLE_TRENDS_CATALOG_TASK,
+    AgenticPlan, DRIVER_TOOLS, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
+    PlannedToolCall, google_trends_catalog as recipe, is_google_trends_catalog_task,
+    plan_chat_step, run_agentic_task,
 };
 use formal_ai::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;

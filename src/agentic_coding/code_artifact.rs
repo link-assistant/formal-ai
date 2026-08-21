@@ -187,7 +187,7 @@ fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<Workspa
             .as_chunks::<2>()
             .0
             .iter()
-            .map(|pair| (pair[0].clone(), pair[1].clone()))
+            .map(|[old, new]| (old.clone(), new.clone()))
             .collect(),
         _ => return None,
     };

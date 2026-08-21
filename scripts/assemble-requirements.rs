@@ -26,6 +26,9 @@
 //!   rust-script scripts/assemble-requirements.rs --split   # re-shard REQUIREMENTS.md
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

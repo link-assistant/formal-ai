@@ -8,7 +8,6 @@
 //! request cannot stop after its first observable effect.
 
 use serde_json::{json, Value};
-use sha2::{Digest, Sha256};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
@@ -101,9 +100,9 @@ fn plan_rewrite_step(
                 &updated,
             );
         }
-    } else if tool_for(tool_names, Capability::Edit).is_some() {
-        if let Some(command) = repeated_identifier_rewrite_command(rewrite) {
-            if let Some(tool) = tool_for(tool_names, Capability::Run) {
+    } else if tool_for(tool_names, Capability::Edit).is_some()
+        && let Some(command) = repeated_identifier_rewrite_command(rewrite)
+            && let Some(tool) = tool_for(tool_names, Capability::Run) {
                 if result_for_command(current_turn, &command).is_none() {
                     return Some(plan_one(tool, json!({"command": command}).to_string()));
                 }
@@ -115,8 +114,6 @@ fn plan_rewrite_step(
                     &updated,
                 );
             }
-        }
-    }
 
     if result_for_path(
         current_turn,
@@ -202,8 +199,8 @@ fn plan_composite_step(
         )?));
     }
 
-    if let Some((old, new)) = compact_registration_edit(&current, &change.registration) {
-        if let Some(tool) = tool_for(tool_names, Capability::Edit) {
+    if let Some((old, new)) = compact_registration_edit(&current, &change.registration)
+        && let Some(tool) = tool_for(tool_names, Capability::Edit) {
             if result_for_edit(current_turn, &change.registration_path, &old, &new).is_none() {
                 return Some(plan_one(
                     tool,
@@ -218,7 +215,6 @@ fn plan_composite_step(
                 &updated,
             );
         }
-    }
 
     if result_for_path(
         current_turn,
@@ -501,7 +497,7 @@ fn plan_digest_verification(
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    let digest = format!("{:x}", Sha256::digest(expected.as_bytes()));
+    let digest = crate::source_fetch::sha256_hex(expected.as_bytes());
     let intent = if observed.split_whitespace().next() == Some(digest.as_str()) {
         "coding_workspace_effect_observed"
     } else {

@@ -17,12 +17,12 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use formal_ai::dialog_log::{write_dialog_exchange, DIALOG_ID_HEADER};
+use formal_ai::dialog_log::{DIALOG_ID_HEADER, write_dialog_exchange};
 use formal_ai::issue_report::SECTIONS;
 use formal_ai::server::{
     enable_http_agent_mode_for_current_process, handle_api_request_with_headers,
 };
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 /// The issue URL the stubbed `gh` prints, standing in for a filed issue.
 const ISSUE_URL: &str = "https://github.com/link-assistant/formal-ai/issues/9001";

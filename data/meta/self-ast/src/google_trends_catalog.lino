@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 16922
   line_count 465
-  content_id source_module_ee49e2390496ff67
+  content_id source_module_07d6cc524c660cb7
   symbol_count 33
   symbols
     const GOOGLE_TRENDS_TOP_LIMIT 25 25

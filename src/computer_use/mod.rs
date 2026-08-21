@@ -14,18 +14,18 @@ mod seed;
 mod synthesis;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub use executor::{ComputerUseError, ComputerUsePolicy, ComputerUseSession};
-pub use induction::{learned, LearnedSchemas, OperationSchema, ResourceBinding, StepSignature};
+pub use induction::{LearnedSchemas, OperationSchema, ResourceBinding, StepSignature, learned};
 pub use lexicon::{
     capability_gap_cue, normalize as normalize_request, operation_cues, resource_cue,
 };
 pub use planner::{plan_agentic_step, tool_for_primitive};
 pub use seed::{
-    benchmark_tasks, capability_gap_for_prompt, plan_for_prompt, BenchmarkTask, CapabilityGap,
+    BenchmarkTask, CapabilityGap, benchmark_tasks, capability_gap_for_prompt, plan_for_prompt,
 };
-pub use synthesis::{synthesize, Synthesis};
+pub use synthesis::{Synthesis, synthesize};
 
 /// The complete issue-#707 primitive taxonomy, in seed and MCP advertisement
 /// order.

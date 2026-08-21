@@ -31,6 +31,9 @@
 //! Usage: rust-script scripts/check-merge-conflict-policy.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

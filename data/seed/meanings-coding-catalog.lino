@@ -292,6 +292,50 @@ meanings
     lexeme zh
       surface
         text kotlin
+  program_language_php
+    grounded-in Q59
+    defined-by program_language
+    defined-by language_php
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to PHP"
+    unit "not applicable"
+    example "php"
+    lexeme en
+      surface
+        text php
+    lexeme ru
+      surface
+        text php
+      surface
+        text пхп
+    lexeme hi
+      surface
+        text पीएचपी
+    lexeme zh
+      surface
+        text php
+  program_language_laravel
+    grounded-in Q13634357
+    defined-by program_language
+    defined-by language_php
+    role program_language_alias
+    precondition "a coding request contains this framework surface"
+    effect "the program-language slot is bound to Laravel"
+    unit "not applicable"
+    example "laravel"
+    lexeme en
+      surface
+        text laravel
+    lexeme ru
+      surface
+        text laravel
+    lexeme hi
+      surface
+        text laravel
+    lexeme zh
+      surface
+        text laravel
   program_task
     defined-by program
     role program_task
@@ -739,3 +783,71 @@ meanings
         text 斐波那契数
       surface
         text 递归斐波那契
+  program_task_copy_stdin_to_stdout
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to copying standard input to standard output"
+    unit "not applicable"
+    example "copy stdin to stdout"
+    lexeme en
+      surface
+        text "copy standard input to standard output"
+      surface
+        text "copy stdin to stdout"
+      surface
+        text "copies standard input to standard output"
+      surface
+        text "copies stdin to stdout"
+      surface
+        text "read stdin and write it to stdout"
+      surface
+        text "echo stdin to stdout"
+      surface
+        text "copy input to output"
+      surface
+        text "stdin to stdout"
+    lexeme ru
+      surface
+        text "скопировать стандартный ввод в стандартный вывод"
+      surface
+        text "копировать стандартный ввод в стандартный вывод"
+      surface
+        text "скопируй stdin в stdout"
+      surface
+        text "скопировать stdin в stdout"
+      surface
+        text "стандартный ввод в стандартный вывод"
+      surface
+        text "из stdin в stdout"
+    lexeme hi
+      surface
+        text "मानक इनपुट को मानक आउटपुट में कॉपी करें"
+      surface
+        text "मानक इनपुट को मानक आउटपुट में कॉपी"
+      surface
+        text "stdin को stdout में कॉपी करें"
+      surface
+        text "stdin से stdout"
+    lexeme zh
+      surface
+        text 将标准输入复制到标准输出
+      surface
+        text 把标准输入复制到标准输出
+      surface
+        text 标准输入复制到标准输出
+      surface
+        text 标准输入到标准输出
+    lexeme es
+      surface
+        text "copiar la entrada estándar a la salida estándar"
+      surface
+        text "copiar entrada estándar a salida estándar"
+      surface
+        text "copia la entrada estándar a la salida estándar"
+      surface
+        text "copia stdin a stdout"
+      surface
+        text "copiar stdin a stdout"
+      surface
+        text "de stdin a stdout"

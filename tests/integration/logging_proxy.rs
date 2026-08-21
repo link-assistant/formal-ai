@@ -4,7 +4,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use crate::http_server::{
-    http_request, reserve_loopback_port, spawn_formal_ai_server_agent_mode, FormalAiServer,
+    FormalAiServer, http_request, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
 };
 
 struct FormalAiProxy {

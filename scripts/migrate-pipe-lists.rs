@@ -13,6 +13,11 @@
 //!
 //! Run with `rust-script scripts/migrate-pipe-lists.rs` (std-only; can also be
 //! compiled directly with `rustc -O scripts/migrate-pipe-lists.rs`).
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::fs;
 use std::io;

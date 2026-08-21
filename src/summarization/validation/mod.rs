@@ -41,8 +41,8 @@ mod prose;
 mod sampling;
 
 pub use baseline::{
-    ratchet_violations, QualityBaseline, BASELINE_PATH, BASELINE_RECORD, HONESTY_POLICY,
-    RATCHET_POLICY, RATCHET_RUNNER,
+    BASELINE_PATH, BASELINE_RECORD, HONESTY_POLICY, QualityBaseline, RATCHET_POLICY,
+    RATCHET_RUNNER, ratchet_violations,
 };
 pub use criteria::COMPRESSION_FLOOR_BYTES;
 pub use prose::sentence as quality_sentence;
@@ -56,8 +56,8 @@ use criteria::{
 
 use crate::links_format::push_lino_node;
 
-use super::file::formalize_repository_file;
 use super::SummarizationConfig;
+use super::file::formalize_repository_file;
 
 /// Minimum quality percentage the repository-summarization protocol must reach.
 /// This is the 80% bar issue #563 set ("at least 80% perfect") and issue #893

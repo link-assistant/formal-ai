@@ -15,8 +15,8 @@
 //! `src/web/seed_loader.js`, and a routing-parity fixture pins the shared
 //! precedence invariants across the Rust and browser surfaces.
 
-use super::parser::parse_lino;
 use super::HANDLER_PRECEDENCE_LINO;
+use super::parser::parse_lino;
 
 /// Ordered specialized-handler names, in dispatch precedence order (first wins),
 /// as declared by the shipped `data/seed/handler-precedence.lino`.

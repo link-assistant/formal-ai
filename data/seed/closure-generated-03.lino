@@ -9,8 +9,13 @@ meanings
     lexeme en
       surface
         text "append memory"
+  archivos
+    defined-by concept
+    lexeme en
+      surface
+        text "archivos"
   below
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "below"
@@ -24,6 +29,11 @@ meanings
     lexeme en
       surface
         text "browser indexeddb"
+  bump
+    defined-by concept
+    lexeme en
+      surface
+        text "bump"
   bundle_root_header
     defined-by field
     lexeme en
@@ -564,6 +574,11 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused ru"
+  response_mutating_action_blocked_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked ru"
   response_orchestration_correction_prompt_hi
     defined-by response_template
     lexeme en
@@ -964,6 +979,11 @@ meanings
     lexeme en
       surface
         text "trim"
+  very
+    defined-by concept
+    lexeme en
+      surface
+        text "very"
   views
     defined-by word_surface
     lexeme en

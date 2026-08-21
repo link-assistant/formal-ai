@@ -164,11 +164,10 @@ pub(super) fn named_shell_command_in_sentence(
     }
 
     // Shape 2: a shell token mentioned anywhere, given run context — the token alone.
-    if has_verb || has_phrase {
-        if let Some(word) = words.iter().find(|w| is_shell_token(w)) {
+    if (has_verb || has_phrase)
+        && let Some(word) = words.iter().find(|w| is_shell_token(w)) {
             return Some(normalize_command_word(word));
         }
-    }
 
     None
 }

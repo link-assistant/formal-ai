@@ -518,10 +518,10 @@ impl Iterator for QuestionGenerator {
             let question = self.current_question();
             self.advance(limit);
 
-            if let Some(question) = question {
-                if self.config.acceptance.accepts(&question) {
-                    return Some(question);
-                }
+            if let Some(question) = question
+                && self.config.acceptance.accepts(&question)
+            {
+                return Some(question);
             }
         }
     }

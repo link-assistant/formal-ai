@@ -97,17 +97,15 @@ pub(super) fn plan_formalization_step(
 
     if inline_source.is_none() {
         // Step 1: search for the source text.
-        if let Some(tool) = tool_for(tool_names, Capability::Search) {
-            if !progress.done(Capability::Search) {
+        if let Some(tool) = tool_for(tool_names, Capability::Search)
+            && !progress.done(Capability::Search) {
                 return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
             }
-        }
         // Step 2: fetch the source text.
-        if let Some(tool) = tool_for(tool_names, Capability::Fetch) {
-            if !progress.done(Capability::Fetch) {
+        if let Some(tool) = tool_for(tool_names, Capability::Fetch)
+            && !progress.done(Capability::Fetch) {
                 return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
             }
-        }
     }
 
     // The source text for the knowledge base: the text quoted in the task if
@@ -120,18 +118,16 @@ pub(super) fn plan_formalization_step(
     let formalized = formalize_text_to_links(source, "");
 
     // Step 3: write the formalized knowledge base.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
+    if let Some(tool) = write_tool
+        && !progress.done(Capability::Write) {
             return plan_one(tool, write_arguments(KB_PATH, &formalized.links_notation));
         }
-    }
     // Step 4: verify by reading the file back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
+    if let Some(tool) = run_tool
+        && !progress.done(Capability::Run) {
             let arguments = json!({ "command": format!("cat {KB_PATH}") });
             return plan_one(tool, arguments.to_string());
         }
-    }
 
     // Step 5: nothing left to do — answer with the knowledge base inline.
     AgenticPlan::Final(final_answer(&formalized))

@@ -61,7 +61,7 @@ pub fn apply_promotions(
 
     let has_targets = !targets.is_empty();
     let mut authored_edits = Vec::new();
-    let mut agent_session_ids = Vec::new();
+    let mut agent_session_digests = Vec::new();
     for (seed_file, (desired, bytes_written)) in targets {
         let task = format!("Create file {seed_file} containing\n{desired}");
         let outcome = run_agentic_task(&task).map_err(invalid_data)?;
@@ -78,7 +78,7 @@ pub fn apply_promotions(
         }
 
         let session = serde_json::to_string(&outcome.session_json()).map_err(invalid_data)?;
-        agent_session_ids.push(stable_id("promotion_agent_session", &session));
+        agent_session_digests.push(stable_id("promotion_agent_session", &session));
         authored_edits.push((seed_file, authored_path, authored_content, bytes_written));
     }
 
@@ -107,7 +107,7 @@ pub fn apply_promotions(
         applied,
         rejected,
         branch_plan: run.branch_plan(),
-        agent_session_ids,
+        agent_session_digests,
     })
 }
 

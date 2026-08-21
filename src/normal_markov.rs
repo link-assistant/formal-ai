@@ -200,10 +200,9 @@ pub fn unwrap_transport_quotes(text: &str) -> &str {
         if let Some(inner) = trimmed
             .strip_prefix(quote)
             .and_then(|value| value.strip_suffix(quote))
+            && !inner.contains(quote)
         {
-            if !inner.contains(quote) {
-                return inner;
-            }
+            return inner;
         }
     }
     trimmed

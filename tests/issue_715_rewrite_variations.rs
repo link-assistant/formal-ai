@@ -1,6 +1,6 @@
 //! Structural NL variation and safety coverage for issue #715 rewrites.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::normal_markov::quoted_segments;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 

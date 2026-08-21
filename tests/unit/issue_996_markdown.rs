@@ -4,7 +4,7 @@
 //! and the plan/knowledge-base dump becomes unreadable.
 
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 /// The content of the first fenced `lino` block in `answer`.

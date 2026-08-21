@@ -1,5 +1,5 @@
 use formal_ai::agentic_coding::planner::tool_capability;
-use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
 use formal_ai::protocol::ChatMessage;
 use formal_ai::seed::response_for;
 use formal_ai::solver::{SolverConfig, UniversalSolver};

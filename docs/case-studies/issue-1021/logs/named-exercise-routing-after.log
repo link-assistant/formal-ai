@@ -1,0 +1,108 @@
+=== Give me example of how to do copy stdin to stdout in Rust
+-- intent: write_program
+Here is a minimal Rust copy standard input to standard output program:
+
+```rust
+use std::io::{self, Read, Write};
+
+fn main() -> io::Result<()> {
+    let mut input = Vec::new();
+    io::stdin().read_to_end(&mut input)?;
+    io::stdout().write_all(&input)
+}
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `rustc main.rs -o main`
+Run command: `printf 'hello\nworld\n' | ./main`
+Output:
+```text
+hello
+world
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program performs the requested task and prints its result to standard output.
+
+How to test it yourself:
+1. Install the Rust toolchain from https://rustup.rs.
+2. Save the code above to a file named `main.rs`.
+3. Check that it compiles: `rustc main.rs -o main`.
+4. Run it: `printf 'hello\nworld\n' | ./main`.
+5. Compare the output with the expected output shown above.
+
+=== Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust
+-- intent: write_program
+Here is a minimal Rust copy standard input to standard output program:
+
+```rust
+use std::io::{self, Read, Write};
+
+fn main() -> io::Result<()> {
+    let mut input = Vec::new();
+    io::stdin().read_to_end(&mut input)?;
+    io::stdout().write_all(&input)
+}
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `rustc main.rs -o main`
+Run command: `printf 'hello\nworld\n' | ./main`
+Output:
+```text
+hello
+world
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program performs the requested task and prints its result to standard output.
+
+How to test it yourself:
+1. Install the Rust toolchain from https://rustup.rs.
+2. Save the code above to a file named `main.rs`.
+3. Check that it compiles: `rustc main.rs -o main`.
+4. Run it: `printf 'hello\nworld\n' | ./main`.
+5. Compare the output with the expected output shown above.
+
+=== write a program that copies stdin to stdout
+-- intent: write_program_language_unspecified
+I will not guess an implementation language. You asked for `copy_stdin_to_stdout`, but the request does not say which programming language to write it in, and choosing one for you would answer a request you did not make.
+
+Name the language — for example by adding "in <language>" — and I will derive the program in it.
+
+=== write a Rust program that copies stdin to stdout
+-- intent: write_program
+Here is a minimal Rust copy standard input to standard output program:
+
+```rust
+use std::io::{self, Read, Write};
+
+fn main() -> io::Result<()> {
+    let mut input = Vec::new();
+    io::stdin().read_to_end(&mut input)?;
+    io::stdout().write_all(&input)
+}
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `rustc main.rs -o main`
+Run command: `printf 'hello\nworld\n' | ./main`
+Output:
+```text
+hello
+world
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program performs the requested task and prints its result to standard output.
+
+How to test it yourself:
+1. Install the Rust toolchain from https://rustup.rs.
+2. Save the code above to a file named `main.rs`.
+3. Check that it compiles: `rustc main.rs -o main`.
+4. Run it: `printf 'hello\nworld\n' | ./main`.
+5. Compare the output with the expected output shown above.
+

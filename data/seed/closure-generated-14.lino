@@ -54,6 +54,11 @@ meanings
     lexeme en
       surface
         text "customers"
+  dame
+    defined-by concept
+    lexeme en
+      surface
+        text "dame"
   deduplication
     defined-by term
     lexeme en
@@ -169,11 +174,21 @@ meanings
     lexeme en
       surface
         text "local search not found"
+  me
+    defined-by word_surface
+    lexeme en
+      surface
+        text "me"
   memory_inventory_item
     defined-by intent
     lexeme en
       surface
         text "memory inventory item"
+  mutating-action
+    defined-by concept
+    lexeme en
+      surface
+        text "mutating action"
   narrative
     defined-by concept
     lexeme en
@@ -904,6 +919,11 @@ meanings
     lexeme en
       surface
         text "summarization criterion embedded grammar recursion"
+  symlink
+    defined-by concept
+    lexeme en
+      surface
+        text "symlink"
   there
     defined-by concept
     lexeme en
@@ -969,6 +989,16 @@ meanings
     lexeme en
       surface
         text "two paths"
+  ver
+    defined-by concept
+    lexeme en
+      surface
+        text "ver"
+  we
+    defined-by word_surface
+    lexeme en
+      surface
+        text "we"
   wikibooks
     defined-by source
     lexeme en

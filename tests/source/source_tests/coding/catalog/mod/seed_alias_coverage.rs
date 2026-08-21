@@ -6,7 +6,7 @@
 //! that language or task would silently never match), and every alias meaning
 //! must name a real catalog slug (else it is dead seed data).
 use super::*;
-use crate::seed::{lexicon, ROLE_PROGRAM_LANGUAGE_ALIAS, ROLE_PROGRAM_TASK_ALIAS};
+use crate::seed::{ROLE_PROGRAM_LANGUAGE_ALIAS, ROLE_PROGRAM_TASK_ALIAS, lexicon};
 
 #[test]
 fn every_language_slug_owns_an_alias_meaning() {

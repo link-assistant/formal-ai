@@ -20,9 +20,9 @@
 use std::collections::BTreeSet;
 use std::sync::OnceLock;
 
-use super::parser::{decode_codepoints, parse_lino, LinoNode};
-use super::roles::{ROLE_ONTOLOGY_CATEGORY, ROLE_ONTOLOGY_ROOT, ROLE_ONTOLOGY_TYPE};
 use super::MEANING_FILES;
+use super::parser::{LinoNode, decode_codepoints, parse_lino};
+use super::roles::{ROLE_ONTOLOGY_CATEGORY, ROLE_ONTOLOGY_ROOT, ROLE_ONTOLOGY_TYPE};
 
 /// Where a surface form positions the variable subject of a templated prompt.
 ///

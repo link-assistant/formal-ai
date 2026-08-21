@@ -47,9 +47,9 @@ pub use learning::{
 };
 pub use recursive::{RecordedSplit, SplittingExecutor};
 pub use strategy::{
-    contract as task_decomposition_contract, strategies as task_decomposition_strategies,
-    TaskDecompositionContract, TaskDecompositionStrategy, TaskStrategyStage, CONTRACT_LINO,
-    STRATEGIES_LINO,
+    CONTRACT_LINO, STRATEGIES_LINO, TaskDecompositionContract, TaskDecompositionStrategy,
+    TaskStrategyStage, contract as task_decomposition_contract,
+    strategies as task_decomposition_strategies,
 };
 
 /// A node of a task decomposition: the task itself at the root, one sub-task at

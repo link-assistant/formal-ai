@@ -121,8 +121,8 @@ pub fn try_behavior_rules_with_runtime(
         ));
     }
 
-    if let Some(query) = detail_query(prompt) {
-        if let Some(rule) = find_behavior_rule(&query) {
+    if let Some(query) = detail_query(prompt)
+        && let Some(rule) = find_behavior_rule(&query) {
             log.append("behavior_rule:read", rule.id.clone());
             let body = render_behavior_rule_detail(&rule, &language);
             return Some(finalize_simple(
@@ -134,7 +134,6 @@ pub fn try_behavior_rules_with_runtime(
                 1.0,
             ));
         }
-    }
 
     if let Some(answer) = try_self_awareness(prompt, normalized, log, runtime) {
         return Some(answer);
@@ -780,11 +779,10 @@ fn collect_runtime_rules(log: &EventLog) -> Vec<CompiledSkillPackage> {
     let mut seen = std::collections::HashSet::new();
     let mut rules = Vec::new();
     for event in log.events().iter().filter(|e| e.kind == "prior_turn:user") {
-        if let Ok(rule) = compile_natural_language_skill(&event.payload) {
-            if seen.insert(rule.id.clone()) {
+        if let Ok(rule) = compile_natural_language_skill(&event.payload)
+            && seen.insert(rule.id.clone()) {
                 rules.push(rule);
             }
-        }
     }
     rules
 }

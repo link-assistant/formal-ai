@@ -17,7 +17,7 @@ use super::{
     DreamingCandidateTask, DreamingEventObservation, DreamingPattern, DreamingSynthesizedTask,
     LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency,
 };
-use crate::dreaming_application::{replay_answer_with_amendments, RetainedAmendment};
+use crate::dreaming_application::{RetainedAmendment, replay_answer_with_amendments};
 use crate::memory::MemoryEvent;
 
 pub(super) struct LearningResult {

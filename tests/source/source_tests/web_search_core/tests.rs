@@ -214,9 +214,11 @@ fn build_request_evidence_lists_providers_in_priority_order() {
 #[test]
 fn build_request_evidence_skips_empty_language_line() {
     let lines = build_request_evidence("query", "");
-    assert!(!lines
-        .iter()
-        .any(|line| line == "web_search:language:" || line == "web_search:language: "));
+    assert!(
+        !lines
+            .iter()
+            .any(|line| line == "web_search:language:" || line == "web_search:language: ")
+    );
 }
 
 /// Issue #180: Internet Archive is listed in the default plan and tagged

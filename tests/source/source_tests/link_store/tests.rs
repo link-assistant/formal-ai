@@ -1,25 +1,31 @@
 use super::{
-    default_native_link_store, memory_event_to_link_record, selected_link_store_backend,
-    validate_memory_links_notation, LinkStore, LinkStoreBackend, LinkStoreError,
+    LinkStore, LinkStoreBackend, LinkStoreError, default_native_link_store,
+    memory_event_to_link_record, selected_link_store_backend, validate_memory_links_notation,
 };
-use crate::memory::{export_links_notation, MemoryEvent, MemoryStore};
+use crate::memory::{MemoryEvent, MemoryStore, export_links_notation};
 
 #[test]
 fn memory_events_reduce_to_type_subtype_value_doublets() {
     let record = memory_event_to_link_record(&MemoryEvent::user("hello"), 0);
     assert_eq!(record.record_type, "MemoryEvent");
-    assert!(record
-        .links
-        .iter()
-        .any(|link| link.from == "Type" && link.to == "MemoryEvent"));
-    assert!(record
-        .links
-        .iter()
-        .any(|link| link.from == "SubType" && link.to == "user"));
-    assert!(record
-        .links
-        .iter()
-        .any(|link| link.from == "field:content" && link.to == "value:hello"));
+    assert!(
+        record
+            .links
+            .iter()
+            .any(|link| link.from == "Type" && link.to == "MemoryEvent")
+    );
+    assert!(
+        record
+            .links
+            .iter()
+            .any(|link| link.from == "SubType" && link.to == "user")
+    );
+    assert!(
+        record
+            .links
+            .iter()
+            .any(|link| link.from == "field:content" && link.to == "value:hello")
+    );
 }
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
@@ -89,7 +95,7 @@ fn strict_import_accepts_legacy_memory_documents() {
 #[cfg(feature = "doublets-native")]
 #[test]
 fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
-    use crate::memory::{export_full_memory, BundleInfo};
+    use crate::memory::{BundleInfo, export_full_memory};
 
     let events = vec![
         MemoryEvent {

@@ -2,9 +2,9 @@ self_ast_census
   target src/self_improvement.rs
   language rust
   fidelity signature
-  byte_len 24828
+  byte_len 24800
   line_count 699
-  content_id source_module_e00d4bd51e35bcee
+  content_id source_module_6844a4158bee1d33
   symbol_count 37
   symbols
     const CODING_MODIFICATION_SUITE_LINO 16 17

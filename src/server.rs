@@ -1,25 +1,26 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use serde::Serialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver_and_memory, AnthropicContentBlock,
-    AnthropicMessagesRequest,
+    AnthropicContentBlock, AnthropicMessagesRequest, anthropic_message_sse,
+    create_anthropic_message_with_solver_and_memory,
 };
 use crate::context_capacity::ContextCapacity;
 use crate::engine::{knowledge_graph, render_thinking_steps};
 use crate::gemini::{
-    create_gemini_generate_content_response_with_solver_and_memory, gemini_model_list,
-    gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
+    GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
+    gemini_model_list, gemini_model_metadata, gemini_response_sse, vertex_model_list,
 };
 use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
-    chat_exchange_to_record, chat_tool_executions, create_chat_completion_with_solver_and_memory,
+    ChatCompletion, ChatCompletionRequest, ResponsesRequest, chat_exchange_to_record,
+    chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
-    responses_exchange_to_record, ChatCompletion, ChatCompletionRequest, ResponsesRequest,
+    responses_exchange_to_record,
 };
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
@@ -183,16 +184,39 @@ fn dispatch_api_request_with_auth(
         // the conversation itself worked, which reads in a transcript exactly
         // like a misconfigured base URL. A base path we serve is reachable, and
         // saying so costs one branch.
+        //
+        // `@anthropic-ai/claude-code` 2.1.238 added a second one on top of it.
+        // Its `preconnectFired` warm-up sends `HEAD $ANTHROPIC_BASE_URL/api/hello`
+        // once per session, which against the base URL our wrapper writes
+        // arrives here as `/api/anthropic/api/hello`. The doubled `/api` is a
+        // defect on neither side: `/api/hello` is Anthropic's own endpoint, and
+        // `https://api.anthropic.com/api/hello` answers `200` with
+        // `{"message": "hello"}` to `GET` and `200` with an empty body to
+        // `HEAD`. Serving an Anthropic-compatible surface means serving it too.
+        // The client discards the result — it is a connection warm-up, not a
+        // health check — so the `404` this used to return broke no session; it
+        // was recorded as a failed exchange, which is the same thing #671 fixed
+        // for the base path itself and is worth fixing for the same reason.
         (
             "HEAD",
-            "/" | "/health" | "/api/anthropic" | "/api/openai" | "/api/gemini" | "/api/formal-ai"
-            | "/api/vertex",
+            "/"
+            | "/health"
+            | "/api/anthropic"
+            | "/api/openai"
+            | "/api/gemini"
+            | "/api/formal-ai"
+            | "/api/vertex"
+            | "/api/hello"
+            | "/api/anthropic/api/hello",
         ) => ApiHttpResponse {
             status_code: 200,
             content_type: "application/json",
             body: String::new(),
             deprecated: false,
         },
+        ("GET", "/api/hello" | "/api/anthropic/api/hello") => {
+            json_response(200, &json!({"message": "hello"}))
+        }
         ("GET", "/health") => json_response(
             200,
             &json!({

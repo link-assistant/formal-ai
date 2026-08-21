@@ -47,7 +47,10 @@ const CORPUS: &[Case] = &[
     // --- known languages, in every request language -------------------------
     case("Write me hello world program in Rust", Some("rust")),
     case("hello world in python", Some("python")),
-    case("write a hello world program in JavaScript", Some("javascript")),
+    case(
+        "write a hello world program in JavaScript",
+        Some("javascript"),
+    ),
     case("hello world in py", Some("python")),
     case("hello world in golang", Some("go")),
     case("hello world in node", Some("javascript")),
@@ -67,7 +70,10 @@ const CORPUS: &[Case] = &[
     // --- languages we do not catalogue, but must still read ------------------
     case("hello world in elvish", Some("elvish")),
     case("hello world in the elvish language", Some("elvish")),
-    case("write a hello world program in language elvish", Some("elvish")),
+    case(
+        "write a hello world program in language elvish",
+        Some("elvish"),
+    ),
     // --- negatives: `the`, `the current directory`, no language at all -------
     case(
         "Create a file named hello.txt in the current directory whose entire content is the single line: Hello World.",
@@ -82,7 +88,10 @@ const CORPUS: &[Case] = &[
     // a place in Hindi, Chinese and Spanish too.
     case("मौजूदा डायरेक्टरी में hello.txt नाम की फ़ाइल बनाओ", None),
     case("在当前目录下创建一个名为 hello.txt 的文件", None),
-    case("crea un archivo llamado hello.txt en el directorio actual", None),
+    case(
+        "crea un archivo llamado hello.txt en el directorio actual",
+        None,
+    ),
     case("escribe un programa", None),
     // --- negatives: the position is filled by something that names no language
     case("hello world in 3 steps", None),
@@ -178,10 +187,12 @@ fn a_request_without_a_language_asks_which_language_instead_of_naming_a_gap() {
         response.answer
     );
     assert!(response.answer.contains("hello_world"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "response:write_program:language_unspecified"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "response:write_program:language_unspecified")
+    );
 }
 
 #[test]

@@ -1,6 +1,6 @@
 //! Seed-driven recognition and acknowledgement of dialog-control turns.
 
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;

@@ -4,7 +4,7 @@
 //! calculator-shaped expressions to `link-calculator` first, and preserves the
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
-use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::arithmetic::{ArithmeticError, evaluate_fallback_formatted};
 use crate::calculation_time::elapsed_time_expression;
 use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
@@ -426,10 +426,10 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
     if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
         return Ok(evaluation);
     }
-    if expression.contains('=') {
-        if let Ok(evaluation) = evaluate_linear_equation(expression) {
-            return Ok(evaluation);
-        }
+    if expression.contains('=')
+        && let Ok(evaluation) = evaluate_linear_equation(expression)
+    {
+        return Ok(evaluation);
     }
     let formatted = evaluate_fallback_formatted(expression)?;
     Ok(CalculationEvaluation {
@@ -634,15 +634,14 @@ fn strip_calculation_wrappers_with_prefixes(
                 break;
             }
         }
-        if !changed {
-            if let Some((stripped, interpretation)) =
+        if !changed
+            && let Some((stripped, interpretation)) =
                 strip_fuzzy_prefix_case_insensitive(&working, &prefixes)
-            {
-                working = stripped.to_owned();
-                explicit = true;
-                interpretations.push(interpretation);
-                changed = true;
-            }
+        {
+            working = stripped.to_owned();
+            explicit = true;
+            interpretations.push(interpretation);
+            changed = true;
         }
         if !changed {
             break;
@@ -887,17 +886,17 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
     // Fibonacci number and multiply it by 8% of 500. Show me the code ...") into
     // a calculator expression and offer it as an additional candidate.
-    if let Some(normalized) = normalize_word_problem_detailed(&stripped) {
-        if has_calculation_signal(&normalized.expression, explicit) {
-            push_calculation_candidate(
-                &mut candidates,
-                normalized.expression,
-                explicit,
-                interpretations,
-                normalized.reasoning_steps,
-                normalized.result_label,
-            );
-        }
+    if let Some(normalized) = normalize_word_problem_detailed(&stripped)
+        && has_calculation_signal(&normalized.expression, explicit)
+    {
+        push_calculation_candidate(
+            &mut candidates,
+            normalized.expression,
+            explicit,
+            interpretations,
+            normalized.reasoning_steps,
+            normalized.result_label,
+        );
     }
     if trimmed
         != candidates

@@ -13,8 +13,8 @@
 
 use std::sync::OnceLock;
 
-use super::parser::{parse_lino, LinoNode};
 use super::ENTITY_NAMES_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// One named entity with its correctly spelled surfaces per language.
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -5,7 +5,7 @@
 //! shortcut that runs the full formalize → summarize → deformalize pipeline
 //! over the cleaned text.
 
-use super::{deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig};
+use super::{Statement, SummarizationConfig, deformalize, formalize, summarize, to_topic};
 
 /// Strip the most common GitHub README noise from a block of Markdown text:
 ///

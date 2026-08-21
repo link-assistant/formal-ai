@@ -2,9 +2,9 @@ self_ast_census
   target src/links_substitution_query/text.rs
   language rust
   fidelity signature
-  byte_len 8111
-  line_count 233
-  content_id source_module_54590acf88bfa6d5
+  byte_len 8087
+  line_count 229
+  content_id source_module_aee740cd2f6b1dbb
   symbol_count 10
   symbols
     struct Operand 15 18
@@ -13,7 +13,7 @@ self_ast_census
     function render_substitution_query 72 104
     function render_side 106 117
     function pair_operands 120 156
-    function rule 158 165
-    function parse_side 168 190
-    function parse_operand 192 208
-    function parse_operand_name 212 232
+    function rule 158 161
+    function parse_side 164 186
+    function parse_operand 188 204
+    function parse_operand_name 208 228

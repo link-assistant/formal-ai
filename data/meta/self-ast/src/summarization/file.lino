@@ -2,9 +2,9 @@ self_ast_census
   target src/summarization/file.rs
   language rust
   fidelity signature
-  byte_len 26015
+  byte_len 25975
   line_count 812
-  content_id source_module_2631a5891f360cf6
+  content_id source_module_49d0b69fa24f4098
   symbol_count 57
   symbols
     const MAX_META_LANGUAGE_PARSE_BYTES 26 26

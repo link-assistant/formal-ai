@@ -449,6 +449,8 @@ roles
     kind meaning
   repository_reference
     kind meaning
+  request_function_word
+    kind meaning
   request_objective_lead
     kind predicate
   research_criterion

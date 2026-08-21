@@ -1,0 +1,327 @@
+E2E (opencode-desktop)	Set up job	﻿2026-08-19T16:03:26.3105997Z Current runner version: '2.336.0'
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3131792Z ##[group]Runner Image Provisioner
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3132727Z Hosted Compute Agent
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3133350Z Version: 20260729.566
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3133952Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3134735Z Build Date: 2026-07-29T19:17:02Z
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3135418Z Worker ID: {20ceab34-18c8-49eb-9c5e-c8fa0157ee0a}
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3136179Z Azure Region: westus3
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3136797Z ##[endgroup]
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3138207Z ##[group]Operating System
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3138909Z Ubuntu
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3139418Z 24.04.4
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3139943Z LTS
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3140543Z ##[endgroup]
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3141414Z ##[group]Runner Image
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3142073Z Image: ubuntu-24.04
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3142644Z Version: 20260810.271.1
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3143699Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3145463Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3146380Z ##[endgroup]
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3147547Z ##[group]GITHUB_TOKEN Permissions
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3149331Z Contents: read
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3150073Z Metadata: read
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3150838Z ##[endgroup]
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3152973Z Secret source: Actions
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3154066Z Prepare workflow directory
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3553199Z Prepare all required actions
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.3600088Z Getting action download info
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.7405536Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:26.8749674Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:27.6019375Z Download action repository 'actions/download-artifact@v8' (SHA:3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c)
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:28.3497539Z Download action repository 'actions/setup-node@v6' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:28.5028372Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:28.6450046Z Download action repository 'actions/upload-artifact@v7' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+E2E (opencode-desktop)	Set up job	2026-08-19T16:03:28.8738464Z Complete job name: E2E (opencode-desktop)
+E2E (opencode-desktop)	Run actions/checkout@v6	﻿2026-08-19T16:03:28.9672240Z ##[group]Run actions/checkout@v6
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9673615Z with:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9674452Z   repository: link-assistant/formal-ai
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9683006Z   token: ***
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9683826Z   ssh-strict: true
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9684655Z   ssh-user: git
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9685500Z   persist-credentials: true
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9686416Z   clean: true
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9687252Z   sparse-checkout-cone-mode: true
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9688243Z   fetch-depth: 1
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9689070Z   fetch-tags: false
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9689912Z   show-progress: true
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9690969Z   lfs: false
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9691763Z   submodules: false
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9692617Z   set-safe-directory: true
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9693600Z   allow-unsafe-pr-checkout: false
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9694873Z env:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9695641Z   CARGO_NET_RETRY: 10
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9696523Z   CARGO_TERM_COLOR: always
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9697467Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:28.9698329Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0746449Z Syncing repository: link-assistant/formal-ai
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0750519Z ##[group]Getting Git version info
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0752938Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0756223Z [command]/usr/bin/git version
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0808731Z git version 2.54.0
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0849413Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0863914Z Temporarily overriding HOME='/home/runner/work/_temp/c8c00d0c-6f86-4f0b-b398-a0998a1df7f5' before making global git config changes
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0868947Z Adding repository directory to the temporary git global config as a safe directory
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0873592Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0914038Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0916936Z ##[group]Determining repository object format
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0919281Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0920935Z ##[group]Initializing the repository
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.0924368Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1071920Z hint: Using 'master' as the name for the initial branch. This default branch name
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1075399Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1078634Z hint: to use in all of your new repositories, which will suppress this warning,
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1082198Z hint: call:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1083502Z hint:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1085301Z hint: 	git config --global init.defaultBranch <name>
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1087347Z hint:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1089211Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1092630Z hint: 'development'. The just-created branch can be renamed via this command:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1095164Z hint:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1096495Z hint: 	git branch -m <name>
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1098274Z hint:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1100386Z hint: Disable this message with "git config set advice.defaultBranchName false"
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1104164Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1109791Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1177587Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1179997Z ##[group]Disabling automatic garbage collection
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1182460Z [command]/usr/bin/git config --local gc.auto 0
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1214908Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1217204Z ##[group]Setting up auth
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1219036Z Removing SSH command configuration
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1223062Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1265892Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1882344Z Removing HTTP extra header
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1889869Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.1929592Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2147297Z Removing includeIf entries pointing to credentials config files
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2152973Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2191631Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2415704Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2461287Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2500048Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2551153Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2588655Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2618015Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2619556Z ##[group]Fetching the repository
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:29.2626294Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +7eae66f9d970f449e3557427b213e8287d985c15:refs/remotes/pull/1027/merge
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4039211Z From https://github.com/link-assistant/formal-ai
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4039997Z  * [new ref]         7eae66f9d970f449e3557427b213e8287d985c15 -> pull/1027/merge
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4106463Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4107161Z ##[group]Determining the checkout info
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4107866Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4108287Z [command]/usr/bin/git sparse-checkout disable
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4141880Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4172796Z ##[group]Checking out the ref
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:52.4176713Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1027/merge
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:53.4712040Z Updating files:  38% (5866/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:53.5465657Z Updating files:  39% (5903/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:53.7132148Z Updating files:  40% (6054/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:53.8106625Z Updating files:  41% (6205/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.0362821Z Updating files:  42% (6357/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.0731823Z Updating files:  43% (6508/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.0885909Z Updating files:  44% (6659/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.1004610Z Updating files:  45% (6811/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.1434475Z Updating files:  46% (6962/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.1559477Z Updating files:  47% (7113/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.2664890Z Updating files:  48% (7265/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.2858399Z Updating files:  49% (7416/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.3297147Z Updating files:  50% (7567/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.3797050Z Updating files:  51% (7719/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.4343475Z Updating files:  52% (7870/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.4351853Z Updating files:  52% (8016/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.4561843Z Updating files:  53% (8022/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.4674495Z Updating files:  54% (8173/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.4791349Z Updating files:  55% (8324/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.5067930Z Updating files:  56% (8476/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.5180020Z Updating files:  57% (8627/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.5458862Z Updating files:  58% (8778/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.5888298Z Updating files:  59% (8930/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.6134158Z Updating files:  60% (9081/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.6546204Z Updating files:  61% (9232/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.6949171Z Updating files:  62% (9384/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.7219843Z Updating files:  63% (9535/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.8171797Z Updating files:  64% (9686/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.8339871Z Updating files:  65% (9838/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.8588166Z Updating files:  66% (9989/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.8903291Z Updating files:  67% (10140/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.9056295Z Updating files:  68% (10292/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.9189496Z Updating files:  69% (10443/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.9320591Z Updating files:  70% (10594/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.9609665Z Updating files:  71% (10746/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:54.9817650Z Updating files:  72% (10897/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0000979Z Updating files:  73% (11048/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0141661Z Updating files:  74% (11200/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0354389Z Updating files:  75% (11351/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0421432Z Updating files:  76% (11502/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0493544Z Updating files:  77% (11654/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0671466Z Updating files:  78% (11805/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.0968932Z Updating files:  79% (11956/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.1083655Z Updating files:  80% (12108/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.1192612Z Updating files:  81% (12259/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.1510165Z Updating files:  82% (12410/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.1632295Z Updating files:  83% (12562/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.1745610Z Updating files:  84% (12713/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2140036Z Updating files:  85% (12864/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2225343Z Updating files:  86% (13016/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2318837Z Updating files:  87% (13167/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2420665Z Updating files:  88% (13318/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2523196Z Updating files:  89% (13470/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2641151Z Updating files:  90% (13621/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2774898Z Updating files:  91% (13772/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.2910119Z Updating files:  92% (13924/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3171174Z Updating files:  93% (14075/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3319067Z Updating files:  94% (14226/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3414488Z Updating files:  95% (14378/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3538289Z Updating files:  96% (14529/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3649546Z Updating files:  97% (14680/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3764509Z Updating files:  98% (14832/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3878500Z Updating files:  99% (14983/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3879056Z Updating files: 100% (15134/15134)
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.3879437Z Updating files: 100% (15134/15134), done.
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4032940Z Note: switching to 'refs/remotes/pull/1027/merge'.
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4033387Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4033707Z You are in 'detached HEAD' state. You can look around, make experimental
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4034479Z changes and commit them, and you can discard any commits you make in this
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4035247Z state without impacting any branches by switching back to a branch.
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4035693Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4035973Z If you want to create a new branch to retain commits you create, you may
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4036667Z do so (now or later) by using -c with the switch command. Example:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4037079Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4037235Z   git switch -c <new-branch-name>
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4037510Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4037658Z Or undo this operation with:
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4037914Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4038040Z   git switch -
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4038226Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4038555Z Turn off this advice by setting config variable advice.detachedHead to false
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4038959Z 
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4039587Z HEAD is now at 7eae66f Merge 604bd8f432c185c045a14048b6734737e82e51ea into 0e4f2547b906b03bc401373736728e5980eba7ca
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4139216Z ##[endgroup]
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4185103Z [command]/usr/bin/git log -1 --format=%H
+E2E (opencode-desktop)	Run actions/checkout@v6	2026-08-19T16:03:55.4212948Z 7eae66f9d970f449e3557427b213e8287d985c15
+E2E (opencode-desktop)	Setup Bun	﻿2026-08-19T16:03:55.4476351Z ##[group]Run oven-sh/setup-bun@v2
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4476638Z with:
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4476838Z   bun-version-file: .bun-version
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4477081Z   no-cache: true
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4479396Z   token: ***
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4479583Z env:
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4479758Z   CARGO_NET_RETRY: 10
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4479972Z   CARGO_TERM_COLOR: always
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4480192Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.4480395Z ##[endgroup]
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.6169308Z Obtained version 1.3.14 from .bun-version
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:55.6186976Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-linux-x64.zip
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:56.0830019Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/dce754ef-e99a-4e92-a0fd-c71048da95de.zip
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:56.7554685Z [command]/home/runner/.bun/bin/bun --revision
+E2E (opencode-desktop)	Setup Bun	2026-08-19T16:03:56.7599289Z 1.3.14+0d9b296af
+E2E (opencode-desktop)	Download formal-ai binary	﻿2026-08-19T16:03:56.7786346Z ##[group]Run actions/download-artifact@v8
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7786640Z with:
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7786830Z   name: formal-ai-binary
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7787051Z   path: target/release
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7787262Z   merge-multiple: false
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7787490Z   repository: link-assistant/formal-ai
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7787739Z   run-id: 32272689026
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7787944Z   skip-decompress: false
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7788162Z   digest-mismatch: error
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7788363Z env:
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7788538Z   CARGO_NET_RETRY: 10
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7788893Z   CARGO_TERM_COLOR: always
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7789115Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7789342Z   NODE_OPTIONS: --disable-warning=DEP0005
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.7789598Z ##[endgroup]
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:56.9186477Z Downloading single artifact
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:57.1718315Z Preparing to download the following artifacts:
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:57.1719632Z - formal-ai-binary (ID: 9373073166, Size: 63815436, Expected Digest: sha256:700700cb19100f45ee0b3a3ef85983482c7d4a661d86bc2dbcda5de9cdf60a02)
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:57.6533852Z Redirecting to blob download url: https://productionresultssa1.blob.core.windows.net/actions-results/a545031a-8435-40d2-9d50-cb3688c4d161/workflow-job-run-aa826eb5-764e-5f45-8628-09be0f318668/artifacts/3d3de750935aacdcbd581898c117eddeb1be852e2c3e0742ef389a4fa7e7db12.zip
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:03:57.6535791Z Starting download of artifact to: /home/runner/work/formal-ai/formal-ai/target/release
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:04:04.9858405Z SHA256 digest of downloaded artifact is 700700cb19100f45ee0b3a3ef85983482c7d4a661d86bc2dbcda5de9cdf60a02
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:04:04.9859518Z Artifact download completed successfully.
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:04:04.9860087Z Total of 1 artifact(s) downloaded
+E2E (opencode-desktop)	Download formal-ai binary	2026-08-19T16:04:04.9866859Z Download artifact has finished successfully
+E2E (opencode-desktop)	Make formal-ai executable	﻿2026-08-19T16:04:05.0031575Z ##[group]Run chmod +x target/release/formal-ai
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0032002Z ^[[36;1mchmod +x target/release/formal-ai^[[0m
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0071102Z shell: /usr/bin/bash -e {0}
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0071370Z env:
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0071565Z   CARGO_NET_RETRY: 10
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0071790Z   CARGO_TERM_COLOR: always
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0072024Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-desktop)	Make formal-ai executable	2026-08-19T16:04:05.0072246Z ##[endgroup]
+E2E (opencode-desktop)	Install Xvfb	﻿2026-08-19T16:04:05.0195320Z ##[group]Run scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Install Xvfb" bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq xvfb'
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0196387Z ^[[36;1mscripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Install Xvfb" bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq xvfb'^[[0m
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0229350Z shell: /usr/bin/bash -e {0}
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0229596Z env:
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0229805Z   CARGO_NET_RETRY: 10
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0230030Z   CARGO_TERM_COLOR: always
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0230267Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0230487Z   TEST_BUDGET_SECONDS: 300
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0230974Z   TEST_WARN_RATIO_PERCENT: 60
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:04:05.0231212Z ##[endgroup]
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:07:05.3365393Z ##[warning]The command is still running after 180s (60% of its 300s execution budget). Speed up or repartition it before the budget terminates the step.
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:09:05.5385290Z ##[error]The command was terminated after 300s, its full 300s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout.
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:09:06.5403249Z Install Xvfb was terminated after 301s, its full 300s execution budget.
+E2E (opencode-desktop)	Install Xvfb	2026-08-19T16:09:06.5412267Z ##[error]Process completed with exit code 124.
+E2E (opencode-desktop)	Upload recorded transcripts	﻿2026-08-19T16:09:06.5500434Z ##[group]Run actions/upload-artifact@v7
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5500926Z with:
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5501134Z   name: transcripts-opencode-desktop
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5501699Z   path: experiments/agentic_cli_matrix/artifacts/opencode-desktop
+E2E (opencode-desktop)	Upload recorded transcripts	experiments/agentic_cli_matrix/recorded/opencode-desktop
+E2E (opencode-desktop)	Upload recorded transcripts	
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5502255Z   retention-days: 14
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5502472Z   if-no-files-found: warn
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5502697Z   compression-level: 6
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5502911Z   overwrite: false
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5503119Z   include-hidden-files: false
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5503355Z   archive: true
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5503537Z env:
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5503720Z   CARGO_NET_RETRY: 10
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5503928Z   CARGO_TERM_COLOR: always
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5504150Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.5504357Z ##[endgroup]
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.6923743Z Multiple search paths detected. Calculating the least common ancestor of all paths
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.6926735Z The least common ancestor is /home/runner/work/formal-ai/formal-ai/experiments/agentic_cli_matrix. This will be the root directory of the artifact
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.6928252Z With the provided path, there will be 1 file uploaded
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.6933697Z Artifact name is valid!
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:06.6934483Z Root directory input is valid!
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.0562218Z Uploading artifact: transcripts-opencode-desktop.zip
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.0608081Z Beginning upload of artifact content to blob storage
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.3452574Z Uploaded bytes 310
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.4114597Z Finished uploading artifact content to blob storage!
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.4116083Z SHA256 digest of uploaded artifact is 4429a775fc15553f05ad1e58dacb141d7aee90d372d3f0de0a7d1999ae86c741
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.4117457Z Finalizing artifact upload
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.7697726Z Artifact transcripts-opencode-desktop successfully finalized. Artifact ID 9373350910
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.7698811Z Artifact transcripts-opencode-desktop has been successfully uploaded! Final size is 310 bytes. Artifact ID is 9373350910
+E2E (opencode-desktop)	Upload recorded transcripts	2026-08-19T16:09:07.7702658Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/32272689026/artifacts/9373350910
+E2E (opencode-desktop)	Post Run actions/checkout@v6	﻿2026-08-19T16:09:07.7886843Z Post job cleanup.
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8766390Z [command]/usr/bin/git version
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8808517Z git version 2.54.0
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8882443Z Temporarily overriding HOME='/home/runner/work/_temp/6e60d23e-0e43-45e5-badf-7464bb346aee' before making global git config changes
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8883824Z Adding repository directory to the temporary git global config as a safe directory
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8886765Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8920087Z Removing SSH command configuration
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8927303Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.8967579Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9224507Z Removing HTTP extra header
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9231539Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9267068Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9527604Z Removing includeIf entries pointing to credentials config files
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9540058Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9568205Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9569050Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9569701Z includeif.gitdir:/github/workspace/.git.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9570182Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9579636Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9606295Z /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9620467Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9662460Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9690580Z /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9702153Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9741405Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9768273Z /github/runner_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9781165Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9831892Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9857276Z /github/runner_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9866875Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:07.9911413Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+E2E (opencode-desktop)	Post Run actions/checkout@v6	2026-08-19T16:09:08.0161829Z Removing credentials config '/home/runner/work/_temp/git-credentials-b7f5cac6-ab1d-4780-81b4-8b17770f4331.config'
+E2E (opencode-desktop)	Complete job	﻿2026-08-19T16:09:08.0309314Z Cleaning up orphan processes

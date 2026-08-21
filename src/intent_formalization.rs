@@ -11,7 +11,7 @@ use std::sync::OnceLock;
 use lino_objects_codec::format::escape_reference;
 
 use crate::engine::{
-    normalize_prompt, program_spec, stable_id, SelectedRule, WRITE_PROGRAM_INTENT,
+    SelectedRule, WRITE_PROGRAM_INTENT, normalize_prompt, program_spec, stable_id,
 };
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
@@ -28,7 +28,7 @@ mod prompt_relevants;
 mod requirements;
 mod write_program_request;
 use prompt_relevants::append_prompt_relevants;
-pub use requirements::{ordered_requirement_spans, OrderedRequirementSpan};
+pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 use write_program_request::{requested_write_program_parameters, write_program_parameters};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -364,10 +364,10 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
 fn write_program_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     let task = intent.parameters.get("task").cloned();
     let language = intent.parameters.get("language").cloned();
-    if let (Some(task_slug), Some(language_slug)) = (task.as_deref(), language.as_deref()) {
-        if let Some(spec) = program_spec(task_slug, language_slug) {
-            return SelectedRule::WriteProgram(spec);
-        }
+    if let (Some(task_slug), Some(language_slug)) = (task.as_deref(), language.as_deref())
+        && let Some(spec) = program_spec(task_slug, language_slug)
+    {
+        return SelectedRule::WriteProgram(spec);
     }
     SelectedRule::UnsupportedWriteProgram { task, language }
 }
@@ -518,27 +518,26 @@ pub(crate) fn recover_write_program_rule(
     let normalized_follow_up = normalize_prompt(follow_up);
     let modifiers = detected_program_modifiers(&normalized_follow_up);
     let mut plan = None;
-    if !modifiers.is_empty() {
-        if let Some(base) = recovered_task.as_deref() {
-            let lowered = crate::program_plan::lower(base, &modifiers);
-            if lowered.was_modified() {
-                plan = Some(lowered.links_notation());
-            }
-            recovered_task = Some(lowered.resolved_task);
+    if !modifiers.is_empty()
+        && let Some(base) = recovered_task.as_deref()
+    {
+        let lowered = crate::program_plan::lower(base, &modifiers);
+        if lowered.was_modified() {
+            plan = Some(lowered.links_notation());
         }
+        recovered_task = Some(lowered.resolved_task);
     }
 
     if let (Some(task_slug), Some(language_slug)) =
         (recovered_task.as_deref(), recovered_language.as_deref())
+        && let Some(spec) = program_spec(task_slug, language_slug)
     {
-        if let Some(spec) = program_spec(task_slug, language_slug) {
-            let trace = format!("write_program task={task_slug} language={language_slug}");
-            return WriteProgramRecovery {
-                rule: SelectedRule::WriteProgram(spec),
-                trace: Some(trace),
-                plan,
-            };
-        }
+        let trace = format!("write_program task={task_slug} language={language_slug}");
+        return WriteProgramRecovery {
+            rule: SelectedRule::WriteProgram(spec),
+            trace: Some(trace),
+            plan,
+        };
     }
 
     WriteProgramRecovery {

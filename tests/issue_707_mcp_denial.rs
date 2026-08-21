@@ -1,5 +1,5 @@
 use formal_ai::handle_api_request;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[test]
 fn mcp_refuses_computer_effects_without_agent_mode() {
@@ -31,7 +31,9 @@ fn mcp_refuses_computer_effects_without_agent_mode() {
         body["result"]["structuredContent"]["events"][0]["passed"],
         false
     );
-    assert!(body["result"]["structuredContent"]["output"]["error"]
-        .as_str()
-        .is_some_and(|error| error.contains("agent_mode_required")));
+    assert!(
+        body["result"]["structuredContent"]["output"]["error"]
+            .as_str()
+            .is_some_and(|error| error.contains("agent_mode_required"))
+    );
 }

@@ -18,7 +18,7 @@ use std::fmt::{self, Write as _};
 use std::sync::OnceLock;
 
 use crate::engine::FormalAiEngine;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::seed::supported_languages;
 
 /// How many Google Trends topics issue #498 requires the system to answer.

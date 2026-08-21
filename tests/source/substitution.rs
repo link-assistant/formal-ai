@@ -12,10 +12,10 @@ use std::fmt::Write as _;
 
 use lino_objects_codec::format::parse_indented;
 
-use crate::engine::{stable_id, KNOWLEDGE_SCHEMA_VERSION};
+use crate::engine::{KNOWLEDGE_SCHEMA_VERSION, stable_id};
 use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::push_lino_node;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
 const DEFAULT_MAX_APPLICATIONS: usize = 64;
 

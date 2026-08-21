@@ -253,7 +253,12 @@ pub fn program_test_instructions(
 ) -> String {
     let execution = &spec.language.execution;
     let save_as = spec.language.save_as;
-    let run_command = execution.run_command;
+    // Issue #863: a task defined against standard input is not run by naming
+    // the command alone — without the pipe the reader gets a program waiting on
+    // a terminal, not the expected output. `run_command_line` carries the
+    // fixture the task was verified against, and is the plain run command for
+    // every task that reads no input.
+    let run_command = spec.run_command_line();
 
     if prior_code_response {
         return match language {

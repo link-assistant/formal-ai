@@ -24,6 +24,9 @@
 //! Usage: rust-script scripts/check-associative-terminology.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```
@@ -269,10 +272,8 @@ fn check_directory(cwd: &Path) -> CheckResult {
         }
 
         let rust = is_rust_file(path);
-        if rust {
-            if let Some(violation) = file_name_violation(path, &relative_path(path, cwd)) {
-                result.modules.push(violation);
-            }
+        if rust && let Some(violation) = file_name_violation(path, &relative_path(path, cwd)) {
+            result.modules.push(violation);
         }
 
         if !has_route_scan_extension(path) {
@@ -386,7 +387,9 @@ fn print_violations(result: &CheckResult) {
 
 #[cfg(not(test))]
 fn main() {
-    println!("\nChecking associative terminology (links network, not graph) for public API routes and modules...\n");
+    println!(
+        "\nChecking associative terminology (links network, not graph) for public API routes and modules...\n"
+    );
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
     let result = check_directory(&cwd);

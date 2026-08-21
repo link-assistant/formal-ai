@@ -1030,6 +1030,27 @@ meanings
     lexeme zh
       surface
         text javascript
+  language_php
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
+        text php
+      surface
+        text laravel
+      surface
+        text symfony
+    lexeme ru
+      surface
+        text php
+      surface
+        text пхп
+    lexeme hi
+      surface
+        text पीएचपी
+    lexeme zh
+      surface
+        text php
   implementation_language_preposition
     defined-by software_language
     role implementation_language_preposition

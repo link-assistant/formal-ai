@@ -23,8 +23,8 @@
 //! `hive-mind` (or any other registered project), the answer starts from the
 //! curated statements here before any fallback web search.
 
-use super::parser::{parse_lino, split_pipe_list, LinoNode};
 use super::PROJECTS_LINO;
+use super::parser::{LinoNode, parse_lino, split_pipe_list};
 
 /// A localized variant of a single project statement.
 #[derive(Debug, Clone, Default)]

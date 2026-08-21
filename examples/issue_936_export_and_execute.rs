@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     fs::write(&source, &recipe.source)?;
 
     let compilation = Command::new("rustc")
-        .arg("--edition=2021")
+        .arg("--edition=2024")
         .args(["-D", "warnings"])
         .arg(&source)
         .arg("-o")

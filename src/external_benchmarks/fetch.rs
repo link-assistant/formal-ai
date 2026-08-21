@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
 use super::{
-    manifest::{SuiteManifest, SuiteSource, CACHE_DIR},
+    manifest::{CACHE_DIR, SuiteManifest, SuiteSource},
     vocabulary,
 };
 

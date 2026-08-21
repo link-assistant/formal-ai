@@ -166,8 +166,8 @@ impl Work {
         let mut predicate: Option<(usize, usize, PredicateLexeme)> = None;
         let mut index = 0;
         while index < tokens.len() && predicate.is_none() {
-            if let Some((width, lexeme)) = self.match_at(&tokens, index) {
-                if matches!(lexeme.kind, LexemeKind::Predicate) {
+            if let Some((width, lexeme)) = self.match_at(&tokens, index)
+                && matches!(lexeme.kind, LexemeKind::Predicate) {
                     predicate = Some((
                         index,
                         index + width,
@@ -179,7 +179,6 @@ impl Work {
                         },
                     ));
                 }
-            }
             index += 1;
         }
         let (pred_start, pred_end, predicate) = predicate?;

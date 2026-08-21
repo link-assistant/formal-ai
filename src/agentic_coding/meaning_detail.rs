@@ -621,13 +621,12 @@ fn lexeme_core(entity: &Value) -> Value {
 pub fn source_bundle(concept: &Concept) -> String {
     let mut entities = serde_json::Map::new();
     for source in concept.sources {
-        if let Ok(Value::Object(doc)) = serde_json::from_str::<Value>(source.json) {
-            if let Some(Value::Object(map)) = doc.get("entities") {
+        if let Ok(Value::Object(doc)) = serde_json::from_str::<Value>(source.json)
+            && let Some(Value::Object(map)) = doc.get("entities") {
                 for (id, entity) in map {
                     entities.insert(id.clone(), lexeme_core(entity));
                 }
             }
-        }
     }
     let mut root = serde_json::Map::new();
     root.insert("entities".to_owned(), Value::Object(entities));

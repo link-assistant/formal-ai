@@ -2,9 +2,9 @@ self_ast_census
   target src/skill_compiler/structured.rs
   language rust
   fidelity signature
-  byte_len 17294
+  byte_len 17282
   line_count 508
-  content_id source_module_299be5957fb64720
+  content_id source_module_b13ed6f9d008f4d7
   symbol_count 27
   symbols
     struct StructuredSkillSpec 12 22

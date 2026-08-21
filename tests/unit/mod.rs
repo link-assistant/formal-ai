@@ -1,10 +1,3 @@
-use std::sync::{Mutex, MutexGuard, OnceLock};
-
-fn memory_env_lock() -> MutexGuard<'static, ()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
-}
-
 mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;
@@ -18,6 +11,7 @@ mod data_files;
 mod dialog_log;
 mod docker_runtime;
 mod docs_requirements;
+mod docs_requirements_issue_1021;
 mod docs_requirements_issue_451;
 mod docs_requirements_issue_468;
 mod docs_requirements_issue_482;
@@ -67,6 +61,13 @@ mod dreaming_runtime;
 mod formal_ai;
 mod github_logs;
 mod installation_conversion;
+mod issue_1021_behaviour_range;
+mod issue_1021_bounded_autonomy;
+mod issue_1021_closed_circle;
+mod issue_1021_contribution_artifacts;
+mod issue_1021_recoverable_memory;
+mod issue_1021_verified_move;
+mod issue_1021_write_path;
 mod issue_1963;
 mod issue_337;
 mod issue_403;

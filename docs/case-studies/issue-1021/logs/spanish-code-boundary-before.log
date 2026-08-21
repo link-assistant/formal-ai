@@ -1,0 +1,7 @@
+escribe código                                -> write_script_c
+necesito código                               -> write_script_c
+dame código                                   -> write_script_c
+copiar stdin a stdout en código               -> write_program
+escribe código en Python                      -> write_script_python
+copiar stdin a stdout en C                    -> write_program
+write me a C program that counts to three     -> write_program

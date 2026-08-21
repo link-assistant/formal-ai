@@ -17,7 +17,7 @@ use std::path::Path;
 
 use crate::links_format::push_lino_node;
 use crate::seed::parser::parse_lino;
-use crate::seed::{source_registry, SourceRecord};
+use crate::seed::{SourceRecord, source_registry};
 use crate::source_fetch::sha256_hex;
 use crate::trace_record;
 

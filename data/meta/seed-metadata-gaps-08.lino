@@ -235,6 +235,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "case"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_2988b0dee3d61f08
+    source "data/seed/closure-generated-05.lino"
+    record "items"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4a7112bbe4962118
     source "data/seed/closure-generated-05.lino"
     record "local_search_scope_listing"
@@ -266,6 +270,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_b921eeb15ea7b4d8
     source "data/seed/closure-generated-06.lino"
     record "called"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e8b4c97fa945a608
+    source "data/seed/closure-generated-06.lino"
+    record "cause"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_ae5b0ad7b1cd41a8
     source "data/seed/closure-generated-06.lino"
@@ -375,6 +383,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "veracity"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3ec656ee06bf9e78
+    source "data/seed/closure-generated-09.lino"
+    record "authors"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e577265f308e9088
     source "data/seed/closure-generated-09.lino"
     record "contain"
@@ -382,6 +394,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_0c6e1ee46783cff8
     source "data/seed/closure-generated-09.lino"
     record "entries"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_973a0a97b0343c48
+    source "data/seed/closure-generated-09.lino"
+    record "fragment"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_749459fd0122e4b8
+    source "data/seed/closure-generated-09.lino"
+    record "governs"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6f424d26669332b8
     source "data/seed/closure-generated-09.lino"
@@ -466,6 +486,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_09584e79f964fc08
     source "data/seed/closure-generated-10.lino"
     record "response_write_program_language_unspecified_name_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a73ab06ac8275828
+    source "data/seed/closure-generated-10.lino"
+    record "rung"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_dc225a27bb954e48
     source "data/seed/closure-generated-11.lino"
@@ -571,6 +595,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_tool_result_empty_list_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_beaf9705bdb4fdf8
+    source "data/seed/closure-generated-12.lino"
+    record "wording"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9f906c142106ffa8
     source "data/seed/closure-generated-13.lino"
     record "contributor_fact_count_summary"
@@ -643,6 +671,14 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "client_server_version_missing"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_91e3b9917aa815d8
+    source "data/seed/closure-generated-15.lino"
+    record "closes"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_0d1319ff010c7b78
+    source "data/seed/closure-generated-15.lino"
+    record "composes"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8fe9cd065f53cfd8
     source "data/seed/closure-generated-15.lino"
     record "criterion"
@@ -694,6 +730,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_d1ae017899e73b38
     source "data/seed/closure-generated-15.lino"
     record "response_thinking_trace_heading_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d45684d000eeb118
+    source "data/seed/closure-generated-15.lino"
+    record "see"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9313782faec45a08
     source "data/seed/closure-generated-15.lino"

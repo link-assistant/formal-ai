@@ -7,7 +7,7 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::seed;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};

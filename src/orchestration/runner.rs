@@ -1,10 +1,9 @@
 use super::permission::AgentRunPermission;
-use super::workspace::{changes, snapshot, WorkspaceChange};
-use crate::seed::client_integrations;
+use super::workspace::{WorkspaceChange, changes, snapshot};
 use crate::DEFAULT_MODEL;
+use crate::seed::client_integrations;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sha2::{Digest, Sha256};
 #[cfg(unix)]
 use std::collections::HashMap;
 use std::collections::{BTreeMap, BTreeSet};
@@ -494,7 +493,7 @@ pub fn resume_agent(
 pub fn session_sha256(session: &AgentSession) -> Result<String, serde_json::Error> {
     let mut bytes = serde_json::to_vec_pretty(session)?;
     bytes.push(b'\n');
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(crate::source_fetch::sha256_hex(&bytes))
 }
 
 fn validate_verification(config: &AgentRunConfig) -> Result<(), AgentRunError> {
@@ -892,7 +891,7 @@ impl EventChain {
             kind: kind.to_string(),
             detail: detail.to_string(),
             previous_sha256,
-            sha256: format!("{:x}", Sha256::digest(payload.as_bytes())),
+            sha256: crate::source_fetch::sha256_hex(payload.as_bytes()),
         });
     }
 }

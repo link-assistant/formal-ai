@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 3465
   line_count 99
-  content_id source_module_a037c30f7747ea40
+  content_id source_module_4c7de11dfc467950
   symbol_count 4
   symbols
     function render_failure_report 19 22

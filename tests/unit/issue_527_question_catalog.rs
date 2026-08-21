@@ -16,8 +16,8 @@
 //!    the in-repo Agent CLI driver walk it write → verify → final.
 
 use formal_ai::agentic_coding::{
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
     is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,
-    AgenticPlan, PlannedToolCall, DRIVER_TOOLS, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
 };
 use formal_ai::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;

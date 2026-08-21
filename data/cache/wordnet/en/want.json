@@ -1,0 +1,111 @@
+{
+  "lemma": "want",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14517010-n",
+      "partOfSpeech": "n",
+      "definition": "a state of extreme poverty",
+      "synonyms": [
+        "privation",
+        "deprivation",
+        "neediness"
+      ]
+    },
+    {
+      "id": "oewn-14472871-n",
+      "partOfSpeech": "n",
+      "definition": "the state of needing something that is absent or unavailable",
+      "examples": [
+        "there is a serious lack of insight into the problem",
+        "water is the critical deficiency in desert regions",
+        "for want of a nail the shoe was lost"
+      ],
+      "synonyms": [
+        "lack",
+        "deficiency"
+      ]
+    },
+    {
+      "id": "oewn-09390888-n",
+      "partOfSpeech": "n",
+      "definition": "anything that is necessary but lacking",
+      "examples": [
+        "he had sufficient means to meet his simple needs",
+        "I tried to supply his wants"
+      ],
+      "synonyms": [
+        "need"
+      ]
+    },
+    {
+      "id": "oewn-07501369-n",
+      "partOfSpeech": "n",
+      "definition": "a specific feeling of desire",
+      "examples": [
+        "he got his wish",
+        "he was above all wishing and desire"
+      ],
+      "synonyms": [
+        "wish",
+        "wishing"
+      ]
+    },
+    {
+      "id": "oewn-01829179-v",
+      "partOfSpeech": "v",
+      "definition": "feel or have a desire for; want strongly",
+      "examples": [
+        "I want to go home now",
+        "I want my own room"
+      ],
+      "synonyms": [
+        "desire"
+      ]
+    },
+    {
+      "id": "oewn-01191258-v",
+      "partOfSpeech": "v",
+      "definition": "have need of",
+      "examples": [
+        "This piano wants the attention of a competent tuner"
+      ],
+      "synonyms": [
+        "need",
+        "require"
+      ]
+    },
+    {
+      "id": "oewn-01319724-v",
+      "partOfSpeech": "v",
+      "definition": "hunt or look for; want for a particular reason",
+      "examples": [
+        "Your former neighbor is wanted by the FBI",
+        "Uncle Sam wants you"
+      ]
+    },
+    {
+      "id": "oewn-00711034-v",
+      "partOfSpeech": "v",
+      "definition": "wish or demand the presence of",
+      "examples": [
+        "I want you here at noon!"
+      ]
+    },
+    {
+      "id": "oewn-02638648-v",
+      "partOfSpeech": "v",
+      "definition": "be without, lack; be deficient in",
+      "examples": [
+        "want courtesy",
+        "want the strength to go on living",
+        "flood victims wanting food and shelter"
+      ]
+    }
+  ]
+}

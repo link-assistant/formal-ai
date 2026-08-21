@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 
 use formal_ai::{
-    google_trends_catalog, parse_google_trends_rss, supported_languages, GoogleTrendPromptVariant,
-    GOOGLE_TRENDS_TOP_LIMIT,
+    GOOGLE_TRENDS_TOP_LIMIT, GoogleTrendPromptVariant, google_trends_catalog,
+    parse_google_trends_rss, supported_languages,
 };
 
 const SAMPLE_RSS: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

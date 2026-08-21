@@ -5,6 +5,9 @@
 //! Usage: rust-script scripts/check-file-size.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```
@@ -12,7 +15,7 @@
 use std::fs;
 use std::path::Path;
 #[cfg(not(test))]
-use std::process::{exit, Command};
+use std::process::{Command, exit};
 use walkdir::WalkDir;
 
 const FILE_LIMITS: &[FileLimit] = &[

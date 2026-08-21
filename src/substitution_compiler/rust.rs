@@ -1,6 +1,6 @@
 use std::fmt::Write as _;
 
-use super::rust_runtime::{rules_source, COMMON_RUNTIME};
+use super::rust_runtime::{COMMON_RUNTIME, rules_source};
 use super::{CompiledSubstitutionFile, SubstitutionProgramIr};
 
 pub(super) fn emit(

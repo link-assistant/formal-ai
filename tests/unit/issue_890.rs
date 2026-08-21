@@ -44,7 +44,7 @@ fn execute_rust(program: &str) -> String {
     let binary = std::env::temp_dir().join(stem);
     fs::write(&source, program).expect("write generated Rust proof");
     let compiled = Command::new("rustc")
-        .args(["--edition=2021", "-o"])
+        .args(["--edition=2024", "-o"])
         .arg(&binary)
         .arg(&source)
         .output()
@@ -251,9 +251,11 @@ fn every_registered_natural_language_can_request_proof_translation() {
 #[test]
 fn registered_partial_language_stays_outside_the_full_support_matrix() {
     let language = "es";
-    assert!(formal_ai::language::registered_languages()
-        .iter()
-        .any(|registered| registered.slug() == language));
+    assert!(
+        formal_ai::language::registered_languages()
+            .iter()
+            .any(|registered| registered.slug() == language)
+    );
     assert!(
         !formal_ai::supported_languages()
             .iter()

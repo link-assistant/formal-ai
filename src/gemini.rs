@@ -8,13 +8,13 @@
 use std::collections::HashMap;
 
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
-use crate::context_capacity::{avg_utf8_bytes_per_char, ContextCapacity};
+use crate::context_capacity::{ContextCapacity, avg_utf8_bytes_per_char};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
-    create_chat_completion_with_solver_and_memory, ChatCompletion, ChatCompletionRequest,
-    ChatMessage, MessageContent, ToolCall,
+    ChatCompletion, ChatCompletionRequest, ChatMessage, MessageContent, ToolCall,
+    create_chat_completion_with_solver_and_memory,
 };
 use crate::seed::{canonical_model_id, resolve_model_id};
 use crate::solver::UniversalSolver;

@@ -28,17 +28,17 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 
 use super::dispatch::{
-    candidate_run_config, safe_name, ComparisonEntry, ComparisonLedger, DispatchConfig,
-    DispatchError, DispatchMode, DispatchReport,
+    ComparisonEntry, ComparisonLedger, DispatchConfig, DispatchError, DispatchMode, DispatchReport,
+    candidate_run_config, safe_name,
 };
 use super::observe_orchestration_session;
 use super::replay::write_session;
-use super::runner::{run_agent, verify_workspace, AgentSession};
-use super::workspace::{apply_changes, copy_workspace, WorkspaceChange};
+use super::runner::{AgentSession, run_agent, verify_workspace};
+use super::workspace::{WorkspaceChange, apply_changes, copy_workspace};
 use crate::client_contract_learning::learn_client_contracts;
 use crate::links_format::push_lino_node;
 use crate::recursive_execution::{
-    solve_recursively, RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor,
+    RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively,
 };
 use crate::task_decomposition::SplittingExecutor;
 

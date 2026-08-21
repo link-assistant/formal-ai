@@ -5,6 +5,9 @@ self_ast_census
   byte_len 31844
   line_count 845
   content_id source_module_518fe6a5de80a1a9
+  byte_len 31796
+  line_count 847
+  content_id source_module_b58fa34b608c2020
   symbol_count 25
   symbols
     function translation_debug_enabled 42 45
@@ -32,3 +35,17 @@ self_ast_census
     function capitalize_ascii_first 767 776
     function phrasal_variants 789 821
     function normalize_page_title 831 845
+    function compositional_candidates 567 634
+    function seed_meaning_id 636 638
+    function seed_meaning_for_surface 640 644
+    function seed_compositional_translation 646 665
+    function seed_role_translation 667 691
+    function same_surface 693 695
+    function russian_phrase_to_english 704 711
+    function russian_word_to_english 719 721
+    function translate_russian_word_sequence 723 742
+    function russian_genitive_relation_head 750 752
+    function russian_genitive_noun 759 767
+    function capitalize_ascii_first 769 778
+    function phrasal_variants 791 823
+    function normalize_page_title 833 847

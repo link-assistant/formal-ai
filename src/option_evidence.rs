@@ -25,7 +25,7 @@
 //! unsupplied, which the research loop already treats as an open question worth
 //! another round. Abstaining is the designed outcome; guessing is not.
 
-use crate::option_network::{Candidate, Constraint, Demand, Offer, Supply, Tier, SCALE};
+use crate::option_network::{Candidate, Constraint, Demand, Offer, SCALE, Supply, Tier};
 
 /// The largest number of fractional digits kept when parsing.
 ///

@@ -633,15 +633,15 @@ impl ParsedCommand {
         // `python -m pip install …`: the module after `-m` behaves as the
         // effective program, so fold it in.
         let rest: Vec<&str> = tokens.collect();
-        let mut index = 0;
-        if (program == "python" || program == "python3" || program == "py")
+        let index = if (program == "python" || program == "python3" || program == "py")
             && rest.first() == Some(&"-m")
+            && let Some(module) = rest.get(1)
         {
-            if let Some(module) = rest.get(1) {
-                program = module.to_lowercase();
-                index = 2;
-            }
-        }
+            program = module.to_lowercase();
+            2
+        } else {
+            0
+        };
         for token in &rest[index..] {
             let bare = token.trim_matches(|c: char| c == '"' || c == '\'');
             if bare == "--version"

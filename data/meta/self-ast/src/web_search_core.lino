@@ -2,9 +2,9 @@ self_ast_census
   target src/web_search_core.rs
   language rust
   fidelity signature
-  byte_len 25578
-  line_count 755
-  content_id source_module_538dc4eb9552488c
+  byte_len 25542
+  line_count 753
+  content_id source_module_c6d8b7bf56de8c4c
   symbol_count 22
   symbols
     const WEB_SEARCH_RRF_K 33 33
@@ -21,11 +21,11 @@ self_ast_census
     struct FusedEntry 384 390
     struct SearchExecution 396 404
     function execute_duckduckgo_search 413 485
-    function execute_duckduckgo_instant_answer 488 536
-    function fuse_with_web_search 539 578
-    function collect_duckduckgo_topics 581 594
-    function percent_encode_query 597 609
-    function reciprocal_rank_fusion 615 657
-    function parse_rrf_input 665 698
-    function serialize_rrf_output 704 728
-    function format_score 734 755
+    function execute_duckduckgo_instant_answer 488 534
+    function fuse_with_web_search 537 576
+    function collect_duckduckgo_topics 579 592
+    function percent_encode_query 595 607
+    function reciprocal_rank_fusion 613 655
+    function parse_rrf_input 663 696
+    function serialize_rrf_output 702 726
+    function format_score 732 753

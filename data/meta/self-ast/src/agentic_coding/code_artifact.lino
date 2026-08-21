@@ -5,6 +5,9 @@ self_ast_census
   byte_len 13168
   line_count 346
   content_id source_module_32ae3a1083307537
+  byte_len 13166
+  line_count 346
+  content_id source_module_4821d0a756253e46
   symbol_count 17
   symbols
     const MAX_REWRITE_STEPS 24 24
@@ -31,6 +34,8 @@ self_ast_census
     clean true
     total_link_count 9774
     named_node_count 1991
+    total_link_count 9772
+    named_node_count 1989
     distinct_node_kinds 82
     node_kinds
       arguments 172
@@ -63,12 +68,13 @@ self_ast_census
       function_item 13
       generic_function 2
       generic_type 12
-      identifier 464
+      identifier 465
       if_expression 20
       impl_item 1
-      index_expression 6
+      index_expression 4
       inner_doc_comment_marker 4
       integer_literal 24
+      integer_literal 22
       let_condition 6
       let_declaration 39
       lifetime 3
@@ -94,7 +100,7 @@ self_ast_census
       self 5
       self_parameter 1
       shorthand_field_initializer 1
-      slice_pattern 1
+      slice_pattern 2
       source_file 1
       string_content 43
       string_literal 41

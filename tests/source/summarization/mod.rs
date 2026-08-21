@@ -569,15 +569,15 @@ mod file;
 mod markdown;
 mod resource;
 
-pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+pub use dialog::{DialogTurn, formalize_dialog, generate_chat_title, summarize_dialog};
 pub use file::{
-    formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
-    MetaLanguageFormalization, RepositoryFileFormalization,
+    EmbeddedGrammarFormalization, MetaLanguageFormalization, RepositoryFileFormalization,
+    formalize_repository_file, summarize_repository_file,
 };
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
 pub use resource::{
-    formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
     RepositoryDirectoryFormalization, RepositoryEntry, RepositoryResourceFormalization,
+    formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
 };
 
 #[path = "../source_tests/summarization/mod/tests.rs"]

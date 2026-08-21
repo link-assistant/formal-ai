@@ -8,10 +8,10 @@
 //! concept knowledge base lives in [`crate::concepts`]; this module
 //! re-exports nothing — callers import those modules directly.
 
-use crate::engine::{normalize_prompt, ExecutionStatus, ProgramSpec, SelectedRule};
+use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::intent_formalization::{formalize_intent, IntentKind};
-use crate::language::{detect as detect_language, Language};
+use crate::intent_formalization::{IntentKind, formalize_intent};
+use crate::language::{Language, detect as detect_language};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecomposedSubImpulse {
@@ -808,11 +808,14 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
 /// ([`ROLE_HELLO_WORLD_REFERENCE`]), so those keep their richer formalization
 /// instead of collapsing into a bare script.
 ///
+/// Defers again — see [`names_no_task_beyond_the_minimal_script`] — when the
+/// prompt names a task the minimal script cannot render.
+///
 /// [`ROLE_SCRIPT_AUTHORING_VERB`]: crate::seed::ROLE_SCRIPT_AUTHORING_VERB
 /// [`ROLE_SCRIPT_OR_CODE_ARTIFACT`]: crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT
 /// [`ROLE_PROGRAM_GENUS`]: crate::seed::ROLE_PROGRAM_GENUS
 /// [`ROLE_HELLO_WORLD_REFERENCE`]: crate::seed::ROLE_HELLO_WORLD_REFERENCE
-pub fn is_write_script_request(normalized: &str) -> bool {
+pub fn is_write_script_request(prompt: &str, normalized: &str) -> bool {
     use crate::seed::{
         ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_GENUS, ROLE_SCRIPT_AUTHORING_VERB,
         ROLE_SCRIPT_OR_CODE_ARTIFACT,
@@ -826,8 +829,37 @@ pub fn is_write_script_request(normalized: &str) -> bool {
         return false;
     }
     // Author a script: the write verb plus a script-or-code artifact noun.
-    lexicon.mentions_role(ROLE_SCRIPT_AUTHORING_VERB, normalized)
-        && lexicon.mentions_role(ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized)
+    if !(lexicon.mentions_role(ROLE_SCRIPT_AUTHORING_VERB, normalized)
+        && lexicon.mentions_role(ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized))
+    {
+        return false;
+    }
+    names_no_task_beyond_the_minimal_script(prompt, normalized)
+}
+
+/// Return true when the minimal-script route can render everything the prompt
+/// names, and false when the prompt names a task it cannot.
+///
+/// The route renders exactly one thing: the hello-world template for the
+/// language it recognizes. `handler:write_script` is hoisted to the front of
+/// method selection by the bare tokens "script"/"code" in
+/// `data/meta/cue-lexicon.lino`, which without this check lets that one template
+/// answer any request merely ending in "give me the code" — jumping over the
+/// task routes `data/seed/handler-precedence.lino` ranks above it (`numeric_list`
+/// is line 29, `write_script` line 43). Standing aside for a task it cannot
+/// render restores that order for any authoring verb, in any language, because
+/// the test is a property of the route rather than of a phrase.
+fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bool {
+    let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
+        // No catalogued language: the route declines on its own grounds.
+        return true;
+    };
+    if crate::coding::program_task_by_alias(normalized)
+        .is_some_and(|task| task.slug != program.task.slug)
+    {
+        return false;
+    }
+    crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_none()
 }
 
 pub fn format_write_script_execution(program: ProgramSpec) -> String {

@@ -39,7 +39,7 @@ use crate::substitution::{
     SubstitutionRuleSet, SubstitutionTraceReport,
 };
 use crate::substitution_compiler::{
-    compile_substitution_rules, CompiledSubstitutionProgram, SubstitutionCompilationTarget,
+    CompiledSubstitutionProgram, SubstitutionCompilationTarget, compile_substitution_rules,
 };
 
 /// Graph node naming the task currently planned.

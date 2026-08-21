@@ -2,36 +2,36 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 9966
-  line_count 285
-  content_id source_module_55c1e27ca2bf2c6c
+  byte_len 9950
+  line_count 283
+  content_id source_module_1da723cfdab99ac2
   symbol_count 11
   symbols
-    function tool_for 16 44
-    function tool_matches_capability 46 56
-    function classify_tool 60 123
-    function is_workspace_creation_tool 130 136
-    function plan_shared_capability_step 138 167
-    function task_matches 169 179
-    function arguments_for 181 228
-    function wildcard_token 230 234
-    function file_tokens 236 249
-    function shell_fallback 251 281
-    function shell_quote 283 285
+    function tool_for 16 43
+    function tool_matches_capability 45 55
+    function classify_tool 59 122
+    function is_workspace_creation_tool 129 135
+    function plan_shared_capability_step 137 165
+    function task_matches 167 177
+    function arguments_for 179 226
+    function wildcard_token 228 232
+    function file_tokens 234 247
+    function shell_fallback 249 279
+    function shell_quote 281 283
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8341
-    named_node_count 1728
-    distinct_node_kinds 62
+    total_link_count 8313
+    named_node_count 1724
+    distinct_node_kinds 63
     node_kinds
       arguments 164
       array_expression 2
       array_type 3
       binary_expression 40
-      block 43
+      block 41
       boolean_literal 1
       call_expression 164
       char_literal 25
@@ -41,7 +41,7 @@ self_ast_census
       doc_comment 14
       else_clause 7
       escape_sequence 2
-      expression_statement 29
+      expression_statement 27
       field_expression 120
       field_identifier 120
       for_expression 1
@@ -49,9 +49,10 @@ self_ast_census
       generic_function 1
       generic_type 7
       identifier 408
-      if_expression 17
+      if_expression 15
       inner_doc_comment_marker 1
       integer_literal 1
+      let_chain 2
       let_condition 4
       let_declaration 17
       lifetime 3

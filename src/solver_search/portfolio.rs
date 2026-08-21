@@ -17,8 +17,8 @@
 //! They disagree on real problems, which is what makes the recorded comparison
 //! evidence rather than decoration.
 
-use super::{run_search, seed_from_prompt, Candidate, Op, SearchProblem, SearchSolution};
-use crate::draft_portfolio::{run_portfolio, DraftArtifact, DraftPlan, PortfolioLeaf};
+use super::{Candidate, Op, SearchProblem, SearchSolution, run_search, seed_from_prompt};
+use crate::draft_portfolio::{DraftArtifact, DraftPlan, PortfolioLeaf, run_portfolio};
 use crate::event_log::EventLog;
 use crate::solver::SolverConfig;
 use std::collections::BTreeMap;

@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 11108
   line_count 311
-  content_id source_module_25a895fab176ea65
+  content_id source_module_67881e809be42e5b
   symbol_count 19
   symbols
     enum TelegramPollingRuntimeError 18 21

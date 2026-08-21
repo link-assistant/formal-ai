@@ -12,12 +12,12 @@
 use std::path::Path;
 
 use formal_ai::agentic_coding::{
-    explain, is_explain_task, plan_chat_step, run_agentic_task, AgenticPlan, PlannedToolCall,
-    DRIVER_TOOLS, EXPLAIN_PATH, EXPLAIN_TASK,
+    AgenticPlan, DRIVER_TOOLS, EXPLAIN_PATH, EXPLAIN_TASK, PlannedToolCall, explain,
+    is_explain_task, plan_chat_step, run_agentic_task,
 };
 use formal_ai::{
-    canonical_explanation, owned_manifest, ChatMessage, Citation, CitationKind, SystemExplanation,
-    ToolCall,
+    ChatMessage, Citation, CitationKind, SystemExplanation, ToolCall, canonical_explanation,
+    owned_manifest,
 };
 use lino_objects_codec::format::parse_indented;
 

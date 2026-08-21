@@ -12,8 +12,8 @@ use std::process::Command;
 use clap::Subcommand;
 
 use formal_ai::external_benchmarks::{
-    self, ledger::Ledger, ledger::UnavailableEntry, manifest, ratchet, vocabulary, SuiteRun,
-    DEFAULT_SLICE, LEDGER_PATH,
+    self, DEFAULT_SLICE, LEDGER_PATH, SuiteRun, ledger::Ledger, ledger::UnavailableEntry, manifest,
+    ratchet, vocabulary,
 };
 
 #[derive(Debug, Subcommand)]

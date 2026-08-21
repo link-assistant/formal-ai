@@ -16,6 +16,9 @@
 //!   - 1: Check failed (source changes without changelog fragment)
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```

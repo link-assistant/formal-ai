@@ -18,12 +18,12 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::protocol::ChatMessage;
 use formal_ai::self_ast_census::{
-    document_path_for, drift_report, workspace, CensusDrift, CensusFidelity, WorkspaceCensus,
-    CENSUS_DIR, FULL_FIDELITY_PREFIX,
+    CENSUS_DIR, CensusDrift, CensusFidelity, FULL_FIDELITY_PREFIX, WorkspaceCensus,
+    document_path_for, drift_report, workspace,
 };
 
 /// The repository root, so the tests read the *committed* census rather than a

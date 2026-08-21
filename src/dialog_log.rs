@@ -19,10 +19,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::dialog_conversation::{
-    turns_in_exchange, write_conversation_record, DialogConversationLog,
+    DialogConversationLog, turns_in_exchange, write_conversation_record,
 };
 use crate::engine::stable_id;
-use crate::proxy::{summarize_proxy_exchange, ProxyExchangeLog};
+use crate::proxy::{ProxyExchangeLog, summarize_proxy_exchange};
 use crate::server::ApiHttpResponse;
 
 /// Header carrying the caller's own session identifier (#839).

@@ -22,13 +22,13 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
-use super::induction::{learned, LearnedSchemas, FETCH_OPERATION};
+use super::induction::{FETCH_OPERATION, LearnedSchemas, learned};
 use super::lexicon::{
     capability_gap_cue, instruction_surface, normalize, operation_cues, resource_cue,
 };
-use super::seed::{capability_gap_response, step_conditions, CapabilityGap};
+use super::seed::{CapabilityGap, capability_gap_response, step_conditions};
 use super::{ComputerPlanStep, ComputerUsePlan, ComputerUsePrimitive};
 
 /// Argument fields that name a location in the workspace. Their values are

@@ -19,11 +19,11 @@
 //! | `R916-10` | #907 follow-up | a policy sentence naming a command does not authorize it |
 
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
-use formal_ai::agentic_coding::tool_result::{step_outcome, StepOutcome};
-use formal_ai::agentic_coding::{plan_chat_step, plan_symbolic_command_reroute, AgenticPlan};
+use formal_ai::agentic_coding::tool_result::{StepOutcome, step_outcome};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, plan_symbolic_command_reroute};
 use formal_ai::protocol::{
-    create_chat_completion_with_solver, latest_user_request, ChatCompletionRequest, ChatMessage,
-    ToolCall,
+    ChatCompletionRequest, ChatMessage, ToolCall, create_chat_completion_with_solver,
+    latest_user_request,
 };
 use formal_ai::seed::client_integrations;
 use formal_ai::solver::{SolverConfig, UniversalSolver};

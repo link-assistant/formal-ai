@@ -102,6 +102,13 @@ class Program {
 }"#,
     },
     ProgramTemplate {
+        task_slug: "hello_world",
+        language_slug: "php",
+        code: r#"<?php
+
+echo "Hello, world!", PHP_EOL;"#,
+    },
+    ProgramTemplate {
         task_slug: "count_to_three",
         language_slug: "rust",
         code: r#"fn main() {
@@ -154,6 +161,15 @@ int main(void) {
     }
     return 0;
 }"#,
+    },
+    ProgramTemplate {
+        task_slug: "count_to_three",
+        language_slug: "php",
+        code: r"<?php
+
+foreach (range(1, 3) as $number) {
+    echo $number, PHP_EOL;
+}",
     },
     ProgramTemplate {
         task_slug: "list_files",
@@ -370,6 +386,17 @@ fun main() {
     // command-line argument, defaulting to "." when none is supplied. Each
     // template sorts names in byte order, so the verified output matches
     // `list_files` for the documented sample directory.
+    ProgramTemplate {
+        task_slug: "list_files",
+        language_slug: "php",
+        code: r#"<?php
+
+$names = array_filter(scandir("."), "is_file");
+sort($names);
+foreach ($names as $name) {
+    echo $name, PHP_EOL;
+}"#,
+    },
     ProgramTemplate {
         task_slug: "list_files_arg",
         language_slug: "rust",
@@ -602,6 +629,18 @@ fun main(args: Array<String>) {
     val path = if (args.isNotEmpty()) args[0] else "."
     val entries = File(path).listFiles() ?: return
     entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg",
+        language_slug: "php",
+        code: r#"<?php
+
+$path = $argv[1] ?? ".";
+$names = array_filter(scandir($path), fn($name) => is_file($path . DIRECTORY_SEPARATOR . $name));
+sort($names);
+foreach ($names as $name) {
+    echo $name, PHP_EOL;
 }"#,
     },
 ];

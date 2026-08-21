@@ -9,13 +9,13 @@ use std::process::Command;
 
 use formal_ai::agentic_coding::{algorithm_learning::trace_from_driver_outcome, run_agentic_task};
 use formal_ai::algorithm_discovery::{
-    discover_algorithms, trace_from_compiled_procedure, trace_from_event_log, AlgorithmApproval,
-    AlgorithmGate, AlgorithmHost, ArgumentPattern, ExecutionTrace, TraceStep,
-    MAX_DISCOVERED_ALGORITHM_STEPS, MAX_DISCOVERY_INPUT_STEPS,
+    AlgorithmApproval, AlgorithmGate, AlgorithmHost, ArgumentPattern, ExecutionTrace,
+    MAX_DISCOVERED_ALGORITHM_STEPS, MAX_DISCOVERY_INPUT_STEPS, TraceStep, discover_algorithms,
+    trace_from_compiled_procedure, trace_from_event_log,
 };
 use formal_ai::{
-    apply_dreaming_plan, compile_procedure, plan_memory_dreaming, DreamingConfig, EventLog,
-    MemoryEvent, MemoryStore,
+    DreamingConfig, EventLog, MemoryEvent, MemoryStore, apply_dreaming_plan, compile_procedure,
+    plan_memory_dreaming,
 };
 
 fn step(operation: &str, arguments: &[(&str, &str)]) -> TraceStep {
@@ -112,16 +112,21 @@ fn held_out_constant_drift_is_preserved_as_a_failed_candidate() {
         .expect("the rejected candidate must remain inspectable");
     assert_eq!(candidate.held_out.len(), 1);
     assert!(!candidate.held_out[0].passed);
-    assert!(candidate.held_out[0]
-        .failures
-        .iter()
-        .any(|failure| failure.contains("constant_mismatch")));
-    assert!(run
-        .links_notation()
-        .contains("status \"held_out_validation_failed\""));
-    assert!(candidate
-        .conformance_links_notation("must-not-pass", &BTreeMap::new())
-        .is_err());
+    assert!(
+        candidate.held_out[0]
+            .failures
+            .iter()
+            .any(|failure| failure.contains("constant_mismatch"))
+    );
+    assert!(
+        run.links_notation()
+            .contains("status \"held_out_validation_failed\"")
+    );
+    assert!(
+        candidate
+            .conformance_links_notation("must-not-pass", &BTreeMap::new())
+            .is_err()
+    );
 }
 
 #[test]
@@ -145,14 +150,18 @@ fn held_out_missing_or_changed_steps_reject_an_incomplete_algorithm() {
         .find(|candidate| candidate.steps.len() == 3)
         .expect("two support traces should retain an inspectable proposal");
     assert!(!candidate.validated());
-    assert!(candidate.held_out[0]
-        .failures
-        .iter()
-        .any(|failure| failure.contains("operation_mismatch")));
-    assert!(candidate.held_out[0]
-        .failures
-        .iter()
-        .any(|failure| failure.contains("missing_step")));
+    assert!(
+        candidate.held_out[0]
+            .failures
+            .iter()
+            .any(|failure| failure.contains("operation_mismatch"))
+    );
+    assert!(
+        candidate.held_out[0]
+            .failures
+            .iter()
+            .any(|failure| failure.contains("missing_step"))
+    );
 }
 
 #[test]
@@ -171,10 +180,11 @@ fn failed_longer_episode_does_not_hide_a_validated_subroutine() {
         changed_tail,
     ]);
 
-    assert!(run
-        .candidates
-        .iter()
-        .any(|candidate| { candidate.steps.len() == 3 && !candidate.validated() }));
+    assert!(
+        run.candidates
+            .iter()
+            .any(|candidate| { candidate.steps.len() == 3 && !candidate.validated() })
+    );
     assert!(run.validated_candidates().iter().any(|candidate| {
         candidate
             .steps
@@ -222,10 +232,12 @@ fn held_out_argument_shape_drift_is_a_counterexample() {
         .expect("support retains a reviewable failed proposal");
 
     assert!(!candidate.validated());
-    assert!(candidate.held_out[0]
-        .failures
-        .iter()
-        .any(|failure| failure.contains("unexpected_argument")));
+    assert!(
+        candidate.held_out[0]
+            .failures
+            .iter()
+            .any(|failure| failure.contains("unexpected_argument"))
+    );
 }
 
 #[test]
@@ -239,9 +251,10 @@ fn oversized_observation_sets_fail_closed_without_partial_candidates() {
     assert!(run.observation_limit_exceeded);
     assert!(run.candidates.is_empty());
     assert!(!run.associative_compression_lossless);
-    assert!(run
-        .links_notation()
-        .contains("observation_limit_exceeded \"true\""));
+    assert!(
+        run.links_notation()
+            .contains("observation_limit_exceeded \"true\"")
+    );
 }
 
 #[test]
@@ -333,24 +346,30 @@ fn learned_algorithm_is_inert_until_green_gate_and_named_review() {
     ]);
     let candidate = run.validated_candidates()[0];
 
-    assert!(candidate
-        .promote(
-            AlgorithmGate::passed("issue_531_algorithm_discovery", 1),
-            AlgorithmApproval::declined("reviewer"),
-        )
-        .is_err());
-    assert!(candidate
-        .promote(
-            AlgorithmGate::failed("issue_531_algorithm_discovery", 0, 1),
-            AlgorithmApproval::granted("reviewer"),
-        )
-        .is_err());
-    assert!(candidate
-        .promote(
-            AlgorithmGate::passed("", 1),
-            AlgorithmApproval::granted("reviewer"),
-        )
-        .is_err());
+    assert!(
+        candidate
+            .promote(
+                AlgorithmGate::passed("issue_531_algorithm_discovery", 1),
+                AlgorithmApproval::declined("reviewer"),
+            )
+            .is_err()
+    );
+    assert!(
+        candidate
+            .promote(
+                AlgorithmGate::failed("issue_531_algorithm_discovery", 0, 1),
+                AlgorithmApproval::granted("reviewer"),
+            )
+            .is_err()
+    );
+    assert!(
+        candidate
+            .promote(
+                AlgorithmGate::passed("", 1),
+                AlgorithmApproval::granted("reviewer"),
+            )
+            .is_err()
+    );
 
     let approved = candidate
         .promote(
@@ -392,10 +411,12 @@ fn idle_learning_proposes_algorithms_from_persisted_conversation_events() {
         .find(|event| event.kind.as_deref() == Some("algorithm_learning_candidate"))
         .expect("idle learning should retain the proposal");
     assert_eq!(learned.intent.as_deref(), Some("generalize"));
-    assert!(learned
-        .content
-        .as_deref()
-        .is_some_and(|content| content.contains("human_gated \"true\"")));
+    assert!(
+        learned
+            .content
+            .as_deref()
+            .is_some_and(|content| content.contains("human_gated \"true\""))
+    );
 }
 
 fn memory_observations() -> Vec<MemoryEvent> {
@@ -517,13 +538,17 @@ fn formal_ai_agent_cli_discovers_reads_back_and_conformance_checks_the_same_task
             .collect::<Vec<_>>(),
         ["write_file", "run_command", "run_command", "run_command"]
     );
-    assert!(run.steps[1]
-        .arguments
-        .contains("formal-ai learn algorithms"));
+    assert!(
+        run.steps[1]
+            .arguments
+            .contains("formal-ai learn algorithms")
+    );
     assert!(run.steps[2].result.contains("algorithm_candidate"));
-    assert!(run.steps[3]
-        .arguments
-        .contains("formal-ai algorithm conformance"));
+    assert!(
+        run.steps[3]
+            .arguments
+            .contains("formal-ai algorithm conformance")
+    );
     assert!(run.steps[3].result.contains("side_effects \"false\""));
     assert!(run.final_answer.contains("status \"conformance_passed\""));
     assert!(run.final_answer.contains("human_gated \"true\""));

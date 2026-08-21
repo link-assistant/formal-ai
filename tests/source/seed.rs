@@ -36,34 +36,34 @@ mod summary_topics;
 use std::collections::BTreeMap;
 
 use parser::{
-    escape_value, find_closing_quote, parse_codepoint, parse_lino, split_pipe_list, unescape_value,
-    LinoNode,
+    LinoNode, escape_value, find_closing_quote, parse_codepoint, parse_lino, split_pipe_list,
+    unescape_value,
 };
 
-pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
-pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
+pub use brainstorm::{BrainstormCategory, BrainstormSeeds, brainstorm_seeds};
+pub use coreference::{Antecedent, CoreferenceSeeds, Pronoun, coreference_seeds};
 pub use embedded::{
-    seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CODING_IDIOMS_LINO,
-    COMPUTER_USE_TASKS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO,
-    DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO,
-    IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, MEANINGS_CALENDAR_LINO,
-    MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
-    MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
+    AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CODING_IDIOMS_LINO, COMPUTER_USE_TASKS_LINO,
+    CONCEPT_CONTEXTS_LINO, CONCEPTS_LINO, COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO,
+    FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
+    LANGUAGE_DETECTION_LINO, MEANING_FILES, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
+    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
+    MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MODEL_ALIASES_LINO,
     MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
     PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
     PROMPT_PATTERNS_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
-    TOOLS_LINO,
+    TOOLS_LINO, seed_files,
 };
-pub use facts::{facts, FactRecord, LocalizedFact};
+pub use facts::{FactRecord, LocalizedFact, facts};
 pub use meanings::{
-    lexicon, parse_lexicon_text, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm,
+    Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm, lexicon, parse_lexicon_text,
 };
 pub use operation_vocabulary::{
-    operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
+    OperationLanguageForms, OperationTrigger, OperationVocabulary, operation_vocabulary,
 };
-pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
+pub use personas::{Persona, PersonaSeeds, PersonaTopic, persona_seeds};
 pub use projects::{
-    projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
+    LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry, projects_registry,
 };
 pub use roles::{
     ROLE_ANSWER_RATIONALE_LEAD, ROLE_ARCHITECTURE_CONCEPT, ROLE_ARITHMETIC_OPERATOR_WORD,
@@ -95,8 +95,8 @@ pub use roles::{
     ROLE_KNOWLEDGE_INVENTORY_NOUN, ROLE_KNOWLEDGE_INVENTORY_PHRASE, ROLE_KNOWLEDGE_POSSESSION,
     ROLE_LINKS_NOTATION_FORMAT, ROLE_LIVE_RATE_FRESHNESS_CUE, ROLE_LOCAL_SHELL_REQUEST_CUE,
     ROLE_MATH_FUNCTION_NAME, ROLE_MEASUREMENT_UNIT, ROLE_MECHANISM_INQUIRY,
-    ROLE_MECHANISM_PREDICATE, ROLE_NETWORK_CAPABILITY_CUE, ROLE_NONDETERMINISTIC_MARKER,
-    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_OPERATING_PRINCIPLE, ROLE_OUTPUT_DISPLAY_REQUEST,
+    ROLE_MECHANISM_PREDICATE, ROLE_NETWORK_CAPABILITY_CUE, ROLE_NON_REFERENTIAL_SUBJECT,
+    ROLE_NONDETERMINISTIC_MARKER, ROLE_OPERATING_PRINCIPLE, ROLE_OUTPUT_DISPLAY_REQUEST,
     ROLE_PHYSICAL_ACTION_TRIGGER, ROLE_PHYSICAL_DIMENSION, ROLE_PLAYWRIGHT_SCRIPT_CUE,
     ROLE_PLAYWRIGHT_TOOL_NAME, ROLE_POLITENESS_CUE, ROLE_PRIOR_ANSWER_REFERENCE,
     ROLE_PROCEDURAL_REQUEST, ROLE_PROCEDURAL_TASK_MODIFIER, ROLE_PROGRAM_ARTIFACT,
@@ -134,7 +134,7 @@ pub use roles::{
     ROLE_WEB_SEARCH_TOPIC_MARKER, ROLE_WHO_QUESTION_LEAD, ROLE_WHO_QUESTION_TAIL,
     ROLE_WIKIDATA_ENTITY_ANCHOR, ROLE_YEAR_UNIT_CUE,
 };
-pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
+pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///

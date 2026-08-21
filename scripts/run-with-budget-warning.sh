@@ -50,6 +50,30 @@ set -m
 command_pid=$!
 set +m
 
+# A budgeted Rust step that runs long has two causes with the same shape in the
+# log -- work that grew, and a compiler cache that stopped answering -- and
+# nothing printed so far tells them apart. Issue #1021 hit exactly that:
+# `Test (macos-15-intel / specification)` blew its 1200s budget still compiling
+# dependencies, and deciding whether the runner was slow or the cache was cold
+# took reconstructing per-crate rustc timestamps out of a megabyte of log
+# (`experiments/issue_1021_compile_rate_compare.py`). sccache already counts
+# the answer. It is printed when the budget is in trouble and never otherwise,
+# so a healthy run stays quiet and a red one arrives with its own diagnosis.
+report_compiler_cache() {
+  case "${RUSTC_WRAPPER:-}" in
+    *sccache*) ;;
+    *) return 0 ;;
+  esac
+  local sccache="${SCCACHE_PATH:-}"
+  [ -n "$sccache" ] || sccache="$(command -v sccache 2> /dev/null || true)"
+  [ -n "$sccache" ] || return 0
+  echo "[budget] compiler cache counters for ${label}:" >&2
+  # Never fatal: this is a diagnostic, and `set -e` is in force. A wrapper that
+  # died reporting why a step was slow would replace the finding with a worse
+  # one.
+  "$sccache" --show-stats 2>&1 | sed 's/^/[budget] /' >&2 || true
+}
+
 signal_command_tree() {
   local signal="$1"
   kill "-$signal" "-$command_pid" 2> /dev/null ||
@@ -73,6 +97,7 @@ while kill -0 "$command_pid" 2> /dev/null; do
   if [ "$warned" = false ] && [ "$elapsed" -ge "$threshold" ]; then
     warned=true
     echo "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
+    report_compiler_cache
   fi
 
   if [ "$verbose" = true ] &&
@@ -84,6 +109,7 @@ while kill -0 "$command_pid" 2> /dev/null; do
   if [ "$enforce" = true ] && [ "$elapsed" -ge "$budget_seconds" ]; then
     terminated=true
     echo "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
+    report_compiler_cache
     signal_command_tree TERM
     grace_deadline=$((SECONDS + grace_seconds))
     while kill -0 "$command_pid" 2> /dev/null && [ "$SECONDS" -lt "$grace_deadline" ]; do

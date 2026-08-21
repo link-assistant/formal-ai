@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/installation_conversion.rs
   language rust
   fidelity signature
-  byte_len 29236
+  byte_len 29220
   line_count 866
-  content_id source_module_f30175457e746fb3
+  content_id source_module_29963ee38e02b795
   symbol_count 45
   symbols
     enum InstallFormat 17 21

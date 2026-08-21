@@ -172,9 +172,11 @@ mod unix {
             "{}",
             String::from_utf8_lossy(&interactive.stderr)
         );
-        assert!(!std::fs::read_to_string(&interactive_capture)
-            .expect("interactive capture")
-            .contains("--no-browser"));
+        assert!(
+            !std::fs::read_to_string(&interactive_capture)
+                .expect("interactive capture")
+                .contains("--no-browser")
+        );
         let headless_capture = root.join("headless.txt");
         let headless = run(
             &home,
@@ -187,9 +189,11 @@ mod unix {
             "{}",
             String::from_utf8_lossy(&headless.stderr)
         );
-        assert!(std::fs::read_to_string(&headless_capture)
-            .expect("headless capture")
-            .contains("arg[0]=--no-browser"));
+        assert!(
+            std::fs::read_to_string(&headless_capture)
+                .expect("headless capture")
+                .contains("arg[0]=--no-browser")
+        );
         std::fs::remove_dir_all(root).expect("cleanup");
     }
 

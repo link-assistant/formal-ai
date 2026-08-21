@@ -8,7 +8,7 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::{Event, EventLog};
 use crate::substitution::SubstitutionRuleSet;
 

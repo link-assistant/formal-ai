@@ -4,7 +4,7 @@
 //! reviewable associative package, replayed deterministically, and preferred
 //! over step-by-step re-derivation with an explicit `cache_hit` trace.
 
-use formal_ai::{compile_natural_language_skill, ConversationTurn, UniversalSolver};
+use formal_ai::{ConversationTurn, UniversalSolver, compile_natural_language_skill};
 use lino_objects_codec::format::parse_indented;
 
 const SKILL: &str = "When the user says `checksum status`, answer `checksum cache is valid.`";
@@ -32,10 +32,12 @@ fn natural_language_skill_compiles_to_reusable_package() {
     assert!(package.rule_id.starts_with("compiled_skill_rule_"));
     assert!(package.handler_id.starts_with("compiled_skill_handler_"));
     assert!(package.links_notation().contains("compiled_handler"));
-    assert!(package
-        .link_records()
-        .iter()
-        .any(|record| record.record_type == "CompiledSkillPackage"));
+    assert!(
+        package
+            .link_records()
+            .iter()
+            .any(|record| record.record_type == "CompiledSkillPackage")
+    );
 }
 
 #[test]
@@ -160,10 +162,12 @@ Expected test `audit /tmp` -> `filesystem audit requires shell permission.`
 ";
     let package = compile_natural_language_skill(granted_permission)
         .expect("explicit package permission should allow compilation");
-    assert!(package
-        .required_permissions
-        .iter()
-        .any(|permission| permission.capability == "tool:local_shell"));
+    assert!(
+        package
+            .required_permissions
+            .iter()
+            .any(|permission| permission.capability == "tool:local_shell")
+    );
 }
 
 #[test]

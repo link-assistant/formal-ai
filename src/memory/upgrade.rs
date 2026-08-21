@@ -13,7 +13,6 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use fs2::FileExt as _;
 use serde::Serialize;
-use sha2::{Digest as _, Sha256};
 
 use super::ROOT_HEADER;
 
@@ -865,5 +864,5 @@ fn sync_parent(_path: &Path) -> io::Result<()> {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    crate::source_fetch::sha256_hex(bytes)
 }

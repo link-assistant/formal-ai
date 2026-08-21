@@ -14,14 +14,13 @@ use crate::seed;
 /// outrank Codex's purpose-built `exec_command`. Compatibility classification
 /// remains the final fallback for namespaced tools used by other harnesses.
 pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
-    if matches!(capability, Capability::Search | Capability::Fetch) {
-        if let Some(name) = tool_names.iter().copied().find(|name| {
+    if matches!(capability, Capability::Search | Capability::Fetch)
+        && let Some(name) = tool_names.iter().copied().find(|name| {
             name.to_ascii_lowercase().starts_with("mcp__")
                 && classify_tool(name) == Some(capability)
         }) {
             return Some(name);
         }
-    }
     let registry = seed::agentic_tool_capabilities();
     let entry = registry
         .iter()
@@ -158,11 +157,10 @@ pub(super) fn plan_shared_capability_step(
     if let Some(tool) = tool_for(tool_names, capability) {
         return Some(plan_one(tool, arguments_for(capability, task)));
     }
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        if let Some(command) = shell_fallback(capability, task) {
+    if let Some(tool) = tool_for(tool_names, Capability::Run)
+        && let Some(command) = shell_fallback(capability, task) {
             return Some(plan_one(tool, json!({"command": command}).to_string()));
         }
-    }
     None
 }
 

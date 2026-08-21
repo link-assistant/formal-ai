@@ -1,14 +1,14 @@
 //! Issue #873 — an unresolved request is a research trigger, not a terminal
 //! `unknown` answer, whenever external research is permitted.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::language::registered_languages;
 use formal_ai::orchestration::AgentRunConfig;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::research_learning::{
-    recipe_steps, AutonomyMode, CycleConfig, CycleState, KnowledgeKind, RecoveryDecision,
-    RecoveryOption, ResearchLearningCycle, VerificationGate, VersionStatus,
-    DEFAULT_RESEARCH_TIME_LIMIT_SECONDS, RESEARCH_LEARNING_RECIPE,
+    AutonomyMode, CycleConfig, CycleState, DEFAULT_RESEARCH_TIME_LIMIT_SECONDS, KnowledgeKind,
+    RESEARCH_LEARNING_RECIPE, RecoveryDecision, RecoveryOption, ResearchLearningCycle,
+    VerificationGate, VersionStatus, recipe_steps,
 };
 use formal_ai::{SolverConfig, UniversalSolver};
 use std::time::Duration;
@@ -307,9 +307,11 @@ fn default_one_hour_limit_returns_the_current_plan_for_continuation() {
         cycle.config().time_limit_seconds,
         DEFAULT_RESEARCH_TIME_LIMIT_SECONDS
     );
-    assert!(cycle
-        .check_time_limit(DEFAULT_RESEARCH_TIME_LIMIT_SECONDS - 1, "fetch next source")
-        .is_none());
+    assert!(
+        cycle
+            .check_time_limit(DEFAULT_RESEARCH_TIME_LIMIT_SECONDS - 1, "fetch next source")
+            .is_none()
+    );
     assert_eq!(
         cycle.check_time_limit(DEFAULT_RESEARCH_TIME_LIMIT_SECONDS, "fetch next source"),
         Some(RecoveryDecision::AwaitingContinuation {
@@ -399,8 +401,8 @@ fn formal_ai_and_the_real_agent_cli_authored_one_of_five_smallest_leaves() {
         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,
         20
     );
-    assert!(include_str!(
-        "../../docs/case-studies/issue-873/self-hosting-authorship/agent-cli.log"
-    )
-    .contains("ses_01c561b3bffeG2Bl3eBvtDHYzq"));
+    assert!(
+        include_str!("../../docs/case-studies/issue-873/self-hosting-authorship/agent-cli.log")
+            .contains("ses_01c561b3bffeG2Bl3eBvtDHYzq")
+    );
 }

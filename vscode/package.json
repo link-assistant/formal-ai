@@ -1,7 +1,7 @@
 {
   "name": "formal-ai-vscode",
   "displayName": "formal-ai",
-  "version": "0.299.0",
+  "version": "0.345.0",
   "private": true,
   "description": "VS Code extension (desktop + web) embedding the formal-ai symbolic chat UI",
   "publisher": "link-assistant",
@@ -136,19 +136,19 @@
   "devDependencies": {
     "@vscode/test-web": "^0.0.81",
     "@vscode/vsce": "^3.9.2",
-    "esbuild": "^0.28.1",
+    "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   },
   "dependencies": {
     "@link-assistant/web-capture": "^1.11.2",
-    "@link-assistant/web-search": "^0.10.3",
+    "@link-assistant/web-search": "^0.11.0",
     "playwright": "^1.62.1"
   },
   "overrides": {
     "@link-assistant/web-capture": {
-      "browser-commander": "0.10.0",
-      "puppeteer": "^25.7.0",
-      "puppeteer-core": "^25.7.0"
+      "browser-commander": "0.16.1",
+      "puppeteer": "^25.8.0",
+      "puppeteer-core": "^25.8.0"
     }
   },
   "allowScripts": {

@@ -7,7 +7,7 @@
 use std::io::{Read as _, Write as _};
 use std::net::{TcpListener, TcpStream};
 
-use super::{handle_api_request_with_headers, ApiHttpResponse};
+use super::{ApiHttpResponse, handle_api_request_with_headers};
 
 /// One request as it arrived, before any routing decision is made.
 struct ParsedHttpRequest {

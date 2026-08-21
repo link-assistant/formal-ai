@@ -196,7 +196,7 @@ fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {
         .as_chunks::<2>()
         .0
         .iter()
-        .map(|pair| (pair[0].clone(), pair[1].clone()))
+        .map(|[label, value]| (label.clone(), value.clone()))
         .collect()
 }
 

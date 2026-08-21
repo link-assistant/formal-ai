@@ -171,7 +171,9 @@ fn runner_disk_cleanup_accepts_a_bsd_shaped_df() {
     ] {
         let path = bin_dir.join(name);
         std::fs::write(&path, body).expect("fake command");
-        let mut permissions = std::fs::metadata(&path).expect("fake command metadata").permissions();
+        let mut permissions = std::fs::metadata(&path)
+            .expect("fake command metadata")
+            .permissions();
         permissions.set_mode(0o755);
         std::fs::set_permissions(&path, permissions).expect("fake command permissions");
     }

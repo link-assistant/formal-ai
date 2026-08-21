@@ -22,11 +22,11 @@ use serde_json::json;
 use tungstenite::Message;
 use webrtc::data_channel::{DataChannel, DataChannelEvent};
 use webrtc::peer_connection::{
-    register_default_interceptors, MediaEngine, PeerConnection, PeerConnectionBuilder,
-    PeerConnectionEventHandler, RTCConfigurationBuilder, RTCIceGatheringState,
-    RTCPeerConnectionState, RTCSessionDescription, Registry,
+    MediaEngine, PeerConnection, PeerConnectionBuilder, PeerConnectionEventHandler,
+    RTCConfigurationBuilder, RTCIceGatheringState, RTCPeerConnectionState, RTCSessionDescription,
+    Registry, register_default_interceptors,
 };
-use webrtc::runtime::{channel, default_runtime, timeout, Runtime, Sender};
+use webrtc::runtime::{Runtime, Sender, channel, default_runtime, timeout};
 
 use crate::server::handle_api_request_with_headers;
 

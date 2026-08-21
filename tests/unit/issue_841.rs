@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use std::path::PathBuf;
 
 use formal_ai::client_contract_learning::{
-    learn_client_contracts, load_observations, ClientContractObservation,
+    ClientContractObservation, learn_client_contracts, load_observations,
 };
 use formal_ai::seed::{client_integrations, response_for};
 
@@ -129,10 +129,12 @@ fn committed_real_tui_sessions_produce_a_deterministic_review_artifact() {
     assert_eq!(report.findings.len(), 3);
     assert_eq!(report.proposals.len(), 42);
     assert!(report.awaiting_human_review);
-    assert!(report
-        .findings
-        .iter()
-        .all(|finding| finding.status == "confirmed"));
+    assert!(
+        report
+            .findings
+            .iter()
+            .all(|finding| finding.status == "confirmed")
+    );
 
     for client in ["opencode", "claude", "codex"] {
         let client_observations = observations

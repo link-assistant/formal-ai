@@ -8,21 +8,22 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{answer_links_notation, SymbolicAnswer};
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::engine::{SymbolicAnswer, answer_links_notation};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalization;
 use crate::method_registry::MethodRegistry;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::{ConversationTurn, SolverConfig, UniversalSolver};
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_dispatch::{
-    handler_for_method, try_contextual_override, ContextualOutcome, ContextualRuntime,
+    ContextualOutcome, ContextualRuntime, handler_for_method, try_contextual_override,
 };
 use crate::solver_handlers::{
-    try_behavior_rules_with_runtime, try_concept_lookup_with_response_language,
-    try_explicit_repository_lookup, try_feature_capability, try_natural_language_tool_request,
+    CapabilityRuntime, SelfAwarenessRuntime, try_behavior_rules_with_runtime,
+    try_concept_lookup_with_response_language, try_explicit_repository_lookup,
+    try_feature_capability, try_natural_language_tool_request,
     try_pattern_inference_with_response_language, try_playwright_script, try_project_lookup,
-    try_project_lookup_with_response_language, CapabilityRuntime, SelfAwarenessRuntime,
+    try_project_lookup_with_response_language,
 };
 
 /// Execute the single registry-backed method-selection path.
@@ -43,31 +44,31 @@ pub fn try_dispatch(
     // answer family, so the retarget generalizes beyond a single handler.
     let forced_response_language = solver.config.forced_response_language;
     for name in method_names {
-        if matches!(name.as_str(), "feature_capability" | "capabilities") {
-            if let Some(answer) = try_explicit_repository_lookup(
+        if matches!(name.as_str(), "feature_capability" | "capabilities")
+            && let Some(answer) = try_explicit_repository_lookup(
                 prompt,
                 &normalized,
                 log,
                 solver.config.associative_project_promotion,
                 intent_formalization.route.as_deref() == Some("identity"),
                 forced_response_language,
-            ) {
-                return Some(record_method_answer(prompt, log, answer, "project_lookup"));
-            }
+            )
+        {
+            return Some(record_method_answer(prompt, log, answer, "project_lookup"));
         }
         if let Some(answer) = try_prelude_method(solver, &name, prompt, &normalized, log, runtime) {
             return Some(answer);
         }
-        if solver.config.definition_fusion_by_default && name == "concept_lookup" {
-            if let Some(answer) = crate::definition_merge::merge_definitions_by_default(prompt, log)
-            {
-                return Some(record_method_answer(
-                    prompt,
-                    log,
-                    answer,
-                    "definition_merge_by_default",
-                ));
-            }
+        if solver.config.definition_fusion_by_default
+            && name == "concept_lookup"
+            && let Some(answer) = crate::definition_merge::merge_definitions_by_default(prompt, log)
+        {
+            return Some(record_method_answer(
+                prompt,
+                log,
+                answer,
+                "definition_merge_by_default",
+            ));
         }
         match try_contextual_override(
             &name,
@@ -91,36 +92,32 @@ pub fn try_dispatch(
         // through its response-language variant so a replayed definitional
         // request re-renders in the requested language before the plain handler
         // (which localizes only to the detected prompt language) can claim it.
-        if name == "concept_lookup" {
-            if let Some(language) = forced_response_language {
-                if let Some(answer) =
-                    try_concept_lookup_with_response_language(prompt, log, Some(language))
-                {
-                    return Some(record_method_answer(prompt, log, answer, "concept_lookup"));
-                }
-            }
+        if name == "concept_lookup"
+            && let Some(language) = forced_response_language
+            && let Some(answer) =
+                try_concept_lookup_with_response_language(prompt, log, Some(language))
+        {
+            return Some(record_method_answer(prompt, log, answer, "concept_lookup"));
         }
         // Issue #531/#556: when a language is forced, render the pattern-inference
         // report in that language so a replayed "find the pattern" request no
         // longer strands its answer in English.
-        if name == "pattern_inference" {
-            if let Some(language) = forced_response_language {
-                if let Some(answer) =
-                    try_pattern_inference_with_response_language(prompt, &normalized, log, language)
-                {
-                    return Some(record_method_answer(
-                        prompt,
-                        log,
-                        answer,
-                        "pattern_inference",
-                    ));
-                }
-            }
+        if name == "pattern_inference"
+            && let Some(language) = forced_response_language
+            && let Some(answer) =
+                try_pattern_inference_with_response_language(prompt, &normalized, log, language)
+        {
+            return Some(record_method_answer(
+                prompt,
+                log,
+                answer,
+                "pattern_inference",
+            ));
         }
-        if let Some(handler) = handler_for_method(&name) {
-            if let Some(answer) = handler(prompt, &normalized, log) {
-                return Some(record_method_answer(prompt, log, answer, &name));
-            }
+        if let Some(handler) = handler_for_method(&name)
+            && let Some(answer) = handler(prompt, &normalized, log)
+        {
+            return Some(record_method_answer(prompt, log, answer, &name));
         }
         if name == "concept_lookup" {
             let answer = if let Some(language) = forced_response_language {

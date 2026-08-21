@@ -147,12 +147,12 @@ fn classify_value(value: &Value) -> Payload {
             .collect();
         return Payload::Items { entries };
     }
-    if let Some(array) = value.as_array() {
-        if array.len() >= 2 {
-            let titles = string_array(array.get(1));
-            let urls = string_array(array.get(3));
-            return Payload::OpenSearch { titles, urls };
-        }
+    if let Some(array) = value.as_array()
+        && array.len() >= 2
+    {
+        let titles = string_array(array.get(1));
+        let urls = string_array(array.get(3));
+        return Payload::OpenSearch { titles, urls };
     }
     Payload::Unrecognized {
         reason: String::from("unknown_shape"),

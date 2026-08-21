@@ -21,8 +21,8 @@
 use std::path::{Path, PathBuf};
 
 use crate::memory::{
-    export_links_notation_with_schema, parse_links_notation, MemoryEvent,
-    TARGET_MEMORY_SCHEMA_VERSION,
+    MemoryEvent, TARGET_MEMORY_SCHEMA_VERSION, export_links_notation_with_schema,
+    parse_links_notation,
 };
 
 /// Return every event that appears strictly **after** the event `last_seen`.

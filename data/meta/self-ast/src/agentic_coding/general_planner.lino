@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 40863
-  line_count 900
-  content_id source_module_ed5632665e9d2d2f
+  byte_len 40853
+  line_count 899
+  content_id source_module_6459786afbf8eac3
   symbol_count 46
   symbols
     const PLAN_PATH 14 14
@@ -30,37 +30,37 @@ self_ast_census
     function command_plan_text 399 403
     function has_file_write_intent 416 418
     function has_authoritative_literal_write 425 434
-    function parse_write_request 459 539
-    function is_literal_content 545 547
-    function is_non_referential_content 554 560
-    function resolve_census_target 579 586
-    function compose_edit_request 612 684
-    struct Token 686 690
-    function tokens 692 709
-    function bare_surfaces 711 718
-    function clean_path_token 724 727
-    function looks_like_file_path 736 742
-    function clean_cue_token 744 747
-    function first_content_lead_end 751 753
-    function first_prefix_lead_end 754 793
-    function first_action_cue_end 795 800
-    function clean_content 807 823
-    function strip_clause_lead 832 843
-    function strip_leading_qualifier 848 859
-    function safe_relative_path 860 867
-    function capability_slug 868 885
-    function language 886 888
-    function escape 889 894
-    function field 895 897
-    function field_nested 898 900
+    function parse_write_request 459 538
+    function is_literal_content 544 546
+    function is_non_referential_content 553 559
+    function resolve_census_target 578 585
+    function compose_edit_request 611 683
+    struct Token 685 689
+    function tokens 691 708
+    function bare_surfaces 710 717
+    function clean_path_token 723 726
+    function looks_like_file_path 735 741
+    function clean_cue_token 743 746
+    function first_content_lead_end 750 752
+    function first_prefix_lead_end 753 792
+    function first_action_cue_end 794 799
+    function clean_content 806 822
+    function strip_clause_lead 831 842
+    function strip_leading_qualifier 847 858
+    function safe_relative_path 859 866
+    function capability_slug 867 884
+    function language 885 887
+    function escape 888 893
+    function field 894 896
+    function field_nested 897 899
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24405
-    named_node_count 4956
-    distinct_node_kinds 89
+    total_link_count 24396
+    named_node_count 4955
+    distinct_node_kinds 90
     node_kinds
       arguments 383
       array_expression 4
@@ -69,7 +69,7 @@ self_ast_census
       attribute 11
       attribute_item 11
       binary_expression 97
-      block 99
+      block 98
       boolean_literal 2
       break_expression 1
       call_expression 383
@@ -87,7 +87,7 @@ self_ast_census
       enum_variant 5
       enum_variant_list 2
       escape_sequence 11
-      expression_statement 69
+      expression_statement 68
       field_declaration 15
       field_declaration_list 3
       field_expression 317
@@ -99,11 +99,12 @@ self_ast_census
       function_modifiers 3
       generic_type 20
       identifier 1086
-      if_expression 32
+      if_expression 31
       impl_item 3
       index_expression 21
       inner_doc_comment_marker 6
       integer_literal 29
+      let_chain 1
       let_condition 7
       let_declaration 117
       lifetime 11
@@ -119,7 +120,7 @@ self_ast_census
       outer_doc_comment_marker 173
       parameter 52
       parameters 38
-      parenthesized_expression 13
+      parenthesized_expression 14
       primitive_type 76
       range_expression 22
       reference_expression 60

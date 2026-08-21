@@ -222,6 +222,23 @@ end"#,
     },
     // Issue #330: factorial of 5 (5! = 120).
     ProgramTemplate {
+        task_slug: "fizzbuzz",
+        language_slug: "php",
+        code: r#"<?php
+
+foreach (range(1, 15) as $number) {
+    if ($number % 15 === 0) {
+        echo "FizzBuzz", PHP_EOL;
+    } elseif ($number % 3 === 0) {
+        echo "Fizz", PHP_EOL;
+    } elseif ($number % 5 === 0) {
+        echo "Buzz", PHP_EOL;
+    } else {
+        echo $number, PHP_EOL;
+    }
+}"#,
+    },
+    ProgramTemplate {
         task_slug: "factorial",
         language_slug: "rust",
         code: r#"fn main() {
@@ -360,6 +377,14 @@ puts result",
     },
     // Issue #330: reverse the literal string "hello" -> "olleh".
     ProgramTemplate {
+        task_slug: "factorial",
+        language_slug: "php",
+        code: r"<?php
+
+$result = array_product(range(1, 5));
+echo $result, PHP_EOL;",
+    },
+    ProgramTemplate {
         task_slug: "reverse_string",
         language_slug: "rust",
         code: r#"fn main() {
@@ -481,6 +506,14 @@ puts text.reverse"#,
 }"#,
     },
     // Issue #330: sum of the integers 1..=10 (= 55).
+    ProgramTemplate {
+        task_slug: "reverse_string",
+        language_slug: "php",
+        code: r#"<?php
+
+$text = "hello";
+echo strrev($text), PHP_EOL;"#,
+    },
     ProgramTemplate {
         task_slug: "sum_to_ten",
         language_slug: "rust",
@@ -611,6 +644,14 @@ puts total",
     // With F(1)=F(2)=1 the recurrence gives F(10)=55. Every template defines the
     // recursive function and prints `fibonacci(10)`. Outputs were compiled and
     // run locally (experiments/issue-334).
+    ProgramTemplate {
+        task_slug: "sum_to_ten",
+        language_slug: "php",
+        code: r"<?php
+
+$total = array_sum(range(1, 10));
+echo $total, PHP_EOL;",
+    },
     ProgramTemplate {
         task_slug: "fibonacci",
         language_slug: "rust",
@@ -778,5 +819,21 @@ puts fibonacci(10)",
 fun main() {
     println(fibonacci(10))
 }",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "php",
+        code: r"<?php
+
+function fibonacci(int $n): int
+{
+    if ($n <= 2) {
+        return 1;
+    }
+
+    return fibonacci($n - 1) + fibonacci($n - 2);
+}
+
+echo fibonacci(10), PHP_EOL;",
     },
 ];

@@ -4,6 +4,11 @@
 //! Usage:
 //!   rust-script scripts/check-question-necessity-ratchet.rs
 //!   rust-script scripts/check-question-necessity-ratchet.rs --base origin/main
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::env;
 use std::fs;

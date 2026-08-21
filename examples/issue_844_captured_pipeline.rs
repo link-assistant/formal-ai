@@ -4,13 +4,13 @@
 //! `cargo run --example issue_844_captured_pipeline`
 
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::{
-    execute_multi_source_summary, CachedSourceClient, CapturedSourceMetadata, FactChecker,
-    FetchError, FormalSystem, GatheringPlan, SolverConfig, SourceCapture, SourceTier,
-    SourceTransport, SummarizationConfig, SummarizationMode,
+    CachedSourceClient, CapturedSourceMetadata, FactChecker, FetchError, FormalSystem,
+    GatheringPlan, SolverConfig, SourceCapture, SourceTier, SourceTransport, SummarizationConfig,
+    SummarizationMode, execute_multi_source_summary,
 };
 
 #[derive(Clone, Default)]

@@ -1,5 +1,5 @@
 use formal_ai::agentic_coding::{
-    routing_learning, run_agentic_task, ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK,
+    ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, routing_learning, run_agentic_task,
 };
 
 #[test]

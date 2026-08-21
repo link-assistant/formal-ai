@@ -3,9 +3,8 @@
 //! algorithm's formal plan instead of falling through to the unknown response.
 
 use formal_ai::{
-    convert_document_format, document_format_capabilities, document_package_is_recognized,
-    document_profile_is_recognized, supported_document_formats, FormalAiEngine,
-    DOCUMENT_FORMAT_ENGINE,
+    DOCUMENT_FORMAT_ENGINE, FormalAiEngine, convert_document_format, document_format_capabilities,
+    document_package_is_recognized, document_profile_is_recognized, supported_document_formats,
 };
 
 #[test]

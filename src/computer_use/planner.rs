@@ -4,7 +4,7 @@ use crate::agentic_coding::{AgenticPlan, PlannedToolCall};
 use crate::protocol::ChatMessage;
 
 use super::seed::{completion_message, missing_primitive_message, verification_failed_message};
-use super::{capability_gap_for_request, plan_request, ComputerUsePrimitive};
+use super::{ComputerUsePrimitive, capability_gap_for_request, plan_request};
 
 #[must_use]
 pub fn tool_for_primitive<'a>(

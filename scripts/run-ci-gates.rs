@@ -28,6 +28,9 @@
 //!     rust-script scripts/run-ci-gates.rs --check        # validate, run nothing
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

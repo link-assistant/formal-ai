@@ -35,8 +35,8 @@
 //! rather than in the solver, so a maintainer adds a client or a language by
 //! editing a `.lino` file.
 
-use super::parser::{parse_lino, LinoNode};
 use super::CALLER_CONTEXT_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// One client-injected block: the marker tag and the clients that send it.
 #[derive(Debug, Clone, Default)]

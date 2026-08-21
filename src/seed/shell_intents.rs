@@ -16,8 +16,8 @@
 //! JavaScript worker loads the synced deployment copy through
 //! `src/web/seed_loader.js`.
 
-use super::parser::{parse_lino, LinoNode};
 use super::SHELL_INTENTS_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// How a matched intent recovers the command's argument from the prompt.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -41,6 +41,38 @@ pub enum ShellIntentArgument {
     SearchQuery,
 }
 
+/// The observable effect a mutating intent has on the filesystem, declared as
+/// shell predicates rather than as branches in the planner (issues #824, #944).
+///
+/// A command such as `mv` changes the workspace, so the interesting question is
+/// not whether the process exited zero but whether the workspace now holds what
+/// the request asked for. Each template is a `/bin/sh` predicate over the
+/// operands: `{source}`, `{destination}`, and `{destination_parent}` (the
+/// directory component of the destination, or `.` when it has none).
+///
+/// The templates live here, in seed data, for the same reason every other
+/// trigger vocabulary does: a maintainer teaches a new mutating verb its
+/// pre/post conditions by editing a `.lino` file, and the planner keeps working
+/// for verbs it has never heard of.
+#[derive(Debug, Clone, Default)]
+pub struct ShellIntentEffect {
+    /// Predicates that must hold *before* the action runs, in order.
+    pub before: Vec<String>,
+    /// Commands that make the workspace ready for the action (`mkdir -p`).
+    pub prepare: Vec<String>,
+    /// Predicates that must hold *after* the action ran, in order.
+    pub after: Vec<String>,
+}
+
+impl ShellIntentEffect {
+    /// Whether this intent declared any effect at all. An intent with no
+    /// declared effect is read-only as far as the planner is concerned.
+    #[must_use]
+    pub const fn is_declared(&self) -> bool {
+        !self.before.is_empty() || !self.prepare.is_empty() || !self.after.is_empty()
+    }
+}
+
 /// One intent → command mapping: the command to emit, how to fill its argument, and
 /// the multilingual cue phrases (lowercased) that signal the intent.
 #[derive(Debug, Clone, Default)]
@@ -51,6 +83,9 @@ pub struct ShellIntent {
     pub argument: ShellIntentArgument,
     /// Cue phrases, pooled across languages and lowercased for substring matching.
     pub cues: Vec<String>,
+    /// The pre/post conditions this intent's command must satisfy, empty for the
+    /// read-only intents that only report what they observe.
+    pub effect: ShellIntentEffect,
 }
 
 /// Commands selected from a workspace's package-manager marker file.
@@ -87,6 +122,25 @@ pub struct LocalPathSearchKind {
     pub cues: Vec<String>,
 }
 
+/// The parts a prose directory-listing request is composed of.
+///
+/// Issue #865 reported *"List me files here"* reaching web search: the listing
+/// detector matched whole phrases, and no phrase had that word order. The parts
+/// are declared separately so any request that combines a listing verb (or a
+/// question word) with a file/directory object and a local scope is recognised,
+/// in whatever order the user writes them.
+#[derive(Debug, Clone, Default)]
+pub struct DirectoryListingVocabulary {
+    /// Verbs that ask for something to be listed or shown.
+    pub verbs: Vec<String>,
+    /// Question words that open a *which files are here?* request.
+    pub questions: Vec<String>,
+    /// Nouns naming what is listed: files, contents, a directory.
+    pub objects: Vec<String>,
+    /// Phrases that scope the request to the current place.
+    pub scopes: Vec<String>,
+}
+
 /// The semantic shell-intent vocabulary: the ordered intent table plus the
 /// name-lead cue words that introduce a `NameLead` argument.
 #[derive(Debug, Clone, Default)]
@@ -108,6 +162,15 @@ pub struct ShellIntentVocabulary {
     pub local_path_search_kinds: Vec<LocalPathSearchKind>,
     /// Workspace marker → test/install/build mappings in preference order.
     pub workspace_commands: Vec<WorkspaceCommands>,
+    /// Nouns that name the filesystem object a path argument refers to.
+    ///
+    /// A cue carrying one of these (*"copy the file"*) says what its operands
+    /// are, so a plain name (`build`) is a legitimate operand. A cue that
+    /// carries none (*"copy"*) says nothing, so its operands must look like
+    /// paths — see `shell_command::collect_path_arguments` (issue #863).
+    pub path_objects: Vec<String>,
+    /// Parts that compose a prose directory-listing request.
+    pub directory_listing: DirectoryListingVocabulary,
     /// Intent → command mappings in declaration (most-specific-first) order.
     pub intents: Vec<ShellIntent>,
 }
@@ -190,6 +253,33 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
                     })
                     .collect();
             }
+            "path_objects" => {
+                vocab.path_objects = collect_language_values(group, "object")
+                    .into_iter()
+                    .map(|object| object.to_lowercase())
+                    .collect();
+            }
+            "directory_listing" => {
+                let part = |name: &str, child: &str| {
+                    group
+                        .children
+                        .iter()
+                        .find(|node| node.name == name)
+                        .map(|node| {
+                            collect_language_values(node, child)
+                                .into_iter()
+                                .map(|value| value.to_lowercase())
+                                .collect()
+                        })
+                        .unwrap_or_default()
+                };
+                vocab.directory_listing = DirectoryListingVocabulary {
+                    verbs: part("verbs", "verb"),
+                    questions: part("questions", "question"),
+                    objects: part("objects", "object"),
+                    scopes: part("scopes", "scope"),
+                };
+            }
             "intents" => {
                 vocab.intents = group
                     .children
@@ -221,6 +311,28 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
             .into_iter()
             .map(|cue| cue.to_lowercase())
             .collect(),
+        effect: node
+            .children
+            .iter()
+            .find(|child| child.name == "effect")
+            .map(parse_intent_effect)
+            .unwrap_or_default(),
+    }
+}
+
+/// Read the ordered `before` / `prepare` / `after` templates of one `effect` block.
+fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
+    let templates = |name: &str| -> Vec<String> {
+        node.children
+            .iter()
+            .filter(|child| child.name == name)
+            .map(|child| child.id.clone())
+            .collect()
+    };
+    ShellIntentEffect {
+        before: templates("before"),
+        prepare: templates("prepare"),
+        after: templates("after"),
     }
 }
 

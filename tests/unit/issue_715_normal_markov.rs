@@ -1,4 +1,4 @@
-use formal_ai::normal_markov::{quoted_segments, RewriteHalt, RewriteProgram, RewriteRule};
+use formal_ai::normal_markov::{RewriteHalt, RewriteProgram, RewriteRule, quoted_segments};
 
 #[test]
 fn rules_use_priority_order_and_replace_the_leftmost_occurrence() {

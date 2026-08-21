@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/wikidata.rs
   language rust
   fidelity signature
-  byte_len 12066
+  byte_len 12026
   line_count 311
-  content_id source_module_1dbc257c5790a0b5
+  content_id source_module_0c20417828d30fde
   symbol_count 13
   symbols
     struct Wikidata 19 21

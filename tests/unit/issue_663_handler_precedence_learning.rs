@@ -7,7 +7,7 @@
 
 use formal_ai::agentic_coding::learning_report::handler_precedence_learning;
 use formal_ai::agentic_coding::{
-    run_agentic_task, HANDLER_PRECEDENCE_LEARNING_PATH, HANDLER_PRECEDENCE_LEARNING_TASK,
+    HANDLER_PRECEDENCE_LEARNING_PATH, HANDLER_PRECEDENCE_LEARNING_TASK, run_agentic_task,
 };
 
 #[test]

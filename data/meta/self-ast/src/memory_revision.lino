@@ -1,0 +1,38 @@
+self_ast_census
+  target src/memory_revision.rs
+  language rust
+  fidelity signature
+  byte_len 18862
+  line_count 515
+  content_id source_module_c86b62dc1dc5ea1f
+  symbol_count 29
+  symbols
+    const CRATE_EDITION 49 49
+    function digest 52 54
+    struct BaselinePin 64 66
+    function record 74 83
+    function paths 87 89
+    function len 93 95
+    function is_empty 99 101
+    function drift 105 114
+    function holds 118 120
+    struct RevisionFile 125 130
+    struct MemoryRevision 135 144
+    function capture 149 182
+    function restore 194 212
+    function matches 217 221
+    struct VersionVerdict 226 235
+    function green 240 247
+    function permits_switch 253 255
+    enum RollbackReason 260 268
+    function slug 273 279
+    enum AttemptOutcome 284 299
+    function slug 304 309
+    struct RevisionLedger 314 321
+    function open 330 340
+    function stable 344 346
+    function revisions 350 352
+    function attempts 356 358
+    function attempt 371 417
+    function memory_events 423 467
+    function rustc_verdict 486 515

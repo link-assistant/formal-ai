@@ -18,7 +18,7 @@
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-use crate::seed::{multilingual_responses, ResponseRecord};
+use crate::seed::{ResponseRecord, multilingual_responses};
 
 /// Intent prefix for the per-step sentences.
 pub(crate) const STEP_INTENT_PREFIX: &str = "thinking_step_";

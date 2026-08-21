@@ -1,0 +1,41 @@
+sandbox: (throwaway)
+PASS  R916-01    #905  a lost write is not a completion
+PASS  R916-02    #908  a silent check command does not abandon the complete
+PASS  R916-03    #908  the failure report names the exit code, not the harn
+PASS  R916-04    #905  an observed effect is what completion means
+PASS  R916-05    #905  an adverbial qualifier is not part of the content
+PASS  R916-06    #907  a caller context block does not hijack the request
+PASS  R916-07    #907  a declarative statement of fact is not a request
+PASS  R916-08a   #909  --global writes a gemini configuration that starts h
+PASS  R916-08b   #909  --global writes the complete OpenAI triple for qwen
+PASS  R916-09    #907  an unmarked caller preamble does not outrank the obj
+PASS  R916-10    #907  a policy sentence naming a privileged command does n
+PASS  824.L1     #944  a single move is performed and verified
+PASS  824.L2     #944  a move onto an occupied destination stops before it 
+PASS  824.L3     #944  a directory move takes its contents and leaves its s
+PASS  824.L4     #944  a move into a path that does not exist yet creates i
+PASS  824.L5     #944  a copy is carried out the same way without naming co
+
+TOTAL 16/16 write-effect rungs passed
+  #905: 3/3
+  #907: 4/4
+  #908: 2/2
+  #909: 2/2
+  #944: 5/5
+
+wrote experiments/issue_916_write_effect_ladder/results.json
+
+--- the same rungs re-run against the committed baseline (the issue #408 ratchet) ---
+$ BASELINE=<results.json at HEAD> experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh
+PASS  824.L3     #944  a directory move takes its contents and leaves its s
+PASS  824.L4     #944  a move into a path that does not exist yet creates i
+PASS  824.L5     #944  a copy is carried out the same way without naming co
+
+TOTAL 16/16 write-effect rungs passed
+  #905: 3/3
+  #907: 4/4
+  #908: 2/2
+  #909: 2/2
+  #944: 5/5
+
+baseline 11/11 -> now 16/16

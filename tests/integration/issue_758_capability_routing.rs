@@ -1,7 +1,7 @@
 //! Protocol-boundary regressions for capability-first CLI routing (issue #758).
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[test]
 fn local_search_aliases_never_turn_into_web_search_calls() {
@@ -101,10 +101,12 @@ fn todo_and_multi_edit_arguments_are_recursively_schema_valid() {
     );
     assert_eq!(todo.as_object().unwrap().len(), 1);
     assert_eq!(todo["plan"][0]["status"], "pending");
-    assert!(todo["plan"][0]["step"]
-        .as_str()
-        .unwrap()
-        .contains("todo list"));
+    assert!(
+        todo["plan"][0]["step"]
+            .as_str()
+            .unwrap()
+            .contains("todo list")
+    );
 
     let (_, edit) = strict_call(
         "replace alpha with beta in a.txt and b.txt",

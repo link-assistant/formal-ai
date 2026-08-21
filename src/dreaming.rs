@@ -22,7 +22,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::algorithm_discovery::{
-    discover_algorithms, traces_from_memory_events, AlgorithmCandidate,
+    AlgorithmCandidate, discover_algorithms, traces_from_memory_events,
 };
 use crate::associative_persistence::AssociativeMemory;
 use crate::memory::{MemoryEvent, MemoryStore};

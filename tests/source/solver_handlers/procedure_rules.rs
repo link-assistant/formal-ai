@@ -17,7 +17,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
 use crate::skill_procedure::{
-    compile_procedure, CompiledProcedure, ProcedureCompileError, ProcedureLearningProposal,
+    CompiledProcedure, ProcedureCompileError, ProcedureLearningProposal, compile_procedure,
 };
 
 use super::finalize_simple;

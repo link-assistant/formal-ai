@@ -228,6 +228,17 @@ fun main() {
 }"#,
     },
     ProgramTemplate {
+        task_slug: "list_files_reverse_sort",
+        language_slug: "php",
+        code: r#"<?php
+
+$names = array_filter(scandir("."), "is_file");
+rsort($names);
+foreach ($names as $name) {
+    echo $name, PHP_EOL;
+}"#,
+    },
+    ProgramTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "rust",
         code: r#"use std::env;
@@ -467,6 +478,18 @@ fun main(args: Array<String>) {
     val path = if (args.isNotEmpty()) args[0] else "."
     val entries = File(path).listFiles() ?: return
     entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "list_files_arg_reverse_sort",
+        language_slug: "php",
+        code: r#"<?php
+
+$path = $argv[1] ?? ".";
+$names = array_filter(scandir($path), fn($name) => is_file($path . DIRECTORY_SEPARATOR . $name));
+rsort($names);
+foreach ($names as $name) {
+    echo $name, PHP_EOL;
 }"#,
     },
 ];

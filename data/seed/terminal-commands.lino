@@ -80,11 +80,34 @@ terminal_commands
       prefix "运行 powershell"
       prefix 执行
       prefix 运行
+  command_nouns
+    language en
+      noun command
+      noun commands
+    language ru
+      noun команда
+      noun команду
+      noun команды
+      noun команд
+    language hi
+      noun कमांड
+      noun कमान
+      noun निर्देश
+    language zh
+      noun 命令
+      noun 指令
   bare_shell_tokens
     token git
     token bash
     token powershell
     token pwsh
+    token ls
+    token pwd
+    token whoami
+    token uname
+    token df
+    token du
+    token ps
   shell_tokens
     token ls
     token pwd

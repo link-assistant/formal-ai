@@ -1,0 +1,24 @@
+# bash experiments/issue-1021-deadline-precision/compare-clocks.sh
+# Three drafts of scripts/run-with-deadline.sh against the same 3s deadline.
+# Draft 2 expires early in 3 runs of 5; the shipped one never does.
+
+draft 1: 1s poll, SECONDS clock        status=124  3s deadline expired after 4.394s
+draft 2: 0.1s poll, SECONDS clock      status=124  3s deadline expired after 2.897s
+shipped: 0.1s poll, both bounds        status=124  3s deadline expired after 3.504s
+
+draft 1: 1s poll, SECONDS clock        status=124  3s deadline expired after 4.256s
+draft 2: 0.1s poll, SECONDS clock      status=124  3s deadline expired after 3.012s
+shipped: 0.1s poll, both bounds        status=124  3s deadline expired after 3.560s
+
+draft 1: 1s poll, SECONDS clock        status=124  3s deadline expired after 4.409s
+draft 2: 0.1s poll, SECONDS clock      status=124  3s deadline expired after 2.542s
+shipped: 0.1s poll, both bounds        status=124  3s deadline expired after 3.421s
+
+draft 1: 1s poll, SECONDS clock        status=124  3s deadline expired after 4.259s
+draft 2: 0.1s poll, SECONDS clock      status=124  3s deadline expired after 3.011s
+shipped: 0.1s poll, both bounds        status=124  3s deadline expired after 3.437s
+
+draft 1: 1s poll, SECONDS clock        status=124  3s deadline expired after 4.328s
+draft 2: 0.1s poll, SECONDS clock      status=124  3s deadline expired after 2.734s
+shipped: 0.1s poll, both bounds        status=124  3s deadline expired after 3.529s
+

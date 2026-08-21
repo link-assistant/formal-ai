@@ -15,16 +15,16 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use formal_ai::SummarizationConfig;
 use formal_ai::language::registered_languages;
 use formal_ai::statement_audit::RepositoryCorpus;
 use formal_ai::summarization::formalize_repository_file;
 use formal_ai::summarization::validation::{
-    evaluate_file, ratchet_violations, validate_repository_summarization, CorpusFile,
-    QualityBaseline, QualityScore, SamplingProtocol, BASELINE_PATH, CRITERIA,
-    CRITERION_INTENT_PREFIX, DEFAULT_FILES_PER_ITERATION, DEFAULT_MINIMUM_ITERATIONS,
-    DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_WINDOW, QUALITY_RATCHET_PERCENT,
+    BASELINE_PATH, CRITERIA, CRITERION_INTENT_PREFIX, CorpusFile, DEFAULT_FILES_PER_ITERATION,
+    DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_WINDOW,
+    QUALITY_RATCHET_PERCENT, QualityBaseline, QualityScore, SamplingProtocol, evaluate_file,
+    ratchet_violations, validate_repository_summarization,
 };
-use formal_ai::SummarizationConfig;
 
 /// The seed file that owns every sentence this protocol prints.
 const QUALITY_PROSE_SEED_PATH: &str = "data/seed/multilingual-responses-summarization-quality.lino";
@@ -210,11 +210,13 @@ fn issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent() {
     };
     assert_eq!(score.percent(), 79);
     assert!(!score.meets(QUALITY_RATCHET_PERCENT));
-    assert!(QualityScore {
-        passed: 200,
-        applicable: 250
-    }
-    .meets(QUALITY_RATCHET_PERCENT));
+    assert!(
+        QualityScore {
+            passed: 200,
+            applicable: 250
+        }
+        .meets(QUALITY_RATCHET_PERCENT)
+    );
     // An empty score is not a vacuous pass.
     assert_eq!(QualityScore::default().percent(), 0);
     assert!(!QualityScore::default().meets(QUALITY_RATCHET_PERCENT));
@@ -517,14 +519,18 @@ fn issue_893_oversized_plain_text_keeps_bounded_head_and_tail_evidence() {
         "oversized plain text produced {} statements",
         formalized.statements.len()
     );
-    assert!(formalized
-        .statements
-        .iter()
-        .any(|statement| statement.text == "head evidence"));
-    assert!(formalized
-        .statements
-        .iter()
-        .any(|statement| statement.text == "tail evidence"));
+    assert!(
+        formalized
+            .statements
+            .iter()
+            .any(|statement| statement.text == "head evidence")
+    );
+    assert!(
+        formalized
+            .statements
+            .iter()
+            .any(|statement| statement.text == "tail evidence")
+    );
 }
 
 #[test]

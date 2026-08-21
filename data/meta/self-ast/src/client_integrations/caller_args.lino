@@ -2,9 +2,9 @@ self_ast_census
   target src/client_integrations/caller_args.rs
   language rust
   fidelity signature
-  byte_len 10842
+  byte_len 10818
   line_count 283
-  content_id source_module_fde72e4c8dd663f2
+  content_id source_module_5e6159edabd88711
   symbol_count 17
   symbols
     struct CallerArgs 15 22

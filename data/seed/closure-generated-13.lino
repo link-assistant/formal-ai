@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "canonical"
+  changed
+    defined-by category
+    lexeme en
+      surface
+        text "changed"
   client_contract_parse_transcript_error
     defined-by intent
     lexeme en
@@ -49,6 +54,11 @@ meanings
     lexeme en
       surface
         text "comparison decomposed no evidence"
+  contenido
+    defined-by concept
+    lexeme en
+      surface
+        text "contenido"
   context_machine_learning
     defined-by context
     lexeme en
@@ -59,11 +69,21 @@ meanings
     lexeme en
       surface
         text "contributor fact count summary"
+  costs
+    defined-by concept
+    lexeme en
+      surface
+        text "costs"
   cp
     defined-by concept
     lexeme en
       surface
         text "cp"
+  cuales
+    defined-by concept
+    lexeme en
+      surface
+        text "cuales"
   docker_microservice
     defined-by environment
     lexeme en
@@ -189,6 +209,11 @@ meanings
     lexeme en
       surface
         text "list week events by topic"
+  lista
+    defined-by concept
+    lexeme en
+      surface
+        text "lista"
   manuscript
     defined-by word_surface
     lexeme en
@@ -199,6 +224,11 @@ meanings
     lexeme en
       surface
         text "mcp prompt description"
+  minor
+    defined-by concept
+    lexeme en
+      surface
+        text "minor"
   move_note
     defined-by task
     lexeme en
@@ -209,11 +239,21 @@ meanings
     lexeme en
       surface
         text "multi step"
+  mutating_action_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "mutating action completed"
   mv
     defined-by concept
     lexeme en
       surface
         text "mv"
+  over-refusal
+    defined-by concept
+    lexeme en
+      surface
+        text "over refusal"
   path_argument
     defined-by operation
     lexeme en
@@ -310,7 +350,7 @@ meanings
       surface
         text "programming task catalog"
   ps
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "ps"
@@ -609,6 +649,16 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused es"
+  response_mutating_action_blocked_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked hi"
+  response_mutating_action_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed en"
   response_pattern_sequence_constant_zh
     defined-by response_template
     lexeme en
@@ -814,6 +864,16 @@ meanings
     lexeme en
       surface
         text "retract contributed facts"
+  reveal
+    defined-by concept
+    lexeme en
+      surface
+        text "reveal"
+  steps
+    defined-by concept
+    lexeme en
+      surface
+        text "steps"
   summarization_criterion_content_grounded
     defined-by intent
     lexeme en
@@ -844,6 +904,11 @@ meanings
     lexeme en
       surface
         text "task plan stage regression"
+  these
+    defined-by word_surface
+    lexeme en
+      surface
+        text "these"
   thinking_narrative_greeting
     defined-by intent
     lexeme en

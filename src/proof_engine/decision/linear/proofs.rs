@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 use crate::proof_engine::types::{Proof, ProofMethod, ProofStep, StepKind};
 
 use super::{
-    format_affine, format_assignment, format_atoms, format_number, IntervalSystem, LinearAtom,
+    IntervalSystem, LinearAtom, format_affine, format_assignment, format_atoms, format_number,
 };
 
 pub(super) fn linear_identity_proof(atom: &LinearAtom) -> Proof {

@@ -4,12 +4,12 @@ use crate::associative_persistence::AssociativeMemory;
 use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
 use crate::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+    ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore, rank_probability_candidates,
 };
 use crate::relative_meta_logic::{RelativeEvidence, SourceTier, Stance, StatementAssessment};
 use crate::world_model::{Context, Statement as WorldStatement};
 
-use super::extract::{extract_corpus, proposed_resolution, ExtractedStatement};
+use super::extract::{ExtractedStatement, extract_corpus, proposed_resolution};
 use super::model::{
     AttachedEvidence, AuditConfig, AuditFinding, AuditedStatement, Contradiction, EvidenceCapture,
     EvidenceSelector, FindingKind, RepositoryAudit, RepositoryCorpus, StatementReference,

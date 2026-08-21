@@ -136,13 +136,25 @@ jobs:
         # legs (`cursor`, `opencode-desktop`) ran the same step successfully in
         # the same run, so the hang is transient and upstream; what was missing
         # is a deadline that expires before the job clock and says so.
+        #
+        # Issue #1021: the deadline then fired for real in run 32272689026 --
+        # this leg was terminated at its full 300s while the sibling GUI legs
+        # of the same run installed the same package in 52s. Reporting a
+        # transient stall is not the same as surviving it, so the attempt is
+        # bounded too: a stalled mirror is killed while the budget still has
+        # room for another try, and the wrapper refuses to start if its
+        # attempts cannot fit. `-q` rather than `-qq` because the terminated
+        # step logged nothing about which phase was stuck.
         env:
           TEST_BUDGET_SECONDS: 300
           TEST_WARN_RATIO_PERCENT: 60
+          FORMAL_AI_APT_ATTEMPTS: 3
+          FORMAL_AI_APT_ATTEMPT_SECONDS: 90
+          FORMAL_AI_APT_RETRY_DELAY_SECONDS: 5
         run: >-
           scripts/run-with-budget-warning.sh
           "$TEST_BUDGET_SECONDS" "Install Xvfb"
-          bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq xvfb'
+          scripts/apt-install-with-retry.sh xvfb
 
       - name: Pin Node for clients with native addons
         if: matrix.installer == 'npm-native'

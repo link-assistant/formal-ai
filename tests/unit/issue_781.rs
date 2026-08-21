@@ -3,12 +3,12 @@
 //! laptop's electrical requirement, its barrel dimensions, and the candidate
 //! listing. This replays that general search → multi-fetch → cited answer path.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatCompletionRequest, ChatMessage, ToolCall};
 use formal_ai::{
-    create_anthropic_message_with_solver, create_chat_completion_with_solver,
-    create_response_with_solver, AnthropicContentBlock, AnthropicMessagesRequest,
-    ResponseOutputItem, ResponsesRequest, SolverConfig, UniversalSolver,
+    AnthropicContentBlock, AnthropicMessagesRequest, ResponseOutputItem, ResponsesRequest,
+    SolverConfig, UniversalSolver, create_anthropic_message_with_solver,
+    create_chat_completion_with_solver, create_response_with_solver,
 };
 
 const TOOLS: [&str; 2] = ["websearch", "webfetch"];
@@ -259,10 +259,12 @@ fn anthropic_messages_explains_the_action_before_tool_use() {
         message.content.first(),
         Some(AnthropicContentBlock::Text { text }) if !text.trim().is_empty()
     ));
-    assert!(message
-        .content
-        .iter()
-        .any(|block| matches!(block, AnthropicContentBlock::ToolUse { .. })));
+    assert!(
+        message
+            .content
+            .iter()
+            .any(|block| matches!(block, AnthropicContentBlock::ToolUse { .. }))
+    );
 }
 
 #[test]
@@ -285,10 +287,12 @@ fn responses_explains_the_action_before_the_function_call() {
         Some(ResponseOutputItem::Message(message))
             if message.content.iter().any(|part| !part.text.trim().is_empty())
     ));
-    assert!(response
-        .output
-        .iter()
-        .any(|item| matches!(item, ResponseOutputItem::FunctionCall(_))));
+    assert!(
+        response
+            .output
+            .iter()
+            .any(|item| matches!(item, ResponseOutputItem::FunctionCall(_)))
+    );
 }
 
 #[test]
@@ -593,7 +597,9 @@ fn research_deepens_toward_the_part_of_the_question_the_evidence_left_open() {
     answer_tool_calls(
         &mut messages,
         &fetches,
-        &["What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector."],
+        &[
+            "What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector.",
+        ],
     );
 
     let deeper = tool_calls(&messages);
@@ -687,7 +693,9 @@ fn a_source_already_read_is_not_read_again() {
     answer_tool_calls(
         &mut messages,
         &fetches,
-        &["What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector."],
+        &[
+            "What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector.",
+        ],
     );
     let deeper = tool_calls(&messages);
     // The refined search returns the same page plus a new one.

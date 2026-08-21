@@ -1,6 +1,6 @@
 use std::fmt::Write as _;
 
-use super::rust_runtime::{rules_source, COMMON_RUNTIME};
+use super::rust_runtime::{COMMON_RUNTIME, rules_source};
 use super::{CompiledSubstitutionFile, SubstitutionProgramIr};
 
 pub(super) fn emit(
@@ -92,16 +92,16 @@ fn panic(_info: &core::panic::PanicInfo<'_>) -> ! { loop {} }
 ";
 
 const WASM_ENTRY_POINTS: &str = r#"
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn input_ptr() -> *mut u8 { core::ptr::addr_of_mut!(INPUT).cast::<u8>() }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn output_ptr() -> *mut u8 { core::ptr::addr_of_mut!(OUTPUT).cast::<u8>() }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn input_capacity() -> usize { INPUT_CAPACITY }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn run(length: usize) -> usize {
     OFFSET.store(0, Ordering::Release);
     let length = length.min(INPUT_CAPACITY);

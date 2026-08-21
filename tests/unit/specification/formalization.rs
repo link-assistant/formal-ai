@@ -5,9 +5,9 @@
 //! Wikidata properties/items when possible and to explicit fallbacks otherwise.
 
 use formal_ai::translation::{
-    formalize_prompt, formalize_prompt_candidates, select_formalization_candidate,
-    softmax_formalization_scores, FormalizationAnchorKind, FormalizationDecision,
-    FormalizationRole, FormalizationSelectionConfig, FormalizationSelectionReason,
+    FormalizationAnchorKind, FormalizationDecision, FormalizationRole,
+    FormalizationSelectionConfig, FormalizationSelectionReason, formalize_prompt,
+    formalize_prompt_candidates, select_formalization_candidate, softmax_formalization_scores,
 };
 use formal_ai::{FormalAiEngine, SolverConfig, UniversalSolver};
 

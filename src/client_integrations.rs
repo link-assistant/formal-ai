@@ -6,12 +6,12 @@ use std::process::Command;
 
 use clap::{Args as ClapArgs, ValueEnum};
 
+use crate::DEFAULT_MODEL;
 use crate::context_capacity::ContextCapacity;
 use crate::seed::{
-    client_integrations as seed_client_integrations, ClientIntegration, ModeArgPosition,
-    ModelArgPosition,
+    ClientIntegration, ModeArgPosition, ModelArgPosition,
+    client_integrations as seed_client_integrations,
 };
-use crate::DEFAULT_MODEL;
 
 mod caller_args;
 mod command;
@@ -25,14 +25,14 @@ mod tool_args;
 mod url;
 use caller_args::CallerArgs;
 use command::{contains_model_arg, resolve_integration_command};
-use completion::{require_completed, run_to_completion, AuthoringRun, CompletionInvocation};
+use completion::{AuthoringRun, CompletionInvocation, require_completed, run_to_completion};
 use global_config::{
     render_json_settings, render_toml_settings, undo_global_config, write_global_config,
 };
 use server::maybe_start_server;
 use session_files::{
-    newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
-    TempConfigDir,
+    TempConfigDir, newest_changed_session_file, print_session_files, session_file_snapshot,
+    user_home_dir,
 };
 pub use tool_args::delimit_tool_args;
 use url::{base_url_with_port, join_url_path};
@@ -206,7 +206,9 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let server = if args.start_server || !args.no_start_server {
         let server = maybe_start_server(&context.base_url, args.port)?;
         if server.is_some() {
-            eprintln!("formal-ai: started a temporary server in agent mode (tool and shell execution enabled)");
+            eprintln!(
+                "formal-ai: started a temporary server in agent mode (tool and shell execution enabled)"
+            );
         }
         server
     } else {

@@ -20,14 +20,14 @@ use crate::solver_handler_how::{
 use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
-    try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
-    try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
-    try_coreference_request, try_document_originality_check, try_document_request,
-    try_execution_failure, try_fact_checking, try_fact_lookup, try_github_repository_traffic,
-    try_http_fetch, try_http_fetch_with_offline, try_ill_formed, try_installation_conversion,
-    try_javascript_execution, try_learn_from_source, try_meta_explanation,
-    try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
+    SelfAwarenessRuntime, try_algorithm, try_arithmetic, try_brainstorming_request,
+    try_calendar_create_event, try_calendar_reasoning, try_capabilities, try_clarification,
+    try_compound_interest, try_concept_lookup, try_conversation_memory,
+    try_conversation_topic_request, try_coreference_request, try_document_originality_check,
+    try_document_request, try_execution_failure, try_fact_checking, try_fact_lookup,
+    try_github_repository_traffic, try_http_fetch, try_http_fetch_with_offline, try_ill_formed,
+    try_installation_conversion, try_javascript_execution, try_learn_from_source,
+    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
     try_numeric_list_with_history, try_opinion_question, try_pattern_inference,
     try_program_synthesis, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_research_comparison_table, try_research_result_followup,
@@ -36,7 +36,7 @@ use crate::solver_handlers::{
     try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_task_decomposition_with_depth, try_text_manipulation,
     try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
-    try_web_search_with_offline, try_world_state, try_write_script, SelfAwarenessRuntime,
+    try_web_search_with_offline, try_world_state, try_write_script,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 

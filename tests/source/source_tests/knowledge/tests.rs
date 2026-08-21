@@ -1,5 +1,5 @@
 use super::{
-    cache_capacity, within_cache_capacity, CodingOracle, KnowledgeSource, KNOWLEDGE_CACHE_FLOOR,
+    CodingOracle, KNOWLEDGE_CACHE_FLOOR, KnowledgeSource, cache_capacity, within_cache_capacity,
 };
 
 #[test]

@@ -15,8 +15,8 @@ use std::fmt::Write as _;
 
 use lino_objects_codec::format::parse_indented;
 
-use crate::engine::{stable_id, KNOWLEDGE_SCHEMA_VERSION};
-use crate::memory::{import_full_memory, MemoryEvent, MemoryStore, BUNDLE_HEADER, ROOT_HEADER};
+use crate::engine::{KNOWLEDGE_SCHEMA_VERSION, stable_id};
+use crate::memory::{BUNDLE_HEADER, MemoryEvent, MemoryStore, ROOT_HEADER, import_full_memory};
 
 /// A single doublet edge in the canonical `from -> to` projection.
 #[derive(Debug, Clone, PartialEq, Eq)]

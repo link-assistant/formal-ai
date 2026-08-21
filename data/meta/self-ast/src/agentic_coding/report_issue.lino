@@ -5,6 +5,9 @@ self_ast_census
   byte_len 19693
   line_count 544
   content_id source_module_5d3bddfbf80eaa27
+  byte_len 19699
+  line_count 544
+  content_id source_module_83472b3b78a9e7be
   symbol_count 46
   symbols
     const REPORT_BODY_COMMAND 14 14
@@ -61,6 +64,9 @@ self_ast_census
     total_link_count 14266
     named_node_count 2881
     distinct_node_kinds 76
+    total_link_count 14264
+    named_node_count 2879
+    distinct_node_kinds 77
     node_kinds
       arguments 261
       array_expression 7
@@ -93,11 +99,12 @@ self_ast_census
       function_modifiers 1
       generic_function 5
       generic_type 11
-      identifier 695
+      identifier 696
       if_expression 12
-      index_expression 6
+      index_expression 4
       inner_doc_comment_marker 1
       integer_literal 17
+      integer_literal 15
       let_condition 3
       let_declaration 49
       lifetime 1
@@ -120,6 +127,7 @@ self_ast_census
       scoped_identifier 64
       scoped_type_identifier 1
       scoped_use_list 4
+      slice_pattern 1
       source_file 1
       string_content 90
       string_literal 84

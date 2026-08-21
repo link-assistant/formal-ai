@@ -14,12 +14,12 @@ use std::fmt::Write as _;
 use std::path::PathBuf;
 
 use clap::{Subcommand, ValueEnum};
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
 use formal_ai::client_contract_learning::{
     learn_client_contracts, load_observations, observe_proxy_transcript,
 };
-use formal_ai::seed::{client_integrations, ClientIntegration, ConfigFormat};
+use formal_ai::seed::{ClientIntegration, ConfigFormat, client_integrations};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 pub enum ClientsFormat {

@@ -1,0 +1,10 @@
+ok   #0: claimed '1, 2, 3' actual '1, 2, 3'
+ok   #1: claimed '3, 2, 1' actual '3, 2, 1'
+ok   #2: claimed '3, 2, 1' actual '3, 2, 1'
+ok   #3: claimed 'apple, banana, pear' actual 'apple, banana, pear'
+ok   #4: claimed '29' actual '29'
+ok   #5: claimed '24' actual '24'
+ok   #6: claimed '1' actual '1'
+ok   #7: claimed '9' actual '9'
+
+8/8 verified

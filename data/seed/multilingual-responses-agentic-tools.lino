@@ -79,3 +79,43 @@ multilingual_responses
     intent tool_result_failed_exit_code
     language es
     text "El comando falló: `{tool}` terminó con código {exit_code}.\n\n```text\n{error}\n```"
+  response response_mutating_action_completed_en
+    intent mutating_action_completed
+    language en
+    text "Completed the action `{action}` and verified it with {checks}."
+  response response_mutating_action_completed_ru
+    intent mutating_action_completed
+    language ru
+    text "Действие `{action}` выполнено и проверено командами {checks}."
+  response response_mutating_action_completed_hi
+    intent mutating_action_completed
+    language hi
+    text "क्रिया `{action}` पूरी हुई और {checks} से सत्यापित की गई।"
+  response response_mutating_action_completed_zh
+    intent mutating_action_completed
+    language zh
+    text "已完成操作 `{action}`，并通过 {checks} 进行了验证。"
+  response response_mutating_action_completed_es
+    intent mutating_action_completed
+    language es
+    text "Se completó la acción `{action}` y se verificó con {checks}."
+  response response_mutating_action_blocked_en
+    intent mutating_action_blocked
+    language en
+    text "I did not run `{action}`. The check `{check}` exited {exit_code}, so the action was skipped and nothing in the workspace changed."
+  response response_mutating_action_blocked_ru
+    intent mutating_action_blocked
+    language ru
+    text "Я не выполнил `{action}`. Проверка `{check}` завершилась с кодом {exit_code}, поэтому действие пропущено и в рабочем каталоге ничего не изменилось."
+  response response_mutating_action_blocked_hi
+    intent mutating_action_blocked
+    language hi
+    text "मैंने `{action}` नहीं चलाया। जाँच `{check}` {exit_code} कोड के साथ समाप्त हुई, इसलिए क्रिया छोड़ दी गई और कार्यक्षेत्र में कुछ नहीं बदला।"
+  response response_mutating_action_blocked_zh
+    intent mutating_action_blocked
+    language zh
+    text "我没有执行 `{action}`。检查 `{check}` 以退出码 {exit_code} 结束，因此跳过了该操作，工作区没有发生任何变化。"
+  response response_mutating_action_blocked_es
+    intent mutating_action_blocked
+    language es
+    text "No ejecuté `{action}`. La comprobación `{check}` terminó con código {exit_code}, así que se omitió la acción y nada cambió en el espacio de trabajo."

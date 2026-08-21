@@ -1,17 +1,17 @@
 //! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, projects_registry, ProjectRecord};
-use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
+use crate::seed::{self, ProjectRecord, projects_registry};
+use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
 
 use super::finalize_simple;
-use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
+use super::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser

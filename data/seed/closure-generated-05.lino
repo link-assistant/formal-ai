@@ -19,6 +19,11 @@ meanings
     lexeme en
       surface
         text "agentic report contents question"
+  artifact
+    defined-by concept
+    lexeme en
+      surface
+        text "artifact"
   attached
     defined-by word_surface
     lexeme en
@@ -44,6 +49,11 @@ meanings
     lexeme en
       surface
         text "case"
+  changelog
+    defined-by concept
+    lexeme en
+      surface
+        text "changelog"
   code_request
     defined-by operation
     lexeme en
@@ -129,6 +139,11 @@ meanings
     lexeme en
       surface
         text "file handle"
+  filing
+    defined-by concept
+    lexeme en
+      surface
+        text "filing"
   git
     defined-by token
     lexeme en
@@ -144,6 +159,11 @@ meanings
     lexeme en
       surface
         text "human"
+  imprime
+    defined-by concept
+    lexeme en
+      surface
+        text "imprime"
   intent_concept_lookup
     defined-by intent
     lexeme en
@@ -194,6 +214,11 @@ meanings
     lexeme en
       surface
         text "issue report ran command"
+  items
+    defined-by concept
+    lexeme en
+      surface
+        text "items"
   lexeme_import_no_clean_alias
     defined-by intent
     lexeme en
@@ -214,6 +239,11 @@ meanings
     lexeme en
       surface
         text "linksplatform"
+  listing
+    defined-by concept
+    lexeme en
+      surface
+        text "listing"
   local_search_scope_listing
     defined-by intent
     lexeme en
@@ -234,6 +264,11 @@ meanings
     lexeme en
       surface
         text "original first party"
+  paperwork
+    defined-by concept
+    lexeme en
+      surface
+        text "paperwork"
   pattern_concept_context_delimiter_men_hi
     defined-by prompt_pattern
     lexeme en
@@ -360,7 +395,7 @@ meanings
       surface
         text "proposal only"
   pwd
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "pwd"
@@ -594,6 +629,11 @@ meanings
     lexeme en
       surface
         text "response meta explanation zh"
+  response_mutating_action_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed ru"
   response_orchestration_correction_prompt_ru
     defined-by response_template
     lexeme en
@@ -974,6 +1014,11 @@ meanings
     lexeme en
       surface
         text "verbose"
+  verification
+    defined-by concept
+    lexeme en
+      surface
+        text "verification"
   who_is_unknown_entity_suggestion
     defined-by intent
     lexeme en

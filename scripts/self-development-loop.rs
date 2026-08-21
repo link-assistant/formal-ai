@@ -1,8 +1,8 @@
 //! Release-cycle gate for Formal AI's reviewed self-development loop.
 
 use super::{
-    commit_has_formal_ai_evidence, git, read_release_rows, trailer_values, EvidencePolicy,
-    ReleaseRow, METRIC_VERSION, PULL_REQUEST_TRAILER,
+    EvidencePolicy, METRIC_VERSION, PULL_REQUEST_TRAILER, ReleaseRow,
+    commit_has_formal_ai_evidence, git, read_release_rows, trailer_values,
 };
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -76,10 +76,8 @@ pub(super) fn merged_self_authored_pull_requests(
                 }
             },
         };
-        if is_attributed {
-            if let Some(reference) = validated_commit_pull_request(repo, commit)? {
-                attributed.insert(commit.to_owned(), reference);
-            }
+        if is_attributed && let Some(reference) = validated_commit_pull_request(repo, commit)? {
+            attributed.insert(commit.to_owned(), reference);
         }
     }
 

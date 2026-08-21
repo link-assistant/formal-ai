@@ -441,11 +441,10 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
         }
     }
     for &marker in &markers.topic_before_markers {
-        if let Some(index) = normalized.find(marker) {
-            if let Some(query) = valid_search_query(&normalized[..index]) {
+        if let Some(index) = normalized.find(marker)
+            && let Some(query) = valid_search_query(&normalized[..index]) {
                 return Some(query);
             }
-        }
     }
     if let Some(query) = imperative_candidate.and_then(valid_search_query) {
         return Some(query);
@@ -529,11 +528,10 @@ fn extract_topic_subject(normalized: &str) -> Option<String> {
 fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
     for &prefix in &markers.explicit_prefixes {
-        if let Some(query) = normalized.strip_prefix(prefix) {
-            if let Some(query) = valid_search_query(query) {
+        if let Some(query) = normalized.strip_prefix(prefix)
+            && let Some(query) = valid_search_query(query) {
                 return Some(query);
             }
-        }
     }
     for &(prefix, suffix) in &markers.explicit_circumfixes {
         if let Some(candidate) = normalized.strip_prefix(prefix).and_then(|rest| {
@@ -541,22 +539,20 @@ fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
                 rest.trim_end_matches(is_url_trailing_punctuation)
                     .strip_suffix(suffix)
             })
-        }) {
-            if let Some(query) = valid_search_query(candidate) {
+        })
+            && let Some(query) = valid_search_query(candidate) {
                 return Some(query);
             }
-        }
     }
     for &suffix in &markers.explicit_suffixes {
         if let Some(query) = normalized.strip_suffix(suffix).or_else(|| {
             normalized
                 .trim_end_matches(is_url_trailing_punctuation)
                 .strip_suffix(suffix)
-        }) {
-            if let Some(query) = valid_search_query(query) {
+        })
+            && let Some(query) = valid_search_query(query) {
                 return Some(query);
             }
-        }
     }
     None
 }

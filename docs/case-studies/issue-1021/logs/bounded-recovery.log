@@ -1,0 +1,19 @@
+=== a run that never resolves
+-- step 1: continue
+-- step 2: continue
+-- step 3: continue
+-- step 4: continue
+-- stopped after 4 steps: autonomy_stuck_recovery_limit_reached (60s of 60s)
+   plan: rebuild_after_the_failing_test
+   plan: rerun_the_failing_test
+
+=== a next version of itself that does not compile
+-- rustc: error[E0308]: mismatched types
+-- rustc:  --> <workspace>/version.rs:2:5
+-- rustc:   |
+-- memory_revision_compile_failed -> restored memory_revision_8c9075fea714e2b1
+-- workspace matches the last stable version: true
+
+=== two viable resolutions
+-- full_trust=false: autonomy_choice_not_delegated
+-- full_trust=true: adopt_the_replacement_api (net 5 against runner-up Some(-2))

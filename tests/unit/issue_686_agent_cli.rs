@@ -1,6 +1,6 @@
 use formal_ai::agentic_coding::{
-    associative_learning, is_associative_learning_task, run_agentic_task,
-    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
+    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,
+    is_associative_learning_task, run_agentic_task,
 };
 
 #[test]
@@ -49,9 +49,11 @@ fn formal_ai_executes_associative_learning_through_agent_cli() {
         associative_learning::render_document()
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
-    assert!(outcome
-        .final_answer
-        .contains("persisted and ranked 3 expressions"));
+    assert!(
+        outcome
+            .final_answer
+            .contains("persisted and ranked 3 expressions")
+    );
 }
 
 #[test]

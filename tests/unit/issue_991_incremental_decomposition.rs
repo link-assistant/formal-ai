@@ -7,8 +7,8 @@
 //! protocol on the repository's own splitter rather than on a fixture one.
 
 use formal_ai::recursive_execution::{
-    solve_recursively, solve_recursively_within, RecursiveExecution, RecursiveTask, TaskAttempt,
-    TaskExecutor,
+    RecursiveExecution, RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively,
+    solve_recursively_within,
 };
 use formal_ai::task_decomposition::SplittingExecutor;
 

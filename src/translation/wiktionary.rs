@@ -607,10 +607,10 @@ fn split_inline_translations(value: &str) -> Vec<String> {
 
 fn parse_qualifier_args<'a, I: Iterator<Item = &'a str>>(parts: I) -> Option<String> {
     for part in parts {
-        if let Some((key, value)) = part.split_once('=') {
-            if matches!(key.trim(), "q" | "qual" | "qualifier" | "n") {
-                return Some(value.trim().to_owned());
-            }
+        if let Some((key, value)) = part.split_once('=')
+            && matches!(key.trim(), "q" | "qual" | "qualifier" | "n")
+        {
+            return Some(value.trim().to_owned());
         }
     }
     None

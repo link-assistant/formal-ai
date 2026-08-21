@@ -7,8 +7,8 @@
 //! answers — so adding a new brainstorm topic (or extending an existing
 //! one) does not require touching Rust code.
 
-use super::parser::{parse_lino, split_pipe_list};
 use super::BRAINSTORM_SEEDS_LINO;
+use super::parser::{parse_lino, split_pipe_list};
 
 /// One brainstorm category.
 ///

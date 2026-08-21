@@ -235,6 +235,183 @@ shell_intents
       test "make test"
       install "make install"
       build make
+  path_objects
+    language en
+      object file
+      object files
+      object directory
+      object directories
+      object folder
+      object folders
+      object link
+      object symlink
+    language ru
+      object файл
+      object файла
+      object файлы
+      object папка
+      object папку
+      object папке
+      object каталог
+      object каталоге
+      object ссылка
+      object ссылку
+    language hi
+      object फ़ाइल
+      object फ़ाइलें
+      object फ़ोल्डर
+      object निर्देशिका
+      object लिंक
+    language zh
+      object 文件
+      object 文件夹
+      object 目录
+      object 链接
+  directory_listing
+    verbs
+      language en
+        verb list
+        verb show
+        verb display
+        verb print
+        verb enumerate
+        verb reveal
+        verb inspect
+        verb scan
+        verb see
+        verb give
+      language ru
+        verb покажи
+        verb показать
+        verb выведи
+        verb вывести
+        verb перечисли
+        verb отобрази
+        verb просмотри
+        verb просканируй
+        verb дай
+        verb список
+      language hi
+        verb दिखाएँ
+        verb दिखाओ
+        verb सूचीबद्ध
+        verb प्रिंट
+        verb सूची
+        verb दें
+        verb देखें
+      language zh
+        verb 显示
+        verb 列出
+        verb 打印
+        verb 展示
+        verb 查看
+        verb 给出
+        verb 扫描
+      language es
+        verb lista
+        verb listar
+        verb muestra
+        verb muéstrame
+        verb muestrame
+        verb mostrar
+        verb enseña
+        verb imprime
+        verb enumera
+        verb dame
+        verb ver
+    questions
+      language en
+        question what
+        question which
+        question "what's"
+      language ru
+        question какие
+        question что
+        question каких
+      language hi
+        question कौन
+        question क्या
+        question कौनसी
+      language zh
+        question 哪些
+        question 什么
+      language es
+        question qué
+        question cuáles
+        question cuales
+        question cuál
+    objects
+      language en
+        object files
+        object contents
+        object content
+        object listing
+        object entries
+        object items
+      language ru
+        object файлы
+        object файлов
+        object файла
+        object содержимое
+      language hi
+        object फ़ाइलें
+        object फ़ाइलों
+        object सामग्री
+      language zh
+        object 文件
+        object 内容
+      language es
+        object archivos
+        object ficheros
+        object contenido
+        object contenidos
+        object entradas
+    scopes
+      language en
+        scope here
+        scope "current directory"
+        scope "working directory"
+        scope "current working directory"
+        scope "this directory"
+        scope "the directory"
+        scope "current folder"
+        scope "this folder"
+        scope "the folder"
+        scope "local files"
+      language ru
+        scope здесь
+        scope "текущей папке"
+        scope "этой папке"
+        scope "текущем каталоге"
+        scope "этом каталоге"
+        scope "рабочем каталоге"
+        scope "текущий каталог"
+        scope "эту папку"
+        scope "локальные файлы"
+      language hi
+        scope यहाँ
+        scope "वर्तमान फ़ोल्डर"
+        scope "इस फ़ोल्डर"
+        scope "वर्तमान निर्देशिका"
+        scope "इस निर्देशिका"
+        scope "स्थानीय फ़ाइलें"
+      language zh
+        scope 这里
+        scope 当前目录
+        scope 这个目录
+        scope 当前文件夹
+        scope 这个文件夹
+        scope 本地文件
+      language es
+        scope aquí
+        scope aqui
+        scope "directorio actual"
+        scope "este directorio"
+        scope "el directorio"
+        scope "carpeta actual"
+        scope "esta carpeta"
+        scope "la carpeta"
+        scope "archivos locales"
   intents
     intent
       command "formal-ai:report-issue"
@@ -581,6 +758,12 @@ shell_intents
     intent
       command cp
       argument two_paths
+      effect
+        before "test -e {source}"
+        before "test ! -e {destination}"
+        prepare "mkdir -p -- {destination_parent}"
+        after "test -e {destination}"
+        after "test -e {source}"
       language en
         cue "copy the file"
         cue "copy file"
@@ -597,11 +780,18 @@ shell_intents
     intent
       command mv
       argument two_paths
+      effect
+        before "test -e {source}"
+        before "test ! -e {destination}"
+        prepare "mkdir -p -- {destination_parent}"
+        after "test -e {destination}"
+        after "test ! -e {source}"
       language en
         cue "move the file"
         cue "rename the file"
         cue "move file"
         cue rename
+        cue move
       language ru
         cue "перемести файл"
         cue "переименуй файл"

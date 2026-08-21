@@ -2,12 +2,13 @@
 //! a source-derived procedure without treating search prose as the answer.
 
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::coding_research_learning::{
-    execute_researched_coding_procedure, research_coding_skill_gap, CodingResearchApproval,
-    CodingResearchGap, ResearchedCodingProcedureLedger, CODING_RESEARCH_LEARNING_CONTRACT,
+    CODING_RESEARCH_LEARNING_CONTRACT, CodingResearchApproval, CodingResearchGap,
+    ResearchedCodingProcedureLedger, execute_researched_coding_procedure,
+    research_coding_skill_gap,
 };
 use formal_ai::{CachedSourceClient, FetchError, SourceTransport};
 
@@ -173,9 +174,10 @@ fn failed_execution_is_not_kept_and_schedules_the_next_research_round() {
         "ruby count_to_three verified coding procedure SPDX license alternative evidence round 2"
     );
     assert!(gap.links_notation().contains(&first_query));
-    assert!(gap
-        .links_notation()
-        .contains("coding_research_execution_verification_failed"));
+    assert!(
+        gap.links_notation()
+            .contains("coding_research_execution_verification_failed")
+    );
     assert!(ledger.is_empty());
 
     fs::remove_dir_all(cache).expect("remove fixture cache");

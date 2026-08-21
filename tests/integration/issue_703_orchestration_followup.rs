@@ -1,17 +1,17 @@
 use formal_ai::orchestration::{
+    AgentCommand, AgentRunError, AgentRunPermission, AgentStatus, ComparisonEntry,
+    ComparisonLedger, DispatchConfig, DispatchMode, ReplayError, VerificationCommand,
     apply_verified_translation, dispatch_agents, extract_agent_result,
     observe_orchestration_session, replay_session, resume_agent, run_agent, synthesize_sessions,
-    write_session, AgentCommand, AgentRunError, AgentRunPermission, AgentStatus, ComparisonEntry,
-    ComparisonLedger, DispatchConfig, DispatchMode, ReplayError, VerificationCommand,
+    write_session,
 };
 use std::fs;
 use std::process::Command;
 use std::time::{Duration, Instant};
 
 use super::issue_703_orchestration::{
-    fixture_command, fixture_commands, fixture_config, fixture_config_with_output,
-    grant_fixture_agent_command, TestWorkspace, FIXTURE_ENV, FIXTURE_RELEASE_ENV,
-    FIXTURE_STARTED_ENV,
+    FIXTURE_ENV, FIXTURE_RELEASE_ENV, FIXTURE_STARTED_ENV, TestWorkspace, fixture_command,
+    fixture_commands, fixture_config, fixture_config_with_output, grant_fixture_agent_command,
 };
 
 const AUTHORSHIP_SESSION: &str = "ses_050646852ffetdnQ73vR1yZ8la";
@@ -145,9 +145,11 @@ fn real_formal_ai_correction_chain_resumes_one_native_session_and_pins_the_artif
         .position(|arg| arg == "agent")
         .expect("the controlled client is explicit");
     assert!(resume_position < prompt_position);
-    assert!(final_session
-        .stdout
-        .contains(&format!("--resume {CONTINUATION_SESSION} --no-fork -p")));
+    assert!(
+        final_session
+            .stdout
+            .contains(&format!("--resume {CONTINUATION_SESSION} --no-fork -p"))
+    );
     assert_eq!(
         final_session
             .native_session
@@ -219,18 +221,73 @@ fn timeout_is_recorded_without_an_implicit_retry() {
     );
 }
 
+/// Is a process the agent left behind still running once the agent timed out?
+///
+/// Issue #1021: the file this test used to read answers a different question.
+/// `descendant-survived` is absent both when the descendant was terminated and
+/// when it is alive but has not reached its write yet, so the old assertion
+/// passed for the right reason only when the timings lined up, and a loaded
+/// macOS runner lined them up the other way (run 32272689475, job
+/// 96137354605). The kernel is asked instead, and each of the three ways this
+/// can go wrong is named separately: never spawned, still alive, or already
+/// finished before the kill arrived.
 #[cfg(unix)]
 #[test]
 fn timeout_terminates_descendant_processes() {
     let workspace = TestWorkspace::new("descendant-timeout");
     let mut config = fixture_config("codex", workspace.path(), "descendant_timeout");
-    config.timeout = Duration::from_millis(20);
+    // Not the behaviour under test: the margin that makes the descendant
+    // certainly exist when the timeout reaches it. Without it a kill that
+    // lands before the fixture has spawned anything would pass this test
+    // while proving nothing.
+    config.timeout = Duration::from_secs(2);
 
     let session = run_agent(&config).expect("timeout is recorded");
-    std::thread::sleep(Duration::from_millis(250));
 
     assert_eq!(session.status, AgentStatus::TimedOut);
-    assert!(!workspace.path().join("descendant-survived").exists());
+    let recorded_pid = fs::read_to_string(workspace.path().join("descendant-pid")).expect(
+        "the fixture spawned a descendant and recorded it before the 2s timeout reached it",
+    );
+    let descendant = recorded_pid.trim().to_string();
+    // Well short of the 20s the descendant would live on its own: a descendant
+    // that escaped the kill is unmistakably still running when this expires,
+    // and one that received it is gone within milliseconds.
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while process_is_running(&descendant) {
+        assert!(
+            Instant::now() < deadline,
+            "descendant {descendant} was still running 5s after the agent timed out, so the \
+             timeout did not reach the process group"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        !workspace.path().join("descendant-survived").exists(),
+        "the descendant is gone now, but it stayed alive for the 20s its file costs, so the \
+         timeout reached the process group far later than the 2s it was given"
+    );
+}
+
+/// Is this pid still a running process?
+///
+/// `kill -0` cannot answer that: it succeeds for a terminated process whose
+/// exit status nobody has collected yet, and an orphaned descendant is
+/// reparented to a PID 1 that may never collect it — in this repository's own
+/// container, PID 1 is a `node` process holding hundreds of such entries. The
+/// state column separates the two: `Z` is a process that has already
+/// terminated, which is what this test wants to see.
+#[cfg(unix)]
+fn process_is_running(pid: &str) -> bool {
+    let observation = Command::new("ps")
+        .args(["-o", "state=", "-p", pid])
+        .output()
+        .expect("ps is available");
+    if !observation.status.success() {
+        return false;
+    }
+    let state = String::from_utf8_lossy(&observation.stdout);
+    let state = state.trim();
+    !state.is_empty() && !state.starts_with('Z')
 }
 
 #[test]
@@ -274,14 +331,18 @@ fn verification_timeout_is_recorded_and_fails_the_session() {
     assert!(!session.passed());
     assert_eq!(session.verification.len(), 1);
     assert!(session.verification[0].timed_out);
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "verification_started"));
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "verification_timed_out"));
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "verification_started")
+    );
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "verification_timed_out")
+    );
 }
 
 #[test]
@@ -375,14 +436,18 @@ fn council_results_are_formalized_summarized_and_cross_checked() {
 
     assert_eq!(report.schema, "formal-ai-agent-synthesis-v1");
     assert_eq!(report.sources.len(), 2);
-    assert!(report
-        .sources
-        .iter()
-        .all(|source| source.meta_language.starts_with("formalization_candidate")));
-    assert!(report
-        .claims
-        .iter()
-        .any(|claim| claim.text.contains("Rust is memory safe") && claim.presented));
+    assert!(
+        report
+            .sources
+            .iter()
+            .all(|source| source.meta_language.starts_with("formalization_candidate"))
+    );
+    assert!(
+        report
+            .claims
+            .iter()
+            .any(|claim| claim.text.contains("Rust is memory safe") && claim.presented)
+    );
     assert!(!report.contradictions.is_empty());
     assert!(!report.corrections.is_empty());
     assert_eq!(report.fact_check_scope, "cross_agent_evidence_preflight");
@@ -407,10 +472,12 @@ fn council_results_are_formalized_summarized_and_cross_checked() {
     .expect("Russian translation");
     assert_eq!(report.final_language, "ru");
     assert!(!report.translation_required);
-    assert!(report
-        .translation
-        .as_ref()
-        .is_some_and(|translation| translation.session_sha256 == "translator-session-sha256"));
+    assert!(
+        report
+            .translation
+            .as_ref()
+            .is_some_and(|translation| translation.session_sha256 == "translator-session-sha256")
+    );
 }
 
 #[test]
@@ -545,13 +612,17 @@ fn repeated_orchestration_sessions_feed_human_gated_adapter_learning() {
         formal_ai::learn_client_contracts(&observations, &formal_ai::seed::client_integrations());
 
     assert!(report.awaiting_human_review);
-    assert!(report
-        .proposals
-        .iter()
-        .any(|proposal| proposal.field == "orchestration_target"));
-    assert!(report
-        .links_notation()
-        .contains("decision \"awaiting_human_review\""));
+    assert!(
+        report
+            .proposals
+            .iter()
+            .any(|proposal| proposal.field == "orchestration_target")
+    );
+    assert!(
+        report
+            .links_notation()
+            .contains("decision \"awaiting_human_review\"")
+    );
 }
 
 #[test]
@@ -616,19 +687,23 @@ fn a_proven_false_claim_resumes_the_same_native_session_with_parent_evidence() {
         corrected.task
     );
     assert!(corrected.task.contains("The release date is 2027."));
-    assert!(corrected
-        .task
-        .contains("The signed release record says 2026."));
+    assert!(
+        corrected
+            .task
+            .contains("The signed release record says 2026.")
+    );
     assert!(
         corrected
             .task
             .ends_with("Complete this correction goal: The corrected release date is 2026."),
         "the task must remain last so literal task parsers cannot consume correction evidence"
     );
-    assert!(corrected
-        .events
-        .iter()
-        .any(|event| event.kind == "native_session_resumed"));
+    assert!(
+        corrected
+            .events
+            .iter()
+            .any(|event| event.kind == "native_session_resumed")
+    );
 }
 
 #[test]
@@ -737,10 +812,12 @@ fn custom_output_directory_inside_workspace_is_excluded_from_candidate_copies() 
 
     assert_eq!(report.sessions.len(), 1);
     assert!(config.output_dir.join("comparison-ledger.json").is_file());
-    assert!(!config
-        .output_dir
-        .join("candidates/000-codex/agent-artifacts")
-        .exists());
+    assert!(
+        !config
+            .output_dir
+            .join("candidates/000-codex/agent-artifacts")
+            .exists()
+    );
 }
 
 #[test]

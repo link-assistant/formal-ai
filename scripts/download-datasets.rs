@@ -6,6 +6,9 @@
 //!   rust-script scripts/download-datasets.rs --output data
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! lino-objects-codec = "0.2.1"
 //! ```

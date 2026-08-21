@@ -1,0 +1,34 @@
+# Runs 32474308269 (`Task Ladder`) and 32474308365 (`Question necessity ratchet`) on
+# commit 41c543964: both failed in `Run ./.github/actions/setup-sccache`, before any
+# repository code ran, because github.com's release CDN answered 504 to the sccache
+# download three times in a row. The action's own retry ladder (13s, 16s) is shorter
+# than the outage was. Neither failure is a defect in this branch, and a re-run of
+# each cleared it -- recorded because "two workflows went red" and "two workflows
+# could not fetch a compiler cache" look identical in the run list.
+
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:48:59.6880041Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:10.7887817Z Unexpected HTTP response: 504
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:10.7888128Z Waiting 13 seconds before trying again
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:23.8836705Z Unexpected HTTP response: 504
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:23.8837067Z Waiting 16 seconds before trying again
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:39.9791648Z ##[error]Error: Unexpected HTTP response: 504
+Task Ladder (issue #984)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:39.9829694Z ##[end-action id=__self.__run;outcome=skipped;conclusion=skipped;duration_ms=0]
+
+Question necessity ratchet (issue #920)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:17.0096486Z Unexpected HTTP response: 504
+Question necessity ratchet (issue #920)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:31.0882331Z Unexpected HTTP response: 504
+Question necessity ratchet (issue #920)	Run ./.github/actions/setup-sccache	2026-08-21T10:49:48.1714605Z ##[error]Error: Unexpected HTTP response: 504
+
+# The `outcome=skipped` line above is the structural half worth keeping. When the
+# install fails, `Enable sccache for Rust` never runs, so `RUSTC_WRAPPER` is never
+# exported and the job would have compiled perfectly well without the cache -- just
+# slower. The step is fatal anyway, which is what turned an upstream CDN hiccup into
+# two red workflows.
+
+$ grep -c 'setup-sccache' .github/workflows/*.yml | awk -F: '{s+=$2} END {print s}'
+12
+$ grep -l 'setup-sccache' .github/workflows/*.yml | wc -l
+8
+
+$ gh run rerun 32474308269 --repo link-assistant/formal-ai --failed
+$ gh run rerun 32474308365 --repo link-assistant/formal-ai --failed
+# both green on the re-run, same commit, nothing changed

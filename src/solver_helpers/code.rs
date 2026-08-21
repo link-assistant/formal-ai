@@ -8,7 +8,7 @@
 //! path resolving unchanged.
 
 use super::{extract_backticked, extract_fenced_block, extract_quoted_phrase};
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::proof_program::FormalProof;
 
 pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {

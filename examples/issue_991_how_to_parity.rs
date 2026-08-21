@@ -27,7 +27,7 @@ use std::fmt::Write as _;
 use std::fs;
 use std::path::Path;
 
-use formal_ai::how_to_guide::{synthesize_how_to_guide, GuideBounds, ServicePreferences};
+use formal_ai::how_to_guide::{GuideBounds, ServicePreferences, synthesize_how_to_guide};
 use formal_ai::service_accessibility::ServiceAccessibilityCache;
 use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
