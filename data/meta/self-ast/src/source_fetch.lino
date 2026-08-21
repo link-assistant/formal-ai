@@ -2,10 +2,10 @@ self_ast_census
   target src/source_fetch.rs
   language rust
   fidelity signature
-  byte_len 12199
-  line_count 395
-  content_id source_module_1b6d34fe4bf36583
-  symbol_count 38
+  byte_len 12946
+  line_count 413
+  content_id source_module_31de488fdb48d779
+  symbol_count 39
   symbols
     const CACHE_FORMAT_VERSION 21 21
     const LEGACY_CACHE_FORMAT_VERSION 22 22
@@ -43,5 +43,6 @@ self_ast_census
     function cache_error 373 375
     function cache_diagnostic 377 379
     function sha256_hex 382 384
-    function unix_now 386 390
-    function format_timestamp 392 395
+    function hex_lower 396 402
+    function unix_now 404 408
+    function format_timestamp 410 413

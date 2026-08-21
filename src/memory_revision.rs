@@ -41,8 +41,6 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use sha2::{Digest as _, Sha256};
-
 use crate::engine::stable_id;
 use crate::memory::MemoryEvent;
 
@@ -52,9 +50,7 @@ const CRATE_EDITION: &str = env!("FORMAL_AI_CRATE_EDITION");
 
 /// Content digest of `bytes`, in the hexadecimal form the baseline pin records.
 fn digest(bytes: &[u8]) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(bytes);
-    format!("{:x}", hasher.finalize())
+    crate::source_fetch::sha256_hex(bytes)
 }
 
 /// The digests of the test files a version is not allowed to change.

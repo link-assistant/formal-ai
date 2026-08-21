@@ -8,7 +8,6 @@
 //! request cannot stop after its first observable effect.
 
 use serde_json::{json, Value};
-use sha2::{Digest, Sha256};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
@@ -498,7 +497,7 @@ fn plan_digest_verification(
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    let digest = format!("{:x}", Sha256::digest(expected.as_bytes()));
+    let digest = crate::source_fetch::sha256_hex(expected.as_bytes());
     let intent = if observed.split_whitespace().next() == Some(digest.as_str()) {
         "coding_workspace_effect_observed"
     } else {

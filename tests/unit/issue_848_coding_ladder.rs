@@ -5,7 +5,6 @@
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
-use sha2::{Digest, Sha256};
 
 const CREATE_RUST_FUNCTION: &str = "Create a new file src/si_units.rs in this repository \
     containing a single public Rust function millimetres_to_metres that takes an f64 and \
@@ -367,7 +366,7 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
         "sha256sum -- src/web_search_core.rs",
         "verification must not return the whole large source through Agent"
     );
-    let digest = format!("{:x}", Sha256::digest(AFTER.as_bytes()));
+    let digest = formal_ai::sha256_hex(AFTER.as_bytes());
     push_result(
         &mut messages,
         "agent_verify",
@@ -509,7 +508,7 @@ fn composite_module_uses_a_compact_agent_registration_edit() {
         json_arguments(&verify_lib.arguments)["command"],
         "sha256sum -- src/lib.rs"
     );
-    let digest = format!("{:x}", Sha256::digest(LIB_AFTER.as_bytes()));
+    let digest = formal_ai::sha256_hex(LIB_AFTER.as_bytes());
     push_result(
         &mut messages,
         "agent_verify_lib",

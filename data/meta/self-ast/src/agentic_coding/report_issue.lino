@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 19665
-  line_count 542
-  content_id source_module_6b7ffe3931831aeb
+  byte_len 19699
+  line_count 544
+  content_id source_module_83472b3b78a9e7be
   symbol_count 46
   symbols
     const REPORT_BODY_COMMAND 14 14
@@ -32,37 +32,37 @@ self_ast_census
     function plan_report_flow 56 144
     function ask_or_render 146 186
     function localized 188 190
-    function localized_options 192 199
-    function is_report_question 201 210
-    function answer_texts 212 222
-    function parse_targets 224 242
-    function parse_contents 244 253
-    function matches_option 255 266
-    function is_report_intent 269 281
-    function report_action_governs_subject 283 327
-    function commands_for_targets 336 349
-    function command_for 351 372
-    function export_command 379 395
-    function learning_command 397 404
-    function github_command 411 446
-    function source_name 448 454
-    function dialog_id 464 469
-    function report_title 471 476
-    function title_turns 483 493
-    function report_finished 496 526
-    function formal_ai_repo 528 530
-    function config 532 536
-    function render 538 542
+    function localized_options 192 201
+    function is_report_question 203 212
+    function answer_texts 214 224
+    function parse_targets 226 244
+    function parse_contents 246 255
+    function matches_option 257 268
+    function is_report_intent 271 283
+    function report_action_governs_subject 285 329
+    function commands_for_targets 338 351
+    function command_for 353 374
+    function export_command 381 397
+    function learning_command 399 406
+    function github_command 413 448
+    function source_name 450 456
+    function dialog_id 466 471
+    function report_title 473 478
+    function title_turns 485 495
+    function report_finished 498 528
+    function formal_ai_repo 530 532
+    function config 534 538
+    function render 540 544
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14228
-    named_node_count 2873
-    distinct_node_kinds 76
+    total_link_count 14264
+    named_node_count 2879
+    distinct_node_kinds 77
     node_kinds
-      arguments 260
+      arguments 261
       array_expression 7
       array_type 13
       assignment_expression 1
@@ -72,7 +72,7 @@ self_ast_census
       binary_expression 24
       block 56
       boolean_literal 10
-      call_expression 260
+      call_expression 261
       closure_expression 38
       closure_parameters 38
       const_item 20
@@ -84,20 +84,20 @@ self_ast_census
       enum_variant_list 2
       escape_sequence 11
       expression_statement 56
-      field_expression 194
-      field_identifier 195
+      field_expression 196
+      field_identifier 196
       field_initializer 1
       field_initializer_list 1
       for_expression 1
       function_item 24
       function_modifiers 1
-      generic_function 4
+      generic_function 5
       generic_type 11
-      identifier 695
+      identifier 696
       if_expression 12
-      index_expression 6
+      index_expression 4
       inner_doc_comment_marker 1
-      integer_literal 16
+      integer_literal 15
       let_condition 3
       let_declaration 49
       lifetime 1
@@ -120,6 +120,7 @@ self_ast_census
       scoped_identifier 64
       scoped_type_identifier 1
       scoped_use_list 4
+      slice_pattern 1
       source_file 1
       string_content 90
       string_literal 84
@@ -131,7 +132,7 @@ self_ast_census
       tuple_pattern 20
       tuple_struct_pattern 5
       tuple_type 3
-      type_arguments 15
+      type_arguments 16
       type_identifier 55
       unary_expression 11
       use_as_clause 1

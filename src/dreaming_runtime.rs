@@ -155,8 +155,7 @@ pub fn learning_cycle_record_path(memory_path: &Path) -> std::path::PathBuf {
 #[must_use]
 pub fn dreaming_disabled() -> bool {
     std::env::var("FORMAL_AI_DREAMING")
-        .ok()
-        .is_some_and(|value| matches!(value.to_ascii_lowercase().as_str(), "0" | "off" | "false"))
+        .is_ok_and(|value| matches!(value.to_ascii_lowercase().as_str(), "0" | "off" | "false"))
 }
 
 fn now_seconds() -> u64 {
