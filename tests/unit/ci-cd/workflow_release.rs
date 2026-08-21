@@ -603,6 +603,46 @@ fn the_research_harness_declares_an_mcp_tool_call_timeout() {
     );
 }
 
+/// Issue #534 forbids caching `target/` in CI, and the reason is disk rather
+/// than taste: a hosted ubuntu runner ships ~14 GB free, seven jobs already run
+/// `scripts/free-runner-disk.sh` to survive, and a job that exhausts `/` takes
+/// the runner down with no failed step and no log to download. A cached target
+/// tree measured 930 MB per job on top of that.
+///
+/// The guard read three hand-listed files, so `agentic-cli-matrix.yml` and
+/// `external-benchmarks.yml` cached it unnoticed. It now reads every workflow;
+/// this test pins that it does, because a policy enforced over part of the tree
+/// reports compliance it has not checked.
+#[test]
+fn the_disk_policy_reads_every_workflow_not_a_hand_listed_few() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let guard = fs::read_to_string(format!("{manifest_dir}/scripts/check-disk-usage-policy.rs"))
+        .expect("disk usage policy guard should be readable");
+
+    assert!(
+        guard.contains(r#"fs::read_dir(".github/workflows")"#),
+        "the disk policy must sweep the workflow directory, or a workflow it \
+         does not list can cache the target tree unnoticed"
+    );
+
+    let dir = format!("{manifest_dir}/.github/workflows");
+    let mut checked = 0;
+    for entry in fs::read_dir(&dir).expect("workflow directory should be readable") {
+        let path = entry.expect("directory entry").path();
+        if path.extension().is_none_or(|ext| ext != "yml") {
+            continue;
+        }
+        let workflow = fs::read_to_string(&path).expect("workflow should be readable");
+        assert!(
+            !workflow.lines().any(|line| line.trim() == "target"),
+            "{} caches the target tree, which issue #534 forbids",
+            path.display()
+        );
+        checked += 1;
+    }
+    assert!(checked > 0, "the sweep must actually find workflows");
+}
+
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
 /// between tool turns. If that unrelated provider is unavailable, the client
 /// exits before returning the tool result to Formal AI.
