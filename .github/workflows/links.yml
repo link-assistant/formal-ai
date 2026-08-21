@@ -80,6 +80,13 @@ jobs:
           # while serving them normally outside CI; `main` shows the same
           # 12x502 / 16x503 spread, so this is not specific to any branch.
           #
+          # `--accept-timeouts` is the same principle one step further: a
+          # timeout describes the host's latency, not the link. eur-lex.europa.eu
+          # stopped answering entirely on 2026-08-21 -- 45 s with no response
+          # from a workstation, well past the 30 s budget here -- and reddened
+          # both open pull requests over three LEGAL-COMPLIANCE.md citations
+          # neither of them touches.
+          #
           # `--cache-exclude-status` keeps those verdicts out of the cache so
           # the next run re-checks for real instead of replaying a bad answer
           # for `--max-cache-age 1d`. Without it, accepting these codes would
@@ -92,6 +99,7 @@ jobs:
             --max-retries 3
             --timeout 30
             --accept '200..=204,429,500..=599'
+            --accept-timeouts
             --cache-exclude-status '429,500..=599'
             --host-concurrency 2
             --host-request-interval 100ms
