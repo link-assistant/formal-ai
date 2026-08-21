@@ -1377,8 +1377,9 @@ by lowering it.
     it, because the one number that would close it was never printed.
 
     Re-run on the same commit with nothing changed, the shard passed in 620s —
-    52% of the budget. Three observations of one piece of work: 620s, 838s,
-    1200s-and-terminated.
+    52% of the budget. The commit that carries the reporter, on the same
+    lockfile, then took 603s (job 96736754559). Four observations of one piece
+    of work: 603s, 620s, 838s, 1200s-and-terminated.
 
     One thing that looked like the cause and is not, because ruling it out is
     part of the answer: both runs logged
@@ -1404,6 +1405,15 @@ by lowering it.
     pin it, and the two positive ones were falsified against the previous
     script. That is the standing debug-output clause applied to CI: the next
     person to meet this red job reads the answer instead of narrowing it.
+
+    Half of that is confirmed on a real runner and half is not, which is worth
+    saying rather than rounding up. Job 96736754559 finished at 603s, half the
+    budget and below the 70% threshold, and `grep -c '[budget]'` over its log
+    returns `0` — a healthy step is exactly as quiet as before. The other half,
+    counters printed by a step that is genuinely terminated, has still only been
+    observed against the stand-in sccache the unit tests drive, because no CI
+    step has blown its budget since. It stays *not yet confirmed* in the
+    traceability table until one does.
 
     What deliberately did **not** change is the 1200s. The shard's own error
     text offers three ways out — speed up, repartition, or raise the budget with
