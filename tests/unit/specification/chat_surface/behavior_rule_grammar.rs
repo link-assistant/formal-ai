@@ -7,7 +7,7 @@
 //! grammar it has to read, which is why they read as a set and split off as
 //! one.
 
-use formal_ai::{ConversationTurn, SolverConfig, UniversalSolver};
+use formal_ai::{ConversationTurn, UniversalSolver};
 
 use super::answer;
 
