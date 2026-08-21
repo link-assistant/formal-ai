@@ -148,3 +148,27 @@ _Alerts not introduced by this pull request might have been detected because the
 #
 # 101 -> 2 on the branch, 0 critical, and the check that reported 98 critical
 # security vulnerabilities on the previous head now reports none.
+
+== what the rename left behind ==
+# `Test (ubuntu-latest / full)` on b86c529b9 failed, and not on CodeQL:
+#   gh api repos/link-assistant/formal-ai/actions/jobs/96789209855
+#   {"conclusion":"failure","name":"Test (ubuntu-latest / full)",
+#    "steps":["Check self-AST census freshness"]}
+#
+# and the same two failures locally, 850s into the unit suite:
+#   issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render
+#     committed self-AST census has drifted:
+#       stale data/meta/self-ast/src/cli_improve.lino
+#       stale data/meta/self-ast/src/promotion.lino
+#       stale data/meta/self-ast/src/promotion/materialize.lino
+#       stale data/meta/self-ast/src/translation/selection.lino
+#   docs_requirements_issue_1021::every_test_the_traceability_rows_cite_exists
+#     unrecognised citation before `::` in a traceability row: under
+#
+# The first is the census keyed by content id: renaming symbols in four modules
+# changes their content ids, so four committed documents had to be rewritten.
+# `cargo run --example regenerate_self_ast_census` rewrote exactly those four
+# ("490 documents (4 rewritten, 0 removed)"). The second is this branch's own
+# citation gate refusing the prose "nine parser tests under ::parser", because a
+# `::` it cannot attribute to a file is a citation it would otherwise skip in
+# silence; the nine are now cited by name and each is checked to exist.

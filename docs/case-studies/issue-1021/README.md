@@ -1545,4 +1545,16 @@ by lowering it.
     verdict: until every configured language has uploaded, the check reports
     the absence of an answer in the same slot where it later reports one.
 
+    One thing the rename broke, and the tree caught it rather than a reviewer:
+    `data/meta/self-ast/` holds a committed census of every owned module, keyed
+    by content id, so renaming four files' symbols made four census documents
+    stale and `issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render`
+    fail. `cargo run --example regenerate_self_ast_census` rewrote exactly those
+    four. Worth naming because of where the failure surfaced: `Test (ubuntu-latest / full)`
+    reports it in a *"Check self-AST census freshness"* step, and locally it is
+    850 seconds into the unit suite, so a rename that looks complete because it
+    compiles and passes the targeted tests is not yet complete. The lesson
+    generalises past this rename -- a derived artifact committed next to its
+    source is a second place every source edit has to land.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297
