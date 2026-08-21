@@ -1,15 +1,15 @@
 //! Acceptance regressions for issue #709: statement-level search fusion.
 
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::seed;
 use formal_ai::web_search_fusion_core::fuse_statement_search_payload;
 use formal_ai::{
-    execute_search_fusion, telegram_html_from_markdown, try_web_search_with_client,
     CachedSourceClient, EventLog, FetchError, SearchSourceClassification, SourceTier,
-    SourceTransport,
+    SourceTransport, execute_search_fusion, telegram_html_from_markdown,
+    try_web_search_with_client,
 };
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
@@ -34,16 +34,20 @@ fn browser_wasm_core_deformalizes_and_preserves_exact_provenance() {
         "original_first_party"
     );
     let evidence = fused["evidence"].as_array().expect("evidence array");
-    assert!(evidence.iter().any(|value| value
-        .as_str()
-        .is_some_and(|line| line.contains("wikidata:Q89"))));
-    assert!(fused["lines"]
-        .as_array()
-        .expect("Markdown lines")
-        .iter()
-        .any(|value| value
+    assert!(evidence.iter().any(|value| {
+        value
             .as_str()
-            .is_some_and(|line| line.contains("[Read more](https://foreign.invalid/apple)"))));
+            .is_some_and(|line| line.contains("wikidata:Q89"))
+    }));
+    assert!(
+        fused["lines"]
+            .as_array()
+            .expect("Markdown lines")
+            .iter()
+            .any(|value| value
+                .as_str()
+                .is_some_and(|line| line.contains("[Read more](https://foreign.invalid/apple)")))
+    );
 }
 
 #[test]
@@ -60,18 +64,22 @@ fn browser_wasm_core_detects_each_statement_language_and_uses_target_grammar() {
     assert_eq!(statements.len(), 1, "both languages express one meaning");
     assert_eq!(statements[0]["text"], "सेब फल है.");
     assert_eq!(statements[0]["sources"][0]["language"], "en");
-    assert!(fused["evidence"]
-        .as_array()
-        .expect("evidence array")
-        .iter()
-        .filter_map(serde_json::Value::as_str)
-        .any(|line| line.contains("language=en")));
-    assert!(fused["evidence"]
-        .as_array()
-        .expect("evidence array")
-        .iter()
-        .filter_map(serde_json::Value::as_str)
-        .any(|line| line.contains("language=ru")));
+    assert!(
+        fused["evidence"]
+            .as_array()
+            .expect("evidence array")
+            .iter()
+            .filter_map(serde_json::Value::as_str)
+            .any(|line| line.contains("language=en"))
+    );
+    assert!(
+        fused["evidence"]
+            .as_array()
+            .expect("evidence array")
+            .iter()
+            .filter_map(serde_json::Value::as_str)
+            .any(|line| line.contains("language=ru"))
+    );
 }
 
 #[test]
@@ -88,15 +96,21 @@ fn browser_wasm_core_keeps_both_ranked_conflict_sides() {
     let statements = fused["statements"].as_array().expect("statements array");
 
     assert_eq!(statements.len(), 2);
-    assert!(statements
-        .iter()
-        .all(|statement| statement["conflict"] == true));
-    assert!(statements
-        .iter()
-        .any(|statement| statement["text"] == "The parser is fast."));
-    assert!(statements
-        .iter()
-        .any(|statement| statement["text"] == "The parser is not fast."));
+    assert!(
+        statements
+            .iter()
+            .all(|statement| statement["conflict"] == true)
+    );
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement["text"] == "The parser is fast.")
+    );
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement["text"] == "The parser is not fast.")
+    );
 }
 
 #[test]
@@ -120,13 +134,15 @@ fn browser_wasm_core_uses_fused_rank_and_labels_alternate_provenance() {
 
     assert_eq!(statements.len(), 3);
     assert_eq!(statements[0]["text"], "Zebra target is decisive.");
-    assert!(fused["lines"]
-        .as_array()
-        .expect("Markdown lines")
-        .iter()
-        .any(|value| value
-            .as_str()
-            .is_some_and(|line| line.contains("Other sources"))));
+    assert!(
+        fused["lines"]
+            .as_array()
+            .expect("Markdown lines")
+            .iter()
+            .any(|value| value
+                .as_str()
+                .is_some_and(|line| line.contains("Other sources")))
+    );
 }
 
 #[test]
@@ -300,18 +316,24 @@ fn cached_sources_are_formalized_merged_ranked_and_replayed_deterministically() 
 
     assert_eq!(first.research.search.fused.len(), 3);
     assert_eq!(first.research.pages.len(), 3);
-    assert!(first
-        .observations
-        .iter()
-        .any(|item| item.origin.as_str() == "search_hit"));
-    assert!(first
-        .observations
-        .iter()
-        .any(|item| item.origin.as_str() == "fetched_source"));
-    assert!(first
-        .observations
-        .iter()
-        .all(|item| !item.source_url.is_empty() && !item.formalization.is_empty()));
+    assert!(
+        first
+            .observations
+            .iter()
+            .any(|item| item.origin.as_str() == "search_hit")
+    );
+    assert!(
+        first
+            .observations
+            .iter()
+            .any(|item| item.origin.as_str() == "fetched_source")
+    );
+    assert!(
+        first
+            .observations
+            .iter()
+            .all(|item| !item.source_url.is_empty() && !item.formalization.is_empty())
+    );
 
     let statement = first
         .answer
@@ -339,11 +361,13 @@ fn cached_sources_are_formalized_merged_ranked_and_replayed_deterministically() 
     let offline = CachedSourceClient::new(&cache, transport);
     let replay = execute_search_fusion(&offline, "apple taxonomy", "en", 3, classify)
         .expect("offline replay");
-    assert!(replay
-        .research
-        .pages
-        .iter()
-        .all(|page| page.capture.cached()));
+    assert!(
+        replay
+            .research
+            .pages
+            .iter()
+            .all(|page| page.capture.cached())
+    );
     assert_eq!(replay.render_markdown(), first.render_markdown());
     assert_eq!(replay.trace(), first.trace());
     assert_eq!(replay.learning_proposal(), proposal);
@@ -403,11 +427,13 @@ fn native_deformalization_uses_data_driven_hindi_word_order() {
     )
     .expect("captured search fusion");
 
-    assert!(execution
-        .answer
-        .statements
-        .iter()
-        .any(|statement| statement.text == "सेब फल है."));
+    assert!(
+        execution
+            .answer
+            .statements
+            .iter()
+            .any(|statement| statement.text == "सेब फल है.")
+    );
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
@@ -436,14 +462,18 @@ fn contradictory_sources_keep_both_sides_with_tiers_and_posteriors() {
     assert_eq!(contested.len(), 2, "neither side may be silently dropped");
     assert!(contested.iter().any(|item| item.text.contains("not fast")));
     assert!(contested.iter().any(|item| !item.text.contains("not fast")));
-    assert!(contested
-        .iter()
-        .all(|item| (0.0..=1.0).contains(&item.posterior.get())));
+    assert!(
+        contested
+            .iter()
+            .all(|item| (0.0..=1.0).contains(&item.posterior.get()))
+    );
     assert_ne!(contested[0].posterior, contested[1].posterior);
-    assert!(contested
-        .iter()
-        .flat_map(|item| &item.sources)
-        .any(|source| source.tier == SourceTier::OriginalFirstParty));
+    assert!(
+        contested
+            .iter()
+            .flat_map(|item| &item.sources)
+            .any(|source| source.tier == SourceTier::OriginalFirstParty)
+    );
     assert!(execution.trace().contains("conflict:source_disagreement"));
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
@@ -534,12 +564,14 @@ fn capture_policy_is_per_statement_and_demotes_exact_mirrors() {
         vec!["https://boundary.invalid/mirror"],
         "an exact page capture contributes zero even when the caller did not pre-classify it"
     );
-    assert!(execution
-        .answer
-        .sources
-        .iter()
-        .find(|source| source.url.ends_with("/mirror"))
-        .is_some_and(|source| source.tier == SourceTier::Unoriginal));
+    assert!(
+        execution
+            .answer
+            .sources
+            .iter()
+            .find(|source| source.url.ends_with("/mirror"))
+            .is_some_and(|source| source.tier == SourceTier::Unoriginal)
+    );
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
@@ -562,10 +594,12 @@ fn cli_http_and_telegram_use_the_same_ranked_source_contract() {
     assert!(answer.answer.contains("Apple is a fruit."));
     assert!(answer.answer.contains("posterior="));
     assert!(answer.answer.contains("Original handbook"));
-    assert!(answer
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("search_fusion:formalization:")));
+    assert!(
+        answer
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("search_fusion:formalization:"))
+    );
 
     let telegram = telegram_html_from_markdown(&answer.answer);
     assert!(telegram.contains("<a href=\"https://facts.invalid/original\">Original handbook</a>"));
@@ -573,7 +607,9 @@ fn cli_http_and_telegram_use_the_same_ranked_source_contract() {
     assert!(telegram.contains("<a href=\"https://facts.invalid/original\">Read more</a>"));
     assert!(!telegram.contains("[Read more]"));
     assert_eq!(
-        telegram_html_from_markdown("```text\n[not a link](https://facts.invalid) **literal**\n```"),
+        telegram_html_from_markdown(
+            "```text\n[not a link](https://facts.invalid) **literal**\n```"
+        ),
         "<pre><code class=\"language-text\">[not a link](https://facts.invalid) **literal**\n</code></pre>"
     );
 

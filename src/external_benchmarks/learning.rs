@@ -10,7 +10,7 @@ use std::fmt::Write as _;
 use crate::agentic_coding::external_benchmark_learning;
 use crate::links_format::format_lino_value_verbatim;
 
-use super::{vocabulary, SuiteRun};
+use super::{SuiteRun, vocabulary};
 
 /// Render a human-review-gated learning proposal from actual run failures.
 ///

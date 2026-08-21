@@ -63,9 +63,11 @@ fn web_and_telegram_acceptance_evidence_is_committed() {
             "Playwright fixture must pin {phrase}"
         );
     }
-    assert!(root()
-        .join("docs/screenshots/issue-709-search-fusion.png")
-        .is_file());
+    assert!(
+        root()
+            .join("docs/screenshots/issue-709-search-fusion.png")
+            .is_file()
+    );
     assert!(read(REGRESSIONS).contains("telegram_html_from_markdown"));
 }
 
@@ -92,10 +94,12 @@ fn case_study_release_and_agent_authorship_evidence_are_committed() {
         "pull-review-comments.json",
         "pull-reviews.json",
     ] {
-        assert!(root()
-            .join("docs/case-studies/issue-709/raw-data")
-            .join(raw)
-            .is_file());
+        assert!(
+            root()
+                .join("docs/case-studies/issue-709/raw-data")
+                .join(raw)
+                .is_file()
+        );
     }
     let fragments = fs::read_dir(root().join("changelog.d")).expect("read changelog fragments");
     let unreleased = fragments.filter_map(Result::ok).any(|entry| {
@@ -108,9 +112,11 @@ fn case_study_release_and_agent_authorship_evidence_are_committed() {
     assert!(decomposition.contains("reviewed_smallest_leaves 13"));
     assert!(decomposition.contains("formal_ai_authored_leaves 7"));
     assert!(decomposition.contains("formal_ai_authored_percent 54"));
-    assert!(root()
-        .join("data/meta/search-fusion-provenance-invariant.lino")
-        .is_file());
+    assert!(
+        root()
+            .join("data/meta/search-fusion-provenance-invariant.lino")
+            .is_file()
+    );
     let agent_leaves = [
         (
             "data/meta/search-fusion-learning-contract.lino",

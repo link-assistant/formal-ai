@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 2070
   line_count 75
-  content_id source_module_e2bc0de84e71906d
+  content_id source_module_6a6e99013cb8966d
   symbol_count 2
   symbols
     function find_assignment 7 48

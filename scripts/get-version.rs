@@ -14,6 +14,9 @@
 //!   - version: The current version from Cargo.toml
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```

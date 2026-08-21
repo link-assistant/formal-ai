@@ -20,8 +20,8 @@
 //! issue #123 asked for: "All features should be supported in all 4 languages".
 
 use formal_ai::event_log::EventLog;
-use formal_ai::question_necessity::{classify_question, enforce_questions, QuestionClass};
-use formal_ai::{seed, FormalAiEngine};
+use formal_ai::question_necessity::{QuestionClass, classify_question, enforce_questions};
+use formal_ai::{FormalAiEngine, seed};
 
 const LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
 

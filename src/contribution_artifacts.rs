@@ -15,7 +15,7 @@
 //! no prose of its own (R379) and a maintainer retunes the phrasing by editing
 //! `data/seed/contribution-artifacts.lino`.
 
-use crate::seed::{contribution_artifact_vocabulary, ContributionArtifactVocabulary};
+use crate::seed::{ContributionArtifactVocabulary, contribution_artifact_vocabulary};
 
 /// What the author of a change supplies; everything else is derived.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_task.rs
   language rust
   fidelity full_ast
-  byte_len 12302
-  line_count 336
-  content_id source_module_69452924e8fdc9b5
+  byte_len 12282
+  line_count 334
+  content_id source_module_1944b6eae7231129
   symbol_count 14
   symbols
     enum RustItemKind 19 23
@@ -16,19 +16,19 @@ self_ast_census
     function render_template 199 204
     function rust_path 206 219
     function is_path_character 221 223
-    function requested_identifier 225 249
-    function slot_identifier 251 282
-    function identifier_tokens 284 287
-    function valid_identifier 289 300
-    function numeric_literals 302 336
+    function requested_identifier 225 247
+    function slot_identifier 249 280
+    function identifier_tokens 282 285
+    function valid_identifier 287 298
+    function numeric_literals 300 334
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9881
-    named_node_count 1968
-    distinct_node_kinds 79
+    total_link_count 9852
+    named_node_count 1963
+    distinct_node_kinds 80
     node_kinds
       abstract_type 1
       arguments 176
@@ -38,7 +38,7 @@ self_ast_census
       attribute 4
       attribute_item 4
       binary_expression 36
-      block 53
+      block 51
       boolean_literal 1
       call_expression 176
       char_literal 14
@@ -52,7 +52,7 @@ self_ast_census
       enum_item 1
       enum_variant 3
       enum_variant_list 1
-      expression_statement 38
+      expression_statement 36
       field_declaration 2
       field_declaration_list 1
       field_expression 140
@@ -64,10 +64,11 @@ self_ast_census
       generic_function 2
       generic_type 11
       identifier 484
-      if_expression 22
+      if_expression 20
       index_expression 8
       inner_doc_comment_marker 8
       integer_literal 17
+      let_chain 1
       let_condition 4
       let_declaration 45
       line_comment 10

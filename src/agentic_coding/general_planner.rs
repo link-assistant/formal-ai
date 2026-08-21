@@ -499,14 +499,13 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         } else {
             request.get(marker_end..)
         };
-        if !marker_leads || first_action_cue_end(&toks).is_some() {
-            if let Some(content) = marker_span
+        if (!marker_leads || first_action_cue_end(&toks).is_some())
+            && let Some(content) = marker_span
                 .and_then(clean_content)
                 .filter(|content| is_literal_content(content))
             {
                 return Some((target, content));
             }
-        }
     }
     let content_span = if cue_is_destination {
         let action_end = first_action_cue_end(&toks)?;

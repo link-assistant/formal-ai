@@ -12,8 +12,8 @@
 //! what the Agent CLI writes — never hand-authored.
 
 use formal_ai::agentic_coding::{
-    plan_chat_step, run_agentic_task, self_ast, self_heal, AgenticPlan, PlannedToolCall,
-    DRIVER_TOOLS,
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, plan_chat_step, run_agentic_task, self_ast,
+    self_heal,
 };
 use formal_ai::{ChatMessage, RepairOutcome, SourceRoundTrip, ToolCall};
 use lino_objects_codec::format::parse_indented;
@@ -47,11 +47,12 @@ fn self_healing_case_closes_the_loop_and_stays_human_gated() {
         case.failure_prompt,
         "List the files but sort the results in reverse order"
     );
-    assert!(case
-        .trace
-        .events
-        .iter()
-        .any(|event| event.kind == "rule_synthesis_candidate"));
+    assert!(
+        case.trace
+            .events
+            .iter()
+            .any(|event| event.kind == "rule_synthesis_candidate")
+    );
 
     // It mapped the failure onto real source that round-trips through the meta
     // language byte-for-byte (source → links → source).

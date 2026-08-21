@@ -12,10 +12,10 @@ use std::io::Write;
 use std::process::{Command, Stdio};
 
 use formal_ai::issue_report::{
-    issue_title, truncate_records, ReportAttachment, ReportBody, ReportField, ReportLabels,
-    ReportTurn, TitleSettings, SECTIONS,
+    ReportAttachment, ReportBody, ReportField, ReportLabels, ReportTurn, SECTIONS, TitleSettings,
+    issue_title, truncate_records,
 };
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 /// A fixture that exercises every section, both `omitted` labels and an
 /// attachment, so a drift anywhere in the document is caught.

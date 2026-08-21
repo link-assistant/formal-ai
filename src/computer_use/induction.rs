@@ -35,7 +35,7 @@ use std::sync::OnceLock;
 use serde_json::Value;
 
 use super::lexicon::{normalize, operation_cues, resource_cue};
-use super::seed::{benchmark_tasks, BenchmarkTask};
+use super::seed::{BenchmarkTask, benchmark_tasks};
 use super::{ComputerPlanStep, ComputerUsePrimitive};
 
 /// Head of the Links Notation record [`LearnedSchemas::links_notation`] emits.
@@ -200,25 +200,25 @@ pub fn induce(tasks: &[BenchmarkTask]) -> LearnedSchemas {
                 attributed[index] = true;
             }
         }
-        if let (Some(last), false) = (body_operations.last(), verification.is_empty()) {
-            if body_operations.len() >= body.len() {
-                verifications
-                    .entry(last.clone())
-                    .or_default()
-                    .push(verification.to_vec());
-            }
+        if let (Some(last), false) = (body_operations.last(), verification.is_empty())
+            && body_operations.len() >= body.len()
+        {
+            verifications
+                .entry(last.clone())
+                .or_default()
+                .push(verification.to_vec());
         }
         // The fetch operation is realised by the materialisation prefix.
-        if operations.iter().any(|slug| slug == FETCH_OPERATION) && materialised > 0 {
-            if let Some(step) = task.steps[..materialised]
+        if operations.iter().any(|slug| slug == FETCH_OPERATION)
+            && materialised > 0
+            && let Some(step) = task.steps[..materialised]
                 .iter()
                 .find(|step| step.primitive == ComputerUsePrimitive::HttpFetch)
-            {
-                observations
-                    .entry(FETCH_OPERATION.to_owned())
-                    .or_default()
-                    .push((task.id.clone(), step.clone()));
-            }
+        {
+            observations
+                .entry(FETCH_OPERATION.to_owned())
+                .or_default()
+                .push((task.id.clone(), step.clone()));
         }
         for (index, step) in body.iter().enumerate() {
             if !attributed[index] {

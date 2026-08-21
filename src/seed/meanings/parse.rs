@@ -9,7 +9,7 @@
 //! of the seed file-size guard (mirroring [`super::super::roles`]).
 
 use super::{Lexeme, Lexicon, Meaning, SemanticFacet, WordForm};
-use crate::seed::parser::{decode_codepoints, parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, decode_codepoints, parse_lino};
 
 pub(super) fn parse_lexicon(text: &str) -> Lexicon {
     let root = parse_lino(text);

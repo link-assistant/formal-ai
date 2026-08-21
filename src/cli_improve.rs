@@ -3,8 +3,8 @@ use std::path::PathBuf;
 
 use crate::load_memory_or_empty;
 use formal_ai::{
-    agent_info, apply_promotions, export_memory_full, parse_promotion_proposals,
-    replay_promotion_gates, BundleInfo, MemoryStore, PromotionRun,
+    BundleInfo, MemoryStore, PromotionRun, agent_info, apply_promotions, export_memory_full,
+    parse_promotion_proposals, replay_promotion_gates,
 };
 
 /// Arguments for `formal-ai improve` (issue #656, E37).
@@ -159,10 +159,10 @@ fn write_full_memory_backup(
         ..BundleInfo::default()
     };
     let text = export_memory_full(&seed, store.events(), &[], &info);
-    if let Some(parent) = path.parent() {
-        if !parent.as_os_str().is_empty() {
-            std::fs::create_dir_all(parent)?;
-        }
+    if let Some(parent) = path.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        std::fs::create_dir_all(parent)?;
     }
     std::fs::write(path, text)?;
     eprintln!(

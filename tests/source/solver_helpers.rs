@@ -8,10 +8,10 @@
 //! concept knowledge base lives in [`crate::concepts`]; this module
 //! re-exports nothing — callers import those modules directly.
 
-use crate::engine::{normalize_prompt, ExecutionStatus, ProgramSpec, SelectedRule};
+use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::intent_formalization::{formalize_intent, IntentKind};
-use crate::language::{detect as detect_language, Language};
+use crate::intent_formalization::{IntentKind, formalize_intent};
+use crate::language::{Language, detect as detect_language};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecomposedSubImpulse {

@@ -2,8 +2,8 @@
 
 use formal_ai::agentic_coding::learning_report::self_hosting_learning;
 use formal_ai::agentic_coding::{
-    run_agentic_task, LearningReport, REPORTS, SELF_HOSTING_LEARNING_PATH,
-    SELF_HOSTING_LEARNING_TASK,
+    LearningReport, REPORTS, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,
+    run_agentic_task,
 };
 
 #[test]
@@ -19,8 +19,11 @@ fn self_hosting_learning_is_derived_and_review_gated() {
     assert!(first.contains("self_hosting_learning_report"));
     assert!(first.contains("issue \"657\""));
     assert!(first.contains("decision \"awaiting_human_review\""));
-    assert!(first
-        .contains("promotion_gate \"metric_fixture_exact_share_and_honest_ledger_ratchet_pass\""));
+    assert!(
+        first.contains(
+            "promotion_gate \"metric_fixture_exact_share_and_honest_ledger_ratchet_pass\""
+        )
+    );
     assert!(first.contains("lesson:trailer-provenance"));
     assert!(first.contains("lesson:honest-baseline"));
     assert!(first.contains("lesson:changed-line-weighting"));
@@ -223,7 +226,9 @@ fn a_report_ranks_any_persisted_network() {
     assert!(document.contains("promotion_gate \"fixture_gate\""));
     assert!(document.contains("expression_count \"1\""));
     assert!(document.contains("observation:only"));
-    assert!(FIXTURE
-        .final_answer(&document)
-        .contains("ranked 1 fixture observations"));
+    assert!(
+        FIXTURE
+            .final_answer(&document)
+            .contains("ranked 1 fixture observations")
+    );
 }

@@ -6,11 +6,11 @@
 //! checklist, and the multilingual tests pin it in all four supported
 //! languages so recognition can only come from the seed lexicon (issue #386).
 
-use formal_ai::recursive_execution::{solve_recursively, RecursiveTask, TaskAttempt, TaskExecutor};
+use formal_ai::recursive_execution::{RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively};
 use formal_ai::task_decomposition::{
-    decompose_task, decompose_task_with_ledger, is_checkable, split_once_checkable,
-    task_decomposition_contract, Decomposition, TaskLearningApproval, TaskLearningGate,
-    TaskStrategyLedger, TaskStrategyProposal, CONTRACT_LINO,
+    CONTRACT_LINO, Decomposition, TaskLearningApproval, TaskLearningGate, TaskStrategyLedger,
+    TaskStrategyProposal, decompose_task, decompose_task_with_ledger, is_checkable,
+    split_once_checkable, task_decomposition_contract,
 };
 use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
 
@@ -489,20 +489,22 @@ fn failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_acti
     assert!(proposal.links_notation().contains("human_review_required"));
 
     let mut red = TaskStrategyLedger::new();
-    assert!(red
-        .promote(
+    assert!(
+        red.promote(
             &proposal,
             TaskLearningGate::failed("task_decomposition_specification", 12, 1),
             TaskLearningApproval::granted("maintainer"),
         )
-        .is_err());
-    assert!(red
-        .promote(
+        .is_err()
+    );
+    assert!(
+        red.promote(
             &proposal,
             TaskLearningGate::passed("task_decomposition_specification", 13),
             TaskLearningApproval::declined("maintainer"),
         )
-        .is_err());
+        .is_err()
+    );
 
     let mut reviewed = TaskStrategyLedger::new();
     reviewed

@@ -5,10 +5,10 @@
 //! materialized without effects; promotion and execution require separate
 //! named review and green-gate values.
 
-use formal_ai::algorithm_discovery::{
-    discover_algorithms, traces_from_memory_events, ArgumentPattern,
-};
 use formal_ai::MemoryStore;
+use formal_ai::algorithm_discovery::{
+    ArgumentPattern, discover_algorithms, traces_from_memory_events,
+};
 
 fn main() {
     let mut memory = MemoryStore::new();

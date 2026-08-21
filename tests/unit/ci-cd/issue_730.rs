@@ -17,11 +17,13 @@ fn every_desktop_job_has_a_bounded_runtime_and_least_privilege() {
         desktop.contains("permissions:\n  contents: read"),
         "workflow default must be read-only"
     );
-    assert!(!desktop
-        .split("\njobs:\n")
-        .next()
-        .unwrap()
-        .contains("\nconcurrency:\n"));
+    assert!(
+        !desktop
+            .split("\njobs:\n")
+            .next()
+            .unwrap()
+            .contains("\nconcurrency:\n")
+    );
     for (job, next) in [
         ("resolve", "build"),
         ("build", "vscode"),
@@ -98,11 +100,13 @@ fn main_pipeline_defaults_to_read_only_permissions() {
         release.contains("permissions:\n  contents: read"),
         "ordinary CI jobs must not inherit repository write permissions"
     );
-    assert!(!release
-        .split("\njobs:\n")
-        .next()
-        .unwrap()
-        .contains("\nconcurrency:\n"));
+    assert!(
+        !release
+            .split("\njobs:\n")
+            .next()
+            .unwrap()
+            .contains("\nconcurrency:\n")
+    );
 }
 
 #[test]

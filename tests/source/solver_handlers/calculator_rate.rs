@@ -1,7 +1,7 @@
 //! Calculator-backed answers about rates used for currency calculations.
 
-use crate::calculation::{evaluate_calculation, CalculationEvaluation};
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::calculation::{CalculationEvaluation, evaluate_calculation};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;
@@ -66,9 +66,7 @@ fn rate_basis_answer(
         "hi" => format!(
             "मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}."
         ),
-        "zh" => format!(
-            "货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}."
-        ),
+        "zh" => format!("货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}."),
         _ => format!(
             "For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}."
         ),

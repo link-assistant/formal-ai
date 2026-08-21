@@ -15,7 +15,7 @@ use std::time::Duration;
 use formal_ai::bounded_autonomy::{
     AutonomyMode, AutonomyPolicy, LoopStep, ManualClock, RecoveryLoop, Resolution, ResolutionOption,
 };
-use formal_ai::memory_revision::{rustc_verdict, AttemptOutcome, RevisionLedger};
+use formal_ai::memory_revision::{AttemptOutcome, RevisionLedger, rustc_verdict};
 
 fn main() {
     stuck_run();

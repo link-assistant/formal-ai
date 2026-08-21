@@ -5,7 +5,7 @@
 //! through chat, but the chat surface should not leak diagnostic ids or
 //! internal state into the user-facing prose by default.
 
-use formal_ai::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SymbolicAnswer, knowledge_links_notation};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)

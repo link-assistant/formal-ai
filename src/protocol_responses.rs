@@ -266,10 +266,10 @@ fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
 }
 
 fn constrain_to_schema(value: Value, schema: &Value, name: &str, user_prompt: &str) -> Value {
-    if let Some(allowed) = schema.get("enum").and_then(Value::as_array) {
-        if !allowed.contains(&value) {
-            return allowed.first().cloned().unwrap_or(value);
-        }
+    if let Some(allowed) = schema.get("enum").and_then(Value::as_array)
+        && !allowed.contains(&value)
+    {
+        return allowed.first().cloned().unwrap_or(value);
     }
     match schema.get("type").and_then(Value::as_str) {
         Some("object") => {

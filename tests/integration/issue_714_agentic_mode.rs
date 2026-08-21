@@ -36,12 +36,13 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
     // pasted into an argument. `formal-ai report body` exports it and renders the
     // six-section document around it, and `gh` files that file — so what this test
     // pins is unchanged: both logs are gathered, and no HTTP client is involved.
-    assert!(arguments["command"].as_str().is_some_and(|command| command
-        .contains("gh issue create")
-        && command.contains("formal-ai report body")
-        && command.contains("--source both")
-        && command.contains("--body-file")
-        && !command.contains("curl")));
+    assert!(arguments["command"].as_str().is_some_and(
+        |command| command.contains("gh issue create")
+            && command.contains("formal-ai report body")
+            && command.contains("--source both")
+            && command.contains("--body-file")
+            && !command.contains("curl")
+    ));
 }
 
 #[test]
@@ -74,9 +75,11 @@ fn responses_routes_report_to_any_run_capability_alias() {
         .find(|item| item["type"] == "function_call")
         .expect("report should emit a Responses function call");
     assert_eq!(call["name"], "run_command");
-    assert!(call["arguments"]
-        .as_str()
-        .is_some_and(|arguments| arguments.contains("gh issue create")));
+    assert!(
+        call["arguments"]
+            .as_str()
+            .is_some_and(|arguments| arguments.contains("gh issue create"))
+    );
 }
 
 #[test]
@@ -107,9 +110,11 @@ fn gemini_routes_localized_report_to_shell_alias() {
         .find_map(|part| part.get("functionCall"))
         .expect("report should emit a Gemini functionCall");
     assert_eq!(call["name"], "shell");
-    assert!(call["args"]["command"]
-        .as_str()
-        .is_some_and(|command| command.contains("gh issue create")));
+    assert!(
+        call["args"]["command"]
+            .as_str()
+            .is_some_and(|command| command.contains("gh issue create"))
+    );
 }
 
 #[test]

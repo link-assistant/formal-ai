@@ -1,4 +1,4 @@
-use formal_ai::{create_chat_completion, ChatCompletionRequest, ChatMessage};
+use formal_ai::{ChatCompletionRequest, ChatMessage, create_chat_completion};
 
 fn main() {
     let request = ChatCompletionRequest {

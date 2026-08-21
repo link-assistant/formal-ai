@@ -11,8 +11,8 @@
 //! keeps the generator itself R379-clean: it knows the *shape* of a fragment and
 //! of a body, and reads every word of them from seed data.
 
-use super::parser::{parse_lino, LinoNode};
 use super::CONTRIBUTION_ARTIFACTS_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// One changelog category and the heading it renders as.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]

@@ -1,7 +1,7 @@
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 
-use formal_ai::{export_links_notation, resolve_memory_path_from, MemoryEvent, SyncStore};
+use formal_ai::{MemoryEvent, SyncStore, export_links_notation, resolve_memory_path_from};
 
 fn event(id: &str, content: &str) -> MemoryEvent {
     MemoryEvent {

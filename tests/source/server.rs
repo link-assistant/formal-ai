@@ -5,14 +5,14 @@ use serde::Serialize;
 use serde_json::json;
 
 use crate::anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessagesRequest,
+    AnthropicMessagesRequest, anthropic_message_sse, create_anthropic_message_with_solver,
 };
-use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot, DEFAULT_MODEL};
+use crate::engine::{DEFAULT_MODEL, is_known_trace_id, knowledge_graph, knowledge_graph_dot};
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
-    create_chat_completion_with_solver, create_response_with_solver, ChatCompletionRequest,
-    ResponsesRequest,
+    ChatCompletionRequest, ResponsesRequest, create_chat_completion_with_solver,
+    create_response_with_solver,
 };
 use crate::seed::merged_bundle;
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};

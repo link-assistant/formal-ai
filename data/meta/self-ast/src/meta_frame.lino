@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 28384
   line_count 749
-  content_id source_module_c6de4ce55a2c52df
+  content_id source_module_e06de17c98940c4b
   symbol_count 37
   symbols
     function formalize_span 36 39

@@ -1,12 +1,12 @@
 use formal_ai::{
-    apply_auto_free_space_with_snapshot, apply_dreaming_plan, auto_free_space_choice,
-    auto_free_space_enabled, auto_free_space_preference_path,
-    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    execute_memory_query, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
-    replay_answer_with_amendments, run_core_dreaming_once, seed_cache_events, AutoFreeSpaceChoice,
-    ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig, DreamingDurability,
-    MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment, SolverConfig, StorageSnapshot,
-    UniversalSolver,
+    AutoFreeSpaceChoice, ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig,
+    DreamingDurability, MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment,
+    SolverConfig, StorageSnapshot, UniversalSolver, apply_auto_free_space_with_snapshot,
+    apply_dreaming_plan, auto_free_space_choice, auto_free_space_enabled,
+    auto_free_space_preference_path, create_chat_completion_with_solver_and_memory,
+    create_response_with_solver_and_memory, execute_memory_query, measure_storage,
+    persist_auto_free_space_choice, plan_memory_dreaming, replay_answer_with_amendments,
+    run_core_dreaming_once, seed_cache_events,
 };
 
 #[test]
@@ -89,10 +89,12 @@ fn dreaming_restructures_recomputable_duplicates_by_recalculated_use_frequency()
         action.kind == DreamingActionKind::RemoveDuplicateRecomputable
             && action.event_id == "cache-low-use"
     }));
-    assert!(!plan
-        .actions
-        .iter()
-        .any(|action| action.event_id == "cache-high-use"));
+    assert!(
+        !plan
+            .actions
+            .iter()
+            .any(|action| action.event_id == "cache-high-use")
+    );
 }
 
 #[test]
@@ -129,18 +131,23 @@ fn dreaming_preserves_raw_events_and_learning_when_reclaiming_space() {
     let plan = plan_memory_dreaming(&events, &config);
 
     assert!(plan.required_reclaim_bytes > 0);
-    assert!(plan
-        .actions
-        .iter()
-        .any(|action| action.event_id == "external-cache"));
-    assert!(!plan
-        .actions
-        .iter()
-        .any(|action| action.event_id == "raw-user-message"));
-    assert!(!plan
-        .actions
-        .iter()
-        .any(|action| action.event_id == "learned-skill"));
+    assert!(
+        plan.actions
+            .iter()
+            .any(|action| action.event_id == "external-cache")
+    );
+    assert!(
+        !plan
+            .actions
+            .iter()
+            .any(|action| action.event_id == "raw-user-message")
+    );
+    assert!(
+        !plan
+            .actions
+            .iter()
+            .any(|action| action.event_id == "learned-skill")
+    );
 }
 
 #[test]
@@ -166,10 +173,12 @@ fn dreaming_reports_bigger_storage_when_recomputable_data_cannot_satisfy_target(
 
     assert!(plan.required_reclaim_bytes > plan.selected_reclaim_bytes);
     assert!(plan.requires_bigger_storage);
-    assert!(!plan
-        .actions
-        .iter()
-        .any(|action| action.event_id == "raw-only"));
+    assert!(
+        !plan
+            .actions
+            .iter()
+            .any(|action| action.event_id == "raw-only")
+    );
 }
 
 #[test]
@@ -191,18 +200,24 @@ fn applying_dreaming_plan_removes_only_selected_recomputable_events() {
     let outcome = apply_dreaming_plan(&mut store, &plan);
 
     assert_eq!(outcome.removed_events, 1);
-    assert!(store
-        .events()
-        .iter()
-        .any(|event| event.id == "cache-high-use"));
-    assert!(store
-        .events()
-        .iter()
-        .any(|event| event.id == "raw-user-message"));
-    assert!(!store
-        .events()
-        .iter()
-        .any(|event| event.id == "cache-low-use"));
+    assert!(
+        store
+            .events()
+            .iter()
+            .any(|event| event.id == "cache-high-use")
+    );
+    assert!(
+        store
+            .events()
+            .iter()
+            .any(|event| event.id == "raw-user-message")
+    );
+    assert!(
+        !store
+            .events()
+            .iter()
+            .any(|event| event.id == "cache-low-use")
+    );
 }
 
 #[test]
@@ -280,9 +295,11 @@ fn dreaming_generalizes_requirements_into_meta_algorithm_amendments() {
         .amendment_for("latex")
         .expect("dreaming should generalize the latex requirement");
     assert!(amendment.rule.contains("LaTeX"));
-    assert!(amendment
-        .source_requirement_ids
-        .contains(&String::from("req-1")));
+    assert!(
+        amendment
+            .source_requirement_ids
+            .contains(&String::from("req-1"))
+    );
     assert!(amendment.covered_event_ids.contains(&String::from("run-1")));
     assert!(amendment.covered_event_ids.contains(&String::from("run-2")));
 }
@@ -468,10 +485,11 @@ fn dreaming_simulates_frequent_topic_tasks_and_mines_recurring_structures() {
     let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
 
     assert_eq!(plan.candidate_tasks.len(), 2);
-    assert!(plan
-        .candidate_tasks
-        .iter()
-        .all(|candidate| candidate.passed));
+    assert!(
+        plan.candidate_tasks
+            .iter()
+            .all(|candidate| candidate.passed)
+    );
     assert!(plan.patterns.iter().any(|pattern| {
         pattern.topic == "rust"
             && pattern.occurrences == 2
@@ -570,10 +588,12 @@ fn core_background_dreaming_learns_but_does_not_free_without_consent() {
     assert_eq!(outcome.removed_events, 0);
     assert!(after.events().iter().any(|event| event.id == "duplicate-a"));
     assert!(after.events().iter().any(|event| event.id == "duplicate-b"));
-    assert!(after
-        .events()
-        .iter()
-        .any(|event| { event.kind.as_deref() == Some("meta_algorithm_amendment") }));
+    assert!(
+        after
+            .events()
+            .iter()
+            .any(|event| { event.kind.as_deref() == Some("meta_algorithm_amendment") })
+    );
 
     let _ = std::fs::remove_file(&memory_path);
     let _ = std::fs::remove_file(format!("{}.auto-free-space", memory_path.display()));
@@ -794,14 +814,18 @@ fn auto_free_space_for_write_stops_at_target_with_nonzero_incoming_bytes() {
         .filter(|event| event.id.starts_with("cache-"))
         .count();
     assert!(remaining_caches >= recomputable_count - outcome.removed_events);
-    assert!(store
-        .events()
-        .iter()
-        .any(|event| event.content.as_deref() == Some("irreplaceable raw question")));
-    assert!(store
-        .events()
-        .iter()
-        .any(|event| event.content.as_deref() == Some("irreplaceable raw answer")));
+    assert!(
+        store
+            .events()
+            .iter()
+            .any(|event| event.content.as_deref() == Some("irreplaceable raw question"))
+    );
+    assert!(
+        store
+            .events()
+            .iter()
+            .any(|event| event.content.as_deref() == Some("irreplaceable raw answer"))
+    );
 
     let _ = std::fs::remove_file(preference_path);
 }

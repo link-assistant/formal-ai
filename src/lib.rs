@@ -180,57 +180,58 @@ pub(crate) mod world_model_cycles;
 pub mod world_model_dialog;
 
 pub use agent::{
-    parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
-    AgentCommandResult, AgentError, AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig,
-    PlannedAgentAction,
+    AgentAction, AgentActionKind, AgentActionStatus, AgentCommandResult, AgentError, AgentRun,
+    AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig, PlannedAgentAction, parse_agent_plan,
+    run_agent_plan,
 };
 pub use anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver,
-    create_anthropic_message_with_solver_and_memory, AnthropicContentBlock, AnthropicMessage,
-    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicUsage,
+    AnthropicContentBlock, AnthropicMessage, AnthropicMessageInput, AnthropicMessagesRequest,
+    AnthropicUsage, anthropic_message_sse, create_anthropic_message_with_solver,
+    create_anthropic_message_with_solver_and_memory,
 };
 pub use associative_package::{
-    default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
-    PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
-    PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+    AssociativePackage, PackageDependency, PackageHandler, PackageImportError, PackageInstallError,
+    PackagePermission, PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+    default_associative_packages, default_package_store,
 };
 pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
-pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
+pub use change_request::{AcceptedChange, ChangeRejected, ChangeRequest, canonical_change_request};
 pub use client_contract_learning::{
-    learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
-    ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
+    ClientContractFinding, ClientContractLearningReport, ClientContractObservation,
+    ClientContractProposal, DeliveryMode, learn_client_contracts, load_observations,
+    observe_proxy_transcript,
 };
 pub use client_integrations::{
-    delimit_tool_args, run_with_formal_ai, ClientProtocol, WithFormalAiArgs,
+    ClientProtocol, WithFormalAiArgs, delimit_tool_args, run_with_formal_ai,
 };
 pub use document_formats::{
+    DOCUMENT_FORMAT_ENGINE, DocumentConversion, DocumentFormatCapabilities,
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
     document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
-    supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
-    DOCUMENT_FORMAT_ENGINE,
+    supported_document_formats,
 };
 pub use dreaming::{
-    apply_dreaming_plan, compose_recipe_with_amendments, plan_memory_dreaming,
-    render_dreaming_plan, DreamingAction, DreamingActionKind, DreamingConfig, DreamingDurability,
+    DreamingAction, DreamingActionKind, DreamingConfig, DreamingDurability,
     DreamingEventObservation, DreamingOutcome, DreamingPlan, DreamingSynthesizedTask,
-    LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency,
+    LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency, apply_dreaming_plan,
+    compose_recipe_with_amendments, plan_memory_dreaming, render_dreaming_plan,
 };
 pub use dreaming_application::{
-    amended_answer, apply_retained_amendments, replay_answer_with_amendments, retained_amendments,
-    solve_with_amendment_records, solve_with_standing_requirements, topic_matches,
-    RetainedAmendment,
+    RetainedAmendment, amended_answer, apply_retained_amendments, replay_answer_with_amendments,
+    retained_amendments, solve_with_amendment_records, solve_with_standing_requirements,
+    topic_matches,
 };
 pub use dreaming_runtime::{
-    core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
+    ForegroundActivity, core_is_idle, dreaming_disabled, run_core_dreaming_once,
 };
 pub use engine::{
-    humanize_meta_identifier, knowledge_links_notation, localize_thinking_steps,
-    naturalize_thinking_step, naturalize_thinking_step_in, render_thinking_steps,
-    render_thinking_steps_in, thinking_answer_language, thinking_language_label,
-    thinking_language_label_in, thinking_narrative, thinking_narrative_in, thinking_trace_heading,
-    FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    DEFAULT_MODEL, FormalAiEngine, SymbolicAnswer, ThinkingStep, humanize_meta_identifier,
+    knowledge_links_notation, localize_thinking_steps, naturalize_thinking_step,
+    naturalize_thinking_step_in, render_thinking_steps, render_thinking_steps_in,
+    thinking_answer_language, thinking_language_label, thinking_language_label_in,
+    thinking_narrative, thinking_narrative_in, thinking_trace_heading,
 };
 pub use event_log::{Event, EventLog};
 pub use fact_checking::{
@@ -239,199 +240,200 @@ pub use fact_checking::{
 };
 pub use formal_system::FormalSystem;
 pub use github_logs::{
+    GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary, GithubLogCollectorConfig,
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
-    render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
-    GithubLogCollectorConfig,
+    render_github_log_plan,
 };
 pub use google_trends_catalog::{
+    GOOGLE_TRENDS_TOP_LIMIT, GoogleTrendNewsItem, GoogleTrendPromptAnswer,
+    GoogleTrendPromptVariant, GoogleTrendTopic, GoogleTrendsCatalog, GoogleTrendsParseError,
     google_trends_catalog, parse_google_trends_rss, render_google_trends_snapshot_lino,
-    GoogleTrendNewsItem, GoogleTrendPromptAnswer, GoogleTrendPromptVariant, GoogleTrendTopic,
-    GoogleTrendsCatalog, GoogleTrendsParseError, GOOGLE_TRENDS_TOP_LIMIT,
 };
 pub use google_trends_learning::{
-    trending_learning_report, TrendingFrontierEntry, TrendingLearningReport,
+    TrendingFrontierEntry, TrendingLearningReport, trending_learning_report,
 };
 pub use intent_formalization::{
-    formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
-    IntentFormalizationCacheEntry, IntentKind,
+    IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry, IntentKind,
+    formalize_intent, impulse_id_for,
 };
 pub use knowledge::{
-    cache_capacity, within_cache_capacity, CodingOracle, KnowledgeSource, OracleSnippet,
-    KNOWLEDGE_CACHE_FLOOR,
+    CodingOracle, KNOWLEDGE_CACHE_FLOOR, KnowledgeSource, OracleSnippet, cache_capacity,
+    within_cache_capacity,
 };
-pub use language::{detect as detect_language, Language};
-pub use learning_adoption_ledger::{google_trends_adoption_ledger, AdoptionLedger, AdoptionPair};
+pub use language::{Language, detect as detect_language};
+pub use learning_adoption_ledger::{AdoptionLedger, AdoptionPair, google_trends_adoption_ledger};
 pub use learning_cycle::{
+    BlockedClass, CandidateSurface, FrontierItem, HeldOutTest, LearningCycleRun,
     google_trends_learning_cycle, parse_frontier_record, recorded_google_trends_frontier,
-    run_learning_cycle, BlockedClass, CandidateSurface, FrontierItem, HeldOutTest,
-    LearningCycleRun,
+    run_learning_cycle,
 };
 pub use learning_ledger::{
-    approved_lesson_for, canonical_ledger, canonical_ledger_failure_prompts, HumanApproval,
-    LearningLedger, LedgerEntry, PromotionRejected,
+    HumanApproval, LearningLedger, LedgerEntry, PromotionRejected, approved_lesson_for,
+    canonical_ledger, canonical_ledger_failure_prompts,
 };
 #[cfg(feature = "doublets-native")]
 pub use link_store::{
-    default_native_link_store, memory_event_to_link_record, memory_events_to_link_records,
-    selected_link_store_backend, validate_memory_links_notation, DefaultNativeLinkStore,
-    DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
+    DefaultNativeLinkStore, DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore,
+    LinkStoreBackend, LinkStoreError, default_native_link_store, memory_event_to_link_record,
+    memory_events_to_link_records, selected_link_store_backend, validate_memory_links_notation,
 };
 pub use links_query::{
-    parse_links_query, run_links_query, run_links_query_against, EdgePattern, Field, Filter,
-    FilterOp, LinksQuery, LinksQueryError, LinksQueryResult, NodePattern,
+    EdgePattern, Field, Filter, FilterOp, LinksQuery, LinksQueryError, LinksQueryResult,
+    NodePattern, parse_links_query, run_links_query, run_links_query_against,
 };
 pub use memory::{
+    BundleInfo, MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+    MemoryEvent, MemoryMigrationReceipt, MemoryMigrationState, MemoryStore, MemoryUpgradeError,
+    MemoryUpgradeStatus, ParsedBundle, TARGET_MEMORY_SCHEMA_VERSION,
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation, export_links_notation as export_memory_links_notation,
     extract_memory_from_bundle, import_full_memory as import_memory_full, migrate_memory,
     migrate_memory_with_pre_commit, parse_links_notation as parse_memory_links_notation,
     preflight_memory_upgrade, seed_cache_events, suggest_migrations as suggest_memory_migrations,
-    write_locked_atomic, BundleInfo, MemoryEvent, MemoryMigrationReceipt, MemoryMigrationState,
-    MemoryStore, MemoryUpgradeError, MemoryUpgradeStatus, ParsedBundle,
-    MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
-    TARGET_MEMORY_SCHEMA_VERSION,
+    write_locked_atomic,
 };
 pub use memory_sync::{
-    configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
+    SyncStore, configured_memory_path, events_since, merge_event, merge_union_by_id,
 };
 pub use probability::{
-    rank_probability_candidates, symbolic_cosine_similarity, ProbabilityCandidate,
-    ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel, ProbabilityRanking,
-    ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
-    RankedProbabilityCandidate, SimilarEvidence,
+    ProbabilityCandidate, ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel,
+    ProbabilityRanking, ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
+    RankedProbabilityCandidate, SimilarEvidence, rank_probability_candidates,
+    symbolic_cosine_similarity,
 };
 pub use program_plan::ProgramPlanCompilationError;
 pub use promotion::{
-    apply_promotions, demonstration_promotion_proposals, demonstration_promotion_run,
-    parse_promotion_proposals, promotions_from_learning_run, render_promotion_proposals,
-    replay_promotion_gates, replay_promotion_gates_with, AppliedSeedEdit, GateCommandOutput,
-    PromotionApplyOutcome, PromotionBranchPlan, PromotionOutcome, PromotionProposal,
-    PromotionRatchet, PromotionRecord, PromotionRun, SeedEdit, LEARNED_PROGRAM_RULES_SEED_FILE,
+    AppliedSeedEdit, GateCommandOutput, LEARNED_PROGRAM_RULES_SEED_FILE, PromotionApplyOutcome,
+    PromotionBranchPlan, PromotionOutcome, PromotionProposal, PromotionRatchet, PromotionRecord,
+    PromotionRun, SeedEdit, apply_promotions, demonstration_promotion_proposals,
+    demonstration_promotion_run, parse_promotion_proposals, promotions_from_learning_run,
+    render_promotion_proposals, replay_promotion_gates, replay_promotion_gates_with,
 };
 pub use protocol::{
+    ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage, FunctionCall, MessageContent,
+    MessageContentPart, ResponseCustomToolCall, ResponseFunctionToolCall, ResponseObject,
+    ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage, ResponseUsage,
+    ResponseWebSearchAction, ResponseWebSearchToolCall, ResponsesRequest, TokenUsage, ToolCall,
     create_chat_completion, create_chat_completion_with_solver,
     create_chat_completion_with_solver_and_memory, create_response, create_response_with_solver,
-    create_response_with_solver_and_memory, ChatChoice, ChatCompletion, ChatCompletionRequest,
-    ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseCustomToolCall,
-    ResponseFunctionToolCall, ResponseObject, ResponseOutputContent, ResponseOutputItem,
-    ResponseOutputMessage, ResponseUsage, ResponseWebSearchAction, ResponseWebSearchToolCall,
-    ResponsesRequest, TokenUsage, ToolCall,
+    create_response_with_solver_and_memory,
 };
 pub use proxy::{
-    run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
+    ProxyConfig, ProxyExchangeLog, ProxyToolCallLog, run_proxy, summarize_proxy_exchange,
 };
 pub use question_generation::{
-    generated_question_answers, question_lexicon_summary, question_lexicon_summary_for_language,
     GeneratedQuestion, GeneratedQuestionAnswer, GeneratedQuestionAnswerStream,
     GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig,
     QuestionGenerator, QuestionGrammarClass, QuestionLexiconSummary, QuestionWord,
+    generated_question_answers, question_lexicon_summary, question_lexicon_summary_for_language,
 };
-pub use rebuild_plan::{canonical_rebuild_plan, ReattachArtifact, RebuildPlan, RebuildStep};
+pub use rebuild_plan::{ReattachArtifact, RebuildPlan, RebuildStep, canonical_rebuild_plan};
 pub use relative_meta_logic::{
-    Aggregator, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
-    ASSUMED_TRUE_PRIOR,
+    ASSUMED_TRUE_PRIOR, Aggregator, RelativeEvidence, SourceTier, Stance, StatementAssessment,
+    TruthValue,
 };
-pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
+pub use repair_strategy::{RepairStrategy, RepairTarget, canonical_strategies};
 pub use search_fusion::{
-    execute_search_fusion, FormalizedSearchObservation, FusedSearchStatement,
-    NormalizedSearchSource, SearchFusionAnswer, SearchFusionExecution, SearchObservationOrigin,
-    SearchSourceClassification,
+    FormalizedSearchObservation, FusedSearchStatement, NormalizedSearchSource, SearchFusionAnswer,
+    SearchFusionExecution, SearchObservationOrigin, SearchSourceClassification,
+    execute_search_fusion,
 };
 pub use search_fusion_learning::{
-    execute_search_fusion_with_recipe, SearchFusionLearningApproval, SearchFusionLearningError,
+    SEARCH_FUSION_TASK_FAMILY, SearchFusionLearningApproval, SearchFusionLearningError,
     SearchFusionLearningFrontier, SearchFusionLearningGate, SearchFusionLearningObservation,
-    SearchFusionRecipeCandidate, SearchFusionRecipeLedger, SEARCH_FUSION_TASK_FAMILY,
+    SearchFusionRecipeCandidate, SearchFusionRecipeLedger, execute_search_fusion_with_recipe,
 };
 pub use seed::{
-    agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
-    environment_records, intent_routing, language_rules, merged_bundle, model_aliases,
-    multilingual_responses, operation_vocabulary, parse_bundle, projects_registry, prompt_patterns,
-    render_response, resolve_model_id, response_for, seed_files, supported_languages,
-    try_resolve_model_id, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
-    MigrationFlow, ModelAliasRegistry, OperationLanguageForms, OperationTrigger,
-    OperationVocabulary, ProjectRecord, ProjectStatement, ProjectsRegistry,
+    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
+    ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
+    ProjectRecord, ProjectStatement, ProjectsRegistry, agent_info, canonical_model_id,
+    concepts as seed_concepts, environment_directory, environment_records, intent_routing,
+    language_rules, merged_bundle, model_aliases, multilingual_responses, operation_vocabulary,
+    parse_bundle, projects_registry, prompt_patterns, render_response, resolve_model_id,
+    response_for, seed_files, supported_languages, try_resolve_model_id,
 };
 pub use self_ast_census::{
-    drift_report, scan_symbols, CensusDrift, CensusFidelity, CensusResolution, ModuleCensus,
-    SymbolSpan, WorkspaceCensus,
+    CensusDrift, CensusFidelity, CensusResolution, ModuleCensus, SymbolSpan, WorkspaceCensus,
+    drift_report, scan_symbols,
 };
 pub use self_explanation::{
-    canonical_explanation, Citation, CitationKind, ExplanationSection, SystemExplanation,
+    Citation, CitationKind, ExplanationSection, SystemExplanation, canonical_explanation,
 };
 pub use self_healing::{
-    canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
+    RepairCase, RepairOutcome, SourceRoundTrip, canonical_case, canonical_failure_trace,
 };
 pub use self_improvement::{
-    learn_from_reported_conversation, learn_rules_from_unknown_traces,
-    learning_trace_from_symbolic_answer, BenchmarkGateReport, LearnedRuleAdoption,
-    LearnedRuleProposal, LearningRejection, LearningRun, ReportedLearning, UnknownTrace,
+    BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal, LearningRejection, LearningRun,
+    ReportedLearning, UnknownTrace, learn_from_reported_conversation,
+    learn_rules_from_unknown_traces, learning_trace_from_symbolic_answer,
 };
 pub use self_source_links::{
-    owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
-    owned_source_files, owned_total_bytes, SourceLinks, SourceModuleDigest, SourceModuleProjection,
+    SourceLinks, SourceModuleDigest, SourceModuleProjection, owned_file_count, owned_manifest,
+    owned_manifest_content_id, owned_manifest_notation, owned_source_files, owned_total_bytes,
 };
 pub use sequences::{
+    CompressionResult, CompressionStep, Doublet, Grid, GridPatternReport, GridSymmetry,
+    GridTransform, LinkAddress, LinkFrequenciesCache, LinkFrequency, RepetitionPattern,
+    SequenceIndex, SequencePattern, SequencePatternReport, SequenceStore, SymbolTable,
     balanced_convert, compress, detect_palindrome, detect_period, detect_repetition,
-    infer_grid_patterns, infer_sequence_patterns, CompressionResult, CompressionStep, Doublet,
-    Grid, GridPatternReport, GridSymmetry, GridTransform, LinkAddress, LinkFrequenciesCache,
-    LinkFrequency, RepetitionPattern, SequenceIndex, SequencePattern, SequencePatternReport,
-    SequenceStore, SymbolTable,
+    infer_grid_patterns, infer_sequence_patterns,
 };
 pub use server::{
-    enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,
-    handle_api_request_with_headers, serve, ApiAuthConfig, ApiHttpResponse,
+    ApiAuthConfig, ApiHttpResponse, enable_http_agent_mode_for_current_process, handle_api_request,
+    handle_api_request_with_auth, handle_api_request_with_headers, serve,
 };
 pub use shared_dialog::{
-    convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,
     SharedDialog, SharedDialogError, SharedDialogFormat, SharedDialogMetadata, SharedDialogTurn,
+    convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,
 };
 pub use shared_memory::{
-    ensure_shared_memory_file, resolve_memory_path_from, shared_memory_path, MEMORY_PATH_ENV,
+    MEMORY_PATH_ENV, ensure_shared_memory_file, resolve_memory_path_from, shared_memory_path,
 };
 pub use skill_compiler::{
-    compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,
-    CompiledSkillHandlerStub, CompiledSkillInput, CompiledSkillPackage, CompiledSkillPermission,
-    CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
+    CompiledSkillEffect, CompiledSkillExpectedTest, CompiledSkillHandlerStub, CompiledSkillInput,
+    CompiledSkillPackage, CompiledSkillPermission, CompiledSkillPrecondition, CompiledSkillReplay,
+    CompiledSkillStep, SkillCompileError, compile_natural_language_skill,
 };
 pub use skill_procedure::{
-    compile_procedure, compile_procedure_with_ledger, extract_compiled_procedure_artifact,
-    ApprovedProcedureLesson, CompiledProcedure, ProcedureArtifactError, ProcedureCapabilityLedger,
-    ProcedureCapabilityLesson, ProcedureCompileError, ProcedureHost, ProcedureLearnedSurface,
-    ProcedureLearningApproval, ProcedureLearningCandidate, ProcedureLearningError,
-    ProcedureLearningGate, ProcedureLearningObservation, ProcedureLearningProposal,
-    ProcedureRequirement, ProcedureRun, ProcedureRunError, ProcedureStep, ProcedureTrigger,
-    StepOutcome, PROCEDURE_CONFORMANCE_TRIGGER,
+    ApprovedProcedureLesson, CompiledProcedure, PROCEDURE_CONFORMANCE_TRIGGER,
+    ProcedureArtifactError, ProcedureCapabilityLedger, ProcedureCapabilityLesson,
+    ProcedureCompileError, ProcedureHost, ProcedureLearnedSurface, ProcedureLearningApproval,
+    ProcedureLearningCandidate, ProcedureLearningError, ProcedureLearningGate,
+    ProcedureLearningObservation, ProcedureLearningProposal, ProcedureRequirement, ProcedureRun,
+    ProcedureRunError, ProcedureStep, ProcedureTrigger, StepOutcome, compile_procedure,
+    compile_procedure_with_ledger, extract_compiled_procedure_artifact,
 };
 pub use solver::{
-    solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
-    ExecutionSurface, SolverConfig, UniversalSolver,
+    BlueprintComposition, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
+    UniversalSolver, solve, solve_with_history,
 };
 pub use solver_handler_how_synthesis::{
-    service_preferences_from_env, try_how_to_procedure_with_client,
-    try_how_to_procedure_with_offline, DISABLED_SERVICES_ENV,
+    DISABLED_SERVICES_ENV, service_preferences_from_env, try_how_to_procedure_with_client,
+    try_how_to_procedure_with_offline,
 };
 pub use solver_handlers::{
-    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
-    try_web_search_with_client, MemoryQueryExecution,
+    MemoryQueryExecution, answer_memory_recall, execute_memory_query,
+    execute_memory_query_with_options, try_web_search_with_client,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{
-    sha256_hex, CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport,
+    CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport, sha256_hex,
 };
 pub use source_research::{
-    execute_option_research, execute_source_research, execute_statement_research,
     OptionResearchExecution, ResearchFailure, ResearchPage, SourceResearchExecution,
-    StatementResearchExecution,
+    StatementResearchExecution, execute_option_research, execute_source_research,
+    execute_statement_research,
 };
 pub use statement_verification::{
-    assess_market_price_claims, extract_market_price_claims, CapturedStatementEvidence,
-    MarketPriceAssessment, MarketPriceClaim, StatementVerificationExecution,
-    StatementVerificationPlan,
+    CapturedStatementEvidence, MarketPriceAssessment, MarketPriceClaim,
+    StatementVerificationExecution, StatementVerificationPlan, assess_market_price_claims,
+    extract_market_price_claims,
 };
 pub use storage_policy::{
-    apply_auto_free_space_for_write, apply_auto_free_space_with_snapshot, auto_free_space_choice,
-    auto_free_space_enabled, auto_free_space_preference_path, measure_storage,
-    persist_auto_free_space_choice, plan_for_real_storage, AutoFreeSpaceChoice, StorageSnapshot,
+    AutoFreeSpaceChoice, StorageSnapshot, apply_auto_free_space_for_write,
+    apply_auto_free_space_with_snapshot, auto_free_space_choice, auto_free_space_enabled,
+    auto_free_space_preference_path, measure_storage, persist_auto_free_space_choice,
+    plan_for_real_storage,
 };
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,
@@ -439,63 +441,63 @@ pub use substitution::{
     SubstitutionTraceReport,
 };
 pub use substitution_compiler::{
-    compile_substitution_rules, CompiledSubstitutionFile, CompiledSubstitutionProgram,
-    SubstitutionActionIr, SubstitutionCompilationTarget, SubstitutionPatternIr,
-    SubstitutionPatternNodeIr, SubstitutionProgramIr, SubstitutionRuleIr,
+    CompiledSubstitutionFile, CompiledSubstitutionProgram, SubstitutionActionIr,
+    SubstitutionCompilationTarget, SubstitutionPatternIr, SubstitutionPatternNodeIr,
+    SubstitutionProgramIr, SubstitutionRuleIr, compile_substitution_rules,
 };
 pub use summarization::{
-    apply_compound_words, apply_semantic_primes, classify_sentence, deduplicate, deformalize,
-    describe_project, describe_readme, evaluate_file, execute_captured_gathering,
-    execute_multi_source_summary, formalize, formalize_dialog, formalize_markdown,
-    formalize_repository_directory, formalize_repository_file, formalize_repository_resource,
-    gather, generate_chat_title, is_valid_identifier, label_for_mode, merge_into_context,
-    merge_into_formal_context, quality_sentence, rank, ratchet_violations, recheck,
-    strip_markdown_noise, summarize, summarize_dialog, summarize_repository_file,
-    summarize_repository_resource, to_identifier, to_topic, validate_repository_summarization,
-    CapturedGatheringFailure, CapturedGatheringReport, CapturedSourceMetadata,
-    CapturedSourceObservation, Contradiction, CorpusFile, Criterion, CriterionOutcome, DedupReport,
-    DialogTurn, EmbeddedGrammarFormalization, FetchRecord, FetchedSource, FileQualityReport,
-    GatheringPlan, GatheringReport, IdentifierBudget, ImportanceScore, IterationReport, MergeLink,
-    MergedContext, MergedStatement, MetaLanguageFormalization, MultiSourceSummaryExecution,
-    NamingConvention, Polarity, QualityBaseline, QualityScore, RankedStatement, RecheckReport,
-    RecheckedStatement, RepositoryDirectoryFormalization, RepositoryEntry,
-    RepositoryFileFormalization, RepositoryResourceFormalization, SamplingProtocol, SourceCache,
-    SourceProvider, SourcedStatement, Statement, StatementKind, StatementSignature,
-    StatementVariant, SummarizationConfig, SummarizationMode, ValidationReport, Verdict,
-    BASELINE_PATH, BASELINE_RECORD, COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION,
+    BASELINE_PATH, BASELINE_RECORD, COMPRESSION_FLOOR_BYTES, CRITERIA, CapturedGatheringFailure,
+    CapturedGatheringReport, CapturedSourceMetadata, CapturedSourceObservation, Contradiction,
+    CorpusFile, Criterion, CriterionOutcome, DEFAULT_FILES_PER_ITERATION,
     DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, DEFAULT_MAX_ITERATIONS,
     DEFAULT_MAX_STATEMENTS, DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED,
-    DEFAULT_STABILITY_TOLERANCE_PERCENT, DEFAULT_STABILITY_WINDOW, HONESTY_POLICY,
-    QUALITY_RATCHET_PERCENT, RATCHET_POLICY, RATCHET_RUNNER,
+    DEFAULT_STABILITY_TOLERANCE_PERCENT, DEFAULT_STABILITY_WINDOW, DedupReport, DialogTurn,
+    EmbeddedGrammarFormalization, FetchRecord, FetchedSource, FileQualityReport, GatheringPlan,
+    GatheringReport, HONESTY_POLICY, IdentifierBudget, ImportanceScore, IterationReport, MergeLink,
+    MergedContext, MergedStatement, MetaLanguageFormalization, MultiSourceSummaryExecution,
+    NamingConvention, Polarity, QUALITY_RATCHET_PERCENT, QualityBaseline, QualityScore,
+    RATCHET_POLICY, RATCHET_RUNNER, RankedStatement, RecheckReport, RecheckedStatement,
+    RepositoryDirectoryFormalization, RepositoryEntry, RepositoryFileFormalization,
+    RepositoryResourceFormalization, SamplingProtocol, SourceCache, SourceProvider,
+    SourcedStatement, Statement, StatementKind, StatementSignature, StatementVariant,
+    SummarizationConfig, SummarizationMode, ValidationReport, Verdict, apply_compound_words,
+    apply_semantic_primes, classify_sentence, deduplicate, deformalize, describe_project,
+    describe_readme, evaluate_file, execute_captured_gathering, execute_multi_source_summary,
+    formalize, formalize_dialog, formalize_markdown, formalize_repository_directory,
+    formalize_repository_file, formalize_repository_resource, gather, generate_chat_title,
+    is_valid_identifier, label_for_mode, merge_into_context, merge_into_formal_context,
+    quality_sentence, rank, ratchet_violations, recheck, strip_markdown_noise, summarize,
+    summarize_dialog, summarize_repository_file, summarize_repository_resource, to_identifier,
+    to_topic, validate_repository_summarization,
 };
 pub use telegram::{
-    handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
     ParsedUpdatesBatch, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,
-    TelegramReplyParameters, TelegramWebhookError, TelegramWebhookReply,
+    TelegramReplyParameters, TelegramWebhookError, TelegramWebhookReply, handle_telegram_webhook,
+    parse_get_updates_response, telegram_html_from_markdown,
 };
 pub use telegram_runtime::{
-    run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
-    CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
+    CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport, run_telegram_polling,
+    run_telegram_polling_with_transport, run_telegram_webhook_server,
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
-    assess_arithmetic_claim, detect_language as detect_prompt_language,
-    evaluate_arithmetic_expression, normalize_prompt as normalize_prompt_text, tokenize_prompt,
-    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome, assess_arithmetic_claim,
+    detect_language as detect_prompt_language, evaluate_arithmetic_expression,
+    normalize_prompt as normalize_prompt_text, tokenize_prompt,
 };
 pub use web_search_core::{
+    FusedEntry, ProviderCategory, ProviderRanking, ProviderSpec, SearchExecution,
+    WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY,
+    WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K,
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,
     execute_duckduckgo_search, parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output,
-    FusedEntry, ProviderCategory, ProviderRanking, ProviderSpec, SearchExecution,
-    WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS, WEB_SEARCH_PROVIDER_LIMIT,
-    WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
 pub use world_model::{
     Action, Context, ContextAccessEvent, ContextAccessEventKind, ContextDiff, Dependency,
     GeneralMemoryCommitError, GeneralMemoryPermission, LinkConflict, Prediction, RecalculatedLink,
     RecalculationReport, Statement as WorldStatement, StatementChange, WorldModel,
 };
-pub use world_model_atoms::{classify as classify_utterance, state_atom, UtteranceKind};
+pub use world_model_atoms::{UtteranceKind, classify as classify_utterance, state_atom};
 pub use world_model_context::{
     ContextHierarchy, ContextHierarchyError, ExternalLookup, InheritancePolicy, ParentContext,
     ReferenceResolution, ReferenceResolutionKind,

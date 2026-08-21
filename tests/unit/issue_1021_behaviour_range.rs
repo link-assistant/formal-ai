@@ -12,7 +12,7 @@
 //! run is evidence of generalization rather than of a memorised seed.
 
 use formal_ai::agentic_coding::mutating_action::verified_recipe;
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall, UniversalSolver};
 
 /// The shell command the agentic planner resolves for `prompt`, or `None` when

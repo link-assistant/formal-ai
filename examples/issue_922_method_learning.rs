@@ -1,6 +1,7 @@
 //! Mine reusable method proposals from real recursive-core executions.
 
-use formal_ai::intent_formalization::{formalize_intent, IntentFormalization};
+use formal_ai::EventLog;
+use formal_ai::intent_formalization::{IntentFormalization, formalize_intent};
 use formal_ai::meta_construction::RecursionMode;
 use formal_ai::method_learning::learn_methods_from_event_logs;
 use formal_ai::promotion::render_promotion_proposals;
@@ -8,7 +9,6 @@ use formal_ai::recipe_interpreter::RecipeProgram;
 use formal_ai::selection::SelectionMode;
 use formal_ai::skill_ledger::SkillMode;
 use formal_ai::translation::formalize_prompt;
-use formal_ai::EventLog;
 
 fn formalize(prompt: &str) -> IntentFormalization {
     let candidate = formalize_prompt(prompt, "en");

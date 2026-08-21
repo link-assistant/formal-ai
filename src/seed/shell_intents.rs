@@ -16,8 +16,8 @@
 //! JavaScript worker loads the synced deployment copy through
 //! `src/web/seed_loader.js`.
 
-use super::parser::{parse_lino, LinoNode};
 use super::SHELL_INTENTS_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// How a matched intent recovers the command's argument from the prompt.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]

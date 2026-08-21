@@ -237,11 +237,7 @@ impl ArithValue {
                 magnitude,
             } => {
                 let f = magnitude.to_f64();
-                if *negative {
-                    -f
-                } else {
-                    f
-                }
+                if *negative { -f } else { f }
             }
             Self::Float(f) => *f,
         }

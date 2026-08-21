@@ -109,19 +109,19 @@ pub fn apply_env_modes(
     selection_mode: &mut SelectionMode,
     skill_mode: &mut SkillMode,
 ) {
-    if let Ok(value) = std::env::var("FORMAL_AI_RECURSION_MODE") {
-        if let Some(mode) = RecursionMode::from_slug(&value) {
-            *recursion_mode = mode;
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_RECURSION_MODE")
+        && let Some(mode) = RecursionMode::from_slug(&value)
+    {
+        *recursion_mode = mode;
     }
-    if let Ok(value) = std::env::var("FORMAL_AI_SELECTION_MODE") {
-        if let Some(mode) = SelectionMode::from_slug(&value) {
-            *selection_mode = mode;
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_SELECTION_MODE")
+        && let Some(mode) = SelectionMode::from_slug(&value)
+    {
+        *selection_mode = mode;
     }
-    if let Ok(value) = std::env::var("FORMAL_AI_SKILL_MODE") {
-        if let Some(mode) = SkillMode::from_slug(&value) {
-            *skill_mode = mode;
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_SKILL_MODE")
+        && let Some(mode) = SkillMode::from_slug(&value)
+    {
+        *skill_mode = mode;
     }
 }

@@ -11,8 +11,8 @@
 //! change the issue asked for — not a hand-authored approximation.
 
 use formal_ai::agentic_coding::{
-    corpus, diagram, is_meaning_detail_task, meaning_detail, plan_chat_step, run_agentic_task,
-    self_ast, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, corpus, diagram, is_meaning_detail_task,
+    meaning_detail, plan_chat_step, run_agentic_task, self_ast,
 };
 use formal_ai::{ChatMessage, ToolCall};
 
@@ -217,9 +217,11 @@ fn driver_runs_the_meaning_detail_loop_and_writes_the_seed_block() {
 
     // The final answer summarises the change with the block inline.
     assert!(outcome.final_answer.contains("more detailed"));
-    assert!(outcome
-        .final_answer
-        .contains(meaning_detail::TOMATO.kb_path));
+    assert!(
+        outcome
+            .final_answer
+            .contains(meaning_detail::TOMATO.kb_path)
+    );
 }
 
 #[test]
@@ -290,9 +292,11 @@ fn driver_runs_the_potato_recipe_with_a_different_request() {
     assert!(run.result.contains("grammatical_number plural"));
 
     assert!(outcome.final_answer.contains("more detailed"));
-    assert!(outcome
-        .final_answer
-        .contains(meaning_detail::POTATO.kb_path));
+    assert!(
+        outcome
+            .final_answer
+            .contains(meaning_detail::POTATO.kb_path)
+    );
 }
 
 #[test]

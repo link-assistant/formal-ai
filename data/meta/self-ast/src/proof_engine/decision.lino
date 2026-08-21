@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/decision.rs
   language rust
   fidelity signature
-  byte_len 4299
+  byte_len 4287
   line_count 120
-  content_id source_module_d5cc74ecf132602f
+  content_id source_module_05133b6c0b9a70ae
   symbol_count 12
   symbols
     module boolean 20 20

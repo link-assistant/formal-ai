@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use formal_ai::{
-    collect_github_logs_with_runner, github_log_capture_plan, GithubLogCollectorConfig,
+    GithubLogCollectorConfig, collect_github_logs_with_runner, github_log_capture_plan,
 };
 
 #[test]
@@ -30,20 +30,26 @@ fn github_log_plan_captures_issue_pr_run_and_all_comment_types() {
     assert!(commands.iter().any(|command| command.contains(
         "gh issue view 1814 --repo link-assistant/hive-mind --json number,title,body,author,state,labels,comments,createdAt,updatedAt,url"
     )));
-    assert!(commands.iter().any(|command| command
-        .contains("gh api repos/link-assistant/hive-mind/issues/1814/comments --paginate")));
+    assert!(commands.iter().any(|command| {
+        command.contains("gh api repos/link-assistant/hive-mind/issues/1814/comments --paginate")
+    }));
     assert!(commands.iter().any(|command| command.contains(
         "gh pr view 1816 --repo link-assistant/hive-mind --json number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url"
     )));
-    assert!(commands.iter().any(|command| command
-        .contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate")));
-    assert!(commands.iter().any(|command| command
-        .contains("gh api repos/link-assistant/hive-mind/issues/1816/comments --paginate")));
-    assert!(commands.iter().any(|command| command
-        .contains("gh api repos/link-assistant/hive-mind/pulls/1816/reviews --paginate")));
-    assert!(commands
-        .iter()
-        .any(|command| command.contains("gh pr diff 1816 --repo link-assistant/hive-mind")));
+    assert!(commands.iter().any(|command| {
+        command.contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate")
+    }));
+    assert!(commands.iter().any(|command| {
+        command.contains("gh api repos/link-assistant/hive-mind/issues/1816/comments --paginate")
+    }));
+    assert!(commands.iter().any(|command| {
+        command.contains("gh api repos/link-assistant/hive-mind/pulls/1816/reviews --paginate")
+    }));
+    assert!(
+        commands
+            .iter()
+            .any(|command| command.contains("gh pr diff 1816 --repo link-assistant/hive-mind"))
+    );
     assert!(commands.iter().any(|command| command.contains(
         "gh run list --repo link-assistant/hive-mind --limit 5 --branch issue-1814-0f855d3671ac --json databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url"
     )));
@@ -90,9 +96,11 @@ fn github_log_collector_writes_manifest_and_captured_files() {
     assert!(manifest.contains("\"repo\": \"link-assistant/hive-mind\""));
     assert!(manifest.contains("issue-1814-comments.json"));
     assert!(manifest.contains("repos/link-assistant/hive-mind/issues/1814/comments"));
-    assert!(seen_commands
-        .iter()
-        .any(|command| command.starts_with("gh issue view 1814")));
+    assert!(
+        seen_commands
+            .iter()
+            .any(|command| command.starts_with("gh issue view 1814"))
+    );
 
     let _ = std::fs::remove_dir_all(root);
 }

@@ -144,7 +144,7 @@ impl AnswerReport {
     }
 }
 
-/// The contents of each ```-fenced block, in order.
+/// The contents of each triple-backtick-fenced block, in order.
 fn fenced_blocks(answer: &str) -> impl Iterator<Item = String> + '_ {
     answer.split("\n```").skip(1).step_by(2).map(|block| {
         block

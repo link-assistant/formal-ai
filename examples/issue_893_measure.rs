@@ -10,8 +10,8 @@ use std::collections::BTreeMap;
 
 use formal_ai::statement_audit::RepositoryCorpus;
 use formal_ai::{
-    evaluate_file, validate_repository_summarization, CorpusFile, SamplingProtocol,
-    SummarizationConfig,
+    CorpusFile, SamplingProtocol, SummarizationConfig, evaluate_file,
+    validate_repository_summarization,
 };
 
 fn main() {

@@ -28,6 +28,11 @@
 //!
 //! Run with `rust-script scripts/migrate-empty-facet-fields.rs` (std-only; can
 //! also be compiled directly with `rustc`).
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::fs;
 use std::io;

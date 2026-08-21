@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_helpers/mod.rs
   language rust
   fidelity signature
-  byte_len 27633
-  line_count 766
-  content_id source_module_a3c125cef18213d7
+  byte_len 27497
+  line_count 765
+  content_id source_module_f67dcff30d5bac7c
   symbol_count 49
   symbols
     module code 13 13
@@ -43,16 +43,16 @@ self_ast_census
     function extract_assistant_name 424 426
     function extract_name_after_needles 430 453
     function recall_assistant_name_from_history 460 469
-    function humanize_url 482 506
-    function hex_nibble 508 515
-    function is_reserved_uri_delimiter 517 522
-    function extract_fenced_block 527 547
-    function is_write_script_request 568 588
-    function names_no_task_beyond_the_minimal_script 602 613
-    function format_write_script_execution 615 641
-    function env_definition_fusion_by_default 644 650
-    function env_bool 653 655
-    function env_bool_with_extra_truthy 658 671
-    function env_bounded_f32 674 681
-    function env_truthy 684 693
-    function config_from_env 698 766
+    function humanize_url 482 507
+    function hex_nibble 509 516
+    function is_reserved_uri_delimiter 518 523
+    function extract_fenced_block 528 548
+    function is_write_script_request 569 589
+    function names_no_task_beyond_the_minimal_script 603 614
+    function format_write_script_execution 616 642
+    function env_definition_fusion_by_default 645 651
+    function env_bool 654 656
+    function env_bool_with_extra_truthy 659 672
+    function env_bounded_f32 675 682
+    function env_truthy 685 694
+    function config_from_env 699 765

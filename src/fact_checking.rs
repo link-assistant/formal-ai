@@ -9,7 +9,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
-use crate::proof_engine::{attempt_proof, ProofMethod, ProofOutcome};
+use crate::proof_engine::{ProofMethod, ProofOutcome, attempt_proof};
 use crate::relative_meta_logic::{RelativeEvidence, SourceTier, Stance, TruthValue};
 use crate::solver::SolverConfig;
 use crate::world_model::{

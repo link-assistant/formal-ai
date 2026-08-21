@@ -17,11 +17,11 @@ use crate::research_learning::{
     AutonomyMode, CycleConfig, KnowledgeKind, RecoveryOption, ResearchLearningCycle,
     VerificationGate,
 };
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::source_fetch::{CachedSourceClient, SourceCapture, SourceTransport};
-use crate::source_research::{execute_source_research, SourceResearchExecution};
+use crate::source_research::{SourceResearchExecution, execute_source_research};
 use crate::workspace_change_learning::{
-    execute_workspace_rewrite, WorkspaceRewriteExecution, WORKSPACE_CHANGE_TASK_FAMILY,
+    WORKSPACE_CHANGE_TASK_FAMILY, WorkspaceRewriteExecution, execute_workspace_rewrite,
 };
 
 const SEARCH_PAGE_LIMIT: usize = 3;

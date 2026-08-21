@@ -5,12 +5,12 @@ use serde_json::Value;
 
 use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
 use crate::agentic_coding::narration::tool_action_narration;
-use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
+use crate::agentic_coding::planner::{AgenticPlan, plan_chat_step};
 use crate::dreaming_application::{
     amended_answer, apply_retained_amendments, solve_with_standing_requirements,
 };
 use crate::engine::{
-    estimate_tokens, render_thinking_steps, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep,
+    FormalAiEngine, SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
 };
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
@@ -407,10 +407,10 @@ impl ResponsesRequest {
     #[must_use]
     pub fn to_chat_completion_request(&self) -> ChatCompletionRequest {
         let mut messages = responses_input::messages(&self.input);
-        if let Some(instructions) = self.instructions.as_deref() {
-            if !instructions.trim().is_empty() {
-                messages.insert(0, ChatMessage::new("system", instructions.trim()));
-            }
+        if let Some(instructions) = self.instructions.as_deref()
+            && !instructions.trim().is_empty()
+        {
+            messages.insert(0, ChatMessage::new("system", instructions.trim()));
         }
         ChatCompletionRequest {
             model: self.model.clone(),
@@ -460,10 +460,10 @@ pub fn create_chat_completion_with_solver_and_memory(
 
     match agentic_outcome(request, solver.config.agent_mode) {
         AgenticOutcome::Refused(answer) => {
-            return chat_completion_from_symbolic(request, &prompt, answer)
+            return chat_completion_from_symbolic(request, &prompt, answer);
         }
         AgenticOutcome::Planned(plan) => {
-            return chat_completion_from_plan(request, &prompt, plan, memory_events)
+            return chat_completion_from_plan(request, &prompt, plan, memory_events);
         }
         AgenticOutcome::Fallthrough => {}
     }
@@ -518,13 +518,13 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         // (issue #671). Answering from what is already here needs no tool, so
         // it belongs on this side of the gate — but still only in agent mode,
         // which is what promises the client a workspace-aware answer.
-        if agent_mode {
-            if let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages) {
-                if trace {
-                    eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
-                }
-                return AgenticOutcome::Planned(AgenticPlan::Final(answer));
+        if agent_mode
+            && let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages)
+        {
+            if trace {
+                eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
             }
+            return AgenticOutcome::Planned(AgenticPlan::Final(answer));
         }
         if trace {
             eprintln!("[trace] agentic_outcome: fallthrough (no tool execution requested)");
@@ -719,7 +719,7 @@ pub fn create_response_with_solver_and_memory(
     match agentic_outcome(&chat_request, solver.config.agent_mode) {
         AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
         AgenticOutcome::Planned(plan) => {
-            return response_from_plan(request, &prompt, plan, memory_events)
+            return response_from_plan(request, &prompt, plan, memory_events);
         }
         AgenticOutcome::Fallthrough => {}
     }

@@ -13,7 +13,7 @@
 //! Everything language-specific comes from the `phrasing` blocks of
 //! `data/seed/release-timelines.lino`; this file only fills placeholders.
 
-use crate::seed::{release_timelines, ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelines};
+use crate::seed::{ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelines, release_timelines};
 
 /// A rendered timeline plus the classification the answer is built from, so
 /// callers (and tests) can inspect the split without parsing prose.

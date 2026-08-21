@@ -12,13 +12,13 @@ pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
-    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
-    try_conversation_memory, MemoryQueryExecution,
+    MemoryQueryExecution, answer_memory_recall, execute_memory_query,
+    execute_memory_query_with_options, try_conversation_memory,
 };
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
-pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use feature_capability::{CapabilityRuntime, try_feature_capability};
 pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::{is_install_conversion_request, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
@@ -54,21 +54,21 @@ pub use web_requests::{
 pub use world_state::try_world_state;
 pub use {
     web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
-    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
+    web_search_intent::WebSearchQueryKind, web_search_intent::web_search_query_for,
 };
 
 use crate::calculation::{
-    calculation_expression_candidates, evaluate_calculation, interpretation_statements,
-    PromptInterpretation,
+    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
+    interpretation_statements,
 };
 use crate::concepts::{
-    extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
+    ConceptRecord, extract_concept_query, lookup_concept_query, resolve_context_label,
 };
 use crate::engine::{
-    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation, stable_id,
-    ExecutionStatus, SymbolicAnswer,
+    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias,
+    knowledge_links_notation, stable_id,
 };
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::language::detect as detect_language;
 use crate::seed::{localized_response, response_for};
 use crate::solver_helpers::{
@@ -225,10 +225,10 @@ pub fn try_concept_lookup_with_response_language(
     forced_response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
     let mut query = extract_concept_query(prompt)?;
-    if query.response_language.is_none() {
-        if let Some(forced) = forced_response_language {
-            query.response_language = Some(forced.to_owned());
-        }
+    if query.response_language.is_none()
+        && let Some(forced) = forced_response_language
+    {
+        query.response_language = Some(forced.to_owned());
     }
     log.append("concept_lookup:request", query.term.clone());
     if let Some(context) = query.context.as_deref() {
@@ -582,26 +582,26 @@ pub fn try_translation(
         }
     }
 
-    if let Some(code) = &backticked {
-        if let Some((source_lang, target_lang)) = detected_program {
-            let translated = translate_program(code, source_lang, target_lang);
-            let body = format!(
-                "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"
-            );
-            log.append("language_from", source_lang.to_owned());
-            log.append("language_to", target_lang.to_owned());
-            let meaning_id = stable_id("meaning", &normalize_code_meaning(code));
-            log.append("meaning", meaning_id);
-            let intent = format!("translate_{source_lang}_to_{target_lang}");
-            return Some(finalize_simple(
-                prompt,
-                log,
-                &intent,
-                "response:translate_code",
-                &body,
-                1.0,
-            ));
-        }
+    if let Some(code) = &backticked
+        && let Some((source_lang, target_lang)) = detected_program
+    {
+        let translated = translate_program(code, source_lang, target_lang);
+        let body = format!(
+            "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"
+        );
+        log.append("language_from", source_lang.to_owned());
+        log.append("language_to", target_lang.to_owned());
+        let meaning_id = stable_id("meaning", &normalize_code_meaning(code));
+        log.append("meaning", meaning_id);
+        let intent = format!("translate_{source_lang}_to_{target_lang}");
+        return Some(finalize_simple(
+            prompt,
+            log,
+            &intent,
+            "response:translate_code",
+            &body,
+            1.0,
+        ));
     }
 
     // Prefer an explicitly quoted fragment (`Translate "apple" to Russian`).
@@ -628,14 +628,13 @@ pub fn try_translation(
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
         let target_surface = translation.primary_surface().map(str::to_owned);
         let gap = target_surface.is_none();
-        let mut meaning_id = translation.meaning.slug();
-        if define_in_links && !translation.meaning.is_wikidata_backed() {
-            if let Some(seed_meaning) =
-                crate::translation::seed_meaning_for_surface(&surface, source_slug)
-            {
-                meaning_id = seed_meaning.slug();
-            }
-        }
+        // A seed meaning stands in only where Wikidata has nothing to say and
+        // the caller asked for links; otherwise the pipeline's own id is the id.
+        let seed_meaning = (define_in_links && !translation.meaning.is_wikidata_backed())
+            .then(|| crate::translation::seed_meaning_for_surface(&surface, source_slug))
+            .flatten();
+        let meaning_id =
+            seed_meaning.map_or_else(|| translation.meaning.slug(), |meaning| meaning.slug());
         (target_surface, meaning_id, gap)
     } else {
         // Fallback: hash the surface fragment so the trace still has a

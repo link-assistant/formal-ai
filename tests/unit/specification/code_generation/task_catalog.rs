@@ -2,7 +2,7 @@
 //! factorial, string reversal, sums, recursive Fibonacci) and their
 //! per-language coverage across the popular languages (issue #386 split).
 
-use super::{answer, assert_write_program_parameters, POPULAR_LANGUAGES};
+use super::{POPULAR_LANGUAGES, answer, assert_write_program_parameters};
 
 // ---------------------------------------------------------------------------
 // Issue #330: the catalog must support a wider range of coding tasks than just

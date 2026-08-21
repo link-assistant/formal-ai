@@ -4,7 +4,7 @@ use std::io;
 use std::path::PathBuf;
 
 use clap::Args;
-use formal_ai::file_legality::{check_file_legality_with, FileLegalityConfig};
+use formal_ai::file_legality::{FileLegalityConfig, check_file_legality_with};
 
 #[derive(Debug, Clone, Args)]
 pub struct FileLegalityArgs {

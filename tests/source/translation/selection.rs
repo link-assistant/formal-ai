@@ -5,7 +5,7 @@
 //! `SolverConfig::temperature` range stays useful.
 
 use crate::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+    ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore, rank_probability_candidates,
 };
 use crate::translation::{FormalizationCandidate, FormalizationRole};
 

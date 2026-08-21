@@ -23,6 +23,9 @@
 //!   rust-script scripts/generate-seed-registry.rs --write   # regenerate
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

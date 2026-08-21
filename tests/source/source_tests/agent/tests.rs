@@ -153,7 +153,9 @@ fn unsupported_commands_are_rejected() {
     assert_eq!(run.status, AgentRunStatus::Failed);
     assert!(run.command_results.is_empty());
     assert_eq!(run.actions[0].status, AgentActionStatus::Failed);
-    assert!(run.actions[0]
-        .detail
-        .contains("unsupported sandbox command"));
+    assert!(
+        run.actions[0]
+            .detail
+            .contains("unsupported sandbox command")
+    );
 }

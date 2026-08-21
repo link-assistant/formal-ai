@@ -12,7 +12,7 @@
 //! `aider` leg.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const MARKER: &str = "ALPHA_MARKER_11111";
 

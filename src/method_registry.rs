@@ -20,7 +20,7 @@ use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
 use crate::seed::parser::parse_lino;
 use crate::solver_dispatch::{
-    specialized_handlers, CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES,
+    CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES, specialized_handlers,
 };
 
 /// How a method is reached during dispatch.

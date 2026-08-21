@@ -16,7 +16,7 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::contribution_artifacts::{compose, Contribution};
+use formal_ai::contribution_artifacts::{Contribution, compose};
 use serde_json::Value;
 
 /// Read a string field, or fail naming it.

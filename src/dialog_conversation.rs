@@ -17,7 +17,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
 /// Suffix of the conversation-shaped log, beside the `<dialog_id>.jsonl` trace.
 pub const CONVERSATION_LOG_SUFFIX: &str = ".conversation.jsonl";

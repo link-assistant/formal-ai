@@ -13,8 +13,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::memory_revision::{
-    rustc_verdict, AttemptOutcome, BaselinePin, MemoryRevision, RevisionLedger, RollbackReason,
-    VersionVerdict,
+    AttemptOutcome, BaselinePin, MemoryRevision, RevisionLedger, RollbackReason, VersionVerdict,
+    rustc_verdict,
 };
 
 /// A workspace of its own per test, named after the test so a failure leaves an
@@ -342,4 +342,34 @@ fn a_revision_captured_from_an_absent_file_restores_it_as_absent() {
     revision.restore(&root).expect("restore");
 
     assert!(!root.join("later.lino").exists());
+}
+
+/// The verdict has to speak the dialect the crate is written in.
+///
+/// `rustc_verdict` compiles *this crate's own next version*, so the edition it
+/// passes to `rustc` is not a detail: pinned at 2021 while the crate moved to
+/// 2024, it would answer "does not compile" to a candidate whose only sin was
+/// using a let-chain -- and the ledger would roll back a version that `cargo
+/// build` accepts. The source below is rejected by edition 2021 and accepted by
+/// edition 2024, so it fails this test for exactly that mismatch and no other.
+#[test]
+fn the_verdict_compiles_the_edition_the_crate_is_written_in() {
+    let root = workspace("crate-edition");
+    seed_workspace(&root);
+    fs::write(
+        root.join("version.rs"),
+        "pub fn answer(value: Option<u32>) -> u32 {\n    \
+         if let Some(value) = value\n        && value > 40\n    {\n        \
+         value\n    } else {\n        0\n    }\n}\n",
+    )
+    .expect("let-chain version");
+
+    let verdict = rustc_verdict(&root, "version.rs", 1);
+
+    assert!(
+        verdict.compiled,
+        "a let-chain is edition-2024 Rust and this crate is edition-2024 Rust: {}",
+        verdict.diagnostics
+    );
+    assert!(verdict.permits_switch());
 }

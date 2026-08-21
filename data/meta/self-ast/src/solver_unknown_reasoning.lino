@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_unknown_reasoning.rs
   language rust
   fidelity signature
-  byte_len 16542
+  byte_len 16490
   line_count 504
-  content_id source_module_60e438502ef41e93
+  content_id source_module_7247b643c915b753
   symbol_count 26
   symbols
     const FOCUS_PLACEHOLDER 19 19

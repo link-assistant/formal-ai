@@ -6,6 +6,9 @@
 //!   rust-script --test scripts/check-minimal-core-boundary.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```

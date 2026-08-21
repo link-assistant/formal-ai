@@ -9,7 +9,7 @@
 //! before the write path.
 
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
-use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::ChatMessage;
 
 fn single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {

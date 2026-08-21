@@ -17,7 +17,7 @@
 //! Usage: `cargo run --example issue_907_caller_framing_hijack`
 
 use formal_ai::gemini::{
-    create_gemini_generate_content_response_with_solver_and_memory, GeminiGenerateContentRequest,
+    GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
 };
 use formal_ai::{SolverConfig, UniversalSolver};
 

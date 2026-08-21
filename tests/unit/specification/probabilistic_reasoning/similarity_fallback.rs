@@ -69,14 +69,18 @@ fn nearest_similar_evidence_skips_self_and_zero_count_and_low_similarity() {
 
     // The query equals the only stored target, so there is no *other* target to
     // borrow from.
-    assert!(store
-        .nearest_similar_evidence("answer:apple", false, None, 0.0)
-        .is_none());
+    assert!(
+        store
+            .nearest_similar_evidence("answer:apple", false, None, 0.0)
+            .is_none()
+    );
 
     // A wholly unrelated query clears no positive threshold.
-    assert!(store
-        .nearest_similar_evidence("result:banana", false, None, 0.1)
-        .is_none());
+    assert!(
+        store
+            .nearest_similar_evidence("result:banana", false, None, 0.1)
+            .is_none()
+    );
 }
 
 #[test]

@@ -1,7 +1,7 @@
 //! Regression coverage for issue #905: tool failures are observations, not
 //! completed steps, and verification evidence must match the requested bytes.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::{AnthropicMessagesRequest, ChatMessage, ResponsesRequest, ToolCall};
 use std::fs;
 
@@ -399,8 +399,10 @@ fn issue_905_case_study_and_self_authorship_are_preserved() {
     assert!(
         read("self-hosting-authorship/agent-cli.log").contains("ses_034e9dafeffe7nxeTkFhmHLmZN")
     );
-    assert!(read("self-hosting-fixture-refresh/agent-cli.log")
-        .contains("ses_00ea26880ffeRCSs97U7BNbw9A"));
+    assert!(
+        read("self-hosting-fixture-refresh/agent-cli.log")
+            .contains("ses_00ea26880ffeRCSs97U7BNbw9A")
+    );
 
     let authored = fs::read(format!(
         "{case}/self-hosting-authorship/tool-result-evidence-invariant.lino"

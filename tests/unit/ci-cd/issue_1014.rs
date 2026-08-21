@@ -80,8 +80,10 @@ fn automatic_release_defers_an_ineligible_cycle_without_weakening_the_manual_gat
     assert!(automatic.contains("id: release_gate"));
     assert!(automatic.contains("steps.release_gate.outputs.should_release == 'true'"));
     assert!(manual.contains("scripts/version-and-commit.rs"));
-    assert!(repository_file("scripts/version-and-commit.rs")
-        .contains("ensure_self_development_release"));
+    assert!(
+        repository_file("scripts/version-and-commit.rs")
+            .contains("ensure_self_development_release")
+    );
 }
 
 #[test]
@@ -217,7 +219,7 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
             if line.contains("--trust") {
                 assert!(
                     (path == ".github/workflows/release.yml"
-                        && line.contains("opencode-ai@1.18.4"))
+                        && line.contains("opencode-ai@1.18.19"))
                         || (path == "experiments/agentic_cli_matrix/install_client.sh"
                             && line.contains("\"$spec\"")),
                     "{path}: {line}"
@@ -226,13 +228,13 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
         }
     }
 
-    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.4"));
+    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.19"));
     let installer = repository_file("experiments/agentic_cli_matrix/install_client.sh");
     assert!(installer.contains("[ \"$CLIENT\" = opencode ]"));
     assert!(installer.contains("bun add -g --trust \"$spec\""));
     assert!(
         repository_file("experiments/agentic_cli_matrix/clients.lock")
-            .contains("opencode-ai@1.18.4")
+            .contains("opencode-ai@1.18.19")
     );
 }
 
@@ -250,7 +252,9 @@ fn vscode_dependency_graph_test_runs_after_its_dependencies_are_installed() {
         !test_script.contains("bundle-web-tools.test.mjs"),
         "the lint-stage test must remain runnable from committed source without npm install"
     );
-    assert!(package.contains("\"test:package\": \"node --test scripts/bundle-web-tools.test.mjs\""));
+    assert!(
+        package.contains("\"test:package\": \"node --test scripts/bundle-web-tools.test.mjs\"")
+    );
     let install = workflow
         .find("scripts/install-node-dependencies.sh vscode")
         .expect("locked VS Code dependency install");

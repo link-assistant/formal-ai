@@ -15,12 +15,16 @@ fn software_project_plan_exposes_requirement_graph_and_approval_preferences() {
     assert!(response.answer.contains("Requirement model"));
     assert!(response.answer.contains("Subtasks"));
     assert!(response.answer.contains("requirement_category"));
-    assert!(response
-        .answer
-        .contains("delivery_mode manual_instructions"));
-    assert!(response
-        .answer
-        .contains("implementation_language \"python\""));
+    assert!(
+        response
+            .answer
+            .contains("delivery_mode manual_instructions")
+    );
+    assert!(
+        response
+            .answer
+            .contains("implementation_language \"python\"")
+    );
     assert!(response.answer.contains("approval_gate \"each_step\""));
     assert!(response.answer.contains("approval_gate \"bash_command\""));
     assert!(response.answer.contains("requirement graph"));
@@ -30,26 +34,86 @@ fn software_project_plan_exposes_requirement_graph_and_approval_preferences() {
 #[test]
 fn popular_software_project_prompts_use_the_general_formalization_path() {
     let examples = [
-        ("Create a React web app for tracking workout progress with charts", "web app"),
-        ("Build a Python REST API for invoices with overdue payment reminders", "API"),
-        ("Write a Rust command line tool for renaming photos by date", "command-line tool"),
-        ("Make a GitHub Action that checks changelog fragments on pull requests", "action"),
-        ("Develop a browser extension that saves highlighted quotes and exports CSV", "browser extension"),
-        ("Create a Discord bot for scheduling game sessions and sending reminders", "bot"),
-        ("Scaffold a Node.js service that imports customer records and validates email addresses", "service"),
-        ("Generate a mobile app for habit tracking with notifications and backups", "mobile app"),
-        ("Design a website for event schedules that exports calendar data", "website"),
-        ("Implement a plugin for a design tool that syncs assets and reports conflicts", "plugin"),
-        ("Build a TypeScript SDK for uploading files with retries and progress events", "SDK"),
-        ("Create a Telegram bot that tracks expenses and sends weekly reports", "bot"),
-        ("Write a Python scraper that imports product prices and stores history", "scraper"),
-        ("Implement a Rust library for validating configuration files", "library"),
-        ("Build an admin dashboard that filters users and exports audit logs", "dashboard"),
-        ("Make an Owlbear extension that tracks HP, protection, resistance, and cooldowns", "extension"),
-        ("Build a FastAPI service that imports support tickets and sends status notifications", "service"),
-        ("Create a Node.js API for uploading files with retries and progress logs", "API"),
-        ("Generate a command line tool with shell commands for backup checks and upload validation", "command-line tool"),
-        ("Develop a web app for incident reports and run commands in WebVM after approval", "web app"),
+        (
+            "Create a React web app for tracking workout progress with charts",
+            "web app",
+        ),
+        (
+            "Build a Python REST API for invoices with overdue payment reminders",
+            "API",
+        ),
+        (
+            "Write a Rust command line tool for renaming photos by date",
+            "command-line tool",
+        ),
+        (
+            "Make a GitHub Action that checks changelog fragments on pull requests",
+            "action",
+        ),
+        (
+            "Develop a browser extension that saves highlighted quotes and exports CSV",
+            "browser extension",
+        ),
+        (
+            "Create a Discord bot for scheduling game sessions and sending reminders",
+            "bot",
+        ),
+        (
+            "Scaffold a Node.js service that imports customer records and validates email addresses",
+            "service",
+        ),
+        (
+            "Generate a mobile app for habit tracking with notifications and backups",
+            "mobile app",
+        ),
+        (
+            "Design a website for event schedules that exports calendar data",
+            "website",
+        ),
+        (
+            "Implement a plugin for a design tool that syncs assets and reports conflicts",
+            "plugin",
+        ),
+        (
+            "Build a TypeScript SDK for uploading files with retries and progress events",
+            "SDK",
+        ),
+        (
+            "Create a Telegram bot that tracks expenses and sends weekly reports",
+            "bot",
+        ),
+        (
+            "Write a Python scraper that imports product prices and stores history",
+            "scraper",
+        ),
+        (
+            "Implement a Rust library for validating configuration files",
+            "library",
+        ),
+        (
+            "Build an admin dashboard that filters users and exports audit logs",
+            "dashboard",
+        ),
+        (
+            "Make an Owlbear extension that tracks HP, protection, resistance, and cooldowns",
+            "extension",
+        ),
+        (
+            "Build a FastAPI service that imports support tickets and sends status notifications",
+            "service",
+        ),
+        (
+            "Create a Node.js API for uploading files with retries and progress logs",
+            "API",
+        ),
+        (
+            "Generate a command line tool with shell commands for backup checks and upload validation",
+            "command-line tool",
+        ),
+        (
+            "Develop a web app for incident reports and run commands in WebVM after approval",
+            "web app",
+        ),
     ];
 
     assert!(
@@ -76,9 +140,11 @@ fn popular_software_project_prompts_use_the_general_formalization_path() {
             "prompt {prompt:?} should formalize artifact {artifact:?}: {}",
             response.answer
         );
-        assert!(response
-            .answer
-            .contains("approval_gate \"implementation_plan\""));
+        assert!(
+            response
+                .answer
+                .contains("approval_gate \"implementation_plan\"")
+        );
         assert!(!response.answer.contains("intent: unknown"));
     }
 }
@@ -118,21 +184,29 @@ fn software_project_followup_keeps_test_step_in_the_project_dialogue() {
     assert!(follow_up.answer.contains("software_project_followup"));
     assert!(follow_up.answer.contains("follow_up_kind verification"));
     assert!(follow_up.answer.contains("target_site \"wikipedia.org\""));
-    assert!(follow_up
-        .answer
-        .contains("expected_output \"the top 10 most frequent words\""));
+    assert!(
+        follow_up
+            .answer
+            .contains("expected_output \"the top 10 most frequent words\"")
+    );
     assert!(follow_up.answer.contains("parent_artifact \"scraper\""));
-    assert!(follow_up
-        .answer
-        .contains("approval_gate \"test_execution\""));
-    assert!(follow_up
-        .answer
-        .contains("approval_gate \"network_access\""));
+    assert!(
+        follow_up
+            .answer
+            .contains("approval_gate \"test_execution\"")
+    );
+    assert!(
+        follow_up
+            .answer
+            .contains("approval_gate \"network_access\"")
+    );
     assert!(follow_up.answer.contains("Verification plan"));
     // The misrouted answers we are guarding against:
-    assert!(!follow_up
-        .answer
-        .contains("free, multilingual online encyclopedia"));
+    assert!(
+        !follow_up
+            .answer
+            .contains("free, multilingual online encyclopedia")
+    );
     assert!(!follow_up.answer.contains("cannot answer that from local"));
 }
 
@@ -505,9 +579,10 @@ fn software_project_dialogue_examples_formalize_plan_then_implement_after_approv
         assert!(plan.answer.contains("```lino"));
         assert!(plan.answer.contains("software_project_request"));
         assert!(plan.answer.contains("approval_state proposed"));
-        assert!(plan
-            .answer
-            .contains(&format!("artifact \"{}\"", example.artifact)));
+        assert!(
+            plan.answer
+                .contains(&format!("artifact \"{}\"", example.artifact))
+        );
         assert!(
             plan.answer
                 .contains(&format!("delivery_mode {}", example.delivery_mode)),
@@ -516,16 +591,19 @@ fn software_project_dialogue_examples_formalize_plan_then_implement_after_approv
             example.delivery_mode,
             plan.answer
         );
-        assert!(plan
-            .answer
-            .contains(&format!("implementation_language \"{}\"", example.language)));
+        assert!(
+            plan.answer
+                .contains(&format!("implementation_language \"{}\"", example.language))
+        );
         assert!(plan.answer.contains("approval_gate \"task_formalization\""));
-        assert!(plan
-            .answer
-            .contains("approval_gate \"implementation_plan\""));
-        assert!(plan
-            .answer
-            .contains(&format!("approval_gate \"{}\"", example.extra_gate)));
+        assert!(
+            plan.answer
+                .contains("approval_gate \"implementation_plan\"")
+        );
+        assert!(
+            plan.answer
+                .contains(&format!("approval_gate \"{}\"", example.extra_gate))
+        );
         assert!(plan.answer.contains("requirement_category"));
         assert!(plan.answer.contains("requirement graph"));
         assert!(plan.answer.contains("implementation subtask(s)"));
@@ -559,9 +637,11 @@ fn software_project_dialogue_examples_formalize_plan_then_implement_after_approv
         assert!(implementation.answer.contains("software_project_request"));
         assert!(implementation.answer.contains("Implementation steps"));
         assert!(implementation.answer.contains("Generated code checks"));
-        assert!(implementation
-            .answer
-            .contains(&format!("Starter {} core", example.starter_label)));
+        assert!(
+            implementation
+                .answer
+                .contains(&format!("Starter {} core", example.starter_label))
+        );
         assert!(implementation.answer.contains(example.code_fence));
         assert!(
             implementation

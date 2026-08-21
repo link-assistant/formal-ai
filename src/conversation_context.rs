@@ -4,7 +4,7 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::dialog_conversation::{
     append_with_overlap, load_conversation_records, transcript_from_records, turns_in_exchange,

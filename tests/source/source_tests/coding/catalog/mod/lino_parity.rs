@@ -5,7 +5,7 @@
 //! `list_files_arg` out of the seed). Regenerate the seed blocks with
 //! `experiments/issue-330-coding-tasks/generate_lino.py` when adding tasks.
 use super::*;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
 #[test]
 fn lino_seed_tasks_line_lists_every_catalog_task() {

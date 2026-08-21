@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/numeric_list/mod.rs
   language rust
   fidelity signature
-  byte_len 34926
-  line_count 855
-  content_id source_module_0acf63f6f883b1d3
+  byte_len 34898
+  line_count 853
+  content_id source_module_fabd24b6819cd2db
   symbol_count 39
   symbols
     module codegen 35 35
@@ -22,27 +22,27 @@ self_ast_census
     function try_numeric_list_with_history 190 257
     function solve_numeric_list 267 269
     function solve_numeric_list_with_context 276 353
-    function numeric_list_history_context 361 396
-    function detect_operation 402 428
-    function compute 433 466
-    function compare_items 468 473
-    function value_type_label 475 483
-    function format_scalar 487 499
-    function family 504 506
-    function formalization 508 517
-    function render 522 540
-    struct Localization 548 551
-    function for_language 554 565
-    function intro 567 574
-    function intro_en 576 605
-    function intro_ru 607 631
-    function intro_hi 633 657
-    function intro_zh 659 683
-    function ontology 687 689
-    function result_kind_for 693 706
-    function family_for 709 722
-    function direction_for 726 736
-    function parse_list_items 738 744
-    function parse_quoted_strings 749 787
-    function parse_numbers 794 845
-    function preceded_by_digit_or_word 850 855
+    function numeric_list_history_context 361 395
+    function detect_operation 401 427
+    function compute 432 465
+    function compare_items 467 472
+    function value_type_label 474 482
+    function format_scalar 486 498
+    function family 503 505
+    function formalization 507 516
+    function render 521 539
+    struct Localization 547 550
+    function for_language 553 564
+    function intro 566 573
+    function intro_en 575 604
+    function intro_ru 606 630
+    function intro_hi 632 656
+    function intro_zh 658 682
+    function ontology 686 688
+    function result_kind_for 692 705
+    function family_for 708 721
+    function direction_for 725 735
+    function parse_list_items 737 743
+    function parse_quoted_strings 748 785
+    function parse_numbers 792 843
+    function preceded_by_digit_or_word 848 853

@@ -1,7 +1,7 @@
 //! Regression coverage for issue #749 shell-command passthrough.
 
 use formal_ai::agentic_coding::mutating_action::verified_recipe;
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
 /// The command a prompt is carried out by, driven to the end of its plan.

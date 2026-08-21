@@ -19,7 +19,7 @@
 //! That is precisely the gap issue #671 exists to close, so the guard lives
 //! here as well as in the matrix.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const ALPHA: &str = "ALPHA_MARKER_11111\nalpha second line";

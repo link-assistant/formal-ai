@@ -37,10 +37,10 @@ mod codegen;
 use std::{cmp::Ordering, fmt::Write as _};
 
 use crate::coding::ProgramLanguage;
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
-use crate::seed::parser::{parse_lino, LinoNode};
 use crate::seed::NUMERIC_LIST_OPERATIONS_LINO;
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::{engine::SymbolicAnswer, event_log::EventLog};
 

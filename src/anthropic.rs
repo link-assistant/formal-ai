@@ -29,15 +29,15 @@
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
-use crate::context_capacity::{avg_utf8_bytes_per_char, ContextCapacity};
+use crate::context_capacity::{ContextCapacity, avg_utf8_bytes_per_char};
 
-use crate::engine::{render_thinking_steps, stable_id, ThinkingStep};
+use crate::engine::{ThinkingStep, render_thinking_steps, stable_id};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
-    create_chat_completion_with_solver, create_chat_completion_with_solver_and_memory,
     ChatCompletion, ChatCompletionRequest, ChatMessage, MessageContent, ToolCall,
+    create_chat_completion_with_solver, create_chat_completion_with_solver_and_memory,
 };
 use crate::solver::UniversalSolver;
 
@@ -430,8 +430,11 @@ fn anthropic_message_from_chat_completion(
             input_tokens: completion.usage.prompt_tokens,
             output_tokens: completion.usage.completion_tokens,
         },
-        context: json!(ContextCapacity::current()
-            .unwrap_or_else(|_| { ContextCapacity::from_bytes(0, 0, avg_utf8_bytes_per_char()) })),
+        context: json!(
+            ContextCapacity::current().unwrap_or_else(|_| {
+                ContextCapacity::from_bytes(0, 0, avg_utf8_bytes_per_char())
+            })
+        ),
     }
 }
 

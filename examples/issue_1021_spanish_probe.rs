@@ -10,8 +10,8 @@
 //!
 //! Run with `cargo run --example issue_1021_spanish_probe`.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::ChatMessage;
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 
 /// The shell command the agentic planner resolves for `prompt`, or `None` when
 /// it routes somewhere other than a command execution tool.

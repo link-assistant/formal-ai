@@ -422,10 +422,10 @@ fn wikidata_cache_path(root: &Path, id: &str, extension: &str) -> PathBuf {
 }
 
 fn wiktionary_cache_path(root: &Path, id: &str) -> PathBuf {
-    if let Some(rest) = id.strip_prefix("WT-") {
-        if let Some((language, page)) = rest.split_once('-') {
-            return root.join(language).join(format!("{page}.lino"));
-        }
+    if let Some(rest) = id.strip_prefix("WT-")
+        && let Some((language, page)) = rest.split_once('-')
+    {
+        return root.join(language).join(format!("{page}.lino"));
     }
     root.join(format!("{id}.lino"))
 }

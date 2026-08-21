@@ -24,9 +24,9 @@
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 
-use crate::engine::{normalize_prompt, FormalAiEngine};
+use crate::engine::{FormalAiEngine, normalize_prompt};
 use crate::google_trends_catalog::google_trends_catalog;
-use crate::learning_cycle::{recorded_google_trends_frontier, FrontierItem};
+use crate::learning_cycle::{FrontierItem, recorded_google_trends_frontier};
 use crate::solver_handlers::web_search_query_for;
 
 /// The intent the unknown path reports.

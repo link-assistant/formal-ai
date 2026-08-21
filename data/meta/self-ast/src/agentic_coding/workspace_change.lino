@@ -2,43 +2,43 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 17869
-  line_count 540
-  content_id source_module_459ae62e4690a7e8
+  byte_len 17841
+  line_count 537
+  content_id source_module_4d46be159d590889
   symbol_count 24
   symbols
     struct GroundedRewrite 27 31
     struct CompositeModuleChange 34 39
     function plan_workspace_change_step 41 57
-    function plan_rewrite_step 59 147
-    function plan_composite_step 149 257
-    function grounded_rewrite 259 285
-    function composite_module_change 289 310
-    function insert_registration 312 325
-    function compact_registration_edit 327 351
-    const MAX_SUFFIX_BYTES 328 328
-    function repeated_identifier_rewrite_command 353 361
-    function shell_safe_identifier 363 368
-    function identifier_tokens 370 373
-    function valid_identifier 375 385
-    function rust_paths 387 409
-    function result_for_path 411 435
-    function result_for_edit 437 449
-    function argument_matches_path 451 458
-    function argument_matches 460 463
-    function workspace_path_matches 465 472
-    function result_for_command 474 490
-    function plan_digest_verification 492 513
-    function matching_result 515 536
-    function read_arguments 538 540
+    function plan_rewrite_step 59 145
+    function plan_composite_step 147 254
+    function grounded_rewrite 256 282
+    function composite_module_change 286 307
+    function insert_registration 309 322
+    function compact_registration_edit 324 348
+    const MAX_SUFFIX_BYTES 325 325
+    function repeated_identifier_rewrite_command 350 358
+    function shell_safe_identifier 360 365
+    function identifier_tokens 367 370
+    function valid_identifier 372 382
+    function rust_paths 384 406
+    function result_for_path 408 432
+    function result_for_edit 434 446
+    function argument_matches_path 448 455
+    function argument_matches 457 460
+    function workspace_path_matches 462 469
+    function result_for_command 471 487
+    function plan_digest_verification 489 510
+    function matching_result 512 533
+    function read_arguments 535 537
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14578
-    named_node_count 2901
-    distinct_node_kinds 75
+    total_link_count 14535
+    named_node_count 2894
+    distinct_node_kinds 76
     node_kinds
       abstract_type 2
       arguments 273
@@ -47,7 +47,7 @@ self_ast_census
       attribute 3
       attribute_item 3
       binary_expression 50
-      block 79
+      block 76
       boolean_literal 6
       break_expression 1
       call_expression 273
@@ -59,7 +59,7 @@ self_ast_census
       crate 4
       doc_comment 8
       else_clause 4
-      expression_statement 72
+      expression_statement 69
       field_declaration 7
       field_declaration_list 2
       field_expression 188
@@ -72,10 +72,11 @@ self_ast_census
       generic_function 4
       generic_type 16
       identifier 781
-      if_expression 34
+      if_expression 31
       index_expression 5
       inner_doc_comment_marker 8
       integer_literal 9
+      let_chain 2
       let_condition 6
       let_declaration 58
       line_comment 9

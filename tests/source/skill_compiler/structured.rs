@@ -4,8 +4,8 @@ use crate::engine::normalize_prompt;
 use crate::seed;
 
 use super::{
-    code_spans, extract_trigger_response, looks_like_skill_description, CompiledSkillInput,
-    CompiledSkillStep, SkillCompileError,
+    CompiledSkillInput, CompiledSkillStep, SkillCompileError, code_spans, extract_trigger_response,
+    looks_like_skill_description,
 };
 
 #[derive(Debug, Clone, Default)]

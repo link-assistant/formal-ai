@@ -16,7 +16,7 @@
 //! `aider` leg.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const REMINDER: &str = "To suggest changes to a file you MUST return the entire content of the \
 updated file.\nYou MUST use this *file listing* format:\n\npath/to/filename.js\n```\n// entire \

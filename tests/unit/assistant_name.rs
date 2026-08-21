@@ -14,8 +14,7 @@ const NAME_PROMPTS: &[NamePrompt] = &[
     NamePrompt {
         language: "en",
         prompt: "What is your name?",
-        answer:
-            "I'm formal AI, and currently I don't have a name. But you can name me as you like.",
+        answer: "I'm formal AI, and currently I don't have a name. But you can name me as you like.",
     },
     NamePrompt {
         language: "ru",

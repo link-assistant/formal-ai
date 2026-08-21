@@ -2,8 +2,9 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::{
+    SharedDialogError, SharedDialogFormat, SharedDialogMetadata,
     convert_shared_dialog_to_demo_memory, parse_memory_links_notation, parse_shared_dialog,
-    response_for, SharedDialogError, SharedDialogFormat, SharedDialogMetadata,
+    response_for,
 };
 
 const CHATGPT_SHARE_URL: &str = "https://chatgpt.com/share/6a3825b9-8de4-83ee-9c24-52fd1eb38d24";
@@ -32,12 +33,16 @@ fn chatgpt_share_html_extracts_visible_dialog_turns() {
     assert_eq!(dialog.turns[2].role, "user");
     assert_eq!(dialog.turns[3].role, "assistant");
     assert!(dialog.turns[0].content.contains("make a loop of that"));
-    assert!(dialog.turns[1]
-        .content
-        .contains("while true; do sleep 30m && hive-cleanup -f; done"));
-    assert!(dialog.turns[3]
-        .content
-        .contains("screen -dmS auto-cleanup bash -c"));
+    assert!(
+        dialog.turns[1]
+            .content
+            .contains("while true; do sleep 30m && hive-cleanup -f; done")
+    );
+    assert!(
+        dialog.turns[3]
+            .content
+            .contains("screen -dmS auto-cleanup bash -c")
+    );
 }
 
 #[test]
@@ -70,11 +75,13 @@ fn chatgpt_share_conversion_exports_demo_memory_events() {
         Some("Infinite loop script")
     );
     assert_eq!(events[0].evidence, vec![String::from(CHATGPT_SHARE_URL)]);
-    assert!(events[3]
-        .content
-        .as_deref()
-        .unwrap_or_default()
-        .contains("screen -dmS auto-cleanup bash -c"));
+    assert!(
+        events[3]
+            .content
+            .as_deref()
+            .unwrap_or_default()
+            .contains("screen -dmS auto-cleanup bash -c")
+    );
 }
 
 #[test]

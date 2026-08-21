@@ -6,7 +6,7 @@
       "name": "formal-ai-issue-819-tui-proof",
       "dependencies": {
         "agent-commander": "0.10.1",
-        "command-stream": "^0.17.2",
+        "command-stream": "^0.19.0",
       },
     },
   },
@@ -41,12 +41,14 @@
 
     "agent-commander": ["agent-commander@0.10.1", "", { "dependencies": { "command-stream": "^0.17.2" }, "bin": { "start-agent": "bin/start-agent.mjs", "stop-agent": "bin/stop-agent.mjs" } }, "sha512-NXX1Qd6WgJ5FKpxvhNCnEn+DdEUzh2+Pn64X/rU3yTwBEVeVVDyalLc1a1Ud2WLlrqtTOeofEsCC5myatspwkw=="],
 
-    "command-stream": ["command-stream@0.17.2", "", { "dependencies": { "@resvg/resvg-js": "^2.6.2", "@xterm/headless": "^6.0.0", "gifenc": "^1.0.3", "node-pty": "^1.2.0-beta.14" } }, "sha512-SEHSZgtfV6/llMw7mm0q/1w559EZd56rPmcGjkTWEkFwjtunqMM20qh8cr33S7CQ6FRfIVoiMjTPyvvnFOTvcw=="],
+    "command-stream": ["command-stream@0.19.0", "", { "dependencies": { "@resvg/resvg-js": "^2.6.2", "@xterm/headless": "^6.0.0", "gifenc": "^1.0.3", "node-pty": "^1.2.0-beta.14" } }, "sha512-RGLIT1gidQCMY4NbhsxDL8C4kkwOssQe8DUGKIBH46XXOZYqbwDxlkGyZrtnr+F6MNeP1H+/r6I7cDh1lFoKIw=="],
 
     "gifenc": ["gifenc@1.0.3", "", {}, "sha512-xdr6AdrfGBcfzncONUOlXMBuc5wJDtOueE3c5rdG0oNgtINLD+f2iFZltrBRZYzACRbKr+mSVU/x98zv2u3jmw=="],
 
     "node-addon-api": ["node-addon-api@7.1.1", "", {}, "sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ=="],
 
     "node-pty": ["node-pty@1.2.0-beta.14", "", { "dependencies": { "node-addon-api": "^7.1.0" } }, "sha512-XORU9BQgpxVgqr7WivjJ17mLenOHUgKKWzuZZNaw3NDYgHc/wPJQMSaoLDrpEgqV6aU1nNwil1o/OqYj6lWmUA=="],
+
+    "agent-commander/command-stream": ["command-stream@0.17.2", "", { "dependencies": { "@resvg/resvg-js": "^2.6.2", "@xterm/headless": "^6.0.0", "gifenc": "^1.0.3", "node-pty": "^1.2.0-beta.14" } }, "sha512-SEHSZgtfV6/llMw7mm0q/1w559EZd56rPmcGjkTWEkFwjtunqMM20qh8cr33S7CQ6FRfIVoiMjTPyvvnFOTvcw=="],
   }
 }

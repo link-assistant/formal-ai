@@ -10,7 +10,7 @@
 //! visible without spawning any.
 
 use formal_ai::recursive_execution::{
-    solve_recursively, RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor,
+    RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively,
 };
 use formal_ai::task_decomposition::SplittingExecutor;
 
@@ -97,9 +97,5 @@ fn print_run(run: &RecursiveRun, depth: usize) {
 }
 
 const fn marker(run: &RecursiveRun) -> &'static str {
-    if run.is_passed() {
-        "PASS"
-    } else {
-        "BLOCKED"
-    }
+    if run.is_passed() { "PASS" } else { "BLOCKED" }
 }

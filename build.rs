@@ -50,6 +50,40 @@ fn main() {
     fs::write(&out_path, generated).expect("write seed_bundle_files.rs");
 
     emit_owned_source_manifest(&manifest_dir, &out_dir);
+    emit_crate_edition(&manifest_dir);
+}
+
+/// Export the crate's own Rust edition as `FORMAL_AI_CRATE_EDITION`.
+///
+/// [`crate::memory_revision::rustc_verdict`] compiles the next version of this
+/// crate with a bare `rustc`, which has no manifest to read the edition from. A
+/// constant typed into that module would be a second place to remember, and the
+/// day it fell behind the manifest the ledger would start rolling back versions
+/// that `cargo build` accepts. So the value is read from `Cargo.toml` here,
+/// where there is only one of it.
+fn emit_crate_edition(manifest_dir: &Path) {
+    let manifest_path = manifest_dir.join("Cargo.toml");
+    println!("cargo:rerun-if-changed={}", manifest_path.display());
+    let manifest = fs::read_to_string(&manifest_path).expect("read Cargo.toml");
+    let edition = package_edition(&manifest)
+        .unwrap_or_else(|| panic!("[package] edition missing from {}", manifest_path.display()));
+    println!("cargo:rustc-env=FORMAL_AI_CRATE_EDITION={edition}");
+}
+
+/// The `edition` of the manifest's `[package]` table, ignoring every other
+/// table -- a `[dependencies]` entry may carry an `edition` key of its own.
+fn package_edition(manifest: &str) -> Option<String> {
+    let mut in_package = false;
+    for line in manifest.lines() {
+        let line = line.trim();
+        if line.starts_with('[') {
+            in_package = line == "[package]";
+        } else if in_package && let Some(value) = line.strip_prefix("edition") {
+            let value = value.trim_start().strip_prefix('=')?.trim();
+            return Some(value.trim_matches('"').to_owned());
+        }
+    }
+    None
 }
 
 /// Emit `owned_source_files.rs` — the compile-time manifest of every owned Rust
@@ -137,10 +171,10 @@ fn seed_sort_key(path: &Path) -> (String, u32, String) {
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or_default();
-    if let Some((bucket, suffix)) = stem.rsplit_once("-part") {
-        if let Ok(n) = suffix.parse::<u32>() {
-            return (bucket.to_string(), n, stem.to_string());
-        }
+    if let Some((bucket, suffix)) = stem.rsplit_once("-part")
+        && let Ok(n) = suffix.parse::<u32>()
+    {
+        return (bucket.to_string(), n, stem.to_string());
     }
     (stem.to_string(), 0, stem.to_string())
 }

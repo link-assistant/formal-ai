@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 5710
   line_count 135
-  content_id source_module_69a6a5a6bc6bd2ca
+  content_id source_module_e6d4527643355e86
   symbol_count 6
   symbols
     const DISABLED_SERVICES_ENV 30 30

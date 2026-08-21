@@ -1,4 +1,4 @@
-use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};
+use formal_ai::memory_program::{MemoryProgramLimits, compile_memory_program};
 
 #[test]
 fn equivalent_multilingual_requests_compile_to_the_same_program_links() {

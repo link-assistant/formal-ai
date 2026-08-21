@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 28859
-  line_count 842
-  content_id source_module_8a78901c46226dd7
+  byte_len 28827
+  line_count 838
+  content_id source_module_3dd2714c5bcabd39
   symbol_count 44
   symbols
     enum FileReadTask 11 22
@@ -13,52 +13,52 @@ self_ast_census
     struct ToolResultRecord 39 43
     function plan_file_read_step 48 80
     function failed_step_answer 90 93
-    function plan_direct_file_read 95 145
-    function plan_list_then_read 147 229
-    function file_read_task_for 231 287
-    function has_file_read_intent 289 291
-    function asks_to_read_every_file 293 296
-    function asks_to_list_then_read 298 308
-    function asks_to_read_file_in_folder 310 312
-    function selection_for_prompt 314 320
-    function mode_for_prompt 322 334
-    function extract_value_key 336 347
-    function leading_cat_path 349 360
-    function first_local_file_path 362 367
-    function clean_file_token 369 381
-    function looks_like_local_file_path 383 401
-    function is_file_path_char 403 405
-    function directory_for_list_read 407 438
-    function tool_result_records 440 471
-    function tool_result_call 473 479
-    function read_result_for_path 481 490
-    function same_path 498 507
-    function read_results_for_paths 509 519
-    function run_record_for_command 527 535
-    function command_argument 545 549
-    function path_argument 551 556
-    function read_arguments 558 565
-    function read_command_for 567 574
-    function list_files_command 576 585
-    function cat_many_command 587 599
-    function shell_path 601 609
-    function selected_paths_from_listing 611 641
-    function file_read_final_answer 643 672
-    function extract_jsonish_value 674 701
-    function supplied_file_answer 717 724
-    function supplied_file_final_answer 741 770
-    function supplied_file_template 778 791
-    function supplied_file_content 801 828
-    function tool_for 830 835
-    function plan_one 837 842
+    function plan_direct_file_read 95 144
+    function plan_list_then_read 146 227
+    function file_read_task_for 229 284
+    function has_file_read_intent 286 288
+    function asks_to_read_every_file 290 293
+    function asks_to_list_then_read 295 305
+    function asks_to_read_file_in_folder 307 309
+    function selection_for_prompt 311 317
+    function mode_for_prompt 319 331
+    function extract_value_key 333 344
+    function leading_cat_path 346 357
+    function first_local_file_path 359 364
+    function clean_file_token 366 378
+    function looks_like_local_file_path 380 398
+    function is_file_path_char 400 402
+    function directory_for_list_read 404 435
+    function tool_result_records 437 468
+    function tool_result_call 470 476
+    function read_result_for_path 478 487
+    function same_path 495 504
+    function read_results_for_paths 506 516
+    function run_record_for_command 524 532
+    function command_argument 542 546
+    function path_argument 548 553
+    function read_arguments 555 562
+    function read_command_for 564 571
+    function list_files_command 573 582
+    function cat_many_command 584 596
+    function shell_path 598 606
+    function selected_paths_from_listing 608 638
+    function file_read_final_answer 640 669
+    function extract_jsonish_value 671 697
+    function supplied_file_answer 713 720
+    function supplied_file_final_answer 737 766
+    function supplied_file_template 774 787
+    function supplied_file_content 797 824
+    function tool_for 826 831
+    function plan_one 833 838
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21496
-    named_node_count 4392
-    distinct_node_kinds 87
+    total_link_count 21440
+    named_node_count 4384
+    distinct_node_kinds 88
     node_kinds
       arguments 368
       array_expression 8
@@ -67,7 +67,7 @@ self_ast_census
       attribute 5
       attribute_item 5
       binary_expression 57
-      block 121
+      block 117
       boolean_literal 5
       call_expression 368
       char_literal 35
@@ -81,7 +81,7 @@ self_ast_census
       enum_variant 9
       enum_variant_list 3
       escape_sequence 15
-      expression_statement 105
+      expression_statement 101
       field_declaration 9
       field_declaration_list 3
       field_expression 272
@@ -95,10 +95,11 @@ self_ast_census
       generic_function 5
       generic_type 30
       identifier 991
-      if_expression 47
+      if_expression 43
       index_expression 26
       inner_doc_comment_marker 1
       integer_literal 30
+      let_chain 4
       let_condition 21
       let_declaration 61
       lifetime 9

@@ -15,8 +15,8 @@
 
 use formal_ai::relative_meta_logic::SourceTier;
 use formal_ai::summarization::{
-    gather, merge_into_context, FetchedSource, GatheringPlan, SourceCache, SourceProvider,
-    SummarizationConfig, SummarizationMode,
+    FetchedSource, GatheringPlan, SourceCache, SourceProvider, SummarizationConfig,
+    SummarizationMode, gather, merge_into_context,
 };
 
 /// The pages a fetcher would return for the question, keyed by URL.

@@ -59,9 +59,11 @@ fn quoted_string_lists_are_transformed() {
 
     assert_eq!(sorted.value_type, "string");
     assert_eq!(sorted.result, vec!["apple", "banana", "pear"]);
-    assert!(sorted
-        .code
-        .contains(r#"const numbers = ["pear", "apple", "banana"];"#));
+    assert!(
+        sorted
+            .code
+            .contains(r#"const numbers = ["pear", "apple", "banana"];"#)
+    );
     assert!(sorted.code.contains("[...numbers].sort()"));
     assert!(sorted.syntax_tree.contains("value_type string"));
     assert!(sorted.cst_tree.contains("cst_tree"));

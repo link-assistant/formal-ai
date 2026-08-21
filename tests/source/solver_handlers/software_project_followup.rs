@@ -9,13 +9,13 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt, stable_id};
 use crate::event_log::EventLog;
 use crate::seed;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
-use super::software_project::{is_approval_prompt, lino_string, SoftwareProjectMeaning};
+use super::software_project::{SoftwareProjectMeaning, is_approval_prompt, lino_string};
 
 /// Kinds of follow-up that exercise an already-designed artifact. The order in
 /// [`follow_up_kind`] gives verification precedence over plain execution so a

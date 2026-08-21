@@ -46,6 +46,10 @@ use sha2::{Digest as _, Sha256};
 use crate::engine::stable_id;
 use crate::memory::MemoryEvent;
 
+/// The Rust edition this crate is written in, read from `Cargo.toml` by
+/// `build.rs` so the manifest stays the only place it is written down.
+const CRATE_EDITION: &str = env!("FORMAL_AI_CRATE_EDITION");
+
 /// Content digest of `bytes`, in the hexadecimal form the baseline pin records.
 fn digest(bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();
@@ -477,11 +481,16 @@ impl RevisionLedger {
 ///
 /// `baseline_passed` is carried through from the caller because a compile check
 /// is not a test run; the ledger needs both numbers and this half only knows one.
+///
+/// The edition is the crate's own. What is being compiled here is the next
+/// version of *this* crate, so a verdict rendered under an older edition would
+/// reject Rust that `cargo build` accepts -- a let-chain would read as "does not
+/// compile" and the ledger would roll back a version that was never broken.
 #[must_use]
 pub fn rustc_verdict(root: &Path, source: &str, baseline_passed: usize) -> VersionVerdict {
     let output = Command::new("rustc")
         .arg("--edition")
-        .arg("2021")
+        .arg(CRATE_EDITION)
         .arg("--crate-type")
         .arg("lib")
         .arg("--emit=metadata")

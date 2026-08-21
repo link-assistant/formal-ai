@@ -9,7 +9,7 @@
 
 use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot};
 use crate::links_query::run_links_query;
-use crate::server::{error_response, json_response, links_notation_response, ApiHttpResponse};
+use crate::server::{ApiHttpResponse, error_response, json_response, links_notation_response};
 
 /// Serve the links-network view of the knowledge store — the canonical
 /// `/v1/network` endpoint (and, flagged deprecated, its `/v1/graph` alias).
@@ -26,10 +26,10 @@ pub fn handle_network_request(query: &str) -> ApiHttpResponse {
         }
     }
 
-    if let Some(trace_id) = trace {
-        if !is_known_trace_id(trace_id) {
-            return error_response(404, "unknown trace id");
-        }
+    if let Some(trace_id) = trace
+        && !is_known_trace_id(trace_id)
+    {
+        return error_response(404, "unknown trace id");
     }
 
     if format == Some("dot") {
@@ -60,10 +60,10 @@ pub fn handle_links_query_request(body: &str) -> ApiHttpResponse {
 /// object (`{"query": "..."}`, for tooling convenience) or a Links-Notation
 /// envelope (`links_query`\n`  query "..."`).
 fn parse_links_query_body(body: &str) -> Option<String> {
-    if let Ok(value) = serde_json::from_str::<serde_json::Value>(body) {
-        if let Some(query) = value.get("query").and_then(|item| item.as_str()) {
-            return Some(query.to_owned());
-        }
+    if let Ok(value) = serde_json::from_str::<serde_json::Value>(body)
+        && let Some(query) = value.get("query").and_then(|item| item.as_str())
+    {
+        return Some(query.to_owned());
     }
     for line in body.lines() {
         let trimmed = line.trim();

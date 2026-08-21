@@ -16,7 +16,7 @@
 //! classification to the exact captured bytes used to derive it.
 
 use crate::relative_meta_logic::{
-    RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
+    ASSUMED_TRUE_PRIOR, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
 };
 use crate::seed::market_price_assets;
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
@@ -333,15 +333,15 @@ pub fn extract_statements(sample: &str) -> Vec<String> {
 pub fn extract_market_price_claims(sample: &str) -> Vec<MarketPriceClaim> {
     let mut claims: Vec<MarketPriceClaim> = Vec::new();
     for fragment in market_price_fragments(sample) {
-        if let Some(claim) = parse_market_price_claim(&fragment) {
-            if !claims.iter().any(|existing| {
+        if let Some(claim) = parse_market_price_claim(&fragment)
+            && !claims.iter().any(|existing| {
                 existing.asset == claim.asset
                     && existing.period == claim.period
                     && (existing.claimed_price - claim.claimed_price).abs() < f64::EPSILON
                     && existing.statement == claim.statement
-            }) {
-                claims.push(claim);
-            }
+            })
+        {
+            claims.push(claim);
         }
     }
     claims

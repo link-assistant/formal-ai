@@ -1,7 +1,7 @@
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::orchestration::{
-    replay_session, run_agent, AgentCommand, AgentRunConfig, AgentRunError, AgentRunPermission,
-    AgentStatus, DispatchConfig,
+    AgentCommand, AgentRunConfig, AgentRunError, AgentRunPermission, AgentStatus, DispatchConfig,
+    replay_session, run_agent,
 };
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use std::collections::BTreeMap;
@@ -91,10 +91,12 @@ fn exact_readme_badge_task_discovers_qwens_deferred_shell_tool() {
     };
     assert_eq!(discovery.tool, "tool_search");
     let arguments: serde_json::Value = serde_json::from_str(&discovery.arguments).unwrap();
-    assert!(arguments["query"]
-        .as_str()
-        .unwrap()
-        .contains("run_shell_command"));
+    assert!(
+        arguments["query"]
+            .as_str()
+            .unwrap()
+            .contains("run_shell_command")
+    );
 
     let messages = vec![
         ChatMessage::user("add a README badge"),
@@ -239,10 +241,12 @@ fn arbitrary_agent_program_requires_a_separate_explicit_grant() {
     let session = run_agent(&config).expect("the exact custom argv is now explicitly granted");
     assert_eq!(session.cli, "private-neural-tui");
     assert!(session.passed());
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "custom_adapter_granted"));
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "custom_adapter_granted")
+    );
 }
 
 #[test]
@@ -265,14 +269,18 @@ fn a_registered_cli_label_does_not_bypass_the_custom_program_grant() {
     config.allowlisted_agent_commands.insert(program.clone());
     let session = run_agent(&config).expect("the explicitly granted override runs");
     assert!(session.native_session.is_none());
-    assert!(session
-        .events
-        .iter()
-        .any(|event| { event.kind == "custom_adapter_granted" && event.detail == program }));
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "process_started" && event.detail == program));
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| { event.kind == "custom_adapter_granted" && event.detail == program })
+    );
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "process_started" && event.detail == program)
+    );
 }
 
 #[test]
@@ -302,10 +310,12 @@ fn all_required_seed_adapters_capture_process_and_workspace_events() {
         assert!(session.stderr.contains("fixture_stderr"));
         assert_eq!(session.changes.len(), 1);
         assert_eq!(session.changes[0].path, "README.md");
-        assert!(session
-            .events
-            .iter()
-            .any(|event| event.kind == "workspace_effect"));
+        assert!(
+            session
+                .events
+                .iter()
+                .any(|event| event.kind == "workspace_effect")
+        );
     }
 }
 
@@ -388,10 +398,12 @@ fn all_six_cli_entrypoints_run_a_scripted_repo_task_through_the_real_wrapper() {
             fs::read_to_string(workspace.path().join("README.md")).unwrap(),
             "# scripted badge\n"
         );
-        assert!(session
-            .changes
-            .iter()
-            .any(|change| change.path == "README.md"));
+        assert!(
+            session
+                .changes
+                .iter()
+                .any(|change| change.path == "README.md")
+        );
     }
 }
 
@@ -451,10 +463,12 @@ fn public_cli_runs_an_explicitly_granted_agent_through_bash() {
     let session = replay_session(&fs::read(session_path).unwrap()).unwrap();
     assert_eq!(session.cli, "private-neural-agent");
     assert_eq!(session.stdout.trim(), "bash-agent:answer through bash");
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "custom_adapter_granted"));
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "custom_adapter_granted")
+    );
 }
 
 #[cfg(unix)]
@@ -506,17 +520,17 @@ fn public_cli_compares_multiple_explicitly_granted_bash_agents() {
     );
     let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(report["sessions"].as_array().map(Vec::len), Some(2));
-    assert!(report["sessions"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .all(|session| {
-            session["events"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .any(|event| event["kind"] == "custom_adapter_granted" && event["detail"] == "sh")
-        }));
+    assert!(
+        report["sessions"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|session| {
+                session["events"].as_array().unwrap().iter().any(|event| {
+                    event["kind"] == "custom_adapter_granted" && event["detail"] == "sh"
+                })
+            })
+    );
     assert_eq!(
         fs::read_to_string(workspace.path().join("README.md")).unwrap(),
         "# custom neural result\n"
@@ -604,15 +618,19 @@ fn public_cli_resumes_the_recorded_vendor_session_with_correction_evidence() {
         String::from_utf8_lossy(&resumed.stderr)
     );
     let corrected = replay_session(&fs::read(corrected_path).unwrap()).unwrap();
-    assert!(corrected
-        .args
-        .windows(2)
-        .any(|args| args == ["--resume", "ses_vendor_703"]));
+    assert!(
+        corrected
+            .args
+            .windows(2)
+            .any(|args| args == ["--resume", "ses_vendor_703"])
+    );
     assert!(corrected.args.iter().any(|arg| arg == "--no-fork"));
     assert!(corrected.task.contains("The release date is 2027."));
-    assert!(corrected
-        .task
-        .contains("The signed release record says 2026."));
+    assert!(
+        corrected
+            .task
+            .contains("The signed release record says 2026.")
+    );
     assert_eq!(
         corrected
             .continuation
@@ -671,45 +689,59 @@ fn direct_vendor_entrypoints_keep_editing_and_prompt_arguments() {
         assert_eq!(session.args.last().map(String::as_str), Some("vendor task"));
         match cli {
             "agent" => {
-                assert!(session
-                    .args
-                    .windows(2)
-                    .any(|args| args == ["-p", "vendor task"]));
-                assert!(session
-                    .args
-                    .iter()
-                    .any(|arg| arg == "--no-retry-on-rate-limits"));
+                assert!(
+                    session
+                        .args
+                        .windows(2)
+                        .any(|args| args == ["-p", "vendor task"])
+                );
+                assert!(
+                    session
+                        .args
+                        .iter()
+                        .any(|arg| arg == "--no-retry-on-rate-limits")
+                );
             }
             "gemini" | "qwen" => {
-                assert!(session
-                    .args
-                    .windows(2)
-                    .any(|args| args == ["-p", "vendor task"]));
+                assert!(
+                    session
+                        .args
+                        .windows(2)
+                        .any(|args| args == ["-p", "vendor task"])
+                );
             }
             "claude" => {
-                assert!(session
-                    .args
-                    .windows(2)
-                    .any(|args| args == ["--print", "vendor task"]));
+                assert!(
+                    session
+                        .args
+                        .windows(2)
+                        .any(|args| args == ["--print", "vendor task"])
+                );
             }
             "codex" => {
-                assert!(session
-                    .args
-                    .windows(2)
-                    .any(|args| args == ["-m", "formal-ai"]));
-                assert!(session
-                    .args
-                    .windows(2)
-                    .any(|args| args == ["--sandbox", "workspace-write"]));
+                assert!(
+                    session
+                        .args
+                        .windows(2)
+                        .any(|args| args == ["-m", "formal-ai"])
+                );
+                assert!(
+                    session
+                        .args
+                        .windows(2)
+                        .any(|args| args == ["--sandbox", "workspace-write"])
+                );
                 assert!(session.args.iter().any(|arg| arg == "--json"));
                 assert!(!session.args.iter().any(|arg| arg == "read-only"));
             }
             "opencode" => {
                 assert!(session.args.iter().any(|arg| arg == "--auto"));
-                assert!(session
-                    .args
-                    .windows(2)
-                    .any(|args| args == ["--format", "json"]));
+                assert!(
+                    session
+                        .args
+                        .windows(2)
+                        .any(|args| args == ["--format", "json"])
+                );
             }
             _ => unreachable!(),
         }

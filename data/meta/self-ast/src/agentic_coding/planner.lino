@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 40796
-  line_count 896
-  content_id source_module_660f777e92d7c004
+  byte_len 40692
+  line_count 884
+  content_id source_module_67599f8f161cd3f6
   symbol_count 30
   symbols
     enum AgenticPlan 52 57
@@ -13,45 +13,45 @@ self_ast_census
     function permission_key 99 116
     function registry_id 118 135
     function tool_capability 144 146
-    function plan_chat_step 151 454
-    function plan_shell_step 457 474
-    struct DocumentRecipe 486 495
-    function plan_document_recipe 500 524
-    function plan_meaning_detail_step 533 582
-    function plan_diagram_step 589 602
-    function plan_self_ast_step 609 622
-    function plan_self_heal_step 629 642
-    function plan_source_links_step 650 663
-    function plan_ledger_step 670 683
-    function plan_explain_step 690 703
-    function plan_change_request_step 711 724
-    function plan_repair_strategy_step 732 745
-    function plan_rebuild_step 754 767
-    function plan_question_catalog_step 775 788
-    function plan_dreaming_audit_step 790 803
-    function plan_google_trends_learning_step 811 824
-    function plan_google_trends_catalog_step 826 839
-    function plan_one 841 846
-    function write_arguments 854 862
-    function fetch_arguments 871 877
-    function classify_tool 879 881
-    function latest_user_text 884 886
-    function trace_route 892 896
+    function plan_chat_step 151 446
+    function plan_shell_step 449 466
+    struct DocumentRecipe 478 487
+    function plan_document_recipe 492 516
+    function plan_meaning_detail_step 525 570
+    function plan_diagram_step 577 590
+    function plan_self_ast_step 597 610
+    function plan_self_heal_step 617 630
+    function plan_source_links_step 638 651
+    function plan_ledger_step 658 671
+    function plan_explain_step 678 691
+    function plan_change_request_step 699 712
+    function plan_repair_strategy_step 720 733
+    function plan_rebuild_step 742 755
+    function plan_question_catalog_step 763 776
+    function plan_dreaming_audit_step 778 791
+    function plan_google_trends_learning_step 799 812
+    function plan_google_trends_catalog_step 814 827
+    function plan_one 829 834
+    function write_arguments 842 850
+    function fetch_arguments 859 865
+    function classify_tool 867 869
+    function latest_user_text 872 874
+    function trace_route 880 884
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19289
-    named_node_count 3868
-    distinct_node_kinds 67
+    total_link_count 19119
+    named_node_count 3842
+    distinct_node_kinds 68
     node_kinds
       arguments 254
       array_type 35
       attribute 6
       attribute_item 6
       binary_expression 2
-      block 99
+      block 87
       call_expression 254
       closure_expression 7
       closure_parameters 7
@@ -62,7 +62,7 @@ self_ast_census
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      expression_statement 135
+      expression_statement 123
       field_declaration 6
       field_declaration_list 2
       field_expression 38
@@ -73,9 +73,10 @@ self_ast_census
       function_modifiers 2
       generic_type 5
       identifier 1117
-      if_expression 72
+      if_expression 60
       impl_item 1
       inner_doc_comment_marker 2
+      let_chain 10
       let_condition 44
       let_declaration 38
       lifetime 3

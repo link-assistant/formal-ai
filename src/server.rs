@@ -1,25 +1,26 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use serde::Serialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver_and_memory, AnthropicContentBlock,
-    AnthropicMessagesRequest,
+    AnthropicContentBlock, AnthropicMessagesRequest, anthropic_message_sse,
+    create_anthropic_message_with_solver_and_memory,
 };
 use crate::context_capacity::ContextCapacity;
 use crate::engine::{knowledge_graph, render_thinking_steps};
 use crate::gemini::{
-    create_gemini_generate_content_response_with_solver_and_memory, gemini_model_list,
-    gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
+    GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
+    gemini_model_list, gemini_model_metadata, gemini_response_sse, vertex_model_list,
 };
 use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
-    chat_exchange_to_record, chat_tool_executions, create_chat_completion_with_solver_and_memory,
+    ChatCompletion, ChatCompletionRequest, ResponsesRequest, chat_exchange_to_record,
+    chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
-    responses_exchange_to_record, ChatCompletion, ChatCompletionRequest, ResponsesRequest,
+    responses_exchange_to_record,
 };
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};

@@ -72,8 +72,7 @@ fn explicit_reverse_sort_path_argument_programs_work_in_every_supported_prompt_l
         Case {
             name: "English",
             language: "en",
-            prompt:
-                "Write me a Rust program that lists files with a path argument sorted in reverse order",
+            prompt: "Write me a Rust program that lists files with a path argument sorted in reverse order",
         },
         Case {
             name: "Russian",

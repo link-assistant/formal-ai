@@ -5,7 +5,7 @@
 //! names `tail -c 12000 | sed '1d'` as the reason #838's attached context could
 //! not be read. Each test below fails against the code that filed #838.
 
-use formal_ai::issue_report::{issue_title, truncate_records, ReportTurn, TitleSettings};
+use formal_ai::issue_report::{ReportTurn, TitleSettings, issue_title, truncate_records};
 use formal_ai::json_lino::lino_to_json;
 use serde_json::json;
 

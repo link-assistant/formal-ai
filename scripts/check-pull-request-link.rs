@@ -25,6 +25,9 @@
 //!   rust-script --test scripts/check-pull-request-link.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

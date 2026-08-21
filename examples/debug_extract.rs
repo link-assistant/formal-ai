@@ -1,8 +1,8 @@
 //! Debug `extract_translations` against cached Wiktionary pages.
 
 use formal_ai::translation::{
-    wiktionary::{extract_translation_blocks, Wiktionary},
     CachedHttpClient, CurlClient,
+    wiktionary::{Wiktionary, extract_translation_blocks},
 };
 
 fn main() {

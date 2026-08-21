@@ -2,7 +2,7 @@
 
 use std::fmt::Write as _;
 
-use crate::agent::{parse_agent_plan, run_agent_plan, AgentAction, AgentRunStatus};
+use crate::agent::{AgentAction, AgentRunStatus, parse_agent_plan, run_agent_plan};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 

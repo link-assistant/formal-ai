@@ -1,17 +1,17 @@
 use formal_ai::orchestration::{
+    AgentCommand, AgentRunError, AgentRunPermission, AgentStatus, ComparisonEntry,
+    ComparisonLedger, DispatchConfig, DispatchMode, ReplayError, VerificationCommand,
     apply_verified_translation, dispatch_agents, extract_agent_result,
     observe_orchestration_session, replay_session, resume_agent, run_agent, synthesize_sessions,
-    write_session, AgentCommand, AgentRunError, AgentRunPermission, AgentStatus, ComparisonEntry,
-    ComparisonLedger, DispatchConfig, DispatchMode, ReplayError, VerificationCommand,
+    write_session,
 };
 use std::fs;
 use std::process::Command;
 use std::time::{Duration, Instant};
 
 use super::issue_703_orchestration::{
-    fixture_command, fixture_commands, fixture_config, fixture_config_with_output,
-    grant_fixture_agent_command, TestWorkspace, FIXTURE_ENV, FIXTURE_RELEASE_ENV,
-    FIXTURE_STARTED_ENV,
+    FIXTURE_ENV, FIXTURE_RELEASE_ENV, FIXTURE_STARTED_ENV, TestWorkspace, fixture_command,
+    fixture_commands, fixture_config, fixture_config_with_output, grant_fixture_agent_command,
 };
 
 const AUTHORSHIP_SESSION: &str = "ses_050646852ffetdnQ73vR1yZ8la";
@@ -145,9 +145,11 @@ fn real_formal_ai_correction_chain_resumes_one_native_session_and_pins_the_artif
         .position(|arg| arg == "agent")
         .expect("the controlled client is explicit");
     assert!(resume_position < prompt_position);
-    assert!(final_session
-        .stdout
-        .contains(&format!("--resume {CONTINUATION_SESSION} --no-fork -p")));
+    assert!(
+        final_session
+            .stdout
+            .contains(&format!("--resume {CONTINUATION_SESSION} --no-fork -p"))
+    );
     assert_eq!(
         final_session
             .native_session
@@ -329,14 +331,18 @@ fn verification_timeout_is_recorded_and_fails_the_session() {
     assert!(!session.passed());
     assert_eq!(session.verification.len(), 1);
     assert!(session.verification[0].timed_out);
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "verification_started"));
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "verification_timed_out"));
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "verification_started")
+    );
+    assert!(
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "verification_timed_out")
+    );
 }
 
 #[test]
@@ -430,14 +436,18 @@ fn council_results_are_formalized_summarized_and_cross_checked() {
 
     assert_eq!(report.schema, "formal-ai-agent-synthesis-v1");
     assert_eq!(report.sources.len(), 2);
-    assert!(report
-        .sources
-        .iter()
-        .all(|source| source.meta_language.starts_with("formalization_candidate")));
-    assert!(report
-        .claims
-        .iter()
-        .any(|claim| claim.text.contains("Rust is memory safe") && claim.presented));
+    assert!(
+        report
+            .sources
+            .iter()
+            .all(|source| source.meta_language.starts_with("formalization_candidate"))
+    );
+    assert!(
+        report
+            .claims
+            .iter()
+            .any(|claim| claim.text.contains("Rust is memory safe") && claim.presented)
+    );
     assert!(!report.contradictions.is_empty());
     assert!(!report.corrections.is_empty());
     assert_eq!(report.fact_check_scope, "cross_agent_evidence_preflight");
@@ -462,10 +472,12 @@ fn council_results_are_formalized_summarized_and_cross_checked() {
     .expect("Russian translation");
     assert_eq!(report.final_language, "ru");
     assert!(!report.translation_required);
-    assert!(report
-        .translation
-        .as_ref()
-        .is_some_and(|translation| translation.session_sha256 == "translator-session-sha256"));
+    assert!(
+        report
+            .translation
+            .as_ref()
+            .is_some_and(|translation| translation.session_sha256 == "translator-session-sha256")
+    );
 }
 
 #[test]
@@ -600,13 +612,17 @@ fn repeated_orchestration_sessions_feed_human_gated_adapter_learning() {
         formal_ai::learn_client_contracts(&observations, &formal_ai::seed::client_integrations());
 
     assert!(report.awaiting_human_review);
-    assert!(report
-        .proposals
-        .iter()
-        .any(|proposal| proposal.field == "orchestration_target"));
-    assert!(report
-        .links_notation()
-        .contains("decision \"awaiting_human_review\""));
+    assert!(
+        report
+            .proposals
+            .iter()
+            .any(|proposal| proposal.field == "orchestration_target")
+    );
+    assert!(
+        report
+            .links_notation()
+            .contains("decision \"awaiting_human_review\"")
+    );
 }
 
 #[test]
@@ -671,19 +687,23 @@ fn a_proven_false_claim_resumes_the_same_native_session_with_parent_evidence() {
         corrected.task
     );
     assert!(corrected.task.contains("The release date is 2027."));
-    assert!(corrected
-        .task
-        .contains("The signed release record says 2026."));
+    assert!(
+        corrected
+            .task
+            .contains("The signed release record says 2026.")
+    );
     assert!(
         corrected
             .task
             .ends_with("Complete this correction goal: The corrected release date is 2026."),
         "the task must remain last so literal task parsers cannot consume correction evidence"
     );
-    assert!(corrected
-        .events
-        .iter()
-        .any(|event| event.kind == "native_session_resumed"));
+    assert!(
+        corrected
+            .events
+            .iter()
+            .any(|event| event.kind == "native_session_resumed")
+    );
 }
 
 #[test]
@@ -792,10 +812,12 @@ fn custom_output_directory_inside_workspace_is_excluded_from_candidate_copies() 
 
     assert_eq!(report.sessions.len(), 1);
     assert!(config.output_dir.join("comparison-ledger.json").is_file());
-    assert!(!config
-        .output_dir
-        .join("candidates/000-codex/agent-artifacts")
-        .exists());
+    assert!(
+        !config
+            .output_dir
+            .join("candidates/000-codex/agent-artifacts")
+            .exists()
+    );
 }
 
 #[test]

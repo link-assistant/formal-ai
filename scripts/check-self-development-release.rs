@@ -5,6 +5,11 @@
 //! range open and defer publishing without making every push red. Operational
 //! errors still fail this command. Manual releases retain the hard gate in
 //! `version-and-commit.rs`.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::env;
 use std::fs::OpenOptions;

@@ -689,9 +689,9 @@ src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could n
 src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
 src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
-src/rule_synthesis.rs	rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
-src/rule_synthesis.rs	rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm
-src/rule_synthesis.rs	rustc --edition=2021 {primary} -o substitution_program
+src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
+src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm
+src/rule_synthesis.rs	rustc --edition=2024 {primary} -o substitution_program
 src/rule_synthesis.rs	write_program task={} language={}
 src/seed.rs	formal_ai_seed_bundle\n
 src/seed/meanings/parse.rs	{surface} denotes {parent_meaning}

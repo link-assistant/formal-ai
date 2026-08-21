@@ -20,8 +20,8 @@
 use std::collections::BTreeSet;
 use std::sync::OnceLock;
 
-use super::roles::{ROLE_ONTOLOGY_CATEGORY, ROLE_ONTOLOGY_ROOT, ROLE_ONTOLOGY_TYPE};
 use super::MEANING_FILES;
+use super::roles::{ROLE_ONTOLOGY_CATEGORY, ROLE_ONTOLOGY_ROOT, ROLE_ONTOLOGY_TYPE};
 
 mod parse;
 use parse::parse_lexicon;

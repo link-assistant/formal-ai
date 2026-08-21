@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use clap::Args;
 use formal_ai::statement_audit::{
-    audit_corpus, parse_evidence_json, AuditConfig, EvidenceCapture, RepositoryCorpus,
+    AuditConfig, EvidenceCapture, RepositoryCorpus, audit_corpus, parse_evidence_json,
 };
 use serde_json::json;
 

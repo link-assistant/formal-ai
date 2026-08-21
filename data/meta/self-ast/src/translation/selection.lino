@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 12837
   line_count 417
-  content_id source_module_da42dcb84f10cfff
+  content_id source_module_b24cc30a86e20605
   symbol_count 26
   symbols
     struct FormalizationSelectionConfig 14 18

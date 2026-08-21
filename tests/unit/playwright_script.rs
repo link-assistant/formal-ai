@@ -14,9 +14,11 @@ fn russian_playwright_script_prompt_returns_starter_example() {
     assert!(response.answer.contains("Playwright"));
     assert!(response.answer.contains("```typescript"));
     assert!(response.answer.contains("@playwright/test"));
-    assert!(response
-        .answer
-        .contains("https://playwright.dev/docs/writing-tests"));
+    assert!(
+        response
+            .answer
+            .contains("https://playwright.dev/docs/writing-tests")
+    );
     assert_ne!(response.intent, "unknown");
 }
 

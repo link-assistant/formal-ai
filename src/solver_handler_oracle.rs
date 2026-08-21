@@ -23,7 +23,7 @@
 //! so it is purely additive.
 
 use crate::coding::program_task_by_alias;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::knowledge::CodingOracle;
 use crate::solver::BlueprintComposition;

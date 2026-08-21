@@ -39,6 +39,9 @@
 //!   rust-script --test scripts/check-tests-as-docs.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```

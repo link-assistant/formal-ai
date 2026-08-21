@@ -8,13 +8,14 @@ use formal_ai::memory_program::{
     MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramLimits,
 };
 use formal_ai::memory_query_language::{
-    compile_memory_query, execute_memory_query, MemoryQueryCompiler, MemoryQueryLearningApproval,
-    MemoryQueryLearningGate, MemoryQueryLearningObservation, MemoryQueryValue, QueryDialect,
+    MemoryQueryCompiler, MemoryQueryLearningApproval, MemoryQueryLearningGate,
+    MemoryQueryLearningObservation, MemoryQueryValue, QueryDialect, compile_memory_query,
+    execute_memory_query,
 };
 use formal_ai::substitution::CrudEvent;
 use formal_ai::{
-    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
     ChatCompletionRequest, ResponsesRequest, SolverConfig, UniversalSolver,
+    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
 };
 
 const LIMITS: MemoryProgramLimits = MemoryProgramLimits {
@@ -232,11 +233,13 @@ fn lowered_programs_execute_over_projected_doublets_and_drift_is_refused() {
                 "{source}"
             );
         }
-        assert!(query
-            .link_program
-            .rules
-            .iter()
-            .all(|rule| link_substitution_effect(rule) == expected));
+        assert!(
+            query
+                .link_program
+                .rules
+                .iter()
+                .all(|rule| link_substitution_effect(rule) == expected)
+        );
     }
 
     let mut drifted = compile(
@@ -262,13 +265,15 @@ fn lowered_programs_execute_over_projected_doublets_and_drift_is_refused() {
 #[test]
 fn learned_templates_reject_placeholder_drift_and_query_injection() {
     let mut compiler = MemoryQueryCompiler::new();
-    assert!(compiler
-        .learn_natural_language_template(
-            "Show {field} memories.",
-            "SELECT {different} FROM memory",
-            QueryDialect::SqlAnsi,
-        )
-        .is_err());
+    assert!(
+        compiler
+            .learn_natural_language_template(
+                "Show {field} memories.",
+                "SELECT {different} FROM memory",
+                QueryDialect::SqlAnsi,
+            )
+            .is_err()
+    );
     compiler
         .learn_natural_language_template(
             "Show {field} memories.",
@@ -276,13 +281,15 @@ fn learned_templates_reject_placeholder_drift_and_query_injection() {
             QueryDialect::SqlAnsi,
         )
         .expect("matching placeholder");
-    assert!(compiler
-        .compile(
-            "Show content; DELETE FROM memory memories.",
-            QueryDialect::NaturalLanguage,
-            LIMITS,
-        )
-        .is_err());
+    assert!(
+        compiler
+            .compile(
+                "Show content; DELETE FROM memory memories.",
+                QueryDialect::NaturalLanguage,
+                LIMITS,
+            )
+            .is_err()
+    );
 }
 
 #[test]
@@ -308,37 +315,43 @@ fn repeated_successes_propose_learning_but_only_green_human_review_promotes_it()
     assert_eq!(candidate.exact_query_template, "SELECT {value} FROM memory");
 
     let mut compiler = MemoryQueryCompiler::new();
-    assert!(compiler
-        .compile("Show tool memories.", QueryDialect::NaturalLanguage, LIMITS,)
-        .is_err());
-    assert!(compiler
-        .promote_candidate(
-            candidate.clone(),
-            &MemoryQueryLearningGate {
-                suite: String::from("issue_708_held_out"),
-                passed: 2,
-                failed: 1,
-            },
-            &MemoryQueryLearningApproval {
-                reviewer: String::from("maintainer"),
-                granted: true,
-            },
-        )
-        .is_err());
-    assert!(compiler
-        .promote_candidate(
-            candidate.clone(),
-            &MemoryQueryLearningGate {
-                suite: String::from("issue_708_held_out"),
-                passed: 3,
-                failed: 0,
-            },
-            &MemoryQueryLearningApproval {
-                reviewer: String::from("maintainer"),
-                granted: false,
-            },
-        )
-        .is_err());
+    assert!(
+        compiler
+            .compile("Show tool memories.", QueryDialect::NaturalLanguage, LIMITS,)
+            .is_err()
+    );
+    assert!(
+        compiler
+            .promote_candidate(
+                candidate.clone(),
+                &MemoryQueryLearningGate {
+                    suite: String::from("issue_708_held_out"),
+                    passed: 2,
+                    failed: 1,
+                },
+                &MemoryQueryLearningApproval {
+                    reviewer: String::from("maintainer"),
+                    granted: true,
+                },
+            )
+            .is_err()
+    );
+    assert!(
+        compiler
+            .promote_candidate(
+                candidate.clone(),
+                &MemoryQueryLearningGate {
+                    suite: String::from("issue_708_held_out"),
+                    passed: 3,
+                    failed: 0,
+                },
+                &MemoryQueryLearningApproval {
+                    reviewer: String::from("maintainer"),
+                    granted: false,
+                },
+            )
+            .is_err()
+    );
     compiler
         .promote_candidate(
             candidate,
@@ -389,14 +402,18 @@ fn solver_routes_exact_sql_and_graphql_with_auditable_results() {
     .expect("exact SQL route");
     assert_eq!(selected.answer.intent, "memory_exact_query");
     assert!(selected.answer.answer.contains("memory_query_result"));
-    assert!(selected
-        .answer
-        .links_notation
-        .contains("memory_exact_query_compiled"));
-    assert!(selected
-        .answer
-        .links_notation
-        .contains("link_cli_substitution"));
+    assert!(
+        selected
+            .answer
+            .links_notation
+            .contains("memory_exact_query_compiled")
+    );
+    assert!(
+        selected
+            .answer
+            .links_notation
+            .contains("link_cli_substitution")
+    );
 
     let created = execute_memory_query_with_options(
         "mutation { createMemory(input: { id: \"m2\", kind: \"fact\", content: \"created\" }) { id content } }",

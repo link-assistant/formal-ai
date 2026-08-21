@@ -5,12 +5,11 @@ use crate::seed::ClientIntegration;
 use super::user_home_dir;
 
 pub(super) fn resolve_integration_command(integration: &ClientIntegration) -> PathBuf {
-    if !integration.command_env.is_empty() {
-        if let Some(command) =
+    if !integration.command_env.is_empty()
+        && let Some(command) =
             std::env::var_os(&integration.command_env).filter(|value| !value.is_empty())
-        {
-            return PathBuf::from(command);
-        }
+    {
+        return PathBuf::from(command);
     }
 
     let primary = PathBuf::from(&integration.command);

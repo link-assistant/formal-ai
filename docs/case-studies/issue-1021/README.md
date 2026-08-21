@@ -896,3 +896,64 @@ by lowering it.
     directly available in every registered language after the split. Nothing was
     hidden by the move: the registry declares the split file once and
     `scripts/generate-seed-registry.rs` carries it to every production surface.
+
+26. **The compiler that judges a self-authored version was pinned to an older
+    dialect than the one the system writes in.** `memory_revision::rustc_verdict`
+    is the real compile step behind E94's "if compilation of next version of
+    itself fails" — an actual `rustc` on an actual file. It passed
+    `--edition 2021`. The moment this branch moved the crate to edition 2024, a
+    candidate version whose only novelty was a let-chain would have come back
+    `compiled: false` with `error: let chains are only allowed in Rust 2024 or
+    later`, and the ledger would have rolled back a version that `cargo build`
+    accepts. The reproduction is
+    `issue_1021_recoverable_memory::the_verdict_compiles_the_edition_the_crate_is_written_in`:
+    it writes a let-chain, asks for the verdict, and fails on exactly that
+    mismatch and nothing else.
+
+    The fix is not the string `2024`. A constant typed into `memory_revision.rs`
+    would be a second place to remember the edition, and the day it fell behind
+    `Cargo.toml` the same silent rollback returns. `build.rs` reads the
+    `[package]` table and exports `FORMAL_AI_CRATE_EDITION`, so the manifest is
+    the only place the edition is written down and the next edition move carries
+    the verdict with it. The same pin sat in two more places that compile
+    system-authored Rust — `experiments/issue_847_coding_ladder/run_coding_ladder.sh`,
+    which decides whether a ladder task's generated source counts as verified,
+    and `rule_synthesis::execution_commands`, which tells the user how to build
+    the substitution program the server just wrote. Both would have failed
+    working output for the same reason.
+
+27. **`sh src/web/wasm-worker/build.sh` was broken by the edition move, and no
+    committed artifact would have shown it.** The worker's `lib.rs` is not a
+    standalone program: it `#[path]`-includes `src/language.rs`,
+    `src/arithmetic.rs`, `src/web_search_core.rs` and
+    `src/web_search_fusion_core.rs` from the crate itself. Once clippy's
+    `collapsible_if` rewrote those four into let-chains, a build script pinned to
+    `--edition=2021` stopped compiling, with ten errors and no output file. CI
+    does run the script, so this would have gone red there — but the *committed*
+    `src/web/formal_ai_worker.wasm` is checked only against a size budget
+    (`scripts/check-wasm-worker-size.rs`), never against a fresh build, so the
+    stale binary sat in the tree looking healthy the whole time. The build is at
+    edition 2024 now and the worker is rebuilt from it: 291518 bytes against the
+    400 KiB warning band.
+
+    The missing check is left as a finding rather than closed with a gate. The
+    obvious one — `git diff --exit-code` on the `.wasm` after the CI build, the
+    way `src/web/vendor.bundle.js` is already checked ten lines below — compares
+    bytes emitted by CI's `@stable` `rustc` against bytes emitted by whichever
+    `rustc` the contributor had. Those differ across compiler releases for
+    reasons that are nobody's mistake, so the gate would fail honest pull
+    requests. Naming the gap is the accurate move; picking a comparison that
+    survives a toolchain bump is separate work.
+
+    Both `src/web/wasm-worker/src/lib.rs` and the WebAssembly programs
+    `src/substitution_compiler/webassembly.rs` writes export their entry points
+    through `#[no_mangle]`, which edition 2024 makes a hard error in favour of
+    `#[unsafe(no_mangle)]`. That spelling has been accepted in every edition
+    since Rust 1.82, so it is a rename and not a version floor.
+
+    One nearby command was found stale and left that way:
+    `experiments/issue709_wasm_heap.rs`'s doc comment names a `rustc` line that
+    has not worked since `web_search_fusion_core.rs` grew a
+    `crate::search_fusion_grammar` reference — the same breakage is on `main`,
+    predates this branch, and needs the experiment's `#[path]` list rebuilt
+    rather than an edition flag.

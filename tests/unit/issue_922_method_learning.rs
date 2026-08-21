@@ -5,19 +5,19 @@ use std::cell::Cell;
 use std::fs;
 use std::path::Path;
 
+use formal_ai::EventLog;
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_construction::RecursionMode;
-use formal_ai::method_learning::{learn_methods_from_event_logs, LEARNED_METHODS_SEED_FILE};
+use formal_ai::method_learning::{LEARNED_METHODS_SEED_FILE, learn_methods_from_event_logs};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::promotion::{
-    parse_promotion_proposals, replay_promotion_gates_with, GateCommandOutput, PromotionOutcome,
-    PromotionRun,
+    GateCommandOutput, PromotionOutcome, PromotionRun, parse_promotion_proposals,
+    replay_promotion_gates_with,
 };
 use formal_ai::recipe_interpreter::RecipeProgram;
 use formal_ai::selection::SelectionMode;
 use formal_ai::skill_ledger::SkillMode;
 use formal_ai::translation::formalize_prompt;
-use formal_ai::EventLog;
 
 fn formalize(prompt: &str) -> formal_ai::intent_formalization::IntentFormalization {
     let candidate = formalize_prompt(prompt, "en");
@@ -222,12 +222,17 @@ fn rejected_benchmark_proposals_are_durable_and_include_the_reason() {
         .into_iter()
         .find(|event| event.kind.as_deref() == Some("promotion_rejection"))
         .expect("the rejected edit and its reasons must remain append-only evidence");
-    assert!(rejection
-        .content
-        .as_deref()
-        .is_some_and(|reason| reason.contains("issue_362_multilingual_coding_modification")));
-    assert!(rejection
-        .evidence
-        .iter()
-        .any(|link| link.contains("benchmark:issue_362_multilingual_coding_modification:blocked")));
+    assert!(
+        rejection
+            .content
+            .as_deref()
+            .is_some_and(|reason| reason.contains("issue_362_multilingual_coding_modification"))
+    );
+    assert!(
+        rejection
+            .evidence
+            .iter()
+            .any(|link| link
+                .contains("benchmark:issue_362_multilingual_coding_modification:blocked"))
+    );
 }

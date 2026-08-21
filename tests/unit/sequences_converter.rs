@@ -2,8 +2,8 @@
 //! (issue #531). Externalised from `src/sequences/converter.rs`.
 
 use formal_ai::sequences::{
-    balanced_convert, LinkAddress, LinkFrequenciesCache, SequenceIndex, SequenceStore, SymbolTable,
-    NULL_LINK,
+    LinkAddress, LinkFrequenciesCache, NULL_LINK, SequenceIndex, SequenceStore, SymbolTable,
+    balanced_convert,
 };
 
 fn points(

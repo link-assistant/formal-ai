@@ -3,8 +3,8 @@ use crate::client_contract_learning::{ClientContractObservation, DeliveryMode};
 use crate::language;
 use crate::relative_meta_logic::SourceTier;
 use crate::summarization::{
-    deduplicate, deformalize, formalize, rank, recheck, summarize, SourcedStatement,
-    SummarizationConfig, SummarizationMode,
+    SourcedStatement, SummarizationConfig, SummarizationMode, deduplicate, deformalize, formalize,
+    rank, recheck, summarize,
 };
 use crate::translation::formalize_prompt;
 use serde::{Deserialize, Serialize};
@@ -213,10 +213,8 @@ pub fn extract_agent_result(stdout: &str) -> String {
         };
         update_best_candidate(&mut best, &value);
     }
-    if complete_stream {
-        if let Some((_, text)) = best.take() {
-            return text;
-        }
+    if complete_stream && let Some((_, text)) = best.take() {
+        return text;
     }
 
     // Some clients (and process supervisors around them) place diagnostics
@@ -246,13 +244,12 @@ fn update_embedded_json_candidates(best: &mut Option<(u8, String)>, line: &str) 
 }
 
 fn update_best_candidate(best: &mut Option<(u8, String)>, value: &Value) {
-    if let Some(candidate) = result_candidate(value) {
-        if best
+    if let Some(candidate) = result_candidate(value)
+        && best
             .as_ref()
             .is_none_or(|(priority, _)| candidate.0 >= *priority)
-        {
-            *best = Some(candidate);
-        }
+    {
+        *best = Some(candidate);
     }
 }
 

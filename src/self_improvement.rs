@@ -8,7 +8,7 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::{Event, EventLog};
 use crate::learning_ledger::LearningLedger;
 use crate::substitution::SubstitutionRuleSet;
@@ -347,14 +347,14 @@ fn find_learning_trace(
 ) -> Option<(Option<String>, Vec<serde_json::Value>)> {
     match value {
         serde_json::Value::Object(object) => {
-            if let Some(trace) = object.get("learning_trace") {
-                if let Some(events) = trace.get("events").and_then(serde_json::Value::as_array) {
-                    let prompt = trace
-                        .get("prompt")
-                        .and_then(serde_json::Value::as_str)
-                        .map(str::to_owned);
-                    return Some((prompt, events.clone()));
-                }
+            if let Some(trace) = object.get("learning_trace")
+                && let Some(events) = trace.get("events").and_then(serde_json::Value::as_array)
+            {
+                let prompt = trace
+                    .get("prompt")
+                    .and_then(serde_json::Value::as_str)
+                    .map(str::to_owned);
+                return Some((prompt, events.clone()));
             }
             object.values().find_map(find_learning_trace)
         }

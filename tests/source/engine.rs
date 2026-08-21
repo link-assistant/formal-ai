@@ -6,9 +6,9 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
+    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramSpec, WRITE_PROGRAM_INTENT,
     program_language_by_alias, program_spec, program_template_count, supported_program_languages,
-    supported_program_tasks, ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES,
-    WRITE_PROGRAM_INTENT,
+    supported_program_tasks,
 };
 
 use std::sync::OnceLock;
@@ -17,22 +17,23 @@ use serde::{Deserialize, Serialize};
 
 use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
-    assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
-    russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
+    ASSISTANT_NAME_EXAMPLES, assistant_name_answer, chinese_assistant_name_answer,
+    hindi_assistant_name_answer, russian_assistant_name_answer,
+};
+use crate::engine_responses::{
+    ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES,
+    TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES, chinese_assistant_free_time_answer,
+    chinese_courtesy_response_answer, chinese_farewell_answer, chinese_greeting_answer,
+    chinese_identity_answer, chinese_test_status_answer, courtesy_response_answer,
+    hindi_assistant_free_time_answer, hindi_courtesy_response_answer, hindi_farewell_answer,
+    hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
+    russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
+    russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
+    test_status_answer,
 };
 pub(crate) use crate::engine_responses::{
     assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,
     unknown_language_fallback_answer,
-};
-use crate::engine_responses::{
-    chinese_assistant_free_time_answer, chinese_courtesy_response_answer, chinese_farewell_answer,
-    chinese_greeting_answer, chinese_identity_answer, chinese_test_status_answer,
-    courtesy_response_answer, hindi_assistant_free_time_answer, hindi_courtesy_response_answer,
-    hindi_farewell_answer, hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
-    russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
-    russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
-    test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES,
-    GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
@@ -44,10 +45,10 @@ pub const DEFAULT_MODEL: &str = "formal-ai";
 // Thinking model + deterministic naturalizer live in `crate::thinking` (issue #488),
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
 pub use crate::thinking::{
-    humanize_meta_identifier, localize_thinking_steps, naturalize_thinking_step,
+    ThinkingStep, humanize_meta_identifier, localize_thinking_steps, naturalize_thinking_step,
     naturalize_thinking_step_in, render_thinking_steps, render_thinking_steps_in,
     thinking_answer_language, thinking_language_label, thinking_language_label_in,
-    thinking_narrative, thinking_narrative_in, thinking_trace_heading, ThinkingStep,
+    thinking_narrative, thinking_narrative_in, thinking_trace_heading,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 2604
   line_count 78
-  content_id source_module_0a2aec397e1db4f2
+  content_id source_module_af8cae995817f06e
   symbol_count 5
   symbols
     function is_conversation_control_prompt 12 16

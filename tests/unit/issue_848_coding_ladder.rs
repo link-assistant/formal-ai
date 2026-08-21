@@ -3,7 +3,7 @@
 //! A passing response is not evidence of a code change. These tests inspect the
 //! bytes that the real offline Agent CLI loop writes and then reads back.
 
-use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use sha2::{Digest, Sha256};
 
@@ -530,7 +530,7 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
         std::fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
     };
     let runner = read("experiments/issue_847_coding_ladder/run_coding_ladder.sh");
-    assert!(runner.contains("[\"rustc\", \"--edition=2021\""));
+    assert!(runner.contains("[\"rustc\", \"--edition=2024\""));
     assert!(runner.contains("rust_target_existed[created]"));
     assert!(runner.contains("\"dataset_total\": len(all_tasks)"));
     assert!(runner.contains("\"complete\": not only"));

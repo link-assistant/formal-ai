@@ -3,7 +3,7 @@ set -eu
 
 rustc \
   -D warnings \
-  --edition=2021 \
+  --edition=2024 \
   --target wasm32-unknown-unknown \
   --crate-type cdylib \
   -C opt-level=z \

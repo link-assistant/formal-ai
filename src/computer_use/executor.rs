@@ -8,12 +8,12 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use base64::Engine as _;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
 use super::{
-    ComputerPlanStep, ComputerStepRecord, ComputerUsePrimitive, VerificationEvent,
-    VerificationPhase, COMPUTER_USE_PRIMITIVES,
+    COMPUTER_USE_PRIMITIVES, ComputerPlanStep, ComputerStepRecord, ComputerUsePrimitive,
+    VerificationEvent, VerificationPhase,
 };
 
 static SESSION_SEQUENCE: AtomicU64 = AtomicU64::new(0);

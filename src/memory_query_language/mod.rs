@@ -21,7 +21,7 @@ use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::links_substitution_query::{
-    link_substitution_effect, render_link_substitution_query, LinkRewriteProgram,
+    LinkRewriteProgram, link_substitution_effect, render_link_substitution_query,
 };
 #[cfg(not(target_arch = "wasm32"))]
 use crate::memory_program::MemoryProgramLimits;
@@ -37,7 +37,7 @@ mod sql;
 mod syntax;
 
 #[cfg(not(target_arch = "wasm32"))]
-pub use execution::{execute_memory_query, MemoryQueryOutcome};
+pub use execution::{MemoryQueryOutcome, execute_memory_query};
 #[cfg(not(target_arch = "wasm32"))]
 pub use learning::{
     MemoryQueryCompiler, MemoryQueryLearningApproval, MemoryQueryLearningCandidate,

@@ -11,12 +11,12 @@
 //! recipe is reachable through the agentic interface as the tenth recipe.
 
 use formal_ai::agentic_coding::{
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK,
     is_repair_strategy_task, plan_chat_step, repair_strategy as recipe, run_agentic_task,
-    AgenticPlan, PlannedToolCall, DRIVER_TOOLS, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK,
 };
 use formal_ai::repair_strategy::{
-    canonical_data_record_failure, canonical_solver_method_failure, canonical_strategies,
-    canonical_test_failure, RepairStrategy, RepairTarget,
+    RepairStrategy, RepairTarget, canonical_data_record_failure, canonical_solver_method_failure,
+    canonical_strategies, canonical_test_failure,
 };
 use formal_ai::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;

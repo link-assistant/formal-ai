@@ -11,7 +11,7 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
 use formal_ai::client_contract_learning::{
-    learn_client_contracts, load_observations, ClientContractObservation, DeliveryMode,
+    ClientContractObservation, DeliveryMode, learn_client_contracts, load_observations,
 };
 use formal_ai::seed::client_integrations;
 
@@ -247,9 +247,11 @@ fn repeated_independent_observations_propose_a_human_gated_reusable_contract() {
     assert_eq!(report.proposals.len(), 1);
     assert_eq!(report.proposals[0].client_id, "future-client");
     assert_eq!(report.proposals[0].value, "workspace_read");
-    assert!(report
-        .links_notation()
-        .contains("decision \"awaiting_human_review\""));
+    assert!(
+        report
+            .links_notation()
+            .contains("decision \"awaiting_human_review\"")
+    );
 }
 
 #[test]

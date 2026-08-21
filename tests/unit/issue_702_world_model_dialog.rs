@@ -5,12 +5,12 @@
 //! it into the conversation. One test per requirement, then a whole-task test
 //! that runs a scripted multi-turn dialogue end to end.
 
+use formal_ai::SubstitutionLink;
 use formal_ai::relative_meta_logic::Stance;
 use formal_ai::solver::{ConversationRole, ConversationTurn};
 use formal_ai::world_model::Action;
-use formal_ai::world_model_atoms::{classify, state_atom, UtteranceKind, CONSULTED_CUE_SETS};
+use formal_ai::world_model_atoms::{CONSULTED_CUE_SETS, UtteranceKind, classify, state_atom};
 use formal_ai::world_model_dialog::{DialogueWorldModel, SyncEventKind, WorldModelMode};
-use formal_ai::SubstitutionLink;
 
 /// The four supported languages saying the same three things: a current-state
 /// fact, a wish, and the "what is left?" question.

@@ -5,7 +5,7 @@
 //! reply was derived. The visualization is *optional*: it must never be
 //! required for the chat surface to work.
 
-use formal_ai::{handle_api_request, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SymbolicAnswer, handle_api_request};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)

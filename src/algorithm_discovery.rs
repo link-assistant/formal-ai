@@ -8,9 +8,9 @@
 
 use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::sequences::{
-    balanced_convert, compress, LinkAddress, SequenceStore, SymbolTable, NULL_LINK,
+    LinkAddress, NULL_LINK, SequenceStore, SymbolTable, balanced_convert, compress,
 };
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 

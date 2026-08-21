@@ -2,16 +2,16 @@
 
 use std::fmt::Write as _;
 
-use formal_ai::agentic_coding::tool_result::{step_outcome, StepOutcome};
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::tool_result::{StepOutcome, step_outcome};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::issue_report::{ReportAttachment, ReportBody};
 use formal_ai::memory::MemoryEvent;
 use formal_ai::protocol::ToolCall;
 use formal_ai::seed;
 use formal_ai::skill_compiler::compile_natural_language_skill;
 use formal_ai::{
-    create_chat_completion_with_solver_and_memory, ChatCompletionRequest, ChatMessage,
-    ConversationTurn, SolverConfig, UniversalSolver,
+    ChatCompletionRequest, ChatMessage, ConversationTurn, SolverConfig, UniversalSolver,
+    create_chat_completion_with_solver_and_memory,
 };
 
 fn shell_command(prompt: &str) -> Option<String> {
@@ -272,10 +272,12 @@ fn github_report_command() -> String {
         panic!("expected a server export command");
     };
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
-    assert!(arguments["command"]
-        .as_str()
-        .unwrap()
-        .contains("--source server"));
+    assert!(
+        arguments["command"]
+            .as_str()
+            .unwrap()
+            .contains("--source server")
+    );
 
     progressed.push(ChatMessage::tool_result(
         "run-2",
@@ -289,10 +291,12 @@ fn github_report_command() -> String {
         panic!("expected a learning command");
     };
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
-    assert!(arguments["command"]
-        .as_str()
-        .unwrap()
-        .contains("context learn"));
+    assert!(
+        arguments["command"]
+            .as_str()
+            .unwrap()
+            .contains("context learn")
+    );
 
     progressed.push(ChatMessage::tool_result("run-3", "exec_command", "learned"));
     let AgenticPlan::ToolCalls(calls) =

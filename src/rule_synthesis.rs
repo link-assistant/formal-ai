@@ -8,13 +8,13 @@
 use std::fmt::Write as _;
 use std::path::Path;
 
-use crate::coding::{program_spec, ProgramSpec};
+use crate::coding::{ProgramSpec, program_spec};
 use crate::engine::{
-    normalize_prompt, ExecutionRecipe, ExecutionRecipeFile, SelectedRule, SymbolicAnswer,
+    ExecutionRecipe, ExecutionRecipeFile, SelectedRule, SymbolicAnswer, normalize_prompt,
 };
 use crate::event_log::EventLog;
 use crate::intent_formalization::{
-    active_program_context, detected_program_modifiers, ActiveProgramContext,
+    ActiveProgramContext, active_program_context, detected_program_modifiers,
 };
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::program_coreference::looks_like_bare_program_artifact_follow_up;
@@ -142,7 +142,7 @@ fn record_construction(log: &mut EventLog, construction: &UnknownRuleConstructio
 fn execution_commands(target: SubstitutionCompilationTarget, primary: &str) -> Vec<String> {
     match target {
         SubstitutionCompilationTarget::Rust => vec![
-            format!("rustc --edition=2021 {primary} -o substitution_program"),
+            format!("rustc --edition=2024 {primary} -o substitution_program"),
             String::from("./substitution_program < input.tsv"),
         ],
         SubstitutionCompilationTarget::JavaScript => {
@@ -150,7 +150,7 @@ fn execution_commands(target: SubstitutionCompilationTarget, primary: &str) -> V
             vec![
                 String::from("rustup target add wasm32-unknown-unknown"),
                 format!(
-                    "rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm"
+                    "rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm"
                 ),
                 format!("node {primary} {stem}.wasm < input.tsv"),
             ]
@@ -158,11 +158,9 @@ fn execution_commands(target: SubstitutionCompilationTarget, primary: &str) -> V
         SubstitutionCompilationTarget::WebAssembly => vec![
             String::from("rustup target add wasm32-unknown-unknown"),
             format!(
-                "rustc --edition=2021 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm"
+                "rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm"
             ),
-            String::from(
-                "node run_substitution_wasm.mjs substitution_program.wasm < input.tsv",
-            ),
+            String::from("node run_substitution_wasm.mjs substitution_program.wasm < input.tsv"),
         ],
     }
 }

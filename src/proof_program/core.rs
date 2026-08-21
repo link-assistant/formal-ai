@@ -22,37 +22,21 @@ impl ProofBound {
     }
 
     const fn lower_operator(self) -> &'static str {
-        if self.inclusive {
-            ">="
-        } else {
-            ">"
-        }
+        if self.inclusive { ">=" } else { ">" }
     }
 
     const fn upper_operator(self) -> &'static str {
-        if self.inclusive {
-            "<="
-        } else {
-            "<"
-        }
+        if self.inclusive { "<=" } else { "<" }
     }
 
     const fn first_integer(self) -> i128 {
         let value = self.value as i128;
-        if self.inclusive {
-            value
-        } else {
-            value + 1
-        }
+        if self.inclusive { value } else { value + 1 }
     }
 
     const fn last_integer(self) -> i128 {
         let value = self.value as i128;
-        if self.inclusive {
-            value
-        } else {
-            value - 1
-        }
+        if self.inclusive { value } else { value - 1 }
     }
 }
 

@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/benchmark_prompts.rs
   language rust
   fidelity signature
-  byte_len 19553
-  line_count 545
-  content_id source_module_0796c3f405c797a5
+  byte_len 19529
+  line_count 543
+  content_id source_module_1875a2116ca5df07
   symbol_count 31
   symbols
     function summary_topic_seed_data 19 22
@@ -14,27 +14,27 @@ self_ast_census
     static CELL 61 61
     function try_brainstorming_request 65 86
     function try_conversation_topic_request 88 126
-    function conversation_topic 137 154
-    function clean_conversation_topic 156 168
-    const DEFAULT_BRAINSTORM_COUNT 171 171
-    function requested_brainstorm_count 181 187
-    function cardinal_value 194 199
-    function numbered 201 209
-    function fact_records 211 214
-    static CELL 212 212
-    function detect_relation 232 241
-    function detect_subject_alias 245 251
-    function try_fact_lookup 253 319
-    function render_release_timeline 323 343
-    function coreference_seed_data 345 348
-    static CELL 346 346
-    function try_coreference_request 350 384
-    function resolve_coreference_antecedent 393 438
-    const REFERENCE 397 397
-    function matching_coreference_pronoun 440 454
-    function rewrite_coreference_prompt 456 468
-    function replace_token 470 500
-    function token_boundary 502 504
-    function persona_seed_data 506 509
-    static CELL 507 507
-    function try_roleplay_request 511 545
+    function conversation_topic 137 153
+    function clean_conversation_topic 155 167
+    const DEFAULT_BRAINSTORM_COUNT 170 170
+    function requested_brainstorm_count 180 186
+    function cardinal_value 193 198
+    function numbered 200 208
+    function fact_records 210 213
+    static CELL 211 211
+    function detect_relation 231 240
+    function detect_subject_alias 244 250
+    function try_fact_lookup 252 318
+    function render_release_timeline 322 342
+    function coreference_seed_data 344 347
+    static CELL 345 345
+    function try_coreference_request 349 383
+    function resolve_coreference_antecedent 392 436
+    const REFERENCE 396 396
+    function matching_coreference_pronoun 438 452
+    function rewrite_coreference_prompt 454 466
+    function replace_token 468 498
+    function token_boundary 500 502
+    function persona_seed_data 504 507
+    static CELL 505 505
+    function try_roleplay_request 509 543

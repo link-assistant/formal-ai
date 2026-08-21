@@ -230,8 +230,8 @@ pub fn try_software_project_request(
         canonical.as_str()
     };
 
-    if is_approval_prompt(normalized) {
-        if let Some(meaning) = prior_software_project_meaning(log) {
+    if is_approval_prompt(normalized)
+        && let Some(meaning) = prior_software_project_meaning(log) {
             record_meaning(log, &meaning, ApprovalState::Approved);
             let body = render_implementation_response(&meaning);
             return Some(finalize_simple(
@@ -243,7 +243,6 @@ pub fn try_software_project_request(
                 0.82,
             ));
         }
-    }
 
     let meaning = SoftwareProjectMeaning::from_prompt(prompt, normalized)?;
     record_meaning(log, &meaning, ApprovalState::Proposed);
@@ -431,11 +430,10 @@ fn scan_match<T>(normalized: &str, matcher: impl Fn(&str) -> Option<(usize, T)>)
         if !is_start_boundary(normalized, index) {
             continue;
         }
-        if let Some((consumed, value)) = matcher(&normalized[index..]) {
-            if consumed > 0 && is_end_boundary(normalized, index + consumed) {
+        if let Some((consumed, value)) = matcher(&normalized[index..])
+            && consumed > 0 && is_end_boundary(normalized, index + consumed) {
                 return Some(value);
             }
-        }
     }
     None
 }

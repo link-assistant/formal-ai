@@ -2,9 +2,9 @@
 //! that module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
 
 use crate::concepts::{extract_concept_query, lookup_concept_query};
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::seed;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
@@ -213,11 +213,11 @@ pub fn try_how_it_works(
             format!("inline:{}", term.to_lowercase()),
         );
         let concept_prompt = format!("what is {term}");
-        if let Some(concept_query) = extract_concept_query(&concept_prompt) {
-            if lookup_concept_query(&concept_query).is_some() {
-                // Delegate to try_concept_lookup by synthesising a standard prompt.
-                return try_concept_lookup(&concept_prompt, log);
-            }
+        if let Some(concept_query) = extract_concept_query(&concept_prompt)
+            && lookup_concept_query(&concept_query).is_some()
+        {
+            // Delegate to try_concept_lookup by synthesising a standard prompt.
+            return try_concept_lookup(&concept_prompt, log);
         }
         record_mechanism_query(log, term);
         let body = render_mechanism_discovery_answer(term, detect_language(prompt));
@@ -238,11 +238,11 @@ pub fn try_how_it_works(
         // (typically the term in "Term (category): …" format).
         if let Some(term) = extract_topic_from_prior_reply(&prior) {
             use crate::concepts::{extract_concept_query, lookup_concept_query};
-            if let Some(query) = extract_concept_query(&format!("what is {term}")) {
-                if lookup_concept_query(&query).is_some() {
-                    log.append("followup:subject", format!("prior_reply:{term}"));
-                    return try_concept_lookup(&format!("what is {term}"), log);
-                }
+            if let Some(query) = extract_concept_query(&format!("what is {term}"))
+                && lookup_concept_query(&query).is_some()
+            {
+                log.append("followup:subject", format!("prior_reply:{term}"));
+                return try_concept_lookup(&format!("what is {term}"), log);
             }
             // Topic is known from history but not in the concept corpus —
             // return a helpful explanation that names the topic.

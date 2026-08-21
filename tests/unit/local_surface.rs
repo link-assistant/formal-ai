@@ -6,8 +6,8 @@
 //! `docs/desktop/server-api.md` are verified end-to-end without a live socket.
 
 use formal_ai::{
-    export_memory_links_notation, handle_api_request, parse_bundle, run_links_query, MemoryEvent,
-    SyncStore,
+    MemoryEvent, SyncStore, export_memory_links_notation, handle_api_request, parse_bundle,
+    run_links_query,
 };
 
 // --- D4 (R4): bundled Anthropic Messages adapter ---------------------------

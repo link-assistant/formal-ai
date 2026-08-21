@@ -104,7 +104,11 @@ fn shared_program_synthesis_trace_is_multilingual() {
         ),
     ] {
         let response = solver.solve(prompt);
-        assert_eq!(response.intent, "write_program", "{language}: {}", response.answer);
+        assert_eq!(
+            response.intent, "write_program",
+            "{language}: {}",
+            response.answer
+        );
         assert_shared_trace(&response.links_notation, "program_synthesis");
     }
 }

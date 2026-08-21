@@ -11,8 +11,8 @@
 
 use std::sync::OnceLock;
 
-use super::parser::{parse_lino, LinoNode};
 use super::MARKET_PRICE_REFERENCES_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// One market asset with its aliases, grounding, and per-period references.
 #[derive(Debug, Clone, PartialEq)]

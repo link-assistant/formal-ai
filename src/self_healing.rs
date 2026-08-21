@@ -27,7 +27,7 @@ use crate::agentic_coding::self_ast;
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::self_improvement::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, LearningRun, UnknownTrace,
+    BenchmarkGateReport, LearningRun, UnknownTrace, learn_rules_from_unknown_traces,
 };
 
 /// The verified source ↔ links round-trip for the module a repair case maps onto.

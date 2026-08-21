@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/lexicon.rs
   language rust
   fidelity full_ast
-  byte_len 13379
-  line_count 408
-  content_id source_module_16601e4b778ef5d2
+  byte_len 13363
+  line_count 407
+  content_id source_module_0e48bea7f6365f75
   symbol_count 29
   symbols
     const LEXICON_LINO 13 13
@@ -25,25 +25,25 @@ self_ast_census
     struct Work 135 144
     function primary_context 147 149
     function final_context 151 157
-    function extract 163 223
-    function match_at 227 246
-    struct Lexicon 249 251
-    function standard 255 257
-    function load 259 325
-    function best_work_for 327 347
-    function tokenize 350 355
-    struct Record 361 365
-    function field 368 373
-    function parse_records 376 398
-    function parse_pair 400 408
+    function extract 163 222
+    function match_at 226 245
+    struct Lexicon 248 250
+    function standard 254 256
+    function load 258 324
+    function best_work_for 326 346
+    function tokenize 349 354
+    struct Record 360 364
+    function field 367 372
+    function parse_records 375 397
+    function parse_pair 399 407
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10759
-    named_node_count 2150
-    distinct_node_kinds 79
+    total_link_count 10745
+    named_node_count 2148
+    distinct_node_kinds 80
     node_kinds
       arguments 156
       array_expression 1
@@ -52,7 +52,7 @@ self_ast_census
       attribute 5
       attribute_item 5
       binary_expression 18
-      block 45
+      block 44
       break_expression 1
       call_expression 156
       char_literal 3
@@ -67,7 +67,7 @@ self_ast_census
       enum_item 2
       enum_variant 6
       enum_variant_list 2
-      expression_statement 46
+      expression_statement 45
       field_declaration 40
       field_declaration_list 11
       field_expression 175
@@ -79,11 +79,12 @@ self_ast_census
       function_modifiers 1
       generic_type 29
       identifier 370
-      if_expression 15
+      if_expression 14
       impl_item 7
       index_expression 6
       inner_doc_comment_marker 10
       integer_literal 8
+      let_chain 1
       let_condition 8
       let_declaration 24
       lifetime 4

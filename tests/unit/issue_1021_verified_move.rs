@@ -14,7 +14,7 @@
 //! ladder rungs `824.L1`-`824.L5`.
 
 use formal_ai::agentic_coding::mutating_action::verified_recipe;
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 2] = ["write_file", "run_shell_command"];

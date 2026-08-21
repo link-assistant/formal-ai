@@ -27,7 +27,7 @@
 
 use std::env;
 
-use crate::seed::{contribution_artifact_vocabulary, WritePathVocabulary};
+use crate::seed::{WritePathVocabulary, contribution_artifact_vocabulary};
 
 /// What the ladder says about one command.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

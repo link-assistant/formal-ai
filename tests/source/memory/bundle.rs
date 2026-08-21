@@ -10,8 +10,8 @@
 use std::collections::BTreeMap;
 
 use super::{
-    escape_value, format_event_into, isoformat_now, parse_links_notation, parse_quoted,
-    split_first_token, MemoryEvent, BUNDLE_HEADER, ROOT_HEADER,
+    BUNDLE_HEADER, MemoryEvent, ROOT_HEADER, escape_value, format_event_into, isoformat_now,
+    parse_links_notation, parse_quoted, split_first_token,
 };
 
 /// Build a single Links Notation bundle document.

@@ -4,13 +4,13 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::dialog_log::write_dialog_exchange;
 use formal_ai::json_lino::json_to_lino;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::server::handle_api_request;
 use links_notation::parse_lino as parse_canonical_lino;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 fn isolated_directory(test_name: &str) -> PathBuf {
     let nonce = SystemTime::now()
@@ -348,7 +348,7 @@ fn conversation_learning_endpoint_stages_structured_server_trace_for_review() {
     with_environment(
         &[
             ("FORMAL_AI_DIALOG_LOG_DIR", directory.clone()),
-            ("FORMAL_AI_MEMORY_PATH", memory_path.clone()),
+            ("FORMAL_AI_MEMORY_PATH", memory_path),
         ],
         || {
             let headers = [("X-Formal-AI-Dialog-ID", "issue-822-learning")];

@@ -1,7 +1,7 @@
 use super::permission::AgentRunPermission;
-use super::workspace::{changes, snapshot, WorkspaceChange};
-use crate::seed::client_integrations;
+use super::workspace::{WorkspaceChange, changes, snapshot};
 use crate::DEFAULT_MODEL;
+use crate::seed::client_integrations;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};

@@ -133,27 +133,27 @@ fn reset_bump() {
 
 // === Classic prompt classifier (pre-existing API) ===
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn input_ptr() -> *mut u8 {
     core::ptr::addr_of_mut!(INPUT).cast::<u8>()
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn output_ptr() -> *mut u8 {
     core::ptr::addr_of_mut!(OUTPUT).cast::<u8>()
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn input_capacity() -> usize {
     INPUT_CAPACITY
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn output_capacity() -> usize {
     OUTPUT_CAPACITY
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn classify(length: usize) -> u32 {
     let length = min(length, INPUT_CAPACITY);
     let input =
@@ -263,22 +263,22 @@ const fn min(left: usize, right: usize) -> usize {
 // `web_search_core::*` helpers. This keeps the WASM↔JS boundary free of any
 // allocator imports (`malloc`, `free`, `dlmalloc`, …).
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_rrf_k() -> u32 {
     WEB_SEARCH_RRF_K
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_concurrency_per_category() -> u32 {
     WEB_SEARCH_CONCURRENCY_PER_CATEGORY
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_provider_limit() -> u32 {
     WEB_SEARCH_PROVIDER_LIMIT
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_registry_len() -> u32 {
     WEB_SEARCH_PROVIDER_REGISTRY.len() as u32
 }
@@ -286,7 +286,7 @@ pub extern "C" fn web_search_registry_len() -> u32 {
 /// Write the canonical default plan ids to `OUTPUT`, one per line.
 ///
 /// Returns the number of bytes written.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_plan() -> usize {
     reset_bump();
     let ids = default_search_plan_ids();
@@ -304,7 +304,7 @@ pub extern "C" fn web_search_plan() -> usize {
 /// (query, language) pair to `OUTPUT`.
 ///
 /// `INPUT` must contain `query\nlanguage` (the language line may be empty).
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_request_evidence(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -333,7 +333,7 @@ pub extern "C" fn web_search_request_evidence(input_length: usize) -> usize {
 /// Fuse a flat list of `provider_id\trank\turl\ttitle\texcerpt` rows
 /// (one per `INPUT` line) into the RRF-ranked `OUTPUT` block produced by
 /// `web_search_core::serialize_rrf_output`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_fuse(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -352,7 +352,7 @@ pub extern "C" fn web_search_fuse(input_length: usize) -> usize {
 }
 
 /// Formalize, merge, rank, and render captured search excerpts as statements.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_statement_fusion(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -381,7 +381,7 @@ pub extern "C" fn web_search_statement_fusion(input_length: usize) -> usize {
 /// Normalize a prompt to the same lowercase/whitespace-stripped form the JS
 /// worker used to produce. `INPUT` contains the raw prompt bytes; on return
 /// `OUTPUT` carries the normalized UTF-8 bytes.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_normalize_prompt(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -399,7 +399,7 @@ pub extern "C" fn engine_normalize_prompt(input_length: usize) -> usize {
 
 /// Detect the dominant language of the prompt held in `INPUT`. Writes a
 /// 2-letter slug (`en`, `ru`, `hi`, `zh`, or `unknown`) to `OUTPUT`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_detect_language(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -419,7 +419,7 @@ pub extern "C" fn engine_detect_language(input_length: usize) -> usize {
 /// on success `OUTPUT` carries the formatted decimal result. On failure the
 /// payload is `ERR:<reason>` so JS can render the failure in its native UI
 /// without duplicating the parser. Returns the number of bytes written.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_evaluate_arithmetic(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -445,7 +445,7 @@ pub extern "C" fn engine_evaluate_arithmetic(input_length: usize) -> usize {
 /// Assess an arithmetic equality/inequality for the current-dialog fact
 /// checker. `OUTPUT` is a JSON object consumed by the UI-glue worker, or empty
 /// when the statement is outside the arithmetic decision procedure.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_assess_arithmetic_claim(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -466,7 +466,7 @@ pub extern "C" fn engine_assess_arithmetic_claim(input_length: usize) -> usize {
 /// Audit prior user turns in the current dialogue. `INPUT` contains five
 /// percent-encoded seed templates followed by percent-encoded user turns, one
 /// item per line. `OUTPUT` is the complete worker-answer JSON object.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_fact_check_dialogue(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -496,7 +496,7 @@ pub extern "C" fn engine_fact_check_dialogue(input_length: usize) -> usize {
 /// Parse and execute an exact SQL/GraphQL memory query in the shared Rust
 /// query core. The line-oriented input is URI-encoded by the browser bridge;
 /// the output is either an answer JSON object or empty for a non-query prompt.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_memory_query(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -515,7 +515,7 @@ pub extern "C" fn engine_memory_query(input_length: usize) -> usize {
 /// Parse a formal proof once and project it into a seed-defined executable
 /// program. The three URI-encoded input lines are statement, target, and the
 /// proof-program template seed; `OUTPUT` is a complete worker-answer object.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_translate_formal_proof(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -532,7 +532,7 @@ pub extern "C" fn engine_translate_formal_proof(input_length: usize) -> usize {
 
 /// Project a semantic statement between a seeded natural language and formal
 /// concrete syntax. The line-oriented adapter returns a complete answer JSON.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_translate_formal_statement(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -820,7 +820,7 @@ fn push_json_string(output: &mut String, value: &str) {
 
 /// Build a stable FNV-1a id. `INPUT` contains `prefix\ntext`; `OUTPUT`
 /// receives `prefix_<hash>`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_stable_id(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -841,7 +841,7 @@ pub extern "C" fn engine_stable_id(input_length: usize) -> usize {
 
 /// Select the deterministic unknown-answer opener. `INPUT` contains
 /// `language\nprompt`; `OUTPUT` receives the opener text.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_select_unknown_opener(input_length: usize) -> usize {
     reset_bump();
     let bytes = unsafe {
@@ -860,7 +860,7 @@ pub extern "C" fn engine_select_unknown_opener(input_length: usize) -> usize {
 }
 
 /// Return 1 when the serialized route payload matches, else 0.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn engine_match_intent_route(input_length: usize) -> u32 {
     reset_bump();
     let bytes = unsafe {
@@ -876,7 +876,7 @@ pub extern "C" fn engine_match_intent_route(input_length: usize) -> u32 {
 }
 
 /// Write the registry as `id\tlabel\tcategory\tcors_readable\tdefault\n…`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn web_search_registry_dump() -> usize {
     reset_bump();
     let mut buffer = String::new();

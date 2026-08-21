@@ -7,7 +7,7 @@ use std::process::Command;
 
 use clap::{Args, Subcommand, ValueEnum};
 use formal_ai::dialog_conversation::append_with_overlap;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const ERROR_PLACEHOLDER: &str = "{error}";
 const SESSION_PLACEHOLDER: &str = "{session}";
@@ -204,10 +204,10 @@ fn session_candidates(
 
     let harness = harness_session(db);
     let mut candidates: Vec<String> = harness.as_ref().ok().cloned().into_iter().collect();
-    if let Some(recorded) = formal_ai::conversation_context::latest_recorded_dialog(log_dir) {
-        if !candidates.contains(&recorded) {
-            candidates.push(recorded);
-        }
+    if let Some(recorded) = formal_ai::conversation_context::latest_recorded_dialog(log_dir)
+        && !candidates.contains(&recorded)
+    {
+        candidates.push(recorded);
     }
     if candidates.is_empty() {
         return Err(harness.err().unwrap_or_else(|| unresolved_session().into()));

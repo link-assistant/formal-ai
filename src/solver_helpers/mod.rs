@@ -13,9 +13,9 @@
 mod code;
 pub use code::*;
 
-use crate::engine::{normalize_prompt, ExecutionStatus, ProgramSpec, SelectedRule};
+use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::intent_formalization::{formalize_intent, IntentKind};
+use crate::intent_formalization::{IntentKind, formalize_intent};
 use crate::language::detect as detect_language;
 use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
 
@@ -317,11 +317,11 @@ pub const fn is_prime(value: u64) -> bool {
 
 pub fn extract_quoted_phrase(text: &str) -> Option<String> {
     for (open, close) in [('\'', '\''), ('"', '"'), ('`', '`'), ('«', '»')] {
-        if let Some(start) = text.find(open) {
-            if let Some(end_offset) = text[start + open.len_utf8()..].find(close) {
-                let inner = &text[start + open.len_utf8()..start + open.len_utf8() + end_offset];
-                return Some(inner.to_owned());
-            }
+        if let Some(start) = text.find(open)
+            && let Some(end_offset) = text[start + open.len_utf8()..].find(close)
+        {
+            let inner = &text[start + open.len_utf8()..start + open.len_utf8() + end_offset];
+            return Some(inner.to_owned());
         }
     }
     None
@@ -342,10 +342,10 @@ pub fn recall_name_from_history(log: &EventLog, prompt: &str) -> Option<String> 
         return Some(name);
     }
     for event in log.events() {
-        if event.kind == "prior_turn:user" {
-            if let Some(name) = extract_introduced_name(&event.payload) {
-                return Some(name);
-            }
+        if event.kind == "prior_turn:user"
+            && let Some(name) = extract_introduced_name(&event.payload)
+        {
+            return Some(name);
         }
     }
     None
@@ -487,17 +487,18 @@ pub fn humanize_url(url: &str) -> String {
     let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
     let mut i = 0usize;
     while i < bytes.len() {
-        if bytes[i] == b'%' && i + 2 < bytes.len() {
-            if let (Some(hi), Some(lo)) = (hex_nibble(bytes[i + 1]), hex_nibble(bytes[i + 2])) {
-                let value = (hi << 4) | lo;
-                if is_reserved_uri_delimiter(value) {
-                    out.extend_from_slice(&bytes[i..=i + 2]);
-                } else {
-                    out.push(value);
-                }
-                i += 3;
-                continue;
+        if bytes[i] == b'%'
+            && i + 2 < bytes.len()
+            && let (Some(hi), Some(lo)) = (hex_nibble(bytes[i + 1]), hex_nibble(bytes[i + 2]))
+        {
+            let value = (hi << 4) | lo;
+            if is_reserved_uri_delimiter(value) {
+                out.extend_from_slice(&bytes[i..=i + 2]);
+            } else {
+                out.push(value);
             }
+            i += 3;
+            continue;
         }
         out.push(bytes[i]);
         i += 1;
@@ -716,10 +717,9 @@ pub fn config_from_env() -> SolverConfig {
     }
     if let Ok(value) =
         std::env::var("FORMAL_AI_EXECUTION_SURFACE").or_else(|_| std::env::var("FORMAL_AI_SURFACE"))
+        && let Some(surface) = ExecutionSurface::from_env_value(&value)
     {
-        if let Some(surface) = ExecutionSurface::from_env_value(&value) {
-            config.execution_surface = surface;
-        }
+        config.execution_surface = surface;
     }
     if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
         config.temperature = value;
@@ -730,32 +730,31 @@ pub fn config_from_env() -> SolverConfig {
     if let Some(value) = env_bounded_f32("FORMAL_AI_FOLLOW_UP_PROBABILITY", 0.0, 1.0) {
         config.follow_up_probability = value;
     }
-    if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
-        if let Ok(parsed) = value.parse::<u64>() {
-            config.cache_ttl_seconds = parsed;
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS")
+        && let Ok(parsed) = value.parse::<u64>()
+    {
+        config.cache_ttl_seconds = parsed;
     }
-    if let Ok(value) = std::env::var("FORMAL_AI_COMPUTE_BUDGET") {
-        if let Ok(parsed) = value.trim().parse::<u32>() {
-            config.compute_budget = parsed;
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_COMPUTE_BUDGET")
+        && let Ok(parsed) = value.trim().parse::<u32>()
+    {
+        config.compute_budget = parsed;
     }
-    if let Ok(value) = std::env::var("FORMAL_AI_DRAFT_COUNT") {
-        if let Ok(parsed) = value.trim().parse::<u8>() {
-            config.draft_count = parsed.max(1);
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_DRAFT_COUNT")
+        && let Ok(parsed) = value.trim().parse::<u8>()
+    {
+        config.draft_count = parsed.max(1);
     }
     if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
         .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
+        && let Some(mode) = BlueprintComposition::from_value(&value)
     {
-        if let Some(mode) = BlueprintComposition::from_value(&value) {
-            config.blueprint_composition = mode;
-        }
+        config.blueprint_composition = mode;
     }
-    if let Ok(value) = std::env::var("FORMAL_AI_WORLD_MODEL_MODE") {
-        if let Some(mode) = crate::world_model_dialog::WorldModelMode::from_slug(&value) {
-            config.world_model_mode = mode;
-        }
+    if let Ok(value) = std::env::var("FORMAL_AI_WORLD_MODEL_MODE")
+        && let Some(mode) = crate::world_model_dialog::WorldModelMode::from_slug(&value)
+    {
+        config.world_model_mode = mode;
     }
     crate::meta_core::apply_env_modes(
         &mut config.recursion_mode,

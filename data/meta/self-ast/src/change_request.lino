@@ -2,28 +2,28 @@ self_ast_census
   target src/change_request.rs
   language rust
   fidelity signature
-  byte_len 13818
-  line_count 343
-  content_id source_module_bcf2749e602b677a
+  byte_len 13848
+  line_count 345
+  content_id source_module_3006609c8f40a288
   symbol_count 20
   symbols
     struct ChangeRequest 39 54
-    function for_module 66 95
-    function is_human_gated 100 102
-    function review 115 136
-    function summary 140 150
-    function links_notation 155 169
-    function content_id 173 175
-    enum ChangeRejected 183 188
-    function slug 193 198
-    struct AcceptedChange 204 221
-    function summary 226 237
-    function canonical_change_request 247 252
-    function derive_requirement 259 281
-    function derive_test_name 284 299
-    function patch_plan 307 315
-    function collapse_whitespace 317 319
-    function decapitalize 321 326
-    function field 328 330
-    function nested 332 334
-    function quote 336 343
+    function for_module 66 97
+    function is_human_gated 102 104
+    function review 117 138
+    function summary 142 152
+    function links_notation 157 171
+    function content_id 175 177
+    enum ChangeRejected 185 190
+    function slug 195 200
+    struct AcceptedChange 206 223
+    function summary 228 239
+    function canonical_change_request 249 254
+    function derive_requirement 261 283
+    function derive_test_name 286 301
+    function patch_plan 309 317
+    function collapse_whitespace 319 321
+    function decapitalize 323 328
+    function field 330 332
+    function nested 334 336
+    function quote 338 345

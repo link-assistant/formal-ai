@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/library.rs
   language rust
   fidelity signature
-  byte_len 51583
-  line_count 679
-  content_id source_module_d27ce3227011977f
+  byte_len 51479
+  line_count 667
+  content_id source_module_744a2b7ebd24b657
   symbol_count 11
   symbols
     struct KnownTheoremEntry 19 32
@@ -12,9 +12,9 @@ self_ast_census
     function matches 44 46
     function build_proof 48 80
     const REGISTRY 85 92
-    const PYTHAGOREAN 94 161
-    const EUCLID_INFINITUDE_OF_PRIMES 163 266
-    const SQRT_TWO_IRRATIONAL 268 335
-    const FERMAT_LITTLE 337 424
-    const GODEL_FIRST_INCOMPLETENESS 426 557
-    const LAPLACIAN_DETERMINISM 559 679
+    const PYTHAGOREAN 94 158
+    const EUCLID_INFINITUDE_OF_PRIMES 160 263
+    const SQRT_TWO_IRRATIONAL 265 332
+    const FERMAT_LITTLE 334 418
+    const GODEL_FIRST_INCOMPLETENESS 420 548
+    const LAPLACIAN_DETERMINISM 550 667

@@ -7,7 +7,7 @@
 //!   > docs/case-studies/issue-686/agent-cli-session-associative-learning.json
 //! ```
 
-use formal_ai::agentic_coding::{run_agentic_task, ASSOCIATIVE_LEARNING_TASK};
+use formal_ai::agentic_coding::{ASSOCIATIVE_LEARNING_TASK, run_agentic_task};
 
 fn main() {
     let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK)

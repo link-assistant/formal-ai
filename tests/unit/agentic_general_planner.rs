@@ -1,5 +1,5 @@
-use formal_ai::agentic_coding::general_planner::{compose_general_change_plan, PLAN_PATH};
-use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
+use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_change_plan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const EN_TASK: &str = "Create file notes/general-demo.txt containing planner fallback works";
@@ -20,10 +20,11 @@ through the Formal AI Agent CLI.";
 fn agentic_general_planner_composes_capability_steps_and_verification() {
     let plan = compose_general_change_plan(EN_TASK).expect("general plan");
     assert!(plan.steps.len() >= 3);
-    assert!(plan
-        .steps
-        .iter()
-        .all(|step| !step.expected_evidence.is_empty()));
+    assert!(
+        plan.steps
+            .iter()
+            .all(|step| !step.expected_evidence.is_empty())
+    );
     assert_eq!(plan.verification_command, "cat notes/general-demo.txt");
 }
 
@@ -188,9 +189,11 @@ fn general_task_runs_end_to_end() {
         .collect();
     assert_eq!(tools, ["write_file", "write_file", "run_command"]);
     assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
-    assert!(outcome.steps[1]
-        .arguments
-        .contains("notes/general-demo.txt"));
+    assert!(
+        outcome.steps[1]
+            .arguments
+            .contains("notes/general-demo.txt")
+    );
     assert!(outcome.steps[2].result.contains("planner fallback works"));
 }
 

@@ -13,20 +13,20 @@ mod runner;
 pub(crate) mod workspace;
 
 pub use analysis::{
-    apply_verified_translation, extract_agent_result, observe_orchestration_session,
-    synthesize_sessions, AgentSynthesisClaim, AgentSynthesisContradiction, AgentSynthesisError,
-    AgentSynthesisReport, AgentSynthesisSource, VerifiedTranslation,
+    AgentSynthesisClaim, AgentSynthesisContradiction, AgentSynthesisError, AgentSynthesisReport,
+    AgentSynthesisSource, VerifiedTranslation, apply_verified_translation, extract_agent_result,
+    observe_orchestration_session, synthesize_sessions,
 };
 pub use dispatch::{
-    dispatch_agents, ComparisonEntry, ComparisonLedger, DispatchConfig, DispatchError,
-    DispatchMode, DispatchReport,
+    ComparisonEntry, ComparisonLedger, DispatchConfig, DispatchError, DispatchMode, DispatchReport,
+    dispatch_agents,
 };
 pub use incremental::{IncrementalProposal, IncrementalSplit, IncrementalStep, IncrementalTrace};
 pub use permission::AgentRunPermission;
-pub use replay::{read_session, replay_session, write_session, ReplayError};
+pub use replay::{ReplayError, read_session, replay_session, write_session};
 pub use runner::{
-    resume_agent, run_agent, session_sha256, AgentCommand, AgentContinuation, AgentEvent,
-    AgentRunConfig, AgentRunError, AgentSession, AgentStatus, AgentTarget, CorrectionRequest,
-    NativeAgentSession, VerificationCommand, VerificationResult,
+    AgentCommand, AgentContinuation, AgentEvent, AgentRunConfig, AgentRunError, AgentSession,
+    AgentStatus, AgentTarget, CorrectionRequest, NativeAgentSession, VerificationCommand,
+    VerificationResult, resume_agent, run_agent, session_sha256,
 };
 pub use workspace::{WorkspaceChange, WorkspaceChangeKind};

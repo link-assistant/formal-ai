@@ -2,7 +2,7 @@
 //!
 //! Run as a test target via `--test issue_715_artifact_is_lino`.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;
 

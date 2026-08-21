@@ -2,13 +2,13 @@ use std::error::Error;
 use std::io::{self, IsTerminal, Write};
 use std::path::{Path, PathBuf};
 
-use crate::{read_input, MemoryAction};
+use crate::{MemoryAction, read_input};
 use clap::{Args as ClapArgs, ValueEnum};
 use formal_ai::{
-    agent_info, apply_dreaming_plan, auto_free_space_choice, execute_memory_query,
-    export_memory_full, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
-    preflight_memory_upgrade, render_dreaming_plan, render_response, response_for, seed_files,
-    suggest_memory_migrations, AutoFreeSpaceChoice, BundleInfo, DreamingConfig, MemoryStore,
+    AutoFreeSpaceChoice, BundleInfo, DreamingConfig, MemoryStore, agent_info, apply_dreaming_plan,
+    auto_free_space_choice, execute_memory_query, export_memory_full, measure_storage,
+    persist_auto_free_space_choice, plan_memory_dreaming, preflight_memory_upgrade,
+    render_dreaming_plan, render_response, response_for, seed_files, suggest_memory_migrations,
 };
 
 #[derive(Debug, ClapArgs)]
@@ -358,10 +358,10 @@ fn write_full_memory_backup(path: &Path, store: &MemoryStore) -> Result<(), Box<
         ..BundleInfo::default()
     };
     let text = export_memory_full(&seed, store.events(), &[], &info);
-    if let Some(parent) = path.parent() {
-        if !parent.as_os_str().is_empty() {
-            std::fs::create_dir_all(parent)?;
-        }
+    if let Some(parent) = path.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        std::fs::create_dir_all(parent)?;
     }
     std::fs::write(path, text)?;
     eprintln!(

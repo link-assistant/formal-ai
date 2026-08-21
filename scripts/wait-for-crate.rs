@@ -18,6 +18,9 @@
 //!   - crate_available: 'true' when the version is visible, or 'skipped' for template defaults
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ureq = "2"

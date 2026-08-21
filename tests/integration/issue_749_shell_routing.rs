@@ -2,7 +2,7 @@
 
 use formal_ai::agentic_coding::mutating_action::verified_recipe;
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[test]
 fn codex_responses_preserves_arbitrary_commands_and_uses_cmd() {

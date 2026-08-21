@@ -1,5 +1,5 @@
 use super::*;
-use crate::coding::{program_language_by_slug, PROGRAM_LANGUAGES};
+use crate::coding::{PROGRAM_LANGUAGES, program_language_by_slug};
 
 /// Test-only enumeration of every CST grammar declared in the seed. The shipped
 /// crate only ever looks a single language up (`grammar_metadata`), so this

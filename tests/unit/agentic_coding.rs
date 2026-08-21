@@ -5,13 +5,13 @@
 //! behaviour on text the closed lexicon does not recognise.
 
 use formal_ai::agentic_coding::{
-    corpus, coverage_line, formalize_text_to_links, plan_chat_step, run_agentic_task, AgenticPlan,
-    PlannedToolCall, CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, DRIVER_TOOLS,
-    FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS, SEARCH_QUERY,
+    AgenticPlan, CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, DRIVER_TOOLS,
+    FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS, PlannedToolCall, SEARCH_QUERY, corpus,
+    coverage_line, formalize_text_to_links, plan_chat_step, run_agentic_task,
 };
 use formal_ai::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, SolverConfig, ToolCall,
-    UniversalSolver,
+    ChatCompletionRequest, ChatMessage, SolverConfig, ToolCall, UniversalSolver,
+    create_chat_completion_with_solver,
 };
 
 #[test]
@@ -130,12 +130,16 @@ fn arbitrary_text_still_produces_a_valid_knowledge_base() {
     assert_eq!(summary.procedures, 0);
     assert_eq!(summary.contexts, 0);
     assert!(!summary.covers_all_nine());
-    assert!(formalized
-        .links_notation
-        .contains("predicate \"pred:states\""));
-    assert!(formalized
-        .links_notation
-        .contains("natural_language \"A cat sat on a mat.\""));
+    assert!(
+        formalized
+            .links_notation
+            .contains("predicate \"pred:states\"")
+    );
+    assert!(
+        formalized
+            .links_notation
+            .contains("natural_language \"A cat sat on a mat.\"")
+    );
     // Language detection falls back to English for non-Cyrillic input.
     assert!(formalized.links_notation.contains("language \"en\""));
 }
@@ -144,9 +148,11 @@ fn arbitrary_text_still_produces_a_valid_knowledge_base() {
 fn explicit_doc_id_overrides_the_default() {
     let formalized = formalize_text_to_links(CANONICAL_FISHERMAN_SYNOPSIS, "kb:custom");
     assert_eq!(formalized.summary.doc_id, "kb:custom");
-    assert!(formalized
-        .links_notation
-        .starts_with("knowledge_base\n  id \"kb:custom\""));
+    assert!(
+        formalized
+            .links_notation
+            .starts_with("knowledge_base\n  id \"kb:custom\"")
+    );
 }
 
 // --- Deterministic agentic planner (the server's "brain") -------------------

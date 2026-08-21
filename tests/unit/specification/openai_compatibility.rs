@@ -6,9 +6,9 @@
 //! drop-in symbolic engine.
 
 use formal_ai::{
-    create_chat_completion, create_response, export_memory_links_notation, handle_api_request,
-    handle_api_request_with_auth, model_aliases, resolve_model_id, ApiAuthConfig,
-    ChatCompletionRequest, ChatMessage, MemoryEvent, ResponsesRequest, DEFAULT_MODEL,
+    ApiAuthConfig, ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, MemoryEvent,
+    ResponsesRequest, create_chat_completion, create_response, export_memory_links_notation,
+    handle_api_request, handle_api_request_with_auth, model_aliases, resolve_model_id,
 };
 
 // ---------------------------------------------------------------------------
@@ -61,11 +61,13 @@ fn chat_completion_accepts_multipart_content() {
     };
 
     let completion = create_chat_completion(&request);
-    assert!(completion.choices[0]
-        .message
-        .content
-        .plain_text()
-        .contains("```rust"));
+    assert!(
+        completion.choices[0]
+            .message
+            .content
+            .plain_text()
+            .contains("```rust")
+    );
 }
 #[test]
 fn chat_completion_reports_token_usage() {
@@ -194,10 +196,12 @@ fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
 
     assert!(!response.thinking_steps.is_empty());
     assert_eq!(messages[0].thinking_steps, response.thinking_steps);
-    assert!(response
-        .thinking_steps
-        .iter()
-        .any(|step| step.source_event == "response"));
+    assert!(
+        response
+            .thinking_steps
+            .iter()
+            .any(|step| step.source_event == "response")
+    );
 }
 #[test]
 fn responses_endpoint_includes_standard_reasoning_output_item() {
@@ -518,11 +522,13 @@ fn gemini_and_vertex_protocols_share_the_solver_with_native_model_lists() {
     assert_eq!(gemini_models.status_code, 200);
     let gemini_json: serde_json::Value = serde_json::from_str(&gemini_models.body).unwrap();
     assert_eq!(gemini_json["models"][0]["name"], "models/formal-ai");
-    assert!(gemini_json["models"][0]["supportedGenerationMethods"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .any(|method| method == "generateContent"));
+    assert!(
+        gemini_json["models"][0]["supportedGenerationMethods"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|method| method == "generateContent")
+    );
 
     let gemini_body = serde_json::json!({
         "contents": [{"role": "user", "parts": [{"text": "Hi"}]}]

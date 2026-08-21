@@ -1,5 +1,10 @@
 #!/usr/bin/env rust-script
 //! CI guard for the development disk-usage policy introduced by issue #534.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::{fs, process::ExitCode};
 

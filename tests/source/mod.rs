@@ -69,92 +69,92 @@ pub mod web_engine_core;
 pub mod web_search_core;
 
 pub use agent::{
-    parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
-    AgentCommandResult, AgentError, AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig,
-    PlannedAgentAction,
+    AgentAction, AgentActionKind, AgentActionStatus, AgentCommandResult, AgentError, AgentRun,
+    AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig, PlannedAgentAction, parse_agent_plan,
+    run_agent_plan,
 };
 pub use anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessage,
-    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicTextBlock, AnthropicUsage,
+    AnthropicMessage, AnthropicMessageInput, AnthropicMessagesRequest, AnthropicTextBlock,
+    AnthropicUsage, anthropic_message_sse, create_anthropic_message_with_solver,
 };
 pub use associative_package::{
-    default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
-    PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
-    PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+    AssociativePackage, PackageDependency, PackageHandler, PackageImportError, PackageInstallError,
+    PackagePermission, PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+    default_associative_packages, default_package_store,
 };
 pub use engine::{
-    knowledge_links_notation, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    DEFAULT_MODEL, FormalAiEngine, SymbolicAnswer, ThinkingStep, knowledge_links_notation,
 };
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
+    GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary, GithubLogCollectorConfig,
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
-    render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
-    GithubLogCollectorConfig,
+    render_github_log_plan,
 };
 pub use intent_formalization::{
-    formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
-    IntentFormalizationCacheEntry, IntentKind,
+    IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry, IntentKind,
+    formalize_intent, impulse_id_for,
 };
 pub use knowledge::{
-    cache_capacity, within_cache_capacity, CodingOracle, KnowledgeSource, OracleSnippet,
-    KNOWLEDGE_CACHE_FLOOR,
+    CodingOracle, KNOWLEDGE_CACHE_FLOOR, KnowledgeSource, OracleSnippet, cache_capacity,
+    within_cache_capacity,
 };
-pub use language::{detect as detect_language, Language};
+pub use language::{Language, detect as detect_language};
 #[cfg(feature = "doublets-native")]
 pub use link_store::{
-    default_native_link_store, memory_event_to_link_record, memory_events_to_link_records,
-    selected_link_store_backend, validate_memory_links_notation, DefaultNativeLinkStore,
-    DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore, LinkStoreBackend, LinkStoreError,
+    DefaultNativeLinkStore, DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore,
+    LinkStoreBackend, LinkStoreError, default_native_link_store, memory_event_to_link_record,
+    memory_events_to_link_records, selected_link_store_backend, validate_memory_links_notation,
 };
 pub use links_query::{
-    parse_links_query, run_links_query, run_links_query_against, EdgePattern, Field, Filter,
-    FilterOp, LinksQuery, LinksQueryError, LinksQueryResult, NodePattern,
+    EdgePattern, Field, Filter, FilterOp, LinksQuery, LinksQueryError, LinksQueryResult,
+    NodePattern, parse_links_query, run_links_query, run_links_query_against,
 };
 pub use memory::{
-    export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
+    BundleInfo, MemoryEvent, MemoryStore, ParsedBundle, export_bundle as export_memory_bundle,
+    export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
-    suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
-    ParsedBundle,
+    suggest_migrations as suggest_memory_migrations,
 };
 pub use memory_sync::{
-    configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
+    SyncStore, configured_memory_path, events_since, merge_event, merge_union_by_id,
 };
 pub use probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel,
-    ProbabilityRanking, ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
-    RankedProbabilityCandidate,
+    ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel, ProbabilityRanking,
+    ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
+    RankedProbabilityCandidate, rank_probability_candidates,
 };
 pub use protocol::{
-    create_chat_completion, create_chat_completion_with_solver, create_response,
-    create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
-    MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
-    ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
+    ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage, MessageContent,
+    MessageContentPart, ResponseObject, ResponseOutputContent, ResponseOutputMessage,
+    ResponseUsage, ResponsesRequest, TokenUsage, create_chat_completion,
+    create_chat_completion_with_solver, create_response, create_response_with_solver,
 };
 pub use seed::{
-    agent_info, concepts as seed_concepts, environment_directory, environment_records,
-    intent_routing, language_rules, merged_bundle, multilingual_responses, operation_vocabulary,
-    parse_bundle, projects_registry, prompt_patterns, response_for, seed_files,
-    supported_languages, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
-    MigrationFlow, OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord,
-    ProjectStatement, ProjectsRegistry,
+    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
+    OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord, ProjectStatement,
+    ProjectsRegistry, agent_info, concepts as seed_concepts, environment_directory,
+    environment_records, intent_routing, language_rules, merged_bundle, multilingual_responses,
+    operation_vocabulary, parse_bundle, projects_registry, prompt_patterns, response_for,
+    seed_files, supported_languages,
 };
 pub use self_improvement::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
-    LearningRejection, LearningRun, UnknownTrace,
+    BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal, LearningRejection, LearningRun,
+    UnknownTrace, learn_rules_from_unknown_traces,
 };
 pub use server::{
-    handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,
-    ApiAuthConfig, ApiHttpResponse,
+    ApiAuthConfig, ApiHttpResponse, handle_api_request, handle_api_request_with_auth,
+    handle_api_request_with_headers, serve,
 };
 pub use skill_compiler::{
-    compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,
-    CompiledSkillHandlerStub, CompiledSkillInput, CompiledSkillPackage, CompiledSkillPermission,
-    CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
+    CompiledSkillEffect, CompiledSkillExpectedTest, CompiledSkillHandlerStub, CompiledSkillInput,
+    CompiledSkillPackage, CompiledSkillPermission, CompiledSkillPrecondition, CompiledSkillReplay,
+    CompiledSkillStep, SkillCompileError, compile_natural_language_skill,
 };
 pub use solver::{
-    solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
-    ExecutionSurface, SolverConfig, UniversalSolver,
+    BlueprintComposition, ConversationRole, ConversationTurn, ExecutionSurface, SolverConfig,
+    UniversalSolver, solve, solve_with_history,
 };
 pub use solver_helpers::humanize_url;
 pub use substitution::{
@@ -163,23 +163,23 @@ pub use substitution::{
     SubstitutionTraceReport,
 };
 pub use summarization::{
-    apply_compound_words, apply_semantic_primes, classify_sentence, deformalize, describe_project,
-    describe_readme, formalize, formalize_dialog, formalize_markdown,
+    DEFAULT_MAX_STATEMENTS, DialogTurn, EmbeddedGrammarFormalization, MetaLanguageFormalization,
+    RepositoryDirectoryFormalization, RepositoryEntry, RepositoryFileFormalization,
+    RepositoryResourceFormalization, Statement, StatementKind, SummarizationConfig,
+    SummarizationMode, apply_compound_words, apply_semantic_primes, classify_sentence, deformalize,
+    describe_project, describe_readme, formalize, formalize_dialog, formalize_markdown,
     formalize_repository_directory, formalize_repository_file, formalize_repository_resource,
     generate_chat_title, strip_markdown_noise, summarize, summarize_dialog,
-    summarize_repository_file, summarize_repository_resource, to_topic, DialogTurn,
-    EmbeddedGrammarFormalization, MetaLanguageFormalization, RepositoryDirectoryFormalization,
-    RepositoryEntry, RepositoryFileFormalization, RepositoryResourceFormalization, Statement,
-    StatementKind, SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
+    summarize_repository_file, summarize_repository_resource, to_topic,
 };
 pub use telegram::{
-    handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
     ParsedUpdatesBatch, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,
-    TelegramReplyParameters, TelegramWebhookError, TelegramWebhookReply,
+    TelegramReplyParameters, TelegramWebhookError, TelegramWebhookReply, handle_telegram_webhook,
+    parse_get_updates_response, telegram_html_from_markdown,
 };
 pub use telegram_runtime::{
-    run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
-    CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
+    CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport, run_telegram_polling,
+    run_telegram_polling_with_transport, run_telegram_webhook_server,
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
@@ -187,8 +187,9 @@ pub use web_engine_core::{
     normalize_prompt as normalize_prompt_text, tokenize_prompt,
 };
 pub use web_search_core::{
+    FusedEntry, ProviderCategory, ProviderRanking, ProviderSpec,
+    WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY,
+    WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K,
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,
-    parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output, FusedEntry, ProviderCategory,
-    ProviderRanking, ProviderSpec, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS,
-    WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+    parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output,
 };

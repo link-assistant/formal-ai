@@ -12,8 +12,8 @@
 
 use std::fs;
 
-use formal_ai::solver::solve;
 use formal_ai::SymbolicAnswer;
+use formal_ai::solver::solve;
 
 /// The two prompts named in the issue body, verbatim except for shortening the
 /// embedded paths so the assertion stays readable.

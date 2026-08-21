@@ -15,7 +15,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use formal_ai::contribution_artifacts::{compose, Contribution};
+use formal_ai::contribution_artifacts::{Contribution, compose};
 use formal_ai::seed::contribution_artifact_vocabulary;
 
 fn root() -> PathBuf {

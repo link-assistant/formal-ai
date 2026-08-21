@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 9384
   line_count 277
-  content_id source_module_5a0e2f858402f7be
+  content_id source_module_1a17845feeaf2eb6
   symbol_count 7
   symbols
     enum BenchmarkAction 20 66

@@ -7,7 +7,7 @@
 //! regression to memoized answers would break here first.
 
 use formal_ai::{
-    solve, solve_with_history, ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver,
+    ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver, solve, solve_with_history,
 };
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -339,9 +339,11 @@ fn concept_lookup_answers_what_is_wikipedia() {
     let response = answer("What is Wikipedia?");
     assert_eq!(response.intent, "concept_lookup");
     assert!(response.answer.to_lowercase().contains("encyclopedia"));
-    assert!(response
-        .answer
-        .contains("https://en.wikipedia.org/wiki/Wikipedia"));
+    assert!(
+        response
+            .answer
+            .contains("https://en.wikipedia.org/wiki/Wikipedia")
+    );
 }
 
 #[test]

@@ -1,6 +1,6 @@
 //! Regression coverage for proactive issue-report invitations after detected failures.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::{SolverConfig, UniversalSolver};
 
@@ -131,9 +131,11 @@ fn unresolved_reasoning_proactively_asks_to_report_on_every_rust_surface_languag
     });
     let answer = solver.solve("Explain the issue-864 frobnicator ritual");
     assert_eq!(answer.intent, "unknown");
-    assert!(answer
-        .answer
-        .contains("Detecté un fallo mientras trabajaba en esta solicitud"));
+    assert!(
+        answer
+            .answer
+            .contains("Detecté un fallo mientras trabajaba en esta solicitud")
+    );
     assert!(answer.answer.contains(REPORT_COMMAND));
 }
 

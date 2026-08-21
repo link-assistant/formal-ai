@@ -2,15 +2,15 @@ use std::error::Error;
 use std::fmt::{Display, Formatter};
 use std::io;
 use std::process::Command;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::sleep;
 use std::time::Duration;
 
 use crate::server::serve;
 use crate::telegram::{
-    extract_sent_message_id, parse_get_updates_response, TelegramPollingConfig,
-    TelegramPollingError, TelegramPollingReply,
+    TelegramPollingConfig, TelegramPollingError, TelegramPollingReply, extract_sent_message_id,
+    parse_get_updates_response,
 };
 
 /// Errors that can interrupt the long-polling loop.

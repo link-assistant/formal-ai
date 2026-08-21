@@ -5,13 +5,13 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
 use formal_ai::engine::ExecutionRecipe;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::{
-    compile_substitution_rules, CompiledSubstitutionProgram, ConversationTurn, CrudEvent,
-    ProgramPlanCompilationError, SubstitutionCompilationTarget, SubstitutionGraph,
-    SubstitutionRuleSet, UniversalSolver,
+    CompiledSubstitutionProgram, ConversationTurn, CrudEvent, ProgramPlanCompilationError,
+    SubstitutionCompilationTarget, SubstitutionGraph, SubstitutionRuleSet, UniversalSolver,
+    compile_substitution_rules,
 };
 
 const COUNTER_RULES: &str = r#"
@@ -146,7 +146,7 @@ fn counter_loop_executes_identically_in_rust_javascript_and_webassembly() {
     let rust_binary = directory.join("counter_loop");
     run_with_input(
         Command::new("rustc")
-            .arg("--edition=2021")
+            .arg("--edition=2024")
             .args(["-D", "warnings"])
             .arg(&rust_source)
             .arg("-o")
@@ -161,10 +161,12 @@ fn counter_loop_executes_identically_in_rust_javascript_and_webassembly() {
     let javascript = compile_substitution_rules(&rules, SubstitutionCompilationTarget::JavaScript);
     let javascript_source = write_artifact(&directory, &javascript);
     assert!(javascript_source.is_file());
-    assert!(javascript
-        .primary_file
-        .contents
-        .contains("substitution semantics remain in Rust/WASM"));
+    assert!(
+        javascript
+            .primary_file
+            .contents
+            .contains("substitution semantics remain in Rust/WASM")
+    );
     assert!(!javascript.primary_file.contents.contains("applyRule"));
     let javascript_wasm_source = javascript
         .supporting_files
@@ -175,7 +177,7 @@ fn counter_loop_executes_identically_in_rust_javascript_and_webassembly() {
     let javascript_wasm_binary = directory.join("counter_loop_js.wasm");
     run_with_input(
         Command::new("rustc")
-            .arg("--edition=2021")
+            .arg("--edition=2024")
             .args(["-D", "warnings"])
             .args(["--target", "wasm32-unknown-unknown"])
             .args(["--crate-type", "cdylib"])
@@ -201,7 +203,7 @@ fn counter_loop_executes_identically_in_rust_javascript_and_webassembly() {
     let wasm_binary = directory.join("counter_loop.wasm");
     run_with_input(
         Command::new("rustc")
-            .arg("--edition=2021")
+            .arg("--edition=2024")
             .args(["-D", "warnings"])
             .args(["--target", "wasm32-unknown-unknown"])
             .args(["--crate-type", "cdylib"])
@@ -227,9 +229,11 @@ fn counter_loop_executes_identically_in_rust_javascript_and_webassembly() {
         (&webassembly, "webassembly"),
     ] {
         assert!(artifact.trace.contains("substitution_compilation"));
-        assert!(artifact
-            .trace
-            .contains("verification executable_parity_required"));
+        assert!(
+            artifact
+                .trace
+                .contains("verification executable_parity_required")
+        );
         assert!(artifact.trace.contains(target));
     }
 
@@ -310,16 +314,14 @@ fn verified_program_plan_exports_are_seeded_in_all_supported_languages() {
         MultilingualExportCase {
             language: "English",
             initial: "Write me a Rust program that lists the files in the current directory",
-            follow_up:
-                "Sort the results in reverse order and export the substitution rule to Rust",
+            follow_up: "Sort the results in reverse order and export the substitution rule to Rust",
             target: "rust",
             primary_file: "program_plan_rules.rs",
             localized_intro: "The verified substitution-rule program is ready for rust. Save each named file exactly as shown. The input format is one `from<TAB>to` link per line; then run the commands below. Primary file: program_plan_rules.rs.",
         },
         MultilingualExportCase {
             language: "Russian",
-            initial:
-                "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
+            initial: "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
             follow_up: "Сделай сортировку результатов в обратном порядке и экспортируй правило подстановки в JavaScript",
             target: "javascript",
             primary_file: "program_plan_rules.mjs",
@@ -373,9 +375,11 @@ fn verified_program_plan_exports_are_seeded_in_all_supported_languages() {
         assert!(exported.answer.contains(case.primary_file));
         assert!(exported.links_notation.contains("rule_verification"));
         assert!(exported.links_notation.contains("status passed"));
-        assert!(exported
-            .links_notation
-            .contains("verification executable_parity_required"));
+        assert!(
+            exported
+                .links_notation
+                .contains("verification executable_parity_required")
+        );
         let recipe = exported
             .execution_recipe
             .expect("export should carry an executable primary artifact");
@@ -510,7 +514,9 @@ fn live_agent_cli_export_and_self_authored_contract_are_preserved() {
 
     assert!(live_agent.contains("ses_ff77cb103ffe3hhhGqf2qquEkR"));
     assert!(live_agent.contains("request:task\\tlist_files_reverse_sort"));
-    assert!(live_server.contains("node program_plan_rules.mjs program_plan_rules.wasm < input.tsv"));
+    assert!(
+        live_server.contains("node program_plan_rules.mjs program_plan_rules.wasm < input.tsv")
+    );
     for artifact in [
         "program_plan_rules.mjs",
         "program_plan_rules_wasm.rs",

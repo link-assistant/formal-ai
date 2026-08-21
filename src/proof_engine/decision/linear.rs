@@ -30,12 +30,12 @@ pub(super) fn attempt_linear_claim(claim: &str, language: &str) -> Option<ProofO
 }
 
 fn split_implication(text: &str) -> Option<(&str, &str)> {
-    if let Some(rest) = text.strip_prefix("if ") {
-        if let Some(index) = rest.find(" then ") {
-            let premise = &rest[..index];
-            let conclusion = &rest[index + " then ".len()..];
-            return Some((premise.trim(), conclusion.trim()));
-        }
+    if let Some(rest) = text.strip_prefix("if ")
+        && let Some(index) = rest.find(" then ")
+    {
+        let premise = &rest[..index];
+        let conclusion = &rest[index + " then ".len()..];
+        return Some((premise.trim(), conclusion.trim()));
     }
     for token in [" implies ", " => ", " -> "] {
         if let Some(index) = text.find(token) {
@@ -648,45 +648,44 @@ impl Interval {
         if self.contradiction.is_some() {
             return;
         }
-        if let (Some(lower), Some(upper)) = (self.lower, self.upper) {
-            if lower.value > upper.value + EPSILON
-                || (nearly_equal(lower.value, upper.value) && (lower.strict || upper.strict))
-            {
-                self.contradiction = Some(format!(
-                    "requires x {} {} and x {} {}",
-                    if lower.strict { ">" } else { ">=" },
-                    format_number(lower.value),
-                    if upper.strict { "<" } else { "<=" },
-                    format_number(upper.value)
-                ));
-                return;
-            }
+        if let (Some(lower), Some(upper)) = (self.lower, self.upper)
+            && (lower.value > upper.value + EPSILON
+                || (nearly_equal(lower.value, upper.value) && (lower.strict || upper.strict)))
+        {
+            self.contradiction = Some(format!(
+                "requires x {} {} and x {} {}",
+                if lower.strict { ">" } else { ">=" },
+                format_number(lower.value),
+                if upper.strict { "<" } else { "<=" },
+                format_number(upper.value)
+            ));
+            return;
         }
-        if let Some(value) = self.equality {
-            if !self.contains(value) {
-                self.contradiction = Some(format!(
-                    "requires x = {}, but the interval excludes that value",
-                    format_number(value)
-                ));
-            }
+        if let Some(value) = self.equality
+            && !self.contains(value)
+        {
+            self.contradiction = Some(format!(
+                "requires x = {}, but the interval excludes that value",
+                format_number(value)
+            ));
         }
     }
 
     fn contains(&self, value: f64) -> bool {
-        if let Some(lower) = self.lower {
-            if value < lower.value - EPSILON || (lower.strict && nearly_equal(value, lower.value)) {
-                return false;
-            }
+        if let Some(lower) = self.lower
+            && (value < lower.value - EPSILON || (lower.strict && nearly_equal(value, lower.value)))
+        {
+            return false;
         }
-        if let Some(upper) = self.upper {
-            if value > upper.value + EPSILON || (upper.strict && nearly_equal(value, upper.value)) {
-                return false;
-            }
+        if let Some(upper) = self.upper
+            && (value > upper.value + EPSILON || (upper.strict && nearly_equal(value, upper.value)))
+        {
+            return false;
         }
-        if let Some(equal) = self.equality {
-            if !nearly_equal(value, equal) {
-                return false;
-            }
+        if let Some(equal) = self.equality
+            && !nearly_equal(value, equal)
+        {
+            return false;
         }
         !self
             .excluded
@@ -730,15 +729,17 @@ impl IntervalSystem {
         if let Some(value) = self.interval.equality {
             return self.interval.contains(value).then_some(value);
         }
-        if let Some(upper) = self.interval.upper {
-            if !upper.strict && self.interval.contains(upper.value) {
-                return Some(upper.value);
-            }
+        if let Some(upper) = self.interval.upper
+            && !upper.strict
+            && self.interval.contains(upper.value)
+        {
+            return Some(upper.value);
         }
-        if let Some(lower) = self.interval.lower {
-            if !lower.strict && self.interval.contains(lower.value) {
-                return Some(lower.value);
-            }
+        if let Some(lower) = self.interval.lower
+            && !lower.strict
+            && self.interval.contains(lower.value)
+        {
+            return Some(lower.value);
         }
         let candidate = match (self.interval.lower, self.interval.upper) {
             (Some(lower), Some(upper)) => f64::midpoint(lower.value, upper.value),

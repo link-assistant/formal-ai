@@ -10,10 +10,10 @@
 use std::time::Duration;
 
 use formal_ai::bounded_autonomy::{
-    weigh, AutonomyMode, AutonomyPolicy, Clock as _, LoopStep, ManualClock, PermissionRequest,
-    RecoveryLoop, Resolution, ResolutionOption, SystemClock, AUTONOMY_MODE_VARIABLE,
-    DEFAULT_STUCK_RECOVERY_LIMIT, FULL_AUTONOMOUS_VALUE, FULL_TRUST_VALUE, FULL_TRUST_VARIABLE,
-    STUCK_RECOVERY_LIMIT_VARIABLE,
+    AUTONOMY_MODE_VARIABLE, AutonomyMode, AutonomyPolicy, Clock as _, DEFAULT_STUCK_RECOVERY_LIMIT,
+    FULL_AUTONOMOUS_VALUE, FULL_TRUST_VALUE, FULL_TRUST_VARIABLE, LoopStep, ManualClock,
+    PermissionRequest, RecoveryLoop, Resolution, ResolutionOption, STUCK_RECOVERY_LIMIT_VARIABLE,
+    SystemClock, weigh,
 };
 
 /// Run `body` with the three autonomy variables forced to `values` -- every one

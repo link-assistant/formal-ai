@@ -8,13 +8,13 @@
 //! claim is the difference between them — and because #943 is exactly the bug
 //! where one state was never checked.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::contribution_write_path::{
-    decide_with, opted_in_with, permits, plan_publication, plan_publication_with, Publication,
-    WritePathDecision, WritePathRefusal,
-};
-use formal_ai::seed::{contribution_artifact_vocabulary, WritePathVocabulary};
 use formal_ai::ChatMessage;
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+use formal_ai::contribution_write_path::{
+    Publication, WritePathDecision, WritePathRefusal, decide_with, opted_in_with, permits,
+    plan_publication, plan_publication_with,
+};
+use formal_ai::seed::{WritePathVocabulary, contribution_artifact_vocabulary};
 
 fn write_path() -> WritePathVocabulary {
     contribution_artifact_vocabulary().write_path
@@ -64,10 +64,12 @@ fn the_ladder_has_both_rungs_and_an_opt_in_to_climb_the_first() {
     assert!(!vocab.opt_in_variable.is_empty());
     assert!(!vocab.opt_in_value.is_empty());
     assert!(vocab.opt_in.iter().any(|action| action == "gh pr create"));
-    assert!(vocab
-        .refused
-        .iter()
-        .any(|action| action == "gh issue create"));
+    assert!(
+        vocab
+            .refused
+            .iter()
+            .any(|action| action == "gh issue create")
+    );
     // Merging stays a human decision, so no opt-in reaches it.
     assert!(vocab.refused.iter().any(|action| action == "gh pr merge"));
 }
@@ -195,9 +197,11 @@ fn publishing_a_contribution_is_planned_only_under_the_opt_in() {
     let commands =
         plan_publication_with(&publication, &vocab, true).expect("the opt-in reaches the rung");
     assert_eq!(commands.len(), vocab.publication.len());
-    assert!(commands
-        .iter()
-        .any(|command| command.contains("gh pr create")));
+    assert!(
+        commands
+            .iter()
+            .any(|command| command.contains("gh pr create"))
+    );
     // Every slot is filled: a leftover placeholder would ship as a literal.
     for command in &commands {
         assert!(!command.contains('{'), "{command}");

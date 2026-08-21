@@ -15,7 +15,7 @@
 //! pull request (Links Notation) prints to stdout.
 
 use formal_ai::self_improvement::BenchmarkGateReport;
-use formal_ai::{canonical_change_request, ChangeRejected, HumanApproval};
+use formal_ai::{ChangeRejected, HumanApproval, canonical_change_request};
 
 fn main() {
     let request = canonical_change_request();

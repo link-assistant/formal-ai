@@ -16,7 +16,7 @@
 use std::path::Path;
 use std::process::{Command, Stdio};
 
-use formal_ai::box_language_projects::{box_language_contract, BoxLanguageContract};
+use formal_ai::box_language_projects::{BoxLanguageContract, box_language_contract};
 
 fn repository_root() -> &'static Path {
     Path::new(env!("CARGO_MANIFEST_DIR"))

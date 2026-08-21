@@ -9,8 +9,8 @@
 //! proven separately on a subject that shares no vocabulary with it.
 
 use formal_ai::option_network::{
-    milli, units, Candidate, Comparison, Constraint, Offer, OptionNetwork, Supply, Tier,
-    MAX_PLAN_ITEMS,
+    Candidate, Comparison, Constraint, MAX_PLAN_ITEMS, Offer, OptionNetwork, Supply, Tier, milli,
+    units,
 };
 
 /// The issue's own case: a replacement power supply for a specific laptop.

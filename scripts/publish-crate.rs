@@ -19,6 +19,9 @@
 //!     'rate_limited', 'skipped', or 'failed'
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```

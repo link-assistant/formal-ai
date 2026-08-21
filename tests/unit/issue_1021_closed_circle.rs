@@ -31,14 +31,14 @@
 
 use std::fs;
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::contribution_artifacts::{compose, Contribution};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+use formal_ai::contribution_artifacts::{Contribution, compose};
 use formal_ai::contribution_write_path::{
-    decide_with, plan_publication_with, Publication, WritePathDecision,
+    Publication, WritePathDecision, decide_with, plan_publication_with,
 };
 use formal_ai::seed::contribution_artifact_vocabulary;
 use formal_ai::{ChatMessage, UniversalSolver};
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
 /// Directory holding the captured run.
 fn run_dir() -> String {

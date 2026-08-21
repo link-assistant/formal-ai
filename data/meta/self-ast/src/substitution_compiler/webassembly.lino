@@ -2,9 +2,9 @@ self_ast_census
   target src/substitution_compiler/webassembly.rs
   language rust
   fidelity signature
-  byte_len 5076
+  byte_len 5108
   line_count 147
-  content_id source_module_957e96112db8cd0d
+  content_id source_module_43cd46b197e40db5
   symbol_count 29
   symbols
     function emit 6 19

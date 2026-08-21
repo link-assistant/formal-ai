@@ -11,6 +11,9 @@
 //! Usage: rust-script scripts/collect-changelog.rs [--rust-root <path>]
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! chrono = "0.4"

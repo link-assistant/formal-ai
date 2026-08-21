@@ -109,9 +109,11 @@ fn models_report_real_disk_context_and_memory_usage() {
     assert_eq!(anthropic_response.status_code, 200);
     let anthropic: serde_json::Value =
         serde_json::from_str(&anthropic_response.body).expect("Anthropic JSON");
-    assert!(anthropic["context"]["context_window_tokens"]
-        .as_u64()
-        .is_some_and(|value| value > 0));
+    assert!(
+        anthropic["context"]["context_window_tokens"]
+            .as_u64()
+            .is_some_and(|value| value > 0)
+    );
     assert_eq!(anthropic["context"]["avg_utf8_bytes_per_char"], 2);
     let configured: serde_json::Value =
         serde_json::from_str(&configured_response.body).expect("configured models JSON");

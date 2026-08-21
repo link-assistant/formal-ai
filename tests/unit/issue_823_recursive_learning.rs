@@ -2,11 +2,11 @@
 //! reported traces must feed the live, human-gated learning path.
 
 use formal_ai::recursive_execution::{
-    solve_recursively, RecursiveExecution, RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor,
+    RecursiveExecution, RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively,
 };
 use formal_ai::{
-    learn_from_reported_conversation, learning_trace_from_symbolic_answer, ConversationTurn,
-    SolverConfig, UniversalSolver,
+    ConversationTurn, SolverConfig, UniversalSolver, learn_from_reported_conversation,
+    learning_trace_from_symbolic_answer,
 };
 use serde_json::json;
 
@@ -129,9 +129,11 @@ fn a_real_symbolic_candidate_round_trips_through_report_ingestion() {
     let prompt = "Сделай сортировку результатов в обратном порядке";
     let candidate = setup.solve_with_history(prompt, &history);
 
-    assert!(candidate
-        .links_notation
-        .contains("rule_synthesis_candidate"));
+    assert!(
+        candidate
+            .links_notation
+            .contains("rule_synthesis_candidate")
+    );
     let learning_trace = learning_trace_from_symbolic_answer(prompt, &candidate)
         .expect("verified candidates must expose structured learning metadata");
     let report = json!({

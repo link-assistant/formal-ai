@@ -18,14 +18,24 @@ test("production manifests and focused fallback limitations stay mapped", () => 
     "utf8",
   );
 
-  assert.equal(desktopManifest.dependencies["command-stream"], "0.18.0");
+  assert.equal(desktopManifest.dependencies["command-stream"], "0.19.0");
   assert.equal(vscodeManifest.dependencies["command-stream"], undefined);
   assert.match(cargoManifest, /^command-stream = "=0\.16\.0"$/m);
-  const componentEntry = fs.readFileSync(
-    require.resolve("command-stream"),
-    "utf8",
-  );
-  assert.match(componentEntry, /from '\.\/terminal-capture\.mjs'/);
+  // Issue #189 is that a CommonJS host could not reach this library at all.
+  // The guard used to grep the CommonJS entry for its `terminal-capture.mjs`
+  // re-export, but 0.19.0 turned that entry into a thin `require(esm)` wrapper
+  // and the re-export moved into the ESM graph behind it -- so the text was
+  // gone while the capability was not. Asserting on the loaded exports asks the
+  // question the grep was standing in for, and keeps asking it through
+  // whatever the package does to its file layout next.
+  const componentExports = require("command-stream");
+  for (const name of ["captureTerminal", "openTerminal", "unrollTerminalFrames"]) {
+    assert.equal(
+      typeof componentExports[name],
+      "function",
+      `command-stream must reach ${name} from CommonJS`,
+    );
+  }
   for (const upstreamIssue of [189, 190, 191, 192]) {
     assert.match(caseStudy, new RegExp(`command-stream/issues/${upstreamIssue}`));
   }

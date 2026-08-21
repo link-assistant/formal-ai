@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/pipeline.rs
   language rust
   fidelity signature
-  byte_len 31860
-  line_count 846
-  content_id source_module_423724a02ec54d66
+  byte_len 31812
+  line_count 848
+  content_id source_module_63d9e528ddff7b6f
   symbol_count 25
   symbols
     function translation_debug_enabled 42 46
@@ -18,17 +18,17 @@ self_ast_census
     function select_best_block 395 466
     function upgrade_meaning_via_wikidata 473 535
     function canonical_target_english_meaning 537 566
-    function compositional_candidates 568 634
-    function seed_meaning_id 636 638
-    function seed_meaning_for_surface 640 644
-    function seed_compositional_translation 646 665
-    function seed_role_translation 667 691
-    function same_surface 693 695
-    function russian_phrase_to_english 704 711
-    function russian_word_to_english 719 721
-    function translate_russian_word_sequence 723 741
-    function russian_genitive_relation_head 749 751
-    function russian_genitive_noun 758 766
-    function capitalize_ascii_first 768 777
-    function phrasal_variants 790 822
-    function normalize_page_title 832 846
+    function compositional_candidates 568 635
+    function seed_meaning_id 637 639
+    function seed_meaning_for_surface 641 645
+    function seed_compositional_translation 647 666
+    function seed_role_translation 668 692
+    function same_surface 694 696
+    function russian_phrase_to_english 705 712
+    function russian_word_to_english 720 722
+    function translate_russian_word_sequence 724 743
+    function russian_genitive_relation_head 751 753
+    function russian_genitive_noun 760 768
+    function capitalize_ascii_first 770 779
+    function phrasal_variants 792 824
+    function normalize_page_title 834 848

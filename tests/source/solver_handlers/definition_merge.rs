@@ -1,6 +1,6 @@
 use std::fmt::Write as _;
 
-use crate::concepts::{extract_concept_query, lookup_concept_query, ConceptQuery, ConceptRecord};
+use crate::concepts::{ConceptQuery, ConceptRecord, extract_concept_query, lookup_concept_query};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;

@@ -2,40 +2,40 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 15037
-  line_count 339
-  content_id source_module_f2ee60ce41130709
+  byte_len 14921
+  line_count 330
+  content_id source_module_9b2aea003072e037
   symbol_count 14
   symbols
     const EXPECTED_PLACEHOLDER 15 15
     const OBSERVED_PLACEHOLDER 16 16
     const PLAN_PLACEHOLDER 17 17
     const PLAN_PATH_PLACEHOLDER 18 18
-    function plan_general_change_step 20 182
-    function plan_work_item_execution 198 216
-    function repository_work_item_objective 223 230
-    function finish_general_change 232 260
-    function general_plan_completed 266 280
-    function tool_argument_path 282 288
-    function read_arguments 290 297
-    function capability_label 299 316
-    function general_plan_mismatch 318 331
-    function general_plan_unverified 333 339
+    function plan_general_change_step 20 173
+    function plan_work_item_execution 189 207
+    function repository_work_item_objective 214 221
+    function finish_general_change 223 251
+    function general_plan_completed 257 271
+    function tool_argument_path 273 279
+    function read_arguments 281 288
+    function capability_label 290 307
+    function general_plan_mismatch 309 322
+    function general_plan_unverified 324 330
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9315
-    named_node_count 1886
-    distinct_node_kinds 60
+    total_link_count 9231
+    named_node_count 1874
+    distinct_node_kinds 61
     node_kinds
       arguments 144
       array_expression 1
       array_type 4
       assignment_expression 6
       binary_expression 40
-      block 48
+      block 42
       call_expression 144
       closure_expression 12
       closure_parameters 12
@@ -43,16 +43,17 @@ self_ast_census
       crate 10
       doc_comment 24
       else_clause 2
-      expression_statement 57
+      expression_statement 51
       field_expression 138
       field_identifier 138
       function_item 10
       function_modifiers 1
       generic_type 3
       identifier 490
-      if_expression 32
+      if_expression 26
       inner_doc_comment_marker 1
       integer_literal 8
+      let_chain 6
       let_condition 14
       let_declaration 19
       lifetime 1

@@ -676,41 +676,41 @@ mod resource;
 pub mod validation;
 pub mod vocabulary;
 
-pub use context::{merge_into_context, merge_into_formal_context, MergedContext};
+pub use context::{MergedContext, merge_into_context, merge_into_formal_context};
 pub use dedup::{
-    deduplicate, Contradiction, DedupReport, MergeLink, MergedStatement, Polarity,
-    SourcedStatement, StatementSignature, StatementVariant,
+    Contradiction, DedupReport, MergeLink, MergedStatement, Polarity, SourcedStatement,
+    StatementSignature, StatementVariant, deduplicate,
 };
 pub use dialog::{
-    formalize_dialog, generate_chat_title, summarize_dialog, summarize_dialog_plain, DialogTurn,
+    DialogTurn, formalize_dialog, generate_chat_title, summarize_dialog, summarize_dialog_plain,
 };
 pub use file::{
-    formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
-    MetaLanguageFormalization, RepositoryFileFormalization,
+    EmbeddedGrammarFormalization, MetaLanguageFormalization, RepositoryFileFormalization,
+    formalize_repository_file, summarize_repository_file,
 };
 pub use gathering::{
-    execute_captured_gathering, gather, CapturedGatheringFailure, CapturedGatheringReport,
-    CapturedSourceMetadata, CapturedSourceObservation, FetchRecord, FetchedSource, GatheringPlan,
-    GatheringReport, SourceCache, SourceProvider,
+    CapturedGatheringFailure, CapturedGatheringReport, CapturedSourceMetadata,
+    CapturedSourceObservation, FetchRecord, FetchedSource, GatheringPlan, GatheringReport,
+    SourceCache, SourceProvider, execute_captured_gathering, gather,
 };
 pub use identifier::{
-    is_valid_identifier, to_identifier, IdentifierBudget, NamingConvention,
-    DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS,
+    DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, IdentifierBudget,
+    NamingConvention, is_valid_identifier, to_identifier,
 };
-pub use importance::{rank, to_statements_in, ImportanceScore, RankedStatement};
+pub use importance::{ImportanceScore, RankedStatement, rank, to_statements_in};
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
-pub use pipeline::{execute_multi_source_summary, MultiSourceSummaryExecution};
-pub use recheck::{recheck, RecheckReport, RecheckedStatement, Verdict};
+pub use pipeline::{MultiSourceSummaryExecution, execute_multi_source_summary};
+pub use recheck::{RecheckReport, RecheckedStatement, Verdict, recheck};
 pub use resource::{
-    formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
     RepositoryDirectoryFormalization, RepositoryEntry, RepositoryResourceFormalization,
+    formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
 };
 pub use validation::{
-    evaluate_file, quality_sentence, ratchet_violations, validate_repository_summarization,
-    CorpusFile, Criterion, CriterionOutcome, FileQualityReport, IterationReport, QualityBaseline,
-    QualityScore, SamplingProtocol, ValidationReport, BASELINE_PATH, BASELINE_RECORD,
-    COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
+    BASELINE_PATH, BASELINE_RECORD, COMPRESSION_FLOOR_BYTES, CRITERIA, CorpusFile, Criterion,
+    CriterionOutcome, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
     DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_TOLERANCE_PERCENT,
-    DEFAULT_STABILITY_WINDOW, HONESTY_POLICY, QUALITY_RATCHET_PERCENT, RATCHET_POLICY,
-    RATCHET_RUNNER,
+    DEFAULT_STABILITY_WINDOW, FileQualityReport, HONESTY_POLICY, IterationReport,
+    QUALITY_RATCHET_PERCENT, QualityBaseline, QualityScore, RATCHET_POLICY, RATCHET_RUNNER,
+    SamplingProtocol, ValidationReport, evaluate_file, quality_sentence, ratchet_violations,
+    validate_repository_summarization,
 };

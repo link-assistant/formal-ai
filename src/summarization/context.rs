@@ -33,7 +33,7 @@
 //! needs both stances to tell a contested claim from a confirmed one.
 
 use super::dedup::{DedupReport, SourcedStatement};
-use super::importance::{rank, RankedStatement};
+use super::importance::{RankedStatement, rank};
 use crate::formal_system::FormalSystem;
 use crate::relative_meta_logic::{Stance, TruthValue};
 use crate::world_model::{Context, Dependency, Statement as WorldStatement};

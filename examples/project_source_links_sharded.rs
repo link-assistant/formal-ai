@@ -17,7 +17,7 @@
 
 use std::path::PathBuf;
 
-use formal_ai::{owned_source_files, SourceLinks};
+use formal_ai::{SourceLinks, owned_source_files};
 
 /// Modules per shard. At roughly seven Links Notation lines per module plus a small
 /// per-shard header, this keeps every shard comfortably under the 1500-line `.lino`

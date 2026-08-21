@@ -5,10 +5,10 @@
 //! promoted seed edit into the workspace.
 
 use std::process::Command;
-use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicU64, Ordering};
 
-use formal_ai::{render_promotion_proposals, PromotionProposal, SeedEdit};
+use formal_ai::{PromotionProposal, SeedEdit, render_promotion_proposals};
 
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 static PROMOTION_CLI_LOCK: Mutex<()> = Mutex::new(());
@@ -84,12 +84,14 @@ fn proposal_file(dir: &std::path::Path) -> std::path::PathBuf {
 }
 
 fn init_git(dir: &std::path::Path) {
-    assert!(Command::new("git")
-        .args(["init", "-q"])
-        .current_dir(dir)
-        .status()
-        .expect("git init")
-        .success());
+    assert!(
+        Command::new("git")
+            .args(["init", "-q"])
+            .current_dir(dir)
+            .status()
+            .expect("git init")
+            .success()
+    );
 }
 
 #[test]

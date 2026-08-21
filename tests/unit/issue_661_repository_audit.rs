@@ -7,8 +7,8 @@
 
 use formal_ai::relative_meta_logic::{SourceTier, Stance};
 use formal_ai::statement_audit::{
-    audit_corpus, parse_evidence_json, AuditConfig, EvidenceCapture, EvidenceSelector,
-    RepositoryCorpus, RepositoryDocument, SourceKind,
+    AuditConfig, EvidenceCapture, EvidenceSelector, RepositoryCorpus, RepositoryDocument,
+    SourceKind, audit_corpus, parse_evidence_json,
 };
 use std::fs;
 use std::process::Command;

@@ -81,11 +81,10 @@ impl Progress {
                 let payload = super::tool_result::normalized_payload(&raw);
                 fetch_result = Some(payload.clone().unwrap_or_default());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
-                if let Some(url) = fetch_url.as_ref() {
-                    if !attempted_fetches.contains(url) {
+                if let Some(url) = fetch_url.as_ref()
+                    && !attempted_fetches.contains(url) {
                         attempted_fetches.push(url.clone());
                     }
-                }
                 if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     if let Some(url) = fetch_url {
                         fetched_pages.push((url, text.clone()));
@@ -238,11 +237,10 @@ fn argument_targets(arguments: &str, path: &str) -> bool {
 /// a prior assistant `tool_calls` turn.
 pub(super) fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
     let message = &messages[index];
-    if let Some(name) = &message.name {
-        if let Some(capability) = classify_tool(name) {
+    if let Some(name) = &message.name
+        && let Some(capability) = classify_tool(name) {
             return Some(capability);
         }
-    }
     result_tool_call(messages, index).and_then(|call| classify_tool(&call.function.name))
 }
 

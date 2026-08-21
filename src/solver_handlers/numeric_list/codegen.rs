@@ -275,11 +275,10 @@ impl<'p> Composer<'p> {
     /// the inheritance chain, else the catalog-wide `defaults` entry.
     fn resolved_name(&self, key: &str) -> Option<String> {
         for language in &self.chain {
-            if let Some(names) = language.children.iter().find(|child| child.name == "names") {
-                if let Some(entry) = names.children.iter().find(|child| child.name == key) {
+            if let Some(names) = language.children.iter().find(|child| child.name == "names")
+                && let Some(entry) = names.children.iter().find(|child| child.name == key) {
                     return Some(entry.id.clone());
                 }
-            }
         }
         let name = default_name(key);
         if name.is_empty() {
@@ -294,11 +293,10 @@ impl<'p> Composer<'p> {
     fn resolved_type(&self) -> Option<String> {
         let class = self.program.value_type.links_label();
         for language in &self.chain {
-            if let Some(types) = language.children.iter().find(|child| child.name == "types") {
-                if let Some(entry) = types.children.iter().find(|child| child.name == class) {
+            if let Some(types) = language.children.iter().find(|child| child.name == "types")
+                && let Some(entry) = types.children.iter().find(|child| child.name == class) {
                     return Some(entry.id.clone());
                 }
-            }
         }
         None
     }
@@ -351,11 +349,10 @@ impl<'p> Composer<'p> {
                 continue;
             }
             let on = case.children.iter().find(|child| child.name == "on");
-            if let Some(on) = on {
-                if !on.id.split_whitespace().any(|token| token == class) {
+            if let Some(on) = on
+                && !on.id.split_whitespace().any(|token| token == class) {
                     continue;
                 }
-            }
             let score = u32::from(operation_exact) * 2 + u32::from(on.is_some());
             if best.is_none_or(|(_, current)| score > current) {
                 best = Some((case.find_child_value("code"), score));

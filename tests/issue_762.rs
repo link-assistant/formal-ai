@@ -7,21 +7,27 @@ fn desktop_registry_has_cross_platform_launch_metadata() {
         .expect("OpenCode Desktop integration");
     assert_eq!(desktop.command_env, "FORMAL_AI_OPENCODE_DESKTOP_BIN");
     assert_eq!(desktop.command, "opencode-desktop");
-    assert!(desktop
-        .platform_commands
-        .iter()
-        .any(|candidate| candidate.key == "linux"
-            && candidate.value == "/opt/OpenCode/ai.opencode.desktop"));
-    assert!(desktop
-        .platform_commands
-        .iter()
-        .any(|candidate| candidate.key == "macos"
-            && candidate.value == "/Applications/OpenCode.app/Contents/MacOS/OpenCode"));
-    assert!(desktop
-        .platform_commands
-        .iter()
-        .any(|candidate| candidate.key == "windows"
-            && candidate.value == "{local_app_data}/Programs/OpenCode/OpenCode.exe"));
+    assert!(
+        desktop
+            .platform_commands
+            .iter()
+            .any(|candidate| candidate.key == "linux"
+                && candidate.value == "/opt/OpenCode/ai.opencode.desktop")
+    );
+    assert!(
+        desktop
+            .platform_commands
+            .iter()
+            .any(|candidate| candidate.key == "macos"
+                && candidate.value == "/Applications/OpenCode.app/Contents/MacOS/OpenCode")
+    );
+    assert!(
+        desktop
+            .platform_commands
+            .iter()
+            .any(|candidate| candidate.key == "windows"
+                && candidate.value == "{local_app_data}/Programs/OpenCode/OpenCode.exe")
+    );
 }
 
 #[cfg(unix)]

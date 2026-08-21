@@ -1,4 +1,4 @@
-use super::{detect, Language};
+use super::{Language, detect};
 
 #[test]
 fn latin_text_is_english() {

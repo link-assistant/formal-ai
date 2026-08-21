@@ -13,8 +13,8 @@
 //! `experiments/issue-513-sync-worker-terminal.mjs`, so both engines detect
 //! terminal commands from one source of truth.
 
-use super::parser::{parse_lino, LinoNode};
 use super::TERMINAL_COMMANDS_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// The multilingual terminal-command trigger vocabulary, pooled across every
 /// supported language because detection itself is language-agnostic.

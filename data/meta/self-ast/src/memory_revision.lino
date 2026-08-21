@@ -2,36 +2,37 @@ self_ast_census
   target src/memory_revision.rs
   language rust
   fidelity signature
-  byte_len 18421
-  line_count 510
-  content_id source_module_7777ef4d297a3612
-  symbol_count 28
+  byte_len 18954
+  line_count 519
+  content_id source_module_f3a5ca20aa4aa781
+  symbol_count 29
   symbols
-    function digest 50 54
-    struct BaselinePin 64 66
-    function record 74 83
-    function paths 87 89
-    function len 93 95
-    function is_empty 99 101
-    function drift 105 114
-    function holds 118 120
-    struct RevisionFile 125 130
-    struct MemoryRevision 135 144
-    function capture 149 182
-    function restore 194 212
-    function matches 217 221
-    struct VersionVerdict 226 235
-    function green 240 247
-    function permits_switch 253 255
-    enum RollbackReason 260 268
-    function slug 273 279
-    enum AttemptOutcome 284 299
-    function slug 304 309
-    struct RevisionLedger 314 321
-    function open 330 340
-    function stable 344 346
-    function revisions 350 352
-    function attempts 356 358
-    function attempt 371 417
-    function memory_events 423 467
-    function rustc_verdict 481 510
+    const CRATE_EDITION 51 51
+    function digest 54 58
+    struct BaselinePin 68 70
+    function record 78 87
+    function paths 91 93
+    function len 97 99
+    function is_empty 103 105
+    function drift 109 118
+    function holds 122 124
+    struct RevisionFile 129 134
+    struct MemoryRevision 139 148
+    function capture 153 186
+    function restore 198 216
+    function matches 221 225
+    struct VersionVerdict 230 239
+    function green 244 251
+    function permits_switch 257 259
+    enum RollbackReason 264 272
+    function slug 277 283
+    enum AttemptOutcome 288 303
+    function slug 308 313
+    struct RevisionLedger 318 325
+    function open 334 344
+    function stable 348 350
+    function revisions 354 356
+    function attempts 360 362
+    function attempt 375 421
+    function memory_events 427 471
+    function rustc_verdict 490 519

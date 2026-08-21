@@ -3,10 +3,10 @@
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::links_format::push_lino_node;
-use crate::normal_markov::{quoted_segment_spans, quoted_segments, QuotedSegment};
+use crate::normal_markov::{QuotedSegment, quoted_segment_spans, quoted_segments};
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_handlers::text_edit_ops::{

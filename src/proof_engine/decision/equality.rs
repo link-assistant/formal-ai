@@ -1,6 +1,6 @@
 //! Bounded equality saturation over symbolic S-expressions.
 
-use egg::{rewrite, RecExpr, Rewrite, Runner, SymbolLang};
+use egg::{RecExpr, Rewrite, Runner, SymbolLang, rewrite};
 
 use crate::proof_engine::types::{Proof, ProofMethod, ProofOutcome, ProofStep, StepKind};
 

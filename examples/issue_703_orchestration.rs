@@ -4,7 +4,7 @@
 //! `cargo run --example issue_703_orchestration -- /tmp/formal-ai-agent-demo`
 
 use formal_ai::orchestration::{
-    replay_session, run_agent, write_session, AgentCommand, AgentRunConfig, AgentRunPermission,
+    AgentCommand, AgentRunConfig, AgentRunPermission, replay_session, run_agent, write_session,
 };
 use std::error::Error;
 use std::fs;

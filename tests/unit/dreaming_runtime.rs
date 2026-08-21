@@ -6,8 +6,8 @@
 use std::time::Duration;
 
 use formal_ai::{
-    core_is_idle, dreaming_disabled, run_core_dreaming_once, write_locked_atomic,
-    ForegroundActivity, MemoryStore,
+    ForegroundActivity, MemoryStore, core_is_idle, dreaming_disabled, run_core_dreaming_once,
+    write_locked_atomic,
 };
 
 #[test]

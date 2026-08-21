@@ -9,10 +9,10 @@
 //! install guide converted into the runnable init script. The container half is
 //! `tests/integration/issue_932_box_language_projects.rs`.
 
-use formal_ai::box_language_projects::{
-    box_image_survey, box_language_contract, BoxLanguageProject,
-};
 use formal_ai::FormalAiEngine;
+use formal_ai::box_language_projects::{
+    BoxLanguageProject, box_image_survey, box_language_contract,
+};
 
 /// The command a developer of each language would actually type to start a
 /// project. PR #119 asked for exactly these, not a Formal-AI-specific build.
