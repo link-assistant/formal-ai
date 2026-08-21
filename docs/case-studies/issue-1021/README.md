@@ -1188,4 +1188,73 @@ by lowering it.
     the unreachable path ever became reachable — the bundle has a test that it
     *builds*, not one that it *loads*.
 
+32. **One link timing out makes the gate name sixteen healthy links as broken,
+    and the gate fails on the timeout either way.** The `Broken Link Checker`
+    went red twice on this branch (runs 32242196357 and 32454084765) and once on
+    `main`, each time printing `::error::Broken link detected:` over links that
+    answer 200. Both branch reports say the same thing in the summary table:
+
+    | Run | Errors | Timeouts | Redirected | Verdict |
+    |-----|--------|----------|------------|---------|
+    | 32242196357 | 0 | 1 | 19 | failed |
+    | 32454084765 | 0 | 1 | 18 | failed |
+    | 32455788384 | 0 | 0 | 19 | passed |
+
+    Zero errors in all three. The only thing that separates the passing run from
+    the failing ones is a single timeout, and it was a different link each time
+    — `rowanzellers.com/hellaswag/` in one, `docs.anthropic.com/en/docs/claude-code/cli-usage`
+    in the other. Both answer 200 in well under lychee's 30s budget when measured
+    from here: three consecutive requests each, 0.67/0.62/0.51s and
+    4.34/0.76/0.82s. The victim is whichever link the runner's network happened
+    to stall on.
+
+    Two separate defects sit behind that, and only the first is fixed here.
+
+    The first is a parser bug in this repository. `extractBrokenUrls` in
+    `scripts/check-web-archive.mjs` narrowed its deliberately permissive bullet
+    matcher to the failure section by searching for one hard-coded heading,
+    `## Errors per input`. lychee writes only the sections it has links for, so a
+    report whose sole failure is a timeout is headed `## Timeouts per input` and
+    that search finds nothing — whereupon the function fell back to parsing the
+    *whole document*, harvesting every URL under `## Redirects per input` and
+    posting the ones Wayback had no snapshot for as broken links. The fallback
+    was not an oversight; it is there for legacy headingless output, and it is
+    kept. What was wrong is which reports reached it.
+
+    The fix inverts the selection. Every `## … per input` section is now sliced
+    out by heading, and a section counts as failing unless it is one of the
+    outcomes known to be healthy — redirects, exclusions, successes, suggestions.
+    Selecting by exclusion rather than inclusion is the point: a category this
+    parser has not heard of, from a lychee release or a renamed heading, is
+    reported rather than dropped. Getting that wrong in the reporting direction
+    names a healthy link, which is loud and gets fixed; getting it wrong in the
+    dropping direction turns a real broken link into a green build, which is
+    silent. `.github/workflows/links.yml` already asserted this property in a
+    comment — "a parser regression silently turns healthy redirects into 'broken'
+    links (a false positive) or drops real failures (a false negative)" — and
+    already ran `node --test scripts/check-web-archive.test.mjs` ahead of lychee
+    to enforce it. The enforcement missed because all three tests described a
+    report that *has* an errors section, which is the one shape the old lookup
+    got right. Four tests now cover the shapes it got wrong, and all four fail
+    against the previous parser. The reproduction in
+    `experiments/issue-1021-link-checker-false-positive/` runs the real report
+    from run 32454084765, captured verbatim from the job log: 17 URLs reported
+    broken before the fix, 16 of them links lychee itself had classified as
+    healthy redirects; 1 after, which is the timeout the fallback exists to
+    check.
+
+    The second is a policy question, and it stays a finding rather than a change.
+    `Fail if broken links were found` fires on `steps.lychee.outputs.exit_code
+    != 0` and exits 1 unconditionally — it never reads what the Wayback check
+    concluded. So even with the parser corrected, a single runner-side timeout
+    still fails the gate over a link that is fine, and the `--accept
+    '200..=204,429,500..=599'` list cannot soften it because a timeout carries no
+    status code to accept. Making that non-fatal means deciding that an
+    unreachable-right-now link no longer blocks a pull request, which is moving a
+    limit rather than meeting it, so per the standing clause on #1021 it is
+    reported here for a decision instead of being applied. Worth weighing
+    together: `--max-retries 3` is already set, so these links had three attempts
+    against a 30s timeout and still did not answer, and a timeout is genuinely
+    weaker evidence of breakage than a 404 is.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297
