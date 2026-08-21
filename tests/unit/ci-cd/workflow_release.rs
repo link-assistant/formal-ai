@@ -603,64 +603,44 @@ fn the_research_harness_declares_an_mcp_tool_call_timeout() {
     );
 }
 
-/// Caching only `~/.cargo/registry` leaves `target/` empty, so every run
-/// recompiles from scratch — 509 crates in `Test (ubuntu-latest / full)`, and
-/// `formal-ai` itself four times in that one job. sccache does not rescue it:
-/// its GitHub Actions backend is scoped per branch, and the whole store held
-/// 17 MB across 100 entries when this was measured, so its own stats reported
-/// one cache hit against those 509 compilations.
+/// Issue #534 forbids caching `target/` in CI, and the reason is disk rather
+/// than taste: a hosted ubuntu runner ships ~14 GB free, seven jobs already run
+/// `scripts/free-runner-disk.sh` to survive, and a job that exhausts `/` takes
+/// the runner down with no failed step and no log to download. A cached target
+/// tree measured 930 MB per job on top of that.
 ///
-/// Every workflow that compiles Rust therefore caches `target/`, not just
-/// `release.yml`. A branch restores the default branch's cache, so the entry
-/// `main` writes is the one every later pull request starts from — which also
-/// means a workflow that never runs on `main` leaves nothing to inherit.
-///
-/// `desktop-release.yml` is the one deliberate exception and carries its own
-/// evidence: on run 30398883119 the post-job archive of a 194 MB Cargo home
-/// consumed the remaining budget and cancelled an otherwise-successful job.
+/// The guard read three hand-listed files, so `agentic-cli-matrix.yml` and
+/// `external-benchmarks.yml` cached it unnoticed. It now reads every workflow;
+/// this test pins that it does, because a policy enforced over part of the tree
+/// reports compliance it has not checked.
 #[test]
-fn every_rust_workflow_caches_build_output() {
+fn the_disk_policy_reads_every_workflow_not_a_hand_listed_few() {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let guard = fs::read_to_string(format!("{manifest_dir}/scripts/check-disk-usage-policy.rs"))
+        .expect("disk usage policy guard should be readable");
+
+    assert!(
+        guard.contains(r#"fs::read_dir(".github/workflows")"#),
+        "the disk policy must sweep the workflow directory, or a workflow it \
+         does not list can cache the target tree unnoticed"
+    );
+
     let dir = format!("{manifest_dir}/.github/workflows");
     let mut checked = 0;
-
     for entry in fs::read_dir(&dir).expect("workflow directory should be readable") {
         let path = entry.expect("directory entry").path();
         if path.extension().is_none_or(|ext| ext != "yml") {
             continue;
         }
         let workflow = fs::read_to_string(&path).expect("workflow should be readable");
-        let name = path
-            .file_name()
-            .expect("workflow file name")
-            .to_string_lossy()
-            .to_string();
-
-        if !workflow.contains("cargo build")
-            && !workflow.contains("cargo test")
-            && !workflow.contains("cargo run")
-            && !workflow.contains("cargo clippy")
-            && !workflow.contains("cargo llvm-cov")
-        {
-            continue;
-        }
-        if name == "desktop-release.yml" {
-            assert!(
-                workflow.contains("Keep Cargo's dependency cache out of this matrix"),
-                "the desktop matrix opts out of caching on purpose; keep the \
-                 measured reason next to the decision"
-            );
-            continue;
-        }
-
         assert!(
-            workflow.contains("\n            target\n") || workflow.contains("Swatinem/rust-cache"),
-            "{name} compiles Rust without caching target/, so it recompiles \
-             every crate on every run"
+            !workflow.lines().any(|line| line.trim() == "target"),
+            "{} caches the target tree, which issue #534 forbids",
+            path.display()
         );
         checked += 1;
     }
-    assert!(checked > 0, "the sweep must actually find Rust workflows");
+    assert!(checked > 0, "the sweep must actually find workflows");
 }
 
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer

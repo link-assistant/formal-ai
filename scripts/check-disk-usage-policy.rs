@@ -22,14 +22,27 @@ fn gate_registry() -> Vec<String> {
 
 fn main() -> ExitCode {
     let manifest = fs::read_to_string("Cargo.toml").expect("read Cargo.toml");
-    let mut sources = [
-        ".github/workflows/release.yml",
-        ".github/workflows/desktop-release.yml",
-        ".github/actions/setup-sccache/action.yml",
-    ]
-    .into_iter()
-    .map(|path| fs::read_to_string(path).unwrap_or_else(|error| panic!("read {path}: {error}")))
-    .collect::<Vec<_>>();
+    // Every workflow, not a hand-listed three: the policy read only
+    // `release.yml` and `desktop-release.yml`, so `agentic-cli-matrix.yml` and
+    // `external-benchmarks.yml` cached the target tree unnoticed -- the exact
+    // thing this gate exists to forbid.
+    let mut workflow_paths = fs::read_dir(".github/workflows")
+        .expect("read .github/workflows")
+        .map(|entry| entry.expect("read a workflow").path())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "yml"))
+        .collect::<Vec<_>>();
+    workflow_paths.sort();
+    let mut sources = workflow_paths
+        .into_iter()
+        .map(|path| {
+            fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("read {}: {error}", path.display()))
+        })
+        .collect::<Vec<_>>();
+    sources.push(
+        fs::read_to_string(".github/actions/setup-sccache/action.yml")
+            .expect("read .github/actions/setup-sccache/action.yml"),
+    );
     // Issue #991 moved the lint job's commands into one file per gate, so the
     // text CI executes is the workflow plus that registry. A policy that read
     // only the workflow would score a gate's command as absent the moment it

@@ -72,16 +72,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - uses: ./.github/actions/setup-sccache
-      - name: Cache cargo registry and build output
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-write-effect-ladder-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-write-effect-ladder-
 
       - name: Test the write-effect judge
         run: |
