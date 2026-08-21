@@ -610,34 +610,57 @@ fn the_research_harness_declares_an_mcp_tool_call_timeout() {
 /// 17 MB across 100 entries when this was measured, so its own stats reported
 /// one cache hit against those 509 compilations.
 ///
-/// Every job that compiles Rust therefore caches `target/` beside the
-/// registry. The key carries the commit so each run writes a fresh entry, and
-/// `restore-keys` falls back to the newest matching one — a branch can restore
-/// the default branch's cache, so one warm entry on `main` serves the pull
-/// requests opened after it.
+/// Every workflow that compiles Rust therefore caches `target/`, not just
+/// `release.yml`. A branch restores the default branch's cache, so the entry
+/// `main` writes is the one every later pull request starts from — which also
+/// means a workflow that never runs on `main` leaves nothing to inherit.
+///
+/// `desktop-release.yml` is the one deliberate exception and carries its own
+/// evidence: on run 30398883119 the post-job archive of a 194 MB Cargo home
+/// consumed the remaining budget and cancelled an otherwise-successful job.
 #[test]
-fn rust_jobs_cache_build_output_and_not_only_the_registry() {
-    let workflow = release_workflow();
+fn every_rust_workflow_caches_build_output() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let dir = format!("{manifest_dir}/.github/workflows");
     let mut checked = 0;
 
-    for job in ["lint", "test", "build", "test-agent-cli-e2e"] {
-        let block = job_block(&workflow, job);
-        if !block.contains("~/.cargo/registry") {
+    for entry in fs::read_dir(&dir).expect("workflow directory should be readable") {
+        let path = entry.expect("directory entry").path();
+        if path.extension().is_none_or(|ext| ext != "yml") {
             continue;
         }
+        let workflow = fs::read_to_string(&path).expect("workflow should be readable");
+        let name = path
+            .file_name()
+            .expect("workflow file name")
+            .to_string_lossy()
+            .to_string();
+
+        if !workflow.contains("cargo build")
+            && !workflow.contains("cargo test")
+            && !workflow.contains("cargo run")
+            && !workflow.contains("cargo clippy")
+            && !workflow.contains("cargo llvm-cov")
+        {
+            continue;
+        }
+        if name == "desktop-release.yml" {
+            assert!(
+                workflow.contains("Keep Cargo's dependency cache out of this matrix"),
+                "the desktop matrix opts out of caching on purpose; keep the \
+                 measured reason next to the decision"
+            );
+            continue;
+        }
+
         assert!(
-            block.contains("\n            target\n"),
-            "{job} caches the cargo registry but not target/, so it recompiles \
+            workflow.contains("\n            target\n") || workflow.contains("Swatinem/rust-cache"),
+            "{name} compiles Rust without caching target/, so it recompiles \
              every crate on every run"
-        );
-        assert!(
-            block.contains("restore-keys:"),
-            "{job} must declare restore-keys, or a new commit never inherits \
-             the previous build output"
         );
         checked += 1;
     }
-    assert!(checked > 0, "the sweep must actually find cargo caches");
+    assert!(checked > 0, "the sweep must actually find Rust workflows");
 }
 
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer

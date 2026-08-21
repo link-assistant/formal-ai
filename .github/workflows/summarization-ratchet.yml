@@ -72,6 +72,16 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - uses: ./.github/actions/setup-sccache
+      - name: Cache cargo registry and build output
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-summarization-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-summarization-
 
       - name: Build the CLI
         run: cargo build --release --bin formal-ai
