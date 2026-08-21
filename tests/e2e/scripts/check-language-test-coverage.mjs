@@ -118,7 +118,16 @@ function isLanguageFacingPath(relativePath) {
 // keep in step, so demanding en/ru/hi/zh/es test evidence for it is a false
 // result -- the kind issue #1017 exists to remove. Seed and translation data
 // stay file-level, because there every line is localized content by definition.
-const lineLevelPrefixes = ['src/solver_handlers/', 'src/web/worker/'];
+// `src/translation/` joins the line-level check for the reason the comment
+// above gives: without it, every edit under that prefix is treated as localized,
+// so a mechanical refactor (`.ok().is_some_and(..)` -> `is_ok_and(..)`) demanded
+// en/ru/hi/zh/es test evidence it has no per-language counterpart for. The
+// prefix stays language-facing; only the false positive goes.
+const lineLevelPrefixes = [
+  'src/solver_handlers/',
+  'src/web/worker/',
+  'src/translation/',
+];
 
 const languageRelevantLine =
   /\b(?:language|locale|lang|i18n|translat|localiz|localis|Language|Locale)/u;

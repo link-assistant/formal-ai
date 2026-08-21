@@ -40,7 +40,9 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
         [] => None,
         [replacement] => Some(replacement.clone()),
         values if values.len() % 2 == 0 => values
-            .chunks_exact(2)
+            .as_chunks::<2>()
+            .0
+            .iter()
             .find(|pair| pair[0] == "Hello, world!")
             .map(|pair| pair[1].clone())
             .or_else(|| values.last().cloned()),
