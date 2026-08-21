@@ -130,14 +130,7 @@ fn comparison_ledger_answers_why_in_all_supported_languages() {
 
 #[test]
 fn draft_count_can_be_configured_from_the_environment() {
-    let previous = std::env::var_os("FORMAL_AI_DRAFT_COUNT");
-    std::env::set_var("FORMAL_AI_DRAFT_COUNT", "3");
-    let config = SolverConfig::from_env();
-    if let Some(value) = previous {
-        std::env::set_var("FORMAL_AI_DRAFT_COUNT", value);
-    } else {
-        std::env::remove_var("FORMAL_AI_DRAFT_COUNT");
-    }
+    let config = temp_env::with_var("FORMAL_AI_DRAFT_COUNT", Some("3"), SolverConfig::from_env);
 
     assert_eq!(config.draft_count, 3);
 }

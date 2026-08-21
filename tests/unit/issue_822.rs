@@ -1,9 +1,7 @@
 //! Regression coverage for issue #822: complete agentic report context.
 
-use std::ffi::OsString;
 use std::fs;
-use std::path::PathBuf;
-use std::sync::{Mutex, OnceLock};
+use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
@@ -254,160 +252,150 @@ fn generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars() {
     parse_canonical_lino(&lino).expect("generic export must satisfy the canonical grammar");
 }
 
-static DIALOG_LOG_ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-
-struct EnvRestore {
-    key: &'static str,
-    previous: Option<OsString>,
-}
-
-impl EnvRestore {
-    fn set(key: &'static str, value: &std::path::Path) -> Self {
-        let previous = std::env::var_os(key);
-        std::env::set_var(key, value);
-        Self { key, previous }
-    }
-}
-
-impl Drop for EnvRestore {
-    fn drop(&mut self) {
-        if let Some(value) = self.previous.as_ref() {
-            std::env::set_var(self.key, value);
-        } else {
-            std::env::remove_var(self.key);
-        }
-    }
+/// Run `body` with `variables` set in the process environment, then put the
+/// environment back the way it was.
+///
+/// Edition 2024 made `std::env::set_var` unsafe, and it is right to: `cargo
+/// test` runs these tests on threads that share one environment, so a test
+/// that sets a variable is writing into every other test's world. This crate
+/// forbids unsafe code, so the override is scoped by `temp-env` instead —
+/// whose reentrant lock is held for the closure and is what now serialises the
+/// two tests below, in place of the mutex this file used to keep by hand.
+fn with_environment<R>(variables: &[(&str, PathBuf)], body: impl FnOnce() -> R) -> R {
+    let scoped: Vec<(&str, Option<&Path>)> = variables
+        .iter()
+        .map(|(name, value)| (*name, Some(value.as_path())))
+        .collect();
+    temp_env::with_vars(scoped, body)
 }
 
 #[test]
 fn conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_default() {
-    let _lock = DIALOG_LOG_ENV_LOCK
-        .get_or_init(|| Mutex::new(()))
-        .lock()
-        .unwrap();
     let directory = isolated_directory("conversation-api");
-    let _env = EnvRestore::set("FORMAL_AI_DIALOG_LOG_DIR", &directory);
-    let headers = [("X-Formal-AI-Dialog-ID", "issue-822-full-context")];
-    let request = json!({
-        "model": "formal-ai",
-        "messages": [
-            {"role": "user", "content": "Use every turn"},
-            {"role": "assistant", "content": null, "tool_calls": [{
-                "id": "call_1",
-                "type": "function",
-                "function": {"name": "bash", "arguments": "{\\\"command\\\":\\\"printf secret\\\"}"}
-            }]},
-            {"role": "tool", "tool_call_id": "call_1", "content": "secret-tool-output"}
-        ]
-    })
-    .to_string();
-    let path = write_dialog_exchange(
-        &directory,
-        "POST",
-        "/v1/chat/completions",
-        &headers,
-        &request,
-        200,
-        "application/json",
-        r#"{"id":"response_1","choices":[]}"#,
-    )
-    .expect("dialog log");
-    let dialog_id = path.file_stem().unwrap().to_str().unwrap();
-    assert_eq!(dialog_id, "issue-822-full-context");
+    with_environment(&[("FORMAL_AI_DIALOG_LOG_DIR", directory.clone())], || {
+        let headers = [("X-Formal-AI-Dialog-ID", "issue-822-full-context")];
+        let request = json!({
+            "model": "formal-ai",
+            "messages": [
+                {"role": "user", "content": "Use every turn"},
+                {"role": "assistant", "content": null, "tool_calls": [{
+                    "id": "call_1",
+                    "type": "function",
+                    "function": {"name": "bash", "arguments": "{\\\"command\\\":\\\"printf secret\\\"}"}
+                }]},
+                {"role": "tool", "tool_call_id": "call_1", "content": "secret-tool-output"}
+            ]
+        })
+        .to_string();
+        let path = write_dialog_exchange(
+            &directory,
+            "POST",
+            "/v1/chat/completions",
+            &headers,
+            &request,
+            200,
+            "application/json",
+            r#"{"id":"response_1","choices":[]}"#,
+        )
+        .expect("dialog log");
+        let dialog_id = path.file_stem().unwrap().to_str().unwrap();
+        assert_eq!(dialog_id, "issue-822-full-context");
 
-    let lino = handle_api_request(
-        "GET",
-        &format!("/api/formal-ai/v1/conversations/{dialog_id}"),
-        "",
-    );
-    assert_eq!(lino.status_code, 200, "{}", lino.body);
-    assert_eq!(lino.content_type, "text/plain");
-    for expected in [
-        "conversation",
-        "metadata",
-        "message",
-        "tool_calls",
-        "secret-tool-output",
-        "server_logs",
-        "response_1",
-    ] {
-        assert!(
-            lino.body.contains(expected),
-            "missing {expected:?}: {}",
-            lino.body
+        let lino = handle_api_request(
+            "GET",
+            &format!("/api/formal-ai/v1/conversations/{dialog_id}"),
+            "",
         );
-    }
-    parse_canonical_lino(&lino.body).expect("conversation export must be canonical LiNo");
+        assert_eq!(lino.status_code, 200, "{}", lino.body);
+        assert_eq!(lino.content_type, "text/plain");
+        for expected in [
+            "conversation",
+            "metadata",
+            "message",
+            "tool_calls",
+            "secret-tool-output",
+            "server_logs",
+            "response_1",
+        ] {
+            assert!(
+                lino.body.contains(expected),
+                "missing {expected:?}: {}",
+                lino.body
+            );
+        }
+        parse_canonical_lino(&lino.body).expect("conversation export must be canonical LiNo");
 
-    let json_response = handle_api_request(
-        "GET",
-        &format!("/api/formal-ai/v1/conversations/{dialog_id}?format=json"),
-        "",
-    );
-    assert_eq!(json_response.status_code, 200, "{}", json_response.body);
-    assert_eq!(json_response.content_type, "application/json");
-    let exported: Value = serde_json::from_str(&json_response.body).expect("JSON opt-in");
-    assert_eq!(exported["metadata"]["dialog_id"], dialog_id);
-    assert_eq!(exported["messages"][2]["content"], "secret-tool-output");
-    assert!(!exported["server_logs"].as_array().unwrap().is_empty());
+        let json_response = handle_api_request(
+            "GET",
+            &format!("/api/formal-ai/v1/conversations/{dialog_id}?format=json"),
+            "",
+        );
+        assert_eq!(json_response.status_code, 200, "{}", json_response.body);
+        assert_eq!(json_response.content_type, "application/json");
+        let exported: Value = serde_json::from_str(&json_response.body).expect("JSON opt-in");
+        assert_eq!(exported["metadata"]["dialog_id"], dialog_id);
+        assert_eq!(exported["messages"][2]["content"], "secret-tool-output");
+        assert!(!exported["server_logs"].as_array().unwrap().is_empty());
 
-    fs::remove_dir_all(directory).expect("remove test directory");
+        fs::remove_dir_all(&directory).expect("remove test directory");
+    });
 }
 
 #[test]
 fn conversation_learning_endpoint_stages_structured_server_trace_for_review() {
-    let _memory_lock = super::memory_env_lock();
-    let _lock = DIALOG_LOG_ENV_LOCK
-        .get_or_init(|| Mutex::new(()))
-        .lock()
-        .unwrap();
     let directory = isolated_directory("conversation-learning");
-    let _env = EnvRestore::set("FORMAL_AI_DIALOG_LOG_DIR", &directory);
     let memory_path = directory.join("memory.lino");
-    let _memory_env = EnvRestore::set("FORMAL_AI_MEMORY_PATH", &memory_path);
-    let headers = [("X-Formal-AI-Dialog-ID", "issue-822-learning")];
-    let request = json!({
-        "model": "formal-ai",
-        "messages": [{
-            "role": "user",
-            "content": "List the files but sort the results in reverse order"
-        }]
-    })
-    .to_string();
-    let response = json!({
-        "choices": [],
-        "learning_trace": {"events": [
-            {"kind": "selected_rule", "payload": "initial unknown reason no_seed_route next try_rule_synthesis"},
-            {"kind": "rule_synthesis_candidate", "payload": "rule_synthesis_candidate\n  id reverse_sort_list_files\n  base_task list_files\n  modifier reverse_sort\n  resolved_task list_files_reverse_sort"},
-            {"kind": "rule_verification", "payload": "rule_verification\n  fixture list_files_output_order\n  status passed"}
-        ]}
-    })
-    .to_string();
-    write_dialog_exchange(
-        &directory,
-        "POST",
-        "/v1/chat/completions",
-        &headers,
-        &request,
-        200,
-        "application/json",
-        &response,
-    )
-    .expect("dialog log");
+    with_environment(
+        &[
+            ("FORMAL_AI_DIALOG_LOG_DIR", directory.clone()),
+            ("FORMAL_AI_MEMORY_PATH", memory_path.clone()),
+        ],
+        || {
+            let headers = [("X-Formal-AI-Dialog-ID", "issue-822-learning")];
+            let request = json!({
+                "model": "formal-ai",
+                "messages": [{
+                    "role": "user",
+                    "content": "List the files but sort the results in reverse order"
+                }]
+            })
+            .to_string();
+            let response = json!({
+            "choices": [],
+            "learning_trace": {"events": [
+                {"kind": "selected_rule", "payload": "initial unknown reason no_seed_route next try_rule_synthesis"},
+                {"kind": "rule_synthesis_candidate", "payload": "rule_synthesis_candidate\n  id reverse_sort_list_files\n  base_task list_files\n  modifier reverse_sort\n  resolved_task list_files_reverse_sort"},
+                {"kind": "rule_verification", "payload": "rule_verification\n  fixture list_files_output_order\n  status passed"}
+            ]}
+        })
+        .to_string();
+            write_dialog_exchange(
+                &directory,
+                "POST",
+                "/v1/chat/completions",
+                &headers,
+                &request,
+                200,
+                "application/json",
+                &response,
+            )
+            .expect("dialog log");
 
-    let staged = handle_api_request(
-        "POST",
-        "/api/formal-ai/v1/conversations/issue-822-learning/learn",
-        "",
+            let staged = handle_api_request(
+                "POST",
+                "/api/formal-ai/v1/conversations/issue-822-learning/learn",
+                "",
+            );
+            assert_eq!(staged.status_code, 200, "{}", staged.body);
+            let body: Value = serde_json::from_str(&staged.body).expect("learning response");
+            assert_eq!(body["learning_trace_found"], true);
+            assert_eq!(body["rule_proposals"], 1);
+            assert_eq!(body["awaiting_human_review"], true);
+            assert_eq!(body["promoted"], false, "uploading must not imply approval");
+
+            fs::remove_dir_all(&directory).expect("remove test directory");
+        },
     );
-    assert_eq!(staged.status_code, 200, "{}", staged.body);
-    let body: Value = serde_json::from_str(&staged.body).expect("learning response");
-    assert_eq!(body["learning_trace_found"], true);
-    assert_eq!(body["rule_proposals"], 1);
-    assert_eq!(body["awaiting_human_review"], true);
-    assert_eq!(body["promoted"], false, "uploading must not imply approval");
-
-    fs::remove_dir_all(directory).expect("remove test directory");
 }
 
 #[test]

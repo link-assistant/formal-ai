@@ -1,56 +1,72 @@
-use std::sync::{Mutex, OnceLock};
+use std::ffi::OsStr;
 
 use formal_ai::gemini::{gemini_model_metadata, vertex_model_list};
 use formal_ai::handle_api_request;
 
-fn memory_env_lock() -> std::sync::MutexGuard<'static, ()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
-}
-
 #[test]
 fn models_report_real_disk_context_and_memory_usage() {
-    let _guard = memory_env_lock();
     let dir =
         std::env::temp_dir().join(format!("formal-ai-context-capacity-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("create temp memory directory");
     let memory_path = dir.join("memory.lino");
     std::fs::write(&memory_path, vec![b'x'; 4_096]).expect("write memory fixture");
-
-    let previous_path = std::env::var_os("FORMAL_AI_MEMORY_PATH");
-    let previous_average = std::env::var_os("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR");
-    std::env::set_var("FORMAL_AI_MEMORY_PATH", &memory_path);
-    std::env::remove_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR");
-    let free_before = fs2::available_space(&dir).expect("free space before request");
-    let response = handle_api_request("GET", "/v1/models", "");
-    let gemini = gemini_model_metadata("models/formal-ai");
-    let vertex = vertex_model_list("test-project", "test-location");
-    let anthropic_response = handle_api_request(
-        "POST",
-        "/v1/messages",
-        r#"{"model":"formal-ai","max_tokens":32,"messages":[{"role":"user","content":"2 + 2"}]}"#,
-    );
-    std::env::set_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", "4");
-    let configured_response = handle_api_request("GET", "/v1/models", "");
     let memory_dir = dir.join("memory-store");
     std::fs::create_dir_all(memory_dir.join("nested")).expect("memory directory");
     std::fs::write(memory_dir.join("memory.lino"), vec![b'x'; 100]).expect("lino file");
     std::fs::write(memory_dir.join("nested/event-log-1"), vec![b'x'; 50]).expect("event log");
     std::fs::write(memory_dir.join("ignored.txt"), vec![b'x'; 1_000]).expect("ignored file");
-    std::env::set_var("FORMAL_AI_MEMORY_PATH", &memory_dir);
-    std::env::set_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", "2");
-    let directory_capacity = formal_ai::context_capacity::ContextCapacity::current()
-        .expect("directory-backed context capacity");
+
+    let free_before = fs2::available_space(&dir).expect("free space before request");
+
+    // The store and the byte average are read from the environment on every
+    // request, so the three configurations this test compares are three scopes
+    // rather than three assignments. Edition 2024 made `std::env::set_var`
+    // unsafe -- a test binary is multi-threaded and the environment is not --
+    // and this crate forbids unsafe code, so `temp-env` scopes them instead.
+    // The scopes nest, and its lock is reentrant, so the whole sequence is held
+    // against the rest of the suite the way the hand-held mutex used to hold it.
+    let (response, gemini, vertex, anthropic_response, configured_response, directory_capacity) =
+        temp_env::with_vars(
+            [
+                ("FORMAL_AI_MEMORY_PATH", Some(memory_path.as_os_str())),
+                ("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", None),
+            ],
+            || {
+                let response = handle_api_request("GET", "/v1/models", "");
+                let gemini = gemini_model_metadata("models/formal-ai");
+                let vertex = vertex_model_list("test-project", "test-location");
+                let anthropic_response = handle_api_request(
+                    "POST",
+                    "/v1/messages",
+                    r#"{"model":"formal-ai","max_tokens":32,"messages":[{"role":"user","content":"2 + 2"}]}"#,
+                );
+                let configured_response =
+                    temp_env::with_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", Some("4"), || {
+                        handle_api_request("GET", "/v1/models", "")
+                    });
+                let directory_capacity = temp_env::with_vars(
+                    [
+                        ("FORMAL_AI_MEMORY_PATH", Some(memory_dir.as_os_str())),
+                        ("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", Some(OsStr::new("2"))),
+                    ],
+                    || {
+                        formal_ai::context_capacity::ContextCapacity::current()
+                            .expect("directory-backed context capacity")
+                    },
+                );
+                (
+                    response,
+                    gemini,
+                    vertex,
+                    anthropic_response,
+                    configured_response,
+                    directory_capacity,
+                )
+            },
+        );
+
     let free_after = fs2::available_space(&dir).expect("free space after request");
-    match previous_path {
-        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
-        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
-    }
-    match previous_average {
-        Some(value) => std::env::set_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", value),
-        None => std::env::remove_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR"),
-    }
     let _ = std::fs::remove_dir_all(&dir);
 
     assert_eq!(response.status_code, 200);

@@ -187,7 +187,6 @@ fn chat_completions_route_records_live_exchange_into_configured_memory() {
     // Issue #540 §1: a POSTed chat must land in the persistent memory log so
     // background dreaming has organic data to learn from — proven end-to-end
     // through the HTTP handler against a temp FORMAL_AI_MEMORY_PATH.
-    let _guard = super::memory_env_lock();
     let dir = std::env::temp_dir().join(format!(
         "formal-ai-local-surface-chat-record-{}",
         std::process::id()
@@ -196,18 +195,14 @@ fn chat_completions_route_records_live_exchange_into_configured_memory() {
     std::fs::create_dir_all(&dir).expect("temp dir");
     let path = dir.join("memory.lino");
 
-    let previous = std::env::var_os("FORMAL_AI_MEMORY_PATH");
-    std::env::set_var("FORMAL_AI_MEMORY_PATH", &path);
-    let body = serde_json::json!({
-        "model": "formal-ai",
-        "messages": [{"role": "user", "content": "Hi"}]
-    })
-    .to_string();
-    let response = handle_api_request("POST", "/v1/chat/completions", &body);
-    match previous {
-        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
-        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
-    }
+    let response = temp_env::with_var("FORMAL_AI_MEMORY_PATH", Some(&path), || {
+        let body = serde_json::json!({
+            "model": "formal-ai",
+            "messages": [{"role": "user", "content": "Hi"}]
+        })
+        .to_string();
+        handle_api_request("POST", "/v1/chat/completions", &body)
+    });
 
     assert_eq!(response.status_code, 200);
     let recorded = SyncStore::open_at(&path);
@@ -244,7 +239,6 @@ fn sample_event(id: &str, content: &str) -> formal_ai::MemoryEvent {
 }
 
 fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
-    let _guard = super::memory_env_lock();
     let dir = std::env::temp_dir().join(format!(
         "formal-ai-local-surface-memory-query-{}",
         std::process::id()
@@ -271,13 +265,7 @@ fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
     ]);
     std::fs::write(&path, memory).expect("write memory");
 
-    let previous = std::env::var_os("FORMAL_AI_MEMORY_PATH");
-    std::env::set_var("FORMAL_AI_MEMORY_PATH", &path);
-    let result = run();
-    match previous {
-        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
-        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
-    }
+    let result = temp_env::with_var("FORMAL_AI_MEMORY_PATH", Some(&path), run);
     let _ = std::fs::remove_dir_all(&dir);
     result
 }

@@ -624,7 +624,6 @@ fn http_responses_route_queries_persisted_memory_with_natural_language() {
 }
 
 fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
-    let _guard = super::super::memory_env_lock();
     let dir = std::env::temp_dir().join(format!("formal-ai-memory-query-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("temp dir");
@@ -657,13 +656,7 @@ fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
     ]);
     std::fs::write(&path, memory).expect("write memory");
 
-    let previous = std::env::var_os("FORMAL_AI_MEMORY_PATH");
-    std::env::set_var("FORMAL_AI_MEMORY_PATH", &path);
-    let result = run();
-    match previous {
-        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
-        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
-    }
+    let result = temp_env::with_var("FORMAL_AI_MEMORY_PATH", Some(&path), run);
     let _ = std::fs::remove_dir_all(&dir);
     result
 }

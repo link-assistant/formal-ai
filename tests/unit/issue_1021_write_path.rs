@@ -8,9 +8,6 @@
 //! claim is the difference between them — and because #943 is exactly the bug
 //! where one state was never checked.
 
-use std::env;
-use std::sync::{Mutex, MutexGuard, OnceLock};
-
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::contribution_write_path::{
     decide_with, opted_in_with, permits, plan_publication, plan_publication_with, Publication,
@@ -19,39 +16,20 @@ use formal_ai::contribution_write_path::{
 use formal_ai::seed::{contribution_artifact_vocabulary, WritePathVocabulary};
 use formal_ai::ChatMessage;
 
-/// The opt-in lives in the process environment, so the two states cannot be
-/// entered at once. Every test that touches it holds this lock.
-fn opt_in_lock() -> MutexGuard<'static, ()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(()))
-        .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner)
-}
-
 fn write_path() -> WritePathVocabulary {
     contribution_artifact_vocabulary().write_path
 }
 
 /// Run `body` with the opt-in forced to `value` -- `Some` to set it, `None` to
-/// clear it -- holding the lock throughout and restoring whatever was there
-/// before, so a failure inside `body` cannot leave the ladder in either state
-/// for the rest of the suite.
+/// clear it -- restoring whatever was there before, so a failure inside `body`
+/// cannot leave the ladder in either state for the rest of the suite.
+///
+/// Edition 2024 made `std::env::set_var` unsafe because a test binary is
+/// multi-threaded and the environment is not, and this crate forbids unsafe
+/// code, so the scoping is `temp-env`'s. Its reentrant lock is what holds the
+/// suite to one opt-in state at a time, in place of the mutex this file kept.
 fn with_opt_in_variable(value: Option<&str>, body: impl FnOnce()) {
-    let vocab = write_path();
-    let _guard = opt_in_lock();
-    let previous = env::var(&vocab.opt_in_variable).ok();
-    match value {
-        Some(value) => env::set_var(&vocab.opt_in_variable, value),
-        None => env::remove_var(&vocab.opt_in_variable),
-    }
-    let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(body));
-    match previous {
-        Some(value) => env::set_var(&vocab.opt_in_variable, value),
-        None => env::remove_var(&vocab.opt_in_variable),
-    }
-    if let Err(payload) = outcome {
-        std::panic::resume_unwind(payload);
-    }
+    temp_env::with_var(write_path().opt_in_variable, value, body);
 }
 
 /// Run `body` in the opted-in state.
@@ -185,17 +163,12 @@ fn only_the_seeded_value_counts_as_an_opt_in() {
     let vocab = write_path();
     with_opt_in(|| assert!(opted_in_with(&write_path())));
 
-    let _guard = opt_in_lock();
-    let previous = env::var(&vocab.opt_in_variable).ok();
     for value in ["", "0", "yes", "true"] {
-        env::set_var(&vocab.opt_in_variable, value);
-        assert!(!opted_in_with(&vocab), "{value:?} is not the opt-in");
+        with_opt_in_variable(Some(value), || {
+            assert!(!opted_in_with(&vocab), "{value:?} is not the opt-in");
+        });
     }
-    env::remove_var(&vocab.opt_in_variable);
-    assert!(!opted_in_with(&vocab));
-    if let Some(value) = previous {
-        env::set_var(&vocab.opt_in_variable, value);
-    }
+    with_opt_in_variable(None, || assert!(!opted_in_with(&vocab)));
 }
 
 /// The write path Formal AI takes on its own behalf: the publication steps are

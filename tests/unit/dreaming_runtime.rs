@@ -75,7 +75,6 @@ fn a_foreground_request_cancels_a_dreaming_run_mid_flight() {
 fn dreaming_env_opt_out_recognizes_only_explicit_off_values() {
     // Default-on: absent or affirmative values keep dreaming enabled; only an
     // explicit 0/off/false (any case) disables it.
-    let previous = std::env::var_os("FORMAL_AI_DREAMING");
     for (value, disabled) in [
         (None, false),
         (Some("1"), false),
@@ -87,15 +86,9 @@ fn dreaming_env_opt_out_recognizes_only_explicit_off_values() {
         (Some("false"), true),
         (Some("False"), true),
     ] {
-        match value {
-            Some(value) => std::env::set_var("FORMAL_AI_DREAMING", value),
-            None => std::env::remove_var("FORMAL_AI_DREAMING"),
-        }
-        assert_eq!(dreaming_disabled(), disabled, "value {value:?}");
-    }
-    match previous {
-        Some(value) => std::env::set_var("FORMAL_AI_DREAMING", value),
-        None => std::env::remove_var("FORMAL_AI_DREAMING"),
+        temp_env::with_var("FORMAL_AI_DREAMING", value, || {
+            assert_eq!(dreaming_disabled(), disabled, "value {value:?}");
+        });
     }
 }
 

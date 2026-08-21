@@ -122,10 +122,10 @@ fn parent_paths_are_rejected() {
 
 #[test]
 fn command_environment_is_cleared() {
-    std::env::set_var("FORMAL_AI_TEST_SECRET", "do-not-leak");
     let prompt = "[agent] run command `env`";
-    let run = run_agent_plan(prompt, &config("empty_env")).unwrap();
-    std::env::remove_var("FORMAL_AI_TEST_SECRET");
+    let run = temp_env::with_var("FORMAL_AI_TEST_SECRET", Some("do-not-leak"), || {
+        run_agent_plan(prompt, &config("empty_env")).unwrap()
+    });
 
     assert_eq!(run.status, AgentRunStatus::Completed);
     assert!(!run.command_results[0].stdout.contains("do-not-leak"));

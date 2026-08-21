@@ -7,8 +7,6 @@
 //! stuck scenario issue #947 describes -- a loop that never resolves -- runs here
 //! in microseconds against the same arithmetic the default hour uses.
 
-use std::env;
-use std::sync::{Mutex, MutexGuard, OnceLock};
 use std::time::Duration;
 
 use formal_ai::bounded_autonomy::{
@@ -18,46 +16,34 @@ use formal_ai::bounded_autonomy::{
     STUCK_RECOVERY_LIMIT_VARIABLE,
 };
 
+/// Run `body` with the three autonomy variables forced to `values` -- every one
+/// of them, so a variable this call does not name is unset rather than
+/// inherited -- and put the environment back afterwards, panic or not.
+///
 /// The policy is read from the process environment, so the modes cannot be
-/// entered at once. Every test that touches it holds this lock.
-fn environment_lock() -> MutexGuard<'static, ()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(()))
-        .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner)
-}
-
-/// Run `body` with the three autonomy variables forced to `values`, restoring
-/// whatever was there before even if `body` panics.
+/// entered at once and every test that touches it must be serialised. That used
+/// to be a mutex kept here; since edition 2024 made `std::env::set_var` unsafe
+/// -- for exactly this reason -- and this crate forbids unsafe code, the
+/// scoping is `temp-env`'s, whose reentrant lock is held for the closure and
+/// serialises these tests against every other environment override in the
+/// binary rather than only against each other.
 fn with_environment(values: &[(&str, Option<&str>)], body: impl FnOnce()) {
-    let _guard = environment_lock();
-    let variables = [
+    let mut scoped: Vec<(&str, Option<&str>)> = [
         AUTONOMY_MODE_VARIABLE,
         FULL_TRUST_VARIABLE,
         STUCK_RECOVERY_LIMIT_VARIABLE,
-    ];
-    let previous: Vec<(&str, Option<String>)> = variables
-        .iter()
-        .map(|name| (*name, env::var(name).ok()))
-        .collect();
-    for name in &variables {
-        env::remove_var(name);
-    }
+    ]
+    .iter()
+    .map(|name| (*name, None))
+    .collect();
     for (name, value) in values {
-        if let Some(value) = value {
-            env::set_var(name, value);
+        if let Some(slot) = scoped.iter_mut().find(|(scoped, _)| scoped == name) {
+            slot.1 = *value;
+        } else {
+            scoped.push((name, *value));
         }
     }
-    let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(body));
-    for (name, value) in previous {
-        match value {
-            Some(value) => env::set_var(name, value),
-            None => env::remove_var(name),
-        }
-    }
-    if let Err(payload) = outcome {
-        std::panic::resume_unwind(payload);
-    }
+    temp_env::with_vars(scoped, body);
 }
 
 const fn unattended(limit: Duration) -> AutonomyPolicy {
