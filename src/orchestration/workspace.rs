@@ -242,7 +242,7 @@ fn require_hash(
 }
 
 fn ignored(path: &Path, root: &Path) -> bool {
-    path.strip_prefix(root).ok().is_some_and(|relative| {
+    path.strip_prefix(root).is_ok_and(|relative| {
         relative.components().next().is_some_and(|part| {
             matches!(
                 part.as_os_str().to_str(),
