@@ -1257,4 +1257,94 @@ by lowering it.
     against a 30s timeout and still did not answer, and a timeout is genuinely
     weaker evidence of breakage than a 404 is.
 
+33. **Refreshing two pinned clients turned two matrix legs red, and neither red
+    was a regression in this repository — one was a contract that had moved and
+    one was a probe that had not existed before.** `02f590106` lifted
+    `experiments/agentic_cli_matrix/clients.lock` from `t3code 0.0.28` to
+    `0.0.33` and from `claude 2.1.215` to `2.1.238`. Run 32455788406 on
+    `1149a1118` then failed exactly those two legs and no others, which is what
+    makes the refresh the cause rather than a coincidence: `main`'s last matrix
+    run (32129820467, 2026-08-18) was green, and this branch's pre-refresh runs
+    failed only on `agent`, the leg finding 30 covers and which the
+    `@link-assistant/agent` 0.25.0 → 0.26.0 bump in the same refresh fixed. Per
+    the standing clause that the gates decide, a bump that trips a gate is
+    unfinished work, so both were root-caused rather than pinned back.
+
+    The `t3code` failure is the tripwire working:
+
+    ```
+    !! launch: subcommands changed from 'auth connect project serve start ' to 'auth connect pair project serve service start ' — check for a prompt path
+    ```
+
+    `t3code` is a web application server, so `case_launch()` in `run_leg.sh`
+    cannot hand it a prompt; instead of leaving the *reason* implicit it asserts
+    the client's `--help` subcommand list verbatim, so that upstream growing a
+    way to drive it non-interactively fails the leg instead of passing unnoticed.
+    Two names appeared. Reproduced locally under Node 22.23.2 — the version t3's
+    own `engines` field requires, and without which its `node-pty` addon makes
+    `--help` print nothing at all — `0.0.28` lists `start serve auth project
+    connect` and `0.0.33` adds `pair` ("Mint a pairing token for a running T3
+    Code server and print it as a QR code.") and `service` ("Manage the T3 Code
+    background service.", with `install`, `uninstall`, `update`, `status`).
+    Neither is a prompt path: one mints a token for a server that is already
+    running and one manages a background daemon. So the contract is re-recorded
+    in `data/seed/client-integrations.lino` and the assertion stays exact. The
+    seed file has no comment syntax, so the reasoning lives here and in the
+    changelog entry rather than beside the seven `launch_subcommand` lines.
+
+    The `claude` failure needed a disassembly to explain:
+
+    ```
+    !! greeting: proxy recorded failing exchanges: 404 /api/anthropic/api/hello
+    ```
+
+    with the trace showing the probe landing between a healthy `GET /health` and
+    a conversation that worked:
+
+    ```
+    [trace] GET /health (0 byte body)
+    [trace] HEAD /api/anthropic/api/hello (0 byte body)
+    [trace] POST /api/anthropic/v1/messages (88170 byte body)
+    ```
+
+    `2.1.238` added a once-per-session connection warm-up. Read verbatim out of
+    the shipped `@anthropic-ai/claude-code-linux-x64` binary, it is guarded by
+    `providerCache.preconnectFired`, skipped whenever Bedrock, Vertex, Foundry, a
+    gateway, an HTTP proxy, a unix socket or a client certificate is configured,
+    and otherwise fires:
+
+    ```js
+    let t = V.ANTHROPIC_BASE_URL || al().BASE_API_URL;
+    fetch(`${t.replace(/\/+$/,"")}/api/hello`, {method:"HEAD", signal: AbortSignal.timeout(1e4)}).catch(()=>{})
+    ```
+
+    That it is new was checked rather than assumed: `preconnectFired` and
+    `` `${t.replace(/\/+$/,"")}/api/hello` `` both occur zero times in the
+    `2.1.215` binary. The twelve `/api/hello` hits that version does contain are
+    a bundled `bun init` project template and two connectivity checks
+    (`tengu_preflight_check_failed`, `/doctor`), all of which build their URL
+    from the hardcoded `BASE_API_URL` and so never reach a local base URL.
+
+    The doubled `/api` in `/api/anthropic/api/hello` is a defect on neither side.
+    Our wrapper writes `ANTHROPIC_BASE_URL=http://127.0.0.1:PORT/api/anthropic`;
+    `/api/hello` is Anthropic's own endpoint, and
+    `https://api.anthropic.com/api/hello` answers — verified by `curl`, with no
+    credentials — `200` and `{"message": "hello"}` to `GET`, and `200` with an
+    empty body to `HEAD`. Serving an Anthropic-compatible surface means serving
+    that too, so `src/server.rs` now answers both spellings and the assertion is
+    left alone. The `404` broke no session — the client discards the result, and
+    the `POST` two lines later carried an 88,170-byte response — but
+    `matrix_assert_proxy_ok` fails on any non-2xx exchange, which is precisely
+    the situation issue #671 already fixed for the bare base path, for the same
+    reason: a probe answered `404` reads in a transcript exactly like a base URL
+    pointing nowhere.
+
+    `tests/integration/issue_1021_client_preflight.rs` holds three tests, and
+    they were falsified against the unpatched server rather than merely run:
+    the `/api/hello` one fails with ``assertion `left == right` failed: HEAD
+    /api/hello  left: 404  right: 200``, while the other two — every published
+    base path answers a `HEAD` probe, and the hello route does not swallow paths
+    beneath it — pass both before and after, which is what an honest regression
+    guard for already-correct behaviour looks like.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297
