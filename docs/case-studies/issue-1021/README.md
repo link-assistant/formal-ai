@@ -1152,7 +1152,7 @@ by lowering it.
     that cannot carry one, and it is taken anyway.** `browser-commander` is
     pinned by both `desktop/package.json` and `vscode/package.json` inside an
     `overrides` block for `@link-assistant/web-capture`, and the JavaScript half
-    of this refresh raised it 0.10.0 → 0.15.0. 0.16.0 adds
+    of this refresh raised it 0.10.0 → 0.15.0. The 0.16 line adds
     `better-sqlite3@^12.11.1` and, with it, twenty-five more transitive packages
     — `prebuild-install`, `node-abi`, `bindings`, `tar-fs` and the rest of the
     prebuilt-binary toolchain. The VS Code extension does not ship
@@ -1163,15 +1163,25 @@ by lowering it.
 
     The first draft of this finding held the override at 0.15.0 on that reasoning
     and it was wrong, which is why the measurement is written down here. Bundling
-    both graphs with the extension's own `bundleWebTools` succeeds either way:
-    9,295,234 bytes at 0.15.0 against 11,827,516 at 0.16.0. The addon backs
-    `browser-commander/src/browser/browser-cookie-database.js`, reachable only
-    from `browser-cookies.js`, and `@link-assistant/web-capture/src/browser.js`
-    — the only entry point this repository imports — never touches cookies. So
-    the bump is taken: both lockfiles resolve with exactly the intended delta and
-    no version churn elsewhere, `scripts/check-javascript-dependencies.sh` audits
-    all five committed locks clean, and `vscode/scripts/bundle-web-tools.test.mjs`
-    passes.
+    each graph with the extension's own `bundleWebTools` succeeds every time:
+    9,295,234 bytes at 0.15.0 against 11,827,516 at both 0.16.0 and 0.16.1. The
+    addon backs `browser-commander/src/browser/browser-cookie-database.js`,
+    reachable only from `browser-cookies.js`, and
+    `@link-assistant/web-capture/src/browser.js` — the only entry point this
+    repository imports — never touches cookies. So the bump is taken: both
+    lockfiles resolve with exactly the intended delta and no version churn
+    elsewhere, `scripts/check-javascript-dependencies.sh` audits all five
+    committed locks clean, and `vscode/scripts/bundle-web-tools.test.mjs` passes.
+
+    The version delivered is 0.16.1, not the 0.16.0 the first pass took. That
+    correction came from re-reading the registry rather than the branch: `npm
+    view browser-commander time` dates 0.16.0 to 2026-08-02T07:56Z and 0.16.1 to
+    2026-08-02T14:39Z, so 0.16.1 was already the newest stable release when this
+    refresh started and the first pass simply missed it by six and a half hours
+    of publish history. It is recorded because it names the failure mode: "newest
+    stable" has to be read from the registry at the moment of the bump, and a
+    version that looks new is not evidence that it is newest. The two releases
+    bundle to the same byte count, so nothing above changes.
 
     What stays a finding is the 2.5 MB the VSIX grows to carry a database engine
     nothing in this repository calls, and the fact that no gate would notice if

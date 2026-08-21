@@ -146,7 +146,7 @@
   },
   "overrides": {
     "@link-assistant/web-capture": {
-      "browser-commander": "0.16.0",
+      "browser-commander": "0.16.1",
       "puppeteer": "^25.8.0",
       "puppeteer-core": "^25.8.0"
     }
