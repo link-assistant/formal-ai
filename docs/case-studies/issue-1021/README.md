@@ -1427,4 +1427,33 @@ by lowering it.
     budgets' sum above 1200s, which is why it is written here as a question for
     review and not applied.
 
+35. **A cache that failed to download failed the job that could have run
+    without it.** Verifying finding 34 produced its own evidence. Two workflows
+    on commit `41c543964` — `Task Ladder` and `Question necessity ratchet` —
+    went red in `Run ./.github/actions/setup-sccache`, before a line of
+    repository code ran, because github.com's release CDN answered `504` to the
+    sccache download three times in a row at 10:49Z
+    (`logs/sccache-release-cdn-outage.log`). The action's own retry ladder waits
+    13s and then 16s; the outage outlasted it. A re-run of each, same commit,
+    nothing changed, was green — so this is an upstream hiccup and not a defect
+    in this branch.
+
+    What makes it worth writing down is the shape rather than the outage. The
+    action's own log says `Enable sccache for Rust ... outcome=skipped`: when the
+    install fails, `RUSTC_WRAPPER` is never exported, so the job would have
+    compiled fine without the cache, only slower. The install step is fatal
+    anyway, which is how a missing *accelerator* becomes a failed *job* — in 12
+    step invocations across 8 workflows.
+
+    The one-line change is obvious and is deliberately not taken here, because
+    it is a decision rather than a cleanup, and finding 34 is exactly why. A job
+    that silently proceeds without the compiler cache is a job compiling cold,
+    and the budgeted steps on this branch are sized against warm builds — the
+    specification shard has been observed at 603s, 620s, 838s and
+    terminated-at-1200s on identical work. Tolerating a failed cache install
+    would convert some fraction of these outages from an honest red step into a
+    budget termination whose cause is one layer further away. It is worth doing
+    *with* the counters from finding 34 in place, which is now true, and worth
+    saying out loud before it is done.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297
