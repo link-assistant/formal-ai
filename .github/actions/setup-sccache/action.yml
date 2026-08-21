@@ -20,6 +20,25 @@ runs:
         echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
         echo "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"
 
+    # Start the server explicitly, before any cargo step runs.
+    #
+    # Measured on run 32500015304: `Test (ubuntu-latest / full)` compiled 514
+    # crates and sccache reported `Compile requests 1` -- one request, zero
+    # misses, zero write errors. A wrapper that is never asked cannot miss, so
+    # the counter says the compilations went somewhere else, not that the cache
+    # was cold. Each `run:` step is its own process; if the server is spawned
+    # lazily by the first rustc invocation and does not outlive that step, every
+    # later step starts over and the final `--show-stats` reports whatever the
+    # last one did.
+    #
+    # `--start-server` is idempotent -- it exits 0 when a server is already
+    # listening -- so this is safe to keep even once the cause is confirmed.
+    - name: Start the sccache server
+      shell: bash
+      run: |
+        sccache --start-server || true
+        sccache --show-stats | head -20
+
     - name: Enable opt-in sccache diagnostics
       if: env.FORMAL_AI_CI_VERBOSE == 'true'
       shell: bash
