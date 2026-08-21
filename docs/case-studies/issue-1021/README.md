@@ -1347,4 +1347,74 @@ by lowering it.
     beneath it — pass both before and after, which is what an honest regression
     guard for already-correct behaviour looks like.
 
+34. **A step that ran out of time said how long it took and nothing about what
+    made it slow.** The head that carries finding 33 went green everywhere
+    except one job: `Test (macos-15-intel / specification)` was terminated at
+    its full 1200s budget (run 32463873155, job 96716556814,
+    `logs/macos-specification-shard-runner-rate.log`). It is not a test
+    failure. The last line before the deadline is
+    `rustc --crate-name formal_ai --edition=2024 src/lib.rs`, so the shard was
+    still compiling its own library and no test had started; steps 8, 9, 10 and
+    12 never ran.
+
+    The same shard on the previous commit had compiled the same work in 566s
+    and passed 1037 tests in 267s, finishing at 838s of the same 1200s budget
+    (job 96699699539). Two runs an hour apart, one lockfile, opposite verdicts.
+    The question is which of the two candidate causes it was — a slower runner,
+    or a compiler cache that stopped answering — and *the logs cannot tell them
+    apart*, because cargo prints ``Running `sccache rustc ...` `` on a cache hit
+    exactly as it does on a miss. Narrowing it took
+    `experiments/issue_1021_compile_rate_compare.py`, which matches each crate
+    against itself across the two megabyte-scale job logs, since cargo schedules
+    ready units across jobserver slots and the *order* differs run to run even
+    when the *set* does not. The set was identical — 480 crates in both — and
+    the red run was 2.4x to 2.6x slower at every decile of the green run's
+    progress, uniformly, from `hashbrown` at 20% through `formal_ai` at the end.
+    Uniform rules out a *partial* cache difference — some crates hit, some
+    missed would be lumpy — but it does not separate a uniformly slower machine
+    from a cache that answered everything in one run and nothing in the other.
+    Which is the point: the measurement narrows the question and cannot close
+    it, because the one number that would close it was never printed.
+
+    Re-run on the same commit with nothing changed, the shard passed in 620s —
+    52% of the budget. Three observations of one piece of work: 620s, 838s,
+    1200s-and-terminated.
+
+    One thing that looked like the cause and is not, because ruling it out is
+    part of the answer: both runs logged
+    `Cache not found for input keys: macOS-cargo-<hash>, macOS-cargo-`. That
+    restore can never hit. Every consumer of the `macOS-cargo-*` key family in
+    the repository is `actions/cache/restore@v5` — the `test` matrix here, and
+    `build-archive` in `macos-core-tests.yml` — while the only step that
+    *writes* that key family, `lint` in `release.yml`, runs on `ubuntu-latest`
+    and therefore writes `Linux-cargo-*`. Nothing populates the macOS side, so
+    the restore is a guaranteed miss on every run, forever. It is also not worth
+    what it looks like: the download window it would have skipped is 19s in one
+    run and 20s in the other, against a 1200s budget. Naming it and measuring it
+    is the finding; changing it would trade a 20s saving for an upload of the
+    whole registry on a runner family that is already the slow one.
+
+    What changed is the reporting, not the budget.
+    `scripts/run-with-budget-warning.sh` is the script that prints the
+    `::error` naming the blown budget, so it is where a reader is standing when
+    they ask why; it now asks sccache for its counters at the two moments a
+    budget is in trouble — the 70% warning and the termination — and only when
+    `RUSTC_WRAPPER` names sccache, so the Xvfb install of finding 14 stays
+    exactly as quiet as it was. Three tests in `tests/unit/ci-cd/issue_1021.rs`
+    pin it, and the two positive ones were falsified against the previous
+    script. That is the standing debug-output clause applied to CI: the next
+    person to meet this red job reads the answer instead of narrowing it.
+
+    What deliberately did **not** change is the 1200s. The shard's own error
+    text offers three ways out — speed up, repartition, or raise the budget with
+    the job timeout — and the third is the one the standing clause forbids
+    taking unasked. Repartitioning is the interesting one and is a decision
+    rather than a cleanup: two thirds of this shard's budget is spent compiling,
+    not testing, so a budget meant to bound test work is mostly bounding a cold
+    build. Splitting it into a budgeted `cargo test --no-run` and a budgeted
+    test run would give each phase a deadline that still expires before the
+    35-minute cap, which is issue #1017's invariant. It would also raise the two
+    budgets' sum above 1200s, which is why it is written here as a question for
+    review and not applied.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297

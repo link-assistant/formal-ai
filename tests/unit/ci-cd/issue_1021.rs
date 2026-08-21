@@ -487,6 +487,138 @@ fn a_command_that_beats_its_deadline_keeps_its_own_status() {
     }
 }
 
+/// A stand-in `sccache` that answers `--show-stats` with one recognisable
+/// counter, so the assertions below test the wrapper's reporting rather than
+/// sccache's own output format.
+fn stub_sccache(directory: &Path) -> PathBuf {
+    let path = directory.join("sccache");
+    fs::write(
+        &path,
+        "#!/usr/bin/env bash\nprintf 'Compile requests 41\\n'\n",
+    )
+    .expect("write the stand-in sccache");
+    fs::set_permissions(&path, fs::Permissions::from_mode(0o755))
+        .expect("make the stand-in sccache executable");
+    path
+}
+
+/// The budget wrapper is what reports that a Rust step ran out of time, and
+/// until issue #1021 it reported only the number of seconds. That is not enough
+/// to act on: `Test (macos-15-intel / specification)` blew its 1200s budget
+/// still compiling dependencies, and the two candidate causes -- a slower
+/// runner and a colder compiler cache -- leave the same trace in the log.
+/// Deciding between them took reconstructing per-crate rustc timestamps out of
+/// a megabyte of raw job log. sccache counts the answer already, so the step
+/// that announces the failure asks it.
+#[test]
+fn a_budget_that_expires_reports_the_compiler_cache_counters() {
+    let directory = temp_dir("budget-cache-terminated");
+    let sccache = stub_sccache(&directory);
+    let output = Command::new("bash")
+        .arg(format!(
+            "{}/scripts/run-with-budget-warning.sh",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .arg("1")
+        .arg("Specification test shard")
+        .arg("bash")
+        .arg("-c")
+        .arg("sleep 120")
+        .env("RUSTC_WRAPPER", "sccache")
+        .env("SCCACHE_PATH", &sccache)
+        .output()
+        .expect("run the budget wrapper");
+
+    assert_eq!(
+        output.status.code(),
+        Some(124),
+        "the budget must still terminate the command: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("[budget] Compile requests 41"),
+        "a terminated Rust step must arrive with the cache counters that say \
+         whether the compiler cache was answering, got:\n{stderr}"
+    );
+}
+
+/// The same counters, one step earlier. The warning fires while the command can
+/// still be acted on, which is the moment the counters are worth reading; and
+/// a command that then finishes keeps its own exit status, because a diagnostic
+/// that changed the result would be a defect rather than a diagnosis.
+#[test]
+fn a_budget_warning_reports_the_counters_without_touching_the_result() {
+    let directory = temp_dir("budget-cache-warning");
+    let sccache = stub_sccache(&directory);
+    let output = Command::new("bash")
+        .arg(format!(
+            "{}/scripts/run-with-budget-warning.sh",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .arg("8")
+        .arg("Specification test shard")
+        .arg("bash")
+        .arg("-c")
+        .arg("sleep 3")
+        .env("TEST_WARN_RATIO_PERCENT", "25")
+        .env("RUSTC_WRAPPER", "sccache")
+        .env("SCCACHE_PATH", &sccache)
+        .output()
+        .expect("run the budget wrapper");
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "the command beat its budget and keeps its own status: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("is approaching its timeout"),
+        "the warning must fire at 25% of an 8s budget, got:\n{stderr}"
+    );
+    assert!(
+        stderr.contains("[budget] Compile requests 41"),
+        "the warning is the actionable moment, so it carries the counters too, \
+         got:\n{stderr}"
+    );
+}
+
+/// Not every budgeted step compiles Rust -- the Xvfb install of finding 14 is
+/// one that does not -- so the counters are asked for only where they mean
+/// something. A step with no sccache wrapper must stay exactly as quiet as it
+/// was before, or the wrapper trades one unreadable log for another.
+#[test]
+fn a_budget_that_wraps_no_compiler_reports_no_counters() {
+    let directory = temp_dir("budget-cache-absent");
+    let sccache = stub_sccache(&directory);
+    let output = Command::new("bash")
+        .arg(format!(
+            "{}/scripts/run-with-budget-warning.sh",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .arg("1")
+        .arg("Install Xvfb")
+        .arg("bash")
+        .arg("-c")
+        .arg("sleep 120")
+        // The stand-in is reachable; what is missing is any claim that this
+        // step compiles through it.
+        .env("SCCACHE_PATH", &sccache)
+        .env_remove("RUSTC_WRAPPER")
+        .output()
+        .expect("run the budget wrapper");
+
+    assert_eq!(output.status.code(), Some(124));
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        !stderr.contains("Compile requests"),
+        "a step that compiles nothing must not report compiler counters, \
+         got:\n{stderr}"
+    );
+}
+
 /// Is this pid still a running process? `kill -0` says yes for a terminated
 /// process nobody has reaped yet, and a killed descendant is reparented to a
 /// PID 1 that may never reap it, so the state column is read instead: `Z` is a
