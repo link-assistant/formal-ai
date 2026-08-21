@@ -603,6 +603,43 @@ fn the_research_harness_declares_an_mcp_tool_call_timeout() {
     );
 }
 
+/// Caching only `~/.cargo/registry` leaves `target/` empty, so every run
+/// recompiles from scratch — 509 crates in `Test (ubuntu-latest / full)`, and
+/// `formal-ai` itself four times in that one job. sccache does not rescue it:
+/// its GitHub Actions backend is scoped per branch, and the whole store held
+/// 17 MB across 100 entries when this was measured, so its own stats reported
+/// one cache hit against those 509 compilations.
+///
+/// Every job that compiles Rust therefore caches `target/` beside the
+/// registry. The key carries the commit so each run writes a fresh entry, and
+/// `restore-keys` falls back to the newest matching one — a branch can restore
+/// the default branch's cache, so one warm entry on `main` serves the pull
+/// requests opened after it.
+#[test]
+fn rust_jobs_cache_build_output_and_not_only_the_registry() {
+    let workflow = release_workflow();
+    let mut checked = 0;
+
+    for job in ["lint", "test", "build", "test-agent-cli-e2e"] {
+        let block = job_block(&workflow, job);
+        if !block.contains("~/.cargo/registry") {
+            continue;
+        }
+        assert!(
+            block.contains("\n            target\n"),
+            "{job} caches the cargo registry but not target/, so it recompiles \
+             every crate on every run"
+        );
+        assert!(
+            block.contains("restore-keys:"),
+            "{job} must declare restore-keys, or a new commit never inherits \
+             the previous build output"
+        );
+        checked += 1;
+    }
+    assert!(checked > 0, "the sweep must actually find cargo caches");
+}
+
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
 /// between tool turns. If that unrelated provider is unavailable, the client
 /// exits before returning the tool result to Formal AI.

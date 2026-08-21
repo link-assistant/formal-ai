@@ -255,15 +255,16 @@ jobs:
           bun-version-file: .bun-version
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-      - name: Cache cargo registry
+      - name: Cache cargo registry and build output
         uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            target
+          key: ${{ runner.os }}-lint-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
+            ${{ runner.os }}-lint-cargo-
       - name: Lint GitHub Actions workflows
         env:
           ACTIONLINT_VERSION: 1.7.12
@@ -347,15 +348,17 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
-      - name: Restore cargo registry cache
-        uses: actions/cache/restore@v5
+      # `target/` is cached too; see workflow_release.rs for why.
+      - name: Cache cargo registry and build output
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            target
+          key: ${{ runner.os }}-${{ matrix.test-suite }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
+            ${{ runner.os }}-${{ matrix.test-suite }}-cargo-
       - name: Check LiNo data integrity
         if: matrix.test-suite == 'full'
         run: cargo test --test unit data_files -- --nocapture
@@ -430,7 +433,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-cargo-build-
       - name: Build release
@@ -966,7 +970,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
+            target
+          key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-cargo-agentcli-e2e-
             ${{ runner.os }}-cargo-
@@ -1262,7 +1267,8 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-box-language-${{ hashFiles('**/Cargo.lock') }}
+            target
+          key: ${{ runner.os }}-cargo-box-language-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-cargo-box-language-
             ${{ runner.os }}-cargo-
