@@ -4,8 +4,30 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libssl-dev pkg-config && \
     rm -rf /var/lib/apt/lists/*
+
+# Dependencies are their own layer, keyed on the manifests alone.
+#
+# `COPY . .` before `cargo build` made every file in the tree part of the
+# build layer's cache key, so editing one `.rs` rebuilt all ~500 dependency
+# crates. The image build measured 24 minutes with its slowest layers at 428s,
+# 419s and 355s, and it gates the pipeline's finish on its own.
+#
+# The stand-in sources exist because `cargo build` needs the targets its
+# manifest declares. `build.rs` is copied for real -- it reads
+# `data/seed/api-cache/` and emits an empty registry when absent, which is the
+# case in this build, so it does not pull the data tree into this layer.
+COPY Cargo.toml Cargo.lock build.rs ./
+RUN mkdir -p src tests/unit tests/integration && \
+    echo 'fn main() {}' > src/main.rs && \
+    echo '' > src/lib.rs && \
+    echo '' > tests/unit/mod.rs && \
+    echo '' > tests/integration/mod.rs && \
+    cargo build --release --locked --lib --bins && \
+    rm -rf src tests
+
+# Only this layer is invalidated by a source edit.
 COPY . .
-RUN cargo build --release --locked
+RUN cargo build --release --locked --bins
 
 FROM konard/box-dind:2.1.1
 
