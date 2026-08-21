@@ -2,11 +2,11 @@ self_ast_census
   target src/code_editing.rs
   language rust
   fidelity signature
-  byte_len 1467
-  line_count 49
-  content_id source_module_413d0ed57919a2dc
+  byte_len 1503
+  line_count 51
+  content_id source_module_0c42f5ceb5db2a10
   symbol_count 3
   symbols
     function apply_inline_hello_world_output_replacement 6 16
     function apply_inline_hello_world_source_replacement 18 30
-    function inline_hello_world_replacement 32 49
+    function inline_hello_world_replacement 32 51
