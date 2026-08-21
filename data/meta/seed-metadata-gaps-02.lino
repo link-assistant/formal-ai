@@ -379,6 +379,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "response_how_to_guide_conflict_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_80a5f1d13f079df2
+    source "data/seed/closure-generated-09.lino"
+    record "response_mutating_action_blocked_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bb6aa42e0cced242
     source "data/seed/closure-generated-09.lino"
     record "response_summarization_ratchet_nothing_applicable_es"

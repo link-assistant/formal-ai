@@ -11,19 +11,52 @@
 //! satisfies the reported wording leaves the paraphrases failing, so a green
 //! run is evidence of generalization rather than of a memorised seed.
 
+use formal_ai::agentic_coding::mutating_action::verified_recipe;
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::{ChatMessage, UniversalSolver};
+use formal_ai::{ChatMessage, ToolCall, UniversalSolver};
 
 /// The shell command the agentic planner resolves for `prompt`, or `None` when
 /// it routes somewhere other than a command execution tool.
+///
+/// A command that changes the workspace is planned as the verified recipe its
+/// seed intent declares (issue #944), so the plan is driven to its end — each
+/// step reported as having succeeded — and the mutating action is picked out of
+/// it as the one step that is a recipe of its own. A read-only command is a
+/// single-step plan and is returned unchanged.
 fn shell_command(prompt: &str) -> Option<String> {
-    let plan = plan_chat_step(&[ChatMessage::user(prompt)], &["exec_command"])?;
-    let AgenticPlan::ToolCalls(calls) = plan else {
-        return None;
-    };
-    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
-    arguments["command"].as_str().map(str::to_owned)
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let mut commands: Vec<String> = Vec::new();
+    while commands.len() <= MAX_PLAN_STEPS {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["exec_command"])
+        else {
+            break;
+        };
+        let call = calls.first()?;
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        let command = arguments["command"].as_str()?.to_owned();
+        let id = format!("call_{}", messages.len());
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            id.clone(),
+            call.tool.clone(),
+            call.arguments.clone(),
+        )]));
+        messages.push(ChatMessage::tool_result(
+            id,
+            &call.tool,
+            format!("Command: {command}\nOutput: (empty)\nExit Code: 0"),
+        ));
+        commands.push(command);
+    }
+    commands
+        .iter()
+        .find(|command| verified_recipe(command).is_some())
+        .or_else(|| commands.first())
+        .cloned()
 }
+
+/// A plan longer than this is a runaway, not an answer; the longest recipe the
+/// seed declares is six steps.
+const MAX_PLAN_STEPS: usize = 12;
 
 /// Issue #866 and #867: *"Execute ls command"* ran `/bin/ls command`, which
 /// fails with *cannot access 'command'*. The noun naming the command is part of

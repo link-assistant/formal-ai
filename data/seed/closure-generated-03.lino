@@ -574,6 +574,11 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused ru"
+  response_mutating_action_blocked_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked ru"
   response_orchestration_correction_prompt_hi
     defined-by response_template
     lexeme en

@@ -647,6 +647,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "manuscript"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a492fe292519fb9b
+    source "data/seed/closure-generated-13.lino"
+    record "mutating_action_completed"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5de408284f7191cb
     source "data/seed/closure-generated-13.lino"
     record "pattern_greeting_keyword_hi"

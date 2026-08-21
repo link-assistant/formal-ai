@@ -629,6 +629,11 @@ meanings
     lexeme en
       surface
         text "response memory program match limit zh"
+  response_mutating_action_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed zh"
   response_pattern_grid_diagonal_hi
     defined-by response_template
     lexeme en

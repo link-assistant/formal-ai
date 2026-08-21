@@ -1,16 +1,53 @@
 //! Regression coverage for issue #749 shell-command passthrough.
 
+use formal_ai::agentic_coding::mutating_action::verified_recipe;
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::ChatMessage;
+use formal_ai::{ChatMessage, ToolCall};
 
+/// The command a prompt is carried out by, driven to the end of its plan.
+///
+/// A command that changes the workspace is not issued once: since issue #944 it
+/// is planned as the verified recipe its seed intent declares, so the first tool
+/// call for *"copy a.txt to b.txt"* is `test -e a.txt` and the copy itself comes
+/// three steps later. This helper therefore drives the plan the way a client
+/// would — reporting each step as having succeeded — and returns the one step
+/// that is a recipe of its own, which is exactly the mutating action. For every
+/// read-only command the plan is a single step and that step is the answer, so
+/// the question this helper asks is unchanged.
 fn shell_command(prompt: &str) -> Option<String> {
-    let plan = plan_chat_step(&[ChatMessage::user(prompt)], &["exec_command"])?;
-    let AgenticPlan::ToolCalls(calls) = plan else {
-        return None;
-    };
-    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
-    arguments["command"].as_str().map(str::to_owned)
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let mut commands: Vec<String> = Vec::new();
+    while commands.len() <= MAX_PLAN_STEPS {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["exec_command"])
+        else {
+            break;
+        };
+        let call = calls.first()?;
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        let command = arguments["command"].as_str()?.to_owned();
+        let id = format!("call_{}", messages.len());
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            id.clone(),
+            call.tool.clone(),
+            call.arguments.clone(),
+        )]));
+        messages.push(ChatMessage::tool_result(
+            id,
+            &call.tool,
+            format!("Command: {command}\nOutput: (empty)\nExit Code: 0"),
+        ));
+        commands.push(command);
+    }
+    commands
+        .iter()
+        .find(|command| verified_recipe(command).is_some())
+        .or_else(|| commands.first())
+        .cloned()
 }
+
+/// A plan longer than this is a runaway, not an answer; the longest recipe the
+/// seed declares is six steps.
+const MAX_PLAN_STEPS: usize = 12;
 
 #[test]
 fn explicit_shell_forms_pass_the_complete_command_through() {

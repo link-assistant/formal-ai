@@ -70,6 +70,15 @@ pub(super) fn failed_verification(
     Some(render(verification_command, output, prompt))
 }
 
+/// The process exit status the harness reported for `raw`, when it reported one.
+///
+/// Callers that build their own report of a stopped step need the status the
+/// workspace answered with, not a rendering of it: a recipe that stops on a
+/// precondition says which check stopped it and with what code (issue #944).
+pub(super) fn reported_exit_code(raw: &str) -> Option<i64> {
+    normalize(raw).exit_code
+}
+
 /// One shell step as the harness itself reported it: the command's own text,
 /// with the transport envelope removed.
 pub(super) struct ShellStep {
@@ -756,7 +765,7 @@ fn is_search(label: &str) -> bool {
         .any(|kind| lower.contains(kind))
 }
 
-fn response_language(prompt: &str) -> &'static str {
+pub(super) fn response_language(prompt: &str) -> &'static str {
     crate::language::detect(prompt).slug()
 }
 

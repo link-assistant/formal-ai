@@ -494,6 +494,16 @@ meanings
     lexeme en
       surface
         text "response meta explanation hi"
+  response_mutating_action_completed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed es"
+  response_mutating_action_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed hi"
   response_pattern_sequence_constant_en
     defined-by response_template
     lexeme en

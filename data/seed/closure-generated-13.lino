@@ -239,6 +239,11 @@ meanings
     lexeme en
       surface
         text "multi step"
+  mutating_action_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "mutating action completed"
   mv
     defined-by concept
     lexeme en
@@ -644,6 +649,16 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused es"
+  response_mutating_action_blocked_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked hi"
+  response_mutating_action_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed en"
   response_pattern_sequence_constant_zh
     defined-by response_template
     lexeme en

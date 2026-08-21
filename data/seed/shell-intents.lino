@@ -758,6 +758,12 @@ shell_intents
     intent
       command cp
       argument two_paths
+      effect
+        before "test -e {source}"
+        before "test ! -e {destination}"
+        prepare "mkdir -p -- {destination_parent}"
+        after "test -e {destination}"
+        after "test -e {source}"
       language en
         cue "copy the file"
         cue "copy file"
@@ -774,6 +780,12 @@ shell_intents
     intent
       command mv
       argument two_paths
+      effect
+        before "test -e {source}"
+        before "test ! -e {destination}"
+        prepare "mkdir -p -- {destination_parent}"
+        after "test -e {destination}"
+        after "test ! -e {source}"
       language en
         cue "move the file"
         cue "rename the file"

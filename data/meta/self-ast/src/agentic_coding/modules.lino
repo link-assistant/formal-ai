@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 5233
-  line_count 134
-  content_id source_module_2f96a41847b5f5d4
-  symbol_count 52
+  byte_len 5258
+  line_count 135
+  content_id source_module_d36f51ac51973dde
+  symbol_count 53
   symbols
     module algorithm_learning 10 10
     module associative_learning 11 11
@@ -38,44 +38,45 @@ self_ast_census
     module lexicon 38 38
     module local_search 39 39
     module meaning_detail 40 40
-    module narration 41 41
-    module planner 42 42
-    module procedure 43 43
-    module progress 44 44
-    module question_catalog 45 45
-    module rebuild_plan 46 46
-    module repair_strategy 47 47
-    module report_issue 48 48
-    module report_script 49 49
-    module routing_learning 50 50
-    module self_ast 51 51
-    module self_heal 52 52
-    module shell_command 53 53
-    module shell_command_policy 54 54
-    module shell_file_fallback 55 55
-    module source_links 56 56
-    module statement_audit 57 57
-    module structured_edit 58 58
-    module tool_result 59 59
-    module web_research 60 60
-    module workspace_change 61 61
+    module mutating_action 41 41
+    module narration 42 42
+    module planner 43 43
+    module procedure 44 44
+    module progress 45 45
+    module question_catalog 46 46
+    module rebuild_plan 47 47
+    module repair_strategy 48 48
+    module report_issue 49 49
+    module report_script 50 50
+    module routing_learning 51 51
+    module self_ast 52 52
+    module self_heal 53 53
+    module shell_command 54 54
+    module shell_command_policy 55 55
+    module shell_file_fallback 56 56
+    module source_links 57 57
+    module statement_audit 58 58
+    module structured_edit 59 59
+    module tool_result 60 60
+    module web_research 61 61
+    module workspace_change 62 62
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2809
-    named_node_count 435
+    total_link_count 2829
+    named_node_count 438
     distinct_node_kinds 11
     node_kinds
       crate 5
-      identifier 198
+      identifier 199
       line_comment 8
-      mod_item 52
+      mod_item 53
       scoped_identifier 10
       scoped_use_list 30
       source_file 1
       use_as_clause 1
       use_declaration 34
       use_list 30
-      visibility_modifier 66
+      visibility_modifier 67

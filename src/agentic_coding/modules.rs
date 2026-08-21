@@ -38,6 +38,7 @@ pub mod ledger;
 pub(crate) mod lexicon;
 mod local_search;
 pub mod meaning_detail;
+pub mod mutating_action;
 pub(crate) mod narration;
 pub mod planner;
 pub mod procedure;

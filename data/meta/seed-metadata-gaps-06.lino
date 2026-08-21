@@ -151,6 +151,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "ls"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_382b3d89ebfa9af6
+    source "data/seed/closure-generated-04.lino"
+    record "mutating_action_blocked"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_eefa055397461906
     source "data/seed/closure-generated-04.lino"
     record "re-run"
@@ -222,6 +226,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_e9308e7805f851b6
     source "data/seed/closure-generated-05.lino"
     record "records"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_dd7c62a0a507b326
+    source "data/seed/closure-generated-05.lino"
+    record "response_mutating_action_completed_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c90f0b2a77495206
     source "data/seed/closure-generated-05.lino"

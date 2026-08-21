@@ -48,6 +48,7 @@ below is built on.
 | 2026-08 | The hive-mind series closes; its standing instruction — solve by generalization (hive-mind#2119) — becomes the frame for this issue |
 | 2026-08-18 | PR #1019, a four-line CI fix, takes six iterations to go green: evidence that the gates, not the code, are what an unattended harness runs into |
 | 2026-08-19 | This branch: the routing rules fixed where they were wrong, PHP catalogued, the contribution artifacts and the write-path ladder added, the circle captured as a replayable session |
+| 2026-08-20 | The review's work list: the injected clock and the rollback proof for #946/#947, `copy stdin to stdout` end to end, Laravel as its own target, a coding request that names no language, and the mutating rungs `824.L1`-`824.L5` with sandbox reset for #944 |
 
 ## 3. Requirements
 
@@ -218,6 +219,23 @@ which language to write it in, in the language the request was written in.
 when the prompt names a catalogued task other than the hello world, or one
 `solve_numeric_list` can answer. It is a property of the route, not a phrase.
 
+**A move that is performed and verified, not issued.** The routing half of #824
+above stops at planning a `mv`, and #944 asks for the other half. A read-only
+command answers by what it prints, so issuing it is the whole job; a mutating
+command answers by what the workspace *holds afterwards*, and a zero exit status
+is not that — `mv a b` exits zero whether or not `b` was something the user
+wanted overwritten, and exits non-zero for a parent directory the request plainly
+implied. So `src/agentic_coding/mutating_action.rs` carries the command out as
+the ordered recipe its intent declares: preconditions, preparation, the action,
+postconditions, with each step observed before the next is planned. None of
+those predicates are written in Rust. They are an `effect` block per intent in
+`data/seed/shell-intents.lino`, which is the generalizing move and the reason
+nothing under `src/` mentions `cp`: a copy differs from a move only in which
+`after` line the seed declares. A step that exits non-zero ends the recipe where
+it stopped and is reported as itself — which check, which status, and that
+nothing changed — so a blocked move is neither a false completion (#916 rung
+`R916-01`) nor the refusal #824 filed.
+
 **The artifacts.** `src/contribution_artifacts.rs` composes the changelog
 fragment and the pull-request body from `data/seed/contribution-artifacts.lino`,
 holding no prose of its own. `src/contribution_write_path.rs` decides the
@@ -277,9 +295,12 @@ cargo run --example issue_1021_bounded_recovery
 cargo run --example issue_1021_php_laravel
 bash experiments/issue-1021-laravel/run.sh
 node experiments/issue-1021-laravel/worker_check.mjs
+cd experiments/issue_916_write_effect_ladder && python3 -m unittest test_ladder.py
+cargo build --release --bin formal-ai
+experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh
 ```
 
-The nine commands below the gates are the measurements the delivery claims rest
+The commands below the gates are the measurements the delivery claims rest
 on, and each writes a log committed under `logs/`. `issue_1021_copy_stdin_harness` compiles and runs
 the `copy_stdin_to_stdout` template in every catalogued language, feeding each
 one the task's own fixture and comparing what comes back:
@@ -297,6 +318,16 @@ resolves to `php`, the uncatalogued `write me PHP Symfony code` falls back to
 `php` rather than inventing a target, and the two last assertions record what the
 mirror does *not* carry — eleven tasks against the engine's twelve, without
 `copy_stdin_to_stdout` (finding 21).
+
+The write-effect ladder is the measurement for #944, and it is the one that
+judges the workspace rather than the answer: it boots the real release binary in
+agent mode, executes the planned tool calls for real inside a per-rung directory,
+and reads the files back off disk afterwards. All sixteen rungs are green,
+including the five appended ones, and the same run against the baseline committed
+before this work reports `baseline 11/11 -> now 16/16`, so the ratchet moved up
+rather than sideways (`logs/write-effect-ladder-after.log`). Rung `824.L5` is
+held out on purpose: a fix that special-cased `mv` would pass `824.L1`-`824.L4`
+and fail the copy.
 
 The deadline is checked where the gap was, not only where the tests are easy to
 run. All eleven `ci_cd::issue_1021` tests passed on the macOS core slices of run
@@ -834,3 +865,34 @@ by lowering it.
     continuation marker or a prose code span such as `` `ci_cd::issue_1021` ``
     fails the test outright. A citation quietly passed over would leave exactly
     the hole that was just closed.
+
+24. **The move rung the issue words as "move+cleanup" is delivered on the half a
+    move owes, and reported on the half it does not.** Issue #944 asks for
+    "multi-step move+cleanup" as its third rung. What rung `824.L3` verifies is
+    the cleanup the move itself owes: after `mv notes/2026 backup/2026`, the
+    postcondition `test ! -e notes/2026` must hold, so a copy masquerading as a
+    move fails the rung. What it does *not* do is remove the now-empty `notes/`
+    parent. Deleting a directory the user did not name is a write they did not
+    request, and #824 is a report about over-refusal, not a licence to
+    over-reach — a system that tidies beyond the instruction is the same class of
+    defect seen from the other side. Recorded here and in the ladder's
+    `README.txt` rather than quietly narrowed; if the intended reading is that
+    the parent should go, it is a one-line `after` step in
+    `data/seed/shell-intents.lino` and no Rust change.
+
+25. **The response file crossed its warning band, and the band did not move.**
+    Adding the two verified-action responses in five languages each took
+    `data/seed/multilingual-responses-agentic.lino` to 1421 lines against a
+    warning band of 1400, failing
+    `ci_cd::issue_999::warning_band_files_are_small_and_split_responses_cover_the_registry`.
+    The band is one of the four gates the review names as not-to-be-relaxed, and
+    the file already had the answer written into the same test: issue #999 split
+    the tool-outcome responses into
+    `data/seed/multilingual-responses-agentic-tools.lino`, and
+    `mutating_action_completed` / `mutating_action_blocked` are that same family
+    — what the workspace tools observed, not what the planner said. Moving the
+    forty lines there leaves the main file at 1381 and the split file at 121, and
+    the two new intents join the four the test already pins as having to stay
+    directly available in every registered language after the split. Nothing was
+    hidden by the move: the registry declares the split file once and
+    `scripts/generate-seed-registry.rs` carries it to every production surface.

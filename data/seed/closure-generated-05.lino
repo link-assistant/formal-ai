@@ -629,6 +629,11 @@ meanings
     lexeme en
       surface
         text "response meta explanation zh"
+  response_mutating_action_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed ru"
   response_orchestration_correction_prompt_ru
     defined-by response_template
     lexeme en

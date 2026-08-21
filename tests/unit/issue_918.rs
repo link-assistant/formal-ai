@@ -357,6 +357,10 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // joins the count as a hand-written record because every meaning in
     // `data/seed/meanings.lino` -- all 22 of them, not just the new one --
     // carries its lexemes without the five-field metadata that file has never
-    // supplied.
-    assert_eq!(expected_gaps.len(), 3_818);
+    // supplied. The last twelve arrived the same way: the verified-mutating-
+    // action responses issues #824 and #944 added pull their two intent tokens
+    // and their ten response ids into the closure, and every one of the twelve
+    // is a `closure-generated-*.lino` record -- no hand-written gap, no
+    // handler without metadata.
+    assert_eq!(expected_gaps.len(), 3_830);
 }

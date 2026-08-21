@@ -124,7 +124,7 @@ pub use release_timelines::{
 pub use roles::*;
 pub use shell_intents::{
     shell_intent_vocabulary, DirectoryListingVocabulary, LocalPathSearchKind, LocalPathSearchScope,
-    ShellIntent, ShellIntentArgument, ShellIntentVocabulary,
+    ShellIntent, ShellIntentArgument, ShellIntentEffect, ShellIntentVocabulary,
 };
 pub use sources::{
     external_service_settings_keys, external_trusted_sources, percent_encode, source_record,

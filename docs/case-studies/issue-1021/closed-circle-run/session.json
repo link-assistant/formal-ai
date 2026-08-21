@@ -78,7 +78,7 @@
       "prompt": "Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust"
     },
     {
-      "command": "mv /Users/konard/Code/link-assistant/hive-control-center ~/Code/Archive/link-assistant",
+      "command": "test -e /Users/konard/Code/link-assistant/hive-control-center",
       "issue": 824,
       "prompt": "Move /Users/konard/Code/link-assistant/hive-control-center to ~/Code/Archive/link-assistant"
     },

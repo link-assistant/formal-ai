@@ -569,6 +569,11 @@ meanings
     lexeme en
       surface
         text "response memory root links empty zh"
+  response_mutating_action_blocked_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked en"
   response_pattern_grid_anti_diagonal_es
     defined-by response_template
     lexeme en

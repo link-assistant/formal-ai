@@ -41,6 +41,38 @@ pub enum ShellIntentArgument {
     SearchQuery,
 }
 
+/// The observable effect a mutating intent has on the filesystem, declared as
+/// shell predicates rather than as branches in the planner (issues #824, #944).
+///
+/// A command such as `mv` changes the workspace, so the interesting question is
+/// not whether the process exited zero but whether the workspace now holds what
+/// the request asked for. Each template is a `/bin/sh` predicate over the
+/// operands: `{source}`, `{destination}`, and `{destination_parent}` (the
+/// directory component of the destination, or `.` when it has none).
+///
+/// The templates live here, in seed data, for the same reason every other
+/// trigger vocabulary does: a maintainer teaches a new mutating verb its
+/// pre/post conditions by editing a `.lino` file, and the planner keeps working
+/// for verbs it has never heard of.
+#[derive(Debug, Clone, Default)]
+pub struct ShellIntentEffect {
+    /// Predicates that must hold *before* the action runs, in order.
+    pub before: Vec<String>,
+    /// Commands that make the workspace ready for the action (`mkdir -p`).
+    pub prepare: Vec<String>,
+    /// Predicates that must hold *after* the action ran, in order.
+    pub after: Vec<String>,
+}
+
+impl ShellIntentEffect {
+    /// Whether this intent declared any effect at all. An intent with no
+    /// declared effect is read-only as far as the planner is concerned.
+    #[must_use]
+    pub const fn is_declared(&self) -> bool {
+        !self.before.is_empty() || !self.prepare.is_empty() || !self.after.is_empty()
+    }
+}
+
 /// One intent → command mapping: the command to emit, how to fill its argument, and
 /// the multilingual cue phrases (lowercased) that signal the intent.
 #[derive(Debug, Clone, Default)]
@@ -51,6 +83,9 @@ pub struct ShellIntent {
     pub argument: ShellIntentArgument,
     /// Cue phrases, pooled across languages and lowercased for substring matching.
     pub cues: Vec<String>,
+    /// The pre/post conditions this intent's command must satisfy, empty for the
+    /// read-only intents that only report what they observe.
+    pub effect: ShellIntentEffect,
 }
 
 /// Commands selected from a workspace's package-manager marker file.
@@ -276,6 +311,28 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
             .into_iter()
             .map(|cue| cue.to_lowercase())
             .collect(),
+        effect: node
+            .children
+            .iter()
+            .find(|child| child.name == "effect")
+            .map(parse_intent_effect)
+            .unwrap_or_default(),
+    }
+}
+
+/// Read the ordered `before` / `prepare` / `after` templates of one `effect` block.
+fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
+    let templates = |name: &str| -> Vec<String> {
+        node.children
+            .iter()
+            .filter(|child| child.name == name)
+            .map(|child| child.id.clone())
+            .collect()
+    };
+    ShellIntentEffect {
+        before: templates("before"),
+        prepare: templates("prepare"),
+        after: templates("after"),
     }
 }
 

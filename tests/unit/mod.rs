@@ -73,6 +73,7 @@ mod issue_1021_bounded_autonomy;
 mod issue_1021_closed_circle;
 mod issue_1021_contribution_artifacts;
 mod issue_1021_recoverable_memory;
+mod issue_1021_verified_move;
 mod issue_1021_write_path;
 mod issue_1963;
 mod issue_337;

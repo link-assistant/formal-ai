@@ -23,6 +23,7 @@ use super::learning_report;
 use super::ledger;
 use super::local_search;
 use super::meaning_detail;
+use super::mutating_action;
 use super::procedure;
 pub(super) use super::progress::Progress;
 use super::question_catalog;
@@ -375,6 +376,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
         if let Some(plan) = shell_file_fallback::plan_step(&task, messages, tool_names, &command) {
+            return Some(plan);
+        }
+        // A command that changes the workspace answers by what the workspace
+        // holds afterwards, so it is carried out as the verified recipe its seed
+        // intent declares rather than issued once (issues #824 and #944).
+        if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, &task) {
             return Some(plan);
         }
         return Some(plan_shell_step(messages, tool_names, &command));
