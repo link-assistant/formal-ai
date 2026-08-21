@@ -37,7 +37,10 @@ runs:
       shell: bash
       run: |
         sccache --start-server || true
-        sccache --show-stats | head -20
+        # No `| head`: an early-closing reader makes sccache exit on
+        # `Broken pipe (os error 32)`, which fails the step. The same trap is
+        # documented in experiments/agentic_cli_matrix/lib.sh.
+        sccache --show-stats
 
     - name: Enable opt-in sccache diagnostics
       if: env.FORMAL_AI_CI_VERBOSE == 'true'

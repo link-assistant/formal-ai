@@ -360,7 +360,7 @@ jobs:
         if: matrix.test-suite == 'full'
         run: cargo test --test unit data_files -- --nocapture
       - name: sccache counters after the first compiling step
-        run: sccache --show-stats | head -20
+        run: sccache --show-stats
       - name: Check self-AST census freshness
         if: matrix.test-suite == 'full'
         run: cargo test --test unit self_ast_census -- --nocapture
