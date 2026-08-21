@@ -10,9 +10,36 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-/// The requirement IDs issue #1021 assigns, R1021-1 through R1021-31.
+/// The requirement IDs issue #1021 assigns, read from the shard that assigns
+/// them.
+///
+/// This used to be a literal `(1..=31)`, and it went stale the moment R1021-32
+/// was written: the gate kept passing while checking one fewer requirement than
+/// the branch had. A count copied beside the thing it counts is a count that
+/// drifts, so the range is now derived from the shard and pinned to be
+/// contiguous from 1 -- which is what makes a gap or a duplicate a failure
+/// rather than a silently shorter loop.
 fn requirement_ids() -> Vec<String> {
-    (1..=31).map(|index| format!("R1021-{index}")).collect()
+    let mut numbers: Vec<usize> = read(shard_path())
+        .lines()
+        .filter_map(|line| line.strip_prefix("| R1021-"))
+        .filter_map(|rest| rest.split_once(' '))
+        .filter_map(|(number, _)| number.parse().ok())
+        .collect();
+    numbers.sort_unstable();
+    assert!(
+        !numbers.is_empty(),
+        "the shard should assign at least one requirement"
+    );
+    let expected: Vec<usize> = (1..=numbers.len()).collect();
+    assert_eq!(
+        numbers, expected,
+        "requirement IDs should run contiguously from R1021-1 with no gap or duplicate"
+    );
+    numbers
+        .into_iter()
+        .map(|index| format!("R1021-{index}"))
+        .collect()
 }
 
 #[test]
@@ -25,6 +52,8 @@ fn issue_1021_requirements_are_written_down_and_traceable() {
         &requirements,
         &["Issue #1021 Full-Range Coding And Contribution Artifacts"],
     );
+    // The shard is the editable source; REQUIREMENTS.md is assembled from it.
+    let shard = read(shard_path());
     let traceability = read(root.join("docs/requirements-traceability.md"));
     for id in requirement_ids() {
         assert!(
@@ -37,10 +66,6 @@ fn issue_1021_requirements_are_written_down_and_traceable() {
         );
     }
 
-    // The shard is the editable source; REQUIREMENTS.md is assembled from it.
-    let shard = read(
-        root.join("docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"),
-    );
     assert!(
         shard.contains("generalization"),
         "the shard should restate the generalization rule the issue leads with"
@@ -116,9 +141,7 @@ fn the_case_study_records_the_data_the_analysis_rests_on() {
 fn the_undelivered_requirements_are_reported_rather_than_dropped() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let case_study = read(root.join("docs/case-studies/issue-1021/README.md"));
-    let shard = read(
-        root.join("docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"),
-    );
+    let shard = read(shard_path());
     let traceability = read(root.join("docs/requirements-traceability.md"));
 
     for id in ["R1021-14", "R1021-22"] {
@@ -231,6 +254,15 @@ fn the_undelivered_requirements_are_reported_rather_than_dropped() {
             "R1021-12, R1021-13",
         ],
     );
+}
+
+/// The shard that assigns issue #1021's requirement IDs.
+///
+/// Three tests read it, and a path spelled three times is a path that can be
+/// corrected twice.
+fn shard_path() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md")
 }
 
 fn read(path: impl Into<PathBuf>) -> String {

@@ -577,3 +577,140 @@ fn no_committed_script_reaches_for_a_timeout_binary_macos_does_not_have() {
         "expected the tracked scripts and workflows to be read, saw {checked}"
     );
 }
+
+/// The crate is on edition 2024, and says so in the one place `cargo` reads.
+///
+/// The edition is not a preference here: `build.rs` exports it as
+/// `FORMAL_AI_CRATE_EDITION`, and `src/memory_revision.rs` passes that to the
+/// `rustc` it spawns to judge a self-authored version. A manifest that drifts
+/// back would silently have the judge compile a different language than the
+/// crate is written in -- which is the defect finding 26 records.
+#[test]
+fn the_crate_is_on_edition_2024_and_the_judge_compiles_the_same_edition() {
+    let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
+        .expect("read Cargo.toml");
+    let declared = manifest
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("edition = "))
+        .expect("Cargo.toml should declare an edition")
+        .trim()
+        .trim_matches('"')
+        .to_owned();
+    assert_eq!(declared, "2024", "the crate should be on edition 2024");
+    assert_eq!(
+        env!("FORMAL_AI_CRATE_EDITION"),
+        declared,
+        "build.rs should export the edition the manifest declares, so the \
+         spawned rustc compiles the language this crate is written in"
+    );
+    assert!(
+        manifest
+            .lines()
+            .any(|line| line.trim().starts_with("rust-version = ")),
+        "an edition floor without a rust-version leaves the compiler it needs unstated"
+    );
+}
+
+/// Edition 2024 does not need nightly, and neither should anything this
+/// repository depends on or runs.
+///
+/// The rule was stated on the pull request and had no gate behind it, so it was
+/// true only for as long as nobody reached. The four reaches are enumerated
+/// rather than the one that might be tried: a toolchain file, a toolchain
+/// action asking for anything but stable, a per-invocation toolchain override,
+/// an environment variable that opts a stable compiler into unstable features,
+/// and an unstable feature attribute in the crate itself.
+///
+/// The needles are assembled at run time rather than written out, and the
+/// sentence above names them rather than spelling them, because a guard whose
+/// own source contains what it forbids has to exempt itself -- and an exemption
+/// is exactly the hole the next reach goes through.
+#[test]
+fn nothing_in_the_tree_reaches_for_a_nightly_toolchain() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let tracked = Command::new("git")
+        .args(["ls-files"])
+        .current_dir(root)
+        .output()
+        .expect("run git ls-files");
+    assert!(tracked.status.success(), "git ls-files should succeed");
+    let tracked = String::from_utf8_lossy(&tracked.stdout);
+
+    // Built from pieces: see the doc comment.
+    let feature_attribute = format!("#![{}(", "feature");
+    let plus_nightly = format!("+{}", "nightly");
+    let bootstrap = format!("RUSTC_{}", "BOOTSTRAP");
+    let toolchain_action = format!("dtolnay/rust-{}@", "toolchain");
+    let stable_action = format!("{toolchain_action}stable");
+
+    let mut toolchain_actions = 0_usize;
+    let mut scanned = 0_usize;
+
+    for path in tracked.lines() {
+        assert!(
+            !path.starts_with("rust-toolchain"),
+            "{path}: a toolchain file pins the whole repository off stable"
+        );
+
+        // Archived logs and case-study evidence record what happened; they are
+        // not instructions to anything, and rewriting them would be forgery.
+        if path.starts_with("dev/log/") || path.starts_with("docs/case-studies/") {
+            continue;
+        }
+        let interesting = path.starts_with("src/")
+            || path.starts_with("tests/")
+            || path.starts_with("scripts/")
+            || path.starts_with(".github/")
+            || path.ends_with("Cargo.toml")
+            || Path::new(path)
+                .extension()
+                .is_some_and(|extension| extension.eq_ignore_ascii_case("sh"));
+        if !interesting {
+            continue;
+        }
+        let Ok(contents) = fs::read_to_string(root.join(path)) else {
+            continue; // A binary fixture is not a toolchain request.
+        };
+        scanned += 1;
+
+        for (number, line) in contents.lines().enumerate() {
+            let at = number + 1;
+            if let Some(rest) = line.split(&toolchain_action).nth(1) {
+                toolchain_actions += 1;
+                assert!(
+                    line.contains(&stable_action),
+                    "{path}:{at}: the toolchain action should ask for @stable, not @{}",
+                    rest.split_whitespace().next().unwrap_or(rest)
+                );
+            }
+            assert!(
+                !line.contains(&plus_nightly),
+                // The needle is interpolated rather than typed, for the same
+                // reason it is built from pieces above: this file is scanned
+                // too, and a literal here would fail on its own message.
+                "{path}:{at}: a {plus_nightly} invocation leaves stable Rust behind"
+            );
+            assert!(
+                !line.contains(&bootstrap),
+                "{path}:{at}: this opts a stable compiler into unstable features"
+            );
+            if path.starts_with("src/") || path.starts_with("tests/") {
+                assert!(
+                    !line.trim_start().starts_with(&feature_attribute),
+                    "{path}:{at}: an unstable feature attribute needs a nightly compiler"
+                );
+            }
+        }
+    }
+
+    assert!(
+        scanned > 100,
+        "the scan should reach the tree, and it reached {scanned} files"
+    );
+    assert!(
+        toolchain_actions >= 20,
+        "every CI job that compiles Rust installs a toolchain, and only \
+         {toolchain_actions} installs were found -- the scan is missing them"
+    );
+}
