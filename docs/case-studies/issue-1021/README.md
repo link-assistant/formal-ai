@@ -1148,4 +1148,34 @@ by lowering it.
     under this account is an outward-facing act that has not been asked for, so
     it is raised on the pull request for a decision rather than done unasked.
 
+31. **A minor bump on a JavaScript override drags a native addon into a bundle
+    that cannot carry one, and it is taken anyway.** `browser-commander` is
+    pinned by both `desktop/package.json` and `vscode/package.json` inside an
+    `overrides` block for `@link-assistant/web-capture`, and the JavaScript half
+    of this refresh raised it 0.10.0 → 0.15.0. 0.16.0 adds
+    `better-sqlite3@^12.11.1` and, with it, twenty-five more transitive packages
+    — `prebuild-install`, `node-abi`, `bindings`, `tar-fs` and the rest of the
+    prebuilt-binary toolchain. The VS Code extension does not ship
+    `node_modules`: `vscode/scripts/prepare-resources.mjs` bundles
+    `desktop/lib/web-tools.cjs` with esbuild and `.vscodeignore` whitelists only
+    `playwright` and `playwright-core`, so a `.node` binary resolved at runtime
+    through `bindings` has nowhere to live in the VSIX.
+
+    The first draft of this finding held the override at 0.15.0 on that reasoning
+    and it was wrong, which is why the measurement is written down here. Bundling
+    both graphs with the extension's own `bundleWebTools` succeeds either way:
+    9,295,234 bytes at 0.15.0 against 11,827,516 at 0.16.0. The addon backs
+    `browser-commander/src/browser/browser-cookie-database.js`, reachable only
+    from `browser-cookies.js`, and `@link-assistant/web-capture/src/browser.js`
+    — the only entry point this repository imports — never touches cookies. So
+    the bump is taken: both lockfiles resolve with exactly the intended delta and
+    no version churn elsewhere, `scripts/check-javascript-dependencies.sh` audits
+    all five committed locks clean, and `vscode/scripts/bundle-web-tools.test.mjs`
+    passes.
+
+    What stays a finding is the 2.5 MB the VSIX grows to carry a database engine
+    nothing in this repository calls, and the fact that no gate would notice if
+    the unreachable path ever became reachable — the bundle has a test that it
+    *builds*, not one that it *loads*.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297

@@ -18,3 +18,11 @@ bump: minor
   encoding itself is written once, in `source_fetch::hex_lower`. Adopting the
   new major rather than pinning back to the old one is what this costs, and it
   leaves one implementation of "digest bytes as text" where there were nine.
+- `browser-commander`, the browser runtime both the desktop app and the VS Code
+  extension override inside `@link-assistant/web-capture`, goes 0.15.0 → 0.16.0.
+  The new release adds a native `better-sqlite3` addon and twenty-five more
+  transitive packages, which grows the bundled `web-tools.cjs` the VSIX ships
+  from 9.3 MB to 11.8 MB. It is taken rather than held: the addon backs
+  browser-commander's cookie database, `web-capture`'s `src/browser.js` never
+  reaches it, the esbuild bundle the VSIX is built from still builds, and both
+  lockfiles audit clean.
