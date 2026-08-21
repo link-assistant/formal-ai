@@ -2,9 +2,6 @@ self_ast_census
   target src/external_benchmarks/upstream_rust.rs
   language rust
   fidelity signature
-  byte_len 8294
-  line_count 259
-  content_id source_module_ccf700637b64e69b
   byte_len 8293
   line_count 259
   content_id source_module_07c443c3a78f29b7

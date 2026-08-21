@@ -2,9 +2,6 @@ self_ast_census
   target src/translation/pipeline.rs
   language rust
   fidelity signature
-  byte_len 31844
-  line_count 845
-  content_id source_module_518fe6a5de80a1a9
   byte_len 31796
   line_count 847
   content_id source_module_b58fa34b608c2020
@@ -21,20 +18,6 @@ self_ast_census
     function select_best_block 394 465
     function upgrade_meaning_via_wikidata 472 534
     function canonical_target_english_meaning 536 565
-    function compositional_candidates 567 633
-    function seed_meaning_id 635 637
-    function seed_meaning_for_surface 639 643
-    function seed_compositional_translation 645 664
-    function seed_role_translation 666 690
-    function same_surface 692 694
-    function russian_phrase_to_english 703 710
-    function russian_word_to_english 718 720
-    function translate_russian_word_sequence 722 740
-    function russian_genitive_relation_head 748 750
-    function russian_genitive_noun 757 765
-    function capitalize_ascii_first 767 776
-    function phrasal_variants 789 821
-    function normalize_page_title 831 845
     function compositional_candidates 567 634
     function seed_meaning_id 636 638
     function seed_meaning_for_surface 640 644

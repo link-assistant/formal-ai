@@ -2,9 +2,6 @@ self_ast_census
   target src/dreaming_runtime.rs
   language rust
   fidelity signature
-  byte_len 6980
-  line_count 166
-  content_id source_module_bae6b16bb63e40a1
   byte_len 6968
   line_count 166
   content_id source_module_bf50e8c82ba625e0

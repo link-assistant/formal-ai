@@ -2,9 +2,6 @@ self_ast_census
   target src/agentic_coding/code_artifact.rs
   language rust
   fidelity full_ast
-  byte_len 13168
-  line_count 346
-  content_id source_module_32ae3a1083307537
   byte_len 13166
   line_count 346
   content_id source_module_4821d0a756253e46
@@ -32,8 +29,6 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9774
-    named_node_count 1991
     total_link_count 9772
     named_node_count 1989
     distinct_node_kinds 82
@@ -73,7 +68,6 @@ self_ast_census
       impl_item 1
       index_expression 4
       inner_doc_comment_marker 4
-      integer_literal 24
       integer_literal 22
       let_condition 6
       let_declaration 39
