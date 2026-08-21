@@ -957,3 +957,195 @@ by lowering it.
     `crate::search_fusion_grammar` reference — the same breakage is on `main`,
     predates this branch, and needs the experiment's `#[path]` list rebuilt
     rather than an edition flag.
+
+28. **A major bump deleted a trait, and nine call sites had each written the
+    same encoding by hand.** `sha2` 0.10 returned its digest as a
+    `generic_array::GenericArray`, which implements `LowerHex`; `sha2` 0.11
+    returns a `hybrid_array::Array`, which does not. Nothing in this repository
+    called `LowerHex` by name, so the removal surfaced as ten
+    `error[E0277]: the trait bound ...: LowerHex is not satisfied` at once, in
+    nine files that had independently written `format!("{:x}", Sha256::digest(..))`
+    — `computer_use/executor.rs`, `orchestration/{workspace,runner,replay}.rs`,
+    `memory/upgrade.rs`, `memory_revision.rs`, `agentic_coding/workspace_change.rs`,
+    `file_legality.rs`, and `tests/unit/issue_848_coding_ladder.rs`. Six of them
+    had wrapped it in a private `fn digest`/`fn sha256` of their own.
+
+    Pinning back to `sha2 = "0.10"` would have made the ten errors go away and
+    left the nine copies in place, so the bump was taken as the review asks — a
+    major bump is a code change, not a version change. The encoding is now
+    written once, as `source_fetch::hex_lower`, beside the `sha256_hex` the
+    crate already exported; every one of the nine goes through it, and the seven
+    `use sha2::…` lines that became dead were deleted with them.
+    `src/file_legality.rs` keeps its import because it streams a file through
+    `Sha256::new()` rather than hashing a slice, and it renders the result with
+    the same shared helper. What the upgrade cost, in other words, is what it
+    bought: one implementation of "digest bytes as text" where there were nine.
+
+29. **Five crates in the lockfile are not on their newest release, and none of
+    the five is ours to move.** "Every dependency updated" is a claim about the
+    manifests, and `cargo tree -i` is what separates a stale requirement from an
+    inherited one. `Cargo.lock` still carries `links-notation` 0.13.0 beside our
+    0.14.0 (required by `meta-language` 0.58.2), `sha2` 0.10.9 beside our 0.11.0
+    (`p256` → `rtc-dtls` → `webrtc`), `which` 7.0.3 beside our 8.0.5,
+    `cc` 1.2.67 against an available 1.4.3 (`cmake` → `aws-lc-sys`), and
+    `generic-array` 0.14.7 against an available 0.14.9 (`aead` → `aes-gcm` →
+    `rtc-shared`). The `which` duplicate is the interesting one: it comes from
+    `command-stream`, which issue #1014 pinned at `=0.16.0` deliberately and
+    `tests/unit/ci-cd/issue_1014.rs` asserts — so unpinning it to collapse a
+    duplicate would undo a decision another issue made on purpose.
+
+    Recording the five is the point. A duplicate in the lockfile is normally
+    read as a manifest that nobody refreshed, and here each one is a transitive
+    requirement of a crate that has not yet published against the newer major.
+    They will collapse when their parents move, not when we edit anything.
+
+30. **The `agent` leg of the CLI matrix went red without a commit touching it,
+    and the cause was a floating dependency two levels below a pinned one.**
+    `experiments/agentic_cli_matrix/clients.lock` pins
+    `@link-assistant/agent@0.25.0` exactly, so the client the leg drives is
+    supposed to be a constant. It was not. Run 32307282670 (2026-08-19 22:07 UTC)
+    passed; runs 32415475370, 32422971033 and 32434228261 all failed the same
+    two cases — `read-file` and `interactive` — with
+    `client output never contained 'ALPHA_MARKER_11111'`, on three different
+    commits, none of which is near the tool path.
+
+    `serve.log` names the defect precisely. Round one planned the tool call, and
+    round two arrived carrying its result:
+
+    ```
+    [trace] agentic_outcome: planned ToolCalls([PlannedToolCall { tool: "read", … }])
+    [trace] agentic_outcome: planned Final("Contents of `alpha.txt`:\n\n```text\nTool execution aborted\n```")
+    ```
+
+    The server did its job twice: it planned the read, and it answered with what
+    the client handed back. What the client handed back was an abort, and the
+    client's own log says why, one line before it:
+
+    ```
+    "hint": "Provider returned undefined finishReason but made tool calls",
+    "message": "inferred tool-calls finish reason from pending tool calls"
+    ```
+
+    Our stream is not the one at fault, and that was checked rather than assumed
+    — `curl`ing the streaming endpoint with a `tools` array returns the
+    spec-correct terminator, `"delta":{},"finish_reason":"tool_calls"`, in its
+    own chunk before the usage chunk and `[DONE]`.
+
+    The first version of this finding then guessed wrong about where the
+    `undefined` comes from, and said so in public: it claimed the pinned
+    `@ai-sdk/openai-compatible@^1` “does not map an OpenAI `finish_reason` onto
+    the field the current `ai` package reads.” It maps it correctly —
+    `mapOpenAICompatibleFinishReason` turns `tool_calls` into `"tool-calls"`, and
+    driving that exact provider build through a plain `streamText` executes the
+    tool and answers with the marker. The guess is corrected below and on the
+    upstream issue, because a wrong mechanism published with a right symptom is
+    worse than no mechanism at all.
+
+    What actually happens is a version-shim hole in `ai` itself, and
+    `experiments/issue-1021-agent-cli-finish-reason/` reproduces it with no
+    server and no network. `ai@6` still accepts `LanguageModelV2` providers by
+    proxying them: `asLanguageModelV3` pipes their stream through
+    `convertV2StreamToV3`, which rewrites the V2 plain-string `finishReason`
+    into `{unified, raw}` and the flat V2 `usage` into its nested V3 shape.
+    `wrapLanguageModel` defeats that proxy, because `doWrap` stamps the version
+    on the object it returns while forwarding `doStream` to the wrapped model
+    untouched:
+
+    ```js
+    return {
+      specificationVersion: "v3",
+      …
+      async doStream(params) { … return wrapStream ? … : doStream(); }
+    };
+    ```
+
+    Wrap a V2 model and you get an object that *claims* V3 and still emits V2
+    chunks. `asLanguageModelV3` sees `"v3"` and hands it straight back
+    unconverted — it does not even print its V2 compatibility warning any more.
+    `@link-assistant/agent@0.25.0` wraps its model to rewrite prompts
+    (`src/session/prompt.ts:1003`) and floats `"ai": "^6.0.1"` beside
+    `"@ai-sdk/openai-compatible": "^1.0.32"`, whose models declare
+    `specificationVersion = "v2"`, so its `finish` chunk carries a bare string.
+
+    That was harmless until 2026-08-20T16:03Z, when `ai@6.0.260` shipped this
+    line:
+
+    ```
+    - 9e15cb4: Prevent automatic tool execution when a model call ends with an
+      unsafe finish reason.
+    ```
+
+    The new guard reads the V3 field —
+    `isToolExecutionAllowedFinishReason(chunk.finishReason.unified)` — and
+    `.unified` on a string is `undefined`, which is an unsafe finish reason, so
+    from that release onwards it cancels exactly the tool call the client had
+    just decided to make. Instrumenting the call site inside the installed
+    `ai@6.0.261` and re-running the unmodified client says it in two lines:
+
+    ```
+    [probe] chunk.finishReason = "tool-calls" typeof string
+    [probe] finishReason handed to the guard = undefined
+    ```
+
+    and the mutation closes it — forcing that one predicate to `return true`
+    makes the same 0.25.0 client produce `ALPHA_MARKER_11111` with no aborts.
+    The network-free reproduction reduces the whole thing to a hand-written V2
+    model and one middleware that changes nothing:
+
+    ```
+    v2 model, unwrapped        : tool executions = 1
+    v2 model, wrapLanguageModel: tool executions = 0
+    ```
+
+    The caret let it in: the last passing run resolved `ai` at 6.0.259, and the
+    first failing run started at 2026-08-20T20:41Z, thirty-one minutes after
+    `6.0.261` was published.
+
+    Three local runs pin it down, and the third is the one that matters:
+
+    | tree | client | `ai` | result |
+    | --- | --- | --- | --- |
+    | this branch | 0.26.0 | 6.0.256 | leg passes |
+    | this branch | 0.25.0 | 6.0.261 | `read-file`, `interactive` fail |
+    | 91e469774 — *the last commit CI passed* | 0.25.0 | 6.0.261 | `read-file`, `interactive` fail |
+
+    The third row is the finding. The tree CI was green on fails today, on the
+    same machine, with no formal-ai code in between — so nothing on this branch
+    broke the leg, and re-running the old commit would not have shown that.
+    `0.26.0` moves to `"@ai-sdk/openai-compatible": "^2.0.62"`, whose models
+    declare `specificationVersion = "v3"` — so the version `doWrap` stamps on
+    the wrapper is true, the finish reason arrives as `{unified, raw}`, and the
+    guard has nothing to fire on. `clients.lock` on this branch already names
+    it, and that is the fix. Note that the escape is a package major, not a
+    spec major: provider `1.x` is spec V2 and provider `2.x` is spec V3, which
+    is why “bump the provider” and “adopt the newer specification” are the same
+    move here.
+
+    The lesson is the one the lock file was written for and did not achieve: a
+    version pinned without its dependency tree is not a pin. `bun add -g`
+    resolves the client's own carets at install time, so a leg that pins the
+    client exactly still installs a different program each day. Recording it
+    here rather than raising the round bound is deliberate — a floating
+    transitive dependency is a supply-chain fact about the matrix, and the
+    honest response is to name it, not to make the assertion looser.
+
+    Filed upstream with the reproduction, per #1021's standing clause on
+    third-party defects: [link-assistant/agent#297][agent-297], corrected there
+    once the probe disproved the first mechanism. Two things there that this
+    branch cannot fix from the outside — `0.25.0` is broken *as published*, so a
+    pin to it will keep rotting until the 0.25 line raises its
+    `@ai-sdk/openai-compatible` floor; and the client's processor logs
+    `inferred tool-calls finish reason from pending tool calls` on the very turn
+    it then cancels for having an unsafe finish reason, so the two halves of the
+    client disagree about one turn and the generic `Tool execution aborted`
+    sends the reader to look at the tool.
+
+    The deeper defect is not the agent's, though, and the honest place for it is
+    `vercel/ai`: `doWrap` asserting `specificationVersion: "v3"` over a V2 model
+    is what makes a correct provider, a correct server and a correct client add
+    up to a dropped tool call. `wrap-v2-repro.mjs` is written to be filed as-is,
+    with no formal-ai in it. Filing an issue on a third-party org's repository
+    under this account is an outward-facing act that has not been asked for, so
+    it is raised on the pull request for a decision rather than done unasked.
+
+[agent-297]: https://github.com/link-assistant/agent/issues/297
