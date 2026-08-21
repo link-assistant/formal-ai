@@ -1456,4 +1456,80 @@ by lowering it.
     *with* the counters from finding 34 in place, which is now true, and worth
     saying out loud before it is done.
 
+36. **Ninety-nine security alerts, none of them about what the code does.** The
+    `CodeQL` check on commit `800f5f7ff` failed with "99 new alerts including 98
+    critical severity security vulnerabilities"
+    ([run 96753666549](https://github.com/link-assistant/formal-ai/runs/96753666549)).
+    Ninety-eight of them say the same sentence -- *This hard-coded value is used
+    as a salt* -- and the ninety-ninth says *This operation writes session_id to
+    a log file*. Both are produced by the spelling of an identifier and by
+    nothing else.
+
+    `rust/hard-coded-cryptographic-value` makes a sink out of every positional
+    argument that reaches a parameter *literally named* `password`, `iv`, `nonce`
+    or `salt` (`HeuristicSinks`, upstream
+    `rust/ql/lib/codeql/rust/security/HardcodedCryptographicValueExtensions.qll`);
+    nothing checks that the callee is cryptography. `sample_index(probabilities,
+    impulse, salt)` in `src/translation/selection.rs` hashes with FNV-1a and uses
+    the string only to make a draw reproducible, so all 98 alerts are the
+    `temperature`, `guess_probability` and `questioning_rigor` floats -- `0.7`,
+    `0.4`, `1.0` -- that 24 files write into a `FormalizationSelectionConfig`,
+    each reported as a hard-coded cryptographic salt.
+    `rust/cleartext-logging` classifies any name matching
+    `session.?(id|key)` as account information
+    (`HeuristicNames::nameIndicatesSensitiveData`, upstream
+    `shared/concepts/codeql/concepts/internal/SensitiveDataHeuristics.qll`), and
+    `src/cli_improve.rs` printed FNV-1a digests of recorded sessions out of a
+    binding called `session_id`. Full evidence in
+    `logs/codeql-name-heuristic-alerts.log`.
+
+    The alerts predate the branch, which is worth stating because it is *not* a
+    defence: `?pr=1027` and `?ref=refs/heads/main` return the same 101 alerts,
+    identical on rule, severity and path, and the check's own summary says
+    "Alerts not introduced by this pull request might have been detected because
+    the code changes were too large" -- 1299 files change here. So the check is
+    honest about the code base and uninformative about the diff. It is still
+    red, and the alerts are what has to go.
+
+    The fix renames the things after what they are: `salt` -> `seed` through
+    `selection_seed`, `sample_index` and `seeded_unit_interval`, and
+    `agent_session_ids` -> `agent_session_digests` through `src/promotion.rs`,
+    `src/promotion/materialize.rs` and the evidence line `src/cli_improve.rs`
+    prints. Nothing observable moves: the seed *strings* are assembled from the
+    same fields in the same order, and `stable_id("promotion_agent_session", ..)`
+    keeps its literal prefix, so every draw and every digest is byte-identical
+    before and after. That is the whole change -- a rename is the correct fix
+    when the finding is that a name claimed something the value is not.
+
+    A rename holds only until someone spells it the old way again, so
+    `tests/unit/ci-cd/codeql_sink_heuristics.rs` reads both heuristics out of the
+    tree instead of pinning the two sites: it parses every Rust file CodeQL
+    analyses -- the same set, minus the `docs/`, `dev/` and `experiments/`
+    prefixes `.github/codeql/codeql-config.yml` ignores, which
+    `the_scan_skips_the_same_directories_the_codeql_config_ignores` keeps in
+    step -- and fails on any parameter named after a cryptographic sink or any
+    account-shaped name handed to a logging macro, including through an inline
+    `{capture}` in the format string. `experiments/issue-1021-codeql-name-heuristics/falsify.sh`
+    reverts the renames and runs the guard against the tree that produced the
+    alerts: it reports `src/translation/selection.rs:324` and `:352`,
+    `tests/source/translation/selection.rs:297` and `:325`, and
+    `src/cli_improve.rs:84` -- the exact two mechanisms behind the 99 -- and
+    passes once they are put back.
+
+    Two things were deliberately not done. The first is the two remaining
+    `rust/cleartext-logging` alerts, in
+    `tests/unit/docs_requirements_issue_917.rs` and `_918.rs`, where
+    `let session_id = read(evidence.join("session-id.txt"))` really is an Agent
+    CLI session id and the assertion it feeds is what proves the committed
+    evidence came from a real session. The heuristic has correctly identified
+    what the variable holds; renaming it would be spelling around a true
+    positive, and dismissing the alerts would be moving the check rather than
+    the code. They stay open and are named here. The second is the observation
+    that `salt` probably does not belong in `HeuristicSinks` at all: upstream
+    already excludes `key` from that same list for being too false-positive
+    prone, and this branch is a 98-alert reproduction of the same objection for
+    `salt`. That is an upstream report with a reproduction attached, not a
+    change we can make, and it is proposed here rather than filed, because
+    opening an issue in someone else's repository is a decision for review.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297

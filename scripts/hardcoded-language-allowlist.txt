@@ -1301,6 +1301,6 @@ src/translation/pipeline.rs	start surface={surface:?} {source_lang}->{target_lan
 src/translation/pipeline.rs	wikidata:sparql:{}->{} ({} lemmas)
 src/translation/selection.rs	Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\"?
 src/translation/selection.rs	Which interpretation did you mean: {} or {}?
-src/translation/selection.rs	{impulse}\n{salt}
+src/translation/selection.rs	{impulse}\n{seed}
 src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}
 src/unknown_opener.rs	{opener} {body}

@@ -80,8 +80,13 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
             edit.path.display()
         );
     }
-    for session_id in &outcome.agent_session_ids {
-        eprintln!("Formal AI Agent session evidence: {session_id}");
+    // These are FNV-1a digests of the recorded session JSON, not credentials:
+    // the same value is committed as evidence under `docs/case-studies/`. Naming
+    // them `session_id` made CodeQL's `rust/cleartext-logging` heuristic — which
+    // treats any name matching `session.?(id|key)` as account information — read
+    // this evidence line as leaking a session token.
+    for digest in &outcome.agent_session_digests {
+        eprintln!("Formal AI Agent session evidence: {digest}");
     }
     if !outcome.rejected.is_empty() {
         eprintln!(

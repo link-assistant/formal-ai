@@ -97,8 +97,8 @@ fn promotion_protocol_materializes_pass_and_preserves_fail() {
     let outcome = apply_promotions(&run, &workspace).expect("apply promotions");
     assert_eq!(outcome.applied.len(), 1);
     assert_eq!(outcome.rejected, vec![failing_id]);
-    assert_eq!(outcome.agent_session_ids.len(), 1);
-    assert!(outcome.agent_session_ids[0].starts_with("promotion_agent_session_"));
+    assert_eq!(outcome.agent_session_digests.len(), 1);
+    assert!(outcome.agent_session_digests[0].starts_with("promotion_agent_session_"));
 
     let seed_path = workspace.join(LEARNED_PROGRAM_RULES_SEED_FILE);
     let materialized = std::fs::read_to_string(&seed_path).expect("read materialized seed");
@@ -409,7 +409,7 @@ fn promotion_bridges_adoptable_learning_proposals() {
     let workspace = tmpdir("learning-whole-task");
     init_git(&workspace);
     let applied = apply_promotions(&promotion, &workspace).expect("Agent-authored promotion");
-    assert_eq!(applied.agent_session_ids.len(), 1);
+    assert_eq!(applied.agent_session_digests.len(), 1);
     let learned = std::fs::read_to_string(workspace.join(LEARNED_PROGRAM_RULES_SEED_FILE))
         .expect("learned seed");
     assert!(learned.contains("learned_reverse"), "{learned}");

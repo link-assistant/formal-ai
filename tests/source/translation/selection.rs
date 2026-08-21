@@ -182,7 +182,7 @@ fn select_from_probabilities(
     probabilities: Vec<f32>,
     config: FormalizationSelectionConfig,
     impulse: &str,
-    salt_suffix: &str,
+    seed_suffix: &str,
 ) -> FormalizationSelection {
     if candidates.is_empty() {
         return FormalizationSelection {
@@ -243,7 +243,7 @@ fn select_from_probabilities(
     let index = sample_index(
         &probabilities,
         impulse,
-        &selection_salt(&candidates, config, salt_suffix),
+        &selection_seed(&candidates, config, seed_suffix),
     );
     let probability = probabilities[index];
     FormalizationSelection {
@@ -294,8 +294,8 @@ fn should_clarify(config: FormalizationSelectionConfig) -> bool {
     config.questioning_rigor * (1.0 - config.guess_probability) > 0.5
 }
 
-fn sample_index(probabilities: &[f32], impulse: &str, salt: &str) -> usize {
-    let draw = seeded_unit_interval(impulse, salt);
+fn sample_index(probabilities: &[f32], impulse: &str, seed: &str) -> usize {
+    let draw = seeded_unit_interval(impulse, seed);
     let mut cumulative = 0.0;
     for (index, probability) in probabilities.iter().enumerate() {
         cumulative += *probability;
@@ -306,7 +306,7 @@ fn sample_index(probabilities: &[f32], impulse: &str, salt: &str) -> usize {
     probabilities.len().saturating_sub(1)
 }
 
-fn selection_salt(
+fn selection_seed(
     candidates: &[FormalizationCandidate],
     config: FormalizationSelectionConfig,
     suffix: &str,
@@ -322,8 +322,8 @@ fn selection_salt(
     )
 }
 
-fn seeded_unit_interval(impulse: &str, salt: &str) -> f32 {
-    let hash = fnv1a64(&format!("{impulse}\n{salt}"));
+fn seeded_unit_interval(impulse: &str, seed: &str) -> f32 {
+    let hash = fnv1a64(&format!("{impulse}\n{seed}"));
     let bucket = u16::try_from(hash >> 48).unwrap_or(u16::MAX);
     f32::from(bucket) / f32::from(u16::MAX)
 }

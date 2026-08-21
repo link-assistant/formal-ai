@@ -1,0 +1,120 @@
+# The `CodeQL` check on PR #1027, commit 800f5f7ff -- 99 alerts, 0 of them about
+# what the code does. Recorded 2026-08-21 because "99 critical and high security
+# alerts" and "two identifiers are spelled in a way two lexical heuristics
+# recognise" look identical in a check-run list, and the second is what this is.
+
+== the failing check run ==
+{
+    "completed_at": "2026-08-21T11:16:21Z",
+    "conclusion": "failure",
+    "name": "CodeQL",
+    "output_title": "99 new alerts including 98 critical severity security vulnerabilities",
+    "started_at": "2026-08-21T11:16:20Z",
+    "url": "https://github.com/link-assistant/formal-ai/runs/96753666549"
+}
+
+== its summary, verbatim ==
+### New alerts in code changed by this pull request
+
+Security Alerts:
+ * 98 critical
+ * 1 high
+
+_Alerts not introduced by this pull request might have been detected because the code changes were too large._
+
+# 1299 files change on this branch, which is what that last sentence is about.
+
+== what the branch's alerts are, by rule (`gh api .../code-scanning/alerts?pr=1027`) ==
+3 rust/cleartext-logging	high
+98 rust/hard-coded-cryptographic-value	critical
+
+# 101 alerts are open on the branch; 99 of them were attributed to this pull
+# request. Every one of the 98 critical ones carries the same message:
+    This hard-coded value is used as a salt.
+# The "hard-coded value" in each is a `temperature`, `guess_probability` or
+# `questioning_rigor` float -- `0.7`, `0.4`, `1.0` -- written into a
+# `FormalizationSelectionConfig`. `selection_salt` formats the three of them
+# into a string and hands it to `sample_index(probabilities, impulse, salt)`,
+# so every literal that can reach that call is reported as a cryptographic
+# salt. 24 files construct such a config:
+    18 tests/unit/specification/formalization.rs
+    9 tests/unit/specification/probabilistic_reasoning/multilingual.rs
+    9 tests/unit/specification/probabilistic_reasoning/evidence_core.rs
+    7 tests/source/translation/selection.rs
+    7 tests/source/solver.rs
+    7 src/translation/selection.rs
+    6 tests/unit/specification/probabilistic_reasoning/decision_policy.rs
+    5 tests/unit/issue_920_question_necessity.rs
+    4 tests/unit/proof_request_config.rs
+    4 src/solver_helpers/mod.rs
+    3 tests/unit/specification/unknown_reasoning.rs
+    3 tests/unit/specification/probabilistic_reasoning/mod.rs
+    3 src/solver.rs
+    2 tests/unit/specification/task_decomposition.rs
+    2 tests/unit/specification/benchmarks.rs
+    1 tests/unit/specification/world_state_benchmarks.rs
+    1 tests/unit/specification/text_manipulation_benchmarks.rs
+    1 tests/unit/specification/text_manipulation.rs
+    1 tests/unit/specification/synthesis.rs
+    1 tests/unit/specification/shared_dialog_replay.rs
+    1 tests/unit/specification/procedural_howto_benchmarks.rs
+    1 tests/unit/specification/coding_modification_benchmarks.rs
+    1 tests/unit/playwright_script.rs
+    1 src/external_benchmarks/mod.rs
+
+# ... and the three high ones are one message over three sites:
+    src/cli_improve.rs:84  This operation writes session_id to a log file.
+    tests/unit/docs_requirements_issue_918.rs:184  This operation writes session_id to a log file.
+    tests/unit/docs_requirements_issue_917.rs:192  This operation writes session_id to a log file.
+
+# (line numbers are the ones the 2026-08-16 analysis of `main` recorded)
+
+== the alert set on the pull request is the alert set on `main` ==
+# rule / security severity / path, sorted, for ?pr=1027 and for
+# ?ref=refs/heads/main:
+    101 alerts for pr=1027
+    101 alerts for refs/heads/main
+    diff: IDENTICAL
+# So the branch introduces no alert that `main` does not already have. What it
+# does is change enough files that GitHub stopped diffing and attributed the
+# pre-existing ones. That makes the check honest about the code base and useless
+# as a signal about the diff -- and it is still a red check, so the alerts are
+# what has to go, not the attribution.
+
+== the two rules, read at the source ==
+# rust/hard-coded-cryptographic-value, HeuristicSinks in
+# codeql/rust/ql/lib/codeql/rust/security/HardcodedCryptographicValueExtensions.qll:
+# every positional argument reaching a parameter whose name is literally
+# `password`, `iv`, `nonce` or `salt` is a sink. There is no check that the
+# callee is cryptography. `key` is deliberately *not* in that list upstream,
+# because it was too false-positive-prone -- which is the same objection that
+# applies to `salt` here.
+#
+# rust/cleartext-logging, HeuristicNames::nameIndicatesSensitiveData in
+# codeql/shared/concepts/codeql/concepts/internal/SensitiveDataHeuristics.qll:
+# a name matching (?is).*(acc(ou)?nt|puid|user.?(name|id)|session.?(id|key)).*
+# is account information, unless it also matches one of the neutralising terms
+# (redact|censor|obfuscate|hash|md5|sha|random|crypt|encode|path|file|url).
+# `assert!` is modelled as a logging sink alongside `println!`.
+
+== what was renamed, and what was not ==
+# Renamed, because the name was wrong for what the value is:
+#   src/translation/selection.rs   salt_suffix -> seed_suffix, selection_salt ->
+#     selection_seed, and the `salt` parameters of `sample_index` and
+#     `seeded_unit_interval` -> `seed`. The hash is FNV-1a; the string only
+#     makes a draw reproducible. Seed strings are byte-identical before and
+#     after, so every selection this makes is unchanged.
+#   src/promotion.rs               agent_session_ids -> agent_session_digests,
+#     and the line src/cli_improve.rs prints from them. The values are FNV-1a
+#     digests of the recorded session JSON, committed as evidence under
+#     docs/case-studies/; `stable_id("promotion_agent_session", ...)` keeps its
+#     literal prefix, so the digests are byte-identical too.
+#
+# Not renamed, and reported instead:
+#   tests/unit/docs_requirements_issue_917.rs:133
+#   tests/unit/docs_requirements_issue_918.rs:131
+#     `let session_id = read(evidence.join("session-id.txt"));` -- this really is
+#     an Agent CLI session id, the name is right, and the assertion it feeds is
+#     what proves the committed evidence came from a real session. Renaming it
+#     would be spelling around a heuristic that has correctly identified what
+#     the variable holds. Both alerts stay open and are named here.
