@@ -118,3 +118,33 @@ _Alerts not introduced by this pull request might have been detected because the
 #     what proves the committed evidence came from a real session. Renaming it
 #     would be spelling around a heuristic that has correctly identified what
 #     the variable holds. Both alerts stay open and are named here.
+
+== after: the same check on the commit carrying the rename ==
+# Head 6149a639f. `gh api repos/link-assistant/formal-ai/commits/6149a639f/check-runs`
+# for the three CodeQL check runs, 2026-08-21:
+#
+#   CodeQL (actions)  success  13:23:42 -> 13:24:44
+#   CodeQL (rust)     success  13:23:42 -> 13:32:53
+#     https://github.com/link-assistant/formal-ai/actions/runs/32486606375/job/96784436271
+#   CodeQL            success  "No new alerts in code changed by this pull request"
+#     https://github.com/link-assistant/formal-ai/runs/96784677379
+#
+# The aggregate check reported "1 configuration not found" while the rust leg was
+# still analysing, and resolved to success the moment that leg uploaded its
+# results. Nothing was dismissed and no alert was suppressed; the count moved
+# because the values stopped being named after credentials.
+#
+# gh api "repos/link-assistant/formal-ai/code-scanning/alerts?pr=1027&state=open"
+#   #1  high  rust/cleartext-logging  tests/unit/docs_requirements_issue_917.rs:192
+#       This operation writes session_id to a log file.
+#   #2  high  rust/cleartext-logging  tests/unit/docs_requirements_issue_918.rs:184
+#       This operation writes session_id to a log file.
+#   2 open, both expected, both named above as not renamed.
+#
+# gh api "...alerts?ref=refs/heads/main&state=open"
+#   98 critical  rust/hard-coded-cryptographic-value
+#    3 high      rust/cleartext-logging
+#   101 open, unchanged, because the rename is on this branch and not yet on main.
+#
+# 101 -> 2 on the branch, 0 critical, and the check that reported 98 critical
+# security vulnerabilities on the previous head now reports none.

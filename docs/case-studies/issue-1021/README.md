@@ -1532,4 +1532,17 @@ by lowering it.
     change we can make, and it is proposed here rather than filed, because
     opening an issue in someone else's repository is a decision for review.
 
+    A runner settled it. On 6149a639f both legs are green -- `CodeQL (rust)`
+    job 96784436271 and `CodeQL (actions)` job 96784436191 -- and the aggregate
+    check that had said *99 new alerts including 98 critical severity security
+    vulnerabilities* now says *No new alerts in code changed by this pull
+    request* (run 96784677379). Open alerts on the branch went 101 to 2, none
+    critical, while `main` still carries all 101, which is what shows the count
+    moved because the code changed and not because the query did. The 2 that
+    remain are the two named above. The aggregate check spent nine minutes
+    reporting "1 configuration not found" while the rust leg was still
+    analysing, which is worth knowing before reading a red CodeQL check as a
+    verdict: until every configured language has uploaded, the check reports
+    the absence of an answer in the same slot where it later reports one.
+
 [agent-297]: https://github.com/link-assistant/agent/issues/297
