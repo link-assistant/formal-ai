@@ -31,6 +31,11 @@
 //! checked-in cache satisfies the closure tests offline. Run with
 //! `rust-script scripts/ground-meanings.rs` (std-only; also compiles with
 //! `rustc`). Requires `curl`, `python3`, and a built `cargo`.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::fs;
 use std::io::{self, Write};

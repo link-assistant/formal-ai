@@ -2,9 +2,9 @@ self_ast_census
   target src/statement_verification.rs
   language rust
   fidelity signature
-  byte_len 22522
+  byte_len 22510
   line_count 617
-  content_id source_module_71bca433ce0f537a
+  content_id source_module_77e97b0168b26647
   symbol_count 38
   symbols
     const SENTENCE_TERMINATORS 28 28

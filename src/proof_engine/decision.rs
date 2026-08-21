@@ -48,10 +48,10 @@ pub fn attempt_decision_procedure(claim: &str, language: &str) -> Option<ProofOu
         // syntax outside its grammar.
         return None;
     }
-    if has_linear_signal(&normalized) {
-        if let Some(outcome) = linear::attempt_linear_claim(&normalized, language) {
-            return Some(outcome);
-        }
+    if has_linear_signal(&normalized)
+        && let Some(outcome) = linear::attempt_linear_claim(&normalized, language)
+    {
+        return Some(outcome);
     }
     if has_boolean_signal(&normalized) {
         return boolean::attempt_boolean_claim(&normalized, language);

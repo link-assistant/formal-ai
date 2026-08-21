@@ -2,9 +2,9 @@ self_ast_census
   target src/orchestration/analysis.rs
   language rust
   fidelity signature
-  byte_len 14912
-  line_count 429
-  content_id source_module_607052972ba5f094
+  byte_len 14868
+  line_count 426
+  content_id source_module_149a1640cf01410e
   symbol_count 20
   symbols
     const SOURCES_PLACEHOLDER 14 14
@@ -17,13 +17,13 @@ self_ast_census
     enum AgentSynthesisError 68 73
     function fmt 76 90
     function synthesize_sessions 101 197
-    function extract_agent_result 205 229
-    function update_embedded_json_candidates 236 246
-    function update_best_candidate 248 257
-    function result_candidate 259 293
-    function text_at 295 302
-    function content_text 304 322
-    function correction_requests 324 366
-    function apply_verified_translation 370 391
-    function observe_orchestration_session 396 422
-    function target_slug 424 429
+    function extract_agent_result 205 227
+    function update_embedded_json_candidates 234 244
+    function update_best_candidate 246 254
+    function result_candidate 256 290
+    function text_at 292 299
+    function content_text 301 319
+    function correction_requests 321 363
+    function apply_verified_translation 367 388
+    function observe_orchestration_session 393 419
+    function target_slug 421 426

@@ -6,9 +6,9 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
+    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramSpec, WRITE_PROGRAM_INTENT,
     program_language_by_alias, program_spec, program_template_count, supported_program_languages,
-    supported_program_tasks, ExecutionStatus, ProgramExecution, ProgramSpec, PROGRAM_LANGUAGES,
-    WRITE_PROGRAM_INTENT,
+    supported_program_tasks,
 };
 
 use std::sync::OnceLock;
@@ -17,24 +17,23 @@ use serde::{Deserialize, Serialize};
 
 use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
-    assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
-    russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
+    ASSISTANT_NAME_EXAMPLES, assistant_name_answer, chinese_assistant_name_answer,
+    hindi_assistant_name_answer, russian_assistant_name_answer,
+};
+use crate::engine_responses::{
+    ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES,
+    TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES, chinese_assistant_free_time_answer,
+    chinese_courtesy_response_answer, chinese_farewell_answer, chinese_greeting_answer,
+    chinese_identity_answer, chinese_test_status_answer, chinese_wellbeing_answer,
+    courtesy_response_answer, hindi_assistant_free_time_answer, hindi_courtesy_response_answer,
+    hindi_farewell_answer, hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
+    hindi_wellbeing_answer, russian_assistant_free_time_answer, russian_courtesy_response_answer,
+    russian_farewell_answer, russian_greeting_answer, russian_identity_answer,
+    russian_test_status_answer, russian_wellbeing_answer, test_status_answer,
 };
 pub(crate) use crate::engine_responses::{
     assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,
     unknown_language_fallback_answer, wellbeing_answer,
-};
-use crate::engine_responses::{
-    chinese_assistant_free_time_answer, chinese_courtesy_response_answer, chinese_farewell_answer,
-    chinese_greeting_answer, chinese_identity_answer, chinese_test_status_answer,
-    chinese_wellbeing_answer, courtesy_response_answer, hindi_assistant_free_time_answer,
-    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
-    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
-    russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
-    russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
-    russian_wellbeing_answer, test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES,
-    COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES,
-    UNKNOWN_EXAMPLES,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
@@ -46,10 +45,10 @@ pub const DEFAULT_MODEL: &str = "formal-ai";
 // Thinking model + deterministic naturalizer live in `crate::thinking` (issue #488),
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
 pub use crate::thinking::{
-    humanize_meta_identifier, localize_thinking_steps, naturalize_thinking_step,
+    ThinkingStep, humanize_meta_identifier, localize_thinking_steps, naturalize_thinking_step,
     naturalize_thinking_step_in, render_thinking_steps, render_thinking_steps_in,
     thinking_answer_language, thinking_language_label, thinking_language_label_in,
-    thinking_narrative, thinking_narrative_in, thinking_trace_heading, ThinkingStep,
+    thinking_narrative, thinking_narrative_in, thinking_trace_heading,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -818,7 +817,12 @@ fn write_program_answer(
         write_program_intro(spec.language.name, spec.task.label, language),
         spec.language.code_fence,
         spec.template.code,
-        execution_report(&spec.language.execution, &expected_output, language),
+        execution_report(
+            &spec.language.execution,
+            &spec.run_command_line(),
+            &expected_output,
+            language,
+        ),
         program_explanation_section(spec, language),
         program_test_instructions(spec, language, prior_code_response),
     )
@@ -837,8 +841,13 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
     }
 }
 
-fn execution_report(execution: &ProgramExecution, output: &str, language: Language) -> String {
-    let command_lines = execution_command_lines(execution);
+fn execution_report(
+    execution: &ProgramExecution,
+    run_command: &str,
+    output: &str,
+    language: Language,
+) -> String {
+    let command_lines = execution_command_lines(execution, run_command);
     let verified = matches!(execution.status, ExecutionStatus::Verified);
     let status_phrase = execution_status_phrase(execution.status, language);
     let output_label = execution_output_label(verified, language);
@@ -891,14 +900,15 @@ fn execution_output_label(verified: bool, language: Language) -> &'static str {
     }
 }
 
-fn execution_command_lines(execution: &ProgramExecution) -> String {
+/// The commands a reader types, verbatim.
+///
+/// `run_command` is passed in rather than read off `execution` because a task
+/// that reads standard input is run with its fixture piped in
+/// ([`crate::coding::ProgramSpec::run_command_line`], issue #863); for every
+/// other task it is `execution.run_command` unchanged.
+fn execution_command_lines(execution: &ProgramExecution, run_command: &str) -> String {
     execution.check_command.map_or_else(
-        || format!("Run command: `{}`", execution.run_command),
-        |check_command| {
-            format!(
-                "Check command: `{check_command}`\nRun command: `{}`",
-                execution.run_command
-            )
-        },
+        || format!("Run command: `{run_command}`"),
+        |check_command| format!("Check command: `{check_command}`\nRun command: `{run_command}`"),
     )
 }

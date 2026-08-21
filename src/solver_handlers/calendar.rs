@@ -629,7 +629,8 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     if has_clock && has_timezone && has_participant {
         return true;
     }
-    let has_schedule_verb = [
+    
+    [
         "забей",
         "поставь",
         "создай",
@@ -639,8 +640,7 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         "add to",
     ]
     .iter()
-    .any(|verb| contains_term(normalized, verb));
-    has_schedule_verb
+    .any(|verb| contains_term(normalized, verb))
 }
 
 fn extract_day_number(normalized: &str) -> Option<u32> {
@@ -659,11 +659,10 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
                     break;
                 }
             }
-            if let Ok(n) = digits.parse::<u32>() {
-                if (1..=31).contains(&n) {
+            if let Ok(n) = digits.parse::<u32>()
+                && (1..=31).contains(&n) {
                     return Some(n);
                 }
-            }
         }
     }
     let mut num = String::new();
@@ -676,11 +675,10 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
             return None;
         }
     }
-    if let Ok(n) = num.parse::<u32>() {
-        if (1..=31).contains(&n) {
+    if let Ok(n) = num.parse::<u32>()
+        && (1..=31).contains(&n) {
             return Some(n);
         }
-    }
     None
 }
 
@@ -771,11 +769,10 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
                 break;
             }
         }
-        if let Ok(h) = num.parse::<u32>() {
-            if h <= 23 {
+        if let Ok(h) = num.parse::<u32>()
+            && h <= 23 {
                 return Some((h, 0));
             }
-        }
     }
     None
 }
@@ -803,11 +800,10 @@ fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
             if start == prefix_end || !allowed_marker {
                 continue;
             }
-            if let Ok(hour) = prefix[start..].parse::<u32>() {
-                if hour <= 23 {
+            if let Ok(hour) = prefix[start..].parse::<u32>()
+                && hour <= 23 {
                     return Some((hour, 0));
                 }
-            }
         }
     }
     None
@@ -852,11 +848,10 @@ fn extract_title(normalized: &str) -> Option<String> {
     for verb in ["забей", "поставь", "создай", "добавь"] {
         if let Some(pos) = normalized.find(verb) {
             let after = normalized[pos + verb.len()..].trim_start();
-            if let Some(title) = tidy_title(after) {
-                if title.chars().count() < 60 {
+            if let Some(title) = tidy_title(after)
+                && title.chars().count() < 60 {
                     return Some(title);
                 }
-            }
         }
     }
     None

@@ -14,7 +14,7 @@
     "test:pages": "playwright test --config=playwright.pages.config.js"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "serve": "^14.2.6"
   },
   "dependencies": {

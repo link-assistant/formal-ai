@@ -33,6 +33,9 @@
 //!   - max_published_version: the highest non-yanked version on crates.io (for downstream use)
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ureq = "2"

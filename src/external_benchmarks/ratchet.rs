@@ -46,13 +46,13 @@ pub fn violations(ledger: &Ledger) -> Vec<String> {
 
     for (suite_id, suite) in &suites {
         let best = best_pass_count(&results, suite_id, suite.ratchet_slice);
-        if let Some(best) = best {
-            if suite.minimum_pass_count < best {
-                violations.push(format!(
+        if let Some(best) = best
+            && suite.minimum_pass_count < best
+        {
+            violations.push(format!(
                     "{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}",
                     suite.minimum_pass_count, suite.ratchet_slice
                 ));
-            }
         }
     }
 

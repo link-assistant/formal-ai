@@ -4,8 +4,8 @@ use std::collections::BTreeMap;
 
 use formal_ai::event_log::EventLog;
 use formal_ai::question_necessity::{
-    authorize_question, classify_question, enforce_questions, policy_summary, NecessityTrace,
-    QuestionAuthorization, QuestionClass, QuestionRefusal,
+    NecessityTrace, QuestionAuthorization, QuestionClass, QuestionRefusal, authorize_question,
+    classify_question, enforce_questions, policy_summary,
 };
 use formal_ai::{SolverConfig, SymbolicAnswer, UniversalSolver};
 
@@ -216,10 +216,12 @@ fn issue_920_question_marks_in_quotes_code_and_urls_are_not_questions() {
         enforce_questions(quoted_example, &mut quoted_log),
         quoted_example
     );
-    assert!(quoted_log
-        .events()
-        .iter()
-        .all(|event| !event.kind.starts_with("question_necessity:")));
+    assert!(
+        quoted_log
+            .events()
+            .iter()
+            .all(|event| !event.kind.starts_with("question_necessity:"))
+    );
 }
 
 #[test]
@@ -246,10 +248,11 @@ fn issue_920_fenced_question_examples_are_not_assistant_questions() {
     let mut log = EventLog::new();
 
     assert_eq!(enforce_questions(body, &mut log), body);
-    assert!(log
-        .events()
-        .iter()
-        .all(|event| !event.kind.starts_with("question_necessity:")));
+    assert!(
+        log.events()
+            .iter()
+            .all(|event| !event.kind.starts_with("question_necessity:"))
+    );
 }
 
 #[test]

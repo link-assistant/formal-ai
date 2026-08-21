@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 7059
   line_count 201
-  content_id source_module_b03830849be5aeca
+  content_id source_module_df6fffb5941d175a
   symbol_count 9
   symbols
     struct TaskDecompositionArtifactError 18 21

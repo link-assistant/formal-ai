@@ -2,9 +2,9 @@ self_ast_census
   target src/substitution_compiler/mod.rs
   language rust
   fidelity signature
-  byte_len 7030
-  line_count 212
-  content_id source_module_301519e97c30ecfd
+  byte_len 7046
+  line_count 214
+  content_id source_module_034f8da25c9599a9
   symbol_count 20
   symbols
     module javascript 7 7
@@ -26,4 +26,4 @@ self_ast_census
     function lower_pattern 157 162
     function lower_node 164 177
     function safe_file_stem 179 195
-    function compilation_trace 197 212
+    function compilation_trace 197 214

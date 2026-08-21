@@ -1,13 +1,13 @@
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::option_network::{Comparison, Constraint, OptionNetwork, Tier};
 use formal_ai::relative_meta_logic::RelativeEvidence;
 use formal_ai::{
+    CachedSourceClient, EventLog, FetchError, SourceTier, SourceTransport, Stance, UniversalSolver,
     execute_duckduckgo_search, execute_option_research, execute_statement_research, sha256_hex,
-    try_web_search_with_client, CachedSourceClient, EventLog, FetchError, SourceTier,
-    SourceTransport, Stance, UniversalSolver,
+    try_web_search_with_client,
 };
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
@@ -89,14 +89,18 @@ fn external_search_never_fabricates_source_provenance() {
 fn declared_seed_sources_do_not_masquerade_as_http_captures() {
     let answer = UniversalSolver::default().solve("Combine translated definitions for IIR");
     assert_eq!(answer.intent, "definition_merge");
-    assert!(answer
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("definition_merge:source_declared:")));
-    assert!(answer
-        .evidence_links
-        .iter()
-        .all(|link| !link.starts_with("source:http:")));
+    assert!(
+        answer
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("definition_merge:source_declared:"))
+    );
+    assert!(
+        answer
+            .evidence_links
+            .iter()
+            .all(|link| !link.starts_with("source:http:"))
+    );
 }
 
 #[test]
@@ -243,10 +247,12 @@ fn web_search_handler_reports_only_executed_provider_results() {
 
     assert!(answer.answer.contains("https://result.invalid/a"));
     assert!(answer.answer.contains("https://result.invalid/b"));
-    assert!(answer
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("source:http:")));
+    assert!(
+        answer
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("source:http:"))
+    );
     assert_eq!(
         log.events()
             .iter()
@@ -255,10 +261,11 @@ fn web_search_handler_reports_only_executed_provider_results() {
             .collect::<Vec<_>>(),
         vec!["duckduckgo"]
     );
-    assert!(log
-        .events()
-        .iter()
-        .any(|event| event.kind == "web_search:combined"));
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "web_search:combined")
+    );
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
 
@@ -290,10 +297,12 @@ fn source_research_auto_learns_options_from_captured_pages_and_replays() {
     assert_eq!(first.research.search.rankings.len(), 2);
     assert_eq!(first.research.pages.len(), 2);
     assert_eq!(network.candidates().len(), 2);
-    assert!(network
-        .candidates()
-        .iter()
-        .all(|candidate| candidate.supplies.contains_key("output_voltage")));
+    assert!(
+        network
+            .candidates()
+            .iter()
+            .all(|candidate| candidate.supplies.contains_key("output_voltage"))
+    );
     assert!(network.links_notation().contains("official_compatible"));
     let proposal = first.learning_proposal(&network);
     assert!(proposal.contains(first.research.pages[0].capture.sha256()));
@@ -321,11 +330,13 @@ fn source_research_auto_learns_options_from_captured_pages_and_replays() {
         replay.learning_proposal(&replay_network),
         first.learning_proposal(&network)
     );
-    assert!(replay
-        .research
-        .pages
-        .iter()
-        .all(|page| page.capture.cached()));
+    assert!(
+        replay
+            .research
+            .pages
+            .iter()
+            .all(|page| page.capture.cached())
+    );
     assert_eq!(requests.load(Ordering::SeqCst), 3);
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
@@ -443,10 +454,12 @@ fn whole_source_research_task_executes_and_replays_without_inventing_evidence() 
 
     assert_eq!(live_network.candidates().len(), 2);
     assert_eq!(live_audit.len(), 1);
-    assert!(live_answer
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("source:http:")));
+    assert!(
+        live_answer
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("source:http:"))
+    );
     assert!(live_log.events().iter().all(|event| {
         event.kind != "source:http"
             || (event.payload.contains("fetched_at=1753444800")

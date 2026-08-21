@@ -1037,7 +1037,7 @@ Seed rules currently cover:
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
-Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
+Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, C, and PHP examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
 
 No GPU, neural network, remote model, or random sampling is used.
 

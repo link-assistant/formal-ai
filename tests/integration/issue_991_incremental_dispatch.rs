@@ -14,8 +14,8 @@ use std::os::unix::fs::PermissionsExt as _;
 use std::path::Path;
 
 use formal_ai::orchestration::{
-    dispatch_agents, AgentCommand, AgentRunPermission, DispatchConfig, DispatchMode,
-    VerificationCommand,
+    AgentCommand, AgentRunPermission, DispatchConfig, DispatchMode, VerificationCommand,
+    dispatch_agents,
 };
 
 use super::issue_703_orchestration::TestWorkspace;
@@ -170,10 +170,12 @@ fn a_task_too_big_for_the_cli_is_split_from_its_failure_and_composed_back_up() {
     let lines = done.lines().collect::<Vec<_>>();
     assert_eq!(lines.len(), 3, "{done}");
     assert_eq!(lines[2], COMPOUND_TASK);
-    assert!(report
-        .composed_changes
-        .iter()
-        .any(|change| change.path == "done.txt"));
+    assert!(
+        report
+            .composed_changes
+            .iter()
+            .any(|change| change.path == "done.txt")
+    );
     for step in &trace.steps {
         assert!(
             config.output_dir.join(&step.session_file).is_file(),

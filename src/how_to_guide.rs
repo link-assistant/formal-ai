@@ -23,12 +23,12 @@ use std::collections::{BTreeMap, VecDeque};
 
 use crate::event_log::EventLog;
 use crate::relative_meta_logic::SourceTier;
-use crate::seed::{external_trusted_sources, percent_encode, SourceRecord};
+use crate::seed::{SourceRecord, external_trusted_sources, percent_encode};
 use crate::service_accessibility::{ServiceAccessibilityCache, ServiceStatus};
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceTransport};
 use crate::trace_record;
 
-use extract::{classify, extract_steps, wiki_link_titles, Payload};
+use extract::{Payload, classify, extract_steps, wiki_link_titles};
 
 /// A guide with fewer accepted steps than this is not a procedure; the caller
 /// must report insufficient evidence instead of pretending to answer.

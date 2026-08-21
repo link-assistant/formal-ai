@@ -4,7 +4,7 @@ use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
 use formal_ai::local_transport::{
-    openai_chat_request, webrtc_request, websocket_request, TransportRequest,
+    TransportRequest, openai_chat_request, webrtc_request, websocket_request,
 };
 use serde_json::Value;
 

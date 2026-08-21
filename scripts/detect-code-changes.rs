@@ -38,6 +38,9 @@
 //!   - any-code-changed: 'true' if any non-ignored code files changed
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```
@@ -72,14 +75,13 @@ fn exec(command: &str, args: &[&str]) -> String {
 }
 
 fn set_output(name: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Ok(mut file) = fs::OpenOptions::new()
+    if let Ok(output_file) = env::var("GITHUB_OUTPUT")
+        && let Ok(mut file) = fs::OpenOptions::new()
             .create(true)
             .append(true)
             .open(&output_file)
-        {
-            let _ = writeln!(file, "{name}={value}");
-        }
+    {
+        let _ = writeln!(file, "{name}={value}");
     }
     println!("{name}={value}");
 }
@@ -109,10 +111,10 @@ fn comparison_for_event(
             "complete pull request diff",
         );
     }
-    if event_name == "push" {
-        if let Some(before) = usable_before_sha(before) {
-            return (before.to_string(), "HEAD".to_string(), "complete push diff");
-        }
+    if event_name == "push"
+        && let Some(before) = usable_before_sha(before)
+    {
+        return (before.to_string(), "HEAD".to_string(), "complete push diff");
     }
     (
         "HEAD^".to_string(),
@@ -294,7 +296,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::{classify_changes, comparison_for_event, ChangeFlags};
+    use super::{ChangeFlags, classify_changes, comparison_for_event};
 
     #[test]
     fn pull_requests_compare_the_complete_base_to_head_range() {

@@ -38,9 +38,9 @@
 //! general rather than memorised (CONTRIBUTING rule 4).
 
 use formal_ai::gemini::{
-    create_gemini_generate_content_response_with_solver_and_memory, GeminiGenerateContentRequest,
+    GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
 };
-use formal_ai::protocol::{latest_user_request, ChatMessage};
+use formal_ai::protocol::{ChatMessage, latest_user_request};
 use formal_ai::seed;
 use formal_ai::{SolverConfig, UniversalSolver};
 
@@ -133,7 +133,10 @@ fn client_injected_context_is_not_the_users_request() {
             "environment_context",
             "<cwd>/tmp/workspace</cwd>\n<approval_policy>on-request</approval_policy>",
         ),
-        ("env", "Working directory: /tmp/workspace\nToday's date: 2026-08-02"),
+        (
+            "env",
+            "Working directory: /tmp/workspace\nToday's date: 2026-08-02",
+        ),
         (
             "environment_details",
             "# Current Time\n2026-08-02T20:00:00Z\n# Current Working Directory\n/tmp/workspace",
@@ -148,7 +151,10 @@ fn client_injected_context_is_not_the_users_request() {
             "<{tag}> is the client talking, not the user"
         );
         let call = gemini_call(&[&framed]);
-        assert_eq!(call["name"], "write_file", "<{tag}> must not decide the turn");
+        assert_eq!(
+            call["name"], "write_file",
+            "<{tag}> must not decide the turn"
+        );
     }
 }
 

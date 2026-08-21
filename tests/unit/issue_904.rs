@@ -17,9 +17,9 @@
 //!    "planned, not executed" state instead of a success state.
 
 use formal_ai::agentic_coding::general_planner::{
-    compose_general_change_plan, objective_text, GeneralPlanMode, PlanTerminalState, PLAN_PATH,
+    GeneralPlanMode, PLAN_PATH, PlanTerminalState, compose_general_change_plan, objective_text,
 };
-use formal_ai::agentic_coding::{run_agentic_task, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, run_agentic_task};
 use formal_ai::protocol::ChatMessage;
 
 /// The prompt shape from the issue: a harness system-prompt preamble, then the

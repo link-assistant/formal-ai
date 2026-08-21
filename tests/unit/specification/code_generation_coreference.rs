@@ -61,8 +61,7 @@ fn bare_imperative_results_follow_ups_bind_active_program_in_all_languages() {
         },
         ProgramFollowUpCase {
             name: "Russian",
-            initial:
-                "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
+            initial: "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
             path_argument_follow_up: "Сделай так, чтобы программа принимала путь как аргумент",
             bare_results_follow_up: "Сделай сортировку результатов в обратном порядке",
         },
@@ -142,8 +141,7 @@ fn unknown_bare_program_modifier_constructs_and_verifies_a_rule() {
         },
         ProgramFollowUpCase {
             name: "Russian",
-            initial:
-                "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
+            initial: "Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории",
             path_argument_follow_up: "Сделай так, чтобы программа принимала путь как аргумент",
             bare_results_follow_up: "Сделай сортировку результатов в обратном порядке",
         },

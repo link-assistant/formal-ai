@@ -2,7 +2,7 @@
 
 use std::collections::BTreeMap;
 
-use super::{nearly_zero, LinearAtom};
+use super::{LinearAtom, nearly_zero};
 
 pub(super) fn find_assignment(
     atom: &LinearAtom,

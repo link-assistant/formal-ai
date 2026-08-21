@@ -9,9 +9,9 @@ use std::collections::BTreeMap;
 use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
 use crate::recursive_execution::{RecursiveExecution, RecursiveRun};
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
-use super::{strategy, Decomposition};
+use super::{Decomposition, strategy};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TaskStrategyProposal {

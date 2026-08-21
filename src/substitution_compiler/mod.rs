@@ -207,6 +207,8 @@ fn compilation_trace(ir: &SubstitutionProgramIr, target: SubstitutionCompilation
     };
     format!(
         "substitution_compilation {identity}\n  target {}\n  source_rule_set {}\n  ir_rule_count {}\n  stage lower_to_target_neutral_ir\n  stage emit_from_rust_owned_compiler\n  execution {execution}\n  verification executable_parity_required\n  doctrine javascript_interface_only",
-        target.slug(), ir.id, ir.rules.len()
+        target.slug(),
+        ir.id,
+        ir.rules.len()
     )
 }

@@ -515,6 +515,35 @@ coding_idioms
       case
         for "maximum"
         code "{list}.maxOrNull()"
+  language "php"
+    mutable_list "true"
+    scaffold "list_transformation"
+      code '<?php\n\n${list} = [{literal}];\n{action}\necho implode(", ", ${list}), PHP_EOL;'
+    scaffold "list_reduction"
+      code '<?php\n\n${list} = [{literal}];\n${reduced} = {expression};\necho ${reduced}, PHP_EOL;'
+    idiom "action"
+      case
+        for "sort"
+        code "sort(${list});"
+      case
+        for "reverse_sort"
+        code "rsort(${list});"
+      case
+        for "reverse"
+        code "${list} = array_reverse(${list});"
+    idiom "expression"
+      case
+        for "sum"
+        code "array_sum(${list})"
+      case
+        for "product"
+        code "array_product(${list})"
+      case
+        for "minimum"
+        code "min(${list})"
+      case
+        for "maximum"
+        code "max(${list})"
   coding_meta_algorithm problem_class_to_shared_ir_to_renderers_to_verification
     stage_evidence "{stage} output={output} verifier={verifier}"
     surface_evidence "{surface} projection={projection}"

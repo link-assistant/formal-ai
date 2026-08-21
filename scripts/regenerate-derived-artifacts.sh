@@ -46,6 +46,12 @@ run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt
   rust-script scripts/check-hardcoded-language.rs --write
 run_step "self-AST census (data/meta/self-ast/)" \
   cargo run --quiet --example regenerate_self_ast_census
+# These three are derived from src/agentic_coding/planner.rs, so any edit to the
+# planner -- including one a formatter makes -- leaves them stale. They were
+# missing from this list, and the only thing that noticed was a test failure
+# several minutes into the suite.
+run_step "planner fixtures (data/meta/self-ast.lino, data/meta/self-healing-case.lino, docs/case-studies/issue-538/agent-cli-session-self-ast.json)" \
+  cargo run --quiet --example regenerate_planner_fixtures
 run_step "formatting" cargo fmt
 
 echo ""

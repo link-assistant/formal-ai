@@ -143,7 +143,10 @@ fn most_frequent_pair(sequence: &[LinkAddress]) -> Option<((LinkAddress, LinkAdd
 }
 
 /// Count non-overlapping occurrences of `pair` scanning left to right.
-fn count_non_overlapping(sequence: &[LinkAddress], pair: (LinkAddress, LinkAddress)) -> usize {
+const fn count_non_overlapping(
+    sequence: &[LinkAddress],
+    pair: (LinkAddress, LinkAddress),
+) -> usize {
     let mut count = 0;
     let mut index = 0;
     while index + 1 < sequence.len() {

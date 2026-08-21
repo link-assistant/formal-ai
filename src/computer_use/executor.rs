@@ -8,12 +8,11 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use base64::Engine as _;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use sha2::{Digest, Sha256};
+use serde_json::{Value, json};
 
 use super::{
-    ComputerPlanStep, ComputerStepRecord, ComputerUsePrimitive, VerificationEvent,
-    VerificationPhase, COMPUTER_USE_PRIMITIVES,
+    COMPUTER_USE_PRIMITIVES, ComputerPlanStep, ComputerStepRecord, ComputerUsePrimitive,
+    VerificationEvent, VerificationPhase,
 };
 
 static SESSION_SEQUENCE: AtomicU64 = AtomicU64::new(0);
@@ -762,7 +761,7 @@ fn string_array<'a>(arguments: &'a Value, key: &str) -> Result<Vec<&'a str>, Str
 }
 
 fn digest(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    crate::source_fetch::sha256_hex(bytes)
 }
 
 fn fixture(url: &str) -> Option<&'static str> {

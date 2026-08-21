@@ -1,5 +1,5 @@
 use super::*;
-use crate::coding::{program_language_by_slug, PROGRAM_LANGUAGES};
+use crate::coding::{PROGRAM_LANGUAGES, program_language_by_slug};
 
 /// Test-only enumeration of every CST grammar declared in the seed. The shipped
 /// crate only ever looks a single language up (`grammar_metadata`), so this
@@ -31,8 +31,12 @@ const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &["scala", "kotlin"];
 #[test]
 fn every_catalog_language_has_cst_metadata_or_is_a_declared_gap() {
     for language in PROGRAM_LANGUAGES {
-        let declared = grammar_metadata(language.slug).is_some();
-        let known_gap = LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR.contains(&language.slug);
+        // Read through the base language: a grammar describes the language a
+        // program is written in, so a framework target inherits its base
+        // language's rather than needing one of its own (issue #723).
+        let slug = language.base_language().slug;
+        let declared = grammar_metadata(slug).is_some();
+        let known_gap = LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR.contains(&slug);
         assert!(
             declared != known_gap,
             "`{}` must either have CST metadata or be a declared gap, never both or neither",
@@ -156,6 +160,7 @@ fn meta_language_handles_every_covered_language() {
             "cpp" => "int main() { return 0; }\n",
             "go" => "package main\n\nfunc main() {}\n",
             "ruby" => "puts 1\n",
+            "php" => "<?php\n\necho 1;\n",
             other => panic!("no snippet for meta-language language `{other}`"),
         };
         let cst = parse_program_cst(&grammar.language_slug, snippet)

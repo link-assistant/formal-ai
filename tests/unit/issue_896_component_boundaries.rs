@@ -2,7 +2,7 @@ use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use formal_ai::{execute_duckduckgo_search, CachedSourceClient, FetchError, SourceTransport};
+use formal_ai::{CachedSourceClient, FetchError, SourceTransport, execute_duckduckgo_search};
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
 

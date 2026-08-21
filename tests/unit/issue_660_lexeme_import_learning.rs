@@ -1,7 +1,7 @@
 //! Issue #660 executed through the generalized auto-learning recipe.
 
 use formal_ai::agentic_coding::learning_report::lexeme_import_learning;
-use formal_ai::agentic_coding::{run_agentic_task, LEXEME_IMPORT_LEARNING_PATH, REPORTS};
+use formal_ai::agentic_coding::{LEXEME_IMPORT_LEARNING_PATH, REPORTS, run_agentic_task};
 
 const DIFFERENTLY_WORDED_TASK: &str = "Study the persisted bulk vocabulary ingestion evidence as an associative network, rank reusable amendments without adopting them, and save lexeme-import-learning-report.lino";
 
@@ -23,8 +23,11 @@ fn issue_660_learning_remains_human_review_gated() {
     let report = lexeme_import_learning::render_document();
     assert!(report.starts_with("lexeme_import_learning_report\n  issue \"660\"\n"));
     assert!(report.contains("decision \"awaiting_human_review\""));
-    assert!(report
-        .contains("promotion_gate \"bulk_lexeme_import_integrity_and_dual_agent_cli_e2e_pass\""));
+    assert!(
+        report.contains(
+            "promotion_gate \"bulk_lexeme_import_integrity_and_dual_agent_cli_e2e_pass\""
+        )
+    );
     assert!(!report.contains("decision \"promoted\""));
 }
 

@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/selection.rs
   language rust
   fidelity signature
-  byte_len 12837
-  line_count 417
-  content_id source_module_da42dcb84f10cfff
+  byte_len 13417
+  line_count 426
+  content_id source_module_33f08ea106a96ab4
   symbol_count 26
   symbols
     struct FormalizationSelectionConfig 14 18
@@ -27,9 +27,9 @@ self_ast_census
     function probability_margin_epsilon 316 318
     function should_clarify 320 322
     function sample_index 324 334
-    function selection_salt 336 350
-    function seeded_unit_interval 352 356
-    function fnv1a64 358 365
-    function usize_to_f32 367 370
-    function clarifying_question 372 387
-    function predicate_clarifying_question 389 417
+    function selection_seed 336 350
+    function seeded_unit_interval 361 365
+    function fnv1a64 367 374
+    function usize_to_f32 376 379
+    function clarifying_question 381 396
+    function predicate_clarifying_question 398 426

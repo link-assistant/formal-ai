@@ -9,8 +9,8 @@
 
 use formal_ai::link_store::DoubletLink;
 use formal_ai::links_substitution_query::{
-    link_substitution_effect, parse_link_substitution_query, render_link_substitution_query,
     LinkPattern, LinkRewriteProgram, LinkRewriteRule, Slot, SubstitutionQueryError,
+    link_substitution_effect, parse_link_substitution_query, render_link_substitution_query,
 };
 use formal_ai::normal_markov::RewriteHalt;
 use formal_ai::substitution::CrudEvent;
@@ -359,7 +359,9 @@ fn a_link_needs_both_a_source_and_a_target() {
 #[test]
 fn a_query_needs_two_sides() {
     assert!(parse_error("((1 1))").message.contains("found only one"));
-    assert!(parse_error("() ((1 1)) ()")
-        .message
-        .contains("trailing input"));
+    assert!(
+        parse_error("() ((1 1)) ()")
+            .message
+            .contains("trailing input")
+    );
 }

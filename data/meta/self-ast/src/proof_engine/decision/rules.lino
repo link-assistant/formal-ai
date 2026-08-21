@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/decision/rules.rs
   language rust
   fidelity signature
-  byte_len 11248
+  byte_len 11236
   line_count 378
-  content_id source_module_f285317575bf2d1f
+  content_id source_module_bfd805b19c14f316
   symbol_count 26
   symbols
     const MAX_ROUNDS 9 9

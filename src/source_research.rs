@@ -14,12 +14,12 @@ use crate::option_network::{OptionNetwork, Tier};
 use crate::relative_meta_logic::RelativeEvidence;
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 use crate::statement_verification::{
-    extract_statements, CapturedStatementEvidence, StatementPlan, StatementVerificationExecution,
-    StatementVerificationPlan,
+    CapturedStatementEvidence, StatementPlan, StatementVerificationExecution,
+    StatementVerificationPlan, extract_statements,
 };
 use crate::web_search_core::{
-    execute_duckduckgo_search, FusedEntry, SearchExecution, WEB_SEARCH_PROVIDER_LIMIT,
-    WEB_SEARCH_RRF_K,
+    FusedEntry, SearchExecution, WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_RRF_K,
+    execute_duckduckgo_search,
 };
 
 /// One fused result page captured from the exact URL returned by the provider.

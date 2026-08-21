@@ -73,7 +73,9 @@ impl ChangeRequest {
             .into_iter()
             .find(|digest| digest.path == target_module)
         else {
-            panic!("a change request targets a module that is not in the owned manifest: {target_module}")
+            panic!(
+                "a change request targets a module that is not in the owned manifest: {target_module}"
+            )
         };
 
         let derived_requirement = derive_requirement(trimmed);

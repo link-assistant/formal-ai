@@ -4,7 +4,7 @@
 use std::sync::OnceLock;
 
 use crate::language::detect as detect_language;
-use crate::seed::{self, parser::parse_lino, ROLE_DECOMPOSABLE_TASK_NOUN};
+use crate::seed::{self, ROLE_DECOMPOSABLE_TASK_NOUN, parser::parse_lino};
 
 use super::learning::TaskStrategyLedger;
 

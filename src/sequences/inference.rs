@@ -9,11 +9,11 @@ use std::collections::BTreeSet;
 
 use crate::seed;
 
-use super::compression::{compress, CompressionResult};
+use super::compression::{CompressionResult, compress};
 use super::grid_2d::{Grid, GridSymmetry, GridTransform};
 use super::patterns_1d::{
-    classify_sequence, detect_palindrome, detect_period, detect_repetition, RepetitionPattern,
-    SequencePattern,
+    RepetitionPattern, SequencePattern, classify_sequence, detect_palindrome, detect_period,
+    detect_repetition,
 };
 use super::store::{LinkAddress, SequenceStore};
 

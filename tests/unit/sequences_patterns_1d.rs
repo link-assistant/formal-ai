@@ -8,7 +8,7 @@ use formal_ai::sequences::patterns_1d::{
     classify_sequence, detect_translation, is_constant, is_reverse,
 };
 use formal_ai::sequences::{
-    detect_palindrome, detect_period, detect_repetition, LinkAddress, SequencePattern,
+    LinkAddress, SequencePattern, detect_palindrome, detect_period, detect_repetition,
 };
 
 fn seq(values: &[LinkAddress]) -> Vec<LinkAddress> {

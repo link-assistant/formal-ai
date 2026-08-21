@@ -1,4 +1,4 @@
-use formal_ai::orchestration::{replay_session, AgentStatus, AgentTarget};
+use formal_ai::orchestration::{AgentStatus, AgentTarget, replay_session};
 use std::fs;
 use std::path::{Path, PathBuf};
 

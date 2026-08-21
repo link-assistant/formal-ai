@@ -15,12 +15,11 @@
 //! deliberately slow).
 
 use formal_ai::agentic_coding::{
-    plan_chat_step, run_agentic_task, source_links, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, plan_chat_step, run_agentic_task, source_links,
 };
 use formal_ai::{
-    owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
-    owned_source_files, owned_total_bytes, ChatMessage, SourceLinks, SourceModuleProjection,
-    ToolCall,
+    ChatMessage, SourceLinks, SourceModuleProjection, ToolCall, owned_file_count, owned_manifest,
+    owned_manifest_content_id, owned_manifest_notation, owned_source_files, owned_total_bytes,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -266,9 +265,11 @@ fn driver_drives_the_source_links_projection_to_a_write() {
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
     assert_eq!(written["content"], source_links::render_document());
     assert_eq!(written["path"], source_links::SOURCE_LINKS_PATH);
-    assert!(outcome
-        .final_answer
-        .contains(source_links::SOURCE_LINKS_PATH));
+    assert!(
+        outcome
+            .final_answer
+            .contains(source_links::SOURCE_LINKS_PATH)
+    );
 }
 
 #[test]

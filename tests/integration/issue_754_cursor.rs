@@ -4,7 +4,7 @@ use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use formal_ai::seed::{client_integrations, response_for};
-use formal_ai::{handle_api_request, handle_api_request_with_auth, ApiAuthConfig};
+use formal_ai::{ApiAuthConfig, handle_api_request, handle_api_request_with_auth};
 
 use crate::http_server::{http_request, reserve_loopback_port, spawn_formal_ai_server};
 
@@ -45,11 +45,13 @@ fn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {
     assert_eq!(cursor.invocation.non_interactive_args, ["-p"]);
     assert_eq!(cursor.invocation.temp_home_env, "HOME");
     assert_eq!(cursor.invocation.temp_home_config_path, ".cursor/mcp.json");
-    assert!(cursor
-        .invocation
-        .temp_home_json_settings
-        .iter()
-        .any(|(path, value)| path == "mcpServers.formal-ai.url" && value == "{base_url}/mcp"));
+    assert!(
+        cursor
+            .invocation
+            .temp_home_json_settings
+            .iter()
+            .any(|(path, value)| path == "mcpServers.formal-ai.url" && value == "{base_url}/mcp")
+    );
 }
 
 #[test]
@@ -103,9 +105,11 @@ fn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {
     );
     let listed: serde_json::Value = serde_json::from_str(&listed.body).expect("tools JSON");
     assert_eq!(listed["result"]["tools"][0]["name"], "formal_ai_chat");
-    assert!(listed["result"]["tools"][0]["description"]
-        .as_str()
-        .is_some_and(|description| !description.is_empty()));
+    assert!(
+        listed["result"]["tools"][0]["description"]
+            .as_str()
+            .is_some_and(|description| !description.is_empty())
+    );
 
     let called = handle_api_request(
         "POST",
@@ -115,9 +119,11 @@ fn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {
     assert_eq!(called.status_code, 200);
     let called: serde_json::Value = serde_json::from_str(&called.body).expect("call JSON");
     assert_eq!(called["result"]["content"][0]["type"], "text");
-    assert!(called["result"]["content"][0]["text"]
-        .as_str()
-        .is_some_and(|text| !text.is_empty()));
+    assert!(
+        called["result"]["content"][0]["text"]
+            .as_str()
+            .is_some_and(|text| !text.is_empty())
+    );
 }
 
 #[test]

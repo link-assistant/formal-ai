@@ -1,3 +1,8 @@
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
+
 fn main() {
     let status = std::process::Command::new("cargo")
         .arg("run")

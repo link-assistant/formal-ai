@@ -2,39 +2,39 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 10145
-  line_count 265
-  content_id source_module_9bdcc5fa2dc5c8c4
+  byte_len 10117
+  line_count 263
+  content_id source_module_0173abacba29cff2
   symbol_count 20
   symbols
     struct ToolAttempt 14 19
     struct Progress 22 40
-    function scan 43 123
-    function done 126 128
-    function count 130 135
-    function successful_count 138 143
-    function latest_successful_output 146 152
-    function attempted_write_for 154 162
-    function successful_write_for 164 173
-    function last 181 183
-    function latest_failure 187 189
-    function previous_attempt 191 193
-    function failed_write_count_for 197 209
-    function fetch_result 211 213
-    function search_result 215 217
-    function argument_path 220 226
-    function argument_targets 228 234
-    function result_capability 239 247
-    function result_tool_call 249 256
-    function fetch_call_url 258 265
+    function scan 43 122
+    function done 125 127
+    function count 129 134
+    function successful_count 137 142
+    function latest_successful_output 145 151
+    function attempted_write_for 153 161
+    function successful_write_for 163 172
+    function last 180 182
+    function latest_failure 186 188
+    function previous_attempt 190 192
+    function failed_write_count_for 196 208
+    function fetch_result 210 212
+    function search_result 214 216
+    function argument_path 219 225
+    function argument_targets 227 233
+    function result_capability 238 245
+    function result_tool_call 247 254
+    function fetch_call_url 256 263
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7360
-    named_node_count 1533
-    distinct_node_kinds 68
+    total_link_count 7332
+    named_node_count 1529
+    distinct_node_kinds 69
     node_kinds
       arguments 122
       array_expression 1
@@ -43,7 +43,7 @@ self_ast_census
       attribute 1
       attribute_item 1
       binary_expression 21
-      block 36
+      block 34
       call_expression 122
       closure_expression 23
       closure_parameters 23
@@ -51,7 +51,7 @@ self_ast_census
       crate 3
       declaration_list 1
       doc_comment 32
-      expression_statement 26
+      expression_statement 24
       field_declaration 14
       field_declaration_list 2
       field_expression 132
@@ -62,11 +62,12 @@ self_ast_census
       function_item 18
       generic_type 21
       identifier 295
-      if_expression 12
+      if_expression 10
       impl_item 1
       index_expression 3
       inner_doc_comment_marker 7
       integer_literal 3
+      let_chain 2
       let_condition 6
       let_declaration 22
       line_comment 33

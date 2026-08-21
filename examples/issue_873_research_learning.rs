@@ -1,6 +1,6 @@
 use formal_ai::research_learning::{
-    AutonomyMode, CycleConfig, KnowledgeKind, ResearchLearningCycle, VerificationGate,
-    RESEARCH_LEARNING_RECIPE,
+    AutonomyMode, CycleConfig, KnowledgeKind, RESEARCH_LEARNING_RECIPE, ResearchLearningCycle,
+    VerificationGate,
 };
 
 fn main() {

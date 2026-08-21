@@ -184,8 +184,10 @@ fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<Workspa
     let pairs = match quoted.as_slice() {
         [new] => vec![(last_string_literal(&artifact.content)?, new.clone())],
         values if !values.is_empty() && values.len() % 2 == 0 => values
-            .chunks_exact(2)
-            .map(|pair| (pair[0].clone(), pair[1].clone()))
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|[old, new]| (old.clone(), new.clone()))
             .collect(),
         _ => return None,
     };

@@ -131,8 +131,7 @@ fn upstream_equation_categories_are_delegated_with_steps() {
 
 #[test]
 fn fallback_arithmetic_handles_large_integer_exponents_exactly() {
-    const TEN_POW_100: &str =
-        "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    const TEN_POW_100: &str = "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
     let value = crate::arithmetic::evaluate_fallback_formatted("10^100")
         .expect("large integer exponent should evaluate exactly");

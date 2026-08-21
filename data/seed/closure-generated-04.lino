@@ -74,11 +74,21 @@ meanings
     lexeme en
       surface
         text "compiled procedure"
+  contribution
+    defined-by concept
+    lexeme en
+      surface
+        text "contribution"
   dangling_meaning_review
     defined-by concept
     lexeme en
       surface
         text "dangling meaning review"
+  deprecated
+    defined-by category
+    lexeme en
+      surface
+        text "deprecated"
   desktop_local_sync
     defined-by flow
     lexeme en
@@ -89,6 +99,11 @@ meanings
     lexeme en
       surface
         text "duplicate"
+  entradas
+    defined-by concept
+    lexeme en
+      surface
+        text "entradas"
   eval_js
     defined-by name
     lexeme en
@@ -124,6 +139,11 @@ meanings
     lexeme en
       surface
         text "formal ai bundle"
+  gates
+    defined-by concept
+    lexeme en
+      surface
+        text "gates"
   github_repository_traffic
     defined-by intent
     lexeme en
@@ -210,10 +230,15 @@ meanings
       surface
         text "localized"
   ls
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "ls"
+  major
+    defined-by concept
+    lexeme en
+      surface
+        text "major"
   marie_curie
     defined-by concept
     lexeme en
@@ -229,6 +254,11 @@ meanings
     lexeme en
       surface
         text "meta expression"
+  mutating_action_blocked
+    defined-by intent
+    lexeme en
+      surface
+        text "mutating action blocked"
   nothing
     defined-by concept
     lexeme en
@@ -314,11 +344,21 @@ meanings
     lexeme en
       surface
         text "reach"
+  refused
+    defined-by concept
+    lexeme en
+      surface
+        text "refused"
   refuses
     defined-by concept
     lexeme en
       surface
         text "refuses"
+  refusing
+    defined-by concept
+    lexeme en
+      surface
+        text "refusing"
   repositories
     defined-by word_surface
     lexeme en

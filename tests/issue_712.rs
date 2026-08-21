@@ -2,7 +2,7 @@
 //!
 //! Every row below is copied from the live v0.289.0 report and failed before the fix.
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ChatMessage;
 fn single_call(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
     let messages = vec![ChatMessage::user(prompt)];

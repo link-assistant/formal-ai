@@ -65,9 +65,11 @@ fn grounded_action_recipe_has_eight_ordered_topic_neutral_steps() {
     let recipe = kind(&records, "meta_recipe");
     assert_eq!(recipe.len(), 1);
     assert_eq!(recipe[0].field("topic"), "grounded_action");
-    assert!(recipe[0]
-        .field("generalization")
-        .contains("any tool-backed task"));
+    assert!(
+        recipe[0]
+            .field("generalization")
+            .contains("any tool-backed task")
+    );
 
     let mut orders = kind(&records, "meta_step")
         .into_iter()
@@ -108,10 +110,14 @@ fn grounded_action_recipe_functions_and_runtime_parity_exist() {
         );
     }
     for parity in kind(&records, "meta_parity") {
-        assert!(read(parity.field("rust_source"))
-            .contains(&format!("fn {}", parity.field("rust_function"))));
-        assert!(read(parity.field("js_source"))
-            .contains(&format!("function {}", parity.field("js_function"))));
+        assert!(
+            read(parity.field("rust_source"))
+                .contains(&format!("fn {}", parity.field("rust_function")))
+        );
+        assert!(
+            read(parity.field("js_source"))
+                .contains(&format!("function {}", parity.field("js_function")))
+        );
     }
 }
 

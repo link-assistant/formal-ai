@@ -25,7 +25,7 @@ use std::fmt::Write as _;
 use crate::engine::FormalAiEngine;
 use crate::google_trends_catalog::google_trends_catalog;
 use crate::self_improvement::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, LearningRun, UnknownTrace,
+    BenchmarkGateReport, LearningRun, UnknownTrace, learn_rules_from_unknown_traces,
 };
 
 /// One trending prompt the engine cannot yet route — a point on the learning

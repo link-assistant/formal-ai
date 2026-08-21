@@ -29,8 +29,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::translation::cache::{
-    cache_location, escape_lino_string, split_body_into_chunks, CacheLocation,
-    MAX_SEED_LINES_PER_FILE, MAX_SEED_RECORDS_PER_BUCKET, SEED_BODY_CHUNK_CHARS, SEED_CACHE_DIR,
+    CacheLocation, MAX_SEED_LINES_PER_FILE, MAX_SEED_RECORDS_PER_BUCKET, SEED_BODY_CHUNK_CHARS,
+    SEED_CACHE_DIR, cache_location, escape_lino_string, split_body_into_chunks,
 };
 use formal_ai::translation::{CachedHttpClient, CurlClient, TranslationPipeline};
 
@@ -268,10 +268,10 @@ fn url_mentions_property(url: &str) -> bool {
     };
     for pair in url[query_start + 1..].split('&') {
         for prefix in ["ids=", "titles=", "search="] {
-            if let Some(value) = pair.strip_prefix(prefix) {
-                if looks_like_property_id(value) {
-                    return true;
-                }
+            if let Some(value) = pair.strip_prefix(prefix)
+                && looks_like_property_id(value)
+            {
+                return true;
             }
         }
     }

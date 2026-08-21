@@ -1,7 +1,7 @@
 //! Regressions for issue #832: reports must work outside the server process and
 //! must never claim that a failed shell command filed a GitHub issue.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::server::handle_api_request;
 use serde_json::Value;

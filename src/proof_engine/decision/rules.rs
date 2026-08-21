@@ -287,10 +287,10 @@ fn evaluate(program: &Program) -> Result<Evaluation, String> {
         let mut additions = BTreeSet::new();
         for rule in &program.rules {
             for substitution in satisfying_substitutions(&rule.body, &facts)? {
-                if let Some(atom) = instantiate(&rule.head, &substitution) {
-                    if !facts.contains(&atom) {
-                        additions.insert(atom);
-                    }
+                if let Some(atom) = instantiate(&rule.head, &substitution)
+                    && !facts.contains(&atom)
+                {
+                    additions.insert(atom);
                 }
             }
         }

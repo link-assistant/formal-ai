@@ -15,7 +15,7 @@
 //! 4. routing is unchanged: representative prompts still surface the same handler
 //!    relevants they did before the cues moved out of Rust.
 
-use formal_ai::cue_lexicon::{cue_set, cues, matches, CueMatch};
+use formal_ai::cue_lexicon::{CueMatch, cue_set, cues, matches};
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::translation::formalize_prompt;
 

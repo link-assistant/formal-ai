@@ -1,6 +1,5 @@
 use super::{AgentEvent, AgentSession};
 use serde_json::Error as JsonError;
-use sha2::{Digest, Sha256};
 use std::fmt;
 use std::fs;
 use std::io;
@@ -75,7 +74,7 @@ fn verify_events(events: &[AgentEvent]) -> Result<(), ReplayError> {
             "{}\0{}\0{}\0{}",
             event.sequence, event.kind, event.detail, event.previous_sha256
         );
-        let expected = format!("{:x}", Sha256::digest(payload.as_bytes()));
+        let expected = crate::source_fetch::sha256_hex(payload.as_bytes());
         if event.sha256 != expected {
             return Err(ReplayError::EventDigest(sequence));
         }

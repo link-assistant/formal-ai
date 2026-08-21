@@ -2,7 +2,7 @@
 
 use std::process::Command;
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::seed::{
     self, ROLE_LOCAL_PATH_DIRECTORY_KIND, ROLE_LOCAL_PATH_SCOPE_DESKTOP,

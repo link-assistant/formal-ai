@@ -453,8 +453,8 @@ fn answer_for_candidates(
         }
         return run(tool_names, &metadata_command(&candidate));
     }
-    if widened == Some("inventory") {
-        if let Some(expected) = request.kind {
+    if widened == Some("inventory")
+        && let Some(expected) = request.kind {
             let Some(metadata) = metadata else {
                 return run(tool_names, &metadata_command(&candidate));
             };
@@ -477,7 +477,6 @@ fn answer_for_candidates(
                 ));
             }
         }
-    }
 
     let actual = basename(&candidate);
     let exact = actual.eq_ignore_ascii_case(&request.subject);

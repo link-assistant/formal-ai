@@ -14,8 +14,8 @@ use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration
 use crate::links_format::flatten_lino_value;
 
 use super::{
-    deformalize, formalize, formalize_markdown, summarize, Statement, StatementKind,
-    SummarizationConfig,
+    Statement, StatementKind, SummarizationConfig, deformalize, formalize, formalize_markdown,
+    summarize,
 };
 
 /// Keep optional concrete-syntax evidence bounded for repository artifacts.
@@ -184,13 +184,13 @@ fn render_repository_file_summary(
         formalized.line_count,
         formalized.byte_count
     ));
-    if let Some(meta) = &formalized.meta_language {
-        if meta.is_valid() {
-            parts.push(format!(
-                "meta-language parsed it as {} with {} syntax links.",
-                meta.label, meta.syntax_link_count
-            ));
-        }
+    if let Some(meta) = &formalized.meta_language
+        && meta.is_valid()
+    {
+        parts.push(format!(
+            "meta-language parsed it as {} with {} syntax links.",
+            meta.label, meta.syntax_link_count
+        ));
     }
     if !formalized.embedded_grammars.is_empty() {
         parts.push(format!(
@@ -673,11 +673,11 @@ fn strip_leading_words<'a>(line: &'a str, words: &[&str]) -> &'a str {
     loop {
         let mut changed = false;
         for word in words {
-            if let Some(after_word) = rest.strip_prefix(word) {
-                if after_word.starts_with(char::is_whitespace) {
-                    rest = after_word.trim_start();
-                    changed = true;
-                }
+            if let Some(after_word) = rest.strip_prefix(word)
+                && after_word.starts_with(char::is_whitespace)
+            {
+                rest = after_word.trim_start();
+                changed = true;
             }
         }
         if !changed {

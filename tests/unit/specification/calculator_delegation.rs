@@ -455,8 +455,7 @@ fn compound_interest_prompt_returns_formula_steps_and_eur_conversion() {
 #[test]
 fn final_amount_conversion_uses_prior_compound_interest_answer() {
     let solver = UniversalSolver::default();
-    let first_prompt =
-        "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have? Show the formula, calculate step by step, and";
+    let first_prompt = "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have? Show the formula, calculate step by step, and";
     let first = solver.solve(first_prompt);
     assert_eq!(first.intent, "calculation");
     assert!(first.answer.contains("Final amount: 1489.85 USD"));

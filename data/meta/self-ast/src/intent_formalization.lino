@@ -2,9 +2,9 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 28071
-  line_count 776
-  content_id source_module_cfff851e36bc94fc
+  byte_len 27995
+  line_count 775
+  content_id source_module_cdeb9e48913d8941
   symbol_count 50
   symbols
     module prompt_relevants 27 27
@@ -38,22 +38,22 @@ self_ast_census
     function rewrite_bare_program_coreference_rule 406 435
     struct ActiveProgramContext 437 440
     function active_program_context 442 464
-    function recover_write_program_rule 480 552
-    function operation_vocabulary 554 557
-    static VOCABULARY 555 555
-    function detected_program_modifiers 566 573
-    function append_candidate_knowns 575 593
-    function slot_known_link 595 620
-    function looks_like_single_concept_lookup 622 629
-    function looks_arithmetic 631 641
-    function looks_like_latest_news_search 643 648
-    function looks_like_records_information_search 654 659
-    function looks_like_program_synthesis 661 674
-    function looks_like_text_manipulation 676 680
-    function has_any_token 682 684
-    function contains_term_for_relevants 688 693
-    function route_from_relevants 695 704
-    function infer_kind 706 749
-    function starts_with_question_word 751 766
-    function contains_question_mark 768 770
-    function push_unique 772 776
+    function recover_write_program_rule 480 551
+    function operation_vocabulary 553 556
+    static VOCABULARY 554 554
+    function detected_program_modifiers 565 572
+    function append_candidate_knowns 574 592
+    function slot_known_link 594 619
+    function looks_like_single_concept_lookup 621 628
+    function looks_arithmetic 630 640
+    function looks_like_latest_news_search 642 647
+    function looks_like_records_information_search 653 658
+    function looks_like_program_synthesis 660 673
+    function looks_like_text_manipulation 675 679
+    function has_any_token 681 683
+    function contains_term_for_relevants 687 692
+    function route_from_relevants 694 703
+    function infer_kind 705 748
+    function starts_with_question_word 750 765
+    function contains_question_mark 767 769
+    function push_unique 771 775

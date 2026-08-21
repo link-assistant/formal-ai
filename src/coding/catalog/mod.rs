@@ -12,14 +12,17 @@
 //! The catalog is split into cohesive, focused files to stay well under the
 //! repository's per-file line limit: [`types`] (the records), [`languages`]
 //! ([`PROGRAM_LANGUAGES`]), [`tasks`] ([`PROGRAM_TASKS`]), and the template
-//! tables in [`templates_core`] / [`templates_listing`] / [`templates_extended`],
-//! concatenated here as [`TEMPLATE_GROUPS`].
+//! tables in [`templates_core`] / [`templates_listing`] / [`templates_extended`] /
+//! [`templates_stdin`] / [`templates_framework`], concatenated here as
+//! [`TEMPLATE_GROUPS`].
 
 mod languages;
 mod tasks;
 mod templates_core;
 mod templates_extended;
+mod templates_framework;
 mod templates_listing;
+mod templates_stdin;
 mod types;
 
 use crate::event_log::EventLog;
@@ -44,6 +47,8 @@ const TEMPLATE_GROUPS: &[&[ProgramTemplate]] = &[
     templates_core::TEMPLATES_CORE,
     templates_listing::TEMPLATES_LISTING,
     templates_extended::TEMPLATES_EXTENDED,
+    templates_stdin::TEMPLATES_STDIN,
+    templates_framework::TEMPLATES_FRAMEWORK,
 ];
 
 /// Iterate over every program template across all groups.
@@ -100,12 +105,52 @@ fn alias_surfaces(prefix: &str, slug: &str) -> impl Iterator<Item = &'static str
         .flat_map(crate::seed::Meaning::words)
 }
 
+/// Does `normalized` name this implementation target by one of its surfaces?
+fn names_target(normalized: &str, language: &ProgramLanguage) -> bool {
+    alias_surfaces("program_language", language.slug).any(|alias| contains_token(normalized, alias))
+}
+
 #[must_use]
 pub fn program_language_by_alias(normalized: &str) -> Option<&'static ProgramLanguage> {
-    PROGRAM_LANGUAGES.iter().find(|language| {
-        alias_surfaces("program_language", language.slug)
-            .any(|alias| contains_token(normalized, alias))
-    })
+    // A request that names both a framework and the language that framework is
+    // written in — `напиши мне код на PHP Laravel`, issue #723 — names a single
+    // implementation target, and it is the more specific of the two: answering
+    // in the base language throws away the part of the request that was
+    // hardest to satisfy. Framework rows are therefore consulted first. Nothing
+    // else changes: with no framework named, this is the same first-match scan
+    // over [`PROGRAM_LANGUAGES`] it has always been.
+    PROGRAM_LANGUAGES
+        .iter()
+        .find(|language| language.is_framework() && names_target(normalized, language))
+        .or_else(|| {
+            PROGRAM_LANGUAGES
+                .iter()
+                .find(|language| names_target(normalized, language))
+        })
+}
+
+/// The language a program composed for this request is written in, or `None`
+/// when the request names no implementation target and inherits none.
+///
+/// A request names an *implementation target*, which may be a framework rather
+/// than a language (`напиши мне код на PHP Laravel`, issue #723). Composing a
+/// program out of the catalogued idioms is a question about the language rather
+/// than about the target — Laravel adds no way of sorting a list that PHP does
+/// not already have, and the artifact is a standalone script rather than a file
+/// inside an application — so the target resolves through
+/// [`ProgramLanguage::base_language`] here. The write-program path keeps the
+/// target itself, and answers with the template, the file and the run command
+/// that target actually asked for.
+#[must_use]
+pub fn composition_language(
+    normalized: &str,
+    inherited: Option<&'static ProgramLanguage>,
+) -> Option<&'static ProgramLanguage> {
+    Some(
+        program_language_by_alias(normalized)
+            .or(inherited)?
+            .base_language(),
+    )
 }
 
 #[must_use]
@@ -168,8 +213,16 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
     // A Latin language name can directly follow or precede Han characters in
     // an ordinary Chinese request (for example `翻译成Rust`). Han/Latin script
     // changes are token boundaries even when there is no whitespace. Keep
-    // ASCII-to-ASCII boundaries strict so short aliases such as `rs` and `c`
-    // still cannot match inside unrelated English words.
+    // letter-to-letter boundaries strict so short aliases such as `rs` and `c`
+    // still cannot match inside unrelated words.
+    //
+    // "Letter" here means alphabetic in *any* alphabetic script, not only
+    // ASCII: asking `is_ascii_alphanumeric` instead read the `c` of the Spanish
+    // `código` as an isolated token, because the `ó` after it is not ASCII and
+    // so looked like a word boundary — and every Spanish coding request
+    // mentioning code was answered in C (issue #1021). The scripts that are
+    // written without word spaces stay boundaries, which is the same contract
+    // [`contains_cjk`] and [`contains_devanagari`] draw everywhere else.
     if expected
         .chars()
         .all(|character| character.is_ascii_alphanumeric())
@@ -178,7 +231,9 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
             let before = normalized[..index].chars().next_back();
             let after = normalized[index + expected.len()..].chars().next();
             let is_alias_continuation = |character: char| {
-                character.is_ascii_alphanumeric() || matches!(character, '+' | '#')
+                let spaceless_script = contains_cjk(&character.to_string())
+                    || contains_devanagari(&character.to_string());
+                (character.is_alphanumeric() && !spaceless_script) || matches!(character, '+' | '#')
             };
             before.is_none_or(|character| !is_alias_continuation(character))
                 && after.is_none_or(|character| !is_alias_continuation(character))

@@ -701,9 +701,11 @@ fn research_comparison_table_followup_uses_prior_search_topics() {
         "agent follow-up should create a comparison table instead of falling through, got {} with answer {}",
         response.intent, response.answer,
     );
-    assert!(response
-        .answer
-        .contains("| Topic | Key differences | Use cases | Advantages | Disadvantages |"));
+    assert!(
+        response
+            .answer
+            .contains("| Topic | Key differences | Use cases | Advantages | Disadvantages |")
+    );
     assert!(response.answer.contains("Machine learning algorithms"));
     assert!(response.answer.contains("Deep learning vs traditional ML"));
     assert!(response.answer.contains("Neural networks basics"));
@@ -798,14 +800,12 @@ fn research_result_followup_accepts_supported_language_research_contexts() {
         Case {
             language: "en",
             research_prompt: "research memory safety costs for Rust and C++",
-            prior_answer:
-                "No CORS-enabled web search results were returned for `memory safety costs`.",
+            prior_answer: "No CORS-enabled web search results were returned for `memory safety costs`.",
         },
         Case {
             language: "ru",
             research_prompt: "исследование: затраты на безопасность памяти для Rust и C++",
-            prior_answer:
-                "Не получены результаты веб-поиска по запросу `затраты безопасность памяти`.",
+            prior_answer: "Не получены результаты веб-поиска по запросу `затраты безопасность памяти`.",
         },
         Case {
             language: "hi",

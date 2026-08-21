@@ -193,8 +193,10 @@ fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {
     seed::response_values_for(intent, language)
         .or_else(|| seed::response_values_for(intent, "en"))
         .unwrap_or_default()
-        .chunks_exact(2)
-        .map(|pair| (pair[0].clone(), pair[1].clone()))
+        .as_chunks::<2>()
+        .0
+        .iter()
+        .map(|[label, value]| (label.clone(), value.clone()))
         .collect()
 }
 

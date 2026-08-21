@@ -405,8 +405,8 @@ fn lint_job_guards_the_wasm_worker_migration() {
 }
 
 #[test]
-fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror(
-) {
+fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror()
+ {
     let workflow = release_workflow();
 
     assert!(

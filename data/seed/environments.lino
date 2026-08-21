@@ -10,7 +10,7 @@ environments
     tools ("intent_routing" "write_program" "concept_lookup" "fact_lookup" "summarize_conversation" "brainstorm" "coreference" "roleplay" "wikipedia_lookup" "calculator" "http_fetch" "url_navigate" "web_search" "conversation_recall" "read_local_file" "eval_js" "append_memory" "export_memory" "import_memory")
   environment rust_library
     label "formal-ai Rust crate"
-    runtime "Rust 2021 edition (compiled in via include_str!)"
+    runtime "Rust 2024 edition (compiled in via include_str!)"
     seed_path data/seed/
     memory_store "default native doublets-rs link store; MemoryStore .lino projection with --no-default-features"
     memory_export_command "default_native_link_store()?.export_memory_links_notation / MemoryStore::export_links_notation"

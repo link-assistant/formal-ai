@@ -6,8 +6,8 @@
 
 use std::sync::OnceLock;
 
-use super::parser::{parse_lino, LinoNode};
 use super::MODEL_ALIASES_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ModelAliasRegistry {

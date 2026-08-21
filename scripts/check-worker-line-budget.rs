@@ -20,6 +20,9 @@
 //!   rust-script scripts/check-worker-line-budget.rs --write   # re-baseline
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

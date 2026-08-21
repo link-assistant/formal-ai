@@ -1,6 +1,6 @@
 //! Smoke-test the calculation handler. Run with:
 //! `cargo run --example try_arithmetic` after copying this file into examples/.
-//! Or run via: `rustc -L target/debug/deps --edition 2021 try_arithmetic.rs ...`
+//! Or run via: `rustc -L target/debug/deps --edition 2024 try_arithmetic.rs ...`
 //!
 //! Easier path: replicate the prompts through the test runner. This file is
 //! a record of the manual probes used while developing the handler.

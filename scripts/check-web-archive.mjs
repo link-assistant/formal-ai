@@ -29,6 +29,14 @@ import { pathToFileURL } from 'url';
 const WAYBACK_API = 'https://archive.org/wayback/available?url=';
 
 /**
+ * Lychee section categories that describe a working link.
+ *
+ * Everything not named here is treated as a failure, so a category this list
+ * has not heard of is reported rather than dropped. See `extractBrokenUrls`.
+ */
+const HEALTHY_SECTIONS = /^(?:redirects|excluded|successes|suggestions)$/i;
+
+/**
  * Write output to GitHub Actions output file
  * @param {string} name - Output name
  * @param {string} value - Output value
@@ -52,20 +60,56 @@ function setOutput(name, value) {
 export function extractBrokenUrls(content) {
   const urls = [];
 
-  // Lychee's Markdown report puts failures and successful redirects in
-  // separate level-two sections. Restrict the permissive bullet parser to
-  // the failure section so a healthy redirect is never sent to Wayback or
-  // reported as an error. Older/plain Lychee output has no headings, so keep
-  // parsing the complete report in that case.
-  const errorsHeading = /^## Errors per input\s*$/m.exec(content);
+  // Lychee's Markdown report groups links into level-two sections, one per
+  // outcome: `## Errors per input`, `## Timeouts per input`, `## Redirects per
+  // input`, and so on. It writes only the sections it has links for, so which
+  // headings appear varies run to run. The permissive bullet parser below has
+  // to be restricted to the failing sections, or a healthy redirect gets sent
+  // to Wayback and reported as an error.
+  //
+  // The selection is by exclusion, not inclusion: every section counts as a
+  // failure unless it is one of the outcomes known to be healthy. Listing the
+  // failures instead would mean a category this list has not heard of -- a new
+  // lychee release, a renamed heading -- is silently dropped, turning a real
+  // broken link into a green build. Getting it wrong in this direction reports
+  // a healthy link, which is loud and gets fixed; the other direction is
+  // silent. Naming only `## Errors per input` here is what let a report whose
+  // sole failure was a timeout fall through to the whole-document fallback and
+  // report sixteen of its healthy redirects as broken links (issue #1021).
+  //
+  // `sectionHeading` is built per call rather than hoisted: it carries the `g`
+  // flag, and a shared global regex keeps its `lastIndex` between calls.
+  const sectionHeading = /^##\s+(.+?)\s+per input\s*$/gm;
+
+  const sections = [];
+  let heading;
+  while ((heading = sectionHeading.exec(content)) !== null) {
+    // `headingStart` bounds the previous section, `bodyStart` opens this one,
+    // so no section ever swallows the next section's heading.
+    sections.push({
+      category: heading[1],
+      headingStart: heading.index,
+      bodyStart: heading.index + heading[0].length,
+    });
+  }
+
+  // Older/plain Lychee output has no per-input headings, so keep parsing the
+  // complete report in that case.
   let errorContent = content;
-  if (errorsHeading) {
-    const sectionStart = errorsHeading.index + errorsHeading[0].length;
-    const remainingContent = content.slice(sectionStart);
-    const nextHeading = /^##\s+/m.exec(remainingContent);
-    errorContent = nextHeading
-      ? remainingContent.slice(0, nextHeading.index)
-      : remainingContent;
+  if (sections.length > 0) {
+    errorContent = sections
+      .map((section, index) => ({
+        ...section,
+        body: content.slice(
+          section.bodyStart,
+          index + 1 < sections.length
+            ? sections[index + 1].headingStart
+            : content.length,
+        ),
+      }))
+      .filter((section) => !HEALTHY_SECTIONS.test(section.category))
+      .map((section) => section.body)
+      .join('\n');
   }
 
   // Match lines with error status codes or ERROR markers followed by URLs

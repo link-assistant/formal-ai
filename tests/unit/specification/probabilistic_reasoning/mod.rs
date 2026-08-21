@@ -13,15 +13,15 @@ use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::probability::{
-    rank_probability_candidates, symbolic_cosine_similarity, ProbabilityCandidate,
-    ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel, ProbabilityRankingConfig,
-    ProbabilitySourceProvenance, ProbabilityStore,
+    ProbabilityCandidate, ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel,
+    ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
+    rank_probability_candidates, symbolic_cosine_similarity,
 };
 use formal_ai::translation::{
-    formalization_probability_target, formalize_prompt_candidates, select_formalization_candidate,
+    FormalizationDecision, FormalizationSelectionConfig, formalization_probability_target,
+    formalize_prompt_candidates, select_formalization_candidate,
     select_formalization_candidate_with_policy,
-    select_formalization_candidate_with_probability_store, FormalizationDecision,
-    FormalizationSelectionConfig,
+    select_formalization_candidate_with_probability_store,
 };
 use formal_ai::{CachedSourceClient, FetchError, SourceTransport};
 use formal_ai::{EventLog, MemoryStore, SolverConfig, UniversalSolver};

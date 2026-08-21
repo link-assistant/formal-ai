@@ -234,15 +234,14 @@ pub(super) fn plan_web_research_step(
     query: &str,
 ) -> Option<AgenticPlan> {
     let progress = Progress::scan(messages);
-    if let Some(failure) = progress.latest_failure() {
-        if matches!(failure.capability, Capability::Search | Capability::Fetch) {
+    if let Some(failure) = progress.latest_failure()
+        && matches!(failure.capability, Capability::Search | Capability::Fetch) {
             return Some(AgenticPlan::Final(super::tool_result::render_failure(
                 failure.capability.registry_id(),
                 &failure.detail,
                 query,
             )));
         }
-    }
     // `completed` is in arrival order, so the most recent result says which
     // phase this round is in. `done` cannot: it stays true from round one
     // onward, which is exactly why the old single-round shape could not deepen.

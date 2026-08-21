@@ -229,12 +229,10 @@ fn propagate(
                 ClauseStatus::Satisfied | ClauseStatus::Unresolved => {}
             }
         }
-        if !progressed {
-            if let Some(literal) = find_pure_literal(clauses, assignment) {
-                assignment[literal.variable] = Some(literal.positive);
-                trail.push(literal.variable);
-                progressed = true;
-            }
+        if !progressed && let Some(literal) = find_pure_literal(clauses, assignment) {
+            assignment[literal.variable] = Some(literal.positive);
+            trail.push(literal.variable);
+            progressed = true;
         }
         if !progressed {
             return true;

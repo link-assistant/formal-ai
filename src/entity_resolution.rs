@@ -21,7 +21,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
-use crate::seed::{self, localized_response, Slot, WordForm};
+use crate::seed::{self, Slot, WordForm, localized_response};
 use crate::solver_handlers::finalize_simple;
 
 /// Placeholders the seed response records carry.

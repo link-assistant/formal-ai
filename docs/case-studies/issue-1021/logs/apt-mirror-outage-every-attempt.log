@@ -1,0 +1,111 @@
+# Run 32294252072, job 96206598860, `E2E (opencode-desktop)`: the Xvfb install failed every
+# attempt while azure.archive.ubuntu.com was unreachable. The deadline did what it is for --
+# each attempt was killed at 91s of its 90s budget and retried -- and the step still failed,
+# because the fallback mirror is slower than one attempt is long.
+
+2026-08-19T19:59:28.7904229Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T19:59:28.7905373Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T19:59:28.7906478Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T19:59:29.0377152Z Hit:2 https://archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T19:59:29.1839955Z Get:3 https://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-08-19T19:59:29.3060524Z Ign:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages
+2026-08-19T19:59:29.3061551Z Ign:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en
+2026-08-19T19:59:29.3062379Z Ign:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components
+2026-08-19T19:59:29.3063685Z Ign:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages
+2026-08-19T19:59:29.3065517Z Ign:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en
+2026-08-19T19:59:29.3066158Z Ign:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components
+2026-08-19T19:59:29.3066770Z Ign:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages
+2026-08-19T19:59:29.3067384Z Ign:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en
+2026-08-19T19:59:29.3067972Z Ign:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en
+2026-08-19T19:59:29.3068536Z Ign:23 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components
+2026-08-19T19:59:29.4025307Z Get:4 https://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-08-19T19:59:29.6158363Z Get:5 https://archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-08-19T20:00:22.1125547Z ##[warning]Attempt 1 exited 124 after 91s of its 90s deadline. Exit 124 is the deadline itself -- a stalled mirror, transient and upstream; anything else is apt's own status.
+2026-08-19T20:00:27.2894983Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-08-19T20:00:27.3535847Z Get:6 https://packages.microsoft.com/repos/azure-cli noble InRelease [3564 B]
+2026-08-19T20:00:27.3626133Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-08-19T20:00:27.3753188Z Get:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+2026-08-19T20:00:27.4181679Z Get:9 https://packages.microsoft.com/repos/azure-cli noble/main amd64 Packages [2452 B]
+2026-08-19T20:00:27.4634012Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [360 kB]
+2026-08-19T20:00:27.4641567Z Get:11 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-08-19T20:00:27.4648466Z Get:12 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [317 kB]
+2026-08-19T20:00:27.5057587Z Get:13 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1419 B]
+2026-08-19T20:00:57.5950382Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:00:57.5952798Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:00:57.5953667Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:00:57.5954447Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:00:58.5953934Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:00:58.5956482Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:00:58.5958561Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:00:58.5959664Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:01:00.5966898Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:01:00.5967851Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:01:00.5968730Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:01:00.5969832Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:01:04.5975386Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:01:04.6022137Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:01:04.6023048Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:01:04.6023620Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:01:04.8342596Z Hit:2 https://archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:01:05.4372995Z Get:3 https://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-08-19T20:01:05.5520551Z Ign:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages
+2026-08-19T20:01:05.5522109Z Ign:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en
+2026-08-19T20:01:05.5523059Z Ign:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components
+2026-08-19T20:01:05.5523693Z Ign:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages
+2026-08-19T20:01:05.5524653Z Ign:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en
+2026-08-19T20:01:05.5525715Z Ign:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components
+2026-08-19T20:01:05.5526742Z Ign:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages
+2026-08-19T20:01:05.5527424Z Ign:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en
+2026-08-19T20:01:05.5527978Z Ign:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en
+2026-08-19T20:01:05.5528530Z Ign:23 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components
+2026-08-19T20:01:05.6504253Z Get:4 https://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-08-19T20:01:05.8625529Z Get:5 https://archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-08-19T20:01:51.5783000Z ##[warning]The command is still running after 180s (60% of its 300s execution budget). Speed up or repartition it before the budget terminates the step.
+2026-08-19T20:01:58.1824901Z ##[warning]Attempt 2 exited 124 after 91s of its 90s deadline. Exit 124 is the deadline itself -- a stalled mirror, transient and upstream; anything else is apt's own status.
+2026-08-19T20:02:03.3586450Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-08-19T20:02:03.4271719Z Get:6 https://packages.microsoft.com/repos/azure-cli noble InRelease [3564 B]
+2026-08-19T20:02:03.4528561Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-08-19T20:02:03.4808902Z Get:8 https://packages.microsoft.com/repos/azure-cli noble/main amd64 Packages [2452 B]
+2026-08-19T20:02:03.4964693Z Get:9 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+2026-08-19T20:02:03.5255164Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [317 kB]
+2026-08-19T20:02:03.5271084Z Get:11 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [360 kB]
+2026-08-19T20:02:03.5275734Z Get:12 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-08-19T20:02:03.5721018Z Get:13 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1419 B]
+2026-08-19T20:02:33.6585078Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:02:33.6590038Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:02:33.6590858Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:02:33.6591943Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:02:34.6594171Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:02:34.6595692Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:02:34.6596786Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:02:34.6597810Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:02:36.6603758Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:02:36.6604647Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:02:36.6605467Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:02:36.6606177Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:02:40.6613650Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:02:40.6661054Z Ign:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-08-19T20:02:40.6661957Z Ign:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-08-19T20:02:40.6662536Z Ign:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-08-19T20:02:41.1758351Z Hit:2 https://archive.ubuntu.com/ubuntu noble InRelease
+2026-08-19T20:02:41.7864382Z Get:3 https://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-08-19T20:02:42.1927571Z Ign:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages
+2026-08-19T20:02:42.1930585Z Ign:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en
+2026-08-19T20:02:42.1932777Z Ign:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components
+2026-08-19T20:02:42.1933800Z Ign:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages
+2026-08-19T20:02:42.1934780Z Ign:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en
+2026-08-19T20:02:42.1935605Z Ign:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components
+2026-08-19T20:02:42.1936195Z Ign:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages
+2026-08-19T20:02:42.1936762Z Ign:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en
+2026-08-19T20:02:42.1937325Z Ign:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en
+2026-08-19T20:02:42.1937886Z Ign:23 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components
+2026-08-19T20:02:42.2870821Z Get:4 https://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-08-19T20:02:42.5094339Z Get:5 https://archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-08-19T20:03:34.1847332Z ##[warning]Attempt 3 exited 124 after 91s of its 90s deadline. Exit 124 is the deadline itself -- a stalled mirror, transient and upstream; anything else is apt's own status.
+2026-08-19T20:03:34.1852314Z ##[error]All 3 attempts of 90s failed; the last exited 124. This is no longer a transient stall -- read the attempt warnings above for apt's own output.
+2026-08-19T20:03:34.7319553Z Install Xvfb took 283s of its 300s execution budget.
+2026-08-19T20:03:34.7327821Z ##[error]Process completed with exit code 124.
+2026-08-19T20:03:34.7441165Z ##[group]Run actions/upload-artifact@v7
+2026-08-19T20:03:34.7441471Z with:
+2026-08-19T20:03:34.7441693Z   name: transcripts-opencode-desktop
+2026-08-19T20:03:34.7442275Z   path: experiments/agentic_cli_matrix/artifacts/opencode-desktop

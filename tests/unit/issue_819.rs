@@ -2,13 +2,13 @@
 
 use std::{collections::BTreeSet, fs, path::Path};
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::ChatMessage;
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::ToolCall;
 use formal_ai::seed::{
     self, ROLE_LOCAL_PATH_DIRECTORY_KIND, ROLE_LOCAL_PATH_FILE_KIND, ROLE_LOCAL_PATH_SCOPE_CURRENT,
     ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME, ROLE_LOCAL_PATH_SEARCH_ACTION,
 };
-use formal_ai::ChatMessage;
 
 fn first_tool_call(prompt: &str) -> (String, serde_json::Value) {
     let plan = plan_chat_step(

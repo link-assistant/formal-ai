@@ -22,10 +22,29 @@ fn manifests_select_only_transport_independent_web_features() {
     let manifest = fs::read_to_string(repository_root().join("Cargo.toml"))
         .expect("the workspace manifest should be readable");
 
-    assert!(manifest.contains(
-        "web-capture = { version = \"0.3.36\", default-features = false, features = [\"search\"] }"
-    ));
-    assert!(manifest.contains("web-search = { version = \"0.5.0\", default-features = false }"));
+    // The version is deliberately not part of the assertion. What keeps a stock
+    // Rust image building is the *feature* selection -- these crates pull a
+    // native TLS transport in by default -- and pinning the exact release here
+    // only meant that every routine dependency bump failed this test for a
+    // reason that has nothing to do with OpenSSL.
+    for crate_name in ["web-capture", "web-search"] {
+        let declaration = manifest
+            .lines()
+            .find(|line| line.trim_start().starts_with(&format!("{crate_name} = ")))
+            .unwrap_or_else(|| panic!("the manifest should declare {crate_name}"));
+        assert!(
+            declaration.contains("default-features = false"),
+            "{crate_name} must opt out of default features, which carry a native TLS transport: {declaration}"
+        );
+    }
+    let web_capture = manifest
+        .lines()
+        .find(|line| line.trim_start().starts_with("web-capture = "))
+        .expect("the manifest should declare web-capture");
+    assert!(
+        web_capture.contains("features = [\"search\"]"),
+        "web-capture is here for search, and that feature has to be asked for once defaults are off: {web_capture}"
+    );
 }
 
 #[test]
@@ -34,8 +53,22 @@ fn stock_rust_ci_installs_and_inspects_the_binary_without_apt() {
         fs::read_to_string(repository_root().join(".github/workflows/stock-rust-install.yml"))
             .expect("the stock Rust install workflow should be readable");
 
+    // The container tag is derived, not spelled: the image has to be the floor
+    // the manifest declares, or the job proves a stock install works on a
+    // compiler the crate no longer claims to support.
+    let manifest = fs::read_to_string(repository_root().join("Cargo.toml"))
+        .expect("the workspace manifest should be readable");
+    let rust_version = manifest
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("rust-version = "))
+        .expect("the manifest should declare a rust-version")
+        .trim()
+        .trim_matches('"')
+        .to_owned();
+    let container = format!("container: rust:{rust_version}-slim-bookworm");
+
     for required in [
-        "container: rust:1.96-slim-bookworm",
+        container.as_str(),
         "cargo tree --locked --prefix none --format '{p}'",
         "> /tmp/formal-ai-dependency-tree.txt",
         "grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt",

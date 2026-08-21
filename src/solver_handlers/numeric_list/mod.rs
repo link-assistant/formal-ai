@@ -306,7 +306,7 @@ fn solve_numeric_list_with_context(
 
     // The target language may come from this turn or, for a bare follow-up, from
     // the most recent numeric-list coding turn in the conversation.
-    let language = crate::coding::program_language_by_alias(normalized).or(inherited.language)?;
+    let language = crate::coding::composition_language(normalized, inherited.language)?;
     let mut items = parse_list_items(prompt, operation);
     // Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.")
     // names no numbers of its own — it refers to the list from the previous
@@ -382,12 +382,11 @@ fn numeric_list_history_context(history: &[ConversationTurn]) -> InheritedCoding
         }
         // The language (and code request) come from the most recent turn that
         // named a programming language alongside its list (issue #412).
-        if inherited.language.is_none() {
-            if let Some(language) = crate::coding::program_language_by_alias(normalized) {
+        if inherited.language.is_none()
+            && let Some(language) = crate::coding::program_language_by_alias(normalized) {
                 inherited.language = Some(language);
                 inherited.code_requested = vocabulary.matches("code_request", normalized);
             }
-        }
         if !inherited.items.is_empty() && inherited.language.is_some() {
             break;
         }
@@ -760,13 +759,12 @@ fn parse_quoted_strings(prompt: &str) -> Vec<ParsedListItem> {
         let mut text = String::new();
         while index < chars.len() {
             let ch = chars[index];
-            if ch == '\\' {
-                if let Some(next) = chars.get(index + 1) {
+            if ch == '\\'
+                && let Some(next) = chars.get(index + 1) {
                     text.push(*next);
                     index += 2;
                     continue;
                 }
-            }
             if ch == quote {
                 break;
             }

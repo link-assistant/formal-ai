@@ -27,8 +27,8 @@ pub use cases::{BenchmarkCase, Expectation};
 pub use grade::CaseOutcome;
 pub use ledger::{Ledger, ResultEntry, SuiteEntry, UnavailableEntry};
 pub use manifest::{
-    suite, suite_ids, Availability, Grading, SuiteManifest, SuiteSource, CACHE_DIR, LEDGER_PATH,
-    PERMISSIVE_LICENSES, SUITES,
+    Availability, CACHE_DIR, Grading, LEDGER_PATH, PERMISSIVE_LICENSES, SUITES, SuiteManifest,
+    SuiteSource, suite, suite_ids,
 };
 
 /// The default bounded slice per suite, matching the issue #698 acceptance

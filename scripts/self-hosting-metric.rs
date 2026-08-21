@@ -8,6 +8,11 @@
 //! The evidence path must contain both `formal-ai` and the recorded session id.
 //! Changed lines are additions plus deletions reported by `git show --numstat`;
 //! merge commits, binary files and captured artifacts do not contribute.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 #![allow(dead_code)]
 
@@ -28,7 +33,7 @@ const DEFAULT_TRAILING_WINDOW: usize = 3;
 mod self_development_loop;
 #[allow(unused_imports)]
 pub use self_development_loop::{
-    ensure_self_development_release, self_development_release_status, SelfDevelopmentReleaseStatus,
+    SelfDevelopmentReleaseStatus, ensure_self_development_release, self_development_release_status,
 };
 
 /// Measurement-definition epoch of the rows this build writes.

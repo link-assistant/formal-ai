@@ -1,5 +1,5 @@
 use formal_ai::memory_program::{
-    compile_memory_program, MemoryProgramCompileError, MemoryProgramLimits,
+    MemoryProgramCompileError, MemoryProgramLimits, compile_memory_program,
 };
 
 #[test]

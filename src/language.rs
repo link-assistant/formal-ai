@@ -516,18 +516,19 @@ fn detect_with(prompt: &str, rules: &[Rule]) -> Language {
         if let Some(language) = marker_language(prompt, rules, &counts, fallback_script) {
             return language;
         }
-        if let Some(first) = counts.first {
-            if !first.is_empty() && first != fallback_script {
-                let rival = counts
-                    .counts
-                    .iter()
-                    .filter(|(name, _)| *name != fallback_script && *name != first)
-                    .map(|(_, count)| *count)
-                    .max()
-                    .unwrap_or(0);
-                if counts.of(first) >= rival {
-                    return default_language_of(rules, first);
-                }
+        if let Some(first) = counts.first
+            && !first.is_empty()
+            && first != fallback_script
+        {
+            let rival = counts
+                .counts
+                .iter()
+                .filter(|(name, _)| *name != fallback_script && *name != first)
+                .map(|(_, count)| *count)
+                .max()
+                .unwrap_or(0);
+            if counts.of(first) >= rival {
+                return default_language_of(rules, first);
             }
         }
     }

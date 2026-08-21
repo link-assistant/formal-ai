@@ -10,6 +10,9 @@
 //! Usage: rust-script scripts/check-wasm-worker-size.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

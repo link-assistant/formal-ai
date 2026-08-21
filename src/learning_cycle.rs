@@ -47,8 +47,8 @@ use std::fmt::Write as _;
 
 use crate::engine::normalize_prompt;
 use crate::promotion::{PromotionProposal, PromotionRatchet, SeedEdit};
-use crate::seed::parser::parse_lino;
 use crate::seed::Slot;
+use crate::seed::parser::parse_lino;
 
 /// The frontier slug of the Google Trends learning frontier (issues #498/#499).
 pub const GOOGLE_TRENDS_FRONTIER: &str = "google-trends";

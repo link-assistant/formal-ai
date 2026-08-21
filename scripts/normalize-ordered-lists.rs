@@ -26,6 +26,9 @@
 //!     rust-script scripts/normalize-ordered-lists.rs --write   # rewrite
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! ```
 

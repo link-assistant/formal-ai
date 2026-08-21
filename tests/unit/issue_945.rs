@@ -2,7 +2,7 @@
 //! deliverable into the caller's working directory. A bare relative `--output`
 //! made harness/server exports land at a repository checkout's root.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use serde_json::Value;
 

@@ -38,11 +38,9 @@ pub(super) fn plan_general_change_step(
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
             if let (Some(path), Some(read_tool)) =
                 (path.as_deref(), tool_for(tool_names, Capability::Read))
-            {
-                if progress.failed_write_count_for(path) == 1 {
+                && progress.failed_write_count_for(path) == 1 {
                     return plan_one(read_tool, read_arguments(path));
                 }
-            }
             // The plan event is auxiliary. A write-only client cannot perform
             // the preferred read-before-retry recovery, but its failure must
             // not swallow the user's primary literal-file write.
@@ -50,11 +48,9 @@ pub(super) fn plan_general_change_step(
                 && plan.mode == GeneralPlanMode::LiteralFile
                 && tool_for(tool_names, Capability::Read).is_none()
                 && progress.failed_write_count_for(PLAN_PATH) == 1
-            {
-                if let Some(write_tool) = tool_for(tool_names, Capability::Write) {
+                && let Some(write_tool) = tool_for(tool_names, Capability::Write) {
                     return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
                 }
-            }
             // Recovery is exhausted, but the failed call is not the last word:
             // run the check the plan itself named so the report can carry the
             // status the workspace answered with rather than a transport
@@ -62,14 +58,12 @@ pub(super) fn plan_general_change_step(
             if plan.mode != GeneralPlanMode::RepositoryWorkItem
                 && !plan.verification_command.trim().is_empty()
                 && progress.count(Capability::Run) == 0
-            {
-                if let Some(run_tool) = tool_for(tool_names, Capability::Run) {
+                && let Some(run_tool) = tool_for(tool_names, Capability::Run) {
                     return plan_one(
                         run_tool,
                         json!({ "command": plan.verification_command }).to_string(),
                     );
                 }
-            }
             return AgenticPlan::Final(tool_result::render_failure(
                 path.as_deref().unwrap_or("write"),
                 &failure.detail,
@@ -78,15 +72,14 @@ pub(super) fn plan_general_change_step(
         }
         // A failed run is reported as the command that failed and the status it
         // exited with, not as an anonymous "run" step (issues #905 and #908).
-        if failure.capability == Capability::Run {
-            if let Some(report) = tool_result::failed_verification(
+        if failure.capability == Capability::Run
+            && let Some(report) = tool_result::failed_verification(
                 &progress.run_outputs,
                 &plan.verification_command,
                 &plan.goal,
             ) {
                 return AgenticPlan::Final(report);
             }
-        }
         // A client may require an attempted read before creating a missing
         // file. Whether that read found bytes or reported absence, retry the
         // original write once; its per-target failure budget remains bounded.
@@ -106,8 +99,8 @@ pub(super) fn plan_general_change_step(
         && progress.previous_attempt().is_some_and(|previous| {
             previous.capability == Capability::Write && !previous.succeeded
         });
-    if recovering_write {
-        if let (Some(tool), Some(arguments)) = (
+    if recovering_write
+        && let (Some(tool), Some(arguments)) = (
             tool_for(tool_names, Capability::Write),
             progress
                 .previous_attempt()
@@ -115,7 +108,6 @@ pub(super) fn plan_general_change_step(
         ) {
             return plan_one(tool, arguments.to_owned());
         }
-    }
     // A repository work item names an issue, not an artifact. Recording the
     // reference and stopping is what issue #904 reported: nothing the request
     // asked for was ever produced. The issue itself is where the artifact is
@@ -126,15 +118,14 @@ pub(super) fn plan_general_change_step(
             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
                 return step;
             }
-        } else if let Some(tool) = tool_for(tool_names, Capability::Fetch) {
-            if !progress
+        } else if let Some(tool) = tool_for(tool_names, Capability::Fetch)
+            && !progress
                 .attempted_fetches
                 .iter()
                 .any(|url| url == &plan.target)
             {
                 return plan_one(tool, fetch_arguments(&plan.target));
             }
-        }
     }
     if let Some(tool) = tool_for(tool_names, Capability::Write) {
         let plan_attempted = progress.attempted_write_for(PLAN_PATH);

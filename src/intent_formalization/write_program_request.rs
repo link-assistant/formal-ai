@@ -75,7 +75,21 @@ pub(super) fn write_program_parameters(normalized: &str) -> Option<BTreeMap<Stri
     let asks_for_known_language_program = language
         .as_deref()
         .is_some_and(|language| mentions_program_request && known_write_program_language(language));
-    if task.is_none() && !asks_for_program(normalized) && !asks_for_known_language_program {
+    // Issue #862 / #1021: "мне нужен код" names code as the artefact it wants
+    // produced, and nothing else. It is the same request as "write me some
+    // code" with a different asking verb, and the asking verbs live in the
+    // lexicon under [`crate::seed::ROLE_SCRIPT_AUTHORING_VERB`] rather than
+    // under the narrower `program_request`. Reading it as a `write_program`
+    // request with no parameters is what lets the honest dead end
+    // (`program_skill_gap::Shape::RequestUnspecified`) answer it — the
+    // alternative, and what happened before, is a web search for the words.
+    let asks_for_bare_code =
+        task.is_none() && language.is_none() && names_code_and_nothing_else(normalized);
+    if task.is_none()
+        && !asks_for_program(normalized)
+        && !asks_for_known_language_program
+        && !asks_for_bare_code
+    {
         return None;
     }
     let mut parameters = BTreeMap::new();
@@ -106,4 +120,88 @@ fn known_write_program_language(language: &str) -> bool {
 /// being read as the language `the`.
 fn requested_program_language(normalized: &str) -> Option<String> {
     crate::implementation_language::requested(normalized)
+}
+
+/// Does the request name code as its artefact — and name nothing else?
+///
+/// The recogniser this guards answers "you named neither a task nor a
+/// language". It may only fire when that is *all* the request left
+/// unanswered, so it subtracts everything it can account for — the asking verb
+/// ([`crate::seed::ROLE_SCRIPT_AUTHORING_VERB`]), the artefact noun
+/// ([`crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT`] or, for "a program" rather
+/// than "code", [`crate::seed::ROLE_PROGRAM_GENUS`]), and the closed-class words
+/// a request is built out of ([`crate::seed::ROLE_REQUEST_FUNCTION_WORD`]) —
+/// and requires nothing to be left over.
+///
+/// That subtraction is what separates "I need code" from "give me the code of
+/// this repository" and "I need a code review": both of those name something
+/// besides the code — a repository, a review — so the code word is a qualifier
+/// rather than the artefact, and this route stands aside for whichever route
+/// owns the thing that was named. No surface word is compared here; the
+/// lexicon answers which words each role contributes, in every language it
+/// carries.
+fn names_code_and_nothing_else(normalized: &str) -> bool {
+    use crate::seed::{
+        ROLE_PROGRAM_GENUS, ROLE_REQUEST_FUNCTION_WORD, ROLE_SCRIPT_AUTHORING_VERB,
+        ROLE_SCRIPT_OR_CODE_ARTIFACT,
+    };
+    let lexicon = crate::seed::lexicon();
+    let names_the_artefact = lexicon.mentions_role(ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized)
+        || lexicon.mentions_role(ROLE_PROGRAM_GENUS, normalized);
+    if !(lexicon.mentions_role(ROLE_SCRIPT_AUTHORING_VERB, normalized) && names_the_artefact) {
+        return false;
+    }
+    let mut accounted: Vec<String> = [
+        ROLE_SCRIPT_AUTHORING_VERB,
+        ROLE_SCRIPT_OR_CODE_ARTIFACT,
+        ROLE_PROGRAM_GENUS,
+        ROLE_REQUEST_FUNCTION_WORD,
+    ]
+    .into_iter()
+    .flat_map(|role| lexicon.words_for_role(role))
+    .filter(|word| !word.trim().is_empty())
+    .collect();
+    // Longest first, so "give me" is subtracted as the one act it is before
+    // "me" is subtracted as a pronoun.
+    accounted.sort_by_key(|word| std::cmp::Reverse(word.chars().count()));
+    nothing_is_left(normalized, &accounted)
+}
+
+/// Whether `normalized` is left empty once every surface in `accounted` is
+/// subtracted from it.
+fn nothing_is_left(normalized: &str, accounted: &[String]) -> bool {
+    let mut text = normalized.to_owned();
+    for phrase in accounted.iter().filter(|word| word.contains(' ')) {
+        text = text.replace(phrase.as_str(), " ");
+    }
+    text.split_whitespace().all(|token| {
+        let token = token.trim_matches(|character: char| !character.is_alphanumeric());
+        token.is_empty() || is_accounted_for(token, accounted)
+    })
+}
+
+/// Whether one token is accounted for by `accounted`.
+///
+/// Chinese is written without spaces between words, so a single whitespace
+/// token there carries a whole clause; for those the surfaces are subtracted as
+/// substrings until nothing remains, which is the same contract
+/// [`crate::coding::contains_cjk`] draws everywhere else in the solver.
+fn is_accounted_for(token: &str, accounted: &[String]) -> bool {
+    if accounted.iter().any(|word| word == token) {
+        return true;
+    }
+    if !crate::coding::contains_cjk(token) {
+        return false;
+    }
+    let mut rest = token.to_owned();
+    while let Some(word) = accounted
+        .iter()
+        .find(|word| crate::coding::contains_cjk(word) && rest.contains(word.as_str()))
+    {
+        rest = rest.replace(word.as_str(), "");
+        if rest.is_empty() {
+            return true;
+        }
+    }
+    rest.is_empty()
 }

@@ -20,8 +20,8 @@
 //! "Roleplay frame recorded for `<persona>`" preface uniform regardless of
 //! which persona/topic combination fires.
 
-use super::parser::{parse_lino, split_pipe_list};
 use super::PERSONAS_LINO;
+use super::parser::{parse_lino, split_pipe_list};
 
 /// One persona surface form — the canonical display name, optional Wikidata
 /// Q-ID anchor, and multilingual aliases that route prompts to this entry.

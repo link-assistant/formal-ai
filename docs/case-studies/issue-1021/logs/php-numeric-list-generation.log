@@ -1,0 +1,115 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1787114586826)
+    Finished `dev` profile [unoptimized] target(s) in 56.76s
+     Running `target/debug/examples/issue_1021_php_numeric_list`
+=== Sort the numbers 3, 1, 2 in PHP, give me the code
+-- intent: write_program
+Here is PHP code that sorts the numbers 3, 1, 2 in ascending order:
+
+```php
+<?php
+
+$numbers = [3, 1, 2];
+sort($numbers);
+echo implode(", ", $numbers), PHP_EOL;
+```
+
+Result: 1, 2, 3
+
+=== Sort the numbers 3, 1, 2 in PHP in reverse order, give me the code
+-- intent: write_program
+Here is PHP code that sorts the numbers 3, 1, 2 in descending order:
+
+```php
+<?php
+
+$numbers = [3, 1, 2];
+rsort($numbers);
+echo implode(", ", $numbers), PHP_EOL;
+```
+
+Result: 3, 2, 1
+
+=== Reverse the numbers 1, 2, 3 in PHP, give me the code
+-- intent: write_program
+Here is PHP code that reverses the numbers 1, 2, 3:
+
+```php
+<?php
+
+$numbers = [1, 2, 3];
+$numbers = array_reverse($numbers);
+echo implode(", ", $numbers), PHP_EOL;
+```
+
+Result: 3, 2, 1
+
+=== Sort the strings "pear", "apple", "banana" in PHP, give me the code
+-- intent: write_program
+Here is PHP code that sorts the strings pear, apple, banana in ascending order:
+
+```php
+<?php
+
+$numbers = ["pear", "apple", "banana"];
+sort($numbers);
+echo implode(", ", $numbers), PHP_EOL;
+```
+
+Result: apple, banana, pear
+
+=== Sum the numbers 3, 5, 6, 7, 8 in PHP, give me the code
+-- intent: write_program
+Here is PHP code that sums the numbers 3, 5, 6, 7, 8:
+
+```php
+<?php
+
+$numbers = [3, 5, 6, 7, 8];
+$result = array_sum($numbers);
+echo $result, PHP_EOL;
+```
+
+Result: 29
+
+=== Multiply the numbers 2, 3, 4 in PHP, show me the code
+-- intent: write_program
+Here is PHP code that multiplies the numbers 2, 3, 4:
+
+```php
+<?php
+
+$numbers = [2, 3, 4];
+$result = array_product($numbers);
+echo $result, PHP_EOL;
+```
+
+Result: 24
+
+=== Find the minimum of 5, 3, 8, 1, 9 in PHP code
+-- intent: write_program
+Here is PHP code that finds the smallest of the numbers 5, 3, 8, 1, 9:
+
+```php
+<?php
+
+$numbers = [5, 3, 8, 1, 9];
+$result = min($numbers);
+echo $result, PHP_EOL;
+```
+
+Result: 1
+
+=== Find the maximum of 5, 3, 8, 1, 9 in PHP code
+-- intent: write_program
+Here is PHP code that finds the largest of the numbers 5, 3, 8, 1, 9:
+
+```php
+<?php
+
+$numbers = [5, 3, 8, 1, 9];
+$result = max($numbers);
+echo $result, PHP_EOL;
+```
+
+Result: 9
+

@@ -88,10 +88,10 @@ fn walk_directory(root: &Path, directory: &Path, paths: &mut Vec<PathBuf>) {
             ) {
                 walk_directory(root, &path, paths);
             }
-        } else if file_type.is_file() {
-            if let Ok(relative) = path.strip_prefix(root) {
-                paths.push(relative.to_path_buf());
-            }
+        } else if file_type.is_file()
+            && let Ok(relative) = path.strip_prefix(root)
+        {
+            paths.push(relative.to_path_buf());
         }
     }
 }

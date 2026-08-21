@@ -293,6 +293,19 @@ pub const ROLE_COMMON_TYPO: &str = "common_typo";
 /// reply; the first capitalised token that is not one of these is taken as the
 /// topic. A meaning carrying this role is `defined_by` the `concept` category.
 pub const ROLE_TOPIC_SCAN_STOP_WORD: &str = "topic_scan_stop_word";
+/// Semantic role: a closed-class word that names no artefact.
+///
+/// A pronoun, article, determiner, politeness particle, or basic
+/// preposition/conjunction — the words a request is built out of rather than
+/// the things it asks for. A recogniser that must decide whether a request
+/// names *anything besides* the artefact it recognised subtracts these, so the
+/// question "is there something else in this prompt?" is answered by the
+/// lexicon rather than by a word list in code (issue #862).
+///
+/// Distinct from [`ROLE_TOPIC_SCAN_STOP_WORD`], which also carries the
+/// "source" citation heading: that is a content word here, because "give me
+/// the source of this repository" names a subject.
+pub const ROLE_REQUEST_FUNCTION_WORD: &str = "request_function_word";
 /// Semantic role: a prompt asking to fetch a web resource over HTTP.
 ///
 /// The retrieve-this-URL request ("fetch X", "сделай запрос к X", "अनुरोध भेजें",

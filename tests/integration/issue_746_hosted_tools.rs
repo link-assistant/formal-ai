@@ -1,7 +1,7 @@
 //! Issue #746: hosted and protocol-native tool advertisements reach the shared router.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 fn post(path: &str, body: &Value) -> Value {
     enable_http_agent_mode_for_current_process();
@@ -52,9 +52,11 @@ fn responses_type_only_web_search_routes_instead_of_wildcard_refusal() {
     let call = hosted_web_search_call(&response);
     assert_eq!(call["status"], "completed");
     assert_eq!(call["action"]["type"], "search");
-    assert!(call["action"]["query"]
-        .as_str()
-        .is_some_and(|query| query.contains("elon musk")));
+    assert!(
+        call["action"]["query"]
+            .as_str()
+            .is_some_and(|query| query.contains("elon musk"))
+    );
 }
 
 #[test]
@@ -308,9 +310,11 @@ fn qwen_discovers_a_deferred_web_tool_instead_of_searching_local_files() {
     );
     let call = &response["choices"][0]["message"]["tool_calls"][0]["function"];
     assert_eq!(call["name"], "tool_search");
-    assert!(call["arguments"]
-        .as_str()
-        .is_some_and(|arguments| arguments.contains("web search")));
+    assert!(
+        call["arguments"]
+            .as_str()
+            .is_some_and(|arguments| arguments.contains("web search"))
+    );
 
     let call_id = response["choices"][0]["message"]["tool_calls"][0]["id"]
         .as_str()

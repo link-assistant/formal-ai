@@ -15,7 +15,7 @@
 //! These assert the *agentic* path (`plan_chat_step`), which is exactly how an
 //! external agentic CLI such as `OpenCode` drives the OpenAI-compatible server.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::ChatMessage;
 
 /// The tools a typical agentic CLI (`OpenCode`) advertises.

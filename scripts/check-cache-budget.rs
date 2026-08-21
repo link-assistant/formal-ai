@@ -45,6 +45,9 @@
 //!   rust-script --test scripts/check-cache-budget.rs   # inline unit tests
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```

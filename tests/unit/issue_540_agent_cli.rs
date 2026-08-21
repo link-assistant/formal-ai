@@ -1,6 +1,6 @@
 use formal_ai::agentic_coding::{
-    dreaming_audit, is_dreaming_audit_task, run_agentic_task, DREAMING_AUDIT_PATH,
-    DREAMING_AUDIT_TASK,
+    DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK, dreaming_audit, is_dreaming_audit_task,
+    run_agentic_task,
 };
 
 #[test]

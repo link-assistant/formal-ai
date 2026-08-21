@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 11519
   line_count 328
-  content_id source_module_3a72b7d5cd915cac
+  content_id source_module_65f8e350403ade90
   symbol_count 18
   symbols
     struct GeminiGenerateContentRequest 24 33

@@ -14,12 +14,12 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::agentic_coding::{
-    is_ledger_task, ledger, plan_chat_step, run_agentic_task, AgenticPlan, PlannedToolCall,
-    DRIVER_TOOLS, LEDGER_PATH, LEDGER_TASK,
+    AgenticPlan, DRIVER_TOOLS, LEDGER_PATH, LEDGER_TASK, PlannedToolCall, is_ledger_task, ledger,
+    plan_chat_step, run_agentic_task,
 };
 use formal_ai::{
-    canonical_case, canonical_ledger, ChatMessage, HumanApproval, LearningLedger,
-    PromotionRejected, RepairCase, RepairOutcome, ToolCall,
+    ChatMessage, HumanApproval, LearningLedger, PromotionRejected, RepairCase, RepairOutcome,
+    ToolCall, canonical_case, canonical_ledger,
 };
 use lino_objects_codec::format::parse_indented;
 

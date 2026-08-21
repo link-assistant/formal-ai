@@ -16,7 +16,7 @@
 //! The two sliders are independent — all four combinations must work.
 
 use formal_ai::proof_engine::{
-    attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
+    ProofOutcome, ProofRenderConfig, attempt_proof_with_config, render_outcome_with_config,
 };
 use formal_ai::{SolverConfig, UniversalSolver};
 
@@ -250,36 +250,48 @@ fn hindi_high_follow_up_uses_hindi_question_label() {
 
 #[test]
 fn proof_render_config_threshold_helpers() {
-    assert!(ProofRenderConfig {
-        guess_probability: 0.6,
-        follow_up_probability: 0.0,
-    }
-    .show_interpretation());
-    assert!(!ProofRenderConfig {
-        guess_probability: 0.59,
-        follow_up_probability: 0.0,
-    }
-    .show_interpretation());
-    assert!(ProofRenderConfig {
-        guess_probability: 0.0,
-        follow_up_probability: 0.5,
-    }
-    .ask_follow_ups());
-    assert!(!ProofRenderConfig {
-        guess_probability: 0.0,
-        follow_up_probability: 0.49,
-    }
-    .ask_follow_ups());
-    assert!(ProofRenderConfig {
-        guess_probability: 0.2,
-        follow_up_probability: 0.2,
-    }
-    .is_terse());
-    assert!(!ProofRenderConfig {
-        guess_probability: 0.8,
-        follow_up_probability: 0.2,
-    }
-    .is_terse());
+    assert!(
+        ProofRenderConfig {
+            guess_probability: 0.6,
+            follow_up_probability: 0.0,
+        }
+        .show_interpretation()
+    );
+    assert!(
+        !ProofRenderConfig {
+            guess_probability: 0.59,
+            follow_up_probability: 0.0,
+        }
+        .show_interpretation()
+    );
+    assert!(
+        ProofRenderConfig {
+            guess_probability: 0.0,
+            follow_up_probability: 0.5,
+        }
+        .ask_follow_ups()
+    );
+    assert!(
+        !ProofRenderConfig {
+            guess_probability: 0.0,
+            follow_up_probability: 0.49,
+        }
+        .ask_follow_ups()
+    );
+    assert!(
+        ProofRenderConfig {
+            guess_probability: 0.2,
+            follow_up_probability: 0.2,
+        }
+        .is_terse()
+    );
+    assert!(
+        !ProofRenderConfig {
+            guess_probability: 0.8,
+            follow_up_probability: 0.2,
+        }
+        .is_terse()
+    );
 }
 
 #[test]

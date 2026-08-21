@@ -23,7 +23,7 @@ use std::path::Path;
 
 use formal_ai::event_log::EventLog;
 use formal_ai::how_to_capture_manifest::{
-    drift, manifest_lino, parse_manifest, read_captures, verify_bodies, CAPTURE_MANIFEST_FILE,
+    CAPTURE_MANIFEST_FILE, drift, manifest_lino, parse_manifest, read_captures, verify_bodies,
 };
 use formal_ai::how_to_guide::ServicePreferences;
 use formal_ai::service_accessibility::ServiceAccessibilityCache;

@@ -42,8 +42,8 @@ fn main() {
             continue;
         };
         match name {
-            "intent" => intent = raw.trim().trim_matches('"').to_owned(),
-            "language" => language = raw.trim().trim_matches('"').to_owned(),
+            "intent" => raw.trim().trim_matches('"').clone_into(&mut intent),
+            "language" => raw.trim().trim_matches('"').clone_into(&mut language),
             "text" | "variant" | "ack_variant" | "follow_up_variant" => {
                 let Some(value) = unquote(raw) else { continue };
                 let enforced = enforce_questions(&value, &mut EventLog::new());

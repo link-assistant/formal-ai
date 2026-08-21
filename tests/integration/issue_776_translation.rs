@@ -2,8 +2,8 @@
 //! language-neutral meaning pipeline even when its command follows the text.
 
 use formal_ai::{
-    translation::{extract_unquoted_translation_surface, translate_via_default_pipeline},
     UniversalSolver,
+    translation::{extract_unquoted_translation_surface, translate_via_default_pipeline},
 };
 
 const RUSSIAN: &str = "любая формальная система либо неполна, либо противоречива";

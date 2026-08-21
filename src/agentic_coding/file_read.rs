@@ -120,14 +120,13 @@ fn plan_direct_file_read(
         return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
     }
 
-    if prefer_run {
-        if let Some(tool) = run_tool {
+    if prefer_run
+        && let Some(tool) = run_tool {
             return plan_one(
                 tool,
                 json!({ "command": read_command_for(path, mode) }).to_string(),
             );
         }
-    }
 
     if let Some(tool) = read_tool {
         return plan_one(tool, read_arguments(path));
@@ -195,11 +194,10 @@ fn plan_list_then_read(
                 .collect();
             return AgenticPlan::ToolCalls(calls);
         }
-    } else if let Some(path) = paths.first() {
-        if let Some(tool) = read_tool {
+    } else if let Some(path) = paths.first()
+        && let Some(tool) = read_tool {
             return plan_one(tool, read_arguments(path));
         }
-    }
 
     if let Some(tool) = run_tool {
         let command = if selection == FileSelection::All {
@@ -273,15 +271,14 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
         });
     }
 
-    if has_file_read_intent(&lower) {
-        if let Some(path) = first_local_file_path(prompt) {
+    if has_file_read_intent(&lower)
+        && let Some(path) = first_local_file_path(prompt) {
             return Some(FileReadTask::Direct {
                 path,
                 mode: mode_for_prompt(prompt),
                 prefer_run: false,
             });
         }
-    }
 
     None
 }
@@ -672,14 +669,13 @@ fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> St
 }
 
 fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
-    if let Ok(value) = serde_json::from_str::<serde_json::Value>(content) {
-        if let Some(found) = value.get(key) {
+    if let Ok(value) = serde_json::from_str::<serde_json::Value>(content)
+        && let Some(found) = value.get(key) {
             return Some(match found {
                 serde_json::Value::String(text) => text.clone(),
                 other => other.to_string(),
             });
         }
-    }
     let quoted_key = format!("\"{key}\"");
     let start = content.find(&quoted_key)?;
     let after_key = &content[start + quoted_key.len()..];

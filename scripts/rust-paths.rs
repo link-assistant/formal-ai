@@ -16,6 +16,14 @@
 //!   2. CLI argument: --rust-root <path>
 //!   3. Environment variable: `RUST_ROOT`
 //!   4. Auto-detection: Check ./Cargo.toml first, then ./rust/Cargo.toml
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//!
+//! [dependencies]
+//! regex = "1"
+//! ```
 
 #![allow(dead_code)]
 
@@ -48,23 +56,23 @@ pub fn get_rust_root(explicit_root: Option<&str>, verbose: bool) -> Result<Strin
 
     // Check CLI arguments
     let args: Vec<String> = env::args().collect();
-    if let Some(idx) = args.iter().position(|a| a == "--rust-root") {
-        if let Some(root) = args.get(idx + 1) {
-            if verbose {
-                eprintln!("Using CLI configured Rust root: {root}");
-            }
-            return Ok(root.clone());
+    if let Some(idx) = args.iter().position(|a| a == "--rust-root")
+        && let Some(root) = args.get(idx + 1)
+    {
+        if verbose {
+            eprintln!("Using CLI configured Rust root: {root}");
         }
+        return Ok(root.clone());
     }
 
     // Check environment variable
-    if let Ok(root) = env::var("RUST_ROOT") {
-        if !root.is_empty() {
-            if verbose {
-                eprintln!("Using environment configured Rust root: {root}");
-            }
-            return Ok(root);
+    if let Ok(root) = env::var("RUST_ROOT")
+        && !root.is_empty()
+    {
+        if verbose {
+            eprintln!("Using environment configured Rust root: {root}");
         }
+        return Ok(root);
     }
 
     // Check for single-language repo (Cargo.toml in root)

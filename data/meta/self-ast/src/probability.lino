@@ -2,9 +2,9 @@ self_ast_census
   target src/probability.rs
   language rust
   fidelity signature
-  byte_len 31607
-  line_count 871
-  content_id source_module_00112242017176e8
+  byte_len 31583
+  line_count 867
+  content_id source_module_adb3b9edb4608acc
   symbol_count 54
   symbols
     enum ProbabilityModel 20 27
@@ -53,11 +53,11 @@ self_ast_census
     function rank_probability_candidates 646 754
     function softmax_scores 756 778
     function highest_score_index 780 786
-    function finite_or_zero 788 794
-    function finite_clamped 796 802
-    function usize_to_f32 804 807
-    function count_to_f32 813 815
-    function symbolic_cosine_similarity 824 844
-    function tokenize_symbolic 846 852
-    function bag_of_words 854 860
-    function vector_norm 862 871
+    function finite_or_zero 788 790
+    function finite_clamped 792 798
+    function usize_to_f32 800 803
+    function count_to_f32 809 811
+    function symbolic_cosine_similarity 820 840
+    function tokenize_symbolic 842 848
+    function bag_of_words 850 856
+    function vector_norm 858 867

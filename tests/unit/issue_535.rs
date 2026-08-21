@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use formal_ai::{handle_telegram_webhook, FormalAiEngine};
+use formal_ai::{FormalAiEngine, handle_telegram_webhook};
 
 const ISSUE_535_REPORTED_PROMPT: &str = "Проверь данный текст на уникальность и на плагиат\n\n\
 Attached files:\n\

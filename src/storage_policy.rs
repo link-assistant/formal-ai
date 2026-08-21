@@ -5,7 +5,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 
 use crate::dreaming::{
-    apply_dreaming_plan, plan_memory_dreaming, DreamingConfig, DreamingOutcome, DreamingPlan,
+    DreamingConfig, DreamingOutcome, DreamingPlan, apply_dreaming_plan, plan_memory_dreaming,
 };
 use crate::memory::MemoryStore;
 
@@ -71,10 +71,10 @@ pub fn auto_free_space_enabled(memory_path: &Path) -> bool {
 /// Persist an explicit user choice atomically enough for this tiny sidecar.
 pub fn persist_auto_free_space_choice(memory_path: &Path, enabled: bool) -> io::Result<()> {
     let preference = auto_free_space_preference_path(memory_path);
-    if let Some(parent) = preference.parent() {
-        if !parent.as_os_str().is_empty() {
-            fs::create_dir_all(parent)?;
-        }
+    if let Some(parent) = preference.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        fs::create_dir_all(parent)?;
     }
     fs::write(preference, if enabled { "enabled\n" } else { "disabled\n" })
 }

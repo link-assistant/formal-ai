@@ -8,8 +8,8 @@
 //! so a passing run proves the routing is general, not hardcoded to one phrase.
 
 use formal_ai::agentic_coding::{
-    google_trends_learning as recipe, is_google_trends_learning_task, run_agentic_task,
-    GOOGLE_TRENDS_LEARNING_PATH,
+    GOOGLE_TRENDS_LEARNING_PATH, google_trends_learning as recipe, is_google_trends_learning_task,
+    run_agentic_task,
 };
 use formal_ai::engine::FormalAiEngine;
 use formal_ai::{response_for, seed, supported_languages, trending_learning_report};

@@ -507,10 +507,9 @@ fn execute_duckduckgo_instant_answer<T: crate::source_fetch::SourceTransport>(
     if let (Some(url), Some(text)) = (
         document["AbstractURL"].as_str(),
         document["AbstractText"].as_str(),
-    ) {
-        if !url.is_empty() {
-            rows.insert(0, (url.to_owned(), text.to_owned()));
-        }
+    ) && !url.is_empty()
+    {
+        rows.insert(0, (url.to_owned(), text.to_owned()));
     }
     rows.truncate(10);
     let mut rankings = rows
@@ -527,10 +526,9 @@ fn execute_duckduckgo_instant_answer<T: crate::source_fetch::SourceTransport>(
     if let Some(heading) = document["Heading"]
         .as_str()
         .filter(|value| !value.is_empty())
+        && let Some(first) = rankings.first_mut()
     {
-        if let Some(first) = rankings.first_mut() {
-            heading.clone_into(&mut first.title);
-        }
+        heading.clone_into(&mut first.title);
     }
     Ok((capture, rankings))
 }

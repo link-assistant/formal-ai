@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_artifact.rs
   language rust
   fidelity full_ast
-  byte_len 13132
-  line_count 344
-  content_id source_module_309e9f516b36e9d3
+  byte_len 13166
+  line_count 346
+  content_id source_module_4821d0a756253e46
   symbol_count 17
   symbols
     const MAX_REWRITE_STEPS 24 24
@@ -14,26 +14,26 @@ self_ast_census
     function links_notation 40 90
     function plan_code_artifact_step 93 160
     function generated_artifact 162 171
-    function requested_rewrite 173 211
-    function explicit_substitution_query 219 226
-    function latest_workspace_artifact 228 245
-    function latest_result 247 264
-    function source_from_read_result 269 295
-    function source_from_agent_read_result 297 314
-    function read_arguments 316 318
-    function argument_string 320 322
-    function last_string_literal 324 326
-    function link_field 337 344
+    function requested_rewrite 173 213
+    function explicit_substitution_query 221 228
+    function latest_workspace_artifact 230 247
+    function latest_result 249 266
+    function source_from_read_result 271 297
+    function source_from_agent_read_result 299 316
+    function read_arguments 318 320
+    function argument_string 322 324
+    function last_string_literal 326 328
+    function link_field 339 346
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9736
-    named_node_count 1983
+    total_link_count 9772
+    named_node_count 1989
     distinct_node_kinds 82
     node_kinds
-      arguments 171
+      arguments 172
       array_expression 2
       array_type 5
       attribute 2
@@ -41,7 +41,7 @@ self_ast_census
       binary_expression 21
       block 44
       break_expression 1
-      call_expression 171
+      call_expression 172
       char_literal 4
       closure_expression 18
       closure_parameters 18
@@ -55,20 +55,20 @@ self_ast_census
       expression_statement 56
       field_declaration 4
       field_declaration_list 2
-      field_expression 147
-      field_identifier 158
+      field_expression 149
+      field_identifier 159
       field_initializer 7
       field_initializer_list 4
       for_expression 3
       function_item 13
-      generic_function 1
+      generic_function 2
       generic_type 12
-      identifier 464
+      identifier 465
       if_expression 20
       impl_item 1
-      index_expression 6
+      index_expression 4
       inner_doc_comment_marker 4
-      integer_literal 23
+      integer_literal 22
       let_condition 6
       let_declaration 39
       lifetime 3
@@ -94,7 +94,7 @@ self_ast_census
       self 5
       self_parameter 1
       shorthand_field_initializer 1
-      slice_pattern 1
+      slice_pattern 2
       source_file 1
       string_content 43
       string_literal 41
@@ -106,7 +106,7 @@ self_ast_census
       tuple_expression 1
       tuple_pattern 11
       tuple_struct_pattern 8
-      type_arguments 13
+      type_arguments 14
       type_identifier 44
       type_parameters 1
       unary_expression 5

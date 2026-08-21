@@ -14,6 +14,7 @@ use super::shell_command_policy::{
     governs_commands_rather_than_requesting_one, is_prose_word, named_shell_command_in_sentence,
     normalize_command_word, sentence_spans, states_a_command_policy,
 };
+use super::directory_listing::asks_for_directory_listing;
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
@@ -125,7 +126,62 @@ fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Op
         .unwrap_or(remainder)
         .trim_start();
     let remainder = strip_balanced_outer_quotes(remainder);
+    if let Some(named) = command_named_in_prose(remainder, vocab) {
+        return Some(named);
+    }
     (!remainder.is_empty() && !reads_as_prose(remainder, vocab)).then(|| remainder.to_owned())
+}
+
+/// Characters that turn the words around them into data rather than prose:
+/// quoting, redirection, substitution and command separators.
+const SHELL_QUOTING_AND_METACHARACTERS: &[char] =
+    &['"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}'];
+
+/// Recover the command from a remainder that *names* it instead of being it.
+///
+/// Issue #866 and #867 reported *"Execute ls command"* running `/bin/ls
+/// command`, which fails with *cannot access 'command'*. The trailing noun
+/// names the command; it is not an argument to it. Seed data declares those
+/// nouns per language in `data/seed/terminal-commands.lino`, and their presence
+/// is the tell that the remainder is a noun phrase *about* a command rather
+/// than a command line — so the command is collected out of it, dropping the
+/// determiners that lead the phrase and stopping at the prose that ends it,
+/// exactly as argument collection does elsewhere.
+///
+/// Quoting and shell metacharacters switch the recovery off, because inside
+/// them a word is data: `git commit -m 'fix command parsing'` keeps its message.
+fn command_named_in_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
+    if remainder.contains(|c| SHELL_QUOTING_AND_METACHARACTERS.contains(&c)) {
+        return None;
+    }
+    let words = remainder.split_whitespace().collect::<Vec<_>>();
+    let kept = words
+        .iter()
+        .copied()
+        .filter(|word| !names_a_command(word, vocab))
+        .collect::<Vec<_>>();
+    if kept.len() == words.len() || kept.is_empty() {
+        return None;
+    }
+    let start = kept.iter().position(|word| !is_prose_word(word))?;
+    let mut command = vec![kept[start]];
+    for word in &kept[start + 1..] {
+        if is_prose_word(word) {
+            break;
+        }
+        command.push(word);
+    }
+    Some(command.join(" "))
+}
+
+/// Whether `word` is a seed-declared noun that names a command. Punctuation is
+/// trimmed and case folded across scripts, so *«команду»* and *"Command."* both
+/// match their seed entry.
+fn names_a_command(word: &str, vocab: &TerminalCommandVocabulary) -> bool {
+    let normalized = word
+        .trim_matches(|c: char| !c.is_alphanumeric())
+        .to_lowercase();
+    !normalized.is_empty() && vocab.command_nouns.iter().any(|noun| noun == &normalized)
 }
 
 /// Whether a recovered command line is really a sentence describing an action.
@@ -143,6 +199,13 @@ fn reads_as_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> bool {
     let Some(first) = words.next() else {
         return true;
     };
+    // A web address is a resource to act on, not a program to run. Issue #862
+    // asked to *"Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in
+    // Rust"* — the task published at that address, not the address typed at a
+    // shell — and the passthrough prefix happily handed the whole line over.
+    if first.contains("://") {
+        return true;
+    }
     let command = normalize_command_word(first);
     if vocab.shell_tokens.iter().any(|token| token == &command) {
         return false;
@@ -531,15 +594,45 @@ fn path_arguments(
     count: usize,
 ) -> Option<String> {
     let lower = prompt.to_lowercase();
+    let anchored = names_a_path_object(cue, vocab);
     let after_cue = lower
         .find(cue)
         .and_then(|start| prompt.get(start + cue.len()..))
         .unwrap_or_default();
-    let mut arguments = collect_path_arguments(after_cue, "", vocab, count);
+    let mut arguments = collect_path_arguments(after_cue, "", vocab, count, anchored);
     if arguments.len() < count {
-        arguments = collect_path_arguments(prompt, cue, vocab, count);
+        arguments = collect_path_arguments(prompt, cue, vocab, count, anchored);
     }
     (arguments.len() == count).then(|| arguments.join(" "))
+}
+
+/// Whether the matched cue names the filesystem object its operands refer to.
+///
+/// *"Copy the file a.txt to b.txt"* says outright that what follows is a file, so
+/// any word may be the name. *"Copy"* on its own says nothing, and issue #863
+/// showed what that costs: *"how to do copy stdin to stdout in Rust"* routed to
+/// `cp stdin stdout`, and issue #862 turned a Rosetta Code URL into
+/// `cp _stdin_to_stdout Rust`. An unanchored cue therefore only accepts operands
+/// that [look like paths](looks_like_a_path) — which is also what makes a bare
+/// *move* cue safe enough to add for issue #824.
+fn names_a_path_object(cue: &str, vocab: &ShellIntentVocabulary) -> bool {
+    vocab
+        .path_objects
+        .iter()
+        .any(|object| cue.contains(object.as_str()))
+}
+
+/// Whether a token is written the way a path is written: rooted at the home
+/// directory, carrying a separator, or ending in an extension. A plain word
+/// (`stdin`, `Rust`) is not.
+fn looks_like_a_path(token: &str) -> bool {
+    token.starts_with('~')
+        || token.contains('/')
+        || token.rsplit_once('.').is_some_and(|(stem, extension)| {
+            !stem.is_empty()
+                && !extension.is_empty()
+                && extension.chars().all(char::is_alphanumeric)
+        })
 }
 
 fn collect_path_arguments(
@@ -547,6 +640,7 @@ fn collect_path_arguments(
     cue: &str,
     vocab: &ShellIntentVocabulary,
     count: usize,
+    anchored: bool,
 ) -> Vec<String> {
     let cue = cue.to_lowercase();
     let mut arguments = Vec::new();
@@ -556,6 +650,7 @@ fn collect_path_arguments(
         let normalized = candidate.to_lowercase();
         if candidate.is_empty()
             || !is_safe_path(candidate)
+            || (!anchored && !looks_like_a_path(candidate))
             || cue.split_whitespace().any(|part| part == normalized)
             || vocab
                 .argument_noise
@@ -667,15 +762,25 @@ fn name_lead_argument(prompt: &str, name_leads: &[String]) -> Option<String> {
     (!name.is_empty() && is_safe_path(name)).then(|| name.to_owned())
 }
 
-/// Whether a token is a safe relative path/name: no absolute or `..` escape, no
+/// Whether a token is a path the request itself supplies: no `..` escape, no
 /// leading dash, only path-safe characters.
+///
+/// Absolute (`/Users/me/Archive`) and home-relative (`~/Code`) paths count.
+/// Issue #824 reported *"Move /Users/…/hive-control-center to ~/Code/…"* refused,
+/// and the reason was here: both operands were rejected before any policy got to
+/// see them. Every caller recovers the token verbatim from the user's own words,
+/// so excluding absolute paths never stopped Formal AI from reaching outside the
+/// workspace — it only stopped the user from saying where. `..` stays excluded,
+/// because a traversal is a way of *not* saying where.
 fn is_safe_path(token: &str) -> bool {
-    !token.starts_with('/')
-        && !token.starts_with('-')
-        && !token.split('/').any(|part| part == ".." || part.is_empty())
+    let body = token.strip_prefix("~/").unwrap_or(token);
+    let body = body.strip_prefix('/').unwrap_or(body);
+    !token.starts_with('-')
+        && !body.is_empty()
+        && !body.split('/').any(|part| part == ".." || part.is_empty())
         && token
             .chars()
-            .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
+            .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-' | '~'))
 }
 
 /// Extract an explicit shell command named in the prompt, backed by the seed
@@ -708,73 +813,3 @@ fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Optio
 }
 
 
-/// Whether `prompt` asks, in natural language, to list the files in the current place.
-///
-/// Resolves prose directory-listing requests to `ls`: a listing phrase (or a
-/// which-files question) scoped to the current/working/this directory or folder.
-fn asks_for_directory_listing(prompt: &str) -> bool {
-    let lower = prompt.to_ascii_lowercase();
-
-    let asks_for_listing = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list all files",
-            "list local files",
-            "list of files",
-            "list of all files",
-            "list directory",
-            "list the directory",
-            "list the contents",
-            "listing of files",
-            "directory listing",
-            "directory contents",
-            "folder contents",
-            "contents of this directory",
-            "contents of the current directory",
-            "contents of this folder",
-            "contents of the current folder",
-            "show files",
-            "show the files",
-            "show me the files",
-            "see the files",
-        ],
-    );
-    let asks_which_files = contains_any(
-        &lower,
-        &[
-            "what files",
-            "which files",
-            "files are in",
-            "files in the",
-            "files in this",
-            "files in current",
-            "files in the current",
-            "files exist",
-            "files are here",
-            "files are there",
-        ],
-    );
-    let local_scope = contains_any(
-        &lower,
-        &[
-            "here",
-            "current directory",
-            "working directory",
-            "current working directory",
-            "this directory",
-            "the directory",
-            "current folder",
-            "this folder",
-            "the folder",
-            "local files",
-        ],
-    );
-
-    (asks_for_listing || asks_which_files) && local_scope
-}
-
-fn contains_any(text: &str, phrases: &[&str]) -> bool {
-    phrases.iter().any(|phrase| text.contains(phrase))
-}

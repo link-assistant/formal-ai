@@ -213,12 +213,14 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
     std::fs::create_dir_all(&workspace).expect("workspace");
     std::fs::create_dir_all(&home).expect("home");
     std::fs::create_dir_all(&bin_dir).expect("bin directory");
-    assert!(Command::new("git")
-        .args(["init", "--quiet"])
-        .current_dir(&workspace)
-        .status()
-        .expect("initialize fixture repository")
-        .success());
+    assert!(
+        Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success()
+    );
     write_no_effect_agent(&bin_dir);
 
     let attempts = directory.join("attempts.txt");
@@ -343,12 +345,14 @@ fn corrective_retry_reuses_the_native_session_and_can_complete() {
     for path in [&workspace, &home, &orchestration_home, &bin_dir] {
         std::fs::create_dir_all(path).expect("fixture directory");
     }
-    assert!(Command::new("git")
-        .args(["init", "--quiet"])
-        .current_dir(&workspace)
-        .status()
-        .expect("initialize fixture repository")
-        .success());
+    assert!(
+        Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success()
+    );
     write_effect_client(&bin_dir, "agent", 2);
 
     std::fs::write(directory.join("create-native-session"), "").expect("session sentinel");
@@ -427,12 +431,14 @@ fn six_supported_coding_clients_share_the_completion_contract() {
         for path in [&workspace, &home, &bin_dir] {
             std::fs::create_dir_all(path).expect("fixture directory");
         }
-        assert!(Command::new("git")
-            .args(["init", "--quiet"])
-            .current_dir(&workspace)
-            .status()
-            .expect("initialize fixture repository")
-            .success());
+        assert!(
+            Command::new("git")
+                .args(["init", "--quiet"])
+                .current_dir(&workspace)
+                .status()
+                .expect("initialize fixture repository")
+                .success()
+        );
         write_effect_client(&bin_dir, tool, 1);
 
         let output = run_client(
@@ -512,12 +518,14 @@ fn authoring_prompts_in_every_supported_language_require_workspace_effects() {
         for path in [&workspace, &home, &bin_dir] {
             std::fs::create_dir_all(path).expect("fixture directory");
         }
-        assert!(Command::new("git")
-            .args(["init", "--quiet"])
-            .current_dir(&workspace)
-            .status()
-            .expect("initialize fixture repository")
-            .success());
+        assert!(
+            Command::new("git")
+                .args(["init", "--quiet"])
+                .current_dir(&workspace)
+                .status()
+                .expect("initialize fixture repository")
+                .success()
+        );
         write_effect_client(&bin_dir, "agent", 1);
 
         let output = run_client(&directory, &workspace, &home, &bin_dir, "agent", task, &[]);
@@ -560,12 +568,14 @@ fn recovery_order_is_learned_from_what_actually_produced_artifacts() {
 
     let teaching_workspace = directory.join("teaching-workspace");
     std::fs::create_dir_all(&teaching_workspace).expect("teaching workspace");
-    assert!(Command::new("git")
-        .args(["init", "--quiet"])
-        .current_dir(&teaching_workspace)
-        .status()
-        .expect("initialize fixture repository")
-        .success());
+    assert!(
+        Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&teaching_workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success()
+    );
     // Only the third attempt writes a file: the initial request and the first
     // recovery strategy fail, the second recovery strategy succeeds.
     write_effect_client(&bin_dir, "agent", 3);
@@ -611,12 +621,14 @@ fn recovery_order_is_learned_from_what_actually_produced_artifacts() {
     // find, must now start from what worked and end with what never has.
     let learning_workspace = directory.join("learning-workspace");
     std::fs::create_dir_all(&learning_workspace).expect("learning workspace");
-    assert!(Command::new("git")
-        .args(["init", "--quiet"])
-        .current_dir(&learning_workspace)
-        .status()
-        .expect("initialize fixture repository")
-        .success());
+    assert!(
+        Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&learning_workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success()
+    );
     std::fs::remove_file(directory.join("agent-attempts.txt")).expect("reset attempt counter");
     write_no_effect_agent(&bin_dir);
     let learned_run = run_client(
@@ -681,12 +693,14 @@ fn public_vendor_endpoint_diversion_fails_closed() {
     for path in [&workspace, &home, &bin_dir] {
         std::fs::create_dir_all(path).expect("fixture directory");
     }
-    assert!(Command::new("git")
-        .args(["init", "--quiet"])
-        .current_dir(&workspace)
-        .status()
-        .expect("initialize fixture repository")
-        .success());
+    assert!(
+        Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success()
+    );
     let path = bin_dir.join("codex");
     std::fs::write(
         &path,

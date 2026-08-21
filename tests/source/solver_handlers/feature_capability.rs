@@ -288,7 +288,9 @@ fn feature_capability_body(
                 "Да. Возможность «{label}» доступна в этой конфигурации. Пример сообщения: `{example}`."
             ),
             "zh" => format!("可以。当前配置中「{label}」可用。示例消息：`{example}`。"),
-            "hi" => format!("हाँ। इस configuration में `{label}` available है। Example message: `{example}`."),
+            "hi" => format!(
+                "हाँ। इस configuration में `{label}` available है। Example message: `{example}`."
+            ),
             _ => format!(
                 "Yes. {label} is available in this configuration. Example message: `{example}`."
             ),
@@ -300,8 +302,12 @@ fn feature_capability_body(
         "ru" => format!(
             "Нет. Возможность «{label}» сейчас недоступна в этой конфигурации: {reason}. Пример сообщения после включения: `{example}`."
         ),
-        "zh" => format!("不可以。当前配置中「{label}」不可用：{reason}。启用后的示例消息：`{example}`。"),
-        "hi" => format!("नहीं। इस configuration में `{label}` अभी available नहीं है: {reason}. Enable करने के बाद example message: `{example}`."),
+        "zh" => format!(
+            "不可以。当前配置中「{label}」不可用：{reason}。启用后的示例消息：`{example}`。"
+        ),
+        "hi" => format!(
+            "नहीं। इस configuration में `{label}` अभी available नहीं है: {reason}. Enable करने के बाद example message: `{example}`."
+        ),
         _ => format!(
             "No. {label} is not available in this configuration: {reason}. Example message after enabling it: `{example}`."
         ),

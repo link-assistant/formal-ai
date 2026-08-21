@@ -1,7 +1,7 @@
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, SolverConfig, ToolCall,
-    UniversalSolver,
+    ChatCompletionRequest, ChatMessage, SolverConfig, ToolCall, UniversalSolver,
+    create_chat_completion_with_solver,
 };
 
 const TOOLS: [&str; 2] = ["read", "bash"];

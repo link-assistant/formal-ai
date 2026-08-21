@@ -7,6 +7,9 @@
 //! Usage: rust-script scripts/create-changelog-fragment.rs --bump-type <type> [--description <desc>]
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! chrono = "0.4"
 //! ```

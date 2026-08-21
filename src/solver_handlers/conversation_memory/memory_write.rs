@@ -174,11 +174,10 @@ fn recognize_memory_append(prompt: &str) -> Option<String> {
         .collect();
     prefixes.sort_by_key(|prefix| std::cmp::Reverse(prefix.len()));
     for prefix in prefixes {
-        if lowered.starts_with(&prefix) {
-            if let Some(statement) = clean_memory_write_text(&trimmed[prefix.len()..]) {
+        if lowered.starts_with(&prefix)
+            && let Some(statement) = clean_memory_write_text(&trimmed[prefix.len()..]) {
                 return Some(statement);
             }
-        }
     }
     None
 }

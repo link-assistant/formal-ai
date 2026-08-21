@@ -126,10 +126,10 @@ fn api_key_from_env() -> Option<String> {
         "FORMAL_AI_HTTP_BEARER_TOKEN",
         "FORMAL_AI_API_TOKEN",
     ] {
-        if let Some(value) = std::env::var_os(name) {
-            if !value.is_empty() {
-                return Some(value.to_string_lossy().into_owned());
-            }
+        if let Some(value) = std::env::var_os(name)
+            && !value.is_empty()
+        {
+            return Some(value.to_string_lossy().into_owned());
         }
     }
     None

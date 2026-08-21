@@ -18,8 +18,8 @@
 //! Adding a new summarization topic in any of the four supported languages
 //! therefore does not require touching Rust code.
 
-use super::parser::{parse_lino, split_pipe_list};
 use super::SUMMARY_TOPICS_LINO;
+use super::parser::{parse_lino, split_pipe_list};
 
 /// One summarization topic — the canonical display name, multilingual
 /// detection keywords, and the canned body the handler returns.

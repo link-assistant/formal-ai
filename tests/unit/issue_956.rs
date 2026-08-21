@@ -3,7 +3,7 @@
 //! routed every formalization-keyword task to the seeded fairy-tale recipe and
 //! silently substituted «Сказка о рыбаке и рыбке» for the supplied source.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ChatMessage;
 
 /// The exact repro from the audit: a quoted custom sentence, tool-less client.

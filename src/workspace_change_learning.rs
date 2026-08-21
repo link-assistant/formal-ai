@@ -12,7 +12,7 @@ use std::fmt;
 use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
 use crate::normal_markov::{RewriteHalt, RewriteProgram, RewriteRule};
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
 const LEARNING_CONTRACT: &str =
     include_str!("../data/meta/workspace-change-learning-contract.lino");

@@ -10,11 +10,11 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use crate::calculation::evaluate_calculation;
-use crate::engine::{answer_links_notation, stable_id, SymbolicAnswer};
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::engine::{SymbolicAnswer, answer_links_notation, stable_id};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalizationCache;
 use crate::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+    ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore, rank_probability_candidates,
 };
 use crate::solver::{SolverConfig, UniversalSolver};
 use crate::solver_helpers::DecomposedSubImpulse;

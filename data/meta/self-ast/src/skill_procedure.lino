@@ -2,9 +2,9 @@ self_ast_census
   target src/skill_procedure.rs
   language rust
   fidelity signature
-  byte_len 31017
-  line_count 808
-  content_id source_module_f4496e9a4345d41e
+  byte_len 31025
+  line_count 809
+  content_id source_module_298d2b042e7d9cc7
   symbol_count 51
   symbols
     module artifact 46 46
@@ -51,10 +51,10 @@ self_ast_census
     function first_match 661 663
     function first_procedure_match 665 667
     function first_match_in 669 695
-    function objects_in 701 722
-    function surfaces 725 732
-    function is_standalone 742 753
-    function is_ideographic 756 758
-    function link_record 760 790
-    function push_field 792 800
-    function push_doublet 802 808
+    function objects_in 701 723
+    function surfaces 726 733
+    function is_standalone 743 754
+    function is_ideographic 757 759
+    function link_record 761 791
+    function push_field 793 801
+    function push_doublet 803 809

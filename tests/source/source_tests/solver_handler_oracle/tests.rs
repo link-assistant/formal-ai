@@ -46,34 +46,40 @@ fn falls_back_to_task_alias_when_the_task_hint_is_missing() {
 #[test]
 fn declines_without_a_language() {
     let mut log = EventLog::new();
-    assert!(try_write_program_from_oracle(
-        "write a hello world program",
-        "write a hello world program",
-        Some("hello_world"),
-        None,
-        &mut log,
-    )
-    .is_none());
-    assert!(try_write_program_from_oracle(
-        "write a hello world program in   ",
-        "write a hello world program in   ",
-        Some("hello_world"),
-        Some("   "),
-        &mut log,
-    )
-    .is_none());
+    assert!(
+        try_write_program_from_oracle(
+            "write a hello world program",
+            "write a hello world program",
+            Some("hello_world"),
+            None,
+            &mut log,
+        )
+        .is_none()
+    );
+    assert!(
+        try_write_program_from_oracle(
+            "write a hello world program in   ",
+            "write a hello world program in   ",
+            Some("hello_world"),
+            Some("   "),
+            &mut log,
+        )
+        .is_none()
+    );
 }
 
 #[test]
 fn declines_for_a_catalogued_or_unknown_language() {
     let mut log = EventLog::new();
     // Klingon is not in any source — the caller keeps its existing path.
-    assert!(try_write_program_from_oracle(
-        "write a hello world program in klingon",
-        "write a hello world program in klingon",
-        Some("hello_world"),
-        Some("klingon"),
-        &mut log,
-    )
-    .is_none());
+    assert!(
+        try_write_program_from_oracle(
+            "write a hello world program in klingon",
+            "write a hello world program in klingon",
+            Some("hello_world"),
+            Some("klingon"),
+            &mut log,
+        )
+        .is_none()
+    );
 }

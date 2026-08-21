@@ -51,10 +51,12 @@ fn translate_identity_returns_self_with_identity_provenance() {
     let pipeline = TranslationPipeline::new(&http);
     let translation = pipeline.translate("hello", "en", "en").unwrap();
     assert_eq!(translation.primary_surface(), Some("hello"));
-    assert!(translation
-        .provenance
-        .iter()
-        .any(|entry| entry == "identity"));
+    assert!(
+        translation
+            .provenance
+            .iter()
+            .any(|entry| entry == "identity")
+    );
     assert_eq!(translation.meaning.slug(), "wiktionary:en:hello");
 }
 
@@ -68,10 +70,12 @@ fn translate_identity_upgrades_to_wikidata_meaning_when_available() {
 
     assert_eq!(translation.primary_surface(), Some("hello"));
     assert_eq!(translation.meaning.slug(), "wikidata-sense:L8885");
-    assert!(translation
-        .provenance
-        .iter()
-        .any(|entry| entry == "wikidata:lexeme:L8885"));
+    assert!(
+        translation
+            .provenance
+            .iter()
+            .any(|entry| entry == "wikidata:lexeme:L8885")
+    );
 }
 
 #[test]
@@ -105,12 +109,16 @@ fn wikidata_upgrade_canonicalizes_target_english_meaning() {
     .expect("wikidata search should produce a meaning");
 
     assert_eq!(meaning.slug(), "wikidata-sense:L8885");
-    assert!(provenance
-        .iter()
-        .any(|entry| entry == "wikidata:lexeme:L150880"));
-    assert!(provenance
-        .iter()
-        .any(|entry| entry == "wikidata:canonical_lexeme:L8885"));
+    assert!(
+        provenance
+            .iter()
+            .any(|entry| entry == "wikidata:lexeme:L150880")
+    );
+    assert!(
+        provenance
+            .iter()
+            .any(|entry| entry == "wikidata:canonical_lexeme:L8885")
+    );
 }
 
 #[test]
@@ -156,17 +164,21 @@ fn translate_uses_compositional_ru_en_fallback_for_short_phrases() {
 
     let noun_phrase = pipeline.translate("доброе яблоко", "ru", "en").unwrap();
     assert_eq!(noun_phrase.primary_surface(), Some("Good apple"));
-    assert!(noun_phrase
-        .provenance
-        .iter()
-        .any(|p| p == "compositional:ru->en:доброе яблоко"));
+    assert!(
+        noun_phrase
+            .provenance
+            .iter()
+            .any(|p| p == "compositional:ru->en:доброе яблоко")
+    );
 
     let question_phrase = pipeline.translate("что это такое?", "ru", "en").unwrap();
     assert_eq!(question_phrase.primary_surface(), Some("What is this?"));
-    assert!(question_phrase
-        .provenance
-        .iter()
-        .any(|p| p == "compositional:ru->en:что это такое"));
+    assert!(
+        question_phrase
+            .provenance
+            .iter()
+            .any(|p| p == "compositional:ru->en:что это такое")
+    );
 }
 
 #[test]

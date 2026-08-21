@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/calendar.rs
   language rust
   fidelity signature
-  byte_len 33945
-  line_count 981
-  content_id source_module_3215a320878aa552
+  byte_len 33835
+  line_count 976
+  content_id source_module_16a42c716b43899c
   symbol_count 49
   symbols
     enum Weekday 21 29
@@ -42,17 +42,17 @@ self_ast_census
     function try_calendar_create_event 503 585
     function default_title 588 595
     function mentions_calendar_create_request 597 644
-    function extract_day_number 646 685
-    function relative_date_offset 687 700
-    function extract_event_title 702 710
-    function compute_target_date_with_rollover 712 732
-    function extract_clock_time 734 781
-    function extract_spoken_hour_time 783 814
-    function mentions_timezone_alias 816 823
-    function resolve_timezone 825 830
-    function extract_title 832 863
-    function extract_participant_title 865 871
-    function tidy_title 873 918
-    function strip_action_words 920 934
-    function capitalize_first 936 941
-    function render_create_confirmation 943 981
+    function extract_day_number 646 683
+    function relative_date_offset 685 698
+    function extract_event_title 700 708
+    function compute_target_date_with_rollover 710 730
+    function extract_clock_time 732 778
+    function extract_spoken_hour_time 780 810
+    function mentions_timezone_alias 812 819
+    function resolve_timezone 821 826
+    function extract_title 828 858
+    function extract_participant_title 860 866
+    function tidy_title 868 913
+    function strip_action_words 915 929
+    function capitalize_first 931 936
+    function render_create_confirmation 938 976

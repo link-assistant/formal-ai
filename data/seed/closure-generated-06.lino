@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "called"
+  cause
+    defined-by concept
+    lexeme en
+      surface
+        text "cause"
   client_global_config_auth_refusal
     defined-by intent
     lexeme en
@@ -54,6 +59,11 @@ meanings
     lexeme en
       surface
         text "context learning failed"
+  copy_stdin_to_stdout
+    defined-by task
+    lexeme en
+      surface
+        text "copy stdin to stdout"
   could
     defined-by concept
     lexeme en
@@ -134,11 +144,21 @@ meanings
     lexeme en
       surface
         text "issue report omitted records"
+  issues
+    defined-by concept
+    lexeme en
+      surface
+        text "issues"
   join
     defined-by concept
     lexeme en
       surface
         text "join"
+  just
+    defined-by word_surface
+    lexeme en
+      surface
+        text "just"
   knowledge-representation
     defined-by category
     lexeme en

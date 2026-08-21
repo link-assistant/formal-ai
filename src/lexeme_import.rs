@@ -34,7 +34,7 @@ use serde_json::Value;
 use crate::event_log::EventLog;
 use crate::json_lino::json_cache_file;
 use crate::knowledge::cache_capacity;
-use crate::seed::{localized_response, parse_lexicon_text, LANGUAGES_LINO};
+use crate::seed::{LANGUAGES_LINO, localized_response, parse_lexicon_text};
 use crate::translation::http::HttpClient;
 
 /// Full-support project languages, derived from the registry in ledger order.
@@ -45,10 +45,10 @@ pub fn import_languages() -> Vec<&'static str> {
     for line in LANGUAGES_LINO.lines() {
         if let Some(language) = line.strip_prefix("  language ") {
             current = Some(language);
-        } else if line == "    status full" {
-            if let Some(language) = current.take() {
-                languages.push(language);
-            }
+        } else if line == "    status full"
+            && let Some(language) = current.take()
+        {
+            languages.push(language);
         }
     }
     languages
@@ -576,13 +576,13 @@ fn keep_language_arrays(section: Option<&Value>) -> Option<Ordered> {
     let object = section?.as_object()?;
     let mut kept = Vec::new();
     for language in import_languages() {
-        if let Some(Value::Array(items)) = object.get(language) {
-            if !items.is_empty() {
-                kept.push((
-                    language.to_string(),
-                    Ordered::Arr(items.iter().map(value_to_ordered).collect()),
-                ));
-            }
+        if let Some(Value::Array(items)) = object.get(language)
+            && !items.is_empty()
+        {
+            kept.push((
+                language.to_string(),
+                Ordered::Arr(items.iter().map(value_to_ordered).collect()),
+            ));
         }
     }
     (!kept.is_empty()).then_some(Ordered::Obj(kept))

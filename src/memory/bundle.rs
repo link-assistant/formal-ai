@@ -10,8 +10,8 @@
 use std::collections::BTreeMap;
 
 use super::{
-    escape_value, format_event_into, isoformat_now, parse_links_notation, parse_quoted,
-    split_first_token, MemoryEvent, BUNDLE_HEADER, ROOT_HEADER,
+    BUNDLE_HEADER, MemoryEvent, ROOT_HEADER, escape_value, format_event_into, isoformat_now,
+    parse_links_notation, parse_quoted, split_first_token,
 };
 
 /// Build a single Links Notation bundle document.
@@ -309,17 +309,17 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
                 continue;
             }
             // Free-form info field, e.g. `version "0.22.0"`.
-            if let Some((key, rest)) = split_first_token(content) {
-                if let Some(value) = parse_quoted(rest) {
-                    match key {
-                        "exported_at" => bundle.info.exported_at = Some(value),
-                        "version" => bundle.info.version = Some(value),
-                        "url" => bundle.info.url = Some(value),
-                        "user_agent" => bundle.info.user_agent = Some(value),
-                        "worker_state" => bundle.info.worker_state = Some(value),
-                        "mode" => bundle.info.mode = Some(value),
-                        _ => {}
-                    }
+            if let Some((key, rest)) = split_first_token(content)
+                && let Some(value) = parse_quoted(rest)
+            {
+                match key {
+                    "exported_at" => bundle.info.exported_at = Some(value),
+                    "version" => bundle.info.version = Some(value),
+                    "url" => bundle.info.url = Some(value),
+                    "user_agent" => bundle.info.user_agent = Some(value),
+                    "worker_state" => bundle.info.worker_state = Some(value),
+                    "mode" => bundle.info.mode = Some(value),
+                    _ => {}
                 }
             }
             section = None;
@@ -333,11 +333,11 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
                             .seed_files
                             .push((name, std::mem::take(&mut current_seed_body)));
                     }
-                    if let Some(rest) = content.strip_prefix("file ") {
-                        if let Some(value) = parse_quoted(rest) {
-                            current_seed_file = Some(value);
-                            current_seed_body = String::new();
-                        }
+                    if let Some(rest) = content.strip_prefix("file ")
+                        && let Some(value) = parse_quoted(rest)
+                    {
+                        current_seed_file = Some(value);
+                        current_seed_body = String::new();
                     }
                 } else if current_seed_file.is_some() && indent >= 6 {
                     let body = if line.len() >= 6 { &line[6..] } else { "" };
@@ -348,10 +348,10 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
                 }
             }
             Some("preferences") if indent == 4 => {
-                if let Some((key, rest)) = split_first_token(content) {
-                    if let Some(value) = parse_quoted(rest) {
-                        bundle.preferences.push((key.to_string(), value));
-                    }
+                if let Some((key, rest)) = split_first_token(content)
+                    && let Some(value) = parse_quoted(rest)
+                {
+                    bundle.preferences.push((key.to_string(), value));
                 }
             }
             Some("memory") => {
@@ -390,19 +390,17 @@ fn parse_agent_info(text: &str) -> BTreeMap<String, String> {
         let indent = line.chars().take_while(|c| *c == ' ').count();
         let content = &line[indent..];
         if indent == 2 {
-            if let Some(rest) = content.strip_prefix("field ") {
-                if let Some(value) = parse_quoted(rest) {
-                    current_field = Some(value);
-                }
+            if let Some(rest) = content.strip_prefix("field ")
+                && let Some(value) = parse_quoted(rest)
+            {
+                current_field = Some(value);
             }
-        } else if indent == 4 {
-            if let Some(rest) = content.strip_prefix("value ") {
-                if let Some(value) = parse_quoted(rest) {
-                    if let Some(key) = current_field.take() {
-                        out.insert(key, value);
-                    }
-                }
-            }
+        } else if indent == 4
+            && let Some(rest) = content.strip_prefix("value ")
+            && let Some(value) = parse_quoted(rest)
+            && let Some(key) = current_field.take()
+        {
+            out.insert(key, value);
         }
     }
     out

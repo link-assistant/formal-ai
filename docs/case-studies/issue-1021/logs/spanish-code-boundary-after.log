@@ -1,0 +1,7 @@
+escribe código                                -> write_program_request_unspecified
+necesito código                               -> write_program_request_unspecified
+dame código                                   -> write_program_request_unspecified
+copiar stdin a stdout en código               -> write_program_language_unspecified
+escribe código en Python                      -> write_script_python
+copiar stdin a stdout en C                    -> write_program
+write me a C program that counts to three     -> write_program

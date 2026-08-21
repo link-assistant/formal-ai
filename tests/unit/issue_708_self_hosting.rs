@@ -3,7 +3,7 @@ use std::process::{Command, Stdio};
 
 fn rustfmt_source(source: &str) -> String {
     let mut child = Command::new("rustfmt")
-        .args(["--edition", "2021", "--emit", "stdout"])
+        .args(["--edition", "2024", "--emit", "stdout"])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn()
@@ -41,20 +41,24 @@ fn captured_agent_artifacts_match_their_committed_leaves() {
         15
     );
 
+    // The leaves under `docs/case-studies/issue-708/` are evidence: they are the
+    // bytes the Agent CLI emitted, and they stay frozen at those bytes. The live
+    // copies are carried by `cargo fmt`, which reflowed them when the crate moved
+    // to the 2024 style edition. So the two are compared through the formatter,
+    // the way the query-languages leaf below already was -- the question this
+    // test asks is whether the suite is still the authored one, not whether the
+    // repository's formatter has stood still since it was authored.
     let suite = include_str!("issue_708_memory_program_execution.rs");
     let authored_suite = include_str!(
         "../../docs/case-studies/issue-708/self-hosting-execution-tests/issue_708_memory_program_execution.rs"
     );
-    assert_eq!(authored_suite, suite.strip_suffix('\n').unwrap_or(suite));
+    assert_eq!(rustfmt_source(authored_suite), suite);
 
     let compiler_test = include_str!("issue_708_memory_program.rs");
     let authored_compiler_test = include_str!(
         "../../docs/case-studies/issue-708/self-hosting-authorship/issue_708_memory_program.rs"
     );
-    assert_eq!(
-        authored_compiler_test,
-        compiler_test.strip_suffix('\n').unwrap_or(compiler_test)
-    );
+    assert_eq!(rustfmt_source(authored_compiler_test), compiler_test);
 
     let query_suite = include_str!("issue_708_memory_query_languages.rs");
     let authored_query_suite = include_str!(

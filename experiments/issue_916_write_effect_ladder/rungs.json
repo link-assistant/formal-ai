@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "issue_916_write_effect_rungs",
   "epic": "916",
-  "note": "Every rung names one defect from the #902-#909 family and pins the workspace effect that closes it. Rung ids match tests/unit/issue_916.rs so a fix, its regression test and its ladder rung carry one name.",
+  "note": "Every rung names one defect from the #902-#909 family and pins the workspace effect that closes it. Rung ids match tests/unit/issue_916.rs so a fix, its regression test and its ladder rung carry one name. The 824.L* rungs are the mutating ladder issue #944 asks for: each declares the state it starts from, the sandbox is reset to exactly that state and read back before the rung runs, and the effect is judged off disk afterwards.",
   "rungs": [
     {
       "id": "R916-01",
@@ -20,10 +20,14 @@
         }
       ],
       "effects": {
-        "files_absent": ["hello.txt"]
+        "files_absent": [
+          "hello.txt"
+        ]
       },
       "claims_completion": false,
-      "forbid": ["verified it"]
+      "forbid": [
+        "verified it"
+      ]
     },
     {
       "id": "R916-02",
@@ -34,15 +38,26 @@
       "note": "`python3 -m py_compile main.py` prints nothing and exits 0. Reading that as a failure abandoned a program that had already been written correctly (issue #908, row 3).",
       "effects": {
         "files_present": {
-          "main.py": {"contains": ["Hello"]}
+          "main.py": {
+            "contains": [
+              "Hello"
+            ]
+          }
         },
         "checks": [
-          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+          {
+            "command": "python3 main.py",
+            "stdout_contains": "Hello, world!"
+          }
         ]
       },
       "claims_completion": true,
-      "expect_tool": ["write_file"],
-      "forbid": ["could not complete"]
+      "expect_tool": [
+        "write_file"
+      ],
+      "forbid": [
+        "could not complete"
+      ]
     },
     {
       "id": "R916-03",
@@ -61,8 +76,12 @@
         }
       ],
       "claims_completion": false,
-      "expect": ["127"],
-      "forbid": ["harness could not complete"]
+      "expect": [
+        "127"
+      ],
+      "forbid": [
+        "harness could not complete"
+      ]
     },
     {
       "id": "R916-04",
@@ -73,14 +92,21 @@
       "note": "The same request as R916-01 with a working write tool. The claim is now backed by the file the workspace holds.",
       "effects": {
         "files_present": {
-          "hello.txt": {"equals": "Hello World"}
+          "hello.txt": {
+            "equals": "Hello World"
+          }
         },
         "checks": [
-          {"command": "cat hello.txt", "stdout_contains": "Hello World"}
+          {
+            "command": "cat hello.txt",
+            "stdout_contains": "Hello World"
+          }
         ]
       },
       "claims_completion": true,
-      "expect_tool": ["write_file"]
+      "expect_tool": [
+        "write_file"
+      ]
     },
     {
       "id": "R916-05",
@@ -91,7 +117,12 @@
       "note": "Issue #905 section 3: `exactly:` qualifies the requirement, so it must not be written into the file.",
       "effects": {
         "files_present": {
-          "greeting.txt": {"equals": "Hello World", "excludes": ["exactly:"]}
+          "greeting.txt": {
+            "equals": "Hello World",
+            "excludes": [
+              "exactly:"
+            ]
+          }
         }
       },
       "claims_completion": true
@@ -105,15 +136,26 @@
       "note": "gemini-cli prepends this block to every turn. Reading `Today's date is ...` as a question ran `date` and never wrote the program (issue #907, fix 1).",
       "effects": {
         "files_present": {
-          "main.py": {"contains": ["Hello"]}
+          "main.py": {
+            "contains": [
+              "Hello"
+            ]
+          }
         },
         "checks": [
-          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+          {
+            "command": "python3 main.py",
+            "stdout_contains": "Hello, world!"
+          }
         ]
       },
       "claims_completion": true,
-      "expect_tool": ["write_file"],
-      "command_forbid": ["date"]
+      "expect_tool": [
+        "write_file"
+      ],
+      "command_forbid": [
+        "date"
+      ]
     },
     {
       "id": "R916-07",
@@ -124,34 +166,68 @@
       "note": "Issue #907, fix 2: a sentence that supplies a fact does not ask for one.",
       "effects": {
         "files_present": {
-          "main.py": {"contains": ["Hello"]}
+          "main.py": {
+            "contains": [
+              "Hello"
+            ]
+          }
         },
         "checks": [
-          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+          {
+            "command": "python3 main.py",
+            "stdout_contains": "Hello, world!"
+          }
         ]
       },
       "claims_completion": true,
-      "expect_tool": ["write_file"],
-      "command_forbid": ["date"]
+      "expect_tool": [
+        "write_file"
+      ],
+      "command_forbid": [
+        "date"
+      ]
     },
     {
       "id": "R916-08a",
       "issue": "909",
       "kind": "cli",
       "title": "--global writes a gemini configuration that starts headlessly",
-      "argv": ["with", "--global", "gemini"],
+      "argv": [
+        "with",
+        "--global",
+        "gemini"
+      ],
       "note": "gemini-cli reads GEMINI_DEFAULT_AUTH_TYPE as a default only and still refused to start with `Invalid auth method selected.`; the selection has to be recorded in its settings file (issue #909).",
       "effects": {
         "files_present": {
-          ".profile": {"contains": ["GEMINI_DEFAULT_AUTH_TYPE", "GOOGLE_GEMINI_BASE_URL"]},
-          ".gemini/settings.json": {"contains": ["\"selectedType\"", "gemini-api-key"]}
+          ".profile": {
+            "contains": [
+              "GEMINI_DEFAULT_AUTH_TYPE",
+              "GOOGLE_GEMINI_BASE_URL"
+            ]
+          },
+          ".gemini/settings.json": {
+            "contains": [
+              "\"selectedType\"",
+              "gemini-api-key"
+            ]
+          }
         }
       },
-      "expect": ["configured gemini"],
+      "expect": [
+        "configured gemini"
+      ],
       "undo": {
-        "argv": ["with", "--undo", "gemini"],
+        "argv": [
+          "with",
+          "--undo",
+          "gemini"
+        ],
         "effects": {
-          "files_absent": [".profile", ".gemini/settings.json"]
+          "files_absent": [
+            ".profile",
+            ".gemini/settings.json"
+          ]
         }
       }
     },
@@ -160,18 +236,36 @@
       "issue": "909",
       "kind": "cli",
       "title": "--global writes the complete OpenAI triple for qwen",
-      "argv": ["with", "--global", "qwen"],
+      "argv": [
+        "with",
+        "--global",
+        "qwen"
+      ],
       "note": "qwen-code selects the OpenAI auth path only when key, base URL and model are all present; a missing OPENAI_MODEL left it prompting (issue #909).",
       "effects": {
         "files_present": {
-          ".profile": {"contains": ["OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENAI_MODEL"]}
+          ".profile": {
+            "contains": [
+              "OPENAI_API_KEY",
+              "OPENAI_BASE_URL",
+              "OPENAI_MODEL"
+            ]
+          }
         }
       },
-      "expect": ["configured qwen"],
+      "expect": [
+        "configured qwen"
+      ],
       "undo": {
-        "argv": ["with", "--undo", "qwen"],
+        "argv": [
+          "with",
+          "--undo",
+          "qwen"
+        ],
         "effects": {
-          "files_absent": [".profile"]
+          "files_absent": [
+            ".profile"
+          ]
         }
       }
     },
@@ -184,15 +278,27 @@
       "note": "Hive Mind's adapters concatenated workflow policy and objective into one untagged user message, so the #907 markup rule had nothing to separate. Production observed Codex run `/bin/bash -lc pwd` and five Codex attempts run bare `sudo`, with no requested file created (hive-mind#2158).",
       "effects": {
         "files_present": {
-          "main.py": {"contains": ["Hello"]}
+          "main.py": {
+            "contains": [
+              "Hello"
+            ]
+          }
         },
         "checks": [
-          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+          {
+            "command": "python3 main.py",
+            "stdout_contains": "Hello, world!"
+          }
         ]
       },
       "claims_completion": true,
-      "expect_tool": ["write_file"],
-      "command_forbid": ["pwd", "sudo"]
+      "expect_tool": [
+        "write_file"
+      ],
+      "command_forbid": [
+        "pwd",
+        "sudo"
+      ]
     },
     {
       "id": "R916-10",
@@ -203,15 +309,215 @@
       "note": "The other half of the same class, with no objective delimiter to lean on: a conditional clause governs how a command would be treated, it does not ask for one. A different command and a different lead from R916-09, so passing proves the rule rather than the phrasing.",
       "effects": {
         "files_present": {
-          "main.py": {"contains": ["Hello"]}
+          "main.py": {
+            "contains": [
+              "Hello"
+            ]
+          }
         },
         "checks": [
-          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+          {
+            "command": "python3 main.py",
+            "stdout_contains": "Hello, world!"
+          }
         ]
       },
       "claims_completion": true,
-      "expect_tool": ["write_file"],
-      "command_forbid": ["rm"]
+      "expect_tool": [
+        "write_file"
+      ],
+      "command_forbid": [
+        "rm"
+      ]
+    },
+    {
+      "id": "824.L1",
+      "issue": "944",
+      "kind": "chat",
+      "title": "a single move is performed and verified",
+      "prompt": "move the file report.txt to archive/report.txt",
+      "note": "Issue #824 reported `Move <dir> to <dir>` being refused outright. The first rung of the mutating ladder: the source exists, the destination is free, and the move must actually happen and be checked afterwards rather than announced.",
+      "seed": {
+        "files": {
+          "report.txt": "quarterly figures\n"
+        },
+        "directories": [
+          "archive"
+        ],
+        "absent": [
+          "archive/report.txt"
+        ]
+      },
+      "effects": {
+        "files_present": {
+          "archive/report.txt": {
+            "equals": "quarterly figures"
+          }
+        },
+        "files_absent": [
+          "report.txt"
+        ]
+      },
+      "claims_completion": true,
+      "expect": [
+        "mv report.txt archive/report.txt",
+        "test -e archive/report.txt"
+      ],
+      "command_expect": [
+        "test -e report.txt",
+        "mv report.txt archive/report.txt",
+        "test ! -e report.txt"
+      ]
+    },
+    {
+      "id": "824.L2",
+      "issue": "944",
+      "kind": "chat",
+      "title": "a move onto an occupied destination stops before it acts",
+      "prompt": "move the file report.txt to archive/report.txt",
+      "note": "The same request against a destination that is already taken. `mv` would exit 0 here and silently destroy the file that was there, so the precondition has to stop the recipe: nothing moves, and the answer names the check and the status instead of claiming a completion.",
+      "seed": {
+        "files": {
+          "report.txt": "quarterly figures\n",
+          "archive/report.txt": "last year\n"
+        }
+      },
+      "effects": {
+        "files_present": {
+          "report.txt": {
+            "equals": "quarterly figures"
+          },
+          "archive/report.txt": {
+            "equals": "last year"
+          }
+        }
+      },
+      "claims_completion": false,
+      "expect": [
+        "test ! -e archive/report.txt",
+        "1"
+      ],
+      "command_forbid": [
+        "mv report.txt archive/report.txt"
+      ]
+    },
+    {
+      "id": "824.L3",
+      "issue": "944",
+      "kind": "chat",
+      "title": "a directory move takes its contents and leaves its source behind",
+      "prompt": "move notes/2026 to backup/2026",
+      "note": "The multi-step rung: a whole directory moves, and the cleanup half of the move -- that the source is gone afterwards -- is verified rather than assumed. This is the shape of the path pair issue #824 reported, with the operands carrying directory separators.",
+      "seed": {
+        "files": {
+          "notes/2026/january.md": "# January\n",
+          "notes/2026/february.md": "# February\n"
+        },
+        "directories": [
+          "backup"
+        ],
+        "absent": [
+          "backup/2026"
+        ]
+      },
+      "effects": {
+        "files_present": {
+          "backup/2026/january.md": {
+            "contains": [
+              "January"
+            ]
+          },
+          "backup/2026/february.md": {
+            "contains": [
+              "February"
+            ]
+          }
+        },
+        "files_absent": [
+          "notes/2026"
+        ],
+        "checks": [
+          {
+            "command": "ls backup/2026",
+            "stdout_contains": "january.md"
+          }
+        ]
+      },
+      "claims_completion": true,
+      "expect": [
+        "mv notes/2026 backup/2026"
+      ],
+      "command_expect": [
+        "test ! -e notes/2026"
+      ]
+    },
+    {
+      "id": "824.L4",
+      "issue": "944",
+      "kind": "chat",
+      "title": "a move into a path that does not exist yet creates it first",
+      "prompt": "move the file report.txt to archive/2026/quarter-four/report.txt",
+      "note": "Issue #944 point 3: \"verify/create destination parent (mkdir -p)\". None of `archive`, `archive/2026` or `archive/2026/quarter-four` exists when the rung starts, so a bare `mv` exits 1. The rung passes only if the intermediate directories were created as part of carrying the request out.",
+      "seed": {
+        "files": {
+          "report.txt": "quarterly figures\n"
+        },
+        "absent": [
+          "archive"
+        ]
+      },
+      "effects": {
+        "files_present": {
+          "archive/2026/quarter-four/report.txt": {
+            "equals": "quarterly figures"
+          }
+        },
+        "files_absent": [
+          "report.txt"
+        ]
+      },
+      "claims_completion": true,
+      "expect": [
+        "mv report.txt archive/2026/quarter-four/report.txt"
+      ],
+      "command_expect": [
+        "mkdir -p -- archive/2026/quarter-four"
+      ]
+    },
+    {
+      "id": "824.L5",
+      "issue": "944",
+      "kind": "chat",
+      "title": "a copy is carried out the same way without naming copy anywhere",
+      "prompt": "copy a.txt to backup/a.txt",
+      "note": "Held out from the four rungs the review named, and the reason the fix is a generalization rather than a `mv` special case: nothing in src/ mentions `cp`. The recipe comes from the effect block `data/seed/shell-intents.lino` declares for the intent, so a copy keeps its source where a move does not, and this rung is the difference.",
+      "seed": {
+        "files": {
+          "a.txt": "alpha\n"
+        },
+        "absent": [
+          "backup"
+        ]
+      },
+      "effects": {
+        "files_present": {
+          "backup/a.txt": {
+            "equals": "alpha"
+          },
+          "a.txt": {
+            "equals": "alpha"
+          }
+        }
+      },
+      "claims_completion": true,
+      "expect": [
+        "cp a.txt backup/a.txt",
+        "test -e a.txt"
+      ],
+      "command_expect": [
+        "mkdir -p -- backup",
+        "cp a.txt backup/a.txt"
+      ]
     }
   ]
 }

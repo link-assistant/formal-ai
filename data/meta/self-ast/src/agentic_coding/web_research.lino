@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 29309
-  line_count 706
-  content_id source_module_9ba2d06e79a5ee2e
+  byte_len 29301
+  line_count 705
+  content_id source_module_9b925fb08bfaaa1f
   symbol_count 40
   symbols
     function web_research_query_for 17 33
@@ -20,41 +20,41 @@ self_ast_census
     function seed_unresolved_question_subject 195 202
     function seed_prefix_subject 204 217
     const MAX_RESEARCH_ROUNDS 229 229
-    function plan_web_research_step 231 266
-    function plan_fetches 274 286
-    function plan_deeper_round 295 332
-    function uncovered_aspects 345 359
-    const MIN_ASPECT_CHARS 363 363
-    function aspects_of 365 380
-    const MAX_EXTRACT_CHARS 385 385
-    const EXTRACT_SENTENCES 389 389
-    function final_answer 391 428
-    function extract_answer 439 474
-    function structurally_complete_prose 485 501
-    function is_sentence_terminal 503 505
-    function relevance 515 521
-    function character_overlap 529 545
-    function truncate_chars 549 556
-    function seed_text 558 562
-    function render_seed_text 564 570
-    function preferred_url 576 578
-    const MAX_RESEARCH_SOURCES 584 584
-    function research_urls 586 595
-    function urls_in 597 606
-    function authoritative_host 608 624
-    function is_context_reference 626 638
-    function topic_from_history 640 687
-    function is_conversation_meta_request 689 695
-    function trim_question_punctuation 697 702
-    function latest_user_text 704 706
+    function plan_web_research_step 231 265
+    function plan_fetches 273 285
+    function plan_deeper_round 294 331
+    function uncovered_aspects 344 358
+    const MIN_ASPECT_CHARS 362 362
+    function aspects_of 364 379
+    const MAX_EXTRACT_CHARS 384 384
+    const EXTRACT_SENTENCES 388 388
+    function final_answer 390 427
+    function extract_answer 438 473
+    function structurally_complete_prose 484 500
+    function is_sentence_terminal 502 504
+    function relevance 514 520
+    function character_overlap 528 544
+    function truncate_chars 548 555
+    function seed_text 557 561
+    function render_seed_text 563 569
+    function preferred_url 575 577
+    const MAX_RESEARCH_SOURCES 583 583
+    function research_urls 585 594
+    function urls_in 596 605
+    function authoritative_host 607 623
+    function is_context_reference 625 637
+    function topic_from_history 639 686
+    function is_conversation_meta_request 688 694
+    function trim_question_punctuation 696 701
+    function latest_user_text 703 705
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18438
-    named_node_count 3948
-    distinct_node_kinds 73
+    total_link_count 18424
+    named_node_count 3946
+    distinct_node_kinds 74
     node_kinds
       arguments 388
       array_expression 3
@@ -63,7 +63,7 @@ self_ast_census
       attribute 1
       attribute_item 1
       binary_expression 31
-      block 76
+      block 75
       boolean_literal 1
       break_expression 2
       call_expression 388
@@ -75,7 +75,7 @@ self_ast_census
       doc_comment 116
       else_clause 2
       escape_sequence 9
-      expression_statement 62
+      expression_statement 61
       field_expression 305
       field_identifier 301
       float_literal 3
@@ -85,10 +85,11 @@ self_ast_census
       generic_function 4
       generic_type 29
       identifier 827
-      if_expression 24
+      if_expression 23
       index_expression 3
       inner_doc_comment_marker 6
       integer_literal 17
+      let_chain 1
       let_condition 4
       let_declaration 60
       line_comment 154

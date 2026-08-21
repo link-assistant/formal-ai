@@ -4,6 +4,9 @@
 //! Usage: rust-script scripts/check-crate-package-size.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```
@@ -12,7 +15,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 #[cfg(not(test))]
-use std::process::{exit, Command};
+use std::process::{Command, exit};
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -183,8 +186,8 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::{
-        classify_package_size, crate_archive_name, crate_archive_path, format_bytes,
-        PackageSizeStatus, CRATES_IO_MAX_PACKAGE_BYTES, PACKAGE_WARN_BYTES,
+        CRATES_IO_MAX_PACKAGE_BYTES, PACKAGE_WARN_BYTES, PackageSizeStatus, classify_package_size,
+        crate_archive_name, crate_archive_path, format_bytes,
     };
 
     #[test]

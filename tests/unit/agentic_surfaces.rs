@@ -14,9 +14,9 @@
 
 use formal_ai::agentic_coding::{CANONICAL_SOURCE_URL, SEARCH_QUERY};
 use formal_ai::{
-    anthropic_message_sse, create_anthropic_message_with_solver, create_response_with_solver,
     AnthropicContentBlock, AnthropicMessagesRequest, ResponsesRequest, SolverConfig,
-    UniversalSolver,
+    UniversalSolver, anthropic_message_sse, create_anthropic_message_with_solver,
+    create_response_with_solver,
 };
 
 /// A solver with agent mode enabled — the real guard for any tool execution.
@@ -298,13 +298,12 @@ fn responses_emits_function_call_in_agent_mode() {
         calls[0].arguments.contains(SEARCH_QUERY),
         "function_call arguments should carry the canonical search query"
     );
-    assert!(response
-        .output_messages()
-        .first()
-        .is_some_and(|message| message
+    assert!(response.output_messages().first().is_some_and(|message| {
+        message
             .content
             .iter()
-            .any(|part| !part.text.trim().is_empty())));
+            .any(|part| !part.text.trim().is_empty())
+    }));
 }
 
 #[test]

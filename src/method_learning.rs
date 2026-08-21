@@ -7,7 +7,7 @@
 //! into issue-#656 promotion proposals. Discovery never mutates the registry.
 
 use crate::algorithm_discovery::{
-    discover_algorithms, AlgorithmCandidate, AlgorithmDiscoveryRun, ExecutionTrace, TraceStep,
+    AlgorithmCandidate, AlgorithmDiscoveryRun, ExecutionTrace, TraceStep, discover_algorithms,
 };
 use crate::event_log::EventLog;
 use crate::links_format::push_lino_node;

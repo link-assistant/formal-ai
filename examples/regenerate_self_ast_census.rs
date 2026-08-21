@@ -14,7 +14,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 
-use formal_ai::self_ast_census::{workspace, CENSUS_DIR};
+use formal_ai::self_ast_census::{CENSUS_DIR, workspace};
 
 fn main() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));

@@ -7,7 +7,7 @@ use super::{
     SortDirection,
 };
 use crate::engine::stable_id;
-use crate::memory::{isoformat_now, MemoryEvent, MemoryStore};
+use crate::memory::{MemoryEvent, MemoryStore, isoformat_now};
 use crate::memory_program::{
     MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramPermission,
 };

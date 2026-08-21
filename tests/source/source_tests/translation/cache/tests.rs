@@ -129,8 +129,8 @@ fn cache_paths_use_semantic_subdirectories() {
 #[test]
 fn wiktionary_url_lands_under_per_language_subdirectory() {
     let location = cache_location(
-            "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1",
-        );
+        "https://en.wiktionary.org/w/api.php?action=parse&page=apple&prop=wikitext&formatversion=2&format=json&redirects=1",
+    );
     assert_eq!(
         location.directory,
         PathBuf::from("wiktionary-cache").join("en")
@@ -141,8 +141,8 @@ fn wiktionary_url_lands_under_per_language_subdirectory() {
 #[test]
 fn wikidata_search_url_keyed_by_search_term() {
     let location = cache_location(
-            "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=lexeme&srsearch=apple&limit=3",
-        );
+        "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=lexeme&srsearch=apple&limit=3",
+    );
     assert_eq!(
         location.directory,
         PathBuf::from("wikidata-cache").join("search")

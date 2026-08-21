@@ -150,12 +150,13 @@ fn section<'a>(source: &'a str, start: &str, end: &str) -> Result<&'a str, Strin
 
 fn node_pairs(source: &str) -> Result<Vec<(String, String)>, String> {
     let names = node_names(source);
-    let chunks = names.chunks_exact(2);
-    if !chunks.remainder().is_empty() {
+    let (pairs, remainder) = names.as_chunks::<2>();
+    if !remainder.is_empty() {
         return Err(String::from("upstream Node tuple has odd arity"));
     }
-    Ok(chunks
-        .map(|chunk| (chunk[0].clone(), chunk[1].clone()))
+    Ok(pairs
+        .iter()
+        .map(|[left, right]| (left.clone(), right.clone()))
         .collect())
 }
 

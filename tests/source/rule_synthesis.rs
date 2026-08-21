@@ -7,11 +7,11 @@
 
 use std::fmt::Write as _;
 
-use crate::coding::{program_spec, ProgramSpec};
-use crate::engine::{normalize_prompt, SelectedRule};
+use crate::coding::{ProgramSpec, program_spec};
+use crate::engine::{SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::intent_formalization::{
-    active_program_context, detected_program_modifiers, ActiveProgramContext,
+    ActiveProgramContext, active_program_context, detected_program_modifiers,
 };
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::program_coreference::looks_like_bare_program_artifact_follow_up;

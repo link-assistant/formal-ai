@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_context.rs
   language rust
   fidelity signature
-  byte_len 15290
+  byte_len 15278
   line_count 426
-  content_id source_module_e612e83017271e23
+  content_id source_module_48766f672428bed4
   symbol_count 30
   symbols
     const ERROR_PLACEHOLDER 12 12

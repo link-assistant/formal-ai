@@ -2,7 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use formal_ai::dialog_log::{write_dialog_exchange, DialogExchangeLog};
+use formal_ai::dialog_log::{DialogExchangeLog, write_dialog_exchange};
 
 fn isolated_directory(test_name: &str) -> PathBuf {
     let nonce = SystemTime::now()

@@ -41,8 +41,7 @@ use crate::seed::{
 /// per-process toggling, so we re-check each call here (cheap stdlib lookup).
 fn translation_debug_enabled() -> bool {
     std::env::var("FORMAL_AI_TRANSLATION_DEBUG")
-        .ok()
-        .is_some_and(|value| !value.is_empty() && value != "0")
+        .is_ok_and(|value| !value.is_empty() && value != "0")
 }
 
 /// Emit a structured debug line to stderr when
@@ -218,16 +217,16 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
         // target-edition Wiktionary in reverse. The target page lists
         // the source language under its own translation block — useful
         // when the source edition is sparse (common for ru → en).
-        if blocks.is_empty() {
-            if let Some(reverse) = reverse_lookup(
+        if blocks.is_empty()
+            && let Some(reverse) = reverse_lookup(
                 self.http,
                 surface,
                 source_lang,
                 target_lang,
                 &mut provenance,
-            ) {
-                blocks = reverse;
-            }
+            )
+        {
+            blocks = reverse;
         }
 
         // Stage 1d: phrasal-variant fallback. Some natural phrases don't
@@ -585,14 +584,15 @@ fn compositional_candidates(
         }];
     }
 
-    if source_lang.eq_ignore_ascii_case("ru") && target_lang.eq_ignore_ascii_case("en") {
-        if let Some(surface) = russian_phrase_to_english(page_title) {
-            provenance.push(format!("compositional:ru->en:{page_title}"));
-            return vec![WiktionaryCandidate {
-                surface: surface.to_owned(),
-                qualifier: None,
-            }];
-        }
+    if source_lang.eq_ignore_ascii_case("ru")
+        && target_lang.eq_ignore_ascii_case("en")
+        && let Some(surface) = russian_phrase_to_english(page_title)
+    {
+        provenance.push(format!("compositional:ru->en:{page_title}"));
+        return vec![WiktionaryCandidate {
+            surface: surface.to_owned(),
+            qualifier: None,
+        }];
     }
 
     // The HTTP variant fallback already tried `phrasal_variants` against
@@ -725,14 +725,15 @@ fn translate_russian_word_sequence(words: &[&str]) -> Option<String> {
     let mut index = 0;
     while index < words.len() {
         let word = words[index];
-        if let Some(next) = words.get(index + 1) {
-            if russian_genitive_relation_head(word) && russian_genitive_noun(next).is_some() {
-                translated.push(russian_word_to_english(word)?);
-                translated.push("of");
-                translated.push(russian_genitive_noun(next)?);
-                index += 2;
-                continue;
-            }
+        if let Some(next) = words.get(index + 1)
+            && russian_genitive_relation_head(word)
+            && russian_genitive_noun(next).is_some()
+        {
+            translated.push(russian_word_to_english(word)?);
+            translated.push("of");
+            translated.push(russian_genitive_noun(next)?);
+            index += 2;
+            continue;
         }
         translated.push(russian_word_to_english(word)?);
         index += 1;

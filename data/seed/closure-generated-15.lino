@@ -54,6 +54,11 @@ meanings
     lexeme en
       surface
         text "client server version missing"
+  closes
+    defined-by concept
+    lexeme en
+      surface
+        text "closes"
   coding_catalog
     defined-by concept
     lexeme en
@@ -69,6 +74,11 @@ meanings
     lexeme en
       surface
         text "comments"
+  composes
+    defined-by concept
+    lexeme en
+      surface
+        text "composes"
   configure_message_animation
     defined-by intent
     lexeme en
@@ -119,16 +129,31 @@ meanings
     lexeme en
       surface
         text "echo"
+  either
+    defined-by concept
+    lexeme en
+      surface
+        text "either"
   emits
     defined-by concept
     lexeme en
       surface
         text "emits"
+  enumera
+    defined-by concept
+    lexeme en
+      surface
+        text "enumera"
   even
     defined-by concept
     lexeme en
       surface
         text "even"
+  explicit
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit"
   external_benchmark_ascent_prompt_prefix
     defined-by intent
     lexeme en
@@ -279,6 +304,16 @@ meanings
     lexeme en
       surface
         text "mkdir"
+  muestra
+    defined-by concept
+    lexeme en
+      surface
+        text "muestra"
+  my
+    defined-by word_surface
+    lexeme en
+      surface
+        text "my"
   next
     defined-by concept
     lexeme en
@@ -389,6 +424,11 @@ meanings
     lexeme en
       surface
         text "recall name"
+  removed
+    defined-by category
+    lexeme en
+      surface
+        text "removed"
   response_agent_procedure_verification_failed_hi
     defined-by response_template
     lexeme en
@@ -594,6 +634,11 @@ meanings
     lexeme en
       surface
         text "response mcp prompt description en"
+  response_mutating_action_blocked_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked es"
   response_pattern_grid_diagonal_zh
     defined-by response_template
     lexeme en
@@ -839,6 +884,11 @@ meanings
     lexeme en
       surface
         text "reverse sort list files arg"
+  see
+    defined-by concept
+    lexeme en
+      surface
+        text "see"
   sentence_case
     defined-by operation
     lexeme en

@@ -3,10 +3,10 @@
 use std::process::Command;
 
 use formal_ai::seed::{self, ROLE_CONVERSATION_RETURN_RECAP};
-use formal_ai::summarization::{summarize_dialog_plain, DialogTurn};
+use formal_ai::summarization::{DialogTurn, summarize_dialog_plain};
 use formal_ai::{
-    create_anthropic_message_with_solver, solve_with_history, AnthropicContentBlock,
-    AnthropicMessagesRequest, ConversationTurn, SolverConfig, UniversalSolver,
+    AnthropicContentBlock, AnthropicMessagesRequest, ConversationTurn, SolverConfig,
+    UniversalSolver, create_anthropic_message_with_solver, solve_with_history,
 };
 
 const CLAUDE_AWAY_RECAP_PROMPT: &str = "The user stepped away and is coming back. Recap in under 40 words, 1-2 plain sentences, no markdown. Lead with the overall goal and current task, then the one next action. Skip root-cause narrative, fix internals, secondary to-dos, and em-dash tangents.";

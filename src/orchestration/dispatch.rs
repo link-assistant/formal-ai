@@ -1,11 +1,11 @@
-use super::incremental::{dispatch_incrementally, IncrementalTrace};
+use super::incremental::{IncrementalTrace, dispatch_incrementally};
 use super::permission::AgentRunPermission;
-use super::replay::{write_session, ReplayError};
+use super::replay::{ReplayError, write_session};
 use super::runner::{
-    run_agent, AgentCommand, AgentRunConfig, AgentRunError, AgentSession, AgentTarget,
-    VerificationCommand,
+    AgentCommand, AgentRunConfig, AgentRunError, AgentSession, AgentTarget, VerificationCommand,
+    run_agent,
 };
-use super::workspace::{apply_changes, copy_workspace, validate_changes, WorkspaceChange};
+use super::workspace::{WorkspaceChange, apply_changes, copy_workspace, validate_changes};
 use crate::task_decomposition::decompose_task;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};

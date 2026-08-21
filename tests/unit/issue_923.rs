@@ -3,9 +3,9 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::external_benchmarks::{manifest, run_suite, Grading, Ledger};
 use formal_ai::external_benchmarks::{BenchmarkCase, Expectation};
-use formal_ai::proof_engine::{attempt_proof, ProofMethod, ProofOutcome};
+use formal_ai::external_benchmarks::{Grading, Ledger, manifest, run_suite};
+use formal_ai::proof_engine::{ProofMethod, ProofOutcome, attempt_proof};
 
 #[test]
 fn equality_saturation_proves_a_non_numeric_rewrite() {

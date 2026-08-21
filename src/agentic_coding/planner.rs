@@ -23,6 +23,7 @@ use super::learning_report;
 use super::ledger;
 use super::local_search;
 use super::meaning_detail;
+use super::mutating_action;
 use super::procedure;
 pub(super) use super::progress::Progress;
 use super::question_catalog;
@@ -180,14 +181,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Claim this narrow shape before edit/source semantics inspect the payload:
     // literal bytes may themselves say "rename X to Y" (issue #708). Broader
     // file-write requests remain below the semantic coding routes.
-    if has_authoritative_literal_write(&task) {
-        if let Some(plan) = tool_for(tool_names, Capability::Write)
+    if has_authoritative_literal_write(&task)
+        && let Some(plan) = tool_for(tool_names, Capability::Write)
             .and_then(|_| compose_general_change_plan(&task))
             .map(|plan| plan_general_change_step(messages, tool_names, &plan))
         {
             return Some(plan);
         }
-    }
     // A learned workspace-change procedure owns grounded repository rewrites
     // and multi-file compositions before source creation or shell routing can
     // collapse them into one incomplete action.
@@ -356,11 +356,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Preserve the established stateful list/read recipe whenever the client
     // exposes its typed read capability. The shared read-many route remains
     // available for CLIs that advertise only a batch reader.
-    if tool_for(tool_names, Capability::Read).is_some() {
-        if let Some(file_task) = file_read_task_for(&task) {
+    if tool_for(tool_names, Capability::Read).is_some()
+        && let Some(file_task) = file_read_task_for(&task) {
             return Some(plan_file_read_step(&file_task, messages, tool_names));
         }
-    }
     // A meanings-driven explicit local scope dominates generic search verbs.
     // This state machine observes each result and widens only after emptiness.
     if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
@@ -375,6 +374,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
         if let Some(plan) = shell_file_fallback::plan_step(&task, messages, tool_names, &command) {
+            return Some(plan);
+        }
+        // A command that changes the workspace answers by what the workspace
+        // holds afterwards, so it is carried out as the verified recipe its seed
+        // intent declares rather than issued once (issues #824 and #944).
+        if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, &task) {
             return Some(plan);
         }
         return Some(plan_shell_step(messages, tool_names, &command));
@@ -399,11 +404,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(query) = web_research::web_research_query_for(messages) {
-        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+    if let Some(query) = web_research::web_research_query_for(messages)
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
             return Some(plan);
         }
-    }
     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -413,23 +417,19 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // already claimed by the capability router. This fallback therefore keeps
     // grep available to grep-only clients without letting an alphabetically
     // earlier local tool steal a web-research request.
-    if !tool_result::has_latest_turn_result(messages) {
-        if let Some(query) = shell_command::code_search_query_for_task(&task) {
-            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
+    if !tool_result::has_latest_turn_result(messages)
+        && let Some(query) = shell_command::code_search_query_for_task(&task)
+            && let Some(tool) = tool_for(tool_names, Capability::Grep) {
                 return Some(plan_one(
                     tool,
                     json!({ "query": query, "pattern": query }).to_string(),
                 ));
             }
-        }
-    }
-    if web_research::has_successful_search_result(messages) {
-        if let Some(query) = web_research::unresolved_web_research_query_for(messages) {
-            if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+    if web_research::has_successful_search_result(messages)
+        && let Some(query) = web_research::unresolved_web_research_query_for(messages)
+            && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
                 return Some(plan);
             }
-        }
-    }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
         return Some(AgenticPlan::Final(answer));
     }
@@ -438,11 +438,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     {
         return Some(plan);
     }
-    if let Some(query) = web_research::unresolved_web_research_query_for(messages) {
-        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+    if let Some(query) = web_research::unresolved_web_research_query_for(messages)
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
             return Some(plan);
         }
-    }
     None
 }
 
@@ -539,36 +538,32 @@ fn plan_meaning_detail_step(
     let progress = Progress::scan(messages);
 
     // Step 1: search for the Wikidata lexeme data.
-    if let Some(tool) = search_tool {
-        if !progress.done(Capability::Search) {
+    if let Some(tool) = search_tool
+        && !progress.done(Capability::Search) {
             return plan_one(tool, json!({ "query": concept.search_query }).to_string());
         }
-    }
     // Step 2: fetch the lexeme forms (where the missing plural is recovered).
-    if let Some(tool) = fetch_tool {
-        if !progress.done(Capability::Fetch) {
+    if let Some(tool) = fetch_tool
+        && !progress.done(Capability::Fetch) {
             return plan_one(tool, fetch_arguments(concept.source_url));
         }
-    }
 
     // Re-derive the enriched block from the fetched lexeme facts (or the canonical
     // fallback when the fetch errored), exactly as the formalization recipe does.
     let block = meaning_detail::enrich_block(concept, progress.fetched_text.as_deref());
 
     // Step 3: write the enriched meaning block.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
+    if let Some(tool) = write_tool
+        && !progress.done(Capability::Write) {
             return plan_one(tool, write_arguments(concept.kb_path, &block));
         }
-    }
     // Step 4: verify by reading the enriched block back (mirrors the formalization
     // recipe; `cat` is the allowlisted read the sandbox workspace supports).
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
+    if let Some(tool) = run_tool
+        && !progress.done(Capability::Run) {
             let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
             return plan_one(tool, arguments.to_string());
         }
-    }
 
     // Step 5: nothing left to do — answer with the enriched block inline.
     AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))

@@ -162,8 +162,7 @@ fn budget_search_respects_the_allowed_operator_set() {
     // Only addition is allowed, so the search may not reach a product-only
     // target; it should decline and leave the honest unknown reply, with the
     // recognized operator set recorded in the trace.
-    let prompt =
-        "Using the numbers 2, 3, and 4 with the operation + only, find an expression that equals 24.";
+    let prompt = "Using the numbers 2, 3, and 4 with the operation + only, find an expression that equals 24.";
     let solver = solver_with_budget(512);
     let answer = solver.solve(prompt);
 

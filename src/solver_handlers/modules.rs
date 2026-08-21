@@ -25,7 +25,7 @@ mod github_repository_traffic;
 mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
-mod numeric_list;
+pub mod numeric_list;
 mod pattern_inference;
 mod playwright_script;
 mod procedure_rules;

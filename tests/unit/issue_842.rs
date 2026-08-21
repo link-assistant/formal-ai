@@ -2,7 +2,7 @@
 
 use std::{fs, path::Path};
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 fn one_call(prompt: &str) -> PlannedToolCall {

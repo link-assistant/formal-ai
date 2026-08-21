@@ -5,7 +5,7 @@
 //! or `cache_hit:` events from a request alone.
 
 use std::error::Error;
-use std::fmt::{Display, Formatter};
+use std::fmt::{Display, Formatter, Write as _};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -380,7 +380,25 @@ fn cache_diagnostic(code: &str, path: &Path) -> FetchError {
 
 #[must_use]
 pub fn sha256_hex(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex_lower(&Sha256::digest(bytes))
+}
+
+/// Render digest bytes in the lowercase hexadecimal every pin in this
+/// repository is written in.
+///
+/// `sha2` 0.10 returned a `GenericArray`, which implemented `LowerHex`, so a
+/// digest could be rendered with `format!("{:x}", ..)` wherever one was taken
+/// -- and it was, in nine places. `sha2` 0.11 returns a `hybrid_array::Array`,
+/// which does not, and the nine places all stopped compiling at once. Rather
+/// than write the same loop nine times, the encoding lives here, beside the
+/// digest helper the crate already exported.
+#[must_use]
+pub fn hex_lower(bytes: &[u8]) -> String {
+    let mut hex = String::with_capacity(bytes.len() * 2);
+    for byte in bytes {
+        let _ = write!(hex, "{byte:02x}");
+    }
+    hex
 }
 
 fn unix_now() -> u64 {

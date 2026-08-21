@@ -1,6 +1,6 @@
 //! Regression coverage for capability-first agentic tool routing (issue #758).
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ChatMessage;
 
 fn routed_tool(prompt: &str, tools: &[&str]) -> String {

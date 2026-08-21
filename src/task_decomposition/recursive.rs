@@ -14,7 +14,7 @@
 
 use crate::recursive_execution::{RecursiveTask, TaskAttempt, TaskExecutor};
 
-use super::{decompose_task_with_ledger, SubTask, TaskStrategyLedger};
+use super::{SubTask, TaskStrategyLedger, decompose_task_with_ledger};
 
 /// One split the controller requested and this adapter answered.
 ///

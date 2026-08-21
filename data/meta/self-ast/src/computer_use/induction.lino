@@ -2,9 +2,9 @@ self_ast_census
   target src/computer_use/induction.rs
   language rust
   fidelity signature
-  byte_len 18262
+  byte_len 18214
   line_count 483
-  content_id source_module_b10792e8cdcee6c8
+  content_id source_module_fd41a84f48d56fe8
   symbol_count 22
   symbols
     const RECORD_TYPE 42 42

@@ -1,6 +1,6 @@
-use formal_ai::computer_use::{benchmark_tasks, COMPUTER_USE_PRIMITIVES};
+use formal_ai::computer_use::{COMPUTER_USE_PRIMITIVES, benchmark_tasks};
 use formal_ai::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[test]
 fn mcp_advertises_the_complete_computer_use_taxonomy_with_schemas() {

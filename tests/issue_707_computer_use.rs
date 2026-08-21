@@ -2,11 +2,11 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::process::Command;
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::computer_use::{
-    benchmark_tasks, capability_gap_for_prompt, replay_verified_plan, run_verified_plan,
-    ComputerPlanStep, ComputerUsePolicy, ComputerUsePrimitive, ComputerUseSession,
-    VerificationPhase, COMPUTER_USE_PRIMITIVES,
+    COMPUTER_USE_PRIMITIVES, ComputerPlanStep, ComputerUsePolicy, ComputerUsePrimitive,
+    ComputerUseSession, VerificationPhase, benchmark_tasks, capability_gap_for_prompt,
+    replay_verified_plan, run_verified_plan,
 };
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use serde_json::json;
@@ -209,9 +209,11 @@ fn every_primitive_is_agent_mode_permission_and_confirmation_gated() {
         };
         let record = session.execute_step(&step);
         assert!(!record.verified, "{}", primitive.name());
-        assert!(record.output["error"]
-            .as_str()
-            .is_some_and(|error| error.contains("agent_mode_required")));
+        assert!(
+            record.output["error"]
+                .as_str()
+                .is_some_and(|error| error.contains("agent_mode_required"))
+        );
         assert!(!record.events[0].passed);
         assert!(!record.events[1].passed);
         assert!(!record.events[2].passed);
@@ -232,9 +234,11 @@ fn every_primitive_is_agent_mode_permission_and_confirmation_gated() {
         "written",
     );
     assert!(!record.verified);
-    assert!(record.output["error"]
-        .as_str()
-        .is_some_and(|error| error.contains("confirmation_required")));
+    assert!(
+        record.output["error"]
+            .as_str()
+            .is_some_and(|error| error.contains("confirmation_required"))
+    );
     assert!(!session.root().join("result.txt").exists());
 }
 
@@ -253,9 +257,11 @@ fn workspace_paths_cannot_escape_the_isolation_boundary() {
         "written",
     );
     assert!(!record.verified);
-    assert!(record.output["error"]
-        .as_str()
-        .is_some_and(|error| error.contains("path_escapes_workspace")));
+    assert!(
+        record.output["error"]
+            .as_str()
+            .is_some_and(|error| error.contains("path_escapes_workspace"))
+    );
     assert!(!outside.exists());
 }
 

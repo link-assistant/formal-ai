@@ -6,6 +6,7 @@ mod check_associative_terminology;
 mod check_crate_package_size;
 #[path = "../../../scripts/check-file-size.rs"]
 mod check_file_size;
+mod codeql_sink_heuristics;
 #[allow(clippy::duplicate_mod)]
 #[path = "../../../scripts/create-github-release.rs"]
 mod create_github_release;
@@ -17,6 +18,7 @@ mod issue_1001;
 mod issue_1012;
 mod issue_1014;
 mod issue_1017;
+mod issue_1021;
 mod issue_717;
 mod issue_730;
 mod issue_739;

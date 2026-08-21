@@ -4,7 +4,7 @@
 //! answer or deterministic answer pool it is allowed to return.
 
 use formal_ai::{
-    ExecutionSurface, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver, DEFAULT_MODEL,
+    DEFAULT_MODEL, ExecutionSurface, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver,
 };
 
 const IDENTITY_EN: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
@@ -294,7 +294,9 @@ fn assert_exact_answer_text(label: &str, actual: &str, expected_answers: &[Strin
         .map(|(index, answer)| format!("{}. {}", index + 1, answer))
         .collect::<Vec<_>>()
         .join("\n\n");
-    panic!("{label} returned an undocumented answer.\n\nExpected one of:\n{expected}\n\nActual:\n{actual}");
+    panic!(
+        "{label} returned an undocumented answer.\n\nExpected one of:\n{expected}\n\nActual:\n{actual}"
+    );
 }
 
 fn self_facts(surface: ExpectedSurface) -> String {

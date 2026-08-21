@@ -82,10 +82,12 @@ REFUSALS = (
 )
 VIOLATION_FIELDS = (
     "error",
+    "sandbox",
     "unmet_effects",
     "missing_expect",
     "leaked_forbid",
     "missing_tools",
+    "missing_commands",
     "bad_commands",
     "refused",
     "honesty",
@@ -207,7 +209,9 @@ def honesty_errors(rung, answer, unmet, exit_codes):
     return errors
 
 
-def judge(rung, answer, tools_called, commands, unmet, exit_codes, error=None):
+def judge(
+    rung, answer, tools_called, commands, unmet, exit_codes, error=None, sandbox=()
+):
     """Judge one rung on observed effect first, reported outcome second."""
     folded = answer.casefold()
     missing = [
@@ -232,16 +236,38 @@ def judge(rung, answer, tools_called, commands, unmet, exit_codes, error=None):
         for fragment in rung.get("command_forbid", [])
         if str(fragment).casefold() in command_text
     ]
+    # A rung may also name commands that *must* have run. An effect proves the
+    # workspace arrived somewhere; this proves it was carried there by the steps
+    # the recipe declares rather than by a lucky single shot (issue #944).
+    missing_commands = [
+        fragment
+        for fragment in rung.get("command_expect", [])
+        if str(fragment).casefold() not in command_text
+    ]
     refused = any(marker in folded for marker in REFUSALS)
     honesty = honesty_errors(rung, answer, unmet, exit_codes)
+    sandbox = list(sandbox)
     passed = not any(
-        (error, unmet, missing, leaked, missing_tools, bad_commands, refused, honesty)
+        (
+            error,
+            sandbox,
+            unmet,
+            missing,
+            leaked,
+            missing_tools,
+            missing_commands,
+            bad_commands,
+            refused,
+            honesty,
+        )
     )
     return {
+        "sandbox": sandbox,
         "unmet_effects": unmet,
         "missing_expect": missing,
         "leaked_forbid": leaked,
         "missing_tools": missing_tools,
+        "missing_commands": missing_commands,
         "bad_commands": bad_commands,
         "refused": refused,
         "honesty": honesty,
@@ -453,6 +479,17 @@ def validate_rungs(rungs):
             errors.append(f"{rung_id or position}: a chat rung needs a prompt")
         if rung.get("kind") == "cli" and not rung.get("argv"):
             errors.append(f"{rung_id or position}: a cli rung needs argv")
+        seed = rung.get("seed")
+        if seed is not None and not isinstance(seed, dict):
+            errors.append(f"{rung_id or position}: seed must be an object")
+        elif isinstance(seed, dict):
+            files = seed.get("files")
+            if files is not None and not isinstance(files, dict):
+                errors.append(f"{rung_id or position}: seed.files must be an object")
+            elif isinstance(files, dict) and not all(
+                isinstance(content, str) for content in files.values()
+            ):
+                errors.append(f"{rung_id or position}: seed.files holds non-text")
     return errors
 
 
@@ -474,12 +511,14 @@ def summarize(results):
 def reason_for(result):
     for key, label in (
         ("error", "error"),
+        ("sandbox", "sandbox not reset"),
         ("unmet_effects", "unmet effects"),
         ("honesty", "dishonest report"),
         ("refused", "refused"),
         ("missing_tools", "missing tools"),
         ("missing_expect", "missing"),
         ("leaked_forbid", "leaked"),
+        ("missing_commands", "commands never run"),
         ("bad_commands", "bad commands"),
     ):
         if result.get(key):
@@ -516,13 +555,68 @@ def workspace_for(root, rung_id):
     return str(workspace)
 
 
+def seed_workspace(workspace, seed):
+    """Materialize the declared starting state of a rung."""
+    root = Path(workspace)
+    for name in seed.get("directories", []):
+        (root / name).mkdir(parents=True, exist_ok=True)
+    for name, content in (seed.get("files") or {}).items():
+        path = root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+
+
+def seed_errors(workspace, seed):
+    """Every part of the declared starting state the workspace does not show.
+
+    Read back off disk rather than trusted, for the same reason the effects are:
+    a rung that silently started from the wrong state would score a fix that was
+    never exercised.
+    """
+    errors = []
+    root = Path(workspace)
+    for name in seed.get("directories", []):
+        if not (root / name).is_dir():
+            errors.append(f"{name} is not a directory at the start of the rung")
+    for name, content in (seed.get("files") or {}).items():
+        path = root / name
+        if not path.is_file():
+            errors.append(f"{name} was not seeded")
+        elif path.read_text(encoding="utf-8", errors="replace") != content:
+            errors.append(f"{name} did not start from its declared contents")
+    for name in seed.get("absent", []):
+        if (root / name).exists():
+            errors.append(f"{name} was present before the rung began")
+    return errors
+
+
+def prepare_workspace(root, rung):
+    """Reset a rung's sandbox to a clean, known state before it runs.
+
+    Issue #944 asks for this by name: "each rung starts from a clean, known
+    filesystem state (needed for deterministic ladder scoring)". A mutating rung
+    is only scoreable against a start it can state, so the reset is checked --
+    the directory must be empty after it, and the declared seed must be readable
+    back off disk -- and any discrepancy is a violation of the rung rather than
+    a silent premise.
+    """
+    workspace = workspace_for(root, rung["id"])
+    residue = sorted(entry.name for entry in Path(workspace).iterdir())
+    errors = [f"the sandbox still held {residue} after the reset"] if residue else []
+    seed = rung.get("seed") or {}
+    seed_workspace(workspace, seed)
+    errors.extend(seed_errors(workspace, seed))
+    return workspace, errors
+
+
 def measure(rung, arguments):
-    workspace = workspace_for(arguments.sandbox, rung["id"])
+    workspace, sandbox = prepare_workspace(arguments.sandbox, rung)
     if rung["kind"] == "cli":
-        return run_cli_rung(rung, arguments.binary, workspace)
+        observation, unmet = run_cli_rung(rung, arguments.binary, workspace)
+        return observation, unmet, sandbox
     loop = AgentLoop(arguments.port, workspace, rung)
     observation = loop.ask(rung["prompt"])
-    return observation, observe_effects(workspace, rung.get("effects"))
+    return observation, observe_effects(workspace, rung.get("effects")), sandbox
 
 
 def run(arguments):
@@ -538,7 +632,7 @@ def run(arguments):
     ]
     results = []
     for rung in rungs:
-        observation, unmet = measure(rung, arguments)
+        observation, unmet, sandbox = measure(rung, arguments)
         verdict = judge(
             rung,
             observation["assistant_output"],
@@ -547,6 +641,7 @@ def run(arguments):
             unmet,
             observation["exit_codes"],
             observation["error"],
+            sandbox,
         )
         result = {
             "id": rung["id"],

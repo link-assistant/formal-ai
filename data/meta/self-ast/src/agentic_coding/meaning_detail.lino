@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/meaning_detail.rs
   language rust
   fidelity full_ast
-  byte_len 30967
-  line_count 761
-  content_id source_module_763b6af219dd70d8
+  byte_len 30955
+  line_count 760
+  content_id source_module_d15a27621c0b76bf
   symbol_count 38
   symbols
     const SINGULAR_FEATURE 47 47
@@ -40,19 +40,19 @@ self_ast_census
     function concept_lexemes 517 545
     function embedded_entities 548 554
     function lexeme_core 560 612
-    function source_bundle 621 635
-    function language_name 638 646
-    function render_block 655 739
-    function enrich_block 744 746
-    function final_answer_for 751 761
+    function source_bundle 621 634
+    function language_name 637 645
+    function render_block 654 738
+    function enrich_block 743 745
+    function final_answer_for 750 760
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17019
-    named_node_count 3501
-    distinct_node_kinds 68
+    total_link_count 17005
+    named_node_count 3499
+    distinct_node_kinds 69
     node_kinds
       arguments 229
       array_expression 9
@@ -60,7 +60,7 @@ self_ast_census
       attribute 16
       attribute_item 16
       binary_expression 6
-      block 53
+      block 52
       boolean_literal 1
       call_expression 229
       char_literal 1
@@ -70,7 +70,7 @@ self_ast_census
       doc_comment 180
       else_clause 1
       escape_sequence 11
-      expression_statement 43
+      expression_statement 42
       field_declaration 35
       field_declaration_list 9
       field_expression 221
@@ -82,9 +82,10 @@ self_ast_census
       generic_function 2
       generic_type 22
       identifier 620
-      if_expression 11
+      if_expression 10
       inner_doc_comment_marker 39
       integer_literal 2
+      let_chain 1
       let_condition 9
       let_declaration 62
       lifetime 18

@@ -4,8 +4,8 @@ use std::process::Command;
 use std::os::unix::fs::PermissionsExt as _;
 
 use formal_ai::{
-    export_memory_links_notation, handle_api_request, migrate_memory_with_pre_commit, MemoryEvent,
-    MemoryStore, SyncStore,
+    MemoryEvent, MemoryStore, SyncStore, export_memory_links_notation, handle_api_request,
+    migrate_memory_with_pre_commit,
 };
 use fs2::FileExt as _;
 
@@ -214,9 +214,11 @@ fn released_zero_byte_store_is_readable_and_upgradeable() {
     let receipt = formal_ai::migrate_memory(&memory_path, Some(&backup_path), None)
         .expect("upgrade released empty store");
     assert!(receipt.changed);
-    assert!(std::fs::read(&backup_path)
-        .expect("read empty backup")
-        .is_empty());
+    assert!(
+        std::fs::read(&backup_path)
+            .expect("read empty backup")
+            .is_empty()
+    );
     assert_eq!(
         std::fs::read_to_string(&memory_path).expect("read migrated empty store"),
         "demo_memory\n  schema_version \"2\"\n"
@@ -400,9 +402,11 @@ fn interrupted_migration_keeps_original_byte_identical_and_retryable() {
         Some(&backup_path),
         Some(&receipt_path),
         |staged| {
-            assert!(std::fs::read_to_string(staged)
-                .expect("read staged candidate")
-                .contains("schema_version \"2\""));
+            assert!(
+                std::fs::read_to_string(staged)
+                    .expect("read staged candidate")
+                    .contains("schema_version \"2\"")
+            );
             Err(std::io::Error::new(
                 std::io::ErrorKind::Interrupted,
                 "simulated stop",
@@ -516,9 +520,11 @@ fn future_schema_is_refused_nonzero_and_never_modified() {
         future
     );
     let mut server_store = SyncStore::open_at(&memory_path);
-    assert!(server_store
-        .record_chat_exchange("must not write", "future schema")
-        .is_err());
+    assert!(
+        server_store
+            .record_chat_exchange("must not write", "future schema")
+            .is_err()
+    );
     assert_eq!(
         std::fs::read_to_string(&memory_path).expect("future memory after server write refusal"),
         future

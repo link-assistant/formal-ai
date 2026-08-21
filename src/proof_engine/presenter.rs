@@ -55,11 +55,11 @@ pub fn render_outcome_with_config(
         ProofOutcome::Inconclusive { reason } => render_inconclusive(reason, language),
     };
     body.push_str(&core);
-    if config.ask_follow_ups() {
-        if let Some(footer) = render_follow_up_questions(outcome, language) {
-            body.push_str("\n\n");
-            body.push_str(&footer);
-        }
+    if config.ask_follow_ups()
+        && let Some(footer) = render_follow_up_questions(outcome, language)
+    {
+        body.push_str("\n\n");
+        body.push_str(&footer);
     }
     body
 }

@@ -9,7 +9,7 @@
 //! `400 invalid chat request: data did not match any variant of untagged enum
 //! MessageContent`, killing the qwen agent loop mid-conversation.
 
-use formal_ai::{handle_api_request, ChatMessage};
+use formal_ai::{ChatMessage, handle_api_request};
 
 #[test]
 fn assistant_tool_call_turn_with_explicit_null_content_deserializes() {

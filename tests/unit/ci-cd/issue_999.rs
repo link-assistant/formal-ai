@@ -151,6 +151,12 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
             "coding_workspace_written_unverified",
             "coding_workspace_verification_failed",
             "tool_result_failed_exit_code",
+            // Issues #824 and #944 added the verified-mutating-action pair to
+            // the same split file, for the same reason the four above are
+            // there: they are what the workspace tools observed, not what the
+            // planner said.
+            "mutating_action_completed",
+            "mutating_action_blocked",
         ] {
             assert!(
                 formal_ai::seed::response_for(intent, language.slug()).is_some(),

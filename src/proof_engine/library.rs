@@ -102,12 +102,9 @@ const PYTHAGOREAN: KnownTheoremEntry = KnownTheoremEntry {
         "पाइथागोरस",
         "पाइथागोरियन",
     ],
-    statement_en:
-        "In any right triangle with legs a, b and hypotenuse c we have a² + b² = c².",
-    statement_ru:
-        "В любом прямоугольном треугольнике с катетами a, b и гипотенузой c выполняется a² + b² = c².",
-    statement_hi:
-        "किसी भी समकोण त्रिभुज जिसके लंब a, b और कर्ण c है, के लिए a² + b² = c² होता है।",
+    statement_en: "In any right triangle with legs a, b and hypotenuse c we have a² + b² = c².",
+    statement_ru: "В любом прямоугольном треугольнике с катетами a, b и гипотенузой c выполняется a² + b² = c².",
+    statement_hi: "किसी भी समकोण त्रिभुज जिसके लंब a, b और कर्ण c है, के लिए a² + b² = c² होता है।",
     statement_zh: "在任意直角三角形中,若两直角边为 a、b,斜边为 c,则 a² + b² = c²。",
     steps: &[
         LocalizedStep {
@@ -347,11 +344,9 @@ const FERMAT_LITTLE: KnownTheoremEntry = KnownTheoremEntry {
         "费马小定理",
         "費馬小定理",
     ],
-    statement_en:
-        "For every prime p and every integer a, aᵖ ≡ a (mod p). Equivalently, if gcd(a, p) = 1, \
+    statement_en: "For every prime p and every integer a, aᵖ ≡ a (mod p). Equivalently, if gcd(a, p) = 1, \
          then aᵖ⁻¹ ≡ 1 (mod p).",
-    statement_ru:
-        "Для любого простого p и любого целого a выполнено aᵖ ≡ a (mod p). Эквивалентно, при \
+    statement_ru: "Для любого простого p и любого целого a выполнено aᵖ ≡ a (mod p). Эквивалентно, при \
          НОД(a, p) = 1 имеем aᵖ⁻¹ ≡ 1 (mod p).",
     statement_hi: "हर अभाज्य p तथा हर पूर्णांक a के लिए aᵖ ≡ a (mod p)। यदि gcd(a, p) = 1 हो, \
          तो aᵖ⁻¹ ≡ 1 (mod p)।",
@@ -405,8 +400,7 @@ const FERMAT_LITTLE: KnownTheoremEntry = KnownTheoremEntry {
         },
         LocalizedStep {
             kind: StepKind::Inference,
-            en:
-                "By induction, aᵖ ≡ a (mod p) for every non-negative integer a. When gcd(a, p) = 1 \
+            en: "By induction, aᵖ ≡ a (mod p) for every non-negative integer a. When gcd(a, p) = 1 \
                  we may cancel one factor of a (it is invertible modulo p) to get aᵖ⁻¹ ≡ 1 (mod p).",
             ru: "По индукции aᵖ ≡ a (mod p) для всех a ≥ 0. Если НОД(a, p) = 1, можно сократить \
                  один множитель a (он обратим по модулю p), получив aᵖ⁻¹ ≡ 1 (mod p).",
@@ -446,16 +440,13 @@ const GODEL_FIRST_INCOMPLETENESS: KnownTheoremEntry = KnownTheoremEntry {
         "不完备",
         "不完备性",
     ],
-    statement_en:
-        "Any consistent, recursively axiomatised formal system F that interprets Peano arithmetic \
+    statement_en: "Any consistent, recursively axiomatised formal system F that interprets Peano arithmetic \
          admits a true arithmetical sentence G_F that F neither proves nor refutes (Gödel's first \
          incompleteness theorem).",
-    statement_ru:
-        "Всякая непротиворечивая, рекурсивно аксиоматизированная формальная система F, \
+    statement_ru: "Всякая непротиворечивая, рекурсивно аксиоматизированная формальная система F, \
          интерпретирующая арифметику Пеано, имеет истинное арифметическое утверждение G_F, \
          которое F не доказывает и не опровергает (первая теорема Гёделя о неполноте).",
-    statement_hi:
-        "हर सुसंगत, पुनरावर्ती रूप से अभिगृहीत औपचारिक तंत्र F, जो Peano अंकगणित को निरूपित \
+    statement_hi: "हर सुसंगत, पुनरावर्ती रूप से अभिगृहीत औपचारिक तंत्र F, जो Peano अंकगणित को निरूपित \
          करता है, में एक सत्य अंकगणितीय कथन G_F मौजूद है जिसे F न तो सिद्ध करता है न खंडित \
          (गोडेल का प्रथम अपूर्णता प्रमेय)।",
     statement_zh: "任意一个一致、可递归公理化且可表达 Peano 算术的形式系统 F,\
@@ -567,16 +558,13 @@ const LAPLACIAN_DETERMINISM: KnownTheoremEntry = KnownTheoremEntry {
         "决定论",
         "निर्धारणवाद",
     ],
-    statement_en:
-        "Within the Newtonian axiom set N = (Euclidean space, smooth time, Newton's second law \
+    statement_en: "Within the Newtonian axiom set N = (Euclidean space, smooth time, Newton's second law \
          F = m·ẍ, Lipschitz-bounded forces), the future trajectory of every closed mechanical \
          system is uniquely determined by its present state (Laplacian determinism).",
-    statement_ru:
-        "В аксиоматике Ньютона N = (евклидово пространство, гладкое время, второй закон Ньютона \
+    statement_ru: "В аксиоматике Ньютона N = (евклидово пространство, гладкое время, второй закон Ньютона \
          F = m·ẍ, силы с ограничением Липшица) будущая траектория каждой замкнутой механической \
          системы однозначно определена её текущим состоянием (лапласовский детерминизм).",
-    statement_hi:
-        "न्यूटनीय अभिगृहीत समुच्चय N = (यूक्लिडीय आकाश, सतत काल, न्यूटन का द्वितीय नियम \
+    statement_hi: "न्यूटनीय अभिगृहीत समुच्चय N = (यूक्लिडीय आकाश, सतत काल, न्यूटन का द्वितीय नियम \
          F = m·ẍ, लिप्शिट्ज़-सीमित बल) के अंतर्गत हर बंद यांत्रिक तंत्र की भविष्य प्रक्षेपवक्र \
          उसकी वर्तमान अवस्था से अद्वितीय रूप से निर्धारित होती है (Laplace का निर्धारणवाद)।",
     statement_zh: "在牛顿公理集 N =(欧氏空间、光滑时间、牛顿第二定律 F = m·ẍ、\

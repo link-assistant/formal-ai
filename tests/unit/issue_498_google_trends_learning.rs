@@ -1,9 +1,9 @@
 use formal_ai::agentic_coding::{
-    google_trends_learning as recipe, is_google_trends_learning_task, plan_chat_step,
-    run_agentic_task, AgenticPlan, PlannedToolCall, DRIVER_TOOLS, GOOGLE_TRENDS_LEARNING_PATH,
-    GOOGLE_TRENDS_LEARNING_TASK,
+    AgenticPlan, DRIVER_TOOLS, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
+    PlannedToolCall, google_trends_learning as recipe, is_google_trends_learning_task,
+    plan_chat_step, run_agentic_task,
 };
-use formal_ai::{recorded_google_trends_frontier, trending_learning_report, ChatMessage, ToolCall};
+use formal_ai::{ChatMessage, ToolCall, recorded_google_trends_frontier, trending_learning_report};
 use lino_objects_codec::format::parse_indented;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
@@ -69,10 +69,12 @@ fn the_learning_report_is_a_faithful_proposal_only_run() {
     assert_eq!(report.handled_by_engine, 80);
 
     // Every frontier prompt is genuinely unrouted, and each becomes a learning trace.
-    assert!(report
-        .frontier
-        .iter()
-        .all(|entry| entry.engine_intent == "unknown"));
+    assert!(
+        report
+            .frontier
+            .iter()
+            .all(|entry| entry.engine_intent == "unknown")
+    );
     assert_eq!(report.run.trace_count, report.frontier_count());
 
     // The loop is still proposal-only and still adopts nothing on its own: the

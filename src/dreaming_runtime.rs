@@ -8,11 +8,11 @@
 
 use std::io;
 use std::path::Path;
-use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Once;
+use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use crate::dreaming::{apply_dreaming_plan, DreamingOutcome};
+use crate::dreaming::{DreamingOutcome, apply_dreaming_plan};
 use crate::memory::MemoryStore;
 use crate::storage_policy::{auto_free_space_enabled, plan_for_real_storage};
 
@@ -72,10 +72,10 @@ pub fn start_core_dreaming() {
                 loop {
                     std::thread::sleep(Duration::from_secs(DEFAULT_IDLE_SECONDS));
                     if core_is_idle(Duration::from_secs(DEFAULT_IDLE_SECONDS)) {
-                        if let Err(error) = run_core_dreaming_once(&path) {
-                            if std::env::var("FORMAL_AI_DREAMING_DEBUG").as_deref() == Ok("1") {
-                                eprintln!("[dreaming] background run failed: {error}");
-                            }
+                        if let Err(error) = run_core_dreaming_once(&path)
+                            && std::env::var("FORMAL_AI_DREAMING_DEBUG").as_deref() == Ok("1")
+                        {
+                            eprintln!("[dreaming] background run failed: {error}");
                         }
                         std::thread::sleep(Duration::from_secs(DEFAULT_INTERVAL_SECONDS));
                     }
@@ -155,8 +155,7 @@ pub fn learning_cycle_record_path(memory_path: &Path) -> std::path::PathBuf {
 #[must_use]
 pub fn dreaming_disabled() -> bool {
     std::env::var("FORMAL_AI_DREAMING")
-        .ok()
-        .is_some_and(|value| matches!(value.to_ascii_lowercase().as_str(), "0" | "off" | "false"))
+        .is_ok_and(|value| matches!(value.to_ascii_lowercase().as_str(), "0" | "off" | "false"))
 }
 
 fn now_seconds() -> u64 {

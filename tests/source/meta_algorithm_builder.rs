@@ -2,7 +2,7 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::event_log::EventLog;
-use crate::seed::{parser::parse_lino, render_response, response_for, CODING_IDIOMS_LINO};
+use crate::seed::{CODING_IDIOMS_LINO, parser::parse_lino, render_response, response_for};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CodingSurface {

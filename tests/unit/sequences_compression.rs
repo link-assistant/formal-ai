@@ -1,7 +1,7 @@
 //! Unit tests for associative deduplication / Re-Pair compression (issue #531).
 //! Externalised from `src/sequences/compression.rs`.
 
-use formal_ai::sequences::{compress, LinkAddress, SequenceStore, SymbolTable};
+use formal_ai::sequences::{LinkAddress, SequenceStore, SymbolTable, compress};
 
 fn atoms(store: &mut SequenceStore, symbols: &mut SymbolTable, values: &[u64]) -> Vec<LinkAddress> {
     values.iter().map(|&v| symbols.scalar(store, v)).collect()

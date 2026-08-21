@@ -20,10 +20,12 @@ fn natural_language_memory_query_reads_link_network() {
 
     assert!(response.answer.contains("greeting"));
     assert!(response.answer.contains("intent"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "intent:concept_introspection_greeting"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "intent:concept_introspection_greeting")
+    );
 }
 
 #[test]
@@ -33,10 +35,12 @@ fn natural_language_api_call_requires_agent_mode() {
     assert_eq!(response.intent, "tool_call_refused");
     assert!(response.answer.contains("Execution status: refused"));
     assert!(response.answer.contains("agent mode"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "policy:agent_mode_required_for_tools:tool:calculator"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "policy:agent_mode_required_for_tools:tool:calculator")
+    );
 }
 
 #[test]
@@ -46,22 +50,30 @@ fn natural_language_api_call_invokes_allowed_tool_and_records_trace() {
     assert_eq!(response.intent, "natural_language_api_call");
     assert!(response.answer.contains("Execution status: executed"));
     assert!(response.answer.contains("Result: 4"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "tool_call:calculator"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("tool_parameter:expression=2:+:2")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "tool_result:4"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("tool_permission:allowed:tool:calculator")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "tool_call:calculator")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("tool_parameter:expression=2:+:2"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "tool_result:4")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("tool_permission:allowed:tool:calculator"))
+    );
 }
 
 #[test]
@@ -71,14 +83,18 @@ fn natural_language_web_search_api_call_records_parameters_and_result() {
     assert_eq!(response.intent, "natural_language_api_call");
     assert!(response.answer.contains("Execution status: planned"));
     assert!(response.answer.contains("Tool call: web_search"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "web_search:request:Rust ownership"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "tool_result:search_plan_recorded"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:Rust ownership")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "tool_result:search_plan_recorded")
+    );
 }
 
 #[test]
@@ -88,10 +104,12 @@ fn natural_language_code_execution_requires_agent_mode() {
     assert_eq!(response.intent, "tool_call_refused");
     assert!(response.answer.contains("Execution status: refused"));
     assert!(response.answer.contains("tool:javascript_execution"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "policy:agent_mode_required_for_tools:tool:javascript_execution"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "policy:agent_mode_required_for_tools:tool:javascript_execution")
+    );
 }
 
 #[test]
@@ -124,10 +142,11 @@ console.log(1 + 2);
 
         assert_eq!(response.intent, "tool_call_refused");
         assert!(response.answer.contains("Execution status: refused"));
-        assert!(response
-            .evidence_links
-            .iter()
-            .any(|link| link == "policy:agent_mode_required_for_tools:tool:javascript_execution"));
+        assert!(
+            response.evidence_links.iter().any(
+                |link| link == "policy:agent_mode_required_for_tools:tool:javascript_execution"
+            )
+        );
     }
 }
 
@@ -138,18 +157,24 @@ fn natural_language_code_execution_runs_bounded_javascript_when_allowed() {
     assert_eq!(response.intent, "javascript_execution");
     assert!(response.answer.contains("Execution status: executed"));
     assert!(response.answer.contains("Output: 3"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "tool_call:javascript_execution"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("tool_permission:allowed:tool:javascript_execution")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("execution_status:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "tool_call:javascript_execution")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("tool_permission:allowed:tool:javascript_execution"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("execution_status:"))
+    );
 }
 
 #[test]
@@ -160,8 +185,10 @@ fn natural_language_tool_without_package_permission_is_refused() {
     assert!(response.answer.contains("Execution status: refused"));
     assert!(response.answer.contains("tool:local_shell"));
     assert!(response.answer.contains("associative package"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "policy:package_permission_required:tool:local_shell"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "policy:package_permission_required:tool:local_shell")
+    );
 }

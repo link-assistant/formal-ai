@@ -9,7 +9,7 @@
 //! The surface words for every language live once, in `data/seed/meanings.lino`;
 //! this code understands the *concepts*, not the words.
 
-use crate::seed::{lexicon, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION};
+use crate::seed::{ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION, lexicon};
 
 /// True when `normalized` reads like a bare follow-up that modifies an existing
 /// program artifact — e.g. "cancel the sorting", "Отмени сортировку",

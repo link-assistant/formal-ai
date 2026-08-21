@@ -1,0 +1,16 @@
+self_ast_census
+  target src/contribution_artifacts.rs
+  language rust
+  fidelity signature
+  byte_len 7619
+  line_count 201
+  content_id source_module_9fa4b10f71388731
+  symbol_count 7
+  symbols
+    struct Contribution 22 45
+    struct ContributionArtifacts 49 58
+    function compose 67 69
+    function compose_with 73 124
+    function issue_token 130 135
+    function pull_request_body 143 176
+    function verification_section 179 201

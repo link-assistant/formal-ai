@@ -1,0 +1,33 @@
+# Every ci_cd::issue_1021 test on the macOS core slices, run 32294252392, commit 65585a99.
+# The two slices that reported `timeout: command not found` in run 32282461075 are 15/16 and 16/16;
+# both are green here, and the deadline's own tests ran on macOS rather than only on Linux.
+
+        PASS [   0.890s] ( 70/175) formal-ai::unit ci_cd::issue_1021::a_command_that_beats_its_deadline_keeps_its_own_status
+        PASS [   0.045s] ( 71/175) formal-ai::unit ci_cd::issue_1021::the_codex_pin_names_the_upstream_defect_and_the_bisect_that_would_lift_it
+        PASS [   0.158s] ( 71/176) formal-ai::unit ci_cd::issue_1021::attempts_that_cannot_fit_the_step_budget_are_refused_before_the_first_one
+        PASS [   0.032s] ( 71/176) formal-ai::unit ci_cd::issue_1021::every_third_party_cli_a_workflow_installs_globally_carries_an_explicit_version
+        PASS [   0.189s] ( 71/176) formal-ai::unit ci_cd::issue_1021::no_case_study_evidence_is_hidden_from_the_repository_by_gitignore
+        PASS [   0.076s] ( 71/176) formal-ai::unit ci_cd::issue_1021::no_committed_script_reaches_for_a_timeout_binary_macos_does_not_have
+        PASS [   0.022s] ( 72/176) formal-ai::unit ci_cd::issue_1021::every_budgeted_retry_in_a_workflow_fits_the_budget_it_runs_under
+        PASS [   1.395s] ( 75/175) formal-ai::unit ci_cd::issue_1021::a_mirror_that_keeps_refusing_is_reported_after_the_last_attempt
+        PASS [   1.975s] ( 92/175) formal-ai::unit ci_cd::issue_1021::the_deadline_exits_124_and_kills_the_whole_stalled_tree
+        PASS [   3.835s] ( 96/175) formal-ai::unit ci_cd::issue_1021::the_deadline_never_expires_before_the_time_it_was_given
+        PASS [   3.826s] (101/176) formal-ai::unit ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds
+
+# The slice conclusions, same run:
+success macOS Core Tests / Run macOS core slice 1/16
+success macOS Core Tests / Run macOS core slice 10/16
+success macOS Core Tests / Run macOS core slice 11/16
+success macOS Core Tests / Run macOS core slice 12/16
+success macOS Core Tests / Run macOS core slice 13/16
+success macOS Core Tests / Run macOS core slice 14/16
+success macOS Core Tests / Run macOS core slice 15/16
+success macOS Core Tests / Run macOS core slice 16/16
+success macOS Core Tests / Run macOS core slice 2/16
+success macOS Core Tests / Run macOS core slice 3/16
+success macOS Core Tests / Run macOS core slice 4/16
+success macOS Core Tests / Run macOS core slice 5/16
+success macOS Core Tests / Run macOS core slice 6/16
+success macOS Core Tests / Run macOS core slice 7/16
+success macOS Core Tests / Run macOS core slice 8/16
+success macOS Core Tests / Run macOS core slice 9/16

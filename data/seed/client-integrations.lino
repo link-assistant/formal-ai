@@ -81,8 +81,10 @@ client_integrations
       launch_http_path "/"
       launch_subcommand "auth"
       launch_subcommand "connect"
+      launch_subcommand "pair"
       launch_subcommand "project"
       launch_subcommand "serve"
+      launch_subcommand "service"
       launch_subcommand "start"
     ephemeral
       non_interactive_arg "--no-browser"

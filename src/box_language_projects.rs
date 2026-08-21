@@ -14,7 +14,7 @@
 //! host-side verifier — so the workflow matrix, the shell harness, and the test
 //! expectations can never drift apart.
 
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
 /// The embedded contract, so a released binary carries the same mapping the
 /// repository scripts read from disk.

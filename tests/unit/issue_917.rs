@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
-use formal_ai::translation::{formal_language_targets, translate_statement};
 use formal_ai::FormalAiEngine;
+use formal_ai::translation::{formal_language_targets, translate_statement};
 
 const FORMAL_STATEMENT: &str = "P31(Q89, Q3314483)";
 const NATURAL_STATEMENTS: [(&str, &str); 5] = [

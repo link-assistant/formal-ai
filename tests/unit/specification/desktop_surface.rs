@@ -7,8 +7,8 @@
 //! make agent/tool-call permissions explicit.
 
 use formal_ai::{
-    environment_records, export_memory_full, handle_api_request, import_memory_full, seed_files,
-    BundleInfo, MemoryEvent, MemoryStore,
+    BundleInfo, MemoryEvent, MemoryStore, environment_records, export_memory_full,
+    handle_api_request, import_memory_full, seed_files,
 };
 
 const DESKTOP_PACKAGE: &str = include_str!("../../../desktop/package.json");
@@ -272,10 +272,12 @@ fn desktop_chat_path_reuses_openai_http_completion_endpoint() {
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert_eq!(json["object"], "chat.completion");
     assert_eq!(json["choices"][0]["message"]["role"], "assistant");
-    assert!(json["choices"][0]["message"]["content"]
-        .as_str()
-        .unwrap_or_default()
-        .contains("Hi, how may I help you?"));
+    assert!(
+        json["choices"][0]["message"]["content"]
+            .as_str()
+            .unwrap_or_default()
+            .contains("Hi, how may I help you?")
+    );
 }
 
 #[test]
@@ -284,12 +286,16 @@ fn desktop_network_view_reuses_graph_endpoint() {
     assert_eq!(response.status_code, 200);
 
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
-    assert!(json["nodes"]
-        .as_array()
-        .is_some_and(|nodes| !nodes.is_empty()));
-    assert!(json["edges"]
-        .as_array()
-        .is_some_and(|edges| !edges.is_empty()));
+    assert!(
+        json["nodes"]
+            .as_array()
+            .is_some_and(|nodes| !nodes.is_empty())
+    );
+    assert!(
+        json["edges"]
+            .as_array()
+            .is_some_and(|edges| !edges.is_empty())
+    );
 }
 
 #[test]

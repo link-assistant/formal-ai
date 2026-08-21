@@ -8,7 +8,7 @@
 //! human [`thinking_narrative`] headline and keeps the concrete steps beneath it
 //! as the recursive "robotic detail" layer.
 
-use formal_ai::{render_thinking_steps, thinking_narrative, thinking_narrative_in, FormalAiEngine};
+use formal_ai::{FormalAiEngine, render_thinking_steps, thinking_narrative, thinking_narrative_in};
 
 /// Every reasoning trace opens with a human, first-person narrative headline and
 /// still carries the concrete robotic detail (issue #676, R8).

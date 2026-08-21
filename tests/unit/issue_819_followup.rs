@@ -1,6 +1,6 @@
 //! Follow-up regressions for issue #819 report multiselect.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use serde_json::Value;
 #[cfg(unix)]

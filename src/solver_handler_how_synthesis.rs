@@ -17,9 +17,9 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::how_to_guide::{synthesize_how_to_guide, GuideBounds, HowToGuide, ServicePreferences};
+use crate::how_to_guide::{GuideBounds, HowToGuide, ServicePreferences, synthesize_how_to_guide};
 use crate::seed::external_service_settings_keys;
-use crate::service_accessibility::{unix_now, ServiceAccessibilityCache};
+use crate::service_accessibility::{ServiceAccessibilityCache, unix_now};
 use crate::solver_handler_how::{procedural_how_to_task, try_how_to_procedure};
 use crate::solver_handlers::finalize_simple;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};

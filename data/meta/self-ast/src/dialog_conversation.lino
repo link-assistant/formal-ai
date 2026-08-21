@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 11453
   line_count 315
-  content_id source_module_8a47163fec299692
+  content_id source_module_ff5fc6b865af9652
   symbol_count 17
   symbols
     const CONVERSATION_LOG_SUFFIX 23 23

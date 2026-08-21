@@ -2,9 +2,9 @@ self_ast_census
   target src/storage_policy.rs
   language rust
   fidelity signature
-  byte_len 5583
+  byte_len 5571
   line_count 163
-  content_id source_module_30fce61fe2da5564
+  content_id source_module_87c0ef562c481095
   symbol_count 11
   symbols
     struct StorageSnapshot 14 17

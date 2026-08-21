@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_synthesis.rs
   language rust
   fidelity signature
-  byte_len 25273
+  byte_len 25249
   line_count 824
-  content_id source_module_a5a61ababd5fe9a3
+  content_id source_module_aed61760d3731b91
   symbol_count 31
   symbols
     struct SolvedSubImpulse 23 30

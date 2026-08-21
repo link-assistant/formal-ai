@@ -11,8 +11,8 @@ use std::collections::BTreeSet;
 use std::fs;
 
 use formal_ai::computer_use::{
-    capability_gap_cue, learned, normalize_request, operation_cues, resource_cue, synthesize,
-    ComputerUsePrimitive,
+    ComputerUsePrimitive, capability_gap_cue, learned, normalize_request, operation_cues,
+    resource_cue, synthesize,
 };
 
 const SNAPSHOT: &str = "docs/case-studies/issue-707/learned-schemas.lino";

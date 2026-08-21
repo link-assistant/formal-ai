@@ -1,5 +1,5 @@
 use formal_ai::agentic_coding::{
-    execution_learning, run_agentic_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
+    EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK, execution_learning, run_agentic_task,
 };
 
 #[test]

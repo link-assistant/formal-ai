@@ -8,7 +8,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::conversation_context::conversation_context_to_lino;
 use formal_ai::dialog_log::write_dialog_exchange;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
 

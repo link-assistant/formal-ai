@@ -8,7 +8,7 @@
 //! uses a *different* natural-language request so a passing run proves the routing
 //! is general, not memorised (CONTRIBUTING rule 4).
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 /// The single tool call a one-step plan emitted, or a panic with the prompt.

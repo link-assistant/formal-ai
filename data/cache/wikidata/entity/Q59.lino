@@ -1,0 +1,16 @@
+Q59
+  aliases
+    en ("PHP programming language" "PHP Hypertext Preprocessor")
+    hi ("पीऍचपी")
+    zh ("超级文本预处理语言" "PHP超级文本预处理语言" "個人的主頁" "超文本預處理器" "超文本预处理器")
+  descriptions
+    en "scripting language focused on web development"
+    hi "प्रोग्रामिंग भाषा"
+    ru "язык программирования"
+    zh "脚本语言"
+  id Q59
+  labels
+    en PHP
+    hi "पीएचपी"
+  type item
+success 1
