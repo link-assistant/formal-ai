@@ -33,17 +33,20 @@ fn repository_file(path: &str) -> String {
 /// Recorded durations, longest first.
 fn recorded_durations() -> Vec<(String, f64)> {
     let text = repository_file("data/meta/test-durations.lino");
-    let mut out: Vec<(String, f64)> = text
-        .lines()
-        .filter_map(|line| {
-            let body = line.trim().strip_prefix('(')?.strip_suffix(')')?;
-            let (name, seconds) = body.rsplit_once(' ')?;
-            if !name.contains("::") {
-                return None;
-            }
-            Some((name.to_string(), seconds.parse::<f64>().ok()?))
-        })
-        .collect();
+    // Canonical Links Notation: `test <name>` then an indented `seconds <n>`.
+    let mut out: Vec<(String, f64)> = Vec::new();
+    let mut pending: Option<String> = None;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if let Some(name) = trimmed.strip_prefix("test ") {
+            pending = name.contains("::").then(|| name.to_string());
+        } else if let Some(seconds) = trimmed.strip_prefix("seconds ")
+            && let Some(name) = pending.take()
+            && let Ok(seconds) = seconds.parse::<f64>()
+        {
+            out.push((name, seconds));
+        }
+    }
     out.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
     out
 }

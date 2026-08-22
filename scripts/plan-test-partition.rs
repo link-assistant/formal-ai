@@ -49,24 +49,26 @@ const DEFAULT_SECONDS: f64 = 0.1;
 const MAX_SPREAD_PERCENT: f64 = 25.0;
 
 fn durations(path: &str) -> BTreeMap<String, f64> {
-    let text = match fs::read_to_string(path) {
-        Ok(text) => text,
-        Err(_) => return BTreeMap::new(),
+    let Ok(text) = fs::read_to_string(path) else {
+        return BTreeMap::new();
     };
+    // Canonical Links Notation: `test <name>` followed by an indented
+    // `seconds <value>`. `data_files::lino_data_files_are_parseable...` rejects
+    // anything else, so the format is not free to drift.
     let mut out = BTreeMap::new();
+    let mut pending: Option<String> = None;
     for line in text.lines() {
-        let line = line.trim();
-        let Some(body) = line.strip_prefix('(').and_then(|l| l.strip_suffix(')')) else {
-            continue;
-        };
-        let Some((name, seconds)) = body.rsplit_once(' ') else {
-            continue;
-        };
-        if !name.contains("::") {
-            continue;
-        }
-        if let Ok(seconds) = seconds.parse::<f64>() {
-            out.insert(name.to_string(), seconds);
+        let trimmed = line.trim();
+        if let Some(name) = trimmed.strip_prefix("test ") {
+            pending = name.contains("::").then(|| name.to_string());
+        } else if let Some(seconds) = trimmed.strip_prefix("seconds ") {
+            // `rust-script` compiles this on the 2021 edition, where let-chains
+            // are not available, so the three conditions nest.
+            if let Some(name) = pending.take() {
+                if let Ok(seconds) = seconds.parse::<f64>() {
+                    out.insert(name, seconds);
+                }
+            }
         }
     }
     out
