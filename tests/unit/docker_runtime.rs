@@ -116,6 +116,42 @@ fn compose_file_offers_optional_openai_compatible_server_profile() {
     );
 }
 
+/// `COPY . .` before `cargo build` puts every file in the tree into the build
+/// layer's cache key, so editing one `.rs` rebuilds all ~500 dependency crates.
+/// The image build measured 24 minutes on run 32470623196, its slowest layers
+/// at 428s, 419s and 355s, and it gates the pipeline's finish alone (#1029).
+///
+/// Dependencies therefore build from the manifests alone, before the sources
+/// arrive. Measured locally: the manifest-only layer builds in 1m48s, and the
+/// source layer then compiles `formal-ai` by itself, reusing every dependency.
+#[test]
+fn the_image_builds_dependencies_before_it_copies_the_sources() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let dockerfile =
+        fs::read_to_string(format!("{manifest_dir}/Dockerfile")).expect("Dockerfile is readable");
+
+    let manifest_copy = dockerfile
+        .find("COPY Cargo.toml Cargo.lock build.rs ./")
+        .expect("the image must copy its manifests before its sources");
+    let source_copy = dockerfile
+        .find("\nCOPY . .")
+        .expect("the image must still copy the sources");
+    assert!(
+        manifest_copy < source_copy,
+        "the manifest copy must precede the source copy, or the dependency \
+         layer is keyed on the whole tree again"
+    );
+
+    let dependency_build = dockerfile
+        .find("cargo build --release --locked --lib --bins")
+        .expect("the image must build dependencies from the manifests alone");
+    assert!(
+        dependency_build < source_copy,
+        "dependencies must build before the sources arrive, or their layer is \
+         invalidated by every source edit"
+    );
+}
+
 fn assert_contains_all(label: &str, content: &str, expected: &[&str]) {
     for needle in expected {
         assert!(
