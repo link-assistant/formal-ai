@@ -91,12 +91,24 @@ jobs:
           # the next run re-checks for real instead of replaying a bad answer
           # for `--max-cache-age 1d`. Without it, accepting these codes would
           # hide a link that later genuinely breaks.
+          #
+          # Issue #1045: a `Connection reset by peer (os error 104)` reddened
+          # `main` on four links that all answer 200 from a workstation. A reset
+          # happens below HTTP, so it carries no status code -- neither the
+          # accept list nor `--cache-exclude-status` can name it, and one of the
+          # four came back as `Error (cached)`, a reset replayed from cache.
+          # `--max-retries 6` with a growing `--retry-wait-time` outlasts the
+          # burst instead of caching it; the recorded lychee report under
+          # `experiments/` is excluded outright because it is captured evidence
+          # of a past failure, not live documentation, and its URLs are supposed
+          # to be broken.
           args: >-
             --verbose
             --no-progress
             --cache
             --max-cache-age 1d
-            --max-retries 3
+            --max-retries 6
+            --retry-wait-time 2
             --timeout 30
             --accept '200..=204,429,500..=599'
             --accept-timeouts
@@ -107,6 +119,7 @@ jobs:
             --exclude-path '^CHANGELOG\.md$'
             --exclude-path docs/case-studies
             --exclude-path dev/log
+            --exclude-path experiments/issue-1021-link-checker-false-positive
             './**/*.md'
             './**/*.html'
           # Don't fail the workflow immediately - we want to check web archive first
