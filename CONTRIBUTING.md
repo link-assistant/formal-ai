@@ -407,6 +407,28 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
   scripts/cargo-test.sh --test unit issue_907    # one module
   ```
 
+  **Start the longest work first.** Whenever work is split across parallel
+  workers -- test partitions, matrix legs, anything fanned out -- the long tasks
+  must be scheduled first and the short ones packed in behind them. A long task
+  started last runs alone on a machine everything else has already finished
+  waiting for, and that tail is pure serial time on the critical path.
+
+  This is longest-processing-time-first, and it is not a preference: measured on
+  run 32591020809 (2895 tests, 4704s of work over eight partitions), splitting
+  by test index gave a **870s** worst partition against a **588s** ideal, while
+  LPT hit 588s exactly. 282s of the critical path, spent idling.
+
+  `scripts/plan-test-partition.rs` implements it for the macOS test slices from
+  the durations recorded in `data/meta/test-durations.lino`, and the
+  `check_test_partition_balance` CI gate fails when the plan drifts out of
+  balance -- so a regression back to index order cannot land quietly. Apply the
+  same rule to any new fan-out: sort by cost, descending, before assigning.
+
+  **Use the whole machine on CI.** An ephemeral runner is billed for the minutes
+  it is alive, so leaving cores idle only makes the wait longer. Do not add
+  `max-parallel`, and do not cap test threads on CI; the local half-CPU cap
+  below exists for a shared laptop, not for a runner.
+
   **Half the CPUs locally, all of them on CI.** A bare `cargo test` starts one
   compile job *and* one test thread per core, which pins the whole machine for
   the length of the run. The wrapper caps both at half the cores unless `CI` is
