@@ -73,6 +73,12 @@ fn the_macos_archive_download_retries_transient_storage_failures() {
 /// `failure` -- which skips the release and hides the cause.
 #[test]
 fn the_download_retry_is_bounded_to_fit_the_job_cap() {
+    // The slice budget and setup share the same cap; the numbers come from the
+    // comment on the job, which records 133s of setup and a 15s SIGTERM grace.
+    const SLICE_BUDGET_SECONDS: u64 = 600;
+    const SETUP_SECONDS: u64 = 133;
+    const GRACE_SECONDS: u64 = 15;
+
     let workflow = macos_workflow();
 
     let step = workflow
@@ -101,12 +107,6 @@ fn the_download_retry_is_bounded_to_fit_the_job_cap() {
          {budget_seconds}s budget. The wrapper refuses to start in that state, \
          so this would fail every macOS slice."
     );
-
-    // The slice budget and setup share the same cap; the numbers come from the
-    // comment on the job, which records 133s of setup and a 15s SIGTERM grace.
-    const SLICE_BUDGET_SECONDS: u64 = 600;
-    const SETUP_SECONDS: u64 = 133;
-    const GRACE_SECONDS: u64 = 15;
 
     let cap_minutes: u64 = workflow
         .split("Run macOS core slice")
