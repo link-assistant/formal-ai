@@ -186,6 +186,30 @@ fn the_per_attempt_deadline_clears_a_normal_download_by_a_wide_margin() {
     );
 }
 
+/// Already-compressed payloads are stored, not compressed a second time.
+///
+/// The artifact is `tests.tar.zst`. `upload-artifact` defaults to zip level 6,
+/// so those bytes were being compressed again -- costing CPU on the upload and
+/// on every one of the sixteen downloads. Measured on 190MB of zstd-compressed
+/// data, zip level 6 returned exactly 0% further gain, which is what data with
+/// no redundancy left should do.
+#[test]
+fn the_test_archive_is_stored_rather_than_compressed_twice() {
+    let workflow = macos_workflow();
+
+    let step = workflow
+        .split("- name: Upload macOS test archive")
+        .nth(1)
+        .expect("the archive job uploads the macOS test archive");
+    let step = step.split("- name:").next().unwrap_or(step);
+
+    assert!(
+        step.contains("compression-level: 0"),
+        "the payload is already zstd-compressed, so re-zipping it spends CPU on \
+         seventeen transfers per run for no size gain. Step:\n{step}"
+    );
+}
+
 /// A partial rerun has to be able to find the archive an earlier attempt left.
 #[test]
 fn a_reran_slice_finds_the_archive_whichever_attempt_uploaded_it() {

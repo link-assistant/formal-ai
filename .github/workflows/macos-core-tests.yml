@@ -81,6 +81,12 @@ jobs:
           name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/macos-core-tests
           retention-days: 1
+          # Issue #1039: the payload is `tests.tar.zst` -- already zstd
+          # compressed. The action's default is zip level 6, so the bytes get
+          # compressed a second time: that costs CPU on the upload and again on
+          # every one of the sixteen downloads, and buys close to nothing on
+          # data that has no redundancy left. Level 0 stores them as they are.
+          compression-level: 0
 
   test-archive:
     name: Run macOS core slice ${{ matrix.partition }}/16
