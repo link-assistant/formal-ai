@@ -373,8 +373,7 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Test suite" \
             cargo test --lib --bins --tests --all-features --verbose -- \
-            --skip data_files:: \
-            --skip self_ast_census
+            --skip data_files:: --skip self_ast_census --skip specification::
       - name: Run specification tests
         if: matrix.test-suite == 'specification'
         env:
