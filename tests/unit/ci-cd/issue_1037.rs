@@ -1,4 +1,4 @@
-//! Regression coverage for issue #1038: the pipeline paid for the same tests
+//! Regression coverage for issue #1037: the pipeline paid for the same tests
 //! twice, and the local cache grew without bound.
 //!
 //! Measured on run 32555911181 (`main`, 2026-08-22). The `CI/CD Pipeline` took
