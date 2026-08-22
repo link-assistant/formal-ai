@@ -139,19 +139,24 @@ fn the_download_retry_is_bounded_to_fit_the_job_cap() {
 
 /// The per-attempt deadline has to clear a *normal* download by a wide margin.
 ///
-/// The first draft set it to 40s. Run 32570566577 then recorded 18s, 23s and
-/// 28s for the slices that succeeded -- and slice 8/16 of that same run spent
-/// all three attempts hitting the deadline (`exited 124 after 42s of its 40s
-/// deadline`, three times). A deadline that close to the normal case converts a
-/// slow-but-working transfer into a failure, which is worse than the flake it
-/// was meant to absorb: the retry then guarantees the red instead of avoiding
-/// it.
+/// The archive is 941MB, so its transfer time is set by whatever throughput the
+/// runner happens to get -- and that varies by more than 5x. Run 32572106023
+/// recorded successes at 16s, 44s and 82s (58, 21 and 11 MB/s).
+///
+/// Two drafts died on this. 40s was barely above the fastest observations, and
+/// slice 8/16 of run 32570566577 spent all three attempts at ~42s. 85s still
+/// sat 3s above an 82s success, and slice 11/16 of run 32572106023 spent all
+/// three attempts at exactly 87s. A deadline just past the observed spread
+/// fires on ordinary slow runners, so the retry manufactures the red it exists
+/// to prevent -- the action it replaced had no per-attempt deadline at all.
 #[test]
 fn the_per_attempt_deadline_clears_a_normal_download_by_a_wide_margin() {
-    /// The slowest download observed succeeding, from run 32570566577.
-    const SLOWEST_OBSERVED_SUCCESS_SECONDS: u64 = 28;
-    /// A deadline below this multiple of a normal download is measuring runner
-    /// jitter rather than a stall.
+    /// The slowest download observed *succeeding*, from run 32572106023. The
+    /// artifact is 941MB, so this is a throughput floor (~11MB/s), not a
+    /// constant -- a slower runner is normal, not broken.
+    const SLOWEST_OBSERVED_SUCCESS_SECONDS: u64 = 82;
+    /// A deadline below this multiple of the slowest observed success is
+    /// measuring runner throughput rather than a stall.
     const MINIMUM_HEADROOM_MULTIPLE: u64 = 2;
 
     let workflow = macos_workflow();

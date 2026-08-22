@@ -96,14 +96,17 @@ jobs:
     # (600s budget + 133s setup + 15s grace = 748s against a 900s cap).
     #
     # Issue #1039 added a retrying artifact download whose own guard bounds it
-    # to 330s worst case, which the previous 900s cap could not absorb at all --
-    # the *cap* would expire first and report `cancelled`. 22 minutes makes room
-    # with margin to spare: 330s download + 600s slice + 133s setup + 15s grace
-    # = 1078s against 1320s. (18 minutes would fit by 2 seconds, which is not a
-    # margin -- one slow checkout and the cap wins again.)
+    # to 570s worst case, which the previous 900s cap could not absorb at all --
+    # the *cap* would expire first and report `cancelled`. 25 minutes makes room:
+    # 570s download + 600s slice + 133s setup + 15s grace = 1318s against 1500s,
+    # leaving 182s -- comfortably more than the range a single slow checkout
+    # varies by (33s to 62s across the slices of run 32572106023).
+    # The download is a 941MB artifact whose transfer time depends on runner
+    # throughput, so its budget has to cover a slow runner rather than a typical
+    # one.
     # `issue_1039::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
     # this from the workflow, so the numbers cannot drift out of agreement.
-    timeout-minutes: 22
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -152,32 +155,33 @@ jobs:
       # that never ran a test. The wrapper pauses between attempts so a later
       # one meets a different minute.
       #
-      # The per-attempt deadline is sized from measured downloads, not guessed.
-      # Run 32570566577 recorded 18s, 23s and 28s for the successful slices, so
-      # the first draft's 40s left barely 1.4x the slowest success -- and slice
-      # 8/16 of that very run spent all three attempts hitting the deadline
-      # (`exited 124 after 42s of its 40s deadline`, three times). A deadline
-      # that close to the normal case turns a slow-but-working transfer into a
-      # failure, which is the opposite of the point.
+      # The per-attempt deadline is sized from the archive, not from a guess.
+      # It is 941MB, so the transfer time is set by whatever throughput the
+      # runner gets, and that varies by more than 5x in practice: run
+      # 32572106023 recorded successes at 16s, 44s and 82s (58, 21 and 11 MB/s)
+      # while slice 11/16 of the same run spent three attempts at exactly 87s
+      # against an 85s deadline.
       #
-      # 85s is roughly 3x the slowest observed success, so only a genuinely
-      # stuck transfer reaches it, while the name lookup -- one small API
-      # response, not a transfer -- gets its own much shorter deadline.
+      # Two earlier drafts died on this. 40s was barely above the *fastest*
+      # observations; 85s still sat 3s above an 82s success. A deadline just
+      # past the observed spread fires on ordinary slow runners, so the retry
+      # manufactures the red it exists to prevent -- the original action had no
+      # per-attempt deadline at all and simply retried.
       #
-      # The budget still has to fit the job cap: the comment above records 600s
-      # slice budget + 133s setup + 15s grace = 748s against the 1080s cap,
-      # leaving 332s. Every deadlined command counts, so the worst case is
-      # 3 x (85s + 15s) + 2 x 15s = 330s, which fits. An exhausted retry then
-      # still *fails* inside the cap instead of being killed by it and reported
-      # as `cancelled` -- the issue #1017 failure this must not reintroduce.
-      # `TEST_BUDGET_SECONDS` makes the wrapper enforce that itself rather than
-      # trusting this comment.
+      # 165s is twice the slowest observed success, tolerating ~5.7MB/s, so only
+      # a genuinely stuck transfer reaches it. The budget still has to fit the
+      # job cap: 1500s cap - 600s slice - 133s setup - 15s grace leaves 752s,
+      # and 3 x (165s + 15s) + 2 x 15s = 570s fits with room. An exhausted retry
+      # then still *fails* inside the cap rather than being killed by it and
+      # reported as `cancelled` -- the issue #1017 failure this must not
+      # reintroduce. `TEST_BUDGET_SECONDS` makes the wrapper enforce that
+      # itself rather than trusting this comment.
       - name: Download macOS test archive
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_BUDGET_SECONDS: 330
+          TEST_BUDGET_SECONDS: 575
           FORMAL_AI_DOWNLOAD_ATTEMPTS: 3
-          FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS: 85
+          FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS: 165
           FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS: 15
           FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS: 15
         run: |

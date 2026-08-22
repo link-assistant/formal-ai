@@ -40,11 +40,11 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
     assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
     assert!(macos.contains("timeout-minutes: 30"));
-    // Issue #1039 raised the slice cap from 15 to 22 minutes to make room for a
+    // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
     // retrying artifact download. `issue_1039::the_download_retry_is_bounded_to
     // _fit_the_job_cap` checks the arithmetic that justifies it, so this only
     // pins that the cap is still declared as a plain number.
-    assert!(macos.contains("timeout-minutes: 22"));
+    assert!(macos.contains("timeout-minutes: 25"));
     assert!(!macos.contains("2100"));
     assert!(macos.contains("taiki-e/install-action@nextest"));
     assert!(macos.contains("scripts/run-with-budget-warning.sh"));
