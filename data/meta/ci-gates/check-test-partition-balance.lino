@@ -1,0 +1,15 @@
+# One CI gate, one file. See `check-ci-gate-registry.lino` for the convention.
+#
+# Issue #1047: `cargo nextest --partition slice:N/D` splits by test *index*,
+# which is uncorrelated with duration. Measured across run 32591020809 -- 2895
+# tests, 4704s of work over eight slices -- index order gave a 870s worst slice
+# against a 588s ideal, so the critical path waited 282s on one machine while
+# the others sat idle. Longest-processing-time-first reaches 588s exactly.
+#
+# This gate fails when the planned partitions drift back out of balance, which
+# is what happens silently as tests are added and the recorded durations go
+# stale. A rebalance is a re-recording, not a code change.
+ci_gate check_test_partition_balance
+  stage rust
+  description "Long tests start first: the planned test partitions stay balanced."
+  run "rust-script scripts/plan-test-partition.rs --report --of 8"
