@@ -19,9 +19,15 @@ repos:
         types: [rust]
         pass_filenames: false
 
+      # The same split the `run_clippy` CI gate uses, and for the same reason.
+      # `--all-targets` *links* every example, and this crate has 116 of them at
+      # roughly 190MB each -- cargo keeps both a hashed and an unhashed copy, so
+      # a single local run leaves about 27GB in `target/debug/examples`. That is
+      # what filled the disk (issue #1049). `cargo check` type-checks examples
+      # without linking them, which is all a lint pass needs.
       - id: cargo-clippy
         name: cargo clippy
-        entry: cargo clippy --all-targets --all-features -- -D warnings
+        entry: bash -c 'cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features'
         language: system
         types: [rust]
         pass_filenames: false

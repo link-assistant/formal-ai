@@ -145,6 +145,23 @@ else
   pruner="timestamps (install cargo-sweep for fingerprint-accurate pruning)"
 fi
 
+# Linked example binaries, which cargo-sweep leaves alone.
+#
+# Issue #1049: `target/debug/examples` reached 27GB of a 28GB tree, and
+# `cargo sweep --maxsize 4096` cleaned nothing from it. This crate has 116
+# examples; each links the whole library into a ~190MB binary, and cargo keeps
+# both a hashed and an unhashed copy of every one. cargo-sweep reasons about
+# what the *current* build references, and these are current -- so they are
+# invisible to it and to `--maxsize` alike, and the tree grows without limit.
+#
+# Nothing needs them between runs. `cargo check --examples` type-checks an
+# example without linking it, which is what both the `run_clippy` CI gate and
+# the pre-commit hook use; a linked example binary only appears when someone
+# runs `--all-targets` by hand, and it is never read again afterwards.
+if [ -d target/debug/examples ] || [ -d target/release/examples ]; then
+  rm -rf target/debug/examples target/release/examples
+fi
+
 # A ceiling, applied after the sweep. Only local runs get one by default: see
 # the header. cargo-sweep drops least-recently-used artifacts until the tree
 # fits, which keeps the newest build -- the one about to be extended -- intact.
