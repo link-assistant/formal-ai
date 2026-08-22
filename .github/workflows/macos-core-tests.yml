@@ -94,7 +94,13 @@ jobs:
     # release. 16 slices cut the worst measured slice to roughly 410s, and the
     # cap sits a half above the 600s budget so the budget always expires first
     # (600s budget + 133s setup + 15s grace = 748s against a 900s cap).
-    timeout-minutes: 15
+    #
+    # Issue #1039 added a retrying artifact download whose own guard bounds it
+    # to 140s worst case, which the previous 900s cap could only absorb with 12s
+    # to spare -- close enough that a slow checkout would put the *cap* first
+    # again and report `cancelled`. 18 minutes restores the margin:
+    # 140s download + 600s slice + 133s setup + 15s grace = 888s against 1080s.
+    timeout-minutes: 18
     strategy:
       fail-fast: false
       matrix:
@@ -138,13 +144,31 @@ jobs:
           targets: wasm32-unknown-unknown
       - name: Install cargo-nextest
         uses: taiki-e/install-action@nextest
+      # Issue #1039: the action's own five retries are spent back-to-back, so a
+      # storage backend having a bad minute exhausts them and reddens a slice
+      # that never ran a test. The wrapper pauses between attempts so a later
+      # one meets a different minute.
+      #
+      # The budget is what the job cap can actually afford, and it is tight:
+      # the comment above this job records 600s slice budget + 133s setup + 15s
+      # grace = 748s against a 900s cap, leaving 152s. `TEST_BUDGET_SECONDS`
+      # here makes the wrapper's own guard enforce that -- 3 x 40s + 2 x 10s =
+      # 140s worst case, so an exhausted retry still *fails* inside the cap
+      # instead of being killed by it and reported as `cancelled`, which is the
+      # issue #1017 failure this must not reintroduce. The observed download is
+      # a few seconds, so 40s is generous per attempt; the value of the retry is
+      # the pause between attempts, not a longer single try.
       - name: Download macOS test archive
-        uses: actions/download-artifact@v8
         env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/macos-core-tests
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_BUDGET_SECONDS: 150
+          FORMAL_AI_DOWNLOAD_ATTEMPTS: 3
+          FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS: 40
+          FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS: 10
+        run: |
+          scripts/download-artifact-with-retry.sh \
+            "macos-core-tests-${{ github.run_id }}" \
+            "$RUNNER_TEMP/macos-core-tests"
       - name: Verify archive source tree
         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
       - name: Run core test slice from archive

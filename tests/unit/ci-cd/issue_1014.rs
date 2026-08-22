@@ -99,7 +99,12 @@ fn macos_core_shards_reuse_one_nextest_archive() {
     assert_eq!(macos.matches("- { partition:").count(), 16);
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
     assert!(macos.contains("actions/upload-artifact@v7"));
-    assert!(macos.contains("actions/download-artifact@v8"));
+    // Issue #1039 moved the download to `scripts/download-artifact-with-retry.sh`
+    // so a transient storage failure retries instead of reddening a slice that
+    // never ran a test. What this test pins is that the slices *reuse the one
+    // archive* rather than each building their own -- the mechanism that
+    // fetches it is free to change, and the retry is covered by issue #1039.
+    assert!(macos.contains("scripts/download-artifact-with-retry.sh"));
     assert!(macos.contains("cargo nextest run --archive-file"));
     assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));
     assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
