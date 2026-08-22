@@ -84,12 +84,12 @@ jobs:
           # Issue #1039: the payload is `tests.tar.zst` -- already zstd
           # compressed. The action's default is zip level 6, so the bytes get
           # compressed a second time: that costs CPU on the upload and again on
-          # every one of the sixteen downloads, and buys close to nothing on
+          # every one of the eight downloads, and buys close to nothing on
           # data that has no redundancy left. Level 0 stores them as they are.
           compression-level: 0
 
   test-archive:
-    name: Run macOS core slice ${{ matrix.partition }}/16
+    name: Run macOS core slice ${{ matrix.partition }}/8
     needs: [build-archive]
     runs-on: macos-15-intel
     # Issue #1017: at 12 slices the round-robin `slice:` partitioner -- which
@@ -97,9 +97,16 @@ jobs:
     # test phase against a 185s minimum. With 133s of per-slice setup that
     # exceeded the 600s job cap, and GitHub reports a `timeout-minutes` kill as
     # `cancelled`, so the whole pipeline reported `cancelled` and skipped the
-    # release. 16 slices cut the worst measured slice to roughly 410s, and the
-    # cap sits a half above the 600s budget so the budget always expires first
-    # (600s budget + 133s setup + 15s grace = 748s against a 900s cap).
+    # release. 16 slices cut the worst measured slice to roughly 410s.
+    #
+    # Issue #1039 measured what that split actually bought. The macOS pool runs
+    # about 4-5 slices at a time, so sixteen of them delivered 4.3x parallelism
+    # (3796s of slice time over an 873s span in run 32572106023) while every
+    # slice paid ~120s of fixed cost -- checkout, toolchain, and its own copy of
+    # a 941MB archive. Eight slices halve that tax. Because `slice:` partitions
+    # round-robin by test index, merging pairs each slow slice with a fast one:
+    # the per-slice test times of that run recombine to a 333s worst case at
+    # eight, against 256s at sixteen, still only 55% of the 600s budget.
     #
     # Issue #1039 added a retrying artifact download whose own guard bounds it
     # to 570s worst case, which the previous 900s cap could not absorb at all --
@@ -125,14 +132,6 @@ jobs:
           - { partition: 6 }
           - { partition: 7 }
           - { partition: 8 }
-          - { partition: 9 }
-          - { partition: 10 }
-          - { partition: 11 }
-          - { partition: 12 }
-          - { partition: 13 }
-          - { partition: 14 }
-          - { partition: 15 }
-          - { partition: 16 }
     steps:
       - uses: actions/checkout@v6
         with:
@@ -206,5 +205,5 @@ jobs:
             cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
-            --partition "slice:${{ matrix.partition }}/16" \
+            --partition "slice:${{ matrix.partition }}/8" \
             -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'

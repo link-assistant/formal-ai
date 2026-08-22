@@ -31,14 +31,14 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     // Issue #1017 raised the slice count from 12 to 16 and both caps with it;
     // `issue_1017::macos_slices_cover_every_partition_of_their_denominator`
     // keeps the matrix and the `slice:` denominator in step from here on.
-    for shard in 1..=16 {
+    for shard in 1..=8 {
         assert!(
             macos.contains(&format!("- {{ partition: {shard} }}")),
             "missing macOS core shard {shard}"
         );
     }
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
     assert!(macos.contains("timeout-minutes: 30"));
     // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
     // retrying artifact download. `issue_1039::the_download_retry_is_bounded_to
