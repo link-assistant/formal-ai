@@ -81,9 +81,15 @@ jobs:
           name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/macos-core-tests
           retention-days: 1
+          # Issue #1039: the payload is `tests.tar.zst` -- already zstd
+          # compressed. The action's default is zip level 6, so the bytes get
+          # compressed a second time: that costs CPU on the upload and again on
+          # every one of the eight downloads, and buys close to nothing on
+          # data that has no redundancy left. Level 0 stores them as they are.
+          compression-level: 0
 
   test-archive:
-    name: Run macOS core slice ${{ matrix.partition }}/16
+    name: Run macOS core slice ${{ matrix.partition }}/8
     needs: [build-archive]
     runs-on: macos-15-intel
     # Issue #1017: at 12 slices the round-robin `slice:` partitioner -- which
@@ -91,10 +97,29 @@ jobs:
     # test phase against a 185s minimum. With 133s of per-slice setup that
     # exceeded the 600s job cap, and GitHub reports a `timeout-minutes` kill as
     # `cancelled`, so the whole pipeline reported `cancelled` and skipped the
-    # release. 16 slices cut the worst measured slice to roughly 410s, and the
-    # cap sits a half above the 600s budget so the budget always expires first
-    # (600s budget + 133s setup + 15s grace = 748s against a 900s cap).
-    timeout-minutes: 15
+    # release. 16 slices cut the worst measured slice to roughly 410s.
+    #
+    # Issue #1039 measured what that split actually bought. The macOS pool runs
+    # about 4-5 slices at a time, so sixteen of them delivered 4.3x parallelism
+    # (3796s of slice time over an 873s span in run 32572106023) while every
+    # slice paid ~120s of fixed cost -- checkout, toolchain, and its own copy of
+    # a 941MB archive. Eight slices halve that tax. Because `slice:` partitions
+    # round-robin by test index, merging pairs each slow slice with a fast one:
+    # the per-slice test times of that run recombine to a 333s worst case at
+    # eight, against 256s at sixteen, still only 55% of the 600s budget.
+    #
+    # Issue #1039 added a retrying artifact download whose own guard bounds it
+    # to 570s worst case, which the previous 900s cap could not absorb at all --
+    # the *cap* would expire first and report `cancelled`. 25 minutes makes room:
+    # 570s download + 600s slice + 133s setup + 15s grace = 1318s against 1500s,
+    # leaving 182s -- comfortably more than the range a single slow checkout
+    # varies by (33s to 62s across the slices of run 32572106023).
+    # The download is a 941MB artifact whose transfer time depends on runner
+    # throughput, so its budget has to cover a slow runner rather than a typical
+    # one.
+    # `issue_1039::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
+    # this from the workflow, so the numbers cannot drift out of agreement.
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -107,14 +132,6 @@ jobs:
           - { partition: 6 }
           - { partition: 7 }
           - { partition: 8 }
-          - { partition: 9 }
-          - { partition: 10 }
-          - { partition: 11 }
-          - { partition: 12 }
-          - { partition: 13 }
-          - { partition: 14 }
-          - { partition: 15 }
-          - { partition: 16 }
     steps:
       - uses: actions/checkout@v6
         with:
@@ -138,13 +155,44 @@ jobs:
           targets: wasm32-unknown-unknown
       - name: Install cargo-nextest
         uses: taiki-e/install-action@nextest
+      # Issue #1039: the action's own five retries are spent back-to-back, so a
+      # storage backend having a bad minute exhausts them and reddens a slice
+      # that never ran a test. The wrapper pauses between attempts so a later
+      # one meets a different minute.
+      #
+      # The per-attempt deadline is sized from the archive, not from a guess.
+      # It is 941MB, so the transfer time is set by whatever throughput the
+      # runner gets, and that varies by more than 5x in practice: run
+      # 32572106023 recorded successes at 16s, 44s and 82s (58, 21 and 11 MB/s)
+      # while slice 11/16 of the same run spent three attempts at exactly 87s
+      # against an 85s deadline.
+      #
+      # Two earlier drafts died on this. 40s was barely above the *fastest*
+      # observations; 85s still sat 3s above an 82s success. A deadline just
+      # past the observed spread fires on ordinary slow runners, so the retry
+      # manufactures the red it exists to prevent -- the original action had no
+      # per-attempt deadline at all and simply retried.
+      #
+      # 165s is twice the slowest observed success, tolerating ~5.7MB/s, so only
+      # a genuinely stuck transfer reaches it. The budget still has to fit the
+      # job cap: 1500s cap - 600s slice - 133s setup - 15s grace leaves 752s,
+      # and 3 x (165s + 15s) + 2 x 15s = 570s fits with room. An exhausted retry
+      # then still *fails* inside the cap rather than being killed by it and
+      # reported as `cancelled` -- the issue #1017 failure this must not
+      # reintroduce. `TEST_BUDGET_SECONDS` makes the wrapper enforce that
+      # itself rather than trusting this comment.
       - name: Download macOS test archive
-        uses: actions/download-artifact@v8
         env:
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/macos-core-tests
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_BUDGET_SECONDS: 575
+          FORMAL_AI_DOWNLOAD_ATTEMPTS: 3
+          FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS: 165
+          FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS: 15
+          FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS: 15
+        run: |
+          scripts/download-artifact-with-retry.sh \
+            "macos-core-tests-${{ github.run_id }}" \
+            "$RUNNER_TEMP/macos-core-tests"
       - name: Verify archive source tree
         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
       - name: Run core test slice from archive
@@ -157,5 +205,5 @@ jobs:
             cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
-            --partition "slice:${{ matrix.partition }}/16" \
+            --partition "slice:${{ matrix.partition }}/8" \
             -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'

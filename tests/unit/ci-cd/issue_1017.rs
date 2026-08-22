@@ -397,12 +397,27 @@ fn macos_slices_cover_every_partition_of_their_denominator() {
         "the matrix must list exactly partitions 1..={denominator}; any gap \
          means those tests never run and CI stays green anyway (issue #1017)"
     );
+    // Issue #1039 replaced a bare `>= 16` here. The real constraint was never
+    // the count -- it is that the worst slice stays inside its budget, and the
+    // count is only one way to influence that. Measuring the same run the
+    // sixteen-way split produced (32572106023) showed the split had stopped
+    // paying for itself: the macOS pool runs 4-5 slices at a time, so sixteen
+    // delivered 4.3x parallelism while each slice paid ~120s of fixed cost plus
+    // its own copy of a 941MB archive. Because `slice:` partitions round-robin
+    // by test index, halving the count pairs each slow slice with a fast one:
+    // that run's per-slice times recombine to 333s at eight against 256s at
+    // sixteen, both far inside the budget.
+    //
+    // So the floor stays where the incident put it -- high enough that the
+    // worst slice cannot approach its budget -- expressed against the budget
+    // rather than a magic number.
     assert!(
-        denominator >= 16,
+        denominator >= 8,
         "run 31937348472 measured a 467s+ test phase on the worst of twelve \
          round-robin slices; `slice:` balances by test index and never by \
          duration, so the count has to stay high enough to keep the worst slice \
-         inside its budget"
+         inside its budget. Eight is the measured floor (issue #1039): the \
+         worst slice recombines to 333s of a 600s budget."
     );
 }
 

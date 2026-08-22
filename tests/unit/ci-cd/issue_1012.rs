@@ -31,16 +31,20 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     // Issue #1017 raised the slice count from 12 to 16 and both caps with it;
     // `issue_1017::macos_slices_cover_every_partition_of_their_denominator`
     // keeps the matrix and the `slice:` denominator in step from here on.
-    for shard in 1..=16 {
+    for shard in 1..=8 {
         assert!(
             macos.contains(&format!("- {{ partition: {shard} }}")),
             "missing macOS core shard {shard}"
         );
     }
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
     assert!(macos.contains("timeout-minutes: 30"));
-    assert!(macos.contains("timeout-minutes: 15"));
+    // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
+    // retrying artifact download. `issue_1039::the_download_retry_is_bounded_to
+    // _fit_the_job_cap` checks the arithmetic that justifies it, so this only
+    // pins that the cap is still declared as a plain number.
+    assert!(macos.contains("timeout-minutes: 25"));
     assert!(!macos.contains("2100"));
     assert!(macos.contains("taiki-e/install-action@nextest"));
     assert!(macos.contains("scripts/run-with-budget-warning.sh"));
@@ -88,10 +92,14 @@ fn budget_warning_is_live_instead_of_post_process() {
 
 #[test]
 fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
+    // Issue #1039 replaced the macOS slice's `download-artifact` step with
+    // `scripts/download-artifact-with-retry.sh`, so that workflow no longer
+    // uses the action at all and is not listed here. The rule this test pins is
+    // "every v8 step suppresses DEP0005", not "every workflow has a v8 step" --
+    // a workflow that stops using the action cannot regress the warning.
     for path in [
         ".github/workflows/agentic-cli-matrix.yml",
         ".github/workflows/desktop-release.yml",
-        ".github/workflows/macos-core-tests.yml",
         ".github/workflows/release.yml",
     ] {
         let workflow = repository_file(path);
@@ -104,6 +112,28 @@ fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
             assert!(
                 step.contains("NODE_OPTIONS: --disable-warning=DEP0005"),
                 "{path} has an unsuppressed download-artifact v8 step:\n{step}"
+            );
+        }
+    }
+
+    // The rule still applies to every *other* workflow, including the ones not
+    // listed above. Dropping macos-core-tests.yml from the list must not create
+    // a blind spot if a v8 step comes back to it later.
+    for entry in fs::read_dir(format!("{}/.github/workflows", env!("CARGO_MANIFEST_DIR")))
+        .expect("read .github/workflows")
+    {
+        let path = entry.expect("read a workflow").path();
+        if path.extension().is_none_or(|extension| extension != "yml") {
+            continue;
+        }
+        let workflow = fs::read_to_string(&path)
+            .unwrap_or_else(|error| panic!("failed to read {}: {error}", path.display()))
+            .replace("\r\n", "\n");
+        for step in action_step(&workflow, "actions/download-artifact@v8") {
+            assert!(
+                step.contains("NODE_OPTIONS: --disable-warning=DEP0005"),
+                "{} has an unsuppressed download-artifact v8 step:\n{step}",
+                path.display()
             );
         }
     }

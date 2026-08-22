@@ -19,8 +19,10 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
 
     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
     assert!(test.contains("test-suite: full"));
-    // Issue #1017 raised the slice count to 16 and the caps with it.
-    for shard in 1..=16 {
+    // Issue #1017 raised the slice count to 16; issue #1039 measured that the
+    // macOS pool only runs 4-5 at a time and brought it back to 8, halving the
+    // per-slice fixed cost without moving the worst slice near its budget.
+    for shard in 1..=8 {
         assert!(macos.contains(&format!("- {{ partition: {shard} }}")));
     }
     assert!(test.contains("test-suite: specification"));
@@ -29,7 +31,7 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     assert!(macos.contains("timeout-minutes: 30"));
     assert!(macos.contains("cargo nextest archive"));
     assert!(macos.contains("cargo nextest run --archive-file"));
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/16\""));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
     assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
     assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));
