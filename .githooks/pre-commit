@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Reclaim build-cache disk on every commit.
+#
+# Issue #1041: the `pre-commit` framework config in `.pre-commit-config.yaml`
+# describes this, but it only runs for someone who has installed that framework
+# *and* run `pre-commit install`. On a fresh clone neither is true, so the
+# sweep that keeps `target/` from filling the disk silently never happened --
+# the machine this was written on reached 205MiB free of 460GiB with the config
+# committed and inert.
+#
+# `build.rs` points `core.hooksPath` here, so an ordinary `cargo build` or
+# `cargo test` installs this hook. That is the one step every contributor takes
+# without being told, which is what makes it reliable.
+#
+# Deliberately narrow: pruning is fast, has no failure mode worth blocking a
+# commit for, and needs no toolchain beyond what is already here. Correctness
+# gates (fmt, clippy, tests) stay in CI and in the pre-commit framework, where
+# they can be run deliberately rather than on every `git commit`.
+set -euo pipefail
+
+repository_root=$(git rev-parse --show-toplevel)
+
+# Never block a commit. A pruner that fails -- no cargo, no target/, a
+# half-written tree -- must not stand between someone and their work.
+"$repository_root/scripts/prune-build-cache.sh" || true
+
+exit 0

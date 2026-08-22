@@ -15,6 +15,7 @@
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 fn main() {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"));
@@ -24,6 +25,8 @@ fn main() {
 
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed={}", seed_dir.display());
+
+    install_git_hooks(&manifest_dir);
 
     let mut files = enumerate_lino_files(&seed_dir);
     files.sort_by_key(|a| seed_sort_key(a));
@@ -145,6 +148,55 @@ fn enumerate_rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
             out.push(path);
         }
     }
+}
+
+/// Point `core.hooksPath` at the tracked `.githooks/` directory.
+///
+/// Issue #1041: `.pre-commit-config.yaml` describes a hook that sweeps the
+/// build cache on every commit, but it runs only for someone who has installed
+/// the `pre-commit` framework *and* run `pre-commit install`. On a fresh clone
+/// neither is true, so the config sat committed and inert while `target/` grew
+/// until the disk filled.
+///
+/// A build script is the one step every contributor takes without being told,
+/// which makes it the reliable place to do this. It is also the only place that
+/// runs before the first commit of a new clone.
+///
+/// Every failure here is ignored. This is a convenience, never a build
+/// requirement: a source tarball with no `.git`, a sandbox with no `git` on
+/// PATH, or a read-only checkout must all still build.
+fn install_git_hooks(manifest_dir: &Path) {
+    // CI checks out fresh for every job and commits nothing, so installing
+    // hooks there is pure overhead on hundreds of jobs.
+    if env::var_os("CI").is_some() {
+        return;
+    }
+
+    let hooks_dir = manifest_dir.join(".githooks");
+    if !hooks_dir.is_dir() || !manifest_dir.join(".git").exists() {
+        return;
+    }
+
+    // Respect a deliberate choice. Someone who already points hooksPath
+    // somewhere -- their own directory, or a tool that manages hooks -- must
+    // not have it silently taken over by a dependency build.
+    let configured = Command::new("git")
+        .args(["-C"])
+        .arg(manifest_dir)
+        .args(["config", "--local", "--get", "core.hooksPath"])
+        .output();
+    if let Ok(output) = &configured
+        && output.status.success()
+        && !String::from_utf8_lossy(&output.stdout).trim().is_empty()
+    {
+        return;
+    }
+
+    let _ = Command::new("git")
+        .args(["-C"])
+        .arg(manifest_dir)
+        .args(["config", "--local", "core.hooksPath", ".githooks"])
+        .status();
 }
 
 fn enumerate_lino_files(seed_dir: &Path) -> Vec<PathBuf> {
