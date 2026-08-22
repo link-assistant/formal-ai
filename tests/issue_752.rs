@@ -5,6 +5,10 @@ use formal_ai::handle_api_request;
 
 #[test]
 fn models_report_real_disk_context_and_memory_usage() {
+    // Issue #1039: how far the reported free-space reading may sit outside the
+    // pair this test brackets it with. See the assertion below.
+    const DISK_SAMPLE_TOLERANCE_BYTES: u64 = 512 * 1024 * 1024;
+
     let dir =
         std::env::temp_dir().join(format!("formal-ai-context-capacity-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
@@ -76,7 +80,34 @@ fn models_report_real_disk_context_and_memory_usage() {
     let disk_free = context["disk_free_bytes"]
         .as_u64()
         .expect("disk_free_bytes");
-    assert!((free_after.min(free_before)..=free_after.max(free_before)).contains(&disk_free));
+    // Issue #1039: the reported figure is a *third* live reading of a shared
+    // filesystem, taken between the two this test brackets it with. Nothing
+    // stops another process on the runner from writing between any two of them,
+    // so requiring the middle reading to land inside the outer pair is a race
+    // rather than an invariant. It lost that race on `macOS Core Tests / Run
+    // macOS core slice 8/16` of run 32572106023, on a pull request that touches
+    // no disk code at all.
+    //
+    // What the assertion is really for is that the server measured *this*
+    // filesystem and reported it, rather than returning a placeholder or the
+    // wrong volume -- so it is checked against the same readings with a
+    // tolerance for concurrent writes. Ordinary CI churn moves free space by
+    // kilobytes to a few megabytes between samples; a wrong volume or a stub
+    // value is off by orders of magnitude and still fails.
+    let lowest = free_after
+        .min(free_before)
+        .saturating_sub(DISK_SAMPLE_TOLERANCE_BYTES);
+    let highest = free_after
+        .max(free_before)
+        .saturating_add(DISK_SAMPLE_TOLERANCE_BYTES);
+    assert!(
+        (lowest..=highest).contains(&disk_free),
+        "reported disk_free_bytes {disk_free} is outside [{lowest}, {highest}], \
+         bracketed by readings {free_before} and {free_after} with a \
+         {DISK_SAMPLE_TOLERANCE_BYTES}-byte tolerance for concurrent writes. \
+         A gap this large means the wrong filesystem was measured, not runner \
+         churn."
+    );
     assert_eq!(context["memory_used_bytes"], 4_096);
     assert_eq!(context["avg_utf8_bytes_per_char"], 2);
     assert_eq!(context["context_used_tokens"], 2_048);
