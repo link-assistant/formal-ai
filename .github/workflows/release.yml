@@ -991,8 +991,9 @@ jobs:
           # its first-run trust dialog (https://github.com/openai/codex/issues/39487).
           # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.238 @openai/codex@0.147.0 @google/gemini-cli@0.56.0
+      # Issue #1043: run, never shipped; LTO costs 536s for unmeasured speed.
       - name: Build formal-ai (release)
-        run: cargo build --release --bin formal-ai
+        run: CARGO_PROFILE_RELEASE_LTO=false CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16 cargo build --release --bin formal-ai
       - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
         timeout-minutes: 5
         env: { PORT: 8896 }
@@ -1272,8 +1273,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-box-language-
             ${{ runner.os }}-cargo-
-      - name: Build formal-ai (release)
-        run: cargo build --release --bin formal-ai
+      - name: Build formal-ai (release)  # issue #1043: see the E2E job above
+        run: CARGO_PROFILE_RELEASE_LTO=false CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16 cargo build --release --bin formal-ai
       - name: Upload formal-ai binary
         uses: actions/upload-artifact@v7
         with:
