@@ -44,7 +44,10 @@
 #   GITHUB_REPOSITORY                  owner/repo (required)
 #   GITHUB_RUN_ID                      run holding the artifact (required)
 #   FORMAL_AI_DOWNLOAD_ATTEMPTS        attempts before giving up (4)
-#   FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS deadline for one attempt (120)
+#   FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS deadline for one download attempt (120)
+#   FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS  deadline for the name lookup (20); it is
+#                                      one small API response, so it does not
+#                                      need the transfer's budget
 #   FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS  pause between attempts (15)
 #   TEST_BUDGET_SECONDS                enclosing step budget, checked when set
 #   FORMAL_AI_GH                       gh binary (gh); tests point it at a
@@ -61,12 +64,14 @@ destination="${2:?destination directory is required}"
 
 attempts="${FORMAL_AI_DOWNLOAD_ATTEMPTS:-4}"
 attempt_seconds="${FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS:-120}"
+lookup_seconds="${FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS:-20}"
 retry_delay_seconds="${FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS:-15}"
 budget_seconds="${TEST_BUDGET_SECONDS:-}"
 gh_binary="${FORMAL_AI_GH:-gh}"
 
 for name in FORMAL_AI_DOWNLOAD_ATTEMPTS:$attempts \
   FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS:$attempt_seconds \
+  FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS:$lookup_seconds \
   FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS:$retry_delay_seconds; do
   if ! [[ "${name#*:}" =~ ^[0-9]+$ ]]; then
     echo "${name%%:*} must be a non-negative integer, got ${name#*:}" >&2
@@ -80,7 +85,13 @@ done
 
 # The guard issue #1017 paid for, applied here: refuse to start rather than
 # discover in CI that the retries cannot fit inside the budget above them.
-worst_case=$((attempts * attempt_seconds + (attempts - 1) * retry_delay_seconds))
+#
+# Both deadlined commands count -- resolving the name *and* downloading -- so
+# an attempt that stalls in both spends the sum. Counting only the download
+# would understate the worst case and let the job cap expire first, which
+# reports as `cancelled` rather than `failure`: exactly what this prevents.
+worst_case=$((attempts * (attempt_seconds + lookup_seconds) \
+  + (attempts - 1) * retry_delay_seconds))
 if [ -n "$budget_seconds" ] && [ "$worst_case" -gt "$budget_seconds" ]; then
   echo "::error title=artifact download retry cannot finish inside its budget::\
 ${attempts} attempts of ${attempt_seconds}s plus ${retry_delay_seconds}s delays \
@@ -105,7 +116,7 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
   # newest match wins, so a genuine re-upload on a later attempt supersedes the
   # earlier archive rather than racing it.
   status=0
-  artifact_name=$("$deadline" "$attempt_seconds" \
+  artifact_name=$("$deadline" "$lookup_seconds" \
     "$gh_binary" api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" \
     --jq "[.artifacts[] | select(.name | startswith(\"${artifact_prefix}\"))] \
           | sort_by(.created_at) | last | .name") || status=$?

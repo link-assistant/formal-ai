@@ -96,16 +96,23 @@ fn the_download_retry_is_bounded_to_fit_the_job_cap() {
 
     let attempts = value("FORMAL_AI_DOWNLOAD_ATTEMPTS:");
     let attempt_seconds = value("FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS:");
+    let lookup_seconds = value("FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS:");
     let delay_seconds = value("FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS:");
     let budget_seconds = value("TEST_BUDGET_SECONDS:");
 
-    let worst_case = attempts * attempt_seconds + attempts.saturating_sub(1) * delay_seconds;
+    // Every deadlined command counts. Each attempt resolves the artifact name
+    // and then downloads it, so an attempt that stalls in both spends the sum
+    // -- counting only the download halves the worst case on paper and lets the
+    // job cap expire first, which reports as `cancelled` rather than `failure`.
+    let worst_case =
+        attempts * (attempt_seconds + lookup_seconds) + attempts.saturating_sub(1) * delay_seconds;
     assert!(
         worst_case <= budget_seconds,
         "the download retry's worst case is {worst_case}s ({attempts} attempts \
-         of {attempt_seconds}s plus {delay_seconds}s delays) against its own \
-         {budget_seconds}s budget. The wrapper refuses to start in that state, \
-         so this would fail every macOS slice."
+         of {attempt_seconds}s download plus {lookup_seconds}s lookup, plus \
+         {delay_seconds}s delays) against its own {budget_seconds}s budget. The \
+         wrapper refuses to start in that state, so this would fail every macOS \
+         slice."
     );
 
     let cap_minutes: u64 = workflow
@@ -127,6 +134,50 @@ fn the_download_retry_is_bounded_to_fit_the_job_cap() {
          would expire first, and GitHub reports that as `cancelled` rather than \
          `failure` -- issue #977 and issue #1017.",
         cap_minutes * 60
+    );
+}
+
+/// The per-attempt deadline has to clear a *normal* download by a wide margin.
+///
+/// The first draft set it to 40s. Run 32570566577 then recorded 18s, 23s and
+/// 28s for the slices that succeeded -- and slice 8/16 of that same run spent
+/// all three attempts hitting the deadline (`exited 124 after 42s of its 40s
+/// deadline`, three times). A deadline that close to the normal case converts a
+/// slow-but-working transfer into a failure, which is worse than the flake it
+/// was meant to absorb: the retry then guarantees the red instead of avoiding
+/// it.
+#[test]
+fn the_per_attempt_deadline_clears_a_normal_download_by_a_wide_margin() {
+    /// The slowest download observed succeeding, from run 32570566577.
+    const SLOWEST_OBSERVED_SUCCESS_SECONDS: u64 = 28;
+    /// A deadline below this multiple of a normal download is measuring runner
+    /// jitter rather than a stall.
+    const MINIMUM_HEADROOM_MULTIPLE: u64 = 2;
+
+    let workflow = macos_workflow();
+
+    let step = workflow
+        .split("- name: Download macOS test archive")
+        .nth(1)
+        .expect("the slice job downloads the macOS test archive");
+    let step = step.split("- name:").next().unwrap_or(step);
+
+    let attempt_seconds: u64 = step
+        .lines()
+        .find_map(|line| {
+            line.trim()
+                .strip_prefix("FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS:")
+        })
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the download step sets a per-attempt deadline");
+
+    assert!(
+        attempt_seconds >= SLOWEST_OBSERVED_SUCCESS_SECONDS * MINIMUM_HEADROOM_MULTIPLE,
+        "the per-attempt deadline is {attempt_seconds}s against a \
+         {SLOWEST_OBSERVED_SUCCESS_SECONDS}s slowest observed *success*. Below \
+         {MINIMUM_HEADROOM_MULTIPLE}x that, the deadline fires on ordinary \
+         variation and the retry turns a working download into a guaranteed \
+         failure -- which is what happened to slice 8/16 of run 32570566577."
     );
 }
 
