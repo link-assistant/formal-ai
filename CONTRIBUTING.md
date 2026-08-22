@@ -421,6 +421,27 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
   `scripts/prune-build-cache.sh` on its own to reclaim space at any time, or set
   `CARGO_TEST_NO_PRUNE=1` to keep everything for a debugging session.
 
+  **Every commit sweeps.** The `prune-build-cache` pre-commit hook runs on every
+  commit, not only Rust ones -- a docs-only commit leaves the previous build's
+  artifacts on disk just the same. Disk is reclaimed as a matter of course
+  rather than when someone remembers.
+
+  ```bash
+  cargo install cargo-sweep   # strongly recommended
+  ```
+
+  With cargo-sweep installed the pruner asks cargo *which artifacts the current
+  build actually references* and removes the rest, so a dependency the next
+  build still needs survives even if it was compiled weeks ago. Without it the
+  pruner falls back to comparing modification times, which cannot tell a stale
+  artifact from a current one that simply did not need rebuilding -- it deletes
+  live dependencies and the next build recompiles them. Both keep the cache
+  small; only cargo-sweep keeps it *useful*.
+
+  `CARGO_TARGET_MAX_SIZE_MB` caps the tree after the sweep, defaulting to 4096
+  (4GB) locally and to no ceiling on CI, where the runner is billed for the
+  rebuild rather than the disk.
+
 - Write tests for all new features
 - Maintain or improve test coverage — this is enforced, not requested. CI
   measures two separate denominators, Rust and browser, against the reviewed

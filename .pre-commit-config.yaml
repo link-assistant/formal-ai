@@ -26,9 +26,26 @@ repos:
         types: [rust]
         pass_filenames: false
 
+      # The wrapper, not a bare `cargo test`: it caps parallelism at half the
+      # cores so a commit does not pin the whole machine, and prunes `target/`
+      # afterwards. A bare `cargo test` does neither.
       - id: cargo-test
         name: cargo test
-        entry: cargo test
+        entry: scripts/cargo-test.sh
         language: system
         types: [rust]
+        pass_filenames: false
+
+      # Every commit ends with a swept cache. `cargo-test.sh` already prunes
+      # after a Rust commit, but a commit that touches no `.rs` file never runs
+      # it -- and `target/` still holds whatever the last build left behind.
+      # `always_run` makes the cache shrink on *every* commit, which is the
+      # point: disk is reclaimed as a matter of course rather than when someone
+      # remembers. Keeping the artifacts the last build referenced means the
+      # next build still links instead of starting cold.
+      - id: prune-build-cache
+        name: prune build cache
+        entry: scripts/prune-build-cache.sh
+        language: system
+        always_run: true
         pass_filenames: false
