@@ -129,7 +129,19 @@ fn full_test_matrix_runs_on_a_supported_macos_image() {
         longest_cap >= 25,
         "the archive build needs at least 25 minutes (issue #961); found {longest_cap}"
     );
-    assert!(MACOS_CORE_WORKFLOW.contains("TEST_BUDGET_SECONDS: 1200"));
+    // Issue #1055: a floor, for the reason the comment above gives -- pinning
+    // the exact number is what broke this when the budget grew from 1200s to
+    // 1400s to absorb a cold rebuild after a profile change.
+    let archive_budget = MACOS_CORE_WORKFLOW
+        .split("TEST_BUDGET_SECONDS: ")
+        .skip(1)
+        .filter_map(|rest| rest.split('\n').next()?.trim().parse::<u64>().ok())
+        .max()
+        .expect("the macOS core workflow must budget its archive build");
+    assert!(
+        archive_budget >= 1200,
+        "the archive build needs at least 1200s (issue #961); found {archive_budget}"
+    );
     assert!(MACOS_CORE_WORKFLOW.contains("taiki-e/install-action@nextest"));
     assert_eq!(
         MACOS_CORE_WORKFLOW.matches("cargo nextest archive").count(),
