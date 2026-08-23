@@ -12,7 +12,7 @@
 # `ubuntu-latest` builds it and `konard/box-dind:2.1.1` runs it.
 ARG BINARY_SOURCE=compile
 
-FROM rust:1.96-slim AS compile-binary
+FROM rust:1.96-slim AS builder
 
 WORKDIR /app
 RUN apt-get update && \
@@ -42,6 +42,11 @@ RUN mkdir -p src tests/unit tests/integration && \
 # Only this layer is invalidated by a source edit.
 COPY . .
 RUN cargo build --release --locked --bins
+
+# `builder` under the name `BINARY_SOURCE` selects, so the historical stage name
+# stays what it has always been -- `docker_runtime` pins it, and renaming a
+# stage to satisfy a build argument would be the tail wagging the dog.
+FROM builder AS compile-binary
 
 # The prebuilt path: no toolchain, no compilation, just the artifact the
 # pipeline already produced and tested.

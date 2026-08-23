@@ -1,4 +1,10 @@
+# `target/` is excluded so a local tree of build artifacts -- gigabytes of it --
+# never enters the build context. Issue #1051 needs one file back out of it:
+# `BINARY_SOURCE=prebuilt` copies the release binary the pipeline already built
+# instead of compiling it a second time inside BuildKit. The exception is the
+# single file, not the directory, so nothing else follows it in.
 target
+!target/release/formal-ai
 .git
 ci-logs
 docs/screenshots

@@ -106,6 +106,36 @@ fn published_images_are_still_built_from_source() {
     }
 }
 
+/// The prebuilt binary can actually reach the build context.
+///
+/// `.dockerignore` excludes `target`, which is right -- a local tree of build
+/// artifacts is gigabytes and must never be uploaded. But it also blocked the
+/// one file the prebuilt path needs, and the failure is not obvious from the
+/// message `BuildKit` prints:
+///
+/// ```text
+/// failed to compute cache key: "/target/release/formal-ai": not found
+/// ```
+///
+/// Verified against real Docker that the exception re-includes that single file
+/// and nothing else: a context with `target/debug/junk` alongside it copies
+/// only `release/formal-ai`.
+#[test]
+fn the_prebuilt_binary_is_not_excluded_from_the_build_context() {
+    let ignore = repository_file(".dockerignore");
+
+    assert!(
+        ignore.contains("target"),
+        "`target/` must stay excluded; it is gigabytes of build artifacts"
+    );
+    assert!(
+        ignore.contains("!target/release/formal-ai"),
+        "the prebuilt path copies exactly this file, so it needs an exception \
+         -- without it the image build fails with a `not found` that reads like \
+         a Dockerfile bug rather than an ignore rule"
+    );
+}
+
 /// The Dockerfile still knows how to build from source.
 #[test]
 fn the_dockerfile_keeps_a_from_source_path() {
