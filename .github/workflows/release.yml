@@ -378,10 +378,16 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Test suite" \
             cargo test --lib --bins --tests --all-features --verbose -- \
             --skip data_files:: --skip self_ast_census --skip specification::
+      # Issue #1053 raised this from 1200s. Changing `[profile.test]` gives
+      # sccache a new key space, so the first run after it compiles all 512
+      # crates cold -- that run reported an 18.29% Rust hit rate against the
+      # usual 79.57% and was killed mid-compile at 1201s, before a single test
+      # ran. 1400s covers a cold rebuild and stays at 66% of the 35m cap, inside
+      # the 70% the budget-share gate allows. Warm, this lane needed 689s.
       - name: Run specification tests
         if: matrix.test-suite == 'specification'
         env:
-          TEST_BUDGET_SECONDS: 1200
+          TEST_BUDGET_SECONDS: 1400
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \
