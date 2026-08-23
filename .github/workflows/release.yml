@@ -80,7 +80,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-changelog
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes]
+    needs: [detect-changes, build-box-language-binary]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v6
@@ -129,12 +129,13 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes]
+    needs: [detect-changes, build-box-language-binary]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v6
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
+      - uses: ./.github/actions/download-formal-ai-binary
       - name: Set up Docker Buildx
         uses: ./.github/actions/setup-buildx-resilient
       - name: Build image
@@ -144,6 +145,9 @@ jobs:
           push: false
           load: true
           tags: formal-ai:pr-check
+          # Publish jobs keep the default `compile`, so what ships is still
+          # built from source (issue #1051).
+          build-args: BINARY_SOURCE=prebuilt
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Verify image runtime contract
@@ -945,7 +949,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 32
-    needs: [detect-changes]
+    needs: [detect-changes, build-box-language-binary]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -991,9 +995,7 @@ jobs:
           # its first-run trust dialog (https://github.com/openai/codex/issues/39487).
           # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.238 @openai/codex@0.147.0 @google/gemini-cli@0.56.0
-      # Issue #1043: run, never shipped; LTO costs 536s for unmeasured speed.
-      - name: Build formal-ai (release)
-        run: CARGO_PROFILE_RELEASE_LTO=false CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16 cargo build --release --bin formal-ai
+      - uses: ./.github/actions/download-formal-ai-binary
       - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
         timeout-minutes: 5
         env: { PORT: 8896 }
@@ -1241,7 +1243,7 @@ jobs:
   # errors across those legs; the available logs do not include backend error
   # details, so opt-in diagnostics live in the shared sccache setup action.
   build-box-language-binary:
-    name: Build Box Language Binary
+    name: Build formal-ai release binary
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build-box-language-binary
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -1273,12 +1275,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-box-language-
             ${{ runner.os }}-cargo-
-      - name: Build formal-ai (release)  # issue #1043: see the E2E job above
+      # Issue #1051: the one release build; everything else downloads it below.
+      - name: Build formal-ai (release)
         run: CARGO_PROFILE_RELEASE_LTO=false CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16 cargo build --release --bin formal-ai
       - name: Upload formal-ai binary
         uses: actions/upload-artifact@v7
         with:
-          name: formal-ai-box-language-binary
+          name: formal-ai-release-binary
           path: target/release/formal-ai
           retention-days: 1
 
@@ -1314,16 +1317,7 @@ jobs:
       # even after the shared host binary no longer has to compile here.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
-      - name: Download formal-ai binary
-        uses: actions/download-artifact@v8
-        env:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
-        with:
-          name: formal-ai-box-language-binary
-          path: target/release
-      - name: Make formal-ai executable
-        run: chmod +x target/release/formal-ai
+      - uses: ./.github/actions/download-formal-ai-binary
       - name: Generate the ${{ matrix.language }} project from Formal-AI answers
         run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
       - name: Build and run it inside its link-foundation/box image
