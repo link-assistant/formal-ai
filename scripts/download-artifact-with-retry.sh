@@ -90,8 +90,17 @@ done
 # an attempt that stalls in both spends the sum. Counting only the download
 # would understate the worst case and let the job cap expire first, which
 # reports as `cancelled` rather than `failure`: exactly what this prevents.
-worst_case=$((attempts * (attempt_seconds + lookup_seconds) \
-  + (attempts - 1) * retry_delay_seconds))
+# The delays double, so their total is `delay * (2^(attempts-1) - 1)`, not
+# `delay * (attempts - 1)`. Counting the flat sum would understate the worst
+# case and let the job cap expire first -- reported as `cancelled`, which is
+# the issue #1017 failure this guard exists to prevent.
+backoff_total=0
+backoff_step=$retry_delay_seconds
+for ((backoff_index = 1; backoff_index < attempts; backoff_index++)); do
+  backoff_total=$((backoff_total + backoff_step))
+  backoff_step=$((backoff_step * 2))
+done
+worst_case=$((attempts * (attempt_seconds + lookup_seconds) + backoff_total))
 if [ -n "$budget_seconds" ] && [ "$worst_case" -gt "$budget_seconds" ]; then
   echo "::error title=artifact download retry cannot finish inside its budget::\
 ${attempts} attempts of ${attempt_seconds}s plus ${retry_delay_seconds}s delays \
@@ -149,7 +158,15 @@ deadline. Exit 124 is the deadline itself -- storage stalled, transient and \
 upstream; anything else is the CLI's own status." >&2
 
   [ "$attempt" -lt "$attempts" ] || break
+
+  # Back off further each time. A transfer that hit the deadline was not slow,
+  # it was stuck: run 32601998... had seven slices finish in 20-77s while one
+  # spent three full 165s attempts and never completed a byte. Retrying at a
+  # fixed interval keeps meeting the same bad minute, so each wait doubles --
+  # 15s, 30s, 60s -- to give the backend time to move the blob somewhere
+  # healthy. The wrapper's budget guard already accounts for the total.
   sleep "$retry_delay_seconds"
+  retry_delay_seconds=$((retry_delay_seconds * 2))
 done
 
 echo "::error title=artifact ${artifact_prefix} could not be downloaded::\

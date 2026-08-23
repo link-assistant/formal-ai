@@ -104,8 +104,14 @@ fn the_download_retry_is_bounded_to_fit_the_job_cap() {
     // and then downloads it, so an attempt that stalls in both spends the sum
     // -- counting only the download halves the worst case on paper and lets the
     // job cap expire first, which reports as `cancelled` rather than `failure`.
-    let worst_case =
-        attempts * (attempt_seconds + lookup_seconds) + attempts.saturating_sub(1) * delay_seconds;
+    // The delays double between attempts (issue #1051): a transfer that hit the
+    // deadline was stuck, not slow, so retrying at a fixed interval keeps
+    // meeting the same bad minute. Their total is therefore geometric, and
+    // counting the flat sum would understate the worst case.
+    let backoff: u64 = (0..attempts.saturating_sub(1))
+        .map(|step| delay_seconds * 2u64.pow(u32::try_from(step).unwrap_or(0)))
+        .sum();
+    let worst_case = attempts * (attempt_seconds + lookup_seconds) + backoff;
     assert!(
         worst_case <= budget_seconds,
         "the download retry's worst case is {worst_case}s ({attempts} attempts \

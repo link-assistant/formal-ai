@@ -199,7 +199,7 @@ jobs:
       - name: Download macOS test archive
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_BUDGET_SECONDS: 575
+          TEST_BUDGET_SECONDS: 590
           FORMAL_AI_DOWNLOAD_ATTEMPTS: 3
           FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS: 165
           FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS: 15
