@@ -360,7 +360,10 @@ jobs:
       - name: Check self-AST census freshness
         if: matrix.test-suite == 'full'
         run: cargo test --test unit self_ast_census -- --nocapture
-      # Issue #1055: built once above; this only runs them.
+      # Issue #1055: built once above; this only runs them. The binary comes
+      # too, because `CARGO_BIN_EXE_formal-ai` bakes `target/release/formal-ai`
+      # into each executable at compile time -- 109 call sites across 36 test
+      # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
         if: matrix.test-suite == 'full'
         uses: actions/download-artifact@v8
@@ -369,6 +372,8 @@ jobs:
         with:
           name: formal-ai-test-executables
           path: dist/tests
+      - uses: ./.github/actions/download-formal-ai-binary
+        if: matrix.test-suite == 'full'
       - name: Run tests
         if: matrix.test-suite == 'full'
         env:

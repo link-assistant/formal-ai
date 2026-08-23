@@ -107,6 +107,26 @@ fn one_job_builds_and_the_rest_download() {
     }
 }
 
+/// The test lane gets the binary as well as the executables.
+///
+/// `CARGO_BIN_EXE_formal-ai` is resolved when a test is *compiled*, and it
+/// expands to `target/release/formal-ai` -- a path baked into every executable
+/// that spawns the CLI, which 109 call sites across 36 test files do. Shipping
+/// the executables without the binary makes all of those fail with
+/// `NotFound`, and the message names the CLI rather than the missing artifact,
+/// so the cause is not obvious from the failure.
+#[test]
+fn the_test_lane_downloads_the_binary_its_executables_expect() {
+    let workflow = release_workflow();
+    let job = super::workflow_fixtures::job_block(&workflow, "test");
+
+    assert!(
+        job.contains("download-formal-ai-binary"),
+        "the executables spawn `target/release/formal-ai` by a path fixed at \
+         compile time, so that file has to be present here too"
+    );
+}
+
 /// Consumers declare the dependency that makes the artifact exist.
 ///
 /// A job that downloads an artifact without depending on its producer is a
