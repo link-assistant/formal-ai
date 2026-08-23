@@ -442,17 +442,13 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
-    // Issue #1055: the skips live in `scripts/run-prebuilt-tests.sh` now, which
-    // the full lane invokes; the invariant they encode is unchanged.
-    let runner = fs::read_to_string(format!(
-        "{}/scripts/run-prebuilt-tests.sh",
-        env!("CARGO_MANIFEST_DIR")
+    // Issue #1055 moved the skip flags into the runner script the lane invokes.
+    let runner = fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/scripts/run-prebuilt-tests.sh"
     ))
-    .expect("read scripts/run-prebuilt-tests.sh");
-    assert!(
-        full_suite.contains("run-prebuilt-tests.sh"),
-        "the full suite runs the prebuilt executables through the shared runner"
-    );
+    .expect("read the runner");
+    assert!(full_suite.contains("run-prebuilt-tests.sh"));
     assert!(
         runner.contains("--skip data_files::") && runner.contains("--skip self_ast_census"),
         "the full suite must skip integrity groups already exercised by their focused gates"
