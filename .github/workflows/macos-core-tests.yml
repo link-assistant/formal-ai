@@ -35,7 +35,15 @@ jobs:
     # an overrun reports as a cancelled job instead of a failed one, so the job
     # cap stays at least a third above the budget it guards.
     # Worst observed on main: 629s (run 31937348472).
-    timeout-minutes: 30
+    #
+    # Issue #1055 raised both. Changing `[profile.release]` gives sccache a new
+    # key space, so the first run after it compiles cold -- this job reported a
+    # 40% hit rate (615 misses) and was killed at 1202s of its 1200s budget,
+    # before the archive existed. 1400s covers that, and the cap moves to 35m so
+    # the budget stays at 66% of it rather than the 77% a 30m cap would give --
+    # `issue_1017`'s gate allows 70%, and the margin pays for checkout and
+    # toolchain setup outside the budgeted step.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v6
         with:
@@ -64,7 +72,7 @@ jobs:
             ${{ runner.os }}-cargo-
       - name: Build one portable nextest archive
         env:
-          TEST_BUDGET_SECONDS: 1200
+          TEST_BUDGET_SECONDS: 1400
           TEST_WARN_RATIO_PERCENT: 80
         run: |
           mkdir -p "$RUNNER_TEMP/macos-core-tests"

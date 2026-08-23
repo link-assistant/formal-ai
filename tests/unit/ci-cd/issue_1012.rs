@@ -39,7 +39,10 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     }
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
     assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
-    assert!(macos.contains("timeout-minutes: 30"));
+    // Issue #1055 raised the archive cap 30m -> 35m so its budget could grow to
+    // 1400s for a cold rebuild while staying at 66% of the cap; issue #1017's
+    // gate allows 70%.
+    assert!(macos.contains("timeout-minutes: 35"));
     // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
     // retrying artifact download. `issue_1039::the_download_retry_is_bounded_to
     // _fit_the_job_cap` checks the arithmetic that justifies it, so this only

@@ -28,7 +28,8 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     assert!(test.contains("test-suite: specification"));
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-    assert!(macos.contains("timeout-minutes: 30"));
+    // Issue #1055 raised the archive cap to 35m; see issue_1012 for the math.
+    assert!(macos.contains("timeout-minutes: 35"));
     assert!(macos.contains("cargo nextest archive"));
     assert!(macos.contains("cargo nextest run --archive-file"));
     assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));

@@ -125,6 +125,18 @@ fn the_test_lane_downloads_the_binary_its_executables_expect() {
         "the executables spawn `target/release/formal-ai` by a path fixed at \
          compile time, so that file has to be present here too"
     );
+
+    // Every binary, not one by name. `src/bin/with-formal-ai.rs` is
+    // auto-discovered by cargo rather than declared in Cargo.toml, so a
+    // hardcoded copy of `formal-ai` alone silently omitted it and
+    // `with_formal_ai::standalone_with_formal_ai_binary_uses_same_wrapper`
+    // failed pointing at a file the artifact never carried.
+    let collector = repository_file("scripts/collect-build-artifacts.sh");
+    assert!(
+        !collector.contains("cp target/release/formal-ai "),
+        "collect every binary `--bins` produced; naming one leaves the next \
+         auto-discovered binary out of the artifact"
+    );
 }
 
 /// Consumers declare the dependency that makes the artifact exist.

@@ -1274,11 +1274,11 @@ jobs:
         run: cargo test --release --no-run --bins --tests --all-features
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
-      - name: Upload formal-ai binary
+      - name: Upload formal-ai binaries
         uses: actions/upload-artifact@v7
         with:
           name: formal-ai-release-binary
-          path: dist/formal-ai
+          path: dist/*
           retention-days: 1
       - name: Upload test executables
         uses: actions/upload-artifact@v7

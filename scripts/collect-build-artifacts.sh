@@ -26,7 +26,14 @@ for target in unit integration source; do
   cp "$newest" "$destination/tests/$target"
 done
 
-cp target/release/formal-ai "$destination/formal-ai"
+# Every binary, not just `formal-ai`. `src/bin/with-formal-ai.rs` is
+# auto-discovered by cargo rather than declared in Cargo.toml, and
+# `tests/integration/with_formal_ai.rs` spawns it through
+# `CARGO_BIN_EXE_with-formal-ai` -- so collecting one binary by name left that
+# test pointing at a file the artifact never carried. Copying what `--bins`
+# actually produced means a new binary is picked up without editing this list.
+find target/release -maxdepth 1 -type f -perm -u+x ! -name "*.d" \
+  -exec cp {} "$destination/" ";"
 
 collected=$(find "$destination/tests" -maxdepth 1 -type f | wc -l | tr -d ' ')
 printf 'collected %s test executables and the release binary into %s/\n' \
