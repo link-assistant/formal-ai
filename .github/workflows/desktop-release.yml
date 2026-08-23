@@ -324,12 +324,20 @@ jobs:
             echo "mode=signed" >> "$GITHUB_OUTPUT"
           fi
 
+      # Issue #1055: through the retry wrapper, like the macOS legs. The
+      # toolset download electron-builder makes is the same on every platform,
+      # and `Build windows-x64` failed on `read ECONNRESET` mid-download while
+      # the previous run of that job, on the same branch, had succeeded.
       - name: Package desktop app (Linux/Windows)
         if: matrix.ebflag != '--mac'
         working-directory: desktop
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+          # Issue #1017's rule applies here too: without the deadline a retry
+          # can outlive the job clock, and GitHub reports that kill as
+          # `cancelled` rather than `failure`.
+          FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
+        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
 
       - name: Package desktop app (macOS signed)
         if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets == 'true'

@@ -40,6 +40,13 @@ readonly transient_signatures=(
   'hdiutil: (create|attach) failed - (Device not configured|Resource busy|No child processes)'
   # got's request timeout inside electron-builder's toolset download (#1017).
   "Timeout awaiting 'request' for [0-9]+ms"
+  # Issue #1055: the same download, dropped mid-stream instead of stalling.
+  # `Build windows-x64` failed with `⨯ read ECONNRESET failedTask=build` while
+  # signtool.exe fetched its toolset, on a commit whose previous run of the same
+  # job on the same branch had succeeded. A reset carries no status and is not a
+  # signing or dependency error, so it belongs here rather than failing outright.
+  'read ECONNRESET'
+  'connect ETIMEDOUT'
 )
 
 if ! [[ "$retry_delay_seconds" =~ ^[0-9]+$ ]]; then

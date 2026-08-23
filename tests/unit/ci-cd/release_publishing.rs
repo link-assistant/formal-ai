@@ -571,9 +571,23 @@ fn desktop_release_lets_electron_builder_read_package_json_build_key() {
     ))
     .unwrap();
 
+    // Issue #1055 routed every packaging leg through the retry wrapper, so the
+    // invocation moved there. What matters is unchanged: electron-builder is
+    // called without `--config`, so it reads the `build` key from package.json.
+    let wrapper = fs::read_to_string(format!(
+        "{}/desktop/scripts/package-macos-with-retry.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
     assert!(
-        workflow.contains("npx --no-install electron-builder ${{ matrix.ebflag }} --publish never"),
-        "desktop release workflow should invoke electron-builder without passing package.json as a config file"
+        workflow.contains(
+            "bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never"
+        ),
+        "desktop release workflow should package through the retry wrapper"
+    );
+    assert!(
+        wrapper.contains("npx --no-install electron-builder \"$@\""),
+        "the wrapper should invoke electron-builder without passing package.json as a config file"
     );
     assert!(
         !workflow.contains("--config package.json"),

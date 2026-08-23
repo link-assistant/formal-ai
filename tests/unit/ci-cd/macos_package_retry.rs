@@ -447,3 +447,44 @@ fn persistent_hdiutil_failure_stops_after_three_attempts() {
     );
     assert_eq!(count, "3", "the retry must remain bounded");
 }
+
+/// Every packaging leg retries, not only the macOS ones.
+///
+/// Issue #1055: `Build windows-x64` failed with `⨯ read ECONNRESET
+/// failedTask=build` while signtool fetched electron-builder's toolset, on a
+/// branch whose previous run of that same job had succeeded. The Linux and
+/// Windows legs called `electron-builder` directly while the macOS legs went
+/// through this wrapper -- but the download that failed is the one every
+/// platform makes, and the wrapper already listed its stalling cousin,
+/// `Timeout awaiting 'request'`, as transient.
+#[test]
+fn every_packaging_leg_goes_through_the_retry_wrapper() {
+    let workflow = fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/.github/workflows/desktop-release.yml"
+    ))
+    .expect("read the desktop release workflow");
+
+    for step in workflow.split("\n      - name: ") {
+        let name = step.lines().next().unwrap_or_default();
+        if !name.starts_with("Package desktop app") {
+            continue;
+        }
+        assert!(
+            step.contains("package-macos-with-retry.sh"),
+            "`{name}` calls electron-builder directly, so a dropped toolset \
+             download fails the job outright. Step:\n{step}"
+        );
+    }
+
+    let wrapper = fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/desktop/scripts/package-macos-with-retry.sh"
+    ))
+    .expect("read the packaging retry wrapper");
+    assert!(
+        wrapper.contains("read ECONNRESET"),
+        "a connection reset mid-download is transient and carries no status, \
+         so it has to be named explicitly to be retried"
+    );
+}
