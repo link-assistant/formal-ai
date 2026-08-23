@@ -62,8 +62,20 @@ fn the_full_test_lane_skips_the_specification_shard() {
         .next()
         .expect("the step body ends at the next step");
 
+    // Issue #1055 moved the skip flags into `scripts/run-prebuilt-tests.sh`,
+    // which the step invokes. The rule is unchanged: the full lane must not
+    // re-run what the specification lane owns.
+    let runner = fs::read_to_string(format!(
+        "{}/scripts/run-prebuilt-tests.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("read scripts/run-prebuilt-tests.sh");
     assert!(
-        step.contains("--skip specification::"),
+        step.contains("run-prebuilt-tests.sh"),
+        "the full lane runs the prebuilt executables through the shared runner"
+    );
+    assert!(
+        runner.contains("--skip specification::"),
         "the `full` lane must skip `specification::`; the `specification` lane \
          already runs those tests, and running them twice put ~4 minutes of \
          duplicate work on the pipeline's critical path. Step body:\n{step}"

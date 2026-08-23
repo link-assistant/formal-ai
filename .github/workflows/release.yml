@@ -80,7 +80,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-changelog
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes, build-box-language-binary]
+    needs: [detect-changes, build-artifacts]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v6
@@ -129,7 +129,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes, build-box-language-binary]
+    needs: [detect-changes, build-artifacts]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v6
@@ -259,15 +259,7 @@ jobs:
           bun-version-file: .bun-version
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-      - name: Cache cargo registry
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+      - uses: ./.github/actions/cache-cargo-registry
       - name: Lint GitHub Actions workflows
         env:
           ACTIONLINT_VERSION: 1.7.12
@@ -319,7 +311,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes, base]
+    needs: [detect-changes, base, build-artifacts]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -368,22 +360,27 @@ jobs:
       - name: Check self-AST census freshness
         if: matrix.test-suite == 'full'
         run: cargo test --test unit self_ast_census -- --nocapture
+      # Issue #1055: built once above; this only runs them.
+      - name: Download test executables
+        if: matrix.test-suite == 'full'
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: formal-ai-test-executables
+          path: dist/tests
       - name: Run tests
         if: matrix.test-suite == 'full'
         env:
           TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
+          chmod +x dist/tests/*
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Test suite" \
-            cargo test --lib --bins --tests --all-features --verbose -- \
-            --skip data_files:: --skip self_ast_census --skip specification::
-      # Issue #1053 raised this from 1200s. Changing `[profile.test]` gives
-      # sccache a new key space, so the first run after it compiles all 512
-      # crates cold -- that run reported an 18.29% Rust hit rate against the
-      # usual 79.57% and was killed mid-compile at 1201s, before a single test
-      # ran. 1400s covers a cold rebuild and stays at 66% of the 35m cap, inside
-      # the 70% the budget-share gate allows. Warm, this lane needed 689s.
+            bash scripts/run-prebuilt-tests.sh
+      # Issue #1053: 1400s covers a cold rebuild after a profile change, and
+      # stays at 66% of the 35m cap, inside the 70% the budget gate allows.
       - name: Run specification tests
         if: matrix.test-suite == 'specification'
         env:
@@ -426,7 +423,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [lint, test, macos-core-tests]
+    needs: [lint, test, macos-core-tests, build-artifacts]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && needs.macos-core-tests.result == 'success' }}
     steps:
       - uses: actions/checkout@v6
@@ -444,8 +441,8 @@ jobs:
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-build-
-      - name: Build release
-        run: cargo build --release --verbose
+      # Issue #1055: the binary exists; packaging needs no rebuild.
+      - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
         run: cargo package --list --allow-dirty
       - name: Check crate package size
@@ -955,7 +952,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 32
-    needs: [detect-changes, build-box-language-binary]
+    needs: [detect-changes, build-artifacts]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -971,16 +968,9 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
-      - name: Cache cargo registry
-        uses: actions/cache@v5
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-agentcli-e2e-
-            ${{ runner.os }}-cargo-
+          prefix: agentcli-e2e-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -1248,10 +1238,10 @@ jobs:
   # compiled the same Linux binary seven times and reported 1,131 cache write
   # errors across those legs; the available logs do not include backend error
   # details, so opt-in diagnostics live in the shared sccache setup action.
-  build-box-language-binary:
-    name: Build formal-ai release binary
+  build-artifacts:
+    name: Build binaries and tests
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-build-box-language-binary
+      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -1271,24 +1261,25 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
-      - name: Cache cargo registry
-        uses: actions/cache@v5
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-box-language-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-box-language-
-            ${{ runner.os }}-cargo-
-      # Issue #1051: the one release build; everything else downloads it below.
-      - name: Build formal-ai (release)
-        run: CARGO_PROFILE_RELEASE_LTO=false CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16 cargo build --release --bin formal-ai
+          prefix: artifacts-
+      # Issue #1055: one compile per platform; consumers download the results.
+      - name: Build binaries and test executables
+        run: cargo test --release --no-run --bins --tests --all-features
+      - name: Collect the build artifacts
+        run: bash scripts/collect-build-artifacts.sh
       - name: Upload formal-ai binary
         uses: actions/upload-artifact@v7
         with:
           name: formal-ai-release-binary
-          path: target/release/formal-ai
+          path: dist/formal-ai
+          retention-days: 1
+      - name: Upload test executables
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-test-executables
+          path: dist/tests
           retention-days: 1
 
   # Issue #932 (follow-up of PR #119): a generated project for a language is
@@ -1302,7 +1293,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [detect-changes, build-box-language-binary]
+    needs: [detect-changes, build-artifacts]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -1499,7 +1490,7 @@ jobs:
     needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
             version-check, base, lint, test, macos-core-tests, build, auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
-            build-box-language-binary, box-language-projects, deploy-pages,
+            build-artifacts, box-language-projects, deploy-pages,
             test-e2e-pages]
     steps:
       - uses: actions/checkout@v6

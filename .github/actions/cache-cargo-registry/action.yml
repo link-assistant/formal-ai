@@ -1,0 +1,23 @@
+name: Cache the cargo registry
+description: >-
+  Restore `~/.cargo/registry` and `~/.cargo/git`, keyed on Cargo.lock. Issue
+  #1055 collapsed seven near-identical copies of this block into one action:
+  they differed only in a key prefix, and `release.yml` sits against the
+  line-count band that issue #999 enforces.
+inputs:
+  prefix:
+    description: Extra key segment, so a job with a distinct dependency set does not evict another's entry.
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v5
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+        key: ${{ runner.os }}-cargo-${{ inputs.prefix }}${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-${{ inputs.prefix }}
+          ${{ runner.os }}-cargo-

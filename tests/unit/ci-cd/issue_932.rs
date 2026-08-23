@@ -104,7 +104,7 @@ fn the_leg_is_gated_like_the_other_slow_legs() {
     let workflow = release_workflow();
     let job = job_block(&workflow, JOB);
 
-    assert!(job.contains("needs: [detect-changes, build-box-language-binary]"));
+    assert!(job.contains("needs: [detect-changes, build-artifacts]"));
     assert!(job.contains("timeout-minutes: 30"));
     assert!(job.contains("cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}"));
     for gate in [
