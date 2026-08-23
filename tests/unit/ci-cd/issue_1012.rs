@@ -97,10 +97,11 @@ fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
     // uses the action at all and is not listed here. The rule this test pins is
     // "every v8 step suppresses DEP0005", not "every workflow has a v8 step" --
     // a workflow that stops using the action cannot regress the warning.
+    // `release.yml` no longer names the action directly: issue #1051 moved its
+    // downloads into a composite action, which the sweep below still covers.
     for path in [
         ".github/workflows/agentic-cli-matrix.yml",
         ".github/workflows/desktop-release.yml",
-        ".github/workflows/release.yml",
     ] {
         let workflow = repository_file(path);
         let steps = action_step(&workflow, "actions/download-artifact@v8");
@@ -190,7 +191,10 @@ fn box_language_matrix_reuses_one_release_binary() {
     assert!(build.contains("cargo build --release --bin formal-ai"));
     assert!(build.contains("actions/upload-artifact@v7"));
     assert!(matrix.contains("needs: [detect-changes, build-box-language-binary]"));
-    assert!(matrix.contains("actions/download-artifact@v8"));
+    // Issue #1051 moved the download into `.github/actions/download-formal-ai-binary`
+    // so the four consumers share one definition; what matters here is still
+    // that the matrix *downloads* the binary rather than rebuilding it.
+    assert!(matrix.contains("uses: ./.github/actions/download-formal-ai-binary"));
     assert!(!matrix.contains("actions/cache@v5"));
     assert!(!matrix.contains("cargo build --release --bin formal-ai"));
 }
