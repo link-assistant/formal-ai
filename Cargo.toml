@@ -128,6 +128,20 @@ incremental = false
 [profile.test]
 debug = 0
 incremental = false
+# Issue #1053: the slow tests here are pure in-process computation -- the seven
+# that exceed 60s spawn no subprocesses at all -- so running them unoptimized
+# spends most of their time in code the compiler would have folded away.
+# Measured on `installation_conversion::popular_github_projects_route_through_
+# install_conversion`: 52.86s at opt-level 0 against 9.34s at 2, a 5.7x
+# difference, for +40s of one-time compilation per job.
+#
+# `debug-assertions` and `overflow-checks` stay on deliberately. They are
+# independent of `opt-level`, and turning them off would change what the tests
+# actually check: `debug_assert!` appears in `src/` and an arithmetic overflow
+# must keep panicking here rather than wrapping silently.
+opt-level = 2
+debug-assertions = true
+overflow-checks = true
 
 [profile.release]
 lto = true
