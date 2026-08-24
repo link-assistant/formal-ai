@@ -70,7 +70,6 @@ mod issue_595;
 mod issue_682;
 mod issue_892;
 mod issue_893_summarization_validation;
-mod issue_1028_binary_decomposition;
 mod links_network;
 mod links_network_terminology_meta_algorithm;
 mod market_price_verification_meta_algorithm;
