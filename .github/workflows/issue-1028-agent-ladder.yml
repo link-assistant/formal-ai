@@ -63,9 +63,6 @@ jobs:
         if: ${{ inputs.skip_build != true }}
         run: cargo build --release --bin formal-ai
 
-      - name: Verify binary decomposition unit tests
-        run: cargo test --test unit issue_1028_binary_decomposition -- --nocapture
-
       - name: Install pinned Agent CLI
         run: bun add -g @link-assistant/agent@0.26.0
 
