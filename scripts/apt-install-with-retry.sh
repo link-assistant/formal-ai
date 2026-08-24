@@ -16,7 +16,7 @@
 # TEST_BUDGET_SECONDS is set, deadlines grow geometrically across attempts so
 # the first probe is cheap and the last attempt receives the largest share of
 # the remaining time. With the default 300s/3-attempt shape and 5s delays this
-# produces 41s / 82s / 167s rather than repeating 90s / 90s / 90s.
+# produces 41s / 83s / 166s rather than repeating 90s / 90s / 90s.
 #
 # Usage: apt-install-with-retry.sh <package> [package...]
 #
@@ -127,7 +127,7 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
 
   status=0
   "${attempt_command[@]}" || status=$?
-  elapsed=$((SECONDS - started))
+  elapsed=$((SECONDS - started)
 
   if [ "$status" -eq 0 ]; then
     printf 'apt install of %s succeeded on attempt %s/%s after %ss.\n' \
