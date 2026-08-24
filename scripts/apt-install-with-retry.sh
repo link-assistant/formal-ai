@@ -31,11 +31,6 @@
 #                                   when already root, as tests are
 set -euo pipefail
 
-# The per-attempt deadline is `scripts/run-with-deadline.sh`, not GNU `timeout`:
-# macOS ships no `timeout`, so the tests that drive this wrapper on the macOS
-# core slices died with `timeout: command not found` while the Linux job it
-# ships on passed (issue #1021, run 32282461075). An absolute path because
-# `sudo` resets PATH to its own secure_path.
 script_directory=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 deadline="$script_directory/run-with-deadline.sh"
 
@@ -89,10 +84,6 @@ else
   weight_sum=""
 fi
 
-# Without a step budget, preserve the historical fixed-deadline behavior because
-# the enclosing budget is unknown. With a budget, the planned deadlines plus
-# the retry delays consume exactly that budget, so the last attempt is never
-# cut short merely because earlier probes used their share.
 status=0
 previous_deadline=0
 weight=1
@@ -100,8 +91,6 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
   started=$SECONDS
 
   if [ -n "$budget_seconds" ]; then
-    # floor(available * (2^attempt - 1) / (2^attempts - 1)) minus the previous
-    # cumulative floor gives this attempt's exact integer share.
     cumulative_weight=$((weight * 2 - 1))
     cumulative_deadline=$((available_attempt_seconds * cumulative_weight / weight_sum))
     attempt_deadline=$((cumulative_deadline - previous_deadline))
@@ -111,11 +100,9 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
     attempt_deadline="$attempt_seconds"
   fi
 
-  # The deadline runs *inside* the privilege escalation so it signals apt-get
-  # itself; killing an unprivileged parent would leave root's apt holding the
-  # dpkg lock and fail every remaining attempt with a lock error instead of the
-  # stall that caused it. `DPkg::Lock::Timeout` covers the leftovers anyway.
-  # shellcheck disable=SC2016  # `$0`/`$@` are the inner shell's, deliberately
+  # The deadline runs inside the privilege escalation so it signals apt-get
+  # itself; killing an unprivileged parent could leave root's apt holding the
+  # dpkg lock and turn a mirror stall into a lock error on every retry.
   attempt_command=(
     "$deadline" "$attempt_deadline" bash -c '
       set -e
@@ -127,7 +114,7 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
 
   status=0
   "${attempt_command[@]}" || status=$?
-  elapsed=$((SECONDS - started)
+  elapsed=$((SECONDS - started))
 
   if [ "$status" -eq 0 ]; then
     printf 'apt install of %s succeeded on attempt %s/%s after %ss.\n' \
