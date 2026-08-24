@@ -1,0 +1,70 @@
+name: Issue 1028 Agent CLI ladder
+
+on:
+  pull_request:
+    paths:
+      - 'src/task_decomposition/**'
+      - 'src/task_decomposition.rs'
+      - 'data/meta/task-decomposition-invariant.lino'
+      - 'tests/unit/specification/**'
+      - 'scripts/apt-install-with-retry.sh'
+      - 'tests/unit/ci-cd/issue_1021.rs'
+      - 'docs/case-studies/issue-1028/**'
+      - 'experiments/issue_1028_agent_cli_ladder/**'
+      - '.github/workflows/issue-1028-agent-ladder.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ladder:
+    name: 32-leaf Agent CLI temporary-copy ladder
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-issue-1028-agent-ladder-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-issue-1028-agent-ladder-
+            ${{ runner.os }}-cargo-
+
+      - name: Build Formal AI
+        run: cargo build --release --bin formal-ai
+
+      - name: Install pinned Agent CLI
+        run: bun add -g @link-assistant/agent@0.26.0
+
+      - name: Run 32-leaf ladder
+        env:
+          AGENT: agent
+          OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-ladder-run
+          # Web access remains available through the Formal AI server; each
+          # leaf is nevertheless isolated in a fresh repository copy.
+        run: experiments/issue_1028_agent_cli_ladder/run.sh
+
+      - name: Upload ladder evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: issue-1028-agent-cli-ladder
+          path: docs/case-studies/issue-1028/agent-ladder-run
+          retention-days: 14
+          if-no-files-found: warn
