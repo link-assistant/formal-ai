@@ -70,7 +70,8 @@ done
 # rounded deadlines add up exactly to the available time, so the last attempt
 # gets every second not consumed by earlier probes or delays.
 if [ -n "$budget_seconds" ]; then
-  if [ "$budget_seconds" -lt $(( (attempts - 1) * retry_delay_seconds + 1 )) ]; then
+  minimum_budget=$(( (attempts - 1) * retry_delay_seconds + 1 ))
+  if [ "$budget_seconds" -lt "$minimum_budget" ]; then
     echo "::error title=apt install retry has no time for an attempt::\
 ${attempts} attempts need ${retry_delay_seconds}s delays plus at least 1s of \
 execution time, but the step budget is ${budget_seconds}s." >&2
@@ -88,39 +89,24 @@ else
   weight_sum=""
 fi
 
-# The guard issue #1017 pays for: a retry that cannot finish inside the budget
-# above it converts a transient stall into a *terminated* step, which is the
-# failure this wrapper exists to prevent. Without a step budget, preserve the
-# historical fixed-deadline behavior because the enclosing budget is unknown.
-if [ -n "$budget_seconds" ]; then
-  worst_case=$((available_attempt_seconds + (attempts - 1) * retry_delay_seconds))
-else
-  worst_case=$((attempts * attempt_seconds + (attempts - 1) * retry_delay_seconds))
-  if [ "$worst_case" -gt 0 ] && [ -n "${TEST_BUDGET_SECONDS:-}" ] && [ "$worst_case" -gt "$budget_seconds" ]; then
-    echo "::error title=apt install retry cannot finish inside its budget::\
-${attempts} attempts of ${attempt_seconds}s plus ${retry_delay_seconds}s delays \
-need ${worst_case}s, but the step budget is ${budget_seconds}s." >&2
-    exit 2
-  fi
-fi
-
+# Without a step budget, preserve the historical fixed-deadline behavior because
+# the enclosing budget is unknown. With a budget, the planned deadlines plus
+# the retry delays consume exactly that budget, so the last attempt is never
+# cut short merely because earlier probes used their share.
 status=0
 previous_deadline=0
+weight=1
 for ((attempt = 1; attempt <= attempts; attempt++)); do
   started=$SECONDS
 
   if [ -n "$budget_seconds" ]; then
-    # floor(available * 2^attempt / (2^attempts - 1)) minus the previous
+    # floor(available * (2^attempt - 1) / (2^attempts - 1)) minus the previous
     # cumulative floor gives this attempt's exact integer share.
-    cumulative_weight=$((weight_sum - weight))
-    current_weight=$((cumulative_weight + weight))
-    cumulative_deadline=$((available_attempt_seconds * current_weight / weight_sum))
+    cumulative_weight=$((weight * 2 - 1))
+    cumulative_deadline=$((available_attempt_seconds * cumulative_weight / weight_sum))
     attempt_deadline=$((cumulative_deadline - previous_deadline))
     previous_deadline=$cumulative_deadline
-    # `weight` is the next power of two; keep it bounded by the number of
-    # attempts so the multiplication cannot accidentally affect the deadline
-    # after the final iteration.
-    weight=$((weight / 2))
+    weight=$((weight * 2))
   else
     attempt_deadline="$attempt_seconds"
   fi
