@@ -27,25 +27,27 @@ fn seed_array_guard_precedes_expansion() -> bool {
 /// #961's contract -- every supported shard runs -- true at any slice count,
 /// and still catches the failure it was written for: a matrix that disagrees
 /// with the denominator silently drops those tests while CI stays green.
-fn macos_core_slice_denominator() -> usize {
-    MACOS_CORE_WORKFLOW
-        .split("--partition \"slice:${{ matrix.partition }}/")
-        .nth(1)
-        .expect("the slice step must declare a denominator")
-        .split('"')
-        .next()
-        .unwrap()
-        .parse()
-        .expect("numeric slice denominator")
+/// Issue #1059 removed the slice denominator: macOS runs the modules named in
+/// `data/meta/macos-platform-tests.lino` on one runner rather than a shard of
+/// the whole suite. The failure this guarded -- a selection that silently drops
+/// tests while CI stays green -- now takes the shape of an empty module list.
+fn macos_platform_modules() -> usize {
+    std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/data/meta/macos-platform-tests.lino"
+    ))
+    .expect("read the macOS platform test list")
+    .lines()
+    .filter(|line| line.trim().starts_with("module "))
+    .count()
 }
 
 fn supported_macos_test_shards_are_complete() -> bool {
-    let slices = macos_core_slice_denominator();
     RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
-        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == slices
-        && (1..=slices)
-            .all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
+        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 1
+        && macos_platform_modules() >= 5
+        && MACOS_CORE_WORKFLOW.contains("platform.filter")
         && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
 

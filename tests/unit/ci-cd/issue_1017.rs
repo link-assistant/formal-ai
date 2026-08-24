@@ -359,65 +359,36 @@ fn budget_wrapper_heartbeat_is_available_but_off_by_default() {
     );
 }
 
-/// A `slice:` denominator that disagrees with the matrix silently *drops*
-/// tests: at `slice:N/16` with twelve matrix entries, four slices' worth of
-/// tests are never run and CI is green anyway. That is a false negative, not a
-/// timeout, and it is the failure mode a partition-count change invites.
+/// The macOS lane must actually select tests.
+///
+/// Issue #1017 guarded a `slice:` denominator that disagreed with the matrix,
+/// because that silently *drops* tests and leaves CI green anyway. Issue #1059
+/// removed the sharding -- the lane now runs the modules named in
+/// `data/meta/macos-platform-tests.lino` on one runner -- but the failure mode
+/// it guarded against survives in a new shape: an empty or unreadable list
+/// makes the filter match nothing, and a lane that runs no tests passes.
 #[test]
-fn macos_slices_cover_every_partition_of_their_denominator() {
-    let macos = repository_file(".github/workflows/macos-core-tests.yml");
+fn the_macos_lane_selects_a_non_empty_set_of_tests() {
+    let listed = repository_file("data/meta/macos-platform-tests.lino");
 
-    let denominator: usize = macos
-        .split("--partition \"slice:${{ matrix.partition }}/")
-        .nth(1)
-        .expect("the slice step must declare a denominator")
-        .split('"')
-        .next()
-        .unwrap()
-        .parse()
-        .expect("numeric slice denominator");
-
-    let mut partitions: Vec<usize> = macos
-        .split("- { partition: ")
-        .skip(1)
-        .map(|entry| {
-            entry
-                .split(&[' ', '}'][..])
-                .next()
-                .unwrap()
-                .parse()
-                .expect("numeric partition")
-        })
+    let modules: Vec<&str> = listed
+        .lines()
+        .filter_map(|line| line.trim().strip_prefix("module "))
         .collect();
-    partitions.sort_unstable();
 
-    assert_eq!(
-        partitions,
-        (1..=denominator).collect::<Vec<_>>(),
-        "the matrix must list exactly partitions 1..={denominator}; any gap \
-         means those tests never run and CI stays green anyway (issue #1017)"
-    );
-    // Issue #1039 replaced a bare `>= 16` here. The real constraint was never
-    // the count -- it is that the worst slice stays inside its budget, and the
-    // count is only one way to influence that. Measuring the same run the
-    // sixteen-way split produced (32572106023) showed the split had stopped
-    // paying for itself: the macOS pool runs 4-5 slices at a time, so sixteen
-    // delivered 4.3x parallelism while each slice paid ~120s of fixed cost plus
-    // its own copy of a 941MB archive. Because `slice:` partitions round-robin
-    // by test index, halving the count pairs each slow slice with a fast one:
-    // that run's per-slice times recombine to 333s at eight against 256s at
-    // sixteen, both far inside the budget.
-    //
-    // So the floor stays where the incident put it -- high enough that the
-    // worst slice cannot approach its budget -- expressed against the budget
-    // rather than a magic number.
     assert!(
-        denominator >= 8,
-        "run 31937348472 measured a 467s+ test phase on the worst of twelve \
-         round-robin slices; `slice:` balances by test index and never by \
-         duration, so the count has to stay high enough to keep the worst slice \
-         inside its budget. Eight is the measured floor (issue #1039): the \
-         worst slice recombines to 333s of a 600s budget."
+        modules.len() >= 5,
+        "`data/meta/macos-platform-tests.lino` names {} modules. A macOS lane \
+         that runs nothing is worse than no lane: it reports success without \
+         testing the platform it exists for.",
+        modules.len()
+    );
+
+    let macos = repository_file(".github/workflows/macos-core-tests.yml");
+    assert!(
+        macos.contains("platform.filter"),
+        "the lane must consume the planned filter; without it the `-E` \
+         expression is empty and nextest runs the whole archive"
     );
 }
 

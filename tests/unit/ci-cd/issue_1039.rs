@@ -122,7 +122,7 @@ fn the_download_retry_is_bounded_to_fit_the_job_cap() {
     );
 
     let cap_minutes: u64 = workflow
-        .split("Run macOS core slice")
+        .split("Run macOS platform tests")
         .nth(1)
         .and_then(|job| {
             job.lines()

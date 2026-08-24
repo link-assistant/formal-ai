@@ -111,26 +111,25 @@ fn the_longest_tests_are_scheduled_first() {
     );
 }
 
-/// The slices consume the plan rather than nextest's index split alone.
+/// The macOS lane consumes a planned filter rather than a slice of everything.
+///
+/// Issue #1059 replaced the eight-way split with a module list: macOS runs the
+/// 139 tests whose behaviour can differ from Linux, not 2895 that cannot. The
+/// longest-first planner still exists for any future fan-out -- the rule in
+/// CONTRIBUTING.md outlives this one lane -- but there is no longer a partition
+/// here for it to balance.
 #[test]
-fn the_macos_slices_run_the_planned_partitions() {
+fn the_macos_lane_runs_a_planned_filter() {
     let workflow = repository_file(".github/workflows/macos-core-tests.yml");
 
     assert!(
-        workflow.contains("plan-test-partition.rs"),
-        "the slices must run the planned partitions; `slice:` alone splits by \
-         test index, which is uncorrelated with duration"
+        workflow.contains("plan-test-partition.rs --macos-platform"),
+        "the lane selects its tests from `data/meta/macos-platform-tests.lino`"
     );
     assert!(
-        workflow.contains("partition-${{ matrix.partition }}.filter"),
-        "each slice reads the plan computed once by the archive job -- \
-         recomputing per machine risks two slices disagreeing about the plan"
-    );
-    // Unrecorded tests still need a home, and `slice:` is what gives them one.
-    assert!(
-        workflow.contains("--partition \"slice:${{ matrix.partition }}/8\""),
-        "a test with no recorded duration must still run exactly once, which \
-         nextest's own index partitioning provides for the remainder"
+        !workflow.contains("slice:${{ matrix.partition }}"),
+        "sharding ten seconds of tests across eight machines costs a 916MB \
+         download each and gains nothing"
     );
 }
 

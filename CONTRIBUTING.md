@@ -407,6 +407,23 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
   scripts/cargo-test.sh --test unit issue_907    # one module
   ```
 
+  **macOS runs platform tests, not the whole suite.** No code in `src/` branches
+  on macOS versus Linux — all eight conditionals are `cfg(unix)`, true on both —
+  so pure Rust logic cannot behave differently there. Every macOS-only failure
+  this repository has recorded came from the environment instead: GNU coreutils
+  absent (`timeout`), bash 3.2 without `mapfile`, subprocess and path handling.
+
+  Running everything twice cost real time: 2895 tests moved a 916 MB archive to
+  each of eight runners, 7 GB per run, and two of those downloads failed
+  outright. The macOS lane now runs the 139 tests whose behaviour can differ —
+  about ten seconds on one runner.
+
+  **When something does behave differently on macOS, add its module to
+  `data/meta/macos-platform-tests.lino`** with a line saying what differs. Do
+  not widen the filter back to everything; the file is the list of what macOS is
+  actually for, and `issue_1017::the_macos_lane_selects_a_non_empty_set_of_tests`
+  fails if it empties out.
+
   **Start the longest work first.** Whenever work is split across parallel
   workers -- test partitions, matrix legs, anything fanned out -- the long tasks
   must be scheduled first and the short ones packed in behind them. A long task
