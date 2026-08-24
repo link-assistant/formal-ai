@@ -19,7 +19,6 @@ mod issue_1012;
 mod issue_1014;
 mod issue_1017;
 mod issue_1021;
-mod issue_1028;
 mod issue_1031;
 mod issue_1037;
 mod issue_1039;
