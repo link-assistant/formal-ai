@@ -2,7 +2,7 @@
 
 This is a complete full binary tree, not a flat list. Depth 0 is the root; depths 1–5 contain 2, 4, 8, 16, and 32 nodes respectively. The complete tree therefore contains exactly 63 task formulations (`1 + 2 + 4 + 8 + 16 + 32`).
 
-The machine-readable canonical tree is `docs/case-studies/issue-1028/task-tree.json`. Every internal node has exactly two children, and every leaf is atomic and independently checkable.
+Every internal node has exactly two children, and every leaf is atomic and independently checkable. The Agent-CLI runner generates the canonical 63-node tree from the 32 atomic leaf formulations at runtime so the tree structure itself is executable and testable.
 
 ## Tree
 
