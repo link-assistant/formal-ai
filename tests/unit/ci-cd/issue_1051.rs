@@ -42,15 +42,16 @@ fn the_release_binary_is_compiled_once_per_pipeline() {
 
     let builders: Vec<&str> = workflow
         .split("\n      - name: ")
-        .filter(|step| step.contains("cargo build --release --bin formal-ai"))
+        .filter(|step| step.contains("cargo test --release --no-run --bins --tests"))
         .collect();
 
     assert_eq!(
         builders.len(),
         1,
-        "`formal-ai` must be compiled once and downloaded everywhere else; \
-         found {} jobs running the same build. Each duplicate costs its own \
-         minutes on the critical path for a byte-identical result.",
+        "the binary and the test executables must be compiled once, in one \
+         job, and downloaded everywhere else; found {} jobs running that \
+         build. Each duplicate costs its own minutes on the critical path \
+         for a byte-identical result.",
         builders.len()
     );
 

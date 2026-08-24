@@ -442,8 +442,15 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
+    // Issue #1055 moved the skip flags into the runner script the lane invokes.
+    let runner = fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/scripts/run-prebuilt-tests.sh"
+    ))
+    .expect("read the runner");
+    assert!(full_suite.contains("run-prebuilt-tests.sh"));
     assert!(
-        full_suite.contains("--skip data_files::") && full_suite.contains("--skip self_ast_census"),
+        runner.contains("--skip data_files::") && runner.contains("--skip self_ast_census"),
         "the full suite must skip integrity groups already exercised by their focused gates"
     );
     assert!(
@@ -750,7 +757,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test-agent-cli-e2e", 32),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
-        ("build-box-language-binary", 20),
+        ("build-artifacts", 20),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the
         // language's traditional init commands inside it. The budget covers a

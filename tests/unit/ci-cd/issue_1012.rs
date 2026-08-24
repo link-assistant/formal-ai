@@ -39,7 +39,10 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     }
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
     assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
-    assert!(macos.contains("timeout-minutes: 30"));
+    // Issue #1055 raised the archive cap 30m -> 35m so its budget could grow to
+    // 1400s for a cold rebuild while staying at 66% of the cap; issue #1017's
+    // gate allows 70%.
+    assert!(macos.contains("timeout-minutes: 35"));
     // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
     // retrying artifact download. `issue_1039::the_download_retry_is_bounded_to
     // _fit_the_job_cap` checks the arithmetic that justifies it, so this only
@@ -185,18 +188,19 @@ fn stock_rust_workflow_uses_a_quiet_dependency_probe_and_installed_path() {
 #[test]
 fn box_language_matrix_reuses_one_release_binary() {
     let workflow = release_workflow();
-    let build = job_block(&workflow, "build-box-language-binary");
+    let build = job_block(&workflow, "build-artifacts");
     let matrix = job_block(&workflow, "box-language-projects");
 
-    assert!(build.contains("cargo build --release --bin formal-ai"));
+    // Issue #1055 builds the binary and the test executables in one command.
+    assert!(build.contains("cargo test --release --no-run --bins --tests"));
     assert!(build.contains("actions/upload-artifact@v7"));
-    assert!(matrix.contains("needs: [detect-changes, build-box-language-binary]"));
+    assert!(matrix.contains("needs: [detect-changes, build-artifacts]"));
     // Issue #1051 moved the download into `.github/actions/download-formal-ai-binary`
     // so the four consumers share one definition; what matters here is still
     // that the matrix *downloads* the binary rather than rebuilding it.
     assert!(matrix.contains("uses: ./.github/actions/download-formal-ai-binary"));
     assert!(!matrix.contains("actions/cache@v5"));
-    assert!(!matrix.contains("cargo build --release --bin formal-ai"));
+    assert!(!matrix.contains("cargo test --release --no-run"));
 }
 
 #[test]

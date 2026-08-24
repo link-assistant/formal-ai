@@ -31,10 +31,17 @@ fn only_harness_builds_weaken_the_release_profile() {
         .filter(|step| step.contains("CARGO_PROFILE_RELEASE_LTO"))
         .collect();
 
+    // Issue #1055 moved this from per-job overrides into `[profile.release]`
+    // itself: LTO is the one build stage that does not parallelize, and it
+    // cost 705s (867s against 162s) on the critical path of everything
+    // downstream. With the profile carrying it, no job needs the override --
+    // but if one reappears, it must still be a harness build.
+    let manifest = fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
+        .expect("read Cargo.toml");
     assert!(
-        !weakened.is_empty(),
-        "the E2E builds should override the release profile; without it they \
-         spend 536s on an optimisation nothing in those jobs measures"
+        manifest.contains("lto = false"),
+        "`[profile.release]` must keep LTO off; it is the one stage that does \
+         not scale with cores, and it gates every downstream job"
     );
 
     for step in &weakened {

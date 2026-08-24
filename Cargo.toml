@@ -144,6 +144,26 @@ debug-assertions = true
 overflow-checks = true
 
 [profile.release]
-lto = true
-codegen-units = 1
+# Issue #1055: no LTO, and no cap on codegen units.
+#
+# Link-time optimization is the one stage of a Rust build that does not
+# parallelize: it merges every crate into a single optimization unit and links
+# it on one thread, so more cores do not shorten it. Measured here on
+# `cargo test --release --no-run --bins --tests` from a touched `lib.rs`:
+#
+#   lto = true,  codegen-units = 1    867s
+#   lto = false, codegen-units unset  162s
+#
+# 705 seconds, 5.4x, sitting on the critical path of everything downstream --
+# tests, packaging, Docker, the release chain. Issue #1043 had already measured
+# the same effect on one job (536s -> 372s) and dropped LTO there; this applies
+# the finding everywhere rather than one job at a time.
+#
+# `codegen-units` is left at the default so the compiler splits the work across
+# every core the runner has. Pinning it to 1 was what forbade that.
+#
+# The cost is a slightly slower binary at runtime. Nothing in this pipeline
+# measures that, and no benchmark gates on it; the build time it buys back is
+# measured and immediate.
+lto = false
 strip = true
