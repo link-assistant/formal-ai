@@ -60,11 +60,21 @@ done
   exit 2
 }
 
-# A budgeted retry gets the time left after the inter-attempt delays. Split
-# that time into 1:2:4:... shares. Cumulative integer division makes the
-# rounded deadlines add up exactly to the available time, so the last attempt
-# gets every second not consumed by earlier probes or delays.
 if [ -n "$budget_seconds" ]; then
+  # A budget smaller than the historical flat schedule cannot safely be
+  # reinterpreted as an escalating schedule: callers that deliberately sized
+  # the step for the configured per-attempt deadline must still fail closed.
+  # The production Xvfb budget (300s) is larger than its 280s flat worst case,
+  # so it gets the new allocation while impossible compositions remain refused.
+  legacy_worst_case=$((attempts * attempt_seconds + (attempts - 1) * retry_delay_seconds))
+  if [ "$legacy_worst_case" -gt "$budget_seconds" ]; then
+    echo "::error title=apt install retry cannot fit its configured attempt budget::\
+${attempts} attempts of ${attempt_seconds}s plus ${retry_delay_seconds}s delays \
+need ${legacy_worst_case}s, but the step budget is ${budget_seconds}s. Lower the \
+attempts or configured attempt deadline, or raise the step budget." >&2
+    exit 2
+  fi
+
   minimum_budget=$(( (attempts - 1) * retry_delay_seconds + 1 ))
   if [ "$budget_seconds" -lt "$minimum_budget" ]; then
     echo "::error title=apt install retry has no time for an attempt::\
