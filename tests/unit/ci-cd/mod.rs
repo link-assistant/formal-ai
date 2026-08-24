@@ -30,6 +30,7 @@ mod issue_1049;
 mod issue_1051;
 mod issue_1053;
 mod issue_1055;
+mod issue_1057;
 mod issue_717;
 mod issue_730;
 mod issue_739;
