@@ -12,25 +12,30 @@
 #
 # So bound the attempt, not just the step: each attempt gets its own deadline,
 # a stalled one is killed while the budget still has room for another, and the
-# whole wrapper is designed to finish inside the enclosing step budget. When
-# TEST_BUDGET_SECONDS is set, deadlines grow geometrically across attempts so
-# the first probe is cheap and the last attempt receives the largest share of
-# the remaining time. With the default 300s/3-attempt shape and 5s delays this
-# produces 41s / 83s / 166s rather than repeating 90s / 90s / 90s.
+# whole wrapper is designed to finish inside the enclosing step budget --
+# `FORMAL_AI_APT_ATTEMPTS * FORMAL_AI_APT_ATTEMPT_SECONDS` plus the delays
+# between them, checked against `TEST_BUDGET_SECONDS` before the first attempt.
+# `desktop/scripts/package-macos-with-retry.sh` is the same shape one runner
+# family over: a retry is only an improvement while it can finish.
 #
 # Usage: apt-install-with-retry.sh <package> [package...]
 #
 # Environment:
 #   FORMAL_AI_APT_ATTEMPTS          attempts before giving up (3)
-#   FORMAL_AI_APT_ATTEMPT_SECONDS   fixed deadline when no step budget is set (90)
+#   FORMAL_AI_APT_ATTEMPT_SECONDS   deadline for one attempt (90)
 #   FORMAL_AI_APT_RETRY_DELAY_SECONDS  pause between attempts (5)
-#   TEST_BUDGET_SECONDS             enclosing step budget; enables escalation
+#   TEST_BUDGET_SECONDS             enclosing step budget, checked when set
 #   FORMAL_AI_APT_GET               apt-get binary (apt-get); tests point it
 #                                   at a stand-in
 #   FORMAL_AI_APT_PRIVILEGE         privilege escalation prefix (sudo); empty
 #                                   when already root, as tests are
 set -euo pipefail
 
+# The per-attempt deadline is `scripts/run-with-deadline.sh`, not GNU `timeout`:
+# macOS ships no `timeout`, so the tests that drive this wrapper on the macOS
+# core slices died with `timeout: command not found` while the Linux job it
+# ships on passed (issue #1021, run 32282461075). An absolute path because
+# `sudo` resets PATH to its own secure_path.
 script_directory=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 deadline="$script_directory/run-with-deadline.sh"
 
@@ -60,61 +65,29 @@ done
   exit 2
 }
 
-if [ -n "$budget_seconds" ]; then
-  # A budget smaller than the historical flat schedule cannot safely be
-  # reinterpreted as an escalating schedule: callers that deliberately sized
-  # the step for the configured per-attempt deadline must still fail closed.
-  # The production Xvfb budget (300s) is larger than its 280s flat worst case,
-  # so it gets the new allocation while impossible compositions remain refused.
-  legacy_worst_case=$((attempts * attempt_seconds + (attempts - 1) * retry_delay_seconds))
-  if [ "$legacy_worst_case" -gt "$budget_seconds" ]; then
-    echo "::error title=apt install retry cannot fit its configured attempt budget::\
+# The guard issue #1017 pays for: a retry that cannot finish inside the budget
+# above it converts a transient stall into a *terminated* step, which is the
+# failure this wrapper exists to prevent. Refuse to start rather than discover
+# it in CI.
+worst_case=$((attempts * attempt_seconds + (attempts - 1) * retry_delay_seconds))
+if [ -n "$budget_seconds" ] && [ "$worst_case" -gt "$budget_seconds" ]; then
+  echo "::error title=apt install retry cannot finish inside its budget::\
 ${attempts} attempts of ${attempt_seconds}s plus ${retry_delay_seconds}s delays \
-need ${legacy_worst_case}s, but the step budget is ${budget_seconds}s. Lower the \
-attempts or configured attempt deadline, or raise the step budget." >&2
-    exit 2
-  fi
-
-  minimum_budget=$(( (attempts - 1) * retry_delay_seconds + 1 ))
-  if [ "$budget_seconds" -lt "$minimum_budget" ]; then
-    echo "::error title=apt install retry has no time for an attempt::\
-${attempts} attempts need ${retry_delay_seconds}s delays plus at least 1s of \
-execution time, but the step budget is ${budget_seconds}s." >&2
-    exit 2
-  fi
-  available_attempt_seconds=$((budget_seconds - (attempts - 1) * retry_delay_seconds))
-  weight_sum=0
-  weight=1
-  for ((i = 1; i <= attempts; i++)); do
-    weight_sum=$((weight_sum + weight))
-    weight=$((weight * 2))
-  done
-else
-  available_attempt_seconds=""
-  weight_sum=""
+need ${worst_case}s, but the step budget is ${budget_seconds}s. Lower the \
+attempts or the per-attempt deadline, or raise the budget with the job cap." >&2
+  exit 2
 fi
 
 status=0
-previous_deadline=0
-weight=1
 for ((attempt = 1; attempt <= attempts; attempt++)); do
   started=$SECONDS
-
-  if [ -n "$budget_seconds" ]; then
-    cumulative_weight=$((weight * 2 - 1))
-    cumulative_deadline=$((available_attempt_seconds * cumulative_weight / weight_sum))
-    attempt_deadline=$((cumulative_deadline - previous_deadline))
-    previous_deadline=$cumulative_deadline
-    weight=$((weight * 2))
-  else
-    attempt_deadline="$attempt_seconds"
-  fi
-
-  # The deadline runs inside the privilege escalation so it signals apt-get
-  # itself; killing an unprivileged parent could leave root's apt holding the
-  # dpkg lock and turn a mirror stall into a lock error on every retry.
+  # The deadline runs *inside* the privilege escalation so it signals apt-get
+  # itself; killing an unprivileged parent would leave root's apt holding the
+  # dpkg lock and fail every remaining attempt with a lock error instead of the
+  # stall that caused it. `DPkg::Lock::Timeout` covers the leftovers anyway.
+  # shellcheck disable=SC2016  # `$0`/`$@` are the inner shell's, deliberately
   attempt_command=(
-    "$deadline" "$attempt_deadline" bash -c '
+    "$deadline" "$attempt_seconds" bash -c '
       set -e
       "$0" -o DPkg::Lock::Timeout=60 update -q
       "$0" -o DPkg::Lock::Timeout=60 install -y -q "$@"
@@ -133,7 +106,7 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
   fi
 
   echo "::warning title=apt install of ${packages} failed attempt ${attempt}/${attempts}::\
-Attempt ${attempt} exited ${status} after ${elapsed}s of its ${attempt_deadline}s \
+Attempt ${attempt} exited ${status} after ${elapsed}s of its ${attempt_seconds}s \
 deadline. Exit 124 is the deadline itself -- a stalled mirror, transient and \
 upstream; anything else is apt's own status." >&2
 
@@ -141,15 +114,8 @@ upstream; anything else is apt's own status." >&2
   sleep "$retry_delay_seconds"
 done
 
-if [ -n "$budget_seconds" ]; then
-  echo "::error title=apt install of ${packages} failed every attempt::\
-All ${attempts} escalating attempts failed within the ${budget_seconds}s step \
-budget; the last attempt had ${attempt_deadline}s. This is no longer a transient \
-stall -- read the attempt warnings above for apt's own output." >&2
-else
-  echo "::error title=apt install of ${packages} failed every attempt::\
+echo "::error title=apt install of ${packages} failed every attempt::\
 All ${attempts} attempts of ${attempt_seconds}s failed; the last exited \
 ${status}. This is no longer a transient stall -- read the attempt warnings \
 above for apt's own output." >&2
-fi
 exit "$status"
