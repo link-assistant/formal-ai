@@ -31,38 +31,38 @@ RUN_LOG="$OUT/run.log"
 : > "$RUN_LOG"
 
 cat > "$OUT/leaves.tsv" <<'EOF'
-L01	Extract the four concrete requirements of issue #1028 and record them with evidence.
-L02	Inspect scripts/apt-install-with-retry.sh and record its retry inputs and defaults.
-L03	Inspect tests/unit/ci-cd/issue_1021.rs and identify the reusable retry harness.
-L04	Inspect the Agentic CLI workflow Xvfb step and record its retry budget variables.
-L05	Calculate the old 3-attempt, 90-second, 5-second-delay worst-case schedule.
-L06	Calculate the 1:2:4 geometric allocation for the remaining retry budget.
-L07	Verify callers without TEST_BUDGET_SECONDS retain fixed per-attempt deadline behavior.
-L08	State and verify the invariant that retry deadlines plus delays fit the step budget.
-L09	Add or verify the focused geometric deadline allocation test.
-L10	Add or verify a deterministic slow-mirror stand-in without network access.
-L11	Prove the old flat retry schedule fails the slow-mirror fixture.
-L12	Prove the budget-aware escalating schedule succeeds on that fixture.
-L13	Verify retry delays are reserved before attempt deadlines are allocated.
-L14	Verify later retries receive strictly more execution time than earlier retries.
-L15	Verify the first retry share is positive and smaller than the final share.
-L16	Verify failure diagnostics report the actual deadline used by the attempt.
-L17	Verify persistent non-timeout apt failure preserves apt's exit status.
-L18	Verify timeout status 124 is distinguished from ordinary apt failures.
-L19	Review retry-wrapper comments for a general geometric algorithm.
-L20	Review the Xvfb workflow and wrapper budget interface for consistency.
-L21	Complete the issue-1028 case-study evidence with concrete artifact paths.
-L22	Complete the changelog fragment for the retry scheduling fix.
-L23	Run bash syntax validation on scripts/apt-install-with-retry.sh.
-L24	Run the focused issue-1028 Rust tests and record the result.
-L25	Inspect the working diff and remove unrelated issue changes.
-L26	Produce a PR summary explaining the reusable retry generalization.
-L27	Add requirement-traceability evidence for all four issue requirements.
-L28	Validate the decomposition artifact has 32 unique leaf nodes.
-L29	Round-trip the task-decomposition artifact through the Links Notation path.
-L30	Classify any ladder failure from observable evidence.
-L31	Generalize any discovered capability gap and add a differently worded regression.
-L32	Produce the final self-coding evidence bundle with outcomes and session IDs.
+L01	Inspect the existing task-decomposition data model and identify where a node stores its children.
+L02	Inspect the existing task-decomposition recursion and record how depth limits are represented.
+L03	Inspect the existing atomicity check and record the observable completion contract for leaves.
+L04	Inspect the existing Links Notation rendering and record how child relationships are serialized.
+L05	Inspect the existing recursive execution adapter and record how a decomposition tree is executed.
+L06	Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.
+L07	Write a minimal example of a two-child task decomposition with independently checkable leaves.
+L08	Verify that a leaf without an observable completion contract is never treated as independently checkable.
+L09	Inspect the binary decomposition invariant and explain the exactly-two-children requirement.
+L10	Verify the invariant explicitly names the supported power-of-two levels through 32.
+L11	Add or verify regression coverage for a two-node decomposition at depth one.
+L12	Add or verify regression coverage for a four-node decomposition at depth two.
+L13	Add or verify regression coverage for an eight-node decomposition at depth three.
+L14	Add or verify regression coverage for a sixteen-node decomposition at depth four.
+L15	Add or verify regression coverage for a thirty-two-node decomposition at depth five.
+L16	Verify every tested internal node has exactly two children and never three or more.
+L17	Verify every tested leaf is atomic and independently checkable.
+L18	Verify every tested node has a stable id and a unique dotted path.
+L19	Verify child paths follow the binary 1/2 convention at every depth.
+L20	Verify the node count of a complete depth-five tree is exactly 63 including the root.
+L21	Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.
+L22	Verify a single node can be selected by dotted binary path for focused debugging.
+L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.
+L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.
+L25	Verify every selected node runs in a fresh temporary repository copy.
+L26	Verify every selected node uses the real Agent CLI against the real Formal AI server.
+L27	Verify every selected node requires an observable proof file with its exact node path.
+L28	Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.
+L29	Verify the case-study lists exactly 32 distinct atomic leaf formulations.
+L30	Verify the case-study path structure contains every binary path from depth one through five.
+L31	Use a differently worded decomposition request to check that the capability is not phrase-specific.
+L32	Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.
 EOF
 
 python3 - "$OUT/leaves.tsv" "$NODES" <<'PY'
@@ -82,7 +82,7 @@ def leaf_index(path):
 
 def emit(path, depth, out):
     if depth == 0:
-        text = 'Solve issue #1028 end-to-end: improve apt retry scheduling and prove the coding capability recursively.'
+        text = 'Verify Formal AI supports recursive binary task decomposition from atomic leaves through the complete 32-leaf level.'
         criterion = 'all_children_pass'
         node_id = 'R'
     elif depth == 5:
@@ -97,7 +97,7 @@ def emit(path, depth, out):
         span = 2 ** (5 - depth)
         start = prefix * span + 1
         end = (prefix + 1) * span
-        text = f'Complete recursive subtask {path}, covering leaf requirements L{start:02d}–L{end:02d}; both child subtasks must produce checkable evidence.'
+        text = f'Complete recursive decomposition node {path}, covering atomic tasks L{start:02d}–L{end:02d}; both child nodes must produce independently checkable evidence.'
         criterion = 'all_children_pass'
     out.append((node_id, depth, text, criterion, child(path,1), child(path,2) if depth < 5 else ''))
     if depth < 5:
@@ -224,7 +224,7 @@ while IFS= read -r line; do
 done < "$OUT/selected.tsv"
 
 cat > "$OUT/README.md" <<EOF
-# Issue #1028 recursive Agent-CLI tree run
+# Recursive Formal AI decomposition tree run
 
 - requested depth: $TREE_DEPTH
 - node filter: ${NODE_FILTER:-none}
