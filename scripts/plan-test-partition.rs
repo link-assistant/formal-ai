@@ -159,6 +159,27 @@ fn main() {
         return;
     }
 
+    if args.iter().any(|a| a == "--macos-platform") {
+        // Issue #1059: macOS runs the tests whose behaviour can differ there,
+        // not the whole suite. `data/meta/macos-platform-tests.lino` lists the
+        // modules and says why each is on the list.
+        let listed = fs::read_to_string("data/meta/macos-platform-tests.lino")
+            .unwrap_or_default();
+        let modules: Vec<String> = listed
+            .lines()
+            .filter_map(|line| line.trim().strip_prefix("module "))
+            .map(|name| format!("test({name}::)"))
+            .collect();
+        if modules.is_empty() {
+            eprintln!("::error title=No macOS platform tests listed::\
+data/meta/macos-platform-tests.lino names no modules, so the macOS lane would \
+run nothing. A platform lane that tests nothing is worse than no lane.");
+            process::exit(1);
+        }
+        println!("{}", modules.join(" + "));
+        return;
+    }
+
     if args.iter().any(|a| a == "--unrecorded") {
         // The complement of every recorded name. The workflow intersects this
         // with nextest's own `--partition`, so unrecorded tests are still split

@@ -438,7 +438,7 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
         env!("CARGO_MANIFEST_DIR")
     ))
     .expect("macOS core workflow");
-    let core_suite = workflow_step_block(&macos, "Run core test slice from archive");
+    let core_suite = workflow_step_block(&macos, "Run macOS platform tests");
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));

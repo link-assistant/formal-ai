@@ -96,7 +96,9 @@ fn macos_core_shards_reuse_one_nextest_archive() {
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
     assert_eq!(regular_tests.matches("os: macos-15-intel").count(), 1);
     assert!(!regular_tests.contains("test-suite: core-"));
-    assert_eq!(macos.matches("- { partition:").count(), 8);
+    // Issue #1059: one runner. What this test pins is that the lane reuses the
+    // archive instead of compiling, which is unchanged.
+    assert_eq!(macos.matches("- { partition:").count(), 1);
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
     assert!(macos.contains("actions/upload-artifact@v7"));
     // Issue #1039 moved the download to `scripts/download-artifact-with-retry.sh`
@@ -107,7 +109,7 @@ fn macos_core_shards_reuse_one_nextest_archive() {
     assert!(macos.contains("scripts/download-artifact-with-retry.sh"));
     assert!(macos.contains("cargo nextest run --archive-file"));
     assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
+    assert!(macos.contains("--archive-file"));
     assert!(macos.contains("git rev-parse 'HEAD^{tree}'"));
     assert!(macos.contains("macos-core-tests/tree"));
     assert!(repository_path("experiments/issue_1014_nextest_archive/run.sh").is_file());

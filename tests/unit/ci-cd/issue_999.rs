@@ -19,12 +19,9 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
 
     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
     assert!(test.contains("test-suite: full"));
-    // Issue #1017 raised the slice count to 16; issue #1039 measured that the
-    // macOS pool only runs 4-5 at a time and brought it back to 8, halving the
-    // per-slice fixed cost without moving the worst slice near its budget.
-    for shard in 1..=8 {
-        assert!(macos.contains(&format!("- {{ partition: {shard} }}")));
-    }
+    // Issue #1059: the lane runs 139 platform-sensitive tests on one runner
+    // rather than the whole suite across eight.
+    assert!(macos.contains("- { partition: 1 }"));
     assert!(test.contains("test-suite: specification"));
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
@@ -32,7 +29,7 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     assert!(macos.contains("timeout-minutes: 35"));
     assert!(macos.contains("cargo nextest archive"));
     assert!(macos.contains("cargo nextest run --archive-file"));
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
+    assert!(macos.contains("--macos-platform"));
     assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
     assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));

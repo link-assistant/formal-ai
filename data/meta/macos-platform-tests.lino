@@ -1,0 +1,25 @@
+macos_platform_tests
+  issue 1059
+  purpose "The tests worth running on macOS: the ones whose behaviour can differ from Linux."
+  rationale "No code in src/ branches on macOS versus Linux -- all eight conditionals are cfg(unix), true on both -- so pure Rust logic cannot behave differently. Every macOS-only failure this repository has recorded came from the environment instead: GNU coreutils absent (timeout), bash 3.2 lacking mapfile, subprocess and path handling."
+  cost "Running the whole suite there moved 916MB to each of eight slices, 7GB per run, and two slices of run 32706091539 could not finish that transfer in three attempts while six did it in 20-81s."
+  extend "When something behaves differently on macOS, add its module here rather than widening the filter back to everything."
+
+  module issue_531_algorithm_discovery
+  module issue_656_promotion
+  module issue_661_repository_audit
+  module issue_706_any_language
+  module issue_708_memory_query_language_browser
+  module issue_708_self_hosting
+  module issue_819
+  module issue_819_followup
+  module issue_840
+  module issue_858
+  module issue_890
+  module issue_936_substitution_compiler
+  module total_closure
+
+  module shell_command
+  module terminal_commands
+  module installation_conversion
+  module issue_1021_client_preflight

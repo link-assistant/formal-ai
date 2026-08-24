@@ -28,17 +28,23 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(test.contains("test-suite: specification"));
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-    // Issue #1017 raised the slice count from 12 to 16 and both caps with it;
-    // `issue_1017::macos_slices_cover_every_partition_of_their_denominator`
-    // keeps the matrix and the `slice:` denominator in step from here on.
-    for shard in 1..=8 {
-        assert!(
-            macos.contains(&format!("- {{ partition: {shard} }}")),
-            "missing macOS core shard {shard}"
-        );
-    }
+    // Issue #1059: macOS runs only the tests whose behaviour can differ from
+    // Linux -- 139 of 2895, about ten seconds. Sharding that multiplies
+    // checkout, toolchain and a 916MB artifact download across machines for no
+    // gain, so one partition is the whole matrix now.
+    assert!(
+        macos.contains("- { partition: 1 }"),
+        "the macOS lane runs on one runner"
+    );
+    assert!(
+        !macos.contains("- { partition: 2 }"),
+        "sharding ten seconds of tests costs more than it saves"
+    );
     assert_eq!(macos.matches("cargo nextest archive").count(), 1);
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/8\""));
+    assert!(
+        macos.contains("plan-test-partition.rs --macos-platform"),
+        "the lane selects platform-sensitive modules, not a slice of everything"
+    );
     // Issue #1055 raised the archive cap 30m -> 35m so its budget could grow to
     // 1400s for a cold rebuild while staying at 66% of the cap; issue #1017's
     // gate allows 70%.

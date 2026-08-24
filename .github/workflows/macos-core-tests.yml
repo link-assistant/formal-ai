@@ -85,17 +85,11 @@ jobs:
       # slices, so the plan costs one rust-script install instead of eight and
       # every slice reads the same file -- a plan recomputed per machine could
       # disagree if the durations file changed mid-run.
-      - name: Plan longest-first test partitions
+      - name: Plan the macOS platform test filter
         run: |
           bash scripts/install-rust-script.sh
-          for partition in $(seq 1 8); do
-            rust-script scripts/plan-test-partition.rs \
-              --partition "$partition" --of 8 \
-              > "$RUNNER_TEMP/macos-core-tests/partition-$partition.filter"
-          done
-          rust-script scripts/plan-test-partition.rs --unrecorded --of 8 \
-            > "$RUNNER_TEMP/macos-core-tests/partition-unrecorded.filter"
-          rust-script scripts/plan-test-partition.rs --report --of 8
+          rust-script scripts/plan-test-partition.rs --macos-platform --of 1 \
+            > "$RUNNER_TEMP/macos-core-tests/platform.filter"
       - name: Run doc tests
         run: cargo test --doc --verbose
       - name: Upload macOS test archive
@@ -112,7 +106,7 @@ jobs:
           compression-level: 0
 
   test-archive:
-    name: Run macOS core slice ${{ matrix.partition }}/8
+    name: Run macOS platform tests
     needs: [build-archive]
     runs-on: macos-15-intel
     # Issue #1017: at 12 slices the round-robin `slice:` partitioner -- which
@@ -148,13 +142,6 @@ jobs:
       matrix:
         include:
           - { partition: 1 }
-          - { partition: 2 }
-          - { partition: 3 }
-          - { partition: 4 }
-          - { partition: 5 }
-          - { partition: 6 }
-          - { partition: 7 }
-          - { partition: 8 }
     steps:
       - uses: actions/checkout@v6
         with:
@@ -218,25 +205,21 @@ jobs:
             "$RUNNER_TEMP/macos-core-tests"
       - name: Verify archive source tree
         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
-      - name: Run core test slice from archive
+      # Issue #1059: macOS runs the tests whose behaviour can differ from
+      # Linux, not the whole suite. `data/meta/macos-platform-tests.lino` names
+      # the modules and says why each is listed. One runner, because those tests
+      # take about ten seconds -- slicing that only multiplies checkout,
+      # toolchain and a 916MB artifact download across eight machines, and two
+      # slices of run 32706091539 could not finish that download at all.
+      - name: Run macOS platform tests
         env:
           TEST_BUDGET_SECONDS: 600
           TEST_WARN_RATIO_PERCENT: 75
         run: |
-          # Issue #1047: nextest's `slice:` splits by test *index*, which is
-          # uncorrelated with duration -- measured worst slice 870s against a
-          # 588s ideal. The plan assigns recorded tests longest-first onto the
-          # emptiest partition, so the long ones start immediately instead of
-          # landing last on a machine everything else has already finished
-          # waiting for. Tests with no recording still go through `--partition`
-          # by index, so a new test runs exactly once without a re-recording.
-          PLANS="$RUNNER_TEMP/macos-core-tests"
-          LPT_OWNED=$(cat "$PLANS/partition-${{ matrix.partition }}.filter")
-          LPT_UNRECORDED=$(cat "$PLANS/partition-unrecorded.filter")
+          PLATFORM=$(cat "$RUNNER_TEMP/macos-core-tests/platform.filter")
           scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "Core test slice" \
+            "$TEST_BUDGET_SECONDS" "macOS platform tests" \
             cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
-            --partition "slice:${{ matrix.partition }}/8" \
-            -E "(($LPT_OWNED) | ($LPT_UNRECORDED)) & not (test(data_files::) | test(self_ast_census) | test(specification::))"
+            -E "($PLATFORM) & not (test(data_files::) | test(self_ast_census) | test(specification::))"
