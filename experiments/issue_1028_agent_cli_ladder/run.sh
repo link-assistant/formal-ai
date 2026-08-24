@@ -73,10 +73,11 @@ check_leaf_28() {
 }
 
 run_one() {
-  local id prompt work port server_pid session_dir proof status
+  local id prompt work port server_pid session_dir proof status num
   id="$1"
   prompt="$2"
-  port=$((BASE_PORT + 10#${id#L01} - 1))
+  num="${id#L}"
+  port=$((BASE_PORT + 10#$num - 1))
   session_dir="$OUT/$id"
   work=$(mktemp -d)
   mkdir -p "$session_dir"
@@ -134,7 +135,6 @@ run_one() {
     check_leaf_28
   fi
 
-  cp -a "$session_dir" "$OUT/${id}-captured"
   cp "$proof" "$session_dir/proof.md"
   echo "$id\tPASS\t$proof" >> "$RUN_LOG"
 }
