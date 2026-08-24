@@ -149,7 +149,9 @@ jobs:
           # built from source (issue #1051).
           build-args: BINARY_SOURCE=prebuilt
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Issue #1057: prebuilt binary, nothing worth caching; exports were
+          # evicting sccache from the shared 10GB pool.
+          cache-to: type=inline
       - name: Verify image runtime contract
         run: |
           set -euo pipefail
@@ -632,7 +634,8 @@ jobs:
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Issue #1057: the GHCR leg above already exported these layers.
+          cache-to: type=inline
       - name: Create GitHub Release
         if: |
           steps.release_gate.outputs.should_release == 'true' && (
@@ -810,7 +813,8 @@ jobs:
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Issue #1057: the GHCR leg above already exported these layers.
+          cache-to: type=inline
       - name: Create GitHub Release
         if: |
           (steps.version.outputs.version_committed == 'true' ||

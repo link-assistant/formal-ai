@@ -176,9 +176,25 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
              an uncached release build recompiles the whole crate and blew the \
              job budget in run 31065367736 (issue #977)"
         );
+        // Issue #1057 narrowed this from "every step exports" to "every step
+        // that builds from source exports". The cache is one 10GB pool shared
+        // with sccache; it reached 10.01GB with buildkit holding 5.26GB against
+        // sccache's 2.44GB, and the compile cache was being evicted to store
+        // layers -- the macOS specification lane fell from a 48% to a 27% hit
+        // rate and died at its budget with no test run.
+        //
+        // A step that copies a prebuilt binary compiles nothing worth keeping,
+        // and a second publish step exports layers the first already wrote. Both
+        // still *read* the cache, which is what keeps the uncached release build
+        // this test was written for from coming back.
+        // `body` starts after the action name, so the step's own name is not in
+        // it; `cache-to: type=inline` is the marker a non-exporting step
+        // carries, and it is only ever set deliberately.
+        let exports_deliberately_skipped = body.contains("cache-to: type=inline");
         assert!(
-            body.contains("cache-to: type=gha,mode=max"),
-            "docker build-push step #{index} has no `cache-to: type=gha,mode=max`"
+            exports_deliberately_skipped || body.contains("cache-to: type=gha,mode=max"),
+            "docker build-push step #{index} builds from source but has no \
+             `cache-to: type=gha,mode=max`"
         );
     }
 }
