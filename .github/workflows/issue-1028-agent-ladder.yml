@@ -1,17 +1,6 @@
 name: Issue 1028 Agent CLI ladder
 
 on:
-  pull_request:
-    paths:
-      - 'src/task_decomposition/**'
-      - 'src/task_decomposition.rs'
-      - 'data/meta/task-decomposition-invariant.lino'
-      - 'tests/unit/specification/**'
-      - 'scripts/apt-install-with-retry.sh'
-      - 'tests/unit/ci-cd/issue_1021.rs'
-      - 'docs/case-studies/issue-1028/**'
-      - 'experiments/issue_1028_agent_cli_ladder/**'
-      - '.github/workflows/issue-1028-agent-ladder.yml'
   workflow_dispatch:
     inputs:
       max_leaves:
@@ -34,9 +23,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: issue-1028-agent-ladder
+  cancel-in-progress: false
+
 jobs:
   ladder:
-    name: 32-leaf Agent CLI temporary-copy ladder
+    name: Agent CLI temporary-copy ladder
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -78,8 +71,6 @@ jobs:
           AGENT: agent
           OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-ladder-run
           LEAF_FILTER: ${{ env.LEAF_FILTER }}
-          # Web access remains available through the Formal AI server; each
-          # leaf is nevertheless isolated in a fresh repository copy.
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
       - name: Upload ladder evidence
