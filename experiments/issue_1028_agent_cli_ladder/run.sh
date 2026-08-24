@@ -123,25 +123,37 @@ for level in levels:
     for row in rows:
         node, depth, *_ = row
         if depth == level and (not filt or node == filt):
-            if not filt or any(level == int(mode) for _ in [0]):
-                print('\t'.join(map(str,row)))
+            print('\t'.join(map(str,row)))
 PY
 
 selected_count=$(wc -l < "$OUT/selected.tsv" | tr -d ' ')
 expected=1
 if [[ "$TREE_DEPTH" = all ]]; then
   expected=63
-elif [[ -z "$NODE_FILTER" ]]; then
+elif [[ -n "$NODE_FILTER" ]]; then
+  expected=1
+else
   expected=$((1 << TREE_DEPTH))
 fi
 [[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
 
 run_one() {
-  local id depth prompt criterion work session_dir server_pid port status proof config
+  local id depth prompt criterion work session_dir server_pid port status proof config node_number
   IFS=$'\t' read -r id depth prompt criterion _left _right <<< "$1"
   session_dir="$OUT/$id"
   work=$(mktemp -d)
   mkdir -p "$session_dir"
+  node_number=$(python3 - "$id" <<'PY'
+import sys
+node=sys.argv[1]
+if node == 'R':
+    print(0)
+else:
+    bits=''.join('0' if x == '1' else '1' for x in node.split('.'))
+    print(int(bits, 2) + 1)
+PY
+)
+  port=$((BASE_PORT + node_number))
 
   cleanup_one() {
     if [[ -n "${server_pid:-}" ]]; then
@@ -159,11 +171,6 @@ run_one() {
   git -C "$work" add .
   git -C "$work" commit -qm ladder-fixture
   mkdir -p "$work/.agent-ladder"
-
-  port=$((BASE_PORT + 10#$(python3 - <<PY
-print(abs(hash('$id')) % 1000)
-PY
-)))
 
   setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
     FORMAL_AI_MEMORY_PATH="$work/.agent-ladder/memory.lino" \
