@@ -247,10 +247,18 @@ fn a_deferral_past_the_day_budget_is_reported_as_overdue() {
     // Re-date the tagged baseline past the budget. The cycle's age is measured
     // from the commit the last release tag points at, so an old tag with no
     // eligible work since is exactly the shape issue #1064 hit in production.
-    let stale = format!("{} days ago", metric_script::DEFERRAL_BUDGET_DAYS + 1);
-    // Both dates move: the cycle's age is read from the committer date, and
-    // leaving the author date behind would describe a commit that git itself
-    // reports inconsistently.
+    // An absolute epoch timestamp, not git's relative "N days ago": that syntax
+    // is understood by `--date` but rejected outright by `GIT_COMMITTER_DATE`,
+    // and the committer date is the one the cycle's age is read from. Both dates
+    // move together, so git never reports the commit inconsistently.
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock must be after epoch")
+        .as_secs();
+    let stale = format!(
+        "{} +0000",
+        now - (metric_script::DEFERRAL_BUDGET_DAYS + 1) * 86_400
+    );
     git_with_env(
         &repo,
         &["commit", "--amend", "--no-edit", "--allow-empty"],

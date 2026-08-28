@@ -327,6 +327,21 @@ fn attempts_that_cannot_fit_the_step_budget_are_refused_before_the_first_one() {
     );
 }
 
+/// Whether a line lists a path for a trigger filter rather than running it.
+///
+/// A `paths:`/`paths-ignore:` entry is a bare YAML list item — `- 'x.sh'` — with
+/// no command around it. A step that runs the script always reaches it through a
+/// `run:` scalar or a `run: >-` continuation, neither of which is a bare item.
+fn is_path_filter_entry(line: &str) -> bool {
+    let trimmed = line.trim();
+    let Some(item) = trimmed.strip_prefix("- ") else {
+        return false;
+    };
+    let item = item.trim().trim_matches(['\'', '"']);
+    // A filter entry is exactly one path; a command has arguments or a wrapper.
+    !item.contains(char::is_whitespace)
+}
+
 /// The guard above only helps while the two numbers meet. They are set in
 /// different places -- the step's `env:` block and the wrapper's defaults -- so
 /// a workflow could compose a retry whose worst case exceeds the budget above
@@ -338,7 +353,14 @@ fn every_budgeted_retry_in_a_workflow_fits_the_budget_it_runs_under() {
     let mut checked = 0_usize;
     for (name, workflow) in workflows() {
         for step in workflow.split("\n      - name: ") {
-            if !step.contains("scripts/apt-install-with-retry.sh") {
+            // A step *runs* the wrapper; a `paths:` filter merely names it, and
+            // splitting on the step delimiter leaves the whole workflow header
+            // as one segment, so a trigger listing the script as a path used to
+            // read here as a step that had lost its budget (issue #1064). Only
+            // a command line counts.
+            if !step.lines().any(|line| {
+                line.contains("scripts/apt-install-with-retry.sh") && !is_path_filter_entry(line)
+            }) {
                 continue;
             }
             checked += 1;
