@@ -186,17 +186,20 @@ fn an_ineligible_cycle_is_blocked_from_the_first_push() {
         &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
     )
     .expect("policy ineligibility must not be confused with an operational error");
+    let metric_script::SelfDevelopmentReleaseStatus::Blocked(fresh_reason) = &fresh else {
+        panic!("a cycle tagged moments ago must already be blocked, not tolerated: {fresh:?}");
+    };
     assert!(
-        matches!(
-            fresh,
-            metric_script::SelfDevelopmentReleaseStatus::Blocked(_)
-        ),
-        "a cycle tagged moments ago must already be blocked, not tolerated: {fresh:?}"
+        fresh_reason.contains("merged Formal AI-authored pull request"),
+        "the refusal must name what is missing: {fresh_reason}"
     );
 
-    // Age must not change the verdict in either direction. An old cycle is the
-    // same defect as a young one, reported the same way — there is no threshold
-    // at which the answer flips, because there is no threshold at all.
+    // Neither dimension the removed budget measured may change the verdict. A
+    // second fixture is aged past the old seven-day window *and* filled past the
+    // old twenty-fragment one, so if either threshold is reintroduced this is
+    // where the answer flips. The age is set on the commit `v1.0.0` points at,
+    // because the cycle's age was read from the tagged baseline, not from HEAD.
+    let aged_repo = fixture_repo();
     let stale = format!(
         "{} +0000",
         SystemTime::now()
@@ -206,40 +209,63 @@ fn an_ineligible_cycle_is_blocked_from_the_first_push() {
             - 60 * 86_400
     );
     git_with_env(
-        &repo,
-        &["commit", "--amend", "--no-edit", "--allow-empty"],
+        &aged_repo,
+        &["commit", "--amend", "--no-edit"],
         &[
             ("GIT_AUTHOR_DATE", stale.as_str()),
             ("GIT_COMMITTER_DATE", stale.as_str()),
         ],
     );
+    git(&aged_repo, &["tag", "-f", "v1.0.0"]);
+    fs::create_dir_all(aged_repo.join("changelog.d")).expect("fragment directory must be created");
+    for index in 0..40 {
+        fs::write(
+            aged_repo.join(format!("changelog.d/2026080{index:02}_120000_fragment.md")),
+            "### Fixed\n- a merged change waiting for a release it never gets\n",
+        )
+        .expect("fragment must be written");
+    }
+    fs::write(aged_repo.join("change.txt"), "unreleased work\n").expect("change must be written");
+    commit(&aged_repo, "unattributed change");
+
+    let aged_ledger = aged_repo.join("data/meta/self-hosting-ledger.lino");
     let aged = metric_script::self_development_release_status(
-        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+        &aged_repo,
+        &aged_ledger,
+        "v1.1.0",
+        "v1.0.0",
+        "HEAD",
+        3,
     )
     .expect("policy ineligibility must not be confused with an operational error");
-    let metric_script::SelfDevelopmentReleaseStatus::Blocked(reason) = &aged else {
-        panic!("an aged cycle must still be blocked: {aged:?}");
+    let metric_script::SelfDevelopmentReleaseStatus::Blocked(aged_reason) = &aged else {
+        panic!(
+            "a sixty-day-old cycle with forty pending fragments must still be blocked: {aged:?}"
+        );
     };
-    assert!(
-        reason.contains("merged Formal AI-authored pull request"),
-        "the reason must name what is missing, not how long it has been missing: {reason}"
+    assert_eq!(
+        aged_reason, fresh_reason,
+        "age and backlog must not change the refusal by one character"
     );
     assert!(
-        !reason.contains("budget"),
-        "no budget may survive anywhere in the refusal: {reason}"
+        !aged_reason.contains("budget"),
+        "no budget may survive anywhere in the refusal: {aged_reason}"
     );
 
     // The hard gate rejects it too: both release paths share one answer.
     let error = metric_script::ensure_self_development_release(
-        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+        &aged_repo,
+        &aged_ledger,
+        "v1.1.0",
+        "v1.0.0",
+        "HEAD",
+        3,
     )
     .expect_err("a blocked cycle must never be releasable");
-    assert!(
-        error.contains("merged Formal AI-authored pull request"),
-        "{error}"
-    );
+    assert_eq!(&error, aged_reason);
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
+    fs::remove_dir_all(aged_repo).expect("aged fixture directory must be removed");
 }
 
 #[test]
