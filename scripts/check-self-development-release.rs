@@ -1,15 +1,14 @@
 #!/usr/bin/env rust-script
 //! Non-mutating self-development preflight for automatic releases.
 //!
-//! A policy-ineligible cycle is expected state on immutable `main`: keep the
-//! range open and defer publishing without making every push red. Operational
-//! errors still fail this command. Manual releases retain the hard gate in
-//! `version-and-commit.rs`.
+//! A policy-ineligible cycle fails this command. Work in this repository is not
+//! deferred, however hard it is, so there is no budget and no grace period: a
+//! release cycle that cannot be cut is a failure from the first push, and stays
+//! one until the work that unblocks it is done (issue #1066).
 //!
-//! Deferring is bounded. Past `DEFERRAL_BUDGET_DAYS` days or
-//! `DEFERRAL_BUDGET_FRAGMENTS` pending fragments the same deferral fails this
-//! command instead of passing quietly, because a release stopped for that long
-//! is an outage a green checkmark hides (issue #1064).
+//! This command never publishes; it only decides. `version-and-commit.rs` holds
+//! the same gate for the manual path, so neither route can be used to escape the
+//! other.
 //!
 //! ```cargo
 //! [package]
@@ -86,15 +85,11 @@ fn run() -> Result<(), String> {
             );
             set_output("should_release", "true")?;
         }
-        self_hosting_metric::SelfDevelopmentReleaseStatus::Deferred(reason) => {
-            println!("::notice title=Release deferred::{reason}");
-            set_output("should_release", "false")?;
-        }
-        // A deferral past its budget is reported as an error and fails this
-        // command. Publishing still does not happen — `should_release` stays
-        // false — but the pipeline stops calling a 14-day outage a success
-        // (issue #1064).
-        self_hosting_metric::SelfDevelopmentReleaseStatus::Overdue(reason) => {
+        // There is no quiet outcome. `should_release` is still written so a
+        // caller reading the output sees a definite answer, and then the command
+        // fails: a cycle that cannot be released is a defect being reported, not
+        // a state being tolerated.
+        self_hosting_metric::SelfDevelopmentReleaseStatus::Blocked(reason) => {
             set_output("should_release", "false")?;
             return Err(reason);
         }
