@@ -81,12 +81,36 @@ fn agent_authored_contract_is_exact_and_controls_the_shipped_ledger() {
     let evidence = include_str!(
         "../../../docs/case-studies/issue-847/self-hosting-authorship/task-decomposition-invariant.lino"
     );
-    assert_eq!(CONTRACT_LINO.as_bytes(), evidence.as_bytes());
+    // The evidence file is the record of what the agent authored in #847, so it
+    // is never rewritten to match later work — doing that would falsify the
+    // thing it exists to prove. What must hold is that every clause the agent
+    // wrote is still shipped verbatim; a clause added afterwards (the `binary`
+    // rule from #1028) is additional, and is asserted on its own below.
+    for clause in evidence
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+    {
+        assert!(
+            CONTRACT_LINO
+                .lines()
+                .any(|shipped| shipped.trim() == clause),
+            "the shipped contract dropped a clause the agent authored in #847: {clause}"
+        );
+    }
 
     let contract = task_decomposition_contract().expect("the embedded contract must be complete");
     assert!(!contract.atomic.is_empty());
     assert!(!contract.execution.is_empty());
     assert!(!contract.learning.is_empty());
+    // Issue #1028: decomposition is a *binary* split, and the contract is what
+    // makes that a shipped rule rather than a convention the runner happens to
+    // follow. A parse that lost the field would return `None` above, so this
+    // asserts the clause is actually populated.
+    assert!(
+        !contract.binary.is_empty(),
+        "the binary-split rule must be part of the shipped contract"
+    );
     assert_eq!(
         TaskStrategyLedger::shipped().approved_strategy_ids(),
         ["task_strategy_verified_change"]

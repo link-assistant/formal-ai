@@ -4,98 +4,162 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
-OUT="${OUT:-$ROOT/docs/case-studies/issue-1028/agent-ladder-run}"
+OUT="${OUT:-$ROOT/docs/case-studies/issue-1028/agent-tree-run}"
+TREE_DEPTH="${TREE_DEPTH:-5}"
+NODE_FILTER="${NODE_FILTER:-}"
 BASE_PORT="${BASE_PORT:-8870}"
-MAX_LEAVES="${MAX_LEAVES:-32}"
-LEAF_FILTER="${LEAF_FILTER:-}"
 
 [[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }
 command -v "$AGENT" >/dev/null || { echo "Agent CLI not installed" >&2; exit 2; }
 command -v git >/dev/null || { echo "git is required" >&2; exit 2; }
 command -v curl >/dev/null || { echo "curl is required" >&2; exit 2; }
+command -v python3 >/dev/null || { echo "python3 is required" >&2; exit 2; }
 
-case "$MAX_LEAVES" in
-  2|4|8|16|32) ;;
-  *) echo "MAX_LEAVES must be one of 2, 4, 8, 16, 32" >&2; exit 2 ;;
+case "$TREE_DEPTH" in
+  0|1|2|3|4|5|all) ;;
+  *) echo "TREE_DEPTH must be 0, 1, 2, 3, 4, 5, or all" >&2; exit 2 ;;
 esac
-if [[ -n "$LEAF_FILTER" && ! "$LEAF_FILTER" =~ ^L(0[1-9]|[12][0-9]|3[0-2])$ ]]; then
-  echo "LEAF_FILTER must be empty or L01..L32" >&2
+if [[ -n "$NODE_FILTER" && ! "$NODE_FILTER" =~ ^(R|[12](\.[12]){0,4})$ ]]; then
+  echo "NODE_FILTER must be R or a binary path such as 2.1.2.2.1" >&2
   exit 2
 fi
 
 mkdir -p "$OUT"
-LEAVES="$OUT/leaves.tsv"
+NODES="$OUT/tree.tsv"
 RUN_LOG="$OUT/run.log"
-: > "$LEAVES"
+: > "$NODES"
 : > "$RUN_LOG"
 
-cat > "$LEAVES" <<'EOF'
-L01	Read issue #1028 and create .agent-ladder/L01-proof.md containing a concise list of its four concrete requirements. Do not change production code.
-L02	Inspect scripts/apt-install-with-retry.sh and record its actual retry variables and defaults in .agent-ladder/L02-proof.md. Use repository source, not memory.
-L03	Inspect tests/unit/ci-cd/issue_1021.rs and identify the reusable apt retry test harness in .agent-ladder/L03-proof.md. Do not modify unrelated tests.
-L04	Inspect .github/workflows/agentic-cli-matrix.yml and record the Xvfb retry budget settings in .agent-ladder/L04-proof.md.
-L05	Calculate the old 3-attempt, 90-second, 5-second-delay worst case from the issue and record the arithmetic in .agent-ladder/L05-proof.md.
-L06	Calculate a geometric 1:2:4 retry schedule for the remaining execution budget and explain the integer-rounding rule in .agent-ladder/L06-proof.md.
-L07	Verify from the wrapper that calls without TEST_BUDGET_SECONDS keep the fixed attempt deadline. Record the exact branch in .agent-ladder/L07-proof.md.
-L08	State the general invariant that a retry schedule must fit inside its enclosing step budget. Record the formula and failure condition in .agent-ladder/L08-proof.md.
-L09	Add or verify a focused issue-1028 test for geometric deadline allocation. Keep the implementation general and write the test name and result to .agent-ladder/L09-proof.md.
-L10	Add or verify a deterministic slow-mirror stand-in for issue #1028, without network access. Prove it in .agent-ladder/L10-proof.md.
-L11	Exercise the old flat per-attempt schedule against the slow-mirror shape and record why it fails in .agent-ladder/L11-proof.md.
-L12	Exercise the budget-aware escalating schedule on the same slow mirror and record the successful recovery in .agent-ladder/L12-proof.md.
-L13	Verify that retry delays are reserved before attempt deadlines are allocated. Add a regression assertion if necessary and document it in .agent-ladder/L13-proof.md.
-L14	Verify that later retries receive strictly more execution time than earlier retries. Add a general regression test if the repository lacks one, then document it in .agent-ladder/L14-proof.md.
-L15	Verify that the first retry share is positive and smaller than the final share. Record the test/evidence in .agent-ladder/L15-proof.md.
-L16	Verify that failure diagnostics report the actual deadline used by the failing attempt, not the historical fixed value. Fix generally if needed and record evidence in .agent-ladder/L16-proof.md.
-L17	Verify that a persistent non-timeout apt failure returns apt's own exit status after all retries. Record evidence in .agent-ladder/L17-proof.md.
-L18	Verify that timeout status 124 is distinguished from apt's ordinary failure statuses. Add a general assertion if needed and record it in .agent-ladder/L18-proof.md.
-L19	Review the retry wrapper comments and make them describe the budget-aware geometric algorithm without relying on issue-specific magic numbers. Record the result in .agent-ladder/L19-proof.md.
-L20	Review the Xvfb workflow environment and wrapper interface together; make any general consistency correction needed and document it in .agent-ladder/L20-proof.md.
-L21	Complete the issue-1028 case-study evidence for the implemented retry behavior. Record the concrete evidence paths in .agent-ladder/L21-proof.md.
-L22	Complete the changelog fragment for the retry scheduling fix. Confirm it matches repository contribution rules and record evidence in .agent-ladder/L22-proof.md.
-L23	Run bash syntax validation against scripts/apt-install-with-retry.sh and record the command and result in .agent-ladder/L23-proof.md.
-L24	Run the focused issue-1028 Rust tests and report their actual result in .agent-ladder/L24-proof.md.
-L25	Inspect the working diff and remove or avoid unrelated changes. Record the final changed-file set in .agent-ladder/L25-proof.md.
-L26	Draft a PR summary that explains the reusable budget-aware retry generalization, not only the observed incident. Put it in .agent-ladder/L26-proof.md.
-L27	Add or verify requirement-traceability evidence for the four issue requirements. Record what is delivered and how it is tested in .agent-ladder/L27-proof.md.
-L28	Validate docs/case-studies/issue-1028/task-decomposition.md has exactly 32 unique L01-L32 leaves and record the checker output in .agent-ladder/L28-proof.md.
-L29	Round-trip the task-decomposition contract/artifact using the repository's existing Links Notation test path and record the result in .agent-ladder/L29-proof.md.
-L30	Inspect any failure evidence available to this leaf, classify the root cause by observable evidence, and record the classification in .agent-ladder/L30-proof.md.
-L31	If this fresh-copy check reveals a capability gap, generalize the production/tooling fix and add a differently worded regression test; never add a prompt-specific branch. Record exactly what generalized capability changed in .agent-ladder/L31-proof.md.
-L32	Produce the final leaf evidence bundle in .agent-ladder/L32-proof.md: completed checks, test commands, changed files, and the agent session identifier.
+cat > "$OUT/leaves.tsv" <<'EOF'
+L01	Inspect the existing task-decomposition data model and identify where a node stores its children.
+L02	Inspect the existing task-decomposition recursion and record how depth limits are represented.
+L03	Inspect the existing atomicity check and record the observable completion contract for leaves.
+L04	Inspect the existing Links Notation rendering and record how child relationships are serialized.
+L05	Inspect the existing recursive execution adapter and record how a decomposition tree is executed.
+L06	Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.
+L07	Write a minimal example of a two-child task decomposition with independently checkable leaves.
+L08	Verify that a leaf without an observable completion contract is never treated as independently checkable.
+L09	Inspect the binary decomposition invariant and explain the exactly-two-children requirement.
+L10	Verify the invariant explicitly names the supported power-of-two levels through 32.
+L11	Add or verify regression coverage for a two-node decomposition at depth one.
+L12	Add or verify regression coverage for a four-node decomposition at depth two.
+L13	Add or verify regression coverage for an eight-node decomposition at depth three.
+L14	Add or verify regression coverage for a sixteen-node decomposition at depth four.
+L15	Add or verify regression coverage for a thirty-two-node decomposition at depth five.
+L16	Verify every tested internal node has exactly two children and never three or more.
+L17	Verify every tested leaf is atomic and independently checkable.
+L18	Verify every tested node has a stable id and a unique dotted path.
+L19	Verify child paths follow the binary 1/2 convention at every depth.
+L20	Verify the node count of a complete depth-five tree is exactly 63 including the root.
+L21	Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.
+L22	Verify a single node can be selected by dotted binary path for focused debugging.
+L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.
+L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.
+L25	Verify every selected node runs in a fresh temporary repository copy.
+L26	Verify every selected node uses the real Agent CLI against the real Formal AI server.
+L27	Verify every selected node requires an observable proof file with its exact node path.
+L28	Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.
+L29	Verify the case-study lists exactly 32 distinct atomic leaf formulations.
+L30	Verify the case-study path structure contains every binary path from depth one through five.
+L31	Use a differently worded decomposition request to check that the capability is not phrase-specific.
+L32	Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.
 EOF
 
-awk -v max="$MAX_LEAVES" 'NR <= max {print}' "$LEAVES" > "$LEAVES.selected"
-mv "$LEAVES.selected" "$LEAVES"
-if [[ -n "$LEAF_FILTER" ]]; then
-  grep -q "^${LEAF_FILTER}[[:space:]]" "$LEAVES" || { echo "$LEAF_FILTER is outside MAX_LEAVES=$MAX_LEAVES" >&2; exit 2; }
-  grep "^${LEAF_FILTER}[[:space:]]" "$LEAVES" > "$LEAVES.selected"
-  mv "$LEAVES.selected" "$LEAVES"
+python3 - "$OUT/leaves.tsv" "$NODES" <<'PY'
+import sys
+from pathlib import Path
+leaves = {}
+for line in Path(sys.argv[1]).read_text().splitlines():
+    leaf, text = line.split('\t', 1)
+    leaves[int(leaf[1:])] = text
+
+def child(path, branch):
+    return path + ("." if path else "") + str(branch)
+
+def leaf_index(path):
+    bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))
+    return int(bits, 2) + 1
+
+def emit(path, depth, out):
+    if depth == 0:
+        text = 'Verify Formal AI supports recursive binary task decomposition from atomic leaves through the complete 32-leaf level.'
+        criterion = 'all_children_pass'
+        node_id = 'R'
+    elif depth == 5:
+        i = leaf_index(path)
+        node_id = path
+        text = f'Atomic task L{i:02d}: {leaves[i]}'
+        criterion = 'observable evidence exists'
+    else:
+        node_id = path
+        bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))
+        prefix = int(bits, 2)
+        span = 2 ** (5 - depth)
+        start = prefix * span + 1
+        end = (prefix + 1) * span
+        text = f'Complete recursive decomposition node {path}, covering atomic tasks L{start:02d}–L{end:02d}; both child nodes must produce independently checkable evidence.'
+        criterion = 'all_children_pass'
+    out.append((node_id, depth, text, criterion, child(path,1), child(path,2) if depth < 5 else ''))
+    if depth < 5:
+        emit(child(path,1), depth+1, out)
+        emit(child(path,2), depth+1, out)
+
+rows=[]
+emit('',0,rows)
+Path(sys.argv[2]).write_text('\n'.join('\t'.join(r) for r in rows)+'\n')
+PY
+
+python3 - "$NODES" "$TREE_DEPTH" "$NODE_FILTER" > "$OUT/selected.tsv" <<'PY'
+import sys
+from pathlib import Path
+rows=[]
+for line in Path(sys.argv[1]).read_text().splitlines():
+    node, depth, text, criterion, left, right = line.split('\t', 5)
+    rows.append((node,int(depth),text,criterion,left,right))
+mode=sys.argv[2]
+filt=sys.argv[3]
+levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+for level in levels:
+    for row in rows:
+        node, depth, *_ = row
+        if depth == level and (not filt or node == filt):
+            print('\t'.join(map(str,row)))
+PY
+
+selected_count=$(wc -l < "$OUT/selected.tsv" | tr -d ' ')
+expected=1
+if [[ "$TREE_DEPTH" = all ]]; then
+  expected=63
+elif [[ -n "$NODE_FILTER" ]]; then
+  expected=1
+else
+  expected=$((1 << TREE_DEPTH))
 fi
-
-leaf_count=$(wc -l < "$LEAVES" | tr -d ' ')
-expected_count="$MAX_LEAVES"
-[[ -n "$LEAF_FILTER" ]] && expected_count=1
-[ "$leaf_count" -eq "$expected_count" ] || { echo "expected $expected_count selected leaves, got $leaf_count" >&2; exit 1; }
-
-check_leaf_28() {
-  local count duplicates
-  count=$(grep -cE '^\| [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ \| L[0-9]{2} ' \
-    "$ROOT/docs/case-studies/issue-1028/task-decomposition.md")
-  duplicates=$(grep -Eo '\| L[0-9]{2} ' "$ROOT/docs/case-studies/issue-1028/task-decomposition.md" | sort | uniq -d)
-  [ "$count" -eq 32 ] || { echo "decomposition rows: $count"; return 1; }
-  [ -z "$duplicates" ] || { echo "duplicate leaf ids: $duplicates"; return 1; }
-}
+[[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
 
 run_one() {
-  local id prompt work port server_pid proof status
-  id="$1"
-  prompt="$2"
-  port=$((BASE_PORT + 10#${id#L} - 1))
+  local id depth prompt criterion work session_dir server_pid port status proof config node_number
+  IFS=$'\t' read -r id depth prompt criterion _left _right <<< "$1"
   session_dir="$OUT/$id"
   work=$(mktemp -d)
   mkdir -p "$session_dir"
+  node_number=$(python3 - "$id" <<'PY'
+import sys
+node=sys.argv[1]
+if node == 'R':
+    print(0)
+else:
+    bits=''.join('0' if x == '1' else '1' for x in node.split('.'))
+    print(int(bits, 2) + 1)
+PY
+)
+  port=$((BASE_PORT + node_number))
+
   cleanup_one() {
-    kill "${server_pid:-}" 2>/dev/null || true
+    if [[ -n "${server_pid:-}" ]]; then
+      kill -- "-${server_pid}" 2>/dev/null || kill "$server_pid" 2>/dev/null || true
+      wait "$server_pid" 2>/dev/null || true
+    fi
     rm -rf "$work"
   }
   trap cleanup_one RETURN
@@ -108,15 +172,19 @@ run_one() {
   git -C "$work" commit -qm ladder-fixture
   mkdir -p "$work/.agent-ladder"
 
-  FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
     FORMAL_AI_MEMORY_PATH="$work/.agent-ladder/memory.lino" \
     FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$port" \
     >"$session_dir/formal-ai.log" 2>&1 &
   server_pid=$!
-  curl -fsS --retry 30 --retry-delay 1 --retry-connrefused "http://127.0.0.1:$port/health" >/dev/null
 
-  local config
-  config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"formal-ai\"}}}},\"model\":\"formalai/formal-ai\"}' "$port")"
+  if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused "http://127.0.0.1:$port/health" >/dev/null; then
+    echo "$id\tFAIL\tformal_ai_server_start" >> "$RUN_LOG"
+    tail -100 "$session_dir/formal-ai.log" >&2 || true
+    return 1
+  fi
+
+  config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$port")"
 
   set +e
   (cd "$work" && \
@@ -124,56 +192,53 @@ run_one() {
     LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
     "$AGENT" --model formalai/formal-ai --permission-mode auto \
       --output-format stream-json --compact-json --disable-stdin \
-      --prompt "$prompt\n\nWrite your evidence to .agent-ladder/$id-proof.md. The first line must be exactly leaf_id=$id. Work only in this temporary repository copy; use web research when it materially improves factual accuracy.") \
+      --prompt "$prompt\n\nThis is recursive binary-tree node $id at depth $depth. Solve only this node's task in this fresh temporary repository. Its completion criterion is: $criterion. Leave observable evidence in .agent-ladder/node-${id}-proof.md. The first line must be exactly node_path=$id. Use web research when it materially improves factual accuracy. Do not claim success without evidence.") \
       >"$session_dir/agent-stream.jsonl" 2>"$session_dir/agent-stderr.log"
   status=$?
   set -e
-  [ "$status" -eq 0 ] || {
+  if [[ "$status" -ne 0 ]]; then
     echo "$id\tFAIL\tagent_exit_$status" >> "$RUN_LOG"
     return 1
-  }
-
-  proof="$work/.agent-ladder/$id-proof.md"
-  [ -s "$proof" ] || { echo "$id\tFAIL\tmissing_proof" >> "$RUN_LOG"; return 1; }
-  grep -q "^leaf_id=$id$" "$proof" || {
-    echo "$id\tFAIL\tbad_proof_marker" >> "$RUN_LOG"
-    return 1
-  }
-
-  if [ "$id" = L23 ]; then
-    bash -n "$work/scripts/apt-install-with-retry.sh"
-  elif [ "$id" = L24 ]; then
-    (cd "$work" && cargo test --test unit -- issue_1028 --nocapture)
-  elif [ "$id" = L28 ]; then
-    check_leaf_28
   fi
 
-  cp -a "$session_dir" "$OUT/${id}-captured"
+  proof="$work/.agent-ladder/node-${id}-proof.md"
+  if [[ ! -s "$proof" ]]; then
+    echo "$id\tFAIL\tmissing_proof" >> "$RUN_LOG"
+    return 1
+  fi
+  if ! grep -q "^node_path=$id$" "$proof"; then
+    echo "$id\tFAIL\tbad_proof_marker" >> "$RUN_LOG"
+    return 1
+  fi
+
   cp "$proof" "$session_dir/proof.md"
-  echo "$id\tPASS\t$proof" >> "$RUN_LOG"
+  echo "$id\tPASS\tdepth=$depth" >> "$RUN_LOG"
 }
 
 failed=0
-while IFS=$'\t' read -r id prompt; do
-  echo "=== $id ===" | tee -a "$RUN_LOG"
-  if run_one "$id" "$prompt"; then :; else failed=1; fi
-done < "$LEAVES"
-
-if [[ -z "$LEAF_FILTER" ]]; then
-  check_leaf_28 | tee "$OUT/decomposition-check.txt"
-fi
+while IFS= read -r line; do
+  [[ -z "$line" ]] && continue
+  node=$(printf '%s\n' "$line" | cut -f1)
+  echo "=== $node ===" | tee -a "$RUN_LOG"
+  if run_one "$line"; then :; else failed=1; break; fi
+done < "$OUT/selected.tsv"
 
 cat > "$OUT/README.md" <<EOF
-# Issue #1028 Agent-CLI ladder run
+# Recursive Formal AI decomposition tree run
 
-Generated by \`experiments/issue_1028_agent_cli_ladder/run.sh\`.
-Each selected leaf runs in a fresh temporary repository copy against the real
+- requested depth: $TREE_DEPTH
+- node filter: ${NODE_FILTER:-none}
+- selected nodes: $selected_count
+- failures: $failed
+
+The canonical decomposition is a complete binary tree: depth 0 has 1 node,
+depth 1 has 2, depth 2 has 4, depth 3 has 8, depth 4 has 16, and depth 5 has 32.
+Each selected node runs in a fresh temporary repository copy against the real
 \`@link-assistant/agent\` CLI and a local \`formal-ai serve --agent-mode\`.
 
-- selected leaves: $leaf_count
-- max leaves: $MAX_LEAVES
-- leaf filter: ${LEAF_FILTER:-none}
-- failures: $failed
+The \`all\` mode verifies the smallest atomic tasks first (32 leaves), then
+16, 8, 4, 2, and finally the root, stopping on the first real failure so the
+underlying capability can be repaired before larger composite tasks are tested.
 EOF
 
 exit "$failed"

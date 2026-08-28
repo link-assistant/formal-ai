@@ -2,4 +2,5 @@ task_decomposition_contract
   record_type meta_invariant
   atomic "require an observable completion contract and no pending children"
   execution "run the exact inspected content-addressed tree"
+  binary "every non-leaf task is recursively split into exactly two children; 1, 2, 4, 8, 16, 32 and so on leaves are valid complete layers"
   learning "activate a strategy only after green regression evidence and human review"

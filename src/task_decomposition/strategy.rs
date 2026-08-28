@@ -17,6 +17,7 @@ const TASK_PLACEHOLDER: &str = "{task}";
 pub struct TaskDecompositionContract {
     pub atomic: String,
     pub execution: String,
+    pub binary: String,
     pub learning: String,
 }
 
@@ -216,13 +217,15 @@ fn parse_contract() -> Option<TaskDecompositionContract> {
     }
     let atomic = root.find_child_value("atomic");
     let execution = root.find_child_value("execution");
+    let binary = root.find_child_value("binary");
     let learning = root.find_child_value("learning");
-    if atomic.is_empty() || execution.is_empty() || learning.is_empty() {
+    if atomic.is_empty() || execution.is_empty() || binary.is_empty() || learning.is_empty() {
         return None;
     }
     Some(TaskDecompositionContract {
         atomic: atomic.to_owned(),
         execution: execution.to_owned(),
+        binary: binary.to_owned(),
         learning: learning.to_owned(),
     })
 }
