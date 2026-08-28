@@ -66,7 +66,11 @@ fn a_script_a_workflow_runs_directly_is_committed_executable() {
             // Only a bare invocation depends on the executable bit. `bash x.sh`
             // and `sh x.sh` name their own interpreter and run either way, so
             // they are not evidence of a defect.
-            if !command.ends_with(".sh") || command.contains(char::is_whitespace) {
+            if std::path::Path::new(command)
+                .extension()
+                .is_none_or(|extension| extension != "sh")
+                || command.contains(char::is_whitespace)
+            {
                 continue;
             }
             let mode = recorded_mode(command)

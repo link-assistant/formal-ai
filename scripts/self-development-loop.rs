@@ -206,9 +206,14 @@ fn pending_fragment_count(repo: &Path) -> usize {
     };
     entries
         .filter_map(Result::ok)
-        .filter(|entry| entry.path().is_file())
-        .filter_map(|entry| entry.file_name().into_string().ok())
-        .filter(|name| !name.starts_with('.') && name.ends_with(".md"))
+        .map(|entry| entry.path())
+        .filter(|path| path.is_file())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "md"))
+        .filter(|path| {
+            path.file_name()
+                .and_then(std::ffi::OsStr::to_str)
+                .is_some_and(|name| !name.starts_with('.'))
+        })
         .count()
 }
 
