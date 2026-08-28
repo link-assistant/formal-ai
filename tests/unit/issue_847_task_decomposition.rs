@@ -167,7 +167,22 @@ fn same_task_agent_cli_authorship_is_preserved() {
         "docs/case-studies/issue-847/self-hosting-authorship/task-decomposition-invariant.lino",
     );
     let canonical = read("data/meta/task-decomposition-invariant.lino");
-    assert_eq!(generated, canonical);
+    // The generated file records what this Agent CLI session actually wrote, so
+    // it stays byte-for-byte as authored: rewriting it to match later work would
+    // destroy the authorship claim this test exists to make. What must remain
+    // true is that the shipped contract still carries every clause that session
+    // produced. A clause added afterwards — the `binary` rule from #1028 — is
+    // additional work, not a contradiction of this one.
+    for clause in generated
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+    {
+        assert!(
+            canonical.lines().any(|shipped| shipped.trim() == clause),
+            "the shipped contract dropped a clause session {session} authored: {clause}"
+        );
+    }
 
     let agent_log = read("docs/case-studies/issue-847/self-hosting-authorship/agent-cli.log");
     assert!(agent_log.contains(session));
