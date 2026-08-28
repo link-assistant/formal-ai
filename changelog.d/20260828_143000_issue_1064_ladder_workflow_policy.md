@@ -11,3 +11,8 @@ bump: patch
   failed on the commit that introduced the workflow, but the follow-up push
   touched only a shell script, so path filtering skipped the lane that would
   have caught them.
+- Commit `experiments/issue_1028_agent_cli_ladder/run.sh` executable. It shipped
+  as mode `100644` while every other script a workflow invokes bare is `100755`,
+  so a checkout handed CI a non-executable file and the ladder's only step died
+  with `Permission denied` on every run the workflow ever had. A new sweep over
+  every workflow pins the executable bit for all thirty such scripts.

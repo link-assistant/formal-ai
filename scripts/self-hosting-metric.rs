@@ -33,7 +33,8 @@ const DEFAULT_TRAILING_WINDOW: usize = 3;
 mod self_development_loop;
 #[allow(unused_imports)]
 pub use self_development_loop::{
-    SelfDevelopmentReleaseStatus, ensure_self_development_release, self_development_release_status,
+    DEFERRAL_BUDGET_DAYS, DEFERRAL_BUDGET_FRAGMENTS, SelfDevelopmentReleaseStatus,
+    ensure_self_development_release, self_development_release_status,
 };
 
 /// Measurement-definition epoch of the rows this build writes.
