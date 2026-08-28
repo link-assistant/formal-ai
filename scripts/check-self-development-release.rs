@@ -6,6 +6,11 @@
 //! errors still fail this command. Manual releases retain the hard gate in
 //! `version-and-commit.rs`.
 //!
+//! Deferring is bounded. Past `DEFERRAL_BUDGET_DAYS` days or
+//! `DEFERRAL_BUDGET_FRAGMENTS` pending fragments the same deferral fails this
+//! command instead of passing quietly, because a release stopped for that long
+//! is an outage a green checkmark hides (issue #1064).
+//!
 //! ```cargo
 //! [package]
 //! edition = "2024"
@@ -84,6 +89,14 @@ fn run() -> Result<(), String> {
         self_hosting_metric::SelfDevelopmentReleaseStatus::Deferred(reason) => {
             println!("::notice title=Release deferred::{reason}");
             set_output("should_release", "false")?;
+        }
+        // A deferral past its budget is reported as an error and fails this
+        // command. Publishing still does not happen — `should_release` stays
+        // false — but the pipeline stops calling a 14-day outage a success
+        // (issue #1064).
+        self_hosting_metric::SelfDevelopmentReleaseStatus::Overdue(reason) => {
+            set_output("should_release", "false")?;
+            return Err(reason);
         }
     }
     Ok(())

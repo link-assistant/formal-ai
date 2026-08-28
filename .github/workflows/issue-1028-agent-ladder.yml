@@ -1,32 +1,21 @@
-name: Issue 1028 Agent CLI ladder
+name: Issue 1028 Agent CLI binary-tree ladder
 
 on:
-  pull_request:
-    paths:
-      - 'src/task_decomposition/**'
-      - 'src/task_decomposition.rs'
-      - 'data/meta/task-decomposition-invariant.lino'
-      - 'tests/unit/specification/**'
-      - 'scripts/apt-install-with-retry.sh'
-      - 'tests/unit/ci-cd/issue_1021.rs'
-      - 'docs/case-studies/issue-1028/**'
-      - 'experiments/issue_1028_agent_cli_ladder/**'
-      - '.github/workflows/issue-1028-agent-ladder.yml'
   workflow_dispatch:
     inputs:
-      max_leaves:
-        description: 'Maximum ladder leaves to execute (2, 4, 8, 16, 32)'
+      depth:
+        description: 'Tree depth to verify: 0=root, 1=2 nodes, 2=4, 3=8, 4=16, 5=32, all=5..0'
         required: false
-        default: '32'
+        default: '5'
         type: choice
-        options: ['2', '4', '8', '16', '32']
-      leaf_filter:
-        description: 'Optional leaf ID (for example L24) to run only one leaf'
+        options: ['0', '1', '2', '3', '4', '5', 'all']
+      node_filter:
+        description: 'Optional node path (for example 2.1.2.2.1)'
         required: false
         default: ''
         type: string
       skip_build:
-        description: 'Reuse the workspace build when debugging the runner (normally false)'
+        description: 'Skip cargo build only when a compatible release binary is already present'
         required: false
         default: false
         type: boolean
@@ -34,14 +23,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: issue-1028-agent-cli-binary-tree
+  cancel-in-progress: false
+
 jobs:
   ladder:
-    name: 32-leaf Agent CLI temporary-copy ladder
+    name: Binary-tree Agent CLI ladder
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     env:
-      MAX_LEAVES: ${{ inputs.max_leaves || '32' }}
-      LEAF_FILTER: ${{ inputs.leaf_filter || '' }}
+      TREE_DEPTH: ${{ inputs.depth || '5' }}
+      NODE_FILTER: ${{ inputs.node_filter || '' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -54,16 +47,18 @@ jobs:
           bun-version-file: .bun-version
           no-cache: true
 
+      # Only the registry is cached. Issue #534 forbids caching the `target`
+      # tree — it is what evicted the shared compiler cache — and the step's own
+      # name is the honest description of what it keeps.
       - name: Cache cargo registry
         uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
-          key: ${{ runner.os }}-issue-1028-agent-ladder-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-issue-1028-agent-tree-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-issue-1028-agent-ladder-
+            ${{ runner.os }}-issue-1028-agent-tree-
             ${{ runner.os }}-cargo-
 
       - name: Build Formal AI
@@ -73,20 +68,19 @@ jobs:
       - name: Install pinned Agent CLI
         run: bun add -g @link-assistant/agent@0.26.0
 
-      - name: Run Agent CLI ladder
+      - name: Run recursive Agent CLI tree
         env:
           AGENT: agent
-          OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-ladder-run
-          LEAF_FILTER: ${{ env.LEAF_FILTER }}
-          # Web access remains available through the Formal AI server; each
-          # leaf is nevertheless isolated in a fresh repository copy.
+          OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-tree-run
+          TREE_DEPTH: ${{ env.TREE_DEPTH }}
+          NODE_FILTER: ${{ env.NODE_FILTER }}
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
-      - name: Upload ladder evidence
+      - name: Upload tree evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: issue-1028-agent-cli-ladder
-          path: docs/case-studies/issue-1028/agent-ladder-run
+          name: issue-1028-agent-cli-binary-tree
+          path: docs/case-studies/issue-1028/agent-tree-run
           retention-days: 14
           if-no-files-found: warn
