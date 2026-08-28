@@ -27,6 +27,30 @@ fn git(repo: &Path, args: &[&str]) -> String {
         .to_owned()
 }
 
+/// `git` with extra environment, for the dates a commit records.
+///
+/// `--date` only moves the author date, and the release cycle's age is measured
+/// from the committer date, so a fixture that needs an old commit must set both.
+fn git_with_env(repo: &Path, args: &[&str], env: &[(&str, &str)]) -> String {
+    let mut command = Command::new("git");
+    command.arg("-C").arg(repo).args(args);
+    for (key, value) in env {
+        command.env(key, value);
+    }
+    let output = command
+        .output()
+        .expect("git must run in the metric fixture");
+    assert!(
+        output.status.success(),
+        "git {args:?} failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout)
+        .expect("git output must be UTF-8")
+        .trim()
+        .to_owned()
+}
+
 fn commit(repo: &Path, message: &str) {
     git(repo, &["add", "."]);
     git(repo, &["commit", "-m", message]);
@@ -140,6 +164,117 @@ fn release_cycle_requires_a_session_backed_merged_pull_request() {
     .expect("the reviewed, session-backed pull request must make the cycle releasable");
     assert_eq!(eligibility.pull_requests, vec![pull_request]);
     assert_eq!(eligibility.target_percentage_basis_points, 0);
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+/// Issue #1064: a young deferral stays quiet, but an old one must not.
+///
+/// The production failure was not that the gate deferred — deferring an
+/// ineligible cycle is correct — it was that the deferral was reported as a
+/// success for 14 days while 45 fragments waited behind it. These two tests pin
+/// each budget dimension separately, so neither can regress into silence alone.
+#[test]
+fn a_deferral_within_budget_stays_a_quiet_deferral() {
+    let repo = fixture_repo();
+    fs::write(repo.join("change.txt"), "unreleased work\n").expect("change must be written");
+    commit(&repo, "unattributed change");
+
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let status = metric_script::self_development_release_status(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("a young ineligible cycle is expected state, not an operational error");
+    assert!(
+        matches!(
+            status,
+            metric_script::SelfDevelopmentReleaseStatus::Deferred(_)
+        ),
+        "a cycle tagged moments ago with no pending fragments must not be overdue: {status:?}"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+#[test]
+fn a_deferral_past_the_fragment_budget_is_reported_as_overdue() {
+    let repo = fixture_repo();
+    fs::create_dir_all(repo.join("changelog.d")).expect("fragment directory must be created");
+    for index in 0..metric_script::DEFERRAL_BUDGET_FRAGMENTS {
+        fs::write(
+            repo.join(format!("changelog.d/2026080{index:02}_120000_fragment.md")),
+            "### Fixed\n- a merged change waiting for a release it never gets\n",
+        )
+        .expect("fragment must be written");
+    }
+    commit(&repo, "merge work that promised a release");
+
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let status = metric_script::self_development_release_status(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("an overdue deferral is a policy verdict, not an operational error");
+    let metric_script::SelfDevelopmentReleaseStatus::Overdue(reason) = &status else {
+        panic!(
+            "{} fragments must outlive the deferral budget: {status:?}",
+            metric_script::DEFERRAL_BUDGET_FRAGMENTS
+        );
+    };
+    assert!(
+        reason.contains("merged Formal AI-authored pull request"),
+        "the original ineligibility reason must survive escalation: {reason}"
+    );
+    assert!(
+        reason.contains("changelog fragments are waiting"),
+        "the reason must name the budget that was breached: {reason}"
+    );
+
+    // The hard gate must reject an overdue cycle exactly as it rejects a
+    // deferred one: escalation changes how loudly the pipeline reports the
+    // stop, never whether a policy-ineligible cycle can publish.
+    let error = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect_err("an overdue cycle must still not be releasable");
+    assert!(error.contains("changelog fragments are waiting"), "{error}");
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+#[test]
+fn a_deferral_past_the_day_budget_is_reported_as_overdue() {
+    let repo = fixture_repo();
+    // Re-date the tagged baseline past the budget. The cycle's age is measured
+    // from the commit the last release tag points at, so an old tag with no
+    // eligible work since is exactly the shape issue #1064 hit in production.
+    let stale = format!("{} days ago", metric_script::DEFERRAL_BUDGET_DAYS + 1);
+    // Both dates move: the cycle's age is read from the committer date, and
+    // leaving the author date behind would describe a commit that git itself
+    // reports inconsistently.
+    git_with_env(
+        &repo,
+        &["commit", "--amend", "--no-edit", "--allow-empty"],
+        &[
+            ("GIT_AUTHOR_DATE", stale.as_str()),
+            ("GIT_COMMITTER_DATE", stale.as_str()),
+        ],
+    );
+    git(&repo, &["tag", "-f", "v1.0.0"]);
+    fs::write(repo.join("change.txt"), "unreleased work\n").expect("change must be written");
+    commit(&repo, "unattributed change");
+
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let status = metric_script::self_development_release_status(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("an overdue deferral is a policy verdict, not an operational error");
+    let metric_script::SelfDevelopmentReleaseStatus::Overdue(reason) = &status else {
+        panic!("a cycle older than the budget must be overdue: {status:?}");
+    };
+    assert!(
+        reason.contains("days (budget"),
+        "the reason must name the day budget that was breached: {reason}"
+    );
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }

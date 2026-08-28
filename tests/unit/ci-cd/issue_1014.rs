@@ -77,6 +77,25 @@ fn automatic_release_defers_an_ineligible_cycle_without_weakening_the_manual_gat
     assert!(policy.contains("Deferred"));
     assert!(preflight.contains("set_output(\"should_release\", \"false\")"));
     assert!(preflight.contains("::notice title=Release deferred::"));
+    // Issue #1064: deferring is bounded. Past its budget the same verdict must
+    // fail the preflight instead of passing quietly, while still never letting
+    // a policy-ineligible cycle publish.
+    assert!(
+        policy.contains("Overdue"),
+        "a deferral must be able to outlive its budget"
+    );
+    assert!(
+        policy.contains("DEFERRAL_BUDGET_DAYS") && policy.contains("DEFERRAL_BUDGET_FRAGMENTS"),
+        "both budget dimensions must be declared in the policy"
+    );
+    assert!(
+        preflight.contains("SelfDevelopmentReleaseStatus::Overdue"),
+        "the preflight must classify an overdue deferral"
+    );
+    assert!(
+        preflight.contains("return Err(reason)"),
+        "an overdue deferral must fail the preflight rather than report success"
+    );
     assert!(automatic.contains("id: release_gate"));
     assert!(automatic.contains("steps.release_gate.outputs.should_release == 'true'"));
     assert!(manual.contains("scripts/version-and-commit.rs"));
