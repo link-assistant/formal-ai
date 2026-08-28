@@ -6,7 +6,7 @@
 # text to the refusal, which is exactly the shape #1065 had -- and asserts the
 # test goes red on it, then restores the file and asserts it goes green again.
 #
-# Usage: experiments/issue_1066_no_deferral/falsify-reintroduced-budget.sh
+# Usage: experiments/issue_1068_no_deferral/falsify-reintroduced-budget.sh
 set -euo pipefail
 
 root=$(git rev-parse --show-toplevel)
