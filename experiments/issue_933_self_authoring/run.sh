@@ -55,7 +55,11 @@ dispatch_status=$?
 set -e
 
 ruby -rjson -e '
-  report = JSON.parse(File.read(ARGV.fetch(0)))
+  # The report is UTF-8. `File.read` decodes with the locale default, so a
+  # POSIX/C locale turns any non-ASCII byte in a task or verifier message
+  # into Encoding::InvalidByteSequenceError and the run reports a failure
+  # the dispatch never had. Read the bytes and name their real encoding.
+  report = JSON.parse(File.read(ARGV.fetch(0), encoding: Encoding::UTF_8))
   trace = report.fetch("incremental")
   abort "dispatch command failed" unless ARGV.fetch(1) == "0"
   abort "root was not solved" unless trace.fetch("solved")
