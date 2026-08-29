@@ -511,6 +511,23 @@ fn an_answer_only_the_symbolic_engine_reaches_is_still_delivered_to_the_named_fi
             "triage/billing.md",
             "triage=billing",
         ),
+        // Both prompts above ask about task structure, which the agentic router
+        // now answers on its own -- so they no longer reach the symbolic engine
+        // and no longer pin this route. These two ask something no agentic route
+        // answers, which is exactly the state that made this gap visible: the
+        // router has no plan, the engine does, and the caller asked for a file.
+        (
+            "What is 17 multiplied by 23? Record the answer in `math/product.md`. \
+             The first line must be exactly `math=product`.",
+            "math/product.md",
+            "math=product",
+        ),
+        (
+            "What is 480 divided by 15? Save the result in `arith/quotient.md`. The \
+             first line must be exactly `arith=quotient`.",
+            "arith/quotient.md",
+            "arith=quotient",
+        ),
     ] {
         let paths = planned_paths(prompt);
         assert!(
