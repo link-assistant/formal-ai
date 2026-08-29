@@ -21,7 +21,7 @@ use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalization_recipe;
 use super::general_execution::plan_general_change_step;
 use super::general_planner::{
-    GeneralChangePlan, compose_general_change_plan, has_authoritative_literal_write, objective_text,
+    compose_general_change_plan, has_authoritative_literal_write, objective_text,
 };
 use super::google_trends_catalog;
 use super::google_trends_learning;
@@ -45,9 +45,9 @@ use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
 use super::structured_edit;
+use super::task_structure;
 use super::tool_result;
 use super::web_research;
-use super::write_request;
 use super::{algorithm_learning, capability_router};
 use super::{change_request, code_artifact};
 use crate::conversation_control::is_conversation_control_prompt;
@@ -192,7 +192,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // file-write requests remain below the semantic coding routes.
     if has_authoritative_literal_write(&task)
         && let Some(plan) = tool_for(tool_names, Capability::Write)
-            .and_then(|_| compose_constrained_change_plan(&task))
+            .and_then(|_| compose_general_change_plan(&task))
             .map(|plan| plan_general_change_step(messages, tool_names, &plan))
         {
             return Some(plan);
@@ -220,7 +220,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
     if let Some(plan) = tool_for(tool_names, Capability::Write)
-        .and_then(|_| compose_constrained_change_plan(&task))
+        .and_then(|_| compose_general_change_plan(&task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
@@ -439,6 +439,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
                     json!({ "query": query, "pattern": query }).to_string(),
                 ));
             }
+    // A question about how a task decomposes is answered by decomposing it. It
+    // has to be resolved before the research routers for the same reason the
+    // workspace inspection above does: the question shape alone would otherwise
+    // send a task the web has never heard of to a web search (issue #1066).
+    if let Some(plan) = task_structure::plan_task_structure_step(&task) {
+        return Some(plan);
+    }
     if let Some(query) = web_research::web_research_query_for(messages)
         && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
             return Some(plan);
@@ -477,7 +484,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = note_composition::plan_note_composition_step(&task, messages) {
         return Some(plan);
     }
-    if let Some(plan) = compose_constrained_change_plan(&task)
+    if let Some(plan) = compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
@@ -489,19 +496,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     None
 }
 
-/// Compose a literal-write plan for `task`, unless its bytes would break a
-/// constraint the same request states about the file being written.
-///
-/// Every literal-write route shares this composer, and the ladder reached two of
-/// them with the same request: the broad route first, and -- once the request had
-/// been handed on and nothing else could plan it -- the late fallback. A guard on
-/// one of them only moves the misroute. See
-/// [`write_request::honours_pinned_first_line`] for what the guard rejects and
-/// why (issue #1066).
-fn compose_constrained_change_plan(task: &str) -> Option<GeneralChangePlan> {
-    compose_general_change_plan(task)
-        .filter(|plan| write_request::honours_pinned_first_line(task, &plan.content))
-}
 /// Run a shell command through the client-owned tool loop, then present its result.
 fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
     let progress = Progress::scan(messages);
