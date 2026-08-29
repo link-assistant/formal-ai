@@ -47,3 +47,31 @@ pub(super) fn trim_trailing_sentence_dot(token: &str) -> &str {
         trimmed
     }
 }
+
+/// Peel the punctuation a sentence wrapped around a path token, in any order.
+///
+/// Prose nests its marks, and the writer picks the nesting: a fenced path that
+/// ends a sentence arrives as `` `Cargo.toml`. `` -- a fence inside a full stop
+/// -- while the same path mid-sentence arrives as `` `Cargo.toml`, ``. Stripping
+/// each class once, in whichever order the code happened to write, clears the
+/// outermost layer and leaves the inner one: `` `Cargo.toml`. `` kept its
+/// closing fence, stopped being file-shaped, and the plainest read request there
+/// is fell through to the open-web routers (issue #1066).
+///
+/// Peeling to a fixpoint is what stops the writer's ordering from mattering.
+/// `strip` supplies the marks the calling route accepts; the sentence's
+/// terminating dot is applied here so every route keeps drawing that boundary
+/// the same way.
+pub(super) fn peel_sentence_punctuation<'a>(
+    token: &'a str,
+    strip: impl Fn(&'a str) -> &'a str,
+) -> &'a str {
+    let mut current = token;
+    loop {
+        let next = trim_trailing_sentence_dot(strip(current));
+        if next == current {
+            return current;
+        }
+        current = next;
+    }
+}

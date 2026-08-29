@@ -7,7 +7,7 @@
 //! composes them into a plan; this module answers only what the prose says, so
 //! a second route can ask the same questions without re-deriving them and
 //! drifting from the parse the planner will actually execute (issue #1066).
-use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
+use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::shell_command_policy::sentences;
 use crate::seed::{self, Slot};
 /// One whitespace token together with its byte span in the original request.
@@ -50,10 +50,11 @@ pub(super) fn bare_surfaces(role: &str) -> Vec<String> {
 /// ("… add the plural to томат.") is not mistaken for a file whose only dot is the
 /// terminal period — a real filename never ends in a bare `.`/`!`/`?`.
 pub(super) fn clean_path_token(word: &str) -> &str {
-    trim_trailing_sentence_dot(
-        word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
-            .trim_end_matches(['!', '?']),
-    )
+    peel_sentence_punctuation(word, |token| {
+        token
+            .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
+            .trim_end_matches(['!', '?'])
+    })
 }
 /// Whether a safe-looking token names a file rather than merely using the
 /// conventional `./` prefix for a directory.
@@ -162,6 +163,28 @@ pub(super) fn stated_write_target(request: &str) -> Option<String> {
 pub(super) fn states_write_action(request: &str) -> bool {
     first_action_cue_end(&tokens(request)).is_some()
 }
+
+/// Whether `request` names `path` as the destination of a write it states.
+///
+/// The read routes need this to keep from opening the file they were asked to
+/// create. "Leave observable evidence in `.agent-ladder/node-1.2-proof.md`. The
+/// first line must be exactly `node_path=1.2`" names one path and one read cue
+/// -- *first line* -- and the two belong to different obligations: the path is
+/// where the answer goes, the cue describes how it has to open. Read the prompt
+/// as a whole and the cue captures the path, and the run opens the file it was
+/// supposed to write.
+///
+/// Scoped to a sentence, for the same reason [`super::evidence_record`] scopes
+/// its own split: "Read the file `Cargo.toml`. Record what you find in
+/// `notes/report.md`." states a write of the second path only, and the first
+/// must stay readable.
+pub(super) fn is_stated_write_target(request: &str, path: &str) -> bool {
+    sentences(request).into_iter().any(|sentence| {
+        states_write_action(sentence.text)
+            && stated_write_target(sentence.text).is_some_and(|target| target == path)
+    })
+}
+
 /// The opening line a sentence pins, read through
 /// [`seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD`].
 ///
@@ -190,27 +213,74 @@ pub(super) fn pinned_first_line_of_request(request: &str) -> Option<String> {
         .into_iter()
         .find_map(|sentence| pinned_first_line(sentence.text))
 }
-/// Whether composed literal content is allowed to be written for `request`.
+/// The same content, rewritten to open with the line `request` pinned.
 ///
 /// A literal write is only literal when it satisfies every stated constraint on
-/// the file it writes. "Produce a final evidence note containing the selected
-/// tree level ... The first line must be exactly `node_path=2.2.2.2.2`" reads as
-/// a literal write to the broad parser -- "containing" cues content -- and the
-/// bytes it recovers are the prose that followed the cue, which do not start
-/// with the pinned line. Writing them would satisfy the sentence that was parsed
-/// and violate the one that was not. The narrower reading, where the note is the
-/// outcome of work still to be done and the pinned line is its header, belongs to
-/// [`super::evidence_record`], so this predicate stands the literal route aside
-/// and lets the request reach it (issue #1066).
-pub(super) fn honours_pinned_first_line(request: &str, content: &str) -> bool {
-    pinned_first_line_of_request(request).is_none_or(|line| content.starts_with(&line))
+/// the file it writes, and a request can state two: what the file contains, and
+/// how it begins. "Write `notes/x.md` containing alpha, beta and gamma. The
+/// first line must be exactly `id=7`" reads as a literal write to the broad
+/// content parser -- *containing* cues content -- and the bytes it recovers are
+/// the prose that followed the cue, which neither open with the pinned line nor
+/// leave the pinning sentence out. Writing them satisfies the sentence that was
+/// parsed and violates the one that was not.
+///
+/// Both corrections come out of a parse that has already happened -- the pinned
+/// line, and which sentence pinned it -- so the plan is repaired rather than
+/// dropped. Dropping it was the earlier fix, and it moved the failure instead of
+/// removing it: a request that states every byte it wants and no work to do has
+/// no other route to reach, so declining sent the plainest write there is to the
+/// open-web routers.
+///
+/// The pinning sentence leaves the body with it. It was recovered only because
+/// the content lead swept up the rest of the prose; the caller stated it as a
+/// constraint on the file, never as something to put inside the file.
+///
+/// Returns `None` when there is nothing to repair -- `request` pins no line, or
+/// `content` already opens with it (issue #1066).
+pub(super) fn honouring_pinned_first_line(request: &str, content: &str) -> Option<String> {
+    let line = pinned_first_line_of_request(request)?;
+    if content.starts_with(&line) {
+        return None;
+    }
+    let body = without_pinning_sentences(content);
+    Some(if body.is_empty() {
+        format!("{line}\n")
+    } else {
+        format!("{line}\n\n{body}\n")
+    })
 }
-/// The byte offset just past the first `file_write_action_cue` token.
-pub(super) fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
+
+/// `content` without any sentence that is itself a leading-line constraint.
+fn without_pinning_sentences(content: &str) -> String {
+    sentences(content)
+        .into_iter()
+        .filter(|sentence| pinned_first_line(sentence.text).is_none())
+        .map(|sentence| content[sentence.span].trim())
+        .filter(|kept| !kept.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+/// The first `file_write_action_cue` token, with its span.
+fn first_action_cue<'a, 'b>(toks: &'a [Token<'b>]) -> Option<&'a Token<'b>> {
     let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
     toks.iter()
         .find(|token| actions.contains(&clean_cue_token(token.text)))
-        .map(|token| token.end)
+}
+/// The byte offset just past the first `file_write_action_cue` token.
+pub(super) fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
+    first_action_cue(toks).map(|token| token.end)
+}
+/// The byte offset at which the first `file_write_action_cue` token begins.
+///
+/// [`first_action_cue_end`] answers where a payload may start; this answers
+/// where the delivery clause does, and the two questions have different callers.
+/// A sentence can carry both halves of a request -- "Break the customer import
+/// rewrite into sub-tasks and record what you work out in `import-split.md`"
+/// states the work and then, mid-sentence, says where its result goes -- so a
+/// reader that hands the whole sentence to delivery throws the work away with
+/// it (issue #1066).
+pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
+    first_action_cue(toks).map(|token| token.start)
 }
 /// Trim a recovered content span down to its literal payload, dropping the
 /// leading clause separator ("… the following: hello") and any surrounding

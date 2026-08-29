@@ -103,6 +103,7 @@ src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 src/agentic_coding/source_links.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+src/agentic_coding/write_request.rs	{line}\n\n{body}\n
 src/associative_package.rs	Package handler: {}
 src/associative_package.rs	Package permission: {}
 src/associative_package.rs	Package trigger: {}
