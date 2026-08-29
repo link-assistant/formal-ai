@@ -779,6 +779,16 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth bound zh"
+  response_task_decomposition_single_need_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need ru"
+  response_task_decomposition_unsplit_depth_bound_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound ru"
   response_task_plan_stage_verification_en
     defined-by response_template
     lexeme en

@@ -2,10 +2,10 @@ self_ast_census
   target src/task_decomposition.rs
   language rust
   fidelity signature
-  byte_len 23185
-  line_count 673
-  content_id source_module_4c6d8262190ff6f5
-  symbol_count 41
+  byte_len 24161
+  line_count 691
+  content_id source_module_c1a619e238216a5c
+  symbol_count 42
   symbols
     module artifact 38 38
     module learning 39 39
@@ -22,29 +22,30 @@ self_ast_census
     struct Decomposition 174 181
     function is_atomic 188 190
     function depth_bound_reached 195 197
-    function leaves 201 205
-    function rows 210 214
-    function numbered_lines 220 242
-    function to_links_notation 246 248
-    function to_recursive_task 252 254
-    function decompose_task 263 265
-    function decompose_task_with_ledger 273 287
-    function build 289 387
-    function child_path 390 397
-    function leaf 399 418
-    function split_once_checkable 427 429
-    function split_once_checkable_with_ledger 431 442
-    function is_checkable 450 452
-    function completion_criterion_for 454 465
-    function segment 469 475
-    function split_sentences 479 494
-    function split_clauses 499 508
-    function split_on_markers 512 522
-    function split_piece_on_marker 524 550
-    function distribute_head_action 560 578
-    function head_action 581 590
-    function merge_uncheckable 597 617
-    function join 619 626
-    function push_trimmed 628 633
-    function record_task_decomposition 640 659
-    function emit_sub_impulses 661 673
+    function unenumerable_reason 213 215
+    function leaves 219 223
+    function rows 228 232
+    function numbered_lines 238 260
+    function to_links_notation 264 266
+    function to_recursive_task 270 272
+    function decompose_task 281 283
+    function decompose_task_with_ledger 291 305
+    function build 307 405
+    function child_path 408 415
+    function leaf 417 436
+    function split_once_checkable 445 447
+    function split_once_checkable_with_ledger 449 460
+    function is_checkable 468 470
+    function completion_criterion_for 472 483
+    function segment 487 493
+    function split_sentences 497 512
+    function split_clauses 517 526
+    function split_on_markers 530 540
+    function split_piece_on_marker 542 568
+    function distribute_head_action 578 596
+    function head_action 599 608
+    function merge_uncheckable 615 635
+    function join 637 644
+    function push_trimmed 646 651
+    function record_task_decomposition 658 677
+    function emit_sub_impulses 679 691

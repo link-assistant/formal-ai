@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/meanings.rs
   language rust
   fidelity signature
-  byte_len 36253
-  line_count 810
-  content_id source_module_0f188f9d9a9200fd
-  symbol_count 54
+  byte_len 39301
+  line_count 869
+  content_id source_module_9d8686e7765695d5
+  symbol_count 57
   symbols
     module parse 26 26
     enum Slot 48 57
@@ -46,18 +46,21 @@ self_ast_census
     function mentions_role 468 471
     function mentions_role_spelled 485 492
     function mentions_role_raw 507 510
-    function arithmetic_normalization_tables 532 570
-    function arithmetic_operators 581 600
-    function words_for_role_in_languages 612 627
-    function first_role_language 639 659
-    function first_role_match 665 670
-    function first_role_match_in_languages_raw 682 692
-    function mentions_role_in_languages_raw 701 709
-    function ontology_root 714 718
-    function reaches_root 727 747
-    function ontology_type_root 756 760
-    function ontology_categories 768 770
-    function surface_present 780 791
-    function lexicon 796 799
-    static CACHE 797 797
-    function parse_lexicon_text 808 810
+    function mentions_role_separated 533 539
+    function arithmetic_normalization_tables 561 599
+    function arithmetic_operators 610 629
+    function words_for_role_in_languages 641 656
+    function first_role_language 668 688
+    function first_role_match 694 699
+    function first_role_match_in_languages_raw 711 721
+    function mentions_role_in_languages_raw 730 738
+    function ontology_root 743 747
+    function reaches_root 756 776
+    function ontology_type_root 785 789
+    function ontology_categories 797 799
+    function surface_present 809 820
+    const PHRASAL_VERB_OBJECT_LIMIT 829 829
+    function separated_surface_present 837 850
+    function lexicon 855 858
+    static CACHE 856 856
+    function parse_lexicon_text 867 869

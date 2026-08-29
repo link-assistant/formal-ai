@@ -499,6 +499,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "response_summarization_ratchet_nothing_applicable_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5a00f4738a5128b4
+    source "data/seed/closure-generated-11.lino"
+    record "response_task_decomposition_single_need_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_765eac6bf4bdab64
     source "data/seed/closure-generated-11.lino"
     record "summarize_conversation"

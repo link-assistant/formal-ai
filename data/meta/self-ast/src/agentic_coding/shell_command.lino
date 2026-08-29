@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 39479
-  line_count 878
-  content_id source_module_ab64f48542e5df24
+  byte_len 39731
+  line_count 882
+  content_id source_module_fb20cc3f17421992
   symbol_count 39
   symbols
     const REPORT_ISSUE_ACTION 22 22
@@ -29,30 +29,30 @@ self_ast_census
     function valid_search_identifier 401 411
     function sentences_with_mood 431 462
     function requesting_sentences 472 486
-    function carries_authoring_task 496 503
-    function strip_subject_lead 507 518
-    function labels_a_value 544 560
-    function is_fact_statement 562 593
-    function intent_shell_command 595 647
-    function path_arguments 649 666
-    function names_a_path_object 677 682
-    function looks_like_a_path 687 698
-    function collect_path_arguments 700 731
-    function local_search_query 733 759
-    function resolve_shell_command 761 767
-    function workspace_command 769 780
-    function remainder_argument 783 791
-    function path_argument 796 806
-    function name_lead_argument 811 826
-    function is_safe_path 838 847
-    function named_shell_command 871 876
+    function carries_authoring_task 500 507
+    function strip_subject_lead 511 522
+    function labels_a_value 548 564
+    function is_fact_statement 566 597
+    function intent_shell_command 599 651
+    function path_arguments 653 670
+    function names_a_path_object 681 686
+    function looks_like_a_path 691 702
+    function collect_path_arguments 704 735
+    function local_search_query 737 763
+    function resolve_shell_command 765 771
+    function workspace_command 773 784
+    function remainder_argument 787 795
+    function path_argument 800 810
+    function name_lead_argument 815 830
+    function is_safe_path 842 851
+    function named_shell_command 875 880
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24379
-    named_node_count 5195
+    total_link_count 24431
+    named_node_count 5209
     distinct_node_kinds 73
     node_kinds
       abstract_type 2
@@ -72,7 +72,7 @@ self_ast_census
       const_item 2
       continue_expression 3
       crate 4
-      doc_comment 235
+      doc_comment 239
       else_clause 1
       expression_statement 66
       field_expression 421
@@ -90,14 +90,14 @@ self_ast_census
       let_declaration 86
       lifetime 9
       lifetime_parameter 3
-      line_comment 257
+      line_comment 261
       macro_invocation 18
       match_arm 11
       match_block 2
       match_expression 2
       match_pattern 11
       mutable_specifier 8
-      outer_doc_comment_marker 224
+      outer_doc_comment_marker 228
       parameter 81
       parameters 37
       parenthesized_expression 11
@@ -113,7 +113,7 @@ self_ast_census
       source_file 1
       string_content 23
       string_literal 24
-      super 7
+      super 8
       token_tree 19
       try_expression 12
       tuple_expression 10
@@ -127,4 +127,4 @@ self_ast_census
       unary_expression 61
       use_declaration 6
       use_list 4
-      visibility_modifier 4
+      visibility_modifier 5

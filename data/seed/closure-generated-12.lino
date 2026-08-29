@@ -1004,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "task atomicity no"
+  task_decomposition_single_need
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition single need"
   task_plan_stage_implementation
     defined-by intent
     lexeme en

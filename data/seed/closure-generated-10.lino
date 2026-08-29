@@ -694,6 +694,11 @@ meanings
     lexeme en
       surface
         text "response task decomposition atomic zh"
+  response_task_decomposition_unsplit_depth_bound_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound hi"
   response_task_first_step_lead_ru
     defined-by response_template
     lexeme en

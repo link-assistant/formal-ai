@@ -779,6 +779,11 @@ meanings
     lexeme en
       surface
         text "response summarization report headline zh"
+  response_task_decomposition_single_need_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need zh"
   response_task_plan_stage_requirements_hi
     defined-by response_template
     lexeme en

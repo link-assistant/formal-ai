@@ -729,6 +729,11 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth marker en"
+  response_task_decomposition_single_need_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need hi"
   response_task_plan_stage_verification_zh
     defined-by response_template
     lexeme en

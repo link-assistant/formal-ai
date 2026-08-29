@@ -603,6 +603,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_thinking_narrative_learn_from_source_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_496c41e4dfbd7a17
+    source "data/seed/closure-generated-12.lino"
+    record "task_decomposition_single_need"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5f603758a86c19c7
     source "data/seed/closure-generated-12.lino"
     record "task_plan_stage_implementation"

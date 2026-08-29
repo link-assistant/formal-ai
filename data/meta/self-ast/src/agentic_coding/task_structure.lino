@@ -1,0 +1,54 @@
+self_ast_census
+  target src/agentic_coding/task_structure.rs
+  language rust
+  fidelity full_ast
+  byte_len 3231
+  line_count 65
+  content_id source_module_3e656db544334c0f
+  symbol_count 1
+  symbols
+    function plan_task_structure_step 48 65
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1068
+    named_node_count 252
+    distinct_node_kinds 35
+    node_kinds
+      arguments 12
+      binary_expression 2
+      block 4
+      call_expression 12
+      crate 2
+      doc_comment 42
+      expression_statement 7
+      field_expression 9
+      field_identifier 9
+      function_item 1
+      generic_type 1
+      identifier 31
+      if_expression 3
+      inner_doc_comment_marker 23
+      let_declaration 2
+      line_comment 42
+      outer_doc_comment_marker 19
+      parameter 1
+      parameters 1
+      primitive_type 1
+      reference_expression 2
+      reference_type 1
+      return_expression 3
+      scoped_identifier 5
+      scoped_use_list 2
+      source_file 1
+      string_content 1
+      string_literal 1
+      super 2
+      type_arguments 1
+      type_identifier 2
+      unary_expression 1
+      use_declaration 3
+      use_list 2
+      visibility_modifier 1
