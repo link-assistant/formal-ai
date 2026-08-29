@@ -99,14 +99,19 @@ def emit(path, depth, out):
         end = (prefix + 1) * span
         text = f'Complete recursive decomposition node {path}, covering atomic tasks L{start:02d}–L{end:02d}; both child nodes must produce independently checkable evidence.'
         criterion = 'all_children_pass'
-    out.append((node_id, depth, text, criterion, child(path,1), child(path,2) if depth < 5 else ''))
+    left = child(path, 1) if depth < 5 else ''
+    right = child(path, 2) if depth < 5 else ''
+    out.append((node_id, depth, text, criterion, left, right))
     if depth < 5:
         emit(child(path,1), depth+1, out)
         emit(child(path,2), depth+1, out)
 
 rows=[]
 emit('',0,rows)
-Path(sys.argv[2]).write_text('\n'.join('\t'.join(r) for r in rows)+'\n')
+# `depth` is an int, and str.join refuses a non-str item, so joining the row
+# straight raised TypeError before a single node was ever selected. Render
+# every field before joining rather than trusting the tuple to be all strings.
+Path(sys.argv[2]).write_text('\n'.join('\t'.join(map(str, r)) for r in rows)+'\n')
 PY
 
 python3 - "$NODES" "$TREE_DEPTH" "$NODE_FILTER" > "$OUT/selected.tsv" <<'PY'
@@ -138,7 +143,7 @@ fi
 [[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
 
 run_one() {
-  local id depth prompt criterion work session_dir server_pid port status proof config node_number
+  local id depth prompt criterion work session_dir server_pid port status proof config node_number full_prompt
   IFS=$'\t' read -r id depth prompt criterion _left _right <<< "$1"
   session_dir="$OUT/$id"
   work=$(mktemp -d)
@@ -179,12 +184,18 @@ PY
   server_pid=$!
 
   if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused "http://127.0.0.1:$port/health" >/dev/null; then
-    echo "$id\tFAIL\tformal_ai_server_start" >> "$RUN_LOG"
+    printf '%s\tFAIL\tformal_ai_server_start\n' "$id" >> "$RUN_LOG"
     tail -100 "$session_dir/formal-ai.log" >&2 || true
     return 1
   fi
 
   config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$port")"
+
+  # Built with printf, not interpolated into a double-quoted string: bash does
+  # not expand \n there, so the node instructions used to reach the agent as one
+  # line with two literal backslash-n in the middle of it.
+  printf -v full_prompt '%s\n\nThis is recursive binary-tree node %s at depth %s. Solve only this node'"'"'s task in this fresh temporary repository. Its completion criterion is: %s. Leave observable evidence in .agent-ladder/node-%s-proof.md. The first line must be exactly node_path=%s. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n' \
+    "$prompt" "$id" "$depth" "$criterion" "$id" "$id"
 
   set +e
   (cd "$work" && \
@@ -192,27 +203,27 @@ PY
     LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
     "$AGENT" --model formalai/formal-ai --permission-mode auto \
       --output-format stream-json --compact-json --disable-stdin \
-      --prompt "$prompt\n\nThis is recursive binary-tree node $id at depth $depth. Solve only this node's task in this fresh temporary repository. Its completion criterion is: $criterion. Leave observable evidence in .agent-ladder/node-${id}-proof.md. The first line must be exactly node_path=$id. Use web research when it materially improves factual accuracy. Do not claim success without evidence.") \
+      --prompt "$full_prompt") \
       >"$session_dir/agent-stream.jsonl" 2>"$session_dir/agent-stderr.log"
   status=$?
   set -e
   if [[ "$status" -ne 0 ]]; then
-    echo "$id\tFAIL\tagent_exit_$status" >> "$RUN_LOG"
+    printf '%s\tFAIL\tagent_exit_%s\n' "$id" "$status" >> "$RUN_LOG"
     return 1
   fi
 
   proof="$work/.agent-ladder/node-${id}-proof.md"
   if [[ ! -s "$proof" ]]; then
-    echo "$id\tFAIL\tmissing_proof" >> "$RUN_LOG"
+    printf '%s\tFAIL\tmissing_proof\n' "$id" >> "$RUN_LOG"
     return 1
   fi
   if ! grep -q "^node_path=$id$" "$proof"; then
-    echo "$id\tFAIL\tbad_proof_marker" >> "$RUN_LOG"
+    printf '%s\tFAIL\tbad_proof_marker\n' "$id" >> "$RUN_LOG"
     return 1
   fi
 
   cp "$proof" "$session_dir/proof.md"
-  echo "$id\tPASS\tdepth=$depth" >> "$RUN_LOG"
+  printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" >> "$RUN_LOG"
 }
 
 failed=0
