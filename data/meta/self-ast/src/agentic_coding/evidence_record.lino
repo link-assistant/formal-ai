@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 12526
+  byte_len 12528
   line_count 261
-  content_id source_module_ab7410fedad818f2
+  content_id source_module_fe2a28015df55d46
   symbol_count 7
   symbols
     struct Obligation 54 61

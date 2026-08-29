@@ -226,7 +226,7 @@ pub(super) fn plan_evidence_record_step(
 /// reads like prose about the subject. "Today's date is Sunday. Create a file
 /// `main.py` that prints Hello, world!" put the first sentence to the engine,
 /// which described the search it would run for it; delivering that description
-/// wrote a paragraph about DuckDuckGo into the caller's Python file. Where the
+/// wrote a paragraph about `DuckDuckGo` into the caller's Python file. Where the
 /// engine would search, this route has nothing to record and stands aside, and
 /// the request goes on to the routes that recognise it.
 ///

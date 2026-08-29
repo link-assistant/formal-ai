@@ -18,7 +18,7 @@ fn numbered_lines(answer: &str) -> Vec<&str> {
         .map(str::trim)
         .filter(|line| {
             line.split_once(['.', ')'])
-                .is_some_and(|(head, _)| !head.is_empty() && head.chars().all(|c| c.is_numeric()))
+                .is_some_and(|(head, _)| !head.is_empty() && head.chars().all(char::is_numeric))
         })
         .collect()
 }
