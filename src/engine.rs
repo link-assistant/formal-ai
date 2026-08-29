@@ -82,6 +82,65 @@ pub struct ExecutionRecipeFile {
     pub source: String,
 }
 
+impl SymbolicAnswer {
+    /// Whether the answer never reached a conclusion about the prompt.
+    ///
+    /// The unknown-prompt fallback, an ill-formed prompt, a punctuation-only
+    /// prompt and every clarification request answer something *about* the
+    /// prompt rather than the prompt itself. A caller that has to act on the
+    /// text -- replaying it in another language
+    /// ([`crate::solver_handlers::response_language_followup`]), recording it as
+    /// evidence at a path the caller named
+    /// ([`crate::agentic_coding`]) -- must be able to tell the two apart, and
+    /// both callers have to agree on where the line is, so the test lives with
+    /// the type that carries the intent rather than in either caller.
+    #[must_use]
+    pub fn is_inconclusive(&self) -> bool {
+        matches!(
+            self.intent.as_str(),
+            "unknown" | "ill_formed" | "punctuation_only_prompt"
+        ) || self.intent.starts_with("clarify")
+    }
+
+    /// Whether the answer points at the open web instead of stating a finding.
+    ///
+    /// The `web_search` intent renders what the browser demo *would* query and
+    /// how it would rank the results. That is a plan for a lookup nobody has
+    /// performed yet, so the text is about the search rather than about the
+    /// subject: nothing in it is true of `IIR` or of `Sunday` in particular.
+    ///
+    /// [`crate::agentic_coding::web_research`] already reads the intent this
+    /// way when it decides an open-world question is unresolved. A caller that
+    /// has to *deliver* an answer -- writing it to a path the request named --
+    /// needs the same reading for the opposite reason: recording a description
+    /// of a pending search as the evidence a run produced is the hollow proof
+    /// issue #1066 exists to stop.
+    #[must_use]
+    pub fn defers_to_the_open_web(&self) -> bool {
+        self.intent == "web_search"
+    }
+
+    /// Whether the answer ends on a promise of a list it never makes.
+    ///
+    /// A reply that closes with the colon introducing an enumeration and stops
+    /// there is a heading with nothing under it. The handler that composes such
+    /// a reply is the one that knows *why* it has nothing to enumerate and says
+    /// so ([`crate::task_decomposition::Decomposition::unenumerable_reason`]);
+    /// this is the backstop underneath it, for the callers that deliver an
+    /// answer somewhere a reader will later find it. Delivering a heading with
+    /// no list is the hollow evidence issue #1066 exists to stop -- it passes
+    /// every mechanical check a harness makes, because a file that says
+    /// nothing is still a non-empty file.
+    ///
+    /// The full-width colon is here because Chinese and Japanese introduce a
+    /// list with it, and a guard that only reads ASCII would hold for four of
+    /// the supported languages and not the fifth.
+    #[must_use]
+    pub fn announces_a_list_it_does_not_make(&self) -> bool {
+        self.answer.trim_end().ends_with([':', '\u{ff1a}'])
+    }
+}
+
 #[derive(Debug, Default, Clone, Copy)]
 pub struct FormalAiEngine;
 
