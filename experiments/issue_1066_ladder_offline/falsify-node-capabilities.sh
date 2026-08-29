@@ -49,6 +49,8 @@ cases=(
   "src/seed/meanings.rs|    pub fn mentions_role_separated(&self, role: &str, normalized: &str) -> bool {|if true { return false; }|issue_1066_ladder_capability::a_question_about_a_task_is_answered_by_thinking_about_the_task"
   "src/agentic_coding/evidence_record.rs|fn work_before_delivery(sentence: &str) -> Option<&str> {|if true { return None; }|issue_1066_ladder_capability::work_coordinated_into_its_delivery_sentence_is_not_thrown_away_with_it"
   "src/task_decomposition/stated_task.rs|fn after_introducing_colon(prompt: &str, asks: &dyn Fn(&str) -> bool) -> Option<String> {|if true { let colon = prompt.rfind(INTRODUCING_COLON)?; let tail = prompt[colon..].chars().skip(1).collect::<String>().trim().to_owned(); return (!tail.is_empty()).then_some(tail); }|issue_1066_hollow_answers::a_colon_in_a_later_sentence_does_not_become_the_task"
+  "src/task_decomposition/stated_task.rs|fn asking_blocks(prompt: &str, asks: &dyn Fn(&str) -> bool) -> String {|if true { return prompt.trim().to_owned(); }|issue_1066_hollow_answers::framing_addressed_to_the_solver_is_not_a_sub_task"
+  "src/calculation.rs|fn sentence_end_from(prompt: &str, from: usize) -> usize {|if true { return prompt.len(); }|issue_1066_hollow_answers::a_calculator_verb_in_the_framing_does_not_claim_the_whole_prompt"
 )
 
 for case in "${cases[@]}"; do

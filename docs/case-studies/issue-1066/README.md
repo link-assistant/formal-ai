@@ -75,7 +75,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The fourteen capability gaps
+## The sixteen capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -96,6 +96,8 @@ the ladder.
 | 12 | An English separable phrasal verb was unreadable by the lexicon | `Lexicon::mentions_role_separated` |
 | 13 | Work coordinated into its own delivery sentence was consumed with it | `evidence_record::work_before_delivery` |
 | 14 | The prompt's *last* colon was read as the one introducing the task | `stated_task::after_introducing_colon` |
+| 15 | Framing addressed to the solver was decomposed as if it were work | `stated_task::asking_blocks` |
+| 16 | A calculation cue claimed every word written after it | `calculation::sentence_end_from` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -127,6 +129,33 @@ the handler's own recogniser identifies. The reading moved out of
 `src/task_decomposition/stated_task.rs` beside the recursion it must agree with,
 and the boundary ledger records the handler shrinking from 328 lines to 243.
 
+Gaps 15 and 16 are the two the ladder's own PASS was hiding. The node scored
+green, and its proof file listed a sub-task that was the seven framing sentences
+pasted together with commas — a numbered line a reader can do nothing with, which
+is the hollowness this issue is about surviving a mechanical check. A node prompt
+states the task, leaves a blank line, and then addresses the solver: which node
+this is, where to work, where to leave evidence, what not to claim. That second
+block says how to work and how to report; it is not work of its own. So the same
+scoping that fixed gap 14 applies one level up — the blocks that *ask* are the
+task, and `asks` is the caller's own recogniser rather than a copy of it. Nothing
+is dropped when no block asks on its own, because a task can be stated across a
+blank line and losing half of it would be the worse reading.
+
+Gap 16 was underneath gap 15 and only became visible once gap 15 was fixed: with
+the framing no longer enumerated, the leaf and interior prompts stopped reaching
+decomposition at all and came back "I parsed 'only this node's task in this fresh
+temporary repository. …' as an arithmetic request but could not evaluate it". The
+framing block says "**Solve** only this node's task", and `solve` is one of the
+calculator's request cues. An embedded cue was read from where it appeared to the
+end of the prompt, so it swallowed four later sentences; those carried the digits
+of `node_path=1.1.1.1.1` and an `=`, which is enough to look evaluable. It then
+failed to evaluate and answered anyway, at confidence 0.3 — low enough to be
+plainly wrong, high enough to displace the 0.86 decomposition the first sentence
+asked for. The rule is the one this issue keeps arriving at from different
+directions: a request is stated in a sentence, so a cue claims its sentence and
+not the rest of the document. "Solve" is ordinary English, and the test that pins
+this uses a worker-assignment prompt that mentions no ladder at all.
+
 Gap 11 is the one worth reading twice, because the first fix for it was wrong in
 a way the suite caught immediately. Bounding a marker-led payload by its sentence
 is right for "Draft a handover memo containing … . Leave the memo in
@@ -151,6 +180,9 @@ cargo run --example issue_1066_decomposition_probe "<task>"
 
 # which language a prompt is detected as, which decides the reply's surfaces
 cargo run --example issue_1066_language_probe "<prompt>"
+
+# whether a segment is judged independently checkable, which decides a split
+cargo run --example issue_1066_checkable_probe "<segment>" "<segment>"
 
 # all sixty-three ladder nodes offline, each proof judged on its content
 bash experiments/issue_1066_ladder_offline/run.sh

@@ -37,11 +37,25 @@ const INTRODUCING_COLON: &[char] = &[':', '：'];
 
 /// Recover the task `prompt` is asking about.
 ///
-/// The prompts in issue #847 quote the task ("… nothing else: 'Add a
-/// paths-ignore filter …'"), so a quoted span wins. Failing that, the text a
-/// colon introduces is the task -- but only a colon in the sentence that asks
-/// the question, which `asks` identifies. Failing both, the prompt itself is
-/// the task, which is what makes "Split this into steps" work on a bare task.
+/// The reading narrows in three steps, each scoped by the one before it: the
+/// block that asks, then the quotation or introducing colon inside it, then the
+/// punctuation that ended the sentence it came from.
+///
+/// A prompt that states a task and then addresses the solver separates the two
+/// with a blank line -- "… identify where a node stores its children.\n\nThis
+/// is recursive binary-tree node 1.1.1.1.1 at depth 5. Solve only this node's
+/// task in this fresh temporary repository. …". The second block says how to
+/// work and how to report; it is not work of its own, and decomposing it
+/// alongside the task produced a sub-task made entirely of the framing
+/// (issue #1066). So the blocks that ask are the task, and the rest is
+/// addressed to the solver. `asks` decides which is which, and it is the same
+/// recogniser that routed the prompt here, never a copy of it.
+///
+/// Inside that block, the prompts in issue #847 quote the task ("… nothing
+/// else: 'Add a paths-ignore filter …'"), so a quoted span wins. Failing that,
+/// the text a colon introduces is the task -- but only a colon in the sentence
+/// that asks the question. Failing both, the block itself is the task, which is
+/// what makes "Split this into steps" work on a bare task.
 ///
 /// The task is then stripped of the punctuation that ended the sentence it was
 /// recovered from, because a task is work to do and not an utterance. A task
@@ -55,13 +69,37 @@ const INTRODUCING_COLON: &[char] = &[':', '：'];
 /// sub-tasks and showed none of them.
 #[must_use]
 pub fn stated_task(prompt: &str, asks: &dyn Fn(&str) -> bool) -> String {
+    let stated = asking_blocks(prompt, asks);
     without_sentence_end(
-        quoted_span(prompt)
-            .or_else(|| after_introducing_colon(prompt, asks))
-            .unwrap_or_else(|| prompt.to_owned())
+        quoted_span(&stated)
+            .or_else(|| after_introducing_colon(&stated, asks))
+            .unwrap_or_else(|| stated.clone())
             .trim(),
     )
     .to_owned()
+}
+
+/// The blocks of `prompt` that ask, joined; the whole prompt when that reading
+/// would lose the question.
+///
+/// A block that does not ask is kept only when no block asks on its own -- a
+/// task can be stated across a blank line, and dropping half of it would be a
+/// worse reading than keeping the framing. Nothing is dropped when the prompt
+/// is a single block, which is the ordinary case.
+fn asking_blocks(prompt: &str, asks: &dyn Fn(&str) -> bool) -> String {
+    let blocks: Vec<&str> = prompt
+        .split("\n\n")
+        .map(str::trim)
+        .filter(|block| !block.is_empty())
+        .collect();
+    if blocks.len() < 2 {
+        return prompt.trim().to_owned();
+    }
+    let asking: Vec<&str> = blocks.iter().copied().filter(|block| asks(block)).collect();
+    if asking.is_empty() {
+        return prompt.trim().to_owned();
+    }
+    asking.join("\n\n")
 }
 
 /// Drop the sentence-ending punctuation, and any space it left behind.

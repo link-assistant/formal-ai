@@ -53,3 +53,15 @@ bump: minor
   unsplittable. The colon now counts only in the sentence that asks the
   question, which is the same sentence scoping already used to tell a command
   that is named from one that is ordered (#1066).
+- Read a task from the block that asks it, not from the instructions addressed
+  to the solver. A prompt that states its task, leaves a blank line, and then
+  says how to work and where to leave evidence had that second block decomposed
+  beside the task, so one listed sub-task was the framing sentences pasted
+  together -- a numbered line a reader can do nothing with. The blocks that ask
+  are the task, decided by the same recogniser that routed the prompt (#1066).
+- Never let a calculation cue claim every word written after it. "Solve" is also
+  ordinary English, and an embedded cue was read to the end of the prompt, so
+  four unrelated sentences became one expression; they carried a digit and an
+  `=`, so it looked evaluable, failed to evaluate, and answered anyway --
+  displacing the decomposition the prompt actually asked for. A request is
+  stated in a sentence, so its cue claims that sentence (#1066).

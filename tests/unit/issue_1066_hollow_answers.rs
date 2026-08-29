@@ -169,6 +169,110 @@ fn a_colon_in_a_later_sentence_does_not_become_the_task() {
 }
 
 #[test]
+fn framing_addressed_to_the_solver_is_not_a_sub_task() {
+    // An agent harness states the task, leaves a blank line, and then addresses
+    // the solver: how to work, where to leave evidence, what not to claim. That
+    // second block is not work of its own, and decomposing it beside the task
+    // produced a sub-task made entirely of the framing sentences pasted
+    // together -- a numbered line the reader cannot do anything with, which is
+    // exactly the hollowness issue #1066 is about. Worded away from the #1028
+    // ladder's own prompt so the rule is not the ladder's.
+    let prompt = "Break the invoice reconciliation rewrite into sub-tasks.\n\nYou are \
+                  worker 7 of 12. Work only in the scratch checkout. Its completion \
+                  criterion is: every child reports independently. Leave what you find in \
+                  worker-7.md. Do not claim success without evidence.";
+    let answer = FormalAiEngine.answer(prompt).answer;
+    let lines = numbered_lines(&answer);
+    assert!(
+        !lines.is_empty(),
+        "nothing was enumerated for the framed prompt: {answer:?}"
+    );
+    for line in &lines {
+        assert!(
+            line.contains("invoice reconciliation"),
+            "a sub-task is about the framing rather than the task: {line:?} in {answer:?}"
+        );
+        for framing in [
+            "worker 7 of 12",
+            "scratch checkout",
+            "Do not claim success",
+            "worker-7.md",
+        ] {
+            assert!(
+                !line.contains(framing),
+                "the framing {framing:?} was enumerated as work: {line:?} in {answer:?}"
+            );
+        }
+    }
+}
+
+#[test]
+fn a_block_that_asks_survives_and_one_that_does_not_is_dropped() {
+    // The block rule is scoped by the caller's own recogniser, so it is pinned
+    // here with that recogniser spelled out rather than through a handler.
+    let asks = |block: &str| block.to_lowercase().contains("sub-tasks");
+    assert_eq!(
+        stated_task(
+            "Break the invoice reconciliation rewrite into sub-tasks.\n\nYou are worker 7 \
+             of 12. Leave what you find in worker-7.md.",
+            &asks,
+        ),
+        "Break the invoice reconciliation rewrite into sub-tasks"
+    );
+    assert_eq!(
+        stated_task(
+            "Read the handover memo.\n\nThen tell me what it says.",
+            &asks,
+        ),
+        "Read the handover memo.\n\nThen tell me what it says",
+        "when no block asks on its own, none of them is dropped"
+    );
+    assert_eq!(
+        stated_task(
+            "Break the invoice reconciliation rewrite into sub-tasks.\n\nThen break the \
+             payroll export rewrite into sub-tasks.",
+            &asks,
+        ),
+        "Break the invoice reconciliation rewrite into sub-tasks.\n\nThen break the \
+         payroll export rewrite into sub-tasks",
+        "a task stated across a blank line keeps both of its halves"
+    );
+}
+
+#[test]
+fn a_calculator_verb_in_the_framing_does_not_claim_the_whole_prompt() {
+    // "Solve" is one of the calculator's request cues, and a harness that
+    // addresses the solver uses it in its ordinary English sense. The cue was
+    // read from where it appeared to the end of the prompt, so the framing --
+    // sentences apart, and carrying the digits and the `=` of an unrelated
+    // instruction -- became the expression. It could not be evaluated, and the
+    // arithmetic reading answered anyway, at a confidence low enough to be
+    // obviously wrong yet high enough to displace the decomposition the first
+    // sentence actually asked for. A cue states its request in a sentence; it
+    // does not own the rest of the document. Worded away from the #1028 ladder
+    // so the rule is not the ladder's.
+    let prompt = "Is the invoice reconciliation rewrite an atomic task?\n\nYou are worker 7 of \
+                  12. Solve only what this worker owns in the scratch checkout. Write the outcome \
+                  to worker-7.md with its first line set to worker_id=7.";
+    let answer = FormalAiEngine.answer(prompt);
+    assert_ne!(
+        answer.intent, "calculation_error",
+        "the framing was read as arithmetic: {:?}",
+        answer.answer
+    );
+    assert_eq!(
+        answer.intent, "task_atomicity",
+        "the question about the task was not answered: {:?}",
+        answer.answer
+    );
+    assert!(
+        answer.answer.contains("invoice reconciliation"),
+        "the answer is not about the task that was asked about: {:?}",
+        answer.answer
+    );
+}
+
+#[test]
 fn a_colon_the_asking_sentence_owns_still_introduces_the_task() {
     // The scoping may not cost the shape it exists for. Issue #847's own
     // prompts introduce the task with a colon, and that colon belongs to the

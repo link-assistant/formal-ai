@@ -2,16 +2,17 @@ self_ast_census
   target src/task_decomposition/stated_task.rs
   language rust
   fidelity signature
-  byte_len 7252
-  line_count 164
-  content_id source_module_5e750247a79003ad
-  symbol_count 8
+  byte_len 9073
+  line_count 202
+  content_id source_module_9f693e996668a864
+  symbol_count 9
   symbols
     const SENTENCE_END 21 21
     const QUOTE_PAIRS 25 33
     const INTRODUCING_COLON 36 36
-    function stated_task 57 65
-    function without_sentence_end 72 76
-    function quoted_span 78 98
-    function after_introducing_colon 117 128
-    function sentence_spans 139 164
+    function stated_task 71 80
+    function asking_blocks 89 103
+    function without_sentence_end 110 114
+    function quoted_span 116 136
+    function after_introducing_colon 155 166
+    function sentence_spans 177 202

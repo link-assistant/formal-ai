@@ -674,6 +674,45 @@ fn has_prefix_boundary(value: &str, start: usize) -> bool {
                 .is_some_and(|character| !character.is_alphanumeric()))
 }
 
+/// Where the sentence that starts at `from` ends, as an index into `prompt`.
+///
+/// A sentence ends at its terminator or at a blank line, and the terminator is
+/// kept because [`trim_prompt_punctuation`] strips it next. A period only ends
+/// a sentence when whitespace or the end of the text follows it, so the point in
+/// "12.5" is a decimal point and not a full stop -- the same period rule the
+/// rest of the codebase reads sentences by.
+fn sentence_end_from(prompt: &str, from: usize) -> usize {
+    const TERMINATORS: &[char] = &['?', '!', '。', '！', '？', '।', '॥'];
+    let tail = &prompt[from..];
+    if let Some(blank_line) = tail.find("\n\n") {
+        return from + blank_line;
+    }
+    let mut characters = tail.char_indices().peekable();
+    while let Some((offset, character)) = characters.next() {
+        let ends_here = TERMINATORS.contains(&character)
+            || (character == '.'
+                && characters
+                    .peek()
+                    .is_none_or(|(_, next)| next.is_whitespace()));
+        if ends_here {
+            return from + offset + character.len_utf8();
+        }
+    }
+    prompt.len()
+}
+
+/// The slices of `prompt` that a calculation cue introduces, each running from
+/// its cue to the end of the sentence the cue is in.
+///
+/// The slice used to run to the end of the prompt, which made every cue verb
+/// the owner of everything written after it. "Solve" is also ordinary English
+/// ("Solve only what this worker owns in the scratch checkout."), so a prompt
+/// that asked one thing and then addressed its solver had the whole address
+/// read as one expression; it carried digits and an `=` from an unrelated
+/// instruction, so it looked evaluable, failed to evaluate, and the arithmetic
+/// reading answered in place of the reading the prompt actually asked for
+/// (issue #1066). A request is stated in a sentence, so that is what its cue
+/// claims.
 fn embedded_calculation_request_slices<'a>(
     prompt: &'a str,
     cue_prefixes: &[String],
@@ -697,7 +736,7 @@ fn embedded_calculation_request_slices<'a>(
     matches.dedup_by_key(|(start, _)| *start);
     matches
         .into_iter()
-        .filter_map(|(start, _)| prompt.get(start..))
+        .filter_map(|(start, _)| prompt.get(start..sentence_end_from(prompt, start)))
         .collect()
 }
 
