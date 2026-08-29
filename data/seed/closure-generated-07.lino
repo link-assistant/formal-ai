@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "count words"
+  draft
+    defined-by word_surface
+    lexeme en
+      surface
+        text "draft"
   external_benchmark_swe_clear_logs_error
     defined-by intent
     lexeme en
@@ -105,7 +110,7 @@ meanings
       surface
         text "how to guide conflicts heading"
   inspect
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "inspect"

@@ -2,34 +2,34 @@ self_ast_census
   target src/agentic_coding/learning_report.rs
   language rust
   fidelity full_ast
-  byte_len 9992
-  line_count 260
-  content_id source_module_cc275258ec4a7035
+  byte_len 10020
+  line_count 261
+  content_id source_module_c14b9369b530aaa2
   symbol_count 16
   symbols
-    static REPORTS 45 57
-    module context_hierarchy_learning 59 59
-    module handler_precedence_learning 60 60
-    module hardcoded_language_learning 61 61
-    module lexeme_import_learning 62 62
-    module search_fusion_learning 63 63
-    module self_hosting_learning 64 64
-    function route 68 70
-    struct LearningReport 75 93
-    function render_document 98 100
-    function render_document_from 107 109
-    function matches 113 115
-    function plan_step 118 131
-    function final_answer 135 150
-    function render 159 239
-    function field 253 260
+    static REPORTS 46 58
+    module context_hierarchy_learning 60 60
+    module handler_precedence_learning 61 61
+    module hardcoded_language_learning 62 62
+    module lexeme_import_learning 63 63
+    module search_fusion_learning 64 64
+    module self_hosting_learning 65 65
+    function route 69 71
+    struct LearningReport 76 94
+    function render_document 99 101
+    function render_document_from 108 110
+    function matches 114 116
+    function plan_step 119 132
+    function final_answer 136 151
+    function render 160 240
+    function field 254 261
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5572
-    named_node_count 1157
+    total_link_count 5593
+    named_node_count 1162
     distinct_node_kinds 69
     node_kinds
       arguments 65
@@ -59,7 +59,7 @@ self_ast_census
       function_item 8
       generic_function 2
       generic_type 3
-      identifier 207
+      identifier 208
       if_expression 3
       impl_item 1
       inner_doc_comment_marker 27
@@ -78,7 +78,7 @@ self_ast_census
       reference_expression 38
       reference_type 22
       remaining_field_pattern 1
-      scoped_identifier 24
+      scoped_identifier 26
       scoped_use_list 2
       self 15
       self_parameter 5
@@ -91,13 +91,13 @@ self_ast_census
       struct_expression 1
       struct_item 1
       struct_pattern 1
-      super 3
+      super 4
       token_tree 12
       tuple_pattern 2
       tuple_struct_pattern 2
       type_arguments 5
       type_identifier 18
       use_as_clause 1
-      use_declaration 7
+      use_declaration 8
       use_list 2
       visibility_modifier 21

@@ -50,6 +50,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-links-root.lino",
   "seed/meanings-local-search.lino",
   "seed/meanings-meta.lino",
+  "seed/meanings-note-composition.lino",
   "seed/meanings-number-constraints.lino",
   "seed/meanings-ontology.lino",
   "seed/meanings-playwright.lino",

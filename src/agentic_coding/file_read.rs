@@ -2,6 +2,7 @@
 
 use serde_json::json;
 
+use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
 use super::general_planner::has_file_write_intent;
 use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
 use crate::protocol::{ChatMessage, ToolCall};
@@ -363,18 +364,27 @@ fn first_local_file_path(prompt: &str) -> Option<String> {
         .find(|token| looks_like_local_file_path(token))
 }
 
+/// A path token as prose wrote it, stripped of the punctuation the sentence put
+/// around it.
+///
+/// The terminating dot is delegated to
+/// [`trim_trailing_sentence_dot`](super::file_path_shape::trim_trailing_sentence_dot)
+/// so the read route, the write-request parser and the shell route all draw the
+/// same boundary between a path and the sentence carrying it.
 fn clean_file_token(token: &str) -> String {
-    token
-        .trim_matches('`')
-        .trim_matches('"')
-        .trim_matches('\'')
-        .trim_matches(|c: char| {
-            matches!(
-                c,
-                ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
-            )
-        })
-        .to_owned()
+    trim_trailing_sentence_dot(
+        token
+            .trim_matches('`')
+            .trim_matches('"')
+            .trim_matches('\'')
+            .trim_matches(|c: char| {
+                matches!(
+                    c,
+                    ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
+                )
+            }),
+    )
+    .to_owned()
 }
 
 fn looks_like_local_file_path(token: &str) -> bool {
@@ -382,6 +392,7 @@ fn looks_like_local_file_path(token: &str) -> bool {
         || token.contains("://")
         || token.starts_with("http:")
         || token.starts_with("https:")
+        || is_dotted_number(token)
     {
         return false;
     }

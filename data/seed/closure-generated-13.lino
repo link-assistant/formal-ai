@@ -344,6 +344,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  produce
+    defined-by word_surface
+    lexeme en
+      surface
+        text "produce"
   programming_task_catalog
     defined-by kind
     lexeme en

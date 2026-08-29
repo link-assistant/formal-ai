@@ -279,6 +279,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "summarization_ratchet_violated"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_624cc1238fe07429
+    source "data/seed/closure-generated-07.lino"
+    record "draft"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e90844b4a3c4e9a9
     source "data/seed/closure-generated-07.lino"
     record "pattern_concept_prefix_shenmeshi_traditional"

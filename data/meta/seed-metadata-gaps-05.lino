@@ -247,6 +247,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "local_search_found_file"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_177637a652c842b5
+    source "data/seed/closure-generated-06.lino"
+    record "note"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_00303bcdfbb49865
     source "data/seed/closure-generated-06.lino"
     record "response_agentic_step_failed_en"

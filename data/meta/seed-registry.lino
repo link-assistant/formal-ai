@@ -209,6 +209,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-note-composition
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-number-constraints
     bundle true
     lexicon meaning

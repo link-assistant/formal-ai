@@ -14,26 +14,16 @@
 //! punctuation or a chained clause-continuation marker, rather than memorising
 //! the handful of `". compare"`-style fragments the prompts happen to use.
 
-use std::sync::OnceLock;
-
 use crate::coding::contains_cjk;
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::normalize_prompt;
 use crate::seed::{
-    self, Slot, WordForm, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY,
-    ROLE_CAPABILITY_QUERY_MORE, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_ENUMERATION_CONSTRAINT,
-    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_NON_REFERENTIAL_SUBJECT,
-    ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
-    ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_SELF_INTRODUCTION_REQUEST,
-    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION,
-    ROLE_WEB_SEARCH_EXPLICIT_PREFIX, ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY,
-    ROLE_WEB_SEARCH_NEWS_SUBJECT, ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT,
-    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
-    ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
-    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
+    self, Slot, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE,
+    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_SELF_INTRODUCTION_REQUEST,
 };
 
 use super::web_requests::normalize_url_candidate;
+use crate::web_search_markers::{markers, WebSearchMarkers};
 
 /// Keep a schemeless local filename from becoming a synthetic HTTPS host.
 ///
@@ -245,176 +235,6 @@ const fn is_sentence_boundary(character: char) -> bool {
     )
 }
 
-/// Every surface cue the web-search recogniser reasons about, projected out of
-/// the meaning lexicon by role and slot. Built once and cached: because
-/// [`seed::lexicon`] returns a `'static` reference, the projected literals are
-/// themselves `'static` and need no allocation beyond the backing vectors.
-struct WebSearchMarkers {
-    /// Lead-ins of an explicit "search X for …" command (prefix slot).
-    explicit_prefixes: Vec<&'static str>,
-    /// Tails of an explicit topic-interest/search template (suffix slot).
-    explicit_suffixes: Vec<&'static str>,
-    /// Bracketing explicit topic-interest/search templates (circumfix slot).
-    explicit_circumfixes: Vec<(&'static str, &'static str)>,
-    /// Bare search verbs that signal an action is requested.
-    action_markers: Vec<&'static str>,
-    /// The subset of action verbs strong enough to stand without a source noun.
-    strong_action_markers: Vec<&'static str>,
-    /// Strong action verbs whose typed argument follows in a prefix slot.
-    strong_imperative_lead_markers: Vec<&'static str>,
-    /// Source/topic nouns that corroborate a weak action verb.
-    signal_markers: Vec<&'static str>,
-    /// Topic connectives whose object follows them ("about …", "о …").
-    topic_after_markers: Vec<&'static str>,
-    /// Topic connectives whose object precedes them ("… के बारे में").
-    topic_before_markers: Vec<&'static str>,
-    /// Imperative search leads whose query follows them ("search for …").
-    imperative_lead_markers: Vec<&'static str>,
-    /// Politeness / determiner noise stripped from the front of a query.
-    leading_noise: Vec<&'static str>,
-    /// Source/medium noise stripped from the end of a query.
-    trailing_noise: Vec<&'static str>,
-    /// Bare source words that are not, on their own, a valid query.
-    source_only: Vec<String>,
-    /// External-source markers that may introduce a typed search action.
-    source_markers: Vec<&'static str>,
-    /// Boundary-preserving web-medium markers used as evidence in semantic frames.
-    source_medium_markers: Vec<&'static str>,
-    /// Information-object markers, excluding names of external sources.
-    information_markers: Vec<&'static str>,
-    /// News/headline subject markers for bare latest-news requests.
-    news_subject_markers: Vec<&'static str>,
-    /// Freshness markers that pair with news/headline subjects.
-    news_recency_markers: Vec<&'static str>,
-    /// Records/documents subject nouns for verbless "records about X" requests.
-    records_subject_markers: Vec<&'static str>,
-    /// Public event category nouns for current-event research questions.
-    public_event_subject_markers: Vec<&'static str>,
-    /// Verbs that open a follow-up instruction clause ("compare", "summarize").
-    followup_verbs: Vec<&'static str>,
-    /// Conjunctions/adverbs that, like punctuation, mark a clause boundary.
-    continuation_markers: Vec<&'static str>,
-    /// Tell-me-about openers whose object is a public term.
-    term_information_prefixes: Vec<&'static str>,
-    /// Tell-me-about closers of verb-final languages ("… के बारे में बताओ").
-    term_information_suffixes: Vec<&'static str>,
-    /// Tell-me-about frames that wrap the term on both sides.
-    term_information_circumfixes: Vec<(&'static str, &'static str)>,
-    /// Question openers of an implicit research request ("what is …", "is there …").
-    research_question_prefixes: Vec<&'static str>,
-    /// Superlative/recency modifiers that make a question researchable.
-    research_modifiers: Vec<&'static str>,
-    /// Evidence nouns (dataset, paper, subscription, pricing …) of a research question.
-    research_evidence_domains: Vec<&'static str>,
-    /// Evaluation nouns (validation, comparison, discount, price …) of a question.
-    research_evaluation_domains: Vec<&'static str>,
-    /// Openers of an enumeration research request ("list all …").
-    enumeration_prefixes: Vec<&'static str>,
-    /// Constraint connectives that make an enumeration researchable.
-    enumeration_constraint_markers: Vec<&'static str>,
-}
-
-/// Build (once) the marker projection from the meaning lexicon.
-fn markers() -> &'static WebSearchMarkers {
-    static CACHE: OnceLock<WebSearchMarkers> = OnceLock::new();
-    CACHE.get_or_init(|| WebSearchMarkers {
-        explicit_prefixes: prefix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
-        explicit_suffixes: suffix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
-        explicit_circumfixes: circumfix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
-        action_markers: bare_literals(ROLE_WEB_SEARCH_ACTION),
-        strong_action_markers: bare_literals(ROLE_WEB_SEARCH_STRONG_ACTION),
-        strong_imperative_lead_markers: prefix_literals(ROLE_WEB_SEARCH_STRONG_ACTION),
-        signal_markers: bare_literals(ROLE_WEB_SEARCH_SIGNAL),
-        topic_after_markers: prefix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
-        topic_before_markers: suffix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
-        imperative_lead_markers: prefix_literals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
-        leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
-        trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
-        source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
-        source_markers: bare_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
-        source_medium_markers: bare_literals(ROLE_WEB_MEDIUM),
-        information_markers: information_literals(),
-        news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
-        news_recency_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_RECENCY),
-        records_subject_markers: bare_literals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
-        public_event_subject_markers: bare_literals(ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT),
-        followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
-        continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
-        term_information_prefixes: prefix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
-        term_information_suffixes: suffix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
-        term_information_circumfixes: circumfix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
-        research_question_prefixes: prefix_literals(ROLE_RESEARCH_QUESTION_OPENER),
-        research_modifiers: bare_literals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
-        research_evidence_domains: bare_literals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
-        research_evaluation_domains: bare_literals(ROLE_RESEARCH_EVALUATION_DOMAIN),
-        enumeration_prefixes: prefix_literals(ROLE_ENUMERATION_REQUEST_OPENER),
-        enumeration_constraint_markers: bare_literals(ROLE_ENUMERATION_CONSTRAINT),
-    })
-}
-
-/// The literal lead-in (text before the `…` slot) of every prefix-slot form of
-/// a role, in lexicon declaration order.
-fn prefix_literals(role: &str) -> Vec<&'static str> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Prefix)
-        .map(WordForm::before_slot)
-        .collect()
-}
-
-/// The literal tail (text after the `…` slot) of every suffix-slot form of a
-/// role, in lexicon declaration order.
-fn suffix_literals(role: &str) -> Vec<&'static str> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Suffix)
-        .map(WordForm::after_slot)
-        .collect()
-}
-
-/// The literal pair around every circumfix-slot form of a role, in lexicon
-/// declaration order.
-fn circumfix_literals(role: &str) -> Vec<(&'static str, &'static str)> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Circumfix)
-        .map(|form| (form.before_slot(), form.after_slot()))
-        .collect()
-}
-
-/// The surface text of every bare-slot form of a role, in lexicon declaration
-/// order. A meaning's roles apply to all its forms, so we keep only the bare
-/// detection tokens and drop any prefix/suffix surfaces the meaning also owns.
-fn bare_literals(role: &str) -> Vec<&'static str> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Bare)
-        .map(|form| form.text.as_str())
-        .collect()
-}
-
-/// The distinct surface words of a role, normalised to a trimmed lowercase key
-/// for equality comparison against a cleaned query.
-fn source_literals(role: &str) -> Vec<String> {
-    seed::lexicon()
-        .words_for_role(role)
-        .iter()
-        .map(|word| word.trim().to_lowercase())
-        .collect()
-}
-
-fn information_literals() -> Vec<&'static str> {
-    let sources = bare_literals(ROLE_WEB_SEARCH_SOURCE_ONLY);
-    bare_literals(ROLE_WEB_SEARCH_SIGNAL)
-        .into_iter()
-        .filter(|marker| !sources.iter().any(|source| source.trim() == marker.trim()))
-        .collect()
-}
-
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
     let imperative_candidate =
@@ -435,7 +255,11 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     for &marker in &markers.topic_after_markers {
         if let Some(index) = normalized.find(marker) {
             let start = index + marker.len();
-            if let Some(query) = valid_search_query(&normalized[start..]) {
+            let topic = &normalized[start..];
+            if states_when_to_search(topic) {
+                continue;
+            }
+            if let Some(query) = valid_search_query(topic) {
                 return Some(query);
             }
         }
@@ -446,7 +270,10 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
                 return Some(query);
             }
     }
-    if let Some(query) = imperative_candidate.and_then(valid_search_query) {
+    if let Some(query) = imperative_candidate
+        .filter(|candidate| !states_when_to_search(candidate))
+        .and_then(valid_search_query)
+    {
         return Some(query);
     }
     None
@@ -514,7 +341,11 @@ fn extract_topic_subject(normalized: &str) -> Option<String> {
     let markers = markers();
     for &marker in &markers.topic_after_markers {
         if let Some(index) = normalized.find(marker) {
-            return valid_search_query(&normalized[index + marker.len()..]);
+            let topic = &normalized[index + marker.len()..];
+            if states_when_to_search(topic) {
+                continue;
+            }
+            return valid_search_query(topic);
         }
     }
     for &marker in &markers.topic_before_markers {
@@ -846,6 +677,52 @@ fn contains_search_marker(normalized: &str, marker: &str) -> bool {
     } else {
         normalized.contains(marker)
     }
+}
+
+/// Whether the text a topic marker introduces says *when* to search rather than
+/// *what* to search for.
+///
+/// A topic marker is unanchored on purpose — a subject can be named anywhere in
+/// a prompt — so the text after it is whatever the caller wrote next, and that
+/// is not always a subject. Hive Mind's harness ends every objective with
+/// standing policy, and *"Use web research when it materially improves factual
+/// accuracy."* pairs a search action with the condition under which to take it.
+/// Reading the condition as the subject searched the open web for *"when it
+/// materially improves factual accuracy …"* and spent the agent's turn on it,
+/// while the objective above went unread (issue #1066).
+///
+/// The tell is the seed-declared policy lead opening the topic, the same one
+/// that tells a rule about running commands from an order to run one
+/// (issue #907). A condition is never a subject, so a topic that opens with a
+/// lead names nothing to look up and this marker is passed over — a later marker,
+/// or a later extractor, may still find the real subject.
+fn states_when_to_search(topic: &str) -> bool {
+    let Some(condition) = seed::caller_context_vocabulary().policy_lead_clause(topic) else {
+        return false;
+    };
+    opens_with_non_referential_subject(condition)
+}
+
+/// Whether `clause` opens with a subject that refers back to the conversation
+/// instead of naming something.
+///
+/// This is what tells the rule from the request when both open with the same
+/// word. *"Use web research when **it** materially improves factual accuracy"*
+/// and *"Look up when **the next release** ships"* are both `when` clauses; only
+/// the first has a subject that names nothing, because *it* is the act of
+/// researching — the thing the caller is legislating about. The second names a
+/// release, so the clause is the object of the lookup and the search is real.
+///
+/// Only whole-word ([`Slot::Bare`]) surfaces count, so a topic that merely
+/// *begins* with such a word ("this american war, explained") still searches.
+fn opens_with_non_referential_subject(clause: &str) -> bool {
+    let Some(subject) = clause.split_whitespace().next() else {
+        return false;
+    };
+    seed::lexicon()
+        .role_word_forms(ROLE_NON_REFERENTIAL_SUBJECT)
+        .iter()
+        .any(|form| form.slot() == Slot::Bare && subject == form.text)
 }
 
 fn valid_search_query(value: &str) -> Option<String> {

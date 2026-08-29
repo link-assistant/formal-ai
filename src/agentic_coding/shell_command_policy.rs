@@ -13,14 +13,26 @@
 
 use crate::seed::{self, TerminalCommandVocabulary};
 
-/// The prompt split into sentences, each as a slice of the original text.
+/// One sentence of a prompt: its trimmed text, and the byte range it occupies.
+///
+/// The ranges tile the prompt, so dropping a sentence and concatenating the rest
+/// reproduces the original wording verbatim — which is what a route needs when
+/// it consumes one clause of a request and hands the remainder on (issue #1066).
+pub(super) struct Sentence<'a> {
+    /// The sentence with its surrounding whitespace and terminator removed.
+    pub(super) text: &'a str,
+    /// Where the sentence sits in the prompt, terminator included.
+    pub(super) span: std::ops::Range<usize>,
+}
+/// The prompt split into sentences.
 ///
 /// Splitting keeps the original case and spacing, because a recovered command
 /// carries its arguments through verbatim — `run cat notes.txt` has to survive
 /// as one sentence, so a dot inside a token ends nothing, exactly as in
 /// [`sentences_with_mood`].
-pub(super) fn sentence_spans(prompt: &str) -> Vec<&str> {
+pub(super) fn sentences(prompt: &str) -> Vec<Sentence<'_>> {
     let mut sentences = Vec::new();
+    let mut span_start = 0;
     let mut start = 0;
     for (index, character) in prompt.char_indices() {
         if !matches!(
@@ -38,18 +50,32 @@ pub(super) fn sentence_spans(prompt: &str) -> Vec<&str> {
             continue;
         }
         let text = prompt[start..index].trim();
+        let end = index + character.len_utf8();
         if !text.is_empty() {
-            sentences.push(text);
+            sentences.push(Sentence {
+                text,
+                span: span_start..end,
+            });
+            span_start = end;
         }
-        start = index + character.len_utf8();
+        start = end;
     }
     let tail = prompt[start..].trim();
     if !tail.is_empty() {
-        sentences.push(tail);
+        sentences.push(Sentence {
+            text: tail,
+            span: span_start..prompt.len(),
+        });
     }
     sentences
 }
-
+/// The prompt split into sentences, each as a slice of the original text.
+pub(super) fn sentence_spans(prompt: &str) -> Vec<&str> {
+    sentences(prompt)
+        .into_iter()
+        .map(|sentence| sentence.text)
+        .collect()
+}
 /// Whether `sentence` states a *rule about* running commands rather than asking
 /// for one to run.
 ///
@@ -61,16 +87,11 @@ pub(super) fn states_a_command_policy(sentence: &str) -> bool {
     let lower = sentence.to_lowercase();
     // A lead opens the rule, or qualifies it from the middle: *"Run commands
     // with sudo only when necessary"* is as much a rule as *"When running sudo
-    // commands, …"*, and both name a class rather than an instance.
-    let carries_lead = seed::caller_context_vocabulary()
-        .policy_leads
-        .iter()
-        .any(|lead| {
-            lower
-                .strip_prefix(lead.as_str())
-                .is_some_and(|rest| rest.starts_with(' '))
-                || lower.contains(&format!(" {lead} "))
-        });
+    // commands, …"*, and both name a class rather than an instance. The test
+    // itself lives on the vocabulary, because the same lead marks the same thing
+    // wherever it is read — web-search routing asks the same question of the
+    // topic a search marker introduces (issue #1066).
+    let carries_lead = seed::caller_context_vocabulary().carries_policy_lead(&lower);
     // A conditional opener alone does not make a sentence policy — plenty of
     // real requests carry one, and treating them as policy answers nothing at
     // all, which is strictly worse than answering imperfectly.

@@ -1,0 +1,86 @@
+self_ast_census
+  target src/agentic_coding/evidence_record.rs
+  language rust
+  fidelity full_ast
+  byte_len 6765
+  line_count 151
+  content_id source_module_1c357f9be9f17399
+  symbol_count 4
+  symbols
+    struct Obligation 40 47
+    function parse_obligation 62 89
+    function plan_evidence_record_step 100 139
+    function with_residual_request 146 151
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3129
+    named_node_count 682
+    distinct_node_kinds 64
+    node_kinds
+      arguments 39
+      array_type 3
+      assignment_expression 3
+      binary_expression 2
+      block 11
+      call_expression 39
+      captured_pattern 1
+      closure_expression 4
+      closure_parameters 4
+      continue_expression 2
+      crate 1
+      doc_comment 59
+      else_clause 1
+      escape_sequence 4
+      expression_statement 15
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 28
+      field_identifier 31
+      field_initializer_list 1
+      for_expression 1
+      function_item 3
+      generic_type 5
+      identifier 140
+      if_expression 4
+      index_expression 2
+      inner_doc_comment_marker 28
+      let_chain 1
+      let_condition 2
+      let_declaration 11
+      line_comment 59
+      macro_invocation 4
+      match_arm 2
+      match_block 1
+      match_expression 1
+      match_pattern 2
+      mutable_specifier 4
+      outer_doc_comment_marker 31
+      parameter 6
+      parameters 3
+      parenthesized_expression 1
+      primitive_type 4
+      reference_expression 8
+      reference_type 7
+      return_expression 1
+      scoped_identifier 16
+      scoped_use_list 3
+      shorthand_field_initializer 3
+      source_file 1
+      string_content 11
+      string_literal 10
+      struct_expression 1
+      struct_item 1
+      super 6
+      token_tree 6
+      try_expression 5
+      tuple_struct_pattern 4
+      type_arguments 5
+      type_identifier 15
+      unary_expression 1
+      unit_expression 1
+      use_declaration 6
+      use_list 3
+      visibility_modifier 1

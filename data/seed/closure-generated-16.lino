@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "completion recovery name target artifact"
+  compose
+    defined-by word_surface
+    lexeme en
+      surface
+        text "compose"
   compression
     defined-by term
     lexeme en
@@ -269,6 +274,11 @@ meanings
     lexeme en
       surface
         text "match"
+  memo
+    defined-by word_surface
+    lexeme en
+      surface
+        text "memo"
   normalize_labels_fixpoint
     defined-by concept
     lexeme en

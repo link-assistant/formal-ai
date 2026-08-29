@@ -5,6 +5,11 @@
 //! Links Notation and written before execution, so the tool transcript is an
 //! append-only record of the decision that caused the change.
 use super::planner::Capability;
+use super::write_request::{
+    bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
+    first_action_cue_end, first_content_lead_end, first_prefix_lead_end, looks_like_file_path,
+    safe_relative_path, tokens,
+};
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
 use crate::seed::{self, Slot};
@@ -459,25 +464,8 @@ pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
 fn parse_write_request(request: &str) -> Option<(String, String)> {
     let lowered = request.to_lowercase();
     let toks = tokens(request);
-    let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
-    let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    // The target file: the first safe, file-looking token that directly follows a
-    // target cue, a destination cue, or an action cue. Requiring a cue keeps an
-    // incidental dotted token (a version, an abbreviation) out of the write path.
-    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
-        let cleaned = clean_path_token(token.text);
-        let looks_like_file = looks_like_file_path(cleaned);
-        if !looks_like_file || !safe_relative_path(cleaned) {
-            return None;
-        }
-        let previous = index.checked_sub(1).map(|i| &toks[i])?;
-        let previous_word = clean_cue_token(previous.text);
-        (target_cues.contains(&previous_word)
-            || dest_cues.contains(&previous_word)
-            || action_cues.contains(&previous_word))
-        .then(|| (index, cleaned.to_owned()))
-    })?;
+    let (file_index, target) = cued_write_target(&toks)?;
     let cue = &toks[file_index - 1];
     let clause_start = cue.start;
     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
@@ -681,189 +669,6 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let new = clean_content(new_span)?;
     Some((target, old, new))
 }
-/// One whitespace token together with its byte span in the original request.
-struct Token<'a> {
-    text: &'a str,
-    start: usize,
-    end: usize,
-}
-/// Split a request into whitespace tokens, recording each token's byte span.
-fn tokens(request: &str) -> Vec<Token<'_>> {
-    let mut cursor = 0;
-    request
-        .split_whitespace()
-        .map(|word| {
-            let start = request[cursor..]
-                .find(word)
-                .map_or(cursor, |offset| cursor + offset);
-            let end = start + word.len();
-            cursor = end;
-            Token {
-                text: word,
-                start,
-                end,
-            }
-        })
-        .collect()
-}
-/// The bare (whole-word) surface forms for a role, lowercased for token matching.
-fn bare_surfaces(role: &str) -> Vec<String> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .iter()
-        .filter(|form| form.slot() == Slot::Bare)
-        .map(|form| form.text.to_lowercase())
-        .collect()
-}
-/// Trim the quoting/edge punctuation from a token that may be a file path,
-/// preserving the interior dots that make it look like a file. Trailing sentence
-/// punctuation is stripped too, so a plain word that merely *ends a sentence*
-/// ("… add the plural to томат.") is not mistaken for a file whose only dot is the
-/// terminal period — a real filename never ends in a bare `.`/`!`/`?`.
-fn clean_path_token(word: &str) -> &str {
-    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
-        .trim_end_matches(['.', '!', '?'])
-}
-/// Whether a safe-looking token names a file rather than merely using the
-/// conventional `./` prefix for a directory.
-///
-/// Checking the whole token for a dot made policy prose such as "keep examples
-/// in ./examples" file-shaped. When a later sentence contained a write-content
-/// marker, the generic planner consequently tried to overwrite that directory.
-/// File shape belongs to the final path component; dots in parent components or
-/// in the relative-path prefix do not make the target a file.
-fn looks_like_file_path(path: &str) -> bool {
-    !path.contains("://")
-        && path
-            .rsplit('/')
-            .next()
-            .is_some_and(|file_name| file_name.contains('.'))
-}
-/// Lowercase a token stripped of edge punctuation, for cue/action comparison.
-fn clean_cue_token(word: &str) -> String {
-    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?'))
-        .to_lowercase()
-}
-/// The byte span just past the leftmost `file_write_content_lead` marker in the
-/// lowercased request, honouring whole-word boundaries for space-delimited
-/// scripts and substring matches for CJK (which has no inter-word spaces).
-fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
-    first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
-}
-fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
-    let markers: Vec<String> = seed::lexicon()
-        .role_word_forms(role)
-        .iter()
-        .filter(|form| form.slot() == Slot::Prefix)
-        .map(|form| form.before_slot().trim().to_lowercase())
-        .filter(|marker| !marker.is_empty())
-        .collect();
-    let mut best: Option<(usize, usize)> = None;
-    for marker in &markers {
-        let mut from = 0;
-        while let Some(relative) = lowered[from..].find(marker.as_str()) {
-            let start = from + relative;
-            let end = start + marker.len();
-            let cjk = !marker.contains(' ') && !marker.is_ascii();
-            let before_ok = cjk
-                || start == 0
-                || lowered[..start]
-                    .chars()
-                    .next_back()
-                    .is_some_and(char::is_whitespace);
-            let after_ok = cjk
-                || end == lowered.len()
-                || lowered[end..]
-                    .chars()
-                    .next()
-                    .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
-            if before_ok && after_ok {
-                if best.is_none_or(|(best_start, best_end)| {
-                    start < best_start || (start == best_start && end > best_end)
-                }) {
-                    best = Some((start, end));
-                }
-                break;
-            }
-            from = end;
-        }
-    }
-    best
-}
-/// The byte offset just past the first `file_write_action_cue` token.
-fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
-    let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    toks.iter()
-        .find(|token| actions.contains(&clean_cue_token(token.text)))
-        .map(|token| token.end)
-}
-/// Trim a recovered content span down to its literal payload, dropping the
-/// leading clause separator ("… the following: hello") and any surrounding
-/// quoting. A delimiter is removed only when the entire payload has a matching
-/// opening and closing delimiter. This matters for generated source and Links
-/// Notation: a lone terminal quote is data, not presentation punctuation.
-/// Returns [`None`] when nothing is left.
-fn clean_content(raw: &str) -> Option<String> {
-    let led = strip_clause_lead(raw);
-    let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
-        led[3..led.len() - 3].trim()
-    } else if led.len() >= 2 {
-        let first = led.as_bytes()[0];
-        let last = led.as_bytes()[led.len() - 1];
-        if first == last && matches!(first, b'`' | b'"' | b'\'') {
-            led[1..led.len() - 1].trim()
-        } else {
-            led
-        }
-    } else {
-        led
-    };
-    (!result.is_empty()).then(|| result.to_owned())
-}
-/// Strip everything a recovered span carries *before* its literal payload: the
-/// clause separators, and the seed-defined adverbs that qualify the requirement
-/// rather than naming content.
-///
-/// "…containing exactly: Hello World" delimits the content with `exactly:`, so
-/// slicing after the content lead captured `exactly: Hello World` as the bytes
-/// to write and as the evidence to verify against — the file would never have
-/// matched (issue #905 §3).
-fn strip_clause_lead(raw: &str) -> &str {
-    let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
-    let mut led = raw.trim();
-    loop {
-        let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
-        let shortened = strip_leading_qualifier(separated, &qualifiers);
-        if shortened.len() == led.len() {
-            return led;
-        }
-        led = shortened;
-    }
-}
-/// Drop one leading qualifier, but only when a clause separator follows it. The
-/// separator is what marks the adverb as introducing the payload rather than
-/// opening it, so content that genuinely starts with "exactly what I asked for"
-/// keeps its first word.
-fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
-    let lowered = text.to_lowercase();
-    qualifiers
-        .iter()
-        .filter(|qualifier| lowered.starts_with(qualifier.as_str()))
-        .filter_map(|qualifier| {
-            let rest = text.get(qualifier.len()..)?.trim_start();
-            rest.starts_with([':', '-', '—', '–']).then_some(rest)
-        })
-        .min_by_key(|rest| rest.len())
-        .unwrap_or(text)
-}
-fn safe_relative_path(path: &str) -> bool {
-    !path.starts_with('/')
-        && !path.starts_with('-')
-        && !path.split('/').any(|part| part == ".." || part.is_empty())
-        && path
-            .chars()
-            .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
-}
 const fn capability_slug(capability: Capability) -> &'static str {
     match capability {
         Capability::Search => "Search",
@@ -897,3 +702,4 @@ fn field(out: &mut String, name: &str, value: &str) {
 fn field_nested(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "    {name} \"{}\"", escape(value));
 }
+

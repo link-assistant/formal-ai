@@ -1,0 +1,18 @@
+self_ast_census
+  target src/web_search_markers.rs
+  language rust
+  fidelity signature
+  byte_len 10816
+  line_count 201
+  content_id source_module_b9afedc84f5c7145
+  symbol_count 9
+  symbols
+    struct WebSearchMarkers 37 100
+    function markers 103 138
+    static CACHE 104 104
+    function prefix_literals 142 149
+    function suffix_literals 153 160
+    function circumfix_literals 164 171
+    function bare_literals 176 183
+    function source_literals 187 193
+    function information_literals 195 201

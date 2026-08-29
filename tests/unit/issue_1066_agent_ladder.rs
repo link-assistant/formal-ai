@@ -18,7 +18,8 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const LADDER: &str = "experiments/issue_1028_agent_cli_ladder/run.sh";
-const EXPERIMENT: &str = "experiments/issue_1066_self_development/reproduce-ladder-tree-generation.sh";
+const EXPERIMENT: &str =
+    "experiments/issue_1066_self_development/reproduce-ladder-tree-generation.sh";
 
 /// A complete binary tree of depth five: 1 + 2 + 4 + 8 + 16 + 32.
 const NODE_COUNT: usize = 63;
@@ -166,8 +167,18 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
             } else {
                 format!("{}.", node.path)
             };
-            assert_eq!(node.left, format!("{prefix}1"), "left child of {}", node.path);
-            assert_eq!(node.right, format!("{prefix}2"), "right child of {}", node.path);
+            assert_eq!(
+                node.left,
+                format!("{prefix}1"),
+                "left child of {}",
+                node.path
+            );
+            assert_eq!(
+                node.right,
+                format!("{prefix}2"),
+                "right child of {}",
+                node.path
+            );
             assert!(paths.contains(&node.left), "missing {}", node.left);
             assert!(paths.contains(&node.right), "missing {}", node.right);
             assert_eq!(node.criterion, "all_children_pass");

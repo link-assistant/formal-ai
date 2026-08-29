@@ -1,0 +1,152 @@
+{
+  "lemma": "review",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05755527-n",
+      "partOfSpeech": "n",
+      "definition": "a new appraisal or evaluation",
+      "synonyms": [
+        "reappraisal",
+        "revaluation",
+        "reassessment"
+      ]
+    },
+    {
+      "id": "oewn-06422034-n",
+      "partOfSpeech": "n",
+      "definition": "an essay or article that gives a critical evaluation (as of a book or play)",
+      "synonyms": [
+        "critique",
+        "critical review",
+        "review article"
+      ]
+    },
+    {
+      "id": "oewn-00144071-n",
+      "partOfSpeech": "n",
+      "definition": "a subsequent examination of a patient for the purpose of monitoring earlier treatment",
+      "synonyms": [
+        "follow-up",
+        "followup",
+        "reexamination"
+      ]
+    },
+    {
+      "id": "oewn-13432706-n",
+      "partOfSpeech": "n",
+      "definition": "(accounting) a service (less exhaustive than an audit) that provides some assurance to interested parties as to the reliability of financial data",
+      "synonyms": [
+        "limited review"
+      ]
+    },
+    {
+      "id": "oewn-07032980-n",
+      "partOfSpeech": "n",
+      "definition": "a variety show with topical sketches and songs and dancing and comedians",
+      "synonyms": [
+        "revue"
+      ]
+    },
+    {
+      "id": "oewn-06610111-n",
+      "partOfSpeech": "n",
+      "definition": "a periodical that publishes critical essays on current affairs or literature or art"
+    },
+    {
+      "id": "oewn-06481048-n",
+      "partOfSpeech": "n",
+      "definition": "a summary at the end that repeats the substance of a longer discussion",
+      "synonyms": [
+        "recapitulation",
+        "recap"
+      ]
+    },
+    {
+      "id": "oewn-01199748-n",
+      "partOfSpeech": "n",
+      "definition": "(law) a judicial reexamination of the proceedings of a court (especially by an appellate court)"
+    },
+    {
+      "id": "oewn-00899509-n",
+      "partOfSpeech": "n",
+      "definition": "practice intended to polish performance or refresh the memory",
+      "synonyms": [
+        "brushup"
+      ]
+    },
+    {
+      "id": "oewn-00880949-n",
+      "partOfSpeech": "n",
+      "definition": "a formal or official examination",
+      "examples": [
+        "the platoon stood ready for review",
+        "we had to wait for the inspection before we could use the elevator"
+      ],
+      "synonyms": [
+        "inspection"
+      ]
+    },
+    {
+      "id": "oewn-00697955-v",
+      "partOfSpeech": "v",
+      "definition": "look at again; examine again",
+      "examples": [
+        "let's review your situation"
+      ],
+      "synonyms": [
+        "reexamine"
+      ]
+    },
+    {
+      "id": "oewn-00857194-v",
+      "partOfSpeech": "v",
+      "definition": "appraise critically",
+      "examples": [
+        "She reviews books for the New York Times",
+        "Please critique this performance"
+      ],
+      "synonyms": [
+        "critique"
+      ]
+    },
+    {
+      "id": "oewn-00698466-v",
+      "partOfSpeech": "v",
+      "definition": "hold a review (of troops)",
+      "synonyms": [
+        "go over",
+        "survey"
+      ]
+    },
+    {
+      "id": "oewn-00698618-v",
+      "partOfSpeech": "v",
+      "definition": "refresh one's memory",
+      "examples": [
+        "I reviewed the material before the test"
+      ],
+      "synonyms": [
+        "brush up",
+        "refresh"
+      ]
+    },
+    {
+      "id": "oewn-00698180-v",
+      "partOfSpeech": "v",
+      "definition": "look back upon (a period of time, sequence of events); remember",
+      "examples": [
+        "she reviewed her achievements with pride"
+      ],
+      "synonyms": [
+        "look back",
+        "retrospect"
+      ]
+    }
+  ]
+}

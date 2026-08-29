@@ -24,7 +24,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
-use formal_ai::protocol::{ChatMessage, ToolCall};
+use formal_ai::{ChatMessage, ToolCall};
 
 /// The tool names `@link-assistant/agent` advertises to the server, in the
 /// order the live trace recorded them.
@@ -108,10 +108,23 @@ fn report_evidence(workspace: &Path) {
     }
 }
 
+/// The head of a tool result, capped by line count *and* by line width.
+///
+/// A repository-wide grep can return a single line of several megabytes (one
+/// minified JSON fixture is enough), which drowns the routing decision this
+/// harness exists to show.
 fn first_lines(text: &str, limit: usize) -> String {
-    let mut out: Vec<&str> = text.lines().take(limit).collect();
+    const WIDTH: usize = 200;
+    let mut out: Vec<String> = text
+        .lines()
+        .take(limit)
+        .map(|line| match line.char_indices().nth(WIDTH) {
+            Some((cut, _)) => format!("{}…", &line[..cut]),
+            None => line.to_owned(),
+        })
+        .collect();
     if text.lines().count() > limit {
-        out.push("…");
+        out.push("…".to_owned());
     }
     out.join("\n")
 }
@@ -255,7 +268,13 @@ fn execute(tool: &str, arguments: &str, workspace: &Path) -> String {
                 Err(error) => format!("Error: {path}: {error}"),
             }
         }
-        "list" => shell(workspace, &format!("ls -la {}", quote(&string(&["path", "directory"]).unwrap_or_else(|| String::from("."))))),
+        "list" => shell(
+            workspace,
+            &format!(
+                "ls -la {}",
+                quote(&string(&["path", "directory"]).unwrap_or_else(|| String::from(".")))
+            ),
+        ),
         "glob" => shell(
             workspace,
             &format!(
@@ -281,9 +300,9 @@ fn execute(tool: &str, arguments: &str, workspace: &Path) -> String {
             };
             shell(workspace, &command)
         }
-        "websearch" | "webfetch" => String::from(
-            "Error: this offline harness has no network access; no result was fetched",
-        ),
+        "websearch" | "webfetch" => {
+            String::from("Error: this offline harness has no network access; no result was fetched")
+        }
         "todoread" => String::from("[]"),
         "todowrite" | "task" | "batch" => String::from("{\"success\":true}"),
         other => format!("Error: unknown tool {other}"),

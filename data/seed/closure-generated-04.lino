@@ -45,7 +45,7 @@ meanings
       surface
         text "because"
   brief
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "brief"

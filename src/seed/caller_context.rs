@@ -132,6 +132,61 @@ impl CallerContextVocabulary {
                     .any(|token| token == word)
             })
     }
+
+    /// The clause a [policy lead](Self::policy_leads) opens `lowercased` with.
+    ///
+    /// This is the strictest reading of a lead, and the one a route wants once
+    /// it has already isolated the text an action marker introduced. *"Use web
+    /// research when it materially improves factual accuracy"* introduces
+    /// *"when it materially improves factual accuracy"*; the lead is `when` and
+    /// the clause it governs is *"it materially improves factual accuracy"*.
+    ///
+    /// Returning the clause rather than a yes/no lets the caller inspect what
+    /// the condition is *about*, which is what separates a rule from a request
+    /// that merely opens the same way — *"look up when the next release ships"*
+    /// opens with the same word and is an ordinary question.
+    #[must_use]
+    pub fn policy_lead_clause<'a>(&self, lowercased: &'a str) -> Option<&'a str> {
+        let text = lowercased.trim_start();
+        self.policy_leads.iter().find_map(|lead| {
+            text.strip_prefix(lead.as_str())
+                .filter(|rest| rest.is_empty() || !starts_with_word_character(rest))
+                .map(str::trim_start)
+        })
+    }
+
+    /// Whether `lowercased` *opens* with a [policy lead](Self::policy_leads).
+    #[must_use]
+    pub fn opens_with_policy_lead(&self, lowercased: &str) -> bool {
+        self.policy_lead_clause(lowercased).is_some()
+    }
+
+    /// Whether `lowercased` carries a [policy lead](Self::policy_leads) at its
+    /// start or from the middle of the clause.
+    ///
+    /// *"When running sudo commands, …"* opens with one; *"Run commands with
+    /// sudo only when necessary"* qualifies from the middle. Both name a class
+    /// rather than an instance, so both are the caller's rule.
+    ///
+    /// Carrying a lead is necessary but not sufficient: a genuine request can
+    /// carry one too (*"If the build fails, run cargo test."*), so each caller
+    /// pairs this with the test that tells its own orders from its own rules.
+    #[must_use]
+    pub fn carries_policy_lead(&self, lowercased: &str) -> bool {
+        self.opens_with_policy_lead(lowercased)
+            || self
+                .policy_leads
+                .iter()
+                .any(|lead| lowercased.contains(&format!(" {lead} ")))
+    }
+}
+
+/// Whether `text` begins with a character that continues a word, so a lead
+/// matched by prefix would only be the head of a longer one (`if` in `iffy`).
+fn starts_with_word_character(text: &str) -> bool {
+    text.chars()
+        .next()
+        .is_some_and(|character| character.is_alphanumeric() || character == '_')
 }
 
 /// Whether `character` belongs to a script written without spaces between words.

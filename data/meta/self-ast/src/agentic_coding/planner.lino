@@ -2,115 +2,96 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 40692
-  line_count 884
-  content_id source_module_67599f8f161cd3f6
-  symbol_count 30
+  byte_len 28050
+  line_count 580
+  content_id source_module_10ffa1e6bdffd34c
+  symbol_count 15
   symbols
-    enum AgenticPlan 52 57
-    struct PlannedToolCall 61 66
-    enum Capability 76 91
-    function permission_key 99 116
-    function registry_id 118 135
-    function tool_capability 144 146
-    function plan_chat_step 151 446
-    function plan_shell_step 449 466
-    struct DocumentRecipe 478 487
-    function plan_document_recipe 492 516
-    function plan_meaning_detail_step 525 570
-    function plan_diagram_step 577 590
-    function plan_self_ast_step 597 610
-    function plan_self_heal_step 617 630
-    function plan_source_links_step 638 651
-    function plan_ledger_step 658 671
-    function plan_explain_step 678 691
-    function plan_change_request_step 699 712
-    function plan_repair_strategy_step 720 733
-    function plan_rebuild_step 742 755
-    function plan_question_catalog_step 763 776
-    function plan_dreaming_audit_step 778 791
-    function plan_google_trends_learning_step 799 812
-    function plan_google_trends_catalog_step 814 827
-    function plan_one 829 834
-    function write_arguments 842 850
-    function fetch_arguments 859 865
-    function classify_tool 867 869
-    function latest_user_text 872 874
-    function trace_route 880 884
+    enum AgenticPlan 61 66
+    struct PlannedToolCall 70 75
+    enum Capability 85 100
+    function permission_key 108 125
+    function registry_id 127 144
+    function tool_capability 153 155
+    function plan_chat_step 160 490
+    function compose_constrained_change_plan 501 504
+    function plan_shell_step 506 523
+    function plan_one 525 530
+    function write_arguments 538 546
+    function fetch_arguments 555 561
+    function classify_tool 563 565
+    function latest_user_text 568 570
+    function trace_route 576 580
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19119
-    named_node_count 3842
-    distinct_node_kinds 68
+    total_link_count 13175
+    named_node_count 2629
+    distinct_node_kinds 64
     node_kinds
-      arguments 254
-      array_type 35
+      arguments 191
+      array_type 5
       attribute 6
       attribute_item 6
       binary_expression 2
-      block 87
-      call_expression 254
-      closure_expression 7
-      closure_parameters 7
+      block 70
+      call_expression 191
+      closure_expression 6
+      closure_parameters 6
       crate 5
       declaration_list 1
-      doc_comment 131
+      doc_comment 54
       else_clause 1
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      expression_statement 123
-      field_declaration 6
-      field_declaration_list 2
-      field_expression 38
-      field_identifier 70
-      field_initializer 26
-      field_initializer_list 13
-      function_item 26
+      expression_statement 117
+      field_declaration 2
+      field_declaration_list 1
+      field_expression 22
+      field_identifier 24
+      function_item 12
       function_modifiers 2
-      generic_type 5
-      identifier 1117
-      if_expression 60
+      generic_type 6
+      identifier 793
+      if_expression 57
       impl_item 1
       inner_doc_comment_marker 2
-      let_chain 10
-      let_condition 44
-      let_declaration 38
-      lifetime 3
-      line_comment 249
-      macro_invocation 21
+      let_chain 7
+      let_condition 42
+      let_declaration 3
+      lifetime 2
+      line_comment 181
+      macro_invocation 8
       match_arm 28
       match_block 2
       match_expression 2
       match_pattern 28
       ordered_field_declaration_list 2
-      outer_doc_comment_marker 129
-      parameter 47
-      parameters 26
-      primitive_type 30
-      reference_expression 83
-      reference_type 65
-      return_expression 58
-      scoped_identifier 213
-      scoped_use_list 5
+      outer_doc_comment_marker 52
+      parameter 16
+      parameters 12
+      primitive_type 14
+      reference_expression 70
+      reference_type 19
+      return_expression 55
+      scoped_identifier 162
+      scoped_use_list 6
       self 4
       self_parameter 2
-      shorthand_field_initializer 26
       source_file 1
-      string_content 59
-      string_literal 60
-      struct_expression 13
-      struct_item 2
-      super 52
-      token_tree 34
+      string_content 46
+      string_literal 47
+      struct_item 1
+      super 50
+      token_tree 18
       try_expression 1
-      tuple_struct_pattern 44
-      type_arguments 5
-      type_identifier 73
-      unary_expression 7
-      use_declaration 41
-      use_list 5
-      visibility_modifier 23
+      tuple_struct_pattern 42
+      type_arguments 6
+      type_identifier 27
+      unary_expression 2
+      use_declaration 45
+      use_list 6
+      visibility_modifier 17

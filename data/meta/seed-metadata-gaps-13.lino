@@ -643,6 +643,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "pattern_wellbeing_phrase_privet_kak_dela"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ef755e112f62153d
+    source "data/seed/closure-generated-13.lino"
+    record "produce"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_3c9b140e9ee457ed
     source "data/seed/closure-generated-13.lino"
     record "response_agentic_action_compile_program_es"

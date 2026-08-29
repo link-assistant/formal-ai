@@ -1,0 +1,87 @@
+meanings
+  document_composition_action
+    defined-by action
+    role document_composition_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as asking for a document to be composed"
+    unit "not applicable"
+    example "produce"
+    lexeme en
+      surface
+        text produce
+      surface
+        text compose
+      surface
+        text draft
+      surface
+        text assemble
+      surface
+        text prepare
+    lexeme ru
+      surface
+        text подготовь
+      surface
+        text подготовьте
+      surface
+        text составь
+      surface
+        text составьте
+      surface
+        text сформируй
+    lexeme hi
+      surface
+        text "तैयार करें"
+      surface
+        text "संकलित करें"
+    lexeme zh
+      surface
+        text 编写
+      surface
+        text 撰写
+      surface
+        text 汇总
+  composed_document_kind
+    defined-by relation
+    role composed_document_kind
+    precondition "a request contains this concept surface"
+    effect "the composed artifact is bound to a document whose content is still to be established"
+    unit "not applicable"
+    example "note"
+    lexeme en
+      surface
+        text note
+      surface
+        text report
+      surface
+        text summary
+      surface
+        text memo
+      surface
+        text brief
+    lexeme ru
+      surface
+        text заметку
+      surface
+        text заметка
+      surface
+        text отчёт
+      surface
+        text отчет
+      surface
+        text сводку
+      surface
+        text справку
+    lexeme hi
+      surface
+        text नोट
+      surface
+        text रिपोर्ट
+      surface
+        text सारांश
+    lexeme zh
+      surface
+        text 笔记
+      surface
+        text 报告
+      surface
+        text 摘要

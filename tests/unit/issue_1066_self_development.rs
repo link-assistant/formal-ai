@@ -124,7 +124,8 @@ fn incremental_harness_assertions_parse_a_utf8_report_under_a_posix_locale() {
 
 #[test]
 fn the_locale_reproduction_experiment_is_committed_and_executable() {
-    let script = Path::new("experiments/issue_1066_self_development/reproduce-locale-report-read.sh");
+    let script =
+        Path::new("experiments/issue_1066_self_development/reproduce-locale-report-read.sh");
     let path = root().join(script);
     assert!(path.is_file(), "{} is missing", script.display());
     #[cfg(unix)]

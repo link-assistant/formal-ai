@@ -204,6 +204,11 @@ meanings
     lexeme en
       surface
         text "nondeterministic"
+  note
+    defined-by word_surface
+    lexeme en
+      surface
+        text "note"
   pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh
     defined-by prompt_pattern
     lexeme en

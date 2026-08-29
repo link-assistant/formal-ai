@@ -41,6 +41,8 @@ src/agentic_coding/driver.rs	command timed out: {}
 src/agentic_coding/driver.rs	error: unsupported tool {other}
 src/agentic_coding/driver.rs	run_command produced no result for {command:?}
 src/agentic_coding/driver.rs	wrote {} byte(s) to {path}
+src/agentic_coding/evidence_record.rs	Recorded the findings in `{}`.
+src/agentic_coding/evidence_record.rs	The findings could not be recorded in `{}`: the write step failed.
 src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
 src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
@@ -80,6 +82,10 @@ src/agentic_coding/ledger.rs	Recorded the approved learning ledger: {count} less
 src/agentic_coding/meaning_detail.rs	Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}
 src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
 src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
+src/agentic_coding/note_composition.rs	- nothing: no tool result was recorded before this note.\n
+src/agentic_coding/note_composition.rs	\nNo requested part above is backed by an observation from this session.\n
+src/agentic_coding/note_composition.rs	\nObserved in this session:\n
+src/agentic_coding/note_composition.rs	{}\n\nRequested parts:\n
 src/agentic_coding/planner.rs	I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
 src/agentic_coding/question_catalog.rs	  intent \"generate_all_possible_questions\"\n
 src/agentic_coding/question_catalog.rs	  record_type \"question_catalog\"\n

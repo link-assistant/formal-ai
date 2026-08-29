@@ -699,6 +699,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "isolated-workspace-allowlist"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f036b1c3da9024a1
+    source "data/seed/closure-generated-14.lino"
+    record "prepare"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_684738bf1deb5601
     source "data/seed/closure-generated-14.lino"
     record "relocate"

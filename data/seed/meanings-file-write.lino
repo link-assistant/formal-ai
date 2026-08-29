@@ -162,6 +162,18 @@ meanings
         text "put"
       surface
         text "set"
+      surface
+        text "record"
+      surface
+        text "leave"
+      surface
+        text "place"
+      surface
+        text "store"
+      surface
+        text "produce"
+      surface
+        text "emit"
     lexeme ru
       surface
         text создай
@@ -179,6 +191,18 @@ meanings
         text сделай
       surface
         text добавь
+      surface
+        text зафиксируй
+      surface
+        text оставь
+      surface
+        text помести
+      surface
+        text храни
+      surface
+        text подготовь
+      surface
+        text выведи
     lexeme hi
       surface
         text बनाओ
@@ -190,6 +214,18 @@ meanings
         text सहेजो
       surface
         text जोड़ो
+      surface
+        text दर्ज
+      surface
+        text छोड़ो
+      surface
+        text रखो
+      surface
+        text संग्रह
+      surface
+        text तैयार
+      surface
+        text निकालो
     lexeme zh
       surface
         text 创建
@@ -201,6 +237,18 @@ meanings
         text 生成
       surface
         text 添加
+      surface
+        text 记录
+      surface
+        text 留下
+      surface
+        text 放置
+      surface
+        text 存储
+      surface
+        text 产出
+      surface
+        text 输出
   file_write_content
     defined-by relation
     role file_write_content_lead
@@ -403,3 +451,46 @@ meanings
         text 到
       surface
         text 在
+  file_leading_line_constraint
+    defined-by relation
+    role file_leading_line_constraint_lead
+    lexeme en
+      surface
+        text "the first line must be exactly …"
+      surface
+        text "the first line must be …"
+      surface
+        text "the first line of the file must be …"
+      surface
+        text "whose first line is exactly …"
+      surface
+        text "whose first line is …"
+      surface
+        text "the file must begin with the line …"
+      surface
+        text "the file must start with the line …"
+      surface
+        text "begin the file with the line …"
+      surface
+        text "start the file with the line …"
+    lexeme ru
+      surface
+        text "первая строка должна быть точно …"
+      surface
+        text "первая строка должна быть …"
+      surface
+        text "начни файл со строки …"
+    lexeme hi
+      surface
+        text "पहली पंक्ति ठीक यही होनी चाहिए …"
+      surface
+        text "पहली पंक्ति होनी चाहिए …"
+      surface
+        text "फ़ाइल की पहली पंक्ति होनी चाहिए …"
+    lexeme zh
+      surface
+        text "第一行必须正好是 …"
+      surface
+        text "第一行必须是 …"
+      surface
+        text "文件的第一行是 …"
