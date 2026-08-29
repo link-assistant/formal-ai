@@ -1,4 +1,4 @@
-# Issue #1068 — the removed deferral budget, falsified
+# Issue #1066 — the removed deferral budget, falsified
 
 `an_ineligible_cycle_is_blocked_from_the_first_push` in
 `tests/unit/specification/self_hosting_metric.rs` claims that no threshold can be
@@ -16,7 +16,7 @@ The file is restored by an `EXIT` trap, so an interrupted run does not leave the
 policy patched.
 
 ```bash
-experiments/issue_1068_no_deferral/falsify-reintroduced-budget.sh
+experiments/issue_1066_no_deferral/falsify-reintroduced-budget.sh
 ```
 
 ## Observed, 2026-08-29

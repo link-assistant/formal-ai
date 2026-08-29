@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Falsify `an_ineligible_cycle_is_blocked_from_the_first_push` (issue #1068).
+# Falsify `an_ineligible_cycle_is_blocked_from_the_first_push` (issue #1066).
 #
 # A guard that never fails is not a guard. This reintroduces the smallest
 # possible version of the removed budget -- a day threshold that appends its own
 # text to the refusal, which is exactly the shape #1065 had -- and asserts the
 # test goes red on it, then restores the file and asserts it goes green again.
 #
-# Usage: experiments/issue_1068_no_deferral/falsify-reintroduced-budget.sh
+# Usage: experiments/issue_1066_no_deferral/falsify-reintroduced-budget.sh
 set -euo pipefail
 
 root=$(git rev-parse --show-toplevel)
@@ -66,12 +66,12 @@ grep -q "Ok(reintroduced_budget(repo, since, format!(" "$policy" ||
   { echo "patch did not reach the call site" >&2; exit 1; }
 
 echo "== with the budget reintroduced: the guard must go RED =="
-if CI=1 cargo test --test unit -- "$test_name" --exact >/tmp/issue-1068-red.log 2>&1; then
+if CI=1 cargo test --test unit -- "$test_name" --exact >/tmp/issue-1066-no-deferral-red.log 2>&1; then
   echo "FALSIFICATION FAILED: the test passed with a budget reintroduced" >&2
-  tail -30 /tmp/issue-1068-red.log >&2
+  tail -30 /tmp/issue-1066-no-deferral-red.log >&2
   exit 1
 fi
-grep -E "panicked at|left:|right:|test result" /tmp/issue-1068-red.log | head -10
+grep -E "panicked at|left:|right:|test result" /tmp/issue-1066-no-deferral-red.log | head -10
 
 restore
 trap - EXIT
