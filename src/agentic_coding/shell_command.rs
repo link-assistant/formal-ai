@@ -493,7 +493,11 @@ fn requesting_sentences<'a>(
 /// built-in intent riding alongside it ("what is today's date? create a file
 /// main.py that prints Hello, world!") answers the smaller of the two questions
 /// and silently drops the work, so the intent steps aside for the task.
-fn carries_authoring_task(sentence: &str) -> bool {
+///
+/// [`super::evidence_record`] reads it for the same reason from the other side:
+/// a sentence that asks for an artifact to be authored states the work, so it
+/// is not a place to deliver some *other* sentence's finding (issue #1066).
+pub(super) fn carries_authoring_task(sentence: &str) -> bool {
     use crate::seed::{ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_KIND, ROLE_PROGRAM_REQUEST};
     let lexicon = seed::lexicon();
     lexicon.mentions_role(ROLE_PROGRAM_REQUEST, sentence)

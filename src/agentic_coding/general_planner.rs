@@ -4,11 +4,12 @@
 //! from the formalized request.  The resulting plan is data: it is serialized to
 //! Links Notation and written before execution, so the tool transcript is an
 //! append-only record of the decision that caused the change.
-use super::planner::Capability;
+use super::planner::{Capability, trace_route};
+use super::shell_command_policy::sentences;
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
-    first_action_cue_end, first_content_lead_end, first_prefix_lead_end, looks_like_file_path,
-    safe_relative_path, tokens,
+    first_action_cue_end, first_content_lead_end, first_prefix_lead_end,
+    honouring_pinned_first_line, looks_like_file_path, safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
@@ -160,6 +161,21 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     // separately, the language to write them with. Only the bytes are content.
     let content = crate::implementation_language::without_trailing_known_modifier(&content)
         .unwrap_or(content);
+    // Issue #1066: the same request can state the bytes and, separately,
+    // constrain the line the file has to open with. The repair belongs here
+    // rather than at the call sites, because every step of the plan quotes the
+    // content it was composed from -- the verification step's expected evidence
+    // most of all -- and a plan whose steps disagree with its own bytes is not
+    // one a reader can check.
+    let content = honouring_pinned_first_line(full_request, &content).map_or(content, |repaired| {
+        // Whether the repair applied is not recoverable from the finished plan,
+        // and the two outcomes it separates -- bytes taken from the prose, and
+        // bytes corrected to match a constraint stated elsewhere in the same
+        // request -- are exactly what a reader checking the plan needs to tell
+        // apart (default off; `FORMAL_AI_TRACE_REQUESTS=1`).
+        trace_route("general_change_plan", "repaired_pinned_first_line");
+        repaired
+    });
     if !safe_relative_path(&target) {
         return None;
     }
@@ -483,9 +499,9 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
         let marker_leads = marker_end <= clause_start;
         let marker_span = if marker_leads {
-            request.get(marker_end..clause_start)
+            request.get(marker_end..end_of_statement(request, marker_end, clause_start))
         } else {
-            request.get(marker_end..)
+            request.get(marker_end..end_of_statement(request, marker_end, request.len()))
         };
         if (!marker_leads || first_action_cue_end(&toks).is_some())
             && let Some(content) = marker_span
@@ -519,10 +535,55 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // it as a literal write both fabricates the wrong file (the string "it") and
     // steals the request from the keyword recipe that would author the real
     // artifact, so fall through instead (issue #663).
-    if is_non_referential_content(&content) || !is_literal_content(&content) {
+    //
+    // The same is true of a payload that names the *work product* rather than
+    // supplying it: "save the answer to FILE" states where an answer goes, not
+    // what it says (issue #1066).
+    if is_non_referential_content(&content)
+        || names_deferred_work_product(&content)
+        || !is_literal_content(&content)
+    {
         return None;
     }
     Some((target, content))
+}
+/// Where the statement that begins at `from` ends, never past `limit`.
+///
+/// A literal payload is something the request *states*, and a statement ends
+/// where its sentence does. Bounding the span by the file clause alone reads
+/// across every sentence in between: "Draft a handover memo containing the
+/// migration status, the outstanding blockers, and the on-call owner. Leave the
+/// memo in `handover/2026-q3.md`" put the marker in the first sentence and the
+/// clause in the second, so the recovered payload ended with the words *Leave
+/// the memo* and the caller's memo opened by instructing them to leave it
+/// (issue #1066).
+///
+/// The clause bound still applies inside the sentence, because "write the
+/// following: hello to `x.txt`" states marker, payload and clause in one
+/// breath. This only refuses to look further than the sentence the marker is in.
+///
+/// A marker that says nothing more on its own line is the exception, because
+/// there the payload is a *block* rather than a phrase: "Create file
+/// `rules.lino` containing\n<three lines of lino>" leaves the marker with an
+/// empty tail, and a newline ends a sentence, so the sentence bound would
+/// recover nothing at all. When the marker's own line has no word left on it,
+/// the statement is the block that follows and runs to `limit`, which is what
+/// this route always did for block payloads.
+fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
+    let Some(sentence) = sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&from))
+    else {
+        return limit;
+    };
+    let says_more = request
+        .get(from..sentence.span.end)
+        .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
+    if says_more {
+        sentence.span.end.min(limit)
+    } else {
+        limit
+    }
 }
 /// Whether a recovered payload says anything at all. A span of nothing but
 /// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
@@ -544,6 +605,52 @@ fn is_non_referential_content(content: &str) -> bool {
         .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
         .iter()
         .any(|form| form.slot() == Slot::Bare && lower == form.text)
+}
+/// Whether a recovered write payload names the result of work the same request
+/// asks for, instead of supplying bytes (issue #1066).
+///
+/// "Save the answer to `out/e.md`" and "leave observable evidence to
+/// `out/e.md`" have the destination-led shape of a literal write -- a write
+/// verb, a span, a destination cue, a path -- and supply no literal. Taking the
+/// span at face value wrote the words *the answer* into the file and, worse,
+/// claimed the request as finished, so the investigation that would have
+/// produced the real bytes never ran.
+///
+/// The surfaces carry [`seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE`] as
+/// [`Slot::Suffix`] forms, because the head noun is what defers and the
+/// modifiers in front of it ("observable", "final") are the caller's, not the
+/// lexicon's.
+///
+/// Deliberately not applied to marker-led content. "Create `a.txt` containing 42
+/// is the answer" states, with the marker, that the span *is* the payload; only
+/// the shapes that infer a payload from position need the check.
+fn names_deferred_work_product(content: &str) -> bool {
+    let lower = content.to_lowercase();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE)
+        .iter()
+        .any(|form| match form.slot() {
+            Slot::Bare => lower == form.text,
+            Slot::Suffix => ends_with_head_noun(&lower, form.after_slot().trim_start()),
+            Slot::Prefix | Slot::Circumfix => false,
+        })
+}
+/// Whether `content` ends with `noun` standing as its own word.
+///
+/// English and Russian separate a head noun from its modifiers with a space, so
+/// the character before the match settles it. Chinese writes the same phrase
+/// with no separator at all, which is why the boundary is stated as "not an
+/// ASCII alphanumeric" rather than "whitespace": demanding a space would never
+/// match 结论, and demanding nothing would match the tail of an unrelated
+/// English word.
+fn ends_with_head_noun(content: &str, noun: &str) -> bool {
+    !noun.is_empty()
+        && content.strip_suffix(noun).is_some_and(|before| {
+            before
+                .chars()
+                .next_back()
+                .is_none_or(|character| !character.is_ascii_alphanumeric())
+        })
 }
 /// Resolve an edit target named in a request through the workspace self-AST
 /// census (issue #673).
