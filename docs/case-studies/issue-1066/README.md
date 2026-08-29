@@ -53,7 +53,7 @@ trusting it.
   the mechanical criterion alone and reading a sample by hand — is how thirty-two
   hollow proofs passed in the first place.
 - **Fix each gap where the general rule was wrong, never at the ladder's
-  wording.** Every one of the fourteen defects below is reachable by a request that
+  wording.** Every one of the sixteen defects below is reachable by a request that
   has nothing to do with the ladder, and each has a test written in different
   words from the prompt that exposed it (CONTRIBUTING rule 4).
 - **Put general lexical capability in the lexicon, not in a handler.** The

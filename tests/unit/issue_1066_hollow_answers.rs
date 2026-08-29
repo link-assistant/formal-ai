@@ -33,11 +33,23 @@ fn an_answer_that_announces_sub_tasks_never_lists_none() {
     // Either the list is made, or the answer says instead why there is none.
     // The colon is the tell: it is the punctuation that promises the list, so an
     // answer that ends on one has announced something it never showed.
+    // Both prompts reach the same refusal, shown here in full: a reader has to
+    // be able to tell an honest "there is nothing to enumerate" from a heading
+    // that promised a list, and only the exact text says which one this is.
+    const UNENUMERABLE: &str = "This task cannot be split into two sub-tasks that can be checked independently, and \
+         no observable completion criterion is known for it, so there is nothing to \
+         enumerate: it is an irreducible single need.";
     for prompt in [
         "Work out whether migrating the billing database divides into smaller pieces.",
         "Split the following into sub-tasks: soothe the reviewer.",
     ] {
-        let answer = FormalAiEngine.answer(prompt).answer;
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.answer.trim(),
+            UNENUMERABLE,
+            "unexpected answer for {prompt:?}"
+        );
+        let answer = response.answer;
         let answer = answer.trim();
         if numbered_lines(answer).is_empty() {
             assert!(
@@ -101,12 +113,49 @@ fn a_listed_sub_task_keeps_the_text_that_says_what_to_do() {
     // policy deleted it as unearned -- leaving `1.  [criterion]`: a numbered
     // list whose every entry had lost its text. The criterion names the check;
     // the text is what a reader would have to do.
-    for prompt in [
-        "Is polishing the onboarding copy an atomic task?",
-        "Is the checkout rewrite a task you can split into steps?",
-        "Является ли рефакторинг платёжного модуля атомарной задачей?",
+    // Each reply is shown in full. The two English prompts differ in their
+    // opening because one asks whether the task is atomic and the other asks
+    // whether it can be split, and the Russian one is answered in Russian
+    // because the surfaces are seeded per language rather than translated.
+    for (prompt, expected) in [
+        (
+            "Is polishing the onboarding copy an atomic task?",
+            concat!(
+                "No — this task is not atomic. It splits into these sub-tasks, each with a completion criterion you can observe:\n",
+                "1. Record independently checkable requirements for Is polishing the onboarding copy an atomic task [requirements_are_independently_checkable]\n",
+                "2. Add a regression test that reproduces Is polishing the onboarding copy an atomic task [regression_test_reproduces_failure]\n",
+                "3. Implement the smallest general change that satisfies Is polishing the onboarding copy an atomic task [requested_behavior_passes]\n",
+                "4. Run the acceptance checks for Is polishing the onboarding copy an atomic task [acceptance_checks_pass]",
+            ),
+        ),
+        (
+            "Is the checkout rewrite a task you can split into steps?",
+            concat!(
+                "Sub-tasks, each with a completion criterion you can observe:\n",
+                "1. Record independently checkable requirements for Is the checkout rewrite a task you can split into steps [requirements_are_independently_checkable]\n",
+                "2. Add a regression test that reproduces Is the checkout rewrite a task you can split into steps [regression_test_reproduces_failure]\n",
+                "3. Implement the smallest general change that satisfies Is the checkout rewrite a task you can split into steps [requested_behavior_passes]\n",
+                "4. Run the acceptance checks for Is the checkout rewrite a task you can split into steps [acceptance_checks_pass]",
+            ),
+        ),
+        (
+            "Является ли рефакторинг платёжного модуля атомарной задачей?",
+            concat!(
+                "Нет — задача не атомарная. Она разбивается на подзадачи, у каждой из которых есть наблюдаемый критерий завершения:\n",
+                "1. Зафиксируй независимо проверяемые требования для Является ли рефакторинг платёжного модуля атомарной задачей [requirements_are_independently_checkable]\n",
+                "2. Добавь регрессионный тест, воспроизводящий Является ли рефакторинг платёжного модуля атомарной задачей [regression_test_reproduces_failure]\n",
+                "3. Реализуй минимальное общее изменение, выполняющее Является ли рефакторинг платёжного модуля атомарной задачей [requested_behavior_passes]\n",
+                "4. Запусти приёмочные проверки для Является ли рефакторинг платёжного модуля атомарной задачей [acceptance_checks_pass]",
+            ),
+        ),
     ] {
-        let answer = FormalAiEngine.answer(prompt).answer;
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.answer.trim(),
+            expected,
+            "unexpected answer for {prompt:?}"
+        );
+        let answer = response.answer;
         let lines = numbered_lines(&answer);
         assert!(
             !lines.is_empty(),
@@ -138,23 +187,55 @@ fn a_colon_in_a_later_sentence_does_not_become_the_task() {
     // reported as unsplittable, which is the same hollowness as an announced
     // list with no entries: the reply is about something the caller never asked
     // about.
-    for (prompt, subject) in [
+    // The replies are shown in full, and they show the scope of the fix
+    // exactly: the enumerated work is the rewrite the caller asked about, and
+    // the trailing deadline or owner rides along inside the task text instead
+    // of replacing it. Before the fix every entry was about "the end of the
+    // quarter" alone.
+    for (prompt, subject, expected) in [
         (
             "Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of \
              the quarter.",
             "warehouse restocking",
+            concat!(
+                "Sub-tasks, each with a completion criterion you can observe:\n",
+                "1. Record independently checkable requirements for Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of the quarter [requirements_are_independently_checkable]\n",
+                "2. Add a regression test that reproduces Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of the quarter [regression_test_reproduces_failure]\n",
+                "3. Implement the smallest general change that satisfies Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of the quarter [requested_behavior_passes]\n",
+                "4. Run the acceptance checks for Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of the quarter [acceptance_checks_pass]",
+            ),
         ),
         (
             "Split the seat-booking migration into sub-tasks. Owner: the reservations \
              team.",
             "seat-booking migration",
+            concat!(
+                "Sub-tasks, each with a completion criterion you can observe:\n",
+                "1. Record independently checkable requirements for Split the seat-booking migration into sub-tasks. Owner: the reservations team [requirements_are_independently_checkable]\n",
+                "2. Add a regression test that reproduces Split the seat-booking migration into sub-tasks. Owner: the reservations team [regression_test_reproduces_failure]\n",
+                "3. Implement the smallest general change that satisfies Split the seat-booking migration into sub-tasks. Owner: the reservations team [requested_behavior_passes]\n",
+                "4. Run the acceptance checks for Split the seat-booking migration into sub-tasks. Owner: the reservations team [acceptance_checks_pass]",
+            ),
         ),
         (
             "Разбей переработку складского учёта на подзадачи. Срок: конец квартала.",
             "складского",
+            concat!(
+                "Подзадачи, у каждой из которых есть наблюдаемый критерий завершения:\n",
+                "1. Зафиксируй независимо проверяемые требования для Разбей переработку складского учёта на подзадачи. Срок: конец квартала [requirements_are_independently_checkable]\n",
+                "2. Добавь регрессионный тест, воспроизводящий Разбей переработку складского учёта на подзадачи. Срок: конец квартала [regression_test_reproduces_failure]\n",
+                "3. Реализуй минимальное общее изменение, выполняющее Разбей переработку складского учёта на подзадачи. Срок: конец квартала [requested_behavior_passes]\n",
+                "4. Запусти приёмочные проверки для Разбей переработку складского учёта на подзадачи. Срок: конец квартала [acceptance_checks_pass]",
+            ),
         ),
     ] {
-        let answer = FormalAiEngine.answer(prompt).answer;
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.answer.trim(),
+            expected,
+            "unexpected answer for {prompt:?}"
+        );
+        let answer = response.answer;
         let lines = numbered_lines(&answer);
         assert!(
             !lines.is_empty(),
@@ -181,7 +262,22 @@ fn framing_addressed_to_the_solver_is_not_a_sub_task() {
                   worker 7 of 12. Work only in the scratch checkout. Its completion \
                   criterion is: every child reports independently. Leave what you find in \
                   worker-7.md. Do not claim success without evidence.";
-    let answer = FormalAiEngine.answer(prompt).answer;
+    // The whole reply, so the fix is legible: four entries, every one of them
+    // about the rewrite, and not one of them about being worker 7 of 12.
+    let expected: &str = concat!(
+        "Sub-tasks, each with a completion criterion you can observe:\n",
+        "1. Record independently checkable requirements for Break the invoice reconciliation rewrite into sub-tasks [requirements_are_independently_checkable]\n",
+        "2. Add a regression test that reproduces Break the invoice reconciliation rewrite into sub-tasks [regression_test_reproduces_failure]\n",
+        "3. Implement the smallest general change that satisfies Break the invoice reconciliation rewrite into sub-tasks [requested_behavior_passes]\n",
+        "4. Run the acceptance checks for Break the invoice reconciliation rewrite into sub-tasks [acceptance_checks_pass]",
+    );
+    let response = FormalAiEngine.answer(prompt);
+    assert_eq!(
+        response.answer.trim(),
+        expected,
+        "unexpected answer for the framed prompt"
+    );
+    let answer = response.answer;
     let lines = numbered_lines(&answer);
     assert!(
         !lines.is_empty(),
