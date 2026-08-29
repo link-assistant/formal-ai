@@ -1078,6 +1078,12 @@ jobs:
         env:
           PORT: 8907
         run: experiments/agent_cli_e2e/run_issue_907.sh
+      - name: "Run agent CLI E2E — a recorded finding is an answer, not a heading (issue #1066)"
+        timeout-minutes: 6
+        env:
+          NODE_PORT: 8944
+          SPLIT_PORT: 8945
+        run: experiments/agent_cli_e2e/run_issue_1066.sh
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
         env:
           PORT: 8776
