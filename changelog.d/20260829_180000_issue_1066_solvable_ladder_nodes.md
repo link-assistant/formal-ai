@@ -46,3 +46,10 @@ bump: minor
   and consuming the whole sentence as delivery left nothing to answer, so the
   request was answered in the transcript and the named file never appeared
   (#1066).
+- Read a task from the colon that introduces it, not from the last colon in the
+  prompt. "Break the warehouse restocking rewrite into sub-tasks. Deadline: the
+  end of the quarter." made the deadline the task, and a deadline is an
+  irreducible single need, so a rewrite that splits four ways was reported as
+  unsplittable. The colon now counts only in the sentence that asks the
+  question, which is the same sentence scoping already used to tell a command
+  that is named from one that is ordered (#1066).

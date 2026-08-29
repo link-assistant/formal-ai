@@ -45,9 +45,10 @@ cases=(
   "src/agentic_coding/evidence_record.rs|            && !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))|// neutralised|issue_907::a_turn_that_carries_a_task_gets_the_task"
   "src/engine.rs|    pub fn announces_a_list_it_does_not_make(&self) -> bool {|if true { return false; }|issue_1066_hollow_answers::an_answer_is_never_a_heading_with_no_list"
   "src/task_decomposition.rs|    pub fn unenumerable_reason(&self) -> Option<AtomicityReason> {|if true { return None; }|issue_1066_hollow_answers::an_answer_that_announces_sub_tasks_never_lists_none"
-  "src/solver_handlers/task_decomposition.rs|fn trim_sentence_end(task: &str) -> &str {|if true { return task; }|issue_1066_hollow_answers::a_listed_sub_task_keeps_the_text_that_says_what_to_do"
+  "src/task_decomposition/stated_task.rs|pub fn without_sentence_end(task: &str) -> &str {|if true { return task; }|issue_1066_hollow_answers::a_listed_sub_task_keeps_the_text_that_says_what_to_do"
   "src/seed/meanings.rs|    pub fn mentions_role_separated(&self, role: &str, normalized: &str) -> bool {|if true { return false; }|issue_1066_ladder_capability::a_question_about_a_task_is_answered_by_thinking_about_the_task"
   "src/agentic_coding/evidence_record.rs|fn work_before_delivery(sentence: &str) -> Option<&str> {|if true { return None; }|issue_1066_ladder_capability::work_coordinated_into_its_delivery_sentence_is_not_thrown_away_with_it"
+  "src/task_decomposition/stated_task.rs|fn after_introducing_colon(prompt: &str, asks: &dyn Fn(&str) -> bool) -> Option<String> {|if true { let colon = prompt.rfind(INTRODUCING_COLON)?; let tail = prompt[colon..].chars().skip(1).collect::<String>().trim().to_owned(); return (!tail.is_empty()).then_some(tail); }|issue_1066_hollow_answers::a_colon_in_a_later_sentence_does_not_become_the_task"
 )
 
 for case in "${cases[@]}"; do

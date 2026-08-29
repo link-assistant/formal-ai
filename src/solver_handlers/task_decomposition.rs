@@ -24,7 +24,7 @@ use crate::seed::{
     ROLE_TASK_FIRST_STEP_CUE,
 };
 use crate::meta_frame::AtomicityReason;
-use crate::task_decomposition::{record_task_decomposition, Decomposition};
+use crate::task_decomposition::{record_task_decomposition, stated_task, Decomposition};
 
 use super::finalize_simple;
 
@@ -65,7 +65,11 @@ pub fn try_task_decomposition_with_depth(
     max_depth: u8,
 ) -> Option<SymbolicAnswer> {
     let question = classify(normalized)?;
-    let task = extract_task(prompt);
+    // The colon reading is scoped to the sentence that asks, so `classify` --
+    // the recogniser, not a copy of it -- decides which sentence that is.
+    let task = stated_task(prompt, &|sentence: &str| {
+        classify(&crate::engine::normalize_prompt(sentence)).is_some()
+    });
     if task.is_empty() {
         return None;
     }
@@ -236,93 +240,4 @@ fn response(language: &str, intent: &str, fallback: &str) -> String {
 /// never to an empty answer in practice.
 fn seeded(language: &str, intent: &str) -> String {
     localized_response(intent, language).unwrap_or_default()
-}
-
-/// Recover the task the prompt is asking about.
-///
-/// The prompts in the issue quote the task ("… nothing else: 'Add a
-/// paths-ignore filter …'"), so a quoted span wins. Failing that, the text
-/// after the last colon is the task. Failing that, the prompt itself is the
-/// task — which is what makes "Split this into steps" work on a bare task.
-///
-/// The task is then stripped of the punctuation that ended the sentence it was
-/// recovered from, because a task is work to do and not an utterance. Every
-/// sub-task this handler reports is composed by putting the task inside a
-/// statement about it, and a task that still carries its asker's question mark
-/// turns that statement back into a question: "Is refactoring the payment
-/// module an atomic task?" produced the sub-task "Record independently
-/// checkable requirements for Is refactoring the payment module an atomic
-/// task?", which [`crate::question_necessity`] then read as this answer asking
-/// something it had not earned and deleted, leaving a numbered list whose every
-/// entry had lost its text. Issue #1066 calls that hollow, and it is: the reply
-/// announced sub-tasks and showed none of them.
-fn extract_task(prompt: &str) -> String {
-    trim_sentence_end(
-        quoted_span(prompt)
-            .or_else(|| after_last_colon(prompt))
-            .unwrap_or_else(|| prompt.to_owned())
-            .trim(),
-    )
-    .to_owned()
-}
-
-/// The punctuation that ends a sentence in the supported writing systems.
-///
-/// Devanagari ends a sentence with a danda rather than a full stop, and the CJK
-/// forms are their own code points, so trimming ASCII alone would leave the
-/// question mark on exactly the languages that need it removed most.
-const SENTENCE_END: &[char] = &['.', '!', '?', '。', '！', '？', '।', '॥', '…'];
-
-/// Drop the sentence-ending punctuation, and any space it left behind.
-///
-/// Repeated because a sentence can end with more than one mark ("Is it atomic?!")
-/// and because trimming one can expose a space in front of the next.
-fn trim_sentence_end(task: &str) -> &str {
-    task.trim_end_matches(|character: char| {
-        SENTENCE_END.contains(&character) || character.is_whitespace()
-    })
-}
-
-/// The quote pairs used across the supported languages. Left and right differ
-/// for every pair except the straight quotes, which close with themselves.
-const QUOTE_PAIRS: &[(char, char)] = &[
-    ('«', '»'),
-    ('“', '”'),
-    ('‘', '’'),
-    ('「', '」'),
-    ('『', '』'),
-    ('"', '"'),
-    ('\'', '\''),
-];
-
-fn quoted_span(prompt: &str) -> Option<String> {
-    let characters: Vec<char> = prompt.chars().collect();
-    let (open_index, closing) = characters
-        .iter()
-        .enumerate()
-        .find_map(|(index, character)| {
-            QUOTE_PAIRS
-                .iter()
-                .find(|(open, _)| open == character)
-                .map(|(_, close)| (index, *close))
-        })?;
-    let close_index = characters
-        .iter()
-        .rposition(|character| *character == closing)?;
-    if close_index <= open_index + 1 {
-        return None;
-    }
-    let span: String = characters[open_index + 1..close_index].iter().collect();
-    let trimmed = span.trim();
-    (!trimmed.is_empty()).then(|| trimmed.to_owned())
-}
-
-fn after_last_colon(prompt: &str) -> Option<String> {
-    let index = prompt.rfind([':', '：'])?;
-    let tail = prompt[index..]
-        .char_indices()
-        .nth(1)
-        .map(|(offset, _)| &prompt[index + offset..])?;
-    let trimmed = tail.trim();
-    (!trimmed.is_empty()).then(|| trimmed.to_owned())
 }

@@ -53,7 +53,7 @@ trusting it.
   the mechanical criterion alone and reading a sample by hand — is how thirty-two
   hollow proofs passed in the first place.
 - **Fix each gap where the general rule was wrong, never at the ladder's
-  wording.** Every one of the thirteen defects below is reachable by a request that
+  wording.** Every one of the fourteen defects below is reachable by a request that
   has nothing to do with the ladder, and each has a test written in different
   words from the prompt that exposed it (CONTRIBUTING rule 4).
 - **Put general lexical capability in the lexicon, not in a handler.** The
@@ -75,7 +75,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The thirteen capability gaps
+## The fourteen capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -91,10 +91,11 @@ the ladder.
 | 7 | An answer describing only a pending web search was delivered as a finding | `SymbolicAnswer::defers_to_the_open_web` |
 | 8 | An authoring sentence was read as a delivery destination | `evidence_record::parse_obligation` |
 | 9 | An announced enumeration with zero entries was still an answer | `Decomposition::unenumerable_reason` |
-| 10 | `enforce_questions` silently deleted a sub-task's text when it ended in `?` | `task_decomposition::trim_sentence_end` |
+| 10 | `enforce_questions` silently deleted a sub-task's text when it ended in `?` | `stated_task::without_sentence_end` |
 | 11 | A marker-led literal payload was read across a sentence boundary | `general_planner::end_of_statement` |
 | 12 | An English separable phrasal verb was unreadable by the lexicon | `Lexicon::mentions_role_separated` |
 | 13 | Work coordinated into its own delivery sentence was consumed with it | `evidence_record::work_before_delivery` |
+| 14 | The prompt's *last* colon was read as the one introducing the task | `stated_task::after_introducing_colon` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -108,6 +109,23 @@ nodes use it; English does not require it, and the fix reads the work in front o
 the write cue, stripping the connective that opens the delivery clause with the
 seed's own `skill_procedure_separator` surfaces rather than a new list of English
 words (R386).
+
+Gap 14 is the one the offline harness found only after it went green. Every node
+proof was non-empty, judged on its content, and honest — and every interior
+node's proof said the node was an irreducible single need, while
+`decompose_task` on the same text returned four checkable children. Two parts of
+one recursion disagreed, which the handler's own module comment says can never
+happen. The cause was not in the recursion: the task handed to it was
+`all_children_pass`. Every ladder node ends with "Its completion criterion is:
+`<criterion>`", the task was read from the prompt's last colon, and a criterion is
+a single need. The ladder's wording is incidental — "Break the warehouse
+restocking rewrite into sub-tasks. Deadline: the end of the quarter." fails
+identically — so the fix is scoping rather than a criterion-shaped exception:
+a colon introduces the task only in the sentence that asks the question, which
+the handler's own recogniser identifies. The reading moved out of
+`src/solver_handlers/task_decomposition.rs` into
+`src/task_decomposition/stated_task.rs` beside the recursion it must agree with,
+and the boundary ledger records the handler shrinking from 328 lines to 243.
 
 Gap 11 is the one worth reading twice, because the first fix for it was wrong in
 a way the suite caught immediately. Bounding a marker-led payload by its sentence

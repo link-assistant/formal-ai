@@ -9,7 +9,7 @@
 
 use formal_ai::engine::{FormalAiEngine, SymbolicAnswer};
 use formal_ai::meta_frame::AtomicityReason;
-use formal_ai::task_decomposition::decompose_task;
+use formal_ai::task_decomposition::{decompose_task, stated_task};
 
 /// The lines of an answer that are numbered sub-task entries.
 fn numbered_lines(answer: &str) -> Vec<&str> {
@@ -127,6 +127,77 @@ fn a_listed_sub_task_keeps_the_text_that_says_what_to_do() {
             );
         }
     }
+}
+
+#[test]
+fn a_colon_in_a_later_sentence_does_not_become_the_task() {
+    // A request states its task and then keeps writing. A colon further down
+    // introduces a deadline, an owner, a criterion -- never the work -- and
+    // taking the prompt's last colon made that fragment the task. A deadline is
+    // an irreducible single need, so a rewrite that splits four ways came back
+    // reported as unsplittable, which is the same hollowness as an announced
+    // list with no entries: the reply is about something the caller never asked
+    // about.
+    for (prompt, subject) in [
+        (
+            "Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of \
+             the quarter.",
+            "warehouse restocking",
+        ),
+        (
+            "Split the seat-booking migration into sub-tasks. Owner: the reservations \
+             team.",
+            "seat-booking migration",
+        ),
+        (
+            "Разбей переработку складского учёта на подзадачи. Срок: конец квартала.",
+            "складского",
+        ),
+    ] {
+        let answer = FormalAiEngine.answer(prompt).answer;
+        let lines = numbered_lines(&answer);
+        assert!(
+            !lines.is_empty(),
+            "nothing was enumerated for {prompt:?}: {answer:?}"
+        );
+        assert!(
+            lines.iter().any(|line| line.contains(subject)),
+            "the sub-tasks are about something other than {subject:?} for {prompt:?}: \
+             {answer:?}"
+        );
+    }
+}
+
+#[test]
+fn a_colon_the_asking_sentence_owns_still_introduces_the_task() {
+    // The scoping may not cost the shape it exists for. Issue #847's own
+    // prompts introduce the task with a colon, and that colon belongs to the
+    // sentence that asks, so it still wins over the whole prompt. The asking
+    // sentence is whichever one the caller's own recogniser accepts; here that
+    // is spelled out, so the rule is pinned without a handler in the way.
+    let asks = |sentence: &str| sentence.to_lowercase().contains("sub-tasks");
+    assert_eq!(
+        stated_task(
+            "Split this task into sub-tasks: add a paths-ignore filter to the release \
+             workflow.",
+            &asks,
+        ),
+        "add a paths-ignore filter to the release workflow"
+    );
+    assert_eq!(
+        stated_task(
+            "Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of \
+             the quarter.",
+            &asks,
+        ),
+        "Break the warehouse restocking rewrite into sub-tasks. Deadline: the end of the \
+         quarter"
+    );
+    assert_eq!(
+        stated_task("Split this into steps", &asks),
+        "Split this into steps",
+        "a bare task with no colon and no quotation is the task"
+    );
 }
 
 #[test]
