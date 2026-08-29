@@ -451,6 +451,22 @@ fn a_file_the_request_asks_for_is_never_opened_for_reading() {
              exactly `triage=billing`.",
             "triage/billing.md",
         ),
+        // A request can also be delivery and nothing else. Both prompts above
+        // ask a question about a task, so the task-structure route answers them
+        // and the read planner is never consulted -- which leaves the guard
+        // unexercised by them. These two state only where the answer goes and
+        // how it opens, so the read planner is exactly what decides them, and
+        // the guard is what it decides with.
+        (
+            "Leave observable evidence in `audit/ledger-check.md`. The first line must \
+             be exactly `audit=ledger-check`.",
+            "audit/ledger-check.md",
+        ),
+        (
+            "Put the outcome in `runs/nightly-42.md`. The first line must be exactly \
+             `run=nightly-42`.",
+            "runs/nightly-42.md",
+        ),
     ] {
         let reads = planned_reads(prompt);
         assert!(
