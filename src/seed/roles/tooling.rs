@@ -225,6 +225,26 @@ pub const ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD: &str =
 /// path. That structural frame lowers "run COMMAND and write its output to
 /// FILE" to a shell redirect instead of writing the words "its output".
 pub const ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE: &str = "file_write_command_output_reference";
+/// Semantic role: the noun a request uses for the work product it is asking to
+/// be produced, rather than for bytes it supplies (issue #1066).
+///
+/// Forms such as "… finding", "… result", "… evidence" (plus translations) are
+/// carried as [`crate::seed::Slot::Suffix`] forms by
+/// `file_write_deferred_content` in `data/seed/meanings-file-write.lino`, the
+/// slot marking the modifiers a caller may put in front of the head noun
+/// ("observable evidence", "final answer").
+///
+/// It is the composed-content sibling of
+/// [`ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE`]: both name bytes that do not
+/// exist yet, one produced by a command and one by the investigation the same
+/// request asks for. "Save the answer to `out/e.md`" has the shape of a literal
+/// write and supplies no literal, so the general change planner wrote the words
+/// *the answer* into the file and the caller's question went unanswered. The
+/// planner reads this role through [`crate::seed::Lexicon::role_word_forms`] to
+/// decline that payload, which hands the request to
+/// [`crate::agentic_coding::evidence_record`] instead.
+pub const ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE: &str =
+    "file_write_deferred_content_reference";
 /// Semantic role: a word that introduces or names the target file of a write
 /// (issue #680).
 ///

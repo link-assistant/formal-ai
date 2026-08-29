@@ -509,6 +509,35 @@ impl Lexicon {
             .any(|meaning| meaning.words().any(|word| normalized.contains(word)))
     }
 
+    /// Does `normalized` use a two-word *action* surface of `role` with its
+    /// object sitting inside it?
+    ///
+    /// English lets an object separate a verb from its particle: "break down the
+    /// customer import rewrite" and "break the customer import rewrite down" are
+    /// the same verb, and so are "break into sub-tasks" and "break the customer
+    /// import rewrite into sub-tasks". A lexicon surface is written in its
+    /// contiguous form, so [`Self::mentions_role`] and [`Self::mentions_role_raw`]
+    /// read only half of the language — and it is the half a caller is *least*
+    /// likely to write, because English puts a long object in the middle.
+    ///
+    /// Formal AI answered "Break the customer import rewrite into sub-tasks" with
+    /// a web search for those words: nothing on the web knows the caller's
+    /// rewrite, and the recursion that does know it was never reached, because
+    /// "break into" is in the seed and "break … into" was not (issue #1066).
+    ///
+    /// Only an action separates. The seed already says which meanings are
+    /// actions, so a role's noun surfaces ("smaller pieces", "sub tasks") are
+    /// never read with a gap in the middle, and a request for "a smaller number
+    /// of pieces" does not name them.
+    #[must_use]
+    pub fn mentions_role_separated(&self, role: &str, normalized: &str) -> bool {
+        let words: Vec<&str> = normalized.split_whitespace().collect();
+        self.meanings_with_role(role)
+            .filter(|meaning| meaning.defined_by.iter().any(|kind| kind == "action"))
+            .flat_map(Meaning::words)
+            .any(|surface| separated_surface_present(&words, surface))
+    }
+
     /// Build the word→value tables the arithmetic evaluator uses to rewrite a
     /// spelled expression into its symbolic form before tokenizing.
     ///
@@ -788,6 +817,36 @@ fn surface_present(normalized: &str, expected: &str) -> bool {
         || normalized.starts_with(&format!("{expected} "))
         || normalized.ends_with(&format!(" {expected}"))
         || normalized.contains(&format!(" {expected} "))
+}
+
+/// The furthest a phrasal verb's object may push its particle away.
+///
+/// An object that separates a phrasal verb is a noun phrase, and a noun phrase
+/// that long stops being one: "break the customer import rewrite into" pushes
+/// the particle four words out, and past about six the two halves are no longer
+/// being read as one verb by the person writing them either. The limit is also
+/// what keeps a verb in one sentence from pairing with a particle in the next.
+const PHRASAL_VERB_OBJECT_LIMIT: usize = 6;
+
+/// Does `words` use the two-word `surface` with its object sitting inside it?
+///
+/// This is the discontinuous counterpart of [`surface_present`], and it applies
+/// only to two-word surfaces, because that is what a phrasal verb is. A
+/// one-word or three-word surface has no particle to separate, and never
+/// matches here.
+fn separated_surface_present(words: &[&str], surface: &str) -> bool {
+    let mut parts = surface.split_whitespace();
+    let (Some(verb), Some(particle), None) = (parts.next(), parts.next(), parts.next()) else {
+        return false;
+    };
+    words.iter().enumerate().any(|(index, word)| {
+        *word == verb
+            && words
+                .iter()
+                .skip(index + 2)
+                .take(PHRASAL_VERB_OBJECT_LIMIT)
+                .any(|later| *later == particle)
+    })
 }
 
 /// The parsed meaning lexicon. Cached — the embedded data is immutable at

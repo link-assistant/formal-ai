@@ -203,6 +203,30 @@ meanings
         text подготовь
       surface
         text выведи
+      surface
+        text создайте
+      surface
+        text напишите
+      surface
+        text запишите
+      surface
+        text сохраните
+      surface
+        text сделайте
+      surface
+        text добавьте
+      surface
+        text зафиксируйте
+      surface
+        text оставьте
+      surface
+        text поместите
+      surface
+        text храните
+      surface
+        text подготовьте
+      surface
+        text выведите
     lexeme hi
       surface
         text बनाओ
@@ -393,6 +417,67 @@ meanings
         text 标准输出
       surface
         text 命令输出
+  file_write_deferred_content
+    defined-by relation
+    role file_write_deferred_content_reference
+    lexeme en
+      surface
+        text "… finding"
+      surface
+        text "… findings"
+      surface
+        text "… result"
+      surface
+        text "… results"
+      surface
+        text "… answer"
+      surface
+        text "… outcome"
+      surface
+        text "… conclusion"
+      surface
+        text "… conclusions"
+      surface
+        text "… evidence"
+      surface
+        text "… verdict"
+      surface
+        text "… proof"
+    lexeme ru
+      surface
+        text "… вывод"
+      surface
+        text "… выводы"
+      surface
+        text "… результат"
+      surface
+        text "… результаты"
+      surface
+        text "… ответ"
+      surface
+        text "… итог"
+      surface
+        text "… заключение"
+      surface
+        text "… доказательство"
+    lexeme hi
+      surface
+        text "… निष्कर्ष"
+      surface
+        text "… परिणाम"
+      surface
+        text "… उत्तर"
+      surface
+        text "… प्रमाण"
+    lexeme zh
+      surface
+        text "… 结论"
+      surface
+        text "… 结果"
+      surface
+        text "… 答案"
+      surface
+        text "… 证据"
   file_write_target
     defined-by relation
     role file_write_target_cue
