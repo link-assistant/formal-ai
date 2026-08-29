@@ -387,5 +387,19 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Vocabulary for a new capability entering the closure is exactly the
     // shape this number tracks: described data grows the count, an
     // undescribed handler would not be allowed to.
-    assert_eq!(expected_gaps.len(), 3_838);
+    //
+    // The eleven after those are the same two shapes again, and they arrived
+    // together under issue #1066. Ten are closure records for the honest
+    // replies a decomposition gives when it cannot enumerate anything: the two
+    // intent tokens `task_decomposition_single_need` and
+    // `task_decomposition_unsplit_depth_bound`, and their eight response ids,
+    // one per registered language. The eleventh is hand-written and says so:
+    // `file_write_deferred_content` in `data/seed/meanings-file-write.lino` is
+    // the vocabulary for a payload that *names* the work product ("... the
+    // findings", "... 结论") rather than stating it, which is what stops a
+    // request to record findings from writing the words "the findings" into
+    // the caller's file. That file carries `role` and has never carried the
+    // other four for any record, so the new one is a gap on exactly the terms
+    // its neighbours already are.
+    assert_eq!(expected_gaps.len(), 3_849);
 }
