@@ -23,6 +23,7 @@ use crate::seed::{
     ROLE_SUBTASK_UNIT_NOUN, ROLE_TASK_ATOMICITY_PREDICATE, ROLE_TASK_DECOMPOSITION_ACTION,
     ROLE_TASK_FIRST_STEP_CUE,
 };
+use crate::meta_frame::AtomicityReason;
 use crate::task_decomposition::{record_task_decomposition, Decomposition};
 
 use super::finalize_simple;
@@ -127,12 +128,19 @@ fn classify(normalized: &str) -> Option<DecompositionQuestion> {
     None
 }
 
-/// Both matchers are consulted because some surfaces are stems ("атомарн",
-/// "разбе") that only a raw substring match can catch, while whole-word
-/// surfaces must stay token-bounded so they don't fire inside longer words.
+/// Whether `normalized` names a meaning in `role`.
+///
+/// All three lexicon matchers are consulted. Some surfaces are stems
+/// ("атомарн", "разбе") that only a raw substring match can catch; whole-word
+/// surfaces must stay token-bounded so they don't fire inside longer words; and
+/// an English phrasal verb carries its object in the middle, which is what
+/// [`Lexicon::mentions_role_separated`](crate::seed::Lexicon::mentions_role_separated)
+/// reads.
 fn mentions(role: &str, normalized: &str) -> bool {
     let lexicon = seed::lexicon();
-    lexicon.mentions_role(role, normalized) || lexicon.mentions_role_raw(role, normalized)
+    lexicon.mentions_role(role, normalized)
+        || lexicon.mentions_role_raw(role, normalized)
+        || lexicon.mentions_role_separated(role, normalized)
 }
 
 fn atomicity_answer(decomposition: &Decomposition, language: &str) -> (&'static str, String) {
@@ -142,11 +150,28 @@ fn atomicity_answer(decomposition: &Decomposition, language: &str) -> (&'static 
             response(language, "task_atomicity_yes", "Yes."),
         );
     }
+    if let Some(reason) = decomposition.unenumerable_reason() {
+        return ("task_atomicity", seeded(language, unenumerable_intent(reason)));
+    }
     let lead = response(language, "task_atomicity_no", "No.");
     (
         "task_atomicity",
         with_sub_tasks(&lead, decomposition, language),
     )
+}
+
+/// The reply that says why there is nothing to enumerate.
+///
+/// Both questions share it. "Is this task atomic?" and "split this task" are
+/// two views of one recursion, so when the recursion produced no sub-tasks and
+/// resolved nothing, both views have the same thing to report -- and neither
+/// may report the other's verdict: the task is not atomic in the sense that
+/// makes an answer directly checkable, and it is not split either.
+const fn unenumerable_intent(reason: AtomicityReason) -> &'static str {
+    match reason {
+        AtomicityReason::DepthBound => "task_decomposition_unsplit_depth_bound",
+        _ => "task_decomposition_single_need",
+    }
 }
 
 fn first_step_answer(decomposition: &Decomposition, language: &str) -> (&'static str, String) {
@@ -166,6 +191,12 @@ fn split_answer(decomposition: &Decomposition, language: &str) -> (&'static str,
         return (
             "task_decomposition",
             seeded(language, "task_decomposition_atomic"),
+        );
+    }
+    if let Some(reason) = decomposition.unenumerable_reason() {
+        return (
+            "task_decomposition",
+            seeded(language, unenumerable_intent(reason)),
         );
     }
     let lead = response(
@@ -213,12 +244,43 @@ fn seeded(language: &str, intent: &str) -> String {
 /// paths-ignore filter …'"), so a quoted span wins. Failing that, the text
 /// after the last colon is the task. Failing that, the prompt itself is the
 /// task — which is what makes "Split this into steps" work on a bare task.
+///
+/// The task is then stripped of the punctuation that ended the sentence it was
+/// recovered from, because a task is work to do and not an utterance. Every
+/// sub-task this handler reports is composed by putting the task inside a
+/// statement about it, and a task that still carries its asker's question mark
+/// turns that statement back into a question: "Is refactoring the payment
+/// module an atomic task?" produced the sub-task "Record independently
+/// checkable requirements for Is refactoring the payment module an atomic
+/// task?", which [`crate::question_necessity`] then read as this answer asking
+/// something it had not earned and deleted, leaving a numbered list whose every
+/// entry had lost its text. Issue #1066 calls that hollow, and it is: the reply
+/// announced sub-tasks and showed none of them.
 fn extract_task(prompt: &str) -> String {
-    quoted_span(prompt)
-        .or_else(|| after_last_colon(prompt))
-        .unwrap_or_else(|| prompt.to_owned())
-        .trim()
-        .to_owned()
+    trim_sentence_end(
+        quoted_span(prompt)
+            .or_else(|| after_last_colon(prompt))
+            .unwrap_or_else(|| prompt.to_owned())
+            .trim(),
+    )
+    .to_owned()
+}
+
+/// The punctuation that ends a sentence in the supported writing systems.
+///
+/// Devanagari ends a sentence with a danda rather than a full stop, and the CJK
+/// forms are their own code points, so trimming ASCII alone would leave the
+/// question mark on exactly the languages that need it removed most.
+const SENTENCE_END: &[char] = &['.', '!', '?', '。', '！', '？', '।', '॥', '…'];
+
+/// Drop the sentence-ending punctuation, and any space it left behind.
+///
+/// Repeated because a sentence can end with more than one mark ("Is it atomic?!")
+/// and because trimming one can expose a space in front of the next.
+fn trim_sentence_end(task: &str) -> &str {
+    task.trim_end_matches(|character: char| {
+        SENTENCE_END.contains(&character) || character.is_whitespace()
+    })
 }
 
 /// The quote pairs used across the supported languages. Left and right differ

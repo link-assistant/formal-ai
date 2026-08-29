@@ -31,6 +31,38 @@ multilingual_responses
     intent task_decomposition_atomic
     language zh
     text "这个任务已经是原子的：任何拆分都无法得到两个可以各自独立检查的子任务。"
+  response response_task_decomposition_single_need_en
+    intent task_decomposition_single_need
+    language en
+    text "This task cannot be split into two sub-tasks that can be checked independently, and no observable completion criterion is known for it, so there is nothing to enumerate: it is an irreducible single need."
+  response response_task_decomposition_single_need_ru
+    intent task_decomposition_single_need
+    language ru
+    text "Эту задачу нельзя разбить на две подзадачи, которые можно проверить по отдельности, и наблюдаемый критерий завершения для неё неизвестен, поэтому перечислять нечего: это неделимая единичная потребность."
+  response response_task_decomposition_single_need_hi
+    intent task_decomposition_single_need
+    language hi
+    text "इस कार्य को ऐसे दो उपकार्यों में नहीं बाँटा जा सकता जिन्हें अलग-अलग जाँचा जा सके, और इसके लिए कोई देखा जा सकने वाला पूर्णता मानदंड ज्ञात नहीं है, इसलिए गिनाने के लिए कुछ नहीं है: यह एक अविभाज्य एकल आवश्यकता है।"
+  response response_task_decomposition_single_need_zh
+    intent task_decomposition_single_need
+    language zh
+    text "这个任务无法拆分成两个可以各自独立检查的子任务，也没有已知的可观察完成标准，因此没有可列举的内容：它是一个不可再分的单一需求。"
+  response response_task_decomposition_unsplit_depth_bound_en
+    intent task_decomposition_unsplit_depth_bound
+    language en
+    text "The decomposition depth bound was reached before this task was split even once, so there is nothing to enumerate: raise the bound to see its sub-tasks."
+  response response_task_decomposition_unsplit_depth_bound_ru
+    intent task_decomposition_unsplit_depth_bound
+    language ru
+    text "Предел глубины разбиения был достигнут до того, как задачу разбили хотя бы один раз, поэтому перечислять нечего: увеличь предел, чтобы увидеть подзадачи."
+  response response_task_decomposition_unsplit_depth_bound_hi
+    intent task_decomposition_unsplit_depth_bound
+    language hi
+    text "इस कार्य को एक बार भी बाँटे जाने से पहले ही विभाजन गहराई की सीमा आ गई, इसलिए गिनाने के लिए कुछ नहीं है: उपकार्य देखने के लिए सीमा बढ़ाएँ।"
+  response response_task_decomposition_unsplit_depth_bound_zh
+    intent task_decomposition_unsplit_depth_bound
+    language zh
+    text "在这个任务被拆分哪怕一次之前就已达到拆分深度上限，因此没有可列举的内容：提高上限即可看到它的子任务。"
   response response_task_atomicity_yes_en
     intent task_atomicity_yes
     language en

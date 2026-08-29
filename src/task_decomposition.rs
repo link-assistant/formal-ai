@@ -196,6 +196,24 @@ impl Decomposition {
         self.root.has_depth_bound_leaf()
     }
 
+    /// Why the decomposition can enumerate nothing, when it can enumerate
+    /// nothing.
+    ///
+    /// [`Self::rows`] excludes the root, so a root the splitter never split has
+    /// no rows at all. The recursion reaches that state in exactly two ways --
+    /// as an irreducible single need, or with the depth bound reached before
+    /// the first split -- and in both it is a leaf that is nonetheless not
+    /// reported atomic, because nothing about it was resolved.
+    ///
+    /// A reader shown the numbered list in that state is shown a heading with
+    /// nothing under it: an answer that announces sub-tasks and lists none.
+    /// That is the hollow answer issue #1066 exists to stop, so the reason is
+    /// handed to the caller instead and the caller can say what happened.
+    #[must_use]
+    pub fn unenumerable_reason(&self) -> Option<AtomicityReason> {
+        (!self.root.atomic && self.root.children.is_empty()).then_some(self.root.reason)
+    }
+
     /// Every leaf of the decomposition, in source order.
     #[must_use]
     pub fn leaves(&self) -> Vec<&SubTask> {
