@@ -12,6 +12,8 @@
 //! and the controller's own depth bound remains the single place that stops the
 //! recursion.
 
+use std::collections::BTreeSet;
+
 use crate::recursive_execution::{RecursiveTask, TaskAttempt, TaskExecutor};
 
 use super::{SubTask, TaskStrategyLedger, decompose_task_with_ledger};
@@ -54,6 +56,10 @@ pub struct SplittingExecutor<E> {
     inner: E,
     ledger: TaskStrategyLedger,
     splits: Vec<RecordedSplit>,
+    /// Atomicity decisions from the exact one-level trees this run inspected.
+    /// `RecursiveTask` carries only goals and children, so the adapter retains
+    /// this part of each emitted leaf's contract until that leaf is attempted.
+    atomic_tasks: BTreeSet<(String, String)>,
 }
 
 impl<E> SplittingExecutor<E> {
@@ -74,6 +80,7 @@ impl<E> SplittingExecutor<E> {
             inner,
             ledger,
             splits: Vec::new(),
+            atomic_tasks: BTreeSet::new(),
         }
     }
 
@@ -123,7 +130,29 @@ impl<E: TaskExecutor> TaskExecutor for SplittingExecutor<E> {
         failure: &TaskAttempt,
         split_depth: u8,
     ) -> Vec<RecursiveTask> {
+        if self
+            .atomic_tasks
+            .iter()
+            .any(|(id, goal)| id == &task.id && goal == &task.goal)
+        {
+            self.splits.push(RecordedSplit {
+                task_id: task.id.clone(),
+                goal: task.goal.clone(),
+                failure_evidence: failure.evidence.clone(),
+                split_depth,
+                children: Vec::new(),
+            });
+            return Vec::new();
+        }
         let decomposition = decompose_task_with_ledger(&task.goal, 1, &self.ledger);
+        self.atomic_tasks.extend(
+            decomposition
+                .root
+                .children
+                .iter()
+                .filter(|child| child.atomic)
+                .map(|child| (child.id.clone(), child.text.clone())),
+        );
         let children: Vec<RecursiveTask> = decomposition
             .root
             .children

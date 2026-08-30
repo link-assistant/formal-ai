@@ -2,6 +2,10 @@
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
+use formal_ai::recursive_execution::{
+    RecursiveExecution, RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively_within,
+};
+use formal_ai::task_decomposition::SplittingExecutor;
 
 const ISSUE_URL: &str = "https://github.com/link-assistant/formal-ai/issues/1069";
 
@@ -75,5 +79,51 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
             Some(AgenticPlan::Final(answer)) if answer.contains("Planned, not executed")
         ),
         "a content marker and filename in different statements must not form a literal write",
+    );
+}
+
+#[derive(Default)]
+struct RefusingExecutor {
+    attempted: Vec<String>,
+}
+
+impl TaskExecutor for RefusingExecutor {
+    fn attempt(&mut self, task: &RecursiveTask) -> TaskAttempt {
+        self.attempted.push(task.goal.clone());
+        TaskAttempt::failed("required workspace effect was missing")
+    }
+
+    fn extend_for(&mut self, _task: &RecursiveTask, _failure: &TaskAttempt) -> bool {
+        false
+    }
+}
+
+#[test]
+fn failed_atomic_strategy_stages_are_not_split_into_the_same_strategy_again() {
+    let task = format!("Solve {ISSUE_URL} in this checkout as one whole task.");
+    let root = RecursiveTask::leaf("issue-1069", task);
+    let mut executor = SplittingExecutor::new(RefusingExecutor::default());
+
+    let run = solve_recursively_within(&root, &mut executor, 3);
+
+    assert_eq!(run.status, RecursiveExecution::Blocked);
+    assert_eq!(run.split_depth_reached(), 1, "{run:#?}");
+    assert_eq!(
+        executor.productive_splits().len(),
+        1,
+        "{:#?}",
+        executor.splits()
+    );
+    assert_eq!(run.blocked_leaves().len(), 4, "{run:#?}");
+    assert!(
+        executor.inner().attempted.iter().all(|attempt| {
+            !attempt
+                .starts_with("Record independently checkable requirements for Record independently")
+                && !attempt.starts_with(
+                    "Add a regression test that reproduces Record independently checkable",
+                )
+        }),
+        "an atomic stage was planned again: {:#?}",
+        executor.inner().attempted,
     );
 }
