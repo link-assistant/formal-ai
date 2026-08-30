@@ -53,7 +53,7 @@ trusting it.
   the mechanical criterion alone and reading a sample by hand — is how thirty-two
   hollow proofs passed in the first place.
 - **Fix each gap where the general rule was wrong, never at the ladder's
-  wording.** Every one of the twenty-five defects below is reachable by a request
+  wording.** Every one of the twenty-six defects below is reachable by a request
   that has nothing to do with the ladder, and each has a test written in
   different words from the prompt that exposed it (CONTRIBUTING rule 4).
 - **Put general lexical capability in the lexicon, not in a handler.** The
@@ -76,7 +76,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The twenty-five capability gaps
+## The twenty-six capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -108,6 +108,7 @@ the ladder.
 | 23 | A permission to use the web, granted in the framing, disqualified the workspace from answering | `stated_request::request_blocks`, `workspace_inspection::asks_about_the_workspace` |
 | 24 | Every former of an open-web query read past the blank line, so the note that places the worker was sent to a search engine | `web_research::web_research_query_for`, `intent_router::plan_web_search_step`, `web_research::unresolved_web_research_query_for` |
 | 25 | A tool result already in hand was overwritten by a research round that reported it had returned nothing | `web_research::plan_web_research_step` |
+| 26 | A line a search *quoted* was read as the search's own diagnosis, so a `grep` that matched fifty lines reported itself as failed | `tool_result::quotes_a_located_line` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -348,6 +349,39 @@ work the agent had already done. It now plans a deeper round or stands aside, an
 standing aside is what lets `tool_result::latest_turn_answer` report the search
 that actually ran. Nothing about the ladder is in that rule: the test that pins
 it uses a Dvorak-keyboard question with a completed `grep` in front of it.
+
+Gap 26 is what the offline run found after gaps 24 and 25 were in. Sixty-two of
+the sixty-three nodes were judged `ok`; node 2.2.1.1.2 was not, and its proof
+opens like this:
+
+```text
+node_path=2.2.1.1.2
+
+The command failed: ./scripts/opencode-conversation-to-lino.py:6:Formal AI's
+context CLI owns the shared JSON-to-Links-Notation conversion.
+./scripts/install.sh:10:#   telegram  the Telegram bot (alias for `cli`: the bot
+ships inside the CLI)
+[...]
+./scripts/install.sh:260:    log "the 'code' CLI was not found on PATH."
+```
+
+The search succeeded. It matched fifty lines, and the node wrote every one of
+them into its proof under a sentence saying the command had failed. The reason is
+on the last line quoted above: `tool_result::looks_like_error` asks the failure
+lexicon about the first 512 characters of a status-less result, and one of the
+files `grep` matched is an installer that prints *not found* when a program is
+missing. Those words are `install.sh`'s. The lexicon cannot tell whose they are.
+
+Naming the tool would fix this node and nothing else — the same reading is wrong
+for `codesearch`, for a `bash` step running `grep`, and for any harness that
+hands back quoted text. What separates a quotation from a diagnosis is not
+vocabulary but that **a quotation says where it came from**: every line a search
+returns carries the file and the line number it was found at. So a result whose
+first line is `<path>:<number>:` is other people's text, and the failure lexicon
+is not asked about it. A harness announcing its own refusal names no line number,
+which is why `grep: /etc/shadow: Permission denied` is still read as a failure —
+and that half is pinned by the same test, so the fix cannot be widened into
+"never report a failure".
 
 ## What is still hollow, and why the judge does not see it
 

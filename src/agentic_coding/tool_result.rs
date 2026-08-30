@@ -154,11 +154,43 @@ pub(super) fn failure_message(
 const PROSE_FAILURE_PREFIX_CHARS: usize = 512;
 
 fn looks_like_error(text: &str) -> bool {
+    if quotes_a_located_line(text) {
+        return false;
+    }
     let diagnostic_prefix: String = text.chars().take(PROSE_FAILURE_PREFIX_CHARS).collect();
     crate::seed::lexicon().mentions_role(
         ROLE_TOOL_RESULT_FAILURE_SIGNAL,
         &crate::engine::normalize_prompt(&diagnostic_prefix),
     )
+}
+
+/// Whether the result opens with a line quoted from somewhere else.
+///
+/// A search answers with other files' text, and every line it returns carries
+/// the place it was found: `./scripts/install.sh:260:    log "the 'code' CLI was
+/// not found on PATH."`. The failure vocabulary in that line belongs to
+/// `install.sh`, not to the search -- but the diagnostic prefix above cannot
+/// tell them apart by wording, so issue #1066 watched a `grep` that had matched
+/// fifty lines report itself as the command that failed, and the node whose only
+/// evidence was that search recorded the failure as its proof.
+///
+/// The distinguishing property is not vocabulary and not the tool's name: it is
+/// that a quotation says where it came from. A harness announcing its own
+/// failure names no line number -- `grep: /etc/shadow: Permission denied` keeps
+/// the old reading, because `/etc/shadow` is not a count of lines.
+fn quotes_a_located_line(text: &str) -> bool {
+    let Some(first) = text.lines().find(|line| !line.trim().is_empty()) else {
+        return false;
+    };
+    let mut fields = first.splitn(3, ':');
+    let (Some(origin), Some(line_number), Some(_)) = (fields.next(), fields.next(), fields.next())
+    else {
+        return false;
+    };
+    !origin.trim().is_empty()
+        && !origin.contains(char::is_whitespace)
+        && !line_number.is_empty()
+        && line_number.bytes().all(|byte| byte.is_ascii_digit())
 }
 
 pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {

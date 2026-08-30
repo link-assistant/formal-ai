@@ -65,6 +65,7 @@ cases=(
   "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::a_permission_to_use_the_web_is_not_the_answer_to_the_question"
   "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::an_open_web_query_stops_at_the_end_of_the_request"
   "src/agentic_coding/web_research.rs|    // onward, which is exactly why the old single-round shape could not deepen.|if let Some(last) = progress.last() && !matches!(last, Capability::Search) && !matches!(last, Capability::Fetch) { let deeper = plan_deeper_round(tool_names, &progress, query); return Some(deeper.unwrap_or(AgenticPlan::Final(final_answer(query, &progress)))); }|issue_1066_ladder_capability::a_workspace_search_that_ran_is_not_reported_as_a_lookup_that_returned_nothing"
+  "src/agentic_coding/tool_result.rs|fn quotes_a_located_line(text: &str) -> bool {|if true { return false; }|issue_1066_ladder_capability::a_matched_line_that_quotes_an_error_is_not_this_command_s_failure"
 )
 
 wanted=("$@")

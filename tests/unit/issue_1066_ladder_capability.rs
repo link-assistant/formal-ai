@@ -1118,3 +1118,63 @@ fn a_workspace_search_that_ran_is_not_reported_as_a_lookup_that_returned_nothing
          tests/decomposition.rs:1: fn two_node_tree_has_two_leaves() {}\n```"
     );
 }
+
+#[test]
+fn a_matched_line_that_quotes_an_error_is_not_this_command_s_failure() {
+    // A search answers with other files' text. When one of those files happens
+    // to contain the words an installer prints when something is missing, the
+    // words are that file's, not the search's -- but the failure lexicon read
+    // them as this step's diagnosis, and the whole matched listing went out
+    // under "The command failed:". Issue #1066's offline run caught it on a node
+    // whose only evidence was a `grep` that had matched fifty lines; the proof
+    // it left behind reported the search as broken.
+    let matched = "src/billing/legacy_rates.rs:41:    // the historical rate table \
+                   was not found, so the default applies\n\
+                   src/billing/invoice_total.rs:88: fn invoice_total(lines: &[Line]) -> Money {";
+    let messages = vec![
+        ChatMessage::user(
+            "Inspect the existing invoice_total helper and record how it rounds a half cent.",
+        ),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-0",
+            "grep",
+            r#"{"pattern":"invoice_total","query":"invoice_total"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("search-0", "grep", matched),
+    ];
+    let plan = plan_chat_step(&messages, &LADDER_TOOLS);
+    let Some(AgenticPlan::Final(answer)) = plan else {
+        panic!("expected the matched lines to be reported, planned {plan:?}");
+    };
+    assert_eq!(
+        answer,
+        format!("The `grep` command completed. Output:\n\n```text\n{matched}\n```")
+    );
+
+    // The reading that separates them is the line number, not the vocabulary: a
+    // harness reporting its own refusal names a path and a reason, and that is
+    // still a failure.
+    let messages = vec![
+        ChatMessage::user(
+            "Inspect the existing invoice_total helper and record how it rounds a half cent.",
+        ),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-1",
+            "grep",
+            r#"{"pattern":"invoice_total","query":"invoice_total"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result(
+            "search-1",
+            "grep",
+            "grep: /etc/shadow: Permission denied, and the index was not found",
+        ),
+    ];
+    let plan = plan_chat_step(&messages, &LADDER_TOOLS);
+    let Some(AgenticPlan::Final(answer)) = plan else {
+        panic!("expected the refusal to be reported, planned {plan:?}");
+    };
+    assert!(
+        answer.starts_with("The command failed:"),
+        "a harness refusal stopped being read as a failure, answered {answer:?}"
+    );
+}
