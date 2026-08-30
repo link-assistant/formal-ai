@@ -676,17 +676,21 @@ fn has_prefix_boundary(value: &str, start: usize) -> bool {
 
 /// Where the sentence that starts at `from` ends, as an index into `prompt`.
 ///
-/// A sentence ends at its terminator or at a blank line, and the terminator is
-/// kept because [`trim_prompt_punctuation`] strips it next. A period only ends
-/// a sentence when whitespace or the end of the text follows it, so the point in
-/// "12.5" is a decimal point and not a full stop -- the same period rule the
-/// rest of the codebase reads sentences by.
+/// A sentence ends at whichever comes first, its terminator or a blank line,
+/// and the terminator is kept because [`trim_prompt_punctuation`] strips it
+/// next. A period only ends a sentence when whitespace or the end of the text
+/// follows it, so the point in "12.5" is a decimal point and not a full stop --
+/// the same period rule the rest of the codebase reads sentences by.
+///
+/// Reading the blank line first, without also looking for a terminator before
+/// it, is the same defect one paragraph further on: a cue in a paragraph that
+/// is followed by another paragraph claims every sentence up to the break, so
+/// framing written as two blocks instead of one is read as one expression
+/// again.
 fn sentence_end_from(prompt: &str, from: usize) -> usize {
     const TERMINATORS: &[char] = &['?', '!', '。', '！', '？', '।', '॥'];
     let tail = &prompt[from..];
-    if let Some(blank_line) = tail.find("\n\n") {
-        return from + blank_line;
-    }
+    let blank_line = tail.find("\n\n").map(|offset| from + offset);
     let mut characters = tail.char_indices().peekable();
     while let Some((offset, character)) = characters.next() {
         let ends_here = TERMINATORS.contains(&character)
@@ -695,10 +699,11 @@ fn sentence_end_from(prompt: &str, from: usize) -> usize {
                     .peek()
                     .is_none_or(|(_, next)| next.is_whitespace()));
         if ends_here {
-            return from + offset + character.len_utf8();
+            let terminator_end = from + offset + character.len_utf8();
+            return blank_line.map_or(terminator_end, |blank| blank.min(terminator_end));
         }
     }
-    prompt.len()
+    blank_line.unwrap_or(prompt.len())
 }
 
 /// The slices of `prompt` that a calculation cue introduces, each running from

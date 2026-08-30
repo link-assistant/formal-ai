@@ -369,6 +369,37 @@ fn a_calculator_verb_in_the_framing_does_not_claim_the_whole_prompt() {
 }
 
 #[test]
+fn a_calculator_verb_does_not_claim_the_rest_of_its_paragraph() {
+    // Bounding the cue by a blank line alone is the same defect one step in:
+    // the cue was read to the end of its *paragraph*, so every later sentence in
+    // it joined the expression. Framing written as three blocks instead of two
+    // put an unrelated `worker_id=7` inside the slice, the arithmetic reading
+    // failed to evaluate it, and it answered in place of the question the first
+    // block asked. A sentence bound and a paragraph bound both apply, and the
+    // nearer of the two is the one that holds.
+    let prompt = "Is the warehouse restocking rewrite an atomic task?\n\nYou are worker 7 of \
+                  12. Solve only what this worker owns in the scratch checkout. Write the \
+                  outcome to worker-7.md with its first line set to worker_id=7.\n\nAsk the \
+                  coordinator when anything is unclear.";
+    let answer = FormalAiEngine.answer(prompt);
+    assert_ne!(
+        answer.intent, "calculation_error",
+        "the framing was read as arithmetic: {:?}",
+        answer.answer
+    );
+    assert_eq!(
+        answer.intent, "task_atomicity",
+        "the question about the task was not answered: {:?}",
+        answer.answer
+    );
+    assert!(
+        answer.answer.contains("warehouse restocking"),
+        "the answer is not about the task that was asked about: {:?}",
+        answer.answer
+    );
+}
+
+#[test]
 fn a_colon_the_asking_sentence_owns_still_introduces_the_task() {
     // The scoping may not cost the shape it exists for. Issue #847's own
     // prompts introduce the task with a colon, and that colon belongs to the
