@@ -45,7 +45,7 @@ meanings
       surface
         text "because"
   brief
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "brief"
@@ -779,11 +779,21 @@ meanings
     lexeme en
       surface
         text "response summarization report headline zh"
+  response_task_decomposition_single_need_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need zh"
   response_task_plan_stage_requirements_hi
     defined-by response_template
     lexeme en
       surface
         text "response task plan stage requirements hi"
+  response_task_plan_stage_verification_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification es"
   response_thinking_language_name_ru_es
     defined-by response_template
     lexeme en

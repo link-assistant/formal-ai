@@ -87,6 +87,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "response_summarization_ratchet_violated_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5da7772287f58801
+    source "data/seed/closure-generated-02.lino"
+    record "response_task_atomicity_no_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bcc1a003c5ebd581
     source "data/seed/closure-generated-02.lino"
     record "response_thinking_step_clarify_formalization_hi"
@@ -698,6 +702,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_8daaeb2ceb552cb1
     source "data/seed/closure-generated-14.lino"
     record "isolated-workspace-allowlist"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f036b1c3da9024a1
+    source "data/seed/closure-generated-14.lino"
+    record "prepare"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_684738bf1deb5601
     source "data/seed/closure-generated-14.lino"

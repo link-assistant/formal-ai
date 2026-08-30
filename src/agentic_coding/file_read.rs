@@ -2,8 +2,11 @@
 
 use serde_json::json;
 
+use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::general_planner::has_file_write_intent;
 use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
+use super::shell_command_policy::sentences;
+use super::write_request;
 use crate::protocol::{ChatMessage, ToolCall};
 use crate::seed;
 
@@ -271,16 +274,58 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
         });
     }
 
+    // A read cue and a path in the same sentence are about each other, and that
+    // is the ordinary case: "выведи sample.txt", "show me the contents of
+    // beta.md". Answering it from the sentence rather than from the whole prompt
+    // is what keeps the two-obligation requests below from being decided by a
+    // cue that belongs to a different clause (issue #1066).
+    if let Some(path) = read_path_named_beside_its_cue(prompt) {
+        return Some(FileReadTask::Direct {
+            path,
+            mode: mode_for_prompt(prompt),
+            prefer_run: false,
+        });
+    }
+
+    // Issue #1066: "write intent beats read intent" is decided above over the
+    // whole prompt, which settles a request that is only a write. It does not
+    // settle a request that is both -- "find X out, and leave the answer in
+    // FILE" -- because there the read cue and the path belong to different
+    // sentences and different obligations. "Leave observable evidence in
+    // `.agent-ladder/node-1.2-proof.md`. The first line must be exactly
+    // `node_path=1.2`" carries the read cue *first line* in the sentence that
+    // constrains the file's opening, and the only path in the prompt is the one
+    // the caller asked to have written. Opening it reads a file that does not
+    // exist yet, and the run ends by recording the resulting error as its
+    // evidence. Where cue and path were never in one sentence, a path the
+    // request states as a write destination is therefore not a read target.
     if has_file_read_intent(&lower)
-        && let Some(path) = first_local_file_path(prompt) {
-            return Some(FileReadTask::Direct {
-                path,
-                mode: mode_for_prompt(prompt),
-                prefer_run: false,
-            });
-        }
+        && let Some(path) = first_local_file_path(prompt)
+        && !write_request::is_stated_write_target(prompt, &path)
+    {
+        return Some(FileReadTask::Direct {
+            path,
+            mode: mode_for_prompt(prompt),
+            prefer_run: false,
+        });
+    }
 
     None
+}
+
+/// The first path a request names in the same sentence as a read cue.
+///
+/// Sentence scope is what separates a cue that is *about* the path from one that
+/// merely shares a prompt with it, the same scoping
+/// [`super::evidence_record`] uses to split a delivery obligation from the work
+/// it delivers, and [`super::shell_command`] uses to tell a named command from an
+/// ordered one (issue #907).
+fn read_path_named_beside_its_cue(prompt: &str) -> Option<String> {
+    sentences(prompt).into_iter().find_map(|sentence| {
+        has_file_read_intent(&sentence.text.to_lowercase())
+            .then(|| first_local_file_path(sentence.text))
+            .flatten()
+    })
 }
 
 fn has_file_read_intent(lower: &str) -> bool {
@@ -363,18 +408,27 @@ fn first_local_file_path(prompt: &str) -> Option<String> {
         .find(|token| looks_like_local_file_path(token))
 }
 
+/// A path token as prose wrote it, stripped of the punctuation the sentence put
+/// around it.
+///
+/// The terminating dot is delegated to
+/// [`trim_trailing_sentence_dot`](super::file_path_shape::trim_trailing_sentence_dot)
+/// so the read route, the write-request parser and the shell route all draw the
+/// same boundary between a path and the sentence carrying it.
 fn clean_file_token(token: &str) -> String {
-    token
-        .trim_matches('`')
-        .trim_matches('"')
-        .trim_matches('\'')
-        .trim_matches(|c: char| {
-            matches!(
-                c,
-                ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
-            )
-        })
-        .to_owned()
+    peel_sentence_punctuation(token, |token| {
+        token
+            .trim_matches('`')
+            .trim_matches('"')
+            .trim_matches('\'')
+            .trim_matches(|c: char| {
+                matches!(
+                    c,
+                    ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
+                )
+            })
+    })
+    .to_owned()
 }
 
 fn looks_like_local_file_path(token: &str) -> bool {
@@ -382,6 +436,7 @@ fn looks_like_local_file_path(token: &str) -> bool {
         || token.contains("://")
         || token.starts_with("http:")
         || token.starts_with("https:")
+        || is_dotted_number(token)
     {
         return false;
     }

@@ -631,6 +631,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_summarization_ratchet_below_committed_es"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b3ff5e2252bd24ff
+    source "data/seed/closure-generated-12.lino"
+    record "response_task_decomposition_unsplit_depth_bound_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_beef7222544e72ff
     source "data/seed/closure-generated-12.lino"
     record "response_thinking_step_formalize_plain_zh"

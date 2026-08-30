@@ -154,11 +154,85 @@ pub(super) fn failure_message(
 const PROSE_FAILURE_PREFIX_CHARS: usize = 512;
 
 fn looks_like_error(text: &str) -> bool {
-    let diagnostic_prefix: String = text.chars().take(PROSE_FAILURE_PREFIX_CHARS).collect();
+    let framing = own_words(text);
+    let diagnostic_prefix: String = framing.chars().take(PROSE_FAILURE_PREFIX_CHARS).collect();
     crate::seed::lexicon().mentions_role(
         ROLE_TOOL_RESULT_FAILURE_SIGNAL,
         &crate::engine::normalize_prompt(&diagnostic_prefix),
     )
+}
+
+/// How many cited lines it takes before a result counts as quoting.
+///
+/// One is not enough. `HTTP/1.1 404: Not Found` cites a place by the letter of
+/// [`citation_offset`] -- `404` stands as its own token before a colon -- and it
+/// is a diagnosis, not a quotation. A body of quotations comes in a list.
+const CITED_LINES_THAT_MAKE_A_QUOTATION: usize = 2;
+
+/// The part of a result the result is saying itself, before it starts quoting.
+///
+/// A search answers with other files' text, and every line it hands back says
+/// where it was found -- `./scripts/install.sh:260:    log "the 'code' CLI was
+/// not found on PATH."` from one harness, `  Line 65: - Failure-driven
+/// splitting: ...` under a file heading from another. The failure vocabulary in
+/// those lines belongs to `install.sh` and to the changelog, not to the search.
+/// The diagnostic prefix cannot tell them apart by wording, so issue #1066
+/// watched a `grep` that had matched a hundred lines report itself as the
+/// command that failed, and the node whose only evidence was that search
+/// recorded the failure as its proof.
+///
+/// The distinguishing property is not vocabulary and not the tool's name --
+/// naming the tool would fix one caller and nothing else. It is that a quotation
+/// says where it came from, so the result's own voice is what it says *before*
+/// the first citation: a count, a heading, or nothing at all. The cut is made at
+/// the citation itself rather than at the start of its line, because a step that
+/// does fail often says so and then points at the place -- `Error: cannot read
+/// src/lib.rs:12: No such file` keeps `Error: cannot read`, and is still read as
+/// the failure it is. A harness announcing its own refusal cites no place at
+/// all, so `grep: /etc/shadow: Permission denied` keeps the old reading in full.
+fn own_words(text: &str) -> &str {
+    let mut consumed = 0usize;
+    let mut first_citation = None;
+    let mut cited = 0usize;
+    for line in text.split_inclusive('\n') {
+        if let Some(offset) = citation_offset(line) {
+            cited += 1;
+            first_citation.get_or_insert(consumed + offset);
+        }
+        consumed += line.len();
+    }
+    match first_citation {
+        Some(offset) if cited >= CITED_LINES_THAT_MAKE_A_QUOTATION => &text[..offset],
+        _ => text,
+    }
+}
+
+/// Where in `line` the result stops speaking and starts naming what it quotes.
+///
+/// Both quoting shapes above put a decimal number immediately before the colon
+/// that introduces the quoted text, and in both the number stands as a token of
+/// its own -- after the path's colon in `install.sh:260:`, after a space in
+/// `Line 65:`. Neither the word before it nor the punctuation around it is
+/// English, which is why this asks about the number's position rather than about
+/// any phrasing. The citation begins where the word carrying it begins.
+fn citation_offset(line: &str) -> Option<usize> {
+    line.match_indices(':').find_map(|(colon, _)| {
+        let before = &line[..colon];
+        let stem = before.trim_end_matches(|character: char| character.is_ascii_digit());
+        let cites = stem.len() < before.len()
+            && stem.chars().next_back().is_none_or(|character| {
+                matches!(character, ':' | '/' | '.') || character.is_whitespace()
+            });
+        cites.then(|| word_start(before))
+    })
+}
+
+/// Where the last whitespace-separated word of `text` begins.
+fn word_start(text: &str) -> usize {
+    text.char_indices()
+        .rev()
+        .find(|(_, character)| character.is_whitespace())
+        .map_or(0, |(index, character)| index + character.len_utf8())
 }
 
 pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {

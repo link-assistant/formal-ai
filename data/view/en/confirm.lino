@@ -1,0 +1,25 @@
+view
+  id M-93188b7a8f8b
+  lemma confirm
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "establish or strengthen as with new evidence or facts"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "strengthen or make more firm"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make more firm"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "support a person for a position"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "administer the rite of confirmation to"
+    provenance (wordnet)

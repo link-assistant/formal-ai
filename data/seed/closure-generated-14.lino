@@ -279,6 +279,11 @@ meanings
     lexeme en
       surface
         text "powershell"
+  prepare
+    defined-by word_surface
+    lexeme en
+      surface
+        text "prepare"
   prepend
     defined-by phrase
     lexeme en
@@ -729,11 +734,21 @@ meanings
     lexeme en
       surface
         text "response supplied file contents zh"
+  response_task_decomposition_atomic_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition atomic es"
   response_task_decomposition_lead_en
     defined-by response_template
     lexeme en
       surface
         text "response task decomposition lead en"
+  response_task_decomposition_single_need_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need en"
   response_thinking_language_name_hi_ru
     defined-by response_template
     lexeme en

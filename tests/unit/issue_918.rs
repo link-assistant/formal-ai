@@ -340,8 +340,15 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // the twenty-seventh catalog record is `program_language_laravel`, the
     // framework issue #723 asked for, which is a catalog row of its own rather
     // than an alias surface of PHP. Either way a new target is a new
-    // complete-source record, never a new gap.
-    assert_eq!(coding_records, 42, "coding-path regression floor");
+    // complete-source record, never a new gap. The three most recent additions
+    // are not language targets at all: `workspace_inspection_examine`,
+    // `workspace_inspection_verify` and `workspace_inspection_identify` are the
+    // vocabulary that lets a request to *look at* the repository route to a
+    // workspace search instead of an open-web one (issue #1066). They land in
+    // the same complete source as the coding tasks and carry the same five
+    // fields, so they raise the floor rather than the gap count -- which is the
+    // point of the floor: new agent capability arrives as described data.
+    assert_eq!(coding_records, 45, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -361,6 +368,49 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // action responses issues #824 and #944 added pull their two intent tokens
     // and their ten response ids into the closure, and every one of the twelve
     // is a `closure-generated-*.lino` record -- no hand-written gap, no
-    // handler without metadata.
-    assert_eq!(expected_gaps.len(), 3_830);
+    // handler without metadata. The one after them is hand-written and says so
+    // honestly: `file_leading_line_constraint` in
+    // `data/seed/meanings-file-write.lino` is the vocabulary for "the first
+    // line must be ..." that lets an evidence-record request pin its opening
+    // line (issue #1066), and that file, like `data/seed/meanings.lino`, has
+    // never carried the five fields for any of its records. A gap recorded in
+    // reviewed data is the outcome this audit is for; the floor above is what
+    // forbids the same omission on the coding path.
+    //
+    // The seven after it are closure records again, and they arrived for the
+    // same reason the twelve before them did. `data/seed/meanings-note-
+    // composition.lino` carries both of its meanings with all five fields --
+    // it is a hand-written file and it is complete -- but the closure expands
+    // each of its English surfaces into a generated record, and `produce`,
+    // `compose`, `draft`, `assemble`, `prepare`, `note` and `memo` had no
+    // generated record before. `report`, `summary` and `brief` already did.
+    // Vocabulary for a new capability entering the closure is exactly the
+    // shape this number tracks: described data grows the count, an
+    // undescribed handler would not be allowed to.
+    //
+    // The eleven after those are the same two shapes again, and they arrived
+    // together under issue #1066. Ten are closure records for the honest
+    // replies a decomposition gives when it cannot enumerate anything: the two
+    // intent tokens `task_decomposition_single_need` and
+    // `task_decomposition_unsplit_depth_bound`, and their eight response ids,
+    // one per language the seed then answered in. The eleventh is hand-written
+    // and says so:
+    // `file_write_deferred_content` in `data/seed/meanings-file-write.lino` is
+    // the vocabulary for a payload that *names* the work product ("... the
+    // findings", "... 结论") rather than stating it, which is what stops a
+    // request to record findings from writing the words "the findings" into
+    // the caller's file. That file carries `role` and has never carried the
+    // other four for any record, so the new one is a gap on exactly the terms
+    // its neighbours already are.
+    // The thirteen after those are one response id per decomposition intent,
+    // and they arrived when Spanish stopped being answered in English (issue
+    // #1066). `es` is a registered language, `data/seed/multilingual-responses-
+    // decomposition.lino` carried no record in it, and `localized_response`
+    // falls back to English rather than failing -- so a Spanish speaker asking
+    // why nothing could be enumerated was told something true in words they had
+    // not asked in. Filling the hole is described data entering the closure,
+    // which is the growth this number exists to track. Leaving the fallback in
+    // place would have held the count still and kept the answer wrong, which is
+    // the direction this floor is here to make visible.
+    assert_eq!(expected_gaps.len(), 3_862);
 }

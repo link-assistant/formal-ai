@@ -543,6 +543,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "response_summarization_criterion_content_grounded_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_891d66df59c4221b
+    source "data/seed/closure-generated-11.lino"
+    record "response_task_decomposition_unsplit_depth_bound_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_7a5926c5d90afbfb
     source "data/seed/closure-generated-11.lino"
     record "response_thinking_narrative_unknown_en"

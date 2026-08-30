@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "count words"
+  draft
+    defined-by word_surface
+    lexeme en
+      surface
+        text "draft"
   external_benchmark_swe_clear_logs_error
     defined-by intent
     lexeme en
@@ -105,7 +110,7 @@ meanings
       surface
         text "how to guide conflicts heading"
   inspect
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "inspect"
@@ -724,6 +729,16 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth marker en"
+  response_task_decomposition_single_need_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need hi"
+  response_task_plan_stage_implementation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation es"
   response_task_plan_stage_verification_zh
     defined-by response_template
     lexeme en

@@ -2,9 +2,9 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 46
-  source_lines_max 19512
+  source_lines_max 19360
   outside_core_file_count_max 46
-  outside_core_lines_max 19512
+  outside_core_lines_max 19360
   source src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
@@ -167,7 +167,7 @@ core_boundary_ledger
     reason "Research criteria, table policy, and rendering are problem-domain knowledge."
   source src/solver_handlers/response_language_followup.rs
     disposition migrate
-    baseline_lines 128
+    baseline_lines 122
     data_target "response-language follow-up rules"
     reason "Language-change cues and response policy belong in multilingual seed data."
   source src/solver_handlers/self_awareness.rs
@@ -197,7 +197,7 @@ core_boundary_ledger
     reason "Follow-up state transitions and project vocabulary are domain policy."
   source src/solver_handlers/task_decomposition.rs
     disposition migrate
-    baseline_lines 266
+    baseline_lines 243
     data_target "task decomposition methods and examples"
     reason "Decomposition heuristics and examples are problem-solving metadata."
   source src/solver_handlers/text_edit_ops.rs
@@ -227,7 +227,7 @@ core_boundary_ledger
     reason "Search-provider selection and result policy belong in data over a network surface."
   source src/solver_handlers/web_search_intent.rs
     disposition migrate
-    baseline_lines 995
+    baseline_lines 872
     data_target "web-search intent and query rules"
     reason "Search cues, query rewriting, and provider policy are domain knowledge."
   source src/solver_handlers/world_state.rs

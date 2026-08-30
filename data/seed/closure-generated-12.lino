@@ -759,6 +759,11 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth bound hi"
+  response_task_decomposition_unsplit_depth_bound_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound es"
   response_task_first_step_lead_zh
     defined-by response_template
     lexeme en
@@ -1004,6 +1009,11 @@ meanings
     lexeme en
       surface
         text "task atomicity no"
+  task_decomposition_single_need
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition single need"
   task_plan_stage_implementation
     defined-by intent
     lexeme en

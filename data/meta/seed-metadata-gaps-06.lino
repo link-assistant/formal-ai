@@ -243,6 +243,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "step"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5a5c4633b1dbc956
+    source "data/seed/closure-generated-05.lino"
+    record "task_decomposition_unsplit_depth_bound"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_100ee7f4dafb8e46
     source "data/seed/closure-generated-06.lino"
     record "collapse"
@@ -802,6 +806,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_a4f759798846d646
     source "data/seed/meanings-file-edit.lino"
     record "file_edit_new_lead"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_5124c39c4bbfd726
+    source "data/seed/meanings-file-write.lino"
+    record "file_write_deferred_content"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_826f9445ce1e5ad6
     source "data/seed/meanings-how.lino"

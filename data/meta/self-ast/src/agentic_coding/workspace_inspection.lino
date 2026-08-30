@@ -1,0 +1,47 @@
+self_ast_census
+  target src/agentic_coding/workspace_inspection.rs
+  language rust
+  fidelity full_ast
+  byte_len 3584
+  line_count 64
+  content_id source_module_3fc76f25b24f422a
+  symbol_count 2
+  symbols
+    function asks_about_the_workspace 44 52
+    function names_an_external_source 62 64
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 947
+    named_node_count 233
+    distinct_node_kinds 27
+    node_kinds
+      arguments 9
+      binary_expression 1
+      block 3
+      call_expression 9
+      closure_expression 1
+      closure_parameters 1
+      crate 2
+      doc_comment 48
+      field_expression 4
+      field_identifier 4
+      function_item 2
+      identifier 25
+      inner_doc_comment_marker 32
+      let_declaration 1
+      line_comment 48
+      outer_doc_comment_marker 16
+      parameter 2
+      parameters 2
+      primitive_type 4
+      reference_expression 2
+      reference_type 2
+      scoped_identifier 9
+      source_file 1
+      super 2
+      unary_expression 1
+      use_declaration 1
+      visibility_modifier 1

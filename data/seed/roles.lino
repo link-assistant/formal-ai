@@ -111,6 +111,8 @@ roles
     kind predicate
   comparison_table_trigger
     kind predicate
+  composed_document_kind
+    kind meaning
   compositional_genitive_head
     kind predicate
   compositional_lemma
@@ -183,6 +185,8 @@ roles
     kind meaning
   detail_modifier
     kind meaning
+  document_composition_action
+    kind meaning
   document_originality_check_action
     kind meaning
   document_originality_document
@@ -215,6 +219,8 @@ roles
     kind predicate
   file_edit_target_cue
     kind predicate
+  file_leading_line_constraint_lead
+    kind predicate
   file_read_action_cue
     kind predicate
   file_write_action_cue
@@ -226,6 +232,8 @@ roles
   file_write_content_lead
     kind predicate
   file_write_content_qualifier
+    kind predicate
+  file_write_deferred_content_reference
     kind predicate
   file_write_destination_cue
     kind predicate
@@ -668,6 +676,8 @@ roles
   who_question_tail
     kind predicate
   wikidata_entity_anchor
+    kind predicate
+  workspace_inspection_action
     kind predicate
   year_unit_cue
     kind predicate

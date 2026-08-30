@@ -293,3 +293,110 @@ meanings
       surface
         text "GitHub issue creation command"
         action "gh issue create"
+  workspace_inspection_examine
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as looking at what the workspace already holds"
+    unit "not applicable"
+    example "inspect"
+    lexeme en
+      surface
+        text inspect
+      surface
+        text examine
+      surface
+        text review
+      surface
+        text audit
+    lexeme ru
+      surface
+        text изучи
+      surface
+        text изучите
+      surface
+        text осмотри
+      surface
+        text просмотри
+    lexeme hi
+      surface
+        text "निरीक्षण करें"
+      surface
+        text "समीक्षा करें"
+    lexeme zh
+      surface
+        text 检查
+      surface
+        text 审查
+      surface
+        text 审阅
+  workspace_inspection_verify
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as confirming a claim against what the workspace holds"
+    unit "not applicable"
+    example "verify"
+    lexeme en
+      surface
+        text verify
+      surface
+        text confirm
+    lexeme ru
+      surface
+        text проверь
+      surface
+        text проверьте
+      surface
+        text убедись
+      surface
+        text подтверди
+    lexeme hi
+      surface
+        text "सत्यापित करें"
+      surface
+        text "पुष्टि करें"
+    lexeme zh
+      surface
+        text 验证
+      surface
+        text 确认
+  workspace_inspection_identify
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as locating something inside the workspace"
+    unit "not applicable"
+    example "identify"
+    lexeme en
+      surface
+        text identify
+      surface
+        text locate
+      surface
+        text "find where"
+      surface
+        text "where does"
+      surface
+        text "where the"
+    lexeme ru
+      surface
+        text определи
+      surface
+        text "найди где"
+      surface
+        text "где находится"
+    lexeme hi
+      surface
+        text "पहचानें"
+      surface
+        text "पता लगाएँ"
+      surface
+        text "कहाँ है"
+    lexeme zh
+      surface
+        text 确定
+      surface
+        text 找出
+      surface
+        text 在哪里

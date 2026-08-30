@@ -344,6 +344,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  produce
+    defined-by word_surface
+    lexeme en
+      surface
+        text "produce"
   programming_task_catalog
     defined-by kind
     lexeme en
@@ -729,11 +734,26 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth bound en"
+  response_task_decomposition_depth_marker_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker es"
+  response_task_decomposition_unsplit_depth_bound_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound zh"
   response_task_first_step_lead_en
     defined-by response_template
     lexeme en
       surface
         text "response task first step lead en"
+  response_task_first_step_lead_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead es"
   response_task_plan_stage_requirements_en
     defined-by response_template
     lexeme en

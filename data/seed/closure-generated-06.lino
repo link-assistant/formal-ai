@@ -204,6 +204,11 @@ meanings
     lexeme en
       surface
         text "nondeterministic"
+  note
+    defined-by word_surface
+    lexeme en
+      surface
+        text "note"
   pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh
     defined-by prompt_pattern
     lexeme en
@@ -639,6 +644,11 @@ meanings
     lexeme en
       surface
         text "response summarization ratchet violated en"
+  response_task_decomposition_single_need_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need es"
   response_task_plan_stage_implementation_ru
     defined-by response_template
     lexeme en

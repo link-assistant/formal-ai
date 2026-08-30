@@ -1071,13 +1071,12 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — capability-first local code search (issue #758)"
-        env:
-          PORT: 8782
-        run: experiments/agent_cli_e2e/run_issue_758.sh
+        run: PORT=8782 experiments/agent_cli_e2e/run_issue_758.sh
       - name: "Run gemini CLI E2E — caller framing does not hijack the request (issue #907)"
-        env:
-          PORT: 8907
-        run: experiments/agent_cli_e2e/run_issue_907.sh
+        run: PORT=8907 experiments/agent_cli_e2e/run_issue_907.sh
+      - name: "Run agent CLI E2E — a recorded finding is an answer, not a heading (issue #1066)"
+        timeout-minutes: 6
+        run: NODE_PORT=8944 SPLIT_PORT=8945 experiments/agent_cli_e2e/run_issue_1066.sh
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
         env:
           PORT: 8776

@@ -2,10 +2,10 @@ self_ast_census
   target src/calculation.rs
   language rust
   fidelity signature
-  byte_len 32333
-  line_count 918
-  content_id source_module_c73cea2a4c420f64
-  symbol_count 51
+  byte_len 34746
+  line_count 962
+  content_id source_module_55c4ff80ba9cc12b
+  symbol_count 53
   symbols
     enum CalculationEngine 15 19
     function slug 23 29
@@ -52,9 +52,11 @@ self_ast_census
     function calculation_request_prefixes 594 615
     function strip_calculation_wrappers_with_prefixes 617 666
     function has_prefix_boundary 668 675
-    function embedded_calculation_request_slices 677 702
-    function calculator_domain_signals 728 751
-    function has_calculation_signal 753 788
-    function contains_spelled_arithmetic 790 804
-    function push_calculation_candidate 806 827
-    function calculation_expression_candidates 833 918
+    function sentence_end_from 690 707
+    const TERMINATORS 691 691
+    function embedded_calculation_request_slices 721 746
+    function calculator_domain_signals 772 795
+    function has_calculation_signal 797 832
+    function contains_spelled_arithmetic 834 848
+    function push_calculation_candidate 850 871
+    function calculation_expression_candidates 877 962

@@ -1,0 +1,84 @@
+self_ast_census
+  target src/agentic_coding/note_composition.rs
+  language rust
+  fidelity full_ast
+  byte_len 9328
+  line_count 212
+  content_id source_module_c031a3dbeaaa3233
+  symbol_count 9
+  symbols
+    function plan_note_composition_step 43 49
+    struct Specification 52 59
+    function composed_document_specification_span 78 80
+    function parse_specification 83 99
+    function enumerated_parts 107 119
+    function trimmed_part 128 134
+    function split_on_separators 144 161
+    function compose 164 188
+    function observations 196 212
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4576
+    named_node_count 1038
+    distinct_node_kinds 57
+    node_kinds
+      arguments 79
+      array_expression 1
+      array_type 4
+      binary_expression 3
+      block 19
+      call_expression 79
+      char_literal 9
+      closure_expression 11
+      closure_parameters 11
+      continue_expression 1
+      crate 3
+      doc_comment 84
+      else_clause 1
+      escape_sequence 8
+      expression_statement 22
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 73
+      field_identifier 78
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 3
+      function_item 8
+      generic_type 11
+      identifier 162
+      if_expression 5
+      inner_doc_comment_marker 27
+      integer_literal 3
+      let_declaration 16
+      line_comment 84
+      macro_invocation 3
+      mutable_specifier 2
+      outer_doc_comment_marker 57
+      parameter 11
+      parameters 8
+      parenthesized_expression 1
+      primitive_type 8
+      range_expression 1
+      reference_expression 8
+      reference_type 11
+      return_expression 1
+      scoped_identifier 20
+      shorthand_field_initializer 1
+      source_file 1
+      string_content 12
+      string_literal 12
+      struct_expression 1
+      struct_item 1
+      super 5
+      token_tree 5
+      try_expression 4
+      tuple_pattern 1
+      type_arguments 11
+      type_identifier 28
+      unary_expression 5
+      use_declaration 6
+      visibility_modifier 2

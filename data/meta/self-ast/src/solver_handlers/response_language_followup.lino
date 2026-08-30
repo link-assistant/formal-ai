@@ -2,12 +2,11 @@ self_ast_census
   target src/solver_handlers/response_language_followup.rs
   language rust
   fidelity signature
-  byte_len 5576
-  line_count 128
-  content_id source_module_27705e51071bc6d0
-  symbol_count 4
+  byte_len 5341
+  line_count 122
+  content_id source_module_49691f67043ac3cb
+  symbol_count 3
   symbols
     function try_response_language_followup 27 97
     function is_language_reanswer_followup 105 116
-    function is_inconclusive 119 122
-    function push_unique 124 128
+    function push_unique 118 122

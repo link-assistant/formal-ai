@@ -774,11 +774,31 @@ meanings
     lexeme en
       surface
         text "response task atomicity no zh"
+  response_task_atomicity_yes_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity yes es"
   response_task_decomposition_depth_bound_zh
     defined-by response_template
     lexeme en
       surface
         text "response task decomposition depth bound zh"
+  response_task_decomposition_single_need_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need ru"
+  response_task_decomposition_unsplit_depth_bound_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound ru"
+  response_task_plan_stage_requirements_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements es"
   response_task_plan_stage_verification_en
     defined-by response_template
     lexeme en

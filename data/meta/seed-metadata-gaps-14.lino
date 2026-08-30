@@ -815,6 +815,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "compression"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_941229b5ec31021e
+    source "data/seed/closure-generated-16.lino"
+    record "memo"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_47573b27c76f26ee
     source "data/seed/closure-generated-16.lino"
     record "response_web_search_unavailable_ru"

@@ -275,6 +275,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "response_summarization_evidence_summary_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3c173b63e03afa2a
+    source "data/seed/closure-generated-07.lino"
+    record "response_task_plan_stage_implementation_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2741aaf73ac8d48a
     source "data/seed/closure-generated-07.lino"
     record "response_thinking_step_formalize_es"
@@ -427,6 +431,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "response_proof_datalog_conclusion_es"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_cbf5864a624cd78a
+    source "data/seed/closure-generated-10.lino"
+    record "response_task_decomposition_unsplit_depth_bound_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d6c9476f40b2e6ba
     source "data/seed/closure-generated-10.lino"
     record "response_thinking_language_name_en_es"
@@ -562,6 +570,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_14f0c1879634e6fa
     source "data/seed/closure-generated-13.lino"
     record "pattern_behavior_rules_list_apne_niyam_ginao_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e30c017bc03512da
+    source "data/seed/closure-generated-13.lino"
+    record "response_task_decomposition_depth_marker_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_564c0677bed295ea
     source "data/seed/closure-generated-13.lino"

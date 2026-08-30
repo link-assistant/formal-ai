@@ -1,0 +1,85 @@
+language en
+lemma review
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a new appraisal or evaluation"
+    id oewn-05755527-n
+    partOfSpeech n
+    synonyms (reappraisal revaluation reassessment)
+  entry
+    definition "an essay or article that gives a critical evaluation (as of a book or play)"
+    id oewn-06422034-n
+    partOfSpeech n
+    synonyms (critique "critical review" "review article")
+  entry
+    definition "a subsequent examination of a patient for the purpose of monitoring earlier treatment"
+    id oewn-00144071-n
+    partOfSpeech n
+    synonyms (follow-up followup reexamination)
+  entry
+    definition "(accounting) a service (less exhaustive than an audit) that provides some assurance to interested parties as to the reliability of financial data"
+    id oewn-13432706-n
+    partOfSpeech n
+    synonyms ("limited review")
+  entry
+    definition "a variety show with topical sketches and songs and dancing and comedians"
+    id oewn-07032980-n
+    partOfSpeech n
+    synonyms (revue)
+  entry
+    definition "a periodical that publishes critical essays on current affairs or literature or art"
+    id oewn-06610111-n
+    partOfSpeech n
+  entry
+    definition "a summary at the end that repeats the substance of a longer discussion"
+    id oewn-06481048-n
+    partOfSpeech n
+    synonyms (recapitulation recap)
+  entry
+    definition "(law) a judicial reexamination of the proceedings of a court (especially by an appellate court)"
+    id oewn-01199748-n
+    partOfSpeech n
+  entry
+    definition "practice intended to polish performance or refresh the memory"
+    id oewn-00899509-n
+    partOfSpeech n
+    synonyms (brushup)
+  entry
+    definition "a formal or official examination"
+    examples ("the platoon stood ready for review" "we had to wait for the inspection before we could use the elevator")
+    id oewn-00880949-n
+    partOfSpeech n
+    synonyms (inspection)
+  entry
+    definition "look at again; examine again"
+    examples ("let's review your situation")
+    id oewn-00697955-v
+    partOfSpeech v
+    synonyms (reexamine)
+  entry
+    definition "appraise critically"
+    examples ("She reviews books for the New York Times" "Please critique this performance")
+    id oewn-00857194-v
+    partOfSpeech v
+    synonyms (critique)
+  entry
+    definition "hold a review (of troops)"
+    id oewn-00698466-v
+    partOfSpeech v
+    synonyms ("go over" survey)
+  entry
+    definition "refresh one's memory"
+    examples ("I reviewed the material before the test")
+    id oewn-00698618-v
+    partOfSpeech v
+    synonyms ("brush up" refresh)
+  entry
+    definition "look back upon (a period of time, sequence of events); remember"
+    examples ("she reviewed her achievements with pride")
+    id oewn-00698180-v
+    partOfSpeech v
+    synonyms ("look back" retrospect)
+source "oewn:2024"

@@ -2,11 +2,12 @@ self_ast_census
   target src/computer_use/planner.rs
   language rust
   fidelity signature
-  byte_len 3903
-  line_count 111
-  content_id source_module_50fc86f4591b0f1b
-  symbol_count 3
+  byte_len 5378
+  line_count 139
+  content_id source_module_3f8f311992b3e820
+  symbol_count 4
   symbols
     function tool_for_primitive 10 18
-    function plan_agentic_step 21 97
-    function tool_name_for_result 99 111
+    function plan_agentic_step 21 113
+    function advertises_computer_use 121 125
+    function tool_name_for_result 127 139

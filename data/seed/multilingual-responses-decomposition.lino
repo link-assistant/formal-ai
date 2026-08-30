@@ -15,6 +15,10 @@ multilingual_responses
     intent task_decomposition_lead
     language zh
     text "子任务，每一个都有可以直接观察到的完成标准："
+  response response_task_decomposition_lead_es
+    intent task_decomposition_lead
+    language es
+    text "Subtareas, cada una con un criterio de finalización que puedes observar:"
   response response_task_decomposition_atomic_en
     intent task_decomposition_atomic
     language en
@@ -31,6 +35,50 @@ multilingual_responses
     intent task_decomposition_atomic
     language zh
     text "这个任务已经是原子的：任何拆分都无法得到两个可以各自独立检查的子任务。"
+  response response_task_decomposition_atomic_es
+    intent task_decomposition_atomic
+    language es
+    text "Esta tarea ya es atómica: ninguna división de ella produce dos subtareas que puedan comprobarse por separado."
+  response response_task_decomposition_single_need_en
+    intent task_decomposition_single_need
+    language en
+    text "This task cannot be split into two sub-tasks that can be checked independently, and no observable completion criterion is known for it, so there is nothing to enumerate: it is an irreducible single need."
+  response response_task_decomposition_single_need_ru
+    intent task_decomposition_single_need
+    language ru
+    text "Эту задачу нельзя разбить на две подзадачи, которые можно проверить по отдельности, и наблюдаемый критерий завершения для неё неизвестен, поэтому перечислять нечего: это неделимая единичная потребность."
+  response response_task_decomposition_single_need_hi
+    intent task_decomposition_single_need
+    language hi
+    text "इस कार्य को ऐसे दो उपकार्यों में नहीं बाँटा जा सकता जिन्हें अलग-अलग जाँचा जा सके, और इसके लिए कोई देखा जा सकने वाला पूर्णता मानदंड ज्ञात नहीं है, इसलिए गिनाने के लिए कुछ नहीं है: यह एक अविभाज्य एकल आवश्यकता है।"
+  response response_task_decomposition_single_need_zh
+    intent task_decomposition_single_need
+    language zh
+    text "这个任务无法拆分成两个可以各自独立检查的子任务，也没有已知的可观察完成标准，因此没有可列举的内容：它是一个不可再分的单一需求。"
+  response response_task_decomposition_single_need_es
+    intent task_decomposition_single_need
+    language es
+    text "Esta tarea no puede dividirse en dos subtareas que puedan comprobarse por separado, y no se conoce ningún criterio de finalización observable para ella, así que no hay nada que enumerar: es una necesidad única indivisible."
+  response response_task_decomposition_unsplit_depth_bound_en
+    intent task_decomposition_unsplit_depth_bound
+    language en
+    text "The decomposition depth bound was reached before this task was split even once, so there is nothing to enumerate: raise the bound to see its sub-tasks."
+  response response_task_decomposition_unsplit_depth_bound_ru
+    intent task_decomposition_unsplit_depth_bound
+    language ru
+    text "Предел глубины разбиения был достигнут до того, как задачу разбили хотя бы один раз, поэтому перечислять нечего: увеличь предел, чтобы увидеть подзадачи."
+  response response_task_decomposition_unsplit_depth_bound_hi
+    intent task_decomposition_unsplit_depth_bound
+    language hi
+    text "इस कार्य को एक बार भी बाँटे जाने से पहले ही विभाजन गहराई की सीमा आ गई, इसलिए गिनाने के लिए कुछ नहीं है: उपकार्य देखने के लिए सीमा बढ़ाएँ।"
+  response response_task_decomposition_unsplit_depth_bound_zh
+    intent task_decomposition_unsplit_depth_bound
+    language zh
+    text "在这个任务被拆分哪怕一次之前就已达到拆分深度上限，因此没有可列举的内容：提高上限即可看到它的子任务。"
+  response response_task_decomposition_unsplit_depth_bound_es
+    intent task_decomposition_unsplit_depth_bound
+    language es
+    text "Se alcanzó el límite de profundidad de descomposición antes de que esta tarea se dividiera siquiera una vez, así que no hay nada que enumerar: sube el límite para ver sus subtareas."
   response response_task_atomicity_yes_en
     intent task_atomicity_yes
     language en
@@ -47,6 +95,10 @@ multilingual_responses
     intent task_atomicity_yes
     language zh
     text "是 — 这个任务是原子的：任何拆分都无法得到两个可以各自独立检查的子任务。"
+  response response_task_atomicity_yes_es
+    intent task_atomicity_yes
+    language es
+    text "Sí — esta tarea es atómica: ninguna división de ella produce dos subtareas que puedan comprobarse por separado."
   response response_task_atomicity_no_en
     intent task_atomicity_no
     language en
@@ -63,6 +115,10 @@ multilingual_responses
     intent task_atomicity_no
     language zh
     text "否 — 这个任务不是原子的。它可以拆分成下列子任务，每一个都有可以直接观察到的完成标准："
+  response response_task_atomicity_no_es
+    intent task_atomicity_no
+    language es
+    text "No — esta tarea no es atómica. Se divide en estas subtareas, cada una con un criterio de finalización que puedes observar:"
   response response_task_first_step_lead_en
     intent task_first_step_lead
     language en
@@ -79,6 +135,10 @@ multilingual_responses
     intent task_first_step_lead
     language zh
     text "第一步是："
+  response response_task_first_step_lead_es
+    intent task_first_step_lead
+    language es
+    text "El primer paso es:"
   response response_task_decomposition_depth_bound_en
     intent task_decomposition_depth_bound
     language en
@@ -95,6 +155,10 @@ multilingual_responses
     intent task_decomposition_depth_bound
     language zh
     text "递归在配置的拆分深度处停止，因此被标记的子任务仍可继续拆分。"
+  response response_task_decomposition_depth_bound_es
+    intent task_decomposition_depth_bound
+    language es
+    text "La recursión se detuvo en la profundidad de descomposición configurada, así que las subtareas marcadas todavía pueden dividirse más."
   response response_task_decomposition_depth_marker_en
     intent task_decomposition_depth_marker
     language en
@@ -111,6 +175,10 @@ multilingual_responses
     intent task_decomposition_depth_marker
     language zh
     text "[已达深度上限]"
+  response response_task_decomposition_depth_marker_es
+    intent task_decomposition_depth_marker
+    language es
+    text "[límite de profundidad alcanzado]"
   response response_task_plan_stage_requirements_en
     intent task_plan_stage_requirements
     language en
@@ -127,6 +195,10 @@ multilingual_responses
     intent task_plan_stage_requirements
     language zh
     text "记录 {task} 的可独立检查需求"
+  response response_task_plan_stage_requirements_es
+    intent task_plan_stage_requirements
+    language es
+    text "Registra requisitos comprobables de forma independiente para {task}"
   response response_task_plan_stage_regression_en
     intent task_plan_stage_regression
     language en
@@ -143,6 +215,10 @@ multilingual_responses
     intent task_plan_stage_regression
     language zh
     text "添加可复现 {task} 的回归测试"
+  response response_task_plan_stage_regression_es
+    intent task_plan_stage_regression
+    language es
+    text "Añade una prueba de regresión que reproduzca {task}"
   response response_task_plan_stage_implementation_en
     intent task_plan_stage_implementation
     language en
@@ -159,6 +235,10 @@ multilingual_responses
     intent task_plan_stage_implementation
     language zh
     text "实现满足 {task} 的最小通用改动"
+  response response_task_plan_stage_implementation_es
+    intent task_plan_stage_implementation
+    language es
+    text "Implementa el cambio general más pequeño que satisfaga {task}"
   response response_task_plan_stage_verification_en
     intent task_plan_stage_verification
     language en
@@ -175,3 +255,7 @@ multilingual_responses
     intent task_plan_stage_verification
     language zh
     text "运行 {task} 的验收检查"
+  response response_task_plan_stage_verification_es
+    intent task_plan_stage_verification
+    language es
+    text "Ejecuta las comprobaciones de aceptación para {task}"

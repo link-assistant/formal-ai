@@ -1,0 +1,82 @@
+self_ast_census
+  target src/agentic_coding/document_recipe.rs
+  language rust
+  fidelity full_ast
+  byte_len 17716
+  line_count 399
+  content_id source_module_b9f1c74fc7391c0d
+  symbol_count 16
+  symbols
+    struct DocumentRecipe 49 58
+    function plan_document_recipe 63 87
+    function plan_meaning_detail_step 96 141
+    function plan_diagram_step 148 161
+    function plan_self_ast_step 168 181
+    function plan_self_heal_step 188 201
+    function plan_source_links_step 209 222
+    function plan_ledger_step 229 242
+    function plan_explain_step 249 262
+    function plan_change_request_step 270 283
+    function plan_repair_strategy_step 291 304
+    function plan_rebuild_step 313 326
+    function plan_question_catalog_step 334 347
+    function plan_dreaming_audit_step 349 362
+    function plan_google_trends_learning_step 370 383
+    function plan_google_trends_catalog_step 385 398
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7872
+    named_node_count 1582
+    distinct_node_kinds 48
+    node_kinds
+      arguments 76
+      array_type 30
+      block 21
+      call_expression 76
+      closure_expression 2
+      closure_parameters 2
+      crate 1
+      doc_comment 102
+      expression_statement 12
+      field_declaration 4
+      field_declaration_list 1
+      field_expression 19
+      field_identifier 49
+      field_initializer 26
+      field_initializer_list 13
+      function_item 15
+      identifier 415
+      if_expression 6
+      inner_doc_comment_marker 16
+      let_chain 4
+      let_condition 6
+      let_declaration 35
+      lifetime 1
+      line_comment 114
+      macro_invocation 14
+      outer_doc_comment_marker 86
+      parameter 32
+      parameters 15
+      primitive_type 17
+      reference_expression 17
+      reference_type 47
+      return_expression 6
+      scoped_identifier 79
+      scoped_use_list 1
+      shorthand_field_initializer 26
+      source_file 1
+      string_content 15
+      string_literal 15
+      struct_expression 13
+      struct_item 1
+      super 35
+      token_tree 18
+      tuple_struct_pattern 6
+      type_identifier 48
+      unary_expression 6
+      use_declaration 17
+      use_list 1
+      visibility_modifier 20

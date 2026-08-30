@@ -1,0 +1,29 @@
+view
+  id M-a7c9ea013e20
+  lemma identify
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "recognize as being; establish the identity of someone or something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give the name or identifying characteristics of; refer to by name or some other identifying characteristic property"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "consider (oneself) as similar to somebody else"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "conceive of as united or associated"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "identify as in botany or biology, for example"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "consider to be equal or the same"
+    provenance (wordnet)

@@ -24,6 +24,11 @@ meanings
     lexeme en
       surface
         text "artifact"
+  assemble
+    defined-by word_surface
+    lexeme en
+      surface
+        text "assemble"
   attached
     defined-by word_surface
     lexeme en
@@ -759,11 +764,21 @@ meanings
     lexeme en
       surface
         text "response task atomicity no ru"
+  response_task_decomposition_lead_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead es"
   response_task_decomposition_lead_zh
     defined-by response_template
     lexeme en
       surface
         text "response task decomposition lead zh"
+  response_task_decomposition_unsplit_depth_bound_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound en"
   response_task_plan_stage_implementation_en
     defined-by response_template
     lexeme en
@@ -954,6 +969,11 @@ meanings
     lexeme en
       surface
         text "task decomposition depth marker"
+  task_decomposition_unsplit_depth_bound
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition unsplit depth bound"
   thinking_narrative_calculation
     defined-by intent
     lexeme en

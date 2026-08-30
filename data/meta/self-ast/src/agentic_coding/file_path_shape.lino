@@ -1,0 +1,57 @@
+self_ast_census
+  target src/agentic_coding/file_path_shape.rs
+  language rust
+  fidelity full_ast
+  byte_len 3639
+  line_count 77
+  content_id source_module_e08db80ded012dc4
+  symbol_count 3
+  symbols
+    function is_dotted_number 21 27
+    function trim_trailing_sentence_dot 42 49
+    function peel_sentence_punctuation 65 77
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1345
+    named_node_count 298
+    distinct_node_kinds 36
+    node_kinds
+      abstract_type 1
+      arguments 12
+      assignment_expression 1
+      binary_expression 6
+      block 7
+      call_expression 12
+      char_literal 4
+      closure_expression 2
+      closure_parameters 2
+      doc_comment 46
+      else_clause 1
+      expression_statement 5
+      field_expression 10
+      field_identifier 10
+      function_item 3
+      function_type 1
+      identifier 37
+      if_expression 2
+      inner_doc_comment_marker 8
+      let_declaration 3
+      lifetime 5
+      lifetime_parameter 1
+      line_comment 46
+      loop_expression 1
+      mutable_specifier 1
+      outer_doc_comment_marker 38
+      parameter 4
+      parameters 4
+      primitive_type 8
+      reference_type 7
+      return_expression 1
+      source_file 1
+      super 3
+      type_identifier 1
+      type_parameters 1
+      visibility_modifier 3

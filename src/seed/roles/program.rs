@@ -254,6 +254,15 @@ pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
 /// Semantic role: a repository-search phrase whose form carries its canonical
 /// query as an action.
 pub const ROLE_CODING_SEARCH_LITERAL_QUERY: &str = "coding_search_literal_query";
+/// Semantic role: a verb that asks the agent to find something out about the
+/// workspace it was given.
+///
+/// *Inspect*, *verify*, *identify* and their multilingual equivalents. A request
+/// carrying one of these names no tool and no scope: it says what the caller
+/// wants to know, not where to look. An agent that holds a workspace looks there
+/// first, so the code-search route reads this role as its second admission
+/// reason alongside an explicit "search the repository" cue (issue #1066).
+pub const ROLE_WORKSPACE_INSPECTION_ACTION: &str = "workspace_inspection_action";
 /// Semantic role: a word an identifier may not be, because a programming
 /// language reserves it.
 ///

@@ -167,6 +167,21 @@ pub const ROLE_FILE_EDIT_TARGET_CUE: &str = "file_edit_target_cue";
 /// supported language routes to the advertised write tool instead of a prose
 /// description.
 pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
+/// Semantic role: a marker phrase that constrains the *first line* of a file a
+/// request asks to be produced (issue #1066).
+///
+/// A lead such as "the first line must be exactly", "whose first line is", or
+/// "begin the file with the line" (plus translations), carried as
+/// [`crate::seed::Slot::Prefix`] forms by `file_leading_line_constraint` in
+/// `data/seed/meanings-file-write.lino`. It states a requirement about the file
+/// rather than naming the whole payload, so it is deliberately separate from
+/// [`ROLE_FILE_WRITE_CONTENT_LEAD`]: the bytes after the marker are the opening
+/// line only, and the rest of the file still has to be composed. The
+/// evidence-record route reads it through
+/// [`crate::seed::Lexicon::role_word_forms`] so a caller who pins a machine-read
+/// header ("the first line must be exactly `node_path=1.1.2`") gets that header
+/// verbatim without the request being mistaken for a literal-content write.
+pub const ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD: &str = "file_leading_line_constraint_lead";
 /// Semantic role: a marker phrase that introduces the literal content of a file
 /// to be written (issue #680).
 ///
@@ -210,6 +225,26 @@ pub const ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD: &str =
 /// path. That structural frame lowers "run COMMAND and write its output to
 /// FILE" to a shell redirect instead of writing the words "its output".
 pub const ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE: &str = "file_write_command_output_reference";
+/// Semantic role: the noun a request uses for the work product it is asking to
+/// be produced, rather than for bytes it supplies (issue #1066).
+///
+/// Forms such as "… finding", "… result", "… evidence" (plus translations) are
+/// carried as [`crate::seed::Slot::Suffix`] forms by
+/// `file_write_deferred_content` in `data/seed/meanings-file-write.lino`, the
+/// slot marking the modifiers a caller may put in front of the head noun
+/// ("observable evidence", "final answer").
+///
+/// It is the composed-content sibling of
+/// [`ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE`]: both name bytes that do not
+/// exist yet, one produced by a command and one by the investigation the same
+/// request asks for. "Save the answer to `out/e.md`" has the shape of a literal
+/// write and supplies no literal, so the general change planner wrote the words
+/// *the answer* into the file and the caller's question went unanswered. The
+/// planner reads this role through [`crate::seed::Lexicon::role_word_forms`] to
+/// decline that payload, which hands the request to
+/// `agentic_coding::evidence_record` instead.
+pub const ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE: &str =
+    "file_write_deferred_content_reference";
 /// Semantic role: a word that introduces or names the target file of a write
 /// (issue #680).
 ///
@@ -505,3 +540,25 @@ pub const ROLE_BINARY_RELATION_PROPERTY: &str = "binary_relation_property";
 /// [`ROLE_BINARY_RELATION_PROPERTY`] because the binary-relation parser skips the
 /// translation property, which is handled by its own action branch.
 pub const ROLE_TRANSLATION_PROPERTY: &str = "translation_property";
+/// Semantic role: a verb that asks for a document to be *composed* rather than
+/// for bytes to be written (issue #1066).
+///
+/// *Produce*, *compose*, *draft*, *assemble*, *prepare* and their multilingual
+/// equivalents, carried by `document_composition_action` in
+/// `data/seed/meanings-note-composition.lino`. Deliberately excludes *write*,
+/// which is already a [`ROLE_FILE_WRITE_ACTION_CUE`] surface: a request that says
+/// *write* has named the act of putting bytes somewhere, and the literal-write
+/// parser owns that reading.
+pub const ROLE_DOCUMENT_COMPOSITION_ACTION: &str = "document_composition_action";
+/// Semantic role: the noun naming a document whose content is described rather
+/// than supplied (issue #1066).
+///
+/// *Note*, *report*, *summary*, *memo*, *brief* and their multilingual
+/// equivalents, carried by `composed_document_kind` in
+/// `data/seed/meanings-note-composition.lino`. Read together with
+/// [`ROLE_DOCUMENT_COMPOSITION_ACTION`] and [`ROLE_FILE_WRITE_CONTENT_LEAD`]: the
+/// three of them are what tell "produce a note containing the tree level and the
+/// node outcomes" -- a specification of what a document has to cover -- from
+/// "create `list.txt` containing apples, bananas and cherries", where the words
+/// after the lead are the file.
+pub const ROLE_COMPOSED_DOCUMENT_KIND: &str = "composed_document_kind";

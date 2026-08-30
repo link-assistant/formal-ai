@@ -4,7 +4,13 @@
 //! from the formalized request.  The resulting plan is data: it is serialized to
 //! Links Notation and written before execution, so the tool transcript is an
 //! append-only record of the decision that caused the change.
-use super::planner::Capability;
+use super::planner::{Capability, trace_route};
+use super::shell_command_policy::prose_sentences;
+use super::write_request::{
+    bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
+    first_action_cue_end, first_content_lead_end, first_prefix_lead_end,
+    honouring_pinned_first_line, looks_like_file_path, safe_relative_path, tokens,
+};
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
 use crate::seed::{self, Slot};
@@ -155,6 +161,21 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     // separately, the language to write them with. Only the bytes are content.
     let content = crate::implementation_language::without_trailing_known_modifier(&content)
         .unwrap_or(content);
+    // Issue #1066: the same request can state the bytes and, separately,
+    // constrain the line the file has to open with. The repair belongs here
+    // rather than at the call sites, because every step of the plan quotes the
+    // content it was composed from -- the verification step's expected evidence
+    // most of all -- and a plan whose steps disagree with its own bytes is not
+    // one a reader can check.
+    let content = honouring_pinned_first_line(full_request, &content).map_or(content, |repaired| {
+        // Whether the repair applied is not recoverable from the finished plan,
+        // and the two outcomes it separates -- bytes taken from the prose, and
+        // bytes corrected to match a constraint stated elsewhere in the same
+        // request -- are exactly what a reader checking the plan needs to tell
+        // apart (default off; `FORMAL_AI_TRACE_REQUESTS=1`).
+        trace_route("general_change_plan", "repaired_pinned_first_line");
+        repaired
+    });
     if !safe_relative_path(&target) {
         return None;
     }
@@ -459,25 +480,8 @@ pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
 fn parse_write_request(request: &str) -> Option<(String, String)> {
     let lowered = request.to_lowercase();
     let toks = tokens(request);
-    let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
-    let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    // The target file: the first safe, file-looking token that directly follows a
-    // target cue, a destination cue, or an action cue. Requiring a cue keeps an
-    // incidental dotted token (a version, an abbreviation) out of the write path.
-    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
-        let cleaned = clean_path_token(token.text);
-        let looks_like_file = looks_like_file_path(cleaned);
-        if !looks_like_file || !safe_relative_path(cleaned) {
-            return None;
-        }
-        let previous = index.checked_sub(1).map(|i| &toks[i])?;
-        let previous_word = clean_cue_token(previous.text);
-        (target_cues.contains(&previous_word)
-            || dest_cues.contains(&previous_word)
-            || action_cues.contains(&previous_word))
-        .then(|| (index, cleaned.to_owned()))
-    })?;
+    let (file_index, target) = cued_write_target(&toks)?;
     let cue = &toks[file_index - 1];
     let clause_start = cue.start;
     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
@@ -492,12 +496,22 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // content-lead surface claims a write. The issue-#671 matrix caught
     // `show me the contents of the file beta.md` planning
     // `write(beta.md, "of the")`, destroying the fixture it was asked to read.
-    if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
+    // A marker inside a sentence that specifies a document to compose introduces
+    // that document's structure, not its bytes; see
+    // [`super::note_composition::composed_document_specification_span`]. Reading
+    // it as a literal payload is what wrote "the selected tree level, node
+    // outcomes, test results, and session id." into the ladder's final proof
+    // file (issue #1066), and it claimed the request too, so the note the caller
+    // asked for was never composed.
+    let specification = super::note_composition::composed_document_specification_span(request);
+    if let Some((_, marker_end)) = first_content_lead_end(&lowered)
+        && !specification.is_some_and(|span| span.contains(&marker_end))
+    {
         let marker_leads = marker_end <= clause_start;
         let marker_span = if marker_leads {
-            request.get(marker_end..clause_start)
+            request.get(marker_end..end_of_statement(request, marker_end, clause_start))
         } else {
-            request.get(marker_end..)
+            request.get(marker_end..end_of_statement(request, marker_end, request.len()))
         };
         if (!marker_leads || first_action_cue_end(&toks).is_some())
             && let Some(content) = marker_span
@@ -531,10 +545,60 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // it as a literal write both fabricates the wrong file (the string "it") and
     // steals the request from the keyword recipe that would author the real
     // artifact, so fall through instead (issue #663).
-    if is_non_referential_content(&content) || !is_literal_content(&content) {
+    //
+    // The same is true of a payload that names the *work product* rather than
+    // supplying it: "save the answer to FILE" states where an answer goes, not
+    // what it says (issue #1066).
+    if is_non_referential_content(&content)
+        || names_deferred_work_product(&content)
+        || !is_literal_content(&content)
+    {
         return None;
     }
     Some((target, content))
+}
+/// Where the statement that begins at `from` ends, never past `limit`.
+///
+/// A literal payload is something the request *states*, and a statement ends
+/// where its sentence does. Bounding the span by the file clause alone reads
+/// across every sentence in between: "Draft a handover memo containing the
+/// migration status, the outstanding blockers, and the on-call owner. Leave the
+/// memo in `handover/2026-q3.md`" put the marker in the first sentence and the
+/// clause in the second, so the recovered payload ended with the words *Leave
+/// the memo* and the caller's memo opened by instructing them to leave it
+/// (issue #1066).
+///
+/// The clause bound still applies inside the sentence, because "write the
+/// following: hello to `x.txt`" states marker, payload and clause in one
+/// breath. This only refuses to look further than the sentence the marker is in.
+///
+/// A marker that says nothing more on its own line is the exception, because
+/// there the payload is a *block* rather than a phrase: "Create file
+/// `rules.lino` containing\n<three lines of lino>" leaves the marker with an
+/// empty tail, and a newline ends a sentence, so the sentence bound would
+/// recover nothing at all. When the marker's own line has no word left on it,
+/// the statement is the block that follows and runs to `limit`, which is what
+/// this route always did for block payloads.
+///
+/// The sentence is the one *prose* reads, so a semicolon inside the payload
+/// joins its two halves instead of ending it. Reading the payload at the scope
+/// shell routing reads at cut issue #918's minimal-core invariant in half at
+/// its semicolon.
+fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
+    let Some(sentence) = prose_sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&from))
+    else {
+        return limit;
+    };
+    let says_more = request
+        .get(from..sentence.span.end)
+        .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
+    if says_more {
+        sentence.span.end.min(limit)
+    } else {
+        limit
+    }
 }
 /// Whether a recovered payload says anything at all. A span of nothing but
 /// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
@@ -556,6 +620,52 @@ fn is_non_referential_content(content: &str) -> bool {
         .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
         .iter()
         .any(|form| form.slot() == Slot::Bare && lower == form.text)
+}
+/// Whether a recovered write payload names the result of work the same request
+/// asks for, instead of supplying bytes (issue #1066).
+///
+/// "Save the answer to `out/e.md`" and "leave observable evidence to
+/// `out/e.md`" have the destination-led shape of a literal write -- a write
+/// verb, a span, a destination cue, a path -- and supply no literal. Taking the
+/// span at face value wrote the words *the answer* into the file and, worse,
+/// claimed the request as finished, so the investigation that would have
+/// produced the real bytes never ran.
+///
+/// The surfaces carry [`seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE`] as
+/// [`Slot::Suffix`] forms, because the head noun is what defers and the
+/// modifiers in front of it ("observable", "final") are the caller's, not the
+/// lexicon's.
+///
+/// Deliberately not applied to marker-led content. "Create `a.txt` containing 42
+/// is the answer" states, with the marker, that the span *is* the payload; only
+/// the shapes that infer a payload from position need the check.
+fn names_deferred_work_product(content: &str) -> bool {
+    let lower = content.to_lowercase();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE)
+        .iter()
+        .any(|form| match form.slot() {
+            Slot::Bare => lower == form.text,
+            Slot::Suffix => ends_with_head_noun(&lower, form.after_slot().trim_start()),
+            Slot::Prefix | Slot::Circumfix => false,
+        })
+}
+/// Whether `content` ends with `noun` standing as its own word.
+///
+/// English and Russian separate a head noun from its modifiers with a space, so
+/// the character before the match settles it. Chinese writes the same phrase
+/// with no separator at all, which is why the boundary is stated as "not an
+/// ASCII alphanumeric" rather than "whitespace": demanding a space would never
+/// match 结论, and demanding nothing would match the tail of an unrelated
+/// English word.
+fn ends_with_head_noun(content: &str, noun: &str) -> bool {
+    !noun.is_empty()
+        && content.strip_suffix(noun).is_some_and(|before| {
+            before
+                .chars()
+                .next_back()
+                .is_none_or(|character| !character.is_ascii_alphanumeric())
+        })
 }
 /// Resolve an edit target named in a request through the workspace self-AST
 /// census (issue #673).
@@ -681,189 +791,6 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let new = clean_content(new_span)?;
     Some((target, old, new))
 }
-/// One whitespace token together with its byte span in the original request.
-struct Token<'a> {
-    text: &'a str,
-    start: usize,
-    end: usize,
-}
-/// Split a request into whitespace tokens, recording each token's byte span.
-fn tokens(request: &str) -> Vec<Token<'_>> {
-    let mut cursor = 0;
-    request
-        .split_whitespace()
-        .map(|word| {
-            let start = request[cursor..]
-                .find(word)
-                .map_or(cursor, |offset| cursor + offset);
-            let end = start + word.len();
-            cursor = end;
-            Token {
-                text: word,
-                start,
-                end,
-            }
-        })
-        .collect()
-}
-/// The bare (whole-word) surface forms for a role, lowercased for token matching.
-fn bare_surfaces(role: &str) -> Vec<String> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .iter()
-        .filter(|form| form.slot() == Slot::Bare)
-        .map(|form| form.text.to_lowercase())
-        .collect()
-}
-/// Trim the quoting/edge punctuation from a token that may be a file path,
-/// preserving the interior dots that make it look like a file. Trailing sentence
-/// punctuation is stripped too, so a plain word that merely *ends a sentence*
-/// ("… add the plural to томат.") is not mistaken for a file whose only dot is the
-/// terminal period — a real filename never ends in a bare `.`/`!`/`?`.
-fn clean_path_token(word: &str) -> &str {
-    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
-        .trim_end_matches(['.', '!', '?'])
-}
-/// Whether a safe-looking token names a file rather than merely using the
-/// conventional `./` prefix for a directory.
-///
-/// Checking the whole token for a dot made policy prose such as "keep examples
-/// in ./examples" file-shaped. When a later sentence contained a write-content
-/// marker, the generic planner consequently tried to overwrite that directory.
-/// File shape belongs to the final path component; dots in parent components or
-/// in the relative-path prefix do not make the target a file.
-fn looks_like_file_path(path: &str) -> bool {
-    !path.contains("://")
-        && path
-            .rsplit('/')
-            .next()
-            .is_some_and(|file_name| file_name.contains('.'))
-}
-/// Lowercase a token stripped of edge punctuation, for cue/action comparison.
-fn clean_cue_token(word: &str) -> String {
-    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?'))
-        .to_lowercase()
-}
-/// The byte span just past the leftmost `file_write_content_lead` marker in the
-/// lowercased request, honouring whole-word boundaries for space-delimited
-/// scripts and substring matches for CJK (which has no inter-word spaces).
-fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
-    first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
-}
-fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
-    let markers: Vec<String> = seed::lexicon()
-        .role_word_forms(role)
-        .iter()
-        .filter(|form| form.slot() == Slot::Prefix)
-        .map(|form| form.before_slot().trim().to_lowercase())
-        .filter(|marker| !marker.is_empty())
-        .collect();
-    let mut best: Option<(usize, usize)> = None;
-    for marker in &markers {
-        let mut from = 0;
-        while let Some(relative) = lowered[from..].find(marker.as_str()) {
-            let start = from + relative;
-            let end = start + marker.len();
-            let cjk = !marker.contains(' ') && !marker.is_ascii();
-            let before_ok = cjk
-                || start == 0
-                || lowered[..start]
-                    .chars()
-                    .next_back()
-                    .is_some_and(char::is_whitespace);
-            let after_ok = cjk
-                || end == lowered.len()
-                || lowered[end..]
-                    .chars()
-                    .next()
-                    .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
-            if before_ok && after_ok {
-                if best.is_none_or(|(best_start, best_end)| {
-                    start < best_start || (start == best_start && end > best_end)
-                }) {
-                    best = Some((start, end));
-                }
-                break;
-            }
-            from = end;
-        }
-    }
-    best
-}
-/// The byte offset just past the first `file_write_action_cue` token.
-fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
-    let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    toks.iter()
-        .find(|token| actions.contains(&clean_cue_token(token.text)))
-        .map(|token| token.end)
-}
-/// Trim a recovered content span down to its literal payload, dropping the
-/// leading clause separator ("… the following: hello") and any surrounding
-/// quoting. A delimiter is removed only when the entire payload has a matching
-/// opening and closing delimiter. This matters for generated source and Links
-/// Notation: a lone terminal quote is data, not presentation punctuation.
-/// Returns [`None`] when nothing is left.
-fn clean_content(raw: &str) -> Option<String> {
-    let led = strip_clause_lead(raw);
-    let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
-        led[3..led.len() - 3].trim()
-    } else if led.len() >= 2 {
-        let first = led.as_bytes()[0];
-        let last = led.as_bytes()[led.len() - 1];
-        if first == last && matches!(first, b'`' | b'"' | b'\'') {
-            led[1..led.len() - 1].trim()
-        } else {
-            led
-        }
-    } else {
-        led
-    };
-    (!result.is_empty()).then(|| result.to_owned())
-}
-/// Strip everything a recovered span carries *before* its literal payload: the
-/// clause separators, and the seed-defined adverbs that qualify the requirement
-/// rather than naming content.
-///
-/// "…containing exactly: Hello World" delimits the content with `exactly:`, so
-/// slicing after the content lead captured `exactly: Hello World` as the bytes
-/// to write and as the evidence to verify against — the file would never have
-/// matched (issue #905 §3).
-fn strip_clause_lead(raw: &str) -> &str {
-    let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
-    let mut led = raw.trim();
-    loop {
-        let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
-        let shortened = strip_leading_qualifier(separated, &qualifiers);
-        if shortened.len() == led.len() {
-            return led;
-        }
-        led = shortened;
-    }
-}
-/// Drop one leading qualifier, but only when a clause separator follows it. The
-/// separator is what marks the adverb as introducing the payload rather than
-/// opening it, so content that genuinely starts with "exactly what I asked for"
-/// keeps its first word.
-fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
-    let lowered = text.to_lowercase();
-    qualifiers
-        .iter()
-        .filter(|qualifier| lowered.starts_with(qualifier.as_str()))
-        .filter_map(|qualifier| {
-            let rest = text.get(qualifier.len()..)?.trim_start();
-            rest.starts_with([':', '-', '—', '–']).then_some(rest)
-        })
-        .min_by_key(|rest| rest.len())
-        .unwrap_or(text)
-}
-fn safe_relative_path(path: &str) -> bool {
-    !path.starts_with('/')
-        && !path.starts_with('-')
-        && !path.split('/').any(|part| part == ".." || part.is_empty())
-        && path
-            .chars()
-            .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
-}
 const fn capability_slug(capability: Capability) -> &'static str {
     match capability {
         Capability::Search => "Search",
@@ -897,3 +824,4 @@ fn field(out: &mut String, name: &str, value: &str) {
 fn field_nested(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "    {name} \"{}\"", escape(value));
 }
+

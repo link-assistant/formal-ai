@@ -20,11 +20,14 @@ mod conversation_recall;
 pub mod corpus;
 pub mod diagram;
 mod directory_listing;
+mod document_recipe;
 pub mod dreaming_audit;
 pub mod driver;
+mod evidence_record;
 pub mod execution_learning;
 pub mod explain;
 pub mod external_benchmark_learning;
+pub(crate) mod file_path_shape;
 mod file_read;
 mod formalization_recipe;
 pub mod formalize;
@@ -40,6 +43,7 @@ mod local_search;
 pub mod meaning_detail;
 pub mod mutating_action;
 pub(crate) mod narration;
+mod note_composition;
 pub mod planner;
 pub mod procedure;
 mod progress;
@@ -55,11 +59,15 @@ mod shell_command;
 mod shell_command_policy;
 mod shell_file_fallback;
 pub mod source_links;
+mod stated_request;
 pub mod statement_audit;
 mod structured_edit;
+mod task_structure;
 pub mod tool_result;
 mod web_research;
 mod workspace_change;
+mod workspace_inspection;
+mod write_request;
 
 pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,

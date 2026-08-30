@@ -15,6 +15,8 @@ use super::shell_command_policy::{
     normalize_command_word, sentence_spans, states_a_command_policy,
 };
 use super::directory_listing::asks_for_directory_listing;
+use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
+use super::workspace_inspection::asks_about_the_workspace;
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
@@ -244,9 +246,61 @@ fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
 /// A client may advertise a dedicated grep/code-search tool instead of a shell.
 /// The planner uses this semantic query before falling back to the `rg` lowering
 /// returned by [`shell_command_for_task`].
+///
+/// The request has to spell the act out — "search the repository for
+/// `task_decomposition`". A request that only says what the caller wants to
+/// know is a different admission with a stricter subject rule; see
+/// [`workspace_inspection_query_for_task`].
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
-    let lower = prompt.to_lowercase();
     let vocab = seed::shell_intent_vocabulary();
+    super::stated_request::request_blocks(prompt)
+        .into_iter()
+        .find_map(|block| {
+            let lower = block.to_lowercase();
+            let cue = longest_search_cue(&lower, &vocab)?;
+            literal_code_search_query(&lower)
+                .or_else(|| shaped_code_search_token(block))
+                .or_else(|| adjacent_code_search_token(block, &lower))
+                .or_else(|| local_search_query(block, &cue, &vocab))
+        })
+}
+
+/// Recover the subject of a request that asks about the workspace itself.
+///
+/// "Inspect the existing task-decomposition data model and identify where a
+/// node stores its children" never says *search*, but an agent that has been
+/// handed a repository answers a question about that repository by reading it.
+/// The planner resolves this ahead of the open-web routers, which would
+/// otherwise claim the request on the strength of its question shape alone
+/// (issue #1066).
+///
+/// What keeps the open web reachable is the subject, not the verb. Only a
+/// code-shaped subject is accepted — a quoted literal, or a token carrying an
+/// underscore, a dot, an interior capital or a hyphen — because that is the
+/// difference between "verify the retry-policy helper" and "verify the current
+/// exchange rate for the euro". A request whose subject is ordinary prose names
+/// nothing the workspace can be searched for, so it is left to the routers that
+/// follow. The whole-prompt fallback [`code_search_query_for_task`] ends with is
+/// deliberately absent here: it works by deleting an explicit cue, and this
+/// admission has no cue to delete.
+pub(super) fn workspace_inspection_query_for_task(prompt: &str) -> Option<String> {
+    super::stated_request::request_blocks(prompt)
+        .into_iter()
+        .filter(|block| asks_about_the_workspace(block))
+        .find_map(|block| {
+            literal_code_search_query(&block.to_lowercase())
+                .or_else(|| shaped_code_search_token(block))
+        })
+}
+
+/// The longest search cue `normalized` spells out, if it spells one out at all.
+///
+/// Both registries describe the same act from different sides — the shell
+/// vocabulary lowers it to `rg`, the capability registry routes it to a `grep`
+/// tool — so a cue from either one is an explicit request to search. The longest
+/// match wins because a longer cue is the more specific reading of the same
+/// words.
+fn longest_search_cue(normalized: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let intent_cues = vocab
         .intents
         .iter()
@@ -257,15 +311,11 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
         .iter()
         .filter(|capability| capability.id == "grep")
         .flat_map(|capability| capability.cues.iter());
-    let (_, cue) = intent_cues
+    intent_cues
         .chain(capability_cues)
-        .filter(|cue| lower.contains(cue.as_str()))
-        .map(|cue| (cue.chars().count(), cue))
-        .max_by_key(|(length, _)| *length)?;
-    literal_code_search_query(&lower)
-        .or_else(|| shaped_code_search_token(prompt))
-        .or_else(|| adjacent_code_search_token(prompt, &lower))
-        .or_else(|| local_search_query(prompt, cue, &vocab))
+        .filter(|cue| normalized.contains(cue.as_str()))
+        .max_by_key(|cue| cue.chars().count())
+        .cloned()
 }
 
 fn literal_code_search_query(normalized: &str) -> Option<String> {
@@ -276,6 +326,20 @@ fn literal_code_search_query(normalized: &str) -> Option<String> {
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
 }
 
+/// The most identifier-shaped token in `prompt`, if it holds one.
+///
+/// Prose names an identifier by writing it: `task_decomposition`,
+/// `retry-policy`, `AgenticPlan`, `Cargo.toml`. Each of those carries a mark
+/// that ordinary English words do not, and the marks are weighted by how rarely
+/// prose produces them. A hyphen is the weakest because prose hyphenates freely,
+/// so `retry-policy` only wins when nothing better is present -- and when it
+/// does win it is lowered to `retry_policy`, the spelling the source would use.
+///
+/// A run of digits separated by dots is excluded even though it carries the
+/// strongest mark. It is never an identifier: it is a version, a section, or --
+/// the case that sent an entire ladder node to grep for `1.1.1.1.1` and record
+/// the result as its evidence -- a node path in the instructions wrapped around
+/// the task (issue #1066).
 fn shaped_code_search_token(prompt: &str) -> Option<String> {
     search_tokens(prompt)
         .filter_map(|token| {
@@ -285,11 +349,13 @@ fn shaped_code_search_token(prompt: &str) -> Option<String> {
                 .any(|character| character.is_ascii_uppercase());
             let score = usize::from(token.contains('.')) * 4
                 + usize::from(token.contains('_')) * 4
-                + usize::from(interior_uppercase) * 3;
-            (score > 0 && !token.contains('/')).then_some((score, token.len(), token))
+                + usize::from(interior_uppercase) * 3
+                + usize::from(token.contains('-')) * 2;
+            let shaped = score > 0 && !token.contains('/') && !is_dotted_number(token);
+            shaped.then_some((score, token.len(), token))
         })
         .max_by_key(|(score, length, _)| (*score, *length))
-        .map(|(_, _, token)| token.to_owned())
+        .map(|(_, _, token)| token.replace('-', "_"))
 }
 
 fn adjacent_code_search_token(prompt: &str, normalized: &str) -> Option<String> {
@@ -320,9 +386,9 @@ fn adjacent_code_search_token(prompt: &str, normalized: &str) -> Option<String> 
 
 fn search_tokens(text: &str) -> impl Iterator<Item = &str> {
     text.split(|character: char| {
-        !character.is_ascii_alphanumeric() && !matches!(character, '_' | '.' | ':')
+        !character.is_ascii_alphanumeric() && !matches!(character, '_' | '.' | ':' | '-')
     })
-    .map(|token| token.trim_matches('.'))
+    .map(|token| token.trim_matches(['.', '-']))
     .filter(|token| !token.is_empty())
 }
 
@@ -434,7 +500,11 @@ fn requesting_sentences<'a>(
 /// built-in intent riding alongside it ("what is today's date? create a file
 /// main.py that prints Hello, world!") answers the smaller of the two questions
 /// and silently drops the work, so the intent steps aside for the task.
-fn carries_authoring_task(sentence: &str) -> bool {
+///
+/// [`super::evidence_record`] reads it for the same reason from the other side:
+/// a sentence that asks for an artifact to be authored states the work, so it
+/// is not a place to deliver some *other* sentence's finding (issue #1066).
+pub(super) fn carries_authoring_task(sentence: &str) -> bool {
     use crate::seed::{ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_KIND, ROLE_PROGRAM_REQUEST};
     let lexicon = seed::lexicon();
     lexicon.mentions_role(ROLE_PROGRAM_REQUEST, sentence)
@@ -626,6 +696,9 @@ fn names_a_path_object(cue: &str, vocab: &ShellIntentVocabulary) -> bool {
 /// directory, carrying a separator, or ending in an extension. A plain word
 /// (`stdin`, `Rust`) is not.
 fn looks_like_a_path(token: &str) -> bool {
+    if is_dotted_number(token) {
+        return false;
+    }
     token.starts_with('~')
         || token.contains('/')
         || token.rsplit_once('.').is_some_and(|(stem, extension)| {
@@ -645,8 +718,9 @@ fn collect_path_arguments(
     let cue = cue.to_lowercase();
     let mut arguments = Vec::new();
     for word in text.split_whitespace() {
-        let candidate = word
-            .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?'));
+        let candidate = trim_trailing_sentence_dot(
+            word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?')),
+        );
         let normalized = candidate.to_lowercase();
         if candidate.is_empty()
             || !is_safe_path(candidate)

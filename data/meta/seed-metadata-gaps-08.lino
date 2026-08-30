@@ -619,6 +619,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_greeting_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1c4df61e231b2418
+    source "data/seed/closure-generated-13.lino"
+    record "response_task_first_step_lead_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_124c4352cd3a8568
     source "data/seed/closure-generated-14.lino"
     record "kebab_case"
@@ -747,6 +751,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "agentic_action_find_home"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_501dd3689140e088
+    source "data/seed/closure-generated-16.lino"
+    record "compose"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8e86aaba523517e8
     source "data/seed/closure-generated-16.lino"
     record "invert"
@@ -830,6 +838,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_89592e8f892a03e8
     source "data/seed/meanings-feature-capability.lino"
     record "feature_capability_web_search"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_0779ae03b5192858
+    source "data/seed/meanings-file-write.lino"
+    record "file_leading_line_constraint"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_1bec173ffdd82ab8
     source "data/seed/meanings-how.lino"
