@@ -902,3 +902,39 @@ fn a_literal_payload_never_crosses_a_sentence_boundary() {
         }
     }
 }
+
+#[test]
+fn an_observation_already_made_is_reported_rather_than_replaced_by_a_verdict() {
+    // A request to look at the workspace is planned as a repository search, and
+    // the turn after it only has to report what came back. The task-structure
+    // route sits ahead of the route that reports a tool result and needs no tool
+    // itself, so it answered the same request a second time from thinking alone
+    // and the observation was discarded: thirty-one of the ladder's thirty-two
+    // leaves recorded a decomposition of their own instructions where their
+    // evidence should have been (issue #1066).
+    //
+    // Standing aside once a tool has run is the rule the two routes on either
+    // side of it already follow. An answer that needs no evidence may not
+    // overrule evidence that was gathered for the same request.
+    let prompt = "Audit the shipment_scheduler module and locate where it splits a \
+                  delivery task into sub-tasks.";
+    let observed = "src/shipment_scheduler.rs:214: fn split_delivery(task: &Task) -> [Leg; 2]";
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-0",
+            "grep",
+            r#"{"pattern":"shipment_scheduler","query":"shipment_scheduler"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("search-0", "grep", observed),
+    ];
+    let plan = plan_chat_step(&messages, &LADDER_TOOLS);
+    let Some(AgenticPlan::Final(answer)) = plan else {
+        panic!("expected the search result to be reported, planned {plan:?}");
+    };
+    assert_eq!(
+        answer,
+        "The `grep` command completed. Output:\n\n```text\n\
+         src/shipment_scheduler.rs:214: fn split_delivery(task: &Task) -> [Leg; 2]\n```"
+    );
+}

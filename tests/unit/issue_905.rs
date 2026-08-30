@@ -401,7 +401,7 @@ fn issue_905_case_study_and_self_authorship_are_preserved() {
     );
     assert!(
         read("self-hosting-fixture-refresh/agent-cli.log")
-            .contains("ses_fb154111dffe3265ttC1V44sTk")
+            .contains("ses_faf5f322effeicCLioH0QBuTdQ")
     );
 
     let authored = fs::read(format!(

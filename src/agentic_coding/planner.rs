@@ -443,7 +443,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // has to be resolved before the research routers for the same reason the
     // workspace inspection above does: the question shape alone would otherwise
     // send a task the web has never heard of to a web search (issue #1066).
-    if let Some(plan) = task_structure::plan_task_structure_step(&task) {
+    //
+    // The route reads `messages` for the same reason its neighbour above does,
+    // and it makes that judgement itself: a turn on which a tool has already run
+    // is not one an answer composed from the request alone may claim.
+    if let Some(plan) = task_structure::plan_task_structure_step(messages, &task) {
         return Some(plan);
     }
     if let Some(query) = web_research::web_research_query_for(messages)

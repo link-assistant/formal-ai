@@ -75,7 +75,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The eighteen capability gaps
+## The nineteen capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -100,6 +100,7 @@ the ladder.
 | 16 | A calculation cue claimed every word written after it | `calculation::sentence_end_from` |
 | 17 | A sentence *specifying* a document to compose was transcribed as the document's bytes | `note_composition::composed_document_specification_span` |
 | 18 | A label calling the work atomic was answered instead of the work | `task_structure::plan_task_structure_step` |
+| 19 | An answer composed from the request alone overruled a tool result already in hand | `task_structure::nothing_has_been_observed_yet` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -187,6 +188,24 @@ a request that specifies a document. It stands aside on the same recogniser gap
 17 uses, which is why the thirty interior nodes are untouched: they ask for
 "independently checkable evidence", and "evidence" is not a document kind the
 seed knows.
+
+Gap 19 is the one that accounts for the other thirty-one leaves, and it is a
+route-ordering defect rather than a reading defect. Every other agentic route
+plans a tool call and stands aside once that call has been made. The
+task-structure route plans no call at all, so its answer is composed from the
+request alone and is therefore the *same answer on every turn* — nothing it
+reads ever changes. Sitting thirty lines above the route that reports a tool
+result, it did not merely repeat itself: it answered over work the planner had
+already done. `Atomic task L01: Inspect the existing task-decomposition data
+model and identify where a node stores its children.` is planned, correctly, as
+a repository search on the first turn; the second turn exists only to report
+what came back, and the task-structure route claimed it and reported a
+four-step decomposition of the leaf's own instructions instead. Measured with
+`FORMAL_AI_TRACE_REQUESTS=1`, turn 0 is `grep` and turn 1 is a `write` of the
+template; with the route suppressed, turn 1 is a `write` of the grep output.
+The rule is that an answer that needed no evidence may not overrule evidence
+gathered for the same request, and the route now asks the question its
+neighbour is asked at the call site — has anything been observed yet?
 
 Gap 11 is the one worth reading twice, because the first fix for it was wrong in
 a way the suite caught immediately. Bounding a marker-led payload by its sentence
