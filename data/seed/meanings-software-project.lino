@@ -157,6 +157,8 @@ meanings
     lexeme en
       surface
         text implement
+      surface
+        text solve
     lexeme ru
       surface
         text реализуй
