@@ -26,11 +26,26 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 OUT="${OUT:-/tmp/issue-1066-ladder-offline}"
 TURNS="${TURNS:-12}"
-EXAMPLE="$ROOT/target/debug/examples/issue_1066_ladder_node_offline"
+BUILT="${EXAMPLE:-$ROOT/target/debug/examples/issue_1066_ladder_node_offline}"
 
-[[ -x "$EXAMPLE" ]] || { echo "build first: cargo build --example issue_1066_ladder_node_offline" >&2; exit 2; }
+[[ -x "$BUILT" ]] || { echo "build first: cargo build --example issue_1066_ladder_node_offline" >&2; exit 2; }
 
 mkdir -p "$OUT" "$OUT/proofs"
+
+# The run takes about forty minutes, and anything that rebuilds or prunes
+# `target/` inside that window changes -- or deletes -- the binary halfway
+# through. That is not a node verdict, but it reads as one: a missing binary
+# writes no proof and the judge reports `missing_proof`, which is exactly what a
+# hollow node looks like. So the binary under measurement is copied out once and
+# every node runs the same bytes.
+EXAMPLE="$OUT/issue_1066_ladder_node_offline"
+cp "$BUILT" "$EXAMPLE"
+
+# The tree each node works in is pinned for the same reason: a commit made while
+# the run is in flight would give the later nodes a different workspace from the
+# earlier ones, and the summary would be one table over two repositories.
+TREE="${TREE:-$(git -C "$ROOT" rev-parse HEAD)}"
+echo "measuring $(basename "$BUILT") against $TREE" >&2
 NODES="$OUT/tree.tsv"
 bash "$ROOT/experiments/issue_1066_ladder_offline/emit-tree.sh" > "$NODES"
 
@@ -45,11 +60,12 @@ while IFS=$'\t' read -r id depth prompt criterion; do
   fi
   work="$OUT/work/$id"
   rm -rf "$work"; mkdir -p "$work/.agent-ladder"
-  git -C "$ROOT" archive HEAD | tar -x -C "$work"
+  git -C "$ROOT" archive "$TREE" | tar -x -C "$work"
   "$EXAMPLE" --task "$prompt" --node "$id" --depth "$depth" \
     --criterion "$criterion" --workspace "$work" --turns "$TURNS" \
     > "$OUT/$id.log" 2>&1
   proof="$work/.agent-ladder/node-$id-proof.md"
+  [[ -x "$EXAMPLE" ]] || { echo "the binary under measurement vanished mid-run" >&2; exit 2; }
   [[ -f "$proof" ]] && cp "$proof" "$OUT/proofs/node-$id-proof.md"
   verdict=$(python3 "$ROOT/experiments/issue_1066_ladder_offline/judge-proof.py" "$proof" "$id")
   if [[ "$verdict" == ok ]]; then
