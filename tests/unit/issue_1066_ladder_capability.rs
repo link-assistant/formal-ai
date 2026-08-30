@@ -967,3 +967,48 @@ fn an_observation_already_made_is_reported_rather_than_replaced_by_a_verdict() {
          src/shipment_scheduler.rs:214: fn split_delivery(task: &Task) -> [Leg; 2]\n```"
     );
 }
+
+#[test]
+fn the_note_that_places_the_worker_does_not_name_the_subject_of_the_work() {
+    // A request often arrives with a second block that says where the worker is
+    // and how to report -- "you are shift 3 of the night-crew rota". That block
+    // names nothing the request asks about. Scoring the whole prompt for its most
+    // code-shaped word let the longest word of that note win, so a question about
+    // the invoice totals searched the workspace for the rota instead.
+    let queries = planned_queries(
+        "Inspect the existing invoice-total helper and identify how it rounds a half \
+         cent.\n\nYou are shift 3 of the night-crew-rota. Work only in this checkout.",
+    );
+    assert!(
+        queries.iter().any(|query| query.contains("invoice_total")),
+        "expected the workspace to be searched for the invoice-total helper, \
+         planned {queries:?}"
+    );
+    assert!(
+        !queries
+            .iter()
+            .any(|query| query.contains("night_crew_rota")),
+        "took the subject from the block that only places the worker, \
+         planned {queries:?}"
+    );
+}
+
+#[test]
+fn a_permission_to_use_the_web_is_not_the_answer_to_the_question() {
+    // "Use web research when it materially improves factual accuracy" grants a
+    // tool; it does not say the answer is on the internet. Read as part of the
+    // request's own words, it turned a question about the checkout into an
+    // open-web query assembled from the whole prompt, and the evidence recorded
+    // was the framing note itself with a line saying the lookup returned nothing.
+    let writes = planned_writes(
+        "Inspect the existing rounding rule and record when a half cent is kept.\n\n\
+         You are worker 4. Use web research when it materially improves factual \
+         accuracy. Record what you find in `notes/rounding.md`.",
+    );
+    assert!(
+        !writes
+            .iter()
+            .any(|content| content.contains("materially improves")),
+        "recorded the note that places the worker as the finding: {writes:?}"
+    );
+}

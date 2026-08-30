@@ -61,6 +61,8 @@ cases=(
   "src/agentic_coding/note_composition.rs|pub(super) fn composed_document_specification_span(task: &str) -> Option<Range<usize>> {|if true { return None; }|issue_1066_ladder_capability::a_label_that_calls_the_work_atomic_does_not_replace_it_with_a_verdict"
   "src/agentic_coding/task_structure.rs|fn nothing_has_been_observed_yet(messages: &[ChatMessage]) -> bool {|if true { return true; }|issue_1066_ladder_capability::an_observation_already_made_is_reported_rather_than_replaced_by_a_verdict"
   "src/agentic_coding/shell_command_policy.rs|pub(super) fn prose_sentences(prompt: &str) -> Vec<Sentence<'_>> {|if true { return sentences(prompt); }|issue_1066_ladder_capability::a_semicolon_inside_a_payload_does_not_end_it"
+  "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::the_note_that_places_the_worker_does_not_name_the_subject_of_the_work"
+  "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::a_permission_to_use_the_web_is_not_the_answer_to_the_question"
 )
 
 wanted=("$@")

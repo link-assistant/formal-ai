@@ -22,6 +22,14 @@
 //! the current exchange rate" is a question the workspace cannot answer, and it
 //! says so by naming an external source. A request that names no source at all is
 //! about the material the agent was given.
+//!
+//! Both halves are read at the scope of one block, because a note that places the
+//! worker is not the request. Every prompt the #1066 ladder sends ends with "use
+//! web research when it materially improves factual accuracy" — a permission to
+//! reach for a tool, granted in a separate paragraph, and not a statement that
+//! the answer is on the internet. Read across the whole prompt, that permission
+//! disqualified every one of the sixty-three nodes from looking at the repository
+//! it had just been handed.
 
 use crate::seed;
 
@@ -29,10 +37,18 @@ use crate::seed;
 ///
 /// The lowercased, normalized copy is what the lexicon is queried with, so the
 /// caller may pass the prompt exactly as it was written.
+///
+/// One block has to satisfy both halves on its own. Splitting first is what
+/// separates "review the retry helper" from the paragraph after it that grants
+/// web access; joined, the grant reads as though the request had named the web.
 pub(super) fn asks_about_the_workspace(prompt: &str) -> bool {
-    let normalized = crate::engine::normalize_prompt(prompt);
-    seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &normalized)
-        && !names_an_external_source(&normalized)
+    super::stated_request::request_blocks(prompt)
+        .into_iter()
+        .any(|block| {
+            let normalized = crate::engine::normalize_prompt(block);
+            seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &normalized)
+                && !names_an_external_source(&normalized)
+        })
 }
 
 /// Whether the request points somewhere outside the workspace for its answer.

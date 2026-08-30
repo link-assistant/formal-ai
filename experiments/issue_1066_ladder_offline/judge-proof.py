@@ -34,11 +34,17 @@ EMPTY_BODIES = {
     "the result", "the finding", "the answer", "the outcome", "the evidence",
     "результат", "вывод", "ответ", "结果", "結果", "परिणाम",
 }
+# A tool that came back with nothing is a step that did not happen. Reporting
+# it reads like a finding -- "research completed for X, but the tool returned no
+# content" is a whole sentence about work -- and proves exactly as much as an
+# empty file. This is not the same as a search that ran and matched nothing:
+# "no matches" is an observation about the workspace and stays a valid proof.
 FAILURE_MARKERS = (
     "could not be recorded",
     "no such file",
     "the write step failed",
     "error:",
+    "returned no content",
 )
 
 

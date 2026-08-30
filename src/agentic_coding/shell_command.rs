@@ -252,13 +252,17 @@ fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
 /// know is a different admission with a stricter subject rule; see
 /// [`workspace_inspection_query_for_task`].
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
-    let lower = prompt.to_lowercase();
     let vocab = seed::shell_intent_vocabulary();
-    let cue = longest_search_cue(&lower, &vocab)?;
-    literal_code_search_query(&lower)
-        .or_else(|| shaped_code_search_token(prompt))
-        .or_else(|| adjacent_code_search_token(prompt, &lower))
-        .or_else(|| local_search_query(prompt, &cue, &vocab))
+    super::stated_request::request_blocks(prompt)
+        .into_iter()
+        .find_map(|block| {
+            let lower = block.to_lowercase();
+            let cue = longest_search_cue(&lower, &vocab)?;
+            literal_code_search_query(&lower)
+                .or_else(|| shaped_code_search_token(block))
+                .or_else(|| adjacent_code_search_token(block, &lower))
+                .or_else(|| local_search_query(block, &cue, &vocab))
+        })
 }
 
 /// Recover the subject of a request that asks about the workspace itself.
@@ -280,10 +284,13 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
 /// deliberately absent here: it works by deleting an explicit cue, and this
 /// admission has no cue to delete.
 pub(super) fn workspace_inspection_query_for_task(prompt: &str) -> Option<String> {
-    if !asks_about_the_workspace(prompt) {
-        return None;
-    }
-    literal_code_search_query(&prompt.to_lowercase()).or_else(|| shaped_code_search_token(prompt))
+    super::stated_request::request_blocks(prompt)
+        .into_iter()
+        .filter(|block| asks_about_the_workspace(block))
+        .find_map(|block| {
+            literal_code_search_query(&block.to_lowercase())
+                .or_else(|| shaped_code_search_token(block))
+        })
 }
 
 /// The longest search cue `normalized` spells out, if it spells one out at all.

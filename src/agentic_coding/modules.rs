@@ -59,6 +59,7 @@ mod shell_command;
 mod shell_command_policy;
 mod shell_file_fallback;
 pub mod source_links;
+mod stated_request;
 pub mod statement_audit;
 mod structured_edit;
 mod task_structure;
