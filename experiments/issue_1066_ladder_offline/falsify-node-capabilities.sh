@@ -58,6 +58,7 @@ cases=(
   "src/calculation.rs|fn sentence_end_from(prompt: &str, from: usize) -> usize {|if true { return prompt.len(); }|issue_1066_hollow_answers::a_calculator_verb_in_the_framing_does_not_claim_the_whole_prompt"
   "src/calculation.rs|fn sentence_end_from(prompt: &str, from: usize) -> usize {|if true { let tail = &prompt[from..]; if let Some(offset) = tail.find(\"\\n\\n\") { return from + offset; } }|issue_1066_hollow_answers::a_calculator_verb_does_not_claim_the_rest_of_its_paragraph"
   "src/agentic_coding/note_composition.rs|pub(super) fn composed_document_specification_span(task: &str) -> Option<Range<usize>> {|if true { return None; }|issue_1066_ladder_capability::a_specified_document_is_composed_even_when_the_request_names_a_file"
+  "src/agentic_coding/note_composition.rs|pub(super) fn composed_document_specification_span(task: &str) -> Option<Range<usize>> {|if true { return None; }|issue_1066_ladder_capability::a_label_that_calls_the_work_atomic_does_not_replace_it_with_a_verdict"
 )
 
 wanted=("$@")

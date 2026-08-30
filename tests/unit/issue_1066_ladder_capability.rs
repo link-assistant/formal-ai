@@ -294,6 +294,31 @@ fn a_specified_document_is_composed_even_when_the_request_names_a_file() {
 }
 
 #[test]
+fn a_label_that_calls_the_work_atomic_does_not_replace_it_with_a_verdict() {
+    // The ladder hands each leaf a heading -- "Atomic task L32: ..." -- and the
+    // heading alone carries both words the task-structure route reads, the
+    // atomicity predicate and the task noun. So the route answered the question
+    // the *label* posed, truthfully, and wrote "Yes — this task is atomic" where
+    // the sentence after the colon had asked for a note. A request that names a
+    // document to produce states work to do, not a task to classify.
+    assert_eq!(
+        planned_writes_to(
+            "Atomic task 9: Assemble an intake summary containing the applicant name, the \
+             referral source, and the interview date. Store it in `intake/monday.md`.",
+            "intake/monday.md"
+        ),
+        vec![
+            "Atomic task 9: Assemble an intake summary containing the applicant name, the \
+             referral source, and the interview date\n\nRequested parts:\n- the applicant \
+             name\n- the referral source\n- the interview date\n\nObserved in this session:\n- \
+             nothing: no tool result was recorded before this note.\n\nNo requested part above \
+             is backed by an observation from this session.\n"
+                .to_owned()
+        ]
+    );
+}
+
+#[test]
 fn a_composed_note_never_claims_what_the_session_did_not_observe() {
     // The honest deliverable for a specification nothing has answered yet is a
     // note that says so. Silence about the missing parts would read as success.

@@ -49,6 +49,23 @@ pub(super) fn plan_task_structure_step(task: &str) -> Option<AgenticPlan> {
     if !looks_like_task_decomposition(&normalize_prompt(task)) {
         return None;
     }
+    // A request that specifies a document to compose states a deliverable, and
+    // a deliverable is work to do rather than a task to classify. The ladder's
+    // last leaf arrives labelled -- "Atomic task L32: Produce a final evidence
+    // note containing the selected tree level, node outcomes, test results, and
+    // session id." -- and the label alone carries the atomicity predicate and
+    // the task noun this route reads. So the route answered the question the
+    // *label* posed, truthfully ("yes, that is atomic"), and the note the
+    // sentence after the colon asked for was never composed (issue #1066).
+    //
+    // The test is [`super::note_composition::composed_document_specification_span`],
+    // the same recogniser that keeps a specification from being transcribed as
+    // literal bytes: a composition action applied to a document kind with two or
+    // more named parts. Nothing about headings or labels is spelled out here --
+    // what decides is that the caller named something to produce.
+    if super::note_composition::composed_document_specification_span(task).is_some() {
+        return None;
+    }
     let answer = FormalAiEngine.answer(task);
     if answer.is_inconclusive()
         || answer.defers_to_the_open_web()
