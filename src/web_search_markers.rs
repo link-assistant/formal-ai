@@ -1,7 +1,7 @@
 //! The web-search cue projection: every surface marker the recogniser reads,
 //! resolved out of the meaning lexicon by semantic role and slot.
 //!
-//! [`crate::solver_handlers::web_search_intent`] decides *whether a prompt asks
+//! `solver_handlers::web_search_intent` decides *whether a prompt asks
 //! for a web search and what it asks about*; this module answers the narrower
 //! question that decision rests on — *which surfaces does the seed declare for
 //! each role?* The two are separable: the projection has no opinion about a

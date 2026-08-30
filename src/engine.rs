@@ -89,7 +89,7 @@ impl SymbolicAnswer {
     /// prompt and every clarification request answer something *about* the
     /// prompt rather than the prompt itself. A caller that has to act on the
     /// text -- replaying it in another language
-    /// ([`crate::solver_handlers::response_language_followup`]), recording it as
+    /// (`solver_handlers::response_language_followup`), recording it as
     /// evidence at a path the caller named
     /// ([`crate::agentic_coding`]) -- must be able to tell the two apart, and
     /// both callers have to agree on where the line is, so the test lives with
@@ -109,7 +109,7 @@ impl SymbolicAnswer {
     /// performed yet, so the text is about the search rather than about the
     /// subject: nothing in it is true of `IIR` or of `Sunday` in particular.
     ///
-    /// [`crate::agentic_coding::web_research`] already reads the intent this
+    /// `agentic_coding::web_research` already reads the intent this
     /// way when it decides an open-world question is unresolved. A caller that
     /// has to *deliver* an answer -- writing it to a path the request named --
     /// needs the same reading for the opposite reason: recording a description

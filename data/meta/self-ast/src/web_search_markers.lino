@@ -2,9 +2,9 @@ self_ast_census
   target src/web_search_markers.rs
   language rust
   fidelity signature
-  byte_len 10816
+  byte_len 10807
   line_count 201
-  content_id source_module_b9afedc84f5c7145
+  content_id source_module_c835ed329e02a554
   symbol_count 9
   symbols
     struct WebSearchMarkers 37 100

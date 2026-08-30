@@ -242,7 +242,7 @@ pub const ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE: &str = "file_write_command_o
 /// *the answer* into the file and the caller's question went unanswered. The
 /// planner reads this role through [`crate::seed::Lexicon::role_word_forms`] to
 /// decline that payload, which hands the request to
-/// [`crate::agentic_coding::evidence_record`] instead.
+/// `agentic_coding::evidence_record` instead.
 pub const ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE: &str =
     "file_write_deferred_content_reference";
 /// Semantic role: a word that introduces or names the target file of a write
