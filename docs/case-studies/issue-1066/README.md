@@ -282,12 +282,14 @@ The subject went first. `shell_command::shaped_code_search_token` picks the most
 code-shaped token in the prompt, scoring `.` and `_` at four, an interior capital
 at three and `-` at two, and breaking ties on length. Nothing in the task above
 is code-shaped; `binary-tree` is. In the pre-fix 32-leaf run kept under
-`docs/case-studies/issue-1066/ladder-before-fix/`, **40 of the 54 `grep` patterns
-the real Agent CLI planned were `binary_tree`** — see `grep-patterns.tsv`.
-`task_decomposition`, which eight of the tasks are explicitly about, accounts for
-four. The tie-break is visible in the two exceptions: `sixteen-node` and
-`thirty-two-node` beat `binary-tree` because they are longer, not because they
-are better.
+`docs/case-studies/issue-1066/ladder-before-fix/`, the real Agent CLI planned
+twenty-nine `grep` calls across the thirty-two leaves, and **twenty of them
+searched for `binary_tree`** — see `grep-patterns.tsv`, which is regenerated from
+the committed `agent-stream.jsonl` files by the command in that directory's
+README. `task_decomposition`, which eight of the tasks are explicitly about,
+accounts for two. The tie-break is visible in the two exceptions: `sixteen-node`
+and `thirty-two-node` beat `binary-tree` because they are longer, not because
+they are better.
 
 The destination went next. `workspace_inspection::asks_about_the_workspace`
 admits a request only if it names an inspection action and does *not* name an
