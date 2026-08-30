@@ -25,6 +25,18 @@ if [[ -n "$NODE_FILTER" && ! "$NODE_FILTER" =~ ^(R|[12](\.[12]){0,4})$ ]]; then
 fi
 
 mkdir -p "$OUT"
+
+# A full depth-five run is over half an hour of real Agent CLI turns, and it
+# shares `target/` with whatever else is building on the machine. A rebuild or a
+# cache prune inside that window swaps -- or removes -- the binary under
+# measurement, and a node that fails because its server never started is
+# indistinguishable in the log from a node that failed on its merits. Copy the
+# binary out once, and every node is measured against the same bytes.
+STAGE="$(mktemp -d)"
+trap 'rm -rf "$STAGE"' EXIT
+cp "$BIN" "$STAGE/formal-ai"
+BIN="$STAGE/formal-ai"
+
 NODES="$OUT/tree.tsv"
 RUN_LOG="$OUT/run.log"
 : > "$NODES"
