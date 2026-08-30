@@ -75,7 +75,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The sixteen capability gaps
+## The eighteen capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -98,6 +98,8 @@ the ladder.
 | 14 | The prompt's *last* colon was read as the one introducing the task | `stated_task::after_introducing_colon` |
 | 15 | Framing addressed to the solver was decomposed as if it were work | `stated_task::asking_blocks` |
 | 16 | A calculation cue claimed every word written after it | `calculation::sentence_end_from` |
+| 17 | A sentence *specifying* a document to compose was transcribed as the document's bytes | `note_composition::composed_document_specification_span` |
+| 18 | A label calling the work atomic was answered instead of the work | `task_structure::plan_task_structure_step` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -156,6 +158,36 @@ directions: a request is stated in a sentence, so a cue claims its sentence and
 not the rest of the document. "Solve" is ordinary English, and the test that pins
 this uses a worker-assignment prompt that mentions no ladder at all.
 
+Gaps 17 and 18 are the last leaf, L32, and they are the clearest example in this
+issue of a mechanical check passing over nothing. The node asks: "Produce a final
+evidence note containing the selected tree level, node outcomes, test results,
+and session id." Its proof file contained, in full, "the selected tree level,
+node outcomes, test results, and session id." — the request's own words, written
+back as the answer. `judge-proof.py` accepted it: the file existed, it was
+non-empty, and it mentioned the node.
+
+Two independent defects had to be fixed before that node produced a note, and the
+second was invisible until the first was gone. "Containing" is a content-lead
+marker, so the literal-write parser took the words after it for the bytes; that
+reading is right for "Create `a.txt` containing 42 is the answer", where the
+marker really does introduce the payload, and wrong here, where the sentence
+around the marker names a composition action, a document kind and four parts. The
+sentence, not the marker, says which reading applies, and the recogniser that
+decides is `note_composition`'s own — the route that would have composed the
+document is asked whether this is a document to compose.
+
+With the transcription gone the proof changed to "Yes — this task is atomic: no
+split of it yields two sub-tasks that can be checked independently." True, and
+not what was asked. The ladder labels each leaf "Atomic task L32: …", and that
+label alone carries both signals the task-structure route reads — the atomicity
+predicate and the task noun — so the route answered the question the *heading*
+posed and the sentence after the colon was never reached. Naming something to
+produce states work to do, not a task to classify, so the route stands aside for
+a request that specifies a document. It stands aside on the same recogniser gap
+17 uses, which is why the thirty interior nodes are untouched: they ask for
+"independently checkable evidence", and "evidence" is not a document kind the
+seed knows.
+
 Gap 11 is the one worth reading twice, because the first fix for it was wrong in
 a way the suite caught immediately. Bounding a marker-led payload by its sentence
 is right for "Draft a handover memo containing … . Leave the memo in
@@ -165,6 +197,102 @@ bound recovered nothing and four `issue_656_promotion` tests went red. The rule
 that holds for both is stated in terms of the marker's own line: a marker that
 says nothing more on its line introduces a *block*, and a block runs to the file
 clause as it always did.
+
+## Where each acceptance item stands
+
+Issue #1066 lists six. Four are done here, and two cannot be reached from a
+branch — they need a merge, a release, and publish credentials. Naming them as
+done would be exactly the green-checkmark-over-nothing this issue exists to end.
+
+| # | Acceptance item | Status |
+| --- | --- | --- |
+| 1 | `experiments/issue_924_self_authoring/run.sh` passes on the server, evidence committed | **Done** |
+| 2 | `issue-1028-agent-ladder.yml` completes at `depth=5` — the 32-leaf level, real Agent CLI | **Done** |
+| 3 | A merged pull request in the open cycle with every introduced commit validly attributed | **Not reachable here** |
+| 4 | `Auto Release` succeeds; the new version is on crates.io and GHCR `:latest` | **Blocked by 3** |
+| 5 | A Hive Mind `solve --model formal-ai` run reports the new version and produces a non-empty pull request | **Blocked by 4** |
+| 6 | No deferral budget, grace period, or bypass anywhere in the release path | **Done** |
+
+**Item 1.** `run.sh` aborted on this server with `Encoding::InvalidByteSequenceError`
+while the report it was reading recorded `"solved": true`: Ruby's `File.read`
+decodes with the locale's default external encoding, and a bare container's
+locale is `POSIX`. The run had succeeded and only the assertion harness had
+failed. Both incremental harnesses now read the report as `Encoding::UTF_8`, the
+harness passes end to end here, and its evidence is committed under
+`docs/case-studies/issue-924/incremental-self-authorship/`: the dispatch report,
+`formal-ai.log`, and five transcripts — four real Agent CLI sessions
+(`ses_fb3751286ffeboekWxOdOhBgAs`, `ses_fb3750160ffel61GySqv2RK388`,
+`ses_fb374f1c8ffe7yKcWfmhT9M26f`, `ses_fb374e16cffeh4E677qM46nCCO`) and the
+composed verifier.
+
+**Item 2.** `depth=5` selects the 32-leaf level, and every leaf is a real Agent
+CLI session against a real `formal-ai serve`. The witness is workflow run
+[33280775741](https://github.com/link-assistant/formal-ai/actions/runs/33280775741),
+which reports `conclusion: success`; its log is kept at
+`ci-logs/issue-1028-agent-ladder-33280775741.log`. Committed alongside it is a
+local re-run of the same 32 leaves under
+`docs/case-studies/issue-1028/agent-tree-run/`, with every node's proof file as
+the Agent CLI left it.
+
+**Item 3 is the one to read carefully.** It asks for a *merged* pull request in
+the open release cycle in which **every** introduced non-merge commit carries
+`Formal-AI-Session`, `Formal-AI-Evidence`, and `Formal-AI-Pull-Request`. This
+pull request cannot be that one, and no amount of work inside it can make it
+that one: its commits were authored here, and CONTRIBUTING is explicit that
+"Do not add these trailers to a human-authored or manually corrected commit."
+Adding them would be the fake result the issue forbids, and the metric checks
+for it anyway — "One attributed commit cannot make a mixed manually authored
+pull request count as end-to-end self-development."
+
+What this pull request can do for item 3, and does, is make the capability real:
+the capability gaps below are the reason a Formal AI-authored node came back with
+an empty heading instead of a decomposition. Item 1's committed sessions are the
+loop running end to end on this machine.
+
+**Item 4 is blocked by item 3, and the block is measured, not assumed:**
+
+```console
+$ rust-script scripts/check-self-development-release.rs
+Output: should_release=false
+Self-development release preflight failed: release cycle v0.345.0..HEAD has no
+merged Formal AI-authored pull request; an end-to-end Formal AI-authored pull
+request requires valid session evidence and the same canonical PR trailer on
+every introduced non-merge commit
+$ echo $?
+1
+```
+
+There is a second gate behind that one, and saying "item 4 follows from item 3"
+without checking would be its own unverified claim. So
+`experiments/issue_1066_qualifying_pr/dry-run.sh` builds the missing pull
+request in a throwaway clone — an attributed commit whose session id is read out
+of item 1's committed evidence bundle, merged with a matching merge subject —
+and runs the gates against it:
+
+```console
+$ experiments/issue_1066_qualifying_pr/dry-run.sh
+== the cycle, measured ==
+0.46% (1829/399988 changed lines; 8/306 commits)
+
+== the release preflight, with a qualifying pull request in the cycle ==
+Output: should_release=false
+Self-development release preflight failed: self-hosting target would fall from
+12.77% to 0.94% for v0.345.0..HEAD; merge additional reviewed Formal AI-authored
+work before cutting the release
+exit=1
+```
+
+The refusal moves, and it does not go away. The ledger's target is 1277 basis
+points; this cycle is 46, and a qualifying pull request merged today projects
+94. So item 4 needs more than item 3 — it needs enough merged Formal
+AI-authored work to hold the ratchet — and that is the ratchet doing its job.
+Item 6 is what keeps both refusals honest: before this work, the same cycle
+reported **success** for the first seven days. `main` staying red on
+`Auto Release` is the state of the repository, honestly reported. Do not resolve
+it by relaxing a limit.
+
+**Item 5** needs a version that exists. It reads the release Hive Mind would
+pull, so it cannot run before item 4 cuts one.
 
 ## How to reproduce any of this
 
