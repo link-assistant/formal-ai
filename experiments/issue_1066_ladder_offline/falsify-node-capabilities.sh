@@ -11,7 +11,11 @@
 # the fix switched off, which is the state the repository was in when the ladder
 # reported sixty-three green nodes and thirty-two of them were hollow.
 #
-# Usage: experiments/issue_1066_ladder_offline/falsify-node-capabilities.sh
+# Usage: experiments/issue_1066_ladder_offline/falsify-node-capabilities.sh [substring ...]
+#
+# With no arguments every guard is falsified. An argument selects the cases
+# whose test name contains it, which is what a reader checking one newly added
+# guard needs; the final green run then covers only the selected cases.
 #
 # Runtime note: the repository compiles its tests at opt-level 2 (issue #1053),
 # which is right for one run of a long suite and wrong for a loop that rebuilds
@@ -50,11 +54,20 @@ cases=(
   "src/agentic_coding/evidence_record.rs|fn work_before_delivery(sentence: &str) -> Option<&str> {|if true { return None; }|issue_1066_ladder_capability::work_coordinated_into_its_delivery_sentence_is_not_thrown_away_with_it"
   "src/task_decomposition/stated_task.rs|fn after_introducing_colon(prompt: &str, asks: &dyn Fn(&str) -> bool) -> Option<String> {|if true { let colon = prompt.rfind(INTRODUCING_COLON)?; let tail = prompt[colon..].chars().skip(1).collect::<String>().trim().to_owned(); return (!tail.is_empty()).then_some(tail); }|issue_1066_hollow_answers::a_colon_in_a_later_sentence_does_not_become_the_task"
   "src/task_decomposition/stated_task.rs|fn asking_blocks(prompt: &str, asks: &dyn Fn(&str) -> bool) -> String {|if true { return prompt.trim().to_owned(); }|issue_1066_hollow_answers::framing_addressed_to_the_solver_is_not_a_sub_task"
+  "src/computer_use/planner.rs|fn advertises_computer_use(tool_names: &[&str]) -> bool {|if true { return true; }|issue_1066_ladder_capability::a_client_that_speaks_no_computer_use_is_not_told_a_primitive_is_missing"
   "src/calculation.rs|fn sentence_end_from(prompt: &str, from: usize) -> usize {|if true { return prompt.len(); }|issue_1066_hollow_answers::a_calculator_verb_in_the_framing_does_not_claim_the_whole_prompt"
 )
 
+wanted=("$@")
+selected=0
 for case in "${cases[@]}"; do
   IFS='|' read -r file anchor injection test_name <<<"$case"
+  if [[ ${#wanted[@]} -gt 0 ]]; then
+    keep=0
+    for want in "${wanted[@]}"; do [[ "$test_name" == *"$want"* ]] && keep=1; done
+    [[ $keep -eq 1 ]] || continue
+  fi
+  selected=$((selected + 1))
   echo "== neutralising ${file}: ${injection} =="
   backup=$(mktemp)
   cp "$file" "$backup"
@@ -88,5 +101,11 @@ PATCH
   trap - EXIT
 done
 
+[[ $selected -gt 0 ]] || { echo "no case matched: ${wanted[*]}" >&2; exit 2; }
+
 echo "== every fix restored: the whole set must go GREEN =="
-cargo test --test unit -- issue_1066_ladder_capability issue_1066_hollow_answers 2>&1 | tail -6
+if [[ ${#wanted[@]} -gt 0 ]]; then
+  cargo test --test unit -- "${wanted[@]}" 2>&1 | tail -6
+else
+  cargo test --test unit -- issue_1066_ladder_capability issue_1066_hollow_answers 2>&1 | tail -6
+fi
