@@ -160,12 +160,25 @@ PY
 )
   port=$((BASE_PORT + node_number))
 
+  # Cleaning the scratch checkout is not what the ladder measures, and it must
+  # never decide a node's verdict. `rm -rf` reports ENOTEMPTY for a directory
+  # that gained a file while the walk was inside it, which is what a just-killed
+  # server flushing its last write looks like; the trap runs under `set -e`, so
+  # that single failure ended the whole run after a node the log had already
+  # recorded as PASS. Retry briefly, then leave the directory to the operating
+  # system's temporary sweeper rather than failing the node.
   cleanup_one() {
     if [[ -n "${server_pid:-}" ]]; then
       kill -- "-${server_pid}" 2>/dev/null || kill "$server_pid" 2>/dev/null || true
       wait "$server_pid" 2>/dev/null || true
     fi
-    rm -rf "$work"
+    local attempt
+    for attempt in 1 2 3; do
+      rm -rf "$work" 2>/dev/null && return 0
+      sleep 1
+    done
+    echo "cleanup: could not remove $work; leaving it in place" >&2
+    return 0
   }
   trap cleanup_one RETURN
 
