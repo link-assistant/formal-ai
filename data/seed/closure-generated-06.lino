@@ -644,6 +644,11 @@ meanings
     lexeme en
       surface
         text "response summarization ratchet violated en"
+  response_task_decomposition_single_need_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need es"
   response_task_plan_stage_implementation_ru
     defined-by response_template
     lexeme en

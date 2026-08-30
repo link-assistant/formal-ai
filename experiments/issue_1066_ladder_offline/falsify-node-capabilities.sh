@@ -43,7 +43,7 @@ cases=(
   "src/agentic_coding/workspace_inspection.rs|pub(super) fn asks_about_the_workspace(prompt: &str) -> bool {|if true { return false; }|issue_1066_ladder_capability::a_question_about_the_repository_is_answered_by_reading_the_repository"
   "src/agentic_coding/file_read.rs|fn read_path_named_beside_its_cue(prompt: &str) -> Option<String> {|if true { return None; }|issue_1066_ladder_capability::a_read_cue_selects_the_path_in_its_own_sentence"
   "src/agentic_coding/evidence_record.rs|fn symbolic_answer(residual: &str) -> Option<String> {|if true { return None; }|issue_1066_ladder_capability::an_answer_only_the_symbolic_engine_reaches_is_still_delivered_to_the_named_file"
-  "src/agentic_coding/task_structure.rs|pub(super) fn plan_task_structure_step(task: &str) -> Option<AgenticPlan> {|if true { return None; }|issue_1066_ladder_capability::a_question_about_a_task_is_answered_by_thinking_about_the_task"
+  "src/agentic_coding/task_structure.rs|) -> Option<AgenticPlan> {|if true { return None; }|issue_1066_ladder_capability::a_question_about_a_task_is_answered_by_thinking_about_the_task"
   "src/agentic_coding/general_planner.rs|fn names_deferred_work_product(content: &str) -> bool {|if true { return false; }|issue_1066_ladder_capability::a_payload_that_names_the_work_product_is_not_written_as_the_body"
   "src/engine.rs|    pub fn defers_to_the_open_web(&self) -> bool {|if true { return false; }|issue_907::a_turn_that_carries_a_task_gets_the_task"
   "src/agentic_coding/evidence_record.rs|            && !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))|// neutralised|issue_907::a_turn_that_carries_a_task_gets_the_task"
@@ -60,9 +60,30 @@ cases=(
   "src/agentic_coding/note_composition.rs|pub(super) fn composed_document_specification_span(task: &str) -> Option<Range<usize>> {|if true { return None; }|issue_1066_ladder_capability::a_specified_document_is_composed_even_when_the_request_names_a_file"
   "src/agentic_coding/note_composition.rs|pub(super) fn composed_document_specification_span(task: &str) -> Option<Range<usize>> {|if true { return None; }|issue_1066_ladder_capability::a_label_that_calls_the_work_atomic_does_not_replace_it_with_a_verdict"
   "src/agentic_coding/task_structure.rs|fn nothing_has_been_observed_yet(messages: &[ChatMessage]) -> bool {|if true { return true; }|issue_1066_ladder_capability::an_observation_already_made_is_reported_rather_than_replaced_by_a_verdict"
+  "src/agentic_coding/shell_command_policy.rs|pub(super) fn prose_sentences(prompt: &str) -> Vec<Sentence<'_>> {|if true { return sentences(prompt); }|issue_1066_ladder_capability::a_semicolon_inside_a_payload_does_not_end_it"
 )
 
 wanted=("$@")
+
+# Every anchor is checked before the first compile. A case rebuilds the suite,
+# so a stale anchor -- a signature this repository has since changed -- is
+# otherwise reported an hour into a run, after the cases before it have already
+# been paid for.
+python3 - "${cases[@]}" <<'PREFLIGHT'
+import sys
+
+stale = []
+for line in sys.argv[1:]:
+    path, anchor, _injection, test = line.split("|", 3)
+    found = open(path, encoding="utf-8").read().count(anchor)
+    if found != 1:
+        stale.append(f"{path}: anchor occurs {found} times, expected 1: {anchor}")
+if stale:
+    print("\n".join(stale), file=sys.stderr)
+    sys.exit(2)
+PREFLIGHT
+
+failures=()
 selected=0
 for case in "${cases[@]}"; do
   IFS='|' read -r file anchor injection test_name <<<"$case"
@@ -94,18 +115,28 @@ print(f"patched {path}")
 PATCH
 
   log="$logs/$(echo "$test_name" | tr ':' '-').log"
+  # A failing case does not end the run. Each case costs a rebuild of the suite,
+  # so stopping at the first one hides every case after it behind an hour of
+  # work already done; they are collected and reported together instead.
   if cargo test --test unit -- "$test_name" --exact >"$log" 2>&1; then
     echo "FALSIFICATION FAILED: ${test_name} passed with the fix neutralised" >&2
     tail -30 "$log" >&2
-    exit 1
+    failures+=("$test_name")
+  else
+    grep -E "panicked at|assertion|test result" "$log" | head -6
   fi
-  grep -E "panicked at|assertion|test result" "$log" | head -6
 
   restore
   trap - EXIT
 done
 
 [[ $selected -gt 0 ]] || { echo "no case matched: ${wanted[*]}" >&2; exit 2; }
+
+if [[ ${#failures[@]} -gt 0 ]]; then
+  echo "== ${#failures[@]} of ${selected} guard(s) were not falsifiable ==" >&2
+  printf '  %s\n' "${failures[@]}" >&2
+  exit 1
+fi
 
 echo "== every fix restored: the whole set must go GREEN =="
 if [[ ${#wanted[@]} -gt 0 ]]; then

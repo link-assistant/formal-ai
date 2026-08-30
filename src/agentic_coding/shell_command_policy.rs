@@ -24,21 +24,48 @@ pub(super) struct Sentence<'a> {
     /// Where the sentence sits in the prompt, terminator included.
     pub(super) span: std::ops::Range<usize>,
 }
-/// The prompt split into sentences.
+/// The prompt split into sentences, with a semicolon ending one.
 ///
 /// Splitting keeps the original case and spacing, because a recovered command
 /// carries its arguments through verbatim — `run cat notes.txt` has to survive
 /// as one sentence, so a dot inside a token ends nothing, exactly as in
 /// [`sentences_with_mood`].
+///
+/// A semicolon ends a sentence here because this is the scope shell routing
+/// reads at, and `build; deploy` names two commands to judge one at a time.
+/// Prose does not read it that way — see [`prose_sentences`].
 pub(super) fn sentences(prompt: &str) -> Vec<Sentence<'_>> {
+    split_sentences(prompt, |character| {
+        matches!(
+            character,
+            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
+        )
+    })
+}
+/// The prompt split into sentences, with a semicolon joining rather than ending
+/// one.
+///
+/// A semicolon separates two commands and joins two clauses, and which of those
+/// it does depends on who is reading. Bounding a literal write payload with the
+/// shell's reading truncated the payload at the first semicolon: issue #918's
+/// minimal-core invariant — *"… or a host surface; domain knowledge and policy
+/// belong in data."* — reached its file ending at *host surface;*, with the
+/// clause saying where domain knowledge goes dropped (issue #1066).
+///
+/// Everything else about the split is the same, terminator handling included,
+/// because the two readings disagree about one character and nothing more.
+pub(super) fn prose_sentences(prompt: &str) -> Vec<Sentence<'_>> {
+    split_sentences(prompt, |character| {
+        matches!(character, '.' | '!' | '?' | '\n' | '。' | '！' | '？')
+    })
+}
+/// The prompt split wherever `ends_sentence` says a sentence ends.
+fn split_sentences(prompt: &str, ends_sentence: impl Fn(char) -> bool) -> Vec<Sentence<'_>> {
     let mut sentences = Vec::new();
     let mut span_start = 0;
     let mut start = 0;
     for (index, character) in prompt.char_indices() {
-        if !matches!(
-            character,
-            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
-        ) {
+        if !ends_sentence(character) {
             continue;
         }
         if character == '.'

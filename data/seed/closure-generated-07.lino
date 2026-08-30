@@ -734,6 +734,11 @@ meanings
     lexeme en
       surface
         text "response task decomposition single need hi"
+  response_task_plan_stage_implementation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation es"
   response_task_plan_stage_verification_zh
     defined-by response_template
     lexeme en

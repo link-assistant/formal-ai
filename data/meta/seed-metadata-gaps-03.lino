@@ -447,6 +447,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "pattern_concept_suffix_shi_shei_simplified"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fb7901e76b98b003
+    source "data/seed/closure-generated-10.lino"
+    record "response_task_plan_stage_regression_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_175f201cf7ee2e13
     source "data/seed/closure-generated-10.lino"
     record "response_thinking_step_scan_memory_hi"
@@ -482,6 +486,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_07b877b7ec82a903
     source "data/seed/closure-generated-11.lino"
     record "response_summarization_ratchet_no_embedded_grammar_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3a9a200af28715e3
+    source "data/seed/closure-generated-11.lino"
+    record "response_task_atomicity_yes_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e77b4df46fd0aa13
     source "data/seed/closure-generated-11.lino"

@@ -53,7 +53,7 @@ trusting it.
   the mechanical criterion alone and reading a sample by hand — is how thirty-two
   hollow proofs passed in the first place.
 - **Fix each gap where the general rule was wrong, never at the ladder's
-  wording.** Every one of the sixteen defects below is reachable by a request that
+  wording.** Every one of the twenty-one defects below is reachable by a request that
   has nothing to do with the ladder, and each has a test written in different
   words from the prompt that exposed it (CONTRIBUTING rule 4).
 - **Put general lexical capability in the lexicon, not in a handler.** The
@@ -67,15 +67,16 @@ trusting it.
 - **Make a decomposition that cannot enumerate say so.** The alternative to an
   honest refusal is the heading-with-no-list that started this, so
   `Decomposition::unenumerable_reason()` reports *why* the split did not happen
-  and eight seeded replies (four reasons × the registered languages) say it in
-  the caller's language.
+  and ten seeded replies — the recursion reaches that state in exactly two ways,
+  and each way is written once per registered language — say it in the caller's
+  language.
 - **Falsify every guard before claiming it.**
   `experiments/issue_1066_ladder_offline/falsify-node-capabilities.sh` switches
   each fix off — one early return, in the one function that decides — and asserts
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The nineteen capability gaps
+## The twenty-one capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -101,6 +102,8 @@ the ladder.
 | 17 | A sentence *specifying* a document to compose was transcribed as the document's bytes | `note_composition::composed_document_specification_span` |
 | 18 | A label calling the work atomic was answered instead of the work | `task_structure::plan_task_structure_step` |
 | 19 | An answer composed from the request alone overruled a tool result already in hand | `task_structure::nothing_has_been_observed_yet` |
+| 20 | A semicolon inside a literal payload ended the payload, because prose was read at the scope shell routing reads at | `shell_command_policy::prose_sentences` |
+| 21 | A decomposition that could not enumerate answered a Spanish-speaking client in English | `data/seed/multilingual-responses-decomposition.lino` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -216,6 +219,43 @@ bound recovered nothing and four `issue_656_promotion` tests went red. The rule
 that holds for both is stated in terms of the marker's own line: a marker that
 says nothing more on its line introduces a *block*, and a block runs to the file
 clause as it always did.
+
+Gap 20 is gap 11 read one level down, and the real Agent-CLI end-to-end leg is
+what found it. Bounding a payload by its sentence is right; the question gap 11
+left open is *whose* sentence. `end_of_statement` reused the splitter that shell
+routing uses, and that splitter ends a sentence on a semicolon on purpose,
+because `build; deploy` names two commands to judge one at a time. Prose does not
+read it that way. Asked to write out issue #918's minimal-core invariant — "… or
+a host surface; domain knowledge and policy belong in data." — the planner
+produced a file ending at *host surface;*, with the clause saying where domain
+knowledge goes dropped, and `issue_918_agent_cli.sh` went red in CI on a file
+whose first half was correct. The fix is not a special case: the two readings
+disagree about one character and nothing else, so one `split_sentences` takes the
+terminator set as an argument and `prose_sentences` is the reading prose gets.
+The test that pins it is a retention policy — "Logs are kept for ninety days;
+backups are kept for a year." — which mentions neither #918 nor the ladder.
+
+Gap 21 is not a routing defect at all, and it is the one that most resembles the
+hollowness this issue is named for. `check_language_change_parity` reported that
+the decomposition response family had records for `en`, `ru`, `hi` and `zh` and
+none for `es`. `localized_response` falls back to the seed's `language unknown`
+record and then to English, so the gap did not fail loudly: a Spanish speaker
+asking why nothing could be enumerated was told something true, in words they had
+not asked in. An honest refusal delivered in the wrong language is hollow in a
+second way. All thirteen decomposition intents were translated rather than the
+two the gate strictly required, because the same silent fallback was covering the
+other eleven, and the test pins the exact sentence per language rather than
+asserting that some text came back — asserting non-emptiness is what let the
+fallback hide.
+
+What gap 21 fixes is the *reply* side: a client whose response language is `es`
+is now answered in Spanish by every decomposition intent. Recognising a
+decomposition *asked* in Spanish is a wider hole and is not closed here —
+`data/seed/meanings-decomposition.lino` carries `en`, `ru`, `hi` and `zh`
+lexemes and no `es` one, and so do most of the seed's meaning files. That is the
+repository's state before this work rather than something this pull request
+changed, and saying it is fixed because the parity gate is green would be the
+same green-checkmark-over-nothing.
 
 ## Where each acceptance item stands
 

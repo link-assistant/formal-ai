@@ -789,6 +789,11 @@ meanings
     lexeme en
       surface
         text "response task plan stage requirements hi"
+  response_task_plan_stage_verification_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification es"
   response_thinking_language_name_ru_es
     defined-by response_template
     lexeme en

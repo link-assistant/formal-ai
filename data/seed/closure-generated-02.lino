@@ -664,6 +664,11 @@ meanings
     lexeme en
       surface
         text "response summarization report iteration es"
+  response_task_atomicity_no_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity no es"
   response_task_atomicity_yes_en
     defined-by response_template
     lexeme en

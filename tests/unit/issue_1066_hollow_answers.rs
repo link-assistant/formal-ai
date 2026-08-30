@@ -10,6 +10,7 @@
 use formal_ai::engine::{FormalAiEngine, SymbolicAnswer};
 use formal_ai::meta_frame::AtomicityReason;
 use formal_ai::task_decomposition::{decompose_task, stated_task};
+use formal_ai::{SolverConfig, UniversalSolver};
 
 /// The lines of an answer that are numbered sub-task entries.
 fn numbered_lines(answer: &str) -> Vec<&str> {
@@ -463,6 +464,84 @@ fn an_answer_is_never_a_heading_with_no_list() {
             "an answer that kept its promise was refused: {text:?}"
         );
     }
+}
+
+#[test]
+fn the_refusal_to_enumerate_is_written_in_the_language_that_asked() {
+    // An honest refusal answered in the wrong language is hollow in a second
+    // way: the reader is told something true in words they did not ask in.
+    // `localized_response` falls back to English for a language the seed has no
+    // record for, so a missing translation does not fail loudly -- it answers a
+    // Spanish speaker in English, which is why this pins the exact sentence per
+    // language instead of asserting that some text came back. Both reasons a
+    // decomposition can enumerate nothing are checked, because they are
+    // separate seed records and either one could be the untranslated one.
+    let cases = [
+        (
+            "en",
+            "This task cannot be split into two sub-tasks that can be checked independently, and \
+             no observable completion criterion is known for it, so there is nothing to \
+             enumerate: it is an irreducible single need.",
+            "The decomposition depth bound was reached before this task was split even once, so \
+             there is nothing to enumerate: raise the bound to see its sub-tasks.",
+        ),
+        (
+            "ru",
+            "Эту задачу нельзя разбить на две подзадачи, которые можно проверить по отдельности, \
+             и наблюдаемый критерий завершения для неё неизвестен, поэтому перечислять нечего: \
+             это неделимая единичная потребность.",
+            "Предел глубины разбиения был достигнут до того, как задачу разбили хотя бы один раз, \
+             поэтому перечислять нечего: увеличь предел, чтобы увидеть подзадачи.",
+        ),
+        (
+            "hi",
+            "इस कार्य को ऐसे दो उपकार्यों में नहीं बाँटा जा सकता जिन्हें अलग-अलग जाँचा जा सके, और इसके लिए कोई देखा जा \
+             सकने वाला पूर्णता मानदंड ज्ञात नहीं है, इसलिए गिनाने के लिए कुछ नहीं है: यह एक अविभाज्य एकल आवश्यकता है।",
+            "इस कार्य को एक बार भी बाँटे जाने से पहले ही विभाजन गहराई की सीमा आ गई, इसलिए गिनाने के लिए कुछ नहीं \
+             है: उपकार्य देखने के लिए सीमा बढ़ाएँ।",
+        ),
+        (
+            "zh",
+            "这个任务无法拆分成两个可以各自独立检查的子任务，也没有已知的可观察完成标准，因此没有可列举的内容：它是一个不可再分的单一需求。",
+            "在这个任务被拆分哪怕一次之前就已达到拆分深度上限，因此没有可列举的内容：提高上限即可看到它的子任务。",
+        ),
+        (
+            "es",
+            "Esta tarea no puede dividirse en dos subtareas que puedan comprobarse por separado, y \
+             no se conoce ningún criterio de finalización observable para ella, así que no hay nada \
+             que enumerar: es una necesidad única indivisible.",
+            "Se alcanzó el límite de profundidad de descomposición antes de que esta tarea se \
+             dividiera siquiera una vez, así que no hay nada que enumerar: sube el límite para ver \
+             sus subtareas.",
+        ),
+    ];
+    for (language, single_need, depth_bound) in cases {
+        let answer = refusal_in(
+            language,
+            4,
+            "Split the following into sub-tasks: charm the auditors.",
+        );
+        assert_eq!(answer, single_need, "single need in {language}");
+        let answer = refusal_in(
+            language,
+            0,
+            "Split the following into sub-tasks: build the analytics dashboard.",
+        );
+        assert_eq!(answer, depth_bound, "depth bound in {language}");
+    }
+}
+
+/// The answer `prompt` gets from a client asking in `language`, with the
+/// recursion bounded at `depth`.
+fn refusal_in(language: &'static str, depth: u8, prompt: &str) -> String {
+    let solver = UniversalSolver::new(SolverConfig {
+        forced_response_language: Some(language),
+        max_decomposition_depth: depth,
+        offline: true,
+        compute_budget: 0,
+        ..SolverConfig::default()
+    });
+    solver.solve(prompt).answer.trim().to_owned()
 }
 
 /// An answer carrying exactly `text`, for testing the shape of what it says.

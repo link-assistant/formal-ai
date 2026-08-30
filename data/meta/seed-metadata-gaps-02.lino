@@ -651,6 +651,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "response_memory_inventory_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a687cb8c66a4ae32
+    source "data/seed/closure-generated-14.lino"
+    record "response_task_decomposition_atomic_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b72819ebab7c2812
     source "data/seed/closure-generated-15.lino"
     record "above"

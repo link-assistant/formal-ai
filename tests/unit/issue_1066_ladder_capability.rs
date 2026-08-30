@@ -145,6 +145,12 @@ fn a_written_file_starts_with_the_line_the_same_request_pinned() {
     // the second, so it composed bytes out of the prose and wrote a file that
     // broke a constraint stated three sentences earlier. A literal write is only
     // literal when it satisfies every stated constraint on the file it writes.
+    //
+    // The three prompts reach the file by three different routes, and that is
+    // deliberate: the pinned line is a property of the request, so no route may
+    // be the one that happens to honour it. The first two are composed
+    // documents and reach `evidence_record`; the third states its bytes
+    // outright and reaches the literal-write repair in `general_planner`.
     for (prompt, target, pinned) in [
         (
             "Draft a handover memo containing the migration status, the outstanding \
@@ -152,6 +158,13 @@ fn a_written_file_starts_with_the_line_the_same_request_pinned() {
              The first line must be exactly `handover=q3`.",
             "handover/2026-q3.md",
             "handover=q3",
+        ),
+        (
+            "Create file `release-checklist.md` containing verify the tag, publish \
+             the crate, push the image. The first line must be exactly \
+             `checklist=v2`.",
+            "release-checklist.md",
+            "checklist=v2",
         ),
         (
             "Assemble a shift summary containing the machines serviced, the parts \
@@ -901,6 +914,22 @@ fn a_literal_payload_never_crosses_a_sentence_boundary() {
             );
         }
     }
+}
+
+#[test]
+fn a_semicolon_inside_a_payload_does_not_end_it() {
+    // The sentence splitter that bounds a literal payload was written for
+    // command policy, where a semicolon separates one command from the next, so
+    // it read `;` as the end of the statement. In prose a semicolon joins two
+    // clauses into one sentence, and half the payload was thrown away: issue
+    // #918's minimal-core invariant reached its file ending at "host surface;"
+    // with the clause naming where domain knowledge goes cut off (issue #1066).
+    let prompt = "Create file `policy/retention.md` containing Logs are kept for ninety \
+                  days; backups are kept for a year.";
+    assert_eq!(
+        planned_writes_to(prompt, "policy/retention.md"),
+        vec!["Logs are kept for ninety days; backups are kept for a year.".to_owned()]
+    );
 }
 
 #[test]

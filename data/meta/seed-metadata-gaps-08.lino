@@ -619,6 +619,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_greeting_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1c4df61e231b2418
+    source "data/seed/closure-generated-13.lino"
+    record "response_task_first_step_lead_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_124c4352cd3a8568
     source "data/seed/closure-generated-14.lino"
     record "kebab_case"

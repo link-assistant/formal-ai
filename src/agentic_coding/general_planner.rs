@@ -5,7 +5,7 @@
 //! Links Notation and written before execution, so the tool transcript is an
 //! append-only record of the decision that caused the change.
 use super::planner::{Capability, trace_route};
-use super::shell_command_policy::sentences;
+use super::shell_command_policy::prose_sentences;
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
     first_action_cue_end, first_content_lead_end, first_prefix_lead_end,
@@ -579,8 +579,13 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
 /// recover nothing at all. When the marker's own line has no word left on it,
 /// the statement is the block that follows and runs to `limit`, which is what
 /// this route always did for block payloads.
+///
+/// The sentence is the one *prose* reads, so a semicolon inside the payload
+/// joins its two halves instead of ending it. Reading the payload at the scope
+/// shell routing reads at cut issue #918's minimal-core invariant in half at
+/// its semicolon.
 fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
-    let Some(sentence) = sentences(request)
+    let Some(sentence) = prose_sentences(request)
         .into_iter()
         .find(|sentence| sentence.span.contains(&from))
     else {
