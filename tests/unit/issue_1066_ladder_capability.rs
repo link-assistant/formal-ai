@@ -677,29 +677,54 @@ fn a_path_that_closes_a_sentence_is_still_a_path() {
 }
 
 #[test]
+fn a_client_that_speaks_no_computer_use_is_not_told_a_primitive_is_missing() {
+    // The seed's computer-use plans are executed by the client that advertises
+    // the primitives -- `fs.write`, `shell.run`, and the rest -- and each step
+    // carries pre/postconditions that client checks. The Agent CLI advertises
+    // none of them; it names its write tool `write`. Reporting the gap to it
+    // claimed the request and spent the turn on a sentence about `fs.write`,
+    // above the write route that would have written the file.
+    let prompt = "Count the sub-tasks of the customer import rewrite and save the result in \
+                  `counts.md`.";
+    assert!(
+        !matches!(plan(prompt), Some(AgenticPlan::Final(answer)) if answer.starts_with("capability_gap:")),
+        "the capability gap was reported to a client that advertises no computer-use primitive"
+    );
+    // A client that *is* running computer-use plans and is missing one
+    // primitive is told exactly which one, because there the gap is actionable.
+    assert_eq!(
+        plan_chat_step(&[ChatMessage::user(prompt)], &["fs.read"]),
+        Some(AgenticPlan::Final(
+            "capability_gap: required primitive fs.write was not advertised for plan \
+             synthesized-computer_use_resource_customers-computer_use_count_lines, step \
+             synthesized-computer_use_resource_customers-computer_use_count_lines-01."
+                .to_owned()
+        ))
+    );
+}
+
+#[test]
 fn a_payload_that_names_the_work_product_is_not_written_as_the_body() {
-    // "Save the result in FILE" says where an answer goes; it does not say what
+    // "Save the result to FILE" says where an answer goes; it does not say what
     // the answer is. Read as a literal write, the phrase naming the work product
     // became the file's contents, so the ladder's proof files contained the word
     // "result" and nothing else -- non-empty, and evidence of nothing.
-    for (prompt, deferred) in [
-        (
-            "Count the sub-tasks of the customer import rewrite and save the result in \
-             `counts.md`.",
-            "the result",
-        ),
-        (
-            "Judge whether the customer import rewrite is one task and record the finding \
-             in `verdict.md`.",
-            "the finding",
-        ),
+    //
+    // The guard belongs to the destination-led shape, the one that infers its
+    // payload from position: the bytes are whatever sits between the write
+    // action and the file clause, which here is only the work product's name. A
+    // request that states no work has nothing to record, so the whole write is
+    // declined rather than written hollow -- an empty list of writes, not an
+    // empty file.
+    for (prompt, target) in [
+        ("Save the answer to `out/e.md`.", "out/e.md"),
+        ("Save the result to `counts.md`.", "counts.md"),
     ] {
-        for content in planned_writes(prompt) {
-            assert!(
-                content.trim() != deferred,
-                "wrote the name of the work product as the work product for {prompt:?}"
-            );
-        }
+        assert_eq!(
+            planned_writes_to(prompt, target),
+            Vec::<String>::new(),
+            "wrote the name of the work product as the work product for {prompt:?}"
+        );
     }
 }
 

@@ -70,6 +70,22 @@ pub fn plan_agentic_step(messages: &[ChatMessage], tool_names: &[&str]) -> Optio
         )));
     };
     let Some(tool) = tool_for_primitive(tool_names, step.primitive) else {
+        // A seed-defined computer-use plan is executed by the client that
+        // advertises the primitives, and a client that advertises none of them
+        // is not this route's client at all. Reporting the gap to it claims the
+        // request and ends the turn with a sentence about `fs.write`, while the
+        // ordinary write route sitting directly below could have written the
+        // file the caller asked for -- the Agent CLI names its write tool
+        // `write`, so every ladder node whose task the computer-use recogniser
+        // matched came back with a capability gap and an empty workspace
+        // (issue #1066).
+        //
+        // The message is still the right answer for a client that *is* running
+        // computer-use plans and happens to be missing one primitive: there the
+        // gap is real and naming it is what lets the client advertise it.
+        if !advertises_computer_use(tool_names) {
+            return None;
+        }
         return Some(AgenticPlan::Final(missing_primitive_message(
             &plan.locale,
             &plan.id,
@@ -94,6 +110,18 @@ pub fn plan_agentic_step(messages: &[ChatMessage], tool_names: &[&str]) -> Optio
         tool: tool.to_owned(),
         arguments: arguments.to_string(),
     }]))
+}
+
+/// Whether `tool_names` advertises any computer-use primitive at all.
+///
+/// The distinction this draws is between a client that speaks the computer-use
+/// contract and one that does not. Only the first can act on a report that one
+/// primitive is missing; for the second, the report is a refusal dressed as an
+/// answer.
+fn advertises_computer_use(tool_names: &[&str]) -> bool {
+    tool_names
+        .iter()
+        .any(|name| ComputerUsePrimitive::from_tool_name(name).is_some())
 }
 
 fn tool_name_for_result(
