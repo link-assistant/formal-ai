@@ -1012,3 +1012,109 @@ fn a_permission_to_use_the_web_is_not_the_answer_to_the_question() {
         "recorded the note that places the worker as the finding: {writes:?}"
     );
 }
+
+#[test]
+fn an_open_web_query_stops_at_the_end_of_the_request() {
+    // The subject of a search is stated in the request; the block after it says
+    // where the worker is and how to report. Read as one string, the second
+    // block became part of the query, blank line and all, and the ladder logged
+    // what that costs: node 1.2.1.2.1 searched for "a two node decomposition at
+    // depth one this is recursive binary tree node 1 2 1 2 1 at depth 5 solve
+    // only this node s task in this fresh temporary repository its completion
+    // criterion is observable evidence exists use web research when it
+    // materially improves factual accuracy do not claim success without
+    // evidence" -- a query no source on earth answers.
+    //
+    // Three different routes form an open-web query, and every one of them had
+    // the same fault, so all three are pinned here with the query each must now
+    // produce.
+    for (prompt, expected) in [
+        (
+            "Verify the current exchange rate between the euro and the yen.\n\n\
+             Work only in this checkout.",
+            "Verify the current exchange rate between the euro and the yen",
+        ),
+        (
+            "Search the web for how the Dvorak keyboard layout was standardised.\n\n\
+             You are node 7 of the survey. Work only in this checkout.",
+            "the web for how the dvorak keyboard layout was standardised",
+        ),
+        (
+            "What is a hash-consed trie?\n\n\
+             You are node 7 of the survey. Work only in this checkout.",
+            "hash consed trie",
+        ),
+    ] {
+        assert_eq!(
+            planned_queries(prompt),
+            vec![expected.to_owned()],
+            "the query carried the block that only places the worker for {prompt:?}"
+        );
+    }
+}
+
+#[test]
+fn a_workspace_search_that_ran_is_not_reported_as_a_lookup_that_returned_nothing() {
+    // A completed tool call belongs to whichever route made it. The research
+    // route decides what to do next by looking at the last one, and when that
+    // last one was a workspace search it had not made, it took the search for a
+    // round of its own that had come back empty and composed a report saying so
+    // -- over the top of the result the agent was already holding. Five of the
+    // ladder's thirty-two leaves recorded exactly that as their evidence:
+    // "Research completed for ..., but the tool returned no content.", with the
+    // matching `grep` output unused in the same transcript.
+    let after_a_search = |request: &str| {
+        vec![
+            ChatMessage::user(request),
+            ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                "search-0",
+                "grep",
+                r#"{"pattern":"two_node","query":"two_node"}"#.to_owned(),
+            )]),
+            ChatMessage::tool_result(
+                "search-0",
+                "grep",
+                "tests/decomposition.rs:1: fn two_node_tree_has_two_leaves() {}",
+            ),
+        ]
+    };
+
+    // This request names the open web itself, so reaching it is still right --
+    // by issuing the search, which is the one thing the old arm never did.
+    let plan = plan_chat_step(
+        &after_a_search("Search the web for how the Dvorak keyboard layout was standardised."),
+        &LADDER_TOOLS,
+    );
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the stated search to be issued, planned {plan:?}");
+    };
+    let issued = calls
+        .iter()
+        .map(|call| format!("{} {}", call.tool, call.arguments))
+        .collect::<Vec<_>>();
+    assert_eq!(
+        issued,
+        vec![r#"websearch {"query":"how the dvorak keyboard layout was standardised"}"#.to_owned()]
+    );
+
+    // This one states its subject in the first block and only places the worker
+    // in the second, so nothing sends it to the open web. The search that ran is
+    // the answer.
+    let plan = plan_chat_step(
+        &after_a_search(
+            "Add or verify regression coverage for a two-node decomposition at depth one.\n\n\
+             This is recursive binary-tree node 1.2.1.2.1 at depth 5. Solve only this node's \
+             task in this fresh temporary repository. Use web research when it materially \
+             improves factual accuracy. Do not claim success without evidence.",
+        ),
+        &LADDER_TOOLS,
+    );
+    let Some(AgenticPlan::Final(answer)) = plan else {
+        panic!("expected the search result to be reported, planned {plan:?}");
+    };
+    assert_eq!(
+        answer,
+        "The `grep` command completed. Output:\n\n```text\n\
+         tests/decomposition.rs:1: fn two_node_tree_has_two_leaves() {}\n```"
+    );
+}

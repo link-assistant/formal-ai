@@ -63,6 +63,8 @@ cases=(
   "src/agentic_coding/shell_command_policy.rs|pub(super) fn prose_sentences(prompt: &str) -> Vec<Sentence<'_>> {|if true { return sentences(prompt); }|issue_1066_ladder_capability::a_semicolon_inside_a_payload_does_not_end_it"
   "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::the_note_that_places_the_worker_does_not_name_the_subject_of_the_work"
   "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::a_permission_to_use_the_web_is_not_the_answer_to_the_question"
+  "src/agentic_coding/stated_request.rs|pub(super) fn request_blocks(prompt: &str) -> Vec<&str> {|if true { return vec![prompt]; }|issue_1066_ladder_capability::an_open_web_query_stops_at_the_end_of_the_request"
+  "src/agentic_coding/web_research.rs|    // onward, which is exactly why the old single-round shape could not deepen.|if let Some(last) = progress.last() && !matches!(last, Capability::Search) && !matches!(last, Capability::Fetch) { let deeper = plan_deeper_round(tool_names, &progress, query); return Some(deeper.unwrap_or(AgenticPlan::Final(final_answer(query, &progress)))); }|issue_1066_ladder_capability::a_workspace_search_that_ran_is_not_reported_as_a_lookup_that_returned_nothing"
 )
 
 wanted=("$@")

@@ -2,97 +2,97 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 29301
-  line_count 705
-  content_id source_module_9b925fb08bfaaa1f
+  byte_len 31792
+  line_count 743
+  content_id source_module_711ebe0d3c25664c
   symbol_count 40
   symbols
-    function web_research_query_for 17 33
-    function unresolved_web_research_query_for 38 55
-    function has_successful_search_result 61 65
-    function is_definition_followup 67 72
-    function definition_followup_topic 74 115
-    function definition_followup_clarification 117 120
-    function contextual_reference_clarification 127 131
-    function seed_research_subject 137 139
-    function seed_definition_subject 141 161
-    function seed_slotted_subject 168 187
-    function seed_unresolved_question_subject 195 202
-    function seed_prefix_subject 204 217
-    const MAX_RESEARCH_ROUNDS 229 229
-    function plan_web_research_step 231 265
-    function plan_fetches 273 285
-    function plan_deeper_round 294 331
-    function uncovered_aspects 344 358
-    const MIN_ASPECT_CHARS 362 362
-    function aspects_of 364 379
-    const MAX_EXTRACT_CHARS 384 384
-    const EXTRACT_SENTENCES 388 388
-    function final_answer 390 427
-    function extract_answer 438 473
-    function structurally_complete_prose 484 500
-    function is_sentence_terminal 502 504
-    function relevance 514 520
-    function character_overlap 528 544
-    function truncate_chars 548 555
-    function seed_text 557 561
-    function render_seed_text 563 569
-    function preferred_url 575 577
-    const MAX_RESEARCH_SOURCES 583 583
-    function research_urls 585 594
-    function urls_in 596 605
-    function authoritative_host 607 623
-    function is_context_reference 625 637
-    function topic_from_history 639 686
-    function is_conversation_meta_request 688 694
-    function trim_question_punctuation 696 701
-    function latest_user_text 703 705
+    function web_research_query_for 31 47
+    function unresolved_web_research_query_for 63 87
+    function has_successful_search_result 93 97
+    function is_definition_followup 99 104
+    function definition_followup_topic 106 147
+    function definition_followup_clarification 149 152
+    function contextual_reference_clarification 159 163
+    function seed_research_subject 169 171
+    function seed_definition_subject 173 193
+    function seed_slotted_subject 200 219
+    function seed_unresolved_question_subject 227 234
+    function seed_prefix_subject 236 249
+    const MAX_RESEARCH_ROUNDS 261 261
+    function plan_web_research_step 263 303
+    function plan_fetches 311 323
+    function plan_deeper_round 332 369
+    function uncovered_aspects 382 396
+    const MIN_ASPECT_CHARS 400 400
+    function aspects_of 402 417
+    const MAX_EXTRACT_CHARS 422 422
+    const EXTRACT_SENTENCES 426 426
+    function final_answer 428 465
+    function extract_answer 476 511
+    function structurally_complete_prose 522 538
+    function is_sentence_terminal 540 542
+    function relevance 552 558
+    function character_overlap 566 582
+    function truncate_chars 586 593
+    function seed_text 595 599
+    function render_seed_text 601 607
+    function preferred_url 613 615
+    const MAX_RESEARCH_SOURCES 621 621
+    function research_urls 623 632
+    function urls_in 634 643
+    function authoritative_host 645 661
+    function is_context_reference 663 675
+    function topic_from_history 677 724
+    function is_conversation_meta_request 726 732
+    function trim_question_punctuation 734 739
+    function latest_user_text 741 743
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18424
-    named_node_count 3946
+    total_link_count 18889
+    named_node_count 4065
     distinct_node_kinds 74
     node_kinds
-      arguments 388
+      arguments 394
       array_expression 3
       array_type 11
       assignment_expression 1
       attribute 1
       attribute_item 1
       binary_expression 31
-      block 75
+      block 77
       boolean_literal 1
       break_expression 2
-      call_expression 388
+      call_expression 394
       char_literal 28
-      closure_expression 60
-      closure_parameters 60
+      closure_expression 61
+      closure_parameters 61
       const_item 5
       crate 32
-      doc_comment 116
+      doc_comment 141
       else_clause 2
       escape_sequence 9
-      expression_statement 61
-      field_expression 305
-      field_identifier 301
+      expression_statement 62
+      field_expression 309
+      field_identifier 305
       float_literal 3
       for_expression 2
       function_item 35
       function_modifiers 1
       generic_function 4
       generic_type 29
-      identifier 827
+      identifier 833
       if_expression 23
       index_expression 3
       inner_doc_comment_marker 6
       integer_literal 17
       let_chain 1
-      let_condition 4
-      let_declaration 60
-      line_comment 154
+      let_condition 3
+      let_declaration 61
+      line_comment 188
       macro_invocation 13
       match_arm 11
       match_block 3
@@ -100,28 +100,28 @@ self_ast_census
       match_pattern 11
       mutable_specifier 12
       or_pattern 1
-      outer_doc_comment_marker 110
-      parameter 54
+      outer_doc_comment_marker 135
+      parameter 55
       parameters 35
-      parenthesized_expression 3
-      primitive_type 65
+      parenthesized_expression 2
+      primitive_type 66
       range_expression 4
-      reference_expression 53
-      reference_type 57
+      reference_expression 50
+      reference_type 58
       return_expression 14
-      scoped_identifier 140
+      scoped_identifier 143
       scoped_type_identifier 3
       scoped_use_list 3
       self 1
       source_file 1
       string_content 40
       string_literal 42
-      super 12
+      super 14
       token_tree 27
-      try_expression 14
+      try_expression 15
       tuple_expression 1
       tuple_pattern 8
-      tuple_struct_pattern 7
+      tuple_struct_pattern 6
       tuple_type 1
       type_arguments 33
       type_cast_expression 2

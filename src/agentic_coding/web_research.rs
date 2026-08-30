@@ -14,27 +14,52 @@ use crate::seed::{self, Slot};
 use crate::world_model::Context;
 use crate::world_model_context::{ContextHierarchy, ExternalLookup, InheritancePolicy};
 
+/// The subject this turn should research, when the request states one.
+///
+/// The subject is read from one block of the request rather than from the whole
+/// of it, for the reason [`super::stated_request`] states: a note that says
+/// where the worker is and how to report is not work, so nothing is read out of
+/// it. Every prompt the issue-#1066 ladder sends carries such a note, and the
+/// subject ran straight through the blank line into it -- a leaf that asked
+/// about "a two-node decomposition at depth one" researched "a two node
+/// decomposition at depth one this is recursive binary tree node 1 2 1 2 1 at
+/// depth 5 solve only this node s task in this fresh temporary repository ...",
+/// a query no source on earth answers.
+///
+/// The blocks are tried in order, so a request that states its subject before
+/// its framing keeps the subject it stated.
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
-    if let Some(query) = seed_research_subject(&task)
-        .or_else(|| seed_slotted_subject(&task, seed::ROLE_DEFINITION_EXAMPLE_REQUEST))
-        .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
-        .or_else(|| seed_definition_subject(&task))
-        .or_else(|| seed_unresolved_question_subject(&task))
-    {
-        return if is_context_reference(&query) {
-            topic_from_history(messages)
-        } else {
-            Some(query)
-        };
+    let query = super::stated_request::request_blocks(&task)
+        .into_iter()
+        .find_map(|block| {
+            seed_research_subject(block)
+                .or_else(|| seed_slotted_subject(block, seed::ROLE_DEFINITION_EXAMPLE_REQUEST))
+                .or_else(|| crate::solver_handlers::detect_web_search_query(block))
+                .or_else(|| seed_definition_subject(block))
+                .or_else(|| seed_unresolved_question_subject(block))
+        })?;
+    if is_context_reference(&query) {
+        topic_from_history(messages)
+    } else {
+        Some(query)
     }
-
-    None
 }
 
 /// Promote a request only after every specialized local route and completed
 /// tool result has declined it. Keeping this separate from explicit research
 /// preserves those higher-priority outcomes while closing the open-world gap.
+///
+/// This is the last route in the planner, so it is the one that decides what a
+/// request nothing else understood is searched for -- and it used to search for
+/// all of it. A prompt whose second block only places the worker was sent to
+/// the open web with that block attached, blank line and all: "Verify the
+/// current exchange rate between the euro and the yen.\n\nWork only in this
+/// checkout." Issue #1066 found every one of its sixty-three ladder nodes
+/// carrying such a block. The query is therefore the first block the engine
+/// itself cannot resolve, for the reason [`super::stated_request`] states,
+/// and the whole request stays the query when no single block qualifies --
+/// which is what a one-block prompt always is.
 pub(super) fn unresolved_web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
     // Once every specialized local route has declined, any unresolved request
@@ -42,16 +67,23 @@ pub(super) fn unresolved_web_research_query_for(messages: &[ChatMessage]) -> Opt
     // than punctuation-driven: instructions can require missing knowledge just
     // as questions do. Conversation-meta requests remain local because searching
     // the public web cannot recover private dialog history.
-    let trimmed = task.trim();
-    let unresolved = matches!(
-        FormalAiEngine.answer(&task).intent.as_str(),
-        "unknown" | "web_search"
-    );
+    let unresolved = |text: &str| {
+        matches!(
+            FormalAiEngine.answer(text).intent.as_str(),
+            "unknown" | "web_search"
+        )
+    };
     let preceding = messages
         .get(..messages.len().saturating_sub(1))
         .unwrap_or(&[]);
-    (unresolved && !is_conversation_meta_request(&task, preceding))
-        .then(|| trim_question_punctuation(trimmed))
+    if !unresolved(&task) || is_conversation_meta_request(&task, preceding) {
+        return None;
+    }
+    let stated = super::stated_request::request_blocks(&task)
+        .into_iter()
+        .find(|block| unresolved(block))
+        .unwrap_or(task.as_str());
+    Some(trim_question_punctuation(stated.trim()))
 }
 
 /// Whether this turn has already entered a successful search → fetch research
@@ -257,10 +289,16 @@ pub(super) fn plan_web_research_step(
                 .or_else(|| plan_deeper_round(tool_names, &progress, query))
                 .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
         ),
-        Some(_) => Some(
-            plan_deeper_round(tool_names, &progress, query)
-                .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
-        ),
+        // The last completed call belongs to some other route -- a workspace
+        // grep, a file read, a shell command. A further search can still be
+        // worth issuing, but composing the answer here is not: `final_answer`
+        // would speak for research that never ran, and it would speak over a
+        // result the agent already has in hand. Issue #1066 measured what that
+        // costs. Nine of the sixty-three ladder nodes searched their own
+        // repository, were handed what it said, and reported "the tool returned
+        // no content" on top of it, because `last` saw the grep and this arm
+        // treated it as a research round that had come back empty.
+        Some(_) => plan_deeper_round(tool_names, &progress, query),
     }
 }
 

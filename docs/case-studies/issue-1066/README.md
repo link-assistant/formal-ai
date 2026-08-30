@@ -53,9 +53,9 @@ trusting it.
   the mechanical criterion alone and reading a sample by hand — is how thirty-two
   hollow proofs passed in the first place.
 - **Fix each gap where the general rule was wrong, never at the ladder's
-  wording.** Every one of the twenty-one defects below is reachable by a request that
-  has nothing to do with the ladder, and each has a test written in different
-  words from the prompt that exposed it (CONTRIBUTING rule 4).
+  wording.** Every one of the twenty-five defects below is reachable by a request
+  that has nothing to do with the ladder, and each has a test written in
+  different words from the prompt that exposed it (CONTRIBUTING rule 4).
 - **Put general lexical capability in the lexicon, not in a handler.** The
   separable-phrasal-verb reader ("break *the customer import rewrite* into
   sub-tasks") was first written inside
@@ -76,7 +76,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The twenty-one capability gaps
+## The twenty-five capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -104,6 +104,10 @@ the ladder.
 | 19 | An answer composed from the request alone overruled a tool result already in hand | `task_structure::nothing_has_been_observed_yet` |
 | 20 | A semicolon inside a literal payload ended the payload, because prose was read at the scope shell routing reads at | `shell_command_policy::prose_sentences` |
 | 21 | A decomposition that could not enumerate answered a Spanish-speaking client in English | `data/seed/multilingual-responses-decomposition.lino` |
+| 22 | The most code-shaped word *anywhere* in the prompt was the search subject, including in a note that only places the worker | `stated_request::request_blocks`, `shell_command` |
+| 23 | A permission to use the web, granted in the framing, disqualified the workspace from answering | `stated_request::request_blocks`, `workspace_inspection::asks_about_the_workspace` |
+| 24 | Every former of an open-web query read past the blank line, so the note that places the worker was sent to a search engine | `web_research::web_research_query_for`, `intent_router::plan_web_search_step`, `web_research::unresolved_web_research_query_for` |
+| 25 | A tool result already in hand was overwritten by a research round that reported it had returned nothing | `web_research::plan_web_research_step` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -257,6 +261,165 @@ repository's state before this work rather than something this pull request
 changed, and saying it is fixed because the parity gate is green would be the
 same green-checkmark-over-nothing.
 
+Gaps 22 and 23 are the ones only the real ladder could show, and they are the
+reason this case study has a second half. Every node prompt the ladder sends is
+two blocks:
+
+```text
+Atomic task L03: Inspect the existing atomicity check and record the observable
+completion contract for leaves.
+
+This is recursive binary-tree node 1.1.1.2.1 at depth 5. Solve only this node's
+task in this fresh temporary repository. [...] Use web research when it
+materially improves factual accuracy. Do not claim success without evidence.
+```
+
+The second block is a note that places the worker. It states no work. Two routes
+read both blocks as one string, and the note won both times.
+
+The subject went first. `shell_command::shaped_code_search_token` picks the most
+code-shaped token in the prompt, scoring `.` and `_` at four, an interior capital
+at three and `-` at two, and breaking ties on length. Nothing in the task above
+is code-shaped; `binary-tree` is. In the pre-fix 32-leaf run kept under
+`docs/case-studies/issue-1066/ladder-before-fix/`, **40 of the 54 `grep` patterns
+the real Agent CLI planned were `binary_tree`** — see `grep-patterns.tsv`.
+`task_decomposition`, which eight of the tasks are explicitly about, accounts for
+four. The tie-break is visible in the two exceptions: `sixteen-node` and
+`thirty-two-node` beat `binary-tree` because they are longer, not because they
+are better.
+
+The destination went next. `workspace_inspection::asks_about_the_workspace`
+admits a request only if it names an inspection action and does *not* name an
+external source. "Use web research when it materially improves factual accuracy"
+names one. Granted in a separate paragraph it is a permission to reach for a
+tool, not a statement that the answer is on the internet — but read as part of
+the request's own words it disqualified the repository the node had just been
+handed, for all sixty-three nodes. Eight of the thirty-two proofs record the
+result in `verdicts.tsv`: `hollow_reported_failure`, a whole sentence saying the
+lookup returned no content, which proves exactly as much as an empty file.
+
+The fix is one rule, and it is the rule this repository already applies one layer
+up: `task_decomposition::stated_task::asking_blocks` narrows a prompt to the
+block that asks before it decomposes anything (gap 15). `stated_request::request_blocks`
+states it for the agentic routes — a block that only places the worker is not
+work, so nothing is read out of it — and each route asks it separately, because
+each route asks which block carries *its* act. A prompt with a single block is
+returned whole and byte-identical, so the change is visible only where a second
+block exists.
+
+Judging changed with it. A proof that reports an empty tool result is now hollow:
+`returned no content` joins the failure markers in `judge-proof.py`. This is not
+the same as a search that ran and matched nothing — "no matches" is an
+observation about the workspace and stays a valid proof.
+
+Gaps 24 and 25 are what the first green real run left behind, and they are the
+reason a mechanical PASS is reported here alongside a judge verdict. With gaps 22
+and 23 fixed, all thirty-two leaves exited zero and wrote a proof whose first line
+was its own node path, and five of them said this:
+
+```text
+node_path=1.2.1.2.1
+
+Research completed for a two node decomposition at depth one this is recursive
+binary tree node 1 2 1 2 1 at depth 5 solve only this node s task in this fresh
+temporary repository its completion criterion is observable evidence exists use
+web research when it materially improves factual accuracy do not claim success
+without evidence, but the tool returned no content.
+```
+
+Two separate defects are visible in that one sentence. The query ran past the
+blank line again — gap 22 fixed the *search* subject and gap 23 fixed the
+*destination*, but three further functions formed an open-web query from the
+whole prompt: `web_research::web_research_query_for`, which reads the stated
+research subject; `intent_router::plan_web_search_step`, which reads an explicit
+search request; and `web_research::unresolved_web_research_query_for`, the
+planner's last route, which searches for whatever nothing else understood. Each
+now asks `stated_request::request_blocks` the same question the other routes
+already ask, which is why gap 24 is one row and three call sites: it is one rule
+that had three copies of the old reading.
+
+The second defect is the clause after the comma. The node *had* searched its
+workspace and *had* been handed what it said; `grep` output was sitting in the
+transcript. `plan_web_research_step` looks at the last completed call to decide
+whether to research further, and its "some other call completed" arm ended in
+`final_answer`, which composes a report about the research round. There was no
+research round. The arm was speaking for work it had not done, and speaking over
+work the agent had already done. It now plans a deeper round or stands aside, and
+standing aside is what lets `tool_result::latest_turn_answer` report the search
+that actually ran. Nothing about the ladder is in that rule: the test that pins
+it uses a Dvorak-keyboard question with a completed `grep` in front of it.
+
+## What is still hollow, and why the judge does not see it
+
+Thirty-two leaves pass and twenty-seven are judged `ok`. Fourteen of those
+twenty-seven contain the same sentence, byte for byte:
+
+```text
+This task cannot be split into two sub-tasks that can be checked independently,
+and no observable completion criterion is known for it, so there is nothing to
+enumerate: it is an irreducible single need.
+```
+
+That is a true statement about the request. It is not an answer to it. L03 asked
+the agent to "Inspect the existing atomicity check and record the observable
+completion contract for leaves"; L24 asked it to "Verify the ladder order for all
+mode is 32, 16, 8, 4, 2, then the root". Both were told their task was atomic.
+`judge-proof.py` accepts all fourteen, and it is right to by its own contract: it
+never receives the task, and it judges the *shape* of a proof, not its wording. A
+judge keyed to these particular sentences would be a phrase list, which is the
+thing this issue exists to remove.
+
+The route is `evidence_record::plan_evidence_record_step`. It splits the delivery
+obligation off, re-plans the residual through `plan_chat_step`, and when every
+agentic route declines the residual it falls back to `symbolic_answer` — the
+symbolic engine answering the request directly. `FormalAiEngine.answer` reads
+"Atomic task L03: ..." as a decomposition question and returns the verdict above.
+Gap 18 taught the *agentic* task-structure route to stand aside for a label like
+that; the symbolic fallback does not consult that route, so it answers anyway.
+
+Every agentic route declines because of the subject rule in
+`shell_command::workspace_inspection_query_for_task`: a request is only searched
+for when it names a code-shaped subject — an underscore, a dot, an interior
+capital, a hyphen. "the existing atomicity check" is prose, so nothing is
+searched for, and the request falls through to a verdict. This is an open
+capability gap, stated here rather than papered over. Three candidate fixes were
+measured and all three were refuted.
+
+**Fix A — grep for the longest content word the lexicon does not know.** Measured
+against this repository with `git grep -lie`, the words such a rule selects are
+not subjects at all: `repository` matches 3033 files, `workflow` 2470,
+`existing` 2097, `structure` 1632, `committed` 1413, `distinct` 1067, `including`
+1109, `explicitly` 1035, `selected` 931. Even the most specific candidates —
+`composite` 291, `recursion` 237, `atomicity` 113 — return more files than any
+proof could report. Grepping a prose word is noise, not an observation.
+
+**Fix B — grep for the noun phrase instead of the word.** This one measures well:
+`atomicity check` matches 3 files, `Links Notation rendering` 1, `recursive
+execution adapter` 1, `dotted binary path` 1, `internal node` 2, `ladder order` 2.
+It is refuted by what it would cost elsewhere. `workspace_inspection::asks_about_the_workspace`
+already admits "Verify the current exchange rate between the euro and the yen" —
+*verify* is a seed-declared inspection action and no external source is named —
+and the only thing keeping that request out of `grep` and on the open web is the
+code-shape subject rule. Relaxing the subject to any noun phrase sends the
+exchange rate to the repository, which the existing guard
+`a_question_the_workspace_cannot_answer_still_reaches_the_open_web` forbids, and
+forbids correctly.
+
+**Fix C — let `task_structure` stand aside whenever the request asks about the
+workspace.** Written, run, and reverted the same session. It never fired where it
+mattered — these fourteen nodes reach the verdict through `evidence_record`, not
+through `task_structure` — and where it did fire it made things worse: "Atomic
+task L16: Verify every tested internal node has exactly two children and never
+three or more" went from a wrong answer to no plan at all, which is a failed
+write and a hollow proof rather than a misleading one.
+
+What all three have in common is that separating "the existing atomicity check"
+from "the current exchange rate" needs the planner to know which nouns name
+artefacts, and there is no such distinction in the seed. Adding one — a list of
+kinds like *check*, *adapter*, *rendering*, *contract* — would pass these
+fourteen prompts and fail rule 4 of CONTRIBUTING, which asks for generality
+proved with different words each time. The gap stays open and stays written down.
+
 ## Where each acceptance item stands
 
 Issue #1066 lists six. Four are done here, and two cannot be reached from a
@@ -292,6 +455,15 @@ which reports `conclusion: success`; its log is kept at
 local re-run of the same 32 leaves under
 `docs/case-studies/issue-1028/agent-tree-run/`, with every node's proof file as
 the Agent CLI left it.
+
+The item is done as the issue states it, and the proofs are reported as they
+are. Re-judging that run with `judge-proof.py` gives 32 of 32 mechanically
+passing, 27 of 32 judged `ok`, and 5 hollow — the five gap-24/25 proofs quoted
+above, which the fixes in this pull request turn into reported search results.
+Of the 27, fourteen are the same decomposition verdict; that is an open
+capability gap and it is written up in full under
+"What is still hollow, and why the judge does not see it". Before gaps 22 and 23
+the same run judged 24 `ok` and 8 hollow.
 
 **Item 3 is the one to read carefully.** It asks for a *merged* pull request in
 the open release cycle in which **every** introduced non-merge commit carries
@@ -379,4 +551,11 @@ experiments/issue_1066_ladder_offline/falsify-node-capabilities.sh
 
 # the real Agent CLI against a real `formal-ai serve`, both legs
 experiments/agent_cli_e2e/run_issue_1066.sh
+
+# the 32-leaf ladder itself, real Agent CLI per node, ~3.5 min a node
+TREE_DEPTH=5 experiments/issue_1028_agent_cli_ladder/run.sh
+
+# judge any proof the way this case study judges them
+python3 experiments/issue_1066_ladder_offline/judge-proof.py \
+  docs/case-studies/issue-1028/agent-tree-run/1.1.1.2.1/proof.md 1.1.1.2.1
 ```
