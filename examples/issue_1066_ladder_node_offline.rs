@@ -13,7 +13,7 @@
 //! offline and says so.
 //!
 //! Usage:
-//!   cargo run --example issue_1066_ladder_node_offline -- \
+//!   cargo run --example `issue_1066_ladder_node_offline` -- \
 //!       [--task <text>] [--node <path>] [--depth <n>] [--criterion <text>] \
 //!       [--prompt <text>] [--workspace <dir>] [--turns <n>]
 //!
