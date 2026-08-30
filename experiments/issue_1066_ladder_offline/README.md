@@ -55,3 +55,48 @@ experiments/issue_1066_ladder_offline/falsify-node-capabilities.sh
 Every proof is kept under `$OUT/proofs/` (default
 `/tmp/issue-1066-ladder-offline`) so a reader can check the judgement rather
 than trust it.
+
+## Observed
+
+Each number below is `judge-proof.py`'s verdict over all sixty-three proofs,
+re-judged with the *current* judge so the comparison is like for like — an
+earlier judge scoring an earlier run is not a measurement of the code.
+
+| State of `src/` | `ok` | hollow |
+| --- | --- | --- |
+| Before the request-block fixes (gaps 22, 23) | 54 | 9 |
+| After them | 57 | 6 |
+| After the query-scope fixes (gaps 24, 25) | 62 | 1 |
+| After the quoted-match fix (gaps 26, 27) | 63 | 0 |
+
+The last row is the whole harness green, and the proof it turns is worth naming:
+node `2.2.1.1.2` answers with fifty lines `grep` matched under `scripts/`, and
+before gaps 26 and 27 it filed them under "The command failed" because
+`install.sh` prints the words "was not found" when the `code` CLI is missing.
+
+Judging that node also found a hole in the judge. `judge-proof.py` had no marker
+for the renderer's own failure sentence, and caught the bad proof only by
+accident -- one of the quoted lines is `except Exception as error:`, which its
+`error:` marker matched. So the marker list now carries `the command failed` in
+each language the renderer says it in, and the markers are read against what a
+proof says *before* it starts citing places, exactly as
+`src/agentic_coding/tool_result.rs` reads a tool result. Re-judging every run
+above with the corrected judge reproduces all three earlier rows unchanged, and
+all eight hollow verdicts in the committed 32-leaf run stay hollow: the
+correction rescues quoted evidence and nothing else.
+
+The real 32-leaf ladder run committed under
+`docs/case-studies/issue-1066/ladder-before-fix/` is the same measurement over
+the Agent CLI rather than the offline harness, and it starts in the same place:
+24 `ok` and 8 hollow. Every hollow verdict there is a node that answered with
+the sentence a lookup returns when it comes back with no content; the one in the
+offline harness's last row is the other kind, a search that ran and was filed as
+a failure. `docs/case-studies/issue-1028/agent-tree-run/` holds the re-run on the
+fixed code, judged the same way.
+
+A passing judge is not the same as a good proof, and this directory does not
+claim it is: fourteen of the thirty-two leaves in that run record a correct
+verdict about their own task label instead of doing the task, and `judge-proof.py`
+accepts all fourteen because it judges shape and never sees the task. That gap is
+written up in `docs/case-studies/issue-1066/README.md` under "What is still
+hollow, and why the judge does not see it".

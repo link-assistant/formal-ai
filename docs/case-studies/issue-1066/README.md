@@ -53,7 +53,7 @@ trusting it.
   the mechanical criterion alone and reading a sample by hand — is how thirty-two
   hollow proofs passed in the first place.
 - **Fix each gap where the general rule was wrong, never at the ladder's
-  wording.** Every one of the twenty-six defects below is reachable by a request
+  wording.** Every one of the twenty-seven defects below is reachable by a request
   that has nothing to do with the ladder, and each has a test written in
   different words from the prompt that exposed it (CONTRIBUTING rule 4).
 - **Put general lexical capability in the lexicon, not in a handler.** The
@@ -76,7 +76,7 @@ trusting it.
   the matching test goes red, then restores the file and asserts the set goes
   green. A guard that has never been observed failing is a claim, not evidence.
 
-## The twenty-six capability gaps
+## The twenty-seven capability gaps
 
 Each row is a general defect: the request shape that exposes it never mentions
 the ladder.
@@ -108,7 +108,8 @@ the ladder.
 | 23 | A permission to use the web, granted in the framing, disqualified the workspace from answering | `stated_request::request_blocks`, `workspace_inspection::asks_about_the_workspace` |
 | 24 | Every former of an open-web query read past the blank line, so the note that places the worker was sent to a search engine | `web_research::web_research_query_for`, `intent_router::plan_web_search_step`, `web_research::unresolved_web_research_query_for` |
 | 25 | A tool result already in hand was overwritten by a research round that reported it had returned nothing | `web_research::plan_web_research_step` |
-| 26 | A line a search *quoted* was read as the search's own diagnosis, so a `grep` that matched fifty lines reported itself as failed | `tool_result::quotes_a_located_line` |
+| 26 | A line a search *quoted* was read as the search's own diagnosis, so a `grep` that matched fifty lines reported itself as failed | `tool_result::own_words` |
+| 27 | The same reading, one renderer along: a search that announces its match count and then quotes each hit under a heading was read as failed | `tool_result::citation_offset` |
 
 Gap 13 is the one the offline harness could not have found. It came out of the
 real Agent-CLI end-to-end leg added for CONTRIBUTING rule 6: the first leg — a
@@ -352,9 +353,9 @@ standing aside is what lets `tool_result::latest_turn_answer` report the search
 that actually ran. Nothing about the ladder is in that rule: the test that pins
 it uses a Dvorak-keyboard question with a completed `grep` in front of it.
 
-Gap 26 is what the offline run found after gaps 24 and 25 were in. Sixty-two of
-the sixty-three nodes were judged `ok`; node 2.2.1.1.2 was not, and its proof
-opens like this:
+Gaps 26 and 27 are the same rule read twice, and they are the last thing the two
+runs found. Sixty-two of the sixty-three offline nodes were judged `ok`; node
+2.2.1.1.2 was not, and its proof opens like this:
 
 ```text
 node_path=2.2.1.1.2
@@ -377,13 +378,53 @@ missing. Those words are `install.sh`'s. The lexicon cannot tell whose they are.
 Naming the tool would fix this node and nothing else — the same reading is wrong
 for `codesearch`, for a `bash` step running `grep`, and for any harness that
 hands back quoted text. What separates a quotation from a diagnosis is not
-vocabulary but that **a quotation says where it came from**: every line a search
-returns carries the file and the line number it was found at. So a result whose
-first line is `<path>:<number>:` is other people's text, and the failure lexicon
-is not asked about it. A harness announcing its own refusal names no line number,
+vocabulary but that **a quotation says where it came from**. So the lexicon is
+asked only about the result's *own words*: `own_words` cuts the text where it
+stops speaking and starts naming what it quotes, and `looks_like_error` reads
+that framing instead of the whole body.
+
+Gap 27 is what the real Agent CLI added to that, and it is why the cut is stated
+in terms of citations rather than of a line's first characters. The offline
+harness renders `grep` the way `grep` does, one `<path>:<line>:<text>` per line.
+The real CLI does not:
+
+```text
+Found 100 matches
+/tmp/tmp.V4WehYZFRA/CHANGELOG.md:
+  Line 65: - Failure-driven splitting: a failed task can be shrunk [...]
+```
+
+Not one line of that starts with a path and a number, so a rule about first
+characters passes it straight through to the lexicon, which finds *failed* in the
+changelog entry the search matched and reports the search as the failure. Both
+renderings agree on the thing that matters: somewhere on the line, a number
+stands as its own word before a colon, and everything after it belongs to
+somebody else. `citation_offset` looks for that anywhere in the line, and the cut
+is made at the start of the citing *word*, not of its line — a step that does
+fail often says so and then points at the place, so `Error: cannot read
+src/lib.rs:12: No such file` keeps `Error: cannot read` and is still read as the
+failure it is.
+
+Two lines have to cite before a body counts as a quotation
+(`CITED_LINES_THAT_MAKE_A_QUOTATION`). One is not enough: `HTTP/1.1 404: Not
+Found` cites a place by the letter of the rule — `404` stands as its own token
+before a colon — and it is a diagnosis, not a quotation. A body of quotations
+comes in a list. A harness announcing its own refusal cites no place at all,
 which is why `grep: /etc/shadow: Permission denied` is still read as a failure —
-and that half is pinned by the same test, so the fix cannot be widened into
+and that half is pinned by the same tests, so the fix cannot be widened into
 "never report a failure".
+
+The judge had the same defect, and finding it is what makes the offline numbers
+above worth reading. `judge-proof.py` scored node 2.2.1.1.2's *fixed* proof
+`hollow_reported_failure`, because one of the lines the search now legitimately
+quotes is `except Exception as error:` and the judge matched its markers against
+the whole file. It had been catching the pre-fix proof by accident, on the quoted
+text rather than on the sentence above it. The judge now mirrors `own_words`, and
+it carries the renderer's own failure sentence — "The command failed" and its
+Russian, Hindi and Chinese equivalents — as a marker, which it never had. The
+correction is strictly conservative: re-judged with it, every run recorded in
+`experiments/issue_1066_ladder_offline/README.md` returns the same counts it did
+before, and all eight hollow verdicts in `ladder-before-fix/` stay hollow.
 
 ## What is still hollow, and why the judge does not see it
 

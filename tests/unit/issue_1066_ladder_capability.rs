@@ -5,10 +5,19 @@
 //! should be fixed generically — never with a prompt-specific branch". These
 //! tests therefore pin the *general* behaviour each observed ladder failure
 //! exposed, and prove it with wording the ladder never uses.
+//!
+//! They are grouped by the seam each one guards: [`written_files`] for the bytes
+//! a run puts in the file it was asked for, [`tool_results`] for what it makes
+//! of an answer already in hand, and this module for the routing that decides
+//! which of those a request is asking for. The planning helpers all three share
+//! live here, and the two child modules reach them through `super::`.
 
 use formal_ai::ChatMessage;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ToolCall;
+
+mod tool_results;
+mod written_files;
 
 /// The fourteen tool names `@link-assistant/agent` advertises, in the order the
 /// live ladder trace recorded them.
@@ -138,59 +147,6 @@ fn planned_writes(prompt: &str) -> Vec<String> {
         .collect()
 }
 
-#[test]
-fn a_written_file_starts_with_the_line_the_same_request_pinned() {
-    // A request can state two things about one file: what it has to contain and
-    // how it has to begin. The literal-write parser read the first and ignored
-    // the second, so it composed bytes out of the prose and wrote a file that
-    // broke a constraint stated three sentences earlier. A literal write is only
-    // literal when it satisfies every stated constraint on the file it writes.
-    //
-    // The three prompts reach the file by three different routes, and that is
-    // deliberate: the pinned line is a property of the request, so no route may
-    // be the one that happens to honour it. The first two are composed
-    // documents and reach `evidence_record`; the third states its bytes
-    // outright and reaches the literal-write repair in `general_planner`.
-    for (prompt, target, pinned) in [
-        (
-            "Draft a handover memo containing the migration status, the outstanding \
-             blockers, and the on-call owner. Leave the memo in `handover/2026-q3.md`. \
-             The first line must be exactly `handover=q3`.",
-            "handover/2026-q3.md",
-            "handover=q3",
-        ),
-        (
-            "Create file `release-checklist.md` containing verify the tag, publish \
-             the crate, push the image. The first line must be exactly \
-             `checklist=v2`.",
-            "release-checklist.md",
-            "checklist=v2",
-        ),
-        (
-            "Assemble a shift summary containing the machines serviced, the parts \
-             replaced, and the hours logged. Record it in `shift/friday.md`. The first \
-             line must be exactly `shift=friday`.",
-            "shift/friday.md",
-            "shift=friday",
-        ),
-    ] {
-        // Only the caller's file is judged. A route may keep a record of its own
-        // reasoning beside the work, and that record is not the file the
-        // request pinned a first line on.
-        let writes = planned_writes_to(prompt, target);
-        assert!(
-            !writes.is_empty(),
-            "nothing was planned to be written to {target:?} for {prompt:?}"
-        );
-        for content in &writes {
-            assert!(
-                content.starts_with(pinned),
-                "wrote a file that does not open with {pinned:?} for {prompt:?}: {content:?}"
-            );
-        }
-    }
-}
-
 /// Every `content` the run writes to `target`, across the turns it takes to
 /// reach it.
 ///
@@ -236,29 +192,6 @@ fn argument(value: &serde_json::Value, keys: &[&str]) -> Option<String> {
             .and_then(serde_json::Value::as_str)
             .map(str::to_owned)
     })
-}
-
-#[test]
-fn spelled_out_bytes_are_still_written_literally() {
-    // Guarding the pinned first line must not cost the planner the literal write
-    // it already did well. A request that states no constraint on the opening
-    // line has nothing to violate, so its bytes go to the file unchanged.
-    for (prompt, expected) in [
-        (
-            "Create `list.txt` containing apples, bananas and cherries.",
-            "apples, bananas and cherries",
-        ),
-        (
-            "Write `greeting.txt` with the text hello from the harness.",
-            "hello from the harness",
-        ),
-    ] {
-        let writes = planned_writes(prompt);
-        assert!(
-            writes.iter().any(|content| content.contains(expected)),
-            "expected the literal bytes {expected:?} for {prompt:?}, planned {writes:?}"
-        );
-    }
 }
 
 #[test]
@@ -554,148 +487,6 @@ fn a_file_the_request_only_mentions_is_still_opened_for_reading() {
 }
 
 #[test]
-fn an_answer_only_the_symbolic_engine_reaches_is_still_delivered_to_the_named_file() {
-    // The ladder's interior nodes ask a question about task structure and then
-    // say where the answer goes. No tool answers that question -- Formal AI's
-    // symbolic engine does -- so a delivery that only forwards what the agentic
-    // router planned drops the obligation entirely and writes nothing. The
-    // caller asked for a file; the file is what has to appear.
-    for (prompt, target, pinned) in [
-        (
-            "Decide whether rewriting the deployment script is a single atomic task. \
-             Leave the outcome in `triage/deploy.md`. The first line must be exactly \
-             `triage=deploy`.",
-            "triage/deploy.md",
-            "triage=deploy",
-        ),
-        (
-            "Judge whether the billing database migration is a problem you can break \
-             down. Record the finding in `triage/billing.md`. The first line must be \
-             exactly `triage=billing`.",
-            "triage/billing.md",
-            "triage=billing",
-        ),
-        // Both prompts above ask about task structure, which the agentic router
-        // now answers on its own -- so they no longer reach the symbolic engine
-        // and no longer pin this route. These two ask something no agentic route
-        // answers, which is exactly the state that made this gap visible: the
-        // router has no plan, the engine does, and the caller asked for a file.
-        (
-            "What is 17 multiplied by 23? Record the answer in `math/product.md`. \
-             The first line must be exactly `math=product`.",
-            "math/product.md",
-            "math=product",
-        ),
-        (
-            "What is 480 divided by 15? Save the result in `arith/quotient.md`. The \
-             first line must be exactly `arith=quotient`.",
-            "arith/quotient.md",
-            "arith=quotient",
-        ),
-    ] {
-        let paths = planned_paths(prompt);
-        assert!(
-            paths.iter().any(|path| path == target),
-            "nothing was planned to be written to {target} for {prompt:?}: {paths:?}"
-        );
-        let writes = planned_writes(prompt);
-        assert!(
-            writes.iter().any(|content| content.starts_with(pinned)),
-            "the delivered file does not open with {pinned:?} for {prompt:?}: {writes:?}"
-        );
-    }
-}
-
-#[test]
-fn work_coordinated_into_its_delivery_sentence_is_not_thrown_away_with_it() {
-    // Two sentences are the tidy way to ask for work and then say where it
-    // goes, and the ladder's own nodes are written that way. English does not
-    // require it: one sentence can state the work, say "and", and name the
-    // destination. A reader that hands the whole sentence to delivery keeps the
-    // destination and loses the work, so the request is answered in the
-    // transcript and the named file never appears.
-    for (prompt, target, pinned, subject) in [
-        (
-            "Break the customer import rewrite into sub-tasks and record what you work \
-             out in `import-split.md`. The first line must be exactly \
-             `plan_for=customer-import`.",
-            "import-split.md",
-            "plan_for=customer-import",
-            "customer import",
-        ),
-        (
-            "Split the invoice archiver migration into sub-tasks and write down what \
-             you decide in `archive-steps.md`. The first line must be exactly \
-             `plan_for=invoice-archiver`.",
-            "archive-steps.md",
-            "plan_for=invoice-archiver",
-            "invoice archiver",
-        ),
-    ] {
-        let paths = planned_paths(prompt);
-        assert!(
-            paths.iter().any(|path| path == target),
-            "nothing was planned to be written to {target} for {prompt:?}: {paths:?}"
-        );
-        let writes = planned_writes(prompt);
-        assert!(
-            writes.iter().any(|content| content.starts_with(pinned)),
-            "the delivered file does not open with {pinned:?} for {prompt:?}: {writes:?}"
-        );
-        assert!(
-            writes
-                .iter()
-                .any(|content| content.to_lowercase().contains(subject)),
-            "the delivered file says nothing about {subject:?}, so the work in front \
-             of the delivery clause was dropped for {prompt:?}: {writes:?}"
-        );
-    }
-}
-
-#[test]
-fn a_delivered_answer_is_the_answer_and_not_a_report_of_a_failed_step() {
-    // What made the ladder's 63 green nodes hollow: the file existed, opened
-    // with the pinned marker, and its body was the error text of the read that
-    // should never have run. A proof file made of a failure report is not
-    // evidence, so the delivered body has to be the answer to the question the
-    // same request asked.
-    let writes = planned_writes(
-        "Decide whether rewriting the deployment script is a single atomic task. \
-         Leave the outcome in `triage/deploy.md`. The first line must be exactly \
-         `triage=deploy`.",
-    );
-    assert!(
-        writes
-            .iter()
-            .any(|content| content.contains("sub-task") || content.contains("atomic")),
-        "the delivered body does not answer the question that was asked: {writes:?}"
-    );
-    assert!(
-        !writes
-            .iter()
-            .any(|content| content.contains("No such file or directory")),
-        "recorded a failed step as the evidence: {writes:?}"
-    );
-}
-
-#[test]
-fn nothing_is_recorded_when_no_answer_was_reached() {
-    // The delivery is only worth having while it stays honest: a residual the
-    // engine cannot conclude anything about must leave the file unwritten
-    // rather than fill it with the engine's inability to answer.
-    for prompt in [
-        "??? Leave the outcome in `triage/nothing.md`.",
-        "asdkjhqwe zxcvbnm. Record the finding in `triage/noise.md`.",
-    ] {
-        let writes = planned_writes(prompt);
-        assert!(
-            writes.is_empty(),
-            "invented an evidence file for {prompt:?}: {writes:?}"
-        );
-    }
-}
-
-#[test]
 fn a_question_about_a_task_is_answered_by_thinking_about_the_task() {
     // Thirty of the ladder's sixty-three nodes ask what a task decomposes into.
     // Nothing on the open web knows the caller's task, and the recursion that
@@ -767,75 +558,6 @@ fn a_client_that_speaks_no_computer_use_is_not_told_a_primitive_is_missing() {
     );
 }
 
-#[test]
-fn a_payload_that_names_the_work_product_is_not_written_as_the_body() {
-    // "Save the result to FILE" says where an answer goes; it does not say what
-    // the answer is. Read as a literal write, the phrase naming the work product
-    // became the file's contents, so the ladder's proof files contained the word
-    // "result" and nothing else -- non-empty, and evidence of nothing.
-    //
-    // The guard belongs to the destination-led shape, the one that infers its
-    // payload from position: the bytes are whatever sits between the write
-    // action and the file clause, which here is only the work product's name. A
-    // request that states no work has nothing to record, so the whole write is
-    // declined rather than written hollow -- an empty list of writes, not an
-    // empty file.
-    for (prompt, target) in [
-        ("Save the answer to `out/e.md`.", "out/e.md"),
-        ("Save the result to `counts.md`.", "counts.md"),
-    ] {
-        assert_eq!(
-            planned_writes_to(prompt, target),
-            Vec::<String>::new(),
-            "wrote the name of the work product as the work product for {prompt:?}"
-        );
-    }
-}
-
-#[test]
-fn a_politely_phrased_write_is_still_a_write() {
-    // Russian states a request to a stranger in the plural imperative, and the
-    // seed knew only the familiar singular, so every polite phrasing of the
-    // plainest write missed the route entirely. The lexicon is the fix; this
-    // pins that it stays.
-    // The plan is compared against the familiar phrasing of the same request
-    // rather than described here: what has to hold is that politeness changes
-    // nothing, and stating the expected plan would pin this route's internals
-    // instead.
-    for (polite, familiar) in [
-        (
-            "Создайте файл `hello.txt` с текстом привет.",
-            "Создай файл `hello.txt` с текстом привет.",
-        ),
-        (
-            "Сохраните файл `notes.txt` с текстом заметка.",
-            "Сохрани файл `notes.txt` с текстом заметка.",
-        ),
-        (
-            "Сделайте `report.md` с текстом итог квартала.",
-            "Сделай `report.md` с текстом итог квартала.",
-        ),
-    ] {
-        let planned = planned_writes(polite);
-        assert!(
-            !planned.is_empty(),
-            "the politely phrased write planned nothing: {polite:?}"
-        );
-        assert_eq!(
-            planned.len(),
-            planned_writes(familiar).len(),
-            "politeness changed how much was planned for {polite:?}"
-        );
-        for (polite_plan, familiar_plan) in planned.iter().zip(planned_writes(familiar)) {
-            assert_eq!(
-                without_derived_ids(polite_plan, polite),
-                without_derived_ids(&familiar_plan, familiar),
-                "politeness changed the plan for {polite:?}"
-            );
-        }
-    }
-}
-
 /// How many hexadecimal digits a content-derived identifier runs to.
 const DERIVED_ID_DIGITS: usize = 16;
 
@@ -882,89 +604,6 @@ fn a_read_cue_selects_the_path_in_its_own_sentence() {
     assert!(
         reads.iter().any(|path| path.ends_with("Cargo.toml")),
         "opened a file the request only mentioned instead of the one it named: {reads:?}"
-    );
-}
-
-#[test]
-fn a_literal_payload_never_crosses_a_sentence_boundary() {
-    // "Compose X containing A, B and C. Leave it in FILE." states the payload in
-    // one sentence and the destination in the next. Bounding the payload by the
-    // destination clause alone read straight through the full stop, so the words
-    // of the delivery instruction became part of the document delivered: the
-    // memo ended with "Leave the memo". A payload is something a sentence says,
-    // and it stops where that sentence does.
-    for (prompt, target, intruder) in [
-        (
-            "Draft a handover memo containing the migration status and the on-call \
-             owner. Leave the memo in `handover/2026-q3.md`.",
-            "handover/2026-q3.md",
-            "Leave the memo",
-        ),
-        (
-            "Assemble a shift summary containing the parts replaced and the hours \
-             logged. Record it in `shift/friday.md`.",
-            "shift/friday.md",
-            "Record it",
-        ),
-    ] {
-        for content in planned_writes_to(prompt, target) {
-            assert!(
-                !content.contains(intruder),
-                "wrote the delivery instruction into the document for {prompt:?}: {content:?}"
-            );
-        }
-    }
-}
-
-#[test]
-fn a_semicolon_inside_a_payload_does_not_end_it() {
-    // The sentence splitter that bounds a literal payload was written for
-    // command policy, where a semicolon separates one command from the next, so
-    // it read `;` as the end of the statement. In prose a semicolon joins two
-    // clauses into one sentence, and half the payload was thrown away: issue
-    // #918's minimal-core invariant reached its file ending at "host surface;"
-    // with the clause naming where domain knowledge goes cut off (issue #1066).
-    let prompt = "Create file `policy/retention.md` containing Logs are kept for ninety \
-                  days; backups are kept for a year.";
-    assert_eq!(
-        planned_writes_to(prompt, "policy/retention.md"),
-        vec!["Logs are kept for ninety days; backups are kept for a year.".to_owned()]
-    );
-}
-
-#[test]
-fn an_observation_already_made_is_reported_rather_than_replaced_by_a_verdict() {
-    // A request to look at the workspace is planned as a repository search, and
-    // the turn after it only has to report what came back. The task-structure
-    // route sits ahead of the route that reports a tool result and needs no tool
-    // itself, so it answered the same request a second time from thinking alone
-    // and the observation was discarded: thirty-one of the ladder's thirty-two
-    // leaves recorded a decomposition of their own instructions where their
-    // evidence should have been (issue #1066).
-    //
-    // Standing aside once a tool has run is the rule the two routes on either
-    // side of it already follow. An answer that needs no evidence may not
-    // overrule evidence that was gathered for the same request.
-    let prompt = "Audit the shipment_scheduler module and locate where it splits a \
-                  delivery task into sub-tasks.";
-    let observed = "src/shipment_scheduler.rs:214: fn split_delivery(task: &Task) -> [Leg; 2]";
-    let messages = vec![
-        ChatMessage::user(prompt),
-        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            "search-0",
-            "grep",
-            r#"{"pattern":"shipment_scheduler","query":"shipment_scheduler"}"#.to_owned(),
-        )]),
-        ChatMessage::tool_result("search-0", "grep", observed),
-    ];
-    let plan = plan_chat_step(&messages, &LADDER_TOOLS);
-    let Some(AgenticPlan::Final(answer)) = plan else {
-        panic!("expected the search result to be reported, planned {plan:?}");
-    };
-    assert_eq!(
-        answer,
-        "The `grep` command completed. Output:\n\n```text\n\
-         src/shipment_scheduler.rs:214: fn split_delivery(task: &Task) -> [Leg; 2]\n```"
     );
 }
 
@@ -1051,130 +690,4 @@ fn an_open_web_query_stops_at_the_end_of_the_request() {
             "the query carried the block that only places the worker for {prompt:?}"
         );
     }
-}
-
-#[test]
-fn a_workspace_search_that_ran_is_not_reported_as_a_lookup_that_returned_nothing() {
-    // A completed tool call belongs to whichever route made it. The research
-    // route decides what to do next by looking at the last one, and when that
-    // last one was a workspace search it had not made, it took the search for a
-    // round of its own that had come back empty and composed a report saying so
-    // -- over the top of the result the agent was already holding. Five of the
-    // ladder's thirty-two leaves recorded exactly that as their evidence:
-    // "Research completed for ..., but the tool returned no content.", with the
-    // matching `grep` output unused in the same transcript.
-    let after_a_search = |request: &str| {
-        vec![
-            ChatMessage::user(request),
-            ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                "search-0",
-                "grep",
-                r#"{"pattern":"two_node","query":"two_node"}"#.to_owned(),
-            )]),
-            ChatMessage::tool_result(
-                "search-0",
-                "grep",
-                "tests/decomposition.rs:1: fn two_node_tree_has_two_leaves() {}",
-            ),
-        ]
-    };
-
-    // This request names the open web itself, so reaching it is still right --
-    // by issuing the search, which is the one thing the old arm never did.
-    let plan = plan_chat_step(
-        &after_a_search("Search the web for how the Dvorak keyboard layout was standardised."),
-        &LADDER_TOOLS,
-    );
-    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
-        panic!("expected the stated search to be issued, planned {plan:?}");
-    };
-    let issued = calls
-        .iter()
-        .map(|call| format!("{} {}", call.tool, call.arguments))
-        .collect::<Vec<_>>();
-    assert_eq!(
-        issued,
-        vec![r#"websearch {"query":"how the dvorak keyboard layout was standardised"}"#.to_owned()]
-    );
-
-    // This one states its subject in the first block and only places the worker
-    // in the second, so nothing sends it to the open web. The search that ran is
-    // the answer.
-    let plan = plan_chat_step(
-        &after_a_search(
-            "Add or verify regression coverage for a two-node decomposition at depth one.\n\n\
-             This is recursive binary-tree node 1.2.1.2.1 at depth 5. Solve only this node's \
-             task in this fresh temporary repository. Use web research when it materially \
-             improves factual accuracy. Do not claim success without evidence.",
-        ),
-        &LADDER_TOOLS,
-    );
-    let Some(AgenticPlan::Final(answer)) = plan else {
-        panic!("expected the search result to be reported, planned {plan:?}");
-    };
-    assert_eq!(
-        answer,
-        "The `grep` command completed. Output:\n\n```text\n\
-         tests/decomposition.rs:1: fn two_node_tree_has_two_leaves() {}\n```"
-    );
-}
-
-#[test]
-fn a_matched_line_that_quotes_an_error_is_not_this_command_s_failure() {
-    // A search answers with other files' text. When one of those files happens
-    // to contain the words an installer prints when something is missing, the
-    // words are that file's, not the search's -- but the failure lexicon read
-    // them as this step's diagnosis, and the whole matched listing went out
-    // under "The command failed:". Issue #1066's offline run caught it on a node
-    // whose only evidence was a `grep` that had matched fifty lines; the proof
-    // it left behind reported the search as broken.
-    let matched = "src/billing/legacy_rates.rs:41:    // the historical rate table \
-                   was not found, so the default applies\n\
-                   src/billing/invoice_total.rs:88: fn invoice_total(lines: &[Line]) -> Money {";
-    let messages = vec![
-        ChatMessage::user(
-            "Inspect the existing invoice_total helper and record how it rounds a half cent.",
-        ),
-        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            "search-0",
-            "grep",
-            r#"{"pattern":"invoice_total","query":"invoice_total"}"#.to_owned(),
-        )]),
-        ChatMessage::tool_result("search-0", "grep", matched),
-    ];
-    let plan = plan_chat_step(&messages, &LADDER_TOOLS);
-    let Some(AgenticPlan::Final(answer)) = plan else {
-        panic!("expected the matched lines to be reported, planned {plan:?}");
-    };
-    assert_eq!(
-        answer,
-        format!("The `grep` command completed. Output:\n\n```text\n{matched}\n```")
-    );
-
-    // The reading that separates them is the line number, not the vocabulary: a
-    // harness reporting its own refusal names a path and a reason, and that is
-    // still a failure.
-    let messages = vec![
-        ChatMessage::user(
-            "Inspect the existing invoice_total helper and record how it rounds a half cent.",
-        ),
-        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            "search-1",
-            "grep",
-            r#"{"pattern":"invoice_total","query":"invoice_total"}"#.to_owned(),
-        )]),
-        ChatMessage::tool_result(
-            "search-1",
-            "grep",
-            "grep: /etc/shadow: Permission denied, and the index was not found",
-        ),
-    ];
-    let plan = plan_chat_step(&messages, &LADDER_TOOLS);
-    let Some(AgenticPlan::Final(answer)) = plan else {
-        panic!("expected the refusal to be reported, planned {plan:?}");
-    };
-    assert!(
-        answer.starts_with("The command failed:"),
-        "a harness refusal stopped being read as a failure, answered {answer:?}"
-    );
 }
