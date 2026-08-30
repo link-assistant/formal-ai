@@ -31,6 +31,7 @@ use super::shell_command_policy::sentences;
 use super::write_request::first_content_lead_end;
 use crate::protocol::ChatMessage;
 use crate::seed;
+use std::ops::Range;
 
 /// Plan the answer to a "produce a document covering A, B and C" request.
 ///
@@ -51,8 +52,31 @@ pub(super) fn plan_note_composition_step(
 struct Specification {
     /// The sentence that asked for the document, as the caller wrote it.
     request: String,
+    /// Where that sentence sits in the request it was read from.
+    span: Range<usize>,
     /// The parts named after the content lead, in the order they were named.
     parts: Vec<String>,
+}
+
+/// Where `task` specifies a document to compose, when it specifies one.
+///
+/// [`super::general_planner`] asks this before reading a content lead as a
+/// literal payload. Both routes recognise the same word -- "containing" is a
+/// [`seed::ROLE_FILE_WRITE_CONTENT_LEAD`] surface either way -- and the sentence
+/// around it is what says which reading applies. When the marker is inside a
+/// sentence that names a composition action, a document kind and two or more
+/// parts, the words after it are the document's structure, and transcribing them
+/// writes the request into the file instead of the note.
+///
+/// The ladder's own last node is exactly this shape: "Produce a final evidence
+/// note containing the selected tree level, node outcomes, test results, and
+/// session id. ... Leave observable evidence in
+/// `.agent-ladder/node-2.2.2.2.2-proof.md`." The specification and the
+/// destination are separate sentences, so the literal-write parser found a cued
+/// path and a content lead and wrote the specification as the proof (issue
+/// #1066).
+pub(super) fn composed_document_specification_span(task: &str) -> Option<Range<usize>> {
+    parse_specification(task).map(|specification| specification.span)
 }
 
 /// Read the composition request out of `task`, one sentence at a time.
@@ -68,6 +92,7 @@ fn parse_specification(task: &str) -> Option<Specification> {
         let parts = enumerated_parts(sentence.text)?;
         Some(Specification {
             request: sentence.text.trim().to_owned(),
+            span: sentence.span.clone(),
             parts,
         })
     })

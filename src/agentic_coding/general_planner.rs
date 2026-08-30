@@ -496,7 +496,17 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // content-lead surface claims a write. The issue-#671 matrix caught
     // `show me the contents of the file beta.md` planning
     // `write(beta.md, "of the")`, destroying the fixture it was asked to read.
-    if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
+    // A marker inside a sentence that specifies a document to compose introduces
+    // that document's structure, not its bytes; see
+    // [`super::note_composition::composed_document_specification_span`]. Reading
+    // it as a literal payload is what wrote "the selected tree level, node
+    // outcomes, test results, and session id." into the ladder's final proof
+    // file (issue #1066), and it claimed the request too, so the note the caller
+    // asked for was never composed.
+    let specification = super::note_composition::composed_document_specification_span(request);
+    if let Some((_, marker_end)) = first_content_lead_end(&lowered)
+        && !specification.is_some_and(|span| span.contains(&marker_end))
+    {
         let marker_leads = marker_end <= clause_start;
         let marker_span = if marker_leads {
             request.get(marker_end..end_of_statement(request, marker_end, clause_start))

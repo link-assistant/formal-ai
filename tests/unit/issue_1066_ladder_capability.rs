@@ -268,6 +268,32 @@ fn a_document_specification_is_composed_instead_of_transcribed() {
 }
 
 #[test]
+fn a_specified_document_is_composed_even_when_the_request_names_a_file() {
+    // A specification and a destination are two different sentences, and the
+    // ladder's last leaf writes them that way. The literal-write parser saw a
+    // cued path and the word "containing", took the words after it for the
+    // bytes, and wrote the request's own wording into the file -- and, by
+    // claiming the request, kept the route that composes documents from ever
+    // running. Naming a file says where the document goes; it does not turn the
+    // specification into the document.
+    assert_eq!(
+        planned_writes_to(
+            "Draft a vendor brief containing the contract owner, the renewal window, \
+             and the escalation path. Store it in `vendors/acme.md`.",
+            "vendors/acme.md"
+        ),
+        vec![
+            "Draft a vendor brief containing the contract owner, the renewal window, and the \
+             escalation path\n\nRequested parts:\n- the contract owner\n- the renewal window\n- \
+             the escalation path\n\nObserved in this session:\n- nothing: no tool result was \
+             recorded before this note.\n\nNo requested part above is backed by an observation \
+             from this session.\n"
+                .to_owned()
+        ]
+    );
+}
+
+#[test]
 fn a_composed_note_never_claims_what_the_session_did_not_observe() {
     // The honest deliverable for a specification nothing has answered yet is a
     // note that says so. Silence about the missing parts would read as success.
