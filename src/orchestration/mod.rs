@@ -5,6 +5,7 @@
 //! and never retries an external process implicitly.
 
 mod analysis;
+mod attribution;
 mod dispatch;
 mod incremental;
 mod permission;

@@ -237,6 +237,7 @@ fn issue_924_agent_authored_contracts_are_canonical_and_cover_twenty_percent_of_
         &[
             "agent dispatch",
             "--incremental",
+            "--pull-request",
             "--cli agent",
             "--verify",
             "learning.lino",

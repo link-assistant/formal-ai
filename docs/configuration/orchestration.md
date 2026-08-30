@@ -168,6 +168,28 @@ formal-ai agent dispatch \
   --workspace /tmp/example-repository
 ```
 
+To turn each verified effect into an independently reviewable commit, run in a
+clean Git worktree and bind the dispatch to its pull request:
+
+```bash
+formal-ai agent dispatch \
+  --cli agent \
+  --incremental \
+  --pull-request https://github.com/example/project/pull/123 \
+  --task "implement the reviewed issue" \
+  --workspace /tmp/example-repository
+```
+
+`--pull-request` is intentionally opt-in and requires `--incremental`. Before
+starting an agent, the controller rejects a malformed URL, a non-Git workspace,
+or any tracked, staged, or untracked work. Each passing session with an effect
+must expose its native session id. The controller then stages only that
+session's verified paths and canonical session JSON, checks the exact staged
+set, and creates a commit carrying `Formal-AI-Session`, `Formal-AI-Evidence`,
+and `Formal-AI-Pull-Request`. Passing verification-only sessions and passing
+sessions with no file effect do not create empty commits. Without
+`--pull-request`, incremental dispatch keeps its compose-only behavior.
+
 The protocol is the repository's own failure-driven controller
 (`solve_recursively`) with the repository's own splitter behind its split hook,
 one level per split, so every deeper split is justified by a failure that

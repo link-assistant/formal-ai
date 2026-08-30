@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 35293
-  line_count 991
-  content_id source_module_21cf072acdbfcb7a
+  byte_len 35354
+  line_count 993
+  content_id source_module_ae17739d5ba5d955
   symbol_count 43
   symbols
     module cli_algorithm 9 9
@@ -38,15 +38,15 @@ self_ast_census
     function fmt 550 556
     function fmt 560 565
     function fmt 569 574
-    function main 577 699
-    function run_github_logs 701 722
-    function run_agent 724 748
-    function into_config 751 763
-    struct TelegramRunArgs 766 775
-    function solver_for_chat 777 794
-    function print_thinking_trace 807 825
-    function run_chat 827 880
-    function run_bundle 882 946
-    function read_input 948 956
-    function run_telegram 958 983
-    function parse_allowed_updates 985 991
+    function main 577 701
+    function run_github_logs 703 724
+    function run_agent 726 750
+    function into_config 753 765
+    struct TelegramRunArgs 768 777
+    function solver_for_chat 779 796
+    function print_thinking_trace 809 827
+    function run_chat 829 882
+    function run_bundle 884 948
+    function read_input 950 958
+    function run_telegram 960 985
+    function parse_allowed_updates 987 993

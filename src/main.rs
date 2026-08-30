@@ -209,7 +209,7 @@ enum Command {
     /// acts as an external CLI: it advertises tools, executes emitted calls in an
     /// offline sandbox, feeds results back, and loops until the server returns the
     /// finished Links Notation knowledge base.
-    Agent(AgentArgs),
+    Agent(Box<AgentArgs>),
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
         #[arg(
@@ -628,14 +628,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Algorithm(args) => run_algorithm(args)?,
         Command::ComputerUse(args) => run_computer_use(args)?,
         Command::Agent(args) => {
-            if let Some(action) = args.action {
+            let AgentArgs {
+                action,
+                task,
+                transcript,
+                session_json,
+            } = *args;
+            if let Some(action) = action {
                 run_external_action(action)?;
             } else {
-                run_agent(
-                    &args.task,
-                    args.transcript || verbose,
-                    args.session_json.as_deref(),
-                )?;
+                run_agent(&task, transcript || verbose, session_json.as_deref())?;
             }
         }
         Command::Serve(args) => {
