@@ -2,9 +2,9 @@ self_ast_census
   target src/orchestration/runner.rs
   language rust
   fidelity signature
-  byte_len 30129
-  line_count 897
-  content_id source_module_0e7f92f8f6f05bbd
+  byte_len 30626
+  line_count 907
+  content_id source_module_60b989b99735ef70
   symbol_count 46
   symbols
     const DEFAULT_BASE_URL 20 20
@@ -16,40 +16,40 @@ self_ast_census
     function env 54 57
     struct VerificationCommand 61 64
     function new 68 76
-    struct AgentRunConfig 80 95
-    function new 99 122
-    function with_permission 125 128
-    function with_command 131 134
-    enum AgentRunError 138 148
-    function fmt 151 169
-    struct AgentEvent 175 181
-    enum AgentStatus 185 189
-    struct VerificationResult 192 200
-    struct NativeAgentSession 203 206
-    struct AgentContinuation 209 214
-    struct CorrectionRequest 217 222
-    struct AgentSession 225 247
-    function passed 251 254
-    function diff_size 257 259
-    function run_agent 262 376
-    function verify_workspace 384 441
-    function resume_agent 449 490
-    function session_sha256 493 497
-    function validate_verification 499 508
-    function build_command 510 548
-    function build_vendor_command 550 602
-    function parse_native_session 604 636
-    const PREFIX 609 609
-    function find_session_id 638 648
-    struct ProcessOutput 650 655
-    function execute 657 670
-    function execute_with_command_stream 673 702
-    function ensure_program_available 705 713
-    function collect_command_stream 716 765
-    function execute_with_std_process 771 816
-    function terminate_process_tree 819 821
-    function read_all 824 828
-    function join_reader 831 836
-    function run_verification 838 874
-    struct EventChain 877 879
-    function push 882 896
+    struct AgentRunConfig 80 99
+    function new 103 127
+    function with_permission 130 133
+    function with_command 136 139
+    enum AgentRunError 143 153
+    function fmt 156 174
+    struct AgentEvent 180 186
+    enum AgentStatus 190 194
+    struct VerificationResult 197 205
+    struct NativeAgentSession 208 211
+    struct AgentContinuation 214 219
+    struct CorrectionRequest 222 227
+    struct AgentSession 230 252
+    function passed 256 259
+    function diff_size 262 264
+    function run_agent 267 381
+    function verify_workspace 389 446
+    function resume_agent 454 495
+    function session_sha256 498 502
+    function validate_verification 504 513
+    function build_command 515 558
+    function build_vendor_command 560 612
+    function parse_native_session 614 646
+    const PREFIX 619 619
+    function find_session_id 648 658
+    struct ProcessOutput 660 665
+    function execute 667 680
+    function execute_with_command_stream 683 712
+    function ensure_program_available 715 723
+    function collect_command_stream 726 775
+    function execute_with_std_process 781 826
+    function terminate_process_tree 829 831
+    function read_all 834 838
+    function join_reader 841 846
+    function run_verification 848 884
+    struct EventChain 887 889
+    function push 892 906

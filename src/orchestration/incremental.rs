@@ -401,7 +401,6 @@ impl TaskExecutor for AgentExecutor<'_> {
         let index = self.sessions.len();
         let cli = self.cli_for(task);
         let candidate = self
-            .config
             .output_dir
             .join("candidates")
             .join(format!("{index:03}-{}", safe_name(&cli)));
@@ -409,7 +408,17 @@ impl TaskExecutor for AgentExecutor<'_> {
             self.record(DispatchError::Io(error));
             return TaskAttempt::failed("controller_aborted");
         }
-        let run = candidate_run_config(self.config, &cli, task.goal.clone(), &candidate);
+        let orchestration_home = self
+            .output_dir
+            .join("native-sessions")
+            .join(format!("{index:03}-{}", safe_name(&cli)));
+        let run = candidate_run_config(
+            self.config,
+            &cli,
+            task.goal.clone(),
+            &candidate,
+            &orchestration_home,
+        );
         let session = match run_agent(&run) {
             Ok(session) => session,
             Err(error) => {
@@ -476,7 +485,18 @@ impl TaskExecutor for AgentExecutor<'_> {
             return self.attempt(task);
         }
         let cli = self.cli_for(task);
-        let run = candidate_run_config(self.config, &cli, task.goal.clone(), &self.workspace);
+        let orchestration_home = self.output_dir.join("native-sessions").join(format!(
+            "{:03}-{}",
+            self.sessions.len(),
+            safe_name(&cli)
+        ));
+        let run = candidate_run_config(
+            self.config,
+            &cli,
+            task.goal.clone(),
+            &self.workspace,
+            &orchestration_home,
+        );
         match verify_workspace(&run) {
             Ok(session) if session.passed() => {
                 self.preserve_session(task, COMPOSED_VERIFIER.to_string(), session)

@@ -2,9 +2,9 @@ self_ast_census
   target src/orchestration/incremental.rs
   language rust
   fidelity signature
-  byte_len 19485
-  line_count 491
-  content_id source_module_1587f52833ddbdee
+  byte_len 19994
+  line_count 511
+  content_id source_module_1c7856ba94415b45
   symbol_count 22
   symbols
     const COMPOSED_VERIFIER 46 46
@@ -26,6 +26,6 @@ self_ast_census
     function record 350 354
     function preserve_session 356 369
     function record_preserved_session 371 393
-    function attempt 397 456
-    function extend_for 458 469
-    function retry_after_children 471 490
+    function attempt 397 465
+    function extend_for 467 478
+    function retry_after_children 480 510

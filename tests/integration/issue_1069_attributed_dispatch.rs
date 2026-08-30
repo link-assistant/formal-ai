@@ -5,7 +5,7 @@
 
 use std::fs;
 use std::os::unix::fs::PermissionsExt as _;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use formal_ai::orchestration::{
@@ -126,6 +126,52 @@ fn initialized_repo(label: &str) -> TestWorkspace {
     git(workspace.path(), &["add", "README.md"]);
     git(workspace.path(), &["commit", "--quiet", "-m", "fixture"]);
     workspace
+}
+
+fn controller_rejecting_nested_home(bin: &TestWorkspace) -> PathBuf {
+    let path = bin.path().join("formal-ai-controller");
+    fs::write(
+        &path,
+        "#!/bin/sh\n\
+         orchestration_home=\n\
+         while test \"$#\" -gt 0; do\n\
+           case \"$1\" in\n\
+             --orchestration-home) orchestration_home=\"$2\"; shift 2 ;;\n\
+             *) shift ;;\n\
+           esac\n\
+         done\n\
+         test -n \"$orchestration_home\" || exit 20\n\
+         case \"$orchestration_home/\" in \"$PWD/\"*) exit 21 ;; esac\n\
+         mkdir -p \"$orchestration_home\"\n\
+         printf 'native state is isolated\\n' > \"$orchestration_home/state\"\n\
+         printf 'verified effect\\n' > isolated.txt\n",
+    )
+    .unwrap();
+    fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+    path
+}
+
+#[test]
+fn dispatch_keeps_native_agent_state_outside_the_candidate_worktree() {
+    let bin = TestWorkspace::new("issue-1069-native-home-bin");
+    let workspace = TestWorkspace::new("issue-1069-native-home");
+    let mut config = DispatchConfig::new(
+        "Create isolated.txt as one verified effect.",
+        workspace.path(),
+        vec!["agent".to_string()],
+    );
+    config.mode = DispatchMode::Incremental;
+    config.permission = AgentRunPermission::grant_for(workspace.path());
+    config.controller_program = controller_rejecting_nested_home(&bin);
+
+    let report = dispatch_agents(&config).expect("dispatch must preserve isolated native state");
+
+    let trace = report.incremental.as_ref().unwrap();
+    assert!(trace.solved, "{trace:#?}");
+    assert_eq!(
+        fs::read_to_string(workspace.path().join("isolated.txt")).unwrap(),
+        "verified effect\n"
+    );
 }
 
 #[test]
