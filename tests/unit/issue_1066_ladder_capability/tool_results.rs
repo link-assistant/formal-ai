@@ -332,7 +332,9 @@ fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
         "the recorded field did not select the requested source fact: {contents:?}"
     );
     assert!(
-        contents.iter().all(|content| !content.contains("Failure-driven splitting")),
+        contents
+            .iter()
+            .all(|content| !content.contains("Failure-driven splitting")),
         "a release-note match was recorded as the task result: {contents:?}"
     );
 }

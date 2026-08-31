@@ -60,24 +60,32 @@ echo "reproduced: joining the row as-is raises TypeError before a single node is
 python3 "$WORK/generate.py" "$WORK/leaves.tsv" "$WORK/tree.tsv"
 rows=$(wc -l < "$WORK/tree.tsv" | tr -d ' ')
 [[ "$rows" -eq 63 ]] || { echo "expected 63 tree nodes, got $rows" >&2; exit 1; }
-python3 - "$WORK/tree.tsv" <<'PY'
+python3 - "$WORK/tree.tsv" "$ROOT" <<'PY'
 import sys
 from collections import Counter
 from pathlib import Path
 rows = [line.split('\t') for line in Path(sys.argv[1]).read_text().splitlines()]
-assert all(len(row) == 6 for row in rows), 'every node row has six fields'
+root = Path(sys.argv[2])
+assert all(len(row) == 8 for row in rows), 'every node row has eight fields'
 depths = Counter(int(row[1]) for row in rows)
 assert depths == Counter({0: 1, 1: 2, 2: 4, 3: 8, 4: 16, 5: 32}), depths
 paths = [row[0] for row in rows]
 assert len(set(paths)) == 63, 'every node path is unique'
 assert paths[0] == 'R', paths[0]
-for node, depth, _text, _criterion, left, right in rows:
+for node, depth, _text, _criterion, left, right, criterion_path, criterion_marker in rows:
     if int(depth) == 5:
         assert (left, right) == ('', ''), f'leaf {node} claims children'
+        assert criterion_path and criterion_marker, f'leaf {node} has no external criterion'
+        assert criterion_marker in (root / criterion_path).read_text(), (
+            node, criterion_path, criterion_marker
+        )
     else:
         prefix = '' if node == 'R' else node + '.'
         assert (left, right) == (prefix + '1', prefix + '2'), (node, left, right)
         assert left in paths and right in paths, (node, left, right)
+        assert (criterion_path, criterion_marker) == ('', ''), (
+            node, criterion_path, criterion_marker
+        )
 leaves = [row for row in rows if int(row[1]) == 5]
 assert len({row[2] for row in leaves}) == 32, 'the 32 leaves are distinctly worded'
 PY

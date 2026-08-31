@@ -440,7 +440,10 @@ fn a_task_label_does_not_become_part_of_the_inspection_query() {
     let pattern = search["pattern"]
         .as_str()
         .expect("the grep pattern must be a string");
-    assert!(pattern.split('|').any(|term| term == "children"), "{search}");
+    assert!(
+        pattern.split('|').any(|term| term == "children"),
+        "{search}"
+    );
     for label_word in ["atomic", "task", "l01:"] {
         assert!(
             !pattern.split('|').any(|term| term == label_word),

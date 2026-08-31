@@ -18,6 +18,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const LADDER: &str = "experiments/issue_1028_agent_cli_ladder/run.sh";
+const NODE_VERIFIER: &str = "experiments/issue_1028_agent_cli_ladder/verify-node.sh";
 const EXPERIMENT: &str =
     "experiments/issue_1066_self_development/reproduce-ladder-tree-generation.sh";
 
@@ -61,6 +62,8 @@ struct Node {
     criterion: String,
     left: String,
     right: String,
+    criterion_path: String,
+    criterion_marker: String,
 }
 
 /// Run the committed generator over the committed leaves and read back the tree.
@@ -101,7 +104,7 @@ fn generate_tree(directory: &Path) -> Vec<Node> {
         .lines()
         .map(|line| {
             let fields = line.split('\t').collect::<Vec<_>>();
-            assert_eq!(fields.len(), 6, "every node row has six fields: {line:?}");
+            assert_eq!(fields.len(), 8, "every node row has eight fields: {line:?}");
             Node {
                 path: fields[0].to_owned(),
                 depth: fields[1]
@@ -111,6 +114,8 @@ fn generate_tree(directory: &Path) -> Vec<Node> {
                 criterion: fields[3].to_owned(),
                 left: fields[4].to_owned(),
                 right: fields[5].to_owned(),
+                criterion_path: fields[6].to_owned(),
+                criterion_marker: fields[7].to_owned(),
             }
         })
         .collect()
@@ -121,6 +126,258 @@ fn temporary_directory(label: &str) -> PathBuf {
     let _ = fs::remove_dir_all(&directory);
     fs::create_dir_all(&directory).expect("temporary directory");
     directory
+}
+
+fn git(directory: &Path, args: &[&str]) {
+    let output = Command::new("git")
+        .arg("-C")
+        .arg(directory)
+        .args(args)
+        .output()
+        .expect("run git in node-verifier fixture");
+    assert!(
+        output.status.success(),
+        "git {args:?} failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+fn node_verifier_fixture(label: &str) -> (PathBuf, PathBuf) {
+    let directory = temporary_directory(label);
+    git(&directory, &["init", "--quiet"]);
+    git(&directory, &["config", "user.name", "Ladder Fixture"]);
+    git(
+        &directory,
+        &["config", "user.email", "ladder@example.invalid"],
+    );
+    fs::write(
+        directory.join("README.md"),
+        "fixture\nstorage_field=children\npub children: Vec<Self>,\n",
+    )
+    .expect("write fixture seed");
+    git(&directory, &["add", "README.md"]);
+    git(&directory, &["commit", "--quiet", "-m", "fixture"]);
+    let proof = directory.join(".agent-ladder/node-1.1-proof.md");
+    fs::create_dir_all(proof.parent().expect("proof parent")).expect("create proof directory");
+    fs::write(
+        &proof,
+        "node_path=1.1\nThe repository inspection produced a concrete recorded result.\n",
+    )
+    .expect("write proof");
+    (directory, proof)
+}
+
+fn run_node_verifier(
+    directory: &Path,
+    proof: &Path,
+    depth: &str,
+    left: &str,
+    right: &str,
+    criterion_path: &str,
+    criterion_marker: &str,
+) -> std::process::Output {
+    Command::new(root().join(NODE_VERIFIER))
+        .arg(directory)
+        .arg(proof)
+        .arg("1.1")
+        .arg(depth)
+        .arg(left)
+        .arg(right)
+        .arg(criterion_path)
+        .arg(criterion_marker)
+        .output()
+        .expect("run the committed node verifier")
+}
+
+#[test]
+fn the_node_verifier_rejects_a_proof_without_a_repository_effect() {
+    let (directory, proof) = node_verifier_fixture("proof-only");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        "storage_field=children",
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "missing_effect"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_accepts_a_non_hollow_proof_and_new_leaf_effect() {
+    let (directory, proof) = node_verifier_fixture("leaf-effect");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=The requested repository task observed storage_field=children.\n",
+    )
+    .expect("write leaf effect");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        "storage_field=children",
+    );
+
+    assert!(
+        output.status.success(),
+        "{}{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "ok");
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_does_not_treat_source_generics_as_placeholders() {
+    let (directory, proof) = node_verifier_fixture("source-generics");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=Line 79: pub children: Vec<Self>,\n",
+    )
+    .expect("write leaf effect containing Rust generics");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        "pub children: Vec<Self>",
+    );
+
+    assert!(
+        output.status.success(),
+        "{}{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_rejects_an_entire_placeholder_result() {
+    let (directory, proof) = node_verifier_fixture("placeholder-result");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=<task result goes here>\n",
+    )
+    .expect("write placeholder leaf effect");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        "storage_field=children",
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "placeholder_effect_result"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_requires_both_children_in_a_composite_effect() {
+    let (directory, proof) = node_verifier_fixture("composite-effect");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=2\nnode_kind=composite\nleft_child=1.1.1\nresult=The requested child results were composed into this checked effect.\n",
+    )
+    .expect("write incomplete composite effect");
+
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "missing_right_child"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_rejects_a_delivery_status_as_the_task_result() {
+    let (directory, proof) = node_verifier_fixture("delivery-status");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=Recorded the findings in the requested proof file.\n",
+    )
+    .expect("write status-only effect");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        "storage_field=children",
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "status_only_effect_result"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_rejects_a_leaf_effect_unrelated_to_its_external_criterion() {
+    let (directory, proof) = node_verifier_fixture("unrelated-leaf-effect");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=The package contains several unrelated source modules.\n",
+    )
+    .expect("write unrelated leaf effect");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        "storage_field=children",
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "unverified_leaf_result"
+    );
+    let _ = fs::remove_dir_all(directory);
 }
 
 #[test]
@@ -158,7 +415,25 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
                 "leaf {} must not claim children",
                 node.path,
             );
-            assert_eq!(node.criterion, "observable evidence exists");
+            assert_eq!(node.criterion, "new_leaf_effect");
+            assert!(
+                !node.criterion_path.is_empty(),
+                "{} criterion path",
+                node.path
+            );
+            assert!(
+                !node.criterion_marker.is_empty(),
+                "{} criterion marker",
+                node.path
+            );
+            let criterion_source = read(&node.criterion_path);
+            assert!(
+                criterion_source.contains(&node.criterion_marker),
+                "{} external criterion {:?} is absent from {}",
+                node.path,
+                node.criterion_marker,
+                node.criterion_path,
+            );
         } else {
             // Exactly two children, named by the binary 1/2 convention, and both
             // of them are nodes the ladder will actually select.
@@ -181,7 +456,17 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
             );
             assert!(paths.contains(&node.left), "missing {}", node.left);
             assert!(paths.contains(&node.right), "missing {}", node.right);
-            assert_eq!(node.criterion, "all_children_pass");
+            assert_eq!(node.criterion, "new_composite_effect");
+            assert!(
+                node.criterion_path.is_empty(),
+                "{} criterion path",
+                node.path
+            );
+            assert!(
+                node.criterion_marker.is_empty(),
+                "{} criterion marker",
+                node.path
+            );
         }
     }
 
