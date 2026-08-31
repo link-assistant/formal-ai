@@ -332,13 +332,15 @@ fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> 
     let terms = inspection_fact_terms(text, &query);
     let canonical_fact = literal_inspection_fact_query(&text.to_lowercase())
         .or_else(|| serialized_relationship_fact_query(text));
-    // A canonical fact expression identifies the implementation independently
-    // of its module. An inferred code-shaped subject can name a subsystem (for
+    // A canonical fact expression identifies its source independently of its
+    // module. An inferred code-shaped subject can name a subsystem (for
     // example `task-strategy`) whose implementation lives in a differently
-    // named file, so it must not exclude the canonical source fact.
+    // named file, so it must not exclude the canonical source fact. The
+    // seed-declared artifact kind still distinguishes regression assertions
+    // from production implementation.
     let include = canonical_fact
         .as_ref()
-        .map(|_| "src/**/*".to_owned())
+        .map(|_| canonical_fact_filename_filter(text))
         .or_else(|| inspection_filename_filter(text, &query));
     if let Some(pattern) = canonical_fact {
         return Some(WorkspaceInspectionSearch {
@@ -362,6 +364,14 @@ fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> 
         pattern,
         include,
     })
+}
+
+fn canonical_fact_filename_filter(text: &str) -> String {
+    if seed::lexicon().mentions_role(seed::ROLE_CODING_TEST_ARTIFACT_KIND, text) {
+        "tests/**/*".to_owned()
+    } else {
+        "src/**/*".to_owned()
+    }
 }
 
 /// Content words that describe the fact requested by a workspace inspection.

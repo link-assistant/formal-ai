@@ -44,6 +44,11 @@ meanings
     lexeme en
       surface
         text "assistant name"
+  associations
+    defined-by word_surface
+    lexeme en
+      surface
+        text "associations"
   browser_to_desktop
     defined-by flow
     lexeme en

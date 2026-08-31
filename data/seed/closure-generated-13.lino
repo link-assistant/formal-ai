@@ -19,6 +19,11 @@ meanings
     lexeme en
       surface
         text "archive round trip"
+  association
+    defined-by word_surface
+    lexeme en
+      surface
+        text "association"
   bootstrap-icons
     defined-by concept
     lexeme en

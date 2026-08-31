@@ -359,6 +359,11 @@ meanings
     lexeme en
       surface
         text "refusing"
+  relationships
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relationships"
   repositories
     defined-by word_surface
     lexeme en

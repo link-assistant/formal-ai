@@ -9,6 +9,11 @@ meanings
     lexeme en
       surface
         text "prompt pattern"
+  adapters
+    defined-by word_surface
+    lexeme en
+      surface
+        text "adapters"
   agentic_action_find_home
     defined-by intent
     lexeme en
@@ -369,6 +374,11 @@ meanings
     lexeme en
       surface
         text "render"
+  renderer
+    defined-by word_surface
+    lexeme en
+      surface
+        text "renderer"
   response_agent_suggestion_active_en
     defined-by response_template
     lexeme en

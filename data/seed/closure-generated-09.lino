@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "response template"
+  adapter
+    defined-by word_surface
+    lexeme en
+      surface
+        text "adapter"
   agent_suggestion_active
     defined-by intent
     lexeme en
@@ -1004,6 +1009,11 @@ meanings
     lexeme en
       surface
         text "sequential compose"
+  serialization
+    defined-by word_surface
+    lexeme en
+      surface
+        text "serialization"
   solver
     defined-by concept
     lexeme en

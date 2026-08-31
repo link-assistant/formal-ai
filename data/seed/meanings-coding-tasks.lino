@@ -23,6 +23,7 @@ meanings
   coding_test
     defined-by code
     role coding_artifact_kind
+    role coding_test_artifact_kind
     precondition "a coding request contains this concept surface"
     effect "the artifact-kind slot is bound to test"
     unit "not applicable"
@@ -30,6 +31,8 @@ meanings
     lexeme en
       surface
         text test
+      surface
+        text regression
     lexeme ru
       surface
         text тест
@@ -434,6 +437,20 @@ meanings
       surface
         text "approved task strategies"
         action "TaskStrategyLedger::shipped"
+  coding_search_independent_leaf_lower_bound
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the asserted minimum decomposition leaf count"
+    effect "the requested fact is searched by the leaf-count comparison asserted in test source"
+    unit "not applicable"
+    example "minimum number of independently verifiable leaves"
+    lexeme en
+      surface
+        text "required lower bound on independently checkable leaves"
+        action "leaves.*len.*>="
+      surface
+        text "minimum number of independently verifiable leaves"
+        action "leaves.*len.*>="
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query

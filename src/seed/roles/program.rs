@@ -258,6 +258,9 @@ pub const ROLE_CODING_CONDITION_SUBJECT_KIND: &str = "coding_condition_subject_k
 /// implementation rather than a test, generated trace, or prose description.
 pub const ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND: &str =
     "coding_source_implementation_subject_kind";
+/// Semantic role: a source-artifact noun that denotes a test or regression
+/// rather than production implementation.
+pub const ROLE_CODING_TEST_ARTIFACT_KIND: &str = "coding_test_artifact_kind";
 /// Semantic role: a noun that makes an adjacent identifier the key of a
 /// relationship in a source representation.
 pub const ROLE_CODING_RELATIONSHIP_SUBJECT_KIND: &str = "coding_relationship_subject_kind";

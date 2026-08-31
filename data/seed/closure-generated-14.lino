@@ -989,6 +989,11 @@ meanings
     lexeme en
       surface
         text "thinking trace heading"
+  to_recursive_task
+    defined-by concept
+    lexeme en
+      surface
+        text "to recursive task"
   tool_fs_move
     defined-by tool
     lexeme en

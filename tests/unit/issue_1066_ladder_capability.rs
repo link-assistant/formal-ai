@@ -542,6 +542,29 @@ fn approved_task_strategies_target_the_ledger_entry_point() {
 }
 
 #[test]
+fn a_regression_lower_bound_searches_test_source() {
+    // A hyphenated scope such as `issue-scale` is prose, not necessarily a
+    // module name. More importantly, this request explicitly names a
+    // regression: its canonical fact belongs in test source, where the lower
+    // bound is asserted, rather than in the production implementation.
+    let arguments = planned_arguments(
+        "Review the issue-scale decomposition regression and identify the minimum number of \
+         independently verifiable leaves.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "issue_scale");
+    assert_eq!(search["pattern"], "leaves.*len.*>=");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("tests/**/*"),
+        "a regression fact must be sought in test source: {search}"
+    );
+}
+
+#[test]
 fn a_workspace_inspection_search_targets_the_fact_being_requested() {
     // Searching only for `task_decomposition` returns a hundred broad matches,
     // headed by release notes, before the field the caller asked about. The

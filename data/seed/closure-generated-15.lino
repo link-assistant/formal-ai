@@ -434,6 +434,11 @@ meanings
     lexeme en
       surface
         text "removed"
+  rendering
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rendering"
   response_agent_procedure_verification_failed_hi
     defined-by response_template
     lexeme en
