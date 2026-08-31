@@ -376,10 +376,12 @@ pub(super) fn workspace_inspection_terms_for_task(prompt: &str) -> Vec<String> {
 
 fn inspection_fact_terms(text: &str, query: &str) -> Vec<String> {
     let mut terms = Vec::new();
-    for token in search_tokens(text) {
+    let scoped = inspection_subject_and_following(text, query);
+    let normalized_query = query.to_lowercase();
+    for token in search_tokens(scoped) {
         let normalized = token.replace('-', "_").to_lowercase();
         if normalized.len() < 3
-            || normalized == query.to_lowercase()
+            || normalized == normalized_query
             || normalized.chars().all(|character| character.is_ascii_digit())
             || is_prose_word(&normalized)
             || seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &normalized)
@@ -391,6 +393,33 @@ fn inspection_fact_terms(text: &str, query: &str) -> Vec<String> {
         terms.push(normalized);
     }
     terms
+}
+
+/// The inspection subject and the request that follows it, without a wrapper.
+///
+/// Harnesses and orchestration layers commonly prefix a task with a numbered or
+/// classified label. The code-shaped subject is the first token that belongs to
+/// the repository question itself, so starting there removes an arbitrary
+/// prefix without having to know any of its words. Hyphenated prose and its
+/// underscored source spelling identify the same subject.
+fn inspection_subject_and_following<'a>(text: &'a str, query: &str) -> &'a str {
+    let hyphenated = query.replace('_', "-");
+    [query, hyphenated.as_str()]
+        .into_iter()
+        .filter_map(|spelling| ascii_case_insensitive_offset(text, spelling))
+        .min()
+        .and_then(|offset| text.get(offset..))
+        .unwrap_or(text)
+}
+
+fn ascii_case_insensitive_offset(text: &str, needle: &str) -> Option<usize> {
+    needle.is_ascii().then_some(())?;
+    text.char_indices()
+        .map(|(offset, _)| offset)
+        .find(|offset| {
+            text.get(*offset..offset + needle.len())
+                .is_some_and(|candidate| candidate.eq_ignore_ascii_case(needle))
+        })
 }
 
 fn module_filename_filter(query: &str) -> Option<String> {

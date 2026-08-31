@@ -424,6 +424,32 @@ fn a_workspace_inspection_search_targets_the_fact_being_requested() {
 }
 
 #[test]
+fn a_task_label_does_not_become_part_of_the_inspection_query() {
+    // A harness may number and classify the task before the colon. Those words
+    // describe the work item, not the repository fact after the colon. Letting
+    // `atomic` and `task` into the grep filled the result cap and then outranked
+    // the requested `children` declaration during evidence selection.
+    let arguments = planned_arguments(
+        "Atomic task L01: Inspect the existing task-decomposition data model and identify \
+         where a node stores its children.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    let pattern = search["pattern"]
+        .as_str()
+        .expect("the grep pattern must be a string");
+    assert!(pattern.split('|').any(|term| term == "children"), "{search}");
+    for label_word in ["atomic", "task", "l01:"] {
+        assert!(
+            !pattern.split('|').any(|term| term == label_word),
+            "task-label word {label_word:?} leaked into the search: {search}"
+        );
+    }
+}
+
+#[test]
 fn a_question_the_workspace_cannot_answer_still_reaches_the_open_web() {
     // *Verify* and *check* are not local words by themselves. What decides is
     // the subject: a request whose subject is ordinary prose, or that names an

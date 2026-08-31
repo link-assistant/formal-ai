@@ -293,9 +293,9 @@ fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
     // release-note hit ahead of the source declaration the caller requested.
     // The delivery field must carry the grounded answer, not merely the first
     // quotation in transport order.
-    let prompt = "Inspect the existing task_decomposition data model and identify where a node \
-                  stores its children. Record the finding in `audit/result.lino` with the exact \
-                  field line `result=`.";
+    let prompt = "Atomic task L01: Inspect the existing task_decomposition data model and \
+                  identify where a node stores its children. Record the finding in \
+                  `audit/result.lino` with the exact field line `result=`.";
     let matched = concat!(
         "Found 3 matches\n",
         "/tmp/work/CHANGELOG.md:\n",
