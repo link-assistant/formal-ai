@@ -232,6 +232,9 @@ pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
 /// Semantic role: a source artifact kind handled by the coding-task executor
 /// in addition to the general [`ROLE_PROGRAM_KIND`] vocabulary.
 pub const ROLE_CODING_ARTIFACT_KIND: &str = "coding_artifact_kind";
+/// Semantic role: a term that identifies a configured bound in prose or in a
+/// source identifier, such as `limit`, `bound`, `cap`, or `max`.
+pub const ROLE_CODING_BOUND_CUE: &str = "coding_bound_cue";
 /// Semantic role: a requested source item's visibility modifier.
 pub const ROLE_CODING_VISIBILITY: &str = "coding_visibility";
 /// Semantic role: a source-generation request's return operation.

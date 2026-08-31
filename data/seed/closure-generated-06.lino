@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "called"
+  cap
+    defined-by word_surface
+    lexeme en
+      surface
+        text "cap"
   cause
     defined-by concept
     lexeme en

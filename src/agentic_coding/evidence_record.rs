@@ -323,7 +323,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
     selected
 }
 
-fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize) {
+fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -346,8 +346,24 @@ fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize)
     } else {
         0
     };
+    let bound_requested = terms.iter().any(|term| {
+        crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, term)
+    });
+    let semantic_overlap = usize::from(
+        bound_requested
+            && words.iter().any(|word| {
+                crate::seed::lexicon()
+                    .mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, word)
+            }),
+    );
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
-    (requested_property, declaration_shape, overlap, code_shape)
+    (
+        requested_property,
+        declaration_shape,
+        semantic_overlap,
+        overlap,
+        code_shape,
+    )
 }
 
 /// Local bindings can repeat the type of the model field a representation

@@ -254,6 +254,11 @@ meanings
     lexeme en
       surface
         text "local search scope listing"
+  max
+    defined-by word_surface
+    lexeme en
+      surface
+        text "max"
   missing_russian_label_todo
     defined-by concept
     lexeme en

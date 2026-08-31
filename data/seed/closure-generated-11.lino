@@ -89,6 +89,11 @@ meanings
     lexeme en
       surface
         text "barack obama"
+  ceiling
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ceiling"
   clones
     defined-by word_surface
     lexeme en

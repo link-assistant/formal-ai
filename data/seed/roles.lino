@@ -79,6 +79,8 @@ roles
     kind predicate
   coding_artifact_kind
     kind predicate
+  coding_bound_cue
+    kind predicate
   coding_division_action
     kind predicate
   coding_identifier_rename_action

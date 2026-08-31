@@ -340,7 +340,7 @@ fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
 }
 
 #[test]
-fn a_usage_comment_is_not_ranked_as_a_source_declaration() {
+fn a_workspace_result_prefers_the_authoritative_bounded_field() {
     // Live L02 searched broadly for the task-decomposition depth limit. The
     // first result was an example's `//! Usage: ... [max_depth]` comment. Its
     // label-and-colon shape looked like a declaration and its filename repeated
@@ -349,7 +349,7 @@ fn a_usage_comment_is_not_ranked_as_a_source_declaration() {
                   record how depth limits are represented. Record the finding in \
                   `audit/result.lino` with the exact field line `result=`.";
     let matched = concat!(
-        "Found 3 matches\n",
+        "Found 6 matches\n",
         "/tmp/work/src/solver_handlers/task_decomposition.rs:\n",
         "  Line 65:     max_depth: u8,\n",
         "\n",
@@ -359,6 +359,7 @@ fn a_usage_comment_is_not_ranked_as_a_source_declaration() {
         "  Line 220:         \"a generous depth must reach atomic leaves: {:?}\",\n",
         "\n",
         "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 72:     pub depth: u8,\n",
         "  Line 180:     pub max_depth: u8,",
     );
     let messages = vec![

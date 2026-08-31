@@ -206,6 +206,30 @@ meanings
     lexeme zh
       surface
         text "值为 …"
+  coding_bound
+    defined-by code
+    role coding_bound_cue
+    precondition "a workspace-inspection fact or source identifier contains this concept surface"
+    effect "the fact or identifier is read as naming a configured bound"
+    unit "not applicable"
+    example "max_items is the limit on item count"
+    lexeme en
+      surface
+        text limit
+      surface
+        text limits
+      surface
+        text bound
+      surface
+        text bounds
+      surface
+        text cap
+      surface
+        text ceiling
+      surface
+        text maximum
+      surface
+        text max
   coding_search_string
     defined-by code
     role coding_search_subject_kind
