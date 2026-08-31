@@ -516,8 +516,18 @@ fn literal_inspection_fact_query(normalized: &str) -> Option<String> {
 /// inspect. Searching for the quoted key reflects source serialization syntax
 /// and prevents generic words around it from exhausting a client's result cap.
 fn serialized_relationship_fact_query(text: &str) -> Option<String> {
+    serialized_relationship_term(text).map(|term| format!(r#""{term}""#))
+}
+
+/// The relationship noun whose serialization the request asks to inspect.
+///
+/// Keep this structural extraction shared with evidence ranking: generic fact
+/// terms deliberately discard some grammar, while the relationship immediately
+/// before a seed-declared relationship kind is the identity-bearing subject.
+pub(super) fn serialized_relationship_term(text: &str) -> Option<String> {
     let lexicon = seed::lexicon();
-    if !lexicon.mentions_role(seed::ROLE_CODING_SERIALIZATION_ACTION, text) {
+    let normalized = crate::engine::normalize_prompt(text);
+    if !lexicon.mentions_role(seed::ROLE_CODING_SERIALIZATION_ACTION, &normalized) {
         return None;
     }
     let tokens = search_tokens(text).collect::<Vec<_>>();
@@ -527,7 +537,7 @@ fn serialized_relationship_fact_query(text: &str) -> Option<String> {
             valid_search_identifier(pair[0])
                 && lexicon.mentions_role(seed::ROLE_CODING_RELATIONSHIP_SUBJECT_KIND, pair[1])
         })
-        .map(|pair| format!(r#""{}""#, pair[0].to_ascii_lowercase()))
+        .map(|pair| pair[0].to_ascii_lowercase())
 }
 
 /// The most identifier-shaped token in `prompt`, if it holds one.

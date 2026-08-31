@@ -345,6 +345,13 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         crate::seed::ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND,
         task,
     );
+    let serialized_relationship =
+        super::shell_command::serialized_relationship_term(task);
+    trace_route(
+        "evidence_record_relationship",
+        serialized_relationship.as_deref().unwrap_or("none"),
+    );
+    trace_route("evidence_record_terms", &terms.join(","));
     let Some(&(mut selected, selected_authority)) = candidates.first() else {
         return "";
     };
@@ -353,6 +360,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         &terms,
         condition_requested,
         implementation_requested,
+        serialized_relationship.as_deref(),
         selected_authority,
     );
     for (candidate, authority) in candidates.into_iter().skip(1) {
@@ -361,6 +369,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
             &terms,
             condition_requested,
             implementation_requested,
+            serialized_relationship.as_deref(),
             authority,
         );
         if score > selected_score {
@@ -368,6 +377,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
             selected_score = score;
         }
     }
+    trace_route("evidence_record_selected", selected);
     selected
 }
 
@@ -376,8 +386,9 @@ fn relevance_score(
     terms: &[String],
     condition_requested: bool,
     implementation_requested: bool,
+    serialized_relationship: Option<&str>,
     source_authority: usize,
-) -> (usize, usize, usize, usize, usize, usize, usize, usize, usize) {
+) -> (usize, usize, usize, usize, usize, usize, usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -411,10 +422,18 @@ fn relevance_score(
             }),
     );
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
+    let direct_serialized_identity = usize::from(serialized_relationship.is_some_and(
+        |relationship| {
+            words
+                .windows(2)
+                .any(|pair| pair[0] == relationship && pair[1] == "id")
+        },
+    ));
     (
         usize::from(
             implementation_requested && !is_quoted_or_commented_source(source_text(line)),
         ),
+        direct_serialized_identity,
         requested_property,
         usize::from(condition_requested && looks_like_condition(line)),
         source_authority,

@@ -447,7 +447,13 @@ fn a_rendering_result_records_the_serialization_statement() {
                   relationships are serialized. Record the finding in `audit/result.lino` \
                   with the exact field line `result=`.";
     let matched = concat!(
-        "Found 3 matches\n",
+        "Found 5 matches\n",
+        "/tmp/work/src/meta_reasoning.rs:\n",
+        "  Line 101:             pairs.push((\"child\", child.unit_id.clone()));\n",
+        "\n",
+        "/tmp/work/src/meta_frame.rs:\n",
+        "  Line 419:             pairs.push((\"child\", child.unit_id.clone()));\n",
+        "\n",
         "/tmp/work/src/task_decomposition.rs:\n",
         "  Line 64:     /// numbering of the rendered list; durable child links use content ids.\n",
         "  Line 152:             pairs.push((\"child\", child.id.clone()));\n",
