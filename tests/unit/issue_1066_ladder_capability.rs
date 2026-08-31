@@ -480,6 +480,28 @@ fn a_documented_invariant_searches_repository_documentation() {
 }
 
 #[test]
+fn a_plainly_worded_binary_invariant_searches_documentation() {
+    // The invariant remains a repository fact when it is stated as ordinary
+    // prose without the hyphenated name that can double as a source token.
+    let arguments = planned_arguments(
+        "Verify every tested internal node has exactly two children and never three or more.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "binary_decomposition_invariant");
+    assert_eq!(
+        search["pattern"],
+        "Every internal node has exactly two children"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("docs/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an

@@ -420,6 +420,20 @@ meanings
       surface
         text "leaf without an observable completion criterion"
         action "unresolved_single_need"
+  binary_decomposition_invariant
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request plainly states the binary decomposition invariant"
+    effect "the repository-search subject is bound to the binary decomposition invariant"
+    unit "not applicable"
+    example "internal node has exactly two children"
+    lexeme en
+      surface
+        text "internal node has exactly two children"
+        action binary_decomposition_invariant
+      surface
+        text "internal nodes have exactly two children"
+        action binary_decomposition_invariant
   coding_search_binary_decomposition_invariant
     defined-by code
     role coding_search_fact_query
@@ -434,6 +448,12 @@ meanings
         action "Every internal node has exactly two children"
       surface
         text "exactly two children requirement"
+        action "Every internal node has exactly two children"
+      surface
+        text "internal node has exactly two children"
+        action "Every internal node has exactly two children"
+      surface
+        text "internal nodes have exactly two children"
         action "Every internal node has exactly two children"
   coding_search_power_of_two_levels_invariant
     defined-by code
