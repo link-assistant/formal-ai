@@ -247,6 +247,7 @@ pub(super) fn plan_evidence_record_step(
         .filter(|answer| !substantive_result_line(answer, &obligation.residual).is_empty())
         .map(str::to_owned);
     let residual_messages = with_residual_request(messages, &obligation.residual)?;
+    let is_workspace_observation = observed.is_some();
     let answer = match observed {
         Some(answer) => answer,
         None => match plan_chat_step(&residual_messages, tool_names) {
@@ -262,7 +263,12 @@ pub(super) fn plan_evidence_record_step(
         },
     };
     trace_route("evidence_record", &obligation.target);
-    let content = render_obligation(&obligation, &answer);
+    let delivered_answer = if is_workspace_observation {
+        substantive_result_line(&answer, &obligation.residual)
+    } else {
+        &answer
+    };
+    let content = render_obligation(&obligation, delivered_answer);
     Some(plan_one(
         write_tool,
         write_arguments(&obligation.target, &content),
@@ -398,10 +404,10 @@ fn relevance_score(
 /// expression on its own line. Calls and declarations without a decision
 /// operator remain ordinary source facts.
 fn looks_like_condition(line: &str) -> bool {
-    let source = line
-        .split_once(": ")
-        .map_or(line, |(_, source)| source)
-        .trim();
+    let source = source_text(line);
+    if is_quoted_or_commented_source(source) {
+        return false;
+    }
     ["if ", "while ", "match ", "when "]
         .iter()
         .any(|prefix| source.starts_with(prefix))
@@ -415,10 +421,7 @@ fn looks_like_condition(line: &str) -> bool {
 /// question asks about. They are declarations, but a public/type-level
 /// declaration is the more authoritative description when both are present.
 fn looks_like_local_binding(line: &str) -> bool {
-    let source = line
-        .split_once(": ")
-        .map_or(line, |(_, source)| source)
-        .trim();
+    let source = source_text(line);
     ["let ", "var ", "auto ", "local "]
         .iter()
         .any(|prefix| source.starts_with(prefix))
@@ -428,10 +431,7 @@ fn looks_like_local_binding(line: &str) -> bool {
 /// authoritatively than an unqualified function parameter with the same name
 /// and type.
 fn looks_like_exposed_declaration(line: &str) -> bool {
-    let source = line
-        .split_once(": ")
-        .map_or(line, |(_, source)| source)
-        .trim();
+    let source = source_text(line);
     source.split_whitespace().next().is_some_and(|keyword| {
         matches!(keyword, "pub" | "public" | "export" | "exported")
             || keyword.starts_with("pub(")
@@ -445,20 +445,8 @@ fn looks_like_exposed_declaration(line: &str) -> bool {
 /// Namespace/generic punctuation such as `sum::<usize>()` is deliberately not
 /// a declaration.
 fn looks_like_declaration(line: &str) -> bool {
-    let source = line
-        .split_once(": ")
-        .map_or(line, |(_, source)| source)
-        .trim();
-    if source.starts_with("//")
-        || source.starts_with("/*")
-        || source.starts_with('*')
-        || source.starts_with('#')
-        || source.starts_with("<!--")
-        || source
-            .chars()
-            .next()
-            .is_some_and(|character| matches!(character, '"' | '\'' | '`'))
-    {
+    let source = source_text(line);
+    if is_quoted_or_commented_source(source) {
         return false;
     }
     let Some((left, right)) = source.split_once(':') else {
@@ -475,6 +463,25 @@ fn looks_like_declaration(line: &str) -> bool {
                         .chars()
                         .all(|character| character.is_ascii_alphanumeric() || character == '_')
             })
+}
+
+fn source_text(line: &str) -> &str {
+    line
+        .split_once(": ")
+        .map_or(line, |(_, source)| source)
+        .trim()
+}
+
+fn is_quoted_or_commented_source(source: &str) -> bool {
+    source.starts_with("//")
+        || source.starts_with("/*")
+        || source.starts_with('*')
+        || source.starts_with('#')
+        || source.starts_with("<!--")
+        || source
+            .chars()
+            .next()
+            .is_some_and(|character| matches!(character, '"' | '\'' | '`'))
 }
 
 fn is_match_count(line: &str) -> bool {

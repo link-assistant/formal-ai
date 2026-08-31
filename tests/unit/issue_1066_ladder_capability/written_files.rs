@@ -238,6 +238,15 @@ fn a_local_observation_satisfies_nested_artifacts_before_optional_web_research()
         }),
         "the local condition was not written to the proof: {writes:#?}",
     );
+    let proof = writes
+        .iter()
+        .find(|(path, _)| path.ends_with(".audit/readiness-proof.md"))
+        .map(|(_, content)| content)
+        .expect("the proof write");
+    assert!(
+        !proof.contains("Line 70:") && !proof.contains("Line 130:"),
+        "the evidence copied the entire search response instead of its concrete result: {proof}",
+    );
 }
 
 #[test]
