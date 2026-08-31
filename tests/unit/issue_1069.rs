@@ -82,6 +82,108 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     );
 }
 
+#[test]
+fn agent_compaction_continuation_resumes_the_summarized_task() {
+    let summary = "Conversation summary: Inspect the repository's queue model and identify \
+        where each queue stores its pending entries. Record the result in \
+        `.agent-evidence/queue.md`.\n\nTitle: Queue model inspection\n\nUser turns:\n  \
+        1. Inspect the repository's queue model and identify where each queue stores its \
+        pending entries. Record the result in `.agent-evidence/queue.md`.";
+    let messages = vec![
+        ChatMessage::user("What did we do so far?"),
+        ChatMessage::assistant(summary),
+        ChatMessage::user("Continue if you have next steps"),
+    ];
+    let tools = ["grep", "write", "websearch"];
+
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("a compacted Agent task must continue through its remaining tool steps");
+    };
+
+    assert!(
+        calls.iter().all(|call| {
+            !call
+                .arguments
+                .to_lowercase()
+                .contains("continue if you have next steps")
+        }),
+        "the Agent continuation phrase replaced the summarized task: {calls:#?}",
+    );
+    assert!(
+        calls.iter().any(|call| {
+            let arguments = call.arguments.to_lowercase();
+            arguments.contains("queue") && arguments.contains("model")
+        }),
+        "the compacted task was not restored: {calls:#?}",
+    );
+}
+
+#[test]
+fn repeated_agent_compaction_finds_an_embedded_summary_envelope() {
+    // A second live Agent compaction summarized the preceding compaction turn.
+    // Its assistant message no longer began with the envelope: it repeated the
+    // protocol continuation first, then embedded the recoverable task summary.
+    // The numbered user appendix was empty, so only the summary prose remained.
+    let summary = "Continue if you have next steps.  Conversation summary: Inspect the \
+        repository's task-decomposition data model and identify where a node stores its \
+        children. Create `agent-ladder-effects/node-1.1.1.1.1.lino` with these exact \
+        field lines: `node_path=1.1.1.1.1`, `node_depth=5`, `node_kind=leaf`, and \
+        `result=` followed by the observed result. Leave supporting evidence in . \
+        agent-ladder/node-1.1.1.1.1-proof.md. The first line must be exactly \
+        node_path=1.1.1.1.1 and the body must state the concrete result.\n\nTitle: What \
+        did we do so\n\nUser turns:\n  1.\n  2. Continue if you have next steps";
+    let messages = vec![
+        ChatMessage::user("What did we do so far?"),
+        ChatMessage::assistant(summary),
+        ChatMessage::user("Continue if you have next steps"),
+    ];
+    let tools = ["grep", "write", "websearch"];
+
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("a repeatedly compacted Agent task must resume from its embedded summary");
+    };
+
+    assert!(
+        calls.iter().all(|call| {
+            !call
+                .arguments
+                .to_lowercase()
+                .contains("continue if you have next steps")
+        }),
+        "the outer continuation replaced the embedded summarized task: {calls:#?}",
+    );
+    assert!(
+        calls.iter().any(|call| {
+            let arguments = call.arguments.to_lowercase();
+            arguments.contains("task") && arguments.contains("decomposition")
+        }),
+        "the embedded task summary was not restored: {calls:#?}",
+    );
+}
+
+#[test]
+fn issue_1069_delivery_recovers_exact_paths_from_the_preserved_user_turn() {
+    let summary = "Conversation summary: Create `. agent-evidence/queue.txt` containing \
+        queue ready.\n\nTitle: Queue evidence\n\nUser turns:\n  1. Create \
+        `.agent-evidence/queue.txt` containing queue ready.\n  2.";
+    let messages = vec![
+        ChatMessage::user("What did we do so far?"),
+        ChatMessage::assistant(summary),
+        ChatMessage::user("Continue if you have next steps"),
+    ];
+
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["write"]) else {
+        panic!("the exact compacted write must remain executable");
+    };
+
+    assert!(
+        calls
+            .iter()
+            .any(|call| call.arguments.contains(".agent-evidence/queue.txt")),
+        "the prose summary's whitespace corruption replaced the exact user turn: {calls:#?}",
+    );
+}
+
 #[derive(Default)]
 struct RefusingExecutor {
     attempted: Vec<String>,

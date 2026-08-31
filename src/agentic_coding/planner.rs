@@ -160,6 +160,15 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let received = latest_user_text(messages)?;
     trace_route("agentic_received", &received);
+    // Agent compacts a long tool loop by asking the model to summarize it, then
+    // starts the next request with the protocol turn "Continue if you have next
+    // steps". The work is still present, but only inside the assistant's
+    // `Conversation summary:` envelope. Treating the protocol turn as a fresh
+    // request loses that work and sends the sentence itself to web search.
+    // Recover only our own summary envelope, immediately before the exact
+    // continuation turn; ordinary user requests that happen to say "continue"
+    // keep their normal meaning.
+    let effective = compacted_agent_task(messages, &received).unwrap_or(received);
     // An *unmarked* harness preamble is still the caller talking (issue #907,
     // follow-up). `<session_context>`-style markup is stripped upstream in
     // `crate::protocol`, but Hive Mind's adapters concatenated their workflow
@@ -175,7 +184,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // that followed. The general planner already read the objective this way
     // (issue #904); every other route now reads it the same way, so one
     // boundary serves the whole router rather than one recipe.
-    let task = objective_text(&received).to_owned();
+    let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
     if is_conversation_control_prompt(&task) || looks_like_skill_description(&task) {
         return None;
@@ -565,6 +574,96 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
 /// The text of the most recent `user` turn.
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
     crate::protocol::latest_user_request(messages)
+}
+
+/// Restore the objective carried through Agent's compaction protocol.
+fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
+    if crate::engine::normalize_prompt(latest) != "continue if you have next steps" {
+        return None;
+    }
+    let latest_user = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
+    messages[..latest_user]
+        .iter()
+        .rev()
+        .filter(|message| message.role.eq_ignore_ascii_case("assistant"))
+        .filter_map(|message| {
+            let envelope = message.content.plain_text();
+            // Agent may compact an already compacted conversation. In that
+            // case its new summary repeats the protocol continuation before
+            // embedding the prior `Conversation summary:` envelope. The
+            // continuation remains trusted only as a protocol trigger; recover
+            // the objective from the last summary marker in the assistant's
+            // compaction response rather than requiring that marker at byte 0.
+            let summary = envelope
+                .rsplit_once("Conversation summary:")?
+                .1
+                .trim_start();
+            preserved_first_user_turn(summary).or_else(|| {
+                summary
+                    .split_once("\n\nTitle:")
+                    .map(|(task, _)| task.trim())
+                    .filter(|task| !task.is_empty())
+                    .map(str::to_owned)
+            })
+            .map(repair_compacted_dot_paths)
+        })
+        .next()
+}
+
+/// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
+///
+/// A live compaction changed `.agent-ladder/node.md` into
+/// `. agent-ladder/node.md`. Only a standalone dot followed by a safe
+/// slash-bearing relative path has this whitespace removed; ordinary prose and
+/// mathematical uses of a period remain untouched.
+fn repair_compacted_dot_paths(mut task: String) -> String {
+    let mut search_from = 0;
+    while let Some(relative_dot) = task[search_from..].find(". ") {
+        let dot = search_from + relative_dot;
+        let standalone = task[..dot]
+            .chars()
+            .next_back()
+            .is_none_or(char::is_whitespace);
+        let after_dot = dot + 1;
+        let Some(non_space) = task[after_dot..].find(|character: char| !character.is_whitespace())
+        else {
+            break;
+        };
+        let path_start = after_dot + non_space;
+        let path_end = task[path_start..]
+            .find(char::is_whitespace)
+            .map_or(task.len(), |offset| path_start + offset);
+        let token = task[path_start..path_end]
+            .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | ';'))
+            .trim_end_matches(['.', '!', '?']);
+        let candidate = format!(".{token}");
+        if standalone
+            && token.contains('/')
+            && super::write_request::safe_relative_path(&candidate)
+        {
+            task.replace_range(after_dot..path_start, "");
+            search_from = dot + 1;
+        } else {
+            search_from = path_start;
+        }
+    }
+    task
+}
+
+/// The summarizer keeps exact user bytes after its prose summary.
+///
+/// Its prose is allowed to normalize Markdown and, in a live Agent run, changed
+/// `.agent-ladder` into `. agent-ladder`. The numbered `User turns` appendix is
+/// the lossless copy, so prefer its first task turn and fall back to the prose
+/// only for older summaries that did not include the appendix.
+fn preserved_first_user_turn(summary: &str) -> Option<String> {
+    let turns = summary.split_once("\n\nUser turns:\n")?.1;
+    let first = turns.strip_prefix("  1. ")?;
+    let end = first.find("\n  2.").unwrap_or(first.len());
+    let task = first[..end].trim();
+    (!task.is_empty()).then(|| task.to_owned())
 }
 
 /// Emit a `route=value` planner-routing trace line to stderr when

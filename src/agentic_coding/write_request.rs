@@ -194,13 +194,53 @@ pub(super) fn is_stated_write_target(request: &str, path: &str) -> bool {
 pub(super) fn pinned_first_line(sentence: &str) -> Option<String> {
     let lowered = sentence.to_lowercase();
     let (_, end) = first_prefix_lead_end(&lowered, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
-    let line = sentence
+    let raw = sentence
         .get(end..)?
         .trim()
         .trim_start_matches([':', '-', '\u{2014}', '\u{2013}'])
-        .trim()
+        .trim();
+    let line = delimited_first_line(raw)
+        .or_else(|| unquoted_machine_first_line(raw))
+        .unwrap_or(raw)
         .trim_matches(['`', '"', '\'']);
     (!line.is_empty()).then(|| line.to_owned())
+}
+
+/// An explicitly delimited opening line, without the presentation delimiters.
+///
+/// The closing delimiter is also a grammatical boundary: in "exactly `id=7`
+/// and the body ...", the coordinated body constraint is not part of the
+/// machine-readable header.
+fn delimited_first_line(raw: &str) -> Option<&str> {
+    let delimiter = raw.chars().next()?;
+    if !matches!(delimiter, '`' | '"' | '\'') {
+        return None;
+    }
+    let after_open = raw.get(delimiter.len_utf8()..)?;
+    let close = after_open.find(delimiter)?;
+    after_open.get(..close)
+}
+
+/// Stop an unquoted machine header before a coordinated second requirement.
+///
+/// Natural-language lines such as "ready and waiting" remain whole. A compact
+/// assignment/header token (`name=value`, `name:value`) followed by a
+/// seed-defined procedure separator is unambiguous: the separator begins the
+/// next clause, as it did in the live Agent ladder prompt.
+fn unquoted_machine_first_line(raw: &str) -> Option<&str> {
+    let lowered = raw.to_lowercase();
+    bare_surfaces(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR)
+        .into_iter()
+        .filter_map(|separator| {
+            let marker = format!(" {separator} ");
+            lowered.find(&marker).and_then(|boundary| {
+                let candidate = raw.get(..boundary)?.trim();
+                (!candidate.contains(char::is_whitespace)
+                    && candidate.contains(['=', ':']))
+                .then_some(candidate)
+            })
+        })
+        .min_by_key(|candidate| candidate.len())
 }
 /// The opening line the request pins, wherever in the request it pins it.
 ///

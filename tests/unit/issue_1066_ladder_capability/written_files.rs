@@ -61,6 +61,105 @@ fn a_written_file_starts_with_the_line_the_same_request_pinned() {
 }
 
 #[test]
+fn an_unquoted_pinned_line_stops_before_the_following_body_clause() {
+    // The real CLI ladder states a machine-readable opening line without
+    // Markdown quotes, then coordinates a second requirement with "and". The
+    // line parser used to swallow that body requirement into the header.
+    let prompt = "Inspect the task model and record the concrete result. Leave supporting \
+        evidence in `.agent-ladder/node-proof.md`. The first line must be exactly \
+        node_path=1.1.1.1.1 and the body must state the concrete result.";
+
+    let writes = super::planned_writes_to(prompt, ".agent-ladder/node-proof.md");
+    assert!(
+        writes
+            .iter()
+            .any(|content| content.lines().next() == Some("node_path=1.1.1.1.1")),
+        "the coordinated body clause was included in the exact first line: {writes:#?}",
+    );
+}
+
+#[test]
+fn issue_1069_delivery_keeps_each_artifacts_own_constraints() {
+    let prompt = "Inspect the existing queue data model and identify where a queue stores its \
+        pending entries. Create `audit-effects/queue.lino` with these exact field lines: \
+        `subject=queue`, `kind=inspection`, and `result=` followed by the observed result. \
+        Leave supporting evidence in `.audit/queue-proof.md`. The first line must be exactly \
+        `proof_for=queue`.";
+
+    let proof = super::planned_writes_to(prompt, ".audit/queue-proof.md");
+    assert!(
+        proof
+            .iter()
+            .any(|content| content.starts_with("proof_for=queue\n")),
+        "the proof inherited no opening-line constraint: {proof:#?}",
+    );
+
+    let effects = super::planned_writes_to(prompt, "audit-effects/queue.lino");
+    assert!(
+        effects.iter().any(|content| {
+            content.lines().any(|line| line == "subject=queue")
+                && content.lines().any(|line| line == "kind=inspection")
+                && content.lines().any(|line| line.starts_with("result="))
+        }),
+        "the structured effect lost its exact fields: {effects:#?}",
+    );
+}
+
+#[test]
+fn nested_delivery_carries_the_observation_into_the_outer_effect() {
+    // One investigation feeds two outputs in the real ladder: a human-readable
+    // proof and a machine-checked effect. Once the proof write succeeded, its
+    // "Recorded the findings" status used to become the effect's `result`,
+    // discarding the observation that both artifacts were meant to record.
+    let prompt = "Inspect the existing task-decomposition data model and identify where a node \
+        stores its children. Create `audit-effects/decomposition.lino` with these exact field \
+        lines: `subject=decomposition`, `kind=inspection`, and `result=` followed by the \
+        observed result. Leave supporting evidence in `.audit/decomposition-proof.md`. The \
+        first line must be exactly `proof_for=decomposition`.";
+    let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
+    let mut effect = None;
+
+    for turn in 0..super::LADDER_TURN_CAP {
+        let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+            formal_ai::agentic_coding::plan_chat_step(&messages, &super::LADDER_TOOLS)
+        else {
+            break;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            if let Ok(arguments) = serde_json::from_str::<serde_json::Value>(&call.arguments)
+                && super::argument(
+                    &arguments,
+                    &["path", "filePath", "file_path", "absolute_path"],
+                )
+                .is_some_and(|path| path.ends_with("audit-effects/decomposition.lino"))
+            {
+                effect =
+                    super::argument(&arguments, &["content", "contents", "text", "new_string"]);
+            }
+            let id = format!("nested-delivery-{turn}-{index}");
+            messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
+                formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
+            ]));
+            let result = if call.tool == "grep" {
+                "src/task_decomposition.rs:79: pub children: Vec<Self>"
+            } else {
+                "ok"
+            };
+            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, result));
+        }
+    }
+
+    let effect = effect.expect("the nested delivery must produce its outer effect");
+    assert!(
+        effect
+            .lines()
+            .any(|line| line.starts_with("result=") && line.contains("children: Vec<Self>")),
+        "the proof writer's status replaced the observed task result: {effect:?}",
+    );
+    assert!(!effect.contains("Recorded the findings"), "{effect}");
+}
+
+#[test]
 fn spelled_out_bytes_are_still_written_literally() {
     // Guarding the pinned first line must not cost the planner the literal write
     // it already did well. A request that states no constraint on the opening

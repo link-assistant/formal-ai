@@ -56,6 +56,8 @@ struct Obligation {
     target: String,
     /// The exact opening line the caller pinned, when it pinned one.
     first_line: Option<String>,
+    /// Exact `key=value` lines declared in the delivery sentence.
+    field_lines: Vec<String>,
     /// Everything the request says that is not about delivery.
     residual: String,
 }
@@ -85,23 +87,35 @@ struct Obligation {
 fn parse_obligation(request: &str) -> Option<Obligation> {
     let mut target = None;
     let mut first_line = None;
+    let mut field_lines = Vec::new();
     let mut residual = String::new();
+    let mut later_obligation = false;
     for sentence in sentences(request) {
         if let Some(line) = pinned_first_line(sentence.text) {
-            first_line = first_line.or(Some(line));
+            if target.is_some() && !later_obligation {
+                first_line = first_line.or(Some(line));
+                continue;
+            }
+            residual.push_str(&request[sentence.span]);
             continue;
         }
-        if target.is_none()
-            && !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))
-            && states_write_action(sentence.text)
-            && let Some(named) = stated_write_target(sentence.text)
-        {
-            target = Some(named);
-            if let Some(work) = work_before_delivery(sentence.text) {
-                residual.push_str(work);
-                residual.push_str(". ");
+        let is_delivery = !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))
+            && states_write_action(sentence.text);
+        if is_delivery && let Some(named) = stated_write_target(sentence.text) {
+            if target.is_none() {
+                field_lines = exact_field_lines(sentence.text, &named);
+                target = Some(named);
+                if let Some(work) = work_before_delivery(sentence.text) {
+                    residual.push_str(work);
+                    residual.push_str(". ");
+                }
+                continue;
             }
-            continue;
+            // A constraint in the next sentence belongs to this later output,
+            // not to the first output selected by this recursive pass. Leave
+            // both sentences in the residual so the nested pass sees them
+            // together and can bind them correctly.
+            later_obligation = true;
         }
         residual.push_str(&request[sentence.span]);
     }
@@ -112,8 +126,32 @@ fn parse_obligation(request: &str) -> Option<Obligation> {
         .map(|target| Obligation {
             target,
             first_line,
+            field_lines,
             residual,
         })
+}
+
+/// Literal `key=value` field constraints carried by one delivery sentence.
+fn exact_field_lines(sentence: &str, target: &str) -> Vec<String> {
+    sentence
+        .split('`')
+        .enumerate()
+        .filter(|(index, _)| index % 2 == 1)
+        .map(|(_, quoted)| quoted.trim())
+        .filter(|quoted| *quoted != target)
+        .filter(|quoted| !quoted.chars().any(char::is_whitespace))
+        .filter(|quoted| {
+            quoted.split_once('=').is_some_and(|(key, _)| {
+                key.chars()
+                    .next()
+                    .is_some_and(|character| character.is_ascii_alphabetic())
+                    && key
+                        .chars()
+                        .all(|character| character.is_ascii_alphanumeric() || character == '_')
+            })
+        })
+        .map(str::to_owned)
+        .collect()
 }
 
 /// The part of a delivery sentence that is not about delivery.
@@ -178,16 +216,20 @@ pub(super) fn plan_evidence_record_step(
     let progress = Progress::scan(messages);
     if progress.attempted_write_for(&obligation.target) {
         trace_route("evidence_record", "already_written");
-        return Some(AgenticPlan::Final(if progress
-            .successful_write_for(&obligation.target)
-        {
-            format!("Recorded the findings in `{}`.", obligation.target)
-        } else {
-            format!(
-                "The findings could not be recorded in `{}`: the write step failed.",
-                obligation.target
-            )
-        }));
+        return Some(AgenticPlan::Final(
+            if progress.successful_write_for(&obligation.target) {
+                progress
+                    .successful_write_content_for(&obligation.target)
+                    .map(|content| written_observation(&obligation, &content))
+                    .filter(|answer| !answer.is_empty())
+                    .unwrap_or_else(|| format!("Recorded the findings in `{}`.", obligation.target))
+            } else {
+                format!(
+                    "The findings could not be recorded in `{}`: the write step failed.",
+                    obligation.target
+                )
+            },
+        ));
     }
     let residual_messages = with_residual_request(messages, &obligation.residual)?;
     let answer = match plan_chat_step(&residual_messages, tool_names) {
@@ -202,14 +244,73 @@ pub(super) fn plan_evidence_record_step(
         }
     };
     trace_route("evidence_record", &obligation.target);
-    let content = obligation.first_line.map_or_else(
-        || format!("{}\n", answer.trim_end()),
-        |line| format!("{line}\n\n{}\n", answer.trim_end()),
-    );
+    let content = render_obligation(&obligation, &answer);
     Some(plan_one(
         write_tool,
         write_arguments(&obligation.target, &content),
     ))
+}
+
+/// Render an answer under the constraints attached to its destination.
+fn render_obligation(obligation: &Obligation, answer: &str) -> String {
+    if !obligation.field_lines.is_empty() {
+        let result = substantive_result_line(answer);
+        let mut rendered = String::new();
+        for field in &obligation.field_lines {
+            rendered.push_str(field);
+            if field.ends_with('=') {
+                rendered.push_str(result);
+            }
+            rendered.push('\n');
+        }
+        return rendered;
+    }
+    obligation.first_line.as_ref().map_or_else(
+        || format!("{}\n", answer.trim_end()),
+        |line| format!("{line}\n\n{}\n", answer.trim_end()),
+    )
+}
+
+/// The observation carried by a successfully written evidence artifact.
+///
+/// Remove only the destination's machine header. The remaining bytes are the
+/// grounded answer the nested delivery wrote and can feed another artifact.
+fn written_observation(obligation: &Obligation, content: &str) -> String {
+    let mut lines = content.lines();
+    if obligation
+        .first_line
+        .as_deref()
+        .is_some_and(|first_line| lines.clone().next().is_some_and(|line| line.trim() == first_line))
+    {
+        lines.next();
+    }
+    lines.collect::<Vec<_>>().join("\n").trim().to_owned()
+}
+
+/// First concrete line of an answer, excluding transport narration.
+fn substantive_result_line(answer: &str) -> &str {
+    answer
+        .lines()
+        .map(str::trim)
+        .find(|line| {
+            !line.is_empty()
+                && *line != "```text"
+                && *line != "```"
+                && !line.ends_with("command completed. Output:")
+                && !is_match_count(line)
+                && !looks_like_result_path_heading(line)
+        })
+        .unwrap_or_default()
+}
+
+fn is_match_count(line: &str) -> bool {
+    line.strip_prefix("Found ")
+        .and_then(|rest| rest.strip_suffix(" matches"))
+        .is_some_and(|count| count.chars().all(|character| character.is_ascii_digit()))
+}
+
+fn looks_like_result_path_heading(line: &str) -> bool {
+    line.ends_with(':') && (line.starts_with('/') || line.starts_with("./"))
 }
 
 /// What Formal AI answers about the residual, when it reaches a conclusion.
