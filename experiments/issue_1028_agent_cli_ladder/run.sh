@@ -42,6 +42,7 @@ NODES="$OUT/tree.tsv"
 RUN_LOG="$OUT/run.log"
 : > "$NODES"
 : > "$RUN_LOG"
+declare -A VERIFIED_EFFECTS=()
 
 cat > "$OUT/leaves.tsv" <<'EOF'
 L01	Inspect the existing task-decomposition data model and identify where a node stores its children.	src/task_decomposition.rs	pub children: Vec<Self>
@@ -211,6 +212,20 @@ PY
   git -C "$work" commit -qm ladder-fixture
   mkdir -p "$work/.agent-ladder"
 
+  if [[ "$depth" -lt 5 ]]; then
+    local left_effect_source="${VERIFIED_EFFECTS[$left]:-}"
+    local right_effect_source="${VERIFIED_EFFECTS[$right]:-}"
+    if [[ ! -s "$left_effect_source" || ! -s "$right_effect_source" ]]; then
+      printf '%s\tFAIL\tmissing_current_run_child_effect\n' "$id" >> "$RUN_LOG"
+      return 1
+    fi
+    mkdir -p "$work/.agent-ladder/verified-children"
+    cp "$left_effect_source" "$work/.agent-ladder/verified-children/node-$left.lino"
+    cp "$right_effect_source" "$work/.agent-ladder/verified-children/node-$right.lino"
+    git -C "$work" add .agent-ladder/verified-children
+    git -C "$work" commit -qm ladder-verified-child-effects
+  fi
+
   setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
     FORMAL_AI_MEMORY_PATH="$work/.agent-ladder/memory.lino" \
     FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$port" \
@@ -229,8 +244,8 @@ PY
     printf -v effect_contract 'Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout.' \
       "$id" "$id" "$depth"
   else
-    printf -v effect_contract 'Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, and `result=` followed by at least four words that state how both child tasks compose.' \
-      "$id" "$id" "$depth" "$left" "$right"
+    printf -v effect_contract 'Read the committed child effects in `.agent-ladder/verified-children/node-%s.lino` and `.agent-ladder/verified-children/node-%s.lino`. Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, `left_result=` followed by the exact left child `result=` value, `right_result=` followed by the exact right child `result=` value, and `result=` followed by at least four words that include both exact child result values and state how they compose.' \
+      "$left" "$right" "$id" "$id" "$depth" "$left" "$right"
   fi
 
   # Built with printf, not interpolated into a double-quoted string: bash does
@@ -276,6 +291,7 @@ PY
 
   cp "$proof" "$session_dir/proof.md"
   cp "$effect" "$session_dir/effect.lino"
+  VERIFIED_EFFECTS["$id"]="$session_dir/effect.lino"
   printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" >> "$RUN_LOG"
 }
 
@@ -301,7 +317,9 @@ Each selected node runs in a fresh temporary repository copy against the real
 \`@link-assistant/agent\` CLI and a local \`formal-ai serve --agent-mode\`.
 PASS requires the external harness to accept a non-hollow proof and a newly
 added \`agent-ladder-effects/node-<id>.lino\` Git effect. Composite effects must
-name both child nodes. Agent exit zero or a self-authored proof alone never pass.
+consume the immutable, committed effects that both children passed earlier in
+this invocation, copy both exact child results, and compose them. Agent exit
+zero or a self-authored proof alone never pass.
 
 The \`all\` mode verifies the smallest atomic tasks first (32 leaves), then
 16, 8, 4, 2, and finally the root, stopping on the first real failure so the

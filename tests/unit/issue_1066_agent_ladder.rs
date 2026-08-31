@@ -167,6 +167,26 @@ fn node_verifier_fixture(label: &str) -> (PathBuf, PathBuf) {
     (directory, proof)
 }
 
+fn commit_verified_child_effects(directory: &Path, left_result: &str, right_result: &str) {
+    let child_directory = directory.join(".agent-ladder/verified-children");
+    fs::create_dir_all(&child_directory).expect("create verified-child directory");
+    fs::write(
+        child_directory.join("node-1.1.1.lino"),
+        format!("node_path=1.1.1\nresult={left_result}\n"),
+    )
+    .expect("write left child effect");
+    fs::write(
+        child_directory.join("node-1.1.2.lino"),
+        format!("node_path=1.1.2\nresult={right_result}\n"),
+    )
+    .expect("write right child effect");
+    git(directory, &["add", ".agent-ladder/verified-children"]);
+    git(
+        directory,
+        &["commit", "--quiet", "-m", "verified child effects"],
+    );
+}
+
 fn run_node_verifier(
     directory: &Path,
     proof: &Path,
@@ -318,6 +338,112 @@ fn the_node_verifier_requires_both_children_in_a_composite_effect() {
     assert_eq!(
         String::from_utf8_lossy(&output.stdout).trim(),
         "missing_right_child"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_rejects_a_composite_without_verified_child_effects() {
+    let (directory, proof) = node_verifier_fixture("composite-without-effects");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        "node_path=1.1\nnode_depth=2\nnode_kind=composite\nleft_child=1.1.1\nright_child=1.1.2\nresult=Both named child tasks compose into this checked result.\n",
+    )
+    .expect("write structurally complete composite effect");
+
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "missing_child_effect"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_rejects_a_composite_that_does_not_copy_a_child_result() {
+    let (directory, proof) = node_verifier_fixture("composite-wrong-child-result");
+    let left_result = "Left child verified the children storage field.";
+    let right_result = "Right child verified the recursive depth bound.";
+    commit_verified_child_effects(&directory, left_result, right_result);
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        format!(
+            "node_path=1.1\nnode_depth=2\nnode_kind=composite\nleft_child=1.1.1\nright_child=1.1.2\nleft_result=An unrelated left result.\nright_result={right_result}\nresult=An unrelated left result; {right_result}\n"
+        ),
+    )
+    .expect("write composite with wrong left result");
+
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "unverified_left_child_result"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_accepts_a_composite_of_both_verified_child_results() {
+    let (directory, proof) = node_verifier_fixture("verified-composite");
+    let left_result = "Left child verified the children storage field.";
+    let right_result = "Right child verified the recursive depth bound.";
+    commit_verified_child_effects(&directory, left_result, right_result);
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        format!(
+            "node_path=1.1\nnode_depth=2\nnode_kind=composite\nleft_child=1.1.1\nright_child=1.1.2\nleft_result={left_result}\nright_result={right_result}\nresult={left_result} {right_result}\n"
+        ),
+    )
+    .expect("write verified composite effect");
+
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+
+    assert!(
+        output.status.success(),
+        "{}{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "ok");
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn the_node_verifier_rejects_a_child_effect_modified_after_fixture_commit() {
+    let (directory, proof) = node_verifier_fixture("modified-child-effect");
+    let left_result = "Left child verified the children storage field.";
+    let right_result = "Right child verified the recursive depth bound.";
+    commit_verified_child_effects(&directory, left_result, right_result);
+    fs::write(
+        directory.join(".agent-ladder/verified-children/node-1.1.1.lino"),
+        "node_path=1.1.1\nresult=The child result was changed after verification.\n",
+    )
+    .expect("modify committed child effect");
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        format!(
+            "node_path=1.1\nnode_depth=2\nnode_kind=composite\nleft_child=1.1.1\nright_child=1.1.2\nleft_result=The child result was changed after verification.\nright_result={right_result}\nresult=The child result was changed after verification. {right_result}\n"
+        ),
+    )
+    .expect("write composite from modified child effect");
+
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "modified_child_effect"
     );
     let _ = fs::remove_dir_all(directory);
 }

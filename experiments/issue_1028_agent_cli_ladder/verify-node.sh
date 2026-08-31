@@ -82,6 +82,29 @@ if [[ "$depth" -eq 5 ]]; then
   [[ -f "$criterion_file" ]] || fail invalid_leaf_criterion
   grep -Fq -- "$criterion_marker" "$criterion_file" || fail invalid_leaf_criterion
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
+else
+  child_directory=".agent-ladder/verified-children"
+  left_relative="$child_directory/node-$left.lino"
+  right_relative="$child_directory/node-$right.lino"
+  left_effect="$workspace/$left_relative"
+  right_effect="$workspace/$right_relative"
+  [[ -s "$left_effect" && -s "$right_effect" ]] || fail missing_child_effect
+  git -C "$workspace" ls-files --error-unmatch -- "$left_relative" "$right_relative" \
+    >/dev/null 2>&1 || fail missing_child_effect
+  child_status=$(git -C "$workspace" status --porcelain=v1 --untracked-files=all -- \
+    "$left_relative" "$right_relative")
+  [[ -z "$child_status" ]] || fail modified_child_effect
+  grep -Fxq "node_path=$left" "$left_effect" || fail invalid_child_effect
+  grep -Fxq "node_path=$right" "$right_effect" || fail invalid_child_effect
+  left_result=$(sed -n 's/^result=//p' "$left_effect" | sed -n '1p')
+  right_result=$(sed -n 's/^result=//p' "$right_effect" | sed -n '1p')
+  [[ -n "$left_result" && -n "$right_result" ]] || fail invalid_child_effect
+  left_claim=$(sed -n 's/^left_result=//p' "$effect" | sed -n '1p')
+  right_claim=$(sed -n 's/^right_result=//p' "$effect" | sed -n '1p')
+  [[ "$left_claim" == "$left_result" ]] || fail unverified_left_child_result
+  [[ "$right_claim" == "$right_result" ]] || fail unverified_right_child_result
+  [[ "$result" == *"$left_result"* ]] || fail uncomposed_left_child_result
+  [[ "$result" == *"$right_result"* ]] || fail uncomposed_right_child_result
 fi
 
 printf 'ok\n'
