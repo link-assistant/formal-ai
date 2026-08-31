@@ -297,13 +297,14 @@ fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
                   identify where a node stores its children. Record the finding in \
                   `audit/result.lino` with the exact field line `result=`.";
     let matched = concat!(
-        "Found 3 matches\n",
+        "Found 4 matches\n",
         "/tmp/work/CHANGELOG.md:\n",
         "  Line 65: - Failure-driven splitting gained a task decomposition hook.\n",
         "\n",
         "/tmp/work/src/task_decomposition.rs:\n",
         "  Line 12: //! A task decomposition is a recursive tree.\n",
-        "  Line 79:     pub children: Vec<Self>,",
+        "  Line 79:     pub children: Vec<Self>,\n",
+        "  Line 106:         1 + self.children.iter().map(Self::node_count).sum::<usize>()",
     );
     let messages = vec![
         ChatMessage::user(prompt),

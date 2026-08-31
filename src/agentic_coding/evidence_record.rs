@@ -292,7 +292,9 @@ fn written_observation(obligation: &Obligation, content: &str) -> String {
 /// Grouped grep output is transport-ordered, not relevance-ordered. Release
 /// notes can therefore precede the source declaration a workspace question
 /// asked for. Rank otherwise substantive lines by overlap with the request's
-/// seed-derived fact terms, preferring a code-shaped line when overlap ties.
+/// seed-derived fact terms. The final fact term is the requested property, and
+/// a declaration answers a storage/representation question more directly than
+/// a later method that happens to use that property.
 fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
     let candidates = answer
         .lines()
@@ -321,23 +323,53 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
     selected
 }
 
-fn relevance_score(line: &str, terms: &[String]) -> (usize, usize) {
+fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
         .map(str::to_ascii_lowercase)
         .collect::<Vec<_>>();
+    let matches = |term: &str| {
+        words.iter().any(|word| word == term)
+            || term
+                .split('_')
+                .all(|part| words.iter().any(|word| word == part))
+    };
     let overlap = terms
         .iter()
-        .filter(|term| {
-            words.iter().any(|word| word == *term)
-                || term
-                    .split('_')
-                    .all(|part| words.iter().any(|word| word == part))
-        })
+        .filter(|term| matches(term))
         .count();
+    let requested_property = usize::from(terms.last().is_some_and(|term| matches(term)));
+    let declaration_shape = usize::from(looks_like_declaration(line));
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
-    (overlap, code_shape)
+    (requested_property, declaration_shape, overlap, code_shape)
+}
+
+/// Recognize a source declaration without assuming a particular language.
+///
+/// Grep renders matches as `Line N: source`; discard that transport prefix,
+/// then recognize an identifier-bearing left side followed by a single colon.
+/// Namespace/generic punctuation such as `sum::<usize>()` is deliberately not
+/// a declaration.
+fn looks_like_declaration(line: &str) -> bool {
+    let source = line
+        .split_once(": ")
+        .map_or(line, |(_, source)| source)
+        .trim();
+    let Some((left, right)) = source.split_once(':') else {
+        return false;
+    };
+    !right.starts_with(':')
+        && !left.contains(['(', ')', '=', '+'])
+        && left
+            .split_whitespace()
+            .next_back()
+            .is_some_and(|name| {
+                !name.is_empty()
+                    && name
+                        .chars()
+                        .all(|character| character.is_ascii_alphanumeric() || character == '_')
+            })
 }
 
 fn is_match_count(line: &str) -> bool {
