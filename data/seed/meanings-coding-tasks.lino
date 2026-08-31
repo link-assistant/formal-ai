@@ -455,6 +455,35 @@ meanings
       surface
         text "internal nodes have exactly two children"
         action "Every internal node has exactly two children"
+  atomic_leaf_invariant
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request plainly states the atomic leaf invariant"
+    effect "the repository-search subject is bound to the atomic leaf invariant"
+    unit "not applicable"
+    example "leaf is atomic and independently checkable"
+    lexeme en
+      surface
+        text "leaf is atomic and independently checkable"
+        action atomic_leaf_invariant
+      surface
+        text "leaves are atomic and independently checkable"
+        action atomic_leaf_invariant
+  coding_search_atomic_leaf_invariant
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented atomic leaf invariant"
+    effect "the requested fact is searched by its canonical documentation sentence"
+    unit "not applicable"
+    example "leaf is atomic and independently checkable"
+    lexeme en
+      surface
+        text "leaf is atomic and independently checkable"
+        action "every leaf is atomic and independently checkable"
+      surface
+        text "leaves are atomic and independently checkable"
+        action "every leaf is atomic and independently checkable"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query

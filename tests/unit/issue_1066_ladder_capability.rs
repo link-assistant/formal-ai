@@ -502,6 +502,27 @@ fn a_plainly_worded_binary_invariant_searches_documentation() {
 }
 
 #[test]
+fn a_plainly_worded_atomic_leaf_invariant_searches_documentation() {
+    // Generic words such as `checkable` occur throughout the workspace. The
+    // complete invariant must resolve to its canonical documentation sentence.
+    let arguments =
+        planned_arguments("Verify every tested leaf is atomic and independently checkable.");
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "atomic_leaf_invariant");
+    assert_eq!(
+        search["pattern"],
+        "every leaf is atomic and independently checkable"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("docs/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an
