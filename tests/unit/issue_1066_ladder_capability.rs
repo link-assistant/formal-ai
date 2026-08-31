@@ -633,6 +633,29 @@ fn the_note_that_places_the_worker_does_not_name_the_subject_of_the_work() {
 }
 
 #[test]
+fn a_single_line_worker_contract_does_not_replace_the_inspection_subject() {
+    // Agent's second compaction can flatten the original paragraph break. The
+    // checkout question and its worker contract then occupy one request block,
+    // but the machine-shaped completion token still is not the thing the user
+    // asked to inspect.
+    let queries = planned_queries(
+        "Inspect the existing invoice-total helper and identify how it rounds a half cent. \
+         This is validation job 7. Its completion criterion is new_audit_effect. Create \
+         `audit-effects/job-7.lino` with the observed result.",
+    );
+    assert!(
+        queries.iter().any(|query| query.contains("invoice_total")),
+        "expected the stated helper to remain the inspection subject, planned {queries:?}",
+    );
+    assert!(
+        !queries
+            .iter()
+            .any(|query| query.contains("new_audit_effect")),
+        "searched for the worker contract instead of the inspection subject: {queries:?}",
+    );
+}
+
+#[test]
 fn a_permission_to_use_the_web_is_not_the_answer_to_the_question() {
     // "Use web research when it materially improves factual accuracy" grants a
     // tool; it does not say the answer is on the internet. Read as part of the

@@ -284,13 +284,33 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
 /// deliberately absent here: it works by deleting an explicit cue, and this
 /// admission has no cue to delete.
 pub(super) fn workspace_inspection_query_for_task(prompt: &str) -> Option<String> {
-    super::stated_request::request_blocks(prompt)
-        .into_iter()
-        .filter(|block| asks_about_the_workspace(block))
-        .find_map(|block| {
-            literal_code_search_query(&block.to_lowercase())
-                .or_else(|| shaped_code_search_token(block))
-        })
+    for block in super::stated_request::request_blocks(prompt) {
+        if !asks_about_the_workspace(block) {
+            continue;
+        }
+        // Agent's compactor may flatten the blank line between the actual
+        // checkout question and a machine-shaped worker contract. Prefer the
+        // subject carried by the sentence that asks to inspect the workspace;
+        // otherwise a later token such as `new_audit_effect` can outrank the
+        // helper the caller asked about. Keep the historical whole-block
+        // fallback for requests whose inspection cue and subject span two
+        // sentences.
+        if let Some(query) = sentence_spans(block)
+            .into_iter()
+            .filter(|sentence| asks_about_the_workspace(sentence))
+            .find_map(code_shaped_query)
+        {
+            return Some(query);
+        }
+        if let Some(query) = code_shaped_query(block) {
+            return Some(query);
+        }
+    }
+    None
+}
+
+fn code_shaped_query(text: &str) -> Option<String> {
+    literal_code_search_query(&text.to_lowercase()).or_else(|| shaped_code_search_token(text))
 }
 
 /// The longest search cue `normalized` spells out, if it spells one out at all.
@@ -885,5 +905,4 @@ fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Optio
         .filter(|sentence| !states_a_command_policy(sentence))
         .find_map(|sentence| named_shell_command_in_sentence(sentence, vocab))
 }
-
 
