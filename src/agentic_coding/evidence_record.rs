@@ -378,6 +378,10 @@ fn looks_like_declaration(line: &str) -> bool {
         || source.starts_with('*')
         || source.starts_with('#')
         || source.starts_with("<!--")
+        || source
+            .chars()
+            .next()
+            .is_some_and(|character| matches!(character, '"' | '\'' | '`'))
     {
         return false;
     }

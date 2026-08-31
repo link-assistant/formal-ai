@@ -353,6 +353,7 @@ fn a_usage_comment_is_not_ranked_as_a_source_declaration() {
         "/tmp/work/examples/dump_task_decomposition.rs:\n",
         "  Line 3: //! Usage: `cargo run --example dump_task_decomposition -- \\\"<task>\\\" [max_depth]`\n",
         "  Line 12:     let max_depth: u8 = args.next().unwrap().parse()?;\n",
+        "  Line 220:         \"a generous depth must reach atomic leaves: {:?}\",\n",
         "\n",
         "/tmp/work/src/task_decomposition.rs:\n",
         "  Line 180:     pub max_depth: u8,",
