@@ -342,6 +342,7 @@ fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize)
     let requested_property = usize::from(terms.last().is_some_and(|term| matches(term)));
     let declaration_shape = if looks_like_declaration(line) {
         1 + usize::from(!looks_like_local_binding(line))
+            + usize::from(looks_like_exposed_declaration(line))
     } else {
         0
     };
@@ -360,6 +361,20 @@ fn looks_like_local_binding(line: &str) -> bool {
     ["let ", "var ", "auto ", "local "]
         .iter()
         .any(|prefix| source.starts_with(prefix))
+}
+
+/// An exposed declaration describes the model's supported representation more
+/// authoritatively than an unqualified function parameter with the same name
+/// and type.
+fn looks_like_exposed_declaration(line: &str) -> bool {
+    let source = line
+        .split_once(": ")
+        .map_or(line, |(_, source)| source)
+        .trim();
+    source.split_whitespace().next().is_some_and(|keyword| {
+        matches!(keyword, "pub" | "public" | "export" | "exported")
+            || keyword.starts_with("pub(")
+    })
 }
 
 /// Recognize a source declaration without assuming a particular language.

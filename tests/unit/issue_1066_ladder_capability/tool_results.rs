@@ -350,6 +350,9 @@ fn a_usage_comment_is_not_ranked_as_a_source_declaration() {
                   `audit/result.lino` with the exact field line `result=`.";
     let matched = concat!(
         "Found 3 matches\n",
+        "/tmp/work/src/solver_handlers/task_decomposition.rs:\n",
+        "  Line 65:     max_depth: u8,\n",
+        "\n",
         "/tmp/work/examples/dump_task_decomposition.rs:\n",
         "  Line 3: //! Usage: `cargo run --example dump_task_decomposition -- \\\"<task>\\\" [max_depth]`\n",
         "  Line 12:     let max_depth: u8 = args.next().unwrap().parse()?;\n",
