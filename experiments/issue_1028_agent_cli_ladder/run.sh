@@ -258,7 +258,8 @@ PY
   (cd "$work" && \
     FORMAL_AI_API_KEY=local \
     LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
-    "$AGENT" --model formalai/formal-ai --permission-mode auto \
+    "$AGENT" --no-summarize-session --compaction-model same \
+      --model formalai/formal-ai --permission-mode auto \
       --output-format stream-json --compact-json --disable-stdin \
       --prompt "$full_prompt") \
       >"$session_dir/agent-stream.jsonl" 2>"$session_dir/agent-stderr.log"

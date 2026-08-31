@@ -708,6 +708,19 @@ fn the_ladder_writes_tab_separated_outcomes_and_real_prompt_paragraphs() {
 }
 
 #[test]
+fn the_ladder_keeps_every_tool_turn_on_the_formal_ai_session() {
+    let script = read(LADDER);
+
+    assert!(
+        script.contains(concat!(
+            "\"$AGENT\" --no-summarize-session --compaction-model same \\\n",
+            "      --model formalai/formal-ai",
+        )),
+        "the real Agent run must not replace the task with an unrelated session summary",
+    );
+}
+
+#[test]
 fn the_ladder_reproduction_experiment_is_committed_and_executable() {
     for script in [LADDER, EXPERIMENT] {
         let path = root().join(script);
