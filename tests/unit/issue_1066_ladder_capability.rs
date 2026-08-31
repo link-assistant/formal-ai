@@ -396,6 +396,21 @@ fn a_question_about_the_repository_is_answered_by_reading_the_repository() {
 }
 
 #[test]
+fn a_source_artifact_noun_scopes_a_plain_inspection_subject() {
+    // Not every source concept contains punctuation or capitals. In "retry
+    // check", the artifact noun makes the adjacent plain word a safe local
+    // subject just as "retry_policy helper" does; without that grammar the
+    // inspection falls through to an answer that never reads the checkout.
+    let queries = planned_queries(
+        "Review the existing retry check and identify which condition accepts completed work.",
+    );
+    assert!(
+        queries.iter().any(|query| query == "retry"),
+        "expected a workspace search for the subject next to `check`, planned {queries:?}"
+    );
+}
+
+#[test]
 fn a_workspace_inspection_search_targets_the_fact_being_requested() {
     // Searching only for `task_decomposition` returns a hundred broad matches,
     // headed by release notes, before the field the caller asked about. The

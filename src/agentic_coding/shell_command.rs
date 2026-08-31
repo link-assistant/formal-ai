@@ -430,8 +430,16 @@ fn module_filename_filter(query: &str) -> Option<String> {
     .then(|| format!("*{query}*"))
 }
 
+/// Resolve the source subject named by an inspection request.
+///
+/// Explicit literal cues and visibly code-shaped tokens are unambiguous on
+/// their own. A plain identifier is also unambiguous when the seed lexicon
+/// places it next to a source-artifact kind, such as `retry check`.
 fn code_shaped_query(text: &str) -> Option<String> {
-    literal_code_search_query(&text.to_lowercase()).or_else(|| shaped_code_search_token(text))
+    let normalized = text.to_lowercase();
+    literal_code_search_query(&normalized)
+        .or_else(|| shaped_code_search_token(text))
+        .or_else(|| adjacent_code_search_token(text, &normalized))
 }
 
 /// The longest search cue `normalized` spells out, if it spells one out at all.

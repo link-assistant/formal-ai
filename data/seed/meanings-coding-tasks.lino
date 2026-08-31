@@ -306,6 +306,16 @@ meanings
     lexeme zh
       surface
         text 结构体
+  coding_search_check
+    defined-by code
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to check"
+    unit "not applicable"
+    example "retry check"
+    lexeme en
+      surface
+        text check
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query
