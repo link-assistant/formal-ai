@@ -542,6 +542,26 @@ fn a_content_addressed_node_identifier_searches_its_source_field() {
 }
 
 #[test]
+fn a_dotted_child_path_convention_searches_its_constructor() {
+    // The path wording describes a source invariant, even though `recursive`
+    // can also introduce a new task decomposition. Inspect the constructor
+    // that appends each one-based child number instead of decomposing again.
+    let arguments = planned_arguments(
+        "Verify recursive child paths append a dot and their one-based numeric ordinal.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "dotted_child_path");
+    assert_eq!(search["pattern"], r#"format!\("\{parent\}\.\{number\}"\)"#);
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an

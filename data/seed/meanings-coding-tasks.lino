@@ -512,6 +512,34 @@ meanings
       surface
         text "content addressed stable identifier"
         action "pub id: String"
+  dotted_child_path
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks how recursive child paths append numeric ordinals"
+    effect "the repository-search subject is bound to the dotted child-path constructor"
+    unit "not applicable"
+    example "child paths follow the dotted numeric convention"
+    lexeme en
+      surface
+        text "child paths follow the dotted numeric convention"
+        action dotted_child_path
+      surface
+        text "child paths append a dot and their one-based numeric ordinal"
+        action dotted_child_path
+  coding_search_dotted_child_path
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the dotted child-path constructor"
+    effect "the requested fact is searched by the regex-safe path formatting expression"
+    unit "not applicable"
+    example "child paths follow the dotted numeric convention"
+    lexeme en
+      surface
+        text "child paths follow the dotted numeric convention"
+        action "format!\(\"\{parent\}\.\{number\}\"\)"
+      surface
+        text "child paths append a dot and their one-based numeric ordinal"
+        action "format!\(\"\{parent\}\.\{number\}\"\)"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
