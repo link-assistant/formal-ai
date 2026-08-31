@@ -170,6 +170,14 @@ run_one() {
   session_dir="$OUT/$id"
   work=$(mktemp -d)
   mkdir -p "$session_dir"
+  # A focused replay reuses its stable evidence directory. Remove only the
+  # known outputs for this node so a failed attempt cannot retain a prior
+  # attempt's proof or effect and appear to have passed.
+  rm -f "$session_dir/agent-stream.jsonl"
+  rm -f "$session_dir/agent-stderr.log"
+  rm -f "$session_dir/formal-ai.log"
+  rm -f "$session_dir/proof.md"
+  rm -f "$session_dir/effect.lino"
   node_number=$(python3 - "$id" <<'PY'
 import sys
 node=sys.argv[1]

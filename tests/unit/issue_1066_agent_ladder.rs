@@ -507,6 +507,31 @@ fn the_node_verifier_rejects_a_leaf_effect_unrelated_to_its_external_criterion()
 }
 
 #[test]
+fn the_ladder_clears_prior_node_artifacts_before_a_replay() {
+    let script = read(LADDER);
+    let run_one = script
+        .split_once("run_one() {\n")
+        .expect("ladder defines run_one")
+        .1
+        .split_once("\n  setsid env ")
+        .expect("ladder starts the Formal AI server after node setup")
+        .0;
+
+    for artifact in [
+        "agent-stream.jsonl",
+        "agent-stderr.log",
+        "formal-ai.log",
+        "proof.md",
+        "effect.lino",
+    ] {
+        assert!(
+            run_one.contains(&format!("rm -f \"$session_dir/{artifact}\"")),
+            "replaying a node must remove stale {artifact} before collecting new evidence",
+        );
+    }
+}
+
+#[test]
 fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
     if !python_available() {
         eprintln!("skipping: python3 is not installed on this host");
