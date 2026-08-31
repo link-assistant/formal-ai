@@ -406,6 +406,20 @@ meanings
       surface
         text "completion criteria"
         action completion_criterion
+  coding_search_missing_leaf_contract
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a leaf without a completion contract is represented"
+    effect "the requested fact is searched by the unresolved single-need sentinel"
+    unit "not applicable"
+    example "leaf without an observable completion contract"
+    lexeme en
+      surface
+        text "leaf without an observable completion contract"
+        action "unresolved_single_need"
+      surface
+        text "leaf without an observable completion criterion"
+        action "unresolved_single_need"
   coding_search_recursive_task_conversion
     defined-by code
     role coding_search_fact_query

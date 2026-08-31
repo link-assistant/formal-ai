@@ -434,6 +434,28 @@ fn a_seed_mapped_source_fact_uses_its_narrow_expression() {
 }
 
 #[test]
+fn a_missing_leaf_contract_uses_the_specific_fact() {
+    // `completion criterion` has a useful broad source spelling, but the whole
+    // phrase asks about the sentinel assigned to a leaf whose contract is
+    // absent. The more specific fact must win even though it contains the
+    // shorter mapped phrase verbatim.
+    let arguments = planned_arguments(
+        "Review the existing fallback check and verify that a leaf without an observable \
+         completion criterion is not independently verifiable.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "fallback");
+    assert_eq!(search["pattern"], "unresolved_single_need");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
+    );
+}
+
+#[test]
 fn a_named_format_rendering_is_a_workspace_subject() {
     // A source format can have an ordinary multi-word name with no identifier
     // punctuation. The adjacent artifact noun still makes it a local source

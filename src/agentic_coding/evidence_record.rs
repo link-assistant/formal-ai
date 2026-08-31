@@ -283,16 +283,36 @@ fn render_obligation(obligation: &Obligation, answer: &str) -> String {
         for field in &obligation.field_lines {
             rendered.push_str(field);
             if field.ends_with('=') {
-                rendered.push_str(result);
+                if field == "result=" {
+                    rendered.push_str(&non_hollow_result(result));
+                } else {
+                    rendered.push_str(result);
+                }
             }
             rendered.push('\n');
         }
         return rendered;
     }
+    let answer = non_hollow_result(answer);
     obligation.first_line.as_ref().map_or_else(
         || format!("{}\n", answer.trim_end()),
         |line| format!("{line}\n\n{}\n", answer.trim_end()),
     )
+}
+
+/// Keep a terse but decisive source token machine-checkable as a concrete result.
+///
+/// Structured result consumers reasonably distinguish an observation from a
+/// placeholder by requiring a short natural-language statement. A source line
+/// can still answer the question completely with only a path and one sentinel,
+/// so retain it verbatim and add context instead of discarding or paraphrasing
+/// the evidence.
+fn non_hollow_result(result: &str) -> String {
+    if result.split_whitespace().count() >= 4 {
+        result.to_owned()
+    } else {
+        format!("Observed repository result: {result}")
+    }
 }
 
 /// The observation carried by a successfully written evidence artifact.

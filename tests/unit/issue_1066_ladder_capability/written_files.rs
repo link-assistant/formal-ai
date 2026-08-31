@@ -250,6 +250,89 @@ fn a_local_observation_satisfies_nested_artifacts_before_optional_web_research()
 }
 
 #[test]
+fn a_terse_source_fact_still_produces_a_non_hollow_result() {
+    // A one-token sentinel is a complete answer to some repository questions,
+    // but the ladder deliberately rejects an effect whose `result` is only a
+    // copied line number and that token. Preserve the exact observed fact while
+    // rendering it as a concrete result with enough natural-language context.
+    let prompt = "Verify that a leaf without an observable completion contract is never treated \
+        as independently checkable. Create `agent-ladder-effects/node.lino` with these exact \
+        field lines: `node_path=1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by \
+        at least four words that state the task result actually observed in this checkout. \
+        Leave supporting evidence in `.agent-ladder/node-proof.md`. The first line must be \
+        exactly `node_path=1.1`.";
+    let mut messages = vec![
+        formal_ai::ChatMessage::user(prompt),
+        formal_ai::ChatMessage::assistant_tool_calls(vec![
+            formal_ai::protocol::ToolCall::function(
+                "search-contract",
+                "grep",
+                r#"{"include":"src/**/*","pattern":"unresolved_single_need"}"#.to_owned(),
+            ),
+        ]),
+        formal_ai::ChatMessage::tool_result(
+            "search-contract",
+            "grep",
+            "src/task_decomposition.rs:385: \"unresolved_single_need\",",
+        ),
+    ];
+    let mut writes = Vec::new();
+
+    for turn in 0..super::LADDER_TURN_CAP {
+        let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+            formal_ai::agentic_coding::plan_chat_step(&messages, &super::LADDER_TOOLS)
+        else {
+            break;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            if let Ok(arguments) = serde_json::from_str::<serde_json::Value>(&call.arguments)
+                && let (Some(path), Some(content)) = (
+                    super::argument(
+                        &arguments,
+                        &["path", "filePath", "file_path", "absolute_path"],
+                    ),
+                    super::argument(&arguments, &["content", "contents", "text", "new_string"]),
+                )
+            {
+                writes.push((path, content));
+            }
+            let id = format!("terse-delivery-{turn}-{index}");
+            messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
+                formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
+            ]));
+            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+        }
+    }
+
+    let effect = writes
+        .iter()
+        .find(|(path, _)| path.ends_with("agent-ladder-effects/node.lino"))
+        .map(|(_, content)| content)
+        .expect("the structured leaf effect");
+    let result = effect
+        .lines()
+        .find_map(|line| line.strip_prefix("result="))
+        .expect("the result field");
+    assert!(
+        result.split_whitespace().count() >= 4,
+        "the result remained hollow: {effect:?}",
+    );
+    assert!(result.contains("unresolved_single_need"), "{effect}");
+
+    let proof = writes
+        .iter()
+        .find(|(path, _)| path.ends_with(".agent-ladder/node-proof.md"))
+        .map(|(_, content)| content)
+        .expect("the supporting proof");
+    let body = proof.lines().skip(1).collect::<Vec<_>>().join(" ");
+    assert!(
+        body.split_whitespace().count() >= 4,
+        "the proof remained hollow: {proof:?}",
+    );
+    assert!(body.contains("unresolved_single_need"), "{proof}");
+}
+
+#[test]
 fn spelled_out_bytes_are_still_written_literally() {
     // Guarding the pinned first line must not cost the planner the literal write
     // it already did well. A request that states no constraint on the opening

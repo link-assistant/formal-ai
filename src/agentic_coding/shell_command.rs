@@ -522,7 +522,8 @@ fn literal_inspection_fact_query(normalized: &str) -> Option<String> {
     seed::lexicon()
         .role_word_forms(seed::ROLE_CODING_SEARCH_FACT_QUERY)
         .into_iter()
-        .find(|form| normalized.contains(&form.text.to_lowercase()))
+        .filter(|form| normalized.contains(&form.text.to_lowercase()))
+        .max_by_key(|form| form.text.chars().count())
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
 }
 
