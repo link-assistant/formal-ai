@@ -330,6 +330,19 @@ meanings
         text renderer
       surface
         text serialization
+  coding_search_adapter
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production adapter"
+    unit "not applicable"
+    example "transport adapter"
+    lexeme en
+      surface
+        text adapter
+      surface
+        text adapters
   coding_relationship_reference
     defined-by code
     role coding_relationship_subject_kind
@@ -390,6 +403,20 @@ meanings
       surface
         text "completion criteria"
         action completion_criterion
+  coding_search_recursive_task_conversion
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a decomposition tree executes"
+    effect "the requested fact is searched by its recursive-task conversion entry point"
+    unit "not applicable"
+    example "decomposition tree execution"
+    lexeme en
+      surface
+        text "decomposition tree execution"
+        action to_recursive_task
+      surface
+        text "decomposition tree is executed"
+        action to_recursive_task
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query

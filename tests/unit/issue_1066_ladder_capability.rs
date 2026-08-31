@@ -481,6 +481,44 @@ fn a_serialized_relationship_uses_its_literal_links_key() {
 }
 
 #[test]
+fn a_plain_adapter_is_a_workspace_subject() {
+    // Adapter names are often ordinary prose with no underscore or capital.
+    // The artifact noun still makes the adjacent subsystem a local source
+    // subject, just as `check` and `rendering` do for their own source kinds.
+    let arguments = planned_arguments(
+        "Inspect the existing transport adapter and identify where operations are dispatched.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "transport");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
+    );
+}
+
+#[test]
+fn recursive_tree_execution_targets_its_conversion_entry_point() {
+    // Searching broad words such as `recursive`, `tree`, and `executed` fills
+    // a result cap with descriptions of recursion. The adapter entry point is
+    // the canonical source fact that reveals how the tree is converted.
+    let arguments = planned_arguments(
+        "Examine the recursive execution adapter and explain the decomposition tree execution.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["pattern"], "to_recursive_task");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
+    );
+}
+
+#[test]
 fn a_workspace_inspection_search_targets_the_fact_being_requested() {
     // Searching only for `task_decomposition` returns a hundred broad matches,
     // headed by release notes, before the field the caller asked about. The
