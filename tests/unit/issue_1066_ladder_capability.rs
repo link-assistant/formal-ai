@@ -523,6 +523,25 @@ fn a_plainly_worded_atomic_leaf_invariant_searches_documentation() {
 }
 
 #[test]
+fn a_content_addressed_node_identifier_searches_its_source_field() {
+    // `content-addressed` describes the identifier's semantics, not a source
+    // filename. The requested fact is the field carried by each tree node.
+    let arguments = planned_arguments(
+        "Inspect how each decomposition node carries its content-addressed stable identifier.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "decomposition_node_identifier");
+    assert_eq!(search["pattern"], "pub id: String");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an

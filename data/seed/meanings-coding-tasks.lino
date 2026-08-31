@@ -484,6 +484,34 @@ meanings
       surface
         text "leaves are atomic and independently checkable"
         action "every leaf is atomic and independently checkable"
+  decomposition_node_identifier
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks for a decomposition node's stable identifier"
+    effect "the repository-search subject is bound to the decomposition node identifier"
+    unit "not applicable"
+    example "content-addressed stable identifier"
+    lexeme en
+      surface
+        text "content-addressed stable identifier"
+        action decomposition_node_identifier
+      surface
+        text "content addressed stable identifier"
+        action decomposition_node_identifier
+  coding_search_decomposition_node_identifier
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a decomposition node carries its stable identifier"
+    effect "the requested fact is searched by the node identifier field declaration"
+    unit "not applicable"
+    example "content-addressed stable identifier"
+    lexeme en
+      surface
+        text "content-addressed stable identifier"
+        action "pub id: String"
+      surface
+        text "content addressed stable identifier"
+        action "pub id: String"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
