@@ -350,6 +350,17 @@ fn planned_queries(prompt: &str) -> Vec<String> {
         .collect()
 }
 
+/// The decoded arguments of every planned tool call.
+fn planned_arguments(prompt: &str) -> Vec<serde_json::Value> {
+    let Some(AgenticPlan::ToolCalls(calls)) = plan(prompt) else {
+        return Vec::new();
+    };
+    calls
+        .iter()
+        .filter_map(|call| serde_json::from_str(&call.arguments).ok())
+        .collect()
+}
+
 #[test]
 fn a_question_about_the_repository_is_answered_by_reading_the_repository() {
     // The ladder's interior nodes ask the agent to look at the material it was
@@ -382,6 +393,34 @@ fn a_question_about_the_repository_is_answered_by_reading_the_repository() {
              planned {queries:?}"
         );
     }
+}
+
+#[test]
+fn a_workspace_inspection_search_targets_the_fact_being_requested() {
+    // Searching only for `task_decomposition` returns a hundred broad matches,
+    // headed by release notes, before the field the caller asked about. The
+    // code-shaped module remains useful context, but the grep pattern must name
+    // the requested fact and the search must stay inside source code.
+    let arguments = planned_arguments(
+        "Inspect the existing task_decomposition data model and identify where a node \
+         stores its children.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    let pattern = search["pattern"]
+        .as_str()
+        .expect("the grep pattern must be a string");
+    assert!(
+        pattern.contains("children"),
+        "the search pattern omitted the fact being requested: {search}"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("*task_decomposition*"),
+        "a module-shaped subject should exclude unrelated changelogs and docs: {search}"
+    );
 }
 
 #[test]

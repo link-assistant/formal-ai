@@ -250,7 +250,7 @@ fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
 /// The request has to spell the act out — "search the repository for
 /// `task_decomposition`". A request that only says what the caller wants to
 /// know is a different admission with a stricter subject rule; see
-/// [`workspace_inspection_query_for_task`].
+/// [`workspace_inspection_search_for_task`].
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
     let vocab = seed::shell_intent_vocabulary();
     super::stated_request::request_blocks(prompt)
@@ -283,7 +283,26 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
 /// follow. The whole-prompt fallback [`code_search_query_for_task`] ends with is
 /// deliberately absent here: it works by deleting an explicit cue, and this
 /// admission has no cue to delete.
-pub(super) fn workspace_inspection_query_for_task(prompt: &str) -> Option<String> {
+pub(super) struct WorkspaceInspectionSearch {
+    /// The code-shaped subject used as the human-readable query.
+    pub(super) query: String,
+    /// The grep expression aimed at the fact requested about that subject.
+    pub(super) pattern: String,
+    /// A filename filter when the subject itself names a module-like file.
+    pub(super) include: Option<String>,
+}
+
+/// Resolve a workspace question into a subject and a fact-focused search.
+///
+/// A module name tells the agent *where* an answer is likely to live, but it is
+/// rarely the answer. Searching only for `task_decomposition` can fill Agent's
+/// result cap with release notes before reaching the `children` field the
+/// caller asked about. The request's remaining content words therefore form
+/// the grep expression, while a lowercase underscored subject narrows the file
+/// set. Both are recovered structurally; no ladder wording is registered here.
+pub(super) fn workspace_inspection_search_for_task(
+    prompt: &str,
+) -> Option<WorkspaceInspectionSearch> {
     for block in super::stated_request::request_blocks(prompt) {
         if !asks_about_the_workspace(block) {
             continue;
@@ -295,18 +314,91 @@ pub(super) fn workspace_inspection_query_for_task(prompt: &str) -> Option<String
         // helper the caller asked about. Keep the historical whole-block
         // fallback for requests whose inspection cue and subject span two
         // sentences.
-        if let Some(query) = sentence_spans(block)
+        if let Some(search) = sentence_spans(block)
             .into_iter()
             .filter(|sentence| asks_about_the_workspace(sentence))
-            .find_map(code_shaped_query)
+            .find_map(workspace_inspection_search)
         {
-            return Some(query);
+            return Some(search);
         }
-        if let Some(query) = code_shaped_query(block) {
-            return Some(query);
+        if let Some(search) = workspace_inspection_search(block) {
+            return Some(search);
         }
     }
     None
+}
+
+fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> {
+    let query = code_shaped_query(text)?;
+    let terms = inspection_fact_terms(text, &query);
+    let include = module_filename_filter(&query);
+    let mut pattern_terms = Vec::new();
+    if include.is_none() {
+        pattern_terms.push(query.clone());
+    }
+    pattern_terms.extend(terms);
+    let pattern = if pattern_terms.is_empty() {
+        query.clone()
+    } else {
+        pattern_terms.join("|")
+    };
+    Some(WorkspaceInspectionSearch {
+        query,
+        pattern,
+        include,
+    })
+}
+
+/// Content words that describe the fact requested by a workspace inspection.
+///
+/// The seed-declared inspection actions and code-subject kinds express the
+/// request's grammar rather than its answer, so they are excluded alongside
+/// ordinary prose words. The remainder is useful both for constructing the
+/// grep and for choosing the most relevant line from grouped grep output.
+pub(super) fn workspace_inspection_terms_for_task(prompt: &str) -> Vec<String> {
+    for block in super::stated_request::request_blocks(prompt) {
+        if !asks_about_the_workspace(block) {
+            continue;
+        }
+        if let Some((sentence, query)) = sentence_spans(block)
+            .into_iter()
+            .filter(|sentence| asks_about_the_workspace(sentence))
+            .find_map(|sentence| code_shaped_query(sentence).map(|query| (sentence, query)))
+        {
+            return inspection_fact_terms(sentence, &query);
+        }
+        if let Some(query) = code_shaped_query(block) {
+            return inspection_fact_terms(block, &query);
+        }
+    }
+    Vec::new()
+}
+
+fn inspection_fact_terms(text: &str, query: &str) -> Vec<String> {
+    let mut terms = Vec::new();
+    for token in search_tokens(text) {
+        let normalized = token.replace('-', "_").to_lowercase();
+        if normalized.len() < 3
+            || normalized == query.to_lowercase()
+            || normalized.chars().all(|character| character.is_ascii_digit())
+            || is_prose_word(&normalized)
+            || seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &normalized)
+            || seed::lexicon().mentions_role(seed::ROLE_CODING_SEARCH_SUBJECT_KIND, &normalized)
+            || terms.contains(&normalized)
+        {
+            continue;
+        }
+        terms.push(normalized);
+    }
+    terms
+}
+
+fn module_filename_filter(query: &str) -> Option<String> {
+    (query.contains('_')
+        && query
+            .chars()
+            .all(|character| character.is_ascii_lowercase() || character.is_ascii_digit() || character == '_'))
+    .then(|| format!("*{query}*"))
 }
 
 fn code_shaped_query(text: &str) -> Option<String> {
@@ -905,4 +997,3 @@ fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Optio
         .filter(|sentence| !states_a_command_policy(sentence))
         .find_map(|sentence| named_shell_command_in_sentence(sentence, vocab))
 }
-

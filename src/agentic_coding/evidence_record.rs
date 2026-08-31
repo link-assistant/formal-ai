@@ -254,7 +254,7 @@ pub(super) fn plan_evidence_record_step(
 /// Render an answer under the constraints attached to its destination.
 fn render_obligation(obligation: &Obligation, answer: &str) -> String {
     if !obligation.field_lines.is_empty() {
-        let result = substantive_result_line(answer);
+        let result = substantive_result_line(answer, &obligation.residual);
         let mut rendered = String::new();
         for field in &obligation.field_lines {
             rendered.push_str(field);
@@ -287,12 +287,17 @@ fn written_observation(obligation: &Obligation, content: &str) -> String {
     lines.collect::<Vec<_>>().join("\n").trim().to_owned()
 }
 
-/// First concrete line of an answer, excluding transport narration.
-fn substantive_result_line(answer: &str) -> &str {
-    answer
+/// The concrete line of an answer that best addresses the requested fact.
+///
+/// Grouped grep output is transport-ordered, not relevance-ordered. Release
+/// notes can therefore precede the source declaration a workspace question
+/// asked for. Rank otherwise substantive lines by overlap with the request's
+/// seed-derived fact terms, preferring a code-shaped line when overlap ties.
+fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
+    let candidates = answer
         .lines()
         .map(str::trim)
-        .find(|line| {
+        .filter(|line| {
             !line.is_empty()
                 && *line != "```text"
                 && *line != "```"
@@ -300,7 +305,39 @@ fn substantive_result_line(answer: &str) -> &str {
                 && !is_match_count(line)
                 && !looks_like_result_path_heading(line)
         })
-        .unwrap_or_default()
+        .collect::<Vec<_>>();
+    let terms = super::shell_command::workspace_inspection_terms_for_task(task);
+    let Some(mut selected) = candidates.first().copied() else {
+        return "";
+    };
+    let mut selected_score = relevance_score(selected, &terms);
+    for candidate in candidates.into_iter().skip(1) {
+        let score = relevance_score(candidate, &terms);
+        if score > selected_score {
+            selected = candidate;
+            selected_score = score;
+        }
+    }
+    selected
+}
+
+fn relevance_score(line: &str, terms: &[String]) -> (usize, usize) {
+    let words = line
+        .split(|character: char| !character.is_ascii_alphanumeric())
+        .filter(|word| !word.is_empty())
+        .map(str::to_ascii_lowercase)
+        .collect::<Vec<_>>();
+    let overlap = terms
+        .iter()
+        .filter(|term| {
+            words.iter().any(|word| word == *term)
+                || term
+                    .split('_')
+                    .all(|part| words.iter().any(|word| word == part))
+        })
+        .count();
+    let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
+    (overlap, code_shape)
 }
 
 fn is_match_count(line: &str) -> bool {

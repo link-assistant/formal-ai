@@ -438,14 +438,21 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // reading that repository. It has to be resolved before the research
     // routers, which would otherwise claim it on the strength of its question
     // shape alone and look the answer up on the open web (issue #1066). The
-    // subject rule inside `workspace_inspection_query_for_task` is what keeps a
+    // subject rule inside `workspace_inspection_search_for_task` is what keeps a
     // genuinely external question out of this route.
     if !tool_result::has_latest_turn_result(messages)
-        && let Some(query) = shell_command::workspace_inspection_query_for_task(&task)
+        && let Some(search) = shell_command::workspace_inspection_search_for_task(&task)
             && let Some(tool) = tool_for(tool_names, Capability::Grep) {
+                let mut arguments = json!({
+                    "query": search.query,
+                    "pattern": search.pattern,
+                });
+                if let Some(include) = search.include {
+                    arguments["include"] = include.into();
+                }
                 return Some(plan_one(
                     tool,
-                    json!({ "query": query, "pattern": query }).to_string(),
+                    arguments.to_string(),
                 ));
             }
     // A question about how a task decomposes is answered by decomposing it. It

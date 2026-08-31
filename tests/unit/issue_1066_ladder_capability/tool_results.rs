@@ -286,3 +286,52 @@ fn a_search_that_announces_its_matches_before_quoting_them_is_not_a_failure() {
         "a status line stopped being read as a failure, answered {answer:?}"
     );
 }
+
+#[test]
+fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
+    // Agent groups grep results by file, and a broad module search can put a
+    // release-note hit ahead of the source declaration the caller requested.
+    // The delivery field must carry the grounded answer, not merely the first
+    // quotation in transport order.
+    let prompt = "Inspect the existing task_decomposition data model and identify where a node \
+                  stores its children. Record the finding in `audit/result.lino` with the exact \
+                  field line `result=`.";
+    let matched = concat!(
+        "Found 3 matches\n",
+        "/tmp/work/CHANGELOG.md:\n",
+        "  Line 65: - Failure-driven splitting gained a task decomposition hook.\n",
+        "\n",
+        "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 12: //! A task decomposition is a recursive tree.\n",
+        "  Line 79:     pub children: Vec<Self>,",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-children",
+            "grep",
+            r#"{"pattern":"task_decomposition","query":"task_decomposition"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("search-children", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the grounded result to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents
+            .iter()
+            .any(|content| content.contains("result=Line 79:     pub children: Vec<Self>,")),
+        "the recorded field did not select the requested source fact: {contents:?}"
+    );
+    assert!(
+        contents.iter().all(|content| !content.contains("Failure-driven splitting")),
+        "a release-note match was recorded as the task result: {contents:?}"
+    );
+}
