@@ -309,12 +309,14 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         })
         .collect::<Vec<_>>();
     let terms = super::shell_command::workspace_inspection_terms_for_task(task);
+    let condition_requested = crate::seed::lexicon()
+        .mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
     let Some(mut selected) = candidates.first().copied() else {
         return "";
     };
-    let mut selected_score = relevance_score(selected, &terms);
+    let mut selected_score = relevance_score(selected, &terms, condition_requested);
     for candidate in candidates.into_iter().skip(1) {
-        let score = relevance_score(candidate, &terms);
+        let score = relevance_score(candidate, &terms, condition_requested);
         if score > selected_score {
             selected = candidate;
             selected_score = score;
@@ -323,7 +325,11 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
     selected
 }
 
-fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize, usize) {
+fn relevance_score(
+    line: &str,
+    terms: &[String],
+    condition_requested: bool,
+) -> (usize, usize, usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -359,11 +365,32 @@ fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize,
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
     (
         requested_property,
+        usize::from(condition_requested && looks_like_condition(line)),
         declaration_shape,
         semantic_overlap,
         overlap,
         code_shape,
     )
+}
+
+/// Whether a source quotation is shaped as a boolean decision.
+///
+/// This intentionally recognises syntax classes rather than identifiers: a
+/// condition may begin with a control-flow keyword or continue a compound
+/// expression on its own line. Calls and declarations without a decision
+/// operator remain ordinary source facts.
+fn looks_like_condition(line: &str) -> bool {
+    let source = line
+        .split_once(": ")
+        .map_or(line, |(_, source)| source)
+        .trim();
+    ["if ", "while ", "match ", "when "]
+        .iter()
+        .any(|prefix| source.starts_with(prefix))
+        || ["&&", "||", "==", "!=", ">=", "<="]
+            .iter()
+            .any(|operator| source.contains(operator))
+        || source.starts_with('!')
 }
 
 /// Local bindings can repeat the type of the model field a representation

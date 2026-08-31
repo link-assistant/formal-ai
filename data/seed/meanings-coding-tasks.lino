@@ -230,6 +230,15 @@ meanings
         text maximum
       surface
         text max
+  completion_criterion
+    defined-by code
+    precondition "a source model names the observable condition for completion"
+    effect "completion_criterion denotes that model field"
+    unit "not applicable"
+    example "completion_criterion"
+    lexeme en
+      surface
+        text completion_criterion
   coding_search_string
     defined-by code
     role coding_search_subject_kind
@@ -309,6 +318,7 @@ meanings
   coding_search_check
     defined-by code
     role coding_search_subject_kind
+    role coding_condition_subject_kind
     precondition "a coding request contains this concept surface"
     effect "the search-subject slot is bound to check"
     unit "not applicable"
@@ -316,6 +326,23 @@ meanings
     lexeme en
       surface
         text check
+  coding_search_completion_criterion
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request contains this concept surface"
+    effect "the requested fact is searched with its canonical source expression"
+    unit "not applicable"
+    example "completion contract"
+    lexeme en
+      surface
+        text "completion contract"
+        action completion_criterion
+      surface
+        text "completion criterion"
+        action completion_criterion
+      surface
+        text "completion criteria"
+        action completion_criterion
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query

@@ -411,6 +411,24 @@ fn a_source_artifact_noun_scopes_a_plain_inspection_subject() {
 }
 
 #[test]
+fn a_seed_mapped_source_fact_uses_its_narrow_expression() {
+    // A natural-language property can have a canonical spelling in source.
+    // Keeping every surrounding prose word in an OR expression fills a grep
+    // result cap before that property appears, so an explicit seed mapping is
+    // the complete search expression rather than one more broad alternative.
+    let arguments = planned_arguments(
+        "Review the existing readiness check and record the observable completion contract \
+         for workers.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "readiness");
+    assert_eq!(search["pattern"], "completion_criterion");
+}
+
+#[test]
 fn a_workspace_inspection_search_targets_the_fact_being_requested() {
     // Searching only for `task_decomposition` returns a hundred broad matches,
     // headed by release notes, before the field the caller asked about. The

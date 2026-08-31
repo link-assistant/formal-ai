@@ -251,9 +251,20 @@ pub const ROLE_CODING_MODULE_REGISTRATION_ACTION: &str = "coding_module_registra
 pub const ROLE_CODING_NAME_SLOT: &str = "coding_name_slot";
 /// Semantic role: a slot that carries a requested literal value.
 pub const ROLE_CODING_VALUE_SLOT: &str = "coding_value_slot";
+/// Semantic role: a source-artifact noun whose requested result is a boolean
+/// condition rather than the declaration of the data that condition reads.
+pub const ROLE_CODING_CONDITION_SUBJECT_KIND: &str = "coding_condition_subject_kind";
 /// Semantic role: a code-kind noun adjacent to the literal subject of a
 /// repository search.
 pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
+/// Semantic role: a natural-language source fact whose surface carries the
+/// canonical, narrow repository-search expression as an action.
+///
+/// Unlike [`ROLE_CODING_SEARCH_LITERAL_QUERY`], this describes the property
+/// being inspected rather than the primary subject. When it is present, its
+/// action is the complete grep expression so broad surrounding prose cannot
+/// exhaust a client's result cap before the property is reached.
+pub const ROLE_CODING_SEARCH_FACT_QUERY: &str = "coding_search_fact_query";
 /// Semantic role: a repository-search phrase whose form carries its canonical
 /// query as an action.
 pub const ROLE_CODING_SEARCH_LITERAL_QUERY: &str = "coding_search_literal_query";

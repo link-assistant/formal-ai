@@ -274,13 +274,12 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
 /// otherwise claim the request on the strength of its question shape alone
 /// (issue #1066).
 ///
-/// What keeps the open web reachable is the subject, not the verb. Only a
-/// code-shaped subject is accepted — a quoted literal, or a token carrying an
-/// underscore, a dot, an interior capital or a hyphen — because that is the
-/// difference between "verify the retry-policy helper" and "verify the current
-/// exchange rate for the euro". A request whose subject is ordinary prose names
-/// nothing the workspace can be searched for, so it is left to the routers that
-/// follow. The whole-prompt fallback [`code_search_query_for_task`] ends with is
+/// What keeps the open web reachable is the subject, not the verb. The subject
+/// must either be visibly code-shaped — quoted or carrying an underscore, dot,
+/// interior capital, or hyphen — or sit next to a seed-declared source-artifact
+/// kind. That is the difference between "verify the retry-policy helper" or
+/// "verify the retry check" and "verify the current exchange rate for the
+/// euro". The whole-prompt fallback [`code_search_query_for_task`] ends with is
 /// deliberately absent here: it works by deleting an explicit cue, and this
 /// admission has no cue to delete.
 pub(super) struct WorkspaceInspectionSearch {
@@ -332,6 +331,13 @@ fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> 
     let query = code_shaped_query(text)?;
     let terms = inspection_fact_terms(text, &query);
     let include = module_filename_filter(&query);
+    if let Some(pattern) = literal_inspection_fact_query(&text.to_lowercase()) {
+        return Some(WorkspaceInspectionSearch {
+            query,
+            pattern,
+            include,
+        });
+    }
     let mut pattern_terms = Vec::new();
     if include.is_none() {
         pattern_terms.push(query.clone());
@@ -391,6 +397,11 @@ fn inspection_fact_terms(text: &str, query: &str) -> Vec<String> {
             continue;
         }
         terms.push(normalized);
+    }
+    if let Some(canonical) = literal_inspection_fact_query(&scoped.to_lowercase())
+        && !terms.contains(&canonical)
+    {
+        terms.push(canonical);
     }
     terms
 }
@@ -470,6 +481,14 @@ fn longest_search_cue(normalized: &str, vocab: &ShellIntentVocabulary) -> Option
 fn literal_code_search_query(normalized: &str) -> Option<String> {
     seed::lexicon()
         .role_word_forms(seed::ROLE_CODING_SEARCH_LITERAL_QUERY)
+        .into_iter()
+        .find(|form| normalized.contains(&form.text.to_lowercase()))
+        .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
+}
+
+fn literal_inspection_fact_query(normalized: &str) -> Option<String> {
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_CODING_SEARCH_FACT_QUERY)
         .into_iter()
         .find(|form| normalized.contains(&form.text.to_lowercase()))
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))

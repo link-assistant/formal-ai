@@ -81,6 +81,8 @@ roles
     kind predicate
   coding_bound_cue
     kind predicate
+  coding_condition_subject_kind
+    kind predicate
   coding_division_action
     kind predicate
   coding_identifier_rename_action
@@ -90,6 +92,8 @@ roles
   coding_name_slot
     kind predicate
   coding_return_action
+    kind predicate
+  coding_search_fact_query
     kind predicate
   coding_search_literal_query
     kind predicate

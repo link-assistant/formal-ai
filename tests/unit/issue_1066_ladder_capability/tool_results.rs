@@ -389,3 +389,46 @@ fn a_workspace_result_prefers_the_authoritative_bounded_field() {
         "the recorded field selected a usage comment instead of the declaration: {contents:?}"
     );
 }
+
+#[test]
+fn a_check_result_prefers_the_condition_over_its_field_declaration() {
+    // A narrow identifier search can return both the model field and the
+    // predicate that checks it. When the requested source artifact is a check,
+    // recording the field declaration describes storage but not the condition
+    // the caller asked to observe.
+    let prompt = "Review the existing readiness check and inspect the observable completion \
+                  contract for workers. Record the finding in `audit/result.lino` with the \
+                  exact field line `result=`.";
+    let matched = concat!(
+        "Found 3 matches\n",
+        "/tmp/work/src/work.rs:\n",
+        "  Line 70:     pub completion_criterion: String,\n",
+        "  Line 89:             && !self.completion_criterion.starts_with(\"unresolved_\")\n",
+        "  Line 130:                 self.completion_criterion.clone(),",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-contract",
+            "grep",
+            r#"{"pattern":"completion_criterion","query":"readiness"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("search-contract", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the checked condition to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents.iter().any(|content| content.contains(
+            "result=Line 89:             && !self.completion_criterion.starts_with(\"unresolved_\")"
+        )),
+        "the recorded field did not select the checked condition: {contents:?}"
+    );
+}
