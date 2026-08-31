@@ -85,6 +85,8 @@ roles
     kind predicate
   coding_division_action
     kind predicate
+  coding_documentation_fact_query
+    kind predicate
   coding_identifier_rename_action
     kind predicate
   coding_module_registration_action

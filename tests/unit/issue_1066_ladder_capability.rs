@@ -456,6 +456,30 @@ fn a_missing_leaf_contract_uses_the_specific_fact() {
 }
 
 #[test]
+fn a_documented_invariant_searches_repository_documentation() {
+    // A hyphenated invariant name resembles an underscored source module, but
+    // this fact is explicitly grounded in the repository's documentation. Its
+    // canonical sentence must choose both the grep pattern and the file scope.
+    let arguments = planned_arguments(
+        "Inspect the binary decomposition invariant and explain the \
+         exactly-two-children requirement.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "exactly_two_children");
+    assert_eq!(
+        search["pattern"],
+        "Every internal node has exactly two children"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("docs/**/*")
+    );
+}
+
+#[test]
 fn a_named_format_rendering_is_a_workspace_subject() {
     // A source format can have an ordinary multi-word name with no identifier
     // punctuation. The adjacent artifact noun still makes it a local source

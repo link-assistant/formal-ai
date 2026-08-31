@@ -278,6 +278,10 @@ pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
 /// action is the complete grep expression so broad surrounding prose cannot
 /// exhaust a client's result cap before the property is reached.
 pub const ROLE_CODING_SEARCH_FACT_QUERY: &str = "coding_search_fact_query";
+/// Semantic role: a canonical repository-search fact whose authoritative
+/// occurrence is maintained in documentation rather than implementation or
+/// regression source.
+pub const ROLE_CODING_DOCUMENTATION_FACT_QUERY: &str = "coding_documentation_fact_query";
 /// Semantic role: a repository-search phrase whose form carries its canonical
 /// query as an action.
 pub const ROLE_CODING_SEARCH_LITERAL_QUERY: &str = "coding_search_literal_query";

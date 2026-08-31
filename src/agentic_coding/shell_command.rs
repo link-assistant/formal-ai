@@ -367,7 +367,9 @@ fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> 
 }
 
 fn canonical_fact_filename_filter(text: &str) -> String {
-    if seed::lexicon().mentions_role(seed::ROLE_CODING_TEST_ARTIFACT_KIND, text) {
+    if seed::lexicon().mentions_role(seed::ROLE_CODING_DOCUMENTATION_FACT_QUERY, text) {
+        "docs/**/*".to_owned()
+    } else if seed::lexicon().mentions_role(seed::ROLE_CODING_TEST_ARTIFACT_KIND, text) {
         "tests/**/*".to_owned()
     } else {
         "src/**/*".to_owned()

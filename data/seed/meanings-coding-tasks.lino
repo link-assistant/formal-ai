@@ -420,6 +420,21 @@ meanings
       surface
         text "leaf without an observable completion criterion"
         action "unresolved_single_need"
+  coding_search_binary_decomposition_invariant
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented binary decomposition invariant"
+    effect "the requested fact is searched by its canonical documentation sentence"
+    unit "not applicable"
+    example "exactly-two-children requirement"
+    lexeme en
+      surface
+        text "exactly-two-children requirement"
+        action "Every internal node has exactly two children"
+      surface
+        text "exactly two children requirement"
+        action "Every internal node has exactly two children"
   coding_search_recursive_task_conversion
     defined-by code
     role coding_search_fact_query
