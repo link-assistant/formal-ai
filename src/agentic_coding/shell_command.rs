@@ -330,10 +330,17 @@ pub(super) fn workspace_inspection_search_for_task(
 fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> {
     let query = code_shaped_query(text)?;
     let terms = inspection_fact_terms(text, &query);
-    let include = inspection_filename_filter(text, &query);
-    if let Some(pattern) = literal_inspection_fact_query(&text.to_lowercase())
-        .or_else(|| serialized_relationship_fact_query(text))
-    {
+    let canonical_fact = literal_inspection_fact_query(&text.to_lowercase())
+        .or_else(|| serialized_relationship_fact_query(text));
+    // A canonical fact expression identifies the implementation independently
+    // of its module. An inferred code-shaped subject can name a subsystem (for
+    // example `task-strategy`) whose implementation lives in a differently
+    // named file, so it must not exclude the canonical source fact.
+    let include = canonical_fact
+        .as_ref()
+        .map(|_| "src/**/*".to_owned())
+        .or_else(|| inspection_filename_filter(text, &query));
+    if let Some(pattern) = canonical_fact {
         return Some(WorkspaceInspectionSearch {
             query,
             pattern,

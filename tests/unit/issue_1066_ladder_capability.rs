@@ -519,6 +519,29 @@ fn recursive_tree_execution_targets_its_conversion_entry_point() {
 }
 
 #[test]
+fn approved_task_strategies_target_the_ledger_entry_point() {
+    // A hyphenated subsystem can name a concept without naming a source file.
+    // Treating `task-strategy` as a module filter searched only nonexistent
+    // `*task_strategy*` files, so the real ledger entry point in
+    // `task_decomposition.rs` was excluded before grep could inspect it.
+    let arguments = planned_arguments(
+        "Review the task-strategy ledger and explain how reviewed decomposition strategies are \
+         activated.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "task_strategy");
+    assert_eq!(search["pattern"], "TaskStrategyLedger::shipped");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*"),
+        "a canonical source fact must not be excluded by an inferred module filter: {search}"
+    );
+}
+
+#[test]
 fn a_workspace_inspection_search_targets_the_fact_being_requested() {
     // Searching only for `task_decomposition` returns a hundred broad matches,
     // headed by release notes, before the field the caller asked about. The

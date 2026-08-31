@@ -417,6 +417,23 @@ meanings
       surface
         text "decomposition tree is executed"
         action to_recursive_task
+  coding_search_approved_task_strategy
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how reviewed decomposition strategies are activated"
+    effect "the requested fact is searched by the review-gated decomposition entry point"
+    unit "not applicable"
+    example "approved decomposition strategies"
+    lexeme en
+      surface
+        text "approved decomposition strategies"
+        action "TaskStrategyLedger::shipped"
+      surface
+        text "reviewed decomposition strategies"
+        action "TaskStrategyLedger::shipped"
+      surface
+        text "approved task strategies"
+        action "TaskStrategyLedger::shipped"
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query
