@@ -320,27 +320,37 @@ fn written_observation(obligation: &Obligation, content: &str) -> String {
 /// a declaration answers a storage/representation question more directly than
 /// a later method that happens to use that property.
 fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
-    let candidates = answer
-        .lines()
-        .map(str::trim)
-        .filter(|line| {
-            !line.is_empty()
-                && *line != "```text"
-                && *line != "```"
-                && !line.ends_with("command completed. Output:")
-                && !is_match_count(line)
-                && !looks_like_result_path_heading(line)
-        })
-        .collect::<Vec<_>>();
+    let mut current_source_authority = 0;
+    let mut candidates = Vec::new();
+    for raw_line in answer.lines() {
+        let line = raw_line.trim();
+        if looks_like_result_path_heading(line) {
+            current_source_authority = source_authority(line);
+            continue;
+        }
+        if !line.is_empty()
+            && line != "```text"
+            && line != "```"
+            && !line.ends_with("command completed. Output:")
+            && !is_match_count(line)
+        {
+            candidates.push((line, current_source_authority.max(source_authority(line))));
+        }
+    }
     let terms = super::shell_command::workspace_inspection_terms_for_task(task);
     let condition_requested = crate::seed::lexicon()
         .mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
-    let Some(mut selected) = candidates.first().copied() else {
+    let Some(&(mut selected, selected_authority)) = candidates.first() else {
         return "";
     };
-    let mut selected_score = relevance_score(selected, &terms, condition_requested);
-    for candidate in candidates.into_iter().skip(1) {
-        let score = relevance_score(candidate, &terms, condition_requested);
+    let mut selected_score = relevance_score(
+        selected,
+        &terms,
+        condition_requested,
+        selected_authority,
+    );
+    for (candidate, authority) in candidates.into_iter().skip(1) {
+        let score = relevance_score(candidate, &terms, condition_requested, authority);
         if score > selected_score {
             selected = candidate;
             selected_score = score;
@@ -353,7 +363,8 @@ fn relevance_score(
     line: &str,
     terms: &[String],
     condition_requested: bool,
-) -> (usize, usize, usize, usize, usize, usize) {
+    source_authority: usize,
+) -> (usize, usize, usize, usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -390,6 +401,7 @@ fn relevance_score(
     (
         requested_property,
         usize::from(condition_requested && looks_like_condition(line)),
+        source_authority,
         declaration_shape,
         semantic_overlap,
         overlap,
@@ -492,6 +504,18 @@ fn is_match_count(line: &str) -> bool {
 
 fn looks_like_result_path_heading(line: &str) -> bool {
     line.ends_with(':') && (line.starts_with('/') || line.starts_with("./"))
+}
+
+/// Prefer a production source fact when an otherwise equivalent test merely
+/// asserts that fact. If every match is outside `src`, the ordinary semantic
+/// ranking remains decisive.
+fn source_authority(path_or_line: &str) -> usize {
+    usize::from(
+        path_or_line
+            .trim_end_matches(':')
+            .split(['/', '\\'])
+            .any(|component| component == "src"),
+    )
 }
 
 /// What Formal AI answers about the residual, when it reaches a conclusion.
