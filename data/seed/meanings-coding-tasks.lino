@@ -459,13 +459,13 @@ meanings
     lexeme en
       surface
         text "approved decomposition strategies"
-        action "TaskStrategyLedger::shipped"
+        action "decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
       surface
         text "reviewed decomposition strategies"
-        action "TaskStrategyLedger::shipped"
+        action "decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
       surface
         text "approved task strategies"
-        action "TaskStrategyLedger::shipped"
+        action "decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
   coding_search_independent_leaf_lower_bound
     defined-by code
     role coding_search_fact_query

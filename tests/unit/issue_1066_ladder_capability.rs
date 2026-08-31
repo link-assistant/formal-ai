@@ -565,21 +565,32 @@ fn recursive_tree_execution_targets_its_conversion_entry_point() {
 }
 
 #[test]
-fn approved_task_strategies_target_the_ledger_entry_point() {
+fn approved_task_strategies_target_the_decomposition_entry_point() {
     // A hyphenated subsystem can name a concept without naming a source file.
     // Treating `task-strategy` as a module filter searched only nonexistent
     // `*task_strategy*` files, so the real ledger entry point in
-    // `task_decomposition.rs` was excluded before grep could inspect it.
+    // `task_decomposition.rs` was excluded before grep could inspect it. The
+    // narrower ledger constructor also has several matches, and an unescaped
+    // full call is not a regex match for its literal parentheses.
     let arguments = planned_arguments(
-        "Review the task-strategy ledger and explain how reviewed decomposition strategies are \
-         activated.",
+        "Inspect the existing task-strategy ledger and record how approved decomposition \
+         strategies are selected.",
     );
     let search = arguments
         .iter()
         .find(|arguments| arguments.get("pattern").is_some())
         .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
     assert_eq!(search["query"], "task_strategy");
-    assert_eq!(search["pattern"], "TaskStrategyLedger::shipped");
+    assert_eq!(
+        search["pattern"],
+        r"decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
+    );
+    let pattern = regex::Regex::new(search["pattern"].as_str().unwrap()).unwrap();
+    assert!(
+        pattern.is_match(
+            "decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped())"
+        )
+    );
     assert_eq!(
         search.get("include").and_then(serde_json::Value::as_str),
         Some("src/**/*"),
