@@ -338,3 +338,49 @@ fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
         "a release-note match was recorded as the task result: {contents:?}"
     );
 }
+
+#[test]
+fn a_usage_comment_is_not_ranked_as_a_source_declaration() {
+    // Live L02 searched broadly for the task-decomposition depth limit. The
+    // first result was an example's `//! Usage: ... [max_depth]` comment. Its
+    // label-and-colon shape looked like a declaration and its filename repeated
+    // more query terms than the actual field, so it displaced `pub max_depth`.
+    let prompt = "Atomic task L02: Inspect the existing task-decomposition recursion and \
+                  record how depth limits are represented. Record the finding in \
+                  `audit/result.lino` with the exact field line `result=`.";
+    let matched = concat!(
+        "Found 3 matches\n",
+        "/tmp/work/examples/dump_task_decomposition.rs:\n",
+        "  Line 3: //! Usage: `cargo run --example dump_task_decomposition -- \\\"<task>\\\" [max_depth]`\n",
+        "  Line 12:     let max_depth: u8 = args.next().unwrap().parse()?;\n",
+        "\n",
+        "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 180:     pub max_depth: u8,",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-depth",
+            "grep",
+            r#"{"pattern":"task_decomposition|max_depth","query":"task_decomposition|max_depth"}"#
+                .to_owned(),
+        )]),
+        ChatMessage::tool_result("search-depth", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the grounded result to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents
+            .iter()
+            .any(|content| content.contains("result=Line 180:     pub max_depth: u8,")),
+        "the recorded field selected a usage comment instead of the declaration: {contents:?}"
+    );
+}

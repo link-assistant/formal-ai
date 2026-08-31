@@ -340,9 +340,26 @@ fn relevance_score(line: &str, terms: &[String]) -> (usize, usize, usize, usize)
         .filter(|term| matches(term))
         .count();
     let requested_property = usize::from(terms.last().is_some_and(|term| matches(term)));
-    let declaration_shape = usize::from(looks_like_declaration(line));
+    let declaration_shape = if looks_like_declaration(line) {
+        1 + usize::from(!looks_like_local_binding(line))
+    } else {
+        0
+    };
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
     (requested_property, declaration_shape, overlap, code_shape)
+}
+
+/// Local bindings can repeat the type of the model field a representation
+/// question asks about. They are declarations, but a public/type-level
+/// declaration is the more authoritative description when both are present.
+fn looks_like_local_binding(line: &str) -> bool {
+    let source = line
+        .split_once(": ")
+        .map_or(line, |(_, source)| source)
+        .trim();
+    ["let ", "var ", "auto ", "local "]
+        .iter()
+        .any(|prefix| source.starts_with(prefix))
 }
 
 /// Recognize a source declaration without assuming a particular language.
@@ -356,6 +373,14 @@ fn looks_like_declaration(line: &str) -> bool {
         .split_once(": ")
         .map_or(line, |(_, source)| source)
         .trim();
+    if source.starts_with("//")
+        || source.starts_with("/*")
+        || source.starts_with('*')
+        || source.starts_with('#')
+        || source.starts_with("<!--")
+    {
+        return false;
+    }
     let Some((left, right)) = source.split_once(':') else {
         return false;
     };
