@@ -331,7 +331,9 @@ fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> 
     let query = code_shaped_query(text)?;
     let terms = inspection_fact_terms(text, &query);
     let include = inspection_filename_filter(text, &query);
-    if let Some(pattern) = literal_inspection_fact_query(&text.to_lowercase()) {
+    if let Some(pattern) = literal_inspection_fact_query(&text.to_lowercase())
+        .or_else(|| serialized_relationship_fact_query(text))
+    {
         return Some(WorkspaceInspectionSearch {
             query,
             pattern,
@@ -505,6 +507,27 @@ fn literal_inspection_fact_query(normalized: &str) -> Option<String> {
         .into_iter()
         .find(|form| normalized.contains(&form.text.to_lowercase()))
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
+}
+
+/// Recover the quoted field key from a relationship-serialization question.
+///
+/// In `how parent relationships are encoded`, `parent` is not merely a broad
+/// prose term: it is the literal key whose representation the caller wants to
+/// inspect. Searching for the quoted key reflects source serialization syntax
+/// and prevents generic words around it from exhausting a client's result cap.
+fn serialized_relationship_fact_query(text: &str) -> Option<String> {
+    let lexicon = seed::lexicon();
+    if !lexicon.mentions_role(seed::ROLE_CODING_SERIALIZATION_ACTION, text) {
+        return None;
+    }
+    let tokens = search_tokens(text).collect::<Vec<_>>();
+    tokens
+        .windows(2)
+        .find(|pair| {
+            valid_search_identifier(pair[0])
+                && lexicon.mentions_role(seed::ROLE_CODING_RELATIONSHIP_SUBJECT_KIND, pair[1])
+        })
+        .map(|pair| format!(r#""{}""#, pair[0].to_ascii_lowercase()))
 }
 
 /// The most identifier-shaped token in `prompt`, if it holds one.

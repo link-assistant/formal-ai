@@ -93,11 +93,15 @@ roles
     kind predicate
   coding_return_action
     kind predicate
+  coding_relationship_subject_kind
+    kind predicate
   coding_search_fact_query
     kind predicate
   coding_search_literal_query
     kind predicate
   coding_search_subject_kind
+    kind predicate
+  coding_serialization_action
     kind predicate
   coding_value_slot
     kind predicate

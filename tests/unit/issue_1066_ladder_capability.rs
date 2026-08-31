@@ -447,16 +447,36 @@ fn a_named_format_rendering_is_a_workspace_subject() {
         .find(|arguments| arguments.get("pattern").is_some())
         .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
     assert_eq!(search["query"], "Notation");
-    assert!(
-        search["pattern"]
-            .as_str()
-            .is_some_and(|pattern| pattern.split('|').any(|term| term == "child")),
-        "the rendering search omitted the relationship being requested: {search}"
+    assert_eq!(
+        search["pattern"], r#""child""#,
+        "the rendering search did not target the literal relationship key: {search}"
     );
     assert_eq!(
         search.get("include").and_then(serde_json::Value::as_str),
         Some("src/**/*"),
         "an implementation rendering should exclude generated prose: {search}"
+    );
+}
+
+#[test]
+fn a_serialized_relationship_uses_its_literal_links_key() {
+    // A source tree can contain thousands of broad prose hits for `record`,
+    // `how`, and `child`. The relationship's serialized Links key is the
+    // source-level fact: quoting it keeps a client's match cap from being
+    // exhausted by unrelated child collections before any renderer appears.
+    let arguments = planned_arguments(
+        "Atomic task R17: Inspect the existing Wire Notation rendering and record how parent \
+         relationships are encoded.\n\nThis is worker 4.2 in a fresh checkout. Record the observed \
+         result and do not claim success without evidence.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["pattern"], r#""parent""#);
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
     );
 }
 
