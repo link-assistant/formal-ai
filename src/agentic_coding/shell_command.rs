@@ -330,7 +330,7 @@ pub(super) fn workspace_inspection_search_for_task(
 fn workspace_inspection_search(text: &str) -> Option<WorkspaceInspectionSearch> {
     let query = code_shaped_query(text)?;
     let terms = inspection_fact_terms(text, &query);
-    let include = module_filename_filter(&query);
+    let include = inspection_filename_filter(text, &query);
     if let Some(pattern) = literal_inspection_fact_query(&text.to_lowercase()) {
         return Some(WorkspaceInspectionSearch {
             query,
@@ -439,6 +439,18 @@ fn module_filename_filter(query: &str) -> Option<String> {
             .chars()
             .all(|character| character.is_ascii_lowercase() || character.is_ascii_digit() || character == '_'))
     .then(|| format!("*{query}*"))
+}
+
+/// Keep source-condition evidence inside production source when the request
+/// does not already name a narrower module. Generated traces and tests often
+/// quote the same condition verbatim, but are observations about the source
+/// rather than the implementation the caller asked to inspect.
+fn inspection_filename_filter(text: &str, query: &str) -> Option<String> {
+    module_filename_filter(query).or_else(|| {
+        seed::lexicon()
+            .mentions_role(seed::ROLE_CODING_CONDITION_SUBJECT_KIND, text)
+            .then(|| "src/**/*".to_owned())
+    })
 }
 
 /// Resolve the source subject named by an inspection request.

@@ -400,10 +400,12 @@ fn a_check_result_prefers_the_condition_over_its_field_declaration() {
                   contract for workers. Record the finding in `audit/result.lino` with the \
                   exact field line `result=`.";
     let matched = concat!(
-        "Found 5 matches\n",
+        "Found 6 matches\n",
         "/tmp/work/tests/readiness.rs:\n",
         "  Line 179:         \"  Line 89: && !self.completion_criterion.starts_with(\\\"unresolved_\\\")\\n\",\n",
         "  Line 229:             && content.contains(\"!self.completion_criterion.starts_with\")\n",
+        "/tmp/work/src/work/strategy.rs:\n",
+        "  Line 190:                     (!text_intent.is_empty() && !completion_criterion.is_empty()).then(|| {\n",
         "/tmp/work/src/work.rs:\n",
         "  Line 70:     pub completion_criterion: String,\n",
         "  Line 89:             && !self.completion_criterion.starts_with(\"unresolved_\")\n",

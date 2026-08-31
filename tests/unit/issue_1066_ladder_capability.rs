@@ -426,6 +426,11 @@ fn a_seed_mapped_source_fact_uses_its_narrow_expression() {
         .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
     assert_eq!(search["query"], "readiness");
     assert_eq!(search["pattern"], "completion_criterion");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*"),
+        "a condition inspection should not search generated traces or documentation: {search}"
+    );
 }
 
 #[test]

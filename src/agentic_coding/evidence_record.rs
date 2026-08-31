@@ -364,7 +364,7 @@ fn relevance_score(
     terms: &[String],
     condition_requested: bool,
     source_authority: usize,
-) -> (usize, usize, usize, usize, usize, usize, usize) {
+) -> (usize, usize, usize, usize, usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -402,6 +402,7 @@ fn relevance_score(
         requested_property,
         usize::from(condition_requested && looks_like_condition(line)),
         source_authority,
+        usize::from(condition_requested && looks_like_instance_condition(line)),
         declaration_shape,
         semantic_overlap,
         overlap,
@@ -427,6 +428,17 @@ fn looks_like_condition(line: &str) -> bool {
             .iter()
             .any(|operator| source.contains(operator))
         || source.starts_with('!')
+}
+
+/// An instance-qualified predicate describes the invariant of the inspected
+/// object more directly than a construction-time check of a similarly named
+/// local value. Recognize common member-access syntax without depending on a
+/// project identifier or a particular natural-language request.
+fn looks_like_instance_condition(line: &str) -> bool {
+    let source = source_text(line);
+    ["self.", "this.", "self->", "this->", "$this->"]
+        .iter()
+        .any(|receiver| source.contains(receiver))
 }
 
 /// Local bindings can repeat the type of the model field a representation
