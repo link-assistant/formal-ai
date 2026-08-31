@@ -434,6 +434,33 @@ fn a_seed_mapped_source_fact_uses_its_narrow_expression() {
 }
 
 #[test]
+fn a_named_format_rendering_is_a_workspace_subject() {
+    // A source format can have an ordinary multi-word name with no identifier
+    // punctuation. The adjacent artifact noun still makes it a local source
+    // question, and generated documentation must not become its evidence.
+    let arguments = planned_arguments(
+        "Inspect the existing Links Notation rendering and record how child relationships are \
+         serialized.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "Notation");
+    assert!(
+        search["pattern"]
+            .as_str()
+            .is_some_and(|pattern| pattern.split('|').any(|term| term == "child")),
+        "the rendering search omitted the relationship being requested: {search}"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*"),
+        "an implementation rendering should exclude generated prose: {search}"
+    );
+}
+
+#[test]
 fn a_workspace_inspection_search_targets_the_fact_being_requested() {
     // Searching only for `task_decomposition` returns a hundred broad matches,
     // headed by release notes, before the field the caller asked about. The

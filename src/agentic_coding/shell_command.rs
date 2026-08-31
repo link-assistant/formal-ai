@@ -447,9 +447,10 @@ fn module_filename_filter(query: &str) -> Option<String> {
 /// rather than the implementation the caller asked to inspect.
 fn inspection_filename_filter(text: &str, query: &str) -> Option<String> {
     module_filename_filter(query).or_else(|| {
-        seed::lexicon()
-            .mentions_role(seed::ROLE_CODING_CONDITION_SUBJECT_KIND, text)
-            .then(|| "src/**/*".to_owned())
+        let lexicon = seed::lexicon();
+        (lexicon.mentions_role(seed::ROLE_CODING_CONDITION_SUBJECT_KIND, text)
+            || lexicon.mentions_role(seed::ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND, text))
+        .then(|| "src/**/*".to_owned())
     })
 }
 

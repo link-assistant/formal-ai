@@ -338,8 +338,13 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         }
     }
     let terms = super::shell_command::workspace_inspection_terms_for_task(task);
-    let condition_requested = crate::seed::lexicon()
-        .mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
+    let lexicon = crate::seed::lexicon();
+    let condition_requested =
+        lexicon.mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
+    let implementation_requested = lexicon.mentions_role(
+        crate::seed::ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND,
+        task,
+    );
     let Some(&(mut selected, selected_authority)) = candidates.first() else {
         return "";
     };
@@ -347,10 +352,17 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         selected,
         &terms,
         condition_requested,
+        implementation_requested,
         selected_authority,
     );
     for (candidate, authority) in candidates.into_iter().skip(1) {
-        let score = relevance_score(candidate, &terms, condition_requested, authority);
+        let score = relevance_score(
+            candidate,
+            &terms,
+            condition_requested,
+            implementation_requested,
+            authority,
+        );
         if score > selected_score {
             selected = candidate;
             selected_score = score;
@@ -363,8 +375,9 @@ fn relevance_score(
     line: &str,
     terms: &[String],
     condition_requested: bool,
+    implementation_requested: bool,
     source_authority: usize,
-) -> (usize, usize, usize, usize, usize, usize, usize, usize) {
+) -> (usize, usize, usize, usize, usize, usize, usize, usize, usize) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -399,6 +412,9 @@ fn relevance_score(
     );
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
     (
+        usize::from(
+            implementation_requested && !is_quoted_or_commented_source(source_text(line)),
+        ),
         requested_property,
         usize::from(condition_requested && looks_like_condition(line)),
         source_authority,

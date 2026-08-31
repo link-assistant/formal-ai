@@ -315,6 +315,21 @@ meanings
     lexeme zh
       surface
         text 结构体
+  coding_search_rendering
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production rendering artifact"
+    unit "not applicable"
+    example "Links Notation rendering"
+    lexeme en
+      surface
+        text rendering
+      surface
+        text renderer
+      surface
+        text serialization
   coding_search_check
     defined-by code
     role coding_search_subject_kind

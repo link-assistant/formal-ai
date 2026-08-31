@@ -437,3 +437,45 @@ fn a_check_result_prefers_the_condition_over_its_field_declaration() {
         "the recorded field did not select the checked condition: {contents:?}"
     );
 }
+
+#[test]
+fn a_rendering_result_records_the_serialization_statement() {
+    // A source-only rendering search can still return explanatory comments and
+    // several child-related statements. Persist the concrete statement that
+    // serializes the relationship rather than a nearby description or use.
+    let prompt = "Inspect the existing Links Notation rendering and record how child \
+                  relationships are serialized. Record the finding in `audit/result.lino` \
+                  with the exact field line `result=`.";
+    let matched = concat!(
+        "Found 3 matches\n",
+        "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 64:     /// numbering of the rendered list; durable child links use content ids.\n",
+        "  Line 152:             pairs.push((\"child\", child.id.clone()));\n",
+        "  Line 157:             out.push_str(&child.to_links_notation());",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-rendering",
+            "grep",
+            r#"{"include":"src/**/*","pattern":"child|relationships|serialized","query":"Notation"}"#
+                .to_owned(),
+        )]),
+        ChatMessage::tool_result("search-rendering", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the serialization fact to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents.iter().any(|content| content
+            .contains("result=Line 152:             pairs.push((\"child\", child.id.clone()));")),
+        "the recorded result did not select the serialization statement: {contents:?}"
+    );
+}

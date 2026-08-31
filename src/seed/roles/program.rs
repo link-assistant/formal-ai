@@ -254,6 +254,10 @@ pub const ROLE_CODING_VALUE_SLOT: &str = "coding_value_slot";
 /// Semantic role: a source-artifact noun whose requested result is a boolean
 /// condition rather than the declaration of the data that condition reads.
 pub const ROLE_CODING_CONDITION_SUBJECT_KIND: &str = "coding_condition_subject_kind";
+/// Semantic role: a source-artifact noun that denotes production
+/// implementation rather than a test, generated trace, or prose description.
+pub const ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND: &str =
+    "coding_source_implementation_subject_kind";
 /// Semantic role: a code-kind noun adjacent to the literal subject of a
 /// repository search.
 pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
