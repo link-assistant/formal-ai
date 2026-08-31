@@ -435,6 +435,24 @@ meanings
       surface
         text "exactly two children requirement"
         action "Every internal node has exactly two children"
+  coding_search_power_of_two_levels_invariant
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented power-of-two node levels"
+    effect "the requested fact is searched by its canonical documentation count sequence"
+    unit "not applicable"
+    example "supported power-of-two levels through 32"
+    lexeme en
+      surface
+        text "supported power-of-two levels through 32"
+        action "2, 4, 8, 16, and 32 nodes respectively"
+      surface
+        text "power-of-two levels through 32"
+        action "2, 4, 8, 16, and 32 nodes respectively"
+      surface
+        text "power of two levels through 32"
+        action "2, 4, 8, 16, and 32 nodes respectively"
   coding_search_recursive_task_conversion
     defined-by code
     role coding_search_fact_query

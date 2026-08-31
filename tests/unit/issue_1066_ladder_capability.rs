@@ -480,6 +480,27 @@ fn a_documented_invariant_searches_repository_documentation() {
 }
 
 #[test]
+fn documented_power_of_two_levels_use_their_literal_invariant() {
+    // A prose name such as `power-of-two` resembles an underscored source
+    // identifier. Here it names the documented node-count invariant, so an
+    // inferred filename must not hide the sentence that contains the counts.
+    let arguments = planned_arguments(
+        "Atomic task L10: Verify the invariant explicitly names the supported \
+         power-of-two levels through 32.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "power_of_two");
+    assert_eq!(search["pattern"], "2, 4, 8, 16, and 32 nodes respectively");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("docs/**/*")
+    );
+}
+
+#[test]
 fn a_named_format_rendering_is_a_workspace_subject() {
     // A source format can have an ordinary multi-word name with no identifier
     // punctuation. The adjacent artifact noun still makes it a local source
