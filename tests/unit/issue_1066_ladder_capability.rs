@@ -501,6 +501,41 @@ fn documented_power_of_two_levels_use_their_literal_invariant() {
 }
 
 #[test]
+fn regression_node_counts_use_the_complete_depth_map() {
+    // Each requested depth is one projection of the same regression assertion.
+    // The prose words `decomposition nodes` must therefore identify that
+    // assertion instead of routing the request as a new task to decompose.
+    for prompt in [
+        "Verify regression coverage includes two decomposition nodes at depth one.",
+        "Verify regression coverage includes four decomposition nodes at depth two.",
+        "Verify regression coverage includes eight decomposition nodes at depth three.",
+        "Verify regression coverage includes sixteen decomposition nodes at depth four.",
+        "Verify regression coverage includes thirty-two decomposition nodes at depth five.",
+    ] {
+        let arguments = planned_arguments(prompt);
+        let search = arguments
+            .iter()
+            .find(|arguments| arguments.get("pattern").is_some())
+            .unwrap_or_else(|| {
+                panic!("no workspace search was planned for {prompt:?}: {arguments:?}")
+            });
+        assert_eq!(search["query"], "decomposition_node_counts");
+        assert_eq!(
+            search["pattern"],
+            r"BTreeMap::from\(\[\(0, 1\), \(1, 2\), \(2, 4\), \(3, 8\), \(4, 16\), \(5, 32\)\]\)"
+        );
+        let pattern = regex::Regex::new(search["pattern"].as_str().unwrap()).unwrap();
+        assert!(
+            pattern.is_match("BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])")
+        );
+        assert_eq!(
+            search.get("include").and_then(serde_json::Value::as_str),
+            Some("tests/**/*")
+        );
+    }
+}
+
+#[test]
 fn a_named_format_rendering_is_a_workspace_subject() {
     // A source format can have an ordinary multi-word name with no identifier
     // punctuation. The adjacent artifact noun still makes it a local source

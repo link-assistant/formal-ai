@@ -453,6 +453,28 @@ meanings
       surface
         text "power of two levels through 32"
         action "2, 4, 8, 16, and 32 nodes respectively"
+  decomposition_node_counts
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request names the per-depth decomposition node counts"
+    effect "the repository-search subject is bound to the decomposition node-count regression"
+    unit "not applicable"
+    example "decomposition nodes at depth"
+    lexeme en
+      surface
+        text "decomposition nodes at depth"
+        action decomposition_node_counts
+  coding_search_decomposition_node_counts_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for a count from the complete per-depth map"
+    effect "the requested fact is searched by the complete regex-safe depth map assertion"
+    unit "not applicable"
+    example "decomposition nodes at depth"
+    lexeme en
+      surface
+        text "decomposition nodes at depth"
+        action "BTreeMap::from\(\[\(0, 1\), \(1, 2\), \(2, 4\), \(3, 8\), \(4, 16\), \(5, 32\)\]\)"
   coding_search_recursive_task_conversion
     defined-by code
     role coding_search_fact_query
