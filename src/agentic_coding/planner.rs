@@ -594,8 +594,10 @@ fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String
     messages[..latest_user]
         .iter()
         .rev()
-        .filter(|message| message.role.eq_ignore_ascii_case("assistant"))
-        .filter_map(|message| {
+        .find_map(|message| {
+            if !message.role.eq_ignore_ascii_case("assistant") {
+                return None;
+            }
             let envelope = message.content.plain_text();
             // Agent may compact an already compacted conversation. In that
             // case its new summary repeats the protocol continuation before
@@ -616,7 +618,6 @@ fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String
             })
             .map(repair_compacted_dot_paths)
         })
-        .next()
 }
 
 /// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
