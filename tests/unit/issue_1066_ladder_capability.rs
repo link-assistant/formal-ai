@@ -562,6 +562,26 @@ fn a_dotted_child_path_convention_searches_its_constructor() {
 }
 
 #[test]
+fn a_complete_tree_node_count_searches_its_test_constant() {
+    // `depth-five` resembles a module name, but here it qualifies the complete
+    // tree count asserted by the ladder regression. Search the test constant
+    // rather than filtering the workspace to a guessed depth_five filename.
+    let arguments = planned_arguments(
+        "Inspect the complete depth-five tree assertion and confirm its root-inclusive node total is 63.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "complete_tree_node_count");
+    assert_eq!(search["pattern"], "const NODE_COUNT: usize = 63");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("tests/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an

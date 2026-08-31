@@ -540,6 +540,41 @@ meanings
       surface
         text "child paths append a dot and their one-based numeric ordinal"
         action "format!\(\"\{parent\}\.\{number\}\"\)"
+  complete_tree_node_count
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks for the complete depth-five tree's root-inclusive node count"
+    effect "the repository-search subject is bound to the complete-tree node-count regression"
+    unit "not applicable"
+    example "node count of a complete depth-five tree is exactly 63 including the root"
+    lexeme en
+      surface
+        text "node count of a complete depth-five tree is exactly 63 including the root"
+        action complete_tree_node_count
+      surface
+        text "complete depth-five tree assertion"
+        action complete_tree_node_count
+      surface
+        text "root-inclusive node total is 63"
+        action complete_tree_node_count
+  coding_search_complete_tree_node_count
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the complete-tree node-count regression constant"
+    effect "the requested fact is searched by its exact test constant"
+    unit "not applicable"
+    example "node count of a complete depth-five tree is exactly 63 including the root"
+    lexeme en
+      surface
+        text "node count of a complete depth-five tree is exactly 63 including the root"
+        action "const NODE_COUNT: usize = 63"
+      surface
+        text "complete depth-five tree assertion"
+        action "const NODE_COUNT: usize = 63"
+      surface
+        text "root-inclusive node total is 63"
+        action "const NODE_COUNT: usize = 63"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
