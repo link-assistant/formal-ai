@@ -160,6 +160,87 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
 }
 
 #[test]
+fn a_local_observation_satisfies_nested_artifacts_before_optional_web_research() {
+    // A harness can permit web research as a fallback after asking about the
+    // checkout. Once grep has answered that local question, the fallback is no
+    // longer work to perform: both requested artifacts must be grounded in the
+    // result already in hand. Re-planning the residual before consuming that
+    // result sent the run to the web and left both artifacts unwritten.
+    let prompt = "Review the existing readiness check and record the observable completion \
+        contract for workers. Create `audit-effects/readiness.lino` with these exact field \
+        lines: `subject=readiness`, `kind=inspection`, and `result=` followed by the \
+        observed result. Leave supporting evidence in `.audit/readiness-proof.md`. The \
+        first line must be exactly `proof_for=readiness`. Use web research when it \
+        materially improves factual accuracy.";
+    let observed = concat!(
+        "Found 3 matches\n",
+        "/tmp/work/src/work.rs:\n",
+        "  Line 70:     pub completion_criterion: String,\n",
+        "  Line 89:             && !self.completion_criterion.starts_with(\"unresolved_\")\n",
+        "  Line 130:                 self.completion_criterion.clone(),",
+    );
+    let mut messages = vec![
+        formal_ai::ChatMessage::user(prompt),
+        formal_ai::ChatMessage::assistant_tool_calls(vec![
+            formal_ai::protocol::ToolCall::function(
+                "search-readiness",
+                "grep",
+                r#"{"pattern":"completion_criterion"}"#.to_owned(),
+            ),
+        ]),
+        formal_ai::ChatMessage::tool_result("search-readiness", "grep", observed),
+    ];
+    let mut writes = Vec::new();
+
+    for turn in 0..super::LADDER_TURN_CAP {
+        let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+            formal_ai::agentic_coding::plan_chat_step(&messages, &super::LADDER_TOOLS)
+        else {
+            break;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            assert_ne!(
+                call.tool, "websearch",
+                "a successful local observation must not fall through to optional web research"
+            );
+            if let Ok(arguments) = serde_json::from_str::<serde_json::Value>(&call.arguments)
+                && let (Some(path), Some(content)) = (
+                    super::argument(
+                        &arguments,
+                        &["path", "filePath", "file_path", "absolute_path"],
+                    ),
+                    super::argument(&arguments, &["content", "contents", "text", "new_string"]),
+                )
+            {
+                writes.push((path, content));
+            }
+            let id = format!("local-delivery-{turn}-{index}");
+            messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
+                formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
+            ]));
+            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+        }
+    }
+
+    assert!(
+        writes.iter().any(|(path, content)| {
+            path.ends_with("audit-effects/readiness.lino")
+                && content.contains("result=Line 89:")
+                && content.contains("!self.completion_criterion.starts_with")
+        }),
+        "the local condition was not written to the structured effect: {writes:#?}",
+    );
+    assert!(
+        writes.iter().any(|(path, content)| {
+            path.ends_with(".audit/readiness-proof.md")
+                && content.starts_with("proof_for=readiness\n")
+                && content.contains("!self.completion_criterion.starts_with")
+        }),
+        "the local condition was not written to the proof: {writes:#?}",
+    );
+}
+
+#[test]
 fn spelled_out_bytes_are_still_written_literally() {
     // Guarding the pinned first line must not cost the planner the literal write
     // it already did well. A request that states no constraint on the opening

@@ -231,17 +231,35 @@ pub(super) fn plan_evidence_record_step(
             },
         ));
     }
+    // A successful checkout inspection is already the grounded answer this
+    // delivery exists to persist. Optional research prose elsewhere in a
+    // harness must not reopen the question on the web before the result is
+    // written. Preserve recursive delivery ordering, though: when the residual
+    // names another output, let that inner obligation consume the observation
+    // first so one result still reaches every requested artifact.
+    let observed = parse_obligation(&obligation.residual)
+        .is_none()
+        .then(|| {
+            super::shell_command::workspace_inspection_search_for_task(&obligation.residual)
+        })
+        .flatten()
+        .and_then(|_| progress.latest_successful_output(Capability::Grep))
+        .filter(|answer| !substantive_result_line(answer, &obligation.residual).is_empty())
+        .map(str::to_owned);
     let residual_messages = with_residual_request(messages, &obligation.residual)?;
-    let answer = match plan_chat_step(&residual_messages, tool_names) {
-        Some(plan @ AgenticPlan::ToolCalls(_)) => {
-            trace_route("evidence_record", "investigating");
-            return Some(plan);
-        }
-        Some(AgenticPlan::Final(answer)) => answer,
-        None => {
-            trace_route("evidence_record", "symbolic_residual");
-            symbolic_answer(&obligation.residual)?
-        }
+    let answer = match observed {
+        Some(answer) => answer,
+        None => match plan_chat_step(&residual_messages, tool_names) {
+            Some(plan @ AgenticPlan::ToolCalls(_)) => {
+                trace_route("evidence_record", "investigating");
+                return Some(plan);
+            }
+            Some(AgenticPlan::Final(answer)) => answer,
+            None => {
+                trace_route("evidence_record", "symbolic_residual");
+                symbolic_answer(&obligation.residual)?
+            }
+        },
     };
     trace_route("evidence_record", &obligation.target);
     let content = render_obligation(&obligation, &answer);
