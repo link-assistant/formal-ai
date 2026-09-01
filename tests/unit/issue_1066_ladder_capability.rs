@@ -601,6 +601,28 @@ fn an_agent_cli_ladder_depth_selector_searches_the_experiment_workflow() {
 }
 
 #[test]
+fn a_focused_dotted_node_filter_searches_the_experiment_selector() {
+    // Selecting one dotted path is an observable workflow invariant, not a
+    // request to decompose the sentence into another task tree.
+    let arguments = planned_arguments(
+        "Verify a single node can be selected by dotted binary path for focused debugging.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "dotted_binary_node_filter");
+    assert_eq!(
+        search["pattern"],
+        r"^        if depth == level and \(not filt or node == filt\):$"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("experiments/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an

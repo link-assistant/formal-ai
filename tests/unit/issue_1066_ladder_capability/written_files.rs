@@ -333,6 +333,90 @@ fn a_terse_source_fact_still_produces_a_non_hollow_result() {
 }
 
 #[test]
+fn a_source_condition_ending_in_a_colon_is_not_an_unmade_list() {
+    // Python block headers are complete source observations even though their
+    // final colon has the same shape as prose promising a list. Preserve the
+    // exact matched condition, but finish the rendered claim so the generic
+    // proof judge does not mistake source punctuation for a hollow promise.
+    let prompt = "Verify a single node can be selected by dotted binary path for focused \
+        debugging. Create `agent-ladder-effects/node.lino` with these exact field lines: \
+        `node_path=2.1.2.1.2`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by \
+        at least four words that state the task result actually observed in this checkout. \
+        Leave supporting evidence in `.agent-ladder/node-proof.md`. The first line must be \
+        exactly `node_path=2.1.2.1.2`.";
+    let marker = "if depth == level and (not filt or node == filt):";
+    let mut messages = vec![
+        formal_ai::ChatMessage::user(prompt),
+        formal_ai::ChatMessage::assistant_tool_calls(vec![
+            formal_ai::protocol::ToolCall::function(
+                "search-node-filter",
+                "grep",
+                r#"{"include":"experiments/**/*","pattern":"node == filt"}"#.to_owned(),
+            ),
+        ]),
+        formal_ai::ChatMessage::tool_result(
+            "search-node-filter",
+            "grep",
+            format!("Line 148:         {marker}"),
+        ),
+    ];
+    let mut writes = Vec::new();
+
+    for turn in 0..super::LADDER_TURN_CAP {
+        let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+            formal_ai::agentic_coding::plan_chat_step(&messages, &super::LADDER_TOOLS)
+        else {
+            break;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            if let Ok(arguments) = serde_json::from_str::<serde_json::Value>(&call.arguments)
+                && let (Some(path), Some(content)) = (
+                    super::argument(
+                        &arguments,
+                        &["path", "filePath", "file_path", "absolute_path"],
+                    ),
+                    super::argument(&arguments, &["content", "contents", "text", "new_string"]),
+                )
+            {
+                writes.push((path, content));
+            }
+            let id = format!("colon-source-delivery-{turn}-{index}");
+            messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
+                formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
+            ]));
+            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+        }
+    }
+
+    for (path, content) in &writes {
+        if path.ends_with(".agent-ladder/node-proof.md")
+            || path.ends_with("agent-ladder-effects/node.lino")
+        {
+            assert!(
+                content.contains(marker),
+                "lost the exact observation: {content:?}"
+            );
+            assert!(
+                !content.trim_end().ends_with(':'),
+                "source punctuation looked like an unmade list: {content:?}"
+            );
+        }
+    }
+    assert!(
+        writes
+            .iter()
+            .any(|(path, _)| path.ends_with(".agent-ladder/node-proof.md")),
+        "the proof was not written: {writes:#?}"
+    );
+    assert!(
+        writes
+            .iter()
+            .any(|(path, _)| path.ends_with("agent-ladder-effects/node.lino")),
+        "the effect was not written: {writes:#?}"
+    );
+}
+
+#[test]
 fn spelled_out_bytes_are_still_written_literally() {
     // Guarding the pinned first line must not cost the planner the literal write
     // it already did well. A request that states no constraint on the opening

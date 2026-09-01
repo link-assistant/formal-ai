@@ -308,7 +308,10 @@ fn render_obligation(obligation: &Obligation, answer: &str) -> String {
 /// so retain it verbatim and add context instead of discarding or paraphrasing
 /// the evidence.
 fn non_hollow_result(result: &str) -> String {
-    if result.split_whitespace().count() >= 4 {
+    let result = result.trim_end();
+    if result.ends_with(':') || result.ends_with('：') {
+        format!("{result} (observed in repository source).")
+    } else if result.split_whitespace().count() >= 4 {
         result.to_owned()
     } else {
         format!("Observed repository result: {result}")

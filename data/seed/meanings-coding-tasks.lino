@@ -604,6 +604,35 @@ meanings
       surface
         text "Agent-CLI ladder depth selector"
         action "^  0\|1\|2\|3\|4\|5\|all\) ;;$"
+  dotted_binary_node_filter
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks how one dotted binary node is selected for focused debugging"
+    effect "the repository-search subject is bound to the ladder's dotted node filter"
+    unit "not applicable"
+    example "single node can be selected by dotted binary path for focused debugging"
+    lexeme en
+      surface
+        text "single node can be selected by dotted binary path for focused debugging"
+        action dotted_binary_node_filter
+      surface
+        text "focused dotted-path node selection"
+        action dotted_binary_node_filter
+  coding_search_dotted_binary_node_filter
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's dotted binary node filter"
+    effect "the requested fact is searched by the anchored Python selector condition"
+    unit "not applicable"
+    example "single node can be selected by dotted binary path for focused debugging"
+    lexeme en
+      surface
+        text "single node can be selected by dotted binary path for focused debugging"
+        action "^        if depth == level and \(not filt or node == filt\):$"
+      surface
+        text "focused dotted-path node selection"
+        action "^        if depth == level and \(not filt or node == filt\):$"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
