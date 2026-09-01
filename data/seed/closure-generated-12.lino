@@ -414,6 +414,21 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm surface ru"
+  response_coding_repository_result_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation en"
+  response_coding_repository_result_observation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation hi"
+  response_coding_repository_source_observation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation ru"
   response_coding_source_function_return_rust
     defined-by response_template
     lexeme en

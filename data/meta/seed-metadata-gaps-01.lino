@@ -55,6 +55,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "constant"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_186247cca4bac2f1
+    source "data/seed/closure-generated-02.lino"
+    record "limits"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e24d7113f1f3a4c1
     source "data/seed/closure-generated-02.lino"
     record "mathematics"
@@ -126,6 +130,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_c880c5b509097d41
     source "data/seed/closure-generated-03.lino"
     record "pattern_x_ruhej_gongzuo_suffix_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_6ff5565709d88ad1
+    source "data/seed/closure-generated-03.lino"
+    record "response_coding_repository_source_observation_zh"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bfe89cedc5caf741
     source "data/seed/closure-generated-03.lino"
@@ -306,6 +314,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_61394266bb97e2f1
     source "data/seed/closure-generated-05.lino"
     record "thinking_narrative_gratitude"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3d5847aa79170be1
+    source "data/seed/closure-generated-06.lino"
+    record "encoded"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_84f4034dd50b50d1
     source "data/seed/closure-generated-06.lino"

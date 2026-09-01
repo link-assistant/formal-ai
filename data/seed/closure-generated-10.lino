@@ -24,6 +24,11 @@ meanings
     lexeme en
       surface
         text "coding meta algorithm solutions heading"
+  coding_repository_source_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "coding repository source observation"
   configure_thinking_detail
     defined-by intent
     lexeme en

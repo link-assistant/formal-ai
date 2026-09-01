@@ -379,6 +379,11 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm surface en"
+  response_coding_repository_source_observation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation hi"
   response_comparison_decomposed_no_evidence_en
     defined-by response_template
     lexeme en

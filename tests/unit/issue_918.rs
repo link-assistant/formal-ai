@@ -340,15 +340,19 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // the twenty-seventh catalog record is `program_language_laravel`, the
     // framework issue #723 asked for, which is a catalog row of its own rather
     // than an alias surface of PHP. Either way a new target is a new
-    // complete-source record, never a new gap. The three most recent additions
-    // are not language targets at all: `workspace_inspection_examine`,
+    // complete-source record, never a new gap. Three later additions are not
+    // language targets at all: `workspace_inspection_examine`,
     // `workspace_inspection_verify` and `workspace_inspection_identify` are the
     // vocabulary that lets a request to *look at* the repository route to a
     // workspace search instead of an open-web one (issue #1066). They land in
     // the same complete source as the coding tasks and carry the same five
     // fields, so they raise the floor rather than the gap count -- which is the
     // point of the floor: new agent capability arrives as described data.
-    assert_eq!(coding_records, 45, "coding-path regression floor");
+    // Issue #1069 adds 29 more complete records: the workspace-search bounds,
+    // subjects and canonical facts needed to discover and verify every ladder
+    // invariant without phrase-specific handler code. Those reviewed records
+    // move the floor from 45 to 74; none is allowed to become a metadata gap.
+    assert_eq!(coding_records, 74, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -412,5 +416,9 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // which is the growth this number exists to track. Leaving the fallback in
     // place would have held the count still and kept the answer wrong, which is
     // the direction this floor is here to make visible.
-    assert_eq!(expected_gaps.len(), 3_862);
+    // Issue #1069 contributes 33 more reviewed closure gaps: the two new
+    // repository-observation intents and ten localized response ids, plus the
+    // source-search vocabulary generated from the 29 complete coding records
+    // above. They are closure data, not missing metadata on the coding path.
+    assert_eq!(expected_gaps.len(), 3_895);
 }

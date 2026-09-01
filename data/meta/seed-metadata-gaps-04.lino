@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 4
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_2a205dec6ed75ce4
+    source "data/seed/closure-generated-01.lino"
+    record "associations"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5f7c8dbebbb5b9a4
     source "data/seed/closure-generated-01.lino"
     record "numeric_list"
@@ -398,6 +402,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_fa550ce7c95e4fc4
     source "data/seed/closure-generated-09.lino"
     record "response_thinking_narrative_test_status_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_bb356925c210cbb4
+    source "data/seed/closure-generated-09.lino"
+    record "serialization"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_84fa990ef0136a94
     source "data/seed/closure-generated-09.lino"

@@ -43,6 +43,7 @@ use super::self_heal;
 use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
+use super::workspace_inspection;
 use super::statement_audit;
 use super::structured_edit;
 use super::task_structure;
@@ -441,7 +442,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // subject rule inside `workspace_inspection_search_for_task` is what keeps a
     // genuinely external question out of this route.
     if !tool_result::has_latest_turn_result(messages)
-        && let Some(search) = shell_command::workspace_inspection_search_for_task(&task)
+        && let Some(search) = workspace_inspection::workspace_inspection_search_for_task(&task)
             && let Some(tool) = tool_for(tool_names, Capability::Grep) {
                 let mut arguments = json!({
                     "query": search.query,

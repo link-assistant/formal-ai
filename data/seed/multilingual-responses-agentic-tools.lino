@@ -119,3 +119,43 @@ multilingual_responses
     intent mutating_action_blocked
     language es
     text "No ejecuté `{action}`. La comprobación `{check}` terminó con código {exit_code}, así que se omitió la acción y nada cambió en el espacio de trabajo."
+  response response_coding_repository_source_observation_en
+    intent coding_repository_source_observation
+    language en
+    text "{result} (observed in repository source)."
+  response response_coding_repository_source_observation_ru
+    intent coding_repository_source_observation
+    language ru
+    text "{result} (наблюдается в исходном коде репозитория)."
+  response response_coding_repository_source_observation_hi
+    intent coding_repository_source_observation
+    language hi
+    text "{result} (रिपॉज़िटरी स्रोत में देखा गया)।"
+  response response_coding_repository_source_observation_zh
+    intent coding_repository_source_observation
+    language zh
+    text "{result}（在仓库源代码中观察到）。"
+  response response_coding_repository_source_observation_es
+    intent coding_repository_source_observation
+    language es
+    text "{result} (observado en el código fuente del repositorio)."
+  response response_coding_repository_result_observation_en
+    intent coding_repository_result_observation
+    language en
+    text "Observed repository result: {result}"
+  response response_coding_repository_result_observation_ru
+    intent coding_repository_result_observation
+    language ru
+    text "Результат, наблюдаемый в репозитории: {result}"
+  response response_coding_repository_result_observation_hi
+    intent coding_repository_result_observation
+    language hi
+    text "रिपॉज़िटरी में देखा गया परिणाम: {result}"
+  response response_coding_repository_result_observation_zh
+    intent coding_repository_result_observation
+    language zh
+    text "在仓库中观察到的结果：{result}"
+  response response_coding_repository_result_observation_es
+    intent coding_repository_result_observation
+    language es
+    text "Resultado observado en el repositorio: {result}"

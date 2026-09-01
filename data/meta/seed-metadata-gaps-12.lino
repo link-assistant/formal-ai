@@ -595,6 +595,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "algorithm_empty_binding_name"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_8f8a1a009190104c
+    source "data/seed/closure-generated-11.lino"
+    record "ceiling"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_7419b9524994205c
     source "data/seed/closure-generated-11.lino"
     record "desktop_to_cli"

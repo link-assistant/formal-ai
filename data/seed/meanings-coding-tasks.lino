@@ -235,6 +235,7 @@ meanings
         text max
   completion_criterion
     defined-by code
+    role coding_search_literal_query
     precondition "a source model names the observable condition for completion"
     effect "completion_criterion denotes that model field"
     unit "not applicable"
@@ -536,10 +537,10 @@ meanings
     lexeme en
       surface
         text "child paths follow the dotted numeric convention"
-        action "format!\(\"\{parent\}\.\{number\}\"\)"
+        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
       surface
         text "child paths append a dot and their one-based numeric ordinal"
-        action "format!\(\"\{parent\}\.\{number\}\"\)"
+        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
   complete_tree_node_count
     defined-by code
     role coding_search_literal_query
@@ -600,10 +601,10 @@ meanings
     lexeme en
       surface
         text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
-        action "^  0\|1\|2\|3\|4\|5\|all\) ;;$"
+        action "all[)] ;;$"
       surface
         text "Agent-CLI ladder depth selector"
-        action "^  0\|1\|2\|3\|4\|5\|all\) ;;$"
+        action "all[)] ;;$"
   dotted_binary_node_filter
     defined-by code
     role coding_search_literal_query
@@ -629,10 +630,10 @@ meanings
     lexeme en
       surface
         text "single node can be selected by dotted binary path for focused debugging"
-        action "^        if depth == level and \(not filt or node == filt\):$"
+        action "^        if depth == level and [(]not filt or node == filt[)]:$"
       surface
         text "focused dotted-path node selection"
-        action "^        if depth == level and \(not filt or node == filt\):$"
+        action "^        if depth == level and [(]not filt or node == filt[)]:$"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
@@ -672,7 +673,7 @@ meanings
     lexeme en
       surface
         text "decomposition nodes at depth"
-        action "BTreeMap::from\(\[\(0, 1\), \(1, 2\), \(2, 4\), \(3, 8\), \(4, 16\), \(5, 32\)\]\)"
+        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
   coding_search_recursive_task_conversion
     defined-by code
     role coding_search_fact_query
@@ -697,13 +698,13 @@ meanings
     lexeme en
       surface
         text "approved decomposition strategies"
-        action "decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
+        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
       surface
         text "reviewed decomposition strategies"
-        action "decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
+        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
       surface
         text "approved task strategies"
-        action "decompose_task_with_ledger\(task, max_depth, &TaskStrategyLedger::shipped\(\)\)"
+        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
   coding_search_independent_leaf_lower_bound
     defined-by code
     role coding_search_fact_query

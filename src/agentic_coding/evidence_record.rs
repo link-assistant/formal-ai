@@ -240,7 +240,7 @@ pub(super) fn plan_evidence_record_step(
     let observed = parse_obligation(&obligation.residual)
         .is_none()
         .then(|| {
-            super::shell_command::workspace_inspection_search_for_task(&obligation.residual)
+            super::workspace_inspection::workspace_inspection_search_for_task(&obligation.residual)
         })
         .flatten()
         .and_then(|_| progress.latest_successful_output(Capability::Grep))
@@ -284,7 +284,7 @@ fn render_obligation(obligation: &Obligation, answer: &str) -> String {
             rendered.push_str(field);
             if field.ends_with('=') {
                 if field == "result=" {
-                    rendered.push_str(&non_hollow_result(result));
+                    rendered.push_str(&non_hollow_result(result, &obligation.residual));
                 } else {
                     rendered.push_str(result);
                 }
@@ -293,7 +293,7 @@ fn render_obligation(obligation: &Obligation, answer: &str) -> String {
         }
         return rendered;
     }
-    let answer = non_hollow_result(answer);
+    let answer = non_hollow_result(answer, &obligation.residual);
     obligation.first_line.as_ref().map_or_else(
         || format!("{}\n", answer.trim_end()),
         |line| format!("{line}\n\n{}\n", answer.trim_end()),
@@ -307,15 +307,18 @@ fn render_obligation(obligation: &Obligation, answer: &str) -> String {
 /// can still answer the question completely with only a path and one sentinel,
 /// so retain it verbatim and add context instead of discarding or paraphrasing
 /// the evidence.
-fn non_hollow_result(result: &str) -> String {
+fn non_hollow_result(result: &str, task: &str) -> String {
     let result = result.trim_end();
-    if result.ends_with(':') || result.ends_with('：') {
-        format!("{result} (observed in repository source).")
+    let language = crate::language::detect(task).slug();
+    let intent = if result.ends_with(':') || result.ends_with('：') {
+        "coding_repository_source_observation"
     } else if result.split_whitespace().count() >= 4 {
-        result.to_owned()
+        return result.to_owned();
     } else {
-        format!("Observed repository result: {result}")
-    }
+        "coding_repository_result_observation"
+    };
+    crate::seed::render_response(intent, language, &[("result", result)])
+        .unwrap_or_else(|| result.to_owned())
 }
 
 /// The observation carried by a successfully written evidence artifact.
@@ -360,7 +363,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
             candidates.push((line, current_source_authority.max(source_authority(line))));
         }
     }
-    let terms = super::shell_command::workspace_inspection_terms_for_task(task);
+    let terms = super::workspace_inspection::workspace_inspection_terms_for_task(task);
     let lexicon = crate::seed::lexicon();
     let condition_requested =
         lexicon.mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
@@ -369,7 +372,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         task,
     );
     let serialized_relationship =
-        super::shell_command::serialized_relationship_term(task);
+        super::workspace_inspection::serialized_relationship_term(task);
     trace_route(
         "evidence_record_relationship",
         serialized_relationship.as_deref().unwrap_or("none"),

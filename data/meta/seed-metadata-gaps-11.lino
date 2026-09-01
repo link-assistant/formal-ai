@@ -147,6 +147,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "lexeme_import_cannot_list"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_6fea6b5709cea6fb
+    source "data/seed/closure-generated-03.lino"
+    record "response_coding_repository_source_observation_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0d3d47df3273041b
     source "data/seed/closure-generated-03.lino"
     record "response_external_benchmark_proof_status_detail_ru"
@@ -766,6 +770,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_c5ead9ea8c0ab2fb
     source "data/seed/closure-generated-15.lino"
     record "pattern_wellbeing_phrase_kak_pozhivaesh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_db0ea80dbffab97b
+    source "data/seed/closure-generated-15.lino"
+    record "rendering"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1b906cd8d864b06b
     source "data/seed/closure-generated-15.lino"

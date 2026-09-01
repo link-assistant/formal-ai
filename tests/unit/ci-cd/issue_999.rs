@@ -150,6 +150,8 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
             "coding_workspace_effect_observed",
             "coding_workspace_written_unverified",
             "coding_workspace_verification_failed",
+            "coding_repository_source_observation",
+            "coding_repository_result_observation",
             "tool_result_failed_exit_code",
             // Issues #824 and #944 added the verified-mutating-action pair to
             // the same split file, for the same reason the four above are

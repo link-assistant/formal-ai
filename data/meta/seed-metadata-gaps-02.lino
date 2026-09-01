@@ -167,6 +167,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "linksplatform"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_eafd4fdf340fecc2
+    source "data/seed/closure-generated-05.lino"
+    record "max"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_75bb6dceaecb4252
     source "data/seed/closure-generated-05.lino"
     record "pattern_courtesy_phrase_wo_hen_hao_xiexie"

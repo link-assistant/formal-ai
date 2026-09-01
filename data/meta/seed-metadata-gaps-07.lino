@@ -263,6 +263,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "response_thinking_step_rule_construction_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9eb4bbbdf6b14437
+    source "data/seed/closure-generated-06.lino"
+    record "serialized"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9b7d02064af3cfb7
     source "data/seed/closure-generated-06.lino"
     record "signal-processing"

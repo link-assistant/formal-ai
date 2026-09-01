@@ -71,6 +71,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "primary"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a05782ef53cba2cd
+    source "data/seed/closure-generated-02.lino"
+    record "response_coding_repository_result_observation_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0e600ebcc34cf5fd
     source "data/seed/closure-generated-02.lino"
     record "response_lexeme_import_lexeme_lost_hi"

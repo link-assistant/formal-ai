@@ -44,6 +44,11 @@ meanings
     lexeme en
       surface
         text "client server did not listen"
+  coding_repository_result_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "coding repository result observation"
   collect_corpus
     defined-by concept
     lexeme en
@@ -394,6 +399,16 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm heading es"
+  response_coding_repository_result_observation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation ru"
+  response_coding_repository_result_observation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation zh"
   response_coding_workspace_effect_observed_ru
     defined-by response_template
     lexeme en

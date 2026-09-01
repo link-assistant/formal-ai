@@ -815,6 +815,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "summarization_criterion_content_retained"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_56ca65a18d5fd950
+    source "data/seed/closure-generated-14.lino"
+    record "to_recursive_task"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9a1ef84cb6e42310
     source "data/seed/closure-generated-14.lino"
     record "wikibooks"

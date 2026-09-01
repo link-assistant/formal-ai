@@ -2,46 +2,100 @@ self_ast_census
   target src/agentic_coding/workspace_inspection.rs
   language rust
   fidelity full_ast
-  byte_len 3584
-  line_count 64
-  content_id source_module_3fc76f25b24f422a
-  symbol_count 2
+  byte_len 15006
+  line_count 326
+  content_id source_module_deb44b5fd0cae5f3
+  symbol_count 15
   symbols
-    function asks_about_the_workspace 44 52
-    function names_an_external_source 62 64
+    function asks_about_the_workspace 48 56
+    function names_an_external_source 66 68
+    struct WorkspaceInspectionSearch 86 93
+    function workspace_inspection_search_for_task 103 136
+    function workspace_inspection_search 138 175
+    function canonical_fact_filename_filter 177 187
+    function workspace_inspection_terms_for_task 195 212
+    function inspection_fact_terms 214 238
+    function inspection_subject_and_following 247 255
+    function ascii_case_insensitive_offset 257 265
+    function module_filename_filter 267 273
+    function inspection_filename_filter 279 286
+    function literal_inspection_fact_query 288 295
+    function serialized_relationship_fact_query 303 305
+    function serialized_relationship_term 312 326
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 947
-    named_node_count 233
-    distinct_node_kinds 27
+    total_link_count 7433
+    named_node_count 1633
+    distinct_node_kinds 68
     node_kinds
-      arguments 9
-      binary_expression 1
-      block 3
-      call_expression 9
-      closure_expression 1
-      closure_parameters 1
-      crate 2
-      doc_comment 48
-      field_expression 4
-      field_identifier 4
-      function_item 2
-      identifier 25
+      arguments 144
+      array_expression 1
+      binary_expression 16
+      block 39
+      call_expression 144
+      char_literal 4
+      closure_expression 25
+      closure_parameters 25
+      continue_expression 3
+      crate 3
+      doc_comment 103
+      else_clause 4
+      expression_statement 31
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 97
+      field_identifier 102
+      field_initializer 2
+      field_initializer_list 3
+      for_expression 3
+      function_item 14
+      generic_function 1
+      generic_type 12
+      identifier 314
+      if_expression 16
+      index_expression 3
       inner_doc_comment_marker 32
-      let_declaration 1
-      line_comment 48
-      outer_doc_comment_marker 16
-      parameter 2
-      parameters 2
-      primitive_type 4
-      reference_expression 2
-      reference_type 2
-      scoped_identifier 9
+      integer_literal 5
+      let_chain 1
+      let_condition 7
+      let_declaration 16
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 116
+      macro_invocation 2
+      mutable_specifier 2
+      outer_doc_comment_marker 71
+      parameter 18
+      parameters 14
+      parenthesized_expression 3
+      primitive_type 22
+      range_expression 2
+      raw_string_literal 1
+      reference_expression 15
+      reference_type 19
+      return_expression 7
+      scoped_identifier 38
+      scoped_use_list 2
+      shorthand_field_initializer 7
       source_file 1
-      super 2
-      unary_expression 1
-      use_declaration 1
-      visibility_modifier 1
+      string_content 10
+      string_literal 9
+      struct_expression 3
+      struct_item 1
+      super 13
+      token_tree 2
+      try_expression 2
+      tuple_expression 1
+      tuple_pattern 2
+      tuple_struct_pattern 7
+      type_arguments 13
+      type_identifier 30
+      type_parameters 1
+      unary_expression 7
+      unit_expression 1
+      use_declaration 3
+      use_list 2
+      visibility_modifier 8

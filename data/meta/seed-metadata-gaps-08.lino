@@ -555,6 +555,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_client_contract_read_observations_error_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_04fba9b7c3633808
+    source "data/seed/closure-generated-12.lino"
+    record "response_coding_repository_source_observation_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6dd635aa66b22d08
     source "data/seed/closure-generated-12.lino"
     record "response_fact_check_statement_counterexample_en"
@@ -746,6 +750,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_7989a0741f40c6b8
     source "data/seed/closure-generated-15.lino"
     record "transformation"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_dbc6825639708898
+    source "data/seed/closure-generated-16.lino"
+    record "adapters"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c1196e7334341ef8
     source "data/seed/closure-generated-16.lino"
