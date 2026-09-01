@@ -272,11 +272,12 @@ pub use learning_ledger::{
     HumanApproval, LearningLedger, LedgerEntry, PromotionRejected, approved_lesson_for,
     canonical_ledger, canonical_ledger_failure_prompts,
 };
-#[cfg(feature = "doublets-native")]
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 pub use link_store::{
-    DefaultNativeLinkStore, DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore,
-    LinkStoreBackend, LinkStoreError, default_native_link_store, memory_event_to_link_record,
-    memory_events_to_link_records, selected_link_store_backend, validate_memory_links_notation,
+    DefaultNativeLinkStore, DoubletLink, DoubletsLinkStore, LinkCliLinkStore, LinkRecord,
+    LinkStore, LinkStoreBackend, LinkStoreError, default_native_link_store,
+    memory_event_to_link_record, memory_events_to_link_records, selected_link_store_backend,
+    server_link_transition_log_path, validate_memory_links_notation,
 };
 pub use links_query::{
     EdgePattern, Field, Filter, FilterOp, LinksQuery, LinksQueryError, LinksQueryResult,
@@ -295,6 +296,7 @@ pub use memory::{
 };
 pub use memory_sync::{
     SyncStore, configured_memory_path, events_since, merge_event, merge_union_by_id,
+    server_link_database_path,
 };
 pub use probability::{
     ProbabilityCandidate, ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel,

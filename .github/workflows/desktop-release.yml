@@ -112,7 +112,7 @@ jobs:
       # (scripts/desktop-release-resolve.sh) instead of being inlined here. The
       # script only needs to *exist*; it queries the GitHub API for everything
       # else, so checking out the default ref is sufficient.
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Resolve tag and whether desktop assets are needed
         id: pick
@@ -208,7 +208,7 @@ jobs:
           deadline=$(( $(date +%s) + JOB_TIMEOUT_MINUTES * 60 - POST_PACKAGING_RESERVE_SECONDS ))
           echo "FORMAL_AI_JOB_DEADLINE_EPOCH=${deadline}" >> "$GITHUB_ENV"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # On pull requests there is no resolved tag: build the PR head, which
           # is the whole point of the dry run.
@@ -242,7 +242,7 @@ jobs:
         # arguments on Windows, but sccache respawns rustc with the expanded
         # command and hits CreateProcess's command-line limit (os error 206).
         if: runner.os != 'Windows'
-        uses: mozilla-actions/sccache-action@v0.0.10
+        uses: mozilla-actions/sccache-action@v0.0.11
         with:
           # v0.17.0 expands Rust response files before spawning rustc and
           # exceeds the Windows command-line limit for web-sys.
@@ -265,7 +265,7 @@ jobs:
         run: cargo build --release --bin formal-ai
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -641,7 +641,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # On pull requests there is no resolved tag: build the PR head, which
           # is the whole point of the dry run.
@@ -660,7 +660,7 @@ jobs:
         run: bash scripts/simulate-fresh-merge.sh
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 

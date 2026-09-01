@@ -28,14 +28,15 @@
     "playwright": "^1.62.1"
   },
   "devDependencies": {
-    "electron": "^43.4.1",
+    "electron": "^44.1.0",
     "electron-builder": "^26.15.7"
   },
   "overrides": {
     "@link-assistant/web-capture": {
+      "@kreuzberg/html-to-markdown-node": "3.5.5",
       "browser-commander": "0.16.1",
-      "puppeteer": "^25.8.0",
-      "puppeteer-core": "^25.8.0"
+      "puppeteer": "^25.9.0",
+      "puppeteer-core": "^25.9.0"
     }
   },
   "build": {

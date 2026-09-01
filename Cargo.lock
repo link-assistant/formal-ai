@@ -1152,9 +1152,9 @@ checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
 
 [[package]]
 name = "doublets"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fec36305f729ca75677ebe6be2f45020a52894c32cac4842e18d4ad320f7a31f"
+checksum = "677be8ee593349204e8e7cbc2398d4b98fb95fd1386f3a7eaf286860a5788c8f"
 dependencies = [
  "cfg-if",
  "leak_slice",
@@ -1453,17 +1453,16 @@ dependencies = [
  "bytes",
  "clap",
  "command-stream",
- "doublets",
  "egg",
  "fs2",
  "kamadak-exif",
  "link-calculator",
- "links-notation 0.14.0",
+ "link-cli",
+ "links-notation 0.16.1",
  "lino-arguments",
  "lino-objects-codec",
  "meta-language",
  "nom 8.0.0",
- "platform-mem",
  "regex",
  "serde",
  "serde_json",
@@ -2457,6 +2456,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "link-cli"
+version = "0.2.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22b8713bafccde8ab4298b27bd5188462ecdfbb52506559c3dc7aa762e33e92c"
+dependencies = [
+ "anyhow",
+ "doublets",
+ "links-notation 0.16.1",
+ "lino-arguments",
+ "thiserror 2.0.20",
+]
+
+[[package]]
 name = "links-notation"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2467,9 +2479,9 @@ dependencies = [
 
 [[package]]
 name = "links-notation"
-version = "0.14.0"
+version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b6e5f36d99612ea82da43dbd5efb37b0b4e9c4b8197228e073b60ef5a0e78f2"
+checksum = "0068a55e836850caf98abf96117045ab641af446ab0816557360b318fd9e5cfe"
 dependencies = [
  "links-notation-macro",
  "nom 8.0.0",
@@ -2508,12 +2520,12 @@ checksum = "5f453c53827aabe91a3d3856d61d14ae3867ab1a4344db22f9fa5396664c8d0e"
 
 [[package]]
 name = "lino-objects-codec"
-version = "0.4.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "faab60e0894cde06f0c571798350644c8be092d625e6a0e45f543212101da561"
+checksum = "55d4c7f90ff7a41e51b6f09873e56ee29dca043e482290a1b3fc6f7f18f810e9"
 dependencies = [
- "base64 0.22.1",
- "links-notation 0.14.0",
+ "base64 0.23.1",
+ "links-notation 0.16.1",
 ]
 
 [[package]]

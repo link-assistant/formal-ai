@@ -100,11 +100,12 @@ pub use knowledge::{
     within_cache_capacity,
 };
 pub use language::{Language, detect as detect_language};
-#[cfg(feature = "doublets-native")]
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 pub use link_store::{
-    DefaultNativeLinkStore, DoubletLink, DoubletsLinkStore, LinkRecord, LinkStore,
-    LinkStoreBackend, LinkStoreError, default_native_link_store, memory_event_to_link_record,
-    memory_events_to_link_records, selected_link_store_backend, validate_memory_links_notation,
+    DefaultNativeLinkStore, DoubletLink, DoubletsLinkStore, LinkCliLinkStore, LinkRecord,
+    LinkStore, LinkStoreBackend, LinkStoreError, default_native_link_store,
+    memory_event_to_link_record, memory_events_to_link_records, selected_link_store_backend,
+    server_link_transition_log_path, validate_memory_links_notation,
 };
 pub use links_query::{
     EdgePattern, Field, Filter, FilterOp, LinksQuery, LinksQueryError, LinksQueryResult,

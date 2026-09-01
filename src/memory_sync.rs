@@ -167,6 +167,12 @@ pub fn chat_recording_enabled() -> bool {
     )
 }
 
+/// Resolve the native link-cli database beside a portable `.lino` memory log.
+#[must_use]
+pub fn server_link_database_path(memory_path: &Path) -> PathBuf {
+    memory_path.with_extension("links")
+}
+
 /// A small file-backed event log used by the HTTP sync endpoints.
 ///
 /// Each request loads the current log, applies its operation, and (for writes)
@@ -239,12 +245,24 @@ impl SyncStore {
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
             }
         };
-        Self {
+        let mut store = Self {
             path: Some(path.to_path_buf()),
             events,
             schema_version,
             compatible,
+        };
+        if store.compatible
+            && let Err(error) = store.synchronize_link_cli_projection()
+        {
+            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                eprintln!(
+                    "[memory] could not synchronize link-cli store for {}: {error}",
+                    path.display()
+                );
+            }
+            store.compatible = false;
         }
+        store
     }
 
     /// The events currently held.
@@ -385,8 +403,28 @@ impl SyncStore {
                 "refusing to write an incompatible persisted-memory schema",
             ));
         }
-        // Locked atomic write (issue #540 §6): the HTTP handlers and the
-        // background dreaming thread share this log.
-        crate::memory::write_locked_atomic(path, &self.to_links_notation())
+        // The locked atomic `.lino` write remains the portable source and the
+        // cross-surface migration boundary. The native server projection is
+        // then replaced through one link-cli transaction. If a process stops
+        // between these operations, `open_at` deterministically repairs the
+        // binary sidecar from the already-complete `.lino` document.
+        crate::memory::write_locked_atomic(path, &self.to_links_notation())?;
+        self.synchronize_link_cli_projection()
+    }
+
+    fn synchronize_link_cli_projection(&self) -> std::io::Result<()> {
+        #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+        {
+            let Some(memory_path) = self.path.as_deref() else {
+                return Ok(());
+            };
+            let database = server_link_database_path(memory_path);
+            let mut store = crate::link_store::LinkCliLinkStore::open_at(&database)
+                .map_err(std::io::Error::other)?;
+            store
+                .replace_memory_events_transactionally(&self.events)
+                .map_err(std::io::Error::other)?;
+        }
+        Ok(())
     }
 }

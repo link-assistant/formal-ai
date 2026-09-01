@@ -23,9 +23,9 @@ following ideas to be explicit:
 - reasoning steps can nest, so tool-generated reasoning (e.g.
   `link-assistant/calculator`) is recorded as a sub-trace of the parent
   reasoning step;
-- everything is appended to a growable memory backed by `doublets-rs` /
-  `doublets-web`, with regular backups to browser storage and disk in `.lino`
-  files;
+- everything is appended to a growable memory backed by the `link-cli` library
+  (file-mapped `doublets-rs`) / `doublets-web`, with regular backups to browser
+  storage and disk in `.lino` files;
 - the local memory is treated as a cache of the public-knowledge database
   (Wikipedia, Wikidata, Wiktionary);
 - the associative store supports stored transformation/substitution rules
@@ -329,9 +329,9 @@ hour. At that bound the reducer retains the current plan in an
 `AwaitingContinuation` decision and resumes only through explicit continuation,
 so the bound is not represented as irreversible failure.
 
-### 4.4 Default native doublets-rs / doublets-web store
+### 4.4 Default native link-cli / doublets-web store
 
-Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
+Native Rust builds select `LinkStoreBackend::LinkCli` by default because
 Cargo's default feature set enables `doublets-native`. The library exposes
 `link_store::DefaultNativeLinkStore` and `default_native_link_store()` so
 embedders can construct the active native backend without checking feature
@@ -339,14 +339,23 @@ flags themselves. Compiling with `--no-default-features` keeps the explicit
 `MemoryStore` / `.lino` projection fallback for small builds and recovery
 tools.
 
-The native backend mirrors each `MemoryEvent` into the `doublets-rs` links network using
-the `Type -> SubType -> Value` reduction in `src/link_store.rs`. Links
-Notation remains the deterministic projection for inspection, backup,
-recovery, and migration: `import_memory_links_notation` accepts both legacy
-`demo_memory` files and full `formal_ai_bundle` exports, while malformed
-documents are rejected before the store is mutated. Exporting the native
-store writes the same stable `.lino` event log that the CLI, HTTP, Telegram,
-and browser surfaces use for portability.
+The native backend embeds the `link-cli` library and mirrors each `MemoryEvent`
+into its file-mapped `doublets-rs` links network using the
+`Type -> SubType -> Value` reduction in `src/link_store.rs`. Every mutation is
+wrapped by `GenericTransactionsDecorator`; its fsynced transition-log sidecar
+commits or rolls back the complete event projection and recovers interrupted
+writes when the database reopens. The HTTP server owns a binary `.links`
+sidecar beside its `.lino` memory file. The portable `.lino` document is
+written atomically first; if a process stops between the two projections, the
+next open deterministically repairs the native sidecar from that complete
+source document.
+
+Links Notation therefore remains the deterministic projection for inspection,
+backup, recovery, and migration: `import_memory_links_notation` accepts both
+legacy `demo_memory` files and full `formal_ai_bundle` exports, while malformed
+documents are rejected before the store is mutated. Exporting the native store
+writes the same stable `.lino` event log that the CLI, HTTP, Telegram, and
+browser surfaces use for portability.
 
 Browser storage remains compatible with `doublets-web`: `src/web/memory.js`
 uses IndexedDB for the event object store, reports `doublets-web` when a
@@ -357,6 +366,7 @@ storage engines are different.
 
 Upstream references:
 
+- [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli)
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs)
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web)
 
@@ -364,8 +374,8 @@ Implemented migration surface:
 
 1. Wrap the current memory projection in a trait so the active backend is
    swappable (`link_store::LinkStore`).
-2. Enable the `doublets-rs` backend by default for native builds through
-   `doublets-native`.
+2. Enable link-cli's transactional file-mapped backend by default for native
+   builds through `doublets-native`.
 3. Preserve `--no-default-features` as the explicit `.lino` projection
    fallback.
 4. Mirror native writes to `.lino` snapshots via
@@ -1451,7 +1461,8 @@ the table in Section 2 and link the new module.
 - `NON-GOALS.md` — what we explicitly do not build.
 - `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R558, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
-- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
+- [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli) — default native transactional storage library.
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — physical doublet store embedded by link-cli.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
 - [`link-foundation/relative-meta-logic`](https://github.com/link-foundation/relative-meta-logic) — future formal-reasoning integration.

@@ -30,8 +30,8 @@ fn memory_events_reduce_to_type_subtype_value_doublets() {
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 #[test]
-fn native_default_build_selects_doublets_rs_backend() {
-    assert_eq!(selected_link_store_backend(), LinkStoreBackend::DoubletsRs);
+fn native_default_build_selects_link_cli_backend() {
+    assert_eq!(selected_link_store_backend(), LinkStoreBackend::LinkCli);
 }
 
 #[cfg(all(not(target_arch = "wasm32"), not(feature = "doublets-native")))]
@@ -94,7 +94,7 @@ fn strict_import_accepts_legacy_memory_documents() {
 
 #[cfg(feature = "doublets-native")]
 #[test]
-fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
+fn link_cli_default_imports_full_lino_bundle_and_exports_deterministically() {
     use crate::memory::{BundleInfo, export_full_memory};
 
     let events = vec![
@@ -131,7 +131,7 @@ fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
     );
 
     let mut store = default_native_link_store().expect("default native store");
-    assert_eq!(store.backend(), LinkStoreBackend::DoubletsRs);
+    assert_eq!(store.backend(), LinkStoreBackend::LinkCli);
 
     let imported = store
         .import_memory_links_notation(&bundle)
@@ -153,7 +153,7 @@ fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
 
 #[cfg(feature = "doublets-native")]
 #[test]
-fn doublets_default_rejects_malformed_import_without_mutation() {
+fn link_cli_default_rejects_malformed_import_without_mutation() {
     let mut store = default_native_link_store().expect("default native store");
     store
         .append_memory_event(MemoryEvent::user("kept"))
@@ -172,7 +172,7 @@ fn doublets_default_rejects_malformed_import_without_mutation() {
 
 #[cfg(feature = "doublets-native")]
 #[test]
-fn doublets_native_backend_mirrors_memory_events() {
+fn link_cli_native_backend_mirrors_memory_events() {
     use super::DoubletsLinkStore;
 
     let mut store = DoubletsLinkStore::new().expect("native doublets store");
@@ -180,7 +180,7 @@ fn doublets_native_backend_mirrors_memory_events() {
         .append_memory_event(MemoryEvent::assistant("hi back"))
         .expect("append");
     assert!(id.starts_with("memory_event_"));
-    assert_eq!(store.backend(), LinkStoreBackend::DoubletsRs);
+    assert_eq!(store.backend(), LinkStoreBackend::LinkCli);
     assert_eq!(store.records().len(), 1);
     assert!(
         store.native_link_count() > store.records()[0].links.len(),

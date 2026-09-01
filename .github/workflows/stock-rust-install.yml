@@ -17,12 +17,12 @@ concurrency:
 jobs:
   stock-rust-install:
     runs-on: ubuntu-latest
-    container: rust:1.96-slim-bookworm
+    container: rust:1.98-slim-bookworm
     timeout-minutes: 40
     env:
       CARGO_INSTALL_ROOT: /tmp/formal-ai-install
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Reject a system OpenSSL dependency
         run: |
           set -eu

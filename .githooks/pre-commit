@@ -23,5 +23,6 @@ repository_root=$(git rev-parse --show-toplevel)
 # Never block a commit. A pruner that fails -- no cargo, no target/, a
 # half-written tree -- must not stand between someone and their work.
 "$repository_root/scripts/prune-build-cache.sh" || true
+"$repository_root/scripts/prune-docker.sh" || true
 
 exit 0

@@ -117,7 +117,7 @@ Status legend:
 
 | # | Vision pillar | Current status | Evidence | Remaining work |
 | --- | --- | --- | --- | --- |
-| 1 | "The associative network is the AI": one doublet-links store is the source of truth | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | `doublets-rs` made the default native physical store by [#278](https://github.com/link-assistant/formal-ai/issues/278) (PR #285). |
+| 1 | "The associative network is the AI": one doublet-links store is the source of truth | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | The default native boundary is link-cli's transactional file-mapped store; `doublets-rs` remains its physical implementation. |
 | 2 | Universal problem-solving loop runs for every prompt in the same shape | Built | `src/solver.rs::UniversalSolver`, active `reasoning_loop` specs | None in the E1-E14 backlog. |
 | 3 | Formalization to Wikidata P-ids/Q-ids with fallback sources | Built | `src/translation/formalization.rs`, `src/translation/pipeline.rs`, active `formalization` specs | Future ranking improvements feed into [#279](https://github.com/link-assistant/formal-ai/issues/279). |
 | 4 | Temperature-based interpretation selection plus clarify-vs-guess | Built | `src/translation/selection.rs`, `SolverConfig::temperature`, active tests | None in the E1-E14 backlog. |

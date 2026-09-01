@@ -2,10 +2,10 @@ self_ast_census
   target src/memory_sync.rs
   language rust
   fidelity signature
-  byte_len 15653
-  line_count 392
-  content_id source_module_8d8a8917f8c8603c
-  symbol_count 18
+  byte_len 17241
+  line_count 430
+  content_id source_module_0a93612b47c20088
+  symbol_count 20
   symbols
     function events_since 37 45
     function merge_union_by_id 54 63
@@ -13,15 +13,17 @@ self_ast_census
     function pick 72 77
     function configured_memory_path 157 159
     function chat_recording_enabled 163 168
-    struct SyncStore 175 180
-    function default 183 190
-    struct RecordedToolExecution 195 199
-    function open 204 206
-    function open_at 210 248
-    function events 252 254
-    function to_links_notation 258 260
-    function delta_links_notation 265 270
-    function import_links_notation 277 294
-    function record_chat_exchange 305 307
-    function record_chat_exchange_with_tools 317 376
-    function persist 378 391
+    function server_link_database_path 172 174
+    struct SyncStore 181 186
+    function default 189 196
+    struct RecordedToolExecution 201 205
+    function open 210 212
+    function open_at 216 266
+    function events 270 272
+    function to_links_notation 276 278
+    function delta_links_notation 283 288
+    function import_links_notation 295 312
+    function record_chat_exchange 323 325
+    function record_chat_exchange_with_tools 335 394
+    function persist 396 413
+    function synchronize_link_cli_projection 415 429

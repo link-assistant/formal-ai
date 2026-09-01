@@ -85,7 +85,7 @@ fn main() -> ExitCode {
             "workflows must retain compile coverage for examples without linking them".to_owned(),
         );
     }
-    if !workflows.contains("mozilla-actions/sccache-action@v0.0.10") {
+    if !workflows.contains("mozilla-actions/sccache-action@v0.0.11") {
         errors.push("workflows must install the supported sccache action version".to_owned());
     }
     for setting in ["SCCACHE_GHA_ENABLED:", "RUSTC_WRAPPER: sccache"] {

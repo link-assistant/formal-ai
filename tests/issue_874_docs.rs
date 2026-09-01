@@ -2,8 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 
 const DIRECT_COMPONENTS: &[(&str, &str)] = &[
-    ("doublets", "https://github.com/linksplatform/doublets-rs"),
-    ("platform-mem", "https://github.com/linksplatform/mem-rs"),
+    ("link-cli", "https://github.com/link-foundation/link-cli"),
     (
         "links-notation",
         "https://github.com/link-foundation/links-notation",
@@ -28,8 +27,9 @@ const DIRECT_COMPONENTS: &[(&str, &str)] = &[
 ];
 
 const RELATED_COMPONENTS: &[&str] = &[
+    "https://github.com/linksplatform/doublets-rs",
+    "https://github.com/linksplatform/mem-rs",
     "https://github.com/linksplatform/doublets-web",
-    "https://github.com/link-foundation/link-cli",
     "https://github.com/link-foundation/relative-meta-logic",
     "https://github.com/link-foundation/meta-theory",
     "https://github.com/link-foundation/transformer",

@@ -251,7 +251,7 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
             if line.contains("--trust") {
                 assert!(
                     (path == ".github/workflows/release.yml"
-                        && line.contains("opencode-ai@1.18.19"))
+                        && line.contains("opencode-ai@1.18.25"))
                         || (path == "experiments/agentic_cli_matrix/install_client.sh"
                             && line.contains("\"$spec\"")),
                     "{path}: {line}"
@@ -260,13 +260,13 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
         }
     }
 
-    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.19"));
+    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.25"));
     let installer = repository_file("experiments/agentic_cli_matrix/install_client.sh");
     assert!(installer.contains("[ \"$CLIENT\" = opencode ]"));
     assert!(installer.contains("bun add -g --trust \"$spec\""));
     assert!(
         repository_file("experiments/agentic_cli_matrix/clients.lock")
-            .contains("opencode-ai@1.18.19")
+            .contains("opencode-ai@1.18.25")
     );
 }
 

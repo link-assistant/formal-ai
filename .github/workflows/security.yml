@@ -34,11 +34,14 @@ jobs:
         language: [rust, actions]
     env:
       # Issue #1017 / github/codeql#19982. The CodeQL Rust extractor vendors its
-      # own rust-analyzer (`ra_ap_* 0.0.301` in CLI 2.26.3) and, with no sysroot
-      # override, resolves `std` from the runner's ambient toolchain. When that
+      # own rust-analyzer (`ra_ap_* 0.0.301` in measured CLI 2.26.3) and, with
+      # no sysroot override, resolves `std` from the runner's ambient toolchain.
+      # When that
       # `std` is newer than the vendored parser understands, *every* call to a
       # `std` macro fails to expand and the file is recorded as "extracted with
-      # errors" — its bodies are then not analysed at all. Run 31937348308
+      # errors" — its bodies are then not analysed at all. Re-checked
+      # 2026-09-01: github/codeql#19982 remains open and the 2.26.4 changelog
+      # contains no Rust extractor fix. Run 31937348308
       # produced 20,725 such diagnostics across 1,023 live source files, so this
       # is an analysis-coverage false negative, not cosmetic noise. Pinning the
       # extractor (and only the extractor — nothing else in this repository
@@ -46,7 +49,7 @@ jobs:
       # coverage. Raise this as CodeQL picks up newer rust-analyzer releases.
       CODEQL_RUST_SYSROOT_TOOLCHAIN: '1.94.0'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # Both variables are required: setting only `_SYSROOT_SRC` leaves the
       # extractor on the discovered (ambient) binary sysroot and the macro
@@ -91,7 +94,7 @@ jobs:
       group: check-${{ github.workflow }}-${{ github.ref }}-cargo-audit
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -129,7 +132,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/dependency-review-action@v5
         with:

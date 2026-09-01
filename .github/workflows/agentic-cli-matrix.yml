@@ -54,13 +54,13 @@ jobs:
     outputs:
       matrix: ${{ steps.matrix-plan.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo registry
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -98,7 +98,7 @@ jobs:
       matrix:
         include: ${{ fromJSON(needs.build.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -164,7 +164,7 @@ jobs:
         # half-installed CLI then migrates its database and *only then* exits 1
         # with `NodePtyModuleLoadError`, which reads like a defect in our server.
         # The `npm-native` installer kind in clients.lock needs a real Node here.
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
 
@@ -173,7 +173,7 @@ jobs:
         # aider-chat declares `Requires-Python >=3.10,<3.13`. Without a pinned
         # interpreter pip resolves *backwards* to a 2024 release rather than
         # failing, which would install a two-year-old CLI under a pinned name.
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -244,7 +244,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Replay every committed transcript
         run: experiments/agentic_cli_matrix/replay.sh
 

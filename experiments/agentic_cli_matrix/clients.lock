@@ -23,22 +23,22 @@
 #   appimage — packaged desktop release, run under Xvfb
 #   script   — vendor install script (URL)
 #
-# Codex is held at 0.147.0 rather than the newest 0.149.0 because
+# Codex is held at 0.147.0 rather than the newest 0.152.0 because
 # @openai/codex@0.148.0 and later drop the ENTER that answers their first-run
 # trust dialog (https://github.com/openai/codex/issues/39487, still open).
 # `experiments/issue_1021_codex_tui_version/run.sh <version>` is the bisect that
 # says when that pin can move; every other row here is the newest release as of
-# 2026-08-21.
+# 2026-09-01.
 
 codex            npm       @openai/codex@0.147.0
-t3code           npm-native t3@0.0.33
-opencode         npm       opencode-ai@1.18.19
-opencode-vscode  tarball   1.134.0
-opencode-desktop appimage  1.18.19
+t3code           npm-native t3@0.0.37
+opencode         npm       opencode-ai@1.18.25
+opencode-vscode  tarball   1.135.0
+opencode-desktop appimage  1.18.25
 agent            npm       @link-assistant/agent@0.26.0
 cursor           script    https://cursor.com/install
-gemini           npm       @google/gemini-cli@0.56.0
-claude           npm       @anthropic-ai/claude-code@2.1.238
-qwen             npm       @qwen-code/qwen-code@0.21.15
+gemini           npm       @google/gemini-cli@0.57.0
+claude           npm       @anthropic-ai/claude-code@2.1.252
+qwen             npm       @qwen-code/qwen-code@0.22.3
 grok             npm       @vibe-kit/grok-cli@0.0.34
 aider            pipx      aider-chat==0.86.2

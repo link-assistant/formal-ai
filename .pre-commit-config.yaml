@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -52,6 +52,16 @@ repos:
       - id: prune-build-cache
         name: prune build cache
         entry: scripts/prune-build-cache.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+
+      # Docker-based checks must not leave stopped containers, dangling images,
+      # or an unbounded build cache on developer machines. This hook is
+      # deliberately best-effort so an unavailable daemon never blocks a commit.
+      - id: prune-docker
+        name: prune Docker leftovers
+        entry: scripts/prune-docker.sh
         language: system
         always_run: true
         pass_filenames: false
