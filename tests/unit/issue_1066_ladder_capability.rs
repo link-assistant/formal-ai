@@ -582,6 +582,25 @@ fn a_complete_tree_node_count_searches_its_test_constant() {
 }
 
 #[test]
+fn an_agent_cli_ladder_depth_selector_searches_the_experiment_workflow() {
+    // Workflow scripts live outside production source, and the pipe-delimited
+    // shell selector must be escaped before it is used as a grep regex.
+    let arguments = planned_arguments(
+        "Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "agent_cli_ladder_depth_selector");
+    assert_eq!(search["pattern"], r"^  0\|1\|2\|3\|4\|5\|all\) ;;$");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("experiments/**/*")
+    );
+}
+
+#[test]
 fn documented_power_of_two_levels_use_their_literal_invariant() {
     // A prose name such as `power-of-two` resembles an underscored source
     // identifier. Here it names the documented node-count invariant, so an

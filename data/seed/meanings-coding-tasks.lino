@@ -575,6 +575,35 @@ meanings
       surface
         text "root-inclusive node total is 63"
         action "const NODE_COUNT: usize = 63"
+  agent_cli_ladder_depth_selector
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks which depths the Agent-CLI ladder workflow accepts"
+    effect "the repository-search subject is bound to the ladder depth selector"
+    unit "not applicable"
+    example "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+    lexeme en
+      surface
+        text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+        action agent_cli_ladder_depth_selector
+      surface
+        text "Agent-CLI ladder depth selector"
+        action agent_cli_ladder_depth_selector
+  coding_search_agent_cli_ladder_depth_selector
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the Agent-CLI ladder's accepted depth selectors"
+    effect "the requested fact is searched by its regex-safe shell case arm"
+    unit "not applicable"
+    example "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+    lexeme en
+      surface
+        text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+        action "^  0\|1\|2\|3\|4\|5\|all\) ;;$"
+      surface
+        text "Agent-CLI ladder depth selector"
+        action "^  0\|1\|2\|3\|4\|5\|all\) ;;$"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
