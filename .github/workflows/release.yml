@@ -164,8 +164,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Test released-to-candidate memory upgrade
         run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
-      - name: Prune Docker artifacts
-        if: ${{ !cancelled() }}
+      - if: ${{ !cancelled() }}
         run: scripts/prune-docker.sh
   secrets-scan:
     name: Secrets Scan
@@ -224,7 +223,6 @@ jobs:
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
-
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
@@ -1292,7 +1290,6 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
           retention-days: 1
-
   # Issue #932 (follow-up of PR #119): a generated project for a language is
   # built and run inside the link-foundation/box image that matches that
   # language, using the language's own init commands. The matrix keeps each
@@ -1321,8 +1318,7 @@ jobs:
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v7
-      # A box variant unpacks to 4-8 GB, more than a stock runner has spare
-      # even after the shared host binary no longer has to compile here.
+      # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
@@ -1339,8 +1335,7 @@ jobs:
           retention-days: 7
           # `always()` also covers a leg that failed before generating anything.
           if-no-files-found: warn
-      - name: Prune Docker artifacts
-        if: ${{ !cancelled() }}
+      - if: ${{ !cancelled() }}
         run: scripts/prune-docker.sh
   deploy-pages:
     name: Deploy Web App to GitHub Pages

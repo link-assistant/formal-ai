@@ -86,6 +86,7 @@ AGENT_LOG="/tmp/agent-out-$PORT.log"
 AGENT_SETUP_LOG="/tmp/agent-setup-$PORT.log"
 AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
 WORKDIR="$(mktemp -d)"
+SERVER_STATE="$(mktemp -d)"
 
 echo "== workdir: $WORKDIR =="
 cd "$WORKDIR" || exit 1
@@ -142,12 +143,14 @@ fi
 # Private, empty memory per run so the chat handler's memory-fed planning and the
 # `POST /v1/chat/completions` round count stay deterministic and independent of
 # what earlier E2E scripts recorded into the shared ~/.formal-ai/memory.lino
-# (issue #828). FORMAL_AI_DREAMING=0 stops background compaction of that file.
+# (issue #828). Keep server-owned state outside WORKDIR: link-cli writes a binary
+# sidecar beside the LiNo file, and Agent must not mistake either file for an
+# authored workspace effect. FORMAL_AI_DREAMING=0 stops background compaction.
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
-  FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
+  FORMAL_AI_MEMORY_PATH="$SERVER_STATE/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!
-trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR"' EXIT
+trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR" "$SERVER_STATE"' EXIT
 
 # Wait for /health without a foreground sleep (curl retries handle the backoff).
 if ! curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \

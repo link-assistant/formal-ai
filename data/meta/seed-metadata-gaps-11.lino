@@ -183,6 +183,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "thinking_step_scan_memory"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_7e6325994c27ab0b
+    source "data/seed/closure-generated-04.lino"
+    record "evidence_exact_composition"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_97670689730a74fb
     source "data/seed/closure-generated-04.lino"
     record "meta-expression"

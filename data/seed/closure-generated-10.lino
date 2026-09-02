@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "fields"
+  file_read_many_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "file read many unavailable"
   first_open_order
     defined-by task
     lexeme en

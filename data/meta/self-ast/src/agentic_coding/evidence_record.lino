@@ -2,117 +2,120 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 27448
-  line_count 640
-  content_id source_module_54b63b4a1c2c708e
-  symbol_count 23
+  byte_len 29559
+  line_count 690
+  content_id source_module_ccbf4009fa1eb51c
+  symbol_count 25
   symbols
     struct Obligation 54 63
     function parse_obligation 87 132
-    function exact_field_lines 135 155
-    function work_before_delivery 171 175
-    function without_trailing_separator 188 198
-    function plan_evidence_record_step 209 276
-    function render_obligation 279 301
-    function non_hollow_result 310 322
-    function written_observation 328 338
-    function substantive_result_line 348 408
-    function relevance_score 410 472
-    function looks_like_condition 480 492
-    function looks_like_instance_condition 498 503
-    function looks_like_local_binding 508 513
-    function looks_like_exposed_declaration 518 524
-    function looks_like_declaration 532 551
-    function source_text 553 558
-    function is_quoted_or_commented_source 560 570
-    function is_match_count 572 576
-    function looks_like_result_path_heading 578 580
-    function source_authority 585 592
-    function symbolic_answer 618 628
-    function with_residual_request 635 640
+    function exact_field_lines 135 168
+    function work_before_delivery 184 188
+    function without_trailing_separator 201 211
+    function plan_evidence_record_step 222 289
+    function render_obligation 292 318
+    function exact_field_values 325 333
+    function combined_observation 336 351
+    function non_hollow_result 360 372
+    function written_observation 378 388
+    function substantive_result_line 398 458
+    function relevance_score 460 522
+    function looks_like_condition 530 542
+    function looks_like_instance_condition 548 553
+    function looks_like_local_binding 558 563
+    function looks_like_exposed_declaration 568 574
+    function looks_like_declaration 582 601
+    function source_text 603 608
+    function is_quoted_or_commented_source 610 620
+    function is_match_count 622 626
+    function looks_like_result_path_heading 628 630
+    function source_authority 635 642
+    function symbolic_answer 668 678
+    function with_residual_request 685 690
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15337
-    named_node_count 3302
-    distinct_node_kinds 78
+    total_link_count 16670
+    named_node_count 3581
+    distinct_node_kinds 79
     node_kinds
-      arguments 292
-      array_expression 8
-      array_type 4
+      arguments 320
+      array_expression 9
+      array_type 5
       assignment_expression 8
-      binary_expression 51
-      block 65
+      binary_expression 52
+      block 68
       boolean_literal 5
-      call_expression 292
+      call_expression 320
       captured_pattern 1
       char_literal 34
-      closure_expression 50
-      closure_parameters 50
+      closure_expression 54
+      closure_parameters 54
       continue_expression 4
-      crate 13
-      doc_comment 174
+      crate 15
+      doc_comment 180
       else_clause 6
       escape_sequence 5
-      expression_statement 58
+      expression_statement 59
       field_declaration 4
       field_declaration_list 1
-      field_expression 234
-      field_identifier 238
+      field_expression 257
+      field_identifier 261
       field_initializer_list 1
       for_expression 4
-      function_item 22
-      generic_function 2
-      generic_type 12
-      identifier 651
+      function_item 24
+      generic_function 3
+      generic_type 15
+      identifier 707
       if_expression 21
-      index_expression 5
+      index_expression 6
       inner_doc_comment_marker 38
-      integer_literal 10
+      integer_literal 11
       let_chain 1
       let_condition 3
-      let_declaration 56
+      let_declaration 63
       lifetime 3
       lifetime_parameter 1
-      line_comment 184
-      macro_invocation 6
-      match_arm 5
-      match_block 2
-      match_expression 2
-      match_pattern 5
+      line_comment 196
+      macro_invocation 7
+      match_arm 8
+      match_block 3
+      match_expression 3
+      match_pattern 8
       mut_pattern 1
-      mutable_specifier 12
-      outer_doc_comment_marker 136
-      parameter 37
-      parameters 22
+      mutable_specifier 13
+      outer_doc_comment_marker 142
+      parameter 41
+      parameters 24
       parenthesized_expression 3
-      primitive_type 55
-      range_expression 2
-      reference_expression 32
+      primitive_type 58
+      range_expression 3
+      reference_expression 38
       reference_pattern 1
-      reference_type 38
+      reference_type 42
       return_expression 9
-      scoped_identifier 69
+      scoped_identifier 76
       scoped_use_list 3
       shorthand_field_initializer 4
+      slice_pattern 2
       source_file 1
-      string_content 59
-      string_literal 60
+      string_content 64
+      string_literal 65
       struct_expression 1
       struct_item 1
       super 10
-      token_tree 8
+      token_tree 9
       try_expression 7
-      tuple_expression 3
-      tuple_pattern 7
+      tuple_expression 4
+      tuple_pattern 9
       tuple_struct_pattern 10
       tuple_type 1
-      type_arguments 14
-      type_identifier 33
+      type_arguments 18
+      type_identifier 40
       type_parameters 1
-      unary_expression 19
+      unary_expression 20
       unit_expression 1
       use_declaration 7
       use_list 3

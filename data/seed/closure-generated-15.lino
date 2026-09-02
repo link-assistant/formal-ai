@@ -279,6 +279,11 @@ meanings
     lexeme en
       surface
         text "lexeme import qid absent from fetch"
+  link_cli_publish_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "link cli publish failed"
   lino-objects-codec
     defined-by name
     lexeme en
@@ -984,11 +989,6 @@ meanings
     lexeme en
       surface
         text "verbatim"
-  visually
-    defined-by word_surface
-    lexeme en
-      surface
-        text "visually"
   write_program_request_unspecified
     defined-by intent
     lexeme en

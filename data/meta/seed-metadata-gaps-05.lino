@@ -399,6 +399,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "response_lexeme_import_missing_provenance_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_378e1856a6b60385
+    source "data/seed/closure-generated-09.lino"
+    record "response_link_cli_publish_failed_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_ca5ec8141b7d8395
     source "data/seed/closure-generated-09.lino"
     record "response_local_search_found_directory_ru"

@@ -449,6 +449,11 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present en"
+  response_evidence_exact_composition_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition es"
   response_external_benchmark_proof_query_ru
     defined-by response_template
     lexeme en

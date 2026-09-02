@@ -1,4 +1,64 @@
 multilingual_responses
+  response response_evidence_exact_composition_en
+    intent evidence_exact_composition
+    language en
+    text "{values}; together these exact observations compose the result."
+  response response_evidence_exact_composition_ru
+    intent evidence_exact_composition
+    language ru
+    text "{values}; вместе эти точные наблюдения составляют результат."
+  response response_evidence_exact_composition_hi
+    intent evidence_exact_composition
+    language hi
+    text "{values}; ये सटीक अवलोकन मिलकर परिणाम बनाते हैं।"
+  response response_evidence_exact_composition_zh
+    intent evidence_exact_composition
+    language zh
+    text "{values}；这些精确观察共同构成结果。"
+  response response_evidence_exact_composition_es
+    intent evidence_exact_composition
+    language es
+    text "{values}; juntas, estas observaciones exactas componen el resultado."
+  response response_file_read_many_unavailable_en
+    intent file_read_many_unavailable
+    language en
+    text "I can read those files when the client advertises a file-read tool or a shell tool."
+  response response_file_read_many_unavailable_ru
+    intent file_read_many_unavailable
+    language ru
+    text "Я смогу прочитать эти файлы, когда клиент предоставит инструмент чтения файлов или оболочки."
+  response response_file_read_many_unavailable_hi
+    intent file_read_many_unavailable
+    language hi
+    text "क्लाइंट के फ़ाइल-पठन या शेल उपकरण उपलब्ध कराने पर मैं उन फ़ाइलों को पढ़ सकता हूँ।"
+  response response_file_read_many_unavailable_zh
+    intent file_read_many_unavailable
+    language zh
+    text "客户端提供文件读取工具或 shell 工具后，我可以读取这些文件。"
+  response response_file_read_many_unavailable_es
+    intent file_read_many_unavailable
+    language es
+    text "Puedo leer esos archivos cuando el cliente ofrece una herramienta de lectura de archivos o de shell."
+  response response_link_cli_publish_failed_en
+    intent link_cli_publish_failed
+    language en
+    text "Failed to publish the link-cli replacement at {path}: {error}"
+  response response_link_cli_publish_failed_ru
+    intent link_cli_publish_failed
+    language ru
+    text "Не удалось опубликовать замену link-cli в {path}: {error}"
+  response response_link_cli_publish_failed_hi
+    intent link_cli_publish_failed
+    language hi
+    text "{path} पर link-cli प्रतिस्थापन प्रकाशित नहीं हो सका: {error}"
+  response response_link_cli_publish_failed_zh
+    intent link_cli_publish_failed
+    language zh
+    text "无法在 {path} 发布 link-cli 替换文件：{error}"
+  response response_link_cli_publish_failed_es
+    intent link_cli_publish_failed
+    language es
+    text "No se pudo publicar el reemplazo de link-cli en {path}: {error}"
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

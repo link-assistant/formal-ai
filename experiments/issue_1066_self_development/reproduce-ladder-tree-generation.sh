@@ -64,9 +64,15 @@ python3 - "$WORK/tree.tsv" "$ROOT" <<'PY'
 import sys
 from collections import Counter
 from pathlib import Path
-rows = [line.split('\t') for line in Path(sys.argv[1]).read_text().splitlines()]
+lines = Path(sys.argv[1]).read_text().splitlines()
+assert all(line.rstrip() == line for line in lines), 'tree rows have trailing whitespace'
+rows = []
+for line in lines:
+    row = line.split('\t')
+    assert 6 <= len(row) <= 8, 'every node row has six required and at most two optional fields'
+    row.extend([''] * (8 - len(row)))
+    rows.append(row)
 root = Path(sys.argv[2])
-assert all(len(row) == 8 for row in rows), 'every node row has eight fields'
 depths = Counter(int(row[1]) for row in rows)
 assert depths == Counter({0: 1, 1: 2, 2: 4, 3: 8, 4: 16, 5: 32}), depths
 paths = [row[0] for row in rows]

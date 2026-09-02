@@ -1,63 +1,63 @@
-R	0	Verify Formal AI supports recursive binary task decomposition from atomic leaves through the complete 32-leaf level.	all_children_pass	1	2
-1	1	Complete recursive decomposition node 1, covering atomic tasks L01–L16; both child nodes must produce independently checkable evidence.	all_children_pass	1.1	1.2
-1.1	2	Complete recursive decomposition node 1.1, covering atomic tasks L01–L08; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.1	1.1.2
-1.1.1	3	Complete recursive decomposition node 1.1.1, covering atomic tasks L01–L04; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.1.1	1.1.1.2
-1.1.1.1	4	Complete recursive decomposition node 1.1.1.1, covering atomic tasks L01–L02; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.1.1.1	1.1.1.1.2
-1.1.1.1.1	5	Atomic task L01: Inspect the existing task-decomposition data model and identify where a node stores its children.	observable evidence exists		
-1.1.1.1.2	5	Atomic task L02: Inspect the existing task-decomposition recursion and record how depth limits are represented.	observable evidence exists		
-1.1.1.2	4	Complete recursive decomposition node 1.1.1.2, covering atomic tasks L03–L04; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.1.2.1	1.1.1.2.2
-1.1.1.2.1	5	Atomic task L03: Inspect the existing atomicity check and record the observable completion contract for leaves.	observable evidence exists		
-1.1.1.2.2	5	Atomic task L04: Inspect the existing Links Notation rendering and record how child relationships are serialized.	observable evidence exists		
-1.1.2	3	Complete recursive decomposition node 1.1.2, covering atomic tasks L05–L08; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.2.1	1.1.2.2
-1.1.2.1	4	Complete recursive decomposition node 1.1.2.1, covering atomic tasks L05–L06; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.2.1.1	1.1.2.1.2
-1.1.2.1.1	5	Atomic task L05: Inspect the existing recursive execution adapter and record how a decomposition tree is executed.	observable evidence exists		
-1.1.2.1.2	5	Atomic task L06: Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.	observable evidence exists		
-1.1.2.2	4	Complete recursive decomposition node 1.1.2.2, covering atomic tasks L07–L08; both child nodes must produce independently checkable evidence.	all_children_pass	1.1.2.2.1	1.1.2.2.2
-1.1.2.2.1	5	Atomic task L07: Write a minimal example of a two-child task decomposition with independently checkable leaves.	observable evidence exists		
-1.1.2.2.2	5	Atomic task L08: Verify that a leaf without an observable completion contract is never treated as independently checkable.	observable evidence exists		
-1.2	2	Complete recursive decomposition node 1.2, covering atomic tasks L09–L16; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.1	1.2.2
-1.2.1	3	Complete recursive decomposition node 1.2.1, covering atomic tasks L09–L12; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.1.1	1.2.1.2
-1.2.1.1	4	Complete recursive decomposition node 1.2.1.1, covering atomic tasks L09–L10; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.1.1.1	1.2.1.1.2
-1.2.1.1.1	5	Atomic task L09: Inspect the binary decomposition invariant and explain the exactly-two-children requirement.	observable evidence exists		
-1.2.1.1.2	5	Atomic task L10: Verify the invariant explicitly names the supported power-of-two levels through 32.	observable evidence exists		
-1.2.1.2	4	Complete recursive decomposition node 1.2.1.2, covering atomic tasks L11–L12; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.1.2.1	1.2.1.2.2
-1.2.1.2.1	5	Atomic task L11: Add or verify regression coverage for a two-node decomposition at depth one.	observable evidence exists		
-1.2.1.2.2	5	Atomic task L12: Add or verify regression coverage for a four-node decomposition at depth two.	observable evidence exists		
-1.2.2	3	Complete recursive decomposition node 1.2.2, covering atomic tasks L13–L16; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.2.1	1.2.2.2
-1.2.2.1	4	Complete recursive decomposition node 1.2.2.1, covering atomic tasks L13–L14; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.2.1.1	1.2.2.1.2
-1.2.2.1.1	5	Atomic task L13: Add or verify regression coverage for an eight-node decomposition at depth three.	observable evidence exists		
-1.2.2.1.2	5	Atomic task L14: Add or verify regression coverage for a sixteen-node decomposition at depth four.	observable evidence exists		
-1.2.2.2	4	Complete recursive decomposition node 1.2.2.2, covering atomic tasks L15–L16; both child nodes must produce independently checkable evidence.	all_children_pass	1.2.2.2.1	1.2.2.2.2
-1.2.2.2.1	5	Atomic task L15: Add or verify regression coverage for a thirty-two-node decomposition at depth five.	observable evidence exists		
-1.2.2.2.2	5	Atomic task L16: Verify every tested internal node has exactly two children and never three or more.	observable evidence exists		
-2	1	Complete recursive decomposition node 2, covering atomic tasks L17–L32; both child nodes must produce independently checkable evidence.	all_children_pass	2.1	2.2
-2.1	2	Complete recursive decomposition node 2.1, covering atomic tasks L17–L24; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.1	2.1.2
-2.1.1	3	Complete recursive decomposition node 2.1.1, covering atomic tasks L17–L20; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.1.1	2.1.1.2
-2.1.1.1	4	Complete recursive decomposition node 2.1.1.1, covering atomic tasks L17–L18; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.1.1.1	2.1.1.1.2
-2.1.1.1.1	5	Atomic task L17: Verify every tested leaf is atomic and independently checkable.	observable evidence exists		
-2.1.1.1.2	5	Atomic task L18: Verify every tested node has a stable id and a unique dotted path.	observable evidence exists		
-2.1.1.2	4	Complete recursive decomposition node 2.1.1.2, covering atomic tasks L19–L20; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.1.2.1	2.1.1.2.2
-2.1.1.2.1	5	Atomic task L19: Verify child paths follow the binary 1/2 convention at every depth.	observable evidence exists		
-2.1.1.2.2	5	Atomic task L20: Verify the node count of a complete depth-five tree is exactly 63 including the root.	observable evidence exists		
-2.1.2	3	Complete recursive decomposition node 2.1.2, covering atomic tasks L21–L24; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.2.1	2.1.2.2
-2.1.2.1	4	Complete recursive decomposition node 2.1.2.1, covering atomic tasks L21–L22; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.2.1.1	2.1.2.1.2
-2.1.2.1.1	5	Atomic task L21: Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.	observable evidence exists		
-2.1.2.1.2	5	Atomic task L22: Verify a single node can be selected by dotted binary path for focused debugging.	observable evidence exists		
-2.1.2.2	4	Complete recursive decomposition node 2.1.2.2, covering atomic tasks L23–L24; both child nodes must produce independently checkable evidence.	all_children_pass	2.1.2.2.1	2.1.2.2.2
-2.1.2.2.1	5	Atomic task L23: Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.	observable evidence exists		
-2.1.2.2.2	5	Atomic task L24: Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.	observable evidence exists		
-2.2	2	Complete recursive decomposition node 2.2, covering atomic tasks L25–L32; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.1	2.2.2
-2.2.1	3	Complete recursive decomposition node 2.2.1, covering atomic tasks L25–L28; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.1.1	2.2.1.2
-2.2.1.1	4	Complete recursive decomposition node 2.2.1.1, covering atomic tasks L25–L26; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.1.1.1	2.2.1.1.2
-2.2.1.1.1	5	Atomic task L25: Verify every selected node runs in a fresh temporary repository copy.	observable evidence exists		
-2.2.1.1.2	5	Atomic task L26: Verify every selected node uses the real Agent CLI against the real Formal AI server.	observable evidence exists		
-2.2.1.2	4	Complete recursive decomposition node 2.2.1.2, covering atomic tasks L27–L28; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.1.2.1	2.2.1.2.2
-2.2.1.2.1	5	Atomic task L27: Verify every selected node requires an observable proof file with its exact node path.	observable evidence exists		
-2.2.1.2.2	5	Atomic task L28: Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.	observable evidence exists		
-2.2.2	3	Complete recursive decomposition node 2.2.2, covering atomic tasks L29–L32; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.2.1	2.2.2.2
-2.2.2.1	4	Complete recursive decomposition node 2.2.2.1, covering atomic tasks L29–L30; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.2.1.1	2.2.2.1.2
-2.2.2.1.1	5	Atomic task L29: Verify the case-study lists exactly 32 distinct atomic leaf formulations.	observable evidence exists		
-2.2.2.1.2	5	Atomic task L30: Verify the case-study path structure contains every binary path from depth one through five.	observable evidence exists		
-2.2.2.2	4	Complete recursive decomposition node 2.2.2.2, covering atomic tasks L31–L32; both child nodes must produce independently checkable evidence.	all_children_pass	2.2.2.2.1	2.2.2.2.2
-2.2.2.2.1	5	Atomic task L31: Use a differently worded decomposition request to check that the capability is not phrase-specific.	observable evidence exists		
-2.2.2.2.2	5	Atomic task L32: Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.	observable evidence exists		
+R	0	Verify Formal AI supports recursive binary task decomposition from atomic leaves through the complete 32-leaf level.	new_composite_effect	1	2
+1	1	Complete recursive decomposition node 1, covering atomic tasks L01–L16; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1	1.2
+1.1	2	Complete recursive decomposition node 1.1, covering atomic tasks L01–L08; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.1	1.1.2
+1.1.1	3	Complete recursive decomposition node 1.1.1, covering atomic tasks L01–L04; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.1.1	1.1.1.2
+1.1.1.1	4	Complete recursive decomposition node 1.1.1.1, covering atomic tasks L01–L02; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.1.1.1	1.1.1.1.2
+1.1.1.1.1	5	Atomic task L01: Inspect the existing task-decomposition data model and identify where a node stores its children.	new_leaf_effect			src/task_decomposition.rs	pub children: Vec<Self>
+1.1.1.1.2	5	Atomic task L02: Inspect the existing task-decomposition recursion and record how depth limits are represented.	new_leaf_effect			src/task_decomposition.rs	pub max_depth: u8
+1.1.1.2	4	Complete recursive decomposition node 1.1.1.2, covering atomic tasks L03–L04; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.1.2.1	1.1.1.2.2
+1.1.1.2.1	5	Atomic task L03: Inspect the existing atomicity check and record the observable completion contract for leaves.	new_leaf_effect			src/task_decomposition.rs	!self.completion_criterion.starts_with("unresolved_")
+1.1.1.2.2	5	Atomic task L04: Inspect the existing Links Notation rendering and record how child relationships are serialized.	new_leaf_effect			src/task_decomposition.rs	pairs.push(("child", child.id.clone()))
+1.1.2	3	Complete recursive decomposition node 1.1.2, covering atomic tasks L05–L08; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.2.1	1.1.2.2
+1.1.2.1	4	Complete recursive decomposition node 1.1.2.1, covering atomic tasks L05–L06; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.2.1.1	1.1.2.1.2
+1.1.2.1.1	5	Atomic task L05: Inspect the existing recursive execution adapter and record how a decomposition tree is executed.	new_leaf_effect			src/task_decomposition.rs	children: self.children.iter().map(Self::to_recursive_task).collect()
+1.1.2.1.2	5	Atomic task L06: Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.	new_leaf_effect			src/task_decomposition.rs	decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped())
+1.1.2.2	4	Complete recursive decomposition node 1.1.2.2, covering atomic tasks L07–L08; both child nodes must produce independently checkable evidence.	new_composite_effect	1.1.2.2.1	1.1.2.2.2
+1.1.2.2.1	5	Atomic task L07: Inspect the issue-sized decomposition regression and record its required lower bound on independently checkable leaves.	new_leaf_effect			tests/unit/specification/task_decomposition.rs	decomposition.leaves().len() >= 3
+1.1.2.2.2	5	Atomic task L08: Verify that a leaf without an observable completion contract is never treated as independently checkable.	new_leaf_effect			src/task_decomposition.rs	"unresolved_single_need"
+1.2	2	Complete recursive decomposition node 1.2, covering atomic tasks L09–L16; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.1	1.2.2
+1.2.1	3	Complete recursive decomposition node 1.2.1, covering atomic tasks L09–L12; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.1.1	1.2.1.2
+1.2.1.1	4	Complete recursive decomposition node 1.2.1.1, covering atomic tasks L09–L10; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.1.1.1	1.2.1.1.2
+1.2.1.1.1	5	Atomic task L09: Inspect the binary decomposition invariant and explain the exactly-two-children requirement.	new_leaf_effect			docs/case-studies/issue-1028/task-decomposition.md	Every internal node has exactly two children
+1.2.1.1.2	5	Atomic task L10: Verify the invariant explicitly names the supported power-of-two levels through 32.	new_leaf_effect			docs/case-studies/issue-1028/task-decomposition.md	2, 4, 8, 16, and 32 nodes respectively
+1.2.1.2	4	Complete recursive decomposition node 1.2.1.2, covering atomic tasks L11–L12; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.1.2.1	1.2.1.2.2
+1.2.1.2.1	5	Atomic task L11: Verify regression coverage includes two decomposition nodes at depth one.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+1.2.1.2.2	5	Atomic task L12: Verify regression coverage includes four decomposition nodes at depth two.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+1.2.2	3	Complete recursive decomposition node 1.2.2, covering atomic tasks L13–L16; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.2.1	1.2.2.2
+1.2.2.1	4	Complete recursive decomposition node 1.2.2.1, covering atomic tasks L13–L14; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.2.1.1	1.2.2.1.2
+1.2.2.1.1	5	Atomic task L13: Verify regression coverage includes eight decomposition nodes at depth three.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+1.2.2.1.2	5	Atomic task L14: Verify regression coverage includes sixteen decomposition nodes at depth four.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+1.2.2.2	4	Complete recursive decomposition node 1.2.2.2, covering atomic tasks L15–L16; both child nodes must produce independently checkable evidence.	new_composite_effect	1.2.2.2.1	1.2.2.2.2
+1.2.2.2.1	5	Atomic task L15: Verify regression coverage includes thirty-two decomposition nodes at depth five.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+1.2.2.2.2	5	Atomic task L16: Verify every tested internal node has exactly two children and never three or more.	new_leaf_effect			docs/case-studies/issue-1028/task-decomposition.md	Every internal node has exactly two children
+2	1	Complete recursive decomposition node 2, covering atomic tasks L17–L32; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1	2.2
+2.1	2	Complete recursive decomposition node 2.1, covering atomic tasks L17–L24; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.1	2.1.2
+2.1.1	3	Complete recursive decomposition node 2.1.1, covering atomic tasks L17–L20; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.1.1	2.1.1.2
+2.1.1.1	4	Complete recursive decomposition node 2.1.1.1, covering atomic tasks L17–L18; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.1.1.1	2.1.1.1.2
+2.1.1.1.1	5	Atomic task L17: Verify every tested leaf is atomic and independently checkable.	new_leaf_effect			docs/case-studies/issue-1028/task-decomposition.md	every leaf is atomic and independently checkable
+2.1.1.1.2	5	Atomic task L18: Inspect how each decomposition node carries its content-addressed stable identifier.	new_leaf_effect			src/task_decomposition.rs	pub id: String
+2.1.1.2	4	Complete recursive decomposition node 2.1.1.2, covering atomic tasks L19–L20; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.1.2.1	2.1.1.2.2
+2.1.1.2.1	5	Atomic task L19: Verify child paths follow the dotted numeric convention at every recursive depth.	new_leaf_effect			src/task_decomposition.rs	format!("{parent}.{number}")
+2.1.1.2.2	5	Atomic task L20: Verify the node count of a complete depth-five tree is exactly 63 including the root.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	const NODE_COUNT: usize = 63
+2.1.2	3	Complete recursive decomposition node 2.1.2, covering atomic tasks L21–L24; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.2.1	2.1.2.2
+2.1.2.1	4	Complete recursive decomposition node 2.1.2.1, covering atomic tasks L21–L22; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.2.1.1	2.1.2.1.2
+2.1.2.1.1	5	Atomic task L21: Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	0|1|2|3|4|5|all) ;;
+2.1.2.1.2	5	Atomic task L22: Verify a single node can be selected by dotted binary path for focused debugging.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	node == filt
+2.1.2.2	4	Complete recursive decomposition node 2.1.2.2, covering atomic tasks L23–L24; both child nodes must produce independently checkable evidence.	new_composite_effect	2.1.2.2.1	2.1.2.2.2
+2.1.2.2.1	5	Atomic task L23: Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+2.1.2.2.2	5	Atomic task L24: Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+2.2	2	Complete recursive decomposition node 2.2, covering atomic tasks L25–L32; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.1	2.2.2
+2.2.1	3	Complete recursive decomposition node 2.2.1, covering atomic tasks L25–L28; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.1.1	2.2.1.2
+2.2.1.1	4	Complete recursive decomposition node 2.2.1.1, covering atomic tasks L25–L26; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.1.1.1	2.2.1.1.2
+2.2.1.1.1	5	Atomic task L25: Verify every selected node runs in a fresh temporary repository copy.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	work=$(mktemp -d)
+2.2.1.1.2	5	Atomic task L26: Verify every selected node uses the real Agent CLI against the real Formal AI server.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	"$AGENT" --model formalai/formal-ai
+2.2.1.2	4	Complete recursive decomposition node 2.2.1.2, covering atomic tasks L27–L28; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.1.2.1	2.2.1.2.2
+2.2.1.2.1	5	Atomic task L27: Verify every selected node requires an observable proof file with its exact node path.	new_leaf_effect			experiments/issue_1028_agent_cli_ladder/run.sh	grep -q "^node_path=$id$" "$proof"
+2.2.1.2.2	5	Atomic task L28: Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.	new_leaf_effect			docs/case-studies/issue-1028/task-decomposition.md	This is a complete full binary tree, not a flat list.
+2.2.2	3	Complete recursive decomposition node 2.2.2, covering atomic tasks L29–L32; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.2.1	2.2.2.2
+2.2.2.1	4	Complete recursive decomposition node 2.2.2.1, covering atomic tasks L29–L30; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.2.1.1	2.2.2.1.2
+2.2.2.1.1	5	Atomic task L29: Verify the executable ladder formulates exactly 32 distinct atomic leaves.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	const LEAF_COUNT: usize = 32
+2.2.2.1.2	5	Atomic task L30: Verify generated child paths are required to exist in the complete tree.	new_leaf_effect			tests/unit/issue_1066_agent_ladder.rs	assert!(paths.contains(&node.left), "missing {}", node.left)
+2.2.2.2	4	Complete recursive decomposition node 2.2.2.2, covering atomic tasks L31–L32; both child nodes must produce independently checkable evidence.	new_composite_effect	2.2.2.2.1	2.2.2.2.2
+2.2.2.2.1	5	Atomic task L31: Inspect the decomposition regression matrix and verify requests are not limited to one fixed wording.	new_leaf_effect			tests/unit/specification/task_decomposition.rs	for (language, prompt) in SPLIT_PROMPTS
+2.2.2.2.2	5	Atomic task L32: Inspect the final evidence-note planner and record the heading used for composed observations.	new_leaf_effect			src/agentic_coding/note_composition.rs	Observed in this session:

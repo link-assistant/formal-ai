@@ -605,6 +605,278 @@ meanings
       surface
         text "Agent-CLI ladder depth selector"
         action "all[)] ;;$"
+  leaf_first_ladder_order
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether verified leaves execute before composite parents"
+    effect "the repository-search subject is bound to the ladder's leaf-first all-mode ordering"
+    unit "not applicable"
+    example "atomic leaves run before composite parents"
+    lexeme en
+      surface
+        text "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
+        action leaf_first_ladder_order
+      surface
+        text "atomic leaves run before composite parents"
+        action leaf_first_ladder_order
+      surface
+        text "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
+        action leaf_first_ladder_order
+      surface
+        text "all-mode traversal visits depth five through depth zero in descending order"
+        action leaf_first_ladder_order
+  coding_search_leaf_first_ladder_order_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's leaf-first all-mode execution order"
+    effect "the requested fact is searched by a regex-safe distinctive prefix of the descending-depth selector"
+    unit "not applicable"
+    example "atomic leaves run before composite parents"
+    lexeme en
+      surface
+        text "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
+        action "levels=list[(]range[(]5,-1,-1"
+      surface
+        text "atomic leaves run before composite parents"
+        action "levels=list[(]range[(]5,-1,-1"
+      surface
+        text "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
+        action "levels=list[(]range[(]5,-1,-1"
+      surface
+        text "all-mode traversal visits depth five through depth zero in descending order"
+        action "levels=list[(]range[(]5,-1,-1"
+  fresh_ladder_repository_copy
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether each ladder node runs in an isolated checkout"
+    effect "the repository-search subject is bound to the ladder's temporary worktree creation"
+    unit "not applicable"
+    example "every selected node runs in a fresh temporary repository copy"
+    lexeme en
+      surface
+        text "every selected node runs in a fresh temporary repository copy"
+        action fresh_ladder_repository_copy
+      surface
+        text "each ladder task receives an isolated scratch checkout"
+        action fresh_ladder_repository_copy
+  coding_search_fresh_ladder_repository_copy_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's per-node temporary checkout"
+    effect "the requested fact is searched by its temporary-directory assignment"
+    unit "not applicable"
+    example "every selected node runs in a fresh temporary repository copy"
+    lexeme en
+      surface
+        text "every selected node runs in a fresh temporary repository copy"
+        action "work=.*mktemp -d"
+      surface
+        text "each ladder task receives an isolated scratch checkout"
+        action "work=.*mktemp -d"
+  real_agent_formal_ai_ladder
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether the ladder invokes Agent against the served Formal AI model"
+    effect "the repository-search subject is bound to the real Agent and Formal AI ladder invocation"
+    unit "not applicable"
+    example "selected node uses the real Agent CLI against the real Formal AI server"
+    lexeme en
+      surface
+        text "selected node uses the real Agent CLI against the real Formal AI server"
+        action real_agent_formal_ai_ladder
+      surface
+        text "ladder leaves invoke Agent through the served Formal AI model"
+        action real_agent_formal_ai_ladder
+  coding_search_real_agent_formal_ai_ladder_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's real Agent and Formal AI invocation"
+    effect "the requested fact is searched by its Agent variable and served model name"
+    unit "not applicable"
+    example "selected node uses the real Agent CLI against the real Formal AI server"
+    lexeme en
+      surface
+        text "selected node uses the real Agent CLI against the real Formal AI server"
+        action "AGENT.*formalai/formal-ai"
+      surface
+        text "ladder leaves invoke Agent through the served Formal AI model"
+        action "AGENT.*formalai/formal-ai"
+  exact_node_path_proof
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether ladder proof names its selected node path"
+    effect "the repository-search subject is bound to the ladder's exact proof-path check"
+    unit "not applicable"
+    example "observable proof file with its exact node path"
+    lexeme en
+      surface
+        text "observable proof file with its exact node path"
+        action exact_node_path_proof
+      surface
+        text "node evidence is rejected unless its proof names the selected path"
+        action exact_node_path_proof
+  coding_search_exact_node_path_proof_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's exact proof-path check"
+    effect "the requested fact is searched by its node-path grep"
+    unit "not applicable"
+    example "observable proof file with its exact node path"
+    lexeme en
+      surface
+        text "observable proof file with its exact node path"
+        action "grep -q.*node_path=.*proof"
+      surface
+        text "node evidence is rejected unless its proof names the selected path"
+        action "grep -q.*node_path=.*proof"
+  complete_binary_tree_not_flat
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks whether the decomposition case study is a tree rather than a flat list"
+    effect "the repository-search subject is bound to the documented complete binary-tree invariant"
+    unit "not applicable"
+    example "case-study describes a tree rather than a flat list"
+    lexeme en
+      surface
+        text "case-study and verify it describes a tree rather than a flat list"
+        action complete_binary_tree_not_flat
+      surface
+        text "case study explicitly rejects a flat-list interpretation"
+        action complete_binary_tree_not_flat
+  coding_search_complete_binary_tree_not_flat_fact
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented complete binary-tree invariant"
+    effect "the requested fact is searched by its canonical not-flat sentence"
+    unit "not applicable"
+    example "case-study describes a tree rather than a flat list"
+    lexeme en
+      surface
+        text "case-study and verify it describes a tree rather than a flat list"
+        action "complete full binary tree, not a flat list"
+      surface
+        text "case study explicitly rejects a flat-list interpretation"
+        action "complete full binary tree, not a flat list"
+  ladder_leaf_count
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks for the executable ladder's atomic leaf total"
+    effect "the repository-search subject is bound to the ladder leaf-count regression constant"
+    unit "not applicable"
+    example "executable ladder formulates exactly 32 distinct atomic leaves"
+    lexeme en
+      surface
+        text "executable ladder formulates exactly 32 distinct atomic leaves"
+        action ladder_leaf_count
+      surface
+        text "ladder regression fixes the atomic leaf total at thirty-two"
+        action ladder_leaf_count
+  coding_search_ladder_leaf_count_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder leaf-count regression constant"
+    effect "the requested fact is searched by its exact test constant"
+    unit "not applicable"
+    example "executable ladder formulates exactly 32 distinct atomic leaves"
+    lexeme en
+      surface
+        text "executable ladder formulates exactly 32 distinct atomic leaves"
+        action "const LEAF_COUNT: usize = 32"
+      surface
+        text "ladder regression fixes the atomic leaf total at thirty-two"
+        action "const LEAF_COUNT: usize = 32"
+  generated_child_path_existence
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks whether every generated child path exists in the complete tree"
+    effect "the repository-search subject is bound to the child-path existence assertion"
+    unit "not applicable"
+    example "generated child paths are required to exist in the complete tree"
+    lexeme en
+      surface
+        text "generated child paths are required to exist in the complete tree"
+        action generated_child_path_existence
+      surface
+        text "tree regression checks that every generated left child path exists"
+        action generated_child_path_existence
+  coding_search_generated_child_path_existence_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the child-path existence assertion"
+    effect "the requested fact is searched by its regex-safe left-child membership check"
+    unit "not applicable"
+    example "generated child paths are required to exist in the complete tree"
+    lexeme en
+      surface
+        text "generated child paths are required to exist in the complete tree"
+        action "paths[.]contains[(]&node[.]left[)]"
+      surface
+        text "tree regression checks that every generated left child path exists"
+        action "paths[.]contains[(]&node[.]left[)]"
+  decomposition_prompt_matrix
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks whether decomposition regressions cover more than one prompt wording"
+    effect "the repository-search subject is bound to the decomposition prompt-matrix loop"
+    unit "not applicable"
+    example "decomposition regression matrix requests are not limited to one fixed wording"
+    lexeme en
+      surface
+        text "decomposition regression matrix and verify requests are not limited to one fixed wording"
+        action decomposition_prompt_matrix
+      surface
+        text "decomposition tests iterate a multilingual prompt matrix"
+        action decomposition_prompt_matrix
+  coding_search_decomposition_prompt_matrix_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the decomposition prompt-matrix loop"
+    effect "the requested fact is searched by its language-and-prompt iteration"
+    unit "not applicable"
+    example "decomposition regression matrix requests are not limited to one fixed wording"
+    lexeme en
+      surface
+        text "decomposition regression matrix and verify requests are not limited to one fixed wording"
+        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+      surface
+        text "decomposition tests iterate a multilingual prompt matrix"
+        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+  composed_observations_heading
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks for the heading used by the evidence-note composer"
+    effect "the repository-search subject is bound to the composed-observations heading"
+    unit "not applicable"
+    example "heading used for composed observations"
+    lexeme en
+      surface
+        text "final evidence-note planner and record the heading used for composed observations"
+        action composed_observations_heading
+      surface
+        text "note composer labels observations gathered in the current session"
+        action composed_observations_heading
+  coding_search_composed_observations_heading_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the evidence-note composer's observation heading"
+    effect "the requested fact is searched by its canonical heading text"
+    unit "not applicable"
+    example "heading used for composed observations"
+    lexeme en
+      surface
+        text "final evidence-note planner and record the heading used for composed observations"
+        action "Observed in this session:"
+      surface
+        text "note composer labels observations gathered in the current session"
+        action "Observed in this session:"
   dotted_binary_node_filter
     defined-by code
     role coding_search_literal_query

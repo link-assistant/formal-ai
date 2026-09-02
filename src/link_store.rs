@@ -105,7 +105,7 @@ pub type DefaultNativeLinkStore = MemoryStore;
 
 /// Create the default Rust-side link store for this build.
 ///
-/// Native default builds return [`LinkCliLinkStore`]. Builds compiled with
+/// Native default builds return `LinkCliLinkStore`. Builds compiled with
 /// `--no-default-features` keep the explicit `.lino` projection fallback.
 pub fn default_native_link_store() -> Result<DefaultNativeLinkStore, LinkStoreError> {
     #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
@@ -489,10 +489,15 @@ impl LinkCliLinkStore {
         )
         .and_then(|()| replace_file(&replacement_database, &self.database))
         .map_err(|error| {
-            LinkStoreError::Backend(format!(
-                "failed to publish link-cli replacement {}: {error}",
-                self.database.display()
-            ))
+            let path = self.database.display().to_string();
+            let detail = error.to_string();
+            let message = crate::seed::render_response(
+                "link_cli_publish_failed",
+                "en",
+                &[("path", &path), ("error", &detail)],
+            )
+            .unwrap_or_else(|| ["link_cli_publish_failed", &path, &detail].join(":"));
+            LinkStoreError::Backend(message)
         });
 
         let reopen_result = open_link_cli_transactions(&self.database);

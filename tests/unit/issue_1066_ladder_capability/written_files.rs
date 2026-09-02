@@ -160,6 +160,148 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
 }
 
 #[test]
+fn every_named_input_is_read_before_a_structured_result_is_written() {
+    // A composed result has one observation per named input. Completing the
+    // investigation after the first successful read both skipped the remaining
+    // input and copied Agent's display-only `<file>` wrapper and line numbers
+    // into the durable result. The delivery route must wait for every input and
+    // carry only the files' undecorated `result=` values forward.
+    let prompt = "Read the committed regional summaries in `inputs/east.lino` and \
+        `inputs/west.lino`. Inspect both files before writing anything. Treat only the \
+        single line beginning exactly `result=` as each regional result. Create \
+        `outputs/combined.lino` with these exact field lines: `kind=combined`, \
+        `east_result=` followed by the exact east child `result=` value, `west_result=` \
+        followed by the exact west child `result=` value, and `result=` followed by at \
+        least four words that include both exact regional results and state how they \
+        compose. Leave supporting evidence in \
+        `.audit/combined-proof.md`. The first line must be exactly `proof_for=combined`.";
+    // Agent's `read` tool abbreviates a physical line after 1,000 columns. The
+    // root of the real 63-node ladder receives child results longer than that,
+    // so an exact-field read must use a byte-preserving extraction rather than
+    // treating the display abbreviation as file contents.
+    let east = format!("East queue drains before noon {}", "east".repeat(320));
+    let west = format!("West queue drains after noon {}", "west".repeat(320));
+    let decorated = |region: &str, result: &str| {
+        let visible = &result[..960];
+        format!(
+            "<file>\n00001| region={region}\n00002| kind=summary\n00003| result={visible} \
+             ... [omitted columns 1001..{} of line 3] ...\n\n\
+             (End of file - total 3 lines)\n</file>",
+            result.len()
+        )
+    };
+    let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
+    let mut observed_paths = Vec::new();
+    let mut writes = Vec::new();
+
+    for turn in 0..super::LADDER_TURN_CAP {
+        let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+            formal_ai::agentic_coding::plan_chat_step(&messages, &super::LADDER_TOOLS)
+        else {
+            break;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            let arguments = serde_json::from_str::<serde_json::Value>(&call.arguments)
+                .expect("planned tool arguments");
+            let path = super::argument(
+                &arguments,
+                &["path", "filePath", "file_path", "absolute_path"],
+            );
+            let content =
+                super::argument(&arguments, &["content", "contents", "text", "new_string"]);
+            let command = super::argument(&arguments, &["command", "cmd"]);
+            if call.tool == "read"
+                && let Some(path) = path.as_deref()
+            {
+                observed_paths.push(path.to_owned());
+            }
+            if call.tool == "bash"
+                && let Some(command) = command.as_deref()
+            {
+                for input in ["inputs/east.lino", "inputs/west.lino"] {
+                    if command.contains(input) {
+                        observed_paths.push(input.to_owned());
+                    }
+                }
+            }
+            if let (Some(path), Some(content)) = (path.as_deref(), content) {
+                assert!(
+                    observed_paths
+                        .iter()
+                        .any(|read| read.ends_with("inputs/east.lino"))
+                        && observed_paths
+                            .iter()
+                            .any(|read| read.ends_with("inputs/west.lino")),
+                    "planned a durable write before observing every named input: \
+                     reads={observed_paths:?}, write={path:?}"
+                );
+                writes.push((path.to_owned(), content));
+            }
+            let id = format!("multi-read-delivery-{turn}-{index}");
+            messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
+                formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
+            ]));
+            let result = match (path.as_deref(), command.as_deref()) {
+                (_, Some(command))
+                    if call.tool == "bash" && command.contains("inputs/east.lino") =>
+                {
+                    east.clone()
+                }
+                (_, Some(command))
+                    if call.tool == "bash" && command.contains("inputs/west.lino") =>
+                {
+                    west.clone()
+                }
+                (Some(path), _) if call.tool == "read" && path.ends_with("inputs/east.lino") => {
+                    decorated("east", &east)
+                }
+                (Some(path), _) if call.tool == "read" && path.ends_with("inputs/west.lino") => {
+                    decorated("west", &west)
+                }
+                _ => "ok".to_owned(),
+            };
+            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, result));
+        }
+    }
+
+    let effect = writes
+        .iter()
+        .find(|(path, _)| path.ends_with("outputs/combined.lino"))
+        .map(|(_, content)| content)
+        .expect("the structured combined result");
+    assert!(
+        effect
+            .lines()
+            .any(|line| line == format!("east_result={east}"))
+    );
+    assert!(
+        effect
+            .lines()
+            .any(|line| line == format!("west_result={west}"))
+    );
+    let combined = effect
+        .lines()
+        .find_map(|line| line.strip_prefix("result="))
+        .expect("the combined result field");
+    assert_eq!(
+        effect
+            .lines()
+            .filter(|line| line.starts_with("result="))
+            .count(),
+        1,
+        "a quoted source-field reference became a duplicate output field: {effect}"
+    );
+    assert!(
+        combined.contains(&east) && combined.contains(&west),
+        "{effect}"
+    );
+    assert!(
+        !effect.contains("<file>") && !effect.contains("00003|"),
+        "tool display decorations leaked into the durable result: {effect}"
+    );
+}
+
+#[test]
 fn a_local_observation_satisfies_nested_artifacts_before_optional_web_research() {
     // A harness can permit web research as a fallback after asking about the
     // checkout. Once grep has answered that local question, the fallback is no

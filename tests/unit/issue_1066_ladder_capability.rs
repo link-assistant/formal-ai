@@ -13,6 +13,8 @@
 //! request is asking for. Shared planning helpers live here, and child modules
 //! reach them through `super::`.
 
+use std::collections::BTreeSet;
+
 use formal_ai::ChatMessage;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ToolCall;
@@ -118,6 +120,54 @@ fn a_genuine_dotted_file_name_is_still_recognised() {
             "expected a read of {expected} for {prompt:?}, planned {paths:?}"
         );
     }
+}
+
+#[test]
+fn textual_rendering_language_is_not_a_gui_capability_request() {
+    // `rendered` also describes text produced by a reader, serializer, or
+    // template. Treating that adjective alone as a visual request made a
+    // composite ladder node refuse to inspect two ordinary text files. Keep a
+    // text-rendering example for every registry language so removing the
+    // ambiguous GUI cue cannot become an English-only repair.
+    let cases = [
+        (
+            "en",
+            "Do not copy tool-rendered line numbers or file wrappers while reading text records.",
+        ),
+        (
+            "ru",
+            "Проверь отрисованную текстовую запись и опиши её текстовый формат.",
+        ),
+        ("hi", "rendered पाठ रिकॉर्ड जाँचें और उसका पाठ प्रारूप बताएँ।"),
+        ("zh", "检查渲染后的文本记录并报告文本格式。"),
+        (
+            "es",
+            "Inspecciona el texto renderizado y describe su formato textual.",
+        ),
+    ];
+    for &(language, prompt) in &cases {
+        assert!(
+            formal_ai::computer_use::capability_gap_for_request(prompt).is_none(),
+            "{language}: text-only wording was mistaken for a GUI capability gap: {prompt:?}",
+        );
+        assert!(
+            final_answer(prompt).is_none_or(|answer| !answer.contains("gui_rendering")),
+            "{language}: the agentic router refused a text-only task as visual: {prompt:?}",
+        );
+    }
+
+    let registered = formal_ai::language::registered_languages()
+        .into_iter()
+        .map(formal_ai::Language::slug)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        cases
+            .map(|(language, _)| language)
+            .into_iter()
+            .collect::<BTreeSet<_>>(),
+        registered,
+        "the textual-rendering matrix must track every registered language",
+    );
 }
 
 /// The answer a plan settles on, when it settles on one without a tool call.

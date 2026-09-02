@@ -469,6 +469,11 @@ meanings
     lexeme en
       surface
         text "response fact check current dialogue zh"
+  response_file_read_many_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable ru"
   response_general_plan_command_capture_action_zh
     defined-by response_template
     lexeme en
@@ -529,6 +534,16 @@ meanings
     lexeme en
       surface
         text "response lexeme import reparse failed ru"
+  response_link_cli_publish_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed hi"
+  response_link_cli_publish_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed zh"
   response_local_search_found_closest_zh
     defined-by response_template
     lexeme en

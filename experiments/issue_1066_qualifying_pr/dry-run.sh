@@ -20,7 +20,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 EVIDENCE="docs/case-studies/issue-924/incremental-self-authorship"
 # The session that authored the committed evidence bundle, read from the bundle
 # rather than pasted, so the trailer and the evidence cannot drift apart.
-SESSION="$(grep -h -o 'ses_[A-Za-z0-9]*' "$ROOT/$EVIDENCE/dispatch-report.json" | head -1)"
+SESSION="$(grep -h -m1 -o 'ses_[A-Za-z0-9]*' "$ROOT/$EVIDENCE/dispatch-report.json")"
 PR_NUMBER="${PR_NUMBER:-99999}"
 
 CLONE="$(mktemp -d)/repo"

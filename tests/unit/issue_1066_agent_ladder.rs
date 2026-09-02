@@ -103,8 +103,12 @@ fn generate_tree(directory: &Path) -> Vec<Node> {
         .expect("generated tree")
         .lines()
         .map(|line| {
-            let fields = line.split('\t').collect::<Vec<_>>();
-            assert_eq!(fields.len(), 8, "every node row has eight fields: {line:?}");
+            let mut fields = line.split('\t').collect::<Vec<_>>();
+            assert!(
+                (6..=8).contains(&fields.len()),
+                "every node row has six required and at most two optional fields: {line:?}",
+            );
+            fields.resize(8, "");
             Node {
                 path: fields[0].to_owned(),
                 depth: fields[1]
@@ -532,6 +536,34 @@ fn the_ladder_clears_prior_node_artifacts_before_a_replay() {
 }
 
 #[test]
+fn the_ladder_keeps_server_memory_out_of_agent_authored_effects() {
+    let script = read(LADDER);
+
+    assert!(
+        script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\""),
+        "server-private .lino and binary .links state must stay below .git so Agent snapshots cannot mistake it for an authored repository effect",
+    );
+    assert!(
+        !script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.agent-ladder/memory.lino\""),
+        "the Agent worktree must contain only fixture inputs and Agent-authored effects",
+    );
+}
+
+#[test]
+fn the_shared_agent_harness_keeps_server_memory_out_of_agent_authored_effects() {
+    let script = read("experiments/agent_cli_e2e/run_agent_cli.sh");
+
+    assert!(
+        script.contains("FORMAL_AI_MEMORY_PATH=\"$SERVER_STATE/memory.lino\""),
+        "server-private .lino and binary .links state must live outside the Agent workspace",
+    );
+    assert!(
+        !script.contains("FORMAL_AI_MEMORY_PATH=\"$WORKDIR/memory.lino\""),
+        "the Agent worktree must contain only fixture inputs and Agent-authored effects",
+    );
+}
+
+#[test]
 fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
     if !python_available() {
         eprintln!("skipping: python3 is not installed on this host");
@@ -636,7 +668,29 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
 }
 
 #[test]
-fn every_ladder_node_can_be_selected_by_depth_and_by_path() {
+fn generated_tree_rows_have_no_trailing_whitespace() {
+    if !python_available() {
+        eprintln!("skipping: python3 is not installed on this host");
+        return;
+    }
+    let directory = temporary_directory("ladder-tree-whitespace");
+    let _ = generate_tree(&directory);
+    let tree = fs::read_to_string(directory.join("tree.tsv")).expect("generated tree");
+
+    for (index, line) in tree.lines().enumerate() {
+        assert_eq!(
+            line.trim_end(),
+            line,
+            "generated tree row {} has trailing whitespace",
+            index + 1,
+        );
+    }
+
+    let _ = fs::remove_dir_all(&directory);
+}
+
+#[test]
+fn every_ladder_node_can_be_selected_with_its_dependency_subtree() {
     if !python_available() {
         eprintln!("skipping: python3 is not installed on this host");
         return;
@@ -666,8 +720,12 @@ fn every_ladder_node_can_be_selected_by_depth_and_by_path() {
             "selecting {mode}/{filter} failed:\n{}",
             String::from_utf8_lossy(&output.stderr),
         );
-        String::from_utf8(output.stdout)
-            .expect("selected nodes are UTF-8")
+        let selected = String::from_utf8(output.stdout).expect("selected nodes are UTF-8");
+        assert!(
+            selected.lines().all(|line| line.trim_end() == line),
+            "selected TSV rows must not have trailing whitespace: {selected:?}",
+        );
+        selected
             .lines()
             .map(|line| line.split('\t').next().expect("node path").to_owned())
             .collect()
@@ -687,10 +745,18 @@ fn every_ladder_node_can_be_selected_by_depth_and_by_path() {
     assert_eq!(all.last().map(String::as_str), Some("R"));
 
     for node in &nodes {
+        let prefix = format!("{}.", node.path);
+        let expected = all
+            .iter()
+            .filter(|candidate| {
+                node.path == "R" || *candidate == &node.path || candidate.starts_with(&prefix)
+            })
+            .cloned()
+            .collect::<Vec<_>>();
         assert_eq!(
             select("all", &node.path),
-            vec![node.path.clone()],
-            "node {} must be selectable on its own",
+            expected,
+            "node {} must be selected after all descendants whose verified effects it consumes",
             node.path,
         );
     }
@@ -746,6 +812,24 @@ fn the_ladder_keeps_every_tool_turn_on_the_formal_ai_session() {
 }
 
 #[test]
+fn the_composite_contract_extracts_raw_results_from_both_children() {
+    let script = read(LADDER);
+
+    assert!(
+        script.contains("Inspect both files before writing anything"),
+        "a composite must consume both immutable child effects",
+    );
+    assert!(
+        script.contains(r#"sed -n "s/^result=//p""#),
+        "the contract must extract the raw result field rather than a tool-rendered file view",
+    );
+    assert!(
+        script.contains("Do not copy tool-rendered line numbers"),
+        "line-number decorations must never become part of a composed child result",
+    );
+}
+
+#[test]
 fn the_ladder_reproduction_experiment_is_committed_and_executable() {
     for script in [LADDER, EXPERIMENT] {
         let path = root().join(script);
@@ -757,4 +841,18 @@ fn the_ladder_reproduction_experiment_is_committed_and_executable() {
             assert!(mode & 0o111 != 0, "{script} must be committed executable");
         }
     }
+}
+
+#[test]
+fn the_qualifying_pr_dry_run_selects_one_session_without_a_pipefail_sigpipe() {
+    let script = read("experiments/issue_1066_qualifying_pr/dry-run.sh");
+
+    assert!(
+        script.contains("grep -h -m1 -o 'ses_[A-Za-z0-9]*'"),
+        "grep must stop after its own first match so pipefail cannot turn head's early exit into status 141",
+    );
+    assert!(
+        !script.contains("| head -1"),
+        "the session selector must not use an early-closing head pipeline under pipefail",
+    );
 }

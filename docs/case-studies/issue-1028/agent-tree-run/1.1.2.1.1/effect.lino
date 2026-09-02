@@ -1,0 +1,4 @@
+node_path=1.1.2.1.1
+node_depth=5
+node_kind=leaf
+result=Line 169:             children: self.children.iter().map(Self::to_recursive_task).collect(),

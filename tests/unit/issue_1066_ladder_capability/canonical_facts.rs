@@ -105,6 +105,142 @@ fn an_agent_cli_ladder_depth_selector_searches_the_experiment_workflow() {
 }
 
 #[test]
+fn leaf_first_ladder_execution_searches_the_experiment_ordering() {
+    // The atomic-task label belongs to the harness, not to the requested fact.
+    // The fact itself is the ordering invariant: leaves execute before their
+    // composite parents so every parent can consume verified child effects.
+    // Pin both the live failure and wording the ladder never uses so the repair
+    // is a semantic source fact rather than a prompt-shaped branch.
+    for prompt in [
+        "Atomic task L23: Verify the ladder can execute the 32 smallest leaves before moving \
+         to larger composite nodes.",
+        "Review the recursive Agent workflow and confirm that atomic leaves run before \
+         composite parents.",
+        "Atomic task L24: Verify the ladder order for all mode is 32, 16, 8, 4, 2, then \
+         the root.",
+        "Confirm the all-mode traversal visits depth five through depth zero in descending \
+         order.",
+    ] {
+        let arguments = planned_arguments(prompt);
+        let search = arguments
+            .iter()
+            .find(|arguments| arguments.get("pattern").is_some())
+            .unwrap_or_else(|| {
+                panic!("no workspace search was planned for {prompt:?}: {arguments:?}")
+            });
+        assert_eq!(search["query"], "leaf_first_ladder_order");
+        assert_eq!(search["pattern"], "levels=list[(]range[(]5,-1,-1");
+        let pattern = regex::Regex::new(search["pattern"].as_str().unwrap()).unwrap();
+        assert!(pattern.is_match("levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]"));
+        assert_eq!(
+            search.get("include").and_then(serde_json::Value::as_str),
+            Some("experiments/**/*")
+        );
+    }
+}
+
+#[test]
+fn remaining_ladder_leaf_invariants_search_their_canonical_artifacts() {
+    // These are repository-inspection facts spanning workflow, documentation,
+    // test, and production artifacts. Pair each live ladder wording with an
+    // unseen equivalent so adding a fact cannot degenerate into an L-number
+    // switch in the planner.
+    let cases = [
+        (
+            "Verify every selected node runs in a fresh temporary repository copy.",
+            "Confirm each ladder task receives an isolated scratch checkout.",
+            "fresh_ladder_repository_copy",
+            "work=.*mktemp -d",
+            "experiments/**/*",
+            "work=$(mktemp -d)",
+        ),
+        (
+            "Verify every selected node uses the real Agent CLI against the real Formal AI server.",
+            "Confirm ladder leaves invoke Agent through the served Formal AI model.",
+            "real_agent_formal_ai_ladder",
+            "AGENT.*formalai/formal-ai",
+            "experiments/**/*",
+            "\"$AGENT\" --model formalai/formal-ai",
+        ),
+        (
+            "Verify every selected node requires an observable proof file with its exact node path.",
+            "Confirm node evidence is rejected unless its proof names the selected path.",
+            "exact_node_path_proof",
+            "grep -q.*node_path=.*proof",
+            "experiments/**/*",
+            "grep -q \"^node_path=$id$\" \"$proof\"",
+        ),
+        (
+            "Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.",
+            "Confirm the decomposition case study explicitly rejects a flat-list interpretation.",
+            "complete_binary_tree_not_flat",
+            "complete full binary tree, not a flat list",
+            "docs/**/*",
+            "This is a complete full binary tree, not a flat list.",
+        ),
+        (
+            "Verify the executable ladder formulates exactly 32 distinct atomic leaves.",
+            "Confirm the ladder regression fixes the atomic leaf total at thirty-two.",
+            "ladder_leaf_count",
+            "const LEAF_COUNT: usize = 32",
+            "tests/**/*",
+            "const LEAF_COUNT: usize = 32;",
+        ),
+        (
+            "Verify generated child paths are required to exist in the complete tree.",
+            "Confirm the tree regression checks that every generated left child path exists.",
+            "generated_child_path_existence",
+            "paths[.]contains[(]&node[.]left[)]",
+            "tests/**/*",
+            "assert!(paths.contains(&node.left), \"missing {}\", node.left);",
+        ),
+        (
+            "Inspect the decomposition regression matrix and verify requests are not limited to one fixed wording.",
+            "Confirm decomposition tests iterate a multilingual prompt matrix.",
+            "decomposition_prompt_matrix",
+            "for [(]language, prompt[)] in SPLIT_PROMPTS",
+            "tests/**/*",
+            "for (language, prompt) in SPLIT_PROMPTS {",
+        ),
+        (
+            "Inspect the final evidence-note planner and record the heading used for composed observations.",
+            "Confirm the note composer labels observations gathered in the current session.",
+            "composed_observations_heading",
+            "Observed in this session:",
+            "src/**/*",
+            "note.push_str(\"\\nObserved in this session:\\n\");",
+        ),
+    ];
+
+    for (live, unseen, query, expected_pattern, include, source_line) in cases {
+        for prompt in [live, unseen] {
+            let arguments = planned_arguments(prompt);
+            let search = arguments
+                .iter()
+                .find(|arguments| arguments.get("pattern").is_some())
+                .unwrap_or_else(|| {
+                    panic!("no workspace search was planned for {prompt:?}: {arguments:?}")
+                });
+            assert_eq!(search["query"], query, "wrong query for {prompt:?}");
+            assert_eq!(
+                search["pattern"], expected_pattern,
+                "wrong pattern for {prompt:?}"
+            );
+            assert_eq!(
+                search.get("include").and_then(serde_json::Value::as_str),
+                Some(include),
+                "wrong artifact scope for {prompt:?}"
+            );
+            let pattern = regex::Regex::new(search["pattern"].as_str().unwrap()).unwrap();
+            assert!(
+                pattern.is_match(source_line),
+                "planned regex {pattern:?} does not match {source_line:?}"
+            );
+        }
+    }
+}
+
+#[test]
 fn a_focused_dotted_node_filter_searches_the_experiment_selector() {
     // Selecting one dotted path is an observable workflow invariant, not a
     // request to decompose the sentence into another task tree.

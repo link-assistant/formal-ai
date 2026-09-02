@@ -695,6 +695,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_external_benchmark_swe_infrastructure_error_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f2cd78d7e9d34f3f
+    source "data/seed/closure-generated-13.lino"
+    record "response_file_read_many_unavailable_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1c4e031e231b3a2f
     source "data/seed/closure-generated-13.lino"
     record "response_task_first_step_lead_en"

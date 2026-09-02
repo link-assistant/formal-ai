@@ -414,6 +414,16 @@ meanings
     lexeme en
       surface
         text "response external benchmark proof query hi"
+  response_file_read_many_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable en"
+  response_file_read_many_unavailable_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable es"
   response_general_plan_completed_ru
     defined-by response_template
     lexeme en
@@ -479,6 +489,11 @@ meanings
     lexeme en
       surface
         text "response lexeme import number lost ru"
+  response_link_cli_publish_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed es"
   response_local_search_found_path_zh
     defined-by response_template
     lexeme en

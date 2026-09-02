@@ -369,11 +369,6 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase how are you en"
-  render
-    defined-by word_surface
-    lexeme en
-      surface
-        text "render"
   renderer
     defined-by word_surface
     lexeme en

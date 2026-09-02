@@ -133,7 +133,7 @@ fn parse_obligation(request: &str) -> Option<Obligation> {
 
 /// Literal `key=value` field constraints carried by one delivery sentence.
 fn exact_field_lines(sentence: &str, target: &str) -> Vec<String> {
-    sentence
+    let fields = sentence
         .split('`')
         .enumerate()
         .filter(|(index, _)| index % 2 == 1)
@@ -151,6 +151,19 @@ fn exact_field_lines(sentence: &str, target: &str) -> Vec<String> {
             })
         })
         .map(str::to_owned)
+        .collect::<Vec<_>>();
+
+    // A field may be quoted once as a source reference and again as the output
+    // field the caller declares: "`left_result=` followed by the child's
+    // `result=` value, and `result=` followed by the composition". The final
+    // occurrence is the declaration's position in the output list. Keep that
+    // occurrence only, so the source reference cannot create an extra field or
+    // move the aggregate ahead of later child fields.
+    fields
+        .iter()
+        .enumerate()
+        .filter(|(index, field)| !fields[index + 1..].contains(field))
+        .map(|(_, field)| field.clone())
         .collect()
 }
 
@@ -279,14 +292,18 @@ pub(super) fn plan_evidence_record_step(
 fn render_obligation(obligation: &Obligation, answer: &str) -> String {
     if !obligation.field_lines.is_empty() {
         let result = substantive_result_line(answer, &obligation.residual);
+        let observed_results = exact_field_values(answer, "result");
+        let mut next_observed = observed_results.iter();
         let mut rendered = String::new();
         for field in &obligation.field_lines {
             rendered.push_str(field);
             if field.ends_with('=') {
                 if field == "result=" {
-                    rendered.push_str(&non_hollow_result(result, &obligation.residual));
+                    let combined = combined_observation(&observed_results, &obligation.residual)
+                        .unwrap_or_else(|| result.to_owned());
+                    rendered.push_str(&non_hollow_result(&combined, &obligation.residual));
                 } else {
-                    rendered.push_str(result);
+                    rendered.push_str(next_observed.next().map_or(result, String::as_str));
                 }
             }
             rendered.push('\n');
@@ -298,6 +315,39 @@ fn render_obligation(obligation: &Obligation, answer: &str) -> String {
         || format!("{}\n", answer.trim_end()),
         |line| format!("{line}\n\n{}\n", answer.trim_end()),
     )
+}
+
+/// Values carried on exact machine-readable lines in an observation.
+///
+/// Multi-file reads deliberately render one bare `key=value` line per input so
+/// a later delivery can preserve those bytes. Display headings and prose are
+/// ignored; only a line whose prefix is exact participates.
+fn exact_field_values(answer: &str, key: &str) -> Vec<String> {
+    let prefix = format!("{key}=");
+    answer
+        .lines()
+        .map(str::trim)
+        .filter_map(|line| line.strip_prefix(&prefix))
+        .map(str::to_owned)
+        .collect()
+}
+
+/// State how multiple exact observations compose while retaining each value.
+fn combined_observation(values: &[String], request: &str) -> Option<String> {
+    match values {
+        [] => None,
+        [only] => Some(only.clone()),
+        many => {
+            let values = many.join("; ");
+            let language = crate::language::detect(request);
+            crate::seed::render_response(
+                "evidence_exact_composition",
+                language.slug(),
+                &[("values", &values)],
+            )
+            .or(Some(values))
+        }
+    }
 }
 
 /// Keep a terse but decisive source token machine-checkable as a concrete result.

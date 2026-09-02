@@ -1,0 +1,4 @@
+node_path=1.1.1.2.1
+node_depth=5
+node_kind=leaf
+result=Line 89:             && !self.completion_criterion.starts_with("unresolved_")

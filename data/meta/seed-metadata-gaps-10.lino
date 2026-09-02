@@ -23,6 +23,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "pattern_courtesy_keyword_dhanyavad"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1379e1101e67a29a
+    source "data/seed/closure-generated-01.lino"
+    record "response_evidence_exact_composition_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_287aa9dbed5ca0ca
     source "data/seed/closure-generated-01.lino"
     record "response_thinking_narrative_meta_explanation_zh"
@@ -750,10 +754,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_4588bab831ada8ba
     source "data/seed/closure-generated-15.lino"
     record "response_thinking_step_group_by_conversation_hi"
-    missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_5a8530b2ae6d8b8a
-    source "data/seed/closure-generated-15.lino"
-    record "visually"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6d0de00da79a2a1a
     source "data/seed/closure-generated-16.lino"

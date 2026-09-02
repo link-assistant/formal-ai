@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "eval js"
+  evidence_exact_composition
+    defined-by intent
+    lexeme en
+      surface
+        text "evidence exact composition"
   export_memory
     defined-by name
     lexeme en
@@ -494,6 +499,11 @@ meanings
     lexeme en
       surface
         text "response definition merge header zh"
+  response_evidence_exact_composition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition hi"
   response_external_benchmark_invalid_rust_string_ru
     defined-by response_template
     lexeme en

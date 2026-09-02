@@ -129,7 +129,12 @@ emit('',0,rows)
 # `depth` is an int, and str.join refuses a non-str item, so joining the row
 # straight raised TypeError before a single node was ever selected. Render
 # every field before joining rather than trusting the tuple to be all strings.
-Path(sys.argv[2]).write_text('\n'.join('\t'.join(map(str, r)) for r in rows)+'\n')
+# Empty optional fields belong to the in-memory row, but emitting their trailing
+# separators makes the committed TSV fail git's whitespace check. Readers pad
+# omitted tail fields back to the eight-field schema below.
+Path(sys.argv[2]).write_text(
+    '\n'.join('\t'.join(map(str, r)).rstrip('\t') for r in rows) + '\n'
+)
 PY
 
 python3 - "$NODES" "$TREE_DEPTH" "$NODE_FILTER" > "$OUT/selected.tsv" <<'PY'
@@ -137,7 +142,11 @@ import sys
 from pathlib import Path
 rows=[]
 for line in Path(sys.argv[1]).read_text().splitlines():
-    node, depth, text, criterion, left, right, criterion_path, criterion_marker = line.split('\t', 7)
+    fields = line.split('\t', 7)
+    if not 6 <= len(fields) <= 8:
+        raise ValueError(f'node row has {len(fields)} fields, expected 6 through 8: {line!r}')
+    fields.extend([''] * (8 - len(fields)))
+    node, depth, text, criterion, left, right, criterion_path, criterion_marker = fields
     rows.append((node,int(depth),text,criterion,left,right,criterion_path,criterion_marker))
 mode=sys.argv[2]
 filt=sys.argv[3]
@@ -145,14 +154,25 @@ levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
 for level in levels:
     for row in rows:
         node, depth, *_ = row
-        if depth == level and (not filt or node == filt):
-            print('\t'.join(map(str,row)))
+        in_focused_subtree = (
+            not filt
+            or filt == 'R'
+            or node == filt
+            or node.startswith(filt + '.')
+        )
+        if depth == level and in_focused_subtree:
+            print('\t'.join(map(str,row)).rstrip('\t'))
 PY
 
 selected_count=$(wc -l < "$OUT/selected.tsv" | tr -d ' ')
 expected=1
 if [[ "$TREE_DEPTH" = all ]]; then
-  expected=63
+  if [[ -z "$NODE_FILTER" || "$NODE_FILTER" = R ]]; then
+    expected=63
+  else
+    filter_depth=$(awk -F. '{ print NF }' <<< "$NODE_FILTER")
+    expected=$(( (1 << (6 - filter_depth)) - 1 ))
+  fi
 elif [[ -n "$NODE_FILTER" ]]; then
   expected=1
 else
@@ -235,7 +255,7 @@ PY
   fi
 
   setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
-    FORMAL_AI_MEMORY_PATH="$work/.agent-ladder/memory.lino" \
+    FORMAL_AI_MEMORY_PATH="$work/.git/formal-ai-memory/memory.lino" \
     FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$port" \
     >"$session_dir/formal-ai.log" 2>&1 &
   server_pid=$!
@@ -252,7 +272,7 @@ PY
     printf -v effect_contract 'Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout.' \
       "$id" "$id" "$depth"
   else
-    printf -v effect_contract 'Read the committed child effects in `.agent-ladder/verified-children/node-%s.lino` and `.agent-ladder/verified-children/node-%s.lino`. Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, `left_result=` followed by the exact left child `result=` value, `right_result=` followed by the exact right child `result=` value, and `result=` followed by at least four words that include both exact child result values and state how they compose.' \
+    printf -v effect_contract 'Read the committed child effects in `.agent-ladder/verified-children/node-%s.lino` and `.agent-ladder/verified-children/node-%s.lino`. Inspect both files before writing anything. Extract each raw child value with `sed -n "s/^result=//p" FILE` or an equivalent command that returns undecorated file bytes. Treat only the single line beginning exactly `result=` as that child result. Do not copy tool-rendered line numbers, `<file>` wrappers, or any other fields. Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, `left_result=` followed by the exact left child `result=` value, `right_result=` followed by the exact right child `result=` value, and `result=` followed by at least four words that include both exact child result values and state how they compose.' \
       "$left" "$right" "$id" "$id" "$depth" "$left" "$right"
   fi
 
@@ -277,6 +297,11 @@ PY
     printf '%s\tFAIL\tagent_exit_%s\n' "$id" "$status" >> "$RUN_LOG"
     return 1
   fi
+
+  # Agent CLI terminates stream-json output with a presentation-only blank
+  # line. Keep the committed JSONL canonical so every line is a JSON record
+  # and the generated evidence passes Git's whitespace check.
+  sed -i '${/^$/d;}' "$session_dir/agent-stream.jsonl"
 
   proof="$work/.agent-ladder/node-${id}-proof.md"
   if [[ ! -s "$proof" ]]; then

@@ -41,11 +41,11 @@ client_contract_learning
     evidence "sessions/002-agent.json"
     evidence "sessions/003-agent.json"
   proposal
-    id "client_contract_proposal_9ddf4d75b8bb0e0a"
+    id "client_contract_proposal_df5d62bd94f938c0"
     client "agent"
     capability "agent_orchestration"
     field "orchestration_program"
-    value "/tmp/gh-issue-solver-1788111081698/target/release/formal-ai"
+    value "/tmp/gh-issue-solver-1788251676512/target/release/formal-ai"
     target "data/seed/client-integrations.lino"
     decision "awaiting_human_review"
     evidence "sessions/000-agent.json"

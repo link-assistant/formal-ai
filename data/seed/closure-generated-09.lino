@@ -669,6 +669,16 @@ meanings
     lexeme en
       surface
         text "response lexeme import surface changed en"
+  response_link_cli_publish_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed en"
+  response_link_cli_publish_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed ru"
   response_local_search_contents_listing_zh
     defined-by response_template
     lexeme en
