@@ -180,14 +180,8 @@ fn issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             "formal projection invariant (issue #917)",
             "experiments/issue_917_agent_cli.sh",
             "/tmp/formal-ai-issue-917-evidence",
+            "/tmp/formal-ai-issue-*-evidence",
         ],
-    );
-    assert!(
-        workflow
-            .matches("/tmp/formal-ai-issue-917-evidence")
-            .count()
-            >= 2,
-        "issue 917 evidence must be uploaded when its CI replay fails"
     );
 }
 

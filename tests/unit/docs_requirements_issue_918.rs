@@ -172,14 +172,8 @@ fn issue_918_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             "minimal-core invariant (issue #918)",
             "experiments/issue_918_agent_cli.sh",
             "/tmp/formal-ai-issue-918-evidence",
+            "/tmp/formal-ai-issue-*-evidence",
         ],
-    );
-    assert!(
-        workflow
-            .matches("/tmp/formal-ai-issue-918-evidence")
-            .count()
-            >= 2,
-        "issue 918 evidence must be uploaded when its CI replay fails"
     );
 }
 

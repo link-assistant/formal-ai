@@ -190,14 +190,8 @@ fn agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             "proof translation invariant (issue #890)",
             "experiments/issue_890_agent_cli.sh",
             "/tmp/formal-ai-issue-890-evidence",
+            "/tmp/formal-ai-issue-*-evidence",
         ],
-    );
-    assert!(
-        workflow
-            .matches("/tmp/formal-ai-issue-890-evidence")
-            .count()
-            >= 2,
-        "issue 890 evidence must be uploaded when its CI replay fails"
     );
 }
 
