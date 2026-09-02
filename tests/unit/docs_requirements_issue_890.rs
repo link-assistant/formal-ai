@@ -170,6 +170,7 @@ fn agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
         &[
             "serve --host 127.0.0.1",
             "--output-format stream-json",
+            "FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\"",
             "proof-translation-invariant.md",
             INVARIANT,
             "cmp -s",
@@ -181,13 +182,22 @@ fn agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             .all(|line| !line.trim_start().starts_with("rg ")),
         "issue 890 Agent CLI replay must only require tools installed by its CI job"
     );
+    let workflow = read(root.join(".github/workflows/release.yml"));
     assert_contains_all(
         "issue 890 Agent CLI CI gate",
-        &read(root.join(".github/workflows/release.yml")),
+        &workflow,
         &[
             "proof translation invariant (issue #890)",
             "experiments/issue_890_agent_cli.sh",
+            "/tmp/formal-ai-issue-890-evidence",
         ],
+    );
+    assert!(
+        workflow
+            .matches("/tmp/formal-ai-issue-890-evidence")
+            .count()
+            >= 2,
+        "issue 890 evidence must be uploaded when its CI replay fails"
     );
 }
 

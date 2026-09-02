@@ -1236,6 +1236,9 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
             /tmp/formal-ai-issue-707-evidence
+            /tmp/formal-ai-issue-890-evidence
+            /tmp/formal-ai-issue-917-evidence
+            /tmp/formal-ai-issue-918-evidence
             /tmp/formal-ai-issue-921-evidence
             /tmp/formal-ai-issue-922-evidence
           retention-days: 7
