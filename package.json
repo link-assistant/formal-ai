@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/web-search-component-entry.js --outfile ./src/web/web-search-component.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify",
+    "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./src/web/web-search-component-entry.js --outfile ./src/web/web-search-component.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify-whitespace --minify-syntax",
     "test:web": "node --test tests/web/*.test.mjs",
     "coverage:web": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage/browser-lcov.info --test-reporter=spec --test-reporter-destination=stdout tests/web/*.test.mjs",
     "coverage:ratchet": "rust-script scripts/check-coverage-ratchet.rs",

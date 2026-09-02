@@ -9,6 +9,25 @@ fn repository_file(path: &str) -> String {
 }
 
 #[test]
+fn web_bundle_generation_skips_nondeterministic_identifier_minification() {
+    let package: serde_json::Value =
+        serde_json::from_str(&repository_file("package.json")).expect("package.json is valid JSON");
+    let build = package["scripts"]["build:web"]
+        .as_str()
+        .expect("build:web is a string");
+
+    // Bun #40657: 1.4.0 can assign different minified identifiers to an
+    // unchanged graph under load. Keep the deterministic size reductions until
+    // the fix after oven-sh/bun#40664 reaches a stable release.
+    assert_eq!(build.matches("--minify-whitespace").count(), 4);
+    assert_eq!(build.matches("--minify-syntax").count(), 4);
+    assert!(
+        !build.split_ascii_whitespace().any(|arg| arg == "--minify"),
+        "bare --minify re-enables nondeterministic identifier renaming"
+    );
+}
+
+#[test]
 fn pre_commit_prunes_docker_without_blocking_commits() {
     let hook = repository_file(".githooks/pre-commit");
     assert!(hook.contains("scripts/prune-docker.sh"));
