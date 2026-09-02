@@ -188,6 +188,25 @@ fn every_client_behavior_is_a_seeded_verification_contract() {
 }
 
 #[test]
+fn t3code_0_0_37_launch_contract_covers_its_complete_surface() {
+    let clients = client_integrations();
+    let t3code = clients
+        .iter()
+        .find(|client| client.id == "t3code")
+        .expect("seeded t3code client");
+    for subcommand in ["theme", "triage"] {
+        assert!(
+            t3code
+                .verification
+                .launch_subcommands
+                .iter()
+                .any(|actual| actual == subcommand),
+            "t3code 0.0.37 exposes {subcommand}; classify it before accepting the upgraded client"
+        );
+    }
+}
+
+#[test]
 fn server_launch_waits_for_every_required_output_line() {
     let leg = read("experiments/agentic_cli_matrix/run_leg.sh");
     assert!(

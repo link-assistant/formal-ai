@@ -579,6 +579,21 @@ fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
                 );
                 assert!(captured.contains("---CLAUDE_CONFIG---"));
                 assert!(captured.contains(r#""hasCompletedOnboarding": true"#));
+                let config_capture = captured
+                    .split_once("---CLAUDE_CONFIG---\n")
+                    .expect("captured Claude config marker")
+                    .1
+                    .split_once("\n---HOME_GEMINI_SETTINGS---")
+                    .expect("captured config terminator")
+                    .0;
+                let config: serde_json::Value =
+                    serde_json::from_str(config_capture).expect("parse captured Claude config");
+                let working_directory = std::env::current_dir().expect("working directory");
+                assert_eq!(
+                    config["projects"][working_directory.to_string_lossy().as_ref()]["hasTrustDialogAccepted"],
+                    true,
+                    "an ephemeral interactive run must not stop at Claude's folder-trust dialog"
+                );
                 assert!(captured.contains("arg[0]=--model"));
                 assert!(captured.contains("arg[1]=formal-ai"));
             }
