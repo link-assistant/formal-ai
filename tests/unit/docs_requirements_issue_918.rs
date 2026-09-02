@@ -138,7 +138,11 @@ fn issue_918_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
     );
 
     let stream = read(evidence.join("agent-stream.raw.log"));
-    assert_contains_all("Agent CLI raw stream", &stream, &[session_id, "formal-ai"]);
+    assert!(
+        stream.contains(session_id),
+        "Agent CLI raw stream must preserve its recorded session"
+    );
+    assert_contains_all("Agent CLI raw stream", &stream, &["formal-ai"]);
     for file in [
         "agent-stderr.log",
         "agent-stream.jsonl",
