@@ -218,3 +218,98 @@ fn issue_1069_a_quoted_path_stays_a_member_literal() {
         "the quoted path is inserted as a member: {updated}"
     );
 }
+
+/// A member literal may be a *phrase*, not just a bare token.
+///
+/// The first change-shaped ladder run (issue #1069) failed on two leaves --
+/// `"Good morning"` into `GREETING_EXAMPLES` and `"toward "` into
+/// `TARGET_MARKERS` -- because the route refused any quoted value containing
+/// whitespace. `experiments/issue_1069_member_shape/survey.py` measures the
+/// real population this route has to serve: of the 1738 string literals that
+/// sit directly inside a bracketed list in this repository's own sources, 523
+/// (30.1%) hold whitespace, 192 of those carry a space at an edge because the
+/// list is scanned against prose, and only 6 span lines. Refusing whitespace
+/// therefore refused nearly a third of every member this tree actually has.
+/// What keeps a quoted *sentence* out is the length bound, and what keeps a
+/// code blob out is that a member never spans lines -- so those are the bounds
+/// the route enforces.
+#[test]
+fn issue_1069_a_member_literal_may_hold_spaces() {
+    let updated = written_source(
+        "Edit the tracked file src/engine_responses.rs: add \"Good morning\" to the \
+         GREETING_EXAMPLES list. Change only that file and keep it valid Rust.",
+        "src/engine_responses.rs",
+        "pub const GREETING_EXAMPLES: &[&str] = &[\"Hi\", \"Hello\", \"Hey\"];\n",
+    );
+    assert!(
+        updated.contains("[\"Hi\", \"Hello\", \"Hey\", \"Good morning\"]"),
+        "a two-word member joins the list like any other: {updated}"
+    );
+}
+
+/// A trailing space is part of the member. `TARGET_MARKERS` holds `"to "` and
+/// `"into "` precisely so a scan cannot match inside a longer word, so trimming
+/// the value the request quoted would silently write a different member than
+/// the one that was asked for.
+#[test]
+fn issue_1069_a_member_literal_keeps_its_boundary_space() {
+    let updated = written_source(
+        "In the file src/solver_handlers/document_request.rs, add \"toward \" to the \
+         TARGET_MARKERS list. Change only that file and keep it valid Rust.",
+        "src/solver_handlers/document_request.rs",
+        "const TARGET_MARKERS: &[&str] = &[\n    \"to \",\n    \"into \",\n];\n",
+    );
+    assert!(
+        updated.contains("\"into \",\n    \"toward \""),
+        "the member is written with the space it was quoted with: {updated}"
+    );
+}
+
+/// The bound that keeps quoted prose out of a member list is length, and it
+/// still holds now that spaces are allowed: a caller who quotes a sentence in
+/// passing does not thereby insert it.
+#[test]
+fn issue_1069_a_quoted_sentence_is_not_a_member() {
+    let source = "const NAMES: &[&str] = &[\"a\"];\n";
+    let mut messages = vec![ChatMessage::user(
+        "Edit names.rs: add \"b\" to the NAMES list. The reviewer wrote \"this list is \
+         the one that decides which of the workspace directories the walker is allowed \
+         to descend into, so please keep it sorted\" in the pull request.",
+    )];
+    let read = next_call(&messages);
+    record(&mut messages, &read, source);
+    let write = next_call(&messages);
+    let updated = argument(&write, "content");
+    assert!(
+        updated.contains("[\"a\", \"b\"]"),
+        "the member the request asked for is inserted: {updated}"
+    );
+    assert!(
+        !updated.contains("keep it sorted"),
+        "the quoted sentence is prose, not a member: {updated}"
+    );
+}
+
+/// A member never spans lines, so a quoted code blob is not one either -- that
+/// is what stops the multi-line literals the survey found in `write!` calls
+/// from being read as members.
+#[test]
+fn issue_1069_a_multi_line_literal_is_not_a_member() {
+    let source = "const NAMES: &[&str] = &[\"a\"];\n";
+    let mut messages = vec![ChatMessage::user(
+        "Edit names.rs: add \"b\" to the NAMES list. For context the caller renders \
+         \"fn main() {\n    println!();\n}\" before it reads the list.",
+    )];
+    let read = next_call(&messages);
+    record(&mut messages, &read, source);
+    let write = next_call(&messages);
+    let updated = argument(&write, "content");
+    assert!(
+        updated.contains("[\"a\", \"b\"]"),
+        "the member the request asked for is inserted: {updated}"
+    );
+    assert!(
+        !updated.contains("println!"),
+        "the multi-line blob is not a member: {updated}"
+    );
+}

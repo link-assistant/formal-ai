@@ -453,11 +453,28 @@ fn without_spans(text: &str, spans: &[(usize, usize)]) -> String {
     kept
 }
 
+/// A member literal is a short single-line phrase.
+///
+/// Spaces belong inside it. `experiments/issue_1069_member_shape/survey.py`
+/// counts the string literals that sit directly inside a bracketed list in this
+/// repository's own sources: 523 of 1738 (30.1%) hold whitespace, and 192 of
+/// those carry a space at an edge because the list is scanned against prose --
+/// `TARGET_MARKERS` holds `"to "` and `"into "` exactly so a scan cannot match
+/// inside a longer word. Refusing whitespace refused nearly a third of every
+/// member list in the tree, which is why `"Good morning"` could not be added to
+/// `GREETING_EXAMPLES` (#1069).
+///
+/// What keeps a quoted *sentence* out is [`MAX_MEMBER_LENGTH`]; what keeps a
+/// quoted code blob out is that a member never spans lines, which the survey
+/// confirms -- only 6 of the 1738 do, and all six are `write!` fragments that
+/// no request would ask to insert.
 fn is_member_literal(value: &str) -> bool {
     !value.is_empty()
         && value.len() <= MAX_MEMBER_LENGTH
         && !value.contains(['"', '\\'])
-        && !value.chars().any(char::is_whitespace)
+        && value
+            .chars()
+            .all(|character| !character.is_whitespace() || character == ' ')
 }
 
 /// A bare prose token only counts as the name of a declaration when it is

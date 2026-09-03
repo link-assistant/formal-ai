@@ -64,6 +64,7 @@ struct Node {
     right: String,
     criterion_path: String,
     criterion_marker: String,
+    criterion_guard: String,
 }
 
 /// Run the committed generator over the committed leaves and read back the tree.
@@ -105,10 +106,10 @@ fn generate_tree(directory: &Path) -> Vec<Node> {
         .map(|line| {
             let mut fields = line.split('\t').collect::<Vec<_>>();
             assert!(
-                (6..=8).contains(&fields.len()),
-                "every node row has six required and at most two optional fields: {line:?}",
+                (6..=9).contains(&fields.len()),
+                "every node row has six required and at most three optional fields: {line:?}",
             );
-            fields.resize(8, "");
+            fields.resize(9, "");
             Node {
                 path: fields[0].to_owned(),
                 depth: fields[1]
@@ -120,6 +121,7 @@ fn generate_tree(directory: &Path) -> Vec<Node> {
                 right: fields[5].to_owned(),
                 criterion_path: fields[6].to_owned(),
                 criterion_marker: fields[7].to_owned(),
+                criterion_guard: fields[8].to_owned(),
             }
         })
         .collect()
@@ -146,6 +148,32 @@ fn git(directory: &Path, args: &[&str]) {
     );
 }
 
+/// The change a leaf fixture is expected to make: absent from the commit,
+/// present in the worktree afterwards.
+const LEAF_MARKER: &str = "pub max_depth: u8";
+/// The anchor that must survive it, so a node cannot pass by rewriting the file
+/// down to its marker.
+const LEAF_ANCHOR: &str = "storage_field=children";
+
+/// Make the fixture's tracked source carry the leaf's change, exactly as a node
+/// that did the work would leave the worktree.
+fn apply_leaf_change(directory: &Path) {
+    let target = directory.join("README.md");
+    let source = fs::read_to_string(&target).expect("fixture source");
+    fs::write(&target, format!("{source}{LEAF_MARKER},\n")).expect("apply the leaf change");
+}
+
+/// Write the node's leaf effect file with the given `result=` line.
+fn write_leaf_effect(directory: &Path, result: &str) {
+    let effect = directory.join("agent-ladder-effects/node-1.1.lino");
+    fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
+    fs::write(
+        effect,
+        format!("node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult={result}\n"),
+    )
+    .expect("write leaf effect");
+}
+
 fn node_verifier_fixture(label: &str) -> (PathBuf, PathBuf) {
     let directory = temporary_directory(label);
     git(&directory, &["init", "--quiet"]);
@@ -159,7 +187,13 @@ fn node_verifier_fixture(label: &str) -> (PathBuf, PathBuf) {
         "fixture\nstorage_field=children\npub children: Vec<Self>,\n",
     )
     .expect("write fixture seed");
-    git(&directory, &["add", "README.md"]);
+    fs::write(directory.join("NOTES.md"), "unrelated tracked file\n").expect("write bystander");
+    fs::write(
+        directory.join("fixture.rs"),
+        "pub struct Node {\n    pub children: Vec<Node>,\n}\n",
+    )
+    .expect("write Rust fixture");
+    git(&directory, &["add", "README.md", "NOTES.md", "fixture.rs"]);
     git(&directory, &["commit", "--quiet", "-m", "fixture"]);
     let proof = directory.join(".agent-ladder/node-1.1-proof.md");
     fs::create_dir_all(proof.parent().expect("proof parent")).expect("create proof directory");
@@ -199,6 +233,7 @@ fn run_node_verifier(
     right: &str,
     criterion_path: &str,
     criterion_marker: &str,
+    criterion_guard: &str,
 ) -> std::process::Output {
     Command::new(root().join(NODE_VERIFIER))
         .arg(directory)
@@ -209,6 +244,7 @@ fn run_node_verifier(
         .arg(right)
         .arg(criterion_path)
         .arg(criterion_marker)
+        .arg(criterion_guard)
         .output()
         .expect("run the committed node verifier")
 }
@@ -224,7 +260,8 @@ fn the_node_verifier_rejects_a_proof_without_a_repository_effect() {
         "",
         "",
         "README.md",
-        "storage_field=children",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
     );
 
     assert!(!output.status.success());
@@ -242,9 +279,10 @@ fn the_node_verifier_accepts_a_non_hollow_proof_and_new_leaf_effect() {
     fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
     fs::write(
         effect,
-        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=The requested repository task observed storage_field=children.\n",
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=The tracked source now declares pub max_depth: u8.\n",
     )
     .expect("write leaf effect");
+    apply_leaf_change(&directory);
 
     let output = run_node_verifier(
         &directory,
@@ -253,7 +291,8 @@ fn the_node_verifier_accepts_a_non_hollow_proof_and_new_leaf_effect() {
         "",
         "",
         "README.md",
-        "storage_field=children",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
     );
 
     assert!(
@@ -273,9 +312,12 @@ fn the_node_verifier_does_not_treat_source_generics_as_placeholders() {
     fs::create_dir_all(effect.parent().expect("effect parent")).expect("create effect directory");
     fs::write(
         effect,
-        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=Line 79: pub children: Vec<Self>,\n",
+        "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=Line 79 now reads pub extras: Vec<Self>,\n",
     )
     .expect("write leaf effect containing Rust generics");
+    let target = directory.join("README.md");
+    let source = fs::read_to_string(&target).expect("fixture source");
+    fs::write(&target, format!("{source}pub extras: Vec<Self>,\n")).expect("apply the change");
 
     let output = run_node_verifier(
         &directory,
@@ -284,7 +326,8 @@ fn the_node_verifier_does_not_treat_source_generics_as_placeholders() {
         "",
         "",
         "README.md",
-        "pub children: Vec<Self>",
+        "pub extras: Vec<Self>",
+        LEAF_ANCHOR,
     );
 
     assert!(
@@ -306,6 +349,7 @@ fn the_node_verifier_rejects_an_entire_placeholder_result() {
         "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=<task result goes here>\n",
     )
     .expect("write placeholder leaf effect");
+    apply_leaf_change(&directory);
 
     let output = run_node_verifier(
         &directory,
@@ -314,7 +358,8 @@ fn the_node_verifier_rejects_an_entire_placeholder_result() {
         "",
         "",
         "README.md",
-        "storage_field=children",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
     );
 
     assert!(!output.status.success());
@@ -336,7 +381,7 @@ fn the_node_verifier_requires_both_children_in_a_composite_effect() {
     )
     .expect("write incomplete composite effect");
 
-    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "", "");
 
     assert!(!output.status.success());
     assert_eq!(
@@ -357,7 +402,7 @@ fn the_node_verifier_rejects_a_composite_without_verified_child_effects() {
     )
     .expect("write structurally complete composite effect");
 
-    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "", "");
 
     assert!(!output.status.success());
     assert_eq!(
@@ -383,7 +428,7 @@ fn the_node_verifier_rejects_a_composite_that_does_not_copy_a_child_result() {
     )
     .expect("write composite with wrong left result");
 
-    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "", "");
 
     assert!(!output.status.success());
     assert_eq!(
@@ -409,7 +454,7 @@ fn the_node_verifier_accepts_a_composite_of_both_verified_child_results() {
     )
     .expect("write verified composite effect");
 
-    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "", "");
 
     assert!(
         output.status.success(),
@@ -442,7 +487,7 @@ fn the_node_verifier_rejects_a_child_effect_modified_after_fixture_commit() {
     )
     .expect("write composite from modified child effect");
 
-    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "");
+    let output = run_node_verifier(&directory, &proof, "2", "1.1.1", "1.1.2", "", "", "");
 
     assert!(!output.status.success());
     assert_eq!(
@@ -462,6 +507,7 @@ fn the_node_verifier_rejects_a_delivery_status_as_the_task_result() {
         "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=Recorded the findings in the requested proof file.\n",
     )
     .expect("write status-only effect");
+    apply_leaf_change(&directory);
 
     let output = run_node_verifier(
         &directory,
@@ -470,7 +516,8 @@ fn the_node_verifier_rejects_a_delivery_status_as_the_task_result() {
         "",
         "",
         "README.md",
-        "storage_field=children",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
     );
 
     assert!(!output.status.success());
@@ -491,6 +538,7 @@ fn the_node_verifier_rejects_a_leaf_effect_unrelated_to_its_external_criterion()
         "node_path=1.1\nnode_depth=5\nnode_kind=leaf\nresult=The package contains several unrelated source modules.\n",
     )
     .expect("write unrelated leaf effect");
+    apply_leaf_change(&directory);
 
     let output = run_node_verifier(
         &directory,
@@ -499,13 +547,167 @@ fn the_node_verifier_rejects_a_leaf_effect_unrelated_to_its_external_criterion()
         "",
         "",
         "README.md",
-        "storage_field=children",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
     );
 
     assert!(!output.status.success());
     assert_eq!(
         String::from_utf8_lossy(&output.stdout).trim(),
         "unverified_leaf_result"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+/// Writing a convincing effect file is not doing the work: with the tracked
+/// source untouched the node has produced evidence and nothing else. This is
+/// the exact shape every pre-#1069 leaf had, so it must now fail.
+#[test]
+fn the_node_verifier_rejects_a_leaf_effect_without_the_tracked_change() {
+    let (directory, proof) = node_verifier_fixture("effect-without-change");
+    write_leaf_effect(
+        &directory,
+        "The tracked source now declares pub max_depth: u8.",
+    );
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "missing_leaf_change"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+/// A marker that is already committed would let a node pass by finding text
+/// rather than by writing it, which is the observation contract again.
+#[test]
+fn the_node_verifier_rejects_a_change_marker_that_is_already_committed() {
+    let (directory, proof) = node_verifier_fixture("preexisting-change");
+    write_leaf_effect(
+        &directory,
+        "The source already contains storage_field=children.",
+    );
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        LEAF_ANCHOR,
+        LEAF_ANCHOR,
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "preexisting_leaf_change"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+/// Replacing the file with its marker satisfies "the marker is present" while
+/// destroying everything the marker was supposed to join.
+#[test]
+fn the_node_verifier_rejects_a_change_that_destroyed_its_anchor() {
+    let (directory, proof) = node_verifier_fixture("destroyed-anchor");
+    write_leaf_effect(
+        &directory,
+        "The tracked source now declares pub max_depth: u8.",
+    );
+    fs::write(directory.join("README.md"), format!("{LEAF_MARKER},\n")).expect("overwrite");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "destroyed_leaf_anchor"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+/// "Change only that file" is part of the task, so a node that also edited an
+/// unrelated tracked source has not done the task it was given.
+#[test]
+fn the_node_verifier_rejects_collateral_changes_to_other_sources() {
+    let (directory, proof) = node_verifier_fixture("collateral-change");
+    write_leaf_effect(
+        &directory,
+        "The tracked source now declares pub max_depth: u8.",
+    );
+    apply_leaf_change(&directory);
+    fs::write(directory.join("NOTES.md"), "edited by mistake\n").expect("collateral edit");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "README.md",
+        LEAF_MARKER,
+        LEAF_ANCHOR,
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "unexpected_tracked_changes"
+    );
+    let _ = fs::remove_dir_all(directory);
+}
+
+/// A Rust change a reviewer could not even parse is not a change.
+#[test]
+fn the_node_verifier_rejects_a_rust_change_that_no_longer_parses() {
+    if Command::new("rustfmt").arg("--version").output().is_err() {
+        return;
+    }
+    let (directory, proof) = node_verifier_fixture("unparsable-change");
+    write_leaf_effect(&directory, "The struct now declares pub max_depth: u8.");
+    fs::write(
+        directory.join("fixture.rs"),
+        "pub struct Node {\n    pub children: Vec<Node>,\n    pub max_depth: u8\n",
+    )
+    .expect("write unbalanced Rust");
+
+    let output = run_node_verifier(
+        &directory,
+        &proof,
+        "5",
+        "",
+        "",
+        "fixture.rs",
+        LEAF_MARKER,
+        "pub struct Node",
+    );
+
+    assert!(!output.status.success());
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "unparsable_leaf_change"
     );
     let _ = fs::remove_dir_all(directory);
 }
@@ -598,7 +800,7 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
                 "leaf {} must not claim children",
                 node.path,
             );
-            assert_eq!(node.criterion, "new_leaf_effect");
+            assert_eq!(node.criterion, "tracked_source_change");
             assert!(
                 !node.criterion_path.is_empty(),
                 "{} criterion path",
@@ -609,12 +811,27 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
                 "{} criterion marker",
                 node.path
             );
+            assert!(
+                !node.criterion_guard.is_empty(),
+                "{} criterion guard",
+                node.path
+            );
+            // A change contract, not an observation contract: the marker is
+            // what the node has to introduce, so finding it already committed
+            // would make the leaf passable without changing anything.
             let criterion_source = read(&node.criterion_path);
             assert!(
-                criterion_source.contains(&node.criterion_marker),
-                "{} external criterion {:?} is absent from {}",
+                !criterion_source.contains(&node.criterion_marker),
+                "{} change marker {:?} is already present in {}",
                 node.path,
                 node.criterion_marker,
+                node.criterion_path,
+            );
+            assert!(
+                criterion_source.contains(&node.criterion_guard),
+                "{} anchor {:?} is absent from {}",
+                node.path,
+                node.criterion_guard,
                 node.criterion_path,
             );
         } else {
@@ -648,6 +865,11 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
             assert!(
                 node.criterion_marker.is_empty(),
                 "{} criterion marker",
+                node.path
+            );
+            assert!(
+                node.criterion_guard.is_empty(),
+                "{} criterion guard",
                 node.path
             );
         }

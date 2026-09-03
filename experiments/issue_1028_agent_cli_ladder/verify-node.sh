@@ -8,8 +8,8 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
-if [[ "$#" -ne 8 ]]; then
-  echo "usage: verify-node.sh WORKSPACE PROOF NODE DEPTH LEFT RIGHT CRITERION_PATH CRITERION_MARKER" >&2
+if [[ "$#" -ne 9 ]]; then
+  echo "usage: verify-node.sh WORKSPACE PROOF NODE DEPTH LEFT RIGHT CHANGE_PATH CHANGE_MARKER CHANGE_GUARD" >&2
   exit 2
 fi
 
@@ -21,6 +21,7 @@ left="$5"
 right="$6"
 criterion_path="$7"
 criterion_marker="$8"
+criterion_guard="$9"
 
 fail() {
   printf '%s\n' "$1"
@@ -72,15 +73,39 @@ printf '%s\n' "$result" | grep -Eiq '^recorded (the )?findings([[:space:]]|$)' \
   && fail status_only_effect_result
 
 if [[ "$depth" -eq 5 ]]; then
+  # A leaf is change-shaped: its deliverable is a diff to a tracked source, not
+  # a side file describing one. Every clause below asks the Git worktree what
+  # happened rather than asking the node what it claims.
   [[ -n "$criterion_path" ]] || fail missing_leaf_criterion
   [[ -n "$criterion_marker" ]] || fail missing_leaf_criterion
+  [[ -n "$criterion_guard" ]] || fail missing_leaf_criterion
   [[ "$criterion_path" != /* && "$criterion_path" != *".."* ]] \
     || fail invalid_leaf_criterion
   git -C "$workspace" ls-files --error-unmatch -- "$criterion_path" >/dev/null 2>&1 \
     || fail untracked_leaf_criterion
   criterion_file="$workspace/$criterion_path"
   [[ -f "$criterion_file" ]] || fail invalid_leaf_criterion
-  grep -Fq -- "$criterion_marker" "$criterion_file" || fail invalid_leaf_criterion
+
+  # The marker has to be absent from the committed fixture, so finding it in the
+  # worktree proves this node introduced it instead of discovering it.
+  git -C "$workspace" show "HEAD:$criterion_path" | grep -Fq -- "$criterion_marker" \
+    && fail preexisting_leaf_change
+  grep -Fq -- "$criterion_marker" "$criterion_file" || fail missing_leaf_change
+  # Deleting the surrounding item would also make the marker "appear" once the
+  # node rewrote the file from scratch, so the anchor has to survive the edit.
+  grep -Fq -- "$criterion_guard" "$criterion_file" || fail destroyed_leaf_anchor
+
+  # Exactly one tracked file may differ, and it must be the target. Untracked
+  # evidence (the effect file, the proof) is deliberately not counted.
+  tracked_changes=$(git -C "$workspace" status --porcelain=v1 --untracked-files=no)
+  [[ "$tracked_changes" == " M $criterion_path" ]] || fail unexpected_tracked_changes
+
+  # A change that no longer parses is not a change a reviewer could take.
+  if [[ "$criterion_path" == *.rs ]] && command -v rustfmt >/dev/null 2>&1; then
+    rustfmt --edition 2024 --emit stdout "$criterion_file" >/dev/null 2>&1 \
+      || fail unparsable_leaf_change
+  fi
+
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
 else
   child_directory=".agent-ladder/verified-children"

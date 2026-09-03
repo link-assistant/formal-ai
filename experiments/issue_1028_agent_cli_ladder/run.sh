@@ -45,38 +45,38 @@ RUN_LOG="$OUT/run.log"
 declare -A VERIFIED_EFFECTS=()
 
 cat > "$OUT/leaves.tsv" <<'EOF'
-L01	Inspect the existing task-decomposition data model and identify where a node stores its children.	src/task_decomposition.rs	pub children: Vec<Self>
-L02	Inspect the existing task-decomposition recursion and record how depth limits are represented.	src/task_decomposition.rs	pub max_depth: u8
-L03	Inspect the existing atomicity check and record the observable completion contract for leaves.	src/task_decomposition.rs	!self.completion_criterion.starts_with("unresolved_")
-L04	Inspect the existing Links Notation rendering and record how child relationships are serialized.	src/task_decomposition.rs	pairs.push(("child", child.id.clone()))
-L05	Inspect the existing recursive execution adapter and record how a decomposition tree is executed.	src/task_decomposition.rs	children: self.children.iter().map(Self::to_recursive_task).collect()
-L06	Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.	src/task_decomposition.rs	decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped())
-L07	Inspect the issue-sized decomposition regression and record its required lower bound on independently checkable leaves.	tests/unit/specification/task_decomposition.rs	decomposition.leaves().len() >= 3
-L08	Verify that a leaf without an observable completion contract is never treated as independently checkable.	src/task_decomposition.rs	"unresolved_single_need"
-L09	Inspect the binary decomposition invariant and explain the exactly-two-children requirement.	docs/case-studies/issue-1028/task-decomposition.md	Every internal node has exactly two children
-L10	Verify the invariant explicitly names the supported power-of-two levels through 32.	docs/case-studies/issue-1028/task-decomposition.md	2, 4, 8, 16, and 32 nodes respectively
-L11	Verify regression coverage includes two decomposition nodes at depth one.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
-L12	Verify regression coverage includes four decomposition nodes at depth two.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
-L13	Verify regression coverage includes eight decomposition nodes at depth three.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
-L14	Verify regression coverage includes sixteen decomposition nodes at depth four.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
-L15	Verify regression coverage includes thirty-two decomposition nodes at depth five.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
-L16	Verify every tested internal node has exactly two children and never three or more.	docs/case-studies/issue-1028/task-decomposition.md	Every internal node has exactly two children
-L17	Verify every tested leaf is atomic and independently checkable.	docs/case-studies/issue-1028/task-decomposition.md	every leaf is atomic and independently checkable
-L18	Inspect how each decomposition node carries its content-addressed stable identifier.	src/task_decomposition.rs	pub id: String
-L19	Verify child paths follow the dotted numeric convention at every recursive depth.	src/task_decomposition.rs	format!("{parent}.{number}")
-L20	Verify the node count of a complete depth-five tree is exactly 63 including the root.	tests/unit/issue_1066_agent_ladder.rs	const NODE_COUNT: usize = 63
-L21	Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.	experiments/issue_1028_agent_cli_ladder/run.sh	0|1|2|3|4|5|all) ;;
-L22	Verify a single node can be selected by dotted binary path for focused debugging.	experiments/issue_1028_agent_cli_ladder/run.sh	node == filt
-L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
-L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
-L25	Verify every selected node runs in a fresh temporary repository copy.	experiments/issue_1028_agent_cli_ladder/run.sh	work=$(mktemp -d)
-L26	Verify every selected node uses the real Agent CLI against the real Formal AI server.	experiments/issue_1028_agent_cli_ladder/run.sh	"$AGENT" --model formalai/formal-ai
-L27	Verify every selected node requires an observable proof file with its exact node path.	experiments/issue_1028_agent_cli_ladder/run.sh	grep -q "^node_path=$id$" "$proof"
-L28	Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.	docs/case-studies/issue-1028/task-decomposition.md	This is a complete full binary tree, not a flat list.
-L29	Verify the executable ladder formulates exactly 32 distinct atomic leaves.	tests/unit/issue_1066_agent_ladder.rs	const LEAF_COUNT: usize = 32
-L30	Verify generated child paths are required to exist in the complete tree.	tests/unit/issue_1066_agent_ladder.rs	assert!(paths.contains(&node.left), "missing {}", node.left)
-L31	Inspect the decomposition regression matrix and verify requests are not limited to one fixed wording.	tests/unit/specification/task_decomposition.rs	for (language, prompt) in SPLIT_PROMPTS
-L32	Inspect the final evidence-note planner and record the heading used for composed observations.	src/agentic_coding/note_composition.rs	Observed in this session:
+L01	Edit the tracked file `src/web_search_core.rs`: add "wikiquote" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.	src/web_search_core.rs	"wikiquote"	WEB_SEARCH_PROVIDERS
+L02	Edit the tracked file `src/thinking.rs`: add "sensor_fusion" to the PLAIN_STEPS list. Change only that file and keep it valid Rust.	src/thinking.rs	"sensor_fusion"	PLAIN_STEPS
+L03	Edit the tracked file `src/seed/meanings/parse.rs`: add "provenance" to the FACET_KINDS list. Change only that file and keep it valid Rust.	src/seed/meanings/parse.rs	"provenance"	FACET_KINDS
+L04	Edit the tracked file `src/solver_handlers/pattern_inference.rs`: add "alternating" to the INTENT_MARKERS list. Change only that file and keep it valid Rust.	src/solver_handlers/pattern_inference.rs	"alternating"	INTENT_MARKERS
+L05	Edit the tracked file `src/how_to_guide.rs`: add "about" to the TOPIC_STOPWORDS list. Change only that file and keep it valid Rust.	src/how_to_guide.rs	"about"	TOPIC_STOPWORDS
+L06	Edit the tracked file `src/solver_handlers/web_requests.rs`: add "deep-foundation" to the PROMOTED_PROJECT_ORGS list. Change only that file and keep it valid Rust.	src/solver_handlers/web_requests.rs	"deep-foundation"	PROMOTED_PROJECT_ORGS
+L07	Edit the tracked file `src/engine_responses.rs`: add "Good morning" to the GREETING_EXAMPLES list. Change only that file and keep it valid Rust.	src/engine_responses.rs	"Good morning"	GREETING_EXAMPLES
+L08	Edit the tracked file `src/solver_dispatch.rs`: add "workspace_change" to the CONTEXTUAL_HANDLER_NAMES list. Change only that file and keep it valid Rust.	src/solver_dispatch.rs	"workspace_change"	CONTEXTUAL_HANDLER_NAMES
+L09	Edit the tracked file `src/agentic_coding/shell_command_policy.rs`: add "kindly" to the PROSE_WORDS list. Change only that file and keep it valid Rust.	src/agentic_coding/shell_command_policy.rs	"kindly"	PROSE_WORDS
+L10	Edit the tracked file `src/solver_handlers/document_request.rs`: add "toward " to the TARGET_MARKERS list. Change only that file and keep it valid Rust.	src/solver_handlers/document_request.rs	"toward "	TARGET_MARKERS
+L11	Edit the tracked file `src/program_skill_gap.rs`: add "structured_edit" to the SYNTHESIS_ROUTES list. Change only that file and keep it valid Rust.	src/program_skill_gap.rs	"structured_edit"	SYNTHESIS_ROUTES
+L12	In the file src/protocol_memory.rs, replace "request_history" with "conversation_history". Change only that file and keep it valid Rust.	src/protocol_memory.rs	conversation_history	REQUEST_HISTORY_CONVERSATION_ID
+L13	In the file src/dialog_log.rs, replace "x-formal-ai-dialog-id" with "x-formal-ai-conversation-id". Change only that file and keep it valid Rust.	src/dialog_log.rs	x-formal-ai-conversation-id	DIALOG_ID_HEADER
+L14	In the file src/learning_adoption_ledger.rs, replace "unknown" with "unspecified". Change only that file and keep it valid Rust.	src/learning_adoption_ledger.rs	unspecified	UNKNOWN_INTENT
+L15	In the file src/google_trends_catalog.rs, replace "{query}" with "{search_query}". Change only that file and keep it valid Rust.	src/google_trends_catalog.rs	{search_query}	QUERY_PLACEHOLDER
+L16	In the file src/service_accessibility.rs, replace "ttl_seconds" with "time_to_live_seconds". Change only that file and keep it valid Rust.	src/service_accessibility.rs	time_to_live_seconds	FIELD_TTL_SECONDS
+L17	In the file src/web_search_fusion_core.rs, replace "statement_negation_cue" with "statement_negation_marker". Change only that file and keep it valid Rust.	src/web_search_fusion_core.rs	statement_negation_marker	NEGATION_ROLE
+L18	In the file src/client_integrations.rs, replace "http://127.0.0.1:8080" with "http://127.0.0.1:8099". Change only that file and keep it valid Rust.	src/client_integrations.rs	http://127.0.0.1:8099	DEFAULT_BASE_URL
+L19	In the file src/cli_report.rs, replace "agentic-cli" with "agentic-command-line". Change only that file and keep it valid Rust.	src/cli_report.rs	agentic-command-line	DEFAULT_SURFACE
+L20	In the file src/entity_resolution.rs, replace "{term}" with "{entity_term}". Change only that file and keep it valid Rust.	src/entity_resolution.rs	{entity_term}	TERM_PLACEHOLDER
+L21	In the file src/solver_handler_how_synthesis.rs, replace "FORMAL_AI_SOURCE_CACHE_DIR" with "FORMAL_AI_HOW_SOURCE_CACHE_DIR". Change only that file and keep it valid Rust.	src/solver_handler_how_synthesis.rs	FORMAL_AI_HOW_SOURCE_CACHE_DIR	CACHE_DIR_ENV
+L22	In the file src/skill_procedure.rs, replace "https://example.com/article" with "https://example.com/document". Change only that file and keep it valid Rust.	src/skill_procedure.rs	https://example.com/document	PROCEDURE_CONFORMANCE_TRIGGER
+L23	In the file src/cli_context.rs, rename the constant ERROR_JOIN to ERROR_LIST_JOIN. Change only that file and keep it valid Rust.	src/cli_context.rs	ERROR_LIST_JOIN	"; "
+L24	In the file src/issue_report.rs, rename the constant TITLE_JOIN to TITLE_SEGMENT_JOIN. Change only that file and keep it valid Rust.	src/issue_report.rs	TITLE_SEGMENT_JOIN	"` + `"
+L25	In the file src/service_accessibility.rs, rename the constant RECORD_INDENT to RECORD_LINE_INDENT. Change only that file and keep it valid Rust.	src/service_accessibility.rs	RECORD_LINE_INDENT	FIELD_INDENT
+L26	In the file src/web_search_fusion_core.rs, rename the constant ENTITY_ROLE to WIKIDATA_ENTITY_ROLE. Change only that file and keep it valid Rust.	src/web_search_fusion_core.rs	WIKIDATA_ENTITY_ROLE	"wikidata_entity_anchor"
+L27	In the file src/cli_report.rs, rename the constant TRACE_SEPARATOR to TRACE_FIELD_SEPARATOR. Change only that file and keep it valid Rust.	src/cli_report.rs	TRACE_FIELD_SEPARATOR	DEFAULT_SURFACE
+L28	In the file src/client_integrations.rs, rename the constant EMPTY_BACKUP_SENTINEL to EMPTY_CONFIG_BACKUP_SENTINEL. Change only that file and keep it valid Rust.	src/client_integrations.rs	EMPTY_CONFIG_BACKUP_SENTINEL	formal-ai-empty-config-backup-v1
+L29	In the file src/google_trends_catalog.rs, rename the constant QUERY_PLACEHOLDER to TRENDS_QUERY_PLACEHOLDER. Change only that file and keep it valid Rust.	src/google_trends_catalog.rs	TRENDS_QUERY_PLACEHOLDER	"{query}"
+L30	In the file src/entity_resolution.rs, rename the constant CORRECTED_PLACEHOLDER to CORRECTED_TERM_PLACEHOLDER. Change only that file and keep it valid Rust.	src/entity_resolution.rs	CORRECTED_TERM_PLACEHOLDER	"{corrected}"
+L31	In the file src/learning_adoption_ledger.rs, rename the constant UNKNOWN_INTENT to UNKNOWN_INTENT_NAME. Change only that file and keep it valid Rust.	src/learning_adoption_ledger.rs	UNKNOWN_INTENT_NAME	"unknown"
+L32	In the file src/links_format.rs, rename the constant PROBE to NOTATION_PROBE. Change only that file and keep it valid Rust.	src/links_format.rs	NOTATION_PROBE	: &str = "v";
 EOF
 
 python3 - "$OUT/leaves.tsv" "$NODES" <<'PY'
@@ -84,8 +84,8 @@ import sys
 from pathlib import Path
 leaves = {}
 for line in Path(sys.argv[1]).read_text().splitlines():
-    leaf, text, criterion_path, criterion_marker = line.split('\t', 3)
-    leaves[int(leaf[1:])] = (text, criterion_path, criterion_marker)
+    leaf, text, change_path, change_marker, change_guard = line.split('\t', 4)
+    leaves[int(leaf[1:])] = (text, change_path, change_marker, change_guard)
 
 def child(path, branch):
     return path + ("." if path else "") + str(branch)
@@ -102,9 +102,9 @@ def emit(path, depth, out):
     elif depth == 5:
         i = leaf_index(path)
         node_id = path
-        leaf_text, criterion_path, criterion_marker = leaves[i]
+        leaf_text, criterion_path, criterion_marker, criterion_guard = leaves[i]
         text = f'Atomic task L{i:02d}: {leaf_text}'
-        criterion = 'new_leaf_effect'
+        criterion = 'tracked_source_change'
     else:
         node_id = path
         bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))
@@ -117,9 +117,11 @@ def emit(path, depth, out):
     if depth < 5:
         criterion_path = ''
         criterion_marker = ''
+        criterion_guard = ''
     left = child(path, 1) if depth < 5 else ''
     right = child(path, 2) if depth < 5 else ''
-    out.append((node_id, depth, text, criterion, left, right, criterion_path, criterion_marker))
+    out.append((node_id, depth, text, criterion, left, right, criterion_path,
+                criterion_marker, criterion_guard))
     if depth < 5:
         emit(child(path,1), depth+1, out)
         emit(child(path,2), depth+1, out)
@@ -142,12 +144,14 @@ import sys
 from pathlib import Path
 rows=[]
 for line in Path(sys.argv[1]).read_text().splitlines():
-    fields = line.split('\t', 7)
-    if not 6 <= len(fields) <= 8:
-        raise ValueError(f'node row has {len(fields)} fields, expected 6 through 8: {line!r}')
-    fields.extend([''] * (8 - len(fields)))
-    node, depth, text, criterion, left, right, criterion_path, criterion_marker = fields
-    rows.append((node,int(depth),text,criterion,left,right,criterion_path,criterion_marker))
+    fields = line.split('\t', 8)
+    if not 6 <= len(fields) <= 9:
+        raise ValueError(f'node row has {len(fields)} fields, expected 6 through 9: {line!r}')
+    fields.extend([''] * (9 - len(fields)))
+    (node, depth, text, criterion, left, right,
+     criterion_path, criterion_marker, criterion_guard) = fields
+    rows.append((node, int(depth), text, criterion, left, right,
+                 criterion_path, criterion_marker, criterion_guard))
 mode=sys.argv[2]
 filt=sys.argv[3]
 levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
@@ -181,12 +185,12 @@ fi
 [[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
 
 run_one() {
-  local id depth prompt criterion left right criterion_path criterion_marker row work session_dir server_pid port status proof effect config node_number full_prompt effect_contract verifier_status verifier_verdict
+  local id depth prompt criterion left right criterion_path criterion_marker criterion_guard row work session_dir server_pid port status proof effect config node_number full_prompt effect_contract verifier_status verifier_verdict
   # Tab is whitespace to Bash, so IFS would collapse the two empty child fields
   # in a leaf row and shift its external criterion into `left`. Translate only
   # for parsing to a non-whitespace separator that preserves empty fields.
   row=${1//$'\t'/$'\x1f'}
-  IFS=$'\x1f' read -r id depth prompt criterion left right criterion_path criterion_marker <<< "$row"
+  IFS=$'\x1f' read -r id depth prompt criterion left right criterion_path criterion_marker criterion_guard <<< "$row"
   session_dir="$OUT/$id"
   work=$(mktemp -d)
   mkdir -p "$session_dir"
@@ -269,8 +273,8 @@ PY
   config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$port")"
 
   if [[ "$depth" -eq 5 ]]; then
-    printf -v effect_contract 'Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout.' \
-      "$id" "$id" "$depth"
+    printf -v effect_contract 'Apply the change to the tracked file `%s` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text %s.' \
+      "$criterion_path" "$id" "$id" "$depth" "$criterion_marker"
   else
     printf -v effect_contract 'Read the committed child effects in `.agent-ladder/verified-children/node-%s.lino` and `.agent-ladder/verified-children/node-%s.lino`. Inspect both files before writing anything. Extract each raw child value with `sed -n "s/^result=//p" FILE` or an equivalent command that returns undecorated file bytes. Treat only the single line beginning exactly `result=` as that child result. Do not copy tool-rendered line numbers, `<file>` wrappers, or any other fields. Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, `left_result=` followed by the exact left child `result=` value, `right_result=` followed by the exact right child `result=` value, and `result=` followed by at least four words that include both exact child result values and state how they compose.' \
       "$left" "$right" "$id" "$id" "$depth" "$left" "$right"
@@ -315,7 +319,7 @@ PY
 
   effect="$work/agent-ladder-effects/node-${id}.lino"
   set +e
-  verifier_verdict=$("$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker")
+  verifier_verdict=$("$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard")
   verifier_status=$?
   set -e
   if [[ "$verifier_status" -ne 0 ]]; then
@@ -349,6 +353,12 @@ The canonical decomposition is a complete binary tree: depth 0 has 1 node,
 depth 1 has 2, depth 2 has 4, depth 3 has 8, depth 4 has 16, and depth 5 has 32.
 Each selected node runs in a fresh temporary repository copy against the real
 \`@link-assistant/agent\` CLI and a local \`formal-ai serve --agent-mode\`.
+Every leaf is *change-shaped*: its task is a member insertion, a literal
+replacement or an identifier rename in a tracked source, and PASS requires the
+worktree to show exactly that one file modified, with the marker absent from
+\`HEAD\`, the anchor still present, and the file still parsing. An effect file
+that merely describes the change never passes.
+
 PASS requires the external harness to accept a non-hollow proof and a newly
 added \`agent-ladder-effects/node-<id>.lino\` Git effect. Composite effects must
 consume the immutable, committed effects that both children passed earlier in

@@ -74,6 +74,7 @@ mod issue_1066_ladder_capability;
 mod issue_1066_self_development;
 mod issue_1069;
 mod issue_1069_identifier_rename;
+mod issue_1069_ladder_change_tasks;
 mod issue_1069_structural_edit;
 mod issue_1963;
 mod issue_337;
