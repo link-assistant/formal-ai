@@ -149,7 +149,8 @@
       "@kreuzberg/html-to-markdown-node": "3.5.5",
       "browser-commander": "0.16.1",
       "puppeteer": "^25.9.0",
-      "puppeteer-core": "^25.9.0"
+      "puppeteer-core": "^25.9.0",
+      "qs": "^6.16.0"
     }
   },
   "allowScripts": {
