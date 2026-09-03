@@ -2,69 +2,69 @@ self_ast_census
   target src/agentic_coding/structured_edit.rs
   language rust
   fidelity full_ast
-  byte_len 18186
-  line_count 499
-  content_id source_module_beed3d1224fa54b2
+  byte_len 19065
+  line_count 514
+  content_id source_module_fdd29733b331a346
   symbol_count 24
   symbols
     const MAX_MEMBER_LENGTH 31 31
     struct MemberInsertion 34 43
     function plan_structured_edit_step 45 93
-    function member_insertion 95 155
-    struct Region 159 162
-    struct Literal 166 171
-    function insert_members 173 207
-    function anchor_by_members 213 231
-    function anchor_by_name 237 263
-    function better 266 276
-    function direct_members 278 283
-    function occurrences 286 306
-    function statement_end 310 325
-    function scan 332 388
-    function closing_delimiter 390 396
-    function string_literal_end 398 410
-    function char_literal_end 414 424
-    function without_spans 426 439
-    function is_member_literal 441 446
-    function looks_like_a_declared_name 451 458
-    function source_path 462 473
-    function is_workspace_path 475 487
-    function valid_identifier 489 495
-    function read_arguments 497 499
+    function member_insertion 95 170
+    struct Region 174 177
+    struct Literal 181 186
+    function insert_members 188 222
+    function anchor_by_members 228 246
+    function anchor_by_name 252 278
+    function better 281 291
+    function direct_members 293 298
+    function occurrences 301 321
+    function statement_end 325 340
+    function scan 347 403
+    function closing_delimiter 405 411
+    function string_literal_end 413 425
+    function char_literal_end 429 439
+    function without_spans 441 454
+    function is_member_literal 456 461
+    function looks_like_a_declared_name 466 473
+    function source_path 477 488
+    function is_workspace_path 490 502
+    function valid_identifier 504 510
+    function read_arguments 512 514
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14593
-    named_node_count 2922
+    total_link_count 15036
+    named_node_count 3008
     distinct_node_kinds 80
     node_kinds
-      arguments 238
+      arguments 247
       array_expression 2
       array_type 12
-      assignment_expression 9
+      assignment_expression 11
       attribute 3
       attribute_item 3
-      binary_expression 86
-      block 64
+      binary_expression 88
+      block 66
       boolean_literal 1
-      call_expression 238
+      call_expression 247
       captured_pattern 2
       char_literal 57
-      closure_expression 37
-      closure_parameters 37
+      closure_expression 38
+      closure_parameters 38
       compound_assignment_expr 8
       const_item 1
       continue_expression 4
       crate 3
       doc_comment 49
-      else_clause 1
-      expression_statement 82
+      else_clause 2
+      expression_statement 85
       field_declaration 9
       field_declaration_list 3
-      field_expression 204
-      field_identifier 218
+      field_expression 215
+      field_identifier 229
       field_initializer 5
       field_initializer_list 3
       for_expression 10
@@ -72,21 +72,21 @@ self_ast_census
       function_modifiers 3
       generic_function 3
       generic_type 23
-      identifier 672
-      if_expression 18
+      identifier 691
+      if_expression 20
       index_expression 12
       inner_doc_comment_marker 13
       integer_literal 43
       let_chain 1
       let_condition 4
-      let_declaration 58
-      line_comment 62
+      let_declaration 61
+      line_comment 67
       macro_invocation 4
       match_arm 21
       match_block 5
       match_expression 5
       match_pattern 21
-      mutable_specifier 21
+      mutable_specifier 23
       or_pattern 8
       outer_doc_comment_marker 36
       parameter 41
@@ -94,7 +94,7 @@ self_ast_census
       parenthesized_expression 6
       primitive_type 57
       range_expression 15
-      reference_expression 32
+      reference_expression 34
       reference_pattern 1
       reference_type 30
       return_expression 14
@@ -115,7 +115,7 @@ self_ast_census
       tuple_type 7
       type_arguments 26
       type_identifier 62
-      unary_expression 27
+      unary_expression 28
       use_declaration 8
       use_list 3
       visibility_modifier 1

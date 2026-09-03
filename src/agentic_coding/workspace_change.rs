@@ -20,13 +20,18 @@ use super::planner::{
 use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
-use crate::workspace_change_learning::execute_workspace_rewrite;
+use crate::workspace_change_learning::{
+    RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word, word_scoped_matches,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct GroundedRewrite {
     target: String,
     pattern: String,
     replacement: String,
+    /// How the pattern is allowed to match. Renaming an identifier is a
+    /// word-scoped edit; replacing a quoted literal is a substring one.
+    scope: RewriteScope,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -66,8 +71,12 @@ fn plan_rewrite_step(
         return Some(plan_one(tool, read_arguments(&rewrite.target)));
     };
     let source = source_from_read_result(&read);
-    let Ok(execution) = execute_workspace_rewrite(&source, &rewrite.pattern, &rewrite.replacement)
-    else {
+    let Ok(execution) = execute_scoped_workspace_rewrite(
+        &source,
+        &rewrite.pattern,
+        &rewrite.replacement,
+        rewrite.scope,
+    ) else {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
@@ -76,7 +85,10 @@ fn plan_rewrite_step(
     };
     let updated = execution.output;
 
-    let occurrences = source.match_indices(&rewrite.pattern).count();
+    let occurrences = match rewrite.scope {
+        RewriteScope::Substring => source.match_indices(&rewrite.pattern).count(),
+        RewriteScope::Word => word_scoped_matches(&source, &rewrite.pattern).len(),
+    };
     if occurrences == 1 {
         if let Some(tool) = tool_for(tool_names, Capability::Edit) {
             if result_for_edit(
@@ -254,29 +266,38 @@ fn plan_composite_step(
 
 fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
     let (target, old_clause, new_clause) = compose_edit_request(task)?;
+    let renaming = seed::lexicon().mentions_role(
+        seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+        &task.to_lowercase(),
+    );
     let quoted = quoted_segments(task);
     let operands = match quoted.as_slice() {
         [old, new] => Some((old.clone(), new.clone())),
-        _ if seed::lexicon().mentions_role(
-            seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
-            &task.to_lowercase(),
-        ) =>
-        {
-            Some((
-                identifier_tokens(&old_clause).next_back()?.to_owned(),
-                identifier_tokens(&new_clause).next()?.to_owned(),
-            ))
-        }
+        _ if renaming => Some((
+            identifier_tokens(&old_clause).next_back()?.to_owned(),
+            identifier_tokens(&new_clause).next()?.to_owned(),
+        )),
         _ => None,
     }?;
     let (old, new) = operands;
-    if old.is_empty() || old == new || new.contains(&old) {
+    // A rename names a *word*, so the edit is word-scoped whichever way the
+    // request spelled its operands. Without that scope the most ordinary rename
+    // there is -- giving a name a prefix or a suffix -- has to be refused, since
+    // an unanchored substring rewrite that reintroduces its own pattern never
+    // terminates.
+    let scope = if renaming && is_identifier_word(&old) && is_identifier_word(&new) {
+        RewriteScope::Word
+    } else {
+        RewriteScope::Substring
+    };
+    if old.is_empty() || old == new || (scope == RewriteScope::Substring && new.contains(&old)) {
         return None;
     }
     Some(GroundedRewrite {
         target,
         pattern: old,
         replacement: new,
+        scope,
     })
 }
 
@@ -350,9 +371,15 @@ fn repeated_identifier_rewrite_command(rewrite: &GroundedRewrite) -> Option<Stri
     if !shell_safe_identifier(&rewrite.pattern) || !shell_safe_identifier(&rewrite.replacement) {
         return None;
     }
+    // The in-memory execution and the command the client runs have to agree on
+    // what a match is, so a word-scoped rewrite asks `sed` for whole words too.
+    let pattern = match rewrite.scope {
+        RewriteScope::Substring => rewrite.pattern.clone(),
+        RewriteScope::Word => format!("\\b{}\\b", rewrite.pattern),
+    };
     Some(format!(
         "sed -i 's/{}/{}/g' -- {}",
-        rewrite.pattern, rewrite.replacement, rewrite.target,
+        pattern, rewrite.replacement, rewrite.target,
     ))
 }
 

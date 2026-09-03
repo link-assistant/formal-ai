@@ -176,3 +176,45 @@ fn issue_1069_insertion_is_idempotent() {
         "a value that is already present leaves the bytes unchanged"
     );
 }
+
+/// The same request with the target path in prose markup. The probe sent this
+/// shape on its second run and the planner listed a directory instead: every
+/// delimited slot was stripped from the prose before the path was looked for,
+/// so a backticked path was invisible to the target finder while a bare one was
+/// not. Which delimiter a request wraps a path in is not a different task, so
+/// the slot is classified by what it *contains* -- a workspace path, a name, or
+/// a member literal -- rather than by the delimiter alone.
+#[test]
+fn issue_1069_reads_the_target_path_out_of_prose_markup() {
+    let updated = written_source(
+        "In this repository, edit the existing tracked file `src/orchestration/workspace.rs`. \
+         It has a private function `ignored` whose `matches!` arm lists the directory names \
+         that are skipped when the workspace is walked: \".git\", \"target\", \".formal-ai\" \
+         and \".formal-ai-orchestration\". Add \"node_modules\" to that same list so \
+         dependency directories are skipped too.",
+        "src/orchestration/workspace.rs",
+        IGNORED_MATCHES,
+    );
+    assert!(
+        updated.contains(
+            r#"Some(".git" | "target" | ".formal-ai" | ".formal-ai-orchestration" | "node_modules")"#
+        ),
+        "the alternation is extended exactly as with a bare path: {updated}"
+    );
+}
+
+/// A quoted path is a member literal first: the target still comes from the
+/// prose, so quoting a file name into a list cannot hijack the target.
+#[test]
+fn issue_1069_a_quoted_path_stays_a_member_literal() {
+    let source = "const IGNORE_FILES: &[&str] = &[\"Cargo.lock\"];\n";
+    let updated = written_source(
+        "Edit scripts/metric.rs: add \"bun.lock\" to the IGNORE_FILES list.",
+        "scripts/metric.rs",
+        source,
+    );
+    assert!(
+        updated.contains("[\"Cargo.lock\", \"bun.lock\"]"),
+        "the quoted path is inserted as a member: {updated}"
+    );
+}

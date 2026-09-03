@@ -111,20 +111,31 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
         return None;
     }
 
-    // A backtick slot is prose markup for an identifier; a quotation slot is a
-    // literal. Splitting on the delimiter keeps `matches!` out of the values
-    // and keeps a quoted `"target"` out of the names.
+    // A backtick slot is prose markup; a quotation slot is a literal. The
+    // delimiter says what the slot is *for*, and the slot's own text says what
+    // it *is*: a workspace path, a declared name, or a member value. Reading
+    // both keeps `matches!` out of the values and a quoted `"target"` out of
+    // the names, while letting a path be written either way -- which delimiter
+    // a request wraps its target in is a spelling, not a different task.
     let mut values = Vec::new();
     let mut named = Vec::new();
+    let mut marked_up_target = None;
+    let mut literal_target = None;
     let mut literal_spans = Vec::new();
     for segment in quoted_segment_spans(task) {
         let marked_up = task[segment.start..].starts_with('`');
+        let path = is_workspace_path(&segment.text).then(|| segment.text.clone());
         if marked_up {
-            if valid_identifier(&segment.text) {
+            if path.is_some() && marked_up_target.is_none() {
+                marked_up_target = path;
+            } else if valid_identifier(&segment.text) && !named.contains(&segment.text) {
                 named.push(segment.text.clone());
             }
         } else if is_member_literal(&segment.text) {
             values.push(segment.text.clone());
+            if literal_target.is_none() {
+                literal_target = path;
+            }
         }
         literal_spans.push((segment.start, segment.end));
     }
@@ -134,9 +145,13 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
 
     // The path and any bare identifier hints are read from the prose that is
     // left once the delimited slots are removed, so a quoted value can never be
-    // mistaken for either.
+    // mistaken for either. A slot only supplies the target when the prose has
+    // no path of its own, and prose markup outranks a quoted literal because a
+    // quoted path is a member value first.
     let prose = without_spans(task, &literal_spans);
-    let target = source_path(&prose)?;
+    let target = source_path(&prose)
+        .or(marked_up_target)
+        .or(literal_target)?;
     for token in prose
         .replacen(&target, " ", 1)
         .split(|character: char| !character.is_ascii_alphanumeric() && character != '_')

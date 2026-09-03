@@ -100,30 +100,155 @@ pub struct WorkspaceRewriteExecution {
     source_fingerprint: String,
 }
 
-/// Compile and execute one safe substitution against caller-owned source bytes.
+/// How a compiled pattern is allowed to match the source bytes.
+///
+/// The distinction is not cosmetic. A substring rewrite of `OLD` into `NEW_OLD`
+/// never terminates, because every application puts the pattern back; that is
+/// why the substring form has to refuse an operand pair whose replacement
+/// contains its pattern. Renaming an *identifier*, though, is the one edit
+/// programmers make most often where exactly that containment is the point:
+/// `SESSION_TRAILER` becomes `AGENT_SESSION_TRAILER` by prefixing it. Under
+/// word scope the inner occurrence is not a match -- its left neighbour is `_`,
+/// an identifier character -- so the rewrite reaches a fixed point in one pass
+/// and the refusal is unnecessary (#1069).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RewriteScope {
+    /// Every byte-sequence occurrence of the pattern is a match.
+    Substring,
+    /// Only occurrences whose neighbouring characters are not identifier
+    /// characters are matches, so a longer name that merely contains the
+    /// pattern is left alone -- and may be produced.
+    Word,
+}
+
+/// Frame character for word-scoped rewriting.
+///
+/// A normal algorithm has no anchors: a rule is a plain substring pair. Word
+/// scope is therefore expressed the way normal algorithms have always expressed
+/// context sensitivity -- by carrying the context *into* the pattern. Framing
+/// the source in a character it cannot contain gives the first and last
+/// positions a neighbour like every other position, so one rule shape covers
+/// matches at the edges too.
+const REWRITE_FRAME: char = '\u{0}';
+
+/// Byte offsets of the word-scoped occurrences of `pattern` in `source`.
+///
+/// A match is word-scoped when neither neighbouring character is an identifier
+/// character, which is the same rule an editor's "whole word" search uses.
+#[must_use]
+pub fn word_scoped_matches(source: &str, pattern: &str) -> Vec<usize> {
+    if pattern.is_empty() {
+        return Vec::new();
+    }
+    source
+        .match_indices(pattern)
+        .filter(|(at, _)| {
+            let before = source[..*at].chars().next_back();
+            let after = source[at + pattern.len()..].chars().next();
+            !before.is_some_and(is_identifier_character)
+                && !after.is_some_and(is_identifier_character)
+        })
+        .map(|(at, _)| at)
+        .collect()
+}
+
+fn is_identifier_character(character: char) -> bool {
+    character.is_alphanumeric() || character == '_'
+}
+
+/// Whether `text` is a single identifier-shaped word.
+#[must_use]
+pub fn is_identifier_word(text: &str) -> bool {
+    !text.is_empty() && text.chars().all(is_identifier_character)
+}
+
+/// The context-carrying rules that rename `pattern` to `replacement` in
+/// `framed`, one rule per distinct pair of neighbouring characters observed.
+///
+/// Each rule re-emits the neighbours it matched, so two occurrences that share
+/// a separator both still find their context after the first is rewritten.
+fn word_scoped_rules(framed: &str, pattern: &str, replacement: &str) -> Vec<RewriteRule> {
+    let mut rules: Vec<RewriteRule> = Vec::new();
+    for at in word_scoped_matches(framed, pattern) {
+        let before = framed[..at].chars().next_back().unwrap_or(REWRITE_FRAME);
+        let after = framed[at + pattern.len()..]
+            .chars()
+            .next()
+            .unwrap_or(REWRITE_FRAME);
+        let rule = RewriteRule::new(
+            format!("{before}{pattern}{after}"),
+            format!("{before}{replacement}{after}"),
+        );
+        if !rules.contains(&rule) {
+            rules.push(rule);
+        }
+    }
+    rules
+}
+
+/// Compile and execute one safe substring substitution against caller-owned
+/// source bytes.
 pub fn execute_workspace_rewrite(
     source: &str,
     pattern: &str,
     replacement: &str,
 ) -> Result<WorkspaceRewriteExecution, WorkspaceChangeLearningError> {
-    if pattern.is_empty() || pattern == replacement || replacement.contains(pattern) {
+    execute_scoped_workspace_rewrite(source, pattern, replacement, RewriteScope::Substring)
+}
+
+/// Compile and execute one safe substitution under an explicit match scope.
+pub fn execute_scoped_workspace_rewrite(
+    source: &str,
+    pattern: &str,
+    replacement: &str,
+    scope: RewriteScope,
+) -> Result<WorkspaceRewriteExecution, WorkspaceChangeLearningError> {
+    if pattern.is_empty() || pattern == replacement {
         return Err(error("workspace_rewrite_operands_unsafe"));
     }
-    let outcome = RewriteProgram::new(
-        vec![RewriteRule::new(pattern, replacement)],
-        MAX_REWRITE_STEPS,
-    )
-    .execute(source);
+    let (rules, subject) = match scope {
+        RewriteScope::Substring => {
+            if replacement.contains(pattern) {
+                return Err(error("workspace_rewrite_operands_unsafe"));
+            }
+            (
+                vec![RewriteRule::new(pattern, replacement)],
+                source.to_owned(),
+            )
+        }
+        RewriteScope::Word => {
+            // Both operands being single words is what makes the run finite: a
+            // one-word replacement cannot contain the pattern as a whole word
+            // unless the two are equal, which is already refused above.
+            if !is_identifier_word(pattern) || !is_identifier_word(replacement) {
+                return Err(error("workspace_rewrite_operands_unsafe"));
+            }
+            if source.contains(REWRITE_FRAME) {
+                return Err(error("workspace_rewrite_frame_conflict"));
+            }
+            let framed = format!("{REWRITE_FRAME}{source}{REWRITE_FRAME}");
+            let rules = word_scoped_rules(&framed, pattern, replacement);
+            (rules, framed)
+        }
+    };
+    if rules.is_empty() {
+        return Err(error("workspace_rewrite_no_match"));
+    }
+    let outcome = RewriteProgram::new(rules, MAX_REWRITE_STEPS).execute(&subject);
     if outcome.halt == RewriteHalt::StepLimit {
         return Err(error("workspace_rewrite_step_limit"));
     }
-    if outcome.trace.is_empty() || outcome.output == source {
+    let output = match scope {
+        RewriteScope::Substring => outcome.output,
+        RewriteScope::Word => outcome.output.trim_matches(REWRITE_FRAME).to_owned(),
+    };
+    if outcome.trace.is_empty() || output == source {
         return Err(error("workspace_rewrite_no_match"));
     }
     Ok(WorkspaceRewriteExecution {
         pattern: pattern.to_owned(),
         replacement: replacement.to_owned(),
-        output: outcome.output,
+        output,
         steps: outcome.trace.len(),
         source_fingerprint: stable_id("workspace_rewrite_source", source),
     })
