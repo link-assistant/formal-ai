@@ -249,6 +249,11 @@ meanings
     lexeme en
       surface
         text "listing"
+  lists
+    defined-by word_surface
+    lexeme en
+      surface
+        text "lists"
   local_search_scope_listing
     defined-by intent
     lexeme en
@@ -1034,6 +1039,11 @@ meanings
     lexeme en
       surface
         text "uncomment lines"
+  vector
+    defined-by word_surface
+    lexeme en
+      surface
+        text "vector"
   verbose
     defined-by concept
     lexeme en

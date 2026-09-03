@@ -350,9 +350,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // point of the floor: new agent capability arrives as described data.
     // Issue #1069 first added 29 complete workspace-search records, moving the
     // floor from 45 to 74. Its verified ladder then supplied 18 leaf-first
-    // decomposition and proof facts, moving the floor from 74 to 92. None is
-    // allowed to become a metadata gap.
-    assert_eq!(coding_records, 92, "coding-path regression floor");
+    // decomposition and proof facts, moving the floor from 74 to 92. Its
+    // change-shaped delegation work added the three member-list kinds --
+    // `coding_member_list_sequence`, `coding_member_list_set` and
+    // `coding_member_list_group` -- that let a request name the collection it
+    // edits in words the file never has to repeat, moving the floor from 92 to
+    // 95. None is allowed to become a metadata gap.
+    assert_eq!(coding_records, 95, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -422,6 +426,11 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // above. The exact-composition, failed multi-read and link-publish response
     // seeds then add 18 generated records while displacing the three obsolete
     // render-surface tokens, for a net 15 more gaps. They are closure data, not
-    // missing metadata on the coding path.
-    assert_eq!(expected_gaps.len(), 3_910);
+    // missing metadata on the coding path. Six more arrive with the member-list
+    // kinds: `set`, `collection`, `group`, `lists`, `sequence` and
+    // `alternation` are the English surfaces that let a request name the
+    // collection it edits, and the closure expands each into a generated
+    // record. Vocabulary for a new capability entering the closure is the same
+    // shape as every addition above it.
+    assert_eq!(expected_gaps.len(), 3_916);
 }

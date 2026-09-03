@@ -44,6 +44,11 @@ meanings
     lexeme en
       surface
         text "coding source binary operation test"
+  collection
+    defined-by word_surface
+    lexeme en
+      surface
+        text "collection"
   concept_lookup_in_context_no_alias
     defined-by intent
     lexeme en
@@ -94,6 +99,11 @@ meanings
     lexeme en
       surface
         text "general plan repository evidence"
+  group
+    defined-by word_surface
+    lexeme en
+      surface
+        text "group"
   headlines
     defined-by concept
     lexeme en

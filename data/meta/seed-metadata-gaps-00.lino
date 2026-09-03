@@ -71,6 +71,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "response_tool_result_empty_generic_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a058dc138b578820
+    source "data/seed/closure-generated-01.lino"
+    record "set"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f6b2b7a1f0458a30
     source "data/seed/closure-generated-01.lino"
     record "takes"

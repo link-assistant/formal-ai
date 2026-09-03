@@ -231,6 +231,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "response_who_is_unknown_entity_suggestion_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_bb128ac2794f8433
+    source "data/seed/closure-generated-05.lino"
+    record "vector"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_120cf5a55f44b5a3
     source "data/seed/closure-generated-06.lino"
     record "cap"

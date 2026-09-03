@@ -239,6 +239,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "imprime"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_76844a6cd9868add
+    source "data/seed/closure-generated-05.lino"
+    record "lists"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1e7ff2293fbcb34d
     source "data/seed/closure-generated-05.lino"
     record "orders"
@@ -290,6 +294,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_81a65583871ba0bd
     source "data/seed/closure-generated-06.lino"
     record "response_thinking_step_formalize_resolved_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_cbd3c7191a99170d
+    source "data/seed/closure-generated-07.lino"
+    record "group"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d0e825c61aeaf84d
     source "data/seed/closure-generated-07.lino"

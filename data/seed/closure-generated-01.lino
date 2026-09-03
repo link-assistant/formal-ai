@@ -974,6 +974,11 @@ meanings
     lexeme en
       surface
         text "send"
+  set
+    defined-by word_surface
+    lexeme en
+      surface
+        text "set"
   submit_form
     defined-by task
     lexeme en

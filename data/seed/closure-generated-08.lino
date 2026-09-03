@@ -1,4 +1,9 @@
 meanings
+  alternation
+    defined-by word_surface
+    lexeme en
+      surface
+        text "alternation"
   baseline
     defined-by concept
     lexeme en

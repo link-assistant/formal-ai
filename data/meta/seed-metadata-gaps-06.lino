@@ -343,6 +343,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "response_write_program_request_unspecified_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_463f9840d8737616
+    source "data/seed/closure-generated-08.lino"
+    record "alternation"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b963d4d109789fb6
     source "data/seed/closure-generated-08.lino"
     record "coding_workspace_effect_observed"

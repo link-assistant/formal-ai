@@ -263,6 +263,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "world_state_remaining"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d6108b19f6c87c0a
+    source "data/seed/closure-generated-07.lino"
+    record "collection"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_34dd9534ac51987a
     source "data/seed/closure-generated-07.lino"
     record "response_capabilities_en"
