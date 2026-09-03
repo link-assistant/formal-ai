@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/roles/program.rs
   language rust
   fidelity signature
-  byte_len 20325
-  line_count 310
-  content_id source_module_39bdef35f450e1e5
-  symbol_count 67
+  byte_len 20874
+  line_count 319
+  content_id source_module_32f3e646d3e6113c
+  symbol_count 68
   symbols
     const ROLE_PROGRAM_ARTIFACT 10 10
     const ROLE_PROGRAM_MODIFICATION 13 13
@@ -69,8 +69,9 @@ self_ast_census
     const ROLE_CODING_RELATIONSHIP_SUBJECT_KIND 269 269
     const ROLE_CODING_SERIALIZATION_ACTION 272 272
     const ROLE_CODING_SEARCH_SUBJECT_KIND 275 275
-    const ROLE_CODING_SEARCH_FACT_QUERY 283 283
-    const ROLE_CODING_DOCUMENTATION_FACT_QUERY 287 287
-    const ROLE_CODING_SEARCH_LITERAL_QUERY 290 290
-    const ROLE_WORKSPACE_INSPECTION_ACTION 299 299
-    const ROLE_IDENTIFIER_RESERVED_WORD 310 310
+    const ROLE_CODING_MEMBER_LIST_KIND 284 284
+    const ROLE_CODING_SEARCH_FACT_QUERY 292 292
+    const ROLE_CODING_DOCUMENTATION_FACT_QUERY 296 296
+    const ROLE_CODING_SEARCH_LITERAL_QUERY 299 299
+    const ROLE_WORKSPACE_INSPECTION_ACTION 308 308
+    const ROLE_IDENTIFIER_RESERVED_WORD 319 319
