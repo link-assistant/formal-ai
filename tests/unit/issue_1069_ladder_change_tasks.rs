@@ -9,11 +9,20 @@
 //!
 //! A full ladder run is over half an hour of real Agent CLI turns, which is far
 //! too slow a feedback loop for the question "can the planner reach this edit at
-//! all". These tests drive the same 32 task sentences through `plan_chat_step`
-//! against the same real repository bytes, answering the read step exactly as a
-//! client's read tool would. A leaf that the planner cannot turn into an
-//! effecting step fails here, in a second, instead of failing halfway through a
-//! long run.
+//! all". These tests drive the same 32 leaves through `plan_chat_step` against
+//! the same real repository bytes, answering the read step exactly as a client's
+//! read tool would. A leaf that the planner cannot turn into an effecting step
+//! fails here, in a second, instead of failing halfway through a long run.
+//!
+//! What they drive is the *whole node prompt*, not the task sentence. An earlier
+//! version of this file sent only the sentence, reported all 32 leaves green,
+//! and the very first real run of node `1.1.2.2.1` then read the node id as if
+//! it were a file: `Error: File not found: /tmp/tmp.QBPcFTv2tg/1.1.2.2.1`. The
+//! sentence never contains a node id, so no sentence-shaped test could have
+//! caught that. A fast test is only worth having when it is faithful, so the
+//! prompt is assembled here exactly as `run.sh` assembles it, and
+//! `issue_1069_the_node_prompt_still_reads_as_the_ladder_writes_it` fails if the
+//! wording drifts apart.
 
 use std::fs;
 use std::path::PathBuf;
@@ -77,6 +86,58 @@ fn leaves() -> Vec<Leaf> {
     leaves
 }
 
+/// The five fragments `run.sh` builds a depth-5 node prompt out of, in the order
+/// it concatenates them. Held here as literals so the assembly below is
+/// readable, and checked against the script itself by
+/// `issue_1069_the_node_prompt_still_reads_as_the_ladder_writes_it`.
+const LEAF_TASK_PREFIX: &str = "Atomic task L";
+const LEAF_CRITERION: &str = "tracked_source_change";
+const EFFECT_CONTRACT: &str = "Apply the change to the tracked file `";
+const NODE_PREAMBLE: &str = "This is recursive binary-tree node ";
+const NODE_EPILOGUE: &str = "The harness rejects proof without the separate Git effect.";
+
+/// The node id `run.sh` gives leaf number `index` (1-based).
+///
+/// `run.sh` walks the tree from the root and maps a path back to a leaf with
+/// `bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))`, so the
+/// inverse is the 5-bit big-endian spelling of `index - 1` with `0` reading as
+/// branch 1 and `1` as branch 2.
+fn node_id(index: usize) -> String {
+    (0..5)
+        .map(|bit| {
+            if (index - 1) >> (4 - bit) & 1 == 0 {
+                "1"
+            } else {
+                "2"
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(".")
+}
+
+/// The prompt the Agent CLI actually receives for a leaf, assembled the way
+/// `run.sh` assembles it.
+fn node_prompt(leaf: &Leaf, index: usize) -> String {
+    let id = node_id(index);
+    let effect_contract = format!(
+        "{EFFECT_CONTRACT}{}` itself -- the file has to end up modified in the Git worktree, and \
+         nothing else may change. Then create `agent-ladder-effects/node-{id}.lino` with these \
+         exact field lines: `node_path={id}`, `node_depth=5`, `node_kind=leaf`, and `result=` \
+         followed by at least four words that state the change you made and that contain the \
+         exact text {}.",
+        leaf.path, leaf.marker,
+    );
+    format!(
+        "{LEAF_TASK_PREFIX}{index:02}: {}\n\n{NODE_PREAMBLE}{id} at depth 5. Solve only this \
+         node's task in this fresh temporary repository. Its harness-evaluated completion \
+         criterion is: {LEAF_CRITERION}. {effect_contract} Leave supporting evidence in \
+         .agent-ladder/node-{id}-proof.md. The first line must be exactly node_path={id} and the \
+         body must state the concrete result. {NODE_EPILOGUE} Use web research when it materially \
+         improves factual accuracy. Do not claim success without evidence.\n",
+        leaf.task,
+    )
+}
+
 fn argument(call: &PlannedToolCall, key: &str) -> Option<String> {
     let arguments: serde_json::Value = serde_json::from_str(&call.arguments).ok()?;
     Some(arguments[key].as_str()?.to_owned())
@@ -108,10 +169,10 @@ enum Effect {
     Commanded(String),
 }
 
-/// Drive the leaf's own task sentence until the planner produces an effect,
+/// Drive the leaf's whole node prompt until the planner produces an effect,
 /// answering every read with the repository's real bytes.
-fn effect_of(leaf: &Leaf, source: &str) -> Result<Effect, String> {
-    let mut messages = vec![ChatMessage::user(&leaf.task)];
+fn effect_of(leaf: &Leaf, prompt: &str, source: &str) -> Result<Effect, String> {
+    let mut messages = vec![ChatMessage::user(prompt)];
     for _ in 0..MAX_STEPS {
         let call = match plan_chat_step(&messages, &TOOLS) {
             Some(AgenticPlan::ToolCalls(mut calls)) if calls.len() == 1 => calls.remove(0),
@@ -159,9 +220,10 @@ fn effect_of(leaf: &Leaf, source: &str) -> Result<Effect, String> {
 #[test]
 fn issue_1069_every_ladder_leaf_reaches_a_real_change() {
     let mut failures = Vec::new();
-    for leaf in leaves() {
+    for (offset, leaf) in leaves().into_iter().enumerate() {
         let source = read(&leaf.path);
-        match effect_of(&leaf, &source) {
+        let prompt = node_prompt(&leaf, offset + 1);
+        match effect_of(&leaf, &prompt, &source) {
             Err(reason) => failures.push(format!("{} ({}): {reason}", leaf.id, leaf.path)),
             Ok(Effect::Wrote(content)) => {
                 if !content.contains(&leaf.marker) {
@@ -241,4 +303,54 @@ fn issue_1069_the_ladder_covers_every_change_family() {
     ] {
         assert!(count >= 8, "{family} is exercised by only {count} leaves");
     }
+}
+
+/// The prompt assembled above is only a faithful stand-in while it still reads
+/// like the one `run.sh` sends. Every fragment it builds from is checked back
+/// against the committed script, so a reworded prompt fails here rather than
+/// silently turning these tests into a test of nothing.
+#[test]
+fn issue_1069_the_node_prompt_still_reads_as_the_ladder_writes_it() {
+    let script = read(LADDER);
+    for fragment in [
+        LEAF_TASK_PREFIX,
+        LEAF_CRITERION,
+        EFFECT_CONTRACT,
+        NODE_PREAMBLE,
+        NODE_EPILOGUE,
+    ] {
+        assert!(
+            script.contains(fragment),
+            "the ladder no longer writes {fragment:?}; re-derive node_prompt from run.sh",
+        );
+    }
+}
+
+/// Issue #1069: a recursive node id is not a file.
+///
+/// The first real Agent CLI run of leaf L07 opened with
+/// `read {"filePath": "/tmp/tmp.QBPcFTv2tg/1.1.2.2.1"}` and never recovered:
+/// having read nothing, the planner then built an edit whose operands were
+/// sentences lifted out of its own prompt, and finally wrote the resulting error
+/// message into `src/engine_responses.rs`. Every one of those steps followed
+/// from resolving the target path to the node id, so this pins the first one.
+#[test]
+fn issue_1069_a_node_id_is_not_the_file_to_read() {
+    let leaves = leaves();
+    let leaf = &leaves[6];
+    assert_eq!(leaf.id, "L07", "L07 is the leaf the first real run failed on");
+    let prompt = node_prompt(leaf, 7);
+    assert!(
+        prompt.contains("1.1.2.2.1"),
+        "L07 is node 1.1.2.2.1; the prompt has to carry the id that caused the failure",
+    );
+    let call = match plan_chat_step(&[ChatMessage::user(&prompt)], &TOOLS) {
+        Some(AgenticPlan::ToolCalls(mut calls)) if calls.len() == 1 => calls.remove(0),
+        other => panic!("expected one tool call, got {other:?}"),
+    };
+    assert_eq!(
+        argument(&call, "path").or_else(|| argument(&call, "filePath")),
+        Some(leaf.path.clone()),
+        "the planner must open the file the task names, not the node id",
+    );
 }

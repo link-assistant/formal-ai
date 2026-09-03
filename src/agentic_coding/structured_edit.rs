@@ -119,15 +119,15 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
     // a request wraps its target in is a spelling, not a different task.
     let mut values = Vec::new();
     let mut named = Vec::new();
-    let mut marked_up_target = None;
+    let mut candidates = Vec::new();
     let mut literal_target = None;
     let mut literal_spans = Vec::new();
     for segment in quoted_segment_spans(task) {
         let marked_up = task[segment.start..].starts_with('`');
         let path = is_workspace_path(&segment.text).then(|| segment.text.clone());
         if marked_up {
-            if path.is_some() && marked_up_target.is_none() {
-                marked_up_target = path;
+            if let Some(path) = path {
+                candidates.push((segment.start, path));
             } else if valid_identifier(&segment.text) && !named.contains(&segment.text) {
                 named.push(segment.text.clone());
             }
@@ -145,12 +145,43 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
 
     // The path and any bare identifier hints are read from the prose that is
     // left once the delimited slots are removed, so a quoted value can never be
-    // mistaken for either. A slot only supplies the target when the prose has
-    // no path of its own, and prose markup outranks a quoted literal because a
-    // quoted path is a member value first.
+    // mistaken for either. A quoted path is not a candidate at all, only a last
+    // resort, because a quoted path is a member value first.
     let prose = without_spans(task, &literal_spans);
-    let target = source_path(&prose)
-        .or(marked_up_target)
+    candidates.extend(bare_source_paths(task, &literal_spans));
+
+    // A request may name several files and change only one of them. The ladder
+    // leaf prompts name three -- the source to edit, an effects record, and a
+    // proof note -- and an earlier rule that read the first *undelimited* path
+    // picked the proof note, because the file to edit was the one the prompt had
+    // bothered to mark up. Preferring markup instead only moves the failure: a
+    // request is free to mark up an incidental file and leave its target bare.
+    //
+    // What separates them is not the delimiter but the shape and the position.
+    // A token carrying a `/` locates a file in the workspace; a bare basename
+    // only mentions one, and a request that means to be acted on says where.
+    // Among equals, the earliest wins, because a request states what it is
+    // acting on before it says what to do afterwards.
+    //
+    // Ranked against labelled data by
+    // `experiments/issue_1069_paths_in_prose/order-survey.py`, which replays
+    // this repository's own commit messages -- change requests written after
+    // the fact -- against the files each commit actually touched. Over the 418
+    // messages that name two or more paths, taking the earliest names a changed
+    // file 68.42% of the time, and preferring a workspace-relative one first
+    // raises that to 84.67%; 29.19% of those messages open with a bare basename
+    // before giving the path (`release.yml`, then
+    // `.github/workflows/release.yml`). Taking the *latest* path is worse than
+    // either at 63.64%. The proxy is loose -- a commit touches many files --
+    // so it is used to rank the rules against each other, not as an accuracy
+    // claim; the exact obligation is pinned instead by
+    // `issue_1069_every_ladder_leaf_reaches_a_real_change`, which requires all
+    // 32 ladder leaves to reach the file their contract names.
+    candidates.sort_by_key(|(offset, path)| (!path.contains('/'), *offset));
+    let target = candidates
+        .into_iter()
+        .next()
+        .map(|(_, path)| path)
         .or(literal_target)?;
     for token in prose
         .replacen(&target, " ", 1)
@@ -489,19 +520,47 @@ fn looks_like_a_declared_name(token: &str) -> bool {
                 && !token.starts_with(|character: char| character.is_ascii_uppercase())))
 }
 
-/// The workspace-relative file the request names, taken from prose that no
-/// longer contains any delimited slot.
-fn source_path(prose: &str) -> Option<String> {
+/// Every undelimited workspace path in `task`, each with its byte offset in
+/// `task`, skipping the delimited slots so a quoted member value is never read
+/// as a path.
+fn bare_source_paths(task: &str, literal_spans: &[(usize, usize)]) -> Vec<(usize, String)> {
+    let mut paths = Vec::new();
+    let mut cursor = 0;
+    for (start, end) in literal_spans
+        .iter()
+        .copied()
+        .chain(std::iter::once((task.len(), task.len())))
+    {
+        if let Some(gap) = task.get(cursor..start) {
+            paths.extend(
+                prose_path_tokens(gap).map(|(offset, path)| (cursor + offset, path)),
+            );
+        }
+        cursor = end.max(cursor);
+    }
+    paths
+}
+
+/// The workspace paths in a run of prose, in order, each with its byte offset.
+fn prose_path_tokens(prose: &str) -> impl Iterator<Item = (usize, String)> + '_ {
     prose
-        .split(|character: char| character.is_whitespace() || character == ',')
-        .map(|token| {
-            token.trim_matches(|character: char| {
-                !character.is_ascii_alphanumeric() && !matches!(character, '_' | '-' | '.' | '/')
-            })
+        .split_inclusive(|character: char| character.is_whitespace() || character == ',')
+        .scan(0_usize, |cursor, chunk| {
+            let start = *cursor;
+            *cursor += chunk.len();
+            Some((start, chunk))
         })
-        .map(|token| token.trim_end_matches('.'))
-        .find(|token| is_workspace_path(token))
-        .map(str::to_owned)
+        .filter_map(|(start, chunk)| {
+            let trimmed = chunk.trim_matches(|character: char| {
+                !character.is_ascii_alphanumeric() && !matches!(character, '_' | '-' | '.' | '/')
+            });
+            let token = trimmed.trim_end_matches('.');
+            if !is_workspace_path(token) {
+                return None;
+            }
+            let offset = start + (token.as_ptr() as usize - chunk.as_ptr() as usize);
+            Some((offset, token.to_owned()))
+        })
 }
 
 fn is_workspace_path(token: &str) -> bool {
@@ -513,6 +572,22 @@ fn is_workspace_path(token: &str) -> bool {
         && !token.split('/').any(|component| component == "..")
         && (1..=8).contains(&extension.len())
         && extension.chars().all(|character| character.is_ascii_alphanumeric())
+        // A dotted run of digits is a number, not a file. Without this the
+        // recursive ladder's own node id `1.1.2.2.1` reads as a path, and a
+        // leaf prompt that names both `src/engine_responses.rs` and its node
+        // sends the planner to open the node: the first real Agent CLI run of
+        // that leaf opened with `File not found: .../1.1.2.2.1`, then, having
+        // observed nothing, built an edit out of sentences from its own prompt.
+        //
+        // Measured rather than guessed, by
+        // `experiments/issue_1069_dotted_tokens/survey.py`: across 15 782
+        // tracked files and 67 distinct extensions, **no** tracked file has an
+        // all-digit extension, while 12.77% of the dotted tokens this predicate
+        // accepts in committed Markdown end in one -- 1 455 distinct spellings,
+        // every one of them an IP address, a licence identifier, a version or a
+        // section number (`127.0.0.1`, `Apache-2.0`, `0.1.0-beta.1`, `v1.22.0`),
+        // and not one of them the name of a file this repository tracks.
+        && !extension.chars().all(|character| character.is_ascii_digit())
         && token.chars().all(|character| {
             character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/')
         })
