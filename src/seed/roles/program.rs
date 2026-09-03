@@ -273,6 +273,15 @@ pub const ROLE_CODING_SERIALIZATION_ACTION: &str = "coding_serialization_action"
 /// Semantic role: a code-kind noun adjacent to the literal subject of a
 /// repository search.
 pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
+/// Semantic role: a noun that says the subject of a coding request is a list
+/// of members rather than a single value.
+///
+/// *Array*, *list*, *set*, *group*, *tuple*, *alternation* and their
+/// multilingual equivalents. The noun says only that a member list is involved;
+/// it deliberately says nothing about which delimiters enclose it or which
+/// separator joins it, because the structural-edit route reads both out of the
+/// target file's own bytes (issue #1069).
+pub const ROLE_CODING_MEMBER_LIST_KIND: &str = "coding_member_list_kind";
 /// Semantic role: a natural-language source fact whose surface carries the
 /// canonical, narrow repository-search expression as an action.
 ///

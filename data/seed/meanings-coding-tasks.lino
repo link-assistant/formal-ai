@@ -284,6 +284,7 @@ meanings
   coding_search_array
     defined-by code
     role coding_search_subject_kind
+    role coding_member_list_kind
     precondition "a coding request contains this concept surface"
     effect "the search-subject slot is bound to array"
     unit "not applicable"
@@ -300,6 +301,89 @@ meanings
     lexeme zh
       surface
         text 数组
+  coding_member_list_sequence
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an ordered member list"
+    unit "not applicable"
+    example "list"
+    lexeme en
+      surface
+        text list
+      surface
+        text lists
+      surface
+        text sequence
+      surface
+        text vector
+    lexeme ru
+      surface
+        text список
+      surface
+        text списке
+      surface
+        text перечень
+    lexeme hi
+      surface
+        text सूची
+    lexeme zh
+      surface
+        text 列表
+  coding_member_list_set
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an unordered member list"
+    unit "not applicable"
+    example "set"
+    lexeme en
+      surface
+        text set
+      surface
+        text collection
+    lexeme ru
+      surface
+        text множество
+      surface
+        text коллекция
+    lexeme hi
+      surface
+        text समुच्चय
+      surface
+        text संग्रह
+    lexeme zh
+      surface
+        text 集合
+  coding_member_list_group
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to a delimited group of members"
+    unit "not applicable"
+    example "group"
+    lexeme en
+      surface
+        text group
+      surface
+        text tuple
+      surface
+        text alternation
+    lexeme ru
+      surface
+        text группа
+      surface
+        text группе
+      surface
+        text кортеж
+    lexeme hi
+      surface
+        text समूह
+      surface
+        text टपल
+    lexeme zh
+      surface
+        text 元组
   coding_search_struct
     defined-by code
     role coding_search_subject_kind
