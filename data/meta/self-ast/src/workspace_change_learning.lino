@@ -2,9 +2,9 @@ self_ast_census
   target src/workspace_change_learning.rs
   language rust
   fidelity signature
-  byte_len 23310
-  line_count 647
-  content_id source_module_46bcd3c0eb5bc01a
+  byte_len 23271
+  line_count 644
+  content_id source_module_ddff7e2b834e078e
   symbol_count 47
   symbols
     const LEARNING_CONTRACT 17 18
@@ -24,33 +24,33 @@ self_ast_census
     function is_identifier_word 161 163
     function word_scoped_rules 170 187
     function execute_workspace_rewrite 191 197
-    function execute_scoped_workspace_rewrite 200 258
-    struct WorkspaceChangeLearningObservation 262 268
-    function from_execution 271 304
-    struct WorkspaceChangeRecipeCandidate 309 314
-    struct WorkspaceChangeLearningFrontier 317 319
-    function new 323 327
-    function record_execution 329 346
-    function observation_count 349 351
-    function infer_candidate 353 373
-    function links_notation 376 398
-    struct WorkspaceChangeLearningGate 402 406
-    function passed 410 416
-    function failed 419 425
-    function is_green 427 429
-    struct WorkspaceChangeLearningApproval 433 436
-    function granted 440 445
-    function declined 448 453
-    struct ApprovedRecipe 457 462
-    struct WorkspaceChangeRecipeLedger 465 467
-    function new 471 475
-    function promote 477 516
-    function plan_for 519 523
-    function links_notation 526 535
-    function review_body 537 562
-    function from_links_notation 564 601
-    function execute_workspace_rewrite_with_recipe 605 618
-    function candidate_identity 620 622
-    function root_named 624 632
-    function required 634 641
-    function parse_usize 643 647
+    function execute_scoped_workspace_rewrite 200 255
+    struct WorkspaceChangeLearningObservation 259 265
+    function from_execution 268 301
+    struct WorkspaceChangeRecipeCandidate 306 311
+    struct WorkspaceChangeLearningFrontier 314 316
+    function new 320 324
+    function record_execution 326 343
+    function observation_count 346 348
+    function infer_candidate 350 370
+    function links_notation 373 395
+    struct WorkspaceChangeLearningGate 399 403
+    function passed 407 413
+    function failed 416 422
+    function is_green 424 426
+    struct WorkspaceChangeLearningApproval 430 433
+    function granted 437 442
+    function declined 445 450
+    struct ApprovedRecipe 454 459
+    struct WorkspaceChangeRecipeLedger 462 464
+    function new 468 472
+    function promote 474 513
+    function plan_for 516 520
+    function links_notation 523 532
+    function review_body 534 559
+    function from_links_notation 561 598
+    function execute_workspace_rewrite_with_recipe 602 615
+    function candidate_identity 617 619
+    function root_named 621 629
+    function required 631 638
+    function parse_usize 640 644
