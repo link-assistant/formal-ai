@@ -396,12 +396,34 @@ fn issue_and_pull_request_delivery_documents_target_the_prepared_pull_request() 
         "dev/log/issues/1014/pulls/1015/README.md",
         "docs/case-studies/issue-1014/README.md",
         "docs/case-studies/pull-request-1015/README.md",
-        "changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md",
     ] {
         let document = repository_file(path);
         for marker in ["#1014", "#1015", "test", "evidence"] {
             assert!(document.contains(marker), "{path} is missing {marker:?}");
         }
+    }
+
+    // The changelog entry is the fourth delivery document, but a fragment does
+    // not survive the release that ships it: v0.346.0 (c11b23d34) consumed
+    // `changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md` and this
+    // test failed on every run afterwards. Follow the entry across its
+    // lifecycle the way `docs_requirements_issue_656` does -- a fragment before
+    // release, a CHANGELOG.md section after -- so the markers stay pinned
+    // either way.
+    let fragment = repository_path("changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md");
+    let (source, changelog) = if fragment.is_file() {
+        (
+            "changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md",
+            repository_file("changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md"),
+        )
+    } else {
+        ("CHANGELOG.md", repository_file("CHANGELOG.md"))
+    };
+    for marker in ["#1014", "#1015", "test", "evidence"] {
+        assert!(
+            changelog.contains(marker),
+            "the issue #1014 changelog entry in {source} is missing {marker:?}"
+        );
     }
 }
 
