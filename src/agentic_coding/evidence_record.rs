@@ -38,6 +38,7 @@
 //! declining exactly as before.
 
 use super::capability_router::tool_for;
+use super::general_planner::compose_general_change_plan;
 use super::planner::{
     AgenticPlan, Capability, plan_chat_step, plan_one, trace_route, write_arguments,
 };
@@ -234,6 +235,23 @@ pub(super) fn plan_evidence_record_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let obligation = parse_obligation(task)?;
+    // The bytes this route delivers are bytes that still have to be found. When
+    // the request already says what goes into that very file -- spelled out
+    // after a content lead, or as the stdout of a command it quotes -- the
+    // literal-write route composes them exactly, and splitting the sentence
+    // instead destroys them: "Create file `policy/retention.md` containing Logs
+    // are kept for ninety days; backups are kept for a year" became a
+    // destination plus a residual, the residual was put to the router as though
+    // it were a question, and the file received the router's status line in
+    // place of the caller's payload.
+    //
+    // Only a composed plan for *this* target disqualifies the delivery. A
+    // request may spell out one file's bytes and ask for another file's
+    // findings, and the second obligation is still this route's.
+    if compose_general_change_plan(task).is_some_and(|plan| plan.target == obligation.target) {
+        trace_route("evidence_record", "declined_literal_write");
+        return None;
+    }
     let write_tool = tool_for(tool_names, Capability::Write)?;
     let progress = Progress::scan(messages);
     if progress.attempted_write_for(&obligation.target) {
