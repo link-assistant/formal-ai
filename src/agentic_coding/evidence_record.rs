@@ -41,6 +41,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use super::capability_router::tool_for;
+use super::general_planner::compose_general_change_plan;
 use super::planner::{
     AgenticPlan, Capability, plan_chat_step, plan_one, plan_settled_routes, trace_route,
     write_arguments,
@@ -254,14 +255,15 @@ pub(super) fn plan_evidence_record_step(
     //   that reaches the self-healing recipe instead, and the run writes one
     //   file nobody asked for before writing the one that was.
     //
-    // So ask, rather than enumerate: plan the whole request through the routes
-    // below this one, from a conversation holding only that request, and stand
-    // down if one of them writes this destination. Only a plan for *this* target
+    // So ask, rather than enumerate. A route below can answer in either of two
+    // ways, and both are asked: it can *declare* the file, the way a composed
+    // general change plan carries the `target` it was compiled for, or it can be
+    // watched *planning* it. Only a route that produces this same target
     // disqualifies the delivery -- a request may spell out one file's bytes and
     // ask for another file's findings, and the second obligation is still this
     // route's.
-    if settled_route_delivers(task, &obligation.target, tool_names) {
-        trace_route("evidence_record", "declined_settled_route");
+    if let Some(reason) = later_route_delivering(task, &obligation.target, tool_names) {
+        trace_route("evidence_record", reason);
         return None;
     }
     let write_tool = tool_for(tool_names, Capability::Write)?;
@@ -336,22 +338,39 @@ pub(super) fn plan_evidence_record_step(
 /// a whole run.
 const DELIVERY_PROBE_TURNS: usize = 4;
 
-/// Whether a route below this one already produces `target` from the whole
-/// request.
+/// How a route below this one already produces `target` from the whole request,
+/// or `None` when none of them does.
 ///
-/// The question is asked by running those routes rather than by listing them:
-/// plan the request through them, answer each planned call with a bare success,
-/// and see whether `target` is among the files they write. A route's own state
-/// machine is what decides -- `plan_general_change_step` records its plan before
-/// writing the file the caller named, so a first step alone would report that
-/// nobody owns `policy/retention.md`, and a table of routes that "declare an
-/// artifact" would have to carry that knowledge secondhand and go stale.
+/// A composed change plan states the file it was compiled for, so asking it is
+/// exact and costs nothing -- and it is the only one of the two that sees a file
+/// a *command* produces, since "Run 'printf learned-output' and write its exact
+/// stdout to reports/learned.txt" is delivered by a shell redirect and never by
+/// a write call at all.
+///
+/// Everything else is asked by running it rather than by listing it: plan the
+/// request through the routes below, answer each planned call with a bare
+/// success, and see whether `target` is among the files they write. That is what
+/// reaches the recipes, which declare nothing and are recognised from the
+/// artifact they write. A route's own state machine is what decides --
+/// `plan_general_change_step` records its plan before writing the file the
+/// caller named, so a first step alone would report that nobody owns
+/// `policy/retention.md`, and a table of routes that "own an artifact" would
+/// have to carry that knowledge secondhand and go stale.
 ///
 /// The probe starts from a conversation holding the request and nothing else, so
 /// the answer depends on the request alone and does not drift as the real run
 /// accumulates results: a recipe that owns a destination owns it on every turn,
 /// and its mid-run plan to read the file back would otherwise look like nobody
 /// owning it.
+fn later_route_delivering(task: &str, target: &str, tool_names: &[&str]) -> Option<&'static str> {
+    if compose_general_change_plan(task).is_some_and(|plan| plan.target == target) {
+        return Some("declined_composed_target");
+    }
+    settled_route_delivers(task, target, tool_names).then_some("declined_settled_route")
+}
+
+/// Whether planning the whole request through the routes below this one walks
+/// into a call that writes `target`.
 fn settled_route_delivers(task: &str, target: &str, tool_names: &[&str]) -> bool {
     let key = (task.to_owned(), target.to_owned(), tool_names.join("\u{1f}"));
     if let Some(known) = DELIVERY_PROBE_ANSWERS.with_borrow(|answers| answers.get(&key).copied()) {
