@@ -354,3 +354,238 @@ fn issue_1069_a_node_id_is_not_the_file_to_read() {
         "the planner must open the file the task names, not the node id",
     );
 }
+
+/// A node prompt states three obligations, not one: change the tracked source,
+/// create the structured effects record, and leave the proof note. Reaching the
+/// first one is not finishing the node, so this bound covers all three.
+const MAX_NODE_STEPS: usize = 32;
+
+/// The files a node run leaves behind, in write order.
+type Workspace = Vec<(String, String)>;
+
+fn workspace_get<'a>(workspace: &'a Workspace, path: &str) -> Option<&'a str> {
+    workspace
+        .iter()
+        .rev()
+        .find(|(held, _)| held == path)
+        .map(|(_, content)| content.as_str())
+}
+
+fn workspace_put(workspace: &mut Workspace, path: &str, content: &str) {
+    if let Some(slot) = workspace
+        .iter_mut()
+        .find(|(held, _)| held == path)
+        .map(|(_, held)| held)
+    {
+        *slot = content.to_owned();
+        return;
+    }
+    workspace.push((path.to_owned(), content.to_owned()));
+}
+
+/// The two commands the planner's change routes emit, executed over the
+/// simulated workspace. Anything else is reported rather than silently ignored,
+/// so this harness can never pass a node by pretending to run a command it does
+/// not understand.
+fn run_command(workspace: &mut Workspace, command: &str) -> Result<String, String> {
+    if let Some(path) = command.strip_prefix("cat ") {
+        let path = path.trim();
+        return Ok(workspace_get(workspace, path).unwrap_or_default().to_owned());
+    }
+    if let Some(rest) = command.strip_prefix("sed -i 's/") {
+        let (script, target) = rest
+            .split_once("' -- ")
+            .ok_or_else(|| format!("unparsed sed command: {command}"))?;
+        let (pattern, replacement) = script
+            .trim_end_matches("/g")
+            .split_once('/')
+            .ok_or_else(|| format!("unparsed sed script: {command}"))?;
+        let target = target.trim();
+        let source = workspace_get(workspace, target)
+            .ok_or_else(|| format!("sed on a file that is not there: {target}"))?
+            .to_owned();
+        // `\b` is a word boundary; the planner only ever asks for it around the
+        // whole pattern, so honouring it means rewriting whole words only.
+        let bare = pattern.trim_start_matches("\\b").trim_end_matches("\\b");
+        let word_scoped = bare != pattern;
+        let mut updated = String::with_capacity(source.len());
+        let mut rest = source.as_str();
+        while let Some(hit) = rest.find(bare) {
+            let (before, after) = rest.split_at(hit);
+            let following = &after[bare.len()..];
+            let boundary = |text: &str, at_end: bool| {
+                let character = if at_end {
+                    text.chars().next()
+                } else {
+                    text.chars().next_back()
+                };
+                character.is_none_or(|character| {
+                    !character.is_alphanumeric() && character != '_'
+                })
+            };
+            updated.push_str(before);
+            if !word_scoped || (boundary(before, false) && boundary(following, true)) {
+                updated.push_str(replacement);
+            } else {
+                updated.push_str(bare);
+            }
+            rest = following;
+        }
+        updated.push_str(rest);
+        workspace_put(workspace, target, &updated);
+        return Ok(String::new());
+    }
+    Err(format!("unhandled command: {command}"))
+}
+
+/// Replay a whole node prompt the way the Agent CLI replays it, against a
+/// workspace holding the leaf's real committed bytes, until the planner says the
+/// node is finished.
+///
+/// Unlike [`effect_of`], this does not stop at the first effect. Stopping there
+/// is exactly the blind spot that let node `1.1.2.2.1` report green here and
+/// then fail a real run with `missing_proof`: the planner made the edit, called
+/// the request served, and never wrote the two records the same prompt asked
+/// for. A node is finished when every file it was told to produce is there.
+fn run_node(leaf: &Leaf, prompt: &str, source: &str) -> Result<Workspace, String> {
+    let mut workspace: Workspace = vec![(leaf.path.clone(), source.to_owned())];
+    let mut messages = vec![ChatMessage::user(prompt)];
+    for _ in 0..MAX_NODE_STEPS {
+        let calls = match plan_chat_step(&messages, &TOOLS) {
+            Some(AgenticPlan::Final(_)) => return Ok(workspace),
+            Some(AgenticPlan::ToolCalls(calls)) if !calls.is_empty() => calls,
+            other => return Err(format!("expected tool calls or a final answer, got {other:?}")),
+        };
+        for call in &calls {
+            let result = match call.tool.as_str() {
+                "read_file" => {
+                    let path = first_argument(call, &["path", "filePath", "file_path"])
+                        .ok_or_else(|| format!("read without a path: {}", call.arguments))?;
+                    workspace_get(&workspace, &path)
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| format!("Error: File not found: {path}"))
+                }
+                "write_file" => {
+                    let path = first_argument(call, &["path", "filePath", "file_path"])
+                        .ok_or_else(|| format!("write without a path: {}", call.arguments))?;
+                    let content = first_argument(call, &["content", "contents", "text"])
+                        .ok_or_else(|| format!("write without content: {}", call.arguments))?;
+                    workspace_put(&mut workspace, &path, &content);
+                    "ok".to_owned()
+                }
+                "edit_file" => {
+                    let path = first_argument(call, &["path", "filePath", "file_path"])
+                        .ok_or_else(|| format!("edit without a path: {}", call.arguments))?;
+                    let old = first_argument(call, &["old_string", "oldString", "old_str", "old"])
+                        .ok_or_else(|| format!("edit without an old value: {}", call.arguments))?;
+                    let new = first_argument(call, &["new_string", "newString", "new_str", "new"])
+                        .ok_or_else(|| format!("edit without a new value: {}", call.arguments))?;
+                    let held = workspace_get(&workspace, &path)
+                        .ok_or_else(|| format!("edit on a file that is not there: {path}"))?;
+                    if !held.contains(&old) {
+                        return Err(format!("edit replaces {old:?}, which {path} does not hold"));
+                    }
+                    let updated = held.replace(&old, &new);
+                    workspace_put(&mut workspace, &path, &updated);
+                    "ok".to_owned()
+                }
+                "run_shell_command" => {
+                    let command = argument(call, "command")
+                        .ok_or_else(|| format!("command without a command: {}", call.arguments))?;
+                    run_command(&mut workspace, &command)?
+                }
+                other => return Err(format!("unexpected tool {other}")),
+            };
+            record(&mut messages, call, &result);
+        }
+    }
+    Err(format!("did not finish within {MAX_NODE_STEPS} steps"))
+}
+
+/// Everything a node prompt asks for has to be there when the node reports done.
+///
+/// The ladder's verifier demands the tracked change *and* the structured effect
+/// *and* the proof note. `issue_1069_every_ladder_leaf_reaches_a_real_change`
+/// only demands the first, which is why a green suite still produced
+/// `1.1.2.2.1 FAIL missing_proof` on a real run.
+#[test]
+fn issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given() {
+    let mut failures = Vec::new();
+    for (offset, leaf) in leaves().into_iter().enumerate() {
+        let index = offset + 1;
+        let id = node_id(index);
+        let source = read(&leaf.path);
+        let prompt = node_prompt(&leaf, index);
+        let workspace = match run_node(&leaf, &prompt, &source) {
+            Ok(workspace) => workspace,
+            Err(reason) => {
+                failures.push(format!("{} ({id}): {reason}", leaf.id));
+                continue;
+            }
+        };
+        let mut report = |reason: String| failures.push(format!("{} ({id}): {reason}", leaf.id));
+
+        match workspace_get(&workspace, &leaf.path) {
+            None => report(format!("lost {}", leaf.path)),
+            Some(changed) if changed == source => {
+                report(format!("left {} unchanged", leaf.path))
+            }
+            Some(changed) if !changed.contains(&leaf.marker) => {
+                report(format!("{} lacks {:?}", leaf.path, leaf.marker))
+            }
+            Some(changed) if !changed.contains(&leaf.guard) => {
+                report(format!("{} lost {:?}", leaf.path, leaf.guard))
+            }
+            Some(_) => {}
+        }
+
+        let effects_path = format!("agent-ladder-effects/node-{id}.lino");
+        match workspace_get(&workspace, &effects_path) {
+            None => report(format!("never wrote {effects_path}")),
+            Some(effects) => {
+                for field in [
+                    format!("node_path={id}"),
+                    "node_depth=5".to_owned(),
+                    "node_kind=leaf".to_owned(),
+                ] {
+                    if !effects.lines().any(|line| line.trim() == field) {
+                        report(format!("{effects_path} lacks the line {field:?}"));
+                    }
+                }
+                match effects.lines().find_map(|line| line.strip_prefix("result=")) {
+                    None => report(format!("{effects_path} states no result=")),
+                    Some(result) if !result.contains(&leaf.marker) => report(format!(
+                        "{effects_path} result= omits {:?}: {result:?}",
+                        leaf.marker
+                    )),
+                    Some(result) if result.split_whitespace().count() < 4 => {
+                        report(format!("{effects_path} result= is under four words: {result:?}"))
+                    }
+                    Some(_) => {}
+                }
+            }
+        }
+
+        let proof_path = format!(".agent-ladder/node-{id}-proof.md");
+        match workspace_get(&workspace, &proof_path) {
+            None => report(format!("never wrote {proof_path}")),
+            Some(proof) if proof.lines().next() != Some(format!("node_path={id}").as_str()) => {
+                report(format!(
+                    "{proof_path} does not open with node_path={id}: {:?}",
+                    proof.lines().next()
+                ))
+            }
+            Some(_) => {}
+        }
+    }
+    assert!(
+        failures.is_empty(),
+        "{} of {LEAF_COUNT} nodes left an obligation unmet:\n{}",
+        failures
+            .iter()
+            .filter_map(|failure| failure.split(' ').next())
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        failures.join("\n")
+    );
+}

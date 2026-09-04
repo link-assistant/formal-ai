@@ -93,3 +93,68 @@ test instead: `issue_1069_every_ladder_leaf_reaches_a_real_change` drives all 32
 leaf prompts — the whole prompt the ladder really sends, not just the task
 sentence — through `plan_chat_step` against the repository's real bytes, and
 requires each to reach the file its contract names.
+
+## 3. A delivery destination and a file being edited — `cue-order-survey.py`
+
+With rules 1 and 2 in place the same leaf ran again (`after-fix/agent-stream.jsonl`).
+It read `src/engine_responses.rs`, wrote it back with the change, ran `cat` on it
+and answered
+
+    Created or updated and observed `src/engine_responses.rs` through the workspace tools.
+
+The edit is right. The node still failed the ladder's verifier with
+`missing_proof`, because the same prompt asks for three things and the run
+produced one: the tracked change, a structured effect at
+`agent-ladder-effects/node-1.1.2.2.1.lino`, and a proof note at
+`.agent-ladder/node-1.1.2.2.1-proof.md`. The change route matched the whole
+request and answered `Final` for all of it.
+
+The route that already knows how to peel "do this, and leave the answer in FILE"
+into a delivery plus a residual — `evidence_record` — sat below the change
+routes and never saw the request. Moving it above them is half the fix; the
+other half is that its delivery test has to stop reading *"Edit the tracked file
+`src/engine_responses.rs`: add "Good morning" to the GREETING_EXAMPLES list"* as
+a delivery. That sentence carries the write cue `add` applied to a cued path, so
+without a second rule the move makes the planner write its own status line over
+the source it was told to edit.
+
+The seed already draws the distinction the fix needs: two families of action
+cue, one composing content *into* a destination, one changing the content *of* a
+file that has some. `cue-order-survey.py` asks whether mere mention separates
+them, over every request-shaped sentence this repository records that names a
+file and carries a cue.
+
+    write-action cues: 15 -> ['add', 'append', 'create', 'emit', 'generate', 'leave',
+                             'make', 'place', 'produce', 'put', 'record', 'save',
+                             'set', 'store', 'write']
+    edit-action cues:  12 -> ['change', 'correct', 'edit', 'modify', 'patch',
+                             'refactor', 'rename', 'replace', 'rewrite',
+                             'substitute', 'swap', 'update']
+
+    recorded request sentences naming a file and carrying a cue: 1118
+      lead with a write cue: 961 (85.96%)
+      lead with an edit cue: 157 (14.04%)
+      mention BOTH families: 30 (2.68%)
+
+Mention does not separate them. Thirty sentences carry both, and the ladder's
+own *delivery* sentence is one of them:
+
+    Then create `agent-ladder-effects/node-1.1.2.2.1.lino` … followed by at
+    least four words that state the **change** you made
+
+A "mentions an edit cue ⇒ not a delivery" rule discards the record the node
+exists to produce. What separates them is position — the same adjacency
+principle `cued_write_target` already uses to bind a cue to a path. The cue a
+sentence *leads with* governs it; a later cue belongs to a clause the leading one
+already took as its object. On the four file-naming sentences of the real node
+prompt this reads all four correctly, including the two that carry both
+families: `Edit the tracked file …` and `Apply the change … modified …` are
+operands, `Then create …node-1.1.2.2.1.lino …` and `Leave supporting evidence in
+.agent-ladder/…-proof.md.` are destinations.
+
+The obligation is pinned by
+`issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given`, which
+replays each of the 32 leaf prompts to `Final` against the leaf's real committed
+bytes and requires every file the prompt named to be there at the end — not just
+the first effect, which is the blind spot that let a green suite coexist with
+`1.1.2.2.1 FAIL missing_proof`.

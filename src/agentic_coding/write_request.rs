@@ -164,6 +164,46 @@ pub(super) fn states_write_action(request: &str) -> bool {
     first_action_cue_end(&tokens(request)).is_some()
 }
 
+/// Whether the sentence leads with an *edit* action rather than a write one.
+///
+/// The seed declares two families of action cue, and they are two different
+/// relations to a file: an answer is composed and delivered *into* a
+/// destination, while an edit changes the content *of* a file that already has
+/// some. Only the first relation can be a delivery, so a sentence stating the
+/// second names an operand of the work and never a place to put some other
+/// sentence's finding.
+///
+/// The families cannot be told apart by mere mention. Measured over the 1 118
+/// request sentences this repository records that name a file and carry a cue
+/// (`experiments/issue_1069_delivery_vs_operand/cue-order-survey.py`), 30 of
+/// them -- 2.68% -- use both, and the ladder's own delivery sentence is one:
+/// "Then create `agent-ladder-effects/node-1.1.2.2.1.lino` … followed by at
+/// least four words that state the **change** you made". Reading that as an
+/// edit loses the record the node exists to produce.
+///
+/// What separates them is position, the same way [`cued_write_target`] binds a
+/// cue to a path by adjacency: the cue a sentence leads with is the one that
+/// governs it, and any later cue belongs to a clause the leading one already
+/// took as its object. On the real node prompt this reads all four
+/// file-naming sentences correctly, including both that carry both families.
+pub(super) fn leads_with_edit_action(sentence: &str) -> bool {
+    let writes = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+    let edits = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
+    tokens(sentence)
+        .iter()
+        .find_map(|token| {
+            let word = clean_cue_token(token.text);
+            if writes.contains(&word) {
+                Some(false)
+            } else if edits.contains(&word) {
+                Some(true)
+            } else {
+                None
+            }
+        })
+        .unwrap_or(false)
+}
+
 /// Whether `request` names `path` as the destination of a write it states.
 ///
 /// The read routes need this to keep from opening the file they were asked to

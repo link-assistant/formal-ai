@@ -207,6 +207,25 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         {
             return Some(plan);
         }
+    // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
+    // of every route that reads a request's lone file-shaped token, because that
+    // token is the *destination* here and opening it for reading ends the run with
+    // the evidence file unwritten. It sits behind the literal-write routes above,
+    // which own a request that spells its bytes out; this one owns the request
+    // whose bytes still have to be found.
+    //
+    // It sits ahead of the change routes below for the same reason it sits ahead
+    // of the readers: a request can carry both halves. The ladder's leaf says
+    // "Edit `src/engine_responses.rs` … Then create `agent-ladder-effects/…lino`
+    // recording what you changed. Leave evidence in `.agent-ladder/…-proof.md`",
+    // and the change routes answer `Final` for the whole request the moment the
+    // edit lands, so the two records the caller verifies are never written and
+    // the node fails `missing_proof` having done the work. This route peels one
+    // delivery at a time and re-plans the residual (see `parse_obligation`), so
+    // the change route still receives the edit -- with only the edit left in it.
+    if let Some(plan) = evidence_record::plan_evidence_record_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     // A learned workspace-change procedure owns grounded repository rewrites
     // and multi-file compositions before source creation or shell routing can
     // collapse them into one incomplete action.
@@ -354,15 +373,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
-    }
-    // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
-    // of every route that reads a request's lone file-shaped token, because that
-    // token is the *destination* here and opening it for reading ends the run with
-    // the evidence file unwritten. It sits behind the literal-write routes above,
-    // which own a request that spells its bytes out; this one owns the request
-    // whose bytes still have to be found.
-    if let Some(plan) = evidence_record::plan_evidence_record_step(&task, messages, tool_names) {
-        return Some(plan);
     }
     if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
         return Some(AgenticPlan::Final(answer));

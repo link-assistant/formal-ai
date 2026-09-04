@@ -45,8 +45,8 @@ use super::progress::Progress;
 use super::shell_command::carries_authoring_task;
 use super::shell_command_policy::sentences;
 use super::write_request::{
-    bare_surfaces, first_action_cue_start, pinned_first_line, stated_write_target,
-    states_write_action, tokens,
+    bare_surfaces, first_action_cue_start, leads_with_edit_action, pinned_first_line,
+    stated_write_target, states_write_action, tokens,
 };
 use crate::protocol::{ChatMessage, MessageContent};
 
@@ -99,7 +99,18 @@ fn parse_obligation(request: &str) -> Option<Obligation> {
             residual.push_str(&request[sentence.span]);
             continue;
         }
+        // Two ways a sentence can state the work instead of a place to put it:
+        // it asks for an artifact to be authored, or it asks for a file that
+        // already exists to be changed. Both make the path it names an operand.
+        // The second is not a refinement of the first -- it is destructive
+        // without it. The ladder's leaf reads "Edit the tracked file
+        // `src/engine_responses.rs`: add \"Good morning\" to the
+        // GREETING_EXAMPLES list", which applies a write cue (`add`) to a cued
+        // path (`file`, `in`), so delivery claimed the tracked source, wrote its
+        // own status line over it, and the write returned success: the file the
+        // node was asked to edit was gone, and the node still reported done.
         let is_delivery = !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))
+            && !leads_with_edit_action(sentence.text)
             && states_write_action(sentence.text);
         if is_delivery && let Some(named) = stated_write_target(sentence.text) {
             if target.is_none() {

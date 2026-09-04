@@ -71,6 +71,7 @@ mod issue_1021_write_path;
 mod issue_1066_agent_ladder;
 mod issue_1066_hollow_answers;
 mod issue_1066_ladder_capability;
+mod issue_1066_node_verifier;
 mod issue_1066_self_development;
 mod issue_1069;
 mod issue_1069_identifier_rename;
