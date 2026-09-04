@@ -68,7 +68,11 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
             "Formal-AI-Evidence: <repo-relative committed evidence path>",
             "Formal-AI-Pull-Request: https://github.com/<owner>/<repo>/pull/<number>",
             "same commit object",
-            "Every non-merge commit introduced by that pull request",
+            // Issue #1069 replaced the all-or-nothing rule: a pull request now
+            // counts for its attributed part, so long as no attributed commit
+            // it introduced names a different pull request.
+            "at least one commit it introduced must carry valid session",
+            "every attributed commit it introduced must name that same pull",
             "must not decrease",
             "git fetch origin --tags",
             "without the latest tag, the check reports a skip",

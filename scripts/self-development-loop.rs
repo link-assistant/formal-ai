@@ -137,19 +137,36 @@ pub(super) fn merged_self_authored_pull_requests(
             .lines()
             .filter(|commit| !commit.is_empty())
             .collect::<Vec<_>>();
-        let end_to_end = !introduced.is_empty()
-            && introduced.iter().all(|commit| {
-                attributed
-                    .get(*commit)
-                    .is_some_and(|reference| pull_request_number(reference) == Some(number))
-            });
-        if end_to_end {
-            let reference = attributed
-                .get(introduced[0])
-                .expect("end-to-end attribution checked every introduced commit");
-            if !pull_requests.contains(reference) {
-                pull_requests.push(reference.clone());
-            }
+        // A pull request counts for the work Formal AI did in it, not for what
+        // else happened to be in it. Requiring *every* introduced commit to be
+        // attributed measured the composition of a pull request rather than the
+        // authorship of the work, and it had one practical consequence: a
+        // self-authored change could never ride along inside ordinary review,
+        // because a single human commit beside it erased it. Every contribution
+        // therefore needed a pull request containing nothing else, which is the
+        // separate pull request the maintainer asked to stop needing on
+        // [PR #1070][decision].
+        //
+        // The measurement is unaffected. `measure` counts lines per commit: an
+        // unattributed commit contributes to the denominator and not the
+        // numerator whether or not a sibling commit is attributed, so this
+        // cannot move the share by a basis point. What is still enforced is
+        // every claim the trailers make -- valid session evidence, an evidence
+        // path present in that commit, and no attributed commit pointing at a
+        // pull request other than the one that introduced it.
+        //
+        // [decision]: https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5539328163
+        let attributed_here = introduced
+            .iter()
+            .filter_map(|commit| attributed.get(*commit))
+            .collect::<Vec<&String>>();
+        let claims_this_pull_request = attributed_here
+            .iter()
+            .all(|reference| pull_request_number(reference) == Some(number));
+        if let Some(reference) = attributed_here.first().filter(|_| claims_this_pull_request)
+            && !pull_requests.contains(*reference)
+        {
+            pull_requests.push((*reference).clone());
         }
     }
     Ok(pull_requests)
@@ -205,9 +222,10 @@ pub fn self_development_release_status(
         merged_self_authored_pull_requests(repo, since, until, EvidencePolicy::Lenient)?;
     if pull_requests.is_empty() {
         return Ok(SelfDevelopmentReleaseStatus::Blocked(format!(
-            "release cycle {since}..{until} has no merged Formal AI-authored pull request; an \
-             end-to-end Formal AI-authored pull request requires valid session evidence and the \
-             same canonical PR trailer on every introduced non-merge commit"
+            "release cycle {since}..{until} has no merged Formal AI-authored pull request; a \
+             merged pull request counts once it introduced at least one commit carrying valid \
+             session evidence, and every attributed commit it introduced names that same pull \
+             request"
         )));
     }
     let mut rows = read_release_rows(ledger)?;

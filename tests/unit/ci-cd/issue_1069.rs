@@ -86,7 +86,9 @@ fn the_authorship_route_commits_the_trailers_the_release_gate_reads() {
         "one evidence file must carry the producer marker and the session id together"
     );
     assert!(
-        script.contains(r#"[[ "$pull_request" =~ ^https://github\.com/[^/]+/[^/]+/pull/[1-9][0-9]*$ ]]"#),
+        script.contains(
+            r#"[[ "$pull_request" =~ ^https://github\.com/[^/]+/[^/]+/pull/[1-9][0-9]*$ ]]"#
+        ),
         "a trailer the metric cannot parse must be rejected here, not at release time"
     );
 }

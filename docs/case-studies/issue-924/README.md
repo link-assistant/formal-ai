@@ -27,18 +27,27 @@ contribution or a falling target had to be repaired.
 The release gate walks first-parent GitHub merge commits in the tag-to-HEAD
 range and accepts a contribution only when all of these facts hold:
 
-1. every non-merge commit introduced by the pull request has valid, committed
-   Formal AI session evidence;
-2. every introduced commit's trailer names that canonical GitHub pull-request
-   URL;
+1. at least one non-merge commit introduced by the pull request has valid,
+   committed Formal AI session evidence;
+2. every *attributed* commit it introduced names that canonical GitHub
+   pull-request URL;
 3. the matching `Merge pull request #N` commit contains the same commit object
    on its second-parent branch and not on its first parent; and
 4. at least one qualifying PR exists in the release range.
 
-A fabricated trailer on a direct commit therefore cannot satisfy the floor,
-and one attributed commit cannot hide a manually authored commit in the same
-pull request. The ledger writes every qualifying PR URL into the release row
-beside the per-release and trailing changed-line shares.
+A fabricated trailer on a direct commit therefore cannot satisfy the floor, and
+a trailer naming some other pull request disqualifies the one that introduced
+it. The ledger writes every qualifying PR URL into the release row beside the
+per-release and trailing changed-line shares.
+
+Condition 1 originally read *every* non-merge commit, and condition 2 applied to
+every introduced commit rather than to the attributed ones. Issue #1069 narrowed
+both: the old pair measured the composition of a pull request rather than the
+authorship of the work, so a self-authored change could never ride along beside
+a human commit and every contribution needed a pull request of its own. The
+measured share is unaffected, because it is computed per commit -- an
+unattributed commit stays in the denominator and out of the numerator either
+way.
 
 The target for a release is the greater of the prior target and the prior
 comparable trailing share. The candidate release's projected trailing share

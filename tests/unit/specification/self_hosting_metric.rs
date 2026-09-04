@@ -2,6 +2,8 @@
 #[path = "../../../scripts/self-hosting-metric.rs"]
 mod metric_script;
 
+mod authorship_composition;
+
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -266,62 +268,6 @@ fn an_ineligible_cycle_is_blocked_from_the_first_push() {
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
     fs::remove_dir_all(aged_repo).expect("aged fixture directory must be removed");
-}
-
-#[test]
-fn release_cycle_rejects_a_partially_attributed_pull_request() {
-    let repo = fixture_repo();
-    let branch = "issue-42";
-    let session = "fixture-session-42";
-    let evidence = "docs/evidence/42/session.txt";
-    let pull_request = "https://github.com/example/formal-ai/pull/42";
-
-    git(&repo, &["switch", "-c", branch]);
-    fs::write(repo.join("human-first.txt"), "unattributed change\n")
-        .expect("human fixture must be written");
-    commit(&repo, "human-authored part of the pull request");
-
-    fs::create_dir_all(repo.join("docs/evidence/42")).expect("evidence directory must be created");
-    fs::write(
-        repo.join(evidence),
-        format!("formal-ai session {session}\n"),
-    )
-    .expect("session evidence must be written");
-    fs::write(repo.join("formal-ai-42.txt"), "session-backed change\n")
-        .expect("generated fixture must be written");
-    commit(
-        &repo,
-        &format!(
-            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
-        ),
-    );
-    git(&repo, &["switch", "main"]);
-    git(
-        &repo,
-        &[
-            "merge",
-            "--no-ff",
-            branch,
-            "-m",
-            "Merge pull request #42 from example/issue-42",
-        ],
-    );
-
-    let error = metric_script::ensure_self_development_release(
-        &repo,
-        &repo.join("data/meta/self-hosting-ledger.lino"),
-        "v1.1.0",
-        "v1.0.0",
-        "HEAD",
-        3,
-    )
-    .expect_err("one attributed commit must not make a mixed-authorship PR end-to-end");
-    assert!(
-        error.contains("end-to-end Formal AI-authored pull request"),
-        "unexpected error: {error}"
-    );
-
-    fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
 
 #[test]
