@@ -46,7 +46,11 @@ fn temp_dir(name: &str) -> PathBuf {
 }
 
 /// What the gate saw in run 100928011479: a request that never got an answer.
+/// This is `bun audit`'s wording.
 const OUTAGE: &str = "outage";
+
+/// The same fault in `npm audit`'s wording, which is not `bun`'s.
+const NPM_OUTAGE: &str = "npm-outage";
 
 /// What the gate saw in run 100948708530: a request that never returns at all.
 const HANG: &str = "hang";
@@ -90,6 +94,11 @@ fn run_bounded_audit_gate(
          \x20     sleep 300 ;;\n\
          \x20   {SLOW})\n\
          \x20     sleep 1 ;;\n\
+         \x20   {NPM_OUTAGE})\n\
+         \x20     echo 'npm warn audit 503 Service Unavailable - POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk - Service Unavailable' >&2\n\
+         \x20     echo 'npm warn audit network timeout at: https://registry.npmjs.org/-/npm/v1/security/advisories/bulk' >&2\n\
+         \x20     echo 'npm error audit endpoint returned an error' >&2\n\
+         \x20     exit 1 ;;\n\
          \x20   *)\n\
          \x20     echo 'error: POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk - 503' >&2\n\
          \x20     exit 1 ;;\n\
@@ -352,4 +361,33 @@ fn the_shipped_deadline_outlasts_a_healthy_audit_yet_fails_inside_the_job() {
         "a worst case of {worst_case}s risks the 15-minute job being cancelled \
          before the gate can say the registry never answered"
     );
+}
+
+/// `bun` and `npm` do not describe an outage the same way, and the first draft
+/// of the transport-fault list was written from `bun` alone. Replayed against a
+/// degraded registry, `npm audit` printed none of the strings it recognised --
+/// no trailing `- 503`, no `code E*` -- so a genuine npm outage fell through to
+/// the failing branch and would have turned the branch red for something
+/// npmjs.org never said, which is the exact failure this gate was fixed for.
+/// The three lines below are that run's output, verbatim.
+#[test]
+fn an_outage_worded_the_way_npm_words_it_is_also_retried() {
+    let (output, audits) = run_audit_gate(NPM_OUTAGE, 2, 3);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+
+    assert!(
+        output.status.success(),
+        "npm's wording for an unreachable registry must be read as an outage, \
+         not as a finding: {stdout}{stderr}"
+    );
+    assert_eq!(
+        stderr
+            .matches("::warning title=advisory registry unreachable")
+            .count(),
+        2,
+        "both unanswered attempts are announced as outages: {stderr}"
+    );
+    // Five committed lockfiles; the first needed all three attempts.
+    assert_eq!(audits, 7, "the gate retries to an answer: {stdout}");
 }

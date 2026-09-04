@@ -51,10 +51,20 @@ attempt_seconds="${FORMAL_AI_AUDIT_ATTEMPT_SECONDS:-180}"
 retry_delay_seconds="${FORMAL_AI_AUDIT_RETRY_DELAY_SECONDS:-5}"
 budget_seconds="${FORMAL_AI_AUDIT_BUDGET_SECONDS:-300}"
 
-# What "the registry never answered" looks like from `bun audit` (`- 503`) and
-# from `npm audit` (its `network`/`code E*` transport errors). A killed attempt
-# says the same thing by exiting 124 with nothing to report.
-unreachable_registry='- 5[0-9][0-9]$|ECONNRESET|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|socket hang up|network request to'
+# What "the registry never answered" looks like. The two tools word it
+# differently, and the first draft of this list was written from `bun audit`
+# alone, so a real npm outage -- reproduced locally against a degraded
+# registry -- went unrecognised and would have failed the gate outright:
+#
+#   npm warn audit 503 Service Unavailable - POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk - Service Unavailable
+#   npm warn audit network timeout at: https://registry.npmjs.org/-/npm/v1/security/advisories/bulk
+#   npm error audit endpoint returned an error
+#
+# `npm` prints that last line whenever the endpoint itself failed, and prints
+# nothing of the sort when it has advisories to report, so it is the reliable
+# half of the pair. A killed attempt says the same thing by exiting 124 with
+# nothing to report.
+unreachable_registry='- 5[0-9][0-9]$|audit endpoint returned an error|network timeout at|ECONNRESET|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|socket hang up|network request to'
 killed_at_deadline=124
 
 # Seconds already spent on attempts that never answered, across every lockfile
