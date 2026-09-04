@@ -69,3 +69,49 @@ fn detached_memory_upgrade_container_is_automatically_removed() {
     assert!(harness.contains("trap cleanup EXIT"));
     assert!(harness.contains("docker rm -f \"$server\""));
 }
+
+/// The authorship route is what lets Formal AI's work ride inside an ordinary
+/// pull request instead of needing one of its own, so its contract is pinned
+/// where a rewrite has to notice it: the three trailers the self-hosting metric
+/// reads, an evidence directory carrying both markers that metric looks for, and
+/// a workspace the Agent CLI cannot see its own logs through.
+#[test]
+fn the_authorship_route_commits_the_trailers_the_release_gate_reads() {
+    let script = repository_file("scripts/author-change-with-formal-ai.sh");
+    assert!(script.contains("Formal-AI-Session: %s"));
+    assert!(script.contains("Formal-AI-Evidence: %s"));
+    assert!(script.contains("Formal-AI-Pull-Request: %s"));
+    assert!(
+        script.contains("printf 'formal-ai session %s\\n' \"$session_id\""),
+        "one evidence file must carry the producer marker and the session id together"
+    );
+    assert!(
+        script.contains(r#"[[ "$pull_request" =~ ^https://github\.com/[^/]+/[^/]+/pull/[1-9][0-9]*$ ]]"#),
+        "a trailer the metric cannot parse must be rejected here, not at release time"
+    );
+}
+
+#[test]
+fn the_authorship_route_keeps_the_agent_cli_out_of_its_own_logs() {
+    let script = repository_file("scripts/author-change-with-formal-ai.sh");
+    assert!(script.contains("work=\"$(mktemp -d)\""));
+    assert!(script.contains("state=\"$(mktemp -d)\""));
+    assert!(
+        script.contains(">\"$state/agent-stream.raw.log\""),
+        "the live stream must land outside both the workspace and the evidence directory"
+    );
+    assert!(script.contains("FORMAL_AI_MEMORY_PATH=\"$state/memory.lino\""));
+    assert!(script.contains("FORMAL_AI_DREAMING=0"));
+}
+
+/// Producing a change must not imply producing a pull request (issue #1069).
+#[test]
+fn the_authorship_route_neither_opens_a_pull_request_nor_pushes() {
+    let script = repository_file("scripts/author-change-with-formal-ai.sh");
+    assert!(!script.contains("gh pr create"));
+    assert!(!script.contains("git -C \"$ROOT\" push"));
+    assert!(
+        script.contains("git -C \"$ROOT\" diff --cached --quiet && die"),
+        "a run that reproduced the committed bytes has authored nothing"
+    );
+}
