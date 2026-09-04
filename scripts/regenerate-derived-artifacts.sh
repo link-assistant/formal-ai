@@ -46,6 +46,15 @@ run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt
   rust-script scripts/check-hardcoded-language.rs --write
 run_step "self-AST census (data/meta/self-ast/)" \
   cargo run --quiet --example regenerate_self_ast_census
+# The reviewed proposal document is derived from the live learner: its candidate
+# id and seed edit are content-addressed over the recursive-core trace, so any
+# new pipeline stage makes it stale (issue #1073 added the thirteenth). The
+# regenerator refreshes only the machine-derived fields and keeps the review
+# decisions. `data/seed/learned-methods.lino` is deliberately NOT here: adopting
+# a method requires a human-confirmed promotion run, which is the trust boundary
+# issue #922 exists to hold.
+run_step "reviewed method proposals (examples/issue-922-method-learning/open-proposals.lino)" \
+  cargo run --quiet --example regenerate_issue_922_open_proposals
 # These three are derived from src/agentic_coding/planner.rs, so any edit to the
 # planner -- including one a formatter makes -- leaves them stale. They were
 # missing from this list, and the only thing that noticed was a test failure

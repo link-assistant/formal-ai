@@ -1,9 +1,9 @@
 promotion_proposals
   proposal
-    source "algorithm_candidate:algorithm_740155f4b5796f69"
+    source "algorithm_candidate:algorithm_e17957243eaaf6db"
     summary "Adopt the longest recurring recursive-core method from two support traces and one held-out trace."
     seed_file "data/seed/learned-methods.lino"
-    seed_lino "learned_method \"learned_recursive_core_740155f4b5796f69\"\n  status \"adopted\"\n  source \"algorithm_candidate:algorithm_740155f4b5796f69\"\n  algorithm_id \"algorithm_740155f4b5796f69\"\n  evidence_id \"algorithm_evidence_b758572e108b5114\"\n  support_trace \"solve-translation\"\n  support_trace \"solve-composed\"\n  held_out_trace \"solve-unknown\"\n  operation \"need:status\"\n  operation \"method_registry\"\n  operation \"method_registry:count\"\n  operation \"work_unit_reasoning\"\n  operation \"work_unit_reasoning:steps\"\n  operation \"upward_construction\"\n  operation \"upward_construction:steps\"\n  operation \"solution_evidence\"\n  operation \"solution_evidence:accounted_for\"\n  operation \"selection\"\n  operation \"skill_ledger\"\n  operation \"skill_ledger:promotable\""
+    seed_lino "learned_method \"learned_recursive_core_e17957243eaaf6db\"\n  status \"adopted\"\n  source \"algorithm_candidate:algorithm_e17957243eaaf6db\"\n  algorithm_id \"algorithm_e17957243eaaf6db\"\n  evidence_id \"algorithm_evidence_e5429e92598ae524\"\n  support_trace \"solve-translation\"\n  support_trace \"solve-composed\"\n  held_out_trace \"solve-unknown\"\n  operation \"need:status\"\n  operation \"method_registry\"\n  operation \"method_registry:count\"\n  operation \"work_unit_reasoning\"\n  operation \"work_unit_reasoning:steps\"\n  operation \"upward_construction\"\n  operation \"upward_construction:steps\"\n  operation \"solution_evidence\"\n  operation \"solution_evidence:accounted_for\"\n  operation \"selection\"\n  operation \"skill_ledger\"\n  operation \"skill_ledger:promotable\"\n  operation \"reasoning_standard\"\n  operation \"reasoning_standard:gates\"\n  operation \"reasoning_standard:verdict\""
     gate
       suite "issue_362_multilingual_coding_modification"
     gate

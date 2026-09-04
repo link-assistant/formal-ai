@@ -1,0 +1,23 @@
+self_ast_census
+  target src/reasoning_standard/instructions.rs
+  language rust
+  fidelity signature
+  byte_len 7916
+  line_count 236
+  content_id source_module_30e28a9cd2d33cdb
+  symbol_count 14
+  symbols
+    struct SourceStep 21 27
+    function new 32 37
+    struct SourceExcerpt 42 47
+    function new 52 57
+    enum StepStatus 62 69
+    function slug 74 80
+    struct InstructionStep 86 97
+    function is_checkable 102 104
+    struct InstructionSet 109 116
+    function source_count 121 123
+    function unverifiable_steps 127 132
+    function unmet_steps 140 150
+    function formalize 160 228
+    struct MergedStep 230 236
