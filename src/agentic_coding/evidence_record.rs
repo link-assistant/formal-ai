@@ -37,10 +37,13 @@
 //! answer that only describes the web search it would run leave this route
 //! declining exactly as before.
 
+use std::cell::RefCell;
+use std::collections::HashMap;
+
 use super::capability_router::tool_for;
-use super::general_planner::compose_general_change_plan;
 use super::planner::{
-    AgenticPlan, Capability, plan_chat_step, plan_one, trace_route, write_arguments,
+    AgenticPlan, Capability, plan_chat_step, plan_one, plan_settled_routes, trace_route,
+    write_arguments,
 };
 use super::progress::Progress;
 use super::shell_command::carries_authoring_task;
@@ -48,7 +51,7 @@ use super::shell_command_policy::sentences;
 use super::write_request::{
     bare_surfaces, delivered_write_target, first_action_cue_start, pinned_first_line, tokens,
 };
-use crate::protocol::{ChatMessage, MessageContent};
+use crate::protocol::{ChatMessage, MessageContent, ToolCall};
 
 /// The delivery half of a request, separated from the work it asks for.
 struct Obligation {
@@ -235,21 +238,30 @@ pub(super) fn plan_evidence_record_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let obligation = parse_obligation(task)?;
-    // The bytes this route delivers are bytes that still have to be found. When
-    // the request already says what goes into that very file -- spelled out
-    // after a content lead, or as the stdout of a command it quotes -- the
-    // literal-write route composes them exactly, and splitting the sentence
-    // instead destroys them: "Create file `policy/retention.md` containing Logs
-    // are kept for ninety days; backups are kept for a year" became a
-    // destination plus a residual, the residual was put to the router as though
-    // it were a question, and the file received the router's status line in
-    // place of the caller's payload.
+    // The bytes this route delivers are bytes that still have to be found, and
+    // peeling the destination off the sentence is how it goes looking for them.
+    // That reading is wrong whenever a route further down already produces this
+    // very file from the request as it stands, because peeling then hands the
+    // remainder to a router that can no longer reach that route:
     //
-    // Only a composed plan for *this* target disqualifies the delivery. A
-    // request may spell out one file's bytes and ask for another file's
-    // findings, and the second obligation is still this route's.
-    if compose_general_change_plan(task).is_some_and(|plan| plan.target == obligation.target) {
-        trace_route("evidence_record", "declined_literal_write");
+    // * "Create file `policy/retention.md` containing Logs are kept for ninety
+    //   days; backups are kept for a year" became a destination plus a residual,
+    //   the residual was put to the router as though it were a question, and the
+    //   file received the router's status line in place of the caller's payload.
+    // * A registered auto-learning report is *identified* by its artifact --
+    //   `LearningReport::matches` looks for its own `path` in the prompt -- so
+    //   removing "and write self-hosting-learning-report.lino" leaves a residual
+    //   that reaches the self-healing recipe instead, and the run writes one
+    //   file nobody asked for before writing the one that was.
+    //
+    // So ask, rather than enumerate: plan the whole request through the routes
+    // below this one, from a conversation holding only that request, and stand
+    // down if one of them writes this destination. Only a plan for *this* target
+    // disqualifies the delivery -- a request may spell out one file's bytes and
+    // ask for another file's findings, and the second obligation is still this
+    // route's.
+    if settled_route_delivers(task, &obligation.target, tool_names) {
+        trace_route("evidence_record", "declined_settled_route");
         return None;
     }
     let write_tool = tool_for(tool_names, Capability::Write)?;
@@ -313,6 +325,97 @@ pub(super) fn plan_evidence_record_step(
         write_tool,
         write_arguments(&obligation.target, &content),
     ))
+}
+
+/// How far the probe below follows a route before concluding it delivers
+/// nothing.
+///
+/// A route reaches the file the caller named early or not at all: the recipes
+/// write their artifact first, and the literal-file composer records its plan
+/// and then writes it. The bound is what keeps a routing question from costing
+/// a whole run.
+const DELIVERY_PROBE_TURNS: usize = 4;
+
+/// Whether a route below this one already produces `target` from the whole
+/// request.
+///
+/// The question is asked by running those routes rather than by listing them:
+/// plan the request through them, answer each planned call with a bare success,
+/// and see whether `target` is among the files they write. A route's own state
+/// machine is what decides -- `plan_general_change_step` records its plan before
+/// writing the file the caller named, so a first step alone would report that
+/// nobody owns `policy/retention.md`, and a table of routes that "declare an
+/// artifact" would have to carry that knowledge secondhand and go stale.
+///
+/// The probe starts from a conversation holding the request and nothing else, so
+/// the answer depends on the request alone and does not drift as the real run
+/// accumulates results: a recipe that owns a destination owns it on every turn,
+/// and its mid-run plan to read the file back would otherwise look like nobody
+/// owning it.
+fn settled_route_delivers(task: &str, target: &str, tool_names: &[&str]) -> bool {
+    let key = (task.to_owned(), target.to_owned(), tool_names.join("\u{1f}"));
+    if let Some(known) = DELIVERY_PROBE_ANSWERS.with_borrow(|answers| answers.get(&key).copied()) {
+        return known;
+    }
+    let answer = probe_settled_routes(task, target, tool_names);
+    DELIVERY_PROBE_ANSWERS.with_borrow_mut(|answers| {
+        // The router is consulted once per turn with the same request, and a
+        // long-lived server sees many requests. Recomputing per turn made the
+        // issue #1028 ladder suite ten times slower; keeping every answer it
+        // ever gave would trade that for unbounded memory. Start over instead --
+        // the answers are derived, so losing them costs one recomputation.
+        if answers.len() >= DELIVERY_PROBE_MEMO_CAPACITY {
+            answers.clear();
+        }
+        answers.insert(key, answer);
+    });
+    answer
+}
+
+thread_local! {
+    /// Probe answers already computed on this thread, keyed by the inputs they
+    /// were computed from.
+    static DELIVERY_PROBE_ANSWERS: RefCell<HashMap<(String, String, String), bool>> =
+        RefCell::new(HashMap::new());
+}
+
+/// How many probe answers one thread remembers before starting over.
+const DELIVERY_PROBE_MEMO_CAPACITY: usize = 512;
+
+fn probe_settled_routes(task: &str, target: &str, tool_names: &[&str]) -> bool {
+    let mut probe = vec![ChatMessage::user(task)];
+    for turn in 0..DELIVERY_PROBE_TURNS {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_settled_routes(task, &probe, tool_names)
+        else {
+            return false;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            if planned_write_path(&call.arguments).is_some_and(|path| path == target) {
+                return true;
+            }
+            let id = format!("delivery-probe-{turn}-{index}");
+            probe.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                &id,
+                &call.tool,
+                call.arguments.clone(),
+            )]));
+            probe.push(ChatMessage::tool_result(id, &call.tool, "ok"));
+        }
+    }
+    false
+}
+
+/// The file a planned call writes, under whichever key its client expects.
+fn planned_write_path(arguments: &str) -> Option<String> {
+    let value = serde_json::from_str::<serde_json::Value>(arguments).ok()?;
+    ["path", "filePath", "file_path", "absolute_path"]
+        .iter()
+        .find_map(|key| {
+            value
+                .get(*key)
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_owned)
+        })
 }
 
 /// Render an answer under the constraints attached to its destination.
