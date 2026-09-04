@@ -343,9 +343,9 @@ const DELIVERY_PROBE_TURNS: usize = 4;
 ///
 /// A composed change plan states the file it was compiled for, so asking it is
 /// exact and costs nothing -- and it is the only one of the two that sees a file
-/// a *command* produces, since "Run 'printf learned-output' and write its exact
-/// stdout to reports/learned.txt" is delivered by a shell redirect and never by
-/// a write call at all.
+/// a shell *redirect* produces, since "Run 'printf learned-output' and write its
+/// exact stdout to reports/learned.txt" is delivered by `>` and never by a write
+/// call at all.
 ///
 /// Everything else is asked by running it rather than by listing it: plan the
 /// request through the routes below, answer each planned call with a bare
@@ -409,7 +409,7 @@ fn probe_settled_routes(task: &str, target: &str, tool_names: &[&str]) -> bool {
             return false;
         };
         for (index, call) in calls.iter().enumerate() {
-            if planned_write_path(&call.arguments).is_some_and(|path| path == target) {
+            if planned_destination(&call.arguments).is_some_and(|path| path == target) {
                 return true;
             }
             let id = format!("delivery-probe-{turn}-{index}");
@@ -423,6 +423,35 @@ fn probe_settled_routes(task: &str, target: &str, tool_names: &[&str]) -> bool {
     }
     false
 }
+
+/// The file a planned call names as its destination, whether the call writes
+/// those bytes itself or runs a command that writes them.
+fn planned_destination(arguments: &str) -> Option<String> {
+    planned_write_path(arguments).or_else(|| planned_command_output_path(arguments))
+}
+
+/// The destination a planned command names for its own output.
+///
+/// A command carries its destination in the option that names it, exactly as a
+/// write call carries it in `path`, and `formal-ai statement-audit --root .
+/// --output statement-audit.lino` produces that file as surely as a write would.
+/// A delivery that cannot see it peels "and write statement-audit.lino" off the
+/// request and records its own status line over the report the command had just
+/// written -- which is what issue #1069's agent-CLI audit run did, on the turn
+/// after the audit succeeded.
+fn planned_command_output_path(arguments: &str) -> Option<String> {
+    let value = serde_json::from_str::<serde_json::Value>(arguments).ok()?;
+    let command = value
+        .get("command")
+        .or_else(|| value.get("cmd"))?
+        .as_str()?;
+    let parts = command.split_whitespace().collect::<Vec<_>>();
+    let index = parts.iter().position(|part| *part == OUTPUT_OPTION)?;
+    parts.get(index + 1).map(|path| (*path).to_owned())
+}
+
+/// The option a command names its output destination with.
+const OUTPUT_OPTION: &str = "--output";
 
 /// The file a planned call writes, under whichever key its client expects.
 fn planned_write_path(arguments: &str) -> Option<String> {
