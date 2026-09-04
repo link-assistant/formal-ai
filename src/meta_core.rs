@@ -18,23 +18,25 @@
 //!    upward construction pass (leaf method → compose children → root) explains
 //!    *how the answer is put back together*. Which directions are emitted is
 //!    governed by [`RecursionMode`](crate::meta_construction::RecursionMode)
-//!    (default `Down`, behavior-preserving), so the box is inspectable in both
-//!    directions, not just the predicate;
+//!    (default `Both`, so both directions are emitted unless a caller
+//!    deliberately quietens one), so the box is inspectable in both directions,
+//!    not just the predicate;
 //! 6. the solution evidence (R334) — the end-to-end join, per need `frame →
 //!    work-unit leaf → status → method`, so "address every detected need" is one
 //!    auditable record;
 //! 7. the method-selection trace (R339) — for every atomic leaf, the method the
 //!    single data-driven registry authority resolves (alias-aware), recorded so
 //!    the selection step of the algorithm is inspectable. Governed by
-//!    [`SelectionMode`](crate::selection::SelectionMode) (default `Off`, which
-//!    records nothing); a leaf with no serving method is recorded `unresolved`
-//!    rather than dropped;
+//!    [`SelectionMode`](crate::selection::SelectionMode) (default `Record`, so
+//!    the trace is present without being asked for); a leaf with no serving
+//!    method is recorded `unresolved` rather than dropped;
 //! 8. the skill-accumulation ledger (R342) — distilled from the solution evidence,
 //!    every satisfied need becomes a proposed reusable skill and every blocked need
 //!    a curriculum item, so the loop accumulates what it can do and a list of what
 //!    it cannot yet do. Governed by [`SkillMode`](crate::skill_ledger::SkillMode)
-//!    (default `Off`, which records nothing); it is proposal-only — no skill is ever
-//!    auto-promoted to stable without tests and a benchmark delta (C3).
+//!    (default `Accumulate`, so the ledger fills on every request); it is
+//!    proposal-only — no skill is ever auto-promoted to stable without tests and
+//!    a benchmark delta (C3).
 //! 9. the reasoning-standard audit (R1073) — the ordered gates of
 //!    `data/meta/reasoning-standard.lino` evaluated over the request's reasoning
 //!    episode, every gate reported `satisfied`, `violated` or `not_triggered`
