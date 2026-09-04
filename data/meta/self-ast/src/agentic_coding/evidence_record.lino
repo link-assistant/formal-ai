@@ -2,120 +2,128 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 31306
-  line_count 717
-  content_id source_module_f8bbfa82bcaea695
-  symbol_count 25
+  byte_len 35984
+  line_count 820
+  content_id source_module_10be84de3642f8c4
+  symbol_count 31
   symbols
-    struct Obligation 54 63
-    function parse_obligation 87 142
-    function exact_field_lines 145 178
-    function work_before_delivery 194 198
-    function without_trailing_separator 211 221
-    function plan_evidence_record_step 232 316
-    function render_obligation 319 345
-    function exact_field_values 352 360
-    function combined_observation 363 378
-    function non_hollow_result 387 399
-    function written_observation 405 415
-    function substantive_result_line 425 485
-    function relevance_score 487 549
-    function looks_like_condition 557 569
-    function looks_like_instance_condition 575 580
-    function looks_like_local_binding 585 590
-    function looks_like_exposed_declaration 595 601
-    function looks_like_declaration 609 628
-    function source_text 630 635
-    function is_quoted_or_commented_source 637 647
-    function is_match_count 649 653
-    function looks_like_result_path_heading 655 657
-    function source_authority 662 669
-    function symbolic_answer 695 705
-    function with_residual_request 712 717
+    struct Obligation 57 66
+    function parse_obligation 90 145
+    function exact_field_lines 148 181
+    function work_before_delivery 197 201
+    function without_trailing_separator 214 224
+    function plan_evidence_record_step 235 328
+    const DELIVERY_PROBE_TURNS 337 337
+    function settled_route_delivers 355 373
+    static DELIVERY_PROBE_ANSWERS 378 379
+    const DELIVERY_PROBE_MEMO_CAPACITY 383 383
+    function probe_settled_routes 385 406
+    function planned_write_path 409 419
+    function render_obligation 422 448
+    function exact_field_values 455 463
+    function combined_observation 466 481
+    function non_hollow_result 490 502
+    function written_observation 508 518
+    function substantive_result_line 528 588
+    function relevance_score 590 652
+    function looks_like_condition 660 672
+    function looks_like_instance_condition 678 683
+    function looks_like_local_binding 688 693
+    function looks_like_exposed_declaration 698 704
+    function looks_like_declaration 712 731
+    function source_text 733 738
+    function is_quoted_or_commented_source 740 750
+    function is_match_count 752 756
+    function looks_like_result_path_heading 758 760
+    function source_authority 765 772
+    function symbolic_answer 798 808
+    function with_residual_request 815 820
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17040
-    named_node_count 3643
-    distinct_node_kinds 78
+    total_link_count 19224
+    named_node_count 4090
+    distinct_node_kinds 80
     node_kinds
-      arguments 324
-      array_expression 9
-      array_type 5
+      arguments 350
+      array_expression 10
+      array_type 7
       assignment_expression 8
-      binary_expression 52
-      block 69
-      boolean_literal 5
-      call_expression 324
+      binary_expression 53
+      block 80
+      boolean_literal 8
+      call_expression 350
       captured_pattern 1
       char_literal 34
-      closure_expression 56
-      closure_parameters 56
+      closure_expression 59
+      closure_parameters 59
+      const_item 2
       continue_expression 4
       crate 15
-      doc_comment 180
+      doc_comment 207
       else_clause 6
-      escape_sequence 5
-      expression_statement 62
+      escape_sequence 6
+      expression_statement 75
       field_declaration 4
       field_declaration_list 1
-      field_expression 261
-      field_identifier 265
+      field_expression 282
+      field_identifier 286
       field_initializer_list 1
-      for_expression 4
-      function_item 24
-      generic_function 3
-      generic_type 15
-      identifier 713
-      if_expression 22
+      for_expression 6
+      function_item 27
+      generic_function 4
+      generic_type 16
+      identifier 821
+      if_expression 25
       index_expression 6
       inner_doc_comment_marker 38
-      integer_literal 11
-      let_condition 3
-      let_declaration 63
+      integer_literal 14
+      let_condition 4
+      let_declaration 69
       lifetime 3
       lifetime_parameter 1
-      line_comment 218
-      macro_invocation 7
+      line_comment 259
+      macro_invocation 11
       match_arm 8
       match_block 3
       match_expression 3
       match_pattern 8
       mut_pattern 1
-      mutable_specifier 13
-      outer_doc_comment_marker 142
-      parameter 41
-      parameters 24
+      mutable_specifier 14
+      outer_doc_comment_marker 169
+      parameter 48
+      parameters 27
       parenthesized_expression 4
-      primitive_type 58
-      range_expression 3
-      reference_expression 38
+      primitive_type 70
+      range_expression 4
+      reference_expression 43
       reference_pattern 1
-      reference_type 42
-      return_expression 10
-      scoped_identifier 78
+      reference_type 51
+      return_expression 13
+      scoped_identifier 87
+      scoped_type_identifier 1
       scoped_use_list 3
       shorthand_field_initializer 4
       slice_pattern 2
       source_file 1
-      string_content 66
-      string_literal 67
+      string_content 72
+      string_literal 74
       struct_expression 1
       struct_item 1
-      super 11
-      token_tree 9
-      try_expression 7
-      tuple_expression 4
-      tuple_pattern 9
-      tuple_struct_pattern 10
+      super 10
+      token_tree 19
+      try_expression 8
+      tuple_expression 5
+      tuple_pattern 10
+      tuple_struct_pattern 13
       tuple_type 1
-      type_arguments 18
-      type_identifier 40
+      type_arguments 20
+      type_identifier 43
       type_parameters 1
-      unary_expression 20
+      unary_expression 21
       unit_expression 1
-      use_declaration 8
+      use_declaration 9
       use_list 3
       visibility_modifier 1
