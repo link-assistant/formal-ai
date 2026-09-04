@@ -909,6 +909,11 @@ meanings
     lexeme en
       surface
         text "reveal"
+  self_published
+    defined-by concept
+    lexeme en
+      surface
+        text "self published"
   steps
     defined-by concept
     lexeme en

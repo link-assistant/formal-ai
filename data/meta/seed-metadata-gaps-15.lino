@@ -403,6 +403,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "description"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_c8ad496afd05417f
+    source "data/seed/closure-generated-08.lino"
+    record "first_hand_record"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_93aee3c26f3202af
     source "data/seed/closure-generated-08.lino"
     record "pattern_concept_prefix_chto_takoe"

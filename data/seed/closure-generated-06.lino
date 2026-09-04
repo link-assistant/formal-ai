@@ -39,6 +39,11 @@ meanings
     lexeme en
       surface
         text "cause"
+  citation
+    defined-by concept
+    lexeme en
+      surface
+        text "citation"
   client_global_config_auth_refusal
     defined-by intent
     lexeme en

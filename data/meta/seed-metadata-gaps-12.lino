@@ -291,6 +291,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "authentic"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b962dac92a02c52c
+    source "data/seed/closure-generated-06.lino"
+    record "citation"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c5bb716f29e60e8c
     source "data/seed/closure-generated-06.lino"
     record "material-symbols"
@@ -758,6 +762,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_d26a5527b7a00fcc
     source "data/seed/closure-generated-13.lino"
     record "response_web_search_live_results_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_7e0e480fad9ea7ec
+    source "data/seed/closure-generated-13.lino"
+    record "self_published"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_466e383455f3dc3c
     source "data/seed/closure-generated-13.lino"

@@ -7,11 +7,24 @@
 //! seed file the single source of truth for both runtimes: which services
 //! exist, which settings key opts each one out, what its API template is, and
 //! under which license its bytes may be quoted.
+//!
+//! Issue #1073 (requirement 4) changed where one field comes from. The registry
+//! used to declare `source_tier` per source and this loader read it back
+//! verbatim, defaulting silently to `independent_corroboration` for anything
+//! that declared nothing — trust asserted, and asserted by omission at that.
+//! Now every entry declares its `primacy` chain (how far it stands from the
+//! primary record, and the source's own policy page establishing each hop) and
+//! [`SourceRecord::tier`] is *derived* from that chain by
+//! [`PrimacyChain::derive_tier`]. The declared `source_tier` survives only as
+//! [`SourceRecord::asserted_tier`], an assertion the derivation is checked
+//! against rather than an input to it.
 
 use std::fmt::Write as _;
 
 use super::embedded::SOURCES_REGISTRY_LINO;
 use super::parser::parse_lino;
+use crate::reasoning_standard::episode::tier_from_slug;
+use crate::reasoning_standard::trust::{PrimacyChain, chain_from_node};
 use crate::relative_meta_logic::SourceTier;
 
 /// The `service_group` marking a live, opt-out-able external service.
@@ -55,15 +68,6 @@ impl HowToRole {
     }
 }
 
-fn tier_from_seed(value: &str) -> SourceTier {
-    match value {
-        "original_first_party" => SourceTier::OriginalFirstParty,
-        "original_journalism" => SourceTier::OriginalJournalism,
-        "unoriginal" => SourceTier::Unoriginal,
-        _ => SourceTier::IndependentCorroboration,
-    }
-}
-
 /// One declared retrieval source.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SourceRecord {
@@ -83,7 +87,20 @@ pub struct SourceRecord {
     /// ordered steps), `secondary` (corroborating procedure), or `none`.
     pub how_to_role: HowToRole,
     /// The #709 relative-meta-logic tier the source's bytes carry.
+    ///
+    /// Issue #1073, requirement 4: this is *derived* from [`Self::primacy`], not
+    /// read from the registry. A source whose registry entry declares no primacy
+    /// chain therefore derives [`SourceTier::Unoriginal`] — trust by omission is
+    /// exactly the assumption the requirement forbids.
     pub tier: SourceTier,
+    /// The hops that separate this source from the primary record, each naming
+    /// its upstream and the primary document (the site's own policy or charter)
+    /// that establishes the hop.
+    pub primacy: PrimacyChain,
+    /// The tier the registry *asserts*, when it asserts one. Kept only so the
+    /// assertion can be checked against the derivation; nothing reads it to
+    /// decide how much a source is worth.
+    pub asserted_tier: Option<SourceTier>,
     /// API template with `{placeholder}` slots.
     pub api: String,
     /// License the retrieved bytes carry.
@@ -139,6 +156,7 @@ pub fn source_registry() -> Vec<SourceRecord> {
         .filter(|node| node.name == "sources_registry")
     {
         for entry in root.children.iter().filter(|node| node.name == "source") {
+            let primacy = chain_from_node(entry);
             records.push(SourceRecord {
                 id: entry.id.clone(),
                 name: entry.find_child_value("name").to_owned(),
@@ -147,7 +165,9 @@ pub fn source_registry() -> Vec<SourceRecord> {
                 settings_key: entry.find_child_value("settings_key").to_owned(),
                 default_enabled: entry.find_child_value("default_enabled") != "false",
                 how_to_role: HowToRole::from_seed(entry.find_child_value("how_to_role")),
-                tier: tier_from_seed(entry.find_child_value("source_tier")),
+                tier: primacy.derive_tier(),
+                primacy,
+                asserted_tier: tier_from_slug(entry.find_child_value("source_tier")),
                 api: entry.find_child_value("api").to_owned(),
                 license_name: entry.find_child_value("license_name").to_owned(),
                 license_url: entry.find_child_value("license_url").to_owned(),

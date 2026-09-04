@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "fact check statement counterexample"
+  first_hand_record
+    defined-by concept
+    lexeme en
+      surface
+        text "first hand record"
   general_plan_repository_action
     defined-by intent
     lexeme en

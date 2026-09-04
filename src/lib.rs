@@ -105,6 +105,7 @@ pub(crate) mod protocol_responses;
 pub mod proxy;
 pub mod question_generation;
 pub mod question_necessity;
+pub mod reasoning_standard;
 pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod recursive_execution;

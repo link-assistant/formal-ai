@@ -447,5 +447,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Answering in English only would have held this number 20 lower and left
     // four of the five languages hearing about their own edit in a language
     // they had not asked in.
-    assert_eq!(expected_gaps.len(), 3_940);
+    // The four after them are the primacy kinds issue #1073 added: `citation`,
+    // `first_hand_record`, `self_published` and `editorial_synthesis` are the
+    // vocabulary a source uses to say how close it stands to what it reports,
+    // and every source in `data/seed/sources-registry.lino` now names one of
+    // them in its `primacy` chain instead of asserting a tier. The closure
+    // expands each into a generated record, so computing trust rather than
+    // assuming it arrives here as described data, on the same terms as every
+    // vocabulary addition above.
+    assert_eq!(expected_gaps.len(), 3_944);
 }

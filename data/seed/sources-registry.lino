@@ -2,6 +2,9 @@ sources_registry
   source wikidata
     name "Wikidata"
     kind structured_knowledge
+    primacy editorial_synthesis
+      upstream "the external references cited on each statement"
+      basis "Wikidata:Verifiability, the project's own policy, requires each statement to cite a source outside Wikidata, so an item is a synthesis one hop from the references it names."
     api "https://www.wikidata.org/wiki/Special:EntityData/{id}.json"
     license_name "CC0 1.0"
     license_url "https://creativecommons.org/publicdomain/zero/1.0/"
@@ -11,6 +14,9 @@ sources_registry
   source wiktionary
     name "Wiktionary"
     kind dictionary
+    primacy editorial_synthesis
+      upstream "the durably archived usages each entry attests"
+      basis "Wiktionary's criteria for inclusion require an entry to be attested from durably archived sources, so an entry stands one hop from the usage record it summarises."
     api "https://api.dictionaryapi.dev/api/v2/entries/en/{lemma}"
     license_name "CC BY-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-sa/3.0/"
@@ -19,6 +25,9 @@ sources_registry
   source wordnet
     name "Open English WordNet 2024"
     kind lexical_database
+    primacy editorial_synthesis
+      upstream "the corpus evidence the lexicographers compiled the synsets from"
+      basis "The Open English WordNet lexicon is compiled by lexicographers from recorded English usage, so on the meaning of a word it is a synthesis over that usage rather than the usage itself."
     api "https://en-word.net/"
     license_name "CC BY 4.0"
     license_url "https://creativecommons.org/licenses/by/4.0/"
@@ -27,6 +36,9 @@ sources_registry
   source wikipedia
     name "Wikipedia"
     kind encyclopedia
+    primacy editorial_synthesis
+      upstream "the published sources each article cites"
+      basis "Wikipedia:No original research, the project's own policy, requires article content to come from published sources, so an article stands one hop from the sources it cites."
     api "https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -40,6 +52,9 @@ sources_registry
     default_enabled true
     how_to_role primary
     source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the procedures its contributors and credited expert reviewers describe"
+      basis "wikiHow articles are written and revised by contributors and credited reviewers rather than by whoever built the thing the article is about, so a guide stands one hop from the procedure it reports."
     api "https://www.wikihow.com/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-NC-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-nc-sa/3.0/"
@@ -53,6 +68,9 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier independent_corroboration
+    primacy citation
+      upstream "the documentation and command output the answers quote"
+      basis "Answers on the network are written by practitioners who quote the documentation and the output they saw, so an answer stands one hop from the record it cites."
     api "https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q={query}&site=stackoverflow&filter=withbody"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -66,6 +84,9 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the function definitions its contributors publish"
+      basis "Wikifunctions catalogues functions contributed and reviewed by its community rather than published by the language implementors, so a catalogue entry stands one hop from the implementation it describes."
     api "https://www.wikifunctions.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
     license_name "CC0 1.0 (function definitions); Apache-2.0 (implementations)"
     license_url "https://www.wikifunctions.org/wiki/Wikifunctions:FAQ"
@@ -79,6 +100,9 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the language implementations its contributors exercised"
+      basis "Rosetta Code tasks are solutions contributed and revised by its community rather than published by the language implementors, so an entry stands one hop from the language it demonstrates."
     api "https://rosettacode.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
     license_name "GNU Free Documentation License 1.2"
     license_url "https://www.gnu.org/licenses/old-licenses/fdl-1.2.html"
@@ -92,6 +116,9 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the published sources its textbooks build on"
+      basis "Wikibooks textbooks are written by contributors from published material rather than by the subject itself, so a chapter stands one hop from the sources behind it."
     api "https://en.wikibooks.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -105,6 +132,9 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the published material its courses and lab procedures build on"
+      basis "Wikiversity learning resources are assembled by contributors from published material rather than by the subject itself, so a resource stands one hop from the sources behind it."
     api "https://en.wikiversity.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -118,6 +148,9 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the travellers' reports and official information its guides summarise"
+      basis "Wikivoyage guides are written by contributors summarising trips and official information rather than published by the places described, so a guide stands one hop from what it reports."
     api "https://en.wikivoyage.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
@@ -131,6 +164,8 @@ sources_registry
     default_enabled true
     how_to_role secondary
     source_tier original_first_party
+    primacy self_published
+      basis "A repository's README and docs tree are published by the project they document, so on the question of how that project works the source is the subject speaking about itself."
     api "https://api.github.com/repos/{owner}/{repo}/readme"
     license_name "Varies (per repository)"
     license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
@@ -144,6 +179,8 @@ sources_registry
     default_enabled true
     how_to_role none
     source_tier original_journalism
+    primacy first_hand_record
+      basis "Wikinews:Original reporting, the project's own policy, covers material its reporters gathered themselves, so a story under that policy is a first-hand record of the event rather than a report of someone else's report."
     api "https://en.wikinews.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     license_name "CC BY 2.5"
     license_url "https://creativecommons.org/licenses/by/2.5/"
