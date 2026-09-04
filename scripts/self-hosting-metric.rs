@@ -96,6 +96,24 @@ pub struct ReleaseRow {
     /// The non-decreasing floor in force for this release. Historical rows
     /// predate issue #924 and therefore read as `None`.
     pub target_percentage_basis_points: Option<u64>,
+    /// A reviewed floor that replaces the ratchet outright, for as long as it
+    /// stays in the ledger.
+    ///
+    /// The ratchet in `self_development_loop::target_from_rows` can only climb,
+    /// so once a cycle measured high the level was unreachable except by
+    /// out-measuring it and no review could bring it back down. Issue #1069 hit
+    /// exactly that wall. This field is the way back down, and it is
+    /// deliberately the *only* way: no flag, environment variable, or workflow
+    /// input moves the target, so lowering it means a reviewed diff to
+    /// `data/meta/self-hosting-ledger.lino` that a reader can see.
+    ///
+    /// It carries forward like the target it replaces, because a level set by
+    /// decision should hold until another decision changes it rather than
+    /// expiring after one release. While it is set the ratchet is not
+    /// protecting the share; `ratchet_regression` still reports a falling
+    /// trailing share independently, so the fall is visible even when it does
+    /// not block.
+    pub target_override_basis_points: Option<u64>,
     /// Reviewed PRs containing valid session-backed commits in this cycle.
     pub self_authored_pull_requests: Vec<String>,
 }
@@ -457,6 +475,11 @@ pub fn record_release_with_policy(
         trailing_window,
         trailing_percentage_basis_points: 0,
         target_percentage_basis_points: Some(self_development_loop::target_from_rows(&rows)),
+        // A level set by decision holds until another decision changes it, so
+        // it travels with the ledger instead of expiring at the next release.
+        target_override_basis_points: rows
+            .last()
+            .and_then(|previous| previous.target_override_basis_points),
         self_authored_pull_requests: self_development_loop::merged_self_authored_pull_requests(
             repo,
             since,
@@ -543,6 +566,7 @@ pub fn project_trailing_share(
         trailing_window,
         trailing_percentage_basis_points: 0,
         target_percentage_basis_points: None,
+        target_override_basis_points: None,
         self_authored_pull_requests: Vec::new(),
     });
     Ok(weighted_percentage(&window_rows))
@@ -671,6 +695,7 @@ fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
             .map_err(|_| "trailing_window does not fit usize".to_owned())?,
         trailing_percentage_basis_points: number("trailing_percentage_basis_points")?,
         target_percentage_basis_points: optional_number("target_percentage_basis_points")?,
+        target_override_basis_points: optional_number("target_override_basis_points")?,
         self_authored_pull_requests: fields
             .iter()
             .filter_map(|field| {
@@ -721,6 +746,12 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
     if let Some(target) = row.target_percentage_basis_points {
         let _ = writeln!(record, "    target_percentage_basis_points \"{target}\"");
     }
+    if let Some(override_target) = row.target_override_basis_points {
+        let _ = writeln!(
+            record,
+            "    target_override_basis_points \"{override_target}\""
+        );
+    }
     for pull_request in &row.self_authored_pull_requests {
         let _ = writeln!(record, "    self_authored_pull_request \"{pull_request}\"");
     }
@@ -745,8 +776,15 @@ pub fn release_note_for_tag(ledger: &Path, tag: &str) -> Result<String, String> 
     if let Some(target) = row.target_percentage_basis_points {
         let _ = write!(
             note,
-            " The non-decreasing release target was **{}**.",
+            " The release target in force was **{}**.",
             format_percentage(target)
+        );
+    }
+    if let Some(override_target) = row.target_override_basis_points {
+        let _ = write!(
+            note,
+            " That target was overridden by the reviewed ledger value **{}**.",
+            format_percentage(override_target)
         );
     }
     if !row.self_authored_pull_requests.is_empty() {

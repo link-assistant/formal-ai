@@ -367,6 +367,102 @@ fn release_target_ratchets_and_records_each_self_authored_pull_request() {
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
 
+/// Issue #1069: a reviewed override is the ratchet's way back down.
+///
+/// The ratchet can only climb: `target_from_rows` takes the greater of the
+/// carried target and the measured trailing share, so once a cycle measured
+/// high the level was unreachable except by out-measuring it and no review could
+/// lower it. The maintainer's decision on [PR #1070][decision] is that the level
+/// is theirs to set, and the lever is the ledger and nothing else. This test
+/// moves it the only way the code allows -- by writing the number onto the
+/// newest comparable row -- and pins both directions: with the override the
+/// cycle is releasable, and with that one line removed the very same cycle is
+/// blocked again by the very same ratchet.
+///
+/// [decision]: https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300
+#[test]
+fn a_reviewed_override_lowers_the_bar_and_removing_it_restores_the_ratchet() {
+    let repo = fixture_repo();
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let history = |override_target: &str| {
+        format!(
+            "self_hosting_ledger\n  current_metric_version \"2\"\n  release\n    \
+             metric_version \"2\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \
+             \"b\"\n    self_authored_lines \"0\"\n    changed_lines \"100\"\n    \
+             self_authored_commits \"0\"\n    commits \"1\"\n    percentage_basis_points \
+             \"0\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
+             \"0\"\n  release\n    metric_version \"2\"\n    tag \"v0.9.0\"\n    since \
+             \"v0.8.0\"\n    until \"c\"\n    self_authored_lines \"0\"\n    changed_lines \
+             \"100\"\n    self_authored_commits \"0\"\n    commits \"1\"\n    \
+             percentage_basis_points \"0\"\n    trailing_window \"3\"\n    \
+             trailing_percentage_basis_points \"6667\"\n{override_target}"
+        )
+    };
+    fs::write(
+        &ledger,
+        history("    target_override_basis_points \"50\"\n"),
+    )
+    .expect("historical release rows must be written");
+    commit(&repo, "historical release rows");
+    git(&repo, &["tag", "--force", "v1.0.0"]);
+
+    fs::write(repo.join("human-code.txt"), "human\n".repeat(98))
+        .expect("human change must be written");
+    commit(&repo, "human part of release");
+    merge_formal_ai_pull_request(&repo, 54);
+
+    let eligibility = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("the reviewed override must make the cycle releasable");
+    assert_eq!(eligibility.target_percentage_basis_points, 50);
+    assert!(
+        eligibility.projected_percentage_basis_points >= 50
+            && eligibility.projected_percentage_basis_points < 6_667,
+        "the cycle must clear the override while falling far short of the share \
+         the ratchet alone would have demanded: {eligibility:?}"
+    );
+
+    // The override travels with the ledger: a release recorded under it leaves
+    // the next release the same bar, rather than letting it expire after one
+    // cycle and stranding the next one against the ratchet again.
+    // `Report`, as the release path itself uses: by release time the range is
+    // immutable history, so the fall in trailing share is announced rather than
+    // deadlocking the release. See `RatchetPolicy`.
+    let row = metric_script::record_release_with_policy(
+        &repo,
+        &ledger,
+        "v1.1.0",
+        "v1.0.0",
+        "HEAD",
+        3,
+        metric_script::RatchetPolicy::Report,
+    )
+    .expect("the release row must be recorded");
+    assert_eq!(row.target_override_basis_points, Some(50));
+    assert!(
+        metric_script::release_note_for_tag(&ledger, "v1.1.0")
+            .expect("release note must be rendered")
+            .contains("overridden by the reviewed ledger value **0.50%**"),
+        "the release notes must name the override that let the release out"
+    );
+
+    // The same repository, the same cycle, one line of ledger removed. Nothing
+    // outside the ledger can produce this difference, which is the point: the
+    // level only ever moves where a reviewer can see it move.
+    fs::write(&ledger, history("")).expect("ledger without an override must be written");
+    let error = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect_err("without the override the ratchet is the bar again");
+    assert!(
+        error.contains("would fall from 66.67%"),
+        "unexpected error: {error}"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
 #[test]
 fn release_eligibility_retry_excludes_the_existing_tag() {
     let repo = fixture_repo();
@@ -468,7 +564,7 @@ fn recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet() {
             .expect("release note must be rendered"),
         "## Self-hosting\n\nFormal AI authored **75.00%** of this release \
          (3 of 4 changed lines). The 3-release trailing share is **75.00%**. The \
-         non-decreasing release target was **0.00%**."
+         release target in force was **0.00%**."
     );
     let ledger_text = fs::read_to_string(&ledger).expect("fixture ledger must be readable");
     parse_lino(ledger_text.trim()).expect("recorded ledger must be canonical Links Notation");

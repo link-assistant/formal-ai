@@ -155,13 +155,41 @@ pub(super) fn merged_self_authored_pull_requests(
     Ok(pull_requests)
 }
 
+/// The share the next release must reach, read off the newest comparable row.
+///
+/// A row that records no target derives one from its own measured trailing
+/// share, and because every recorded release carries the previous target
+/// forward (see `record_release_with_policy`), the sequence ratchets upward on
+/// its own: a dip in one cycle does not lower the bar for the next.
+///
+/// The ratchet can only ever climb, which is why it needs a way back down that
+/// is not a bypass. Once a cycle measured high the level became unreachable
+/// except by out-measuring it, and no review could lower it -- issue #1069 hit
+/// exactly that wall. `target_override_basis_points` is that way back down: a
+/// number written into the ledger by a reviewed commit, replacing the ratchet
+/// for as long as it stays there. The maintainer's decision on
+/// [PR #1070][decision] is that the level is theirs to set: *"It is ok to
+/// contradict the issue #1069, I asked to reduce % to pass faster and fail
+/// faster in production we need release with actual docker image to test it and
+/// continue to iterate, we will increase % later."*
+///
+/// The lever is deliberately the ledger and nothing else. There is no flag, no
+/// environment variable, and no workflow input that changes this number: moving
+/// it means committing a reviewed change to
+/// `data/meta/self-hosting-ledger.lino`, where the value is visible in the diff
+/// and named in the release notes. Lowering the bar is allowed; lowering it
+/// quietly is not.
+///
+/// [decision]: https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300
 pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
     rows.iter()
         .rfind(|row| row.metric_version == METRIC_VERSION)
         .map_or(0, |row| {
-            row.target_percentage_basis_points
-                .unwrap_or(row.trailing_percentage_basis_points)
-                .max(row.trailing_percentage_basis_points)
+            row.target_override_basis_points.unwrap_or_else(|| {
+                row.target_percentage_basis_points
+                    .unwrap_or(0)
+                    .max(row.trailing_percentage_basis_points)
+            })
         })
 }
 

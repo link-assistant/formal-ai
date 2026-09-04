@@ -173,10 +173,16 @@ mixed manually authored pull request count as end-to-end self-development.
 
 Every release cycle must contain at least one such merged contribution. It goes
 through the ordinary pull-request review, CI, and promotion policy without an
-AI-specific bypass. The next release's target is the greater of the previous
-target and previous comparable trailing share, so it must not decrease. If the
-floor or target is missing, merge more reviewed Formal AI-authored work before
-retrying the release. The metric counts additions plus deletions from non-merge
+AI-specific bypass. The next release's target carries forward from the previous
+row and rises with the measured trailing share, so it must not decrease on its
+own. It moves down only when a reviewed commit writes a
+`target_override_basis_points` onto the newest comparable row of
+`data/meta/self-hosting-ledger.lino`, which replaces the ratchet and carries
+forward until another commit changes or removes it. That is the only lever:
+there is no flag, environment variable, or workflow input that moves the target,
+so every change to the level is visible in a diff and named in the release
+notes. If the floor or target is missing, merge more
+reviewed Formal AI-authored work before retrying the release. The metric counts additions plus deletions from non-merge
 commits and ignores binary files. Reproduce it with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 

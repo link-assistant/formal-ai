@@ -82,7 +82,13 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
         &[
             "pull_request_trailer \"Formal-AI-Pull-Request\"",
             "release_cycle_floor \"1\"",
-            "target_policy \"non-decreasing\"",
+            "target_policy \"non-decreasing",
+            // Issue #1069: the ratchet only climbs, so it needs a way back down
+            // that is not a bypass. The schema has to say where that lever is,
+            // and that it is nowhere else, so a reader does not go looking for a
+            // flag.
+            "target_override_procedure \"",
+            "there is no flag, environment variable or workflow input",
         ],
     );
 
