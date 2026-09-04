@@ -15,20 +15,31 @@
 #
 # So a retry is only an improvement while it can finish, the rule
 # `apt-install-with-retry.sh` already carries (issue #1021). Every attempt runs
-# under its own deadline, and the time spent on attempts that did not answer is
-# charged to one budget shared by every lockfile. Only failures are charged: a
-# slow audit that returns a verdict is not the problem, so five slow-but-healthy
-# lockfiles can never exhaust a budget meant for an outage.
+# under its own deadline, and the time an unanswered lockfile spends is charged
+# to a budget that stops it. Only failures are charged: a slow audit that
+# returns a verdict is not the problem this gate has.
 #
 # The deadline is sized from a healthy run, not from a guess. `npm audit
 # --package-lock-only` over `desktop/package-lock.json` -- the largest lockfile
 # here -- returned `found 0 vulnerabilities` in 2m01s on one run and had still
 # not answered at 300s on the next. Both halves matter: a deadline near two
 # minutes kills work that was about to succeed, and no deadline at all waits on
-# a request that is never coming back. 180s leaves the healthy measurement room
-# to drift; the budget stops the gate after two such non-answers. The worst case is therefore about six minutes, comfortably inside
-# the 15-minute job so that the gate's own bound is what fires, and the job's
-# `timeout-minutes` stays the backstop it is meant to be (issue #1017).
+# a request that is never coming back.
+#
+#   run 100973301529  every audit *succeeded* and the job was cancelled anyway.
+#                     The five lockfiles took 92s, 97s, 155s and 203s-and-
+#                     counting, one after another, and 15 minutes ran out with
+#                     one still unaudited.
+#
+# Which is the third lesson, and the reason the lockfiles are audited
+# concurrently rather than in sequence. Neither limit above can help there:
+# both are about a registry that is not answering, and this registry answered
+# every time -- just slowly, five times over. Serially the gate costs the sum of
+# five waits; concurrently it costs the longest one. Nothing is relaxed to buy
+# that, because the waits were never competing for anything: five independent
+# lockfiles, five independent requests. Each carries its own budget, so the
+# gate's whole cost is bounded by one lockfile's worst case rather than by five
+# of them added up, and that bound is far short of the job's.
 #
 # The three outcomes stay distinct. A registry that answers -- with advisories,
 # or with anything not recognisable as a transport fault -- ends the gate on the
@@ -41,7 +52,7 @@
 #   FORMAL_AI_AUDIT_ATTEMPTS             attempts per lockfile before giving up (3)
 #   FORMAL_AI_AUDIT_ATTEMPT_SECONDS      deadline for one attempt (180)
 #   FORMAL_AI_AUDIT_RETRY_DELAY_SECONDS  pause between attempts (5)
-#   FORMAL_AI_AUDIT_BUDGET_SECONDS       seconds the gate may spend on
+#   FORMAL_AI_AUDIT_BUDGET_SECONDS       seconds one lockfile may spend on
 #                                        attempts that never answered (300)
 
 set -euo pipefail
@@ -67,9 +78,11 @@ budget_seconds="${FORMAL_AI_AUDIT_BUDGET_SECONDS:-300}"
 unreachable_registry='- 5[0-9][0-9]$|audit endpoint returned an error|network timeout at|ECONNRESET|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|socket hang up|network request to'
 killed_at_deadline=124
 
-# Seconds already spent on attempts that never answered, across every lockfile
-# so far. Charging only the failures is the point: a healthy audit may take as
-# long as it likes without bringing the gate closer to giving up.
+# Seconds this lockfile has spent on attempts that never answered. Each audit
+# runs in its own subshell and so keeps its own count, which is what makes the
+# gate's cost the longest lockfile rather than the sum. Charging only the
+# failures is the other half: a healthy audit may take as long as it likes
+# without bringing the gate any closer to giving up.
 outage_seconds=0
 
 audit_with_retry() {
@@ -123,31 +136,66 @@ nobody checked -- re-run once the registry answers." >&2
   return "$status"
 }
 
-audit_locks() {
+# One temporary file per stream per lockfile. Concurrent audits would otherwise
+# interleave their output line by line, and a log nobody can attribute to a
+# lockfile is not evidence about any of them.
+audit_output_dir="$(mktemp -d)"
+trap 'rm -rf "$audit_output_dir"' EXIT
+
+audit_pids=()
+audit_names=()
+
+start_audit() {
+  local lock="$1"
+  shift
+  local slot="${#audit_pids[@]}"
+
+  # The subshell is deliberate here, where it was a bug when the audits ran one
+  # at a time: each lockfile wants its own working directory and its own outage
+  # budget, and now that they overlap, nothing may be shared between them.
+  (
+    cd "$(dirname "$lock")" || exit 1
+    audit_with_retry "$lock" "$@"
+  ) >"$audit_output_dir/$slot.out" 2>"$audit_output_dir/$slot.err" &
+
+  audit_pids+=("$!")
+  audit_names+=("$lock")
+}
+
+# Wait for every audit, then replay them in the order they were started, so the
+# log reads the same whichever one happened to finish first. Every audit is
+# waited for even after one has failed: the gate reports on all five lockfiles,
+# not on however many were audited before the first complaint.
+wait_for_audits() {
+  local slot status
+  local failure=0
+
+  for slot in "${!audit_pids[@]}"; do
+    status=0
+    wait "${audit_pids[slot]}" || status=$?
+    echo "Auditing ${audit_names[slot]}"
+    cat "$audit_output_dir/$slot.out"
+    cat "$audit_output_dir/$slot.err" >&2
+    [ "$status" -eq 0 ] || failure="$status"
+  done
+
+  return "$failure"
+}
+
+queue_locks() {
   local lock_name="$1"
   shift
-  local -a audit_command=("$@")
   local lock
-  local workspace
-  local origin
-  origin="$PWD"
 
   while IFS= read -r lock; do
     # A deleted-but-unstaged file can remain in the local index. CI never has
     # that state, but skipping it keeps this check useful while preparing a
     # commit that removes or renames a lock.
     [[ -f "$lock" ]] || continue
-    workspace="$(dirname "$lock")"
-    echo "Auditing $lock"
-    # Not a subshell: the outage budget is shared across lockfiles, and a
-    # subshell would hand each one a fresh copy of it. `set -e` ends the script
-    # on a failed audit, so the only path that needs the directory back is the
-    # passing one.
-    cd "$workspace"
-    audit_with_retry "$lock" "${audit_command[@]}"
-    cd "$origin"
+    start_audit "$lock" "$@"
   done < <(git ls-files | awk -F/ -v name="$lock_name" '$NF == name')
 }
 
-audit_locks "bun.lock" bun audit --audit-level=moderate
-audit_locks "package-lock.json" npm audit --package-lock-only --audit-level=moderate
+queue_locks "bun.lock" bun audit --audit-level=moderate
+queue_locks "package-lock.json" npm audit --package-lock-only --audit-level=moderate
+wait_for_audits

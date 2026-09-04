@@ -208,8 +208,11 @@ fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
     assert!(gate.contains("scripts/check-javascript-dependencies.sh"));
     assert!(script.contains("git ls-files"));
     assert!(script.contains("$NF == name"));
-    assert!(script.contains("audit_locks \"bun.lock\" bun audit"));
-    assert!(script.contains("audit_locks \"package-lock.json\" npm audit"));
+    assert!(script.contains("queue_locks \"bun.lock\" bun audit"));
+    assert!(script.contains("queue_locks \"package-lock.json\" npm audit"));
+    // Queueing an audit is not running one. Both surfaces are audited concurrently,
+    // so the gate's verdict only exists once every queued audit has been waited on.
+    assert!(script.contains("wait_for_audits"));
     assert!(script.contains("bun audit --audit-level=moderate"));
     assert!(script.contains("npm audit --package-lock-only --audit-level=moderate"));
     for lock in [

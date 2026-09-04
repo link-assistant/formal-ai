@@ -32,15 +32,27 @@ use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 use std::process::{Command, Output};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-/// A scratch directory for one test's stand-in binaries.
+/// Distinguishes scratch directories that the clock cannot.
+static SCRATCH_SEQUENCE: AtomicUsize = AtomicUsize::new(0);
+
+/// A scratch directory for one test's stand-in binaries and call logs.
+///
+/// The clock alone is not enough to tell two of these apart. Several tests
+/// share a mode name, they run concurrently, and `SystemTime::now()` is only as
+/// fine-grained as the host clock -- which on a container can be coarse enough
+/// that two of them land on the same nanosecond. Sharing a directory means
+/// sharing the call logs, and a test then counts another's attempts: this suite
+/// first failed by reporting four attempts from a gate configured for two.
 fn temp_dir(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("a clock after 1970")
         .as_nanos();
-    let path = std::env::temp_dir().join(format!("javascript-audit-{name}-{nanos}"));
+    let sequence = SCRATCH_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+    let path = std::env::temp_dir().join(format!("javascript-audit-{name}-{nanos}-{sequence}"));
     fs::create_dir_all(&path).expect("create the scratch directory");
     path
 }
@@ -66,7 +78,7 @@ const ADVISORY: &str = "advisory";
 /// `failures` is how many leading invocations misbehave in `mode`; every later
 /// one reports a clean lockfile. Both stand-ins share one call log, so the
 /// count the assertions read is the number of audits the gate actually ran.
-fn run_audit_gate(mode: &str, failures: u32, attempts: u32) -> (Output, usize) {
+fn run_audit_gate(mode: &str, failures: u32, attempts: u32) -> (Output, Vec<usize>) {
     run_bounded_audit_gate(mode, failures, attempts, 180, 300)
 }
 
@@ -77,21 +89,26 @@ fn run_bounded_audit_gate(
     attempts: u32,
     attempt_seconds: u32,
     budget_seconds: u32,
-) -> (Output, usize) {
+) -> (Output, Vec<usize>) {
     let directory = temp_dir(mode);
     let calls = directory.join("calls");
-    fs::write(&calls, "").expect("create the call log");
 
     let stand_in = format!(
         "#!/usr/bin/env bash\n\
-         printf '%s\\n' \"$0 $*\" >> \"$FAKE_AUDIT_CALLS\"\n\
-         if [ \"$(wc -l < \"$FAKE_AUDIT_CALLS\")\" -le \"$FAKE_AUDIT_FAILURES\" ]; then\n\
+         # One call log per workspace. The audits run concurrently now, so a\n\
+         # single shared log would race and count somebody else's attempts.\n\
+         log=\"$FAKE_AUDIT_CALLS.$(printf '%s' \"$PWD\" | tr -c 'A-Za-z0-9' '_')\"\n\
+         printf '%s\\n' \"$0 $*\" >> \"$log\"\n\
+         if [ \"$(wc -l < \"$log\")\" -le \"$FAKE_AUDIT_FAILURES\" ]; then\n\
          \x20 case \"$FAKE_AUDIT_MODE\" in\n\
          \x20   {ADVISORY})\n\
          \x20     echo '1 vulnerability found (1 moderate)'\n\
          \x20     exit 1 ;;\n\
          \x20   {HANG})\n\
-         \x20     sleep 300 ;;\n\
+         \x20     # `exec`, because `timeout` signals its direct child and\n\
+         \x20     # nothing else: a forked sleep outlives the kill and keeps\n\
+         \x20     # the pipe the gate is still reading from open.\n\
+         \x20     exec sleep 300 ;;\n\
          \x20   {SLOW})\n\
          \x20     sleep 1 ;;\n\
          \x20   {NPM_OUTAGE})\n\
@@ -142,11 +159,24 @@ fn run_bounded_audit_gate(
         .output()
         .expect("run the JavaScript dependency gate");
 
-    let audits = fs::read_to_string(&calls)
-        .expect("read the call log")
-        .lines()
-        .count();
-    (output, audits)
+    // One log per lockfile, so "how many attempts" is answerable per lockfile
+    // rather than only in total. Sorted because concurrent audits finish in no
+    // fixed order, and it is the shape that carries the meaning.
+    let mut attempts_per_lock: Vec<usize> = fs::read_dir(&directory)
+        .expect("read the scratch directory")
+        .filter_map(|entry| {
+            let path = entry.expect("read a scratch entry").path();
+            let name = path.file_name()?.to_str()?;
+            name.starts_with("calls.").then(|| {
+                fs::read_to_string(&path)
+                    .expect("read a call log")
+                    .lines()
+                    .count()
+            })
+        })
+        .collect();
+    attempts_per_lock.sort_unstable();
+    (output, attempts_per_lock)
 }
 
 /// The failure from run 100928011479, replayed: two unanswered requests, then
@@ -165,11 +195,15 @@ fn an_unanswered_registry_is_retried_until_it_answers() {
         stderr
             .matches("::warning title=advisory registry unreachable")
             .count(),
-        2,
+        10,
         "each unanswered attempt must be visible in the job log: {stderr}"
     );
-    // Five committed lockfiles, the first of which needed three attempts.
-    assert_eq!(audits, 7, "the gate must retry rather than skip: {stdout}");
+    // Every lockfile is turned away twice and answered on the third attempt.
+    assert_eq!(
+        audits,
+        vec![3; 5],
+        "the gate must retry rather than skip, on every lockfile: {stdout}"
+    );
 }
 
 /// The registry answering with a finding is the case the gate exists for, so
@@ -193,7 +227,11 @@ fn an_advisory_fails_the_gate_on_the_first_attempt() {
         !stderr.contains("advisory registry unreachable"),
         "an answered registry must not be reported as an outage: {stderr}"
     );
-    assert_eq!(audits, 1, "an answer is not retried: {stdout}");
+    assert_eq!(
+        audits,
+        vec![1; 5],
+        "an answer is not retried, on any lockfile: {stdout}"
+    );
 }
 
 /// Retrying is not passing. An outage that outlasts every attempt leaves the
@@ -214,7 +252,8 @@ fn an_outage_that_outlasts_every_attempt_still_closes_the_gate() {
         "the give-up must annotate the job, not just exit: {stderr}"
     );
     assert_eq!(
-        audits, 2,
+        audits,
+        vec![2; 5],
         "the gate must stop at FORMAL_AI_AUDIT_ATTEMPTS: {stdout}"
     );
 }
@@ -240,20 +279,22 @@ fn a_hung_request_is_killed_at_its_deadline_and_the_next_attempt_answers() {
         "the log must name the killed attempt and its deadline: {stderr}"
     );
     // The claim is that a 300s hang was cut at 2s, so check the clock rather
-    // than the wording -- five lockfiles, one of which hung once.
+    // than the wording.
     assert!(
         elapsed < Duration::from_secs(60),
         "a 2s deadline against a 300s hang must not take {elapsed:?}"
     );
     assert_eq!(
-        audits, 6,
-        "only the hung lockfile is audited twice: {stdout}"
+        audits,
+        vec![2; 5],
+        "each lockfile hangs once and is answered once: {stdout}"
     );
 }
 
-/// The attempts share one budget, so a registry that is down for everyone
-/// cannot be paid for five times over. The gate stops at its own deadline,
-/// which is far short of the job's, and says which one it hit.
+/// A lockfile that is getting no answer stops at its own budget rather than at
+/// the job's `timeout-minutes`, which is far later and cancels the job before
+/// it can say why. Because the lockfiles are audited concurrently, that budget
+/// bounds the whole gate and not just one fifth of it.
 #[test]
 fn a_sustained_outage_stops_at_the_gate_budget_rather_than_the_job_timeout() {
     let started = SystemTime::now();
@@ -272,7 +313,7 @@ fn a_sustained_outage_stops_at_the_gate_budget_rather_than_the_job_timeout() {
     );
     assert!(
         elapsed < Duration::from_secs(60),
-        "five lockfiles x five 2s attempts must be cut short by a 4s budget, \
+        "five 2s attempts per lockfile must be cut short by a 4s budget, \
          not run to {elapsed:?}"
     );
 }
@@ -296,9 +337,13 @@ fn a_slow_but_answering_registry_is_never_charged_to_the_outage_budget() {
         !stderr.contains("budget ran out"),
         "a verdict, however slow, spends none of the outage budget: {stderr}"
     );
-    // Five committed lockfiles, each answering on its first attempt, together
-    // taking five times the one-second budget.
-    assert_eq!(audits, 5, "each lockfile is audited once: {stdout}");
+    // Five committed lockfiles, each answering on its first attempt, each
+    // taking as long as the whole outage budget.
+    assert_eq!(
+        audits,
+        vec![1; 5],
+        "each lockfile is audited exactly once: {stdout}"
+    );
 }
 
 /// A healthy `npm audit --package-lock-only` over `desktop/package-lock.json`
@@ -385,9 +430,51 @@ fn an_outage_worded_the_way_npm_words_it_is_also_retried() {
         stderr
             .matches("::warning title=advisory registry unreachable")
             .count(),
-        2,
+        10,
         "both unanswered attempts are announced as outages: {stderr}"
     );
-    // Five committed lockfiles; the first needed all three attempts.
-    assert_eq!(audits, 7, "the gate retries to an answer: {stdout}");
+    assert_eq!(
+        audits,
+        vec![3; 5],
+        "the gate retries to an answer: {stdout}"
+    );
+}
+
+/// The failure this gate was cancelled for in run 100973301529, which neither
+/// limit above would have caught: every audit answered, and the job ran out of
+/// time anyway. The five lockfiles took 92s, 97s, 155s and 203s-and-counting,
+/// one after another, against a registry that was slow rather than down. A
+/// deadline does not help -- nothing was killed -- and neither does the outage
+/// budget, which charges only attempts that never answered.
+///
+/// What helps is not paying for the waits one at a time. Five lockfiles that
+/// each take three seconds cost fifteen seconds in sequence and three
+/// concurrently, so the clock is the assertion: anything at or above the sum
+/// means the gate went back to auditing them in turn.
+#[test]
+fn the_lockfiles_are_audited_concurrently_rather_than_one_wait_after_another() {
+    let started = SystemTime::now();
+    // One attempt each, killed at three seconds, with a budget far too large to
+    // be what stopped it -- so the only thing the clock can be measuring is
+    // whether the five waits overlapped.
+    let (output, audits) = run_bounded_audit_gate(HANG, 99, 1, 3, 300);
+    let elapsed = started.elapsed().expect("read the clock");
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+
+    assert!(
+        !output.status.success(),
+        "five unaudited lockfiles must not pass: {stdout}{stderr}"
+    );
+    assert_eq!(
+        audits,
+        vec![1; 5],
+        "every lockfile is audited, not just the ones before the first \
+         failure: {stdout}"
+    );
+    assert!(
+        elapsed < Duration::from_secs(10),
+        "five 3s waits must overlap, not add up: {elapsed:?} is the sequential \
+         cost, which is what cancelled run 100973301529"
+    );
 }
