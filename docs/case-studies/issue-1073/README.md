@@ -127,6 +127,44 @@ the changelog fragments that `tests/unit/ci-cd/issue_1014.rs` and
 `main` since the release; they now follow the entry across its lifecycle, the
 way `tests/unit/docs_requirements_issue_656.rs` already did.
 
+## What Formal AI wrote here
+
+One commit on this branch was authored by Formal AI itself, through the live
+loop [`scripts/author-change-with-formal-ai.sh`](../../../scripts/author-change-with-formal-ai.sh)
+drives: `formal-ai serve` behind the real `@link-assistant/agent` CLI, given a
+workspace holding the two documents that make claims about the standard --
+[`contradiction-audit.md`](contradiction-audit.md) and the R1073 requirements
+shard -- and asked to weigh the statements in them.
+
+[`formal-ai-authorship/reasoning-standard-statement-audit.lino`](formal-ai-authorship/reasoning-standard-statement-audit.lino)
+is what it wrote: 70 statements weighed, 0 contradictions, 9 findings, 0 paths
+skipped. Each finding names the statement it declines to accept at face value.
+The raw session traces are committed beside it under
+[`formal-ai-authorship/evidence/`](formal-ai-authorship/evidence), and the commit
+names that session in its `Formal-AI-Session` trailer.
+
+To reproduce it, put the two documents in a scratch directory and point the
+loop at it:
+
+```sh
+seed="$(mktemp -d)"
+cp docs/case-studies/issue-1073/contradiction-audit.md \
+   docs/requirements/issue-1073-reasoning-standard.md "$seed"/
+scripts/author-change-with-formal-ai.sh \
+  --task "Audit all statement-bearing repository prose, code comments, and structured facts; weigh conflicting requirements and captured original-source evidence with probabilities; persist findings and associations; and write statement-audit.lino." \
+  --produces statement-audit.lino \
+  --into docs/case-studies/issue-1073/formal-ai-authorship/reasoning-standard-statement-audit.lino \
+  --evidence docs/case-studies/issue-1073/formal-ai-authorship/evidence \
+  --pull-request https://github.com/link-assistant/formal-ai/pull/1074 \
+  --message "docs(issue-1073): audit the claims this branch makes about the standard" \
+  --seed "$seed" --contains repository_statement_audit
+```
+
+The scope is deliberate. An earlier run seeded the whole case-study directory
+and produced a 2,936-line audit, past the 1,500-line ceiling R222-1 puts on a
+`.lino` file; the answer there is to narrow what is audited, not to exempt the
+artifact.
+
 ## Grounding
 
 The reference dialog is encoded as
