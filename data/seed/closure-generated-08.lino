@@ -369,6 +369,21 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting zh"
+  response_coding_identifier_renamed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding identifier renamed en"
+  response_coding_identifier_renamed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding identifier renamed ru"
+  response_coding_member_inserted_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member inserted es"
   response_coding_workspace_effect_observed_hi
     defined-by response_template
     lexeme en

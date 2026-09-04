@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 40185
-  line_count 850
-  content_id source_module_2280c229e228ffd7
+  byte_len 41376
+  line_count 871
+  content_id source_module_22b8d8ecc82343b4
   symbol_count 37
   symbols
     const PLAN_PATH 20 20
@@ -38,32 +38,32 @@ self_ast_census
     function names_deferred_work_product 666 676
     function ends_with_head_noun 685 693
     function resolve_census_target 712 719
-    function compose_edit_request 745 817
-    function capability_slug 818 835
-    function language 836 838
-    function escape 839 844
-    function field 845 847
-    function field_nested 848 850
+    function compose_edit_request 745 838
+    function capability_slug 839 856
+    function language 857 859
+    function escape 860 865
+    function field 866 868
+    function field_nested 869 871
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21063
-    named_node_count 4293
+    total_link_count 21553
+    named_node_count 4390
     distinct_node_kinds 85
     node_kinds
-      arguments 306
+      arguments 317
       array_expression 1
       attribute 11
       attribute_item 11
-      binary_expression 67
-      block 81
+      binary_expression 70
+      block 82
       boolean_literal 3
-      call_expression 306
+      call_expression 317
       char_literal 27
-      closure_expression 44
-      closure_parameters 44
+      closure_expression 47
+      closure_parameters 47
       compound_assignment_expr 1
       const_item 3
       continue_expression 5
@@ -78,25 +78,25 @@ self_ast_census
       expression_statement 56
       field_declaration 12
       field_declaration_list 2
-      field_expression 242
-      field_identifier 281
+      field_expression 258
+      field_identifier 297
       field_initializer 27
       field_initializer_list 6
       for_expression 2
       function_item 30
       function_modifiers 3
       generic_type 10
-      identifier 963
+      identifier 979
       if_expression 26
       impl_item 3
-      index_expression 12
+      index_expression 13
       inner_doc_comment_marker 6
       integer_literal 17
       let_chain 2
       let_condition 6
-      let_declaration 95
+      let_declaration 97
       lifetime 4
-      line_comment 276
+      line_comment 287
       macro_invocation 17
       match_arm 22
       match_block 4
@@ -107,10 +107,10 @@ self_ast_census
       outer_doc_comment_marker 197
       parameter 45
       parameters 30
-      parenthesized_expression 11
+      parenthesized_expression 12
       primitive_type 60
       range_expression 16
-      reference_expression 59
+      reference_expression 61
       reference_type 44
       return_expression 12
       scoped_identifier 87

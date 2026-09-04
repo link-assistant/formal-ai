@@ -539,6 +539,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "pattern_courtesy_phrase_horosho_spasibo"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3a2c48a91e85399b
+    source "data/seed/closure-generated-11.lino"
+    record "response_coding_text_replaced_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_3da25a81746c8b8b
     source "data/seed/closure-generated-11.lino"
     record "response_fact_check_statement_counterexample_hi"
@@ -738,6 +742,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_e5c8039517c8fefb
     source "data/seed/closure-generated-14.lino"
     record "response_client_global_config_probe_skipped_es"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_66cb192cee24c7cb
+    source "data/seed/closure-generated-14.lino"
+    record "response_coding_member_inserted_zh"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4b4eea6e9e36938b
     source "data/seed/closure-generated-14.lino"

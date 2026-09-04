@@ -563,6 +563,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_agentic_action_find_home_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f4b922d922bc1c43
+    source "data/seed/closure-generated-13.lino"
+    record "response_coding_member_already_present_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_00bd4b34734c41e3
     source "data/seed/closure-generated-13.lino"
     record "response_lexeme_import_lexeme_lost_en"

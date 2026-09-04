@@ -369,6 +369,11 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error ru"
+  response_coding_member_inserted_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member inserted ru"
   response_coding_meta_algorithm_surface_en
     defined-by response_template
     lexeme en

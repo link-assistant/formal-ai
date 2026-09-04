@@ -2,57 +2,57 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 29559
-  line_count 690
-  content_id source_module_ccbf4009fa1eb51c
+  byte_len 30180
+  line_count 699
+  content_id source_module_e7ae41aa66b3ad8b
   symbol_count 25
   symbols
-    struct Obligation 54 63
-    function parse_obligation 87 132
-    function exact_field_lines 135 168
-    function work_before_delivery 184 188
-    function without_trailing_separator 201 211
-    function plan_evidence_record_step 222 289
-    function render_obligation 292 318
-    function exact_field_values 325 333
-    function combined_observation 336 351
-    function non_hollow_result 360 372
-    function written_observation 378 388
-    function substantive_result_line 398 458
-    function relevance_score 460 522
-    function looks_like_condition 530 542
-    function looks_like_instance_condition 548 553
-    function looks_like_local_binding 558 563
-    function looks_like_exposed_declaration 568 574
-    function looks_like_declaration 582 601
-    function source_text 603 608
-    function is_quoted_or_commented_source 610 620
-    function is_match_count 622 626
-    function looks_like_result_path_heading 628 630
-    function source_authority 635 642
-    function symbolic_answer 668 678
-    function with_residual_request 685 690
+    struct Obligation 53 62
+    function parse_obligation 86 141
+    function exact_field_lines 144 177
+    function work_before_delivery 193 197
+    function without_trailing_separator 210 220
+    function plan_evidence_record_step 231 298
+    function render_obligation 301 327
+    function exact_field_values 334 342
+    function combined_observation 345 360
+    function non_hollow_result 369 381
+    function written_observation 387 397
+    function substantive_result_line 407 467
+    function relevance_score 469 531
+    function looks_like_condition 539 551
+    function looks_like_instance_condition 557 562
+    function looks_like_local_binding 567 572
+    function looks_like_exposed_declaration 577 583
+    function looks_like_declaration 591 610
+    function source_text 612 617
+    function is_quoted_or_commented_source 619 629
+    function is_match_count 631 635
+    function looks_like_result_path_heading 637 639
+    function source_authority 644 651
+    function symbolic_answer 677 687
+    function with_residual_request 694 699
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16670
-    named_node_count 3581
-    distinct_node_kinds 79
+    total_link_count 16756
+    named_node_count 3592
+    distinct_node_kinds 78
     node_kinds
-      arguments 320
+      arguments 321
       array_expression 9
       array_type 5
       assignment_expression 8
-      binary_expression 52
+      binary_expression 51
       block 68
       boolean_literal 5
-      call_expression 320
+      call_expression 321
       captured_pattern 1
       char_literal 34
-      closure_expression 54
-      closure_parameters 54
+      closure_expression 55
+      closure_parameters 55
       continue_expression 4
       crate 15
       doc_comment 180
@@ -61,24 +61,23 @@ self_ast_census
       expression_statement 59
       field_declaration 4
       field_declaration_list 1
-      field_expression 257
-      field_identifier 261
+      field_expression 258
+      field_identifier 262
       field_initializer_list 1
       for_expression 4
       function_item 24
       generic_function 3
       generic_type 15
-      identifier 707
+      identifier 704
       if_expression 21
       index_expression 6
       inner_doc_comment_marker 38
       integer_literal 11
-      let_chain 1
       let_condition 3
       let_declaration 63
       lifetime 3
       lifetime_parameter 1
-      line_comment 196
+      line_comment 205
       macro_invocation 7
       match_arm 8
       match_block 3
@@ -89,7 +88,7 @@ self_ast_census
       outer_doc_comment_marker 142
       parameter 41
       parameters 24
-      parenthesized_expression 3
+      parenthesized_expression 4
       primitive_type 58
       range_expression 3
       reference_expression 38

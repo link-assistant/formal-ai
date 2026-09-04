@@ -419,6 +419,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "response_client_contract_missing_evidence_error_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_6496a219469b1158
+    source "data/seed/closure-generated-09.lino"
+    record "response_coding_member_already_present_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f9a3f218fab2c068
     source "data/seed/closure-generated-09.lino"
     record "response_external_benchmark_ascent_prompt_prefix_hi"

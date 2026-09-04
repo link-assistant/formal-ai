@@ -389,6 +389,11 @@ meanings
     lexeme en
       surface
         text "response client global config requirement missing hi"
+  response_coding_member_already_present_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present es"
   response_coding_meta_algorithm_heading_en
     defined-by response_template
     lexeme en

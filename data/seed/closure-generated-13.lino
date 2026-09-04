@@ -444,6 +444,11 @@ meanings
     lexeme en
       surface
         text "response capabilities more ru"
+  response_coding_member_already_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present ru"
   response_coding_meta_algorithm_solutions_heading_hi
     defined-by response_template
     lexeme en

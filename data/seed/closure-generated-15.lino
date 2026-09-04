@@ -494,6 +494,11 @@ meanings
     lexeme en
       surface
         text "response client global config probe started ru"
+  response_coding_identifier_renamed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding identifier renamed es"
   response_coding_repository_source_observation_en
     defined-by response_template
     lexeme en
@@ -504,6 +509,11 @@ meanings
     lexeme en
       surface
         text "response coding source binary operation test rust"
+  response_coding_text_replaced_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced hi"
   response_coding_workspace_verification_failed_ru
     defined-by response_template
     lexeme en

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 32780
-  line_count 686
-  content_id source_module_21a8ff0402cafeb9
+  byte_len 33523
+  line_count 696
+  content_id source_module_67af9272702d0b4f
   symbol_count 17
   symbols
     enum AgenticPlan 62 67
@@ -13,24 +13,24 @@ self_ast_census
     function permission_key 109 126
     function registry_id 128 145
     function tool_capability 154 156
-    function plan_chat_step 161 518
-    function plan_shell_step 521 538
-    function plan_one 540 545
-    function write_arguments 553 561
-    function fetch_arguments 570 576
-    function classify_tool 578 580
-    function latest_user_text 583 585
-    function compacted_agent_task 588 622
-    function repair_compacted_dot_paths 630 662
-    function preserved_first_user_turn 670 676
-    function trace_route 682 686
+    function plan_chat_step 161 528
+    function plan_shell_step 531 548
+    function plan_one 550 555
+    function write_arguments 563 571
+    function fetch_arguments 580 586
+    function classify_tool 588 590
+    function latest_user_text 593 595
+    function compacted_agent_task 598 632
+    function repair_compacted_dot_paths 640 672
+    function preserved_first_user_turn 680 686
+    function trace_route 692 696
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15861
-    named_node_count 3159
+    total_link_count 15948
+    named_node_count 3169
     distinct_node_kinds 76
     node_kinds
       arguments 236
@@ -72,7 +72,7 @@ self_ast_census
       let_condition 45
       let_declaration 21
       lifetime 2
-      line_comment 207
+      line_comment 217
       macro_invocation 10
       match_arm 28
       match_block 2

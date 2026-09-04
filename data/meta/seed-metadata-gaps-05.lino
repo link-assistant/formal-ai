@@ -567,6 +567,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_agent_procedure_executed_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9a1bee29bc5789b5
+    source "data/seed/closure-generated-12.lino"
+    record "response_coding_member_already_present_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fadb491a2e11d6c5
     source "data/seed/closure-generated-12.lino"
     record "response_general_plan_unverified_es"
@@ -674,6 +678,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_26ad6f6c3bdc2ac5
     source "data/seed/closure-generated-15.lino"
     record "pattern_wellbeing_phrase_kaise_ho_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ae317632476fd1b5
+    source "data/seed/closure-generated-15.lino"
+    record "response_coding_identifier_renamed_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_35d98fa112615835
     source "data/seed/closure-generated-15.lino"

@@ -67,6 +67,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "response_algorithm_invalid_binding_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f38e3de12da9a6fc
+    source "data/seed/closure-generated-02.lino"
+    record "response_coding_member_already_present_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5b1592b1bb8cbe3c
     source "data/seed/closure-generated-02.lino"
     record "response_definition_merge_sources_label_zh"
@@ -451,6 +455,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "response_agentic_action_compile_program_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e82a6c8a660730bc
+    source "data/seed/closure-generated-08.lino"
+    record "response_coding_member_inserted_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5755731729a4c55c
     source "data/seed/closure-generated-08.lino"
     record "response_lexeme_import_denotation_lost_hi"
@@ -614,6 +622,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_12c487827b780cbc
     source "data/seed/closure-generated-11.lino"
     record "response_client_global_config_probe_started_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3a2c33a91e8515ec
+    source "data/seed/closure-generated-11.lino"
+    record "response_coding_text_replaced_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2d2ef3fbc322b98c
     source "data/seed/closure-generated-11.lino"
@@ -826,6 +838,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_7925384104d5a92c
     source "data/seed/closure-generated-15.lino"
     record "pattern_wellbeing_phrase_tum_kaise_ho_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_383d2af907481b6c
+    source "data/seed/closure-generated-15.lino"
+    record "response_coding_text_replaced_hi"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_faf617c348c80f3c
     source "data/seed/closure-generated-15.lino"

@@ -639,6 +639,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "response_agent_procedure_write_unavailable_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_aee581f1c7554cba
+    source "data/seed/closure-generated-14.lino"
+    record "response_coding_text_replaced_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_10995b3959f3246a
     source "data/seed/closure-generated-14.lino"
     record "response_detected_failure_report_invitation_ru"

@@ -2,119 +2,129 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 19118
-  line_count 563
-  content_id source_module_6b34c708e26dae85
-  symbol_count 24
+  byte_len 22033
+  line_count 631
+  content_id source_module_04a90f3e19444dab
+  symbol_count 27
   symbols
-    struct GroundedRewrite 28 35
-    struct CompositeModuleChange 38 43
-    function plan_workspace_change_step 45 61
-    function plan_rewrite_step 63 156
-    function plan_composite_step 158 265
-    function grounded_rewrite 267 302
-    function composite_module_change 306 327
-    function insert_registration 329 342
-    function compact_registration_edit 344 368
-    const MAX_SUFFIX_BYTES 345 345
-    function repeated_identifier_rewrite_command 370 384
-    function shell_safe_identifier 386 391
-    function identifier_tokens 393 396
-    function valid_identifier 398 408
-    function rust_paths 410 432
-    function result_for_path 434 458
-    function result_for_edit 460 472
-    function argument_matches_path 474 481
-    function argument_matches 483 486
-    function workspace_path_matches 488 495
-    function result_for_command 497 513
-    function plan_digest_verification 515 536
-    function matching_result 538 559
-    function read_arguments 561 563
+    struct GroundedRewrite 30 37
+    function stated_intent 44 49
+    function stated_slots 52 52
+    struct VerifiedChange 61 66
+    struct CompositeModuleChange 69 74
+    function plan_workspace_change_step 76 92
+    function plan_rewrite_step 94 198
+    function plan_composite_step 200 316
+    function grounded_rewrite 318 366
+    function composite_module_change 370 391
+    function insert_registration 393 406
+    function compact_registration_edit 408 432
+    const MAX_SUFFIX_BYTES 409 409
+    function repeated_identifier_rewrite_command 434 448
+    function shell_safe_identifier 450 455
+    function identifier_tokens 457 460
+    function valid_identifier 462 472
+    function rust_paths 474 496
+    function result_for_path 498 522
+    function result_for_edit 524 536
+    function argument_matches_path 538 545
+    function argument_matches 547 550
+    function workspace_path_matches 552 559
+    function result_for_command 561 577
+    function plan_digest_verification 579 604
+    function matching_result 606 627
+    function read_arguments 629 631
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15154
-    named_node_count 3009
-    distinct_node_kinds 79
+    total_link_count 16630
+    named_node_count 3319
+    distinct_node_kinds 86
     node_kinds
       abstract_type 2
-      arguments 280
-      array_expression 6
-      array_type 13
+      arguments 297
+      array_expression 11
+      array_type 15
       attribute 3
       attribute_item 3
-      binary_expression 54
-      block 77
+      binary_expression 55
+      block 79
       boolean_literal 6
       break_expression 1
-      call_expression 280
+      call_expression 297
       char_literal 16
-      closure_expression 29
-      closure_parameters 29
+      closure_expression 30
+      closure_parameters 30
       const_item 1
       continue_expression 1
       crate 5
-      doc_comment 10
-      else_clause 5
+      declaration_list 1
+      doc_comment 19
+      else_clause 4
       escape_sequence 2
-      expression_statement 69
-      field_declaration 8
-      field_declaration_list 2
-      field_expression 196
-      field_identifier 208
-      field_initializer 4
-      field_initializer_list 2
+      expression_statement 76
+      field_declaration 12
+      field_declaration_list 3
+      field_expression 214
+      field_identifier 242
+      field_initializer 16
+      field_initializer_list 5
       for_expression 2
-      function_item 21
+      function_item 23
+      function_modifiers 1
       function_type 1
       generic_function 4
-      generic_type 16
-      identifier 813
-      if_expression 32
+      generic_type 17
+      identifier 858
+      if_expression 34
+      impl_item 1
       index_expression 5
       inner_doc_comment_marker 8
-      integer_literal 9
+      integer_literal 10
       let_chain 2
       let_condition 6
-      let_declaration 61
-      line_comment 18
+      let_declaration 60
+      lifetime 9
+      lifetime_parameter 1
+      line_comment 37
       macro_invocation 12
-      match_arm 7
+      match_arm 6
       match_block 3
       match_expression 3
-      match_pattern 7
+      match_pattern 6
       mutable_specifier 5
-      outer_doc_comment_marker 2
+      outer_doc_comment_marker 11
       parameter 48
-      parameters 22
+      parameters 24
       parenthesized_expression 1
-      primitive_type 43
+      primitive_type 49
       range_expression 5
-      reference_expression 79
-      reference_type 53
-      return_expression 32
-      scoped_identifier 68
+      reference_expression 97
+      reference_type 62
+      return_expression 35
+      scoped_identifier 73
       scoped_use_list 5
+      self 5
+      self_parameter 2
       shorthand_field_initializer 4
-      slice_pattern 1
       source_file 1
-      string_content 47
-      string_literal 46
-      struct_expression 2
-      struct_item 2
+      string_content 55
+      string_literal 54
+      struct_expression 5
+      struct_item 3
       super 6
       token_tree 21
-      try_expression 28
-      tuple_expression 4
+      try_expression 31
+      tuple_expression 9
       tuple_pattern 8
       tuple_struct_pattern 15
-      tuple_type 1
-      type_arguments 20
+      tuple_type 3
+      type_arguments 21
       type_binding 1
-      type_identifier 64
+      type_identifier 71
+      type_parameters 1
       unary_expression 16
       use_declaration 11
       use_list 5

@@ -323,6 +323,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "ratchet"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_82d84ffacaa398e4
+    source "data/seed/closure-generated-08.lino"
+    record "response_coding_identifier_renamed_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_04d9e482f0c89454
     source "data/seed/closure-generated-08.lino"
     record "response_detected_failure_report_invitation_unknown"
