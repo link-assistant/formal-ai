@@ -2,74 +2,74 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 30180
-  line_count 699
-  content_id source_module_e7ae41aa66b3ad8b
+  byte_len 31306
+  line_count 717
+  content_id source_module_f8bbfa82bcaea695
   symbol_count 25
   symbols
-    struct Obligation 53 62
-    function parse_obligation 86 141
-    function exact_field_lines 144 177
-    function work_before_delivery 193 197
-    function without_trailing_separator 210 220
-    function plan_evidence_record_step 231 298
-    function render_obligation 301 327
-    function exact_field_values 334 342
-    function combined_observation 345 360
-    function non_hollow_result 369 381
-    function written_observation 387 397
-    function substantive_result_line 407 467
-    function relevance_score 469 531
-    function looks_like_condition 539 551
-    function looks_like_instance_condition 557 562
-    function looks_like_local_binding 567 572
-    function looks_like_exposed_declaration 577 583
-    function looks_like_declaration 591 610
-    function source_text 612 617
-    function is_quoted_or_commented_source 619 629
-    function is_match_count 631 635
-    function looks_like_result_path_heading 637 639
-    function source_authority 644 651
-    function symbolic_answer 677 687
-    function with_residual_request 694 699
+    struct Obligation 54 63
+    function parse_obligation 87 142
+    function exact_field_lines 145 178
+    function work_before_delivery 194 198
+    function without_trailing_separator 211 221
+    function plan_evidence_record_step 232 316
+    function render_obligation 319 345
+    function exact_field_values 352 360
+    function combined_observation 363 378
+    function non_hollow_result 387 399
+    function written_observation 405 415
+    function substantive_result_line 425 485
+    function relevance_score 487 549
+    function looks_like_condition 557 569
+    function looks_like_instance_condition 575 580
+    function looks_like_local_binding 585 590
+    function looks_like_exposed_declaration 595 601
+    function looks_like_declaration 609 628
+    function source_text 630 635
+    function is_quoted_or_commented_source 637 647
+    function is_match_count 649 653
+    function looks_like_result_path_heading 655 657
+    function source_authority 662 669
+    function symbolic_answer 695 705
+    function with_residual_request 712 717
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16756
-    named_node_count 3592
+    total_link_count 17040
+    named_node_count 3643
     distinct_node_kinds 78
     node_kinds
-      arguments 321
+      arguments 324
       array_expression 9
       array_type 5
       assignment_expression 8
-      binary_expression 51
-      block 68
+      binary_expression 52
+      block 69
       boolean_literal 5
-      call_expression 321
+      call_expression 324
       captured_pattern 1
       char_literal 34
-      closure_expression 55
-      closure_parameters 55
+      closure_expression 56
+      closure_parameters 56
       continue_expression 4
       crate 15
       doc_comment 180
       else_clause 6
       escape_sequence 5
-      expression_statement 59
+      expression_statement 62
       field_declaration 4
       field_declaration_list 1
-      field_expression 258
-      field_identifier 262
+      field_expression 261
+      field_identifier 265
       field_initializer_list 1
       for_expression 4
       function_item 24
       generic_function 3
       generic_type 15
-      identifier 704
-      if_expression 21
+      identifier 713
+      if_expression 22
       index_expression 6
       inner_doc_comment_marker 38
       integer_literal 11
@@ -77,7 +77,7 @@ self_ast_census
       let_declaration 63
       lifetime 3
       lifetime_parameter 1
-      line_comment 205
+      line_comment 218
       macro_invocation 7
       match_arm 8
       match_block 3
@@ -94,17 +94,17 @@ self_ast_census
       reference_expression 38
       reference_pattern 1
       reference_type 42
-      return_expression 9
-      scoped_identifier 76
+      return_expression 10
+      scoped_identifier 78
       scoped_use_list 3
       shorthand_field_initializer 4
       slice_pattern 2
       source_file 1
-      string_content 64
-      string_literal 65
+      string_content 66
+      string_literal 67
       struct_expression 1
       struct_item 1
-      super 10
+      super 11
       token_tree 9
       try_expression 7
       tuple_expression 4
@@ -116,6 +116,6 @@ self_ast_census
       type_parameters 1
       unary_expression 20
       unit_expression 1
-      use_declaration 7
+      use_declaration 8
       use_list 3
       visibility_modifier 1
