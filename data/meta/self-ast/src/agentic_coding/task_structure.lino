@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/task_structure.rs
   language rust
   fidelity full_ast
-  byte_len 6135
+  byte_len 6143
   line_count 115
-  content_id source_module_2712e2daefda2bd7
+  content_id source_module_4d2c2ad65eb199f9
   symbol_count 2
   symbols
     function plan_task_structure_step 60 101

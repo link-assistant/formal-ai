@@ -21,7 +21,7 @@ same ecosystem is compiled into Formal AI. The sections below distinguish:
 flowchart LR
     Clients["CLI / HTTP / browser"] --> Config["lino-arguments"]
     Config --> Syntax["Links Notation + object codec"]
-    Syntax --> Store["doublets-rs + platform-mem<br/>or browser IndexedDB"]
+    Syntax --> Store["link-cli transactional store<br/>or browser IndexedDB"]
     Store --> Reason["Formal AI reasoning,<br/>query and substitution"]
     Syntax --> Meta["meta-language CST / AST"]
     Reason --> Calc["link-calculator"]
@@ -33,9 +33,10 @@ flowchart LR
    Formal AI configuration.
 2. `links-notation` and `lino-objects-codec` parse human-readable `.lino`
    documents and serialize portable memories, datasets, traces, and packages.
-3. A native default build mirrors those records into `doublets-rs`, backed by
-   `platform-mem`. Browser builds keep the same reducible link shape in
-   IndexedDB and advertise `doublets-web` only when that runtime is present.
+3. A native default build mirrors those records through the `link-cli` library,
+   whose transactional layer wraps a file-mapped `doublets-rs` store. Browser
+   builds keep the same reducible link shape in IndexedDB and advertise
+   `doublets-web` only when that runtime is present.
 4. Formal AI's in-repository reasoning, query, and substitution engines operate
    on the links. `meta-language` supplies CST and AST networks for program and
    document structure, while `link-calculator` handles supported calculations.
@@ -47,26 +48,31 @@ flowchart LR
 These components are current direct dependencies. The manifest and source-path
 references are the source of truth for how each is integrated.
 
-### `doublets`
+### `link-cli`
+
+Repository: [link-foundation/link-cli](https://github.com/link-foundation/link-cli)
+
+Formal AI's default `doublets-native` Cargo feature selects `link-cli` as its
+native link-store library. `src/link_store.rs` uses link-cli's file-mapped
+`DoubletsStorage` and `GenericTransactionsDecorator` directly: server writes
+are committed with an fsynced recovery log, explicit rollback restores both
+the native graph and its in-memory projection, and an interrupted projection is
+repaired from the atomic `.lino` source on reopen. This replaces Formal AI's
+former local composition of `doublets` and `platform-mem`.
+
+### `doublets-rs` storage inside link-cli
 
 Repository: [linksplatform/doublets-rs](https://github.com/linksplatform/doublets-rs)
 
-`doublets-rs` is the Rust implementation of the Links Platform doublet store:
-each link has a source and a target, and links can point to other links. Formal
-AI's default `doublets-native` Cargo feature selects it as the physical native
-link-store backend. `src/link_store.rs` reduces memory events to stable
-`Type → SubType → Value` link graphs, mirrors them into the store, and preserves
-Links Notation as the reviewable import/export projection.
-
-### `platform-mem`
-
-Repository: [linksplatform/mem-rs](https://github.com/linksplatform/mem-rs)
-
-The `platform-mem` crate supplies memory allocation primitives to the native
-doublet store. It appears in `Cargo.toml` under the local dependency name `mem`
-and is enabled with `doublets-native`; `src/link_store.rs` combines
-`mem::Global` with the `doublets` store. It is storage infrastructure, not a
-separate semantic or reasoning layer.
+`doublets-rs` supplies link-cli's physical doublet network: each link has a
+source and target and can point to other links. It is now a transitive
+implementation detail of the link-cli library rather than a separately wired
+Formal AI dependency. `src/link_store.rs` reduces memory events to stable
+`Type → SubType → Value` graphs while Links Notation remains the reviewable
+import/export projection. Its
+[`platform-mem`](https://github.com/linksplatform/mem-rs) allocator is likewise
+transitive storage infrastructure, not a separately integrated semantic or
+reasoning layer.
 
 ### `links-notation`
 
@@ -147,14 +153,14 @@ the `doublets-web` backend when a compatible global runtime is available. This
 keeps browser data portable without claiming that the upstream package is
 always loaded.
 
-### Query dialect: `link-cli`
+### Query dialect supplied by `link-cli`
 
 Repository: [link-foundation/link-cli](https://github.com/link-foundation/link-cli)
 
-`link-cli` defines familiar link query and substitution command conventions.
-Formal AI adapts those conventions in its in-repository implementation in
-`src/links_query.rs` and `src/links_substitution_query/`. It neither launches
-the external CLI nor depends on its package at runtime.
+Besides the native storage APIs used directly above, `link-cli` defines the
+link query and substitution command conventions. Formal AI adapts those
+conventions in `src/links_query.rs` and `src/links_substitution_query/`; it
+links the Rust library in-process and does not launch an external CLI binary.
 
 ### Reasoning model: `relative-meta-logic`
 

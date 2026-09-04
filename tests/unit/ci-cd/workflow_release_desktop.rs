@@ -84,7 +84,7 @@ fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
         "the resolve step should delegate to the unit-tested resolve script"
     );
     assert!(
-        resolve.contains("actions/checkout@v6"),
+        resolve.contains("actions/checkout@v7"),
         "the resolve job must check out the repo so the resolve script is available"
     );
 

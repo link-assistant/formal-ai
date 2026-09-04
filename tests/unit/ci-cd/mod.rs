@@ -33,6 +33,7 @@ mod issue_1055;
 mod issue_1057;
 mod issue_1059;
 mod issue_1064;
+mod issue_1069;
 mod issue_717;
 mod issue_730;
 mod issue_739;
@@ -44,6 +45,7 @@ mod issue_932;
 mod issue_977;
 mod issue_980;
 mod issue_999;
+mod javascript_dependency_audit;
 mod macos_package_retry;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]

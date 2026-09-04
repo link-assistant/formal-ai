@@ -167,6 +167,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "linksplatform"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_eafd4fdf340fecc2
+    source "data/seed/closure-generated-05.lino"
+    record "max"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_75bb6dceaecb4252
     source "data/seed/closure-generated-05.lino"
     record "pattern_courtesy_phrase_wo_hen_hao_xiexie"
@@ -335,6 +339,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "response_capabilities_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_82915afaca67a8f2
+    source "data/seed/closure-generated-08.lino"
+    record "response_coding_identifier_renamed_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f8ab3ffcf1fe1af2
     source "data/seed/closure-generated-08.lino"
     record "response_lexeme_import_fetch_failed_ru"
@@ -474,6 +482,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_f56bcb52de6213d2
     source "data/seed/closure-generated-11.lino"
     record "barack_obama"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5614580e16fddb62
+    source "data/seed/closure-generated-11.lino"
+    record "coding_identifier_renamed"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c36b40560f8cb6b2
     source "data/seed/closure-generated-11.lino"

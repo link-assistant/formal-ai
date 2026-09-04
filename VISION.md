@@ -44,7 +44,7 @@ The system should prefer deep understanding of user needs, intent, context, and 
 
 The default native store is link-native:
 
-- `doublets-rs` is the default native Links Data Store for meanings, history, rules, traces, and executable associations.
+- The `link-cli` library is the default native Links Data Store boundary for meanings, history, rules, traces, and executable associations, using its transactional file-mapped `doublets-rs` backend.
 - `doublets-web` / IndexedDB is the browser-side storage shape.
 - Links Notation is the reviewable text format for seed data, portable packages, traces, and repository data.
 - Doublet links are the primitive storage model for this project.
@@ -135,7 +135,7 @@ The full pipeline is documented in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Growable Memory And Public Knowledge As Cache
 
-Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The default native store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
+Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The default native store is link-cli's transactional file-mapped doublets store in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; portable source and backup documents are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
 
 Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts.
 
@@ -228,7 +228,7 @@ Every capability the CLI or HTTP server exposes is also reachable from the `form
 
 The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `src/seed.rs` (Rust) and `src/web/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
 
-The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers while preserving the unified doublets-rs/doublets-web store and Links Notation migration surface across interfaces.
+The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers while preserving the unified link-cli/doublets-web store and Links Notation migration surface across interfaces.
 
 The foundation batches E1-E20, the reasoning batch E21-E27, the synthesis batch E28-E32, and the parity batch E33-E34 are merged (PRs #305-#311, #319-#323, #328-#329). Every user message is now formalized into a Links Notation intent before routing, unmatched prompts run a reasoning-under-unknowns loop instead of falling through to "I can't answer that", narrow per-language intents are collapsed into a parametric `write a program` intent, behavior can be expressed as substitution rules (`replace x y`, `when n do m`) over link CRUD, natural language can query memory / call APIs / execute code under the permission model, a bounded isolated agent runs allowlisted commands, and progress is measured against an imported industry benchmark slice (HumanEval, MBPP, GSM8K, MATH, BIG-bench).
 

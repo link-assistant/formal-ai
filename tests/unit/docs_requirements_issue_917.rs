@@ -140,7 +140,11 @@ fn issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
     );
 
     let stream = read(evidence.join("agent-stream.raw.log"));
-    assert_contains_all("Agent CLI raw stream", &stream, &[session_id, "formal-ai"]);
+    assert!(
+        stream.contains(session_id),
+        "Agent CLI raw stream must preserve its recorded session"
+    );
+    assert_contains_all("Agent CLI raw stream", &stream, &["formal-ai"]);
     for file in [
         "agent-stderr.log",
         "agent-stream.jsonl",
@@ -160,6 +164,7 @@ fn issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
         &[
             "serve --host 127.0.0.1",
             "--output-format stream-json",
+            "FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\"",
             "formal-language-projection-invariant.md",
             INVARIANT,
             "cmp -s",
@@ -171,12 +176,15 @@ fn issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             .all(|line| !line.trim_start().starts_with("rg ")),
         "issue 917 Agent CLI replay must only require tools installed by its CI job"
     );
+    let workflow = read(root.join(".github/workflows/release.yml"));
     assert_contains_all(
         "issue 917 Agent CLI CI gate",
-        &read(root.join(".github/workflows/release.yml")),
+        &workflow,
         &[
             "formal projection invariant (issue #917)",
             "experiments/issue_917_agent_cli.sh",
+            "/tmp/formal-ai-issue-917-evidence",
+            "/tmp/formal-ai-issue-*-evidence",
         ],
     );
 }

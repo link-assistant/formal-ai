@@ -1,0 +1,13 @@
+diff --git a/src/orchestration/workspace.rs b/src/orchestration/workspace.rs
+index e63458d..191a22f 100644
+--- a/src/orchestration/workspace.rs
++++ b/src/orchestration/workspace.rs
+@@ -245,7 +245,7 @@ fn ignored(path: &Path, root: &Path) -> bool {
+         relative.components().next().is_some_and(|part| {
+             matches!(
+                 part.as_os_str().to_str(),
+-                Some(".git" | "target" | ".formal-ai" | ".formal-ai-orchestration")
++                Some(".git" | "target" | ".formal-ai" | ".formal-ai-orchestration" | "node_modules")
+             )
+         })
+     })

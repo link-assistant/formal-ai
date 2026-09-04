@@ -19,6 +19,11 @@ meanings
     lexeme en
       surface
         text "archive round trip"
+  association
+    defined-by word_surface
+    lexeme en
+      surface
+        text "association"
   bootstrap-icons
     defined-by concept
     lexeme en
@@ -439,6 +444,11 @@ meanings
     lexeme en
       surface
         text "response capabilities more ru"
+  response_coding_member_already_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present ru"
   response_coding_meta_algorithm_solutions_heading_hi
     defined-by response_template
     lexeme en
@@ -484,6 +494,11 @@ meanings
     lexeme en
       surface
         text "response definition followup clarify ru"
+  response_evidence_exact_composition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition zh"
   response_external_benchmark_egg_law_prompt_hi
     defined-by response_template
     lexeme en
@@ -524,6 +539,11 @@ meanings
     lexeme en
       surface
         text "response fact check statement counterexample ru"
+  response_file_read_many_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable hi"
   response_general_plan_command_output_evidence_en
     defined-by response_template
     lexeme en

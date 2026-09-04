@@ -153,7 +153,7 @@ second_line="$(grep -n 'event "released-assistant"' "$workdir/exported.lino" | c
 
 # The real candidate server opens the same upgraded named volume and reports
 # the compatibility contract from /health.
-docker run -d --privileged --name "$server" \
+docker run --rm -d --privileged --name "$server" \
   -p 127.0.0.1::8080 \
   -e DIND_SKIP_DAEMON=1 \
   -e FORMAL_AI_MEMORY_PATH="$MEMORY_PATH" \

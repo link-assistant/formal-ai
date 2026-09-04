@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  coding_member_already_present
+    defined-by intent
+    lexeme en
+      surface
+        text "coding member already present"
   coding_workspace_verification_failed
     defined-by intent
     lexeme en
@@ -109,6 +114,11 @@ meanings
     lexeme en
       surface
         text "eval js"
+  evidence_exact_composition
+    defined-by intent
+    lexeme en
+      surface
+        text "evidence exact composition"
   export_memory
     defined-by name
     lexeme en
@@ -359,6 +369,11 @@ meanings
     lexeme en
       surface
         text "refusing"
+  relationships
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relationships"
   repositories
     defined-by word_surface
     lexeme en
@@ -469,6 +484,11 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm stage hi"
+  response_coding_text_replaced_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced ru"
   response_compiled_procedure_explanation_hi
     defined-by response_template
     lexeme en
@@ -489,6 +509,11 @@ meanings
     lexeme en
       surface
         text "response definition merge header zh"
+  response_evidence_exact_composition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition hi"
   response_external_benchmark_invalid_rust_string_ru
     defined-by response_template
     lexeme en

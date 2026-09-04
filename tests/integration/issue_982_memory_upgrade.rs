@@ -605,10 +605,28 @@ fn ordinary_server_write_preserves_released_schema_and_unknown_metadata() {
     assert!(!after.contains("schema_version"));
     assert!(after.contains("futureField \"preserve me\""));
     assert!(after.find("event \"event-1\"") < after.find("event \"event-2\""));
+    let mut entries = std::fs::read_dir(&dir)
+        .expect("list fixture dir")
+        .map(|entry| {
+            entry
+                .expect("fixture entry")
+                .file_name()
+                .to_string_lossy()
+                .into_owned()
+        })
+        .collect::<Vec<_>>();
+    entries.sort();
+    let mut expected = vec!["memory.lino", "memory.lino.lock"];
+    #[cfg(feature = "doublets-native")]
+    expected.extend([
+        "memory.links",
+        "memory.links.lock",
+        "memory.transitions.links",
+    ]);
+    expected.sort_unstable();
     assert_eq!(
-        std::fs::read_dir(&dir).expect("list fixture dir").count(),
-        2,
-        "an ordinary write may create only the shared writer lock"
+        entries, expected,
+        "an ordinary write may create only the portable memory, its shared writer lock, and the documented link-cli persistence sidecars"
     );
 
     let _ = std::fs::remove_dir_all(dir);

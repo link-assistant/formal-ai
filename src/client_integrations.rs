@@ -163,6 +163,7 @@ struct RenderContext {
     protocol_base_env: String,
     google_auth_type: String,
     model_catalog_path: String,
+    working_directory: String,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -351,6 +352,7 @@ fn render_context(
         protocol_base_env,
         google_auth_type,
         model_catalog_path: String::new(),
+        working_directory: std::env::current_dir()?.to_string_lossy().into_owned(),
     };
     // An already-qualified selector (`provider/model`) is passed through: the
     // seed template only supplies the provider a bare alias is missing.
@@ -696,6 +698,7 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{protocol_base_env}", &context.protocol_base_env)
         .replace("{google_auth_type}", &context.google_auth_type)
         .replace("{model_catalog_path}", &context.model_catalog_path)
+        .replace("{working_directory}", &context.working_directory)
 }
 
 fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {

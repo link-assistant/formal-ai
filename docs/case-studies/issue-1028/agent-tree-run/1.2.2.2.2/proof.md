@@ -1,3 +1,3 @@
 node_path=1.2.2.2.2
 
-This task cannot be split into two sub-tasks that can be checked independently, and no observable completion criterion is known for it, so there is nothing to enumerate: it is an irreducible single need.
+Line 5: Every internal node has exactly two children, and every leaf is atomic and independently checkable. The Agent-CLI runner generates the canonical 63-node tree from the 32 atomic leaf formulations at runtime so the tree structure itself is executable and testable.

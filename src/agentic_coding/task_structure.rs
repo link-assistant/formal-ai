@@ -102,7 +102,7 @@ pub(super) fn plan_task_structure_step(
 
 /// Whether the turn is still one this route may answer.
 ///
-/// It is the same question [`super::shell_command::workspace_inspection_query_for_task`]
+/// It is the same question [`super::workspace_inspection::workspace_inspection_search_for_task`]
 /// is asked at its call site, and this route has a stronger reason to ask it.
 /// Every other route here plans a tool call and stands aside once that call has
 /// been made; this one plans no call at all, so its answer does not change from

@@ -23,6 +23,7 @@ meanings
   coding_test
     defined-by code
     role coding_artifact_kind
+    role coding_test_artifact_kind
     precondition "a coding request contains this concept surface"
     effect "the artifact-kind slot is bound to test"
     unit "not applicable"
@@ -30,6 +31,8 @@ meanings
     lexeme en
       surface
         text test
+      surface
+        text regression
     lexeme ru
       surface
         text тест
@@ -206,6 +209,40 @@ meanings
     lexeme zh
       surface
         text "值为 …"
+  coding_bound
+    defined-by code
+    role coding_bound_cue
+    precondition "a workspace-inspection fact or source identifier contains this concept surface"
+    effect "the fact or identifier is read as naming a configured bound"
+    unit "not applicable"
+    example "max_items is the limit on item count"
+    lexeme en
+      surface
+        text limit
+      surface
+        text limits
+      surface
+        text bound
+      surface
+        text bounds
+      surface
+        text cap
+      surface
+        text ceiling
+      surface
+        text maximum
+      surface
+        text max
+  completion_criterion
+    defined-by code
+    role coding_search_literal_query
+    precondition "a source model names the observable condition for completion"
+    effect "completion_criterion denotes that model field"
+    unit "not applicable"
+    example "completion_criterion"
+    lexeme en
+      surface
+        text completion_criterion
   coding_search_string
     defined-by code
     role coding_search_subject_kind
@@ -247,6 +284,7 @@ meanings
   coding_search_array
     defined-by code
     role coding_search_subject_kind
+    role coding_member_list_kind
     precondition "a coding request contains this concept surface"
     effect "the search-subject slot is bound to array"
     unit "not applicable"
@@ -263,6 +301,89 @@ meanings
     lexeme zh
       surface
         text 数组
+  coding_member_list_sequence
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an ordered member list"
+    unit "not applicable"
+    example "list"
+    lexeme en
+      surface
+        text list
+      surface
+        text lists
+      surface
+        text sequence
+      surface
+        text vector
+    lexeme ru
+      surface
+        text список
+      surface
+        text списке
+      surface
+        text перечень
+    lexeme hi
+      surface
+        text सूची
+    lexeme zh
+      surface
+        text 列表
+  coding_member_list_set
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an unordered member list"
+    unit "not applicable"
+    example "set"
+    lexeme en
+      surface
+        text set
+      surface
+        text collection
+    lexeme ru
+      surface
+        text множество
+      surface
+        text коллекция
+    lexeme hi
+      surface
+        text समुच्चय
+      surface
+        text संग्रह
+    lexeme zh
+      surface
+        text 集合
+  coding_member_list_group
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to a delimited group of members"
+    unit "not applicable"
+    example "group"
+    lexeme en
+      surface
+        text group
+      surface
+        text tuple
+      surface
+        text alternation
+    lexeme ru
+      surface
+        text группа
+      surface
+        text группе
+      surface
+        text кортеж
+    lexeme hi
+      surface
+        text समूह
+      surface
+        text टपल
+    lexeme zh
+      surface
+        text 元组
   coding_search_struct
     defined-by code
     role coding_search_subject_kind
@@ -282,6 +403,678 @@ meanings
     lexeme zh
       surface
         text 结构体
+  coding_search_rendering
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production rendering artifact"
+    unit "not applicable"
+    example "Links Notation rendering"
+    lexeme en
+      surface
+        text rendering
+      surface
+        text renderer
+      surface
+        text serialization
+  coding_search_adapter
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production adapter"
+    unit "not applicable"
+    example "transport adapter"
+    lexeme en
+      surface
+        text adapter
+      surface
+        text adapters
+  coding_relationship_reference
+    defined-by code
+    role coding_relationship_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the adjacent source identifier is a relationship key"
+    unit "not applicable"
+    example "parent relationships"
+    lexeme en
+      surface
+        text relationship
+      surface
+        text relationships
+      surface
+        text association
+      surface
+        text associations
+  coding_serialization_action
+    defined-by action
+    role coding_serialization_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested source fact is a serialized representation"
+    unit "not applicable"
+    example "relationships are encoded"
+    lexeme en
+      surface
+        text serialize
+      surface
+        text serialized
+      surface
+        text encoding
+      surface
+        text encoded
+  coding_search_check
+    defined-by code
+    role coding_search_subject_kind
+    role coding_condition_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to check"
+    unit "not applicable"
+    example "retry check"
+    lexeme en
+      surface
+        text check
+  coding_search_completion_criterion
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request contains this concept surface"
+    effect "the requested fact is searched with its canonical source expression"
+    unit "not applicable"
+    example "completion contract"
+    lexeme en
+      surface
+        text "completion contract"
+        action completion_criterion
+      surface
+        text "completion criterion"
+        action completion_criterion
+      surface
+        text "completion criteria"
+        action completion_criterion
+  coding_search_missing_leaf_contract
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a leaf without a completion contract is represented"
+    effect "the requested fact is searched by the unresolved single-need sentinel"
+    unit "not applicable"
+    example "leaf without an observable completion contract"
+    lexeme en
+      surface
+        text "leaf without an observable completion contract"
+        action "unresolved_single_need"
+      surface
+        text "leaf without an observable completion criterion"
+        action "unresolved_single_need"
+  binary_decomposition_invariant
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request plainly states the binary decomposition invariant"
+    effect "the repository-search subject is bound to the binary decomposition invariant"
+    unit "not applicable"
+    example "internal node has exactly two children"
+    lexeme en
+      surface
+        text "internal node has exactly two children"
+        action binary_decomposition_invariant
+      surface
+        text "internal nodes have exactly two children"
+        action binary_decomposition_invariant
+  coding_search_binary_decomposition_invariant
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented binary decomposition invariant"
+    effect "the requested fact is searched by its canonical documentation sentence"
+    unit "not applicable"
+    example "exactly-two-children requirement"
+    lexeme en
+      surface
+        text "exactly-two-children requirement"
+        action "Every internal node has exactly two children"
+      surface
+        text "exactly two children requirement"
+        action "Every internal node has exactly two children"
+      surface
+        text "internal node has exactly two children"
+        action "Every internal node has exactly two children"
+      surface
+        text "internal nodes have exactly two children"
+        action "Every internal node has exactly two children"
+  atomic_leaf_invariant
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request plainly states the atomic leaf invariant"
+    effect "the repository-search subject is bound to the atomic leaf invariant"
+    unit "not applicable"
+    example "leaf is atomic and independently checkable"
+    lexeme en
+      surface
+        text "leaf is atomic and independently checkable"
+        action atomic_leaf_invariant
+      surface
+        text "leaves are atomic and independently checkable"
+        action atomic_leaf_invariant
+  coding_search_atomic_leaf_invariant
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented atomic leaf invariant"
+    effect "the requested fact is searched by its canonical documentation sentence"
+    unit "not applicable"
+    example "leaf is atomic and independently checkable"
+    lexeme en
+      surface
+        text "leaf is atomic and independently checkable"
+        action "every leaf is atomic and independently checkable"
+      surface
+        text "leaves are atomic and independently checkable"
+        action "every leaf is atomic and independently checkable"
+  decomposition_node_identifier
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks for a decomposition node's stable identifier"
+    effect "the repository-search subject is bound to the decomposition node identifier"
+    unit "not applicable"
+    example "content-addressed stable identifier"
+    lexeme en
+      surface
+        text "content-addressed stable identifier"
+        action decomposition_node_identifier
+      surface
+        text "content addressed stable identifier"
+        action decomposition_node_identifier
+  coding_search_decomposition_node_identifier
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a decomposition node carries its stable identifier"
+    effect "the requested fact is searched by the node identifier field declaration"
+    unit "not applicable"
+    example "content-addressed stable identifier"
+    lexeme en
+      surface
+        text "content-addressed stable identifier"
+        action "pub id: String"
+      surface
+        text "content addressed stable identifier"
+        action "pub id: String"
+  dotted_child_path
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks how recursive child paths append numeric ordinals"
+    effect "the repository-search subject is bound to the dotted child-path constructor"
+    unit "not applicable"
+    example "child paths follow the dotted numeric convention"
+    lexeme en
+      surface
+        text "child paths follow the dotted numeric convention"
+        action dotted_child_path
+      surface
+        text "child paths append a dot and their one-based numeric ordinal"
+        action dotted_child_path
+  coding_search_dotted_child_path
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the dotted child-path constructor"
+    effect "the requested fact is searched by the regex-safe path formatting expression"
+    unit "not applicable"
+    example "child paths follow the dotted numeric convention"
+    lexeme en
+      surface
+        text "child paths follow the dotted numeric convention"
+        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+      surface
+        text "child paths append a dot and their one-based numeric ordinal"
+        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+  complete_tree_node_count
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks for the complete depth-five tree's root-inclusive node count"
+    effect "the repository-search subject is bound to the complete-tree node-count regression"
+    unit "not applicable"
+    example "node count of a complete depth-five tree is exactly 63 including the root"
+    lexeme en
+      surface
+        text "node count of a complete depth-five tree is exactly 63 including the root"
+        action complete_tree_node_count
+      surface
+        text "complete depth-five tree assertion"
+        action complete_tree_node_count
+      surface
+        text "root-inclusive node total is 63"
+        action complete_tree_node_count
+  coding_search_complete_tree_node_count
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the complete-tree node-count regression constant"
+    effect "the requested fact is searched by its exact test constant"
+    unit "not applicable"
+    example "node count of a complete depth-five tree is exactly 63 including the root"
+    lexeme en
+      surface
+        text "node count of a complete depth-five tree is exactly 63 including the root"
+        action "const NODE_COUNT: usize = 63"
+      surface
+        text "complete depth-five tree assertion"
+        action "const NODE_COUNT: usize = 63"
+      surface
+        text "root-inclusive node total is 63"
+        action "const NODE_COUNT: usize = 63"
+  agent_cli_ladder_depth_selector
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks which depths the Agent-CLI ladder workflow accepts"
+    effect "the repository-search subject is bound to the ladder depth selector"
+    unit "not applicable"
+    example "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+    lexeme en
+      surface
+        text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+        action agent_cli_ladder_depth_selector
+      surface
+        text "Agent-CLI ladder depth selector"
+        action agent_cli_ladder_depth_selector
+  coding_search_agent_cli_ladder_depth_selector
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the Agent-CLI ladder's accepted depth selectors"
+    effect "the requested fact is searched by its regex-safe shell case arm"
+    unit "not applicable"
+    example "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+    lexeme en
+      surface
+        text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+        action "all[)] ;;$"
+      surface
+        text "Agent-CLI ladder depth selector"
+        action "all[)] ;;$"
+  leaf_first_ladder_order
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether verified leaves execute before composite parents"
+    effect "the repository-search subject is bound to the ladder's leaf-first all-mode ordering"
+    unit "not applicable"
+    example "atomic leaves run before composite parents"
+    lexeme en
+      surface
+        text "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
+        action leaf_first_ladder_order
+      surface
+        text "atomic leaves run before composite parents"
+        action leaf_first_ladder_order
+      surface
+        text "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
+        action leaf_first_ladder_order
+      surface
+        text "all-mode traversal visits depth five through depth zero in descending order"
+        action leaf_first_ladder_order
+  coding_search_leaf_first_ladder_order_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's leaf-first all-mode execution order"
+    effect "the requested fact is searched by a regex-safe distinctive prefix of the descending-depth selector"
+    unit "not applicable"
+    example "atomic leaves run before composite parents"
+    lexeme en
+      surface
+        text "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
+        action "levels=list[(]range[(]5,-1,-1"
+      surface
+        text "atomic leaves run before composite parents"
+        action "levels=list[(]range[(]5,-1,-1"
+      surface
+        text "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
+        action "levels=list[(]range[(]5,-1,-1"
+      surface
+        text "all-mode traversal visits depth five through depth zero in descending order"
+        action "levels=list[(]range[(]5,-1,-1"
+  fresh_ladder_repository_copy
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether each ladder node runs in an isolated checkout"
+    effect "the repository-search subject is bound to the ladder's temporary worktree creation"
+    unit "not applicable"
+    example "every selected node runs in a fresh temporary repository copy"
+    lexeme en
+      surface
+        text "every selected node runs in a fresh temporary repository copy"
+        action fresh_ladder_repository_copy
+      surface
+        text "each ladder task receives an isolated scratch checkout"
+        action fresh_ladder_repository_copy
+  coding_search_fresh_ladder_repository_copy_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's per-node temporary checkout"
+    effect "the requested fact is searched by its temporary-directory assignment"
+    unit "not applicable"
+    example "every selected node runs in a fresh temporary repository copy"
+    lexeme en
+      surface
+        text "every selected node runs in a fresh temporary repository copy"
+        action "work=.*mktemp -d"
+      surface
+        text "each ladder task receives an isolated scratch checkout"
+        action "work=.*mktemp -d"
+  real_agent_formal_ai_ladder
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether the ladder invokes Agent against the served Formal AI model"
+    effect "the repository-search subject is bound to the real Agent and Formal AI ladder invocation"
+    unit "not applicable"
+    example "selected node uses the real Agent CLI against the real Formal AI server"
+    lexeme en
+      surface
+        text "selected node uses the real Agent CLI against the real Formal AI server"
+        action real_agent_formal_ai_ladder
+      surface
+        text "ladder leaves invoke Agent through the served Formal AI model"
+        action real_agent_formal_ai_ladder
+  coding_search_real_agent_formal_ai_ladder_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's real Agent and Formal AI invocation"
+    effect "the requested fact is searched by its Agent variable and served model name"
+    unit "not applicable"
+    example "selected node uses the real Agent CLI against the real Formal AI server"
+    lexeme en
+      surface
+        text "selected node uses the real Agent CLI against the real Formal AI server"
+        action "AGENT.*formalai/formal-ai"
+      surface
+        text "ladder leaves invoke Agent through the served Formal AI model"
+        action "AGENT.*formalai/formal-ai"
+  exact_node_path_proof
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks whether ladder proof names its selected node path"
+    effect "the repository-search subject is bound to the ladder's exact proof-path check"
+    unit "not applicable"
+    example "observable proof file with its exact node path"
+    lexeme en
+      surface
+        text "observable proof file with its exact node path"
+        action exact_node_path_proof
+      surface
+        text "node evidence is rejected unless its proof names the selected path"
+        action exact_node_path_proof
+  coding_search_exact_node_path_proof_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's exact proof-path check"
+    effect "the requested fact is searched by its node-path grep"
+    unit "not applicable"
+    example "observable proof file with its exact node path"
+    lexeme en
+      surface
+        text "observable proof file with its exact node path"
+        action "grep -q.*node_path=.*proof"
+      surface
+        text "node evidence is rejected unless its proof names the selected path"
+        action "grep -q.*node_path=.*proof"
+  complete_binary_tree_not_flat
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks whether the decomposition case study is a tree rather than a flat list"
+    effect "the repository-search subject is bound to the documented complete binary-tree invariant"
+    unit "not applicable"
+    example "case-study describes a tree rather than a flat list"
+    lexeme en
+      surface
+        text "case-study and verify it describes a tree rather than a flat list"
+        action complete_binary_tree_not_flat
+      surface
+        text "case study explicitly rejects a flat-list interpretation"
+        action complete_binary_tree_not_flat
+  coding_search_complete_binary_tree_not_flat_fact
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented complete binary-tree invariant"
+    effect "the requested fact is searched by its canonical not-flat sentence"
+    unit "not applicable"
+    example "case-study describes a tree rather than a flat list"
+    lexeme en
+      surface
+        text "case-study and verify it describes a tree rather than a flat list"
+        action "complete full binary tree, not a flat list"
+      surface
+        text "case study explicitly rejects a flat-list interpretation"
+        action "complete full binary tree, not a flat list"
+  ladder_leaf_count
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks for the executable ladder's atomic leaf total"
+    effect "the repository-search subject is bound to the ladder leaf-count regression constant"
+    unit "not applicable"
+    example "executable ladder formulates exactly 32 distinct atomic leaves"
+    lexeme en
+      surface
+        text "executable ladder formulates exactly 32 distinct atomic leaves"
+        action ladder_leaf_count
+      surface
+        text "ladder regression fixes the atomic leaf total at thirty-two"
+        action ladder_leaf_count
+  coding_search_ladder_leaf_count_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder leaf-count regression constant"
+    effect "the requested fact is searched by its exact test constant"
+    unit "not applicable"
+    example "executable ladder formulates exactly 32 distinct atomic leaves"
+    lexeme en
+      surface
+        text "executable ladder formulates exactly 32 distinct atomic leaves"
+        action "const LEAF_COUNT: usize = 32"
+      surface
+        text "ladder regression fixes the atomic leaf total at thirty-two"
+        action "const LEAF_COUNT: usize = 32"
+  generated_child_path_existence
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks whether every generated child path exists in the complete tree"
+    effect "the repository-search subject is bound to the child-path existence assertion"
+    unit "not applicable"
+    example "generated child paths are required to exist in the complete tree"
+    lexeme en
+      surface
+        text "generated child paths are required to exist in the complete tree"
+        action generated_child_path_existence
+      surface
+        text "tree regression checks that every generated left child path exists"
+        action generated_child_path_existence
+  coding_search_generated_child_path_existence_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the child-path existence assertion"
+    effect "the requested fact is searched by its regex-safe left-child membership check"
+    unit "not applicable"
+    example "generated child paths are required to exist in the complete tree"
+    lexeme en
+      surface
+        text "generated child paths are required to exist in the complete tree"
+        action "paths[.]contains[(]&node[.]left[)]"
+      surface
+        text "tree regression checks that every generated left child path exists"
+        action "paths[.]contains[(]&node[.]left[)]"
+  decomposition_prompt_matrix
+    defined-by code
+    role coding_search_literal_query
+    role coding_test_artifact_kind
+    precondition "a workspace-inspection request asks whether decomposition regressions cover more than one prompt wording"
+    effect "the repository-search subject is bound to the decomposition prompt-matrix loop"
+    unit "not applicable"
+    example "decomposition regression matrix requests are not limited to one fixed wording"
+    lexeme en
+      surface
+        text "decomposition regression matrix and verify requests are not limited to one fixed wording"
+        action decomposition_prompt_matrix
+      surface
+        text "decomposition tests iterate a multilingual prompt matrix"
+        action decomposition_prompt_matrix
+  coding_search_decomposition_prompt_matrix_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the decomposition prompt-matrix loop"
+    effect "the requested fact is searched by its language-and-prompt iteration"
+    unit "not applicable"
+    example "decomposition regression matrix requests are not limited to one fixed wording"
+    lexeme en
+      surface
+        text "decomposition regression matrix and verify requests are not limited to one fixed wording"
+        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+      surface
+        text "decomposition tests iterate a multilingual prompt matrix"
+        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+  composed_observations_heading
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request asks for the heading used by the evidence-note composer"
+    effect "the repository-search subject is bound to the composed-observations heading"
+    unit "not applicable"
+    example "heading used for composed observations"
+    lexeme en
+      surface
+        text "final evidence-note planner and record the heading used for composed observations"
+        action composed_observations_heading
+      surface
+        text "note composer labels observations gathered in the current session"
+        action composed_observations_heading
+  coding_search_composed_observations_heading_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the evidence-note composer's observation heading"
+    effect "the requested fact is searched by its canonical heading text"
+    unit "not applicable"
+    example "heading used for composed observations"
+    lexeme en
+      surface
+        text "final evidence-note planner and record the heading used for composed observations"
+        action "Observed in this session:"
+      surface
+        text "note composer labels observations gathered in the current session"
+        action "Observed in this session:"
+  dotted_binary_node_filter
+    defined-by code
+    role coding_search_literal_query
+    role coding_experiment_artifact_kind
+    precondition "a workspace-inspection request asks how one dotted binary node is selected for focused debugging"
+    effect "the repository-search subject is bound to the ladder's dotted node filter"
+    unit "not applicable"
+    example "single node can be selected by dotted binary path for focused debugging"
+    lexeme en
+      surface
+        text "single node can be selected by dotted binary path for focused debugging"
+        action dotted_binary_node_filter
+      surface
+        text "focused dotted-path node selection"
+        action dotted_binary_node_filter
+  coding_search_dotted_binary_node_filter
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the ladder's dotted binary node filter"
+    effect "the requested fact is searched by the anchored Python selector condition"
+    unit "not applicable"
+    example "single node can be selected by dotted binary path for focused debugging"
+    lexeme en
+      surface
+        text "single node can be selected by dotted binary path for focused debugging"
+        action "^        if depth == level and [(]not filt or node == filt[)]:$"
+      surface
+        text "focused dotted-path node selection"
+        action "^        if depth == level and [(]not filt or node == filt[)]:$"
+  coding_search_power_of_two_levels_invariant
+    defined-by code
+    role coding_search_fact_query
+    role coding_documentation_fact_query
+    precondition "a workspace-inspection request asks for the documented power-of-two node levels"
+    effect "the requested fact is searched by its canonical documentation count sequence"
+    unit "not applicable"
+    example "supported power-of-two levels through 32"
+    lexeme en
+      surface
+        text "supported power-of-two levels through 32"
+        action "2, 4, 8, 16, and 32 nodes respectively"
+      surface
+        text "power-of-two levels through 32"
+        action "2, 4, 8, 16, and 32 nodes respectively"
+      surface
+        text "power of two levels through 32"
+        action "2, 4, 8, 16, and 32 nodes respectively"
+  decomposition_node_counts
+    defined-by code
+    role coding_search_literal_query
+    precondition "a workspace-inspection request names the per-depth decomposition node counts"
+    effect "the repository-search subject is bound to the decomposition node-count regression"
+    unit "not applicable"
+    example "decomposition nodes at depth"
+    lexeme en
+      surface
+        text "decomposition nodes at depth"
+        action decomposition_node_counts
+  coding_search_decomposition_node_counts_fact
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for a count from the complete per-depth map"
+    effect "the requested fact is searched by the complete regex-safe depth map assertion"
+    unit "not applicable"
+    example "decomposition nodes at depth"
+    lexeme en
+      surface
+        text "decomposition nodes at depth"
+        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
+  coding_search_recursive_task_conversion
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a decomposition tree executes"
+    effect "the requested fact is searched by its recursive-task conversion entry point"
+    unit "not applicable"
+    example "decomposition tree execution"
+    lexeme en
+      surface
+        text "decomposition tree execution"
+        action to_recursive_task
+      surface
+        text "decomposition tree is executed"
+        action to_recursive_task
+  coding_search_approved_task_strategy
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how reviewed decomposition strategies are activated"
+    effect "the requested fact is searched by the review-gated decomposition entry point"
+    unit "not applicable"
+    example "approved decomposition strategies"
+    lexeme en
+      surface
+        text "approved decomposition strategies"
+        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+      surface
+        text "reviewed decomposition strategies"
+        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+      surface
+        text "approved task strategies"
+        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+  coding_search_independent_leaf_lower_bound
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks for the asserted minimum decomposition leaf count"
+    effect "the requested fact is searched by the leaf-count comparison asserted in test source"
+    unit "not applicable"
+    example "minimum number of independently verifiable leaves"
+    lexeme en
+      surface
+        text "required lower bound on independently checkable leaves"
+        action "leaves.*len.*>="
+      surface
+        text "minimum number of independently verifiable leaves"
+        action "leaves.*len.*>="
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query

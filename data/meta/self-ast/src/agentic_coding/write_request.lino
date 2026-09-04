@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 16398
-  line_count 351
-  content_id source_module_2309fe2e042a456c
-  symbol_count 23
+  byte_len 22466
+  line_count 475
+  content_id source_module_cbd7059aec0e5104
+  symbol_count 28
   symbols
     struct Token 14 18
     function tokens 20 37
@@ -15,99 +15,104 @@ self_ast_census
     function clean_cue_token 76 79
     function first_content_lead_end 83 85
     function first_prefix_lead_end 86 125
-    function cued_write_target 130 146
-    function stated_write_target 155 157
-    function states_write_action 163 165
-    function is_stated_write_target 181 186
-    function pinned_first_line 194 204
-    function pinned_first_line_of_request 211 215
-    function honouring_pinned_first_line 240 251
-    function without_pinning_sentences 254 262
-    function first_action_cue 264 268
-    function first_action_cue_end 270 272
-    function first_action_cue_start 282 284
-    function clean_content 291 307
-    function strip_clause_lead 316 327
-    function strip_leading_qualifier 332 343
-    function safe_relative_path 344 351
+    function cued_write_target 130 132
+    function cued_write_targets 137 156
+    function quoted_as_value 166 171
+    function stated_write_target 180 182
+    function states_write_action 188 190
+    function delivered_write_target 240 249
+    function is_stated_write_target 265 270
+    function pinned_first_line 278 291
+    function delimited_first_line 298 306
+    function unquoted_machine_first_line 314 328
+    function pinned_first_line_of_request 335 339
+    function honouring_pinned_first_line 364 375
+    function without_pinning_sentences 378 386
+    function first_action_cue 388 392
+    function first_action_cue_end 394 396
+    function first_action_cue_start 406 408
+    function clean_content 415 431
+    function strip_clause_lead 440 451
+    function strip_leading_qualifier 456 467
+    function safe_relative_path 468 475
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9704
-    named_node_count 2086
+    total_link_count 12149
+    named_node_count 2656
     distinct_node_kinds 72
     node_kinds
-      arguments 166
-      array_expression 5
-      array_type 5
+      arguments 205
+      array_expression 7
+      array_type 6
       assignment_expression 4
-      binary_expression 43
-      block 43
+      binary_expression 49
+      block 53
       break_expression 1
-      call_expression 166
-      char_literal 45
-      closure_expression 33
-      closure_parameters 33
+      call_expression 205
+      char_literal 55
+      closure_expression 40
+      closure_parameters 40
       crate 1
-      doc_comment 126
+      doc_comment 196
       else_clause 4
       escape_sequence 4
-      expression_statement 17
+      expression_statement 19
       field_declaration 3
       field_declaration_list 1
-      field_expression 142
-      field_identifier 146
+      field_expression 174
+      field_identifier 178
       field_initializer 1
       field_initializer_list 1
       for_expression 1
-      function_item 22
+      function_item 27
       generic_function 1
-      generic_type 22
-      identifier 366
-      if_expression 9
-      index_expression 10
+      generic_type 27
+      identifier 444
+      if_expression 10
+      index_expression 12
       inner_doc_comment_marker 9
-      integer_literal 12
+      integer_literal 13
       let_condition 1
-      let_declaration 33
-      lifetime 15
+      let_declaration 43
+      lifetime 16
       lifetime_parameter 4
-      line_comment 126
+      line_comment 196
       loop_expression 1
-      macro_invocation 6
+      macro_invocation 8
       mutable_specifier 4
-      outer_doc_comment_marker 117
-      parameter 28
-      parameters 22
-      parenthesized_expression 4
-      primitive_type 42
-      range_expression 8
-      reference_expression 11
-      reference_type 31
-      return_expression 3
-      scoped_identifier 16
+      outer_doc_comment_marker 187
+      parameter 33
+      parameters 27
+      parenthesized_expression 5
+      primitive_type 50
+      range_expression 11
+      reference_expression 14
+      reference_type 38
+      return_expression 4
+      scoped_identifier 18
       scoped_use_list 2
       self 1
       shorthand_field_initializer 2
       source_file 1
-      string_content 8
-      string_literal 7
+      string_content 9
+      string_literal 8
       struct_expression 1
       struct_item 1
-      super 24
-      token_tree 6
-      try_expression 5
+      super 26
+      token_tree 8
+      try_expression 10
       tuple_expression 2
-      tuple_pattern 4
+      tuple_pattern 6
       tuple_struct_pattern 1
-      tuple_type 4
-      type_arguments 23
-      type_identifier 36
+      tuple_type 5
+      type_arguments 28
+      type_identifier 43
       type_parameters 3
-      unary_expression 13
+      unary_expression 18
       use_declaration 3
       use_list 2
-      visibility_modifier 22
+      visibility_modifier 24
       while_expression 1

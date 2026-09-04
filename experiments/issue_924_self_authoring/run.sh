@@ -9,9 +9,13 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 PORT="${PORT:-8924}"
 ARTIFACT_DIR="$ROOT/docs/case-studies/issue-924/incremental-self-authorship"
-WORKSPACE="$(mktemp -d)"
-SERVER_LOG="$WORKSPACE/formal-ai.log"
+RUN_DIR="$(mktemp -d)"
+WORKSPACE="$RUN_DIR/repository"
+mkdir -p "$WORKSPACE"
+SERVER_LOG="$RUN_DIR/formal-ai.log"
+DISPATCH_REPORT="$RUN_DIR/dispatch-report.json"
 OUTPUT="$WORKSPACE/.formal-ai-orchestration"
+PULL_REQUEST_URL="${PULL_REQUEST_URL:-https://github.com/link-assistant/formal-ai/pull/1070}"
 TASK='Create file issue-924-coordination.txt containing exactly coordinate issue 924 self-development loop; create file self-development-execution-contract.lino containing exactly
 self_development_execution_contract
   record_type "self_development_execution_contract"
@@ -32,18 +36,24 @@ self_development_pull_request_contract
 
 cp "$ROOT/experiments/issue_924_self_authoring/verify.sh" "$WORKSPACE/verify.sh"
 chmod +x "$WORKSPACE/verify.sh"
+git -C "$WORKSPACE" init --quiet
+git -C "$WORKSPACE" config user.name "Formal AI"
+git -C "$WORKSPACE" config user.email "formal-ai@example.invalid"
+git -C "$WORKSPACE" add verify.sh
+git -C "$WORKSPACE" commit --quiet -m "test: seed issue 924 verifier"
+BASE_COMMIT="$(git -C "$WORKSPACE" rev-parse HEAD)"
 
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
-  FORMAL_AI_MEMORY_PATH="$WORKSPACE/memory.lino" FORMAL_AI_DREAMING=0 \
+  FORMAL_AI_MEMORY_PATH="$RUN_DIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 server_pid=$!
 cleanup() {
   local status=$?
   kill "$server_pid" 2>/dev/null || true
   if [ "$status" -eq 0 ]; then
-    rm -rf "$WORKSPACE"
+    rm -rf "$RUN_DIR"
   else
-    echo "failed workspace preserved at $WORKSPACE" >&2
+    echo "failed workspace preserved at $RUN_DIR" >&2
   fi
 }
 trap cleanup EXIT
@@ -58,10 +68,11 @@ set +e
   --task "$TASK" \
   --workspace "$WORKSPACE" \
   --output-dir "$OUTPUT" \
+  --pull-request "$PULL_REQUEST_URL" \
   --base-url "http://127.0.0.1:$PORT" \
   --allow-command bash \
   --verify '["bash","verify.sh"]' \
-  > "$WORKSPACE/dispatch-report.json"
+  > "$DISPATCH_REPORT"
 dispatch_status=$?
 set -e
 
@@ -80,7 +91,21 @@ ruby -rjson -e '
   abort "composed parent was not verified" unless last.fetch("passed")
   abort "parent invoked a redundant agent" unless last.fetch("cli") == "composed-verifier"
   abort "learning artifact missing" unless File.file?(ARGV.fetch(2))
-' "$WORKSPACE/dispatch-report.json" "$dispatch_status" "$OUTPUT/learning.lino"
+' "$DISPATCH_REPORT" "$dispatch_status" "$OUTPUT/learning.lino"
+
+ATTRIBUTED_COMMITS="$(git -C "$WORKSPACE" rev-list --reverse "$BASE_COMMIT..HEAD")"
+test -n "$ATTRIBUTED_COMMITS"
+while IFS= read -r commit; do
+  message="$(git -C "$WORKSPACE" show -s --format=%B "$commit")"
+  session="$(printf '%s\n' "$message" | sed -n 's/^Formal-AI-Session: //p')"
+  evidence="$(printf '%s\n' "$message" | sed -n 's/^Formal-AI-Evidence: //p')"
+  pull_request="$(printf '%s\n' "$message" | sed -n 's/^Formal-AI-Pull-Request: //p')"
+  test -n "$session"
+  test -n "$evidence"
+  test "$pull_request" = "$PULL_REQUEST_URL"
+  git -C "$WORKSPACE" show "$commit:$evidence" | grep -Fqi formal-ai
+  git -C "$WORKSPACE" show "$commit:$evidence" | grep -Fq "$session"
+done <<< "$ATTRIBUTED_COMMITS"
 
 mkdir -p "$ARTIFACT_DIR"
 rm -rf "$ARTIFACT_DIR/sessions"
@@ -88,7 +113,7 @@ cp "$WORKSPACE/self-development-execution-contract.lino" \
   "$ARTIFACT_DIR/self-development-execution-contract.lino"
 cp "$WORKSPACE/self-development-pull-request-contract.lino" \
   "$ARTIFACT_DIR/self-development-pull-request-contract.lino"
-cp "$WORKSPACE/dispatch-report.json" "$ARTIFACT_DIR/dispatch-report.json"
+cp "$DISPATCH_REPORT" "$ARTIFACT_DIR/dispatch-report.json"
 cp "$OUTPUT/learning.lino" "$ARTIFACT_DIR/learning.lino"
 cp "$OUTPUT/proposals.lino" "$ARTIFACT_DIR/proposals.lino"
 cp "$SERVER_LOG" "$ARTIFACT_DIR/formal-ai.log"

@@ -60,7 +60,7 @@ jobs:
       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Rust
@@ -83,7 +83,7 @@ jobs:
     needs: [detect-changes, build-artifacts]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Rust
@@ -103,7 +103,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Rust
@@ -132,7 +132,7 @@ jobs:
     needs: [detect-changes, build-artifacts]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
@@ -164,6 +164,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Test released-to-candidate memory upgrade
         run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
+      - if: ${{ !cancelled() }}
+        run: scripts/prune-docker.sh
   secrets-scan:
     name: Secrets Scan
     runs-on: ubuntu-latest
@@ -180,11 +182,11 @@ jobs:
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Check for secrets
@@ -200,7 +202,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Rust
@@ -221,7 +223,6 @@ jobs:
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
-
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
@@ -240,7 +241,7 @@ jobs:
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Simulate fresh merge with base branch (PR only)
@@ -292,7 +293,7 @@ jobs:
       - name: Check web bundles are current
         run: git diff --exit-code -- src/web/vendor.bundle.js src/web/web-search-component.bundle.js src/web/ocr.bundle.js src/web/app.js
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -329,7 +330,7 @@ jobs:
           - { os: ubuntu-latest, test-suite: full }
           - { os: macos-15-intel, test-suite: specification }
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Simulate fresh merge with base branch (PR only)
@@ -346,7 +347,7 @@ jobs:
           targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
       - name: Restore cargo registry cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: |
             ~/.cargo/registry
@@ -433,14 +434,14 @@ jobs:
     needs: [lint, test, macos-core-tests, build-artifacts]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && needs.macos-core-tests.result == 'success' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - name: Cache cargo registry
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -480,7 +481,7 @@ jobs:
       contents: write
       packages: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -687,7 +688,7 @@ jobs:
       contents: write
       packages: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -851,7 +852,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Rust
@@ -893,14 +894,14 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
           no-cache: true
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24.x'
           cache: npm
@@ -915,7 +916,7 @@ jobs:
           npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         id: playwright-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
@@ -960,7 +961,9 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 32
+    # Issue #1069: raised from 32 so it outlasts the 900s and 600s deadlines
+    # the computer-use steps below now own; see tests/unit/ci-cd/.
+    timeout-minutes: 45
     needs: [detect-changes, build-artifacts]
     if: |
       !cancelled() && (
@@ -973,7 +976,7 @@ jobs:
     env:
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
@@ -993,13 +996,13 @@ jobs:
         run: |
           # OpenCode's pinned postinstall selects its platform binary. Trust
           # only that reviewed package; suppress lifecycle scripts elsewhere.
-          bun add -g --trust opencode-ai@1.18.19
+          bun add -g --trust opencode-ai@1.18.25
           # Pinned for the reason experiments/agentic_cli_matrix/clients.lock
           # gives: a leg must fail because our server changed, not because a CLI
           # shipped overnight — @openai/codex@0.148.0 drops the ENTER answering
           # its first-run trust dialog (https://github.com/openai/codex/issues/39487).
           # Before bumping, run experiments/issue_1021_codex_tui_version.
-          bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.238 @openai/codex@0.147.0 @google/gemini-cli@0.56.0
+          bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
         timeout-minutes: 5
@@ -1117,20 +1120,32 @@ jobs:
         env:
           PORT: 8776
         run: experiments/agent_cli_e2e/run_issue_687.sh
+      # Issue #1069: green runs of this step measured 131s, 136s and 533s --
+      # serial live-model latency -- and run 33880485514 was killed by the
+      # runner at 10 minutes with no scenario named. The wrapper and the script
+      # own the deadline now; the backstop only outlasts it (issue #1017).
       - name: "Run agent CLI E2E — verified computer-use record/replay (issue #707)"
-        timeout-minutes: 10
+        timeout-minutes: 17
         env:
           PORT: 8907
           BIN: ${{ github.workspace }}/target/release/formal-ai
           EVIDENCE_DIR: /tmp/formal-ai-issue-707-evidence
-        run: experiments/agent_cli_e2e/run_issue_707.sh
+          TEST_BUDGET_SECONDS: 900
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Computer-use record/replay E2E" \
+            experiments/agent_cli_e2e/run_issue_707.sh
       - name: "Run agent CLI E2E — held-out computer-use generalization (issue #707)"
         timeout-minutes: 12
         env:
           PORT: 8909
           BIN: ${{ github.workspace }}/target/release/formal-ai
           EVIDENCE_DIR: /tmp/formal-ai-issue-707-generalization-evidence
-        run: experiments/agent_cli_e2e/run_issue_707_generalization.sh
+          TEST_BUDGET_SECONDS: 600
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Held-out computer-use generalization E2E" \
+            experiments/agent_cli_e2e/run_issue_707_generalization.sh
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         env:
           PORT: 8781
@@ -1214,7 +1229,7 @@ jobs:
       - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
         run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
       - name: Install @link-assistant/hive-mind CLI
-        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.12.5
+        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.15.1
       - name: "Run Hive Mind full-circle integration gate (issue #921)"
         timeout-minutes: 5
         run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
@@ -1234,9 +1249,7 @@ jobs:
           path: |
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
-            /tmp/formal-ai-issue-707-evidence
-            /tmp/formal-ai-issue-921-evidence
-            /tmp/formal-ai-issue-922-evidence
+            /tmp/formal-ai-issue-*-evidence
           retention-days: 7
       - name: Upload TUI transcripts and replay artifacts
         if: always()
@@ -1263,7 +1276,7 @@ jobs:
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
@@ -1289,7 +1302,6 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
           retention-days: 1
-
   # Issue #932 (follow-up of PR #119): a generated project for a language is
   # built and run inside the link-foundation/box image that matches that
   # language, using the language's own init commands. The matrix keeps each
@@ -1317,9 +1329,8 @@ jobs:
         # `tests/unit/ci-cd/issue_932.rs`.
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
-      - uses: actions/checkout@v6
-      # A box variant unpacks to 4-8 GB, more than a stock runner has spare
-      # even after the shared host binary no longer has to compile here.
+      - uses: actions/checkout@v7
+      # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
@@ -1336,6 +1347,8 @@ jobs:
           retention-days: 7
           # `always()` also covers a leg that failed before generating anything.
           if-no-files-found: warn
+      - if: ${{ !cancelled() }}
+        run: scripts/prune-docker.sh
   deploy-pages:
     name: Deploy Web App to GitHub Pages
     concurrency:
@@ -1372,7 +1385,7 @@ jobs:
           fi
           echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
           echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ steps.pages_ref.outputs.sha }}
       - name: Configure GitHub Pages
@@ -1390,7 +1403,7 @@ jobs:
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - name: Cache cargo registry
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -1445,9 +1458,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24.x'
           cache: npm
@@ -1458,7 +1471,7 @@ jobs:
           npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         id: playwright-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
@@ -1501,7 +1514,7 @@ jobs:
             build-artifacts, box-language-projects, deploy-pages,
             test-e2e-pages]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Fail the run when a required job was cancelled or failed
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}

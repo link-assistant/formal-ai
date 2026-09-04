@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "response template"
+  adapter
+    defined-by word_surface
+    lexeme en
+      surface
+        text "adapter"
   agent_suggestion_active
     defined-by intent
     lexeme en
@@ -49,6 +54,11 @@ meanings
     lexeme en
       surface
         text "bounded iterate to fixpoint"
+  bounds
+    defined-by word_surface
+    lexeme en
+      surface
+        text "bounds"
   cli_to_browser
     defined-by flow
     lexeme en
@@ -449,6 +459,11 @@ meanings
     lexeme en
       surface
         text "response client global config auth refusal es"
+  response_coding_member_already_present_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present en"
   response_coding_meta_algorithm_solutions_heading_en
     defined-by response_template
     lexeme en
@@ -659,6 +674,16 @@ meanings
     lexeme en
       surface
         text "response lexeme import surface changed en"
+  response_link_cli_publish_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed en"
+  response_link_cli_publish_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed ru"
   response_local_search_contents_listing_zh
     defined-by response_template
     lexeme en
@@ -999,6 +1024,11 @@ meanings
     lexeme en
       surface
         text "sequential compose"
+  serialization
+    defined-by word_surface
+    lexeme en
+      surface
+        text "serialization"
   solver
     defined-by concept
     lexeme en

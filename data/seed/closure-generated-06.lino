@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "called"
+  cap
+    defined-by word_surface
+    lexeme en
+      surface
+        text "cap"
   cause
     defined-by concept
     lexeme en
@@ -94,6 +99,11 @@ meanings
     lexeme en
       surface
         text "divide"
+  encoded
+    defined-by word_surface
+    lexeme en
+      surface
+        text "encoded"
   exceeds
     defined-by word_surface
     lexeme en
@@ -294,11 +304,6 @@ meanings
     lexeme en
       surface
         text "project"
-  rendered
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rendered"
   response_agent_suggestion_active_hi
     defined-by response_template
     lexeme en
@@ -364,11 +369,21 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error ru"
+  response_coding_member_inserted_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member inserted ru"
   response_coding_meta_algorithm_surface_en
     defined-by response_template
     lexeme en
       surface
         text "response coding meta algorithm surface en"
+  response_coding_repository_source_observation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation hi"
   response_comparison_decomposed_no_evidence_en
     defined-by response_template
     lexeme en
@@ -439,6 +454,11 @@ meanings
     lexeme en
       surface
         text "response fact check no statements zh"
+  response_file_read_many_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable zh"
   response_general_plan_command_capture_action_en
     defined-by response_template
     lexeme en
@@ -819,6 +839,11 @@ meanings
     lexeme en
       surface
         text "script and markers"
+  serialized
+    defined-by word_surface
+    lexeme en
+      surface
+        text "serialized"
   signal-processing
     defined-by category
     lexeme en

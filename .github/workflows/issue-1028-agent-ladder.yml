@@ -36,7 +36,7 @@ jobs:
       TREE_DEPTH: ${{ inputs.depth || '5' }}
       NODE_FILTER: ${{ inputs.node_filter || '' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -51,7 +51,7 @@ jobs:
       # tree — it is what evicted the shared compiler cache — and the step's own
       # name is the honest description of what it keeps.
       - name: Cache cargo registry
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry

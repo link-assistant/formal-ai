@@ -1,0 +1,4 @@
+node_path=2.1.1.2.1
+node_depth=5
+node_kind=leaf
+result=Observed repository result: Line 415:         format!("{parent}.{number}")

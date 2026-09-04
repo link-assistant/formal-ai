@@ -167,16 +167,27 @@ authored a commit. Do not add these trailers to a human-authored or manually
 corrected commit. The pull-request reference counts toward the release floor
 only when Git history proves that the same commit object reached the matching
 GitHub merge commit; a direct commit carrying a claimed PR URL does not count.
-Every non-merge commit introduced by that pull request must satisfy the same
-session, evidence, and pull-request checks. One attributed commit cannot make a
-mixed manually authored pull request count as end-to-end self-development.
+A pull request counts for the work Formal AI did in it, not for what else rode
+along with it: at least one commit it introduced must carry valid session
+evidence, and every attributed commit it introduced must name that same pull
+request. A trailer pointing at a different pull request is not evidence about
+this one, and it disqualifies the pull request that introduced it. Self-authored
+work therefore needs no pull request of its own -- it may ride along inside
+ordinary review beside human commits, which stay unattributed and stay in the
+denominator of the metric.
 
 Every release cycle must contain at least one such merged contribution. It goes
 through the ordinary pull-request review, CI, and promotion policy without an
-AI-specific bypass. The next release's target is the greater of the previous
-target and previous comparable trailing share, so it must not decrease. If the
-floor or target is missing, merge more reviewed Formal AI-authored work before
-retrying the release. The metric counts additions plus deletions from non-merge
+AI-specific bypass. The next release's target carries forward from the previous
+row and rises with the measured trailing share, so it must not decrease on its
+own. It moves down only when a reviewed commit writes a
+`target_override_basis_points` onto the newest comparable row of
+`data/meta/self-hosting-ledger.lino`, which replaces the ratchet and carries
+forward until another commit changes or removes it. That is the only lever:
+there is no flag, environment variable, or workflow input that moves the target,
+so every change to the level is visible in a diff and named in the release
+notes. If the floor or target is missing, merge more
+reviewed Formal AI-authored work before retrying the release. The metric counts additions plus deletions from non-merge
 commits and ignores binary files. Reproduce it with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 

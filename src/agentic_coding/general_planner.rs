@@ -506,6 +506,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let specification = super::note_composition::composed_document_specification_span(request);
     if let Some((_, marker_end)) = first_content_lead_end(&lowered)
         && !specification.is_some_and(|span| span.contains(&marker_end))
+        && positions_share_statement(request, marker_end, clause_start)
     {
         let marker_leads = marker_end <= clause_start;
         let marker_span = if marker_leads {
@@ -523,7 +524,9 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     }
     let content_span = if cue_is_destination {
         let action_end = first_action_cue_end(&toks)?;
-        (action_end <= clause_start).then(|| request.get(action_end..clause_start))?
+        (action_end <= clause_start
+            && positions_share_statement(request, action_end, clause_start))
+        .then(|| request.get(action_end..clause_start))?
     } else if let Some(value_lead) = toks
         .iter()
         .skip(file_index + 1)
@@ -534,7 +537,10 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         // introduces its literal value. Requiring a write action before the
         // file keeps an unrelated "contents of FILE" read request out.
         let action_end = first_action_cue_end(&toks)?;
-        (action_end <= clause_start).then(|| request.get(value_lead.end..))?
+        (action_end <= clause_start
+            && positions_share_statement(request, action_end, clause_start)
+            && positions_share_statement(request, clause_start, value_lead.start))
+        .then(|| request.get(value_lead.end..))?
     } else {
         None
     };
@@ -599,6 +605,24 @@ fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
     } else {
         limit
     }
+}
+/// Whether two write-request cues belong to one prose statement.
+///
+/// Literal-write roles are structural only inside the statement that relates
+/// them. Without this check, a content lead in one issue-description paragraph
+/// can pair with an incidental file-shaped token in a later paragraph and turn
+/// repository policy prose into an executable write (issue #1069).
+///
+/// [`end_of_statement`] deliberately lets a marker-only line introduce the
+/// block below it. Reusing that boundary here preserves that supported block
+/// shape while rejecting ordinary completed sentences between the two cues.
+fn positions_share_statement(request: &str, left: usize, right: usize) -> bool {
+    let (from, limit) = if left <= right {
+        (left, right)
+    } else {
+        (right, left)
+    };
+    from == limit || end_of_statement(request, from, limit) == limit
 }
 /// Whether a recovered payload says anything at all. A span of nothing but
 /// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
@@ -781,10 +805,31 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         return None;
     }
     let old_span = request.get(action_end..new_lead.start)?;
+    // A clause does not outlive its sentence. Running the replacement to the end
+    // of the request is right for the one-sentence orders this route was written
+    // for, and wrong for every request that says anything afterwards: an issue
+    // #1028 ladder node reads "In the file src/protocol_memory.rs, replace
+    // \"request_history\" with \"conversation_history\". Change only that file
+    // …", followed by five more sentences of harness contract, and the whole tail
+    // became the replacement text. The same sentence scoping already tells a
+    // named command from an ordered one and a read target from a write one.
+    //
+    // The bound is the end of the sentence's *text*, so the terminator that
+    // closed it does not become part of the replacement.
+    let sentence_end = prose_sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&new_lead.end))
+        .map_or_else(
+            || request.len(),
+            |sentence| {
+                let raw = &request[sentence.span.clone()];
+                sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
+            },
+        );
     let new_end = if file_clause_start > new_lead.end {
-        file_clause_start
+        file_clause_start.min(sentence_end)
     } else {
-        request.len()
+        sentence_end
     };
     let new_span = request.get(new_lead.end..new_end)?;
     let old = clean_content(old_span)?;
@@ -824,4 +869,3 @@ fn field(out: &mut String, name: &str, value: &str) {
 fn field_nested(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "    {name} \"{}\"", escape(value));
 }
-

@@ -2,29 +2,30 @@ self_ast_census
   target src/orchestration/incremental.rs
   language rust
   fidelity signature
-  byte_len 18150
-  line_count 459
-  content_id source_module_53960eaf9df87cac
-  symbol_count 21
+  byte_len 19994
+  line_count 511
+  content_id source_module_1c7856ba94415b45
+  symbol_count 22
   symbols
-    const COMPOSED_VERIFIER 45 45
-    struct IncrementalStep 50 62
-    struct IncrementalSplit 66 76
-    struct IncrementalProposal 86 97
-    function links_notation 102 114
-    struct IncrementalTrace 119 134
-    function dispatch_incrementally 137 199
-    function write_learning 205 219
-    function blocked_tasks 222 227
-    function root_id 229 231
-    function proposals 239 269
-    function write_proposals 276 286
-    function evidence_of 293 310
-    struct AgentExecutor 313 326
-    function new 329 340
-    function cli_for 344 347
-    function record 349 353
-    function preserve_session 355 382
-    function attempt 386 424
-    function extend_for 426 437
-    function retry_after_children 439 458
+    const COMPOSED_VERIFIER 46 46
+    struct IncrementalStep 51 63
+    struct IncrementalSplit 67 77
+    struct IncrementalProposal 87 98
+    function links_notation 103 115
+    struct IncrementalTrace 120 135
+    function dispatch_incrementally 138 200
+    function write_learning 206 220
+    function blocked_tasks 223 228
+    function root_id 230 232
+    function proposals 240 270
+    function write_proposals 277 287
+    function evidence_of 294 311
+    struct AgentExecutor 314 327
+    function new 330 341
+    function cli_for 345 348
+    function record 350 354
+    function preserve_session 356 369
+    function record_preserved_session 371 393
+    function attempt 397 465
+    function extend_for 467 478
+    function retry_after_children 480 510

@@ -1,3 +1,4 @@
+use super::attribution::prepare_attribution;
 use super::incremental::{IncrementalTrace, dispatch_incrementally};
 use super::permission::AgentRunPermission;
 use super::replay::{ReplayError, write_session};
@@ -46,6 +47,9 @@ pub struct DispatchConfig {
     pub controller_program: PathBuf,
     pub command_overrides: BTreeMap<String, AgentCommand>,
     pub max_depth: u8,
+    /// Canonical GitHub pull request receiving attributed incremental commits.
+    /// When absent, dispatch retains its historical compose-only behavior.
+    pub pull_request: Option<String>,
 }
 
 impl DispatchConfig {
@@ -70,6 +74,7 @@ impl DispatchConfig {
             controller_program: run.controller_program,
             command_overrides: BTreeMap::new(),
             max_depth: 3,
+            pull_request: None,
         }
     }
 }
@@ -85,6 +90,7 @@ pub enum DispatchError {
     Io(io::Error),
     WorkerPanicked,
     CompositionConflict(String),
+    Attribution(String),
 }
 
 impl fmt::Display for DispatchError {
@@ -99,6 +105,7 @@ impl fmt::Display for DispatchError {
             Self::Io(error) => write!(formatter, "io:{error}"),
             Self::WorkerPanicked => formatter.write_str("worker_panicked"),
             Self::CompositionConflict(path) => write!(formatter, "composition_conflict:{path}"),
+            Self::Attribution(error) => write!(formatter, "attribution:{error}"),
         }
     }
 }
@@ -170,6 +177,14 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
         }
     }
     let workspace = config.workspace.canonicalize().map_err(DispatchError::Io)?;
+    if let Some(pull_request) = &config.pull_request {
+        if config.mode != DispatchMode::Incremental {
+            return Err(DispatchError::Attribution(
+                "incremental_mode_required".to_string(),
+            ));
+        }
+        prepare_attribution(&workspace, pull_request)?;
+    }
     let prospective_output = prospective_canonical(&config.output_dir)?;
     if prospective_output == workspace || !prospective_output.starts_with(&workspace) {
         return Err(DispatchError::OutputOutsideWorkspace);
@@ -214,12 +229,11 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
     };
     let mut handles = Vec::new();
     for (index, (cli, task)) in jobs.into_iter().enumerate() {
-        let candidate = config
-            .output_dir
-            .join("candidates")
-            .join(format!("{index:03}-{}", safe_name(&cli)));
+        let candidate_id = format!("{index:03}-{}", safe_name(&cli));
+        let candidate = config.output_dir.join("candidates").join(&candidate_id);
         copy_workspace(&workspace, &candidate, &output_dir).map_err(DispatchError::Io)?;
-        let run = candidate_run_config(config, &cli, task, &candidate);
+        let orchestration_home = output_dir.join("native-sessions").join(candidate_id);
+        let run = candidate_run_config(config, &cli, task, &candidate, &orchestration_home);
         handles.push((
             index,
             cli,
@@ -352,6 +366,7 @@ pub(super) fn candidate_run_config(
     cli: &str,
     task: String,
     workspace: &Path,
+    orchestration_home: &Path,
 ) -> AgentRunConfig {
     let mut run = AgentRunConfig::new(cli, task, workspace)
         .with_permission(AgentRunPermission::grant_for(workspace));
@@ -366,6 +381,7 @@ pub(super) fn candidate_run_config(
     run.verification.clone_from(&dispatch.verification);
     run.controller_program
         .clone_from(&dispatch.controller_program);
+    run.orchestration_home = Some(orchestration_home.to_path_buf());
     run.command_override = dispatch.command_overrides.get(cli).cloned();
     run
 }

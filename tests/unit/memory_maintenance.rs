@@ -560,6 +560,27 @@ fn multilingual_topics_receive_distinct_stable_amendment_ids() {
 
 #[test]
 fn core_background_dreaming_learns_but_does_not_free_without_consent() {
+    const CHILD_MARKER: &str = "FORMAL_AI_TEST_CORE_DREAMING_CHILD";
+    if std::env::var_os(CHILD_MARKER).is_none() {
+        // Exercise the idle-only path in a fresh process so unrelated tests using
+        // the production-global activity counter cannot make it yield spuriously.
+        let output = std::process::Command::new(std::env::current_exe().expect("unit test binary"))
+            .args([
+                "--exact",
+                "memory_maintenance::core_background_dreaming_learns_but_does_not_free_without_consent",
+                "--nocapture",
+            ])
+            .env(CHILD_MARKER, "1")
+            .output()
+            .expect("run isolated core dreaming test");
+        assert!(
+            output.status.success(),
+            "isolated core dreaming test failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr),
+        );
+        return;
+    }
     let memory_path = std::env::temp_dir().join(format!(
         "formal-ai-core-dreaming-{}-memory.lino",
         std::process::id()
@@ -597,6 +618,8 @@ fn core_background_dreaming_learns_but_does_not_free_without_consent() {
 
     let _ = std::fs::remove_file(&memory_path);
     let _ = std::fs::remove_file(format!("{}.auto-free-space", memory_path.display()));
+    let _ = std::fs::remove_file(memory_path.with_extension("recipe.lino"));
+    let _ = std::fs::remove_file(memory_path.with_extension("learning-cycle.lino"));
 }
 
 #[test]

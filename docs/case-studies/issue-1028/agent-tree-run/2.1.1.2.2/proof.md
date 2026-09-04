@@ -1,7 +1,3 @@
 node_path=2.1.1.2.2
 
-The `grep` command completed. Output:
-
-```text
-No files found
-```
+Line 26: const NODE_COUNT: usize = 63;

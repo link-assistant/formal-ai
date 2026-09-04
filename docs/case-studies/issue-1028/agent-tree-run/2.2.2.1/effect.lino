@@ -1,0 +1,8 @@
+node_path=2.2.2.1
+node_depth=4
+node_kind=composite
+left_child=2.2.2.1.1
+right_child=2.2.2.1.2
+left_result=Line 27: const LEAF_COUNT: usize = 32;
+right_result=Line 608:             assert!(paths.contains(&node.left), "missing {}", node.left);
+result=Line 27: const LEAF_COUNT: usize = 32;; Line 608:             assert!(paths.contains(&node.left), "missing {}", node.left);; together these exact observations compose the result.

@@ -750,11 +750,12 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
         // asserts the CLI writes the enriched meaning file. The extra headroom
         // over test-e2e-local absorbs a cold cargo build of the release binary.
-        // Raised from 20 (PR #965 review): green runs measured 16m16s and
-        // 17m30s on `main`, so 20 left ~2 minutes of headroom and run
-        // 31097339962 tipped over into a *cancelled* job that looked like a
-        // regression but was only variance.
-        ("test-agent-cli-e2e", 32),
+        // Raised from 20 (PR #965 review): 16m16s and 17m30s green left ~2
+        // minutes of headroom, and run 31097339962 tipped over into a
+        // *cancelled* job that looked like a regression but was only variance.
+        // Raised from 32 (issue #1069): 19m54s green, of which the two
+        // computer-use steps cost 5m32s, is 39m24s at their 900s+600s budgets.
+        ("test-agent-cli-e2e", 45),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
         ("build-artifacts", 20),

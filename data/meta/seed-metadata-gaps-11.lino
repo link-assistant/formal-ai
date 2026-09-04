@@ -147,6 +147,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "lexeme_import_cannot_list"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_6fea6b5709cea6fb
+    source "data/seed/closure-generated-03.lino"
+    record "response_coding_repository_source_observation_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0d3d47df3273041b
     source "data/seed/closure-generated-03.lino"
     record "response_external_benchmark_proof_status_detail_ru"
@@ -178,6 +182,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_0ea1bb783cd7011b
     source "data/seed/closure-generated-03.lino"
     record "thinking_step_scan_memory"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_7e6325994c27ab0b
+    source "data/seed/closure-generated-04.lino"
+    record "evidence_exact_composition"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_97670689730a74fb
     source "data/seed/closure-generated-04.lino"
@@ -531,6 +539,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "pattern_courtesy_phrase_horosho_spasibo"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3a2c48a91e85399b
+    source "data/seed/closure-generated-11.lino"
+    record "response_coding_text_replaced_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_3da25a81746c8b8b
     source "data/seed/closure-generated-11.lino"
     record "response_fact_check_statement_counterexample_hi"
@@ -731,6 +743,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "response_client_global_config_probe_skipped_es"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_66cb192cee24c7cb
+    source "data/seed/closure-generated-14.lino"
+    record "response_coding_member_inserted_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4b4eea6e9e36938b
     source "data/seed/closure-generated-14.lino"
     record "response_summarization_criterion_format_declared_zh"
@@ -766,6 +782,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_c5ead9ea8c0ab2fb
     source "data/seed/closure-generated-15.lino"
     record "pattern_wellbeing_phrase_kak_pozhivaesh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_db0ea80dbffab97b
+    source "data/seed/closure-generated-15.lino"
+    record "rendering"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1b906cd8d864b06b
     source "data/seed/closure-generated-15.lino"

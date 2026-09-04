@@ -43,6 +43,7 @@ use super::self_heal;
 use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
+use super::workspace_inspection;
 use super::statement_audit;
 use super::structured_edit;
 use super::task_structure;
@@ -160,6 +161,15 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let received = latest_user_text(messages)?;
     trace_route("agentic_received", &received);
+    // Agent compacts a long tool loop by asking the model to summarize it, then
+    // starts the next request with the protocol turn "Continue if you have next
+    // steps". The work is still present, but only inside the assistant's
+    // `Conversation summary:` envelope. Treating the protocol turn as a fresh
+    // request loses that work and sends the sentence itself to web search.
+    // Recover only our own summary envelope, immediately before the exact
+    // continuation turn; ordinary user requests that happen to say "continue"
+    // keep their normal meaning.
+    let effective = compacted_agent_task(messages, &received).unwrap_or(received);
     // An *unmarked* harness preamble is still the caller talking (issue #907,
     // follow-up). `<session_context>`-style markup is stripped upstream in
     // `crate::protocol`, but Hive Mind's adapters concatenated their workflow
@@ -175,7 +185,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // that followed. The general planner already read the objective this way
     // (issue #904); every other route now reads it the same way, so one
     // boundary serves the whole router rather than one recipe.
-    let task = objective_text(&received).to_owned();
+    let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
     if is_conversation_control_prompt(&task) || looks_like_skill_description(&task) {
         return None;
@@ -197,21 +207,62 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         {
             return Some(plan);
         }
+    // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
+    // of every route that reads a request's lone file-shaped token, because that
+    // token is the *destination* here and opening it for reading ends the run with
+    // the evidence file unwritten. It sits behind the literal-write routes above,
+    // which own a request that spells its bytes out; this one owns the request
+    // whose bytes still have to be found.
+    //
+    // It sits ahead of the change routes below for the same reason it sits ahead
+    // of the readers: a request can carry both halves. The ladder's leaf says
+    // "Edit `src/engine_responses.rs` … Then create `agent-ladder-effects/…lino`
+    // recording what you changed. Leave evidence in `.agent-ladder/…-proof.md`",
+    // and the change routes answer `Final` for the whole request the moment the
+    // edit lands, so the two records the caller verifies are never written and
+    // the node fails `missing_proof` having done the work. This route peels one
+    // delivery at a time and re-plans the residual (see `parse_obligation`), so
+    // the change route still receives the edit -- with only the edit left in it.
+    if let Some(plan) = evidence_record::plan_evidence_record_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    plan_settled_routes(&task, messages, tool_names)
+}
+
+/// Every route below the delivery peeling above, as one function.
+///
+/// [`plan_evidence_record_step`](evidence_record::plan_evidence_record_step)
+/// peels a named destination off a request and re-plans the remainder, and that
+/// is only ever the right reading when the destination is not already some
+/// other route's whole answer. A registered recipe *is* named by its artifact —
+/// `learning_report::route` matches a prompt precisely by finding its own
+/// `path` in it — so peeling that path off leaves a residual that no longer
+/// reaches the recipe, and the request is answered by whatever the remainder
+/// happens to look like instead.
+///
+/// Splitting the tail out lets the peeling ask the question directly: plan the
+/// *whole* request through the routes below and see whether one of them writes
+/// the file. Nothing here re-enters the peeling, so asking cannot recurse.
+pub(super) fn plan_settled_routes(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
     // A learned workspace-change procedure owns grounded repository rewrites
     // and multi-file compositions before source creation or shell routing can
     // collapse them into one incomplete action.
     if let Some(plan) =
-        super::workspace_change::plan_workspace_change_step(&task, messages, tool_names)
+        super::workspace_change::plan_workspace_change_step(task, messages, tool_names)
     {
         return Some(plan);
     }
     // A source-code description is not literal file content. Lower bounded
     // seed-backed source tasks before the broad literal-write parser so coding
     // requests produce executable bytes and verify those exact bytes.
-    if let Some(plan) = code_task::plan_generated_source_step(&task, messages, tool_names) {
+    if let Some(plan) = code_task::plan_generated_source_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = structured_edit::plan_structured_edit_step(&task, messages, tool_names) {
+    if let Some(plan) = structured_edit::plan_structured_edit_step(task, messages, tool_names) {
         return Some(plan);
     }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
@@ -220,34 +271,34 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
     if let Some(plan) = tool_for(tool_names, Capability::Write)
-        .and_then(|_| compose_general_change_plan(&task))
+        .and_then(|_| compose_general_change_plan(task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
     }
     // Portable event logs own the independently validated trace-learning route.
-    if let Some(task) = algorithm_learning::compile_task(&task) {
+    if let Some(task) = algorithm_learning::compile_task(task) {
         return Some(algorithm_learning::plan_step(messages, tool_names, &task));
     }
     // A freely phrased procedure is one generalized compile → persist → verify
     // recipe on both the symbolic and Agent CLI surfaces.
-    if let Some(procedure) = procedure::compile_task(&task) {
+    if let Some(procedure) = procedure::compile_task(task) {
         return Some(procedure::plan_step(messages, tool_names, &procedure));
     }
     // Specific self-inspection routes precede broad formalization. Associative
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
-    if let Some(report) = learning_report::route(&task) {
+    if let Some(report) = learning_report::route(task) {
         return Some(report.plan_step(messages, tool_names));
     }
     // Repository statement audits run through the same public CLI a human can
     // replay. Route before generic file/code changes because the task names its
     // output artifact but does not ask the planner to fabricate that content.
-    if statement_audit::is_statement_audit_task(&task) {
+    if statement_audit::is_statement_audit_task(task) {
         return Some(plan_shell_step(
             messages,
             tool_names,
-            statement_audit::command_for(&task),
+            statement_audit::command_for(task),
         ));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
@@ -255,43 +306,43 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // be mistaken for an edit, and precedes the generic edit/read/shell routers
     // below. Requests naming both a literal target and literal content are
     // already claimed by the write probe above.
-    if let Some(plan) = code_artifact::plan_code_artifact_step(&task, messages, tool_names) {
+    if let Some(plan) = code_artifact::plan_code_artifact_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if self_heal::is_self_heal_task(&task) {
+    if self_heal::is_self_heal_task(task) {
         return Some(plan_self_heal_step(messages, tool_names));
     }
-    if dreaming_audit::is_dreaming_audit_task(&task) {
+    if dreaming_audit::is_dreaming_audit_task(task) {
         return Some(plan_dreaming_audit_step(messages, tool_names));
     }
-    if self_ast::is_self_ast_task(&task) {
+    if self_ast::is_self_ast_task(task) {
         return Some(plan_self_ast_step(messages, tool_names));
     }
     // The whole-repository source-links recipe: checked alongside the other
     // self-inspection recipes and before formalization, because its request
     // legitimately names "links" (its output format), which the broad
     // formalization keyword match below would otherwise capture.
-    if source_links::is_source_links_task(&task) {
+    if source_links::is_source_links_task(task) {
         return Some(plan_source_links_step(messages, tool_names));
     }
     // The learning-ledger recipe: the promotion step that follows an approved repair
     // case. Checked after self-healing (which owns the "auto learning" keywords) and
     // before formalization, since its request legitimately names "Links Notation".
-    if ledger::is_ledger_task(&task) {
+    if ledger::is_ledger_task(task) {
         return Some(plan_ledger_step(messages, tool_names));
     }
     // The grounded self-explanation recipe: answers "how does Formal AI work?" from
     // real source/data/test artifacts. Checked alongside the other self-inspection
     // recipes and before formalization, since its request legitimately names "Links
     // Notation" as the output format its document is rendered in.
-    if explain::is_explain_task(&task) {
+    if explain::is_explain_task(task) {
         return Some(plan_explain_step(messages, tool_names));
     }
     // The user-initiated self-change recipe: turns a natural-language "change Formal AI
     // itself" request into a reviewable pull request through the same human-gated loop.
     // Checked alongside the other self-referential recipes and before formalization,
     // since its request legitimately names "Links Notation" as the output format.
-    if change_request::is_change_request_task(&task) {
+    if change_request::is_change_request_task(task) {
         return Some(plan_change_request_step(messages, tool_names));
     }
     // The general repair-classification recipe: given an arbitrary failure trace, decide
@@ -301,7 +352,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // names "Links Notation" as the output format its strategies are rendered in. Its
     // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
     // so ordering only guards a request that somehow names both.
-    if repair_strategy::is_repair_strategy_task(&task) {
+    if repair_strategy::is_repair_strategy_task(task) {
         return Some(plan_repair_strategy_step(messages, tool_names));
     }
     // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
@@ -311,7 +362,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // is rendered in. Its keywords key on "reattach" and are disjoint from the
     // source-links recipe's "recompile", so ordering only guards a request that somehow
     // names both.
-    if rebuild_plan::is_rebuild_task(&task) {
+    if rebuild_plan::is_rebuild_task(task) {
         return Some(plan_rebuild_step(messages, tool_names));
     }
     // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
@@ -320,10 +371,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // its keywords ("learning frontier", "self-improvement loop", "cannot … resolve") are
     // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
     // guards a request that somehow names both.
-    if google_trends_learning::is_google_trends_learning_task(&task) {
+    if google_trends_learning::is_google_trends_learning_task(task) {
         return Some(plan_google_trends_learning_step(messages, tool_names));
     }
-    if google_trends_catalog::is_google_trends_catalog_task(&task) {
+    if google_trends_catalog::is_google_trends_catalog_task(task) {
         return Some(plan_google_trends_catalog_step(messages, tool_names));
     }
     // The question-catalog recipe (issue #527): enumerate every possible question
@@ -333,7 +384,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // format its catalog is rendered in. Its keywords ("question catalog", "all possible
     // questions", …) are disjoint from the sibling recipes', so ordering only guards a
     // request that somehow names both.
-    if question_catalog::is_question_catalog_task(&task) {
+    if question_catalog::is_question_catalog_task(task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
     // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
@@ -345,40 +396,31 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
-    // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
-    // of every route that reads a request's lone file-shaped token, because that
-    // token is the *destination* here and opening it for reading ends the run with
-    // the evidence file unwritten. It sits behind the literal-write routes above,
-    // which own a request that spells its bytes out; this one owns the request
-    // whose bytes still have to be found.
-    if let Some(plan) = evidence_record::plan_evidence_record_step(&task, messages, tool_names) {
-        return Some(plan);
-    }
-    if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
+    if let Some(answer) = tool_result::follow_up_answer(messages, task) {
         return Some(AgenticPlan::Final(answer));
     }
-    if let Some(answer) = web_research::contextual_reference_clarification(&task) {
+    if let Some(answer) = web_research::contextual_reference_clarification(task) {
         return Some(AgenticPlan::Final(answer));
     }
-    if web_research::is_definition_followup(&task) {
-        if let Some(query) = web_research::definition_followup_topic(messages, &task) {
+    if web_research::is_definition_followup(task) {
+        if let Some(query) = web_research::definition_followup_topic(messages, task) {
             if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
                 return Some(plan);
             }
         } else {
             return Some(AgenticPlan::Final(
-                web_research::definition_followup_clarification(&task),
+                web_research::definition_followup_clarification(task),
             ));
         }
     }
-    if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names) {
         return Some(plan);
     }
     // Preserve the established stateful list/read recipe whenever the client
     // exposes its typed read capability. The shared read-many route remains
     // available for CLIs that advertise only a batch reader.
     if tool_for(tool_names, Capability::Read).is_some()
-        && let Some(file_task) = file_read_task_for(&task) {
+        && let Some(file_task) = file_read_task_for(task) {
             return Some(plan_file_read_step(&file_task, messages, tool_names));
         }
     // A meanings-driven explicit local scope dominates generic search verbs.
@@ -386,57 +428,64 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = comparison::plan_comparison_step(&task, messages, tool_names) {
+    if let Some(plan) = comparison::plan_comparison_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
+    if let Some(plan) = capability_router::plan_shared_capability_step(task, messages, tool_names)
     {
         return Some(plan);
     }
-    if let Some(command) = shell_command::shell_command_for_task(&task) {
-        if let Some(plan) = shell_file_fallback::plan_step(&task, messages, tool_names, &command) {
+    if let Some(command) = shell_command::shell_command_for_task(task) {
+        if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {
             return Some(plan);
         }
         // A command that changes the workspace answers by what the workspace
         // holds afterwards, so it is carried out as the verified recipe its seed
         // intent declares rather than issued once (issues #824 and #944).
-        if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, &task) {
+        if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, task) {
             return Some(plan);
         }
         return Some(plan_shell_step(messages, tool_names, &command));
     }
-    if let Some(file_task) = file_read_task_for(&task) {
+    if let Some(file_task) = file_read_task_for(task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
-    if formalization_recipe::is_formalization_task(&task) {
+    if formalization_recipe::is_formalization_task(task) {
         return Some(formalization_recipe::plan_formalization_step(
-            &task, messages, tool_names,
+            task, messages, tool_names,
         ));
     }
-    if meaning_detail::is_meaning_detail_task(&task) {
-        return Some(plan_meaning_detail_step(&task, messages, tool_names));
+    if meaning_detail::is_meaning_detail_task(task) {
+        return Some(plan_meaning_detail_step(task, messages, tool_names));
     }
-    if diagram::is_diagram_task(&task) {
+    if diagram::is_diagram_task(task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
     // A typed URL object is more specific than broad research prose. Resolve it
     // before the research recipe so requests such as "tell me about URL" fetch
     // that page instead of turning the URL itself into a search query.
-    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_web_fetch_step(task, messages, tool_names) {
         return Some(plan);
     }
     // A request to look at the repository the agent was handed is answered by
     // reading that repository. It has to be resolved before the research
     // routers, which would otherwise claim it on the strength of its question
     // shape alone and look the answer up on the open web (issue #1066). The
-    // subject rule inside `workspace_inspection_query_for_task` is what keeps a
+    // subject rule inside `workspace_inspection_search_for_task` is what keeps a
     // genuinely external question out of this route.
     if !tool_result::has_latest_turn_result(messages)
-        && let Some(query) = shell_command::workspace_inspection_query_for_task(&task)
+        && let Some(search) = workspace_inspection::workspace_inspection_search_for_task(task)
             && let Some(tool) = tool_for(tool_names, Capability::Grep) {
+                let mut arguments = json!({
+                    "query": search.query,
+                    "pattern": search.pattern,
+                });
+                if let Some(include) = search.include {
+                    arguments["include"] = include.into();
+                }
                 return Some(plan_one(
                     tool,
-                    json!({ "query": query, "pattern": query }).to_string(),
+                    arguments.to_string(),
                 ));
             }
     // A question about how a task decomposes is answered by decomposing it. It
@@ -447,14 +496,14 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // The route reads `messages` for the same reason its neighbour above does,
     // and it makes that judgement itself: a turn on which a tool has already run
     // is not one an answer composed from the request alone may claim.
-    if let Some(plan) = task_structure::plan_task_structure_step(messages, &task) {
+    if let Some(plan) = task_structure::plan_task_structure_step(messages, task) {
         return Some(plan);
     }
     if let Some(query) = web_research::web_research_query_for(messages)
         && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
             return Some(plan);
         }
-    if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_web_search_step(task, messages, tool_names) {
         return Some(plan);
     }
     // A generic localized "find" cue can describe either an open-web lookup or
@@ -464,7 +513,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // grep available to grep-only clients without letting an alphabetically
     // earlier local tool steal a web-research request.
     if !tool_result::has_latest_turn_result(messages)
-        && let Some(query) = shell_command::code_search_query_for_task(&task)
+        && let Some(query) = shell_command::code_search_query_for_task(task)
             && let Some(tool) = tool_for(tool_names, Capability::Grep) {
                 return Some(plan_one(
                     tool,
@@ -476,7 +525,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
             && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
                 return Some(plan);
             }
-    if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
+    if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, task) {
         return Some(AgenticPlan::Final(answer));
     }
     // A request that specifies what a document has to *cover* is answered by
@@ -485,10 +534,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // else claims the request -- and before the literal-write fallback, which
     // would otherwise write the specification instead of the document
     // (issue #1066).
-    if let Some(plan) = note_composition::plan_note_composition_step(&task, messages) {
+    if let Some(plan) = note_composition::plan_note_composition_step(task, messages) {
         return Some(plan);
     }
-    if let Some(plan) = compose_general_change_plan(&task)
+    if let Some(plan) = compose_general_change_plan(task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
@@ -565,6 +614,97 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
 /// The text of the most recent `user` turn.
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
     crate::protocol::latest_user_request(messages)
+}
+
+/// Restore the objective carried through Agent's compaction protocol.
+fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
+    if crate::engine::normalize_prompt(latest) != "continue if you have next steps" {
+        return None;
+    }
+    let latest_user = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
+    messages[..latest_user]
+        .iter()
+        .rev()
+        .find_map(|message| {
+            if !message.role.eq_ignore_ascii_case("assistant") {
+                return None;
+            }
+            let envelope = message.content.plain_text();
+            // Agent may compact an already compacted conversation. In that
+            // case its new summary repeats the protocol continuation before
+            // embedding the prior `Conversation summary:` envelope. The
+            // continuation remains trusted only as a protocol trigger; recover
+            // the objective from the last summary marker in the assistant's
+            // compaction response rather than requiring that marker at byte 0.
+            let summary = envelope
+                .rsplit_once("Conversation summary:")?
+                .1
+                .trim_start();
+            preserved_first_user_turn(summary).or_else(|| {
+                summary
+                    .split_once("\n\nTitle:")
+                    .map(|(task, _)| task.trim())
+                    .filter(|task| !task.is_empty())
+                    .map(str::to_owned)
+            })
+            .map(repair_compacted_dot_paths)
+        })
+}
+
+/// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
+///
+/// A live compaction changed `.agent-ladder/node.md` into
+/// `. agent-ladder/node.md`. Only a standalone dot followed by a safe
+/// slash-bearing relative path has this whitespace removed; ordinary prose and
+/// mathematical uses of a period remain untouched.
+fn repair_compacted_dot_paths(mut task: String) -> String {
+    let mut search_from = 0;
+    while let Some(relative_dot) = task[search_from..].find(". ") {
+        let dot = search_from + relative_dot;
+        let standalone = task[..dot]
+            .chars()
+            .next_back()
+            .is_none_or(char::is_whitespace);
+        let after_dot = dot + 1;
+        let Some(non_space) = task[after_dot..].find(|character: char| !character.is_whitespace())
+        else {
+            break;
+        };
+        let path_start = after_dot + non_space;
+        let path_end = task[path_start..]
+            .find(char::is_whitespace)
+            .map_or(task.len(), |offset| path_start + offset);
+        let token = task[path_start..path_end]
+            .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | ';'))
+            .trim_end_matches(['.', '!', '?']);
+        let candidate = format!(".{token}");
+        if standalone
+            && token.contains('/')
+            && super::write_request::safe_relative_path(&candidate)
+        {
+            task.replace_range(after_dot..path_start, "");
+            search_from = dot + 1;
+        } else {
+            search_from = path_start;
+        }
+    }
+    task
+}
+
+/// The summarizer keeps exact user bytes after its prose summary.
+///
+/// Its prose is allowed to normalize Markdown and, in a live Agent run, changed
+/// `.agent-ladder` into `. agent-ladder`. The numbered `User turns` appendix is
+/// the lossless copy, so prefer its first task turn and fall back to the prose
+/// only for older summaries that did not include the appendix.
+fn preserved_first_user_turn(summary: &str) -> Option<String> {
+    let turns = summary.split_once("\n\nUser turns:\n")?.1;
+    let first = turns.strip_prefix("  1. ")?;
+    let end = first.find("\n  2.").unwrap_or(first.len());
+    let task = first[..end].trim();
+    (!task.is_empty()).then(|| task.to_owned())
 }
 
 /// Emit a `route=value` planner-routing trace line to stderr when

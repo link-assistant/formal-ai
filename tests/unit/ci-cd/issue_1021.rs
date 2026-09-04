@@ -84,7 +84,7 @@ fn installed_specs(line: &str) -> Vec<&str> {
 }
 
 /// A version is explicit when the spec carries an `@<version>` after the
-/// package name: `@openai/codex@0.147.0` and `opencode-ai@1.18.19` are pinned,
+/// package name: `@openai/codex@0.147.0` and `opencode-ai@1.18.25` are pinned,
 /// `@openai/codex` and `opencode-ai` are not.
 fn is_pinned(spec: &str) -> bool {
     let name = spec.strip_prefix('@').unwrap_or(spec);
@@ -118,10 +118,10 @@ fn every_third_party_cli_a_workflow_installs_globally_carries_an_explicit_versio
     assert_eq!(
         checked,
         vec![
-            "@anthropic-ai/claude-code@2.1.238".to_string(),
-            "@google/gemini-cli@0.56.0".to_string(),
+            "@anthropic-ai/claude-code@2.1.252".to_string(),
+            "@google/gemini-cli@0.57.0".to_string(),
             "@openai/codex@0.147.0".to_string(),
-            "opencode-ai@1.18.19".to_string(),
+            "opencode-ai@1.18.25".to_string(),
         ],
         "the set of third-party CLIs CI installs changed; \
          re-run experiments/issue_1021_codex_tui_version/run.sh for the new pin"

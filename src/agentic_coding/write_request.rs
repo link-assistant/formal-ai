@@ -128,21 +128,46 @@ pub(super) fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize,
 /// an action cue. Requiring a cue keeps an incidental dotted token (a version,
 /// an abbreviation) out of the write path.
 pub(super) fn cued_write_target(toks: &[Token<'_>]) -> Option<(usize, String)> {
+    cued_write_targets(toks).into_iter().next()
+}
+
+/// Every cued target in token order, so a caller that has a further question to
+/// ask about a candidate can go on to the next one instead of losing the
+/// sentence with it.
+pub(super) fn cued_write_targets(toks: &[Token<'_>]) -> Vec<(usize, String)> {
     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
     let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    toks.iter().enumerate().find_map(|(index, token)| {
-        let cleaned = clean_path_token(token.text);
-        if !looks_like_file_path(cleaned) || !safe_relative_path(cleaned) {
-            return None;
-        }
-        let previous = index.checked_sub(1).map(|i| &toks[i])?;
-        let previous_word = clean_cue_token(previous.text);
-        (target_cues.contains(&previous_word)
-            || dest_cues.contains(&previous_word)
-            || action_cues.contains(&previous_word))
-        .then(|| (index, cleaned.to_owned()))
-    })
+    toks.iter()
+        .enumerate()
+        .filter_map(|(index, token)| {
+            let cleaned = clean_path_token(token.text);
+            if !looks_like_file_path(cleaned) || !safe_relative_path(cleaned) {
+                return None;
+            }
+            let previous = index.checked_sub(1).map(|i| &toks[i])?;
+            let previous_word = clean_cue_token(previous.text);
+            (target_cues.contains(&previous_word)
+                || dest_cues.contains(&previous_word)
+                || action_cues.contains(&previous_word))
+            .then(|| (index, cleaned.to_owned()))
+        })
+        .collect()
+}
+
+/// Whether a token is written as a double-quoted literal.
+///
+/// A path is *mentioned* -- bare, or set in the backticks this repository's
+/// prose uses for code -- whereas a double-quoted token is a *value* the
+/// sentence is handing to something else: the member "add \"bun.lock\" to the
+/// `IGNORE_FILES` list" inserts, the marker the ladder asks a record to contain.
+/// Both can be file-shaped, and `clean_path_token` peels either quoting away, so
+/// the distinction has to be read before the peeling.
+fn quoted_as_value(word: &str) -> bool {
+    let bare = peel_sentence_punctuation(word, |token| {
+        token.trim_end_matches([',', ':', ';'])
+    });
+    bare.len() >= 2 && bare.starts_with('"') && bare.ends_with('"')
 }
 /// The path a request names as the destination of a write, whether or not it
 /// also spells the bytes out.
@@ -162,6 +187,65 @@ pub(super) fn stated_write_target(request: &str) -> Option<String> {
 /// mentions a file after a positional cue).
 pub(super) fn states_write_action(request: &str) -> bool {
     first_action_cue_end(&tokens(request)).is_some()
+}
+
+/// The path a sentence names as the *destination* of a write it states.
+///
+/// [`stated_write_target`] answers a weaker question -- which path a cue points
+/// at -- and a sentence can point a cue at a path it is not delivering to,
+/// because the same cues introduce the file the work is done *in*. Both of these
+/// name a path after a target cue and state a write action:
+///
+/// > In the file `src/solver_handlers/document_request.rs`, add "toward " to the
+/// > TARGET_MARKERS list.
+///
+/// > Then create `agent-ladder-effects/node-1.1.2.2.1.lino` recording what you
+/// > changed.
+///
+/// Only the second is somewhere to put an answer. In the first the thing being
+/// added goes into a list *inside* the file, and reading it as a delivery
+/// destroys the file it was asked to edit -- the planner writes its own status
+/// line over the source and the write reports success.
+///
+/// What separates them is order, the same adjacency principle
+/// [`cued_write_target`] already uses to bind a cue to a path. A delivery
+/// composes something and then says where to put it, so its path *follows* the
+/// action; a sentence that says where the work happens states the place first
+/// and the action afterwards.
+///
+/// Measured over the 1 118 request sentences this repository records that name a
+/// file and carry a cue (`experiments/issue_1069_paths_in_prose/cue-order-survey.py`),
+/// the path follows the action in 21.56% of them, precedes it in 65.74%, and in
+/// the remaining 12.70% there is no write cue at all -- an edit, which is never a
+/// delivery. So this reads roughly a fifth of them as destinations, where the
+/// weaker "cues a path and states a write" test reads all 1 118.
+///
+/// The rule that suggests itself first is the cue family: the seed declares a
+/// second family for edits, so a sentence mentioning one could be doing work
+/// rather than delivering. That fails on this corpus. Thirty of the sentences
+/// carry both families, and the ladder's own delivery sentence is one of them --
+/// "Then create `agent-ladder-effects/node-1.1.2.2.1.lino` … followed by at
+/// least four words that state the **change** you made" -- so the family rule
+/// discards the record the node exists to produce. Position separates what
+/// mention cannot.
+///
+/// Position alone still admits a value that merely *looks* like a path, because
+/// the operand of an insertion follows the action too: "Edit `scripts/metric.rs`:
+/// add \"bun.lock\" to the `IGNORE_FILES` list" names the file before the action
+/// and the member after it. So the candidates are taken in order and a
+/// double-quoted one is skipped rather than accepted -- see [`quoted_as_value`].
+/// The same survey measures what that costs: of the 241 sentences the position
+/// rule admits, 2 (0.83%) quote their path, and both are member insertions of
+/// exactly this shape. No delivery destination in the corpus is double-quoted.
+pub(super) fn delivered_write_target(sentence: &str) -> Option<String> {
+    let toks = tokens(sentence);
+    let action = first_action_cue_start(&toks)?;
+    cued_write_targets(&toks)
+        .into_iter()
+        .find(|(index, _)| {
+            toks[*index].start > action && !quoted_as_value(toks[*index].text)
+        })
+        .map(|(_, path)| path)
 }
 
 /// Whether `request` names `path` as the destination of a write it states.
@@ -194,13 +278,53 @@ pub(super) fn is_stated_write_target(request: &str, path: &str) -> bool {
 pub(super) fn pinned_first_line(sentence: &str) -> Option<String> {
     let lowered = sentence.to_lowercase();
     let (_, end) = first_prefix_lead_end(&lowered, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
-    let line = sentence
+    let raw = sentence
         .get(end..)?
         .trim()
         .trim_start_matches([':', '-', '\u{2014}', '\u{2013}'])
-        .trim()
+        .trim();
+    let line = delimited_first_line(raw)
+        .or_else(|| unquoted_machine_first_line(raw))
+        .unwrap_or(raw)
         .trim_matches(['`', '"', '\'']);
     (!line.is_empty()).then(|| line.to_owned())
+}
+
+/// An explicitly delimited opening line, without the presentation delimiters.
+///
+/// The closing delimiter is also a grammatical boundary: in "exactly `id=7`
+/// and the body ...", the coordinated body constraint is not part of the
+/// machine-readable header.
+fn delimited_first_line(raw: &str) -> Option<&str> {
+    let delimiter = raw.chars().next()?;
+    if !matches!(delimiter, '`' | '"' | '\'') {
+        return None;
+    }
+    let after_open = raw.get(delimiter.len_utf8()..)?;
+    let close = after_open.find(delimiter)?;
+    after_open.get(..close)
+}
+
+/// Stop an unquoted machine header before a coordinated second requirement.
+///
+/// Natural-language lines such as "ready and waiting" remain whole. A compact
+/// assignment/header token (`name=value`, `name:value`) followed by a
+/// seed-defined procedure separator is unambiguous: the separator begins the
+/// next clause, as it did in the live Agent ladder prompt.
+fn unquoted_machine_first_line(raw: &str) -> Option<&str> {
+    let lowered = raw.to_lowercase();
+    bare_surfaces(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR)
+        .into_iter()
+        .filter_map(|separator| {
+            let marker = format!(" {separator} ");
+            lowered.find(&marker).and_then(|boundary| {
+                let candidate = raw.get(..boundary)?.trim();
+                (!candidate.contains(char::is_whitespace)
+                    && candidate.contains(['=', ':']))
+                .then_some(candidate)
+            })
+        })
+        .min_by_key(|candidate| candidate.len())
 }
 /// The opening line the request pins, wherever in the request it pins it.
 ///

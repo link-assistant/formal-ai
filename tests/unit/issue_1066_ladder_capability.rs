@@ -8,14 +8,18 @@
 //!
 //! They are grouped by the seam each one guards: [`written_files`] for the bytes
 //! a run puts in the file it was asked for, [`tool_results`] for what it makes
-//! of an answer already in hand, and this module for the routing that decides
-//! which of those a request is asking for. The planning helpers all three share
-//! live here, and the two child modules reach them through `super::`.
+//! of an answer already in hand, [`canonical_facts`] for seed-backed source
+//! invariants, and this module for the routing that decides which of those a
+//! request is asking for. Shared planning helpers live here, and child modules
+//! reach them through `super::`.
+
+use std::collections::BTreeSet;
 
 use formal_ai::ChatMessage;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ToolCall;
 
+mod canonical_facts;
 mod tool_results;
 mod written_files;
 
@@ -116,6 +120,54 @@ fn a_genuine_dotted_file_name_is_still_recognised() {
             "expected a read of {expected} for {prompt:?}, planned {paths:?}"
         );
     }
+}
+
+#[test]
+fn textual_rendering_language_is_not_a_gui_capability_request() {
+    // `rendered` also describes text produced by a reader, serializer, or
+    // template. Treating that adjective alone as a visual request made a
+    // composite ladder node refuse to inspect two ordinary text files. Keep a
+    // text-rendering example for every registry language so removing the
+    // ambiguous GUI cue cannot become an English-only repair.
+    let cases = [
+        (
+            "en",
+            "Do not copy tool-rendered line numbers or file wrappers while reading text records.",
+        ),
+        (
+            "ru",
+            "Проверь отрисованную текстовую запись и опиши её текстовый формат.",
+        ),
+        ("hi", "rendered पाठ रिकॉर्ड जाँचें और उसका पाठ प्रारूप बताएँ।"),
+        ("zh", "检查渲染后的文本记录并报告文本格式。"),
+        (
+            "es",
+            "Inspecciona el texto renderizado y describe su formato textual.",
+        ),
+    ];
+    for &(language, prompt) in &cases {
+        assert!(
+            formal_ai::computer_use::capability_gap_for_request(prompt).is_none(),
+            "{language}: text-only wording was mistaken for a GUI capability gap: {prompt:?}",
+        );
+        assert!(
+            final_answer(prompt).is_none_or(|answer| !answer.contains("gui_rendering")),
+            "{language}: the agentic router refused a text-only task as visual: {prompt:?}",
+        );
+    }
+
+    let registered = formal_ai::language::registered_languages()
+        .into_iter()
+        .map(formal_ai::Language::slug)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        cases
+            .map(|(language, _)| language)
+            .into_iter()
+            .collect::<BTreeSet<_>>(),
+        registered,
+        "the textual-rendering matrix must track every registered language",
+    );
 }
 
 /// The answer a plan settles on, when it settles on one without a tool call.
@@ -350,6 +402,17 @@ fn planned_queries(prompt: &str) -> Vec<String> {
         .collect()
 }
 
+/// The decoded arguments of every planned tool call.
+fn planned_arguments(prompt: &str) -> Vec<serde_json::Value> {
+    let Some(AgenticPlan::ToolCalls(calls)) = plan(prompt) else {
+        return Vec::new();
+    };
+    calls
+        .iter()
+        .filter_map(|call| serde_json::from_str(&call.arguments).ok())
+        .collect()
+}
+
 #[test]
 fn a_question_about_the_repository_is_answered_by_reading_the_repository() {
     // The ladder's interior nodes ask the agent to look at the material it was
@@ -380,6 +443,169 @@ fn a_question_about_the_repository_is_answered_by_reading_the_repository() {
             queries.iter().any(|query| query.contains(subject)),
             "expected the workspace to be searched for {subject:?} for {prompt:?}, \
              planned {queries:?}"
+        );
+    }
+}
+
+#[test]
+fn a_source_artifact_noun_scopes_a_plain_inspection_subject() {
+    // Not every source concept contains punctuation or capitals. In "retry
+    // check", the artifact noun makes the adjacent plain word a safe local
+    // subject just as "retry_policy helper" does; without that grammar the
+    // inspection falls through to an answer that never reads the checkout.
+    let queries = planned_queries(
+        "Review the existing retry check and identify which condition accepts completed work.",
+    );
+    assert!(
+        queries.iter().any(|query| query == "retry"),
+        "expected a workspace search for the subject next to `check`, planned {queries:?}"
+    );
+}
+
+#[test]
+fn a_seed_mapped_source_fact_uses_its_narrow_expression() {
+    // A natural-language property can have a canonical spelling in source.
+    // Keeping every surrounding prose word in an OR expression fills a grep
+    // result cap before that property appears, so an explicit seed mapping is
+    // the complete search expression rather than one more broad alternative.
+    let arguments = planned_arguments(
+        "Review the existing readiness check and record the observable completion contract \
+         for workers.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "readiness");
+    assert_eq!(search["pattern"], "completion_criterion");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*"),
+        "a condition inspection should not search generated traces or documentation: {search}"
+    );
+}
+
+#[test]
+fn a_missing_leaf_contract_uses_the_specific_fact() {
+    // `completion criterion` has a useful broad source spelling, but the whole
+    // phrase asks about the sentinel assigned to a leaf whose contract is
+    // absent. The more specific fact must win even though it contains the
+    // shorter mapped phrase verbatim.
+    let arguments = planned_arguments(
+        "Review the existing fallback check and verify that a leaf without an observable \
+         completion criterion is not independently verifiable.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "fallback");
+    assert_eq!(search["pattern"], "unresolved_single_need");
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("src/**/*")
+    );
+}
+
+#[test]
+fn a_documented_invariant_searches_repository_documentation() {
+    // A hyphenated invariant name resembles an underscored source module, but
+    // this fact is explicitly grounded in the repository's documentation. Its
+    // canonical sentence must choose both the grep pattern and the file scope.
+    let arguments = planned_arguments(
+        "Inspect the binary decomposition invariant and explain the \
+         exactly-two-children requirement.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "exactly_two_children");
+    assert_eq!(
+        search["pattern"],
+        "Every internal node has exactly two children"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("docs/**/*")
+    );
+}
+
+#[test]
+fn a_plainly_worded_binary_invariant_searches_documentation() {
+    // The invariant remains a repository fact when it is stated as ordinary
+    // prose without the hyphenated name that can double as a source token.
+    let arguments = planned_arguments(
+        "Verify every tested internal node has exactly two children and never three or more.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    assert_eq!(search["query"], "binary_decomposition_invariant");
+    assert_eq!(
+        search["pattern"],
+        "Every internal node has exactly two children"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("docs/**/*")
+    );
+}
+
+#[test]
+fn a_workspace_inspection_search_targets_the_fact_being_requested() {
+    // Searching only for `task_decomposition` returns a hundred broad matches,
+    // headed by release notes, before the field the caller asked about. The
+    // code-shaped module remains useful context, but the grep pattern must name
+    // the requested fact and the search must stay inside source code.
+    let arguments = planned_arguments(
+        "Inspect the existing task_decomposition data model and identify where a node \
+         stores its children.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    let pattern = search["pattern"]
+        .as_str()
+        .expect("the grep pattern must be a string");
+    assert!(
+        pattern.contains("children"),
+        "the search pattern omitted the fact being requested: {search}"
+    );
+    assert_eq!(
+        search.get("include").and_then(serde_json::Value::as_str),
+        Some("*task_decomposition*"),
+        "a module-shaped subject should exclude unrelated changelogs and docs: {search}"
+    );
+}
+
+#[test]
+fn a_task_label_does_not_become_part_of_the_inspection_query() {
+    // A harness may number and classify the task before the colon. Those words
+    // describe the work item, not the repository fact after the colon. Letting
+    // `atomic` and `task` into the grep filled the result cap and then outranked
+    // the requested `children` declaration during evidence selection.
+    let arguments = planned_arguments(
+        "Atomic task L01: Inspect the existing task-decomposition data model and identify \
+         where a node stores its children.",
+    );
+    let search = arguments
+        .iter()
+        .find(|arguments| arguments.get("pattern").is_some())
+        .unwrap_or_else(|| panic!("no workspace search was planned: {arguments:?}"));
+    let pattern = search["pattern"]
+        .as_str()
+        .expect("the grep pattern must be a string");
+    assert!(
+        pattern.split('|').any(|term| term == "children"),
+        "{search}"
+    );
+    for label_word in ["atomic", "task", "l01:"] {
+        assert!(
+            !pattern.split('|').any(|term| term == label_word),
+            "task-label word {label_word:?} leaked into the search: {search}"
         );
     }
 }
@@ -629,6 +855,29 @@ fn the_note_that_places_the_worker_does_not_name_the_subject_of_the_work() {
             .any(|query| query.contains("night_crew_rota")),
         "took the subject from the block that only places the worker, \
          planned {queries:?}"
+    );
+}
+
+#[test]
+fn a_single_line_worker_contract_does_not_replace_the_inspection_subject() {
+    // Agent's second compaction can flatten the original paragraph break. The
+    // checkout question and its worker contract then occupy one request block,
+    // but the machine-shaped completion token still is not the thing the user
+    // asked to inspect.
+    let queries = planned_queries(
+        "Inspect the existing invoice-total helper and identify how it rounds a half cent. \
+         This is validation job 7. Its completion criterion is new_audit_effect. Create \
+         `audit-effects/job-7.lino` with the observed result.",
+    );
+    assert!(
+        queries.iter().any(|query| query.contains("invoice_total")),
+        "expected the stated helper to remain the inspection subject, planned {queries:?}",
+    );
+    assert!(
+        !queries
+            .iter()
+            .any(|query| query.contains("new_audit_effect")),
+        "searched for the worker contract instead of the inspection subject: {queries:?}",
     );
 }
 

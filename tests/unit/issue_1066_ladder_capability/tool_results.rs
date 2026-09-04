@@ -286,3 +286,202 @@ fn a_search_that_announces_its_matches_before_quoting_them_is_not_a_failure() {
         "a status line stopped being read as a failure, answered {answer:?}"
     );
 }
+
+#[test]
+fn a_recorded_workspace_result_prefers_the_line_that_answers_the_question() {
+    // Agent groups grep results by file, and a broad module search can put a
+    // release-note hit ahead of the source declaration the caller requested.
+    // The delivery field must carry the grounded answer, not merely the first
+    // quotation in transport order.
+    let prompt = "Atomic task L01: Inspect the existing task_decomposition data model and \
+                  identify where a node stores its children. Record the finding in \
+                  `audit/result.lino` with the exact field line `result=`.";
+    let matched = concat!(
+        "Found 4 matches\n",
+        "/tmp/work/CHANGELOG.md:\n",
+        "  Line 65: - Failure-driven splitting gained a task decomposition hook.\n",
+        "\n",
+        "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 12: //! A task decomposition is a recursive tree.\n",
+        "  Line 79:     pub children: Vec<Self>,\n",
+        "  Line 106:         1 + self.children.iter().map(Self::node_count).sum::<usize>()",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-children",
+            "grep",
+            r#"{"pattern":"task_decomposition","query":"task_decomposition"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("search-children", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the grounded result to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents
+            .iter()
+            .any(|content| content.contains("result=Line 79:     pub children: Vec<Self>,")),
+        "the recorded field did not select the requested source fact: {contents:?}"
+    );
+    assert!(
+        contents
+            .iter()
+            .all(|content| !content.contains("Failure-driven splitting")),
+        "a release-note match was recorded as the task result: {contents:?}"
+    );
+}
+
+#[test]
+fn a_workspace_result_prefers_the_authoritative_bounded_field() {
+    // Live L02 searched broadly for the task-decomposition depth limit. The
+    // first result was an example's `//! Usage: ... [max_depth]` comment. Its
+    // label-and-colon shape looked like a declaration and its filename repeated
+    // more query terms than the actual field, so it displaced `pub max_depth`.
+    let prompt = "Atomic task L02: Inspect the existing task-decomposition recursion and \
+                  record how depth limits are represented. Record the finding in \
+                  `audit/result.lino` with the exact field line `result=`.";
+    let matched = concat!(
+        "Found 6 matches\n",
+        "/tmp/work/src/solver_handlers/task_decomposition.rs:\n",
+        "  Line 65:     max_depth: u8,\n",
+        "\n",
+        "/tmp/work/examples/dump_task_decomposition.rs:\n",
+        "  Line 3: //! Usage: `cargo run --example dump_task_decomposition -- \\\"<task>\\\" [max_depth]`\n",
+        "  Line 12:     let max_depth: u8 = args.next().unwrap().parse()?;\n",
+        "  Line 220:         \"a generous depth must reach atomic leaves: {:?}\",\n",
+        "\n",
+        "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 72:     pub depth: u8,\n",
+        "  Line 180:     pub max_depth: u8,",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-depth",
+            "grep",
+            r#"{"pattern":"task_decomposition|max_depth","query":"task_decomposition|max_depth"}"#
+                .to_owned(),
+        )]),
+        ChatMessage::tool_result("search-depth", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the grounded result to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents
+            .iter()
+            .any(|content| content.contains("result=Line 180:     pub max_depth: u8,")),
+        "the recorded field selected a usage comment instead of the declaration: {contents:?}"
+    );
+}
+
+#[test]
+fn a_check_result_prefers_the_condition_over_its_field_declaration() {
+    // A narrow identifier search can return both the model field and the
+    // predicate that checks it. When the requested source artifact is a check,
+    // recording the field declaration describes storage but not the condition
+    // the caller asked to observe.
+    let prompt = "Review the existing readiness check and inspect the observable completion \
+                  contract for workers. Record the finding in `audit/result.lino` with the \
+                  exact field line `result=`.";
+    let matched = concat!(
+        "Found 6 matches\n",
+        "/tmp/work/tests/readiness.rs:\n",
+        "  Line 179:         \"  Line 89: && !self.completion_criterion.starts_with(\\\"unresolved_\\\")\\n\",\n",
+        "  Line 229:             && content.contains(\"!self.completion_criterion.starts_with\")\n",
+        "/tmp/work/src/work/strategy.rs:\n",
+        "  Line 190:                     (!text_intent.is_empty() && !completion_criterion.is_empty()).then(|| {\n",
+        "/tmp/work/src/work.rs:\n",
+        "  Line 70:     pub completion_criterion: String,\n",
+        "  Line 89:             && !self.completion_criterion.starts_with(\"unresolved_\")\n",
+        "  Line 130:                 self.completion_criterion.clone(),",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-contract",
+            "grep",
+            r#"{"pattern":"completion_criterion","query":"readiness"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("search-contract", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the checked condition to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents.iter().any(|content| content.contains(
+            "result=Line 89:             && !self.completion_criterion.starts_with(\"unresolved_\")"
+        )),
+        "the recorded field did not select the checked condition: {contents:?}"
+    );
+}
+
+#[test]
+fn a_rendering_result_records_the_serialization_statement() {
+    // A source-only rendering search can still return explanatory comments and
+    // several child-related statements. Persist the concrete statement that
+    // serializes the relationship rather than a nearby description or use.
+    let prompt = "Inspect the existing Links Notation rendering and record how child \
+                  relationships are serialized. Record the finding in `audit/result.lino` \
+                  with the exact field line `result=`.";
+    let matched = concat!(
+        "Found 5 matches\n",
+        "/tmp/work/src/meta_reasoning.rs:\n",
+        "  Line 101:             pairs.push((\"child\", child.unit_id.clone()));\n",
+        "\n",
+        "/tmp/work/src/meta_frame.rs:\n",
+        "  Line 419:             pairs.push((\"child\", child.unit_id.clone()));\n",
+        "\n",
+        "/tmp/work/src/task_decomposition.rs:\n",
+        "  Line 64:     /// numbering of the rendered list; durable child links use content ids.\n",
+        "  Line 152:             pairs.push((\"child\", child.id.clone()));\n",
+        "  Line 157:             out.push_str(&child.to_links_notation());",
+    );
+    let messages = vec![
+        ChatMessage::user(prompt),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "search-rendering",
+            "grep",
+            r#"{"include":"src/**/*","pattern":"child|relationships|serialized","query":"Notation"}"#
+                .to_owned(),
+        )]),
+        ChatMessage::tool_result("search-rendering", "grep", matched),
+    ];
+
+    let plan = plan_chat_step(&messages, &super::LADDER_TOOLS);
+    let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+        panic!("expected the serialization fact to be written, planned {plan:?}");
+    };
+    let contents = calls
+        .iter()
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
+        .filter_map(|arguments| super::argument(&arguments, &["content", "contents", "text"]))
+        .collect::<Vec<_>>();
+    assert!(
+        contents.iter().any(|content| content
+            .contains("result=Line 152:             pairs.push((\"child\", child.id.clone()));")),
+        "the recorded result did not select the serialization statement: {contents:?}"
+    );
+}

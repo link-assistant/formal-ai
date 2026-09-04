@@ -9,6 +9,11 @@ meanings
     lexeme en
       surface
         text "prompt pattern"
+  adapters
+    defined-by word_surface
+    lexeme en
+      surface
+        text "adapters"
   agentic_action_find_home
     defined-by intent
     lexeme en
@@ -364,11 +369,11 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase how are you en"
-  render
+  renderer
     defined-by word_surface
     lexeme en
       surface
-        text "render"
+        text "renderer"
   response_agent_suggestion_active_en
     defined-by response_template
     lexeme en
@@ -409,6 +414,11 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting en"
+  response_coding_repository_result_observation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation es"
   response_comparison_decomposed_evidence_en
     defined-by response_template
     lexeme en

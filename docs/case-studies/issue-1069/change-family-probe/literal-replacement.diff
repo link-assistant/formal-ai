@@ -1,0 +1,13 @@
+diff --git a/src/orchestration/runner.rs b/src/orchestration/runner.rs
+index 25e8e53..c7e9fb6 100644
+--- a/src/orchestration/runner.rs
++++ b/src/orchestration/runner.rs
+@@ -17,7 +17,7 @@ use std::process::{Command, Stdio};
+ use std::thread;
+ use std::time::{Duration, Instant};
+ 
+-const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
++const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8090";
+ const VERIFICATION_TASK_ENV: &str = "FORMAL_AI_VERIFICATION_TASK";
+ 
+ #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]

@@ -208,8 +208,11 @@ fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
     assert!(gate.contains("scripts/check-javascript-dependencies.sh"));
     assert!(script.contains("git ls-files"));
     assert!(script.contains("$NF == name"));
-    assert!(script.contains("audit_locks \"bun.lock\" bun audit"));
-    assert!(script.contains("audit_locks \"package-lock.json\" npm audit"));
+    assert!(script.contains("queue_locks \"bun.lock\" bun audit"));
+    assert!(script.contains("queue_locks \"package-lock.json\" npm audit"));
+    // Queueing an audit is not running one. Both surfaces are audited concurrently,
+    // so the gate's verdict only exists once every queued audit has been waited on.
+    assert!(script.contains("wait_for_audits"));
     assert!(script.contains("bun audit --audit-level=moderate"));
     assert!(script.contains("npm audit --package-lock-only --audit-level=moderate"));
     for lock in [
@@ -251,7 +254,7 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
             if line.contains("--trust") {
                 assert!(
                     (path == ".github/workflows/release.yml"
-                        && line.contains("opencode-ai@1.18.19"))
+                        && line.contains("opencode-ai@1.18.25"))
                         || (path == "experiments/agentic_cli_matrix/install_client.sh"
                             && line.contains("\"$spec\"")),
                     "{path}: {line}"
@@ -260,13 +263,13 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
         }
     }
 
-    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.19"));
+    assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.25"));
     let installer = repository_file("experiments/agentic_cli_matrix/install_client.sh");
     assert!(installer.contains("[ \"$CLIENT\" = opencode ]"));
     assert!(installer.contains("bun add -g --trust \"$spec\""));
     assert!(
         repository_file("experiments/agentic_cli_matrix/clients.lock")
-            .contains("opencode-ai@1.18.19")
+            .contains("opencode-ai@1.18.25")
     );
 }
 

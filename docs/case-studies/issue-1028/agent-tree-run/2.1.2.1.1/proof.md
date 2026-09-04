@@ -1,7 +1,3 @@
 node_path=2.1.2.1.1
 
-The `grep` command completed. Output:
-
-```text
-No files found
-```
+Line 68: L21	Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.	experiments/issue_1028_agent_cli_ladder/run.sh	0|1|2|3|4|5|all) ;;

@@ -31,9 +31,11 @@ git -C "$work" add README.md
 git -C "$work" commit -qm fixture
 printf '%s\n' "$TASK" >"$OUT/task.txt"
 
+# Keep Formal AI's generated memory, indexes, locks, and dialog logs under
+# .git so the external Agent CLI does not treat binary link indexes as edits.
 FORMAL_AI_AGENT_MODE=1 \
 FORMAL_AI_TRACE_REQUESTS=1 \
-FORMAL_AI_MEMORY_PATH="$work/memory.lino" \
+FORMAL_AI_MEMORY_PATH="$work/.git/formal-ai-memory/memory.lino" \
 FORMAL_AI_DREAMING=0 \
 "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$OUT/formal-ai-server.log" 2>&1 &
 server_pid=$!

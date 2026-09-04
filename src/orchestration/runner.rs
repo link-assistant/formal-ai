@@ -90,6 +90,10 @@ pub struct AgentRunConfig {
     pub allowlisted_commands: BTreeSet<String>,
     pub verification: Vec<VerificationCommand>,
     pub controller_program: PathBuf,
+    /// Exact native client state directory for a Formal AI controller run.
+    /// Dispatch sets this outside the candidate worktree so a client cannot
+    /// observe its own snapshots as authored workspace effects.
+    pub orchestration_home: Option<PathBuf>,
     pub command_override: Option<AgentCommand>,
     pub continuation: Option<AgentContinuation>,
 }
@@ -116,6 +120,7 @@ impl AgentRunConfig {
             allowlisted_commands: BTreeSet::new(),
             verification: Vec::new(),
             controller_program: PathBuf::from("formal-ai"),
+            orchestration_home: None,
             command_override: None,
             continuation: None,
         }
@@ -526,10 +531,15 @@ fn build_command(
             command.args.extend([
                 "--orchestration-home".to_string(),
                 config
-                    .workspace
-                    .join(".formal-ai-orchestration")
-                    .join("native-sessions")
-                    .join(&integration.id)
+                    .orchestration_home
+                    .clone()
+                    .unwrap_or_else(|| {
+                        config
+                            .workspace
+                            .join(".formal-ai-orchestration")
+                            .join("native-sessions")
+                            .join(&integration.id)
+                    })
                     .to_string_lossy()
                     .into_owned(),
             ]);

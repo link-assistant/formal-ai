@@ -1,0 +1,22 @@
+diff --git a/src/orchestration/attribution.rs b/src/orchestration/attribution.rs
+index 161d43d..ceb65aa 100644
+--- a/src/orchestration/attribution.rs
++++ b/src/orchestration/attribution.rs
+@@ -13,7 +13,7 @@ use std::process::{Command, Output};
+ use super::dispatch::DispatchError;
+ use super::runner::AgentSession;
+ 
+-const SESSION_TRAILER: &str = "Formal-AI-Session";
++const AGENT_SESSION_TRAILER: &str = "Formal-AI-Session";
+ const EVIDENCE_TRAILER: &str = "Formal-AI-Evidence";
+ const PULL_REQUEST_TRAILER: &str = "Formal-AI-Pull-Request";
+ 
+@@ -111,7 +111,7 @@ pub(super) fn commit_verified_effect(
+     }
+ 
+     let trailers = [
+-        trailer(SESSION_TRAILER, &native.id),
++        trailer(AGENT_SESSION_TRAILER, &native.id),
+         trailer(EVIDENCE_TRAILER, &evidence),
+         trailer(PULL_REQUEST_TRAILER, pull_request),
+     ]

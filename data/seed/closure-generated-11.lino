@@ -89,11 +89,21 @@ meanings
     lexeme en
       surface
         text "barack obama"
+  ceiling
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ceiling"
   clones
     defined-by word_surface
     lexeme en
       surface
         text "clones"
+  coding_identifier_renamed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding identifier renamed"
   comment
     defined-by concept
     lexeme en
@@ -434,11 +444,26 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting ru"
+  response_coding_identifier_renamed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding identifier renamed zh"
   response_coding_meta_algorithm_heading_ru
     defined-by response_template
     lexeme en
       surface
         text "response coding meta algorithm heading ru"
+  response_coding_text_replaced_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced en"
+  response_coding_text_replaced_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced es"
   response_coding_workspace_effect_observed_en
     defined-by response_template
     lexeme en

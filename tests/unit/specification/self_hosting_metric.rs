@@ -2,6 +2,8 @@
 #[path = "../../../scripts/self-hosting-metric.rs"]
 mod metric_script;
 
+mod authorship_composition;
+
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -269,62 +271,6 @@ fn an_ineligible_cycle_is_blocked_from_the_first_push() {
 }
 
 #[test]
-fn release_cycle_rejects_a_partially_attributed_pull_request() {
-    let repo = fixture_repo();
-    let branch = "issue-42";
-    let session = "fixture-session-42";
-    let evidence = "docs/evidence/42/session.txt";
-    let pull_request = "https://github.com/example/formal-ai/pull/42";
-
-    git(&repo, &["switch", "-c", branch]);
-    fs::write(repo.join("human-first.txt"), "unattributed change\n")
-        .expect("human fixture must be written");
-    commit(&repo, "human-authored part of the pull request");
-
-    fs::create_dir_all(repo.join("docs/evidence/42")).expect("evidence directory must be created");
-    fs::write(
-        repo.join(evidence),
-        format!("formal-ai session {session}\n"),
-    )
-    .expect("session evidence must be written");
-    fs::write(repo.join("formal-ai-42.txt"), "session-backed change\n")
-        .expect("generated fixture must be written");
-    commit(
-        &repo,
-        &format!(
-            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
-        ),
-    );
-    git(&repo, &["switch", "main"]);
-    git(
-        &repo,
-        &[
-            "merge",
-            "--no-ff",
-            branch,
-            "-m",
-            "Merge pull request #42 from example/issue-42",
-        ],
-    );
-
-    let error = metric_script::ensure_self_development_release(
-        &repo,
-        &repo.join("data/meta/self-hosting-ledger.lino"),
-        "v1.1.0",
-        "v1.0.0",
-        "HEAD",
-        3,
-    )
-    .expect_err("one attributed commit must not make a mixed-authorship PR end-to-end");
-    assert!(
-        error.contains("end-to-end Formal AI-authored pull request"),
-        "unexpected error: {error}"
-    );
-
-    fs::remove_dir_all(repo).expect("fixture directory must be removed");
-}
-
-#[test]
 fn release_target_ratchets_and_records_each_self_authored_pull_request() {
     let repo = fixture_repo();
     let first_pull_request = merge_formal_ai_pull_request(&repo, 51);
@@ -363,6 +309,102 @@ fn release_target_ratchets_and_records_each_self_authored_pull_request() {
         "unexpected error: {error}"
     );
     assert!(error.contains("would fall"), "unexpected error: {error}");
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+/// Issue #1069: a reviewed override is the ratchet's way back down.
+///
+/// The ratchet can only climb: `target_from_rows` takes the greater of the
+/// carried target and the measured trailing share, so once a cycle measured
+/// high the level was unreachable except by out-measuring it and no review could
+/// lower it. The maintainer's decision on [PR #1070][decision] is that the level
+/// is theirs to set, and the lever is the ledger and nothing else. This test
+/// moves it the only way the code allows -- by writing the number onto the
+/// newest comparable row -- and pins both directions: with the override the
+/// cycle is releasable, and with that one line removed the very same cycle is
+/// blocked again by the very same ratchet.
+///
+/// [decision]: https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300
+#[test]
+fn a_reviewed_override_lowers_the_bar_and_removing_it_restores_the_ratchet() {
+    let repo = fixture_repo();
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let history = |override_target: &str| {
+        format!(
+            "self_hosting_ledger\n  current_metric_version \"2\"\n  release\n    \
+             metric_version \"2\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \
+             \"b\"\n    self_authored_lines \"0\"\n    changed_lines \"100\"\n    \
+             self_authored_commits \"0\"\n    commits \"1\"\n    percentage_basis_points \
+             \"0\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
+             \"0\"\n  release\n    metric_version \"2\"\n    tag \"v0.9.0\"\n    since \
+             \"v0.8.0\"\n    until \"c\"\n    self_authored_lines \"0\"\n    changed_lines \
+             \"100\"\n    self_authored_commits \"0\"\n    commits \"1\"\n    \
+             percentage_basis_points \"0\"\n    trailing_window \"3\"\n    \
+             trailing_percentage_basis_points \"6667\"\n{override_target}"
+        )
+    };
+    fs::write(
+        &ledger,
+        history("    target_override_basis_points \"50\"\n"),
+    )
+    .expect("historical release rows must be written");
+    commit(&repo, "historical release rows");
+    git(&repo, &["tag", "--force", "v1.0.0"]);
+
+    fs::write(repo.join("human-code.txt"), "human\n".repeat(98))
+        .expect("human change must be written");
+    commit(&repo, "human part of release");
+    merge_formal_ai_pull_request(&repo, 54);
+
+    let eligibility = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("the reviewed override must make the cycle releasable");
+    assert_eq!(eligibility.target_percentage_basis_points, 50);
+    assert!(
+        eligibility.projected_percentage_basis_points >= 50
+            && eligibility.projected_percentage_basis_points < 6_667,
+        "the cycle must clear the override while falling far short of the share \
+         the ratchet alone would have demanded: {eligibility:?}"
+    );
+
+    // The override travels with the ledger: a release recorded under it leaves
+    // the next release the same bar, rather than letting it expire after one
+    // cycle and stranding the next one against the ratchet again.
+    // `Report`, as the release path itself uses: by release time the range is
+    // immutable history, so the fall in trailing share is announced rather than
+    // deadlocking the release. See `RatchetPolicy`.
+    let row = metric_script::record_release_with_policy(
+        &repo,
+        &ledger,
+        "v1.1.0",
+        "v1.0.0",
+        "HEAD",
+        3,
+        metric_script::RatchetPolicy::Report,
+    )
+    .expect("the release row must be recorded");
+    assert_eq!(row.target_override_basis_points, Some(50));
+    assert!(
+        metric_script::release_note_for_tag(&ledger, "v1.1.0")
+            .expect("release note must be rendered")
+            .contains("overridden by the reviewed ledger value **0.50%**"),
+        "the release notes must name the override that let the release out"
+    );
+
+    // The same repository, the same cycle, one line of ledger removed. Nothing
+    // outside the ledger can produce this difference, which is the point: the
+    // level only ever moves where a reviewer can see it move.
+    fs::write(&ledger, history("")).expect("ledger without an override must be written");
+    let error = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect_err("without the override the ratchet is the bar again");
+    assert!(
+        error.contains("would fall from 66.67%"),
+        "unexpected error: {error}"
+    );
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
@@ -468,7 +510,7 @@ fn recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet() {
             .expect("release note must be rendered"),
         "## Self-hosting\n\nFormal AI authored **75.00%** of this release \
          (3 of 4 changed lines). The 3-release trailing share is **75.00%**. The \
-         non-decreasing release target was **0.00%**."
+         release target in force was **0.00%**."
     );
     let ledger_text = fs::read_to_string(&ledger).expect("fixture ledger must be readable");
     parse_lino(ledger_text.trim()).expect("recorded ledger must be canonical Links Notation");
@@ -845,6 +887,9 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     assert!(ledger.contains("pull_request_trailer \"Formal-AI-Pull-Request\""));
     assert!(ledger.contains("release_cycle_floor \"1\""));
     assert!(ledger.contains("release_cycle_unit \"merged session-backed Formal AI pull request\""));
+    // Issue #1069: the header has to say what "session-backed" scopes over, so a
+    // reader is not left inferring the all-or-nothing rule the gate dropped.
+    assert!(ledger.contains("release_cycle_attribution \"issue #1069: a merged pull request"));
     assert!(release_script.contains("## Self-hosting"));
     assert!(ledger.contains("tag \"v0.296.0\""));
     assert!(ledger.contains("percentage_basis_points \"0\""));

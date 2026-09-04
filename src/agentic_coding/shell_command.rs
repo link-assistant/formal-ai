@@ -16,7 +16,6 @@ use super::shell_command_policy::{
 };
 use super::directory_listing::asks_for_directory_listing;
 use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
-use super::workspace_inspection::asks_about_the_workspace;
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
@@ -250,7 +249,7 @@ fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
 /// The request has to spell the act out — "search the repository for
 /// `task_decomposition`". A request that only says what the caller wants to
 /// know is a different admission with a stricter subject rule; see
-/// [`workspace_inspection_query_for_task`].
+/// [`super::workspace_inspection::workspace_inspection_search_for_task`].
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
     let vocab = seed::shell_intent_vocabulary();
     super::stated_request::request_blocks(prompt)
@@ -265,32 +264,17 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
         })
 }
 
-/// Recover the subject of a request that asks about the workspace itself.
+
+/// Resolve the source subject named by an inspection request.
 ///
-/// "Inspect the existing task-decomposition data model and identify where a
-/// node stores its children" never says *search*, but an agent that has been
-/// handed a repository answers a question about that repository by reading it.
-/// The planner resolves this ahead of the open-web routers, which would
-/// otherwise claim the request on the strength of its question shape alone
-/// (issue #1066).
-///
-/// What keeps the open web reachable is the subject, not the verb. Only a
-/// code-shaped subject is accepted — a quoted literal, or a token carrying an
-/// underscore, a dot, an interior capital or a hyphen — because that is the
-/// difference between "verify the retry-policy helper" and "verify the current
-/// exchange rate for the euro". A request whose subject is ordinary prose names
-/// nothing the workspace can be searched for, so it is left to the routers that
-/// follow. The whole-prompt fallback [`code_search_query_for_task`] ends with is
-/// deliberately absent here: it works by deleting an explicit cue, and this
-/// admission has no cue to delete.
-pub(super) fn workspace_inspection_query_for_task(prompt: &str) -> Option<String> {
-    super::stated_request::request_blocks(prompt)
-        .into_iter()
-        .filter(|block| asks_about_the_workspace(block))
-        .find_map(|block| {
-            literal_code_search_query(&block.to_lowercase())
-                .or_else(|| shaped_code_search_token(block))
-        })
+/// Explicit literal cues and visibly code-shaped tokens are unambiguous on
+/// their own. A plain identifier is also unambiguous when the seed lexicon
+/// places it next to a source-artifact kind, such as `retry check`.
+pub(super) fn code_shaped_query(text: &str) -> Option<String> {
+    let normalized = text.to_lowercase();
+    literal_code_search_query(&normalized)
+        .or_else(|| shaped_code_search_token(text))
+        .or_else(|| adjacent_code_search_token(text, &normalized))
 }
 
 /// The longest search cue `normalized` spells out, if it spells one out at all.
@@ -325,6 +309,7 @@ fn literal_code_search_query(normalized: &str) -> Option<String> {
         .find(|form| normalized.contains(&form.text.to_lowercase()))
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
 }
+
 
 /// The most identifier-shaped token in `prompt`, if it holds one.
 ///
@@ -384,7 +369,7 @@ fn adjacent_code_search_token(prompt: &str, normalized: &str) -> Option<String> 
         .map(|(_, _, token)| token.to_owned())
 }
 
-fn search_tokens(text: &str) -> impl Iterator<Item = &str> {
+pub(super) fn search_tokens(text: &str) -> impl Iterator<Item = &str> {
     text.split(|character: char| {
         !character.is_ascii_alphanumeric() && !matches!(character, '_' | '.' | ':' | '-')
     })
@@ -405,7 +390,7 @@ fn search_tokens_with_offsets(text: &str) -> impl Iterator<Item = (&str, usize, 
         .filter(|(token, _, _)| !token.is_empty())
 }
 
-fn valid_search_identifier(token: &str) -> bool {
+pub(super) fn valid_search_identifier(token: &str) -> bool {
     let mut characters = token.chars();
     characters
         .next()
@@ -885,5 +870,3 @@ fn named_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Optio
         .filter(|sentence| !states_a_command_policy(sentence))
         .find_map(|sentence| named_shell_command_in_sentence(sentence, vocab))
 }
-
-

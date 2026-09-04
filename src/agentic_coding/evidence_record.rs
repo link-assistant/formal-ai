@@ -37,18 +37,22 @@
 //! answer that only describes the web search it would run leave this route
 //! declining exactly as before.
 
+use std::cell::RefCell;
+use std::collections::HashMap;
+
 use super::capability_router::tool_for;
+use super::general_planner::compose_general_change_plan;
 use super::planner::{
-    AgenticPlan, Capability, plan_chat_step, plan_one, trace_route, write_arguments,
+    AgenticPlan, Capability, plan_chat_step, plan_one, plan_settled_routes, trace_route,
+    write_arguments,
 };
 use super::progress::Progress;
 use super::shell_command::carries_authoring_task;
 use super::shell_command_policy::sentences;
 use super::write_request::{
-    bare_surfaces, first_action_cue_start, pinned_first_line, stated_write_target,
-    states_write_action, tokens,
+    bare_surfaces, delivered_write_target, first_action_cue_start, pinned_first_line, tokens,
 };
-use crate::protocol::{ChatMessage, MessageContent};
+use crate::protocol::{ChatMessage, MessageContent, ToolCall};
 
 /// The delivery half of a request, separated from the work it asks for.
 struct Obligation {
@@ -56,6 +60,8 @@ struct Obligation {
     target: String,
     /// The exact opening line the caller pinned, when it pinned one.
     first_line: Option<String>,
+    /// Exact `key=value` lines declared in the delivery sentence.
+    field_lines: Vec<String>,
     /// Everything the request says that is not about delivery.
     residual: String,
 }
@@ -85,23 +91,45 @@ struct Obligation {
 fn parse_obligation(request: &str) -> Option<Obligation> {
     let mut target = None;
     let mut first_line = None;
+    let mut field_lines = Vec::new();
     let mut residual = String::new();
+    let mut later_obligation = false;
     for sentence in sentences(request) {
         if let Some(line) = pinned_first_line(sentence.text) {
-            first_line = first_line.or(Some(line));
+            if target.is_some() && !later_obligation {
+                first_line = first_line.or(Some(line));
+                continue;
+            }
+            residual.push_str(&request[sentence.span]);
             continue;
         }
-        if target.is_none()
-            && !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))
-            && states_write_action(sentence.text)
-            && let Some(named) = stated_write_target(sentence.text)
-        {
-            target = Some(named);
-            if let Some(work) = work_before_delivery(sentence.text) {
-                residual.push_str(work);
-                residual.push_str(". ");
+        // A sentence states the work rather than a place to put it when it
+        // asks for an artifact to be authored, or when the path it names is
+        // where the work happens rather than where an answer goes. Both make
+        // that path an operand, and reading either as a delivery is
+        // destructive: the ladder's leaf says "Edit the tracked file
+        // `src/engine_responses.rs`: add \"Good morning\" to the
+        // GREETING_EXAMPLES list", so delivery wrote its own status line over
+        // the source, the write returned success, and the node reported done
+        // having deleted the file it was asked to edit.
+        let delivered = (!carries_authoring_task(&crate::engine::normalize_prompt(sentence.text)))
+            .then(|| delivered_write_target(sentence.text))
+            .flatten();
+        if let Some(named) = delivered {
+            if target.is_none() {
+                field_lines = exact_field_lines(sentence.text, &named);
+                target = Some(named);
+                if let Some(work) = work_before_delivery(sentence.text) {
+                    residual.push_str(work);
+                    residual.push_str(". ");
+                }
+                continue;
             }
-            continue;
+            // A constraint in the next sentence belongs to this later output,
+            // not to the first output selected by this recursive pass. Leave
+            // both sentences in the residual so the nested pass sees them
+            // together and can bind them correctly.
+            later_obligation = true;
         }
         residual.push_str(&request[sentence.span]);
     }
@@ -112,8 +140,45 @@ fn parse_obligation(request: &str) -> Option<Obligation> {
         .map(|target| Obligation {
             target,
             first_line,
+            field_lines,
             residual,
         })
+}
+
+/// Literal `key=value` field constraints carried by one delivery sentence.
+fn exact_field_lines(sentence: &str, target: &str) -> Vec<String> {
+    let fields = sentence
+        .split('`')
+        .enumerate()
+        .filter(|(index, _)| index % 2 == 1)
+        .map(|(_, quoted)| quoted.trim())
+        .filter(|quoted| *quoted != target)
+        .filter(|quoted| !quoted.chars().any(char::is_whitespace))
+        .filter(|quoted| {
+            quoted.split_once('=').is_some_and(|(key, _)| {
+                key.chars()
+                    .next()
+                    .is_some_and(|character| character.is_ascii_alphabetic())
+                    && key
+                        .chars()
+                        .all(|character| character.is_ascii_alphanumeric() || character == '_')
+            })
+        })
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+
+    // A field may be quoted once as a source reference and again as the output
+    // field the caller declares: "`left_result=` followed by the child's
+    // `result=` value, and `result=` followed by the composition". The final
+    // occurrence is the declaration's position in the output list. Keep that
+    // occurrence only, so the source reference cannot create an extra field or
+    // move the aggregate ahead of later child fields.
+    fields
+        .iter()
+        .enumerate()
+        .filter(|(index, field)| !fields[index + 1..].contains(field))
+        .map(|(_, field)| field.clone())
+        .collect()
 }
 
 /// The part of a delivery sentence that is not about delivery.
@@ -174,42 +239,584 @@ pub(super) fn plan_evidence_record_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let obligation = parse_obligation(task)?;
+    // The bytes this route delivers are bytes that still have to be found, and
+    // peeling the destination off the sentence is how it goes looking for them.
+    // That reading is wrong whenever a route further down already produces this
+    // very file from the request as it stands, because peeling then hands the
+    // remainder to a router that can no longer reach that route:
+    //
+    // * "Create file `policy/retention.md` containing Logs are kept for ninety
+    //   days; backups are kept for a year" became a destination plus a residual,
+    //   the residual was put to the router as though it were a question, and the
+    //   file received the router's status line in place of the caller's payload.
+    // * A registered auto-learning report is *identified* by its artifact --
+    //   `LearningReport::matches` looks for its own `path` in the prompt -- so
+    //   removing "and write self-hosting-learning-report.lino" leaves a residual
+    //   that reaches the self-healing recipe instead, and the run writes one
+    //   file nobody asked for before writing the one that was.
+    //
+    // So ask, rather than enumerate. A route below can answer in either of two
+    // ways, and both are asked: it can *declare* the file, the way a composed
+    // general change plan carries the `target` it was compiled for, or it can be
+    // watched *planning* it. Only a route that produces this same target
+    // disqualifies the delivery -- a request may spell out one file's bytes and
+    // ask for another file's findings, and the second obligation is still this
+    // route's.
+    if let Some(reason) = later_route_delivering(task, &obligation.target, tool_names) {
+        trace_route("evidence_record", reason);
+        return None;
+    }
     let write_tool = tool_for(tool_names, Capability::Write)?;
     let progress = Progress::scan(messages);
     if progress.attempted_write_for(&obligation.target) {
         trace_route("evidence_record", "already_written");
-        return Some(AgenticPlan::Final(if progress
-            .successful_write_for(&obligation.target)
-        {
-            format!("Recorded the findings in `{}`.", obligation.target)
-        } else {
-            format!(
-                "The findings could not be recorded in `{}`: the write step failed.",
-                obligation.target
-            )
-        }));
+        return Some(AgenticPlan::Final(
+            if progress.successful_write_for(&obligation.target) {
+                progress
+                    .successful_write_content_for(&obligation.target)
+                    .map(|content| written_observation(&obligation, &content))
+                    .filter(|answer| !answer.is_empty())
+                    .unwrap_or_else(|| format!("Recorded the findings in `{}`.", obligation.target))
+            } else {
+                format!(
+                    "The findings could not be recorded in `{}`: the write step failed.",
+                    obligation.target
+                )
+            },
+        ));
     }
+    // A successful checkout inspection is already the grounded answer this
+    // delivery exists to persist. Optional research prose elsewhere in a
+    // harness must not reopen the question on the web before the result is
+    // written. Preserve recursive delivery ordering, though: when the residual
+    // names another output, let that inner obligation consume the observation
+    // first so one result still reaches every requested artifact.
+    let observed = parse_obligation(&obligation.residual)
+        .is_none()
+        .then(|| {
+            super::workspace_inspection::workspace_inspection_search_for_task(&obligation.residual)
+        })
+        .flatten()
+        .and_then(|_| progress.latest_successful_output(Capability::Grep))
+        .filter(|answer| !substantive_result_line(answer, &obligation.residual).is_empty())
+        .map(str::to_owned);
     let residual_messages = with_residual_request(messages, &obligation.residual)?;
-    let answer = match plan_chat_step(&residual_messages, tool_names) {
-        Some(plan @ AgenticPlan::ToolCalls(_)) => {
-            trace_route("evidence_record", "investigating");
-            return Some(plan);
-        }
-        Some(AgenticPlan::Final(answer)) => answer,
-        None => {
-            trace_route("evidence_record", "symbolic_residual");
-            symbolic_answer(&obligation.residual)?
-        }
+    let is_workspace_observation = observed.is_some();
+    let answer = match observed {
+        Some(answer) => answer,
+        None => match plan_chat_step(&residual_messages, tool_names) {
+            Some(plan @ AgenticPlan::ToolCalls(_)) => {
+                trace_route("evidence_record", "investigating");
+                return Some(plan);
+            }
+            Some(AgenticPlan::Final(answer)) => answer,
+            None => {
+                trace_route("evidence_record", "symbolic_residual");
+                symbolic_answer(&obligation.residual)?
+            }
+        },
     };
     trace_route("evidence_record", &obligation.target);
-    let content = obligation.first_line.map_or_else(
-        || format!("{}\n", answer.trim_end()),
-        |line| format!("{line}\n\n{}\n", answer.trim_end()),
-    );
+    let delivered_answer = if is_workspace_observation {
+        substantive_result_line(&answer, &obligation.residual)
+    } else {
+        &answer
+    };
+    let content = render_obligation(&obligation, delivered_answer);
     Some(plan_one(
         write_tool,
         write_arguments(&obligation.target, &content),
     ))
+}
+
+/// How far the probe below follows a route before concluding it delivers
+/// nothing.
+///
+/// A route reaches the file the caller named early or not at all: the recipes
+/// write their artifact first, and the literal-file composer records its plan
+/// and then writes it. The bound is what keeps a routing question from costing
+/// a whole run.
+const DELIVERY_PROBE_TURNS: usize = 4;
+
+/// How a route below this one already produces `target` from the whole request,
+/// or `None` when none of them does.
+///
+/// A composed change plan states the file it was compiled for, so asking it is
+/// exact and costs nothing -- and it is the only one of the two that sees a file
+/// a shell *redirect* produces, since "Run 'printf learned-output' and write its
+/// exact stdout to reports/learned.txt" is delivered by `>` and never by a write
+/// call at all.
+///
+/// Everything else is asked by running it rather than by listing it: plan the
+/// request through the routes below, answer each planned call with a bare
+/// success, and see whether `target` is among the files they write. That is what
+/// reaches the recipes, which declare nothing and are recognised from the
+/// artifact they write. A route's own state machine is what decides --
+/// `plan_general_change_step` records its plan before writing the file the
+/// caller named, so a first step alone would report that nobody owns
+/// `policy/retention.md`, and a table of routes that "own an artifact" would
+/// have to carry that knowledge secondhand and go stale.
+///
+/// The probe starts from a conversation holding the request and nothing else, so
+/// the answer depends on the request alone and does not drift as the real run
+/// accumulates results: a recipe that owns a destination owns it on every turn,
+/// and its mid-run plan to read the file back would otherwise look like nobody
+/// owning it.
+fn later_route_delivering(task: &str, target: &str, tool_names: &[&str]) -> Option<&'static str> {
+    if compose_general_change_plan(task).is_some_and(|plan| plan.target == target) {
+        return Some("declined_composed_target");
+    }
+    settled_route_delivers(task, target, tool_names).then_some("declined_settled_route")
+}
+
+/// Whether planning the whole request through the routes below this one walks
+/// into a call that writes `target`.
+fn settled_route_delivers(task: &str, target: &str, tool_names: &[&str]) -> bool {
+    let key = (task.to_owned(), target.to_owned(), tool_names.join("\u{1f}"));
+    if let Some(known) = DELIVERY_PROBE_ANSWERS.with_borrow(|answers| answers.get(&key).copied()) {
+        return known;
+    }
+    let answer = probe_settled_routes(task, target, tool_names);
+    DELIVERY_PROBE_ANSWERS.with_borrow_mut(|answers| {
+        // The router is consulted once per turn with the same request, and a
+        // long-lived server sees many requests. Recomputing per turn made the
+        // issue #1028 ladder suite ten times slower; keeping every answer it
+        // ever gave would trade that for unbounded memory. Start over instead --
+        // the answers are derived, so losing them costs one recomputation.
+        if answers.len() >= DELIVERY_PROBE_MEMO_CAPACITY {
+            answers.clear();
+        }
+        answers.insert(key, answer);
+    });
+    answer
+}
+
+thread_local! {
+    /// Probe answers already computed on this thread, keyed by the inputs they
+    /// were computed from.
+    static DELIVERY_PROBE_ANSWERS: RefCell<HashMap<(String, String, String), bool>> =
+        RefCell::new(HashMap::new());
+}
+
+/// How many probe answers one thread remembers before starting over.
+const DELIVERY_PROBE_MEMO_CAPACITY: usize = 512;
+
+fn probe_settled_routes(task: &str, target: &str, tool_names: &[&str]) -> bool {
+    let mut probe = vec![ChatMessage::user(task)];
+    for turn in 0..DELIVERY_PROBE_TURNS {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_settled_routes(task, &probe, tool_names)
+        else {
+            return false;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            if planned_destination(&call.arguments).is_some_and(|path| path == target) {
+                return true;
+            }
+            let id = format!("delivery-probe-{turn}-{index}");
+            probe.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                &id,
+                &call.tool,
+                call.arguments.clone(),
+            )]));
+            probe.push(ChatMessage::tool_result(id, &call.tool, "ok"));
+        }
+    }
+    false
+}
+
+/// The file a planned call names as its destination, whether the call writes
+/// those bytes itself or runs a command that writes them.
+fn planned_destination(arguments: &str) -> Option<String> {
+    planned_write_path(arguments).or_else(|| planned_command_output_path(arguments))
+}
+
+/// The destination a planned command names for its own output.
+///
+/// A command carries its destination in the option that names it, exactly as a
+/// write call carries it in `path`, and `formal-ai statement-audit --root .
+/// --output statement-audit.lino` produces that file as surely as a write would.
+/// A delivery that cannot see it peels "and write statement-audit.lino" off the
+/// request and records its own status line over the report the command had just
+/// written -- which is what issue #1069's agent-CLI audit run did, on the turn
+/// after the audit succeeded.
+fn planned_command_output_path(arguments: &str) -> Option<String> {
+    let value = serde_json::from_str::<serde_json::Value>(arguments).ok()?;
+    let command = value
+        .get("command")
+        .or_else(|| value.get("cmd"))?
+        .as_str()?;
+    let parts = command.split_whitespace().collect::<Vec<_>>();
+    let index = parts.iter().position(|part| *part == OUTPUT_OPTION)?;
+    parts.get(index + 1).map(|path| (*path).to_owned())
+}
+
+/// The option a command names its output destination with.
+const OUTPUT_OPTION: &str = "--output";
+
+/// The file a planned call writes, under whichever key its client expects.
+fn planned_write_path(arguments: &str) -> Option<String> {
+    let value = serde_json::from_str::<serde_json::Value>(arguments).ok()?;
+    ["path", "filePath", "file_path", "absolute_path"]
+        .iter()
+        .find_map(|key| {
+            value
+                .get(*key)
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_owned)
+        })
+}
+
+/// Render an answer under the constraints attached to its destination.
+fn render_obligation(obligation: &Obligation, answer: &str) -> String {
+    if !obligation.field_lines.is_empty() {
+        let result = substantive_result_line(answer, &obligation.residual);
+        let observed_results = exact_field_values(answer, "result");
+        let mut next_observed = observed_results.iter();
+        let mut rendered = String::new();
+        for field in &obligation.field_lines {
+            rendered.push_str(field);
+            if field.ends_with('=') {
+                if field == "result=" {
+                    let combined = combined_observation(&observed_results, &obligation.residual)
+                        .unwrap_or_else(|| result.to_owned());
+                    rendered.push_str(&non_hollow_result(&combined, &obligation.residual));
+                } else {
+                    rendered.push_str(next_observed.next().map_or(result, String::as_str));
+                }
+            }
+            rendered.push('\n');
+        }
+        return rendered;
+    }
+    let answer = non_hollow_result(answer, &obligation.residual);
+    obligation.first_line.as_ref().map_or_else(
+        || format!("{}\n", answer.trim_end()),
+        |line| format!("{line}\n\n{}\n", answer.trim_end()),
+    )
+}
+
+/// Values carried on exact machine-readable lines in an observation.
+///
+/// Multi-file reads deliberately render one bare `key=value` line per input so
+/// a later delivery can preserve those bytes. Display headings and prose are
+/// ignored; only a line whose prefix is exact participates.
+fn exact_field_values(answer: &str, key: &str) -> Vec<String> {
+    let prefix = format!("{key}=");
+    answer
+        .lines()
+        .map(str::trim)
+        .filter_map(|line| line.strip_prefix(&prefix))
+        .map(str::to_owned)
+        .collect()
+}
+
+/// State how multiple exact observations compose while retaining each value.
+fn combined_observation(values: &[String], request: &str) -> Option<String> {
+    match values {
+        [] => None,
+        [only] => Some(only.clone()),
+        many => {
+            let values = many.join("; ");
+            let language = crate::language::detect(request);
+            crate::seed::render_response(
+                "evidence_exact_composition",
+                language.slug(),
+                &[("values", &values)],
+            )
+            .or(Some(values))
+        }
+    }
+}
+
+/// Keep a terse but decisive source token machine-checkable as a concrete result.
+///
+/// Structured result consumers reasonably distinguish an observation from a
+/// placeholder by requiring a short natural-language statement. A source line
+/// can still answer the question completely with only a path and one sentinel,
+/// so retain it verbatim and add context instead of discarding or paraphrasing
+/// the evidence.
+fn non_hollow_result(result: &str, task: &str) -> String {
+    let result = result.trim_end();
+    let language = crate::language::detect(task).slug();
+    let intent = if result.ends_with(':') || result.ends_with('：') {
+        "coding_repository_source_observation"
+    } else if result.split_whitespace().count() >= 4 {
+        return result.to_owned();
+    } else {
+        "coding_repository_result_observation"
+    };
+    crate::seed::render_response(intent, language, &[("result", result)])
+        .unwrap_or_else(|| result.to_owned())
+}
+
+/// The observation carried by a successfully written evidence artifact.
+///
+/// Remove only the destination's machine header. The remaining bytes are the
+/// grounded answer the nested delivery wrote and can feed another artifact.
+fn written_observation(obligation: &Obligation, content: &str) -> String {
+    let mut lines = content.lines();
+    if obligation
+        .first_line
+        .as_deref()
+        .is_some_and(|first_line| lines.clone().next().is_some_and(|line| line.trim() == first_line))
+    {
+        lines.next();
+    }
+    lines.collect::<Vec<_>>().join("\n").trim().to_owned()
+}
+
+/// The concrete line of an answer that best addresses the requested fact.
+///
+/// Grouped grep output is transport-ordered, not relevance-ordered. Release
+/// notes can therefore precede the source declaration a workspace question
+/// asked for. Rank otherwise substantive lines by overlap with the request's
+/// seed-derived fact terms. The final fact term is the requested property, and
+/// a declaration answers a storage/representation question more directly than
+/// a later method that happens to use that property.
+fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
+    let mut current_source_authority = 0;
+    let mut candidates = Vec::new();
+    for raw_line in answer.lines() {
+        let line = raw_line.trim();
+        if looks_like_result_path_heading(line) {
+            current_source_authority = source_authority(line);
+            continue;
+        }
+        if !line.is_empty()
+            && line != "```text"
+            && line != "```"
+            && !line.ends_with("command completed. Output:")
+            && !is_match_count(line)
+        {
+            candidates.push((line, current_source_authority.max(source_authority(line))));
+        }
+    }
+    let terms = super::workspace_inspection::workspace_inspection_terms_for_task(task);
+    let lexicon = crate::seed::lexicon();
+    let condition_requested =
+        lexicon.mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
+    let implementation_requested = lexicon.mentions_role(
+        crate::seed::ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND,
+        task,
+    );
+    let serialized_relationship =
+        super::workspace_inspection::serialized_relationship_term(task);
+    trace_route(
+        "evidence_record_relationship",
+        serialized_relationship.as_deref().unwrap_or("none"),
+    );
+    trace_route("evidence_record_terms", &terms.join(","));
+    let Some(&(mut selected, selected_authority)) = candidates.first() else {
+        return "";
+    };
+    let mut selected_score = relevance_score(
+        selected,
+        &terms,
+        condition_requested,
+        implementation_requested,
+        serialized_relationship.as_deref(),
+        selected_authority,
+    );
+    for (candidate, authority) in candidates.into_iter().skip(1) {
+        let score = relevance_score(
+            candidate,
+            &terms,
+            condition_requested,
+            implementation_requested,
+            serialized_relationship.as_deref(),
+            authority,
+        );
+        if score > selected_score {
+            selected = candidate;
+            selected_score = score;
+        }
+    }
+    trace_route("evidence_record_selected", selected);
+    selected
+}
+
+fn relevance_score(
+    line: &str,
+    terms: &[String],
+    condition_requested: bool,
+    implementation_requested: bool,
+    serialized_relationship: Option<&str>,
+    source_authority: usize,
+) -> (usize, usize, usize, usize, usize, usize, usize, usize, usize, usize) {
+    let words = line
+        .split(|character: char| !character.is_ascii_alphanumeric())
+        .filter(|word| !word.is_empty())
+        .map(str::to_ascii_lowercase)
+        .collect::<Vec<_>>();
+    let matches = |term: &str| {
+        words.iter().any(|word| word == term)
+            || term
+                .split('_')
+                .all(|part| words.iter().any(|word| word == part))
+    };
+    let overlap = terms
+        .iter()
+        .filter(|term| matches(term))
+        .count();
+    let requested_property = usize::from(terms.last().is_some_and(|term| matches(term)));
+    let declaration_shape = if looks_like_declaration(line) {
+        1 + usize::from(!looks_like_local_binding(line))
+            + usize::from(looks_like_exposed_declaration(line))
+    } else {
+        0
+    };
+    let bound_requested = terms.iter().any(|term| {
+        crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, term)
+    });
+    let semantic_overlap = usize::from(
+        bound_requested
+            && words.iter().any(|word| {
+                crate::seed::lexicon()
+                    .mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, word)
+            }),
+    );
+    let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
+    let direct_serialized_identity = usize::from(serialized_relationship.is_some_and(
+        |relationship| {
+            words
+                .windows(2)
+                .any(|pair| pair[0] == relationship && pair[1] == "id")
+        },
+    ));
+    (
+        usize::from(
+            implementation_requested && !is_quoted_or_commented_source(source_text(line)),
+        ),
+        direct_serialized_identity,
+        requested_property,
+        usize::from(condition_requested && looks_like_condition(line)),
+        source_authority,
+        usize::from(condition_requested && looks_like_instance_condition(line)),
+        declaration_shape,
+        semantic_overlap,
+        overlap,
+        code_shape,
+    )
+}
+
+/// Whether a source quotation is shaped as a boolean decision.
+///
+/// This intentionally recognises syntax classes rather than identifiers: a
+/// condition may begin with a control-flow keyword or continue a compound
+/// expression on its own line. Calls and declarations without a decision
+/// operator remain ordinary source facts.
+fn looks_like_condition(line: &str) -> bool {
+    let source = source_text(line);
+    if is_quoted_or_commented_source(source) {
+        return false;
+    }
+    ["if ", "while ", "match ", "when "]
+        .iter()
+        .any(|prefix| source.starts_with(prefix))
+        || ["&&", "||", "==", "!=", ">=", "<="]
+            .iter()
+            .any(|operator| source.contains(operator))
+        || source.starts_with('!')
+}
+
+/// An instance-qualified predicate describes the invariant of the inspected
+/// object more directly than a construction-time check of a similarly named
+/// local value. Recognize common member-access syntax without depending on a
+/// project identifier or a particular natural-language request.
+fn looks_like_instance_condition(line: &str) -> bool {
+    let source = source_text(line);
+    ["self.", "this.", "self->", "this->", "$this->"]
+        .iter()
+        .any(|receiver| source.contains(receiver))
+}
+
+/// Local bindings can repeat the type of the model field a representation
+/// question asks about. They are declarations, but a public/type-level
+/// declaration is the more authoritative description when both are present.
+fn looks_like_local_binding(line: &str) -> bool {
+    let source = source_text(line);
+    ["let ", "var ", "auto ", "local "]
+        .iter()
+        .any(|prefix| source.starts_with(prefix))
+}
+
+/// An exposed declaration describes the model's supported representation more
+/// authoritatively than an unqualified function parameter with the same name
+/// and type.
+fn looks_like_exposed_declaration(line: &str) -> bool {
+    let source = source_text(line);
+    source.split_whitespace().next().is_some_and(|keyword| {
+        matches!(keyword, "pub" | "public" | "export" | "exported")
+            || keyword.starts_with("pub(")
+    })
+}
+
+/// Recognize a source declaration without assuming a particular language.
+///
+/// Grep renders matches as `Line N: source`; discard that transport prefix,
+/// then recognize an identifier-bearing left side followed by a single colon.
+/// Namespace/generic punctuation such as `sum::<usize>()` is deliberately not
+/// a declaration.
+fn looks_like_declaration(line: &str) -> bool {
+    let source = source_text(line);
+    if is_quoted_or_commented_source(source) {
+        return false;
+    }
+    let Some((left, right)) = source.split_once(':') else {
+        return false;
+    };
+    !right.starts_with(':')
+        && !left.contains(['(', ')', '=', '+'])
+        && left
+            .split_whitespace()
+            .next_back()
+            .is_some_and(|name| {
+                !name.is_empty()
+                    && name
+                        .chars()
+                        .all(|character| character.is_ascii_alphanumeric() || character == '_')
+            })
+}
+
+fn source_text(line: &str) -> &str {
+    line
+        .split_once(": ")
+        .map_or(line, |(_, source)| source)
+        .trim()
+}
+
+fn is_quoted_or_commented_source(source: &str) -> bool {
+    source.starts_with("//")
+        || source.starts_with("/*")
+        || source.starts_with('*')
+        || source.starts_with('#')
+        || source.starts_with("<!--")
+        || source
+            .chars()
+            .next()
+            .is_some_and(|character| matches!(character, '"' | '\'' | '`'))
+}
+
+fn is_match_count(line: &str) -> bool {
+    line.strip_prefix("Found ")
+        .and_then(|rest| rest.strip_suffix(" matches"))
+        .is_some_and(|count| count.chars().all(|character| character.is_ascii_digit()))
+}
+
+fn looks_like_result_path_heading(line: &str) -> bool {
+    line.ends_with(':') && (line.starts_with('/') || line.starts_with("./"))
+}
+
+/// Prefer a production source fact when an otherwise equivalent test merely
+/// asserts that fact. If every match is outside `src`, the ordinary semantic
+/// ranking remains decisive.
+fn source_authority(path_or_line: &str) -> usize {
+    usize::from(
+        path_or_line
+            .trim_end_matches(':')
+            .split(['/', '\\'])
+            .any(|component| component == "src"),
+    )
 }
 
 /// What Formal AI answers about the residual, when it reaches a conclusion.

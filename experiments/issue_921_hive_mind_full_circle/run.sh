@@ -2,9 +2,9 @@
 # Issue #921: drive a real Hive Mind `solve` against a formal-ai server and
 # assert the full circle closes -- the gate for hive-mind#2158's vision.
 #
-# The CI caller pins `@link-assistant/hive-mind@2.12.5` because that is the
-# first release carrying hive-mind#2159, the boundary fix for hive-mind#2158.
-# This gate runs against that boundary, so the pin may not fall back below it.
+# The CI caller pins `@link-assistant/hive-mind@2.15.1`, the current release
+# carrying hive-mind#2159's boundary fix. This gate runs against that boundary,
+# so the pin may not fall back below the fixed release.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -202,6 +202,7 @@ printf '%s\n' \
   >"${ORCHESTRATOR_OUT}/task.md"
 printf '%s' 'formal ai dispatched a hive-mind-shaped issue' \
   >"${ORCHESTRATOR_OUT}/expected.txt"
+# shellcheck disable=SC2016 # Expanded by the container's inner shell.
 VERIFY='["sh","-c","test \"$(cat formal-ai-to-hive-mind.txt)\" = \"formal ai dispatched a hive-mind-shaped issue\""]'
 ORCHESTRATOR_TASK='Create file formal-ai-to-hive-mind.txt containing formal ai dispatched a hive-mind-shaped issue'
 "${BIN}" agent run \

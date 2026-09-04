@@ -1,0 +1,20 @@
+self_ast_census
+  target src/orchestration/attribution.rs
+  language rust
+  fidelity signature
+  byte_len 6876
+  line_count 222
+  content_id source_module_6ee11892505461d0
+  symbol_count 11
+  symbols
+    const SESSION_TRAILER 16 16
+    const EVIDENCE_TRAILER 17 17
+    const PULL_REQUEST_TRAILER 18 18
+    function prepare_attribution 20 39
+    function validate_effect_attribution 41 58
+    function commit_verified_effect 60 130
+    function evidence_path 132 154
+    function pull_request_number 156 179
+    function git 181 209
+    function trailer 211 218
+    function attribution_error 220 222

@@ -2,15 +2,16 @@ self_ast_census
   target src/orchestration/mod.rs
   language rust
   fidelity signature
-  byte_len 1348
-  line_count 32
-  content_id source_module_d42065c75a63c5ca
-  symbol_count 7
+  byte_len 1365
+  line_count 33
+  content_id source_module_0817c2dc7141d5b6
+  symbol_count 8
   symbols
     module analysis 7 7
-    module dispatch 8 8
-    module incremental 9 9
-    module permission 10 10
-    module replay 11 11
-    module runner 12 12
-    module workspace 13 13
+    module attribution 8 8
+    module dispatch 9 9
+    module incremental 10 10
+    module permission 11 11
+    module replay 12 12
+    module runner 13 13
+    module workspace 14 14

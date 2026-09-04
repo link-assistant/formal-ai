@@ -1,0 +1,4 @@
+node_path=1.1.2.2.1
+node_depth=5
+node_kind=leaf
+result=Line 374:         decomposition.leaves().len() >= 3,

@@ -1,7 +1,3 @@
 node_path=1.2.1.1.1
 
-The `grep` command completed. Output:
-
-```text
-No files found
-```
+Line 5: Every internal node has exactly two children, and every leaf is atomic and independently checkable. The Agent-CLI runner generates the canonical 63-node tree from the 32 atomic leaf formulations at runtime so the tree structure itself is executable and testable.

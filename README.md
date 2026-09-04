@@ -4,7 +4,7 @@
 [![Desktop Release](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml)
 [![Crates.io](https://img.shields.io/crates/v/formal-ai?label=crates.io&style=flat)](https://crates.io/crates/formal-ai)
 [![Docs.rs](https://img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat)](https://docs.rs/formal-ai)
-[![Rust Version](https://img.shields.io/badge/rust-1.96%2B-blue.svg)](https://www.rust-lang.org/)
+[![Rust Version](https://img.shields.io/badge/rust-1.98%2B-blue.svg)](https://www.rust-lang.org/)
 [![Codecov](https://codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg)](https://codecov.io/gh/link-assistant/formal-ai)
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
@@ -870,12 +870,13 @@ Packaging mirrors the desktop flow: `prepare-resources` copies `src/web/` into `
 
 Every interface produces the same self-contained Links Notation document by default. In the browser, the **Export memory** topbar button writes `formal-ai-memory.lino` as a complete `formal_ai_bundle` — the entire seed (rules, concepts, tools, multilingual responses), UI preferences, environment metadata, and the full append-only event log — so a single click is enough to reconstitute the session. **Import memory** auto-detects bundle vs legacy `demo_memory` files and surfaces migration suggestions when the imported seed version differs from the running app's. The CLI matches:
 
-Native Rust builds now select `doublets-rs` by default through the
-`doublets-native` feature. Links Notation stays the recovery and migration
-projection: existing `demo_memory` logs and full `formal_ai_bundle` exports
-import into the native store, export back to deterministic `.lino`, and can
-still be handled by compiling with `--no-default-features` when a pure
-`MemoryStore` projection is needed.
+Native Rust builds now select the `link-cli` library backend by default through
+the `doublets-native` feature. Server-side mutations use link-cli's file-mapped
+doublets store and recovery-logged transactions; Links Notation stays the
+portable source, recovery, and migration projection. Existing `demo_memory`
+logs and full `formal_ai_bundle` exports synchronize into the native store,
+export back to deterministic `.lino`, and can still be handled by compiling
+with `--no-default-features` when a pure `MemoryStore` projection is needed.
 
 ```bash
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle

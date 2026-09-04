@@ -27,6 +27,7 @@ use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 
+use super::attribution::{commit_verified_effect, validate_effect_attribution};
 use super::dispatch::{
     ComparisonEntry, ComparisonLedger, DispatchConfig, DispatchError, DispatchMode, DispatchReport,
     candidate_run_config, safe_name,
@@ -358,13 +359,23 @@ impl<'config> AgentExecutor<'config> {
         cli: String,
         session: AgentSession,
     ) -> TaskAttempt {
-        let passed = session.passed();
         let index = self.sessions.len();
         let session_file = format!("sessions/{index:03}-{}.json", safe_name(&cli));
-        if let Err(error) = write_session(&self.config.output_dir.join(&session_file), &session) {
+        if let Err(error) = write_session(&self.output_dir.join(&session_file), &session) {
             self.record(DispatchError::Replay(error));
             return TaskAttempt::failed("controller_aborted");
         }
+        self.record_preserved_session(task, cli, session, session_file)
+    }
+
+    fn record_preserved_session(
+        &mut self,
+        task: &RecursiveTask,
+        cli: String,
+        session: AgentSession,
+        session_file: String,
+    ) -> TaskAttempt {
+        let passed = session.passed();
         let evidence = evidence_of(&cli, &session);
         self.steps.push(IncrementalStep {
             task_id: task.id.clone(),
@@ -390,7 +401,6 @@ impl TaskExecutor for AgentExecutor<'_> {
         let index = self.sessions.len();
         let cli = self.cli_for(task);
         let candidate = self
-            .config
             .output_dir
             .join("candidates")
             .join(format!("{index:03}-{}", safe_name(&cli)));
@@ -398,7 +408,17 @@ impl TaskExecutor for AgentExecutor<'_> {
             self.record(DispatchError::Io(error));
             return TaskAttempt::failed("controller_aborted");
         }
-        let run = candidate_run_config(self.config, &cli, task.goal.clone(), &candidate);
+        let orchestration_home = self
+            .output_dir
+            .join("native-sessions")
+            .join(format!("{index:03}-{}", safe_name(&cli)));
+        let run = candidate_run_config(
+            self.config,
+            &cli,
+            task.goal.clone(),
+            &candidate,
+            &orchestration_home,
+        );
         let session = match run_agent(&run) {
             Ok(session) => session,
             Err(error) => {
@@ -407,6 +427,20 @@ impl TaskExecutor for AgentExecutor<'_> {
             }
         };
         let passed = session.passed();
+        let session_file = format!("sessions/{index:03}-{}.json", safe_name(&cli));
+        let session_path = self.output_dir.join(&session_file);
+        if let Err(error) = write_session(&session_path, &session) {
+            self.record(DispatchError::Replay(error));
+            return TaskAttempt::failed("controller_aborted");
+        }
+        if passed
+            && self.config.pull_request.is_some()
+            && let Err(error) =
+                validate_effect_attribution(&self.workspace, &session_path, &session)
+        {
+            self.record(error);
+            return TaskAttempt::failed("controller_aborted");
+        }
         // A passing attempt's effects become the starting point of the next
         // one, so a later sub-task -- and the parent's own retry -- sees the
         // work its predecessors did instead of a workspace that forgot it.
@@ -415,12 +449,19 @@ impl TaskExecutor for AgentExecutor<'_> {
                 self.record(DispatchError::Io(error));
                 return TaskAttempt::failed("controller_aborted");
             }
+            if let Some(pull_request) = &self.config.pull_request
+                && let Err(error) =
+                    commit_verified_effect(&self.workspace, &session_path, &session, pull_request)
+            {
+                self.record(error);
+                return TaskAttempt::failed("controller_aborted");
+            }
             for change in &session.changes {
                 self.changes.retain(|prior| prior.path != change.path);
                 self.changes.push(change.clone());
             }
         }
-        self.preserve_session(task, cli, session)
+        self.record_preserved_session(task, cli, session, session_file)
     }
 
     fn extend_for(&mut self, task: &RecursiveTask, _failure: &TaskAttempt) -> bool {
@@ -444,7 +485,18 @@ impl TaskExecutor for AgentExecutor<'_> {
             return self.attempt(task);
         }
         let cli = self.cli_for(task);
-        let run = candidate_run_config(self.config, &cli, task.goal.clone(), &self.workspace);
+        let orchestration_home = self.output_dir.join("native-sessions").join(format!(
+            "{:03}-{}",
+            self.sessions.len(),
+            safe_name(&cli)
+        ));
+        let run = candidate_run_config(
+            self.config,
+            &cli,
+            task.goal.clone(),
+            &self.workspace,
+            &orchestration_home,
+        );
         match verify_workspace(&run) {
             Ok(session) if session.passed() => {
                 self.preserve_session(task, COMPOSED_VERIFIER.to_string(), session)

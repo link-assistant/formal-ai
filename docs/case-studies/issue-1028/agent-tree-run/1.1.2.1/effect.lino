@@ -1,0 +1,8 @@
+node_path=1.1.2.1
+node_depth=4
+node_kind=composite
+left_child=1.1.2.1.1
+right_child=1.1.2.1.2
+left_result=Line 169:             children: self.children.iter().map(Self::to_recursive_task).collect(),
+right_result=Line 284:     decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped())
+result=Line 169:             children: self.children.iter().map(Self::to_recursive_task).collect(),; Line 284:     decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped()); together these exact observations compose the result.

@@ -24,6 +24,11 @@ meanings
     lexeme en
       surface
         text "coding meta algorithm solutions heading"
+  coding_repository_source_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "coding repository source observation"
   configure_thinking_detail
     defined-by intent
     lexeme en
@@ -59,6 +64,11 @@ meanings
     lexeme en
       surface
         text "fields"
+  file_read_many_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "file read many unavailable"
   first_open_order
     defined-by task
     lexeme en
@@ -339,6 +349,11 @@ meanings
     lexeme en
       surface
         text "response client contract parse transcript error ru"
+  response_coding_member_already_present_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present hi"
   response_coding_meta_algorithm_stage_en
     defined-by response_template
     lexeme en

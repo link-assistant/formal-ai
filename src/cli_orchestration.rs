@@ -133,6 +133,10 @@ pub struct ExternalDispatchArgs {
     pub incremental: bool,
     #[arg(long)]
     pub output_dir: Option<PathBuf>,
+    /// Commit every verified incremental effect with Formal AI attribution to
+    /// this canonical GitHub pull request URL.
+    #[arg(long, requires = "incremental")]
+    pub pull_request: Option<String>,
     #[arg(long, default_value = formal_ai::DEFAULT_MODEL)]
     pub model: String,
     #[arg(long, default_value = "http://127.0.0.1:8080")]
@@ -283,6 +287,7 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     config.verification = parse_verification(&args.verification)?;
     config.command_overrides = parse_agent_commands(&args.commands)?;
     config.max_depth = args.max_depth;
+    config.pull_request = args.pull_request;
     let report = dispatch_agents(&config)?;
     if args.synthesize {
         let mut synthesis = synthesize_sessions(&report.sessions, &args.response_language)?;

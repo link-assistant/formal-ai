@@ -1,32 +1,32 @@
-L01	Inspect the existing task-decomposition data model and identify where a node stores its children.
-L02	Inspect the existing task-decomposition recursion and record how depth limits are represented.
-L03	Inspect the existing atomicity check and record the observable completion contract for leaves.
-L04	Inspect the existing Links Notation rendering and record how child relationships are serialized.
-L05	Inspect the existing recursive execution adapter and record how a decomposition tree is executed.
-L06	Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.
-L07	Write a minimal example of a two-child task decomposition with independently checkable leaves.
-L08	Verify that a leaf without an observable completion contract is never treated as independently checkable.
-L09	Inspect the binary decomposition invariant and explain the exactly-two-children requirement.
-L10	Verify the invariant explicitly names the supported power-of-two levels through 32.
-L11	Add or verify regression coverage for a two-node decomposition at depth one.
-L12	Add or verify regression coverage for a four-node decomposition at depth two.
-L13	Add or verify regression coverage for an eight-node decomposition at depth three.
-L14	Add or verify regression coverage for a sixteen-node decomposition at depth four.
-L15	Add or verify regression coverage for a thirty-two-node decomposition at depth five.
-L16	Verify every tested internal node has exactly two children and never three or more.
-L17	Verify every tested leaf is atomic and independently checkable.
-L18	Verify every tested node has a stable id and a unique dotted path.
-L19	Verify child paths follow the binary 1/2 convention at every depth.
-L20	Verify the node count of a complete depth-five tree is exactly 63 including the root.
-L21	Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.
-L22	Verify a single node can be selected by dotted binary path for focused debugging.
-L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.
-L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.
-L25	Verify every selected node runs in a fresh temporary repository copy.
-L26	Verify every selected node uses the real Agent CLI against the real Formal AI server.
-L27	Verify every selected node requires an observable proof file with its exact node path.
-L28	Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.
-L29	Verify the case-study lists exactly 32 distinct atomic leaf formulations.
-L30	Verify the case-study path structure contains every binary path from depth one through five.
-L31	Use a differently worded decomposition request to check that the capability is not phrase-specific.
-L32	Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.
+L01	Inspect the existing task-decomposition data model and identify where a node stores its children.	src/task_decomposition.rs	pub children: Vec<Self>
+L02	Inspect the existing task-decomposition recursion and record how depth limits are represented.	src/task_decomposition.rs	pub max_depth: u8
+L03	Inspect the existing atomicity check and record the observable completion contract for leaves.	src/task_decomposition.rs	!self.completion_criterion.starts_with("unresolved_")
+L04	Inspect the existing Links Notation rendering and record how child relationships are serialized.	src/task_decomposition.rs	pairs.push(("child", child.id.clone()))
+L05	Inspect the existing recursive execution adapter and record how a decomposition tree is executed.	src/task_decomposition.rs	children: self.children.iter().map(Self::to_recursive_task).collect()
+L06	Inspect the existing task-strategy ledger and record how approved decomposition strategies are selected.	src/task_decomposition.rs	decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped())
+L07	Inspect the issue-sized decomposition regression and record its required lower bound on independently checkable leaves.	tests/unit/specification/task_decomposition.rs	decomposition.leaves().len() >= 3
+L08	Verify that a leaf without an observable completion contract is never treated as independently checkable.	src/task_decomposition.rs	"unresolved_single_need"
+L09	Inspect the binary decomposition invariant and explain the exactly-two-children requirement.	docs/case-studies/issue-1028/task-decomposition.md	Every internal node has exactly two children
+L10	Verify the invariant explicitly names the supported power-of-two levels through 32.	docs/case-studies/issue-1028/task-decomposition.md	2, 4, 8, 16, and 32 nodes respectively
+L11	Verify regression coverage includes two decomposition nodes at depth one.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+L12	Verify regression coverage includes four decomposition nodes at depth two.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+L13	Verify regression coverage includes eight decomposition nodes at depth three.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+L14	Verify regression coverage includes sixteen decomposition nodes at depth four.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+L15	Verify regression coverage includes thirty-two decomposition nodes at depth five.	tests/unit/issue_1066_agent_ladder.rs	BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])
+L16	Verify every tested internal node has exactly two children and never three or more.	docs/case-studies/issue-1028/task-decomposition.md	Every internal node has exactly two children
+L17	Verify every tested leaf is atomic and independently checkable.	docs/case-studies/issue-1028/task-decomposition.md	every leaf is atomic and independently checkable
+L18	Inspect how each decomposition node carries its content-addressed stable identifier.	src/task_decomposition.rs	pub id: String
+L19	Verify child paths follow the dotted numeric convention at every recursive depth.	src/task_decomposition.rs	format!("{parent}.{number}")
+L20	Verify the node count of a complete depth-five tree is exactly 63 including the root.	tests/unit/issue_1066_agent_ladder.rs	const NODE_COUNT: usize = 63
+L21	Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.	experiments/issue_1028_agent_cli_ladder/run.sh	0|1|2|3|4|5|all) ;;
+L22	Verify a single node can be selected by dotted binary path for focused debugging.	experiments/issue_1028_agent_cli_ladder/run.sh	node == filt
+L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+L25	Verify every selected node runs in a fresh temporary repository copy.	experiments/issue_1028_agent_cli_ladder/run.sh	work=$(mktemp -d)
+L26	Verify every selected node uses the real Agent CLI against the real Formal AI server.	experiments/issue_1028_agent_cli_ladder/run.sh	"$AGENT" --model formalai/formal-ai
+L27	Verify every selected node requires an observable proof file with its exact node path.	experiments/issue_1028_agent_cli_ladder/run.sh	grep -q "^node_path=$id$" "$proof"
+L28	Inspect the committed binary-tree case-study and verify it describes a tree rather than a flat list.	docs/case-studies/issue-1028/task-decomposition.md	This is a complete full binary tree, not a flat list.
+L29	Verify the executable ladder formulates exactly 32 distinct atomic leaves.	tests/unit/issue_1066_agent_ladder.rs	const LEAF_COUNT: usize = 32
+L30	Verify generated child paths are required to exist in the complete tree.	tests/unit/issue_1066_agent_ladder.rs	assert!(paths.contains(&node.left), "missing {}", node.left)
+L31	Inspect the decomposition regression matrix and verify requests are not limited to one fixed wording.	tests/unit/specification/task_decomposition.rs	for (language, prompt) in SPLIT_PROMPTS
+L32	Inspect the final evidence-note planner and record the heading used for composed observations.	src/agentic_coding/note_composition.rs	Observed in this session:

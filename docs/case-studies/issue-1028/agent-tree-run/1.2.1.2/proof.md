@@ -1,0 +1,7 @@
+node_path=1.2.1.2
+
+Extracted `result=` values:
+.agent-ladder/verified-children/node-1.2.1.2.1.lino:
+result=Line 176:             pattern.is_match("BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])")
+.agent-ladder/verified-children/node-1.2.1.2.2.lino:
+result=Line 176:             pattern.is_match("BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])")

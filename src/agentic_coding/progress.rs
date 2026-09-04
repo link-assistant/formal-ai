@@ -171,6 +171,21 @@ impl Progress {
         })
     }
 
+    /// Content supplied to the latest successful write of `path`.
+    ///
+    /// A composed request can deliver one observation to more than one file.
+    /// The later delivery must recover the observation from the earlier write,
+    /// not use the earlier writer's human-facing completion status as data.
+    pub(super) fn successful_write_content_for(&self, path: &str) -> Option<String> {
+        self.attempts.iter().rev().find_map(|attempt| {
+            (attempt.capability == Capability::Write && attempt.succeeded)
+                .then_some(attempt.arguments.as_deref())
+                .flatten()
+                .filter(|arguments| argument_targets(arguments, path))
+                .and_then(argument_content)
+        })
+    }
+
     /// The capability of the most recent tool result in this turn.
     ///
     /// `completed` is in arrival order, so this distinguishes *which phase* a
@@ -219,6 +234,14 @@ impl Progress {
 fn argument_path(arguments: &str) -> Option<String> {
     let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
     ["path", "filePath", "file_path"]
+        .iter()
+        .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
+        .map(str::to_owned)
+}
+
+fn argument_content(arguments: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    ["content", "contents", "text", "new_string"]
         .iter()
         .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
         .map(str::to_owned)

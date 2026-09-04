@@ -1,17 +1,20 @@
-//! Swappable Links Notation and doublet-links storage boundary.
+//! Swappable Links Notation and link-cli storage boundary.
 //!
-//! Default native builds use the `doublets-rs` backend through the
-//! `doublets-native` feature. The human-reviewable `.lino` memory and bundle
-//! formats remain the deterministic export/import projection, and native
-//! callers can still compile with `--no-default-features` to use the
-//! [`crate::memory::MemoryStore`] Links Notation projection directly. Browser
-//! builds expose the same shape via the `IndexedDB` mirror in
-//! `src/web/memory.js`.
+//! Default native builds embed link-cli's file-mapped `doublets-rs` store and
+//! transaction-recovery log through the `doublets-native` feature. The
+//! human-reviewable `.lino` memory and bundle formats remain the deterministic
+//! export/import projection, and native callers can still compile with
+//! `--no-default-features` to use the [`crate::memory::MemoryStore`] Links
+//! Notation projection directly. Browser builds expose the same shape via the
+//! `IndexedDB` mirror in `src/web/memory.js`.
 
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 use std::fmt::Write as _;
+use std::path::{Path, PathBuf};
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use lino_objects_codec::format::parse_indented;
 
@@ -40,7 +43,7 @@ pub struct LinkRecord {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LinkStoreBackend {
     LinoProjection,
-    DoubletsRs,
+    LinkCli,
     DoubletsWeb,
 }
 
@@ -88,26 +91,26 @@ pub const fn selected_link_store_backend() -> LinkStoreBackend {
     if cfg!(target_arch = "wasm32") {
         LinkStoreBackend::DoubletsWeb
     } else if cfg!(feature = "doublets-native") {
-        LinkStoreBackend::DoubletsRs
+        LinkStoreBackend::LinkCli
     } else {
         LinkStoreBackend::LinoProjection
     }
 }
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-pub type DefaultNativeLinkStore = DoubletsLinkStore;
+pub type DefaultNativeLinkStore = LinkCliLinkStore;
 
 #[cfg(any(target_arch = "wasm32", not(feature = "doublets-native")))]
 pub type DefaultNativeLinkStore = MemoryStore;
 
 /// Create the default Rust-side link store for this build.
 ///
-/// Native default builds return `DoubletsLinkStore`. Builds compiled with
+/// Native default builds return `LinkCliLinkStore`. Builds compiled with
 /// `--no-default-features` keep the explicit `.lino` projection fallback.
 pub fn default_native_link_store() -> Result<DefaultNativeLinkStore, LinkStoreError> {
     #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
     {
-        DoubletsLinkStore::new()
+        LinkCliLinkStore::new()
     }
 
     #[cfg(any(target_arch = "wasm32", not(feature = "doublets-native")))]
@@ -280,35 +283,84 @@ impl MemoryStore {
     }
 }
 
-/// Native `doublets`-backed mirror for Rust builds.
-#[cfg(feature = "doublets-native")]
-type NativeDoubletsStore =
-    doublets::unit::Store<usize, mem::Global<doublets::parts::LinkPart<usize>>>;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+type NativeLinkCliStorage = link_cli::DoubletsStorage<usize, link_cli::FileMappedUnitStore<usize>>;
 
-/// Native `doublets`-backed mirror for Rust builds.
-#[cfg(feature = "doublets-native")]
-pub struct DoubletsLinkStore {
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+type NativeLinkCliTransactions = link_cli::GenericTransactionsDecorator<
+    usize,
+    NativeLinkCliStorage,
+    link_cli::FileTransitionLog,
+>;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+#[derive(Clone)]
+struct LinkStoreSnapshot {
     events: Vec<MemoryEvent>,
     records: Vec<LinkRecord>,
     nodes: BTreeMap<String, usize>,
-    native: NativeDoubletsStore,
 }
 
-#[cfg(feature = "doublets-native")]
-impl DoubletsLinkStore {
-    /// Create an empty in-memory native doublets store.
+/// Persistent native link-cli store used by Rust builds and the HTTP server.
+///
+/// The binary database is link-cli's file-mapped `doublets-rs` store. Every
+/// mutation passes through `GenericTransactionsDecorator`, whose sidecar log
+/// recovers an interrupted write on the next open. String-to-address mappings
+/// and the reviewable events stay in memory because `.lino` is their portable
+/// source projection; [`Self::replace_memory_events_transactionally`] rebuilds
+/// the complete binary graph from that source in one transaction.
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+pub struct LinkCliLinkStore {
+    database: PathBuf,
+    database_lock: Option<link_cli::FileLock>,
+    events: Vec<MemoryEvent>,
+    records: Vec<LinkRecord>,
+    nodes: BTreeMap<String, usize>,
+    transactions: Option<NativeLinkCliTransactions>,
+    transaction_snapshot: Option<LinkStoreSnapshot>,
+    temporary_database: Option<PathBuf>,
+}
+
+/// Backwards-compatible name for embedders that used the pre-link-cli type.
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+pub type DoubletsLinkStore = LinkCliLinkStore;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+impl LinkCliLinkStore {
+    /// Create an empty temporary link-cli store.
     pub fn new() -> Result<Self, LinkStoreError> {
-        let native = doublets::unit::Store::<usize, _>::new(mem::Global::new())
-            .map_err(|error| format_backend_error(&error))?;
+        static NEXT_TEMPORARY_STORE: AtomicU64 = AtomicU64::new(0);
+        let sequence = NEXT_TEMPORARY_STORE.fetch_add(1, Ordering::Relaxed);
+        let database = std::env::temp_dir().join(format!(
+            "formal-ai-link-cli-{}-{sequence}.links",
+            std::process::id()
+        ));
+        let mut store = Self::open_at(&database)?;
+        store.temporary_database = Some(database);
+        Ok(store)
+    }
+
+    /// Open or create a file-mapped link-cli database with an exclusive lock.
+    pub fn open_at(database: &Path) -> Result<Self, LinkStoreError> {
+        let database_lock = link_cli::FileLock::acquire(
+            link_cli::lock_file_path(database),
+            link_cli::LockMode::Exclusive,
+        )
+        .map_err(LinkStoreError::from)?;
+        let transactions = open_link_cli_transactions(database)?;
         Ok(Self {
+            database: database.to_path_buf(),
+            database_lock: Some(database_lock),
             events: Vec::new(),
             records: Vec::new(),
             nodes: BTreeMap::new(),
-            native,
+            transactions: Some(transactions),
+            transaction_snapshot: None,
+            temporary_database: None,
         })
     }
 
-    /// Build a native doublets store from a `.lino` memory or bundle document.
+    /// Build a temporary native store from a `.lino` memory or bundle document.
     pub fn from_links_notation(text: &str) -> Result<Self, LinkStoreError> {
         let mut store = Self::new()?;
         store.import_memory_links_notation(text)?;
@@ -321,7 +373,7 @@ impl DoubletsLinkStore {
         &self.events
     }
 
-    /// Number of memory events mirrored into native doublets.
+    /// Number of memory events projected into link-cli.
     #[must_use]
     pub const fn len(&self) -> usize {
         self.events.len()
@@ -333,11 +385,139 @@ impl DoubletsLinkStore {
         self.events.is_empty()
     }
 
-    /// Number of raw native doublets links, including point nodes.
+    /// Number of raw native links, including point nodes.
     #[must_use]
     pub fn native_link_count(&self) -> usize {
-        use doublets::Doublets as _;
-        self.native.count()
+        use link_cli::LinksStorage as _;
+        self.transactions().inner().links_count()
+    }
+
+    /// Begin one explicit transaction spanning both the local projection and
+    /// link-cli's binary store.
+    pub fn begin_transaction(&mut self) -> Result<(), LinkStoreError> {
+        if self.transaction_snapshot.is_some() {
+            return Err(LinkStoreError::Backend(String::from(
+                "nested link-cli transactions are not supported",
+            )));
+        }
+        self.transactions_mut()
+            .begin_transaction()
+            .map_err(LinkStoreError::from)?;
+        self.transaction_snapshot = Some(self.snapshot());
+        Ok(())
+    }
+
+    /// Commit and `fsync` the current transaction and recovery log.
+    pub fn commit_transaction(&mut self) -> Result<(), LinkStoreError> {
+        self.transactions_mut()
+            .commit()
+            .map_err(LinkStoreError::from)?;
+        self.transaction_snapshot = None;
+        self.transactions_mut()
+            .flush()
+            .map_err(LinkStoreError::from)
+    }
+
+    /// Roll back the current transaction and restore its in-memory projection.
+    pub fn rollback_transaction(&mut self) -> Result<(), LinkStoreError> {
+        self.transactions_mut()
+            .rollback()
+            .map_err(LinkStoreError::from)?;
+        if let Some(snapshot) = self.transaction_snapshot.take() {
+            self.restore_snapshot(snapshot);
+        }
+        self.transactions_mut()
+            .flush()
+            .map_err(LinkStoreError::from)
+    }
+
+    /// Transactionally build and atomically publish a complete replacement.
+    ///
+    /// This is the server synchronization boundary. Rebuilding makes the
+    /// `.lino` projection a deterministic recovery source even if a previous
+    /// process stopped between writing it and opening link-cli. Building a new
+    /// graph instead of deleting the old graph also avoids invalidating the
+    /// usage indexes that link-cli's underlying tree decorators maintain.
+    pub fn replace_memory_events_transactionally(
+        &mut self,
+        events: &[MemoryEvent],
+    ) -> Result<(), LinkStoreError> {
+        if self.transaction_snapshot.is_some() {
+            return Err(LinkStoreError::Backend(String::from(
+                "cannot replace memory inside an open link-cli transaction",
+            )));
+        }
+        let replacement_database = replacement_path(&self.database, "database");
+        let replacement_log = server_link_transition_log_path(&replacement_database);
+        cleanup_link_cli_files(&replacement_database);
+
+        let mut replacement = match Self::open_at(&replacement_database) {
+            Ok(replacement) => replacement,
+            Err(error) => {
+                cleanup_link_cli_files(&replacement_database);
+                return Err(error);
+            }
+        };
+        if let Err(error) = replacement.begin_transaction() {
+            drop(replacement);
+            cleanup_link_cli_files(&replacement_database);
+            return Err(error);
+        }
+        for event in events.iter().cloned() {
+            if let Err(error) = replacement.append_memory_event_in_open_transaction(event) {
+                let rollback = replacement.rollback_transaction();
+                drop(replacement);
+                cleanup_link_cli_files(&replacement_database);
+                return rollback.and(Err(error));
+            }
+        }
+        if let Err(error) = replacement.commit_transaction() {
+            drop(replacement);
+            cleanup_link_cli_files(&replacement_database);
+            return Err(error);
+        }
+        let snapshot = replacement.snapshot();
+        drop(replacement);
+
+        // Close the old memory map while retaining the explicit sidecar lock.
+        // Install the fully-applied recovery log first: either database is a
+        // valid baseline for that log because it contains no pending replay.
+        let _ = self.transactions.take();
+        let replacement_result = replace_file(
+            &replacement_log,
+            &server_link_transition_log_path(&self.database),
+        )
+        .and_then(|()| replace_file(&replacement_database, &self.database))
+        .map_err(|error| {
+            let path = self.database.display().to_string();
+            let detail = error.to_string();
+            let message = crate::seed::render_response(
+                "link_cli_publish_failed",
+                "en",
+                &[("path", &path), ("error", &detail)],
+            )
+            .unwrap_or_else(|| ["link_cli_publish_failed", &path, &detail].join(":"));
+            LinkStoreError::Backend(message)
+        });
+
+        let reopen_result = open_link_cli_transactions(&self.database);
+        cleanup_link_cli_files(&replacement_database);
+        self.transactions = Some(reopen_result?);
+        replacement_result?;
+        self.restore_snapshot(snapshot);
+        Ok(())
+    }
+
+    fn append_memory_event_in_open_transaction(
+        &mut self,
+        mut event: MemoryEvent,
+    ) -> Result<String, LinkStoreError> {
+        ensure_event_id(&mut event, self.events.len());
+        let id = event.id.clone();
+        let record = memory_event_to_link_record(&event, self.events.len());
+        self.insert_record(record)?;
+        self.events.push(event);
+        Ok(id)
     }
 
     fn insert_record(&mut self, record: LinkRecord) -> Result<(), LinkStoreError> {
@@ -349,51 +529,92 @@ impl DoubletsLinkStore {
     }
 
     fn append_native_doublet(&mut self, from: &str, to: &str) -> Result<(), LinkStoreError> {
-        use doublets::Doublets as _;
         let source = self.node_id(from)?;
         let target = self.node_id(to)?;
-        self.native
-            .create_link(source, target)
-            .map_err(|error| format_backend_error(&error))?;
+        self.transactions_mut()
+            .create(source, target)
+            .map_err(LinkStoreError::from)?;
         Ok(())
     }
 
     fn node_id(&mut self, node: &str) -> Result<usize, LinkStoreError> {
-        use doublets::Doublets as _;
         if let Some(id) = self.nodes.get(node) {
             return Ok(*id);
         }
         let id = self
-            .native
-            .create_point()
-            .map_err(|error| format_backend_error(&error))?;
+            .transactions_mut()
+            .create(0, 0)
+            .map_err(LinkStoreError::from)?;
         self.nodes.insert(node.to_owned(), id);
         Ok(id)
     }
-}
 
-#[cfg(feature = "doublets-native")]
-impl LinkStore for DoubletsLinkStore {
-    fn backend(&self) -> LinkStoreBackend {
-        LinkStoreBackend::DoubletsRs
+    const fn transactions(&self) -> &NativeLinkCliTransactions {
+        self.transactions
+            .as_ref()
+            .expect("link-cli transactions remain present until drop")
     }
 
-    fn append_memory_event(&mut self, mut event: MemoryEvent) -> Result<String, LinkStoreError> {
-        ensure_event_id(&mut event, self.events.len());
-        let id = event.id.clone();
-        let record = memory_event_to_link_record(&event, self.events.len());
-        self.insert_record(record)?;
-        self.events.push(event);
-        Ok(id)
+    const fn transactions_mut(&mut self) -> &mut NativeLinkCliTransactions {
+        self.transactions
+            .as_mut()
+            .expect("link-cli transactions remain present until drop")
+    }
+
+    fn snapshot(&self) -> LinkStoreSnapshot {
+        LinkStoreSnapshot {
+            events: self.events.clone(),
+            records: self.records.clone(),
+            nodes: self.nodes.clone(),
+        }
+    }
+
+    fn restore_snapshot(&mut self, snapshot: LinkStoreSnapshot) {
+        self.events = snapshot.events;
+        self.records = snapshot.records;
+        self.nodes = snapshot.nodes;
+    }
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+impl LinkStore for LinkCliLinkStore {
+    fn backend(&self) -> LinkStoreBackend {
+        LinkStoreBackend::LinkCli
+    }
+
+    fn append_memory_event(&mut self, event: MemoryEvent) -> Result<String, LinkStoreError> {
+        let owns_transaction = self.transaction_snapshot.is_none();
+        if owns_transaction {
+            self.begin_transaction()?;
+        }
+        let result = self.append_memory_event_in_open_transaction(event);
+        if !owns_transaction {
+            return result;
+        }
+        match result {
+            Ok(id) => {
+                self.commit_transaction()?;
+                Ok(id)
+            }
+            Err(error) => {
+                let rollback = self.rollback_transaction();
+                rollback.and(Err(error))
+            }
+        }
     }
 
     fn import_memory_links_notation(&mut self, text: &str) -> Result<usize, LinkStoreError> {
         validate_memory_links_notation(text)?;
         let parsed = import_full_memory(text);
         let count = parsed.events.len();
+        self.begin_transaction()?;
         for event in parsed.events {
-            self.append_memory_event(event)?;
+            if let Err(error) = self.append_memory_event_in_open_transaction(event) {
+                let rollback = self.rollback_transaction();
+                return rollback.and(Err(error));
+            }
         }
+        self.commit_transaction()?;
         Ok(count)
     }
 
@@ -406,9 +627,112 @@ impl LinkStore for DoubletsLinkStore {
     }
 }
 
-#[cfg(feature = "doublets-native")]
-fn format_backend_error(error: &doublets::Error<usize>) -> LinkStoreError {
-    LinkStoreError::Backend(format!("{error:?}"))
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+impl Drop for LinkCliLinkStore {
+    fn drop(&mut self) {
+        if self.transaction_snapshot.is_some() {
+            let _ = self.rollback_transaction();
+        }
+        let _ = self.transactions.take();
+        let _ = self.database_lock.take();
+        let Some(database) = self.temporary_database.take() else {
+            return;
+        };
+        let _ = std::fs::remove_file(server_link_transition_log_path(&database));
+        let _ = std::fs::remove_file(link_cli::lock_file_path(&database));
+        let _ = std::fs::remove_file(database);
+    }
+}
+
+/// Conventional transition-log path used by the embedded link-cli store.
+#[must_use]
+pub fn server_link_transition_log_path(database: &Path) -> PathBuf {
+    let stem = database
+        .file_stem()
+        .and_then(|name| name.to_str())
+        .unwrap_or_default();
+    let filename = format!("{stem}.transitions.links");
+    database
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+        .map_or_else(|| PathBuf::from(&filename), |parent| parent.join(&filename))
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+impl From<link_cli::LinkError> for LinkStoreError {
+    fn from(error: link_cli::LinkError) -> Self {
+        Self::Backend(error.to_string())
+    }
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn open_link_cli_transactions(
+    database: &Path,
+) -> Result<NativeLinkCliTransactions, LinkStoreError> {
+    let storage = NativeLinkCliStorage::open(database).map_err(LinkStoreError::from)?;
+    let transition_log =
+        link_cli::FileTransitionLog::open(server_link_transition_log_path(database))
+            .map_err(LinkStoreError::from)?;
+    link_cli::GenericTransactionsDecorator::new(
+        storage,
+        transition_log,
+        link_cli::LogRetentionPolicy::default(),
+        link_cli::CommitMode::Sync,
+        link_cli_debug_enabled(),
+    )
+    .map_err(LinkStoreError::from)
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn replacement_path(database: &Path, label: &str) -> PathBuf {
+    static NEXT_REPLACEMENT: AtomicU64 = AtomicU64::new(0);
+    let sequence = NEXT_REPLACEMENT.fetch_add(1, Ordering::Relaxed);
+    let filename = database
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("memory.links");
+    database.with_file_name(format!(
+        ".{filename}.{label}.{}.{}.tmp",
+        std::process::id(),
+        sequence
+    ))
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn replace_file(staged: &Path, destination: &Path) -> std::io::Result<()> {
+    match std::fs::rename(staged, destination) {
+        Ok(()) => Ok(()),
+        Err(_rename_error) if destination.exists() => {
+            // `rename` replaces atomically on Unix. Windows requires moving
+            // the destination aside first, so retain a recoverable backup if
+            // publishing the staged file fails.
+            let backup = replacement_path(destination, "backup");
+            std::fs::rename(destination, &backup)?;
+            match std::fs::rename(staged, destination) {
+                Ok(()) => {
+                    let _ = std::fs::remove_file(backup);
+                    Ok(())
+                }
+                Err(error) => {
+                    let _ = std::fs::rename(&backup, destination);
+                    Err(error)
+                }
+            }
+        }
+        Err(error) => Err(error),
+    }
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn cleanup_link_cli_files(database: &Path) {
+    let _ = std::fs::remove_file(server_link_transition_log_path(database));
+    let _ = std::fs::remove_file(link_cli::lock_file_path(database));
+    let _ = std::fs::remove_file(database);
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn link_cli_debug_enabled() -> bool {
+    std::env::var("FORMAL_AI_LINK_CLI_DEBUG").as_deref() == Ok("1")
 }
 
 fn ensure_event_id(event: &mut MemoryEvent, sequence: usize) {

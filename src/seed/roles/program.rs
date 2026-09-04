@@ -232,6 +232,9 @@ pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
 /// Semantic role: a source artifact kind handled by the coding-task executor
 /// in addition to the general [`ROLE_PROGRAM_KIND`] vocabulary.
 pub const ROLE_CODING_ARTIFACT_KIND: &str = "coding_artifact_kind";
+/// Semantic role: a term that identifies a configured bound in prose or in a
+/// source identifier, such as `limit`, `bound`, `cap`, or `max`.
+pub const ROLE_CODING_BOUND_CUE: &str = "coding_bound_cue";
 /// Semantic role: a requested source item's visibility modifier.
 pub const ROLE_CODING_VISIBILITY: &str = "coding_visibility";
 /// Semantic role: a source-generation request's return operation.
@@ -248,9 +251,49 @@ pub const ROLE_CODING_MODULE_REGISTRATION_ACTION: &str = "coding_module_registra
 pub const ROLE_CODING_NAME_SLOT: &str = "coding_name_slot";
 /// Semantic role: a slot that carries a requested literal value.
 pub const ROLE_CODING_VALUE_SLOT: &str = "coding_value_slot";
+/// Semantic role: a source-artifact noun whose requested result is a boolean
+/// condition rather than the declaration of the data that condition reads.
+pub const ROLE_CODING_CONDITION_SUBJECT_KIND: &str = "coding_condition_subject_kind";
+/// Semantic role: a source-artifact noun that denotes production
+/// implementation rather than a test, generated trace, or prose description.
+pub const ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND: &str =
+    "coding_source_implementation_subject_kind";
+/// Semantic role: a source artifact that lives in a reproducible experiment
+/// or workflow harness rather than production source, tests, or documentation.
+pub const ROLE_CODING_EXPERIMENT_ARTIFACT_KIND: &str = "coding_experiment_artifact_kind";
+/// Semantic role: a source-artifact noun that denotes a test or regression
+/// rather than production implementation.
+pub const ROLE_CODING_TEST_ARTIFACT_KIND: &str = "coding_test_artifact_kind";
+/// Semantic role: a noun that makes an adjacent identifier the key of a
+/// relationship in a source representation.
+pub const ROLE_CODING_RELATIONSHIP_SUBJECT_KIND: &str = "coding_relationship_subject_kind";
+/// Semantic role: an action that asks how a source representation emits or
+/// encodes one of its relationships.
+pub const ROLE_CODING_SERIALIZATION_ACTION: &str = "coding_serialization_action";
 /// Semantic role: a code-kind noun adjacent to the literal subject of a
 /// repository search.
 pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
+/// Semantic role: a noun that says the subject of a coding request is a list
+/// of members rather than a single value.
+///
+/// *Array*, *list*, *set*, *group*, *tuple*, *alternation* and their
+/// multilingual equivalents. The noun says only that a member list is involved;
+/// it deliberately says nothing about which delimiters enclose it or which
+/// separator joins it, because the structural-edit route reads both out of the
+/// target file's own bytes (issue #1069).
+pub const ROLE_CODING_MEMBER_LIST_KIND: &str = "coding_member_list_kind";
+/// Semantic role: a natural-language source fact whose surface carries the
+/// canonical, narrow repository-search expression as an action.
+///
+/// Unlike [`ROLE_CODING_SEARCH_LITERAL_QUERY`], this describes the property
+/// being inspected rather than the primary subject. When it is present, its
+/// action is the complete grep expression so broad surrounding prose cannot
+/// exhaust a client's result cap before the property is reached.
+pub const ROLE_CODING_SEARCH_FACT_QUERY: &str = "coding_search_fact_query";
+/// Semantic role: a canonical repository-search fact whose authoritative
+/// occurrence is maintained in documentation rather than implementation or
+/// regression source.
+pub const ROLE_CODING_DOCUMENTATION_FACT_QUERY: &str = "coding_documentation_fact_query";
 /// Semantic role: a repository-search phrase whose form carries its canonical
 /// query as an action.
 pub const ROLE_CODING_SEARCH_LITERAL_QUERY: &str = "coding_search_literal_query";

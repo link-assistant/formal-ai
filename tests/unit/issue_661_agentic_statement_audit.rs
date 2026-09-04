@@ -59,3 +59,42 @@ fn ordinary_statement_questions_do_not_trigger_a_repository_audit() {
         );
     }
 }
+
+/// The audit command writes `statement-audit.lino` itself. A client that also
+/// advertises a write tool must not be told to write that same file again: the
+/// only bytes the planner could put there are its own report of the command,
+/// and they land on top of the audit (issue #1069).
+///
+/// The failure this pins was silent. `run_issue_661_statement_audit.sh` had the
+/// file it asked for, so its `[[ -f ]]` check passed, and only the first content
+/// assertion -- `grep -q '^repository_statement_audit$'` -- reported anything at
+/// all, which is why the agent-CLI job failed with no output.
+#[test]
+fn a_client_with_a_write_tool_does_not_rewrite_the_file_the_command_produced() {
+    let messages = vec![
+        ChatMessage::user(TASK),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "audit_1".to_owned(),
+            "bash".to_owned(),
+            r#"{"command":"formal-ai statement-audit --root . --output statement-audit.lino"}"#
+                .to_owned(),
+        )]),
+        ChatMessage::tool_result(
+            "audit_1",
+            "bash",
+            r#"{"statement_audit":{"contradictions":1,"findings":2,"output":"statement-audit.lino","root":".","statements":8}}"#,
+        ),
+    ];
+
+    for tool_names in [
+        vec!["bash", "write"],
+        vec!["bash", "write", "read", "edit", "grep"],
+    ] {
+        match plan_chat_step(&messages, &tool_names) {
+            Some(AgenticPlan::Final(answer)) => {
+                assert!(answer.contains("statement_audit"), "{answer}");
+            }
+            other => panic!("{tool_names:?} must report the audit, not rewrite it: {other:?}"),
+        }
+    }
+}

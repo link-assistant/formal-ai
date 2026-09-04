@@ -1,3 +1,3 @@
 node_path=2.2.1.2.1
 
-This task cannot be split into two sub-tasks that can be checked independently, and no observable completion criterion is known for it, so there is nothing to enumerate: it is an irreducible single need.
+Line 74: L27	Verify every selected node requires an observable proof file with its exact node path.	experiments/issue_1028_agent_cli_ladder/run.sh	grep -q "^node_path=$id$" "$proof"

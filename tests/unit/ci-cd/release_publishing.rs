@@ -319,7 +319,7 @@ fn readme_keeps_traditional_ci_and_artifact_badges() {
         "actions/workflows/desktop-release.yml/badge.svg?branch=main",
         "img.shields.io/crates/v/formal-ai?label=crates.io&style=flat",
         "img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat",
-        "img.shields.io/badge/rust-1.96%2B-blue.svg",
+        "img.shields.io/badge/rust-1.98%2B-blue.svg",
         "codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg",
         "img.shields.io/badge/license-Unlicense-blue.svg",
     ] {

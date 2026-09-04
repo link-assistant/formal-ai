@@ -1,0 +1,8 @@
+node_path=1.1.1.1
+node_depth=4
+node_kind=composite
+left_child=1.1.1.1.1
+right_child=1.1.1.1.2
+left_result=Line 79:     pub children: Vec<Self>,
+right_result=Line 180:     pub max_depth: u8,
+result=Line 79:     pub children: Vec<Self>,; Line 180:     pub max_depth: u8,; together these exact observations compose the result.

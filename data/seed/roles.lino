@@ -79,19 +79,39 @@ roles
     kind predicate
   coding_artifact_kind
     kind predicate
+  coding_bound_cue
+    kind predicate
+  coding_condition_subject_kind
+    kind predicate
   coding_division_action
     kind predicate
+  coding_documentation_fact_query
+    kind predicate
+  coding_experiment_artifact_kind
+    kind predicate
   coding_identifier_rename_action
+    kind predicate
+  coding_member_list_kind
     kind predicate
   coding_module_registration_action
     kind predicate
   coding_name_slot
     kind predicate
+  coding_relationship_subject_kind
+    kind predicate
   coding_return_action
+    kind predicate
+  coding_search_fact_query
     kind predicate
   coding_search_literal_query
     kind predicate
   coding_search_subject_kind
+    kind predicate
+  coding_serialization_action
+    kind meaning
+  coding_source_implementation_subject_kind
+    kind predicate
+  coding_test_artifact_kind
     kind predicate
   coding_value_slot
     kind predicate

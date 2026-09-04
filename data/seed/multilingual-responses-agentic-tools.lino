@@ -1,4 +1,144 @@
 multilingual_responses
+  response response_evidence_exact_composition_en
+    intent evidence_exact_composition
+    language en
+    text "{values}; together these exact observations compose the result."
+  response response_evidence_exact_composition_ru
+    intent evidence_exact_composition
+    language ru
+    text "{values}; вместе эти точные наблюдения составляют результат."
+  response response_evidence_exact_composition_hi
+    intent evidence_exact_composition
+    language hi
+    text "{values}; ये सटीक अवलोकन मिलकर परिणाम बनाते हैं।"
+  response response_evidence_exact_composition_zh
+    intent evidence_exact_composition
+    language zh
+    text "{values}；这些精确观察共同构成结果。"
+  response response_evidence_exact_composition_es
+    intent evidence_exact_composition
+    language es
+    text "{values}; juntas, estas observaciones exactas componen el resultado."
+  response response_file_read_many_unavailable_en
+    intent file_read_many_unavailable
+    language en
+    text "I can read those files when the client advertises a file-read tool or a shell tool."
+  response response_file_read_many_unavailable_ru
+    intent file_read_many_unavailable
+    language ru
+    text "Я смогу прочитать эти файлы, когда клиент предоставит инструмент чтения файлов или оболочки."
+  response response_file_read_many_unavailable_hi
+    intent file_read_many_unavailable
+    language hi
+    text "क्लाइंट के फ़ाइल-पठन या शेल उपकरण उपलब्ध कराने पर मैं उन फ़ाइलों को पढ़ सकता हूँ।"
+  response response_file_read_many_unavailable_zh
+    intent file_read_many_unavailable
+    language zh
+    text "客户端提供文件读取工具或 shell 工具后，我可以读取这些文件。"
+  response response_file_read_many_unavailable_es
+    intent file_read_many_unavailable
+    language es
+    text "Puedo leer esos archivos cuando el cliente ofrece una herramienta de lectura de archivos o de shell."
+  response response_link_cli_publish_failed_en
+    intent link_cli_publish_failed
+    language en
+    text "Failed to publish the link-cli replacement at {path}: {error}"
+  response response_link_cli_publish_failed_ru
+    intent link_cli_publish_failed
+    language ru
+    text "Не удалось опубликовать замену link-cli в {path}: {error}"
+  response response_link_cli_publish_failed_hi
+    intent link_cli_publish_failed
+    language hi
+    text "{path} पर link-cli प्रतिस्थापन प्रकाशित नहीं हो सका: {error}"
+  response response_link_cli_publish_failed_zh
+    intent link_cli_publish_failed
+    language zh
+    text "无法在 {path} 发布 link-cli 替换文件：{error}"
+  response response_link_cli_publish_failed_es
+    intent link_cli_publish_failed
+    language es
+    text "No se pudo publicar el reemplazo de link-cli en {path}: {error}"
+  response response_coding_member_inserted_en
+    intent coding_member_inserted
+    language en
+    text "Added {members} to the list in `{path}` and observed the result."
+  response response_coding_member_inserted_ru
+    intent coding_member_inserted
+    language ru
+    text "Добавлено {members} в список в `{path}`, результат проверен."
+  response response_coding_member_inserted_hi
+    intent coding_member_inserted
+    language hi
+    text "`{path}` की सूची में {members} जोड़ा और परिणाम सत्यापित किया।"
+  response response_coding_member_inserted_zh
+    intent coding_member_inserted
+    language zh
+    text "已将 {members} 添加到 `{path}` 的列表中并验证了结果。"
+  response response_coding_member_inserted_es
+    intent coding_member_inserted
+    language es
+    text "Se añadió {members} a la lista en `{path}` y se verificó el resultado."
+  response response_coding_member_already_present_en
+    intent coding_member_already_present
+    language en
+    text "`{path}` already lists {members}; nothing needed to change."
+  response response_coding_member_already_present_ru
+    intent coding_member_already_present
+    language ru
+    text "В `{path}` уже перечислено {members}; менять ничего не потребовалось."
+  response response_coding_member_already_present_hi
+    intent coding_member_already_present
+    language hi
+    text "`{path}` में {members} पहले से सूचीबद्ध है; कुछ बदलने की आवश्यकता नहीं थी।"
+  response response_coding_member_already_present_zh
+    intent coding_member_already_present
+    language zh
+    text "`{path}` 中已列出 {members}；无需更改。"
+  response response_coding_member_already_present_es
+    intent coding_member_already_present
+    language es
+    text "`{path}` ya incluye {members}; no hizo falta cambiar nada."
+  response response_coding_text_replaced_en
+    intent coding_text_replaced
+    language en
+    text "Replaced `{old}` with `{new}` in `{path}` and observed the result."
+  response response_coding_text_replaced_ru
+    intent coding_text_replaced
+    language ru
+    text "В `{path}` текст `{old}` заменён на `{new}`, результат проверен."
+  response response_coding_text_replaced_hi
+    intent coding_text_replaced
+    language hi
+    text "`{path}` में `{old}` को `{new}` से बदला और परिणाम सत्यापित किया।"
+  response response_coding_text_replaced_zh
+    intent coding_text_replaced
+    language zh
+    text "已在 `{path}` 中将 `{old}` 替换为 `{new}` 并验证了结果。"
+  response response_coding_text_replaced_es
+    intent coding_text_replaced
+    language es
+    text "Se reemplazó `{old}` por `{new}` en `{path}` y se verificó el resultado."
+  response response_coding_identifier_renamed_en
+    intent coding_identifier_renamed
+    language en
+    text "Renamed `{old}` to `{new}` in `{path}` and observed the result."
+  response response_coding_identifier_renamed_ru
+    intent coding_identifier_renamed
+    language ru
+    text "В `{path}` идентификатор `{old}` переименован в `{new}`, результат проверен."
+  response response_coding_identifier_renamed_hi
+    intent coding_identifier_renamed
+    language hi
+    text "`{path}` में `{old}` का नाम बदलकर `{new}` किया और परिणाम सत्यापित किया।"
+  response response_coding_identifier_renamed_zh
+    intent coding_identifier_renamed
+    language zh
+    text "已在 `{path}` 中将 `{old}` 重命名为 `{new}` 并验证了结果。"
+  response response_coding_identifier_renamed_es
+    intent coding_identifier_renamed
+    language es
+    text "Se renombró `{old}` a `{new}` en `{path}` y se verificó el resultado."
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en
@@ -119,3 +259,43 @@ multilingual_responses
     intent mutating_action_blocked
     language es
     text "No ejecuté `{action}`. La comprobación `{check}` terminó con código {exit_code}, así que se omitió la acción y nada cambió en el espacio de trabajo."
+  response response_coding_repository_source_observation_en
+    intent coding_repository_source_observation
+    language en
+    text "{result} (observed in repository source)."
+  response response_coding_repository_source_observation_ru
+    intent coding_repository_source_observation
+    language ru
+    text "{result} (наблюдается в исходном коде репозитория)."
+  response response_coding_repository_source_observation_hi
+    intent coding_repository_source_observation
+    language hi
+    text "{result} (रिपॉज़िटरी स्रोत में देखा गया)।"
+  response response_coding_repository_source_observation_zh
+    intent coding_repository_source_observation
+    language zh
+    text "{result}（在仓库源代码中观察到）。"
+  response response_coding_repository_source_observation_es
+    intent coding_repository_source_observation
+    language es
+    text "{result} (observado en el código fuente del repositorio)."
+  response response_coding_repository_result_observation_en
+    intent coding_repository_result_observation
+    language en
+    text "Observed repository result: {result}"
+  response response_coding_repository_result_observation_ru
+    intent coding_repository_result_observation
+    language ru
+    text "Результат, наблюдаемый в репозитории: {result}"
+  response response_coding_repository_result_observation_hi
+    intent coding_repository_result_observation
+    language hi
+    text "रिपॉज़िटरी में देखा गया परिणाम: {result}"
+  response response_coding_repository_result_observation_zh
+    intent coding_repository_result_observation
+    language zh
+    text "在仓库中观察到的结果：{result}"
+  response response_coding_repository_result_observation_es
+    intent coding_repository_result_observation
+    language es
+    text "Resultado observado en el repositorio: {result}"

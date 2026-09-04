@@ -404,6 +404,11 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting hi"
+  response_coding_member_already_present_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present zh"
   response_coding_meta_algorithm_solutions_heading_es
     defined-by response_template
     lexeme en
@@ -414,6 +419,21 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm surface ru"
+  response_coding_repository_result_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation en"
+  response_coding_repository_result_observation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation hi"
+  response_coding_repository_source_observation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation ru"
   response_coding_source_function_return_rust
     defined-by response_template
     lexeme en
@@ -434,6 +454,11 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present en"
+  response_evidence_exact_composition_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition es"
   response_external_benchmark_proof_query_ru
     defined-by response_template
     lexeme en
@@ -949,6 +974,11 @@ meanings
     lexeme en
       surface
         text "search"
+  serialize
+    defined-by word_surface
+    lexeme en
+      surface
+        text "serialize"
   sort_lines
     defined-by operation
     lexeme en
