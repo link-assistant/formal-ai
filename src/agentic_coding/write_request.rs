@@ -128,21 +128,46 @@ pub(super) fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize,
 /// an action cue. Requiring a cue keeps an incidental dotted token (a version,
 /// an abbreviation) out of the write path.
 pub(super) fn cued_write_target(toks: &[Token<'_>]) -> Option<(usize, String)> {
+    cued_write_targets(toks).into_iter().next()
+}
+
+/// Every cued target in token order, so a caller that has a further question to
+/// ask about a candidate can go on to the next one instead of losing the
+/// sentence with it.
+pub(super) fn cued_write_targets(toks: &[Token<'_>]) -> Vec<(usize, String)> {
     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
     let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    toks.iter().enumerate().find_map(|(index, token)| {
-        let cleaned = clean_path_token(token.text);
-        if !looks_like_file_path(cleaned) || !safe_relative_path(cleaned) {
-            return None;
-        }
-        let previous = index.checked_sub(1).map(|i| &toks[i])?;
-        let previous_word = clean_cue_token(previous.text);
-        (target_cues.contains(&previous_word)
-            || dest_cues.contains(&previous_word)
-            || action_cues.contains(&previous_word))
-        .then(|| (index, cleaned.to_owned()))
-    })
+    toks.iter()
+        .enumerate()
+        .filter_map(|(index, token)| {
+            let cleaned = clean_path_token(token.text);
+            if !looks_like_file_path(cleaned) || !safe_relative_path(cleaned) {
+                return None;
+            }
+            let previous = index.checked_sub(1).map(|i| &toks[i])?;
+            let previous_word = clean_cue_token(previous.text);
+            (target_cues.contains(&previous_word)
+                || dest_cues.contains(&previous_word)
+                || action_cues.contains(&previous_word))
+            .then(|| (index, cleaned.to_owned()))
+        })
+        .collect()
+}
+
+/// Whether a token is written as a double-quoted literal.
+///
+/// A path is *mentioned* -- bare, or set in the backticks this repository's
+/// prose uses for code -- whereas a double-quoted token is a *value* the
+/// sentence is handing to something else: the member "add \"bun.lock\" to the
+/// `IGNORE_FILES` list" inserts, the marker the ladder asks a record to contain.
+/// Both can be file-shaped, and `clean_path_token` peels either quoting away, so
+/// the distinction has to be read before the peeling.
+fn quoted_as_value(word: &str) -> bool {
+    let bare = peel_sentence_punctuation(word, |token| {
+        token.trim_end_matches([',', ':', ';'])
+    });
+    bare.len() >= 2 && bare.starts_with('"') && bare.ends_with('"')
 }
 /// The path a request names as the destination of a write, whether or not it
 /// also spells the bytes out.
@@ -164,44 +189,63 @@ pub(super) fn states_write_action(request: &str) -> bool {
     first_action_cue_end(&tokens(request)).is_some()
 }
 
-/// Whether the sentence leads with an *edit* action rather than a write one.
+/// The path a sentence names as the *destination* of a write it states.
 ///
-/// The seed declares two families of action cue, and they are two different
-/// relations to a file: an answer is composed and delivered *into* a
-/// destination, while an edit changes the content *of* a file that already has
-/// some. Only the first relation can be a delivery, so a sentence stating the
-/// second names an operand of the work and never a place to put some other
-/// sentence's finding.
+/// [`stated_write_target`] answers a weaker question -- which path a cue points
+/// at -- and a sentence can point a cue at a path it is not delivering to,
+/// because the same cues introduce the file the work is done *in*. Both of these
+/// name a path after a target cue and state a write action:
 ///
-/// The families cannot be told apart by mere mention. Measured over the 1 118
-/// request sentences this repository records that name a file and carry a cue
-/// (`experiments/issue_1069_delivery_vs_operand/cue-order-survey.py`), 30 of
-/// them -- 2.68% -- use both, and the ladder's own delivery sentence is one:
+/// > In the file `src/solver_handlers/document_request.rs`, add "toward " to the
+/// > TARGET_MARKERS list.
+///
+/// > Then create `agent-ladder-effects/node-1.1.2.2.1.lino` recording what you
+/// > changed.
+///
+/// Only the second is somewhere to put an answer. In the first the thing being
+/// added goes into a list *inside* the file, and reading it as a delivery
+/// destroys the file it was asked to edit -- the planner writes its own status
+/// line over the source and the write reports success.
+///
+/// What separates them is order, the same adjacency principle
+/// [`cued_write_target`] already uses to bind a cue to a path. A delivery
+/// composes something and then says where to put it, so its path *follows* the
+/// action; a sentence that says where the work happens states the place first
+/// and the action afterwards.
+///
+/// Measured over the 1 118 request sentences this repository records that name a
+/// file and carry a cue (`experiments/issue_1069_paths_in_prose/cue-order-survey.py`),
+/// the path follows the action in 21.56% of them, precedes it in 65.74%, and in
+/// the remaining 12.70% there is no write cue at all -- an edit, which is never a
+/// delivery. So this reads roughly a fifth of them as destinations, where the
+/// weaker "cues a path and states a write" test reads all 1 118.
+///
+/// The rule that suggests itself first is the cue family: the seed declares a
+/// second family for edits, so a sentence mentioning one could be doing work
+/// rather than delivering. That fails on this corpus. Thirty of the sentences
+/// carry both families, and the ladder's own delivery sentence is one of them --
 /// "Then create `agent-ladder-effects/node-1.1.2.2.1.lino` … followed by at
-/// least four words that state the **change** you made". Reading that as an
-/// edit loses the record the node exists to produce.
+/// least four words that state the **change** you made" -- so the family rule
+/// discards the record the node exists to produce. Position separates what
+/// mention cannot.
 ///
-/// What separates them is position, the same way [`cued_write_target`] binds a
-/// cue to a path by adjacency: the cue a sentence leads with is the one that
-/// governs it, and any later cue belongs to a clause the leading one already
-/// took as its object. On the real node prompt this reads all four
-/// file-naming sentences correctly, including both that carry both families.
-pub(super) fn leads_with_edit_action(sentence: &str) -> bool {
-    let writes = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-    let edits = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
-    tokens(sentence)
-        .iter()
-        .find_map(|token| {
-            let word = clean_cue_token(token.text);
-            if writes.contains(&word) {
-                Some(false)
-            } else if edits.contains(&word) {
-                Some(true)
-            } else {
-                None
-            }
+/// Position alone still admits a value that merely *looks* like a path, because
+/// the operand of an insertion follows the action too: "Edit `scripts/metric.rs`:
+/// add \"bun.lock\" to the `IGNORE_FILES` list" names the file before the action
+/// and the member after it. So the candidates are taken in order and a
+/// double-quoted one is skipped rather than accepted -- see [`quoted_as_value`].
+/// The same survey measures what that costs: of the 241 sentences the position
+/// rule admits, 2 (0.83%) quote their path, and both are member insertions of
+/// exactly this shape. No delivery destination in the corpus is double-quoted.
+pub(super) fn delivered_write_target(sentence: &str) -> Option<String> {
+    let toks = tokens(sentence);
+    let action = first_action_cue_start(&toks)?;
+    cued_write_targets(&toks)
+        .into_iter()
+        .find(|(index, _)| {
+            toks[*index].start > action && !quoted_as_value(toks[*index].text)
         })
-        .unwrap_or(false)
+        .map(|(_, path)| path)
 }
 
 /// Whether `request` names `path` as the destination of a write it states.

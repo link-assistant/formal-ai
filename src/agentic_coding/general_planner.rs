@@ -805,10 +805,31 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         return None;
     }
     let old_span = request.get(action_end..new_lead.start)?;
+    // A clause does not outlive its sentence. Running the replacement to the end
+    // of the request is right for the one-sentence orders this route was written
+    // for, and wrong for every request that says anything afterwards: an issue
+    // #1028 ladder node reads "In the file src/protocol_memory.rs, replace
+    // \"request_history\" with \"conversation_history\". Change only that file
+    // …", followed by five more sentences of harness contract, and the whole tail
+    // became the replacement text. The same sentence scoping already tells a
+    // named command from an ordered one and a read target from a write one.
+    //
+    // The bound is the end of the sentence's *text*, so the terminator that
+    // closed it does not become part of the replacement.
+    let sentence_end = prose_sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&new_lead.end))
+        .map_or_else(
+            || request.len(),
+            |sentence| {
+                let raw = &request[sentence.span.clone()];
+                sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
+            },
+        );
     let new_end = if file_clause_start > new_lead.end {
-        file_clause_start
+        file_clause_start.min(sentence_end)
     } else {
-        request.len()
+        sentence_end
     };
     let new_span = request.get(new_lead.end..new_end)?;
     let old = clean_content(old_span)?;

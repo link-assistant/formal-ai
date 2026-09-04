@@ -11,7 +11,9 @@ use serde_json::{json, Value};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
-use super::code_task::{render_rust_template, render_seeded_outcome, rust_source_for_task};
+use super::code_task::{
+    render_rust_template, render_seeded_change, render_seeded_outcome, rust_source_for_task,
+};
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
 use super::planner::{
@@ -32,6 +34,35 @@ struct GroundedRewrite {
     /// How the pattern is allowed to match. Renaming an identifier is a
     /// word-scoped edit; replacing a quoted literal is a substring one.
     scope: RewriteScope,
+}
+
+impl GroundedRewrite {
+    /// The intent whose seed sentence states this change rather than merely
+    /// reporting that the file was touched. The scope already carries the
+    /// distinction the sentence needs: a word-scoped edit renamed a name, a
+    /// substring one replaced a literal.
+    const fn stated_intent(&self) -> &'static str {
+        match self.scope {
+            RewriteScope::Word => "coding_identifier_renamed",
+            RewriteScope::Substring => "coding_text_replaced",
+        }
+    }
+
+    /// The two operands the seed sentence names, as template slots.
+    fn stated_slots(&self) -> [(&str, &str); 2] {
+        [("{old}", &self.pattern), ("{new}", &self.replacement)]
+    }
+}
+
+/// A change whose bytes are settled, awaiting the observation that confirms it.
+///
+/// `expected` is what the workspace should now hold; `intent` and `slots` are
+/// the seed sentence that states the change once it does.
+struct VerifiedChange<'a> {
+    target: &'a str,
+    expected: &'a str,
+    intent: &'a str,
+    slots: &'a [(&'a str, &'a str)],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -108,8 +139,12 @@ fn plan_rewrite_step(
                 task,
                 current_turn,
                 tool_names,
-                &rewrite.target,
-                &updated,
+                &VerifiedChange {
+                    target: &rewrite.target,
+                    expected: &updated,
+                    intent: rewrite.stated_intent(),
+                    slots: &rewrite.stated_slots(),
+                },
             );
         }
     } else if tool_for(tool_names, Capability::Edit).is_some()
@@ -122,8 +157,12 @@ fn plan_rewrite_step(
                     task,
                     current_turn,
                     tool_names,
-                    &rewrite.target,
-                    &updated,
+                    &VerifiedChange {
+                        target: &rewrite.target,
+                        expected: &updated,
+                        intent: rewrite.stated_intent(),
+                        slots: &rewrite.stated_slots(),
+                    },
                 );
             }
 
@@ -143,15 +182,18 @@ fn plan_rewrite_step(
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    let intent = if observed == updated {
-        "coding_workspace_effect_observed"
-    } else {
-        "coding_workspace_verification_failed"
-    };
-    Some(AgenticPlan::Final(render_seeded_outcome(
-        intent,
+    if observed != updated {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            &rewrite.target,
+        )?));
+    }
+    Some(AgenticPlan::Final(render_seeded_change(
+        rewrite.stated_intent(),
         task,
         &rewrite.target,
+        &rewrite.stated_slots(),
     )?))
 }
 
@@ -203,11 +245,13 @@ fn plan_composite_step(
     };
     let current = source_from_read_result(&read);
     let updated = insert_registration(&current, &change.registration);
+    let registered = ["`", change.registration.trim(), "`"].concat();
     if updated == current {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_effect_observed",
+        return Some(AgenticPlan::Final(render_seeded_change(
+            "coding_member_already_present",
             task,
             &change.registration_path,
+            &[("{members}", &registered)],
         )?));
     }
 
@@ -223,8 +267,12 @@ fn plan_composite_step(
                 task,
                 current_turn,
                 tool_names,
-                &change.registration_path,
-                &updated,
+                &VerifiedChange {
+                    target: &change.registration_path,
+                    expected: &updated,
+                    intent: "coding_member_inserted",
+                    slots: &[("{members}", &registered)],
+                },
             );
         }
 
@@ -252,15 +300,18 @@ fn plan_composite_step(
             json!({"command": registration_command}).to_string(),
         ));
     };
-    let intent = if observed_registration == updated {
-        "coding_workspace_effect_observed"
-    } else {
-        "coding_workspace_verification_failed"
-    };
-    Some(AgenticPlan::Final(render_seeded_outcome(
-        intent,
+    if observed_registration != updated {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            &change.registration_path,
+        )?));
+    }
+    Some(AgenticPlan::Final(render_seeded_change(
+        "coding_member_inserted",
         task,
         &change.registration_path,
+        &[("{members}", &registered)],
     )?))
 }
 
@@ -270,14 +321,27 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
         &task.to_lowercase(),
     );
+    // Both operands have to be literals the request actually quoted, so prose
+    // ("replace the old header with something clearer") is never rewritten as
+    // bytes. What that cannot be is a count: requiring the request to hold
+    // *exactly* two quoted segments made every other pair of delimiters in the
+    // prompt disqualify the edit, and this repository's own prose backticks the
+    // file it names. The issue #1028 ladder node "In the file
+    // `src/protocol_memory.rs`, replace \"request_history\" with
+    // \"conversation_history\"" quotes three things and states one replacement.
+    // Asking whether each clause *is* quoted keeps the guarantee and drops the
+    // arithmetic.
     let quoted = quoted_segments(task);
-    let operands = match quoted.as_slice() {
-        [old, new] => Some((old.clone(), new.clone())),
-        _ if renaming => Some((
+    let is_quoted = |value: &String| quoted.contains(value);
+    let operands = if is_quoted(&old_clause) && is_quoted(&new_clause) {
+        Some((old_clause, new_clause))
+    } else if renaming {
+        Some((
             identifier_tokens(&old_clause).next_back()?.to_owned(),
             identifier_tokens(&new_clause).next()?.to_owned(),
-        )),
-        _ => None,
+        ))
+    } else {
+        None
     }?;
     let (old, new) = operands;
     // A rename names a *word*, so the edit is word-scoped whichever way the
@@ -516,22 +580,26 @@ fn plan_digest_verification(
     task: &str,
     current_turn: &[ChatMessage],
     tool_names: &[&str],
-    target: &str,
-    expected: &str,
+    change: &VerifiedChange<'_>,
 ) -> Option<AgenticPlan> {
-    let command = ["sha256sum -- ", target].concat();
+    let command = ["sha256sum -- ", change.target].concat();
     let Some(observed) = result_for_command(current_turn, &command) else {
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    let digest = crate::source_fetch::sha256_hex(expected.as_bytes());
-    let intent = if observed.split_whitespace().next() == Some(digest.as_str()) {
-        "coding_workspace_effect_observed"
-    } else {
-        "coding_workspace_verification_failed"
-    };
-    Some(AgenticPlan::Final(render_seeded_outcome(
-        intent, task, target,
+    let digest = crate::source_fetch::sha256_hex(change.expected.as_bytes());
+    if observed.split_whitespace().next() != Some(digest.as_str()) {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            change.target,
+        )?));
+    }
+    Some(AgenticPlan::Final(render_seeded_change(
+        change.intent,
+        task,
+        change.target,
+        change.slots,
     )?))
 }
 

@@ -59,6 +59,86 @@ multilingual_responses
     intent link_cli_publish_failed
     language es
     text "No se pudo publicar el reemplazo de link-cli en {path}: {error}"
+  response response_coding_member_inserted_en
+    intent coding_member_inserted
+    language en
+    text "Added {members} to the list in `{path}` and observed the result."
+  response response_coding_member_inserted_ru
+    intent coding_member_inserted
+    language ru
+    text "Добавлено {members} в список в `{path}`, результат проверен."
+  response response_coding_member_inserted_hi
+    intent coding_member_inserted
+    language hi
+    text "`{path}` की सूची में {members} जोड़ा और परिणाम सत्यापित किया।"
+  response response_coding_member_inserted_zh
+    intent coding_member_inserted
+    language zh
+    text "已将 {members} 添加到 `{path}` 的列表中并验证了结果。"
+  response response_coding_member_inserted_es
+    intent coding_member_inserted
+    language es
+    text "Se añadió {members} a la lista en `{path}` y se verificó el resultado."
+  response response_coding_member_already_present_en
+    intent coding_member_already_present
+    language en
+    text "`{path}` already lists {members}; nothing needed to change."
+  response response_coding_member_already_present_ru
+    intent coding_member_already_present
+    language ru
+    text "В `{path}` уже перечислено {members}; менять ничего не потребовалось."
+  response response_coding_member_already_present_hi
+    intent coding_member_already_present
+    language hi
+    text "`{path}` में {members} पहले से सूचीबद्ध है; कुछ बदलने की आवश्यकता नहीं थी।"
+  response response_coding_member_already_present_zh
+    intent coding_member_already_present
+    language zh
+    text "`{path}` 中已列出 {members}；无需更改。"
+  response response_coding_member_already_present_es
+    intent coding_member_already_present
+    language es
+    text "`{path}` ya incluye {members}; no hizo falta cambiar nada."
+  response response_coding_text_replaced_en
+    intent coding_text_replaced
+    language en
+    text "Replaced `{old}` with `{new}` in `{path}` and observed the result."
+  response response_coding_text_replaced_ru
+    intent coding_text_replaced
+    language ru
+    text "В `{path}` текст `{old}` заменён на `{new}`, результат проверен."
+  response response_coding_text_replaced_hi
+    intent coding_text_replaced
+    language hi
+    text "`{path}` में `{old}` को `{new}` से बदला और परिणाम सत्यापित किया।"
+  response response_coding_text_replaced_zh
+    intent coding_text_replaced
+    language zh
+    text "已在 `{path}` 中将 `{old}` 替换为 `{new}` 并验证了结果。"
+  response response_coding_text_replaced_es
+    intent coding_text_replaced
+    language es
+    text "Se reemplazó `{old}` por `{new}` en `{path}` y se verificó el resultado."
+  response response_coding_identifier_renamed_en
+    intent coding_identifier_renamed
+    language en
+    text "Renamed `{old}` to `{new}` in `{path}` and observed the result."
+  response response_coding_identifier_renamed_ru
+    intent coding_identifier_renamed
+    language ru
+    text "В `{path}` идентификатор `{old}` переименован в `{new}`, результат проверен."
+  response response_coding_identifier_renamed_hi
+    intent coding_identifier_renamed
+    language hi
+    text "`{path}` में `{old}` का नाम बदलकर `{new}` किया और परिणाम सत्यापित किया।"
+  response response_coding_identifier_renamed_zh
+    intent coding_identifier_renamed
+    language zh
+    text "已在 `{path}` 中将 `{old}` 重命名为 `{new}` 并验证了结果。"
+  response response_coding_identifier_renamed_es
+    intent coding_identifier_renamed
+    language es
+    text "Se renombró `{old}` a `{new}` en `{path}` y se verificó el resultado."
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

@@ -45,8 +45,7 @@ use super::progress::Progress;
 use super::shell_command::carries_authoring_task;
 use super::shell_command_policy::sentences;
 use super::write_request::{
-    bare_surfaces, first_action_cue_start, leads_with_edit_action, pinned_first_line,
-    stated_write_target, states_write_action, tokens,
+    bare_surfaces, delivered_write_target, first_action_cue_start, pinned_first_line, tokens,
 };
 use crate::protocol::{ChatMessage, MessageContent};
 
@@ -99,20 +98,19 @@ fn parse_obligation(request: &str) -> Option<Obligation> {
             residual.push_str(&request[sentence.span]);
             continue;
         }
-        // Two ways a sentence can state the work instead of a place to put it:
-        // it asks for an artifact to be authored, or it asks for a file that
-        // already exists to be changed. Both make the path it names an operand.
-        // The second is not a refinement of the first -- it is destructive
-        // without it. The ladder's leaf reads "Edit the tracked file
+        // A sentence states the work rather than a place to put it when it
+        // asks for an artifact to be authored, or when the path it names is
+        // where the work happens rather than where an answer goes. Both make
+        // that path an operand, and reading either as a delivery is
+        // destructive: the ladder's leaf says "Edit the tracked file
         // `src/engine_responses.rs`: add \"Good morning\" to the
-        // GREETING_EXAMPLES list", which applies a write cue (`add`) to a cued
-        // path (`file`, `in`), so delivery claimed the tracked source, wrote its
-        // own status line over it, and the write returned success: the file the
-        // node was asked to edit was gone, and the node still reported done.
-        let is_delivery = !carries_authoring_task(&crate::engine::normalize_prompt(sentence.text))
-            && !leads_with_edit_action(sentence.text)
-            && states_write_action(sentence.text);
-        if is_delivery && let Some(named) = stated_write_target(sentence.text) {
+        // GREETING_EXAMPLES list", so delivery wrote its own status line over
+        // the source, the write returned success, and the node reported done
+        // having deleted the file it was asked to edit.
+        let delivered = (!carries_authoring_task(&crate::engine::normalize_prompt(sentence.text)))
+            .then(|| delivered_write_target(sentence.text))
+            .flatten();
+        if let Some(named) = delivered {
             if target.is_none() {
                 field_lines = exact_field_lines(sentence.text, &named);
                 target = Some(named);

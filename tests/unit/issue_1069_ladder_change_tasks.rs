@@ -25,7 +25,9 @@
 //! wording drifts apart.
 
 use std::fs;
+use std::io::Write;
 use std::path::PathBuf;
+use std::process::{Command, Stdio};
 
 use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
@@ -338,7 +340,10 @@ fn issue_1069_the_node_prompt_still_reads_as_the_ladder_writes_it() {
 fn issue_1069_a_node_id_is_not_the_file_to_read() {
     let leaves = leaves();
     let leaf = &leaves[6];
-    assert_eq!(leaf.id, "L07", "L07 is the leaf the first real run failed on");
+    assert_eq!(
+        leaf.id, "L07",
+        "L07 is the leaf the first real run failed on"
+    );
     let prompt = node_prompt(leaf, 7);
     assert!(
         prompt.contains("1.1.2.2.1"),
@@ -377,20 +382,58 @@ fn workspace_put(workspace: &mut Workspace, path: &str, content: &str) {
         .find(|(held, _)| held == path)
         .map(|(_, held)| held)
     {
-        *slot = content.to_owned();
+        content.clone_into(slot);
         return;
     }
     workspace.push((path.to_owned(), content.to_owned()));
 }
 
-/// The two commands the planner's change routes emit, executed over the
-/// simulated workspace. Anything else is reported rather than silently ignored,
-/// so this harness can never pass a node by pretending to run a command it does
-/// not understand.
+/// The commands the planner's change routes emit, executed over the simulated
+/// workspace. Anything else is reported rather than silently ignored, so this
+/// harness can never pass a node by pretending to run a command it does not
+/// understand.
+/// The digest the real `sha256sum` gives these bytes, fed on standard input so
+/// the simulated workspace never has to touch the disk.
+fn sha256sum(content: &str) -> String {
+    let mut child = Command::new("sha256sum")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("run sha256sum");
+    child
+        .stdin
+        .take()
+        .expect("sha256sum takes standard input")
+        .write_all(content.as_bytes())
+        .expect("feed sha256sum");
+    let output = child.wait_with_output().expect("read sha256sum output");
+    String::from_utf8_lossy(&output.stdout)
+        .split_whitespace()
+        .next()
+        .expect("sha256sum prints a digest")
+        .to_owned()
+}
+
 fn run_command(workspace: &mut Workspace, command: &str) -> Result<String, String> {
     if let Some(path) = command.strip_prefix("cat ") {
         let path = path.trim();
-        return Ok(workspace_get(workspace, path).unwrap_or_default().to_owned());
+        return Ok(workspace_get(workspace, path)
+            .unwrap_or_default()
+            .to_owned());
+    }
+    // A verify step that reads the file back through a digest rather than by
+    // printing it. The planner compares this digest against the one it computed
+    // for the bytes it planned, so a stand-in value fails every rename leaf: the
+    // answer has to be the real SHA-256. It is taken from the real `sha256sum`,
+    // the tool the planner's own command names, rather than from the crate's
+    // hashing helper -- a harness that answered with the implementation under
+    // test would agree with it however wrong it was.
+    if let Some(path) = command.strip_prefix("sha256sum -- ") {
+        let path = path.trim();
+        let held = workspace_get(workspace, path)
+            .ok_or_else(|| format!("sha256sum on a file that is not there: {path}"))?
+            .to_owned();
+        return Ok(format!("{}  {path}", sha256sum(&held)));
     }
     if let Some(rest) = command.strip_prefix("sed -i 's/") {
         let (script, target) = rest
@@ -419,9 +462,7 @@ fn run_command(workspace: &mut Workspace, command: &str) -> Result<String, Strin
                 } else {
                     text.chars().next_back()
                 };
-                character.is_none_or(|character| {
-                    !character.is_alphanumeric() && character != '_'
-                })
+                character.is_none_or(|character| !character.is_alphanumeric() && character != '_')
             };
             updated.push_str(before);
             if !word_scoped || (boundary(before, false) && boundary(following, true)) {
@@ -450,11 +491,24 @@ fn run_command(workspace: &mut Workspace, command: &str) -> Result<String, Strin
 fn run_node(leaf: &Leaf, prompt: &str, source: &str) -> Result<Workspace, String> {
     let mut workspace: Workspace = vec![(leaf.path.clone(), source.to_owned())];
     let mut messages = vec![ChatMessage::user(prompt)];
+    // Diagnosing "the node wrote the wrong thing" needs the turn that produced
+    // it, and a 32-leaf failure list cannot carry 32 transcripts. Naming one
+    // leaf prints just that one: `LADDER_TRACE=L12 cargo test ... -- --nocapture`.
+    let trace = std::env::var("LADDER_TRACE").is_ok_and(|wanted| wanted == leaf.id);
     for _ in 0..MAX_NODE_STEPS {
         let calls = match plan_chat_step(&messages, &TOOLS) {
-            Some(AgenticPlan::Final(_)) => return Ok(workspace),
+            Some(AgenticPlan::Final(answer)) => {
+                if trace {
+                    eprintln!("[{}] FINAL {answer:?}", leaf.id);
+                }
+                return Ok(workspace);
+            }
             Some(AgenticPlan::ToolCalls(calls)) if !calls.is_empty() => calls,
-            other => return Err(format!("expected tool calls or a final answer, got {other:?}")),
+            other => {
+                return Err(format!(
+                    "expected tool calls or a final answer, got {other:?}"
+                ));
+            }
         };
         for call in &calls {
             let result = match call.tool.as_str() {
@@ -462,8 +516,7 @@ fn run_node(leaf: &Leaf, prompt: &str, source: &str) -> Result<Workspace, String
                     let path = first_argument(call, &["path", "filePath", "file_path"])
                         .ok_or_else(|| format!("read without a path: {}", call.arguments))?;
                     workspace_get(&workspace, &path)
-                        .map(str::to_owned)
-                        .unwrap_or_else(|| format!("Error: File not found: {path}"))
+                        .map_or_else(|| format!("Error: File not found: {path}"), str::to_owned)
                 }
                 "write_file" => {
                     let path = first_argument(call, &["path", "filePath", "file_path"])
@@ -496,6 +549,12 @@ fn run_node(leaf: &Leaf, prompt: &str, source: &str) -> Result<Workspace, String
                 }
                 other => return Err(format!("unexpected tool {other}")),
             };
+            if trace {
+                eprintln!(
+                    "[{}] {} {} -> {result:?}",
+                    leaf.id, call.tool, call.arguments
+                );
+            }
             record(&mut messages, call, &result);
         }
     }
@@ -527,14 +586,12 @@ fn issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given() {
 
         match workspace_get(&workspace, &leaf.path) {
             None => report(format!("lost {}", leaf.path)),
-            Some(changed) if changed == source => {
-                report(format!("left {} unchanged", leaf.path))
-            }
+            Some(changed) if changed == source => report(format!("left {} unchanged", leaf.path)),
             Some(changed) if !changed.contains(&leaf.marker) => {
-                report(format!("{} lacks {:?}", leaf.path, leaf.marker))
+                report(format!("{} lacks {:?}", leaf.path, leaf.marker));
             }
             Some(changed) if !changed.contains(&leaf.guard) => {
-                report(format!("{} lost {:?}", leaf.path, leaf.guard))
+                report(format!("{} lost {:?}", leaf.path, leaf.guard));
             }
             Some(_) => {}
         }
@@ -552,15 +609,18 @@ fn issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given() {
                         report(format!("{effects_path} lacks the line {field:?}"));
                     }
                 }
-                match effects.lines().find_map(|line| line.strip_prefix("result=")) {
+                match effects
+                    .lines()
+                    .find_map(|line| line.strip_prefix("result="))
+                {
                     None => report(format!("{effects_path} states no result=")),
                     Some(result) if !result.contains(&leaf.marker) => report(format!(
                         "{effects_path} result= omits {:?}: {result:?}",
                         leaf.marker
                     )),
-                    Some(result) if result.split_whitespace().count() < 4 => {
-                        report(format!("{effects_path} result= is under four words: {result:?}"))
-                    }
+                    Some(result) if result.split_whitespace().count() < 4 => report(format!(
+                        "{effects_path} result= is under four words: {result:?}"
+                    )),
                     Some(_) => {}
                 }
             }
@@ -573,7 +633,7 @@ fn issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given() {
                 report(format!(
                     "{proof_path} does not open with node_path={id}: {:?}",
                     proof.lines().next()
-                ))
+                ));
             }
             Some(_) => {}
         }

@@ -118,11 +118,11 @@ a delivery. That sentence carries the write cue `add` applied to a cued path, so
 without a second rule the move makes the planner write its own status line over
 the source it was told to edit.
 
-The seed already draws the distinction the fix needs: two families of action
-cue, one composing content *into* a destination, one changing the content *of* a
-file that has some. `cue-order-survey.py` asks whether mere mention separates
-them, over every request-shaped sentence this repository records that names a
-file and carries a cue.
+The rule that suggests itself first is the cue family. The seed declares two:
+one composing content *into* a destination, one changing the content *of* a file
+that has some, so a sentence mentioning the second could be doing work rather
+than delivering. `cue-order-survey.py` measures that over every request-shaped
+sentence this repository records that names a file and carries a cue.
 
     write-action cues: 15 -> ['add', 'append', 'create', 'emit', 'generate', 'leave',
                              'make', 'place', 'produce', 'put', 'record', 'save',
@@ -143,14 +143,31 @@ own *delivery* sentence is one of them:
     least four words that state the **change** you made
 
 A "mentions an edit cue ⇒ not a delivery" rule discards the record the node
-exists to produce. What separates them is position — the same adjacency
-principle `cued_write_target` already uses to bind a cue to a path. The cue a
-sentence *leads with* governs it; a later cue belongs to a clause the leading one
-already took as its object. On the four file-naming sentences of the real node
-prompt this reads all four correctly, including the two that carry both
-families: `Edit the tracked file …` and `Apply the change … modified …` are
-operands, `Then create …node-1.1.2.2.1.lino …` and `Leave supporting evidence in
-.agent-ladder/…-proof.md.` are destinations.
+exists to produce. Leading with an edit cue is a sounder version of it and does
+read the ladder's leaf correctly, but it is still the wrong question, because a
+sentence can be an edit without using an edit cue at all:
+
+    In the file `src/solver_handlers/document_request.rs`, add "toward " to the
+    TARGET_MARKERS list.
+
+That cues a path (`file`) and states a write action (`add`) with no edit cue
+anywhere, and it is `issue_1069_a_member_literal_keeps_its_boundary_space` — a
+committed test, which failed the moment the route moved.
+
+What separates the two is order, the same adjacency principle
+`cued_write_target` already uses to bind a cue to a path. A delivery composes
+something and then says where to put it, so its path *follows* the action; a
+sentence naming the place the work happens states the place first and the action
+afterwards. `add` comes after `document_request.rs` and before
+`node-1.1.2.2.1.lino`.
+
+    rule 2 -- position of the path relative to the first write-action cue:
+      path follows the action (delivery destination): 241 (21.56%)
+      path precedes it (operand of the work):         735 (65.74%)
+      no write cue at all (an edit, never delivery):  142 (12.70%)
+
+Roughly a fifth of the sentences are destinations, where the test in force —
+"cues a path and states a write" — read all 1 118 as destinations.
 
 The obligation is pinned by
 `issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given`, which

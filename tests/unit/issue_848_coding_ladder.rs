@@ -351,8 +351,9 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
     );
     assert_eq!(
         json_arguments(&rewrite.arguments)["command"],
-        "sed -i 's/WEB_SEARCH_RRF_K/WEB_SEARCH_FUSION_K/g' -- src/web_search_core.rs",
-        "the operation must be derived only from validated identifiers and path"
+        "sed -i 's/\\bWEB_SEARCH_RRF_K\\b/WEB_SEARCH_FUSION_K/g' -- src/web_search_core.rs",
+        "the operation must be derived only from validated identifiers and path, \
+         and scoped to whole words so a longer name containing this one survives"
     );
     push_result(&mut messages, "agent_rewrite", &rewrite, "");
 

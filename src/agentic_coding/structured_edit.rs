@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use serde_json::json;
 
 use super::code_artifact::{latest_result, source_from_read_result};
-use super::code_task::render_seeded_outcome;
+use super::code_task::{render_seeded_change, render_seeded_outcome};
 use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
@@ -62,7 +62,7 @@ pub(super) fn plan_structured_edit_step(
         let read_tool = tool_for(tool_names, Capability::Read)?;
         return Some(plan_one(read_tool, read_arguments(&edit.target)));
     };
-    let updated = insert_members(&source, &edit)?;
+    let (updated, inserted) = insert_members(&source, &edit)?;
 
     if latest_result(current_turn, Capability::Write).is_none() {
         let write_tool = tool_for(tool_names, Capability::Write)?;
@@ -73,10 +73,20 @@ pub(super) fn plan_structured_edit_step(
     }
     if let Some(observed) = latest_result(current_turn, Capability::Run) {
         if observed == updated {
-            return Some(AgenticPlan::Final(render_seeded_outcome(
-                "coding_workspace_effect_observed",
+            // Say what went in, not just that the file was written. The read
+            // step is what made this knowable, and a caller that asked for a
+            // record of the change -- the issue #1028 ladder does -- has
+            // nothing to record when the answer is a status line.
+            let (intent, change) = if inserted.is_empty() {
+                ("coding_member_already_present", quoted_list(&edit.values))
+            } else {
+                ("coding_member_inserted", quoted_list(&inserted))
+            };
+            return Some(AgenticPlan::Final(render_seeded_change(
+                intent,
                 task,
                 &edit.target,
+                &[("{members}", &change)],
             )?));
         }
         return Some(AgenticPlan::Final(render_seeded_outcome(
@@ -216,7 +226,13 @@ struct Literal {
     enclosing: Option<usize>,
 }
 
-fn insert_members(source: &str, edit: &MemberInsertion) -> Option<String> {
+/// The updated source, and the values this call put into the list.
+///
+/// The second half is what lets the route *state* its change instead of merely
+/// reporting that a file was touched: which of the request's values were
+/// missing is discovered from the target's bytes, so it is knowledge only this
+/// function has. It is empty when the list already held everything asked for.
+fn insert_members(source: &str, edit: &MemberInsertion) -> Option<(String, Vec<String>)> {
     let (regions, literals) = scan(source);
     let anchor = anchor_by_members(&regions, &literals, &edit.values)
         .or_else(|| anchor_by_name(source, &regions, &literals, &edit.named))?;
@@ -225,11 +241,12 @@ fn insert_members(source: &str, edit: &MemberInsertion) -> Option<String> {
         .values
         .iter()
         .filter(|value| !members.iter().any(|member| &member.value == *value))
+        .cloned()
         .collect::<Vec<_>>();
     if absent.is_empty() {
         // Everything asked for is already a member. Converging on the current
         // bytes keeps a retried task from duplicating its own earlier effect.
-        return Some(source.to_owned());
+        return Some((source.to_owned(), absent));
     }
     let last = members.last()?;
     let separator = members
@@ -239,7 +256,7 @@ fn insert_members(source: &str, edit: &MemberInsertion) -> Option<String> {
         .filter(|gap| !gap.is_empty())
         .unwrap_or(", ");
     let mut addition = String::new();
-    for value in absent {
+    for value in &absent {
         addition.push_str(separator);
         addition.push('"');
         addition.push_str(value);
@@ -249,7 +266,16 @@ fn insert_members(source: &str, edit: &MemberInsertion) -> Option<String> {
     updated.push_str(source.get(..last.end)?);
     updated.push_str(&addition);
     updated.push_str(source.get(last.end..)?);
-    Some(updated)
+    Some((updated, absent))
+}
+
+/// The members named the way the source spells them, for a sentence.
+fn quoted_list(values: &[String]) -> String {
+    values
+        .iter()
+        .map(|value| format!("\"{value}\""))
+        .collect::<Vec<_>>()
+        .join(", ")
 }
 
 /// The list the request is about is the one that already holds the members the

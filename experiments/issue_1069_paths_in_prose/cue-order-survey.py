@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""Do the two seed cue families co-occur inside one request sentence?
+"""Is a named file a delivery destination or the operand of the work?
 
-`evidence_record::parse_obligation` decides, sentence by sentence, whether the
-file a sentence names is where an answer gets delivered or the operand the work
-acts on. The obvious rule -- "a sentence that mentions an edit cue is doing
-work, not delivering" -- is only sound if the families do not co-occur. This
-measures that over every request sentence this repository records, which are
-the labelled examples the planner is actually held to.
+`evidence_record::parse_obligation` decides that sentence by sentence. Two
+candidate rules are measured here over every request sentence this repository
+records, which are the labelled examples the planner is actually held to:
 
-Run: python3 experiments/issue_1069_delivery_vs_operand/cue-order-survey.py
+  1. "a sentence that mentions an edit cue is doing work, not delivering",
+     which is only sound if the two seed cue families do not co-occur; and
+  2. "the path of a delivery follows the action that composes what goes in it",
+     which is the rule adopted -- `delivered_write_target`; and
+  3. among the sentences rule 2 admits, how many name their path as a
+     double-quoted literal, which is the second half of that rule.
+
+Run: python3 experiments/issue_1069_paths_in_prose/cue-order-survey.py
 """
 
 import pathlib
@@ -46,6 +50,38 @@ def sentences(text: str):
     return [part.strip() for part in re.split(r"(?<=[.!?])\s+|\n", text) if part.strip()]
 
 
+def path_follows_action(sentence: str):
+    """Where the first path sits relative to the first write-action cue.
+
+    This is `delivered_write_target` in Python: the delivery clause opens at the
+    action, so a destination is named after it and an operand before it.
+    Returns None when the sentence carries no write cue at all.
+    """
+    action = None
+    for match in WORD.finditer(sentence.lower()):
+        if match.group(0) in WRITE:
+            action = match.start()
+            break
+    if action is None:
+        return None
+    path = PATH.search(sentence)
+    return path is not None and path.start() > action
+
+
+def quotes_its_path(sentence: str) -> bool:
+    """Whether the first path in the sentence is written as a quoted literal.
+
+    This is `quoted_as_value` in Python: a path is mentioned bare or in the
+    backticks this repository uses for code, while a double-quoted token is a
+    value the sentence hands to something else.
+    """
+    match = PATH.search(sentence)
+    if match is None:
+        return False
+    return (sentence[match.start() - 1: match.start()] == '"'
+            and sentence[match.end(): match.end() + 1] == '"')
+
+
 def first_family(sentence: str):
     """Which cue family the sentence leads with, and every family it mentions."""
     lead = None
@@ -78,7 +114,9 @@ def corpus():
 
 def main() -> int:
     total = both = lead_write = lead_edit = 0
+    after = before = no_write_cue = 0
     examples = []
+    quoted_paths = []
     for name, literal in corpus():
         for sentence in sentences(literal):
             if not PATH.search(sentence):
@@ -91,6 +129,15 @@ def main() -> int:
                 lead_write += 1
             else:
                 lead_edit += 1
+            follows = path_follows_action(sentence)
+            if follows is None:
+                no_write_cue += 1
+            elif follows:
+                after += 1
+                if quotes_its_path(sentence):
+                    quoted_paths.append((name, " ".join(sentence.split())[:150]))
+            else:
+                before += 1
             if len(mentioned) == 2:
                 both += 1
                 if len(examples) < 40:
@@ -103,6 +150,19 @@ def main() -> int:
     print(f"  lead with a write cue: {lead_write} ({lead_write / total:.2%})")
     print(f"  lead with an edit cue: {lead_edit} ({lead_edit / total:.2%})")
     print(f"  mention BOTH families: {both} ({both / total:.2%})")
+    print()
+    print("rule 2 -- position of the path relative to the first write-action cue:")
+    print(f"  path follows the action (delivery destination): {after} ({after / total:.2%})")
+    print(f"  path precedes it (operand of the work):         {before} ({before / total:.2%})")
+    print(f"  no write cue at all (an edit, never delivery):  {no_write_cue} "
+          f"({no_write_cue / total:.2%})")
+    print()
+    print("rule 3 -- how the sentences rule 2 admits write their path:")
+    print(f"  double-quoted (a value, not a destination): {len(quoted_paths)} "
+          f"({len(quoted_paths) / after:.2%} of {after})")
+    print(f"  bare or backticked (a mention):             {after - len(quoted_paths)}")
+    for name, sentence in quoted_paths:
+        print(f"    {name}: {sentence}")
     print()
     print("sentences carrying both families, and the cue each leads with:")
     for lead, name, sentence in examples:
