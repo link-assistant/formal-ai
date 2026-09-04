@@ -887,6 +887,9 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     assert!(ledger.contains("pull_request_trailer \"Formal-AI-Pull-Request\""));
     assert!(ledger.contains("release_cycle_floor \"1\""));
     assert!(ledger.contains("release_cycle_unit \"merged session-backed Formal AI pull request\""));
+    // Issue #1069: the header has to say what "session-backed" scopes over, so a
+    // reader is not left inferring the all-or-nothing rule the gate dropped.
+    assert!(ledger.contains("release_cycle_attribution \"issue #1069: a merged pull request"));
     assert!(release_script.contains("## Self-hosting"));
     assert!(ledger.contains("tag \"v0.296.0\""));
     assert!(ledger.contains("percentage_basis_points \"0\""));

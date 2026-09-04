@@ -5,6 +5,7 @@ self_hosting_ledger
   pull_request_trailer "Formal-AI-Pull-Request"
   release_cycle_floor "1"
   release_cycle_unit "merged session-backed Formal AI pull request"
+  release_cycle_attribution "issue #1069: a merged pull request counts once it introduced at least one validly attributed commit, and every attributed commit it introduced names that same pull request; unattributed commits beside it stay in the denominator"
   target_policy "non-decreasing, unless the newest comparable row carries a reviewed target_override_basis_points"
   target_derivation "target_override_basis_points when present, else max(previous target, previous comparable trailing share)"
   target_override_procedure "commit target_override_basis_points onto the newest comparable row; it carries forward until another commit changes or removes it, and there is no flag, environment variable or workflow input that moves it"
