@@ -55,11 +55,19 @@ grep -qF -- "$CHANGE_GUARD" "$CHANGE_PATH" || {
 # 5. Rust targets must still parse. `rustfmt` fails on a parse error, so a
 #    syntactically broken edit cannot pass. Skipped when rustfmt is absent
 #    rather than silently accepted as a pass of a check that never ran.
+#
+#    The parse output goes to a scratch file outside the workspace: an earlier
+#    revision redirected it to `parse.err` in the working directory, and the
+#    orchestrator -- correctly -- committed that file alongside the edit as part
+#    of the verified effect. A verifier that adds a file to the tree it is
+#    judging contaminates the evidence it exists to produce.
 case "$CHANGE_PATH" in
   *.rs)
     if command -v rustfmt >/dev/null 2>&1; then
-      rustfmt --edition 2024 --emit stdout "$CHANGE_PATH" >/dev/null 2>parse.err || {
-        echo "target_does_not_parse" >&2; cat parse.err >&2; exit 1; }
+      parse_err="$(mktemp)"
+      trap 'rm -f "$parse_err"' EXIT
+      rustfmt --edition 2024 --emit stdout "$CHANGE_PATH" >/dev/null 2>"$parse_err" || {
+        echo "target_does_not_parse" >&2; cat "$parse_err" >&2; exit 1; }
     fi
     ;;
 esac

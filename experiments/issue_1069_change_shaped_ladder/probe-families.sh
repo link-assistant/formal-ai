@@ -68,8 +68,8 @@ run_family() {
     "$BIN" serve --host 127.0.0.1 --port "$port" > "$RUN_DIR/$family-server.log" 2>&1 &
   server_pid=$!
 
-  local ready=0 attempt
-  for attempt in $(seq 1 100); do
+  local ready=0
+  for _ in $(seq 1 100); do
     curl -sf "http://127.0.0.1:$port/v1/models" >/dev/null && { ready=1; break; }
     sleep 0.2
   done
@@ -91,14 +91,21 @@ run_family() {
   kill "$server_pid" 2>/dev/null || true
 
   # The probe's own assertion, independent of what dispatch reports: the
-  # tracked file must carry a *modification* commit with all three trailers.
-  local changed=0 commit trailer trailers_ok=1
+  # tracked file must carry a *modification* commit with all three trailers,
+  # and the commit must add nothing but the orchestrator's own evidence. That
+  # last clause is not decoration: the first revision of `verify.sh` redirected
+  # rustfmt's stderr to `parse.err` inside the workspace, and every attributed
+  # commit duly carried a stray file the task never asked for. Only the
+  # workspace history shows that; the dispatch report does not.
+  local changed=0 commit trailer trailers_ok=1 stray=""
   for commit in $(git -C "$work" rev-list "$base_commit..HEAD"); do
     for trailer in Formal-AI-Session Formal-AI-Evidence Formal-AI-Pull-Request; do
       git -C "$work" show -s --format=%B "$commit" | grep -q "^$trailer:" || trailers_ok=0
     done
     git -C "$work" show --format= --name-status "$commit" \
       | grep -q "^M[[:space:]]*$change_path$" && changed=1
+    stray+="$(git -C "$work" show --format= --name-only --diff-filter=A "$commit" \
+      | grep -v '^\.formal-ai-orchestration/' || true)"
   done
 
   if [ "$status" -ne 0 ]; then
@@ -109,6 +116,9 @@ run_family() {
     failed=1
   elif [ "$changed" -ne 1 ]; then
     printf '%s\tFAIL\tno_tracked_modification\n' "$family" >> "$REPORT"
+    failed=1
+  elif [ -n "$stray" ]; then
+    printf '%s\tFAIL\tstray_files:%s\n' "$family" "$(echo "$stray" | tr '\n' ',')" >> "$REPORT"
     failed=1
   else
     printf '%s\tPASS\t%s\n' "$family" "$change_path" >> "$REPORT"
