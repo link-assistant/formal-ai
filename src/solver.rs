@@ -90,20 +90,21 @@ pub struct SolverConfig {
     /// Hard upper bound on recursive sub-impulse expansion.
     pub max_decomposition_depth: u8,
     /// Which directions of the meta core's recursive reasoning are traced
-    /// (issue #559): `Down` (default) reasons about the downward decomposition
-    /// only and reproduces the pre-knob trace exactly; `Up`/`Both` additionally
-    /// trace the upward construction pass. Trace-only either way (R13).
+    /// (issue #559): `Both` (default since issue #1073) traces the downward
+    /// decomposition and the upward construction pass; `Down`/`Up` narrow it to
+    /// one direction. Trace-only whichever way (R13).
     pub recursion_mode: crate::meta_construction::RecursionMode,
     /// Whether the meta core records the method-selection trace (issue #559,
-    /// R339): `Off` (default) records nothing; `Record` names the method the
-    /// registry resolves for every atomic leaf, or marks the leaf unresolved.
+    /// R339): `Record` (default since issue #1073) names the method the registry
+    /// resolves for every atomic leaf, or marks the leaf unresolved; `Off`
+    /// records nothing.
     /// The registry is the sole dispatch authority (R344), so there is no
     /// legacy baseline to compare against. Trace-only in either mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
     /// Whether the meta core records the skill-accumulation ledger (issue #559,
-    /// R342): `Off` (default) records nothing; `Accumulate` distills each satisfied
-    /// need into a proposed reusable skill and each blocked need into a curriculum
-    /// item. Proposal-only — no skill is auto-promoted without review — and
+    /// R342): `Accumulate` (default since issue #1073) distills each satisfied
+    /// need into a proposed reusable skill and each blocked need into a
+    /// curriculum item; `Off` records nothing. Proposal-only — no skill is auto-promoted without review — and
     /// trace-only either way (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
     /// Whether the dialogue's symbolic world model is maintained and traced

@@ -38,8 +38,12 @@ fn solve_with_mode(prompt: &str, mode: RecursionMode) -> Vec<String> {
 // ---------------------------------------------------------------------------
 
 #[test]
-fn down_is_the_default_and_emits_only_the_downward_direction() {
-    assert_eq!(RecursionMode::default(), RecursionMode::Down);
+fn both_directions_are_the_default_depth_floor() {
+    // Issue #1073 (requirement 1): the deeper pass may not be an opt-in, so the
+    // default emits both directions and `Down` is a deliberate quietening.
+    assert_eq!(RecursionMode::default(), RecursionMode::Both);
+    assert!(RecursionMode::default().emits_downward());
+    assert!(RecursionMode::default().emits_upward());
     assert!(RecursionMode::Down.emits_downward());
     assert!(!RecursionMode::Down.emits_upward());
 }

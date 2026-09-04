@@ -33,10 +33,12 @@ fn evidence_for(prompt: &str) -> SolutionEvidence {
 // ---------------------------------------------------------------------------
 
 #[test]
-fn off_is_the_default_and_records_nothing() {
-    assert_eq!(SkillMode::default(), SkillMode::Off);
+fn accumulate_is_the_default_and_off_records_nothing() {
+    // Issue #1073 (requirement 1): noticing what was learned may not depend on
+    // being asked, so the ledger is recorded by default.
+    assert_eq!(SkillMode::default(), SkillMode::Accumulate);
+    assert!(SkillMode::default().emits_ledger());
     assert!(!SkillMode::Off.emits_ledger());
-    assert!(SkillMode::Accumulate.emits_ledger());
 }
 
 #[test]
