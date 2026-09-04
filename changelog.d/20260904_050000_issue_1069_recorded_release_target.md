@@ -1,6 +1,0 @@
----
-bump: patch
----
-
-### Changed
-- The self-hosting release target can now be lowered, in the ledger and nowhere else. The ratchet is unchanged -- the next release's floor is still the greater of the previous floor and the previous comparable trailing share -- but a ratchet that only ever climbs can strand a cycle that cannot answer it, which is where issue #1069 ended up: the bar sat at 12.77% and was reachable only by out-measuring it, with no review able to bring it back down. The newest comparable row may now carry a reviewed `target_override_basis_points` that replaces the floor and carries forward until another commit changes or removes it. The v0.345.0 row records **0.50%**, along with the share it replaces, the decision that authorised it ([PR #1070](https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300)), and why -- so a release with a real Docker image can be cut and iterated on. No flag, environment variable, or workflow input moves the number: lowering the bar is allowed, lowering it quietly is not, and the release notes name the override that let a release out. A falling trailing share is still reported at release time, and the attribution floor is untouched -- a cycle still needs a merged, session-backed Formal AI pull request, which a lowered percentage does not substitute for.
