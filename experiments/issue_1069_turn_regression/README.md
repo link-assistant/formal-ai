@@ -53,3 +53,29 @@ shows why the probe walks several turns -- the literal-file composer's first
 step writes `.formal-ai/general-change-plan.lino`, and only its second step
 writes `policy/retention.md`. A one-step probe would conclude that nobody owns
 the caller's file.
+
+## The case a probe alone cannot see
+
+Watching a route plan write calls only finds files a *write* call names.
+`command-output.txt` is the request that has neither:
+
+```
+cargo run --example issue_1069_turn_regression -- \
+  "Execute the auto-learning task. Run 'printf learned-output' and write its exact stdout to reports/learned.txt"
+```
+
+Its plan's `execution_mode` is `command_output`, so `reports/learned.txt` is
+produced by the shell redirect `printf learned-output > 'reports/learned.txt'`
+and is never a write call's path. The probe reported that nobody owned the
+file, delivery peeled the destination off, and the residual reached the
+self-healing route on the keyword "auto-learning" -- writing a repair case
+instead. A composed change plan *states* the file it was compiled for, so it is
+asked directly, ahead of the probe:
+
+```
+[trace] evidence_record=declined_composed_target
+```
+
+`TOOLS` overrides the tool names the example offers, comma-separated. This
+prompt needs `TOOLS='write,bash'`: without a command tool there is no
+`command_output` mode to compose, so the default tool set reproduces nothing.
