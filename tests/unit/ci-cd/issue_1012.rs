@@ -229,7 +229,7 @@ fn audited_warning_band_sources_stay_below_their_limits() {
     );
     let workflow_lines = release_workflow().lines().count();
     assert!(
-        workflow_lines <= 1_510,
+        workflow_lines <= 1_522,
         ".github/workflows/release.yml has {workflow_lines} lines"
     );
 }

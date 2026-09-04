@@ -9,6 +9,21 @@ BIN="${BIN:-$ROOT/target/debug/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8907}"
 AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-120}"
+
+# Issue #1069: the run owns a deadline, not only each session. Twenty sessions
+# entitled to AGENT_TIMEOUT_SECONDS each ask for 2400s, and no step budget in
+# the agent-CLI job can hold that -- run 33880485514 spent a whole 10-minute
+# step on the record phase alone and was killed by the runner, which names the
+# step and not the scenario that ran long. `scripts/run-with-budget-warning.sh`
+# enforces the same budget one level up; the reserve leaves the verifier room
+# after the loop, so this script fails first and says where the time went.
+TEST_BUDGET_SECONDS="${TEST_BUDGET_SECONDS:-900}"
+VERIFY_RESERVE_SECONDS="${VERIFY_RESERVE_SECONDS:-60}"
+LOOP_DEADLINE_SECONDS=$((TEST_BUDGET_SECONDS - VERIFY_RESERVE_SECONDS))
+[[ "$LOOP_DEADLINE_SECONDS" -gt 0 ]] || {
+  echo "TEST_BUDGET_SECONDS must leave room for VERIFY_RESERVE_SECONDS" >&2
+  exit 2
+}
 EVIDENCE_DIR="${EVIDENCE_DIR:-$ROOT/docs/case-studies/issue-707/agent-cli-evidence/computer-use}"
 WORKDIR="$(mktemp -d)"
 SERVER_PID=""
@@ -22,6 +37,7 @@ cleanup() {
 trap cleanup EXIT
 
 fail() {
+  echo "::error title=issue #707 computer-use record/replay::$1" >&2
   echo "!! $1" >&2
   if [[ -n "$SERVER_PID" ]]; then
     tail -120 "$WORKDIR/${CURRENT_PHASE:-record}/server.log" >&2 2>/dev/null || true
@@ -90,10 +106,17 @@ EOF
     task_id="${TASK_IDS[$index]}"
     prompt="${TASK_PROMPTS[$index]}"
     log="$EVIDENCE_DIR/$phase/$task_id.jsonl"
-    echo "== $phase $((index + 1))/10: $task_id =="
+    remaining=$((LOOP_DEADLINE_SECONDS - SECONDS))
+    if [[ "$remaining" -le 0 ]]; then
+      fail "the ${TEST_BUDGET_SECONDS}s run budget was spent before $phase/$task_id started"
+    fi
+    session_seconds="$AGENT_TIMEOUT_SECONDS"
+    [[ "$session_seconds" -le "$remaining" ]] || session_seconds="$remaining"
+    echo "== $phase $((index + 1))/10: $task_id (t+${SECONDS}s of ${LOOP_DEADLINE_SECONDS}s) =="
+    session_status=0
     (
       cd "$WORKDIR/$phase"
-      timeout "$AGENT_TIMEOUT_SECONDS" "$AGENT" \
+      timeout "$session_seconds" "$AGENT" \
         --prompt "$prompt" \
         --mcp-default-tool-call-timeout 120000 \
         --mcp-max-tool-call-timeout 600000 \
@@ -103,7 +126,16 @@ EOF
         --compaction-model same \
         --output-format stream-json \
         --compact-json
-    ) >"$log" 2>&1 || fail "Agent CLI failed for $phase/$task_id"
+    ) >"$log" 2>&1 || session_status=$?
+    if [[ "$session_status" -eq 124 ]]; then
+      if [[ "$session_seconds" -lt "$AGENT_TIMEOUT_SECONDS" ]]; then
+        fail "the ${TEST_BUDGET_SECONDS}s run budget expired inside $phase/$task_id, which \
+started with ${session_seconds}s of its ${AGENT_TIMEOUT_SECONDS}s left"
+      fi
+      fail "$phase/$task_id outlasted its ${session_seconds}s session deadline"
+    fi
+    [[ "$session_status" -eq 0 ]] ||
+      fail "Agent CLI failed for $phase/$task_id (exit ${session_status})"
     grep -q '"session_id":"ses_' "$log" \
       || fail "Agent CLI did not preserve a session id for $phase/$task_id"
     grep -q "computer_use_complete" "$log" \

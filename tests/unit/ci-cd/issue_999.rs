@@ -131,7 +131,14 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         // already produces, and `tests/unit/issue_921.rs` pins both step names
         // in this file. Main left three lines of headroom at 1497, so the band
         // moves by the gate's real cost and no further.
-        (".github/workflows/release.yml", 1_510),
+        // Issue #1069 moved this by the deadline the computer-use E2E steps
+        // had to be given: run 33880485514 was killed by `timeout-minutes`
+        // rather than by a budget, so both steps now pass through
+        // `run-with-budget-warning.sh`, which costs the block form of `run:`
+        // and a `TEST_BUDGET_SECONDS` beside each. The wrapper is the
+        // repository's own mechanism for this (issues #977 and #1017) and has
+        // nowhere cheaper to live: the step it guards is the one being timed.
+        (".github/workflows/release.yml", 1_522),
         ("src/intent_formalization.rs", 900),
         ("src/agentic_coding/general_planner.rs", 900),
         ("src/web/worker/formal_ai_worker_20.js", 1_400),

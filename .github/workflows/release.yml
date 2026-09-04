@@ -961,7 +961,9 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 32
+    # Issue #1069: raised from 32 so it outlasts the 900s and 600s deadlines
+    # the computer-use steps below now own; see tests/unit/ci-cd/.
+    timeout-minutes: 45
     needs: [detect-changes, build-artifacts]
     if: |
       !cancelled() && (
@@ -1118,20 +1120,32 @@ jobs:
         env:
           PORT: 8776
         run: experiments/agent_cli_e2e/run_issue_687.sh
+      # Issue #1069: green runs of this step measured 131s, 136s and 533s --
+      # serial live-model latency -- and run 33880485514 was killed by the
+      # runner at 10 minutes with no scenario named. The wrapper and the script
+      # own the deadline now; the backstop only outlasts it (issue #1017).
       - name: "Run agent CLI E2E — verified computer-use record/replay (issue #707)"
-        timeout-minutes: 10
+        timeout-minutes: 17
         env:
           PORT: 8907
           BIN: ${{ github.workspace }}/target/release/formal-ai
           EVIDENCE_DIR: /tmp/formal-ai-issue-707-evidence
-        run: experiments/agent_cli_e2e/run_issue_707.sh
+          TEST_BUDGET_SECONDS: 900
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Computer-use record/replay E2E" \
+            experiments/agent_cli_e2e/run_issue_707.sh
       - name: "Run agent CLI E2E — held-out computer-use generalization (issue #707)"
         timeout-minutes: 12
         env:
           PORT: 8909
           BIN: ${{ github.workspace }}/target/release/formal-ai
           EVIDENCE_DIR: /tmp/formal-ai-issue-707-generalization-evidence
-        run: experiments/agent_cli_e2e/run_issue_707_generalization.sh
+          TEST_BUDGET_SECONDS: 600
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Held-out computer-use generalization E2E" \
+            experiments/agent_cli_e2e/run_issue_707_generalization.sh
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         env:
           PORT: 8781

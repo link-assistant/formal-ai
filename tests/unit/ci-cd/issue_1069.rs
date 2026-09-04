@@ -2,6 +2,8 @@
 
 use std::fs;
 
+use super::workflow_fixtures::{job_block, workflow_step_block};
+
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
         .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
@@ -116,4 +118,88 @@ fn the_authorship_route_neither_opens_a_pull_request_nor_pushes() {
         script.contains("git -C \"$ROOT\" diff --cached --quiet && die"),
         "a run that reproduced the committed bytes has authored nothing"
     );
+}
+
+/// The two computer-use E2E steps bound the whole run, not only each session.
+///
+/// Run 33880485514 killed `Run agent CLI E2E — verified computer-use
+/// record/replay (issue #707)` at its 10-minute `timeout-minutes`, ten
+/// scenarios into the twenty it drives, and the only diagnosis the log carried
+/// was `##[error]The action ... has timed out after 10 minutes` -- which
+/// scenario ran long had to be reconstructed from stdout timestamps. Nothing
+/// had regressed: the same step on the same branch measured 131s, 136s and
+/// 533s on green runs, because every session waits on a remote model.
+///
+/// The defect is the one issue #977 and issue #1017 named from the other side:
+/// `timeout-minutes` was the deadline instead of the backstop. The script
+/// bounded each session (`AGENT_TIMEOUT_SECONDS`, 120s) and nothing bounded the
+/// run, so twenty sessions were entitled to 2400s under a 600s step -- a
+/// budget that could only ever hold on a fast day. Three clocks now nest, each
+/// strictly inside the next: the script clamps every session to what is left of
+/// `TEST_BUDGET_SECONDS` and names the scenario that spent it,
+/// `run-with-budget-warning.sh` terminates at the budget with an `::error`, and
+/// `timeout-minutes` is left as the backstop it is supposed to be.
+#[test]
+fn computer_use_e2e_steps_bound_the_run_and_not_only_each_session() {
+    let workflow = repository_file(".github/workflows/release.yml");
+    let job = job_block(&workflow, "test-agent-cli-e2e");
+
+    for (step_name, script_path) in [
+        (
+            "\"Run agent CLI E2E — verified computer-use record/replay (issue #707)\"",
+            "experiments/agent_cli_e2e/run_issue_707.sh",
+        ),
+        (
+            "\"Run agent CLI E2E — held-out computer-use generalization (issue #707)\"",
+            "experiments/agent_cli_e2e/run_issue_707_generalization.sh",
+        ),
+    ] {
+        let step = workflow_step_block(job, step_name);
+        assert!(
+            step.contains("scripts/run-with-budget-warning.sh"),
+            "{step_name} must own its deadline instead of waiting for the runner"
+        );
+        let budget_seconds: u64 = step
+            .lines()
+            .find_map(|line| line.trim().strip_prefix("TEST_BUDGET_SECONDS:"))
+            .unwrap_or_else(|| panic!("{step_name} declares no TEST_BUDGET_SECONDS"))
+            .trim()
+            .parse()
+            .expect("the budget is a plain number of seconds");
+        let backstop_minutes: u64 = step
+            .lines()
+            .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+            .unwrap_or_else(|| panic!("{step_name} declares no timeout-minutes"))
+            .trim()
+            .parse()
+            .expect("the backstop is a plain number of minutes");
+        // The wrapper terminates at the budget and then waits out a SIGTERM
+        // grace before SIGKILL, so a backstop equal to the budget still lets
+        // the runner win the race and report `cancelled` (issue #977).
+        assert!(
+            backstop_minutes * 60 >= budget_seconds + 60,
+            "{step_name}: a {budget_seconds}s budget under a {backstop_minutes}m backstop \
+             leaves the wrapper no room to terminate, warn and exit 124 first"
+        );
+
+        let script = repository_file(script_path);
+        assert!(
+            script.contains("TEST_BUDGET_SECONDS"),
+            "{script_path} must read the budget of the step that runs it"
+        );
+        assert!(
+            !script.contains("timeout \"$AGENT_TIMEOUT_SECONDS\""),
+            "{script_path} must clamp each session to what is left of the run budget, \
+             or the sessions it is entitled to run outlast the step that runs them"
+        );
+        assert!(
+            script.contains("timeout \"$session_seconds\""),
+            "{script_path} must pass the clamped per-session deadline"
+        );
+        assert!(
+            script.contains("of ${LOOP_DEADLINE_SECONDS}s"),
+            "{script_path} must print elapsed time beside each scenario, so a step that \
+             runs long names the scenario instead of needing stdout timestamps"
+        );
+    }
 }
