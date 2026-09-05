@@ -61,15 +61,9 @@ jobs:
       - name: Install cargo-nextest
         uses: taiki-e/install-action@nextest
       - uses: ./.github/actions/setup-sccache
-      - name: Restore cargo registry cache
-        uses: actions/cache/restore@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+          restore-only: 'true'
       - name: Build one portable nextest archive
         env:
           TEST_BUDGET_SECONDS: 1400
