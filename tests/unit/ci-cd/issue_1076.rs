@@ -356,12 +356,12 @@ fn container_build_caches_are_bounded_and_scoped() {
 /// values in `env:` and used the raw expression anyway.
 ///
 /// The false-negative gap was worse, because it made a green check meaningless:
-/// actionlint does not lint `run:` blocks itself, it shells out to ShellCheck,
-/// and when ShellCheck is not on PATH it skips every shell check and still
-/// exits 0. Measured on this repository -- the binary exits 0 without
-/// ShellCheck installed, and reports SC1073 with it. The Docker image bundles
-/// ShellCheck and pyflakes, which is why the hive-mind best-practices document
-/// (principle 14) requires that form.
+/// actionlint does not lint `run:` blocks itself, it shells out to
+/// `ShellCheck`, and when `ShellCheck` is not on PATH it skips every shell
+/// check and still exits 0. Measured on this repository -- the binary exits 0
+/// without `ShellCheck` installed, and reports SC1073 with it. The Docker image
+/// bundles `ShellCheck` and pyflakes, which is why the hive-mind
+/// best-practices document (principle 14) requires that form.
 #[test]
 fn workflows_are_audited_for_security_not_only_syntax() {
     let config = repository_file(".github/zizmor.yml");
@@ -371,13 +371,13 @@ fn workflows_are_audited_for_security_not_only_syntax() {
          link-foundation templates"
     );
 
-    let runners: Vec<String> = workflow_files()
+    let mut runners = workflow_files()
         .into_iter()
         .filter(|(_, body)| body.contains("zizmor"))
         .map(|(name, _)| name)
-        .collect();
+        .peekable();
     assert!(
-        !runners.is_empty(),
+        runners.peek().is_some(),
         "no workflow runs zizmor. actionlint checks syntax; zizmor checks \
          security -- unpinned actions, template injection into `run:`, \
          over-broad token permissions. All four link-foundation templates run \
@@ -602,13 +602,13 @@ fn job_caps_are_audited_against_what_the_jobs_really_cost() {
     // measured worst case back inside the share issue #1017 enforces.
     let release = repository_file(".github/workflows/release.yml");
     assert_eq!(
-        job_timeout(&job_block(&release, "lint")),
+        job_timeout(job_block(&release, "lint")),
         Some("25"),
         "12.7 minutes measured against a 15-minute cap is 84.4%; the cap had \
          become the deadline (issue #1076)"
     );
     assert_eq!(
-        job_timeout(&job_block(&release, "build")),
+        job_timeout(job_block(&release, "build")),
         Some("20"),
         "11.6 minutes measured against a 15-minute cap is 77.0% (issue #1076)"
     );

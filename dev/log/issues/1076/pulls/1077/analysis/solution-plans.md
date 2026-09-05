@@ -378,3 +378,17 @@ someone checking it:
   evicts them. Deleting caches for merged refs is a plausible periodic job; it
   is not in this pull request because the deletion is irreversible and the
   eviction policy already handles it within seven days.
+* **The `check-file-size.rs` "approaching limit" warnings** — 49 files across
+  `src/`, `tests/`, `data/` and `.github/workflows/` sit between their warning
+  threshold and their hard cap, and each emits a `::warning` annotation on every
+  run. They are not false positives: each one is true, and the gate is designed
+  to nag before it blocks. Bringing all 49 under their warning thresholds is a
+  repository-wide refactor with no relation to the CI/CD correctness this issue
+  is about, so it is out of scope here. This pull request did remove one of them
+  (`tests/unit/ci-cd/workflow_release.rs`, which the D5 comments pushed from 999
+  to 1027 lines — over the hard cap) by splitting the issue #479 site-layout
+  tests into `tests/unit/ci-cd/release_site_layout.rs`. It left
+  `.github/workflows/release.yml` one line shorter than it found it (1,522 ->
+  1,521): the 28-line actionlint step D11 deleted paid for the step budgets D1
+  added. That file is still over its 1,500-line warning threshold and still
+  under the 1,522-line band `issue_999` and `issue_1012` pin.

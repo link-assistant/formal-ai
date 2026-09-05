@@ -49,6 +49,7 @@ mod issue_999;
 mod javascript_dependency_audit;
 mod macos_package_retry;
 mod release_publishing;
+mod release_site_layout;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
 mod source_test_placement;

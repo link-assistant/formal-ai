@@ -34,7 +34,7 @@ fn repository_file(path: &str) -> String {
         .replace("\r\n", "\n")
 }
 
-pub(crate) fn workflow_files() -> Vec<(String, String)> {
+pub fn workflow_files() -> Vec<(String, String)> {
     let dir = format!("{}/.github/workflows", env!("CARGO_MANIFEST_DIR"));
     let mut files: Vec<(String, String)> = fs::read_dir(&dir)
         .expect("workflows directory")
@@ -58,7 +58,7 @@ pub(crate) fn workflow_files() -> Vec<(String, String)> {
 
 /// `timeout-minutes:` as written, which may be a `${{ ... }}` expression when a
 /// matrix leg needs a different cap than its siblings.
-pub(crate) fn job_timeout(job: &str) -> Option<&str> {
+pub fn job_timeout(job: &str) -> Option<&str> {
     job.lines()
         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
         .map(str::trim)
