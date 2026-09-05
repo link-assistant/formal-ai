@@ -1,0 +1,335 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      description:
+        description: 'Release description (optional)'
+        required: false
+        type: string
+
+# Never cancel an in-progress run on main (a release may be mid-flight); do
+# cancel superseded PR runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+env:
+  PHP_VERSION: '8.3'
+
+jobs:
+  # === DETECT CHANGES - determines which downstream jobs need to run ===
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name != 'workflow_dispatch'
+    outputs:
+      php-changed: ${{ steps.changes.outputs.php-changed }}
+      tests-changed: ${{ steps.changes.outputs.tests-changed }}
+      package-changed: ${{ steps.changes.outputs.package-changed }}
+      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+      workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+
+      - name: Detect changes
+        id: changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: php scripts/detect-code-changes.php
+
+  # === LINT AND STATIC ANALYSIS ===
+  # Independent of the changeset check so a fast quality gate always runs.
+  lint:
+    name: Lint and Static Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [detect-changes]
+    # always() && !cancelled() lets this evaluate even though detect-changes is
+    # skipped for workflow_dispatch; otherwise the skip would propagate here.
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.php-changed == 'true' ||
+        needs.detect-changes.outputs.tests-changed == 'true' ||
+        needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.package-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        # --no-check-version: the version field is intentionally present and
+        # owned by the release pipeline, which is at odds with Packagist's
+        # "omit version" recommendation; keep strict checks for everything else.
+        run: composer validate --strict --no-check-version
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Check coding standards (PHP-CS-Fixer)
+        run: composer lint
+
+      - name: Static analysis (PHPStan)
+        run: composer analyse
+
+      - name: Check file size limit
+        run: composer check:file-size
+
+  # === TEST ===
+  test:
+    name: Test (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [detect-changes]
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.php-changed == 'true' ||
+        needs.detect-changes.outputs.tests-changed == 'true' ||
+        needs.detect-changes.outputs.package-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Run tests
+        run: php vendor/bin/phpunit --coverage-text
+
+  # === CHANGESET CHECK - only on PRs that touch code ===
+  # Docs-only PRs are exempt (no changelog fragment required).
+  changeset:
+    name: Changeset Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [detect-changes]
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Ensure the version was not bumped by hand
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: php scripts/check-version-modification.php
+
+      - name: Validate changelog fragment
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: php scripts/validate-changeset.php
+
+  # === BUILD ===
+  # Verifies the package installs cleanly for consumers; runs if lint+test
+  # succeeded or were skipped (docs-only PR).
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [detect-changes, lint, test]
+    if: |
+      always() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        (
+          (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
+          (needs.test.result == 'success' || needs.test.result == 'skipped')
+        )
+      )
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        # --no-check-version: the version field is intentionally present and
+        # owned by the release pipeline, which is at odds with Packagist's
+        # "omit version" recommendation; keep strict checks for everything else.
+        run: composer validate --strict --no-check-version
+
+      - name: Install dependencies (no dev, as a consumer would)
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Verify autoloading works
+        run: php -r "require 'vendor/autoload.php'; echo (new LinkFoundation\Template\Calculator())->add(2, 3), PHP_EOL;"
+
+  # === AUTO RELEASE - push to main ===
+  # Idempotent and self-healing: Packagist + GitHub Releases are the source of
+  # truth, not git tags. Re-running after a partial failure resumes safely.
+  auto-release:
+    name: Auto Release
+    needs: [lint, test, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Decide whether a release is needed
+        id: decide
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: php scripts/check-release-needed.php
+
+      - name: Version, changelog, commit and tag
+        id: version
+        if: steps.decide.outputs.should_release == 'true'
+        run: |
+          if [ "${{ steps.decide.outputs.skip_bump }}" = "true" ]; then
+            php scripts/version-and-commit.php --skip-bump
+          else
+            php scripts/version-and-commit.php --mode=changeset
+          fi
+
+      - name: Wait for Packagist to import the release
+        if: steps.version.outputs.new_version != ''
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: php scripts/wait-for-packagist.php --version "${{ steps.version.outputs.new_version }}"
+
+      - name: Create GitHub release
+        if: steps.version.outputs.new_version != ''
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: php scripts/create-github-release.php --version "${{ steps.version.outputs.new_version }}"
+
+  # === MANUAL RELEASE - workflow_dispatch ===
+  manual-release:
+    name: Manual Release
+    needs: [lint, test, build]
+    # always() && !cancelled() prevents the skipped detect-changes dependency
+    # from propagating; explicit result checks gate release behind green CI.
+    if: |
+      always() && !cancelled() &&
+      github.event_name == 'workflow_dispatch' &&
+      needs.lint.result == 'success' &&
+      needs.test.result == 'success' &&
+      needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Version, changelog, commit and tag
+        id: version
+        env:
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+          RELEASE_DESCRIPTION: ${{ github.event.inputs.description }}
+        run: |
+          php scripts/version-and-commit.php \
+            --mode=instant \
+            --bump="$BUMP_TYPE" \
+            --description="$RELEASE_DESCRIPTION"
+
+      - name: Wait for Packagist to import the release
+        if: steps.version.outputs.new_version != ''
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: php scripts/wait-for-packagist.php --version "${{ steps.version.outputs.new_version }}"
+
+      - name: Create GitHub release
+        if: steps.version.outputs.new_version != ''
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: php scripts/create-github-release.php --version "${{ steps.version.outputs.new_version }}"

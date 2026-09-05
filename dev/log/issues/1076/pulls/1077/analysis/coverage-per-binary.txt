@@ -1,0 +1,9 @@
+Per-test-binary wall time inside the `Generate code coverage` step
+(cargo llvm-cov --all-features; ubuntu-24.04; same 32 targets in every run)
+
+target                             CANCELLED    ok-33902724772    ok-33310631375  slowdown
+unit                              UNFINISHED       733.6s/3190       523.9s/3080
+integration                     1572.8s/358        213.6s/358         29.7s/349   7.4x
+
+SUM of finished binaries        1586.5s            954.1s            558.5s     
+finished / 32                       30                31                31      

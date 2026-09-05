@@ -1,0 +1,247 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/js-template/scripts/run-with-budget-warning.sh	2026-09-05 09:39:57.844032816 +0000
++++ scripts/run-with-budget-warning.sh	2026-09-05 09:37:22.124726147 +0000
+@@ -1,134 +1,139 @@
+ #!/usr/bin/env bash
+-# run-with-budget-warning.sh
++# Run a command under an execution budget that expires before the job clock.
+ #
+-# Owns the deadline for a long CI step so the step, not the job, decides
+-# when time has run out.
++# GitHub reports a job killed by `timeout-minutes` as **cancelled**, not
++# **failed** (issue #977), so a step that is allowed to run until the runner
++# kills it converts a real, actionable timeout into a benign-looking
++# cancellation. Issue #1017 is that exact regression: `macOS core slice 10/12`
++# spent 133s on checkout/toolchain/artifact setup and was killed 467s into a
++# test step whose 480s budget could therefore never expire first, so the whole
++# `CI/CD Pipeline` run reported `cancelled` and no release was published.
++#
++# This wrapper owns the deadline instead of the runner: it warns while the
++# command can still be acted on and -- unless enforcement is explicitly
++# disabled -- terminates the command at the budget and exits 124, so the job
++# reports `failure` with an ::error annotation naming the budget it blew.
+ #
+-# `timeout-minutes` on a job is a backstop, never the deadline: GitHub
+-# reports a job killed by it as *cancelled*, not *failed*, so a genuine
+-# overrun can pass unnoticed on a pull request and cannot name the
+-# deadline it blew on the default branch. A step that owns its own budget
+-# exits non-zero instead, which GitHub reports as a failure with a title
+-# naming the budget and the overrun.
+-#
+-# Usage:
+-#   bash scripts/run-with-budget-warning.sh SECONDS LABEL COMMAND [ARG...]
++# Usage: run-with-budget-warning.sh <budget-seconds> <label> <command> [args...]
+ #
+ # Environment:
+-#   BUDGET_WARN_PERCENT   emit a warning at this share of the budget (default 70)
+-#   BUDGET_GRACE_SECONDS  seconds between SIGTERM and SIGKILL (default 10)
+-#   BUDGET_POLL_SECONDS   polling interval while the command runs (default 1)
+-#
+-# Exit codes: the command's own status, or 124 on timeout (matching timeout(1)).
+-set -uo pipefail
++#   TEST_WARN_RATIO_PERCENT    warn once this share of the budget is spent (70)
++#   TEST_BUDGET_ENFORCE        `false` warns only and never terminates (true)
++#   TEST_BUDGET_GRACE_SECONDS  SIGTERM -> SIGKILL grace period (15)
++#   TEST_BUDGET_POLL_SECONDS   deadline polling interval (1)
++#   FORMAL_AI_CI_VERBOSE       `true` prints periodic progress lines (false)
++set -euo pipefail
+ 
+-if [ "$#" -lt 3 ]; then
+-  echo "Usage: $0 SECONDS LABEL COMMAND [ARG...]" >&2
+-  exit 2
+-fi
+-
+-budget_seconds="$1"
+-label="$2"
++budget_seconds="${1:?budget seconds are required}"
++label="${2:?a warning label is required}"
+ shift 2
+-
+-case "$budget_seconds" in
+-  '' | *[!0-9]*)
+-    echo "Budget must be a whole number of seconds, got '${budget_seconds}'." >&2
+-    exit 2
+-    ;;
+-esac
+-
+-if [ "$budget_seconds" -le 0 ]; then
+-  echo "Budget must be greater than zero seconds." >&2
++[ "$#" -gt 0 ] || {
++  echo "a command is required" >&2
+   exit 2
+-fi
++}
+ 
+-warn_percent="${BUDGET_WARN_PERCENT:-70}"
+-grace_seconds="${BUDGET_GRACE_SECONDS:-10}"
+-poll_seconds="${BUDGET_POLL_SECONDS:-1}"
+-warn_seconds=$((budget_seconds * warn_percent / 100))
+-
+-status_dir="$(mktemp -d "${TMPDIR:-/tmp}/budget-status.XXXXXX")"
+-status_file="${status_dir}/status"
+-trap 'rm -rf "${status_dir}"' EXIT
+-
+-# `set -m` puts the command in its own process group, so the signals below
+-# reach the whole tree. `npm test` and `bun test` spawn workers, and killing
+-# only the direct child leaves orphans holding the runner -- which is also
+-# why timeout(1) is not sufficient here.
+-#
+-# Completion is detected through the status file rather than process
+-# liveness: a finished child stays visible as a zombie until it is reaped,
+-# so `kill -0` alone would never report it as done.
++warn_ratio="${TEST_WARN_RATIO_PERCENT:-70}"
++enforce="${TEST_BUDGET_ENFORCE:-true}"
++grace_seconds="${TEST_BUDGET_GRACE_SECONDS:-15}"
++poll_seconds="${TEST_BUDGET_POLL_SECONDS:-1}"
++verbose="${FORMAL_AI_CI_VERBOSE:-false}"
++heartbeat_seconds="${TEST_BUDGET_HEARTBEAT_SECONDS:-60}"
++
++threshold=$((budget_seconds * warn_ratio / 100))
++[ "$threshold" -gt 0 ] || threshold=1
++started=$SECONDS
++
++# Job control gives the command its own process group, so the whole process
++# tree can be signalled at the deadline instead of only its root.
+ set -m
+-{
+-  "$@"
+-  command_status=$?
+-  printf '%s\n' "${command_status}" > "${status_file}.partial"
+-  mv "${status_file}.partial" "${status_file}"
+-} &
++"$@" &
+ command_pid=$!
+ set +m
+ 
+-# Signal the process group when possible, falling back to the direct child
+-# on platforms without usable process groups (notably Git Bash on Windows).
+-signal_command() {
+-  local signal="$1"
+-  kill "-${signal}" -- "-${command_pid}" 2>/dev/null ||
+-    kill "-${signal}" "${command_pid}" 2>/dev/null ||
+-    true
++# A budgeted Rust step that runs long has two causes with the same shape in the
++# log -- work that grew, and a compiler cache that stopped answering -- and
++# nothing printed so far tells them apart. Issue #1021 hit exactly that:
++# `Test (macos-15-intel / specification)` blew its 1200s budget still compiling
++# dependencies, and deciding whether the runner was slow or the cache was cold
++# took reconstructing per-crate rustc timestamps out of a megabyte of log
++# (`experiments/issue_1021_compile_rate_compare.py`). sccache already counts
++# the answer. It is printed when the budget is in trouble and never otherwise,
++# so a healthy run stays quiet and a red one arrives with its own diagnosis.
++report_compiler_cache() {
++  case "${RUSTC_WRAPPER:-}" in
++    *sccache*) ;;
++    *) return 0 ;;
++  esac
++  local sccache="${SCCACHE_PATH:-}"
++  [ -n "$sccache" ] || sccache="$(command -v sccache 2> /dev/null || true)"
++  [ -n "$sccache" ] || return 0
++  echo "[budget] compiler cache counters for ${label}:" >&2
++  # Never fatal: this is a diagnostic, and `set -e` is in force. A wrapper that
++  # died reporting why a step was slow would replace the finding with a worse
++  # one.
++  "$sccache" --show-stats 2>&1 | sed 's/^/[budget] /' >&2 || true
+ }
+ 
+-command_is_running() {
+-  [ ! -f "${status_file}" ] && kill -0 "${command_pid}" 2>/dev/null
++signal_command_tree() {
++  local signal="$1"
++  kill "-$signal" "-$command_pid" 2> /dev/null ||
++    kill "-$signal" "$command_pid" 2> /dev/null ||
++    true
+ }
+ 
+-terminate_over_budget() {
+-  echo "::error title=${label} exceeded its execution budget::${label} did not finish within its ${budget_seconds}s budget and was terminated. Shorten the step or raise its budget (keeping it below the job's timeout-minutes backstop)."
+-  signal_command TERM
+-
+-  local waited=0
+-  while command_is_running && [ "${waited}" -lt "${grace_seconds}" ]; do
+-    sleep "${poll_seconds}"
+-    waited=$((waited + poll_seconds))
+-  done
+-
+-  if command_is_running; then
+-    echo "${label} ignored SIGTERM after ${grace_seconds}s; sending SIGKILL."
+-    signal_command KILL
+-  fi
+-
+-  wait "${command_pid}" 2>/dev/null || true
+-  exit 124
++# shellcheck disable=SC2329  # invoked indirectly by the trap below
++forward_cancellation() {
++  signal_command_tree TERM
+ }
++trap forward_cancellation INT TERM
+ 
+-echo "Running ${label} with a ${budget_seconds}s budget (warning at ${warn_seconds}s)."
+-
+-SECONDS=0
+ warned=false
++terminated=false
++last_heartbeat=0
+ 
+-while command_is_running; do
+-  if [ "${warned}" = false ] && [ "${SECONDS}" -ge "${warn_seconds}" ]; then
++while kill -0 "$command_pid" 2> /dev/null; do
++  elapsed=$((SECONDS - started))
++
++  if [ "$warned" = false ] && [ "$elapsed" -ge "$threshold" ]; then
+     warned=true
+-    echo "::warning title=${label} is approaching its execution budget::${label} has run for ${SECONDS}s of its ${budget_seconds}s budget."
++    echo "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
++    report_compiler_cache
+   fi
+ 
+-  if [ "${SECONDS}" -ge "${budget_seconds}" ]; then
+-    terminate_over_budget
++  if [ "$verbose" = true ] &&
++    [ $((elapsed - last_heartbeat)) -ge "$heartbeat_seconds" ]; then
++    last_heartbeat="$elapsed"
++    echo "[budget] ${label} has been running for ${elapsed}s of its ${budget_seconds}s budget." >&2
+   fi
+ 
+-  sleep "${poll_seconds}"
+-done
++  if [ "$enforce" = true ] && [ "$elapsed" -ge "$budget_seconds" ]; then
++    terminated=true
++    echo "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
++    report_compiler_cache
++    signal_command_tree TERM
++    grace_deadline=$((SECONDS + grace_seconds))
++    while kill -0 "$command_pid" 2> /dev/null && [ "$SECONDS" -lt "$grace_deadline" ]; do
++      sleep "$poll_seconds"
++    done
++    signal_command_tree KILL
++    break
++  fi
+ 
+-wait "${command_pid}" 2>/dev/null
+-wait_status=$?
++  sleep "$poll_seconds"
++done
+ 
+-# The status file is authoritative: the wrapper subshell's own exit status is
+-# that of the bookkeeping it does after the command returns.
+-if [ -f "${status_file}" ]; then
+-  status="$(cat "${status_file}")"
+-else
+-  status="${wait_status}"
++set +e
++wait "$command_pid"
++status=$?
++set -e
++trap - INT TERM
++
++elapsed=$((SECONDS - started))
++if [ "$terminated" = true ]; then
++  printf '%s was terminated after %ss, its full %ss execution budget.\n' \
++    "$label" "$elapsed" "$budget_seconds"
++  exit 124
+ fi
+-echo "${label} finished in ${SECONDS}s of its ${budget_seconds}s budget (exit ${status})."
+-exit "${status}"
++
++printf '%s took %ss of its %ss execution budget.\n' "$label" "$elapsed" "$budget_seconds"
++exit "$status"

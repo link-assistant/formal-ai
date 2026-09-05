@@ -1,0 +1,14 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/git-config.rs	2026-09-05 09:39:56.904042998 +0000
++++ scripts/git-config.rs	2026-09-05 09:37:22.108726322 +0000
+@@ -9,6 +9,11 @@
+ //! Environment variables:
+ //!   - GIT_USER_NAME: Git user name (default: github-actions[bot])
+ //!   - GIT_USER_EMAIL: Git user email (default: github-actions[bot]@users.noreply.github.com)
++//!
++//! ```cargo
++//! [package]
++//! edition = "2024"
++//! ```
+ 
+ use std::env;
+ use std::process::{Command, exit};

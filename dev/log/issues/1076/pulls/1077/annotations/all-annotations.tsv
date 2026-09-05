@@ -1,0 +1,22 @@
+run_id	workflow	job_id	job_name	level	title	message	path	line
+33955786079	Task Ladder	101278771512	.github	notice	sccache stats - task-ladder	71% - 731 hits, 295 misses, 0 errors	.github	50
+33955786068	Write-Effect Ladder	101278771479	.github	notice	sccache stats - write-effect-ladder	62% - 638 hits, 388 misses, 0 errors	.github	50
+33955786119	Question necessity ratchet	101278771690	.github	notice	sccache stats - question-necessity-ratchet	41% - 443 hits, 638 misses, 0 errors	.github	50
+33955786067	Agentic CLI Matrix	101278771625	.github	warning		You've hit a rate limit, your rate limit will reset in 1 seconds	.github	3
+33955786081	Broken Link Checker	101278771516	.github	notice		Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/33955786081#summary-101278771516	.github	933
+33955786226	CI/CD Pipeline	101278940547	.github	notice	sccache stats - lint	41% - 727 hits, 1054 misses, 0 errors	.github	52
+33955786226	CI/CD Pipeline	101278940547	data/cache/wordnet/en	notice		Closure-driven cache bucket holds 338 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.	data/cache/wordnet/en	0
+33955786226	CI/CD Pipeline	101278940547	data/cache/wiktionary/en	notice		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.	data/cache/wiktionary/en	0
+33955786226	CI/CD Pipeline	101278940547	data/cache/wikidata/entity	notice		Closure-driven cache bucket holds 410 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.	data/cache/wikidata/entity	0
+33955786226	CI/CD Pipeline	101278940648	.github	notice	sccache stats - build-archive	25% - 267 hits, 816 misses, 0 errors	.github	50
+33955786226	CI/CD Pipeline	101278940659	.github	notice	sccache stats - build-artifacts	44% - 455 hits, 573 misses, 0 errors	.github	49
+33955786226	CI/CD Pipeline	101280170811	.github	notice	sccache stats - test-agent-cli-e2e	100% - 1028 hits, 3 misses, 0 errors	.github	48
+33955786226	CI/CD Pipeline	101280170826	.github	notice	sccache stats - test	39% - 405 hits, 624 misses, 0 errors	.github	49
+33955786226	CI/CD Pipeline	101280170912	.github	notice	sccache stats - test	66% - 683 hits, 347 misses, 0 errors	.github	50
+33955786226	CI/CD Pipeline	101282285494	.github	notice	sccache stats - build	78% - 45 hits, 13 misses, 0 errors	.github	44
+33955786082	Coverage	101278931791	.github	notice		Coverage for `browser` functions rose to 57.23% (baseline 45.54%). Run `--only browser --update-baseline` to lock the gain in.	.github	41
+33955786082	Coverage	101278931791	.github	notice		Coverage for `browser` lines rose to 57.94% (baseline 50.48%). Run `--only browser --update-baseline` to lock the gain in.	.github	40
+33955786082	Coverage	101278931847	.github	failure		The job has exceeded the maximum execution time of 40m0s	.github	1
+33955786082	Coverage	101278931847	.github	notice	sccache stats - coverage	0% - 0 hits, 0 misses, 0 errors	.github	34
+33955786082	Coverage	101278931847	.github	warning		No files were found with the provided path: coverage/summary-rust.md coverage/summary-rust.json. No artifacts will be uploaded.	.github	28
+33955786082	Coverage	101278931847	.github	failure		The operation was canceled.	.github	3115

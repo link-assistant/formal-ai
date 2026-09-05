@@ -1,0 +1,158 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/simulate-fresh-merge.sh	2026-09-05 09:39:56.905042987 +0000
++++ scripts/simulate-fresh-merge.sh	2026-09-05 09:37:22.130726082 +0000
+@@ -1,76 +1,89 @@
+ #!/usr/bin/env bash
+-# Simulate merging the pull request head into a fresh copy of the base branch and
+-# run the fast checks against that merge result.
++# simulate-fresh-merge.sh
+ #
+-# A pull request can be green in isolation and still break the base branch when a
+-# semantic (non-textual) conflict is introduced: both sides merge cleanly, but the
+-# combined tree no longer compiles or passes tests. GitHub only tests the PR head
+-# (or a merge commit computed at PR creation time), so this script recreates the
+-# merge locally against the current tip of the base branch.
+-#
+-# Environment:
+-#   GITHUB_BASE_REF - base branch name (set automatically for pull_request events)
+-#   FRESH_MERGE_CHECKS - optional space-separated override of the commands to run
+-set -euo pipefail
+-
+-BASE_REF="${GITHUB_BASE_REF:-main}"
+-
+-if [ -z "${GITHUB_BASE_REF:-}" ]; then
+-  echo "GITHUB_BASE_REF is not set; assuming base branch '${BASE_REF}'"
+-fi
++# Simulates a fresh merge of the current PR branch with the latest base branch.
++# This ensures CI checks run against the actual merge result, not a stale merge preview.
++#
++# Usage:
++#   BASE_REF=main bash scripts/simulate-fresh-merge.sh
++#
++# Environment variables:
++#   BASE_REF       The base branch to merge with (e.g. "main"). Required.
++#   BASE_COMMIT    Optional. A specific commit on the base branch to merge
++#                  instead of its current tip. Set this when several jobs must
++#                  reach the *same* merged tree: resolving the tip separately in
++#                  each job makes the result a function of when each job started,
++#                  so a push to the base branch mid-run silently gives two jobs
++#                  two different trees (issue #1017 -- the macOS slices are
++#                  serialized by the runner pool and start up to an hour apart,
++#                  and every slice that started after such a push failed its
++#                  archive tree check against an archive built before it).
++#
++# Exit code 0 = merge succeeded or not needed; non-zero = merge conflict detected.
++#
++# Adopted from link-foundation/js-ai-driven-development-pipeline-template
++# (issue #808 / R3), with `$BASE_REF` quoted at every expansion -- upstream
++# leaves it bare on lines 44 and 54 while quoting it on 37, so a branch name
++# containing a glob character or whitespace resolved differently depending on
++# which line read it (issue #812; reported upstream).
++#
++# GitHub checks out `refs/pull/N/merge`, a merge preview
++# computed when the PR was last synced -- it does NOT include commits pushed to
++# the base branch afterwards. A PR can therefore be green against a base that no
++# longer exists and break `main` on merge.
+ 
+-echo "Fetching origin/${BASE_REF}..."
+-git fetch --no-tags origin "${BASE_REF}"
++set -euo pipefail
+ 
+-BASE_SHA="$(git rev-parse "origin/${BASE_REF}")"
+-HEAD_SHA="$(git rev-parse HEAD)"
+-echo "Base: ${BASE_REF} (${BASE_SHA})"
+-echo "Head: ${HEAD_SHA}"
+-
+-if git merge-base --is-ancestor "${HEAD_SHA}" "${BASE_SHA}"; then
+-  echo "Head is already contained in origin/${BASE_REF}; nothing to simulate."
+-  exit 0
++echo "=== Synchronizing PR with latest $BASE_REF ==="
++echo "This prevents stale merge preview issues (a green PR that breaks main)"
++echo ""
++
++# Configure git for merge
++git config user.email "github-actions[bot]@users.noreply.github.com"
++git config user.name "github-actions[bot]"
++
++# Fetch the latest base branch
++echo "Fetching latest $BASE_REF..."
++git fetch origin "$BASE_REF"
++
++# Get current and base branch info
++CURRENT_SHA=$(git rev-parse HEAD)
++
++if [ -n "${BASE_COMMIT:-}" ]; then
++  # Pinned mode: merge the commit the caller names, even if the branch has moved
++  # past it. Fetch it explicitly -- on a shallow or filtered clone the object is
++  # not guaranteed to be present just because the branch tip is.
++  git fetch origin "$BASE_COMMIT" 2>/dev/null || true
++  BASE_SHA=$(git rev-parse "$BASE_COMMIT^{commit}")
++  echo "Pinned base commit requested: $BASE_COMMIT -> $BASE_SHA"
++else
++  BASE_SHA=$(git rev-parse "origin/$BASE_REF")
+ fi
+ 
+-# Merge into a detached checkout of the base tip so the working branch is untouched.
+-git config user.name "${GIT_AUTHOR_NAME:-github-actions[bot]}"
+-git config user.email "${GIT_AUTHOR_EMAIL:-github-actions[bot]@users.noreply.github.com}"
+-git checkout --detach "${BASE_SHA}"
+-
+-if ! git merge --no-edit "${HEAD_SHA}"; then
+-  echo "::error::Textual merge conflict with origin/${BASE_REF}. Merge the base branch into this pull request and resolve the conflicts."
+-  git merge --abort || true
+-  git checkout --force -
+-  exit 1
+-fi
++echo "Current checkout (merge preview): $CURRENT_SHA"
++echo "Base branch ($BASE_REF) commit to merge: $BASE_SHA"
++echo ""
+ 
+-echo "Merge succeeded. Running checks on the merged tree..."
++# Check if the base commit has changes not in the merge preview
++BEHIND_COUNT=$(git rev-list --count "HEAD..$BASE_SHA")
+ 
+-status=0
+-if [ -n "${FRESH_MERGE_CHECKS:-}" ]; then
+-  # shellcheck disable=SC2086
+-  for check in ${FRESH_MERGE_CHECKS}; do
+-    echo "::group::${check}"
+-    eval "${check}" || status=1
+-    echo "::endgroup::"
+-  done
++if [ "$BEHIND_COUNT" -eq 0 ]; then
++  echo "Merge preview is up-to-date with $BASE_REF. No simulation needed."
+ else
+-  echo "::group::cargo fmt --all -- --check"
+-  cargo fmt --all -- --check || status=1
+-  echo "::endgroup::"
+-
+-  echo "::group::cargo clippy --all-targets --all-features"
+-  cargo clippy --all-targets --all-features || status=1
+-  echo "::endgroup::"
+-
+-  echo "::group::cargo test --all-features"
+-  cargo test --all-features || status=1
+-  echo "::endgroup::"
++  echo "Base branch has $BEHIND_COUNT new commit(s) since PR was opened/synced."
++  echo "Simulating fresh merge to validate actual merge result..."
++  echo ""
++
++  # Attempt to merge the base commit resolved above
++  if git merge "$BASE_SHA" --no-edit; then
++    echo ""
++    echo "Fresh merge simulation successful!"
++    echo "Checks will now run against the up-to-date merged state."
++  else
++    echo ""
++    echo "::error::Merge conflict detected! PR needs to be rebased/updated before it can be merged."
++    echo "The PR branch is out of sync with $BASE_REF and cannot be automatically merged."
++    exit 1
++  fi
+ fi
+-
+-if [ "${status}" -ne 0 ]; then
+-  echo "::error::Checks failed on the simulated merge with origin/${BASE_REF} even though they pass on the pull request head. This is a semantic merge conflict."
+-fi
+-
+-git checkout --force - >/dev/null 2>&1 || true
+-exit "${status}"
++echo ""

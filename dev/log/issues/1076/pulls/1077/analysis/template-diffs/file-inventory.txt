@@ -1,0 +1,120 @@
+######################## rust-template
+--- files present in BOTH (candidate diffs) ---
+.github/actionlint.yaml
+.github/actions/setup-buildx-resilient/action.yml
+.github/workflows/desktop-release.yml
+.github/workflows/links.yml
+.github/workflows/release.yml
+.github/workflows/security.yml
+scripts/bump-version.rs
+scripts/check-changelog-fragment.rs
+scripts/check-file-size.rs
+scripts/check-pipeline-status.sh
+scripts/check-release-needed.rs
+scripts/check-version-modification.rs
+scripts/check-web-archive.mjs
+scripts/check-web-archive.test.mjs
+scripts/collect-changelog.rs
+scripts/create-changelog-fragment.rs
+scripts/create-github-release.rs
+scripts/desktop-release-resolve.sh
+scripts/detect-code-changes.rs
+scripts/get-bump-type.rs
+scripts/get-version.rs
+scripts/git-config.rs
+scripts/install-rust-script.sh
+scripts/publish-crate.rs
+scripts/run-with-budget-warning.sh
+scripts/rust-paths.rs
+scripts/simulate-fresh-merge.sh
+scripts/version-and-commit.rs
+scripts/wait-for-crate.rs
+--- CI files present ONLY in template ---
+.github/workflows/workflows.yml
+.github/zizmor.yml
+scripts/check-cargo-lock.rs
+scripts/check-crate-size.rs
+scripts/fixtures/lychee-report.md
+scripts/package-desktop.sh
+scripts/release-naming.rs
+scripts/smoke-test-published-crate.rs
+######################## js-template
+--- files present in BOTH (candidate diffs) ---
+.github/actions/setup-buildx-resilient/action.yml
+.github/workflows/links.yml
+.github/workflows/release.yml
+.github/workflows/security.yml
+scripts/check-pipeline-status.sh
+scripts/check-web-archive.mjs
+scripts/run-with-budget-warning.sh
+scripts/simulate-fresh-merge.sh
+--- CI files present ONLY in template ---
+.github/actions/publish-dockerhub/action.yml
+.github/workflows/example-app.yml
+.github/workflows/workflows.yml
+.github/zizmor.yml
+scripts/changeset-version.mjs
+scripts/check-changesets.mjs
+scripts/check-docker-build.mjs
+scripts/check-docker-publish.mjs
+scripts/check-file-line-limits.sh
+scripts/check-mjs-syntax.sh
+scripts/check-release-needed.mjs
+scripts/check-version.mjs
+scripts/create-github-release.mjs
+scripts/create-manual-changeset.mjs
+scripts/debug-print.mjs
+scripts/detect-code-changes.mjs
+scripts/format-github-release.mjs
+scripts/format-release-notes-helpers.mjs
+scripts/format-release-notes.mjs
+scripts/instant-version-bump.mjs
+scripts/js-paths.mjs
+scripts/land-via-pull-request.mjs
+scripts/lint-changed-lines.mjs
+scripts/lint.mjs
+scripts/merge-changesets.mjs
+scripts/npm-registry.mjs
+scripts/package-info.mjs
+scripts/publish-failure-classifier.mjs
+scripts/publish-retry.mjs
+scripts/publish-to-npm.mjs
+scripts/push-failure-classifier.mjs
+scripts/push-main-with-rebase-retry.mjs
+scripts/release-naming.mjs
+scripts/run-command.mjs
+scripts/sanitize-npm-userconfig.mjs
+scripts/setup-npm.mjs
+scripts/smoke-test-package.mjs
+scripts/update-preview-images.mjs
+scripts/use-module.mjs
+scripts/validate-changeset.mjs
+scripts/version-and-commit.mjs
+scripts/wait-for-npm.mjs
+######################## python-template
+--- files present in BOTH (candidate diffs) ---
+.github/workflows/links.yml
+.github/workflows/release.yml
+.github/workflows/security.yml
+scripts/check-pipeline-status.sh
+scripts/run-with-budget-warning.sh
+scripts/simulate-fresh-merge.sh
+--- CI files present ONLY in template ---
+.github/workflows/docs.yml
+.github/workflows/workflows.yml
+.github/zizmor.yml
+scripts/audit_dependencies.py
+scripts/bump_version.py
+scripts/check_file_size.py
+scripts/check_web_archive.py
+scripts/create_github_release.py
+scripts/create_manual_changeset.py
+scripts/detect_code_changes.py
+scripts/format_release_notes.py
+scripts/publish_to_pypi.py
+scripts/release_naming.py
+scripts/smoke_test_published_package.py
+scripts/validate_changeset.py
+scripts/version_and_commit.py
+######################## php-template
+--- files present in BOTH (candidate diffs) ---

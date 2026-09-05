@@ -1,0 +1,43 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/install-rust-script.sh	2026-09-05 09:39:56.904042998 +0000
++++ scripts/install-rust-script.sh	2026-09-05 09:37:22.111726289 +0000
+@@ -1,24 +1,27 @@
+ #!/usr/bin/env bash
+-# Install rust-script idempotently, reproducibly, and resiliently.
+-#
+-# - Short-circuits when rust-script is already on PATH (cached/preinstalled).
+-# - Uses --locked so the published Cargo.lock is honored (reproducible builds,
+-#   immune to broken transitive releases).
+-# - Retries with backoff so a transient crates.io blip does not fail the job.
+ set -euo pipefail
+ 
+ if command -v rust-script >/dev/null 2>&1; then
+-  echo "rust-script already present: $(rust-script --version)"
++  rust-script --version
+   exit 0
+ fi
+ 
+-for attempt in 1 2 3; do
++attempts="${RUST_SCRIPT_INSTALL_ATTEMPTS:-3}"
++delay="${RUST_SCRIPT_INSTALL_RETRY_DELAY_SECONDS:-10}"
++
++for attempt in $(seq 1 "$attempts"); do
++  echo "Installing rust-script (attempt ${attempt}/${attempts})"
+   if cargo install rust-script --locked; then
++    rust-script --version
+     exit 0
+   fi
+-  echo "cargo install rust-script failed (attempt $attempt/3); retrying..." >&2
+-  sleep $((attempt * 5))
+-done
+ 
+-echo "cargo install rust-script failed after 3 attempts" >&2
+-exit 1
++  status=$?
++  if [ "$attempt" -eq "$attempts" ]; then
++    echo "rust-script install failed after ${attempts} attempts"
++    exit "$status"
++  fi
++
++  echo "rust-script install failed with status ${status}; retrying in ${delay}s"
++  sleep "$delay"
++done

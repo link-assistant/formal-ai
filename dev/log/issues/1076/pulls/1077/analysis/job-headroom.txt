@@ -1,0 +1,31 @@
+  use% cap(m)  max(m)   n  workflow / job   (worst run)
+ 100.7     40    40.3  11  Coverage / Code Coverage  run 33955786082  <== OVER 70%
+  84.4     15    12.7  11  CI/CD Pipeline / Lint and Format Check  run 33902725025  <== OVER 70%
+  77.0     15    11.6   8  CI/CD Pipeline / Build Package  run 32642782690  <== OVER 70%
+  75.6     35    26.5  11  CI/CD Pipeline / macOS Core Tests / Build macOS test archive  run 33902725025  <== OVER 70%
+  65.3     60    39.2   8  CI/CD Pipeline / Auto Release  run 33902725025  <-- over 50%
+  62.4     45    28.1  11  CI/CD Pipeline / E2E Tests (agent CLI ↔ formal-ai)  run 33902725025  <-- over 50%
+  53.4     20    10.7   7  CI/CD Pipeline / Build binaries and tests  run 32706091539  <-- over 50%
+  33.0     15     5.0   6  CI/CD Pipeline / E2E Tests (GitHub Pages)  run 32600760901
+  29.6     30     8.9  13  Agentic CLI Matrix / Build formal-ai  run 32598314928
+  29.2     45    13.1  14  Learning cycle (proposal only) / Replay the recorded frontier in proposal mode  run 32616745200
+  28.7      5     1.4  13  Coverage / Detect Changes  run 32740830523
+  28.3      5     1.4  12  CI/CD Pipeline / Detect Changes  run 32688997247
+  27.3     30     8.2   2  CI/CD Pipeline / Build formal-ai release binary  run 32642782690
+  23.3     40     9.3  11  CI/CD Pipeline / E2E Tests (local web app)  run 33189772848
+  23.1     25     5.8   5  CI/CD Pipeline / macOS Core Tests / Run macOS platform tests (1)  run 32740803291
+  22.1     40     8.8  13  Stock Rust Install / stock-rust-install  run 32600760794
+  21.8     15     3.3   2  External Benchmarks / Verify monotonic ledger  run 33384540953
+  14.8     35     5.2   6  CI/CD Pipeline / Deploy Web App to GitHub Pages  run 33902725025
+  11.3      5     0.6  12  CI/CD Pipeline / Pipeline Status  run 32740803291
+   9.6     15     1.4   1  Desktop Release / Package VS Code extension (.vsix)  run 33910649990
+   9.3     15     1.4  12  Coverage / Browser Code Coverage  run 33189772567
+   8.0     10     0.8  15  Security / Cargo audit  run 32740802737
+   8.0      5     0.4  13  Agentic CLI Matrix / Replay recorded sessions  run 32740830480
+   7.6     90     6.9   2  External Benchmarks / Run upstream suites  run 32692217068
+   7.3      5     0.4  13  Agentic CLI Matrix / Learn reusable client contracts  run 32598314928
+   7.2     10     0.7  11  CI/CD Pipeline / Secrets Scan  run 32688997247
+   6.8     10     0.7  11  Broken Link Checker / Check Links  run 33310631382
+   5.0     10     0.5  13  Desktop Release / Resolve target release  run 32742415729
+   1.3      5     0.1  13  Agentic CLI Matrix / Matrix summary  run 32642782590
+   0.8     10     0.1   1  Desktop Release / Publish SHA256SUMS.txt + provenance  run 33910649990

@@ -1,0 +1,168 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/python-template/.github/workflows/links.yml	2026-09-05 09:39:58.647024118 +0000
++++ .github/workflows/links.yml	2026-09-05 09:37:13.887816115 +0000
+@@ -8,17 +8,26 @@
+       - '**.md'
+       - '**.html'
+       - '.github/workflows/links.yml'
++      - '.lycheeignore'
++      - 'scripts/check-web-archive.mjs'
++      - 'scripts/check-web-archive.test.mjs'
+   pull_request:
+     types: [opened, synchronize, reopened]
+     paths:
+       - '**.md'
+       - '**.html'
+       - '.github/workflows/links.yml'
++      - '.lycheeignore'
++      - 'scripts/check-web-archive.mjs'
++      - 'scripts/check-web-archive.test.mjs'
+   workflow_dispatch:
+ 
++# Least-privilege default; jobs escalate individually when needed.
+ permissions:
+   contents: read
+ 
++# Provide Git config to actions/checkout itself; checkout runs git init before
++# any workflow step can configure Git.
+ env:
+   GIT_CONFIG_COUNT: '1'
+   GIT_CONFIG_KEY_0: init.defaultBranch
+@@ -28,33 +37,96 @@
+   link-checker:
+     name: Check Links
+     runs-on: ubuntu-latest
++    # Typical run: <1min with lychee cache. 10min prevents slow
++    # external hosts or Wayback Machine probes from hanging the workflow.
+     timeout-minutes: 10
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-link-checker
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     permissions:
+       contents: read
+     steps:
+-      - uses: actions/checkout@v6
+-        with:
+-          persist-credentials: false
++      - uses: actions/checkout@v7
++
++      # Issue #1017: the rust pipeline template guards this parser with a unit
++      # test because a parser regression silently turns healthy redirects into
++      # "broken" links (a false positive) or drops real failures (a false
++      # negative). It runs before lychee so a parser bug fails in seconds.
++      - name: Test Web Archive report parser
++        run: node --test scripts/check-web-archive.test.mjs
++
++      - name: Prepare reconstructable release history for link checking
++        run: |
++          sed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \
++            > LYCHEE_CHANGELOG.md
+ 
+       - name: Check links with lychee
+         id: lychee
+         uses: lycheeverse/lychee-action@v2
+         with:
++          # Check all Markdown and HTML files
++          # Exclude case-studies directory - these are research documents from
++          # external repos with references to files and issues that don't exist
++          # in this repository (similar exclusion pattern as eslint.config.js)
++          #
++          # 429 and 5xx are accepted rather than treated as broken. They
++          # describe the *host* -- throttling this runner, or failing to serve
++          # anything at all -- and say nothing about whether the link resolves.
++          # A missing page is a 404, and 404 still fails.
++          #
++          # `--max-retries 3` is not enough when the trouble outlasts the
++          # retries. raw.githubusercontent.com answered the same pinned-SHA
++          # LICENSE files 429, then 502, then 503 across three consecutive runs
++          # while serving them normally outside CI; `main` shows the same
++          # 12x502 / 16x503 spread, so this is not specific to any branch.
++          #
++          # `--accept-timeouts` is the same principle one step further: a
++          # timeout describes the host's latency, not the link. eur-lex.europa.eu
++          # stopped answering entirely on 2026-08-21 -- 45 s with no response
++          # from a workstation, well past the 30 s budget here -- and reddened
++          # both open pull requests over three LEGAL-COMPLIANCE.md citations
++          # neither of them touches.
++          #
++          # `--cache-exclude-status` keeps those verdicts out of the cache so
++          # the next run re-checks for real instead of replaying a bad answer
++          # for `--max-cache-age 1d`. Without it, accepting these codes would
++          # hide a link that later genuinely breaks.
++          #
++          # Issue #1045: a `Connection reset by peer (os error 104)` reddened
++          # `main` on four links that all answer 200 from a workstation. A reset
++          # happens below HTTP, so it carries no status code -- neither the
++          # accept list nor `--cache-exclude-status` can name it, and one of the
++          # four came back as `Error (cached)`, a reset replayed from cache.
++          # `--max-retries 6` with a growing `--retry-wait-time` outlasts the
++          # burst instead of caching it; the recorded lychee report under
++          # `experiments/` is excluded outright because it is captured evidence
++          # of a past failure, not live documentation, and its URLs are supposed
++          # to be broken.
+           args: >-
+             --verbose
+             --no-progress
+             --cache
+             --max-cache-age 1d
+-            --max-retries 3
++            --max-retries 6
++            --retry-wait-time 2
+             --timeout 30
++            --accept '200..=204,429,500..=599'
++            --accept-timeouts
++            --cache-exclude-status '429,500..=599'
++            --host-concurrency 2
++            --host-request-interval 100ms
++            --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)'
++            --exclude-path '^CHANGELOG\.md$'
+             --exclude-path docs/case-studies
++            --exclude-path dev/log
++            --exclude-path experiments/issue-1021-link-checker-false-positive
+             './**/*.md'
+             './**/*.html'
++          # Don't fail the workflow immediately - we want to check web archive first
+           fail: false
++          # Output file for broken links report (used by check-web-archive.mjs)
+           output: lychee/out.md
++          # Write a job summary
+           jobSummary: true
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+@@ -62,23 +134,29 @@
+       - name: Check broken links against Web Archive
+         if: steps.lychee.outputs.exit_code != 0
+         id: webarchive
+-        run: python scripts/check_web_archive.py
++        run: node scripts/check-web-archive.mjs
+         env:
+           LYCHEE_OUTPUT: lychee/out.md
+ 
+       - name: Fail if broken links were found
+-        if: always() && steps.lychee.outputs.exit_code != 0
++        # `!cancelled()`, not `always()`: a cancelled job must not append a
++        # "broken links" error to a run that never finished checking them.
++        if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}
+         run: |
+           echo "::error::Broken live links were detected."
+           echo ""
+           echo "What happened:"
+           echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
+-          echo "  An available Web Archive snapshot is a suggested replacement; it does not make the live link valid."
++          echo "  The Web Archive check above provides replacement URLs when snapshots exist."
+           echo ""
+           echo "How to fix:"
+-          echo "  1. Review the 'Check links with lychee' step above for the broken links."
+-          echo "  2. Replace links with suggested archive.org URLs when available."
+-          echo "  3. Otherwise find an updated URL, remove the link, or add a known false positive to .lycheeignore."
++          echo "  1. Review the 'Check links with lychee' step above for a full list of broken links."
++          echo "  2. For links marked with a '::notice::' annotation above, a Web Archive version exists."
++          echo "     Replace those broken links with the suggested archive.org URL."
++          echo "  3. For links with no archive version, either:"
++          echo "     a. Find an updated URL that points to the same or equivalent content."
++          echo "     b. Remove the link if the content is no longer relevant."
++          echo "     c. Add the URL to .lycheeignore if it is a known false positive."
+           echo ""
+-          echo "Report location: lychee/out.md."
++          echo "Report location: lychee/out.md (available as a workflow artifact if configured)."
+           exit 1
