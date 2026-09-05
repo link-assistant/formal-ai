@@ -60,7 +60,7 @@ env:
 
 jobs:
   write-effect-ladder:
-    name: Write-Effect Ladder (issue #916 rungs)
+    name: 'Write-Effect Ladder (issue #916 rungs)'
     runs-on: ubuntu-latest
     # A release build of the server plus one request/execute/observe round trip
     # per rung; the build dominates and starts cold.

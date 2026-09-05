@@ -57,7 +57,7 @@ env:
 
 jobs:
   task-ladder:
-    name: Task Ladder (issue #840 dataset)
+    name: 'Task Ladder (issue #840 dataset)'
     runs-on: ubuntu-latest
     # A release build of the server plus 24 request/route/answer round trips
     # against it; the build dominates and starts cold.

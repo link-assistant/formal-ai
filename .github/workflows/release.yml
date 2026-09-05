@@ -1009,7 +1009,7 @@ jobs:
           # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
       - uses: ./.github/actions/download-formal-ai-binary
-      - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
+      - name: 'Run Agent CLI E2E — held-out algorithm discovery (issue #531)'
         timeout-minutes: 5
         env: { PORT: 8896 }
         run: experiments/agent_cli_e2e/run_issue_531.sh
