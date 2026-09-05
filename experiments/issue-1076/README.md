@@ -1,12 +1,14 @@
 # Experiments for issue #1076
 
 Reproductions backing the three upstream reports in
-`dev/log/issues/1076/pulls/1077/upstream-reports/`. Each script is
-self-contained and needs only bash.
+`dev/log/issues/1076/pulls/1077/upstream-reports/`, and the one defect that
+turned out to be this repository's own (D10b). Each script is self-contained and
+needs only bash.
 
 | script | what it shows |
 |---|---|
 | `repro-budget-poll-interval.sh` | The rust template's budget wrapper stops enforcing entirely when `BUDGET_POLL_SECONDS` is fractional: `elapsed=$(( elapsed + POLL_SECONDS ))` is an arithmetic error, `elapsed` stays 0, and a `sleep 10` under a 2s budget exits 0 after the full 10s. |
+| `repro-actionlint-without-shellcheck.sh` | D10b: the same workflow, whose only defect is inside a `run:` block, exits 0 when actionlint cannot reach ShellCheck and 1 (three findings) when it can. The measurement behind moving actionlint to the container image and adding the canary step to `.github/workflows/workflows.yml`. |
 | `cases2.sh` | Runs all three templates' wrappers against a child that ignores SIGTERM. The js wrapper returns after 3s and leaves the child running; rust and python wait out the grace period and escalate to SIGKILL. |
 
 The vendored copies (`template-run-with-budget-warning.sh` = rust,
