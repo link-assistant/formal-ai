@@ -715,6 +715,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "api"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b2d20cf3d64bc3de
+    source "data/seed/closure-generated-14.lino"
+    record "editorial_synthesis"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c5e1de54b2da098e
     source "data/seed/closure-generated-14.lino"
     record "issue_report_harness_context_heading"

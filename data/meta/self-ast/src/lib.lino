@@ -2,10 +2,10 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 23041
-  line_count 510
-  content_id source_module_c770716636cf8690
-  symbol_count 178
+  byte_len 23069
+  line_count 511
+  content_id source_module_bc786f98a3cb47e8
+  symbol_count 179
   symbols
     module agent 3 3
     module agentic_coding 4 4
@@ -111,77 +111,78 @@ self_ast_census
     module proxy 105 105
     module question_generation 106 106
     module question_necessity 107 107
-    module rebuild_plan 108 108
-    module recipe_interpreter 109 109
-    module recursive_execution 110 110
-    module relative_meta_logic 111 111
-    module release_timeline 112 112
-    module repair_strategy 113 113
-    module requirement_contradiction 114 114
-    module research_learning 115 115
-    module responses_stream 116 116
-    module route_method_alias 117 117
-    module rule_synthesis 118 118
-    module rule_synthesis_portfolio 119 119
-    module search_fusion 120 120
-    module search_fusion_grammar 121 121
-    module search_fusion_learning 122 122
-    module seed 123 123
-    module selection 124 124
-    module self_ast_census 125 125
-    module self_explanation 126 126
-    module self_healing 127 127
-    module self_improvement 128 128
-    module self_source_links 129 129
-    module sequences 130 130
-    module server 131 131
-    module service_accessibility 132 132
-    module shared_dialog 133 133
-    module shared_memory 134 134
-    module skill_compiler 135 135
-    module skill_ledger 136 136
-    module skill_procedure 137 137
-    module solution_evidence 138 138
-    module solver 139 139
-    module solver_config 140 140
-    module solver_diagnostics 141 141
-    module solver_dispatch 142 142
-    module solver_formalization 143 143
-    module solver_handler_docs 144 144
-    module solver_handler_how 145 145
-    module solver_handler_how_synthesis 146 146
-    module solver_handler_oracle 147 147
-    module solver_handler_units 148 148
-    module solver_handlers 149 149
-    module solver_handlers_policy 150 150
-    module solver_helpers 151 151
-    module solver_search 152 152
-    module solver_synthesis 153 153
-    module solver_terminal 154 154
-    module solver_unknown_reasoning 155 155
-    module source_fetch 156 156
-    module source_research 157 157
-    module statement_audit 158 158
-    module statement_verification 159 159
-    module storage_policy 160 160
-    module substitution 161 161
-    module substitution_compiler 162 162
-    module summarization 163 163
-    module task_decomposition 164 164
-    module telegram 165 165
-    module telegram_runtime 166 166
-    module thinking 167 167
-    module thinking_prose 168 168
-    module trace_record 169 169
-    module translation 170 170
-    module unknown_opener 171 171
-    module web_engine_core 172 172
-    module web_search_core 173 173
-    module web_search_fusion_core 174 174
-    module web_search_markers 175 175
-    module workspace_change_learning 176 176
-    module world_model 177 177
-    module world_model_atoms 178 178
-    module world_model_context 179 179
-    module world_model_cycles 180 180
-    module world_model_dialog 181 181
+    module reasoning_standard 108 108
+    module rebuild_plan 109 109
+    module recipe_interpreter 110 110
+    module recursive_execution 111 111
+    module relative_meta_logic 112 112
+    module release_timeline 113 113
+    module repair_strategy 114 114
+    module requirement_contradiction 115 115
+    module research_learning 116 116
+    module responses_stream 117 117
+    module route_method_alias 118 118
+    module rule_synthesis 119 119
+    module rule_synthesis_portfolio 120 120
+    module search_fusion 121 121
+    module search_fusion_grammar 122 122
+    module search_fusion_learning 123 123
+    module seed 124 124
+    module selection 125 125
+    module self_ast_census 126 126
+    module self_explanation 127 127
+    module self_healing 128 128
+    module self_improvement 129 129
+    module self_source_links 130 130
+    module sequences 131 131
+    module server 132 132
+    module service_accessibility 133 133
+    module shared_dialog 134 134
+    module shared_memory 135 135
+    module skill_compiler 136 136
+    module skill_ledger 137 137
+    module skill_procedure 138 138
+    module solution_evidence 139 139
+    module solver 140 140
+    module solver_config 141 141
+    module solver_diagnostics 142 142
+    module solver_dispatch 143 143
+    module solver_formalization 144 144
+    module solver_handler_docs 145 145
+    module solver_handler_how 146 146
+    module solver_handler_how_synthesis 147 147
+    module solver_handler_oracle 148 148
+    module solver_handler_units 149 149
+    module solver_handlers 150 150
+    module solver_handlers_policy 151 151
+    module solver_helpers 152 152
+    module solver_search 153 153
+    module solver_synthesis 154 154
+    module solver_terminal 155 155
+    module solver_unknown_reasoning 156 156
+    module source_fetch 157 157
+    module source_research 158 158
+    module statement_audit 159 159
+    module statement_verification 160 160
+    module storage_policy 161 161
+    module substitution 162 162
+    module substitution_compiler 163 163
+    module summarization 164 164
+    module task_decomposition 165 165
+    module telegram 166 166
+    module telegram_runtime 167 167
+    module thinking 168 168
+    module thinking_prose 169 169
+    module trace_record 170 170
+    module translation 171 171
+    module unknown_opener 172 172
+    module web_engine_core 173 173
+    module web_search_core 174 174
+    module web_search_fusion_core 175 175
+    module web_search_markers 176 176
+    module workspace_change_learning 177 177
+    module world_model 178 178
+    module world_model_atoms 179 179
+    module world_model_context 180 180
+    module world_model_cycles 181 181
+    module world_model_dialog 182 182

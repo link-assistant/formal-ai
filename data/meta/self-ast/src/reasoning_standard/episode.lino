@@ -1,0 +1,40 @@
+self_ast_census
+  target src/reasoning_standard/episode.rs
+  language rust
+  fidelity signature
+  byte_len 17538
+  line_count 468
+  content_id source_module_467682e7293fbdb6
+  symbol_count 31
+  symbols
+    struct Observation 26 39
+    struct Claim 43 55
+    struct Measurement 59 66
+    enum ActionOutcome 70 77
+    function slug 82 88
+    function from_slug 93 99
+    function honest_report 103 105
+    struct Action 110 130
+    function is_honestly_reported 135 140
+    function is_verified 144 146
+    struct Conclusion 151 158
+    struct ReasoningEpisode 162 182
+    function observation 187 191
+    function discharged_checks 195 205
+    function from_lino 209 215
+    function from_node 217 229
+    function to_links_notation 233 321
+    function push_measurement 324 332
+    function collect 334 340
+    function values 342 348
+    function ordinal 350 352
+    function flag 354 360
+    function observation_from_node 362 371
+    function claim_from_node 373 381
+    function source_from_node 383 391
+    function tier_from_slug 396 404
+    function excerpt_from_node 406 415
+    function probe_from_node 417 429
+    function measurement_from_node 431 440
+    function action_from_node 442 460
+    function conclusion_from_node 462 468

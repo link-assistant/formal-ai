@@ -11,13 +11,14 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
-Twelve recipes are grounded today. The **recursive core** (issue #559) is the
-general algorithm every prompt walks; the other eleven encode a topic handler, a
-self-directed loop, or a codebase-hygiene procedure on top of it:
+Thirteen recipes are grounded today. The **recursive core** (issue #559) is the
+general algorithm every prompt walks; the other twelve encode a topic handler, a
+self-directed loop, a reasoning obligation, or a codebase-hygiene procedure on
+top of it:
 
 | Recipe | Issue | What it reproduces |
 | --- | --- | --- |
-| [`recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino) | #559 | The general meta algorithm itself — 12 steps, 25 pinned functions |
+| [`recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino) | #559 | The general meta algorithm itself — 13 steps, 29 pinned functions |
 | [`procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino) | #444 | A chat intent handler for "how to X" |
 | [`agentic-coding-recipe.lino`](../data/meta/agentic-coding-recipe.lino) | #468 | The deterministic agentic-CLI loop |
 | [`response-language-followup-recipe.lino`](../data/meta/response-language-followup-recipe.lino) | #556 | Re-answering the previous turn in a new language |
@@ -29,6 +30,7 @@ self-directed loop, or a codebase-hygiene procedure on top of it:
 | [`computer-use-recipe.lino`](../data/meta/computer-use-recipe.lino) | #707 | The audited computer-use primitive loop (grounded by `tests/unit/specification/computer_use_meta_algorithm.rs`) |
 | [`grounded-action-recipe.lino`](../data/meta/grounded-action-recipe.lino) | #840 | Grounding requested actions in observed effects (grounded by `tests/unit/specification/grounded_action_meta_algorithm.rs`) |
 | [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `tests/unit/issue_704.rs`) |
+| [`reasoning-standard-recipe.lino`](../data/meta/reasoning-standard-recipe.lino) | #1073 | The unconditional reasoning-depth audit — seven gates over every request (grounded by `tests/unit/specification/reasoning_standard_meta_algorithm.rs`) |
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the

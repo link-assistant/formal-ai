@@ -2,29 +2,29 @@ self_ast_census
   target src/solver.rs
   language rust
   fidelity signature
-  byte_len 38279
-  line_count 869
-  content_id source_module_e4beca6a5ef9b2b5
+  byte_len 38302
+  line_count 870
+  content_id source_module_ca2633a67fbc633a
   symbol_count 21
   symbols
-    struct SolverConfig 68 167
-    function default 170 195
-    function from_env 204 206
-    enum ConversationRole 213 216
-    function slug 221 226
-    struct ConversationTurn 235 238
-    function user 243 248
-    function assistant 252 257
-    struct UniversalSolver 262 264
-    function default 267 271
-    function new 277 279
-    function solve 286 288
-    function solve_with_history 295 297
-    function solve_with_probability_store 300 306
-    function solve_with_history_and_probability_store 309 322
-    function solve_with_history_probability_store_and_intent_cache 324 700
-    function handle_policy 702 830
-    function finalize_policy 832 842
-    function record_external_search 844 854
-    function solve 861 863
-    function solve_with_history 867 869
+    struct SolverConfig 68 168
+    function default 171 196
+    function from_env 205 207
+    enum ConversationRole 214 217
+    function slug 222 227
+    struct ConversationTurn 236 239
+    function user 244 249
+    function assistant 253 258
+    struct UniversalSolver 263 265
+    function default 268 272
+    function new 278 280
+    function solve 287 289
+    function solve_with_history 296 298
+    function solve_with_probability_store 301 307
+    function solve_with_history_and_probability_store 310 323
+    function solve_with_history_probability_store_and_intent_cache 325 701
+    function handle_policy 703 831
+    function finalize_policy 833 843
+    function record_external_search 845 855
+    function solve 862 864
+    function solve_with_history 868 870

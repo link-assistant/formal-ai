@@ -224,6 +224,20 @@ fn closed_circle_session_replays() {
     );
 }
 
+/// The lines of a composed changelog fragment that survive into `CHANGELOG.md`:
+/// everything after the `---` frontmatter, minus the blank lines and the
+/// `### Section` heading the release groups entries under.
+fn released_body_lines(fragment: &str) -> Vec<&str> {
+    fragment
+        .split_once("---\n")
+        .and_then(|(_, rest)| rest.split_once("---\n"))
+        .map_or(fragment, |(_, body)| body)
+        .lines()
+        .map(str::trim_end)
+        .filter(|line| !line.is_empty() && !line.starts_with("###"))
+        .collect()
+}
+
 /// The process artifacts in the repository are this generator's output, not
 /// prose someone typed next to it: each committed fragment in `changelog.d/`
 /// and the pull-request body in the case study are compared against what
@@ -233,11 +247,26 @@ fn the_committed_process_artifacts_are_generator_output() {
     let input = input();
     let session = session(&input);
     let root = env!("CARGO_MANIFEST_DIR");
+    let changelog = fs::read_to_string(format!("{root}/CHANGELOG.md")).expect("CHANGELOG.md");
     for rendered in session["contributions"].as_array().expect("contributions") {
         let path = format!("{root}/{}", text(rendered, "changelog_fragment_path"));
-        let committed = fs::read_to_string(&path)
-            .unwrap_or_else(|_| panic!("the composed fragment must be committed at {path}"));
-        assert_eq!(committed, text(rendered, "changelog_fragment"), "{path}");
+        let composed = text(rendered, "changelog_fragment");
+        // A fragment does not outlive the release that ships it: v0.346.0
+        // (c11b23d34) consumed this one and the assertion failed on every run
+        // afterwards. Follow the entry across its lifecycle -- byte-identical
+        // while it is still a fragment, and once released, every body line it
+        // composed must appear in the CHANGELOG.md section it became.
+        if let Ok(committed) = fs::read_to_string(&path) {
+            assert_eq!(committed, composed, "{path}");
+            continue;
+        }
+        for line in released_body_lines(&composed) {
+            assert!(
+                changelog.contains(line),
+                "the fragment composed for {path} was consumed by a release, so \
+                 CHANGELOG.md must carry its line {line:?}"
+            );
+        }
     }
     let body_path = format!("{root}/{}", text(&input, "body_file"));
     let committed = fs::read_to_string(&body_path).expect("the composed pull-request body");

@@ -94,6 +94,7 @@ mod question_generation_lexicon;
 mod reasoning_loop;
 mod reasoning_paths;
 mod reasoning_paths_procedures;
+mod reasoning_standard_meta_algorithm;
 mod recipe_interpreter;
 mod recursive_core_recipe;
 mod response_language_followup;

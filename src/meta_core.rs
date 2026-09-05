@@ -18,23 +18,33 @@
 //!    upward construction pass (leaf method → compose children → root) explains
 //!    *how the answer is put back together*. Which directions are emitted is
 //!    governed by [`RecursionMode`](crate::meta_construction::RecursionMode)
-//!    (default `Down`, behavior-preserving), so the box is inspectable in both
-//!    directions, not just the predicate;
+//!    (default `Both`, so both directions are emitted unless a caller
+//!    deliberately quietens one), so the box is inspectable in both directions,
+//!    not just the predicate;
 //! 6. the solution evidence (R334) — the end-to-end join, per need `frame →
 //!    work-unit leaf → status → method`, so "address every detected need" is one
 //!    auditable record;
 //! 7. the method-selection trace (R339) — for every atomic leaf, the method the
 //!    single data-driven registry authority resolves (alias-aware), recorded so
 //!    the selection step of the algorithm is inspectable. Governed by
-//!    [`SelectionMode`](crate::selection::SelectionMode) (default `Off`, which
-//!    records nothing); a leaf with no serving method is recorded `unresolved`
-//!    rather than dropped;
+//!    [`SelectionMode`](crate::selection::SelectionMode) (default `Record`, so
+//!    the trace is present without being asked for); a leaf with no serving
+//!    method is recorded `unresolved` rather than dropped;
 //! 8. the skill-accumulation ledger (R342) — distilled from the solution evidence,
 //!    every satisfied need becomes a proposed reusable skill and every blocked need
 //!    a curriculum item, so the loop accumulates what it can do and a list of what
 //!    it cannot yet do. Governed by [`SkillMode`](crate::skill_ledger::SkillMode)
-//!    (default `Off`, which records nothing); it is proposal-only — no skill is ever
-//!    auto-promoted to stable without tests and a benchmark delta (C3).
+//!    (default `Accumulate`, so the ledger fills on every request); it is
+//!    proposal-only — no skill is ever auto-promoted to stable without tests and
+//!    a benchmark delta (C3).
+//! 9. the reasoning-standard audit (R1073) — the ordered gates of
+//!    `data/meta/reasoning-standard.lino` evaluated over the request's reasoning
+//!    episode, every gate reported `satisfied`, `violated` or `not_triggered`
+//!    together with the trigger that was false. This stage has **no mode knob**:
+//!    the depth floor may not be conditional on how hard the request looked or on
+//!    being asked for, so the checklist is enumerated on every request, and at
+//!    this seam — where nothing has been observed yet — it honestly reports every
+//!    gate as not triggered rather than omitting it.
 //!
 //! The recording stages are append-only: each stage appends Links Notation
 //! artifacts to the event log. The same registry they record is also the live
@@ -50,15 +60,20 @@ use crate::skill_ledger::SkillMode;
 ///
 /// `max_depth` bounds the recursive decomposition so the downward pass always
 /// terminates. `recursion_mode` selects which recursive directions are reasoned
-/// about: the default ([`RecursionMode::Down`]) emits the downward decomposition
-/// reasoning only, reproducing the pre-knob trace exactly (R13); `Up`/`Both`
-/// additionally emit the upward construction pass. `selection_mode` selects
-/// whether the per-leaf registry method-selection trace is recorded: the
-/// default ([`SelectionMode::Off`]) records nothing. `skill_mode` selects whether
-/// the skill-accumulation ledger is recorded: the default ([`SkillMode::Off`])
-/// records nothing. The structural work-unit decomposition events
+/// about: the default ([`RecursionMode::Both`]) emits the downward decomposition
+/// reasoning *and* the upward construction pass; `Down`/`Up` narrow it.
+/// `selection_mode` selects whether the per-leaf registry method-selection trace
+/// is recorded: the default ([`SelectionMode::Record`]) records it.
+/// `skill_mode` selects whether the skill-accumulation ledger is recorded: the
+/// default ([`SkillMode::Accumulate`]) records it. Every one of those defaults
+/// used to be the quiet setting; issue #1073 (requirement 1) moved them, because
+/// depth that arrives only when a caller asks for it is conditional on
+/// prompting. The narrow modes remain for deliberately quietening a trace.
+/// The structural work-unit decomposition events
 /// (`work_unit:enter` / `work_unit:exit`) are always emitted regardless of any
-/// mode. This is the single seam the solver loop calls; keeping the stages together
+/// mode, and so is the reasoning-standard audit (R1073) — it takes no mode at
+/// all, because a depth floor that can be switched off is not a floor. This is
+/// the single seam the solver loop calls; keeping the stages together
 /// here keeps the loop body small and the pipeline cohesive.
 pub fn record_meta_core(
     log: &mut EventLog,
@@ -94,6 +109,10 @@ pub fn record_meta_core(
     let _selection =
         crate::selection::record_selection(log, &work_unit_root, &method_registry, selection_mode);
     let _skills = crate::skill_ledger::record_skill_ledger(log, &solution_evidence, skill_mode);
+    let _audit = crate::reasoning_standard::record_reasoning_standard(
+        log,
+        &crate::reasoning_standard::open_episode(formalization),
+    );
 }
 
 /// Apply the meta-core mode environment overrides in place.
@@ -102,7 +121,8 @@ pub fn record_meta_core(
 /// `FORMAL_AI_SELECTION_MODE` selects whether the method-selection trace is
 /// recorded, and `FORMAL_AI_SKILL_MODE` selects whether the skill-accumulation
 /// ledger is recorded; an unset or unrecognized value leaves the corresponding mode
-/// at its (behavior-preserving) default. Kept here so the meta-core knobs are parsed
+/// at its default, which since issue #1073 is the full-depth setting rather than
+/// the quiet one. Kept here so the meta-core knobs are parsed
 /// in one place rather than inline in [`crate::solver::SolverConfig::from_env`].
 pub fn apply_env_modes(
     recursion_mode: &mut RecursionMode,
