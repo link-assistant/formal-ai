@@ -35,12 +35,13 @@ and python 6s, both leaving 0.
 ## Defects found here that the templates do **not** have
 
 Checked in the same direction, so the absence is a measurement rather than an
-assumption. Neither was filed, because neither reproduces upstream.
+assumption. None of them was filed, because none reproduces upstream.
 
 | Defect here | Checked | Result |
 | --- | --- | --- |
 | **D14** — an unquoted workflow `name:` containing ` #` is truncated at the YAML comment | every `name:` in all four templates' `.github/workflows/` and `.github/actions/` | none contains an unquoted ` #`; the templates do not embed issue references in names |
 | **D15/D16** — a step-level `timeout-minutes:` larger than 70% of the job cap it must fire under | every step-level cap in all four templates | `rust` and `php` declare none; `js` (20 m under 30 m) and `python` (40 m under 60 m) are both at 66%, inside the share |
+| **D10b** — `actionlint` run as a bare binary silently skips every `run:` block, because it delegates those checks to a ShellCheck that is not installed | how each template invokes actionlint (`.github/workflows/workflows.yml` in all four) | all four already use the container form — `uses: docker://rhysd/actionlint:1.7.7` — which bundles ShellCheck. The defect was this repository running the binary instead; the fix here is the templates' own shape, one version newer |
 
 ## What this repository did about the same defects
 
