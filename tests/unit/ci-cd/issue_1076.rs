@@ -437,6 +437,34 @@ fn workflows_are_audited_for_security_not_only_syntax() {
          is absent (issue #1076)"
     );
 
+    // ...and the image is not taken on trust either. `docker://` pins the form,
+    // not the behaviour: an image that lost ShellCheck would still exit 0 on
+    // these workflows, which is the same silent pass in a new package. The job
+    // lints a fixture whose only defect lives inside a `run:` block and fails
+    // when that fixture *passes*.
+    let canary_path = "tests/fixtures/actionlint/shellcheck-canary.yml";
+    assert!(
+        audit.contains(canary_path),
+        "the actionlint job must lint {canary_path} and fail when it passes, so \
+         a lint that stopped reading `run:` blocks cannot report success \
+         (issue #1076)"
+    );
+    let canary = repository_file(canary_path);
+    assert!(
+        canary.contains("echo \"this quote never closes"),
+        "the canary's defect must stay inside a `run:` block -- a schema error \
+         would be caught by actionlint alone and prove nothing about ShellCheck \
+         (issue #1076)"
+    );
+    assert!(
+        !workflow_files()
+            .into_iter()
+            .any(|(name, _)| name == "shellcheck-canary.yml"),
+        "the canary must stay out of .github/workflows/: it is a fixture, not a \
+         pipeline, and every workflow-wide audit in this suite would read it as \
+         one (issue #1076)"
+    );
+
     // Principle 14: "A blanket `ignore` is indistinguishable from no gate at
     // all." Every suppression in either config names what it suppresses.
     for (file, body) in [

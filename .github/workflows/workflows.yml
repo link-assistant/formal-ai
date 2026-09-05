@@ -54,9 +54,34 @@ jobs:
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
       #   docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12 -color
+      #
+      # `-verbose` costs one line per workflow and buys the one fact the exit
+      # status does not carry: how many files were actually read. A silent 0 and
+      # a 0 after "Found 0 errors in 19 files" are not the same result.
       - uses: docker://rhysd/actionlint:1.7.12
         with:
-          args: -color
+          args: -color -verbose
+
+      # A gate that cannot fail is not a gate. The step above is trusted to lint
+      # `run:` blocks, which actionlint can only do by shelling out to
+      # ShellCheck -- and when ShellCheck is missing it skips them and still
+      # exits 0. So the same image is pointed at a fixture whose only defect is
+      # inside a `run:` block, and this step fails when that *passes*.
+      #
+      # This is the check that would have caught the defect the step above
+      # exists to fix, had it existed while actionlint ran as a bare binary
+      # (issue #1076, defect D11).
+      - name: 'Prove the linter can still see inside a run block'
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          canary=tests/fixtures/actionlint/shellcheck-canary.yml
+          if docker run --rm -v "${PWD}:/repo" -w /repo \
+               rhysd/actionlint:1.7.12 -no-color "${canary}"; then
+            echo "::error file=${canary}::actionlint accepted a workflow whose run: block does not parse. ShellCheck is not running, so every run: block above went unchecked."
+            exit 1
+          fi
+          echo "actionlint rejected the canary, so its ShellCheck delegation is live."
 
   zizmor:
     name: Zizmor

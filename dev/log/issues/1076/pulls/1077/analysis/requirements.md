@@ -30,7 +30,7 @@ table is *not* a failure — it is `cancelled`, because a job that exceeds
 red check. So D1 is simultaneously an error (the job did not do its work) and a
 false negative (the pipeline did not report that it had not). See README §3.
 
-**Status: addressed.** Defect register in README §4, D1–D17 with D4 withdrawn.
+**Status: addressed.** Defect register in README §4, D1–D17 (plus D10b) with D4 withdrawn.
 
 ## R2 — "Use all the best practices from CI/CD templates"
 

@@ -257,6 +257,30 @@ Two compounding findings came out of adding it:
 **Status: done.** `.github/workflows/workflows.yml` runs both, actionlint as the
 Docker image (which bundles ShellCheck), zizmor scoped to the live pipeline.
 
+**And the gate is checked against itself.** `docker://` pins the *form* of the
+lint, not its behaviour: an image that lost ShellCheck, or a future revert to the
+binary, would exit 0 on these workflows exactly as the binary did. So the job
+lints `tests/fixtures/actionlint/shellcheck-canary.yml` — a workflow whose only
+defect is an unterminated double quote inside a `run:` block — and fails when
+that file *passes*. Measured with actionlint 1.7.12:
+
+| ShellCheck on PATH | actionlint exit | output |
+| --- | --- | --- |
+| yes | 1 | SC1009, SC1072, SC1073 |
+| no | 0 | *(silence)* |
+
+`-shellcheck /nonexistent-shellcheck` also exits 0 in silence, so a misconfigured
+path is indistinguishable from a clean run without this canary. The fixture lives
+outside `.github/workflows/` on purpose — every workflow-wide audit in
+`tests/unit/ci-cd/` iterates that directory and would read a deliberately broken
+file as a real pipeline — and `issue_1076::workflows_are_audited_for_security_not_only_syntax`
+asserts all three facts: the job lints it, the defect is inside a `run:` block,
+and the file is not a workflow.
+
+The main lint also runs with `-verbose`, which prints one line per file and a
+closing `Found 0 errors in 19 files`. A silent exit 0 and an exit 0 that names
+nineteen files are not the same result, and only one of them is evidence.
+
 ---
 
 ## D11 — a 7.4x runtime variance that nothing could attribute
