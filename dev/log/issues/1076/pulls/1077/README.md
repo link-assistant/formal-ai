@@ -36,6 +36,7 @@ GitHub access:
 | `references/templates/{rust,js,python,php}-template/` | Complete immutable copies of all four template trees (`.git` removed so they commit as plain files; manifests carry the `.snapshot` suffix required by issue #1014 so no scanner treats archived evidence as a live project). |
 | `upstream-reports/` | The reports filed against the templates, with their reproductions. |
 | `ci-logs/pr-head-a055112a/run-33966796971-workflows.log` | Evidence *after* the fix rather than before it: the `Workflows` run that first carried the actionlint self-check. Line 346 onward is the pinned image rejecting `tests/fixtures/actionlint/shellcheck-canary.yml` with SC1009/SC1072/SC1073 — proof, on GitHub's runners rather than only on a developer machine, that the linter still reads inside `run:` blocks (D10b). |
+| `ci-logs/pr-head-7a4516f1/job-101307904713-test-full.log` | The one job this pull request itself broke: `Test (ubuntu-latest / full)` of run 33966168368. Line 2256 is the Links Notation parse failure that D18 records, and line 2266 the `16 passed; 1 failed` it produced. Kept because the diagnostic added in response to it is only justified by how unreadable the original was. |
 
 The run set was taken from the API rather than from the issue text, so a run
 the issue did not mention could not be missed.
@@ -177,6 +178,7 @@ part of the audit.
 | D15 | The first draft of the D2b fix budgeted `Publish Docker image to GHCR` at 25 minutes; the only two measured builds took 25.5 and 32.5, so it would have failed both releases | false positive (introduced by the D2b fix, caught before merge) | §4.2, `analysis/auto-release-step-durations.tsv` |
 | D16 | Issue #1017's "budget <= 70% of cap" sweep reads `TEST_BUDGET_SECONDS:` only, so the repository's *other* budget mechanism -- 30 step-level `timeout-minutes:` -- was never audited against the cap it must fire under | missing gate (root cause of D15) | `tests/unit/ci-cd/issue_1017.rs:94` |
 | D17 | `issue_1076::job_caps_are_audited_against_what_the_jobs_really_cost` asserted "no write permission" as `!audit.contains("write")` over the whole file, so the audit workflow's own comment — *"Nothing here writes"* — failed it | false positive (introduced by the D5 fix, caught before merge) | §4.2 |
+| D18 | Links Notation has no comment syntax, so a `#` prose line is an ordinary link. `data/meta/ci-gates/check-job-headroom.lino`, added by this PR, wrote `a commit *can* break: two of the tests` — one bare colon — and `Test (ubuntu-latest / full)` went red on prose | error (introduced by the D5 fix, caught by CI) | §4.2, `ci-logs/job-101307904713-test-full.log:2256` |
 
 ### 4.1 Why D4 was withdrawn
 
@@ -194,13 +196,14 @@ sites in this repository. All nine upload diagnostics under `if: always()`
 (logs, transcripts, TUI replays, ladder results) where a missing file genuinely
 carries no signal. None is changed.
 
-### 4.2 Four false positives this work introduced
+### 4.2 Five defects this work introduced
 
 R1 asks for false positives as well as false negatives, and the honest answer is
 that the pre-existing pipeline had none confirmed (D4 was investigated and
-withdrawn) while the *fixes for it* produced four. All four were caught before
-merge, by running or measuring the thing rather than reading it, and all four
-are recorded here because a defect register that only lists other people's
+withdrawn) while the *fixes for it* produced five. Four are false positives, all
+caught before merge by running or measuring the thing rather than reading it;
+the fifth (D18) is a genuine error that reached CI and turned the build red. All
+five are recorded here because a defect register that only lists other people's
 mistakes is not an audit.
 
 **D12 — a diagnostic that could fail the job it was diagnosing.** The verbose
@@ -297,6 +300,49 @@ was checking for is absent. Substring-over-the-whole-file is the same mistake as
 D14 in the other direction: D14 is a YAML comment being read as data, D17 is a
 comment being read as a declaration. Fixed by stripping comments before the
 scan, which is what the assertion always meant.
+
+**D18 — prose that was structural, in a file format with no comments.** The D5
+gate file `data/meta/ci-gates/check-job-headroom.lino` was written with a
+three-paragraph `#` header explaining why the audit runs weekly rather than per
+pull request. One sentence read `holds is the part a commit *can* break: two of
+the tests parse the`, and `Test (ubuntu-latest / full)` failed:
+
+```text
+thread 'data_files::lino_data_files_are_parseable_human_readable_and_bounded' panicked at tests/unit/data_files.rs:57:13:
+.../data/meta/ci-gates/check-job-headroom.lino contains invalid canonical Links
+Notation: Syntax error: Error(Error { input: "# holds is the part a commit *can* break: ...", code: Eof })
+```
+
+Links Notation has no comment syntax. A `#` line is an ordinary link whose first
+reference is `#`, so it parses only while the prose inside it avoids the
+notation's own delimiters — and `:` is one of them. `# a b` parses; `# a: b`
+does not; `` # `a:b` `` does, because a backtick span is a single reference.
+`experiments/issue-1076/repro-lino-comment-colon.sh` reproduces all three
+against the Rust *and* the JavaScript implementation, so it is the grammar
+rather than one port.
+
+Two things follow, and both are done:
+
+1. **Upstream.** The grammar gap is
+   [links-notation#301](https://github.com/link-foundation/links-notation/issues/301),
+   and the fact that the Rust error names no line while the JavaScript port of
+   the same version reports `line`, `column` and what it expected is
+   [links-notation#302](https://github.com/link-foundation/links-notation/issues/302).
+   Bodies in `upstream-reports/`.
+2. **Here.** 52 checked-in `.lino` files carry `#` paragraphs, so this is a trap
+   and not a typo. `tests/unit/lino_location.rs` adds
+   `first_unparseable_lino_line`, which re-parses each line on its own and names
+   the first that fails; `data_files.rs` now prints that line number and text
+   ahead of the parser's own message, so the next writer reads the answer
+   instead of bisecting the file. `every_checked_in_gate_file_still_parses_line_by_line`
+   holds the gate registry specifically, because `run-ci-gates.rs` reads gates
+   with its own line parser and would not notice.
+
+The class is worth naming: the message was accurate, actionable-looking and
+about the wrong thing. It named a file whose *data* is fine. Every other defect
+in this register is a signal that did not fire or fired for the wrong reason;
+D18 is a signal that fired correctly and could not be read, which costs the same
+time and is easier to dismiss.
 
 ## 5. Cache quota accounting
 

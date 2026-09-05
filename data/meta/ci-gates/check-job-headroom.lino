@@ -5,9 +5,9 @@
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
 # Only the inline tests run here. The audit itself needs the Actions API, which
-# a pull request has no measurements of its own in anyway, so it runs weekly
+# a pull request has no measurements of its own to read, so it runs weekly
 # from `.github/workflows/job-headroom.yml` (issue #1076, D5). What this gate
-# holds is the part a commit *can* break: two of the tests parse the
+# holds is the part a commit *can* break -- two of the tests parse the
 # repository's real `.github/workflows/**`, so a job renamed or given a cap the
 # reader cannot resolve fails here rather than dropping out of the weekly audit
 # unnoticed.
