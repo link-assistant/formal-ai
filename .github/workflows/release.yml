@@ -263,34 +263,6 @@ jobs:
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - uses: ./.github/actions/cache-cargo-registry
-      - name: Lint GitHub Actions workflows
-        env:
-          ACTIONLINT_VERSION: 1.7.12
-        run: |
-          set -euo pipefail
-          # actionlint does not lint `run:` blocks itself: it shells out to
-          # ShellCheck. When that binary is absent from PATH, actionlint does
-          # not say so -- it skips every shell check and still exits 0, so this
-          # job stays green while checking half of what it appears to check.
-          # The ubuntu-latest image ships the binary today; assert it, so the
-          # day an image change drops it this job fails loudly instead of
-          # quietly narrowing its own scope (issue #1076: false negatives in
-          # CI). Nothing else is required -- actionlint's other delegate,
-          # pyflakes, applies to `shell: python` blocks, and there are none.
-          #
-          # NB: do not start a comment line in this block with the tool's name
-          # in lowercase. ShellCheck reads `# <name> ...` as a directive and
-          # fails the whole script with SC1073 when it cannot parse one.
-          if ! command -v shellcheck >/dev/null 2>&1; then
-            echo "::error title=actionlint would skip every shell check::shellcheck is not on PATH, so actionlint lints workflow syntax only and exits 0 regardless of what the run: blocks contain. Install shellcheck on the runner before this step."
-            exit 1
-          fi
-          curl -fsSL \
-            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
-            | tar xz -C /tmp actionlint
-          # GitHub supports queue; actionlint schema lag: https://github.com/rhysd/actionlint/issues/657
-          /tmp/actionlint -color \
-            -ignore 'unexpected key "queue" for "concurrency" section'
       - name: Run registered gates (stage rust)
         # Issue #991: the gate list lives in data/meta/ci-gates/, one file per
         # gate, so adding a gate no longer edits this file.

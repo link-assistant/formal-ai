@@ -1,16 +1,30 @@
-# Workflow security audit (issue #1076).
+# Lint and audit the workflows themselves (issue #1076).
 #
-# All four link-foundation pipeline templates ship this workflow, and it is the
-# one template file this repository had no counterpart for. actionlint already
-# runs in the CI/CD Pipeline's `lint` job and checks workflow *syntax*; nothing
-# checked workflow *security*. The gap was not theoretical: the first zizmor run
-# against these workflows found `${{ github.event.inputs.description }}`
-# interpolated directly into two `run:` blocks in release.yml, in steps that
-# hold `secrets.GITHUB_TOKEN`. Both steps already declared the value in `env:`
-# and then used the raw expression anyway.
+# All four link-foundation pipeline templates ship this file, and it is the one
+# template workflow this repository had no counterpart for. The pipeline is code,
+# and until now nothing in the pipeline was looking at it: actionlint ran as one
+# step inside the CI/CD Pipeline's `lint` job, and nothing ran zizmor at all.
 #
-# actionlint deliberately stays where it is. Moving it here would put it behind
-# this workflow's `paths:` filter, and it is a whole-pipeline gate today.
+# The security half of that gap was not theoretical. The first zizmor run against
+# these workflows returned four high-severity template-injection findings, all in
+# release.yml: `${{ github.event.inputs.bump_type }}` and
+# `${{ github.event.inputs.description }}` interpolated straight into the `run:`
+# line of two steps that hold `secrets.GITHUB_TOKEN`. Both steps already declared
+# those values in `env:` and used the raw expression anyway.
+#
+# actionlint moves here from that `lint` job, and changes form on the way. It ran
+# as a bare binary, and a bare actionlint binary does not lint `run:` blocks
+# unless ShellCheck happens to be on PATH -- when it is not, it skips every shell
+# check and still exits 0, so a green result means strictly less than it appears
+# to. Verified both ways on this repository: without ShellCheck installed the
+# binary exits 0 on these workflows; with it installed it reports SC1073 inside a
+# `run:` block. The Docker image bundles ShellCheck and pyflakes, so the check
+# cannot quietly narrow itself. The `-ignore` flag the step used to carry now
+# lives in `.github/actionlint.yaml`, which the image reads as well.
+#
+# Both jobs are gated on `paths: ['.github/**']`: their findings can only change
+# when the workflows do.
+
 name: Workflows
 
 on:
@@ -25,6 +39,25 @@ permissions:
   contents: read
 
 jobs:
+  actionlint:
+    name: Actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # The image bundles ShellCheck and pyflakes, so this lints every `run:`
+      # block as well as the workflow schema. Reproduce locally with:
+      #   docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12 -color
+      - uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
+
   zizmor:
     name: Zizmor
     runs-on: ubuntu-latest
@@ -48,6 +81,17 @@ jobs:
       #     --min-confidence medium --persona regular \
       #     .github/workflows .github/actions
       #
+      # `inputs:` is not optional here even though it reads like it. The action
+      # defaults it to `.`, i.e. the whole repository, and this repository keeps
+      # archived copies of other projects' workflows under `docs/case-studies/`
+      # as evidence. Audited at the default scope this job exits 14 with 1739
+      # findings -- 140 of them high -- every displayed one pointing into
+      # `docs/case-studies/issue-479/template-comparison/rust/.github/workflows/
+      # release.yml`. Those files are records of what another repository shipped,
+      # not a pipeline anyone can fix, so a red check on them is a false positive
+      # of exactly the kind issue #1076 exists to remove. Scoped to the live
+      # pipeline the same command exits 0.
+      #
       # Annotations rather than SARIF: the results should be a red check on the
       # pull request that introduced them, not a Security tab entry that depends
       # on Advanced Security being enabled.
@@ -56,4 +100,5 @@ jobs:
           advanced-security: false
           annotations: true
           config: .github/zizmor.yml
+          inputs: .github/workflows .github/actions
           min-confidence: medium
