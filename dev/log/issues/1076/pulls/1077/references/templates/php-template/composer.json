@@ -1,0 +1,54 @@
+{
+    "name": "link-foundation/example-package-name",
+    "description": "A template for an AI driven development pipeline for Symfony / Composer PHP packages.",
+    "type": "library",
+    "keywords": ["template", "ci-cd", "ai-driven-development", "symfony", "composer", "pipeline"],
+    "homepage": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template",
+    "license": "Unlicense",
+    "version": "0.2.1",
+    "authors": [
+        {
+            "name": "Link Foundation",
+            "homepage": "https://github.com/link-foundation"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.12",
+        "friendsofphp/php-cs-fixer": "^3.64"
+    },
+    "autoload": {
+        "psr-4": {
+            "LinkFoundation\\Template\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LinkFoundation\\Template\\Pipeline\\": "scripts/src/",
+            "LinkFoundation\\Template\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "php-cs-fixer fix --dry-run --diff",
+        "lint:fix": "php-cs-fixer fix",
+        "analyse": "phpstan analyse",
+        "check:file-size": "php scripts/check-file-size.php",
+        "changeset": "php scripts/create-changeset.php",
+        "check": [
+            "@lint",
+            "@analyse",
+            "@check:file-size",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

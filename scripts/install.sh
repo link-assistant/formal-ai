@@ -70,11 +70,17 @@ EOF
 }
 
 # Download <url> to <dest> using curl or wget, whichever exists.
+#
+# Both retry: a release asset that stops arriving mid-transfer is a dropped
+# connection, not a missing release, and curl calls that fatal unless told
+# otherwise. `--retry` on its own does not cover the truncation (curl exit 18);
+# `--retry-all-errors` does. wget needs no flag -- it retries twenty times by
+# default.
 download() {
   url="$1"
   dest="$2"
   if have curl; then
-    curl -fsSL --proto '=https' "$url" -o "$dest"
+    curl -fsSL --proto '=https' --retry 3 --retry-delay 2 --retry-all-errors "$url" -o "$dest"
   elif have wget; then
     wget -qO "$dest" "$url"
   else
@@ -86,7 +92,7 @@ download() {
 fetch() {
   url="$1"
   if have curl; then
-    curl -fsSL --proto '=https' "$url"
+    curl -fsSL --proto '=https' --retry 3 --retry-delay 2 --retry-all-errors "$url"
   elif have wget; then
     wget -qO- "$url"
   else

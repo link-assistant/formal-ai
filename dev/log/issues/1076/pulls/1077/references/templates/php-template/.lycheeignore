@@ -1,0 +1,10 @@
+# URLs that lychee should not check (one regex per line).
+
+# Packagist/shields badges are generated for the released package name and may
+# 404 until the first publish; do not block CI on them.
+https://img\.shields\.io/packagist/.*
+https://packagist\.org/packages/link-foundation/example-package-name.*
+
+# Example/placeholder hosts used in documentation.
+https://example\.com.*
+https://example\.org.*

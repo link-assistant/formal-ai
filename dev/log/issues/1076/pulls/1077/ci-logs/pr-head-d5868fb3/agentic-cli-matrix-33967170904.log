@@ -1,0 +1,36 @@
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	﻿2026-09-05T13:06:54.3376403Z ##[group]Run echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3376816Z ^[[36;1mecho "$HOME/.bun/bin" >> "$GITHUB_PATH"^[[0m
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3377157Z ^[[36;1mecho "$HOME/.local/bin" >> "$GITHUB_PATH"^[[0m
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3377903Z ^[[36;1mexperiments/agentic_cli_matrix/install_client.sh opencode-vscode^[[0m
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3413521Z shell: /usr/bin/bash -e {0}
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3413808Z env:
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3414012Z   CARGO_NET_RETRY: 10
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3414255Z   CARGO_TERM_COLOR: always
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3414652Z   RUSTFLAGS: -Dwarnings
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3415024Z ##[endgroup]
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.3675575Z -- installing opencode-vscode via tarball (1.135.0), command 'code'
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.4790671Z curl: (18) transfer closed with 344439862 bytes remaining to read
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.4812679Z !! downloading VS Code 1.135.0 failed
+E2E (opencode-vscode)	Install opencode-vscode (pinned)	2026-09-05T13:06:54.4830478Z ##[error]Process completed with exit code 1.
+Matrix summary	Fail if any leg failed	﻿2026-09-05T13:12:59.3198083Z ##[group]Run if [ "failure" != "success" ]; then
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3198871Z ^[[36;1mif [ "failure" != "success" ]; then^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3199528Z ^[[36;1m  echo "one or more client legs failed" >&2^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3200126Z ^[[36;1m  exit 1^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3200537Z ^[[36;1mfi^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3201089Z ^[[36;1mif [ "success" != "success" ]; then^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3201774Z ^[[36;1m  echo "a committed transcript no longer replays" >&2^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3202426Z ^[[36;1m  exit 1^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3202856Z ^[[36;1mfi^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3203325Z ^[[36;1mif [ "skipped" != "success" ]; then^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3203975Z ^[[36;1m  echo "client-contract learning failed" >&2^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3204881Z ^[[36;1m  exit 1^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3205332Z ^[[36;1mfi^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3205785Z ^[[36;1mecho "all client legs green"^[[0m
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3701483Z shell: /usr/bin/bash -e {0}
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3702340Z env:
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3702804Z   CARGO_NET_RETRY: 10
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3703363Z   CARGO_TERM_COLOR: always
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3703898Z   RUSTFLAGS: -Dwarnings
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3704618Z ##[endgroup]
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3888079Z one or more client legs failed
+Matrix summary	Fail if any leg failed	2026-09-05T13:12:59.3917897Z ##[error]Process completed with exit code 1.

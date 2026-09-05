@@ -1,0 +1,16 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/.github/actionlint.yaml	2026-09-05 09:39:56.881043247 +0000
++++ .github/actionlint.yaml	2026-09-05 09:37:13.884816148 +0000
+@@ -1,6 +1,10 @@
+-# Runner labels that GitHub provides but actionlint 1.7.7 does not yet know
+-# about. They are real hosted runners, so the "unknown label" reports are
+-# false positives; listing them here keeps the workflows check meaningful.
++# actionlint configuration.
++#
++# `macos-15-intel` and `windows-11-arm` are real GitHub-hosted runner labels
++# (both became generally available in 2025) but are newer than the label list
++# baked into actionlint's release binary, which reports them as unknown. They
++# are declared here so the workflow linter stays free of known-false findings --
++# a linter with permanent noise is a linter nobody reads (issue #812).
+ self-hosted-runner:
+   labels:
+     - macos-15-intel

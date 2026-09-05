@@ -1,0 +1,23 @@
+Wall time attributed to each integration test module (gap-to-completion, parallel harness)
+
+module                                          09-04 ok  09-05 CANC       delta  x
+issue_755_file_read_write                          65.3s      288.1s      222.7s  4.4x
+issue_819_report_flow                              18.0s      238.5s      220.5s  13.3x
+issue_839_report_script                            13.3s      193.4s      180.1s  14.6x
+issue_758_capability_routing                       13.5s      150.0s      136.5s  11.1x
+issue_749_shell_routing                            10.7s      144.2s      133.5s  13.5x
+issue_746_hosted_tools                             11.9s       93.2s       81.3s  7.8x
+issue_819_narration                                 5.7s       84.7s       79.0s  14.8x
+issue_751_token_usage                               7.0s       73.4s       66.4s  10.5x
+issue_859_codex                                     3.1s       67.3s       64.2s  21.6x
+issue_931_local_transports                          2.3s       41.6s       39.2s  17.9x
+issue_819_local_path_search                         7.1s       39.1s       32.0s  5.5x
+issue_744_qwen_tool_schema                          4.9s       25.7s       20.7s  5.2x
+issue_712_intent_routing                            4.5s       15.1s       10.7s  3.4x
+issue_558_change_request                            2.8s       14.8s       12.1s  5.4x
+issue_558_self_explanation                          2.7s       11.3s        8.6s  4.2x
+issue_671_absolute_path_projection                  2.0s        9.3s        7.2s  4.5x
+issue_671_supplied_file_bytes                       3.8s        8.5s        4.8s  2.3x
+issue_680_intent_routing                            2.9s        7.7s        4.9s  2.7x
+
+TOTAL                                             213.6s     1572.8s     1359.2s

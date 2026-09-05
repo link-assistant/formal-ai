@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+
+    <!-- Build settings -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>9999</WarningLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+
+    <!-- Suppress warnings that are common in test projects -->
+    <!-- CA1707: Underscores in test method names are standard practice -->
+    <!-- CA1034: Nested types in tests are acceptable for organization -->
+    <!-- CA1052: Static types used as test containers -->
+    <!-- CA1515: Test classes are public by xUnit convention -->
+    <!-- CA1849: Sync cancel is fine in test setup -->
+    <!-- CA2007: ConfigureAwait not needed in tests -->
+    <NoWarn>$(NoWarn);CA1707;CA1034;CA1052;CA1515;CA1849;CA2007</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MyPackage\MyPackage.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,78 @@
+name: Broken Link Checker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+      - '**.html'
+      - '.github/workflows/links.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**.md'
+      - '**.html'
+      - '.github/workflows/links.yml'
+  workflow_dispatch:
+
+jobs:
+  link-checker:
+    name: Check Links
+    runs-on: ubuntu-latest
+    # Typical run: <1min with the lychee cache. 10min prevents slow external
+    # hosts or Wayback Machine probes from hanging the workflow.
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Check links with lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # The case-studies directory holds research copied from sibling repos
+          # whose relative links resolve there, not here; exclude it.
+          args: >-
+            --verbose
+            --no-progress
+            --cache
+            --max-cache-age 1d
+            --max-retries 3
+            --timeout 30
+            --exclude-path docs/case-studies
+            './**/*.md'
+            './**/*.html'
+          fail: false
+          output: lychee/out.md
+          jobSummary: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check broken links against the Web Archive
+        if: steps.lychee.outputs.exit_code != 0
+        id: webarchive
+        env:
+          LYCHEE_OUTPUT: lychee/out.md
+        run: php scripts/check-web-archive.php
+
+      - name: Fail if broken links found and no web archive fallback
+        if: steps.lychee.outputs.exit_code != 0 && steps.webarchive.outputs.all_archived != 'true'
+        run: |
+          echo "::error::Broken links were detected with no Web Archive fallback available."
+          echo ""
+          echo "How to fix:"
+          echo "  1. Review the 'Check links with lychee' step above for the full list."
+          echo "  2. For links with a '::notice::' annotation, a Web Archive copy exists —"
+          echo "     replace the broken link with the suggested archive.org URL."
+          echo "  3. Otherwise update the URL, remove the link, or add it to .lycheeignore."
+          echo ""
+          echo "Report location: lychee/out.md"
+          exit 1

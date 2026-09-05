@@ -28,7 +28,23 @@
 #   * workflow_dispatch      - manual rebuild for a specific (or latest) tag.
 name: Desktop Release
 
-on:
+# zizmor flags every `workflow_run` trigger as fundamentally insecure, because the
+# usual shape of one -- re-running a pull request's own head in a context that has
+# write permissions and secrets -- is arbitrary code execution by any fork. This
+# workflow is not that shape, on two independent counts:
+#
+#   1. The `resolve` job refuses any `workflow_run` whose `head_branch` is not
+#      `main` (see its `if:` below), so a fork's pipeline run cannot reach it.
+#   2. Nothing downstream ever checks out `workflow_run.head_sha`. The privileged
+#      jobs check out `needs.resolve.outputs.tag` -- a release tag that
+#      scripts/desktop-release-resolve.sh reads back from this repository's own
+#      Releases API. Untrusted code is never the build input, so even if a fork
+#      branch named `main` slipped past (1), the worst case is a redundant build
+#      of an already-published tag, which the idempotency guard then skips.
+#
+# Issue #1076: recorded rather than silenced, so the next person to add a
+# `workflow_run` consumer has to re-establish both counts.
+on: # zizmor: ignore[dangerous-triggers]
   workflow_dispatch:
     inputs:
       tag:

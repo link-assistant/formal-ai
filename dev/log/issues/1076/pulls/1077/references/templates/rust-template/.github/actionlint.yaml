@@ -1,0 +1,7 @@
+# Runner labels that GitHub provides but actionlint 1.7.7 does not yet know
+# about. They are real hosted runners, so the "unknown label" reports are
+# false positives; listing them here keeps the workflows check meaningful.
+self-hosted-runner:
+  labels:
+    - macos-15-intel
+    - windows-11-arm

@@ -1,0 +1,292 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/publish-crate.rs	2026-09-05 09:39:56.904042998 +0000
++++ scripts/publish-crate.rs	2026-09-05 09:37:22.115726245 +0000
+@@ -15,18 +15,13 @@
+ //!   - CARGO_TOKEN: Alternative token name for backwards compatibility
+ //!
+ //! Outputs (written to GITHUB_OUTPUT):
+-//!   - publish_result: one of
+-//!       'success'        - the crate version was published to crates.io
+-//!       'already_exists' - the version is already on crates.io (version-bump bug)
+-//!       'auth_failed'    - missing or invalid crates.io authentication token
+-//!       'rate_limited'   - crates.io returned HTTP 429 (too many versions in 24h);
+-//!                          deferred, automatically-recoverable outcome — the
+-//!                          script exits 0 and the same version is retried on the
+-//!                          next push to 'main' once the throttle window clears
+-//!       'skipped'        - publish skipped (e.g. template default package name)
+-//!       'failed'         - publish failed for an unrecognised reason
++//!   - publish_result: 'success', 'already_exists', 'auth_failed',
++//!     'rate_limited', 'skipped', or 'failed'
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! ```
+@@ -39,34 +34,6 @@
+ #[path = "rust-paths.rs"]
+ mod rust_paths;
+ 
+-fn get_arg(name: &str) -> Option<String> {
+-    let args: Vec<String> = env::args().collect();
+-    let flag = format!("--{}", name);
+-
+-    if let Some(idx) = args.iter().position(|a| a == &flag) {
+-        return args.get(idx + 1).cloned();
+-    }
+-
+-    None
+-}
+-
+-fn needs_cd(rust_root: &str) -> bool {
+-    rust_root != "."
+-}
+-
+-fn set_output(key: &str, value: &str) {
+-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
+-        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
+-            let _ = writeln!(file, "{}={}", key, value);
+-        }
+-    }
+-    println!("Output: {}={}", key, value);
+-}
+-
+-/// Classification of a failed `cargo publish` attempt.
+-///
+-/// Every failure branch funnels through this single enum so the `publish_result`
+-/// output value and the catch-all behaviour cannot drift apart over time.
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ enum FailureKind {
+     AlreadyExists,
+@@ -85,25 +52,11 @@
+         }
+     }
+ 
+-    /// Whether this failure is a *deferred*, automatically-recoverable outcome
+-    /// rather than a hard error.
+-    ///
+-    /// A crates.io HTTP 429 throttle is transient: the same version is re-tried
+-    /// on the next push to `main` once the 24-hour window clears (see
+-    /// `scripts/check-release-needed.rs`). The script therefore exits
+-    /// successfully for this case so a recoverable throttle does not turn the
+-    /// whole release job red. Every other failure stays non-zero.
+     fn is_deferred(self) -> bool {
+         matches!(self, FailureKind::RateLimited)
+     }
+ }
+ 
+-/// Classify a combined stdout/stderr blob from `cargo publish` into a
+-/// [`FailureKind`].
+-///
+-/// Note: the rate-limit checks come before the auth checks because a crates.io
+-/// 429 body never contains the auth-token markers, while the rate-limit markers
+-/// are unambiguous.
+ fn classify_failure(combined: &str) -> FailureKind {
+     if combined.contains("already uploaded") || combined.contains("already exists") {
+         FailureKind::AlreadyExists
+@@ -124,6 +77,30 @@
+     }
+ }
+ 
++fn get_arg(name: &str) -> Option<String> {
++    let args: Vec<String> = env::args().collect();
++    let flag = format!("--{}", name);
++
++    if let Some(idx) = args.iter().position(|a| a == &flag) {
++        return args.get(idx + 1).cloned();
++    }
++
++    None
++}
++
++fn needs_cd(rust_root: &str) -> bool {
++    rust_root != "."
++}
++
++fn set_output(key: &str, value: &str) {
++    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
++        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
++            let _ = writeln!(file, "{}={}", key, value);
++        }
++    }
++    println!("Output: {}={}", key, value);
++}
++
+ fn main() {
+     let rust_root = match rust_paths::get_rust_root(None, true) {
+         Ok(root) => root,
+@@ -213,26 +190,54 @@
+                 eprintln!("=== VERSION ALREADY PUBLISHED ===");
+                 eprintln!();
+                 eprintln!("Version {} already exists on crates.io.", version);
+-                eprintln!("The release pipeline must always publish a version greater than what is already published.");
+-                eprintln!("This indicates a bug in version bumping: the pipeline should have computed a new, unpublished version.");
++                eprintln!(
++                    "The release pipeline must always publish a version greater than what is already published."
++                );
++                eprintln!(
++                    "This indicates a bug in version bumping: the pipeline should have computed a new, unpublished version."
++                );
+                 eprintln!();
+             }
+             FailureKind::RateLimited => {
+                 eprintln!();
+-                eprintln!("=== CRATES.IO RATE LIMIT (HTTP 429) ===");
+-                eprintln!();
+-                eprintln!("crates.io rejected the publish because too many versions of this");
+-                eprintln!("crate have been published in the last 24 hours.");
++                eprintln!("=== CRATES.IO RATE LIMITED ===");
+                 eprintln!();
+-                eprintln!("Original cargo publish error:");
+-                eprintln!("{}", combined.trim());
++                eprintln!(
++                    "crates.io rejected the publish of {}@{} with HTTP 429 Too Many Requests.",
++                    name, version
++                );
++                eprintln!(
++                    "This means too many versions of this crate were published in the last 24 hours."
++                );
++                eprintln!();
++                eprintln!("Original error from cargo publish:");
++                for line in combined.lines() {
++                    let trimmed = line.trim_end();
++                    if !trimmed.is_empty() {
++                        eprintln!("  {}", trimmed);
++                    }
++                }
++                eprintln!();
++                eprintln!(
++                    "This is NOT a bug in the pipeline; the publish has been deferred and will be retried automatically."
++                );
++                eprintln!(
++                    "scripts/check-release-needed.rs detects that {}@{} is missing from crates.io",
++                    name, version
++                );
++                eprintln!(
++                    "and will set should_release=true, skip_bump=true on the next push to main,"
++                );
++                eprintln!("so the same version is re-uploaded once the throttle window has rolled over.");
++                eprintln!();
++                eprintln!("To unblock immediately:");
++                eprintln!("  1. Wait until the 24-hour throttle window has rolled over.");
++                eprintln!(
++                    "  2. Re-run the release workflow, or push any commit to main to trigger a retry."
++                );
+                 eprintln!();
+-                eprintln!("This is a TRANSIENT, automatically-recoverable throttle, not a pipeline bug.");
+-                eprintln!("No action is required other than waiting for the 24-hour window to roll over.");
+-                eprintln!("scripts/check-release-needed.rs will re-attempt the same version on the next");
+-                eprintln!("push to 'main' once the throttle window has cleared.");
+-                eprintln!();
+-                eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html#publishing-a-new-version-of-an-existing-crate");
++                eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
++                eprintln!("See: https://crates.io/policies");
+                 eprintln!();
+             }
+             FailureKind::AuthFailed => {
+@@ -258,37 +263,22 @@
+                 eprintln!("{}", combined);
+             }
+         }
+-
+         set_output("publish_result", kind.output_value());
+-
+-        // A rate-limit is a deferred, automatically-recoverable outcome: exit
+-        // successfully so the release job does not go red over a transient
+-        // crates.io throttle. Downstream release-artifact steps are gated on a
+-        // successful publish (see .github/workflows/release.yml), so a deferred
+-        // upload never produces partial Docker/GitHub release artifacts.
+         if kind.is_deferred() {
+             return;
+         }
+-
+         exit(1);
+     }
+ }
+ 
+ #[cfg(test)]
+ mod tests {
+-    use super::*;
+-
+-    #[test]
+-    fn classifies_already_exists_response() {
+-        let body = "error: crate version 0.1.0 is already uploaded";
+-        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
+-        assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
+-    }
++    use super::{FailureKind, classify_failure};
+ 
+     #[test]
+     fn classifies_rate_limit_response() {
+         let body = "\
+-error: failed to publish my-crate v0.42.0 to registry at https://crates.io
++error: failed to publish formal-ai v0.42.0 to registry at https://crates.io
+ 
+ Caused by:
+   the remote server responded with an error (status 429 Too Many Requests): \
+@@ -296,43 +286,42 @@
+ ";
+         assert_eq!(classify_failure(body), FailureKind::RateLimited);
+         assert_eq!(FailureKind::RateLimited.output_value(), "rate_limited");
++        assert!(FailureKind::RateLimited.is_deferred());
+     }
+ 
+     #[test]
+-    fn classifies_rate_limit_from_too_many_versions_marker() {
+-        let body = "the remote server responded: You have published too many versions";
+-        assert_eq!(classify_failure(body), FailureKind::RateLimited);
++    fn classifies_already_uploaded_response() {
++        let body = "error: crate version 0.42.0 already uploaded";
++        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
++        assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
++        assert!(!FailureKind::AlreadyExists.is_deferred());
+     }
+ 
+     #[test]
+-    fn classifies_auth_failure_response() {
+-        let body = "error: failed to publish: please provide a non-empty token";
+-        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
+-        assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
++    fn classifies_already_exists_response() {
++        let body = "error: this crate version already exists";
++        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
+     }
+ 
+     #[test]
+-    fn classifies_unknown_response() {
+-        let body = "error: some brand new failure mode nobody has seen before";
+-        assert_eq!(classify_failure(body), FailureKind::Unknown);
+-        assert_eq!(FailureKind::Unknown.output_value(), "failed");
++    fn classifies_authentication_failure() {
++        let body = "error: please provide a non-empty token";
++        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
++        assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
++        assert!(!FailureKind::AuthFailed.is_deferred());
+     }
+ 
+     #[test]
+-    fn rate_limit_takes_precedence_over_auth_markers() {
+-        // A 429 body that also happens to mention "authentication" must still be
+-        // classified as rate-limited, since the throttle is the actionable cause.
+-        let body = "status 429 Too Many Requests: authentication retry later";
+-        assert_eq!(classify_failure(body), FailureKind::RateLimited);
++    fn classifies_unauthorized_as_auth_failure() {
++        let body = "error: unauthorized: token rejected";
++        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
+     }
+ 
+     #[test]
+-    fn only_rate_limit_is_deferred() {
+-        // A rate-limit is the single deferred (exit-0) outcome; every other
+-        // failure must remain a hard, non-zero error.
+-        assert!(FailureKind::RateLimited.is_deferred());
+-        assert!(!FailureKind::AlreadyExists.is_deferred());
+-        assert!(!FailureKind::AuthFailed.is_deferred());
++    fn classifies_unknown_failure() {
++        let body = "error: something else entirely went wrong";
++        assert_eq!(classify_failure(body), FailureKind::Unknown);
++        assert_eq!(FailureKind::Unknown.output_value(), "failed");
+         assert!(!FailureKind::Unknown.is_deferred());
+     }
+ }
