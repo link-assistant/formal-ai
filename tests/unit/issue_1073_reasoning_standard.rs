@@ -14,6 +14,7 @@
 
 use formal_ai::event_log::EventLog;
 use formal_ai::intent_formalization::formalize_intent;
+use formal_ai::language::{Language, registered_languages};
 use formal_ai::reasoning_standard::episode::{ActionOutcome, ReasoningEpisode};
 use formal_ai::reasoning_standard::instructions::{
     SourceExcerpt, SourceStep, StepStatus, formalize,
@@ -145,6 +146,152 @@ fn the_depth_floor_holds_for_the_smallest_request_the_pipeline_can_formalize() {
         "the verdict must name what blocked the check: {:?}",
         result.verdict.blockers()
     );
+}
+
+/// The same requirement across the whole registered language matrix.
+///
+/// The standard is a predicate over an episode's *shape* — did evidence precede
+/// the claim, was the action re-measured, do the refutations differ in mechanism
+/// — so the language a request arrives in must not move a gate. Driving the
+/// matrix from `registered_languages()` rather than a hand-written list makes a
+/// newly registered language a failing test instead of a silent gap.
+///
+/// Two values are folded away before the comparison, and neither is folded away
+/// unchecked. The episode id is the request's impulse hash, different per prompt
+/// by construction. The task class is what the router assigned, which is a fact
+/// about routing rather than about the standard: `hola` currently routes to
+/// `statement` where `hello`, `привет`, `नमस्ते` and `你好` route to `courtesy`,
+/// because `data/seed/prompt-patterns.lino` carries greeting keywords for en, ru,
+/// hi and zh and none for es. That gap predates this branch and is left to a
+/// change of its own — `check_language_change_parity` requires every supported
+/// language to move together in one pull request, and four of them need no
+/// change. What is asserted here is that the standard reports the same seven
+/// gates, the same triggers, the same statuses, the same finding shapes and the
+/// same verdict in all five, naming whatever class it was handed.
+#[test]
+fn the_depth_floor_is_the_same_in_every_registered_language() {
+    // One greeting per registered language, each short enough that the
+    // formalizer resolves it without a surrounding sentence.
+    const GREETINGS: &[(&str, &str)] = &[
+        ("en", "Hello"),
+        ("ru", "привет"),
+        ("hi", "नमस्ते"),
+        ("zh", "你好"),
+        ("es", "hola"),
+    ];
+
+    let mut registered = registered_languages()
+        .into_iter()
+        .map(Language::slug)
+        .collect::<Vec<_>>();
+    let mut covered = GREETINGS
+        .iter()
+        .map(|(language, _)| *language)
+        .collect::<Vec<_>>();
+    registered.sort_unstable();
+    covered.sort_unstable();
+    assert_eq!(
+        covered, registered,
+        "every registered language needs a greeting here"
+    );
+
+    let standard = loaded();
+    let audit_greeting = |language: &str, prompt: &str| {
+        let candidate = formalize_prompt(prompt, language);
+        let formalization = formalize_intent(prompt, language, Some(&candidate));
+        let episode = open_episode(&formalization);
+        let task_class = episode.task_class.clone();
+        (audit(&standard, &episode), task_class)
+    };
+
+    // Fold the two per-request values out of every reported string, so what is
+    // compared is the shape the standard produced and not the identity of the
+    // request that produced it.
+    let generalize = |text: &str, episode_id: &str, task_class: &str| {
+        text.replace(episode_id, "<episode>")
+            .replace(task_class, "<task-class>")
+    };
+
+    let (english, english_class) = audit_greeting(GREETINGS[0].0, GREETINGS[0].1);
+    for (language, prompt) in GREETINGS {
+        let (result, task_class) = audit_greeting(language, prompt);
+
+        assert_eq!(
+            result.outcomes.len(),
+            english.outcomes.len(),
+            "{language}: the checklist must be the same length in every language"
+        );
+        for (outcome, expected) in result.outcomes.iter().zip(&english.outcomes) {
+            assert_eq!(outcome.gate, expected.gate, "{language}: gate order");
+            assert_eq!(
+                outcome.order, expected.order,
+                "{language}: gate order index"
+            );
+            assert_eq!(
+                outcome.trigger, expected.trigger,
+                "{}: the trigger that decided {} must not depend on the language",
+                language, expected.gate
+            );
+            assert_eq!(
+                outcome.status, expected.status,
+                "{}: the status of {} must not depend on the language",
+                language, expected.gate
+            );
+
+            let reported = outcome
+                .findings
+                .iter()
+                .map(|finding| generalize(finding, &result.episode_id, &task_class))
+                .collect::<Vec<_>>();
+            let baseline = expected
+                .findings
+                .iter()
+                .map(|finding| generalize(finding, &english.episode_id, &english_class))
+                .collect::<Vec<_>>();
+            assert_eq!(
+                reported, baseline,
+                "{}: {} must report the same findings in every language",
+                language, expected.gate
+            );
+        }
+
+        // The instruction gate names the class it was handed, so folding the
+        // class away above hides nothing: it is checked here against the class
+        // the router actually assigned to this prompt.
+        let instructions = result
+            .outcome("instruction_formalization")
+            .expect("the instruction gate must be reported");
+        assert!(
+            instructions
+                .findings
+                .iter()
+                .any(|finding| finding == &format!("{task_class}:no_instructions_gathered")),
+            "{language}: the violation must name this request's own task class: {:?}",
+            instructions.findings
+        );
+
+        assert_eq!(
+            result.verdict.slug(),
+            english.verdict.slug(),
+            "{language}: the verdict must not depend on the language the request arrived in"
+        );
+        let reported_blockers = result
+            .verdict
+            .blockers()
+            .iter()
+            .map(|blocker| generalize(blocker, &result.episode_id, &task_class))
+            .collect::<Vec<_>>();
+        let baseline_blockers = english
+            .verdict
+            .blockers()
+            .iter()
+            .map(|blocker| generalize(blocker, &english.episode_id, &english_class))
+            .collect::<Vec<_>>();
+        assert_eq!(
+            reported_blockers, baseline_blockers,
+            "{language}: the same checks must be reported as blocked, named the same way"
+        );
+    }
 }
 
 /// R1073-2: gathered instructions are *formalized*, not paraphrased.
