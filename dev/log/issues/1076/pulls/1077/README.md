@@ -35,6 +35,7 @@ GitHub access:
 | `references/CI-CD-BEST-PRACTICES.md` | The Hive Mind guidance as of collection. |
 | `references/templates/{rust,js,python,php}-template/` | Complete immutable copies of all four template trees (`.git` removed so they commit as plain files; manifests carry the `.snapshot` suffix required by issue #1014 so no scanner treats archived evidence as a live project). |
 | `upstream-reports/` | The reports filed against the templates, with their reproductions. |
+| `ci-logs/pr-head-a055112a/run-33966796971-workflows.log` | Evidence *after* the fix rather than before it: the `Workflows` run that first carried the actionlint self-check. Line 346 onward is the pinned image rejecting `tests/fixtures/actionlint/shellcheck-canary.yml` with SC1009/SC1072/SC1073 — proof, on GitHub's runners rather than only on a developer machine, that the linter still reads inside `run:` blocks (D10b). |
 
 The run set was taken from the API rather than from the issue text, so a run
 the issue did not mention could not be missed.
