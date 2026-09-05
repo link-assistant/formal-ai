@@ -1,0 +1,31 @@
+integration test-name counts: 08-30=349  09-04=358  09-05=358
+
+### tests present on 09-04 but NOT on 08-30 (the 9 additions):
+   + issue_1069_attributed_dispatch::attributed_dispatch_rejects_a_dirty_worktree_before_starting_an_agent
+   + issue_1069_attributed_dispatch::attributed_dispatch_rejects_a_noncanonical_pull_request_url
+   + issue_1069_attributed_dispatch::attributed_dispatch_requires_a_native_session_before_applying_an_effect
+   + issue_1069_attributed_dispatch::dispatch_keeps_native_agent_state_outside_the_candidate_worktree
+   + issue_1069_attributed_dispatch::every_passing_effect_in_a_split_run_gets_its_own_attributed_commit
+   + issue_1069_attributed_dispatch::incremental_dispatch_commits_each_verified_effect_with_its_session_evidence
+   + issue_1069_link_cli_store::committed_link_cli_transaction_survives_reopen
+   + issue_1069_link_cli_store::link_cli_rolls_back_an_entire_memory_event_projection
+   + issue_1069_link_cli_store::sync_store_routes_server_writes_through_persistent_link_cli_transactions
+
+### tests present on 08-30 but NOT on 09-04:
+
+### slowest inter-test gaps inside `integration` on 09-05 (CANCELLED):
+      90.9s before issue_749_shell_routing::whole_shell_task_matrix_routes_without_web_search
+      76.5s before issue_755_file_read_write::a_failed_plan_write_never_blocks_the_users_write
+      73.4s before issue_758_capability_routing::specialized_tools_precede_shell_and_shell_is_the_navigation_fallback
+      71.0s before issue_755_file_read_write::write_emits_only_the_advertised_parameter_names
+      68.1s before issue_819_report_flow::a_report_without_an_issue_url_is_narrated_as_a_failure
+      66.0s before issue_839_report_script::an_unexportable_session_fails_before_gh_is_reached
+      56.1s before issue_819_report_flow::opencode_desktop_listing_narration_does_not_expose_the_internal_root
+      55.5s before issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration
+      51.8s before issue_839_report_script::a_missing_command_fails_loudly_and_files_nothing
+      50.0s before issue_755_file_read_write::the_whole_write_read_task_persists_and_reads_back_the_users_content
+      40.0s before issue_758_capability_routing::todo_and_multi_edit_arguments_are_recursively_schema_valid
+      36.6s before issue_931_local_transports::issue_931_websocket_and_webrtc_answers_match_http_byte_for_byte
+      36.2s before issue_839_report_script::a_request_without_a_session_header_asks_the_cli_to_resolve_it
+      35.5s before issue_819_report_flow::opencode_desktop_find_is_narrated_naturally_and_runs_find
+      32.9s before issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages

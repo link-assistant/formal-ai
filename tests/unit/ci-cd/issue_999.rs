@@ -114,11 +114,31 @@ fn current_template_security_and_link_gates_are_present() {
 
 #[test]
 fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
-    let lint = job_block(&release_workflow(), "lint").to_owned();
-    assert!(lint.contains("ACTIONLINT_VERSION: 1.7.12"));
-    assert!(lint.contains("rhysd/actionlint/issues/657"));
-    assert!(lint.contains("unexpected key \"queue\" for \"concurrency\" section"));
-    assert!(!lint.contains("actionlint -ignore '.*'"));
+    // Issue #1076 moved actionlint out of release.yml's `lint` job and into
+    // `.github/workflows/workflows.yml`, and with it the `-ignore` flag, which
+    // is now a `paths:` entry in `.github/actionlint.yaml`. The property this
+    // test defends is unchanged: the suppression names GitHub's `queue` schema
+    // lag specifically and cannot be widened into a blanket filter.
+    let workflow = repository_file(".github/workflows/workflows.yml");
+    let config = repository_file(".github/actionlint.yaml");
+
+    assert!(
+        workflow.contains("docker://rhysd/actionlint:1.7.12"),
+        "actionlint must run as the pinned Docker image -- the image bundles \
+         ShellCheck, and a bare binary without ShellCheck on PATH skips every \
+         `run:` block check and still exits 0 (issue #1076)"
+    );
+    assert!(config.contains("rhysd/actionlint/issues/657"));
+    assert!(config.contains("unexpected key \"queue\" for \"concurrency\" section"));
+
+    // A pattern matching everything is indistinguishable from not running the
+    // linter at all, whichever form it takes.
+    for blanket in ["- '.*'", "- \".*\"", "-ignore '.*'"] {
+        assert!(
+            !config.contains(blanket) && !workflow.contains(blanket),
+            "actionlint suppressions must stay specific, found {blanket:?}"
+        );
+    }
 }
 
 #[test]

@@ -1,0 +1,23 @@
+# A deliberately broken workflow, kept out of `.github/workflows/` so nothing
+# schedules it. Its only defect is inside a `run:` block, which actionlint can
+# only see by shelling out to ShellCheck: the bare binary skips those checks and
+# exits 0 when ShellCheck is absent, so a green actionlint proves nothing on its
+# own. `.github/workflows/workflows.yml` lints this file and fails when it
+# *passes* -- the gate for the gate (issue #1076, defect D11).
+#
+# Measured with actionlint 1.7.12: with ShellCheck on PATH it reports SC1009,
+# SC1072 and SC1073 and exits 1; without ShellCheck it exits 0 in silence.
+name: 'actionlint ShellCheck canary'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  canary:
+    name: 'Never runs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: 'An unterminated double quote, visible only to ShellCheck'
+        run: |
+          echo "this quote never closes

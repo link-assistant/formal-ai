@@ -1,0 +1,12 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/get-bump-type.rs	2026-09-05 09:39:56.903043008 +0000
++++ scripts/get-bump-type.rs	2026-09-05 09:37:22.107726333 +0000
+@@ -19,6 +19,9 @@
+ //! Usage: rust-script scripts/get-bump-type.rs [--default <patch|minor|major>] [--rust-root <path>]
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! ```

@@ -58,7 +58,7 @@ env:
 
 jobs:
   summarization-ratchet:
-    name: Summarization quality ratchet (issue #893)
+    name: 'Summarization quality ratchet (issue #893)'
     runs-on: ubuntu-latest
     # A release build of the CLI plus a few dozen summarizations; the build
     # dominates and starts cold.

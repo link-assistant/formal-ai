@@ -1,0 +1,6 @@
+run          cache       compile     tests     total   #tests  outcome
+33902724772  MISS          23.8m     -0.2m     25.3m     4160  success
+32642782572  MISS          32.3m     -0.2m     33.7m     3973  success
+33189772567  HIT           18.3m     -0.2m     19.5m     3990  success
+33310631375  HIT           13.5m     -0.1m     14.4m     4041  success
+job-101278931847-code-coverage-cancelled MISS           3.2m     36.0m     40.2m     1817  CANCELLED

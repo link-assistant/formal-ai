@@ -139,6 +139,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: ./.github/actions/setup-buildx-resilient
       - name: Build image
+        # Issue #1076: a step-level cap reports an overrun as a step *failure*;
+        # the job cap reports it as `cancelled` and turns nothing red. 15m is
+        # 1.7x the worst of thirteen measured pull-request builds (8.6 min).
+        timeout-minutes: 15
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -148,7 +152,7 @@ jobs:
           # Publish jobs keep the default `compile`, so what ships is still
           # built from source (issue #1051).
           build-args: BINARY_SOURCE=prebuilt
-          cache-from: type=gha
+          cache-from: type=gha,scope=docker-image
           # Issue #1057: prebuilt binary, nothing worth caching; exports were
           # evicting sccache from the shared 10GB pool.
           cache-to: type=inline
@@ -226,7 +230,9 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #1076 (D5): 12.7 min worst case was 84.4% of the old 15m cap -- a
+    # deadline, not a backstop. 25 puts it at 50.7% (check-job-headroom.rs).
+    timeout-minutes: 25
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -263,17 +269,6 @@ jobs:
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - uses: ./.github/actions/cache-cargo-registry
-      - name: Lint GitHub Actions workflows
-        env:
-          ACTIONLINT_VERSION: 1.7.12
-        run: |
-          set -euo pipefail
-          curl -fsSL \
-            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
-            | tar xz -C /tmp actionlint
-          # GitHub supports queue; actionlint schema lag: https://github.com/rhysd/actionlint/issues/657
-          /tmp/actionlint -color \
-            -ignore 'unexpected key "queue" for "concurrency" section'
       - name: Run registered gates (stage rust)
         # Issue #991: the gate list lives in data/meta/ci-gates/, one file per
         # gate, so adding a gate no longer edits this file.
@@ -346,15 +341,9 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
-      - name: Restore cargo registry cache
-        uses: actions/cache/restore@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+          restore-only: 'true'
       - name: Check LiNo data integrity
         if: matrix.test-suite == 'full'
         run: cargo test --test unit data_files -- --nocapture
@@ -427,7 +416,9 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #1076 (D5): 11.6 min worst case (the run that missed its cargo
+    # cache) was 77.0% of 15; 20 puts it at 57.8%, inside the 70% share.
+    timeout-minutes: 20
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -440,15 +431,9 @@ jobs:
       - uses: ./.github/actions/setup-sccache
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-build-
+          prefix: build-
       # Issue #1055: the binary exists; packaging needs no rebuild.
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
@@ -470,7 +455,9 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Issue #1076 (D5): 50.6 min worst case was 84.4% of the old 60m cap, and
+    # the 45m GHCR budget below must fire before the cap. 90m puts it at 56.2%.
+    timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -586,14 +573,19 @@ jobs:
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
+        # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
+        # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
+        # minutes here with seven steps pending and nothing red. 45m is 1.4x
+        # the worst measured build (32.5 min); see the D15 note in dev/log.
+        timeout-minutes: 45
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=docker-image
+          cache-to: type=gha,mode=max,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           steps.release_gate.outputs.should_release == 'true' && (
@@ -628,13 +620,16 @@ jobs:
             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
+        # Issue #1076: reuses the layers the GHCR step above exported, so 20m
+        # is generous; 45m + 20m still fires before the 90m job cap.
+        timeout-minutes: 20
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=gha,scope=docker-image
           # Issue #1057: the GHCR leg above already exported these layers.
           cache-to: type=inline
       - name: Create GitHub Release
@@ -677,7 +672,9 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Issue #1076 (D5): same shape as `auto-release` -- publishes the same
+    # image with the same 45m budget, so the same 90m backstop applies.
+    timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -703,7 +700,7 @@ jobs:
         env:
           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
           DESCRIPTION: ${{ github.event.inputs.description }}
-        run: rust-script scripts/version-and-commit.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+        run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Build release
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         run: cargo build --release
@@ -767,14 +764,19 @@ jobs:
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
+        # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
+        # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
+        # minutes here with seven steps pending and nothing red. 45m is 1.4x
+        # the worst measured build (32.5 min); see the D15 note in dev/log.
+        timeout-minutes: 45
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=docker-image
+          cache-to: type=gha,mode=max,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           (steps.version.outputs.version_committed == 'true' ||
@@ -807,13 +809,16 @@ jobs:
             org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
       - name: Publish Docker image to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
+        # Issue #1076: reuses the layers the GHCR step above exported, so 20m
+        # is generous; 45m + 20m still fires before the 90m job cap.
+        timeout-minutes: 20
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=gha,scope=docker-image
           # Issue #1057: the GHCR leg above already exported these layers.
           cache-to: type=inline
       - name: Create GitHub Release
@@ -863,7 +868,7 @@ jobs:
         env:
           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
           DESCRIPTION: ${{ github.event.inputs.description }}
-        run: rust-script scripts/create-changelog-fragment.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+        run: rust-script scripts/create-changelog-fragment.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
@@ -1004,7 +1009,7 @@ jobs:
           # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
       - uses: ./.github/actions/download-formal-ai-binary
-      - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
+      - name: 'Run Agent CLI E2E — held-out algorithm discovery (issue #531)'
         timeout-minutes: 5
         env: { PORT: 8896 }
         run: experiments/agent_cli_e2e/run_issue_531.sh
@@ -1402,15 +1407,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-docs-
+          prefix: docs-
       - name: Generate Rust API docs (cargo doc)
         env:
           RUSTDOCFLAGS: -D warnings

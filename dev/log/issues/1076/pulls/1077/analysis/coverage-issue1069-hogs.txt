@@ -1,0 +1,26 @@
+==============================================================================
+2026-09-04 ok  (integration 213.6s)   binary span=213.6s, 358 tests completed
+  issue_1069 tests completed: 9/9
+    finished at     0.6s (  0.3% of span)  issue_1069_attributed_dispatch::attributed_dispatch_rejects_a_dirty_worktree_before_starting_an_agent
+    finished at     0.7s (  0.3% of span)  issue_1069_attributed_dispatch::attributed_dispatch_rejects_a_noncanonical_pull_request_url
+    finished at     0.8s (  0.4% of span)  issue_1069_attributed_dispatch::attributed_dispatch_requires_a_native_session_before_applying_an_effect
+    finished at     0.8s (  0.4% of span)  issue_1069_attributed_dispatch::dispatch_keeps_native_agent_state_outside_the_candidate_worktree
+    finished at     1.0s (  0.5% of span)  issue_1069_attributed_dispatch::every_passing_effect_in_a_split_run_gets_its_own_attributed_commit
+    finished at     1.1s (  0.5% of span)  issue_1069_attributed_dispatch::incremental_dispatch_commits_each_verified_effect_with_its_session_evidence
+    finished at     1.4s (  0.7% of span)  issue_1069_link_cli_store::link_cli_rolls_back_an_entire_memory_event_projection
+    finished at     1.8s (  0.8% of span)  issue_1069_link_cli_store::committed_link_cli_transaction_survives_reopen
+    finished at     2.4s (  1.1% of span)  issue_1069_link_cli_store::sync_store_routes_server_writes_through_persistent_link_cli_transactions
+  tests finishing AFTER the last issue_1069 test: 322
+==============================================================================
+2026-09-05 CANCELLED (integration 1572.8s)   binary span=1572.8s, 358 tests completed
+  issue_1069 tests completed: 9/9
+    finished at     1.4s (  0.1% of span)  issue_1069_attributed_dispatch::attributed_dispatch_rejects_a_dirty_worktree_before_starting_an_agent
+    finished at     1.6s (  0.1% of span)  issue_1069_attributed_dispatch::attributed_dispatch_rejects_a_noncanonical_pull_request_url
+    finished at     2.0s (  0.1% of span)  issue_1069_attributed_dispatch::attributed_dispatch_requires_a_native_session_before_applying_an_effect
+    finished at     2.0s (  0.1% of span)  issue_1069_attributed_dispatch::dispatch_keeps_native_agent_state_outside_the_candidate_worktree
+    finished at     2.2s (  0.1% of span)  issue_1069_attributed_dispatch::every_passing_effect_in_a_split_run_gets_its_own_attributed_commit
+    finished at     2.3s (  0.1% of span)  issue_1069_attributed_dispatch::incremental_dispatch_commits_each_verified_effect_with_its_session_evidence
+    finished at     3.0s (  0.2% of span)  issue_1069_link_cli_store::committed_link_cli_transaction_survives_reopen
+    finished at     4.2s (  0.3% of span)  issue_1069_link_cli_store::link_cli_rolls_back_an_entire_memory_event_projection
+    finished at     5.9s (  0.4% of span)  issue_1069_link_cli_store::sync_store_routes_server_writes_through_persistent_link_cli_transactions
+  tests finishing AFTER the last issue_1069 test: 319

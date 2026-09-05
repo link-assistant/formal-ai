@@ -3,16 +3,28 @@ description: >-
   Restore `~/.cargo/registry` and `~/.cargo/git`, keyed on Cargo.lock. Issue
   #1055 collapsed seven near-identical copies of this block into one action:
   they differed only in a key prefix, and `release.yml` sits against the
-  line-count band that issue #999 enforces.
+  line-count band that issue #999 enforces. Issue #1076 collapsed the remaining
+  eight, including the two restore-only ones, after measuring that the same
+  registry was being stored under six prefixes against a single 10 GB
+  repository-wide quota that was already 14% over cap and evicting.
 inputs:
   prefix:
     description: Extra key segment, so a job with a distinct dependency set does not evict another's entry.
     required: false
     default: ''
+  restore-only:
+    description: >-
+      `true` restores without ever saving. For a job that consumes a registry
+      some other job populates -- it still gets the cache, and writes nothing
+      back to the shared quota.
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
-    - uses: actions/cache@v6
+    - id: read-write
+      if: inputs.restore-only != 'true'
+      uses: actions/cache@v6
       with:
         path: |
           ~/.cargo/registry
@@ -21,3 +33,67 @@ runs:
         restore-keys: |
           ${{ runner.os }}-cargo-${{ inputs.prefix }}
           ${{ runner.os }}-cargo-
+    - id: restore-only
+      if: inputs.restore-only == 'true'
+      uses: actions/cache/restore@v6
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+        key: ${{ runner.os }}-cargo-${{ inputs.prefix }}${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-${{ inputs.prefix }}
+          ${{ runner.os }}-cargo-
+
+    # Issue #1076, defect D3. `actions/cache` reports every restore problem as
+    # `##[warning]` and returns success, and it prints the same
+    # `Cache not found for input keys:` line whether the entry was absent or
+    # the request was refused. Both happened here and neither was visible:
+    #
+    #   * run 32642782572, `Coverage / Code Coverage`, 2026-08-23T13:36:54Z --
+    #     `##[warning]Failed to restore: Failed to GetCacheEntryDownloadURL:
+    #     Rate limited: Failed request: (429) Too Many Requests: rate limit
+    #     exceeded`, immediately followed by `Cache not found for input keys`.
+    #     The job went green and rebuilt every dependency.
+    #   * run 33955786067, `Build formal-ai`, 2026-09-05T08:43:59Z --
+    #     `##[warning]You've hit a rate limit` on *save*.
+    #
+    # Finding those took grepping five downloaded logs by hand. This step puts
+    # the outcome where it can be read without that: one row per cache in the
+    # job summary, on every run. It deliberately does **not** fail the job -- a
+    # cache miss is not a defect -- and it deliberately does not annotate
+    # unless asked, because an annotation on every miss is the noise D2 is
+    # about. `FORMAL_AI_CI_VERBOSE` promotes it to a warning annotation for the
+    # duration of an investigation.
+    - name: Report the cargo registry cache outcome
+      if: always()
+      shell: bash
+      env:
+        CACHE_HIT: ${{ steps.read-write.outputs.cache-hit || steps.restore-only.outputs.cache-hit }}
+        MATCHED_KEY: ${{ steps.read-write.outputs.cache-matched-key || steps.restore-only.outputs.cache-matched-key }}
+        WANTED_KEY: ${{ runner.os }}-cargo-${{ inputs.prefix }}${{ hashFiles('**/Cargo.lock') }}
+        RESTORE_ONLY: ${{ inputs.restore-only }}
+      run: |
+        set -euo pipefail
+        if [ "${CACHE_HIT}" = "true" ]; then
+          outcome='hit (exact)'
+        elif [ -n "${MATCHED_KEY}" ]; then
+          outcome="restored from prefix \`${MATCHED_KEY}\`"
+        else
+          outcome='**miss** -- every dependency will be recompiled'
+        fi
+        if [ "${RESTORE_ONLY}" = 'true' ]; then mode='restore-only'; else mode='read-write'; fi
+        # A bullet rather than a table row: the action can run once or several
+        # times in a job, and a stray row with no header renders as raw text.
+        printf -- '- cargo registry cache `%s` (%s): %s\n' \
+          "${WANTED_KEY}" "${mode}" "${outcome}" >> "${GITHUB_STEP_SUMMARY}"
+        # Read straight from the process environment rather than mapping the
+        # `env` context into a step `env:`. A calling job exports its own
+        # `env:` block into every step it runs, this one included, and that
+        # path does not depend on which contexts a composite action can
+        # evaluate. (Written without expression syntax on purpose: Actions
+        # expands an expression anywhere in a `run:` block, shell comments
+        # included, which is what zizmor's template-injection audit reports.)
+        if [ -z "${MATCHED_KEY}" ] && [ "${FORMAL_AI_CI_VERBOSE:-false}" = 'true' ]; then
+          echo "::warning title=cargo registry cache miss::No entry matched ${WANTED_KEY} or any of its restore keys. If the step log above shows a 429, this was a refused request rather than an absent entry (issue #1076)."
+        fi

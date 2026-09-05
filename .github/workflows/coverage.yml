@@ -21,6 +21,13 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
+    inputs:
+      verbose:
+        description: >-
+          Record runner CPU steal, load, memory and disk while coverage runs
+          (issue #1076). Off by default; a green run gains no output from it.
+        type: boolean
+        default: false
 permissions:
   contents: read
 
@@ -67,15 +74,22 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    # Issue #812 raised this from 15 to 25 against a then-worst case of 14.1
-    # minutes. The suite has grown since: re-measured on the last eight green
-    # `main` runs of this job (2026-08-02..03) it takes 17.2, 17.4, 18.2, 18.4,
-    # 18.5, 19.0, 19.1, 19.6 minutes, so the worst case was already using 78% of
-    # the 25-minute cap and the first run on this branch hit it outright. 40
-    # minutes restores roughly a 2x margin over the measured worst case, which
-    # is what keeps a slow runner from failing a build for a reason that has
-    # nothing to do with the code under test.
-    timeout-minutes: 40
+    # Issue #812 raised this from 15 to 25, and issue #1039 to 40. Neither
+    # helped, because the cap was never the right instrument: run 33955786082
+    # burned all 40 minutes and GitHub reported it as `cancelled`, not
+    # `failure`, so nothing turned red (issue #977). Issue #1076 measured that
+    # run -- the `integration` target ran the *same 358 tests* in 1572.8s that
+    # the previous day's run finished in 213.6s, on an identical runner image,
+    # with the slowdown spread across every module and hitting tests that do no
+    # I/O at all. The host was slower, not the code.
+    #
+    # So the cap goes back to being a backstop and the step below owns the
+    # deadline: `TEST_BUDGET_SECONDS: 2400` is 40 minutes, above the 33.8-minute
+    # worst case measured across the last twenty-one green runs so an
+    # ordinarily slow runner still passes, and 66% of this 60-minute cap, inside
+    # the 70% share issue #1017 enforces so checkout, the toolchain,
+    # cargo-llvm-cov's install, the ratchet and the uploads all still fit.
+    timeout-minutes: 60
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -83,6 +97,14 @@ jobs:
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
       )
+    # Issue #1076. The diagnostics switch belongs to the job, not to four
+    # separate steps: `.github/actions/cache-cargo-registry` reports its cache
+    # outcome under it too, and a composite action reads the environment its
+    # job exports rather than an `env:` block on some other step. Off unless a
+    # `workflow_dispatch` input or the `FORMAL_AI_CI_VERBOSE` repository
+    # variable turns it on, so an ordinary green run gains no output.
+    env:
+      FORMAL_AI_CI_VERBOSE: ${{ inputs.verbose || vars.FORMAL_AI_CI_VERBOSE || 'false' }}
     steps:
       - uses: actions/checkout@v7
 
@@ -94,15 +116,15 @@ jobs:
 
       - uses: ./.github/actions/setup-sccache
 
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      # Issue #1076: the inline block this replaces restored only
+      # `Linux-cargo-coverage-*`, so run 33955786082 missed both its exact key
+      # and its one restore key and compiled every dependency from scratch. The
+      # shared action (issue #1055) adds the generic `Linux-cargo-` fallback
+      # that would have caught it, and stops this job's registry being a sixth
+      # near-identical copy against one 10 GB repository-wide cache quota.
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-coverage-
+          prefix: coverage-
 
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
@@ -110,8 +132,47 @@ jobs:
       - name: Clean stale coverage artifacts
         run: cargo llvm-cov clean --workspace
 
+      # Issue #1076. Both steps print nothing unless the job-level switch above
+      # is on. Switched on, they record CPU steal, load, memory and disk once
+      # before the run and every two minutes during it -- the evidence run
+      # 33955786082 could not supply: a 7.4x slowdown on identical tests that
+      # no log could attribute.
+      - name: Report runner capacity
+        run: bash scripts/report-runner-capacity.sh "before coverage"
+
+      - name: Sample runner capacity during coverage
+        run: |
+          set -euo pipefail
+          bash scripts/report-runner-capacity.sh --watch 120 "during coverage" &
+          echo "CAPACITY_SAMPLER_PID=$!" >> "$GITHUB_ENV"
+
+      # The step that decides this job's outcome, and the one that was killed.
+      # It owns its deadline so an overrun is a `failure` with an ::error
+      # annotation naming the budget, never a silent `cancelled`.
       - name: Generate code coverage
-        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+        env:
+          TEST_BUDGET_SECONDS: 2400
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Instrumented coverage run" \
+            cargo llvm-cov --all-features --lcov --output-path lcov.info
+
+      # `kill 0` means "every process in my own process group", so a `:-0`
+      # default here would make this step kill its own shell whenever the
+      # sampler step was skipped -- an `if: always()` step that fails the job
+      # for a diagnostic that never started. Test the variable instead.
+      - name: Stop the capacity sampler
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ -n "${CAPACITY_SAMPLER_PID:-}" ]; then
+            kill "${CAPACITY_SAMPLER_PID}" 2>/dev/null || true
+          fi
+
+      - name: Report runner capacity after coverage
+        if: always()
+        run: bash scripts/report-runner-capacity.sh "after coverage"
 
       # Issue #895: an LCOV file nobody reads is not a coverage requirement.
       # This step reads it, publishes a human-readable summary into the run

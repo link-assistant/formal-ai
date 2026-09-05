@@ -1,0 +1,15 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/.github/actions/setup-buildx-resilient/action.yml	2026-09-05 09:39:56.882043236 +0000
++++ .github/actions/setup-buildx-resilient/action.yml	2026-09-05 09:37:13.885816137 +0000
+@@ -10,8 +10,10 @@
+   Seeding the image locally first means the boot reuses the cached image
+   instead of hitting the registry, and the mirror fallback keeps the seed
+   working even during a full Docker Hub registry outage.
+-  See docs/case-studies/issue-69/README.md and the upstream investigations in
+-  link-foundation/box issues #97 and #100.
++  Adopted verbatim from
++  link-foundation/rust-ai-driven-development-pipeline-template (issue #808 /
++  R3). Upstream rationale: that template's docs/case-studies/issue-69/README.md
++  and the investigations in link-foundation/box issues #97 and #100.
+ inputs:
+   buildkit-image:
+     description: 'Pinned BuildKit image used by the docker-container driver.'

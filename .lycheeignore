@@ -19,6 +19,19 @@ https://openai\.com/policies/services-agreement/
 https://artofproblemsolving\.com/wiki/index\.php/AIME_Problems_and_Solutions
 https://app\.docker\.com/settings/personal-access-tokens
 
+# The European Commission's digital-strategy site answers GitHub's runner
+# address space with 403 while serving the same URL normally elsewhere. Run
+# 33968819188 rejected
+# `/en/policies/guidelines-gpai-providers` (LEGAL-COMPLIANCE.md:359) with
+# `Rejected status code: 403 Forbidden`; the same URL answers 200 from a
+# workstation for GET and HEAD alike, under lychee's own user agent, under
+# `curl/8.20.0` and under a browser agent -- so the refusal follows the caller's
+# network, not its user agent, and the page is not broken. 403 is deliberately
+# not in the workflow's `--accept` list, because elsewhere it does mean "gone",
+# so the exception is named here instead. The Wayback fallback cannot rescue it
+# either: `check-web-archive.mjs` found no snapshot.
+https://digital-strategy\.ec\.europa\.eu/
+
 # The HTML is stamped and served from src/web/, so this build-time relative
 # asset is not resolvable from src/web/app/index.html in the checkout.
 styles\.css\?v=__FORMAL_AI_ASSET_VERSION__

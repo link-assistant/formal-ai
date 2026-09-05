@@ -265,6 +265,12 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
     );
 }
 
+/// The floor issue #896 measured for `Build Package`: a cold cache has to
+/// compile the published crates' unconditional graph inside it. Raising the cap
+/// above this is a matter for the measurement that motivates it (issue #1076
+/// raised it to 20); dropping below it is the regression this test exists for.
+const MIN_BUILD_PACKAGE_CAP_MINUTES: u32 = 15;
+
 #[test]
 fn build_package_budget_bounds_the_published_component_cold_build() {
     let workflow = fs::read_to_string(format!(
@@ -281,10 +287,21 @@ fn build_package_budget_bounds_the_published_component_cold_build() {
         .next()
         .expect("Build Package job body");
 
+    let cap: u32 = build
+        .lines()
+        .find_map(|line| line.strip_prefix("    timeout-minutes:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("Build Package must declare a job cap in whole minutes");
+
+    // The invariant issue #896 established is headroom, so this is a floor, not
+    // an equality. Pinning the exact number made a *raise* fail: issue #1076
+    // measured the job and moved the cap from 15 to 20, which gives the cold
+    // build more room, not less, and this assertion still reported it as a
+    // broken boundary (D20).
     assert!(
-        build.contains("    timeout-minutes: 15\n"),
+        cap >= MIN_BUILD_PACKAGE_CAP_MINUTES,
         "the release build needs headroom for the published crates' unconditional graph \
-         on a cold cache"
+         on a cold cache: {cap}m is below the {MIN_BUILD_PACKAGE_CAP_MINUTES}m floor"
     );
 }
 

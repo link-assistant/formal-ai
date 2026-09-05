@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+use crate::lino_location::first_unparseable_lino_line;
 use formal_ai::json_lino::{json_cache_file, lino_to_json};
 use links_notation::parse_lino as parse_canonical_lino;
 use regex::Regex;
@@ -54,8 +55,12 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
         );
 
         parse_canonical_lino(content.trim()).unwrap_or_else(|error| {
+            let location = match first_unparseable_lino_line(&content) {
+                Some((line, text)) => format!(":{line} (`{text}`)"),
+                None => String::new(),
+            };
             panic!(
-                "{} contains invalid canonical Links Notation: {error}",
+                "{}{location} contains invalid canonical Links Notation: {error}",
                 path.display()
             );
         });

@@ -1,0 +1,1212 @@
+Check Links	UNKNOWN STEP	﻿2026-09-05T08:37:54.7632868Z Current runner version: '2.337.0'
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7657153Z ##[group]Runner Image Provisioner
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7658189Z Hosted Compute Agent
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7658778Z Version: 20260828.587
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7659616Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7660377Z Build Date: 2026-08-28T16:44:25Z
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7661147Z Worker ID: {56a27ef3-fabb-4ea0-9362-3506257a3cf2}
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7661926Z Azure Region: centralus
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7662565Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7663913Z ##[group]Operating System
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7664551Z Ubuntu
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7665099Z 24.04.4
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7666052Z LTS
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7666581Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7667147Z ##[group]Runner Image
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7667767Z Image: ubuntu-24.04
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7668365Z Version: 20260831.293.1
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7669731Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7671368Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7672356Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7673497Z ##[group]GITHUB_TOKEN Permissions
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7676028Z Contents: read
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7676613Z Metadata: read
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7677205Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7679671Z Secret source: Actions
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.7680934Z Prepare workflow directory
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.8061026Z Prepare all required actions
+Check Links	UNKNOWN STEP	2026-09-05T08:37:54.8112625Z Getting action download info
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.0868568Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.1902014Z Download action repository 'lycheeverse/lychee-action@v2' (SHA:e7477775783ea5526144ba13e8db5eec57747ce8)
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.5547758Z Complete job name: Check Links
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6260563Z ##[group]Run actions/checkout@v7
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6261489Z with:
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6262056Z   repository: link-assistant/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6266892Z   token: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6267472Z   ssh-strict: true
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6267964Z   ssh-user: git
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6268607Z   persist-credentials: true
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6269303Z   clean: true
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6269891Z   sparse-checkout-cone-mode: true
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6270509Z   fetch-depth: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6270992Z   fetch-tags: false
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6271531Z   show-progress: true
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6272035Z   lfs: false
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6272513Z   submodules: false
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6273088Z   set-safe-directory: true
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6273701Z   allow-unsafe-pr-checkout: false
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6274555Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6275052Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6275830Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6276613Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.6277224Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7311019Z Syncing repository: link-assistant/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7313970Z ##[group]Getting Git version info
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7315101Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7316989Z [command]/usr/bin/git version
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7417354Z git version 2.55.0
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7452363Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7481360Z Temporarily overriding HOME='/home/runner/work/_temp/6fbb5c82-937a-42bd-802e-513f615474fd' before making global git config changes
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7483919Z Adding repository directory to the temporary git global config as a safe directory
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7486347Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7548271Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7562774Z ##[group]Determining repository object format
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7564928Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7566273Z ##[group]Initializing the repository
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7567172Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7690013Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7700899Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7748439Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7749813Z ##[group]Disabling automatic garbage collection
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7751200Z [command]/usr/bin/git config --local gc.auto 0
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7784634Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7786298Z ##[group]Setting up auth
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7787545Z Removing SSH command configuration
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7803595Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.7835904Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8176945Z Removing HTTP extra header
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8183950Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8219187Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8460857Z Removing includeIf entries pointing to credentials config files
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8462734Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8490687Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8695718Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8730710Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8760313Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8791845Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8820630Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8845266Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8846487Z ##[group]Fetching the repository
+Check Links	UNKNOWN STEP	2026-09-05T08:37:55.8852209Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +701d6a4516699e9bb6a5ac25e419c0cac6a03e27:refs/remotes/origin/main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.2939288Z From https://github.com/link-assistant/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.2941832Z  * [new ref]         701d6a4516699e9bb6a5ac25e419c0cac6a03e27 -> origin/main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.2947620Z [command]/usr/bin/git branch --list --remote origin/main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3624361Z   origin/main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3633763Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3658457Z 701d6a4516699e9bb6a5ac25e419c0cac6a03e27
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3662770Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3664914Z ##[group]Determining the checkout info
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3667692Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.3669430Z [command]/usr/bin/git sparse-checkout disable
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.5922804Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.6111712Z ##[group]Checking out the ref
+Check Links	UNKNOWN STEP	2026-09-05T08:38:10.6114371Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:11.7358755Z Updating files:  36% (5708/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:11.8931633Z Updating files:  37% (5845/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:11.9219098Z Updating files:  38% (6003/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.1852024Z Updating files:  39% (6161/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.3947208Z Updating files:  40% (6319/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.5597234Z Updating files:  41% (6477/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.5758963Z Updating files:  42% (6635/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.5893662Z Updating files:  43% (6793/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.5974919Z Updating files:  44% (6951/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.6324427Z Updating files:  45% (7109/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.6693109Z Updating files:  45% (7133/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.7973686Z Updating files:  46% (7267/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.8149433Z Updating files:  47% (7425/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.8445892Z Updating files:  48% (7583/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.8553024Z Updating files:  49% (7741/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.8661425Z Updating files:  50% (7899/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.9156910Z Updating files:  51% (8057/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:12.9790526Z Updating files:  52% (8215/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.0500983Z Updating files:  53% (8373/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.0702210Z Updating files:  54% (8531/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.0819215Z Updating files:  55% (8689/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.1024423Z Updating files:  56% (8847/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.1205209Z Updating files:  57% (9005/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.1282391Z Updating files:  58% (9163/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.2048611Z Updating files:  59% (9321/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.2512487Z Updating files:  60% (9479/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.2782737Z Updating files:  61% (9637/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.3349481Z Updating files:  62% (9795/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.4089302Z Updating files:  63% (9953/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.4781298Z Updating files:  64% (10111/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.5513624Z Updating files:  65% (10269/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.5703941Z Updating files:  66% (10427/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.6175653Z Updating files:  67% (10584/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.6293782Z Updating files:  68% (10742/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.6328815Z Updating files:  68% (10829/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.6488436Z Updating files:  69% (10900/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.6636528Z Updating files:  70% (11058/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.6911826Z Updating files:  71% (11216/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.7187389Z Updating files:  72% (11374/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.7334712Z Updating files:  73% (11532/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.7517039Z Updating files:  74% (11690/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.7743097Z Updating files:  75% (11848/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.7785167Z Updating files:  76% (12006/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.7831959Z Updating files:  77% (12164/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.8066106Z Updating files:  78% (12322/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.8378261Z Updating files:  79% (12480/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.8464625Z Updating files:  80% (12638/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:13.8580418Z Updating files:  81% (12796/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.0547830Z Updating files:  82% (12954/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.0652986Z Updating files:  83% (13112/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.0787844Z Updating files:  84% (13270/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1243403Z Updating files:  85% (13428/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1306128Z Updating files:  86% (13586/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1398442Z Updating files:  87% (13744/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1471751Z Updating files:  88% (13902/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1561579Z Updating files:  89% (14060/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1678145Z Updating files:  90% (14218/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1805644Z Updating files:  91% (14376/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.1931039Z Updating files:  92% (14534/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2233628Z Updating files:  93% (14692/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2372008Z Updating files:  94% (14850/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2454291Z Updating files:  95% (15008/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2553576Z Updating files:  96% (15166/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2650268Z Updating files:  97% (15324/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2766642Z Updating files:  98% (15482/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2866191Z Updating files:  99% (15640/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2866771Z Updating files: 100% (15797/15797)
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.2867264Z Updating files: 100% (15797/15797), done.
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3209215Z Reset branch 'main'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3210706Z branch 'main' set up to track 'origin/main'.
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3254960Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3292878Z [command]/usr/bin/git log -1 --format=%H
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3321926Z 701d6a4516699e9bb6a5ac25e419c0cac6a03e27
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3524472Z ##[group]Run node --test scripts/check-web-archive.test.mjs
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3525223Z ^[[36;1mnode --test scripts/check-web-archive.test.mjs^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3554186Z shell: /usr/bin/bash -e {0}
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3554577Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3554867Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3555245Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3556005Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:14.3556337Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.0278340Z TAP version 13
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1082629Z # Subtest: extractBrokenUrls ignores successful redirects after the errors section
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1088039Z ok 1 - extractBrokenUrls ignores successful redirects after the errors section
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1088862Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1089464Z   duration_ms: 6.282384
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1090052Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1090510Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1097281Z # Subtest: extractBrokenUrls retains full-report parsing for legacy output
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1098749Z ok 2 - extractBrokenUrls retains full-report parsing for legacy output
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1099647Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1100252Z   duration_ms: 0.338187
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1100831Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1101359Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1101951Z # Subtest: extractBrokenUrls keeps every error inside the errors section
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1102899Z ok 3 - extractBrokenUrls keeps every error inside the errors section
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1105267Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1105910Z   duration_ms: 0.142823
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1106350Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1106759Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1107425Z # Subtest: extractBrokenUrls reports a timeout when the report has no errors section
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1112194Z ok 4 - extractBrokenUrls reports a timeout when the report has no errors section
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1113193Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1113775Z   duration_ms: 0.336339
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1114380Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1114914Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1115996Z # Subtest: extractBrokenUrls collects failures from every failing section, not just the first
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1117317Z ok 5 - extractBrokenUrls collects failures from every failing section, not just the first
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1118225Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1118787Z   duration_ms: 0.237088
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1119522Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1120129Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1120908Z # Subtest: extractBrokenUrls treats an unrecognised section as failing
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1121973Z ok 6 - extractBrokenUrls treats an unrecognised section as failing
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1122695Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1123273Z   duration_ms: 0.185036
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1123745Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1124207Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1124762Z # Subtest: extractBrokenUrls ignores the summary table and the healthy sections around it
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1125906Z ok 7 - extractBrokenUrls ignores the summary table and the healthy sections around it
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1126652Z   ---
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1126975Z   duration_ms: 0.108917
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1127296Z   type: 'test'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1127601Z   ...
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1287495Z 1..7
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1288180Z # tests 7
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1288627Z # suites 0
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1288992Z # pass 7
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1289331Z # fail 0
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1289633Z # cancelled 0
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1289953Z # skipped 0
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1290237Z # todo 0
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1290628Z # duration_ms 115.301757
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1379617Z ##[group]Run sed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1380309Z ^[[36;1msed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1380779Z ^[[36;1m  > LYCHEE_CHANGELOG.md^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1407569Z shell: /usr/bin/bash -e {0}
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1408137Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1408624Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1408955Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1409370Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1409682Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1709512Z ##[group]Run lycheeverse/lychee-action@v2
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1709920Z with:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1711664Z   args: --verbose --no-progress --cache --max-cache-age 1d --max-retries 6 --retry-wait-time 2 --timeout 30 --accept '200..=204,429,500..=599' --accept-timeouts --cache-exclude-status '429,500..=599' --host-concurrency 2 --host-request-interval 100ms --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)' --exclude-path '^CHANGELOG\.md$' --exclude-path docs/case-studies --exclude-path dev/log --exclude-path experiments/issue-1021-link-checker-false-positive './**/*.md' './**/*.html'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1713375Z   fail: false
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1713690Z   output: lychee/out.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1714173Z   jobSummary: true
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1714529Z   debug: false
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1714906Z   failIfEmpty: true
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1715237Z   format: markdown
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1715781Z   lycheeVersion: v0.24.2
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1716230Z   checkbox: true
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1719028Z   token: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1719310Z   workingDirectory: .
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1719682Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1719956Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1720269Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1720627Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1723206Z   GITHUB_TOKEN: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1723515Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1788176Z ##[start-action display=Set up environment;id=lychee.__run]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1822474Z ##[group]Run # Install into $RUNNER_TEMP (not $HOME) so the install path is stable
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1823111Z ^[[36;1m# Install into $RUNNER_TEMP (not $HOME) so the install path is stable^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1823704Z ^[[36;1m# across composite steps. On some runners $HOME is overridden per step^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1824301Z ^[[36;1m# (e.g. actions/checkout temporarily sets it), which made the PATH^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1824827Z ^[[36;1m# entry from one step and the install in another step diverge.^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1825308Z ^[[36;1mecho "$RUNNER_TEMP/lychee/bin" >> "$GITHUB_PATH"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1825846Z ^[[36;1mmkdir -p "$RUNNER_TEMP/lychee/bin"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1855047Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1855552Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1856052Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1856387Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1856821Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1859610Z   GITHUB_TOKEN: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.1859955Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2064190Z ##[end-action id=lychee.__run;outcome=success;conclusion=success;duration_ms=27]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2070064Z ##[start-action display=Download and extract lychee in temp directory;id=lychee.lychee-setup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2095046Z ##[group]Run # Create a temporary directory for downloads and extraction
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2096052Z ^[[36;1m# Create a temporary directory for downloads and extraction^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2096588Z ^[[36;1mTEMP_DIR="${RUNNER_TEMP}/lychee-download"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2097079Z ^[[36;1mrm -rf "${TEMP_DIR}" && mkdir -p "${TEMP_DIR}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2097486Z ^[[36;1mcd "${TEMP_DIR}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2097826Z ^[[36;1m^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2098144Z ^[[36;1mARCH=$(uname -m)^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2098571Z ^[[36;1m# Determine filename and download URL based on version^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2099078Z ^[[36;1mif [[ "${LYCHEE_VERSION}" =~ ^v0\.0|^v0\.1[0-5]\. ]]; then^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2099780Z ^[[36;1m  FILENAME="lychee-${LYCHEE_VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2100557Z ^[[36;1m  DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2103692Z ^[[36;1melse^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2104242Z ^[[36;1m  FILENAME="lychee-${ARCH}-unknown-linux-gnu.tar.gz"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2104892Z ^[[36;1m  if [[ "${LYCHEE_VERSION}" == 'nightly' ]]; then^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2105984Z ^[[36;1m    DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/nightly/${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2106789Z ^[[36;1m  elif [[ "${LYCHEE_VERSION}" == 'latest' ]]; then^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2107602Z ^[[36;1m    DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/latest/download/${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2108423Z ^[[36;1m  else^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2109194Z ^[[36;1m    DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2110024Z ^[[36;1m  fi^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2110496Z ^[[36;1mfi^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2110868Z ^[[36;1m^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2111350Z ^[[36;1mecho "Downloading from: ${DOWNLOAD_URL}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2111913Z ^[[36;1mcurl -sfLO "${DOWNLOAD_URL}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2112370Z ^[[36;1m^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2112911Z ^[[36;1mecho "Extracting ${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2113285Z ^[[36;1mtar -xvzf "${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2113673Z ^[[36;1mrm -rv "${FILENAME}"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2114010Z ^[[36;1m^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2114395Z ^[[36;1m# Detect if lychee binary is in a subfolder within the tar.gz^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2115016Z ^[[36;1mif ! [[ -f "${TEMP_DIR}/lychee" ]]; then^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2116346Z ^[[36;1m  TEMP_DIR="$(echo "${TEMP_DIR}"/lychee-*)"  # need `echo` to evaluate glob^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2116838Z ^[[36;1mfi^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2117179Z ^[[36;1mif ! [[ -f "${TEMP_DIR}/lychee" ]]; then^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2117704Z ^[[36;1m  echo "Cannot find lychee binary in $TEMP_DIR. Did the archive structure change?" >&2^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2118203Z ^[[36;1m  exit 1^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2118496Z ^[[36;1mfi^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2118846Z ^[[36;1m^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2119189Z ^[[36;1m# Output temp directory for use in later steps^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2119627Z ^[[36;1mecho "temp_dir=${TEMP_DIR}" >> $GITHUB_OUTPUT^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2151132Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2151666Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2151995Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2152822Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2153220Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2156602Z   GITHUB_TOKEN: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2156936Z   LYCHEE_VERSION: v0.24.2
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2157293Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.2582961Z Downloading from: https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5616830Z Extracting lychee-x86_64-unknown-linux-gnu.tar.gz
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5644446Z lychee-x86_64-unknown-linux-gnu/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5645232Z lychee-x86_64-unknown-linux-gnu/README.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5646100Z lychee-x86_64-unknown-linux-gnu/docs/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5647095Z lychee-x86_64-unknown-linux-gnu/docs/lychee.1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5647998Z lychee-x86_64-unknown-linux-gnu/docs/TROUBLESHOOTING.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5648962Z lychee-x86_64-unknown-linux-gnu/docs/PRE_COMMIT.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5649860Z lychee-x86_64-unknown-linux-gnu/complete/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5650792Z lychee-x86_64-unknown-linux-gnu/complete/_lychee.ps1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5651641Z lychee-x86_64-unknown-linux-gnu/complete/lychee.elv
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5652860Z lychee-x86_64-unknown-linux-gnu/complete/lychee.fish
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5653637Z lychee-x86_64-unknown-linux-gnu/complete/lychee.bash
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5654476Z lychee-x86_64-unknown-linux-gnu/complete/_lychee
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.5655627Z lychee-x86_64-unknown-linux-gnu/lychee
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7229105Z removed 'lychee-x86_64-unknown-linux-gnu.tar.gz'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7261370Z ##[end-action id=lychee.lychee-setup;outcome=success;conclusion=success;duration_ms=519]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7267361Z ##[start-action display=Install lychee;id=lychee.__run_2]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7309907Z ##[group]Run # Install lychee from the temporary directory
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7310613Z ^[[36;1m# Install lychee from the temporary directory^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7311857Z ^[[36;1minstall -t "$RUNNER_TEMP/lychee/bin" -D "/home/runner/work/_temp/lychee-download/lychee-x86_64-unknown-linux-gnu/lychee"^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7338099Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7338585Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7338880Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7339246Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7339647Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7342498Z   GITHUB_TOKEN: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.7342835Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8615813Z ##[end-action id=lychee.__run_2;outcome=success;conclusion=success;duration_ms=134]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8626057Z ##[start-action display=Run Lychee;id=lychee.run-lychee]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8647740Z ##[group]Run /home/runner/work/_actions/lycheeverse/lychee-action/v2/entrypoint.sh
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8648412Z ^[[36;1m/home/runner/work/_actions/lycheeverse/lychee-action/v2/entrypoint.sh^[[0m
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8674759Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8676142Z env:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8676464Z   GIT_CONFIG_COUNT: 1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8676799Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8677287Z   GIT_CONFIG_VALUE_0: main
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8680303Z   GITHUB_TOKEN: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8682657Z   INPUT_TOKEN: ***
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8684321Z   INPUT_ARGS: --verbose --no-progress --cache --max-cache-age 1d --max-retries 6 --retry-wait-time 2 --timeout 30 --accept '200..=204,429,500..=599' --accept-timeouts --cache-exclude-status '429,500..=599' --host-concurrency 2 --host-request-interval 100ms --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)' --exclude-path '^CHANGELOG\.md$' --exclude-path docs/case-studies --exclude-path dev/log --exclude-path experiments/issue-1021-link-checker-false-positive './**/*.md' './**/*.html'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8686154Z   INPUT_DEBUG: false
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8686501Z   INPUT_FAIL: false
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8686802Z   INPUT_FAILIFEMPTY: true
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8687332Z   INPUT_FORMAT: markdown
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8687679Z   INPUT_JOBSUMMARY: true
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8687970Z   INPUT_CHECKBOX: true
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8688330Z   INPUT_OUTPUT: lychee/out.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8688886Z   SUMMARY_URL: https://github.com/link-assistant/formal-ai/actions/runs/33955786081#summary-101278771516
+Check Links	UNKNOWN STEP	2026-09-05T08:38:15.8689431Z ##[endgroup]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1715911Z [IGNORED] data:, (at 20:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1717590Z [EXCLUDED] file:///home/runner/work/formal-ai/formal-ai/src/web/app/styles.css?v=__FORMAL_AI_ASSET_VERSION__ (at 21:34) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1719182Z [IGNORED] data:, (at 17:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1720120Z [IGNORED] data:, (at 22:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1721037Z [IGNORED] data:, (at 24:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1721904Z [IGNORED] data:, (at 22:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1722819Z [IGNORED] data:, (at 17:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1768162Z [IGNORED] data:, (at 23:28) | Unsupported: URL is missing a hostname
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1770036Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/103 (at 10:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1785316Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/666 (at 1239:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1797739Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/658 (at 1262:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1799070Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/665 (at 1264:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1800286Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 1342:30) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1801923Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 1342:93) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1803139Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 1359:56) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1804440Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 1368:33) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1805902Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/282 (at 1375:57) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1824807Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 1384:16) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1828082Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/674 (at 1384:79) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1831742Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 1385:26) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1834376Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/698 (at 1387:16) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1835892Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 1387:79) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1837154Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/663 (at 1392:2) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1838456Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/699 (at 1393:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1839680Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/698 (at 1394:22) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1840929Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/658 (at 1396:2) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1842098Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/702 (at 1397:24) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1843326Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/703 (at 1399:2) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1844611Z [EXCLUDED] https://github.com/link-assistant/hive-mind/pull/2143 (at 134:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1854329Z [EXCLUDED] https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md (at 360:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1874613Z [EXCLUDED] https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/LICENSE (at 361:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1889632Z [EXCLUDED] https://openai.com/policies/services-agreement/ (at 365:11) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1891779Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/483 (at 7:169) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1893906Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/893 (at 1037:1350) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1896568Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/244 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1898183Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/328 (at 15:40) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1900503Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/329 (at 16:5) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1902180Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/355 (at 23:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1903993Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/364 (at 23:71) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1905749Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 24:37) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1907656Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/377 (at 26:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1909505Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 40:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1911071Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 41:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1912621Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/262 (at 43:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1914155Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/272 (at 44:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1915662Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 54:12) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1917131Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/279 (at 55:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1919038Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/280 (at 56:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1920810Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/281 (at 57:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1922539Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/282 (at 58:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1924406Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 59:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1926291Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 64:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1928117Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 64:67) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1929867Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/873 (at 69:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1931499Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 82:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1933150Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 82:67) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1934966Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/279 (at 122:213) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1936610Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/412 (at 124:354) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1938341Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/412 (at 126:433) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1940050Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 129:197) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1941765Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 133:183) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1945724Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/301 (at 133:310) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1947617Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/279 (at 134:156) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1950775Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/280 (at 135:83) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1952812Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/281 (at 136:159) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1959754Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/658 (at 137:397) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1961561Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 138:346) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1963197Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/873 (at 138:495) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1964666Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/299 (at 139:276) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1966354Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/663 (at 139:431) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1967745Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/300 (at 140:215) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1969180Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/301 (at 141:184) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1970760Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/302 (at 142:210) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1972226Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/303 (at 143:331) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1973548Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/315 (at 143:455) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1975089Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 144:233) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1976786Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 144:372) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1978222Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 145:400) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1979600Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 145:463) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1980933Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 151:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1982444Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/260 (at 151:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1984223Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/247 (at 152:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1985681Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/261 (at 152:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1987081Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/248 (at 153:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1990182Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/263 (at 153:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1991784Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/249 (at 154:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1993138Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/264 (at 154:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1994418Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/250 (at 155:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1995960Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/265 (at 155:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1997302Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/251 (at 156:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.1998842Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/266 (at 156:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2000271Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/252 (at 157:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2001603Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/267 (at 157:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2002982Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/253 (at 158:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2004670Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/268 (at 158:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2006589Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/254 (at 159:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2008078Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/269 (at 159:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2010077Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/255 (at 160:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2011428Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/270 (at 160:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2012867Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/256 (at 161:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2014241Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/271 (at 161:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2015838Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/257 (at 162:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2017146Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/273 (at 162:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2018665Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/258 (at 163:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2020022Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/274 (at 163:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2021522Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 164:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2022969Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/275 (at 164:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2024527Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 165:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2026407Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/285 (at 165:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2027771Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/279 (at 166:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2031513Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/287 (at 166:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2033607Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/280 (at 167:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2034939Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/289 (at 167:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2036376Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/281 (at 168:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2037744Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/290 (at 168:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2039021Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/282 (at 169:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2040247Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/291 (at 169:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2042534Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 170:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2043884Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/293 (at 170:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2045093Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 171:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2046689Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/305 (at 171:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2047940Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/299 (at 172:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2049545Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/306 (at 172:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2050782Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/300 (at 173:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2052030Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/307 (at 173:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2053589Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/301 (at 174:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2055077Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/308 (at 174:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2056407Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/302 (at 175:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2057597Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/309 (at 175:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2059059Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/303 (at 176:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2060288Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/310 (at 176:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2061475Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 177:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2062740Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/311 (at 177:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2063875Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 178:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2068096Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/319 (at 178:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2069479Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/314 (at 179:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2070709Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/320 (at 179:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2071914Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/315 (at 180:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2073079Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/321 (at 180:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2074278Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/316 (at 181:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2075573Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/322 (at 181:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2076836Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 182:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2078067Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/323 (at 182:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2079264Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/262 (at 184:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2080530Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/272 (at 185:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2081738Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/276 (at 186:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2082924Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/277 (at 187:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2084229Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 199:45) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2090762Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/328 (at 199:112) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2092294Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 207:44) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2093560Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/329 (at 207:111) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2095073Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 223:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2096515Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/328 (at 223:274) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2097598Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 224:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2098815Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/329 (at 224:260) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2100041Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 234:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2101205Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/355 (at 241:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2102212Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/366 (at 241:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2103185Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/356 (at 242:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2105004Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/367 (at 242:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2107467Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/357 (at 243:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2108613Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/369 (at 243:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2109746Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/358 (at 244:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2110829Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/370 (at 244:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2112004Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/359 (at 245:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2113235Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/371 (at 245:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2114653Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/360 (at 246:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2116175Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/372 (at 246:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2117304Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/361 (at 247:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2118492Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/373 (at 247:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2119621Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/362 (at 248:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2120753Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/374 (at 248:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2121974Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/363 (at 249:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2123127Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/375 (at 249:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2124258Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/364 (at 250:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2125540Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/376 (at 250:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2126684Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 251:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2127816Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/377 (at 251:68) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2128960Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/416 (at 255:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2130285Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/408 (at 256:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2131449Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/601 (at 272:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2132576Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/538 (at 274:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2133801Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/635 (at 312:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2134917Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/526 (at 314:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2136338Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/890 (at 324:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2137525Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/917 (at 336:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2138655Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 349:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2139881Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 355:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2141022Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/699 (at 362:408) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2142228Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/698 (at 363:120) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2143512Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 364:409) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2144672Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/657 (at 364:473) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2145954Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/701 (at 364:537) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2147083Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/705 (at 364:601) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2148240Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/686 (at 365:175) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2149497Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/702 (at 365:239) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2150690Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/681 (at 366:171) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2151893Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/682 (at 366:235) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2153375Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/671 (at 366:299) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2154601Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/687 (at 366:363) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2156361Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/703 (at 367:401) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2157674Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/662 (at 368:74) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2158963Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/704 (at 368:138) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2160243Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/705 (at 369:73) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2161447Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/660 (at 370:125) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2162647Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/706 (at 370:189) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2164295Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/707 (at 371:124) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2165991Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/708 (at 372:262) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2167291Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/709 (at 373:105) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2168485Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/700 (at 374:52) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2169824Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 375:101) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2171020Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/659 (at 376:110) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2172222Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/663 (at 376:174) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2175649Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/664 (at 376:238) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2179647Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/665 (at 377:111) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2180963Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/670 (at 377:174) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2182129Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/658 (at 377:238) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2183360Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/673 (at 378:226) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2184712Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 378:291) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2186137Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/657 (at 378:356) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2187411Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 383:16) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2188610Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/674 (at 383:79) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2189797Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/698 (at 386:16) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2191035Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 386:79) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2192206Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/914 (at 394:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2193410Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/665 (at 405:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2194637Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/670 (at 405:64) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2195928Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/700 (at 407:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2197227Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/705 (at 408:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2198404Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 410:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2199613Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 412:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2200802Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/902 (at 425:179) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2202103Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 425:242) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2203285Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/705 (at 428:38) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2204463Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/700 (at 433:45) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2205944Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 434:58) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2207021Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/665 (at 436:103) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2208136Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/670 (at 436:166) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2209610Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/916 (at 444:2) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2210747Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/924 (at 444:65) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2212147Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/936 (at 515:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2213347Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/982 (at 527:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2214608Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1021 (at 541:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2215824Z [EXCLUDED] https://github.com/openai/codex/issues/39487 (at 179:166) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2217073Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300 (at 992:726) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2218282Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/873 (at 1179:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2219853Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1246:36) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2221046Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1252:35) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2222265Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1261:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2223442Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1271:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2224693Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1279:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2226208Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1286:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2227423Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/980 (at 1294:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2228656Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/864 (at 1714:241) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2229953Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/858 (at 1758:180) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2231364Z [EXCLUDED] https://github.com/link-foundation/meta-language/issues/41 (at 4653:726) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2233114Z [EXCLUDED] https://github.com/link-foundation/meta-language/issues/42 (at 4653:793) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2234376Z [EXCLUDED] https://github.com/link-foundation/meta-language/issues/43 (at 4653:860) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2246476Z [EXCLUDED] https://github.com/link-foundation/meta-language/issues/64 (at 4653:1149) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2247989Z [EXCLUDED] https://example.com/placeholder (at 5106:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2249017Z [EXCLUDED] https://example.com/placeholder (at 5106:46) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2250214Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 6381:64) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2251644Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 6381:127) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2253805Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 6383:49) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2255605Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 6383:112) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2256864Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 6384:47) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2258266Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 6384:110) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2259511Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 6385:47) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2260750Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 6385:110) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2262012Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 6393:20) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2263376Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 6394:36) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2264599Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 6394:99) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2269638Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 6397:170) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2271062Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 6397:233) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2272913Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/185 (at 6892:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2274122Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/185 (at 6909:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2275517Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/280 (at 174:109) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2276740Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/666 (at 175:121) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2278077Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/703 (at 176:196) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2279322Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/244 (at 237:42) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2280524Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/349 (at 239:11) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2281675Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/559 (at 253:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2282914Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/540 (at 256:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2286518Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/558 (at 258:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2288534Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/468 (at 261:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2289924Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/680 (at 262:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2291139Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/702 (at 267:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2292497Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 271:23) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2293715Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/701 (at 272:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2294919Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/657 (at 274:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2296290Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/704 (at 276:19) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2297866Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/705 (at 281:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2298986Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/706 (at 283:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2300571Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/707 (at 286:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2302818Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/408 (at 296:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2303879Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/488 (at 3:15) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2304992Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/489 (at 4:15) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2306310Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1 (at 5:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2307420Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/253 (at 33:275) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2308537Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/6 (at 48:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2309606Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/8 (at 60:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2310697Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/10 (at 84:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2311970Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/12 (at 98:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2313082Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/843 (at 114:1079) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2314348Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/14 (at 133:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2315824Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/17#issuecomment-4458370500 (at 150:22) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2317145Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/16 (at 171:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2318381Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/18 (at 193:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2319588Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/63 (at 210:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2320880Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/78 (at 229:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2322097Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/80 (at 247:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2323284Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/96 (at 268:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2324593Z [EXCLUDED] https://github.com/link-assistant/calculator/issues/158 (at 282:103) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2326060Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/103 (at 287:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2327241Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/115 (at 309:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2328380Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/117 (at 329:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2329434Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/127 (at 346:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2330642Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/129 (at 366:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2331830Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/133 (at 384:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2333418Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/843 (at 395:523) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2334577Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/159 (at 412:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2335934Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/162 (at 444:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2337250Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/187 (at 458:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2338355Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/195 (at 473:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2342384Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/196 (at 490:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2343634Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/207 (at 505:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2344694Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/244 (at 526:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2346093Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 534:54) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2347182Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 534:117) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2347972Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 535:42) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2348710Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 535:105) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2349430Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 537:60) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2350181Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 537:123) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2350899Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 544:26) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2351670Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 544:89) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2352709Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 550:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2353451Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 550:90) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2354196Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 564:125) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2354916Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 564:188) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2356360Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 564:262) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2357597Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 564:325) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2358776Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 564:419) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2360166Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 564:482) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2361301Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 564:601) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2362447Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 564:664) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2363695Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 564:784) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2367463Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 564:847) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2369029Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/279 (at 579:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2369908Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 595:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2370613Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 607:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2371450Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/349 (at 621:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2372165Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/355 (at 626:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2372969Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 627:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2373700Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 628:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2374476Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/399 (at 648:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2375253Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/398 (at 688:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2376136Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/408 (at 712:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2377173Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/416 (at 715:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2378139Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/438 (at 744:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2379111Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/470 (at 747:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2379949Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/451 (at 769:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2380777Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/452 (at 775:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2381591Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/468 (at 790:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2382428Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/469 (at 805:18) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2383279Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/482 (at 826:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2384144Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/639 (at 829:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2384968Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/492 (at 848:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2385941Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/583 (at 852:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2387003Z [EXCLUDED] https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/85 (at 856:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2388150Z [EXCLUDED] https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/85 (at 867:152) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2389199Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/583 (at 869:185) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2390007Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/498 (at 873:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2390857Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/499 (at 894:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2391677Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/641 (at 899:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2392475Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/526 (at 918:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2393576Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/527 (at 935:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2394395Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/531 (at 957:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2395259Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/642 (at 961:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2396280Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/538 (at 991:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2397201Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/601 (at 1000:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2398102Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/601 (at 1026:198) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2398966Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/540 (at 1030:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2400107Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/494 (at 1034:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2401219Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/645 (at 1042:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2402100Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/558 (at 1084:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2403450Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/637 (at 1088:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2404378Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/637 (at 1100:234) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2405603Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/559 (at 1107:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2406477Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/560 (at 1112:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2407328Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/663 (at 1125:738) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2408284Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/563 (at 1142:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2409201Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/564 (at 1146:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2410055Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/649 (at 1180:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2410946Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/675 (at 1192:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2411823Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 1211:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2412700Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/690 (at 1216:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2413714Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/657 (at 1238:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2414596Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/735 (at 1241:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2415612Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/673 (at 1258:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2416467Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/807 (at 1261:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2417383Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/674 (at 1274:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2418258Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/815 (at 1278:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2419100Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/686 (at 1296:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2420105Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/689 (at 1308:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2421008Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/698 (at 1336:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2422082Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/816 (at 1340:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2423109Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/701 (at 1357:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2424172Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/817 (at 1361:12) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2425130Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/702 (at 1376:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2426004Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 1377:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2426772Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/675 (at 1379:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2427465Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/818 (at 1381:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2428206Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/703 (at 1414:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2429115Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/876#issuecomment-5127332907 (at 1416:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2430041Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/706 (at 1442:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2430941Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/880 (at 1445:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2431778Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/708 (at 1463:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2432540Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/883 (at 1466:10) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2433339Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/709 (at 1484:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2434391Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/834 (at 1499:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2435548Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/837 (at 1505:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2436271Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/835 (at 1524:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2436964Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/900 (at 1527:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2437704Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/839 (at 1546:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2438459Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/838 (at 1548:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2439219Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/844 (at 1567:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2439928Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/855 (at 1571:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2440628Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/847 (at 1591:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2441374Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/857 (at 1595:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2442085Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/848 (at 1613:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2442860Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/897 (at 1617:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2443670Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/858 (at 1637:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2444376Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/899 (at 1639:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2445126Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/864 (at 1654:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2446089Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/910 (at 1656:13) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2447051Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/873 (at 1670:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2447822Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/890 (at 1690:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2448571Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/891 (at 1707:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2449385Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 1708:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2450174Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/406 (at 1709:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2450911Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/893 (at 1728:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2451666Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 1729:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2452744Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/563 (at 1731:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2453533Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/894 (at 1757:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2454303Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 1758:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2455118Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/895 (at 1775:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2456162Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 1776:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2456982Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 1794:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2457800Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/914 (at 1812:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2458533Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/244 (at 1814:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2459270Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 1815:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2460007Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/917 (at 1842:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2460730Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/918 (at 1859:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2461481Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/919 (at 1874:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2462308Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/921 (at 1891:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2463036Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/922 (at 1909:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2463808Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1005 (at 1913:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2464537Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/923 (at 1927:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2465574Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1006 (at 1929:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2466443Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/924 (at 1943:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2467261Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/931 (at 1964:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2468012Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/932 (at 1984:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2468742Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/119 (at 1985:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2469709Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1009 (at 2002:69) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2470432Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/933 (at 2008:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2471167Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/123 (at 2010:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2471994Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/124 (at 2011:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2472867Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1010 (at 2033:154) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2473653Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/936 (at 2042:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2474407Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1016 (at 2056:435) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2475317Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/960 (at 2060:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2476283Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/222#issuecomment-4513844358 (at 2064:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2477255Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/234#issuecomment-4528554549 (at 2066:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2478184Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/961 (at 2084:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2479110Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/973 (at 2102:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2479847Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/927 (at 2103:22) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2480779Z [EXCLUDED] https://github.com/link-assistant/hive-mind/pull/2143 (at 2114:416) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2481574Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/980 (at 2119:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2482385Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/982 (at 2134:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2483137Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/991 (at 2158:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2483894Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 2159:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2484699Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1012 (at 2184:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2485669Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1014 (at 2203:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2486487Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1017 (at 2223:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2487456Z [EXCLUDED] https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135 (at 2250:307) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2488468Z [EXCLUDED] https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137 (at 2250:411) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2489610Z [EXCLUDED] https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60 (at 2250:511) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2490687Z [EXCLUDED] https://github.com/github/codeql/issues/19982#issuecomment-5309221141 (at 2250:679) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2491529Z [EXCLUDED] https://github.com/github/codeql/issues/19982#issuecomment-5309264165 (at 2250:832) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2492398Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1021 (at 2257:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2493080Z [EXCLUDED] https://github.com/openai/codex/issues/39487 (at 2295:87) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2493834Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1073 (at 2310:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2494552Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/658 (at 2341:797) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2495494Z [EXCLUDED] https://github.com/egraphs-good/egg/blob/2f31b28e3f9d78e02273b6c6d4201b5b0720b343/tests/math.rs (at 118:16) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2496727Z [EXCLUDED] https://github.com/s-arash/ascent/blob/cf5e9a87525bb95268cf6680a59882264b0fe0de/ascent/examples/transitive_graph_closure.rs (at 119:33) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2507775Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/454 (at 4:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2510513Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/674 (at 317:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2512115Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/667 (at 344:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2513605Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/669 (at 356:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2514902Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/662 (at 370:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2516411Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/704 (at 372:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2517455Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/670 (at 385:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.2518755Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/668 (at 399:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.5478765Z [EXCLUDED] https://openai.com/index/introducing-simpleqa/ (at 241:28) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.5935117Z [EXCLUDED] https://artofproblemsolving.com/wiki/index.php/AIME_Problems_and_Solutions (at 250:30) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.6856204Z [EXCLUDED] https://github.com/actions/runner/issues/491 (at 50:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.6857775Z [EXCLUDED] https://github.com/link-foundation/browser-commander/issues/29 (at 78:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.6956925Z [EXCLUDED] https://github.com/link-foundation/browser-commander/issues/33 (at 162:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7338663Z [EXCLUDED] https://app.docker.com/settings/personal-access-tokens (at 212:84) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7377830Z [EXCLUDED] https://github.com/link-foundation/browser-commander/issues/31 (at 277:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7827294Z [EXCLUDED] https://github.com/link-assistant/agent/blob/main/docs/stdin-mode.md (at 256:41) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7967553Z [EXCLUDED] https://github.com/openai/codex/blob/main/codex-rs/exec/src/cli.rs (at 258:30) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7969379Z [EXCLUDED] https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/cli-reference.md (at 259:32) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7971459Z [EXCLUDED] https://github.com/QwenLM/qwen-code/blob/main/packages/sdk-typescript/README.md (at 260:31) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.7972510Z [EXCLUDED] https://github.com/anomalyco/opencode/blob/dev/packages/opencode/src/cli/cmd/run.ts (at 261:31) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:16.8431398Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/918 (at 3:28) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.0008261Z [EXCLUDED] https://openai.com/policies/services-agreement/ (at 41:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.0009684Z [EXCLUDED] https://openai.com/policies/eu-terms-of-use/ (at 43:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.0010591Z [EXCLUDED] https://openai.com/index/introducing-gpt-oss/ (at 45:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.1964467Z [EXCLUDED] https://github.com/link-assistant/agent/blob/main/MODELS.md (at 501:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2469182Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/468 (at 605:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2944709Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/658 (at 8:797) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2946619Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/6 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2947942Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/8 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2949220Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/10 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2950315Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/12 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2951525Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/843 (at 19:1079) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2952451Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/16 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2953535Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/14 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2954761Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/17#issuecomment-4458370500 (at 3:22) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2956106Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/80 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2956800Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/18 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2957565Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/117 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2958525Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/78 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2959767Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/63 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2960933Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/96 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2962067Z [EXCLUDED] https://github.com/link-assistant/calculator/issues/158 (at 17:103) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2963189Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/127 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2964368Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/115 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2965252Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/103 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2966296Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/129 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2967781Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/133 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2968751Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/843 (at 14:523) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2969794Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/159 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2970752Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/162 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2971588Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/187 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2972703Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/195 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2973494Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/196 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2974355Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/207 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2975578Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/244 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2977071Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 11:54) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2978318Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 11:117) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2979489Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 12:42) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2980739Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 12:105) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2981726Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 14:60) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2982839Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 14:123) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2983731Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 21:26) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2984896Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 21:89) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2986586Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 27:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2987837Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 27:90) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2989150Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/246 (at 41:125) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2990424Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/259 (at 41:188) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2991591Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/278 (at 41:262) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2993520Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 41:325) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2994868Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/298 (at 41:419) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2996278Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/304 (at 41:482) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2997627Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/313 (at 41:601) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.2998826Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/317 (at 41:664) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3000023Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/326 (at 41:784) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3001496Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 41:847) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3002650Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/283 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3003783Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/279 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3004998Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/327 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3006427Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/349 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3007746Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/355 (at 8:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3008439Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 9:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3009145Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/365 (at 10:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3009887Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/399 (at 3:8) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3010588Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/398 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3011327Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/408 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3012016Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/416 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3012712Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/438 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3013801Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/470 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3015035Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/451 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3016414Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/452 (at 9:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3017625Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/468 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3018704Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/469 (at 18:18) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3019451Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/482 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3020135Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/639 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3020839Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/499 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3021518Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/641 (at 8:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3022617Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/492 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3023743Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/583 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3025098Z [EXCLUDED] https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/85 (at 11:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3026774Z [EXCLUDED] https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/85 (at 22:152) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3027618Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/583 (at 24:185) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3028712Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/498 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3029420Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/527 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3030291Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/526 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3031013Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/531 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3031703Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/642 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3032492Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/538 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3033255Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/601 (at 12:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3033984Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/601 (at 38:198) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3034691Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/558 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3035525Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/637 (at 7:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3036246Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/637 (at 19:234) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3036983Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/540 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3037690Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/494 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3038432Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/645 (at 15:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3039217Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/559 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3039893Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/560 (at 8:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3040672Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/663 (at 21:738) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3041368Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/563 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3042052Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/564 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3042813Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/649 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3128771Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/675 (at 15:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3131216Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/657 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3132463Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/735 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3133854Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/656 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3134920Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/690 (at 8:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3136161Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/673 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3137472Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/807 (at 6:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3138545Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/674 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3139704Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/815 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3140484Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/701 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3141510Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/817 (at 7:12) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3142225Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/698 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3142922Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/816 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3143665Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/686 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3144501Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/689 (at 15:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3145272Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/702 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3146362Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 4:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3147058Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/675 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3147869Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/818 (at 8:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3148665Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/706 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3149464Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/880 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3150286Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/708 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3151133Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/883 (at 6:10) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3152074Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/709 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3153185Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/834 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3154010Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/837 (at 9:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3154830Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/835 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3156403Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/900 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3157347Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/847 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3158044Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/857 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3158808Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/839 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3159520Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/838 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3160243Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/703 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3161070Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/876#issuecomment-5127332907 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3161915Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/844 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3162660Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/855 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3163375Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/848 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3164091Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/897 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3164847Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/858 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3165937Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/899 (at 5:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3166907Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/864 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3167631Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/910 (at 5:13) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3168479Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/873 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3169216Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/890 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3170053Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/891 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3170814Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 4:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3171614Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/406 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3172338Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/893 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3173040Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 4:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3173740Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/563 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3174440Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/894 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3175135Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 4:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3176025Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/895 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3176744Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 4:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3177441Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/909 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3178147Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/914 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3178839Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/244 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3179549Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/651 (at 6:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3180308Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/917 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3180997Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/918 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3181798Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/919 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3182532Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/921 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3183229Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/922 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3183991Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1005 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3184700Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/923 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3185781Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1006 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3186531Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/924 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3187245Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/931 (at 3:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3188134Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/932 (at 3:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3188886Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/119 (at 4:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3189629Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1009 (at 21:69) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3190439Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/933 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3191136Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/123 (at 5:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3191894Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/124 (at 6:4) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3192616Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1010 (at 28:154) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3193448Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/936 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3194167Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/1016 (at 17:435) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3194867Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/960 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3195936Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/222#issuecomment-4513844358 (at 7:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3197078Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/234#issuecomment-4528554549 (at 9:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3197880Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/961 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3198838Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/973 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3199539Z [EXCLUDED] https://github.com/link-assistant/formal-ai/pull/927 (at 4:22) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3200348Z [EXCLUDED] https://github.com/link-assistant/hive-mind/pull/2143 (at 15:416) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3201070Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/980 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3201800Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/982 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3202557Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/991 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3203289Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/710 (at 4:14) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3204268Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1012 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3205220Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1014 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3206415Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1017 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3207734Z [EXCLUDED] https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/135 (at 30:307) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3209164Z [EXCLUDED] https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/137 (at 30:411) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3210687Z [EXCLUDED] https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/60 (at 30:511) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3212182Z [EXCLUDED] https://github.com/github/codeql/issues/19982#issuecomment-5309221141 (at 30:679) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3213930Z [EXCLUDED] https://github.com/github/codeql/issues/19982#issuecomment-5309264165 (at 30:832) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3215134Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1021 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3216467Z [EXCLUDED] https://github.com/openai/codex/issues/39487 (at 41:87) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3217700Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1073 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3218879Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/1 (at 3:27) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3220006Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/253 (at 31:275) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3764546Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/353 (at 3:9) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3766026Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/330 (at 3:26) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3766814Z [EXCLUDED] https://github.com/link-assistant/agent/issues/281 (at 8:22) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3767629Z [EXCLUDED] https://github.com/link-assistant/agent/issues/249 (at 47:3) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3768405Z [EXCLUDED] https://github.com/link-assistant/hive-mind/issues/2158 (at 31:2) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3769226Z [EXCLUDED] https://github.com/microsoft/playwright/issues/33031 (at 23:2) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3924732Z [EXCLUDED] https://github.com/openai/codex/issues/39487 (at 22:23) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3925900Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/736 (at 4:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3927123Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/960 (at 3:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.3927948Z [EXCLUDED] https://github.com/link-assistant/formal-ai/issues/479 (at 15:7) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:17.4311247Z [EXCLUDED] https://github.com/link-assistant/formal-ai/blob/main/LICENSE (at 55:1) | This is due to your 'exclude' values
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3059405Z # Summary
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3060316Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3060707Z | Status         | Count |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3061343Z |----------------|-------|
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3062167Z | 🔍 Total       | 1292  |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3062486Z | 🔗 Unique      | 702   |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3062931Z | ✅ Successful  | 564   |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3063594Z | ⏳ Timeouts    | 0     |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3063962Z | 🔀 Redirected  | 19    |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3064690Z | 👻 Excluded    | 721   |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3065015Z | ❓ Unknown     | 0     |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3065595Z | 🚫 Errors      | 0     |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3065972Z | ⛔ Unsupported | 7     |
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3066160Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3066305Z ## Redirects per input
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3066517Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3066688Z ### Redirects in changelog.d/README.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3066935Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3067252Z * https://scriv.readthedocs.io/ --[302]--> https://scriv.readthedocs.io/en/latest/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3067626Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3067801Z ### Redirects in CONTRIBUTING.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3067998Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3068273Z * https://scriv.readthedocs.io/ --[302]--> https://scriv.readthedocs.io/en/latest/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3068603Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3068760Z ### Redirects in data/benchmarks/LICENSES.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3069006Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3069296Z * https://research.facebook.com/downloads/babi/ --[302]--> https://ai.meta.com/resources/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3069826Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3069958Z ### Redirects in docs/benchmarks.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3070185Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3070774Z * https://ai.google.com/research/NaturalQuestions --[301]--> https://ai.google.com/research/NaturalQuestions/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3071428Z * https://allenai.org/data/arc --[302]--> https://huggingface.co/datasets/allenai/ai2_arc
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3072055Z * https://github.com/lm-sys/arena-hard-auto --[301]--> https://github.com/lmarena/arena-hard-auto
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3072474Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3072623Z ### Redirects in docs/ci-cd/troubleshooting.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3072876Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3073782Z * https://docs.github.com/actions/security-guides/using-secrets-in-github-actions --[302]--> https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3074979Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3075332Z ### Redirects in docs/configuration/orchestration.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3075827Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3076304Z * https://docs.anthropic.com/en/docs/claude-code/cli-usage --[301]--> https://code.claude.com/docs/en/cli-usage
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3076734Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3077021Z ### Redirects in docs/desktop/server-api.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3077324Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3077894Z * https://developers.openai.com/codex/config-reference --[308]--> https://learn.chatgpt.com/docs/config-file/config-reference
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3078641Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3078824Z ### Redirects in docs/upload-memory.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3079190Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3079498Z * https://gist.github.com/ --[302]--> https://gist.github.com/starred
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3080558Z * https://link-assistant.github.io/formal-ai --[301]--> https://link-assistant.github.io/formal-ai/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3081063Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3081284Z ### Redirects in LEGAL-COMPLIANCE.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3081497Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3081853Z * https://docs.mistral.ai/models/model-cards/mistral-7b-0-1 --[308]--> https://docs.mistral.ai/models/mistral-7b-0-1
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3082329Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3082456Z ### Redirects in LYCHEE_CHANGELOG.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3082733Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3085037Z * https://calendar.google.com/calendar/render?action=TEMPLATE%E2%80%A6 --[302]--> https://accounts.google.com/ServiceLogin?service=cl&passive=1209600&osid=1&continue=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&followup=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&emr=1 --[302]--> https://accounts.google.com/v3/signin/identifier?continue=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&emr=1&followup=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&osid=1&passive=1209600&service=cl&flowName=WebLiteSignIn&flowEntry=ServiceLogin&dsh=S889340575:1788597496451290
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3087639Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3088007Z ### Redirects in README.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3088360Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3088543Z * http://unlicense.org/ --[301]--> https://unlicense.org/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3089774Z * https://codecov.io/gh/link-assistant/formal-ai --[301]--> https://app.codecov.io/gh/link-assistant/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3090562Z * https://docs.rs/formal-ai --[302]--> https://docs.rs/formal-ai/latest/formal_ai/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3091091Z * https://www.rust-lang.org/ --[301]--> https://rust-lang.org/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3091337Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3091672Z ### Redirects in src/web/download/assets/screenshots/README.md
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3092191Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3092465Z * https://konard.github.io/vk-bot-desktop --[301]--> https://konard.github.io/vk-bot-desktop/
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3092854Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3092857Z 
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3116993Z ##[notice]Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/33955786081#summary-101278771516
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3148120Z ##[end-action id=lychee.run-lychee;outcome=success;conclusion=success;duration_ms=16452]
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.3371540Z Post job cleanup.
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4252828Z [command]/usr/bin/git version
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4295643Z git version 2.55.0
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4330331Z Temporarily overriding HOME='/home/runner/work/_temp/84a1b1b6-69e5-4aa0-8a53-360d97562f52' before making global git config changes
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4331937Z Adding repository directory to the temporary git global config as a safe directory
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4336858Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4376352Z Removing SSH command configuration
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4377575Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4415569Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4664789Z Removing HTTP extra header
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4671477Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4728418Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4971000Z Removing includeIf entries pointing to credentials config files
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.4979763Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5008358Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5009033Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5009512Z includeif.gitdir:/github/workspace/.git.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5009955Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5017907Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5040485Z /home/runner/work/_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5054801Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-eb647a95\-e703\-4bc5\-aec8\-f48da39ec5ca\.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5116581Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5158487Z /home/runner/work/_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5169980Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-eb647a95\-e703\-4bc5\-aec8\-f48da39ec5ca\.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5197405Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5228847Z /github/runner_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5236834Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-eb647a95\-e703\-4bc5\-aec8\-f48da39ec5ca\.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5273901Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5299553Z /github/runner_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5308350Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-eb647a95\-e703\-4bc5\-aec8\-f48da39ec5ca\.config
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5346874Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5566235Z Removing credentials config '/home/runner/work/_temp/git-credentials-eb647a95-e703-4bc5-aec8-f48da39ec5ca.config'
+Check Links	UNKNOWN STEP	2026-09-05T08:38:32.5716325Z Cleaning up orphan processes

@@ -34,7 +34,7 @@ fn repository_file(path: &str) -> String {
         .replace("\r\n", "\n")
 }
 
-fn workflow_files() -> Vec<(String, String)> {
+pub fn workflow_files() -> Vec<(String, String)> {
     let dir = format!("{}/.github/workflows", env!("CARGO_MANIFEST_DIR"));
     let mut files: Vec<(String, String)> = fs::read_dir(&dir)
         .expect("workflows directory")
@@ -58,7 +58,7 @@ fn workflow_files() -> Vec<(String, String)> {
 
 /// `timeout-minutes:` as written, which may be a `${{ ... }}` expression when a
 /// matrix leg needs a different cap than its siblings.
-fn job_timeout(job: &str) -> Option<&str> {
+pub fn job_timeout(job: &str) -> Option<&str> {
     job.lines()
         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
         .map(str::trim)
@@ -571,10 +571,22 @@ fn cargo_lock_is_committed_so_cache_keys_stay_meaningful() {
          degrades all of them to one constant hash (issue #1017)"
     );
 
+    // Issue #1076 collapsed the last inline registry-cache blocks into
+    // `.github/actions/cache-cargo-registry`, so the key this test protects now
+    // lives in the composite action rather than being repeated in release.yml.
+    // Accept either home: what matters is that a `hashFiles('**/Cargo.lock')`
+    // key still exists somewhere on the path release.yml takes.
+    let action = repository_file(".github/actions/cache-cargo-registry/action.yml");
     let release = repository_file(".github/workflows/release.yml");
     assert!(
-        release.contains("hashFiles('**/Cargo.lock')"),
+        action.contains("hashFiles('**/Cargo.lock')")
+            || release.contains("hashFiles('**/Cargo.lock')"),
         "the cache keys this protects must still exist"
+    );
+    assert!(
+        release.contains("./.github/actions/cache-cargo-registry")
+            || release.contains("hashFiles('**/Cargo.lock')"),
+        "release.yml must still reach a Cargo.lock-keyed registry cache"
     );
 }
 

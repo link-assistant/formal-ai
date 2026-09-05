@@ -16,7 +16,9 @@ mkdir -p "$WORK"
 cd "$WORK"
 
 if ! command -v composer >/dev/null 2>&1; then
-  curl -sS -o composer-setup.php https://getcomposer.org/installer
+  # Retries for the same reason every other install here does: a truncated
+  # transfer is a dropped connection, and only `--retry-all-errors` covers it.
+  curl -sS --retry 3 --retry-delay 2 --retry-all-errors -o composer-setup.php https://getcomposer.org/installer
   php composer-setup.php --quiet --install-dir="$WORK" --filename=composer
   PATH="$WORK:$PATH"
   export PATH

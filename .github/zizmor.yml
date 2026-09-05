@@ -1,0 +1,73 @@
+# zizmor configuration for the workflow security audit run by
+# `.github/workflows/workflows.yml`.
+#
+# Issue #1076: all four link-foundation pipeline templates ship this file and
+# run zizmor beside actionlint. This repository ran actionlint only, so the
+# class of defect zizmor finds had no gate at all -- the first run against
+# these workflows returned four template-injection findings in `release.yml`,
+# where a `workflow_dispatch` description was interpolated straight into a
+# `run:` block.
+#
+# Blanket policy: third-party actions must be pinned to a commit hash, because
+# a mutable tag or branch of a repository we do not control is arbitrary code
+# execution in any job that holds credentials. Namespaces whose release tags we
+# rely on staying immutable are allowed to stay on a readable ref.
+#
+# The template's list is `actions/*`, `github/*`, `docker/*`, `astral-sh/*`,
+# `lycheeverse/*` and `zizmorcore/*`. This repository additionally depends on
+# the Rust toolchain and cache ecosystem, and one of those refs is deliberately
+# floating: `dtolnay/rust-toolchain@stable` means "whatever Rust is current",
+# which a commit hash cannot express. Each addition below is a namespace this
+# repository already trusted before the audit existed; the gate's value is in
+# the injection, trigger and credential audits, not in re-litigating them.
+rules:
+  # In-repository references stay workspace-relative (`uses: ./.github/...`).
+  #
+  # GitHub added the dedicated self-repository form (`uses: $/...`) in July
+  # 2026, and it is strictly better: it is immune to runtime filesystem state
+  # and it lets GitHub enforce pinning policy server-side. It is also two
+  # months old, and this repository has 34 such references -- several of them
+  # (`release.yml`, `desktop-release.yml`) on paths that only execute when a
+  # release is published, which a pull request's CI never exercises. Migrating
+  # them here would mean shipping an unverifiable change to the exact code path
+  # issue #1076 exists to stabilize.
+  #
+  # The rust pipeline template makes the same call for its one such reference:
+  #   uses: ./.github/actions/setup-buildx-resilient # zizmor: ignore[self-repository]
+  # The rationale is uniform across all 34 sites, so it is recorded once here
+  # rather than repeated on every line. Tracked for migration in issue #1076.
+  # zizmor matches base filenames here, not globs, so the 34 sites are listed
+  # by the 12 files that hold them. A new workflow using `./` will fail this
+  # audit until it is added -- deliberately, so the choice stays conscious.
+  self-repository:
+    ignore:
+      - agentic-cli-matrix.yml
+      - coverage.yml
+      - desktop-release.yml
+      - external-benchmarks.yml
+      - issue-1028-agent-ladder.yml
+      - macos-core-tests.yml
+      - proactive-failure-report-e2e.yml
+      - question-necessity-ratchet.yml
+      - release.yml
+      - summarization-ratchet.yml
+      - task-ladder.yml
+      - write-effect-ladder.yml
+
+  unpinned-uses:
+    config:
+      policies:
+        actions/*: ref-pin
+        github/*: ref-pin
+        docker/*: ref-pin
+        astral-sh/*: ref-pin
+        lycheeverse/*: ref-pin
+        zizmorcore/*: ref-pin
+        dtolnay/*: ref-pin
+        taiki-e/*: ref-pin
+        oven-sh/*: ref-pin
+        mozilla-actions/*: ref-pin
+        codecov/*: ref-pin
+        peter-evans/*: ref-pin
+        Swatinem/*: ref-pin
+        '*': hash-pin

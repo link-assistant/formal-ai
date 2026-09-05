@@ -1,0 +1,12 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/check-changelog-fragment.rs	2026-09-05 09:39:56.901043030 +0000
++++ scripts/check-changelog-fragment.rs	2026-09-05 09:37:22.098726431 +0000
+@@ -16,6 +16,9 @@
+ //!   - 1: Check failed (source changes without changelog fragment)
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! ```

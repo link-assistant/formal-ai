@@ -1,0 +1,19 @@
+=== A/B experiment (see experiments/issue_1076_template_budget_drift.sh) ===
+=== A. fractional poll interval: budget of 2s against a 10s command ===
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/run-with-budget-warning.sh
+exit=0 wall=10s (expected: exit 124 at ~2s)
+  arithmetic errors: 1
+--- scripts/run-with-budget-warning.sh
+exit=124 wall=2s (expected: exit 124 at ~2s)
+  arithmetic errors: 0
+
+=== B. integer poll, loop-body drift: budget 5s, command 60s ===
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/run-with-budget-warning.sh
+exit=124 wall=6s (expected: exit 124 at ~5s)
+--- scripts/run-with-budget-warning.sh
+exit=124 wall=6s (expected: exit 124 at ~5s)
+
+=== B under 5x CPU oversubscription (32 spinners / 6 cores), 20s budget ===
+template  : fired after 21.85s
+formal-ai : fired after 21.95s
+=> drift NOT reproduced; defect B withdrawn, only defect A is reported upstream.

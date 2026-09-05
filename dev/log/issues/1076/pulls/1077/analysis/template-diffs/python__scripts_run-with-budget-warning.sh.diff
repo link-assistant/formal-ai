@@ -1,0 +1,127 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/python-template/scripts/run-with-budget-warning.sh	2026-09-05 09:39:58.655024031 +0000
++++ scripts/run-with-budget-warning.sh	2026-09-05 09:37:22.124726147 +0000
+@@ -2,27 +2,26 @@
+ # Run a command under an execution budget that expires before the job clock.
+ #
+ # GitHub reports a job killed by `timeout-minutes` as **cancelled**, not
+-# **failed** (issue #50), so a step that is allowed to run until the runner
++# **failed** (issue #977), so a step that is allowed to run until the runner
+ # kills it converts a real, actionable timeout into a benign-looking
+-# cancellation: red on `main`, and only a warning on a pull request, where a
+-# cancellation is normally just a superseded run.
++# cancellation. Issue #1017 is that exact regression: `macOS core slice 10/12`
++# spent 133s on checkout/toolchain/artifact setup and was killed 467s into a
++# test step whose 480s budget could therefore never expire first, so the whole
++# `CI/CD Pipeline` run reported `cancelled` and no release was published.
+ #
+-# This wrapper owns the deadline instead of the runner. It warns while the
++# This wrapper owns the deadline instead of the runner: it warns while the
+ # command can still be acted on and -- unless enforcement is explicitly
+ # disabled -- terminates the command at the budget and exits 124, so the job
+ # reports `failure` with an ::error annotation naming the budget it blew.
+ #
+-# `timeout-minutes` stays in place as a backstop, never as the deadline.
+-#
+ # Usage: run-with-budget-warning.sh <budget-seconds> <label> <command> [args...]
+ #
+ # Environment:
+-#   BUDGET_WARN_RATIO_PERCENT  warn once this share of the budget is spent (70)
+-#   BUDGET_ENFORCE             `false` warns only and never terminates (true)
+-#   BUDGET_GRACE_SECONDS       SIGTERM -> SIGKILL grace period (15)
+-#   BUDGET_POLL_SECONDS        deadline polling interval (1)
+-#   BUDGET_HEARTBEAT_SECONDS   spacing of the verbose progress lines (60)
+-#   CI_VERBOSE                 `true` prints those progress lines (false)
++#   TEST_WARN_RATIO_PERCENT    warn once this share of the budget is spent (70)
++#   TEST_BUDGET_ENFORCE        `false` warns only and never terminates (true)
++#   TEST_BUDGET_GRACE_SECONDS  SIGTERM -> SIGKILL grace period (15)
++#   TEST_BUDGET_POLL_SECONDS   deadline polling interval (1)
++#   FORMAL_AI_CI_VERBOSE       `true` prints periodic progress lines (false)
+ set -euo pipefail
+ 
+ budget_seconds="${1:?budget seconds are required}"
+@@ -33,26 +32,48 @@
+   exit 2
+ }
+ 
+-warn_ratio="${BUDGET_WARN_RATIO_PERCENT:-70}"
+-enforce="${BUDGET_ENFORCE:-true}"
+-grace_seconds="${BUDGET_GRACE_SECONDS:-15}"
+-poll_seconds="${BUDGET_POLL_SECONDS:-1}"
+-heartbeat_seconds="${BUDGET_HEARTBEAT_SECONDS:-60}"
+-verbose="${CI_VERBOSE:-false}"
++warn_ratio="${TEST_WARN_RATIO_PERCENT:-70}"
++enforce="${TEST_BUDGET_ENFORCE:-true}"
++grace_seconds="${TEST_BUDGET_GRACE_SECONDS:-15}"
++poll_seconds="${TEST_BUDGET_POLL_SECONDS:-1}"
++verbose="${FORMAL_AI_CI_VERBOSE:-false}"
++heartbeat_seconds="${TEST_BUDGET_HEARTBEAT_SECONDS:-60}"
+ 
+ threshold=$((budget_seconds * warn_ratio / 100))
+ [ "$threshold" -gt 0 ] || threshold=1
+ started=$SECONDS
+ 
+ # Job control gives the command its own process group, so the whole process
+-# tree can be signalled at the deadline instead of only its root. `pytest -n`
+-# (xdist) and `pip` both spawn children that would otherwise outlive a kill
+-# aimed at the direct child alone -- which is why `timeout(1)` is not enough.
++# tree can be signalled at the deadline instead of only its root.
+ set -m
+ "$@" &
+ command_pid=$!
+ set +m
+ 
++# A budgeted Rust step that runs long has two causes with the same shape in the
++# log -- work that grew, and a compiler cache that stopped answering -- and
++# nothing printed so far tells them apart. Issue #1021 hit exactly that:
++# `Test (macos-15-intel / specification)` blew its 1200s budget still compiling
++# dependencies, and deciding whether the runner was slow or the cache was cold
++# took reconstructing per-crate rustc timestamps out of a megabyte of log
++# (`experiments/issue_1021_compile_rate_compare.py`). sccache already counts
++# the answer. It is printed when the budget is in trouble and never otherwise,
++# so a healthy run stays quiet and a red one arrives with its own diagnosis.
++report_compiler_cache() {
++  case "${RUSTC_WRAPPER:-}" in
++    *sccache*) ;;
++    *) return 0 ;;
++  esac
++  local sccache="${SCCACHE_PATH:-}"
++  [ -n "$sccache" ] || sccache="$(command -v sccache 2> /dev/null || true)"
++  [ -n "$sccache" ] || return 0
++  echo "[budget] compiler cache counters for ${label}:" >&2
++  # Never fatal: this is a diagnostic, and `set -e` is in force. A wrapper that
++  # died reporting why a step was slow would replace the finding with a worse
++  # one.
++  "$sccache" --show-stats 2>&1 | sed 's/^/[budget] /' >&2 || true
++}
++
+ signal_command_tree() {
+   local signal="$1"
+   kill "-$signal" "-$command_pid" 2> /dev/null ||
+@@ -75,7 +96,8 @@
+ 
+   if [ "$warned" = false ] && [ "$elapsed" -ge "$threshold" ]; then
+     warned=true
+-    echo "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or split the work before the budget terminates the step." >&2
++    echo "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
++    report_compiler_cache
+   fi
+ 
+   if [ "$verbose" = true ] &&
+@@ -86,7 +108,8 @@
+ 
+   if [ "$enforce" = true ] && [ "$elapsed" -ge "$budget_seconds" ]; then
+     terminated=true
+-    echo "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #50, issue #60). Speed up or split the work, or raise the budget together with the job timeout." >&2
++    echo "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
++    report_compiler_cache
+     signal_command_tree TERM
+     grace_deadline=$((SECONDS + grace_seconds))
+     while kill -0 "$command_pid" 2> /dev/null && [ "$SECONDS" -lt "$grace_deadline" ]; do
+@@ -112,6 +135,5 @@
+   exit 124
+ fi
+ 
+-printf '%s took %ss of its %ss execution budget.\n' \
+-  "$label" "$elapsed" "$budget_seconds"
++printf '%s took %ss of its %ss execution budget.\n' "$label" "$elapsed" "$budget_seconds"
+ exit "$status"

@@ -14,6 +14,7 @@ mod desktop_release_resolve;
 #[allow(dead_code)]
 #[path = "../../../scripts/detect-code-changes.rs"]
 mod detect_code_changes;
+mod fresh_merge_fetch_retry;
 mod issue_1001;
 mod issue_1012;
 mod issue_1014;
@@ -34,6 +35,7 @@ mod issue_1057;
 mod issue_1059;
 mod issue_1064;
 mod issue_1069;
+mod issue_1076;
 mod issue_717;
 mod issue_730;
 mod issue_739;
@@ -47,7 +49,9 @@ mod issue_980;
 mod issue_999;
 mod javascript_dependency_audit;
 mod macos_package_retry;
+mod network_download_retry;
 mod release_publishing;
+mod release_site_layout;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
 mod source_test_placement;

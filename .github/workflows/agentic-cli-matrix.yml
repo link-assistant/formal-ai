@@ -59,16 +59,9 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-cli-matrix-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-cli-matrix-
-            ${{ runner.os }}-cargo-
+          prefix: cli-matrix-
 
       - name: Build formal-ai (release)
         run: cargo build --release --bin formal-ai

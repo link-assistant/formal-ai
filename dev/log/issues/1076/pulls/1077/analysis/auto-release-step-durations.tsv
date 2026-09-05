@@ -1,0 +1,11 @@
+run_id	step	minutes
+33902725025	Build release	3.7
+33955786226	Build release	5.6
+33902725025	Free up runner disk space	2
+33955786226	Free up runner disk space	1.8
+33902725025	Post Publish Docker image to GHCR	0.1
+33955786226	Post Publish Docker image to GHCR	0.1
+33902725025	Publish Docker image to GHCR	25.5
+33955786226	Publish Docker image to GHCR	32.5
+33902725025	Smoke test the published crate	3.6
+33955786226	Smoke test the published crate	5.5

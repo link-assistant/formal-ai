@@ -217,6 +217,7 @@ mod issue_989;
 mod issue_991_how_to_synthesis;
 mod issue_991_incremental_decomposition;
 mod issue_996_markdown;
+mod lino_location;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

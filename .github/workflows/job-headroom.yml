@@ -1,0 +1,86 @@
+name: Job Headroom
+
+# Issue #1076 (D5). `timeout-minutes` is meant to be the backstop, never the
+# deadline -- a job killed by its cap is reported by GitHub as `cancelled`,
+# not `failed`, so it turns nothing red (issue #977). Issue #1017 answered that
+# for long *steps*: they run under `scripts/run-with-budget-warning.sh`, whose
+# budget expires first and exits 124 with an `::error`.
+#
+# Nothing answered it for whole jobs, because a cap is a constant in a YAML
+# file and the duration it bounds is only ever observed on GitHub. Measuring
+# `main` for this issue found `Coverage / Code Coverage` already *past* its
+# 40-minute cap (100.7% worst case) and `Lint and Format Check` at 84.4% and
+# rising. Both had been that way for weeks with a green pipeline.
+#
+# This workflow re-derives those ratios from the Actions API so a cap cannot
+# quietly become a deadline again. It is scheduled rather than run per pull
+# request on purpose: headroom is a property of a trend, not of a commit. A
+# pull request that touches no workflow can still be the one that pushes a job
+# over, and a pull request that does touch one has no measurements of its own
+# to be judged against.
+
+on:
+  schedule:
+    # Weekly, off-peak on Monday. The audit reads roughly 400 runs' worth of
+    # job records; a daily cadence would spend that request budget for a signal
+    # that moves over weeks.
+    - cron: '43 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'How many recent runs of the branch to sample'
+        required: false
+        default: '400'
+      branch:
+        description: 'Branch to sample (default: the default branch)'
+        required: false
+        default: ''
+
+permissions:
+  # `actions: read` is what the run and job records need. Nothing here writes.
+  actions: read
+  contents: read
+
+concurrency:
+  group: job-headroom
+  cancel-in-progress: false
+
+jobs:
+  headroom:
+    name: Audit job timeout headroom
+    runs-on: ubuntu-latest
+    # The collector makes one API request per sampled run; 400 runs measured at
+    # about 4.5 minutes. This cap is the backstop for that, and the audit it
+    # guards would be the thing to notice if it ever stopped being one.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Collect measured job durations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Both are `workflow_dispatch` inputs, so they are attacker-supplied
+          # text as far as the audit is concerned. Mapped into the environment
+          # and read as shell variables rather than interpolated into the
+          # script, which would splice them into the command line
+          # (zizmor's template-injection audit, issue #1076).
+          SAMPLE_BRANCH: ${{ inputs.branch }}
+          SAMPLE_RUNS: ${{ inputs.runs || '400' }}
+        run: |
+          set -euo pipefail
+          bash scripts/collect-job-durations.sh \
+            "${SAMPLE_BRANCH}" "${SAMPLE_RUNS}" \
+            > job-durations.tsv
+          wc -l job-durations.tsv
+      - name: Check every declared cap against what the job really costs
+        run: rust-script scripts/check-job-headroom.rs --durations job-durations.tsv
+      - name: Publish the measurements behind the verdict
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: job-durations
+          path: job-durations.tsv
+          retention-days: 90

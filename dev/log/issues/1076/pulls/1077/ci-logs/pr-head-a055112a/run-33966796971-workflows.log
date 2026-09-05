@@ -1,0 +1,741 @@
+Actionlint	Set up job	﻿2026-09-05T12:42:28.0127082Z Current runner version: '2.337.0'
+Actionlint	Set up job	2026-09-05T12:42:28.0161472Z ##[group]Runner Image Provisioner
+Actionlint	Set up job	2026-09-05T12:42:28.0162750Z Hosted Compute Agent
+Actionlint	Set up job	2026-09-05T12:42:28.0163907Z Version: 20260828.587
+Actionlint	Set up job	2026-09-05T12:42:28.0164946Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Actionlint	Set up job	2026-09-05T12:42:28.0166389Z Build Date: 2026-08-28T16:44:25Z
+Actionlint	Set up job	2026-09-05T12:42:28.0167703Z Worker ID: {3e8ae555-f06b-4b86-982d-7a02ce22d089}
+Actionlint	Set up job	2026-09-05T12:42:28.0168849Z Azure Region: eastus
+Actionlint	Set up job	2026-09-05T12:42:28.0170201Z ##[endgroup]
+Actionlint	Set up job	2026-09-05T12:42:28.0172355Z ##[group]Operating System
+Actionlint	Set up job	2026-09-05T12:42:28.0173630Z Ubuntu
+Actionlint	Set up job	2026-09-05T12:42:28.0174503Z 24.04.4
+Actionlint	Set up job	2026-09-05T12:42:28.0175298Z LTS
+Actionlint	Set up job	2026-09-05T12:42:28.0176253Z ##[endgroup]
+Actionlint	Set up job	2026-09-05T12:42:28.0177170Z ##[group]Runner Image
+Actionlint	Set up job	2026-09-05T12:42:28.0178370Z Image: ubuntu-24.04
+Actionlint	Set up job	2026-09-05T12:42:28.0179321Z Version: 20260831.293.1
+Actionlint	Set up job	2026-09-05T12:42:28.0181533Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+Actionlint	Set up job	2026-09-05T12:42:28.0184504Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+Actionlint	Set up job	2026-09-05T12:42:28.0186408Z ##[endgroup]
+Actionlint	Set up job	2026-09-05T12:42:28.0188166Z ##[group]GITHUB_TOKEN Permissions
+Actionlint	Set up job	2026-09-05T12:42:28.0191138Z Contents: read
+Actionlint	Set up job	2026-09-05T12:42:28.0192127Z Metadata: read
+Actionlint	Set up job	2026-09-05T12:42:28.0193212Z ##[endgroup]
+Actionlint	Set up job	2026-09-05T12:42:28.0196296Z Secret source: Actions
+Actionlint	Set up job	2026-09-05T12:42:28.0198092Z Prepare workflow directory
+Actionlint	Set up job	2026-09-05T12:42:28.0668477Z Prepare all required actions
+Actionlint	Set up job	2026-09-05T12:42:28.0742533Z Getting action download info
+Actionlint	Set up job	2026-09-05T12:42:28.2739923Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Actionlint	Set up job	2026-09-05T12:42:28.4909079Z Complete job name: Actionlint
+Actionlint	Pull rhysd/actionlint:1.7.12	﻿2026-09-05T12:42:28.5419045Z ##[group]Pull down action image 'rhysd/actionlint:1.7.12'
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:28.5548297Z ##[command]/usr/bin/docker pull rhysd/actionlint:1.7.12
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:28.9860065Z 1.7.12: Pulling from rhysd/actionlint
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.0568308Z 589002ba0eae: Pulling fs layer
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.0570119Z c09af8888d6a: Pulling fs layer
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.0571331Z 4ccd7d76ca98: Pulling fs layer
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.0572415Z b6b4b7b0e257: Pulling fs layer
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.0573484Z b6b4b7b0e257: Waiting
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.1105256Z c09af8888d6a: Verifying Checksum
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.1127650Z c09af8888d6a: Download complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.1172833Z 4ccd7d76ca98: Verifying Checksum
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.1175991Z 4ccd7d76ca98: Download complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.1177947Z 589002ba0eae: Verifying Checksum
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.1180034Z 589002ba0eae: Download complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.2246666Z b6b4b7b0e257: Verifying Checksum
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.2249071Z b6b4b7b0e257: Download complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.2465435Z 589002ba0eae: Pull complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.4569045Z c09af8888d6a: Pull complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:29.7625108Z 4ccd7d76ca98: Pull complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:31.5630966Z b6b4b7b0e257: Pull complete
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:31.5673109Z Digest: sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:31.5692486Z Status: Downloaded newer image for rhysd/actionlint:1.7.12
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:31.5707657Z docker.io/rhysd/actionlint:1.7.12
+Actionlint	Pull rhysd/actionlint:1.7.12	2026-09-05T12:42:31.5736022Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	﻿2026-09-05T12:42:31.6064514Z ##[group]Run actions/checkout@v7
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6065178Z with:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6065470Z   persist-credentials: false
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6065809Z   repository: link-assistant/formal-ai
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6068435Z   token: ***
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6068689Z   ssh-strict: true
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6068942Z   ssh-user: git
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6069201Z   clean: true
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6069753Z   sparse-checkout-cone-mode: true
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6070068Z   fetch-depth: 1
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6070339Z   fetch-tags: false
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6070595Z   show-progress: true
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6070851Z   lfs: false
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6071090Z   submodules: false
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6071349Z   set-safe-directory: true
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6071922Z   allow-unsafe-pr-checkout: false
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.6072561Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7070768Z Syncing repository: link-assistant/formal-ai
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7072441Z ##[group]Getting Git version info
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7072940Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7074063Z [command]/usr/bin/git version
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7231561Z git version 2.55.0
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7254535Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7266430Z Temporarily overriding HOME='/home/runner/work/_temp/c6981498-4b91-46a8-97ac-f343479f37db' before making global git config changes
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7268383Z Adding repository directory to the temporary git global config as a safe directory
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7272985Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7323275Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7326673Z ##[group]Determining repository object format
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7328554Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7329575Z ##[group]Initializing the repository
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7334242Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7448478Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7450115Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7451457Z hint: to use in all of your new repositories, which will suppress this warning,
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7452469Z hint: call:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7453123Z hint:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7453826Z hint: 	git config --global init.defaultBranch <name>
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7454800Z hint:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7455732Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7457128Z hint: 'development'. The just-created branch can be renamed via this command:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7458262Z hint:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7458994Z hint: 	git branch -m <name>
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7460269Z hint:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7461026Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7462119Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7468379Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7525192Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7526270Z ##[group]Disabling automatic garbage collection
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7536071Z [command]/usr/bin/git config --local gc.auto 0
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7582697Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7583939Z ##[group]Setting up auth
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7584893Z Removing SSH command configuration
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7586095Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.7621468Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8008903Z Removing HTTP extra header
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8014899Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8051987Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8272150Z Removing includeIf entries pointing to credentials config files
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8277675Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8312434Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8533089Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8572586Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8604644Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8643381Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8680188Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8710339Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8711112Z ##[group]Fetching the repository
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:31.8716931Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +de3f1be612d866c88c2c9c04eda664a7dfe2f15f:refs/remotes/pull/1077/merge
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0148033Z From https://github.com/link-assistant/formal-ai
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0148895Z  * [new ref]         de3f1be612d866c88c2c9c04eda664a7dfe2f15f -> pull/1077/merge
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0153450Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0154395Z ##[group]Determining the checkout info
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0155364Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0161407Z [command]/usr/bin/git sparse-checkout disable
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0230547Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0262955Z ##[group]Checking out the ref
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:44.0268823Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1077/merge
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.1107319Z Updating files:  39% (6623/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.1990710Z Updating files:  40% (6690/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.2727221Z Updating files:  41% (6857/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.4508824Z Updating files:  42% (7025/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.5383230Z Updating files:  43% (7192/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.7938960Z Updating files:  44% (7359/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.8121962Z Updating files:  45% (7526/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.8267550Z Updating files:  46% (7694/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.8381208Z Updating files:  47% (7861/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:45.8960784Z Updating files:  48% (8028/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.0076307Z Updating files:  49% (8195/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.0299468Z Updating files:  50% (8362/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.0462455Z Updating files:  51% (8530/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.0546014Z Updating files:  51% (8604/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.0682154Z Updating files:  52% (8697/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.0806349Z Updating files:  53% (8864/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.1358383Z Updating files:  54% (9031/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.2082745Z Updating files:  55% (9199/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.2338212Z Updating files:  56% (9366/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.2439060Z Updating files:  57% (9533/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.2595570Z Updating files:  58% (9700/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.2845525Z Updating files:  59% (9868/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.2963128Z Updating files:  60% (10035/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.3251743Z Updating files:  61% (10202/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.3969834Z Updating files:  62% (10369/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.4205224Z Updating files:  63% (10537/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.4667269Z Updating files:  64% (10704/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.5254267Z Updating files:  65% (10871/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.5976438Z Updating files:  66% (11038/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.6437111Z Updating files:  67% (11206/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.6623138Z Updating files:  68% (11373/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.7010975Z Updating files:  69% (11540/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.7177210Z Updating files:  70% (11707/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.7333857Z Updating files:  71% (11875/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.7477058Z Updating files:  72% (12042/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.7773953Z Updating files:  73% (12209/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.8048045Z Updating files:  74% (12376/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.8216928Z Updating files:  75% (12543/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.8434056Z Updating files:  76% (12711/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.8529123Z Updating files:  77% (12878/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.8609044Z Updating files:  78% (13045/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.8796758Z Updating files:  79% (13212/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.9109153Z Updating files:  80% (13380/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.9226046Z Updating files:  81% (13547/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.9349034Z Updating files:  82% (13714/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.9632693Z Updating files:  83% (13881/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:46.9760367Z Updating files:  84% (14049/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0175283Z Updating files:  85% (14216/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0257783Z Updating files:  86% (14383/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0350984Z Updating files:  87% (14550/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0449355Z Updating files:  88% (14718/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0473423Z Updating files:  88% (14852/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0589766Z Updating files:  89% (14885/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0709926Z Updating files:  90% (15052/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.0847082Z Updating files:  91% (15219/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1001422Z Updating files:  92% (15387/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1193123Z Updating files:  93% (15554/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1452462Z Updating files:  94% (15721/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1560369Z Updating files:  95% (15888/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1687590Z Updating files:  96% (16056/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1813988Z Updating files:  97% (16223/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.1948216Z Updating files:  98% (16390/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2076620Z Updating files:  99% (16557/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2076989Z Updating files: 100% (16724/16724)
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2077316Z Updating files: 100% (16724/16724), done.
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2245089Z Note: switching to 'refs/remotes/pull/1077/merge'.
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2245614Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2245960Z You are in 'detached HEAD' state. You can look around, make experimental
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2246736Z changes and commit them, and you can discard any commits you make in this
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2247509Z state without impacting any branches by switching back to a branch.
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2248149Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2248469Z If you want to create a new branch to retain commits you create, you may
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2249152Z do so (now or later) by using -c with the switch command. Example:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2249882Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2250017Z   git switch -c <new-branch-name>
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2250235Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2250352Z Or undo this operation with:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2250551Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2250655Z   git switch -
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2250795Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2251052Z Turn off this advice by setting config variable advice.detachedHead to false
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2251430Z 
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2251856Z HEAD is now at de3f1be Merge a055112ac5d9c220ad3cf81c388465cd788e3474 into 912bbf65f2ba6c7957b84e893173561ee6c147ba
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2325168Z ##[endgroup]
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2374904Z [command]/usr/bin/git log -1 --format=%H
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2404398Z de3f1be612d866c88c2c9c04eda664a7dfe2f15f
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2416731Z ##[group]Removing auth
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2485492Z Removing SSH command configuration
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2486286Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2488939Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2699853Z Removing HTTP extra header
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2703613Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2738769Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2971252Z Removing includeIf entries pointing to credentials config files
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.2974953Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3005285Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3006132Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3006626Z includeif.gitdir:/github/workspace/.git.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3007005Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3013670Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3040240Z /home/runner/work/_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3049832Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-ee92da18\-1821\-465b\-a02c\-25594a894a53\.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3084151Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3112787Z /home/runner/work/_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3122959Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-ee92da18\-1821\-465b\-a02c\-25594a894a53\.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3163036Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3188214Z /github/runner_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3196584Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-ee92da18\-1821\-465b\-a02c\-25594a894a53\.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3235729Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3261661Z /github/runner_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3270724Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ee92da18\-1821\-465b\-a02c\-25594a894a53\.config
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3304189Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3534289Z Removing credentials config '/home/runner/work/_temp/git-credentials-ee92da18-1821-465b-a02c-25594a894a53.config'
+Actionlint	Run actions/checkout@v7	2026-09-05T12:42:47.3543263Z ##[endgroup]
+Actionlint	Run rhysd/actionlint:1.7.12	﻿2026-09-05T12:42:47.3727538Z ##[group]Run docker://rhysd/actionlint:1.7.12
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:47.3727896Z with:
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:47.3728131Z   args: -color -verbose
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:47.3728380Z ##[endgroup]
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:47.3821637Z ##[command]/usr/bin/docker run --name rhysdactionlint1712_c04b7f --label 1ffa39 --workdir /github/workspace --rm -e "INPUT_ARGS" -e "HOME" -e "GITHUB_JOB" -e "GITHUB_REF" -e "GITHUB_SHA" -e "GITHUB_REPOSITORY" -e "GITHUB_REPOSITORY_OWNER" -e "GITHUB_REPOSITORY_OWNER_ID" -e "GITHUB_RUN_ID" -e "GITHUB_RUN_NUMBER" -e "GITHUB_RETENTION_DAYS" -e "GITHUB_RUN_ATTEMPT" -e "GITHUB_ACTOR_ID" -e "GITHUB_ACTOR" -e "GITHUB_WORKFLOW" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -e "GITHUB_EVENT_NAME" -e "GITHUB_SERVER_URL" -e "GITHUB_API_URL" -e "GITHUB_GRAPHQL_URL" -e "GITHUB_REF_NAME" -e "GITHUB_REF_PROTECTED" -e "GITHUB_REF_TYPE" -e "GITHUB_WORKFLOW_REF" -e "GITHUB_WORKFLOW_SHA" -e "GITHUB_REPOSITORY_ID" -e "GITHUB_TRIGGERING_ACTOR" -e "GITHUB_WORKSPACE" -e "GITHUB_ACTION" -e "GITHUB_EVENT_PATH" -e "GITHUB_ACTION_REPOSITORY" -e "GITHUB_ACTION_REF" -e "GITHUB_PATH" -e "GITHUB_ENV" -e "GITHUB_STEP_SUMMARY" -e "GITHUB_STATE" -e "GITHUB_OUTPUT" -e "GITHUB_ARTIFACTS" -e "GITHUB_ARTIFACTS_LIST" -e "RUNNER_OS" -e "RUNNER_ARCH" -e "RUNNER_NAME" -e "RUNNER_ENVIRONMENT" -e "RUNNER_TOOL_CACHE" -e "RUNNER_TEMP" -e "RUNNER_WORKSPACE" -e "ACTIONS_RUNTIME_URL" -e "ACTIONS_RUNTIME_TOKEN" -e "ACTIONS_CACHE_URL" -e "ACTIONS_RESULTS_URL" -e "ACTIONS_ORCHESTRATION_ID" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp":"/github/runner_temp" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" -v "/home/runner/work/formal-ai/formal-ai":"/github/workspace" rhysd/actionlint:1.7.12 -color -verbose
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8820348Z verbose: Linting all workflow files in repository: /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8823757Z verbose: Detected project: /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8824969Z verbose: Collected 19 YAML files
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8826140Z verbose: Linting 19 files
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8831395Z verbose: Linting .github/workflows/write-effect-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8832697Z verbose: Linting .github/workflows/macos-core-tests.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8833343Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8842028Z verbose: Found 0 parse errors in 1 ms for .github/workflows/macos-core-tests.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8843353Z verbose: Linting .github/workflows/agentic-cli-matrix.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8844452Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8845415Z verbose: Linting .github/workflows/stock-rust-install.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8846623Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8847648Z verbose: Found 0 parse errors in 1 ms for .github/workflows/stock-rust-install.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8848914Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8850518Z verbose: Found 0 parse errors in 2 ms for .github/workflows/write-effect-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8867080Z verbose: Linting .github/workflows/issue-1028-agent-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8868167Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8869696Z verbose: Found 0 parse errors in 3 ms for .github/workflows/agentic-cli-matrix.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8892816Z verbose: Linting .github/workflows/proactive-failure-report-e2e.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8893765Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8894825Z verbose: Found 0 parse errors in 6 ms for .github/workflows/issue-1028-agent-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8895991Z verbose: Linting .github/workflows/job-headroom.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8896831Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8908183Z verbose: Linting .github/workflows/workflows.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8933203Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8935569Z verbose: Linting .github/workflows/security.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8950528Z verbose: verbose: verbose: verbose: verbose: verbose: verbose: verbose: verbose: verbose: verbose: Found 0 parse errors in 7 ms for .github/workflows/job-headroom.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8960869Z verbose: Found 0 parse errors in 7 ms for .github/workflows/proactive-failure-report-e2e.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8972766Z verbose: Found 0 parse errors in 14 ms for .github/workflows/workflows.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8975312Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8985813Z verbose: Found 0 parse errors in 15 ms for .github/workflows/security.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8996218Z Linting .github/workflows/summarization-ratchet.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.8997496Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9004527Z verbose: Found 0 parse errors in 17 ms for .github/workflows/summarization-ratchet.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9007540Z Linting .github/workflows/desktop-release.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9011536Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9032160Z Linting .github/workflows/pin-base-commit.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9034375Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9036079Z Linting .github/workflows/coverage.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9037846Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9072199Z verbose: Found 0 parse errors in 21 ms for .github/workflows/pin-base-commit.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9073560Z Linting .github/workflows/links.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9074400Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9075305Z verbose: Found 0 parse errors in 22 ms for .github/workflows/links.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9076270Z Linting .github/workflows/external-benchmarks.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9077066Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9078324Z verbose: Found 1 parse errors in 23 ms for .github/workflows/external-benchmarks.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9087743Z Linting .github/workflows/question-necessity-ratchet.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9088664Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9090029Z verbose: Found 0 parse errors in 23 ms for .github/workflows/question-necessity-ratchet.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9091126Z Linting .github/workflows/release.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9091819Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9101669Z verbose: Found 0 parse errors in 25 ms for .github/workflows/coverage.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9174211Z Linting .github/workflows/task-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9175258Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9176288Z Linting .github/workflows/learning-cycle.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9195398Z verbose: Using project at /github/workspace
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9208578Z verbose: Found 0 parse errors in 37 ms for .github/workflows/learning-cycle.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9286869Z verbose: Found 3 parse errors in 44 ms for .github/workflows/desktop-release.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9297427Z verbose: Found 0 parse errors in 45 ms for .github/workflows/task-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9365290Z verbose: Found 4 parse errors in 53 ms for .github/workflows/release.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9650597Z verbose: Found total 0 errors in 81 ms for .github/workflows/macos-core-tests.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:49.9985707Z verbose: Found total 0 errors in 114 ms for .github/workflows/agentic-cli-matrix.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0063418Z verbose: Found total 0 errors in 121 ms for .github/workflows/write-effect-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0101566Z verbose: Found total 0 errors in 127 ms for .github/workflows/issue-1028-agent-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0230048Z verbose: Found total 0 errors in 139 ms for .github/workflows/stock-rust-install.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0258036Z verbose: Found total 0 errors in 142 ms for .github/workflows/job-headroom.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0340155Z verbose: Found total 0 errors in 150 ms for .github/workflows/proactive-failure-report-e2e.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0395690Z verbose: Found total 0 errors in 156 ms for .github/workflows/workflows.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0541407Z verbose: Found total 0 errors in 170 ms for .github/workflows/pin-base-commit.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0552726Z verbose: Found total 0 errors in 172 ms for .github/workflows/security.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0900651Z verbose: Found total 0 errors in 206 ms for .github/workflows/links.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.0910321Z verbose: Found total 0 errors in 207 ms for .github/workflows/summarization-ratchet.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.1337450Z verbose: Filtered 1 error(s) due to "-ignore" command line option and "ignore" configuration
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.1346808Z verbose: Found total 0 errors in 250 ms for .github/workflows/external-benchmarks.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.1397506Z verbose: Found total 0 errors in 256 ms for .github/workflows/question-necessity-ratchet.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.1824508Z verbose: Found total 0 errors in 299 ms for .github/workflows/coverage.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.1906275Z verbose: Found total 0 errors in 307 ms for .github/workflows/learning-cycle.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.2081297Z verbose: Found total 0 errors in 323 ms for .github/workflows/task-ladder.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.3673470Z verbose: Filtered 3 error(s) due to "-ignore" command line option and "ignore" configuration
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.3675401Z verbose: Found total 0 errors in 484 ms for .github/workflows/desktop-release.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.6885355Z verbose: Filtered 4 error(s) due to "-ignore" command line option and "ignore" configuration
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.6886207Z verbose: Found total 0 errors in 805 ms for .github/workflows/release.yml
+Actionlint	Run rhysd/actionlint:1.7.12	2026-09-05T12:42:50.6886635Z verbose: Found 0 errors in 19 files
+Actionlint	Prove the linter can still see inside a run block	﻿2026-09-05T12:42:50.7734071Z ##[group]Run set -euo pipefail
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7734487Z ^[[36;1mset -euo pipefail^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7734882Z ^[[36;1mcanary=tests/fixtures/actionlint/shellcheck-canary.yml^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7735330Z ^[[36;1mif docker run --rm -v "${PWD}:/repo" -w /repo \^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7735727Z ^[[36;1m     rhysd/actionlint:1.7.12 -no-color "${canary}"; then^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7736543Z ^[[36;1m  echo "::error file=${canary}::actionlint accepted a workflow whose run: block does not parse. ShellCheck is not running, so every run: block above went unchecked."^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7737269Z ^[[36;1m  exit 1^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7737465Z ^[[36;1mfi^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7737808Z ^[[36;1mecho "actionlint rejected the canary, so its ShellCheck delegation is live."^[[0m
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7779082Z shell: /usr/bin/bash -e {0}
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.7779681Z ##[endgroup]
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9143869Z tests/fixtures/actionlint/shellcheck-canary.yml:22:9: shellcheck reported issue in this script: SC1009:info:1:1: The mentioned syntax error was in this simple command [shellcheck]
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9145313Z    |
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9145787Z 22 |         run: |
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9146278Z    |         ^~~~
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9157583Z tests/fixtures/actionlint/shellcheck-canary.yml:22:9: shellcheck reported issue in this script: SC1072:error:3:1: Expected end of double quoted string. Fix any mentioned problems and try again [shellcheck]
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9159153Z    |
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9160059Z 22 |         run: |
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9160412Z    |         ^~~~
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9161755Z tests/fixtures/actionlint/shellcheck-canary.yml:22:9: shellcheck reported issue in this script: SC1073:error:1:6: Couldn't parse this double quoted string. Fix to allow more checks [shellcheck]
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9163159Z    |
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9163443Z 22 |         run: |
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9163763Z    |         ^~~~
+Actionlint	Prove the linter can still see inside a run block	2026-09-05T12:42:50.9835520Z actionlint rejected the canary, so its ShellCheck delegation is live.
+Actionlint	Post Run actions/checkout@v7	﻿2026-09-05T12:42:50.9968196Z Post job cleanup.
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0847016Z [command]/usr/bin/git version
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0890879Z git version 2.55.0
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0927623Z Temporarily overriding HOME='/home/runner/work/_temp/31cee1c6-743c-4135-8e71-02a5c5deffcd' before making global git config changes
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0929801Z Adding repository directory to the temporary git global config as a safe directory
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0934417Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0967618Z Removing SSH command configuration
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.0975367Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1010156Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1274318Z Removing HTTP extra header
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1279928Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1332877Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1608184Z Removing includeIf entries pointing to credentials config files
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1614732Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actionlint	Post Run actions/checkout@v7	2026-09-05T12:42:51.1658153Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actionlint	Complete job	﻿2026-09-05T12:42:51.2081274Z Cleaning up orphan processes
+Zizmor	Set up job	﻿2026-09-05T12:42:46.2804976Z Current runner version: '2.337.0'
+Zizmor	Set up job	2026-09-05T12:42:46.2823857Z ##[group]Runner Image Provisioner
+Zizmor	Set up job	2026-09-05T12:42:46.2824647Z Hosted Compute Agent
+Zizmor	Set up job	2026-09-05T12:42:46.2825257Z Version: 20260828.587
+Zizmor	Set up job	2026-09-05T12:42:46.2825797Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Zizmor	Set up job	2026-09-05T12:42:46.2826428Z Build Date: 2026-08-28T16:44:25Z
+Zizmor	Set up job	2026-09-05T12:42:46.2827204Z Worker ID: {c8311f05-88de-47b2-a0fe-43eed8f48557}
+Zizmor	Set up job	2026-09-05T12:42:46.2827838Z Azure Region: westus3
+Zizmor	Set up job	2026-09-05T12:42:46.2828345Z ##[endgroup]
+Zizmor	Set up job	2026-09-05T12:42:46.2829422Z ##[group]Operating System
+Zizmor	Set up job	2026-09-05T12:42:46.2829922Z Ubuntu
+Zizmor	Set up job	2026-09-05T12:42:46.2830392Z 24.04.4
+Zizmor	Set up job	2026-09-05T12:42:46.2830857Z LTS
+Zizmor	Set up job	2026-09-05T12:42:46.2831343Z ##[endgroup]
+Zizmor	Set up job	2026-09-05T12:42:46.2831802Z ##[group]Runner Image
+Zizmor	Set up job	2026-09-05T12:42:46.2832289Z Image: ubuntu-24.04
+Zizmor	Set up job	2026-09-05T12:42:46.2832806Z Version: 20260831.293.1
+Zizmor	Set up job	2026-09-05T12:42:46.2833700Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+Zizmor	Set up job	2026-09-05T12:42:46.2835161Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+Zizmor	Set up job	2026-09-05T12:42:46.2835945Z ##[endgroup]
+Zizmor	Set up job	2026-09-05T12:42:46.2837204Z ##[group]GITHUB_TOKEN Permissions
+Zizmor	Set up job	2026-09-05T12:42:46.2838906Z Contents: read
+Zizmor	Set up job	2026-09-05T12:42:46.2839453Z Metadata: read
+Zizmor	Set up job	2026-09-05T12:42:46.2839997Z ##[endgroup]
+Zizmor	Set up job	2026-09-05T12:42:46.2841706Z Secret source: Actions
+Zizmor	Set up job	2026-09-05T12:42:46.2842619Z Prepare workflow directory
+Zizmor	Set up job	2026-09-05T12:42:46.3097986Z Prepare all required actions
+Zizmor	Set up job	2026-09-05T12:42:46.3138179Z Getting action download info
+Zizmor	Set up job	2026-09-05T12:42:46.6207402Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Zizmor	Set up job	2026-09-05T12:42:46.7134496Z Download action repository 'zizmorcore/zizmor-action@v0.6.2' (SHA:3dc1ecc9bcb9e94e9b2c709687979e1298497054)
+Zizmor	Set up job	2026-09-05T12:42:47.0825110Z Getting action download info
+Zizmor	Set up job	2026-09-05T12:42:47.2131295Z Download action repository 'github/codeql-action@7188fc363630916deb702c7fdcf4e481b751f97a' (SHA:7188fc363630916deb702c7fdcf4e481b751f97a)
+Zizmor	Set up job	2026-09-05T12:42:48.2225748Z Complete job name: Zizmor
+Zizmor	Run actions/checkout@v7	﻿2026-09-05T12:42:48.2846860Z ##[group]Run actions/checkout@v7
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2847564Z with:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2847926Z   persist-credentials: false
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2848391Z   repository: link-assistant/formal-ai
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2850880Z   token: ***
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2851512Z   ssh-strict: true
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2851935Z   ssh-user: git
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2852297Z   clean: true
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2852708Z   sparse-checkout-cone-mode: true
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2853126Z   fetch-depth: 1
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2853488Z   fetch-tags: false
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2853899Z   show-progress: true
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2854311Z   lfs: false
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2854696Z   submodules: false
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2855101Z   set-safe-directory: true
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2855498Z   allow-unsafe-pr-checkout: false
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.2856144Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3763940Z Syncing repository: link-assistant/formal-ai
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3765528Z ##[group]Getting Git version info
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3766097Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3767476Z [command]/usr/bin/git version
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3807230Z git version 2.55.0
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3823727Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3836039Z Temporarily overriding HOME='/home/runner/work/_temp/50147834-ca42-4271-aea6-53e5cdb74063' before making global git config changes
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3848062Z Adding repository directory to the temporary git global config as a safe directory
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3849395Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3877948Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3883788Z ##[group]Determining repository object format
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3885029Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3886275Z ##[group]Initializing the repository
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3888076Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3962551Z hint: Using 'master' as the name for the initial branch. This default branch name
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3965849Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3967578Z hint: to use in all of your new repositories, which will suppress this warning,
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3968612Z hint: call:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3969272Z hint:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3970088Z hint: 	git config --global init.defaultBranch <name>
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3970971Z hint:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3971993Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3973191Z hint: 'development'. The just-created branch can be renamed via this command:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3974196Z hint:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3974841Z hint: 	git branch -m <name>
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3975520Z hint:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3976329Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3977925Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.3979815Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4011021Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4012082Z ##[group]Disabling automatic garbage collection
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4013294Z [command]/usr/bin/git config --local gc.auto 0
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4035404Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4036751Z ##[group]Setting up auth
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4037638Z Removing SSH command configuration
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4039714Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4063319Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4323178Z Removing HTTP extra header
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4333688Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4356565Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4521031Z Removing includeIf entries pointing to credentials config files
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4521888Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4544913Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4702022Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4730657Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4752881Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4777641Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4800751Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4821129Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4822127Z ##[group]Fetching the repository
+Zizmor	Run actions/checkout@v7	2026-09-05T12:42:48.4827112Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +de3f1be612d866c88c2c9c04eda664a7dfe2f15f:refs/remotes/pull/1077/merge
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9861681Z From https://github.com/link-assistant/formal-ai
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9862489Z  * [new ref]         de3f1be612d866c88c2c9c04eda664a7dfe2f15f -> pull/1077/merge
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9867972Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9869066Z ##[group]Determining the checkout info
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9869858Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9871838Z [command]/usr/bin/git sparse-checkout disable
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9911163Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9935755Z ##[group]Checking out the ref
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:01.9948021Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1077/merge
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.0531932Z Updating files:  40% (6787/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.1226048Z Updating files:  41% (6857/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.3053178Z Updating files:  42% (7025/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.3927793Z Updating files:  43% (7192/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.6619514Z Updating files:  44% (7359/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.6771311Z Updating files:  45% (7526/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.6898225Z Updating files:  46% (7694/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.6974750Z Updating files:  47% (7861/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.7574424Z Updating files:  48% (8028/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.8695124Z Updating files:  49% (8195/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.8886061Z Updating files:  50% (8362/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.9098705Z Updating files:  51% (8530/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.9184871Z Updating files:  52% (8697/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.9259113Z Updating files:  53% (8864/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:03.9850471Z Updating files:  54% (9031/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.0144437Z Updating files:  55% (9199/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.0630225Z Updating files:  55% (9266/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.0879575Z Updating files:  56% (9366/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.0946574Z Updating files:  57% (9533/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.1064257Z Updating files:  58% (9700/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.1299424Z Updating files:  59% (9868/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.1376336Z Updating files:  60% (10035/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.1651339Z Updating files:  61% (10202/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.2396787Z Updating files:  62% (10369/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.2617141Z Updating files:  63% (10537/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.3101177Z Updating files:  64% (10704/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.3770701Z Updating files:  65% (10871/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.4512776Z Updating files:  66% (11038/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.4991436Z Updating files:  67% (11206/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.5143351Z Updating files:  68% (11373/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.5542738Z Updating files:  69% (11540/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.5670082Z Updating files:  70% (11707/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.5787725Z Updating files:  71% (11875/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.5894625Z Updating files:  72% (12042/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6156558Z Updating files:  73% (12209/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6396928Z Updating files:  74% (12376/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6532923Z Updating files:  75% (12543/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6717901Z Updating files:  76% (12711/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6774901Z Updating files:  77% (12878/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6814125Z Updating files:  78% (13045/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.6969896Z Updating files:  79% (13212/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.7269385Z Updating files:  80% (13380/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.7340967Z Updating files:  81% (13547/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.7421983Z Updating files:  82% (13714/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.7673687Z Updating files:  83% (13881/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.7756789Z Updating files:  84% (14049/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8195900Z Updating files:  85% (14216/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8241098Z Updating files:  86% (14383/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8294818Z Updating files:  87% (14550/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8379097Z Updating files:  88% (14718/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8450593Z Updating files:  89% (14885/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8532489Z Updating files:  90% (15052/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8632817Z Updating files:  91% (15219/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8747446Z Updating files:  92% (15387/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.8902602Z Updating files:  93% (15554/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9134627Z Updating files:  94% (15721/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9208243Z Updating files:  95% (15888/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9296858Z Updating files:  96% (16056/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9378621Z Updating files:  97% (16223/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9474187Z Updating files:  98% (16390/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9562731Z Updating files:  99% (16557/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9563140Z Updating files: 100% (16724/16724)
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9563494Z Updating files: 100% (16724/16724), done.
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9824334Z Note: switching to 'refs/remotes/pull/1077/merge'.
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9824597Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9824782Z You are in 'detached HEAD' state. You can look around, make experimental
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9825189Z changes and commit them, and you can discard any commits you make in this
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9825853Z state without impacting any branches by switching back to a branch.
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9826238Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9826508Z If you want to create a new branch to retain commits you create, you may
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9827218Z do so (now or later) by using -c with the switch command. Example:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9827494Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9827613Z   git switch -c <new-branch-name>
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9827814Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9827927Z Or undo this operation with:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9828117Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9828221Z   git switch -
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9828356Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9828586Z Turn off this advice by setting config variable advice.detachedHead to false
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9828941Z 
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9829352Z HEAD is now at de3f1be Merge a055112ac5d9c220ad3cf81c388465cd788e3474 into 912bbf65f2ba6c7957b84e893173561ee6c147ba
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9863844Z ##[endgroup]
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9902388Z [command]/usr/bin/git log -1 --format=%H
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9922678Z de3f1be612d866c88c2c9c04eda664a7dfe2f15f
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9931172Z ##[group]Removing auth
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9935953Z Removing SSH command configuration
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9943306Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:04.9962160Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0131458Z Removing HTTP extra header
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0134852Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0159704Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0326128Z Removing includeIf entries pointing to credentials config files
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0328902Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0348762Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0349624Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0350143Z includeif.gitdir:/github/workspace/.git.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0350570Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0355433Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0378319Z /home/runner/work/_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0385955Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-2f8bda81\-cd0c\-4402\-86b5\-fde224c1d476\.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0411407Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0427788Z /home/runner/work/_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0488293Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-2f8bda81\-cd0c\-4402\-86b5\-fde224c1d476\.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0527667Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0545174Z /github/runner_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0550771Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-2f8bda81\-cd0c\-4402\-86b5\-fde224c1d476\.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0580606Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0599079Z /github/runner_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0606145Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-2f8bda81\-cd0c\-4402\-86b5\-fde224c1d476\.config
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0634463Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0807675Z Removing credentials config '/home/runner/work/_temp/git-credentials-2f8bda81-cd0c-4402-86b5-fde224c1d476.config'
+Zizmor	Run actions/checkout@v7	2026-09-05T12:43:05.0814390Z ##[endgroup]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	﻿2026-09-05T12:43:05.1038016Z ##[group]Run zizmorcore/zizmor-action@v0.6.2
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1038304Z with:
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1038512Z   advanced-security: false
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1038741Z   annotations: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1038944Z   config: .github/zizmor.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1039180Z   inputs: .github/workflows .github/actions
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1039439Z   min-confidence: medium
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1039650Z   collect: default
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1039844Z   online-audits: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1040062Z   persona: regular
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1040251Z   version: latest
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1042342Z   token: ***
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1042528Z   color: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1042725Z   fail-on-no-inputs: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1042941Z ##[endgroup]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1100073Z ##[start-action display=Run zizmor;id=__zizmorcore_zizmor-action.run-zizmor]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1135873Z ##[group]Run "${GITHUB_ACTION_PATH}/action.sh"
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1136262Z ^[[36;1m"${GITHUB_ACTION_PATH}/action.sh"^[[0m
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1161824Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1162151Z env:
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1162390Z   GHA_ZIZMOR_INPUTS: .github/workflows .github/actions
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1162698Z   GHA_ZIZMOR_COLLECT: default
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1162935Z   GHA_ZIZMOR_ONLINE_AUDITS: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1163168Z   GHA_ZIZMOR_PERSONA: regular
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1163390Z   GHA_ZIZMOR_MIN_SEVERITY: 
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1163634Z   GHA_ZIZMOR_MIN_CONFIDENCE: medium
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1163886Z   GHA_ZIZMOR_VERSION: latest
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1166051Z   GHA_ZIZMOR_TOKEN: ***
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1166272Z   GHA_ZIZMOR_ADVANCED_SECURITY: false
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1166510Z   GHA_ZIZMOR_COLOR: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1166909Z   GHA_ZIZMOR_ANNOTATIONS: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1167142Z   GHA_ZIZMOR_CONFIG: .github/zizmor.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1167394Z   GHA_ZIZMOR_FAIL_ON_NO_INPUTS: true
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1167618Z ##[endgroup]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:05.1248389Z ##[group]Pulling zizmor image
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.0280683Z ghcr.io/zizmorcore/zizmor@sha256:863026d54f91271b10b60b67ad8054cb37120167e162482597db102b3026a284: Pulling from zizmorcore/zizmor
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2641636Z a66283bef834: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2642355Z f1dc41da0ac6: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2643204Z 2e3139e176fe: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2643608Z c920184a3208: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2643926Z 9201e51fe8c1: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2644486Z 69cbafd2417b: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2644774Z 7fc117d2446a: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2645103Z 8d99fd8fea9c: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2645363Z 5f460b97a17e: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2645575Z cdea145aa115: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2645782Z b92857818105: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2645990Z c621f68b4dc2: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2648029Z 4f4fb700ef54: Pulling fs layer
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2648315Z c920184a3208: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2648593Z 9201e51fe8c1: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2648794Z 69cbafd2417b: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2648987Z 7fc117d2446a: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2649217Z 8d99fd8fea9c: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2649447Z 5f460b97a17e: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2649682Z cdea145aa115: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2650008Z b92857818105: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2650269Z c621f68b4dc2: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.2650514Z 4f4fb700ef54: Waiting
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.5157114Z 2e3139e176fe: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.5484447Z f1dc41da0ac6: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.5486994Z f1dc41da0ac6: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.5616873Z a66283bef834: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.5617338Z a66283bef834: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.6709095Z a66283bef834: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.7420054Z c920184a3208: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.7420713Z c920184a3208: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.7519411Z 69cbafd2417b: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.7519898Z 69cbafd2417b: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.7790071Z 9201e51fe8c1: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.7790559Z 9201e51fe8c1: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.9673653Z 5f460b97a17e: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.9674157Z 5f460b97a17e: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.9695388Z 7fc117d2446a: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.9695754Z 7fc117d2446a: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.9807359Z 8d99fd8fea9c: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:06.9808238Z 8d99fd8fea9c: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.1749468Z cdea145aa115: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.1750717Z cdea145aa115: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.1793328Z b92857818105: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.2985798Z b92857818105: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.2986104Z c621f68b4dc2: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.2986340Z c621f68b4dc2: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.3915387Z 4f4fb700ef54: Verifying Checksum
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:07.3915902Z 4f4fb700ef54: Download complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:13.0642667Z f1dc41da0ac6: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:13.1126171Z 2e3139e176fe: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:13.1748188Z c920184a3208: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:13.1957535Z 9201e51fe8c1: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:13.2928301Z 69cbafd2417b: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:13.7463383Z 7fc117d2446a: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.2120901Z 8d99fd8fea9c: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.2778969Z 5f460b97a17e: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.3305369Z cdea145aa115: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.4629185Z b92857818105: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.7190520Z c621f68b4dc2: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.7272379Z 4f4fb700ef54: Pull complete
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.7326995Z Digest: sha256:863026d54f91271b10b60b67ad8054cb37120167e162482597db102b3026a284
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.7333612Z Status: Downloaded newer image for ghcr.io/zizmorcore/zizmor@sha256:863026d54f91271b10b60b67ad8054cb37120167e162482597db102b3026a284
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.7349109Z ghcr.io/zizmorcore/zizmor:latest@sha256:863026d54f91271b10b60b67ad8054cb37120167e162482597db102b3026a284
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.7351586Z ##[endgroup]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:14.9647254Z ^[[32m INFO^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 zizmor v1.29.0
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:15.5472782Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/actions/cache-cargo-registry/action.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:15.7769856Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/actions/download-formal-ai-binary/action.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:16.2196871Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/actions/setup-buildx-resilient/action.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:16.6616455Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/actions/setup-sccache/action.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:17.6369908Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/agentic-cli-matrix.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.0424639Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/coverage.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.4523338Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/desktop-release.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.4557844Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/external-benchmarks.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.4578784Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/issue-1028-agent-ladder.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.4595289Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/job-headroom.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.6816569Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/learning-cycle.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:18.9416376Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/links.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:19.0787821Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/macos-core-tests.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:19.0795343Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/pin-base-commit.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:19.0813797Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/proactive-failure-report-e2e.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:19.0825022Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/question-necessity-ratchet.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:20.1610321Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/release.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:20.7552323Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/security.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:20.7562062Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/stock-rust-install.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:20.7578302Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/summarization-ratchet.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:20.7594542Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/task-ladder.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:21.0100125Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/workflows.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:21.0119791Z ^[[32m INFO^[[0m ^[[1maudit^[[0m^[[2m:^[[0m ^[[2mzizmor^[[0m^[[2m:^[[0m 🌈 completed .github/workflows/write-effect-ladder.yml
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:21.1298645Z ##[end-action id=__zizmorcore_zizmor-action.run-zizmor;outcome=success;conclusion=success;duration_ms=16019]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:21.1303407Z ##[start-action display=Upload SARIF file to GitHub Advanced Security;id=__zizmorcore_zizmor-action.__github_codeql-action]
+Zizmor	Run zizmorcore/zizmor-action@v0.6.2	2026-09-05T12:43:21.1318866Z ##[end-action id=__zizmorcore_zizmor-action.__github_codeql-action;outcome=skipped;conclusion=skipped;duration_ms=0]
+Zizmor	Post Run zizmorcore/zizmor-action@v0.6.2	﻿2026-09-05T12:43:21.1432506Z Post job cleanup.
+Zizmor	Post Run actions/checkout@v7	﻿2026-09-05T12:43:21.1485508Z Post job cleanup.
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2281705Z [command]/usr/bin/git version
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2316742Z git version 2.55.0
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2343646Z Temporarily overriding HOME='/home/runner/work/_temp/e11eef59-9232-4c5e-a051-25cf3dc58668' before making global git config changes
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2344640Z Adding repository directory to the temporary git global config as a safe directory
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2348468Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2373400Z Removing SSH command configuration
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2379468Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2406497Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2591514Z Removing HTTP extra header
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2596063Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2621053Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2825637Z Removing includeIf entries pointing to credentials config files
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2831000Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Zizmor	Post Run actions/checkout@v7	2026-09-05T12:43:21.2853921Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Zizmor	Complete job	﻿2026-09-05T12:43:21.3157544Z Cleaning up orphan processes

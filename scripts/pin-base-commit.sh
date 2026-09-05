@@ -37,7 +37,28 @@ fi
 
 # A shallow fetch is enough: only the tip's identity is needed here, and the
 # jobs that merge it check out their own history.
-git fetch --depth=1 origin "$BASE_REF"
+#
+# It is retried for the reason `scripts/simulate-fresh-merge.sh` retries its
+# own fetch: run 33973154494 lost name resolution on the runner
+# (`Could not resolve host: github.com`) and failed a step that had nothing to
+# do with the change under test (issue #1076, D22). This one resolves the
+# commit every other job in the run merges, so a blip here costs the whole
+# workflow.
+attempt=1
+max_attempts=5
+delay="${FRESH_MERGE_RETRY_DELAY_SECONDS:-5}"
+while :; do
+  if git fetch --depth=1 origin "$BASE_REF"; then
+    break
+  fi
+  if [ "$attempt" -ge "$max_attempts" ]; then
+    echo "::error::git fetch origin $BASE_REF failed $max_attempts times; the base branch tip could not be resolved" >&2
+    exit 1
+  fi
+  echo "git fetch origin $BASE_REF failed (attempt $attempt/$max_attempts); retrying in $((delay * attempt))s"
+  sleep "$((delay * attempt))"
+  attempt=$((attempt + 1))
+done
 commit="$(git rev-parse FETCH_HEAD)"
 
 if [ -n "${GITHUB_OUTPUT:-}" ]; then

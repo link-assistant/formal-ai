@@ -50,16 +50,9 @@ jobs:
       # Only the registry is cached. Issue #534 forbids caching the `target`
       # tree — it is what evicted the shared compiler cache — and the step's own
       # name is the honest description of what it keeps.
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-issue-1028-agent-tree-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-issue-1028-agent-tree-
-            ${{ runner.os }}-cargo-
+          prefix: issue-1028-agent-tree-
 
       - name: Build Formal AI
         if: ${{ inputs.skip_build != true }}
