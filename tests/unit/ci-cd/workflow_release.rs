@@ -470,7 +470,11 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
     let cleanup_name = "- name: Free up runner disk space";
-    let cache_name = "- name: Restore cargo registry cache";
+    // Issue #1076 replaced the inline `Restore cargo registry cache` step with
+    // the shared composite action, so the ordering is now anchored on the
+    // action's path. The invariant is unchanged: reclaim the disk *before*
+    // unpacking a multi-gigabyte cache onto it.
+    let cache_name = "- uses: ./.github/actions/cache-cargo-registry";
 
     assert!(
         test_job.contains(cleanup_name),
@@ -494,9 +498,13 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
 /// is set to `warn` -- so clippy printed findings and exited 0.
 #[test]
 fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
-    // Clippy and the shell lint are registered gates since issue #991; the
-    // actionlint step is still a workflow step because it installs a pinned
-    // binary of its own.
+    // Clippy and the shell lint are registered gates since issue #991.
+    // actionlint is no longer checked here at all: issue #1076 moved it to
+    // `.github/workflows/workflows.yml`, where it runs as the Docker image
+    // rather than the pinned binary this job used to install. The binary form
+    // was the defect -- it delegates `run:` block linting to ShellCheck and,
+    // when ShellCheck is absent, skips those checks and exits 0 regardless.
+    // `ci_cd::issue_1076` and `issue_999` own the assertions now.
     let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
@@ -509,8 +517,10 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
         "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
-        lint.contains("actionlint"),
-        "workflow definitions must be linted (issue #812)"
+        !lint.contains("actionlint"),
+        "workflow linting belongs to .github/workflows/workflows.yml since issue \
+         #1076; a second copy here would drift from the Docker-image form that \
+         guarantees ShellCheck is present"
     );
     assert!(
         lint.contains("scripts/lint-shell-scripts.sh"),
@@ -725,7 +735,14 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // 1500-line band this same file pins below.
         ("base", 0),
         // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
-        ("lint", 15),
+        // Issue #1076 (D5): raised from 15. Measured over 400 `main` runs the
+        // worst case was 12.7 minutes -- 84.4% of that cap, and trending up
+        // (6.0 min at the start of the window, 12.7 at the end). A cap the work
+        // nearly reaches is the deadline rather than the backstop, and a job
+        // killed by its cap reports `cancelled`, not `failure`. Unlike `test`
+        // there is no single dominant step to hand a budget to here, so the cap
+        // is the only mechanism; 25 puts the same worst case at 50.7%.
+        ("lint", 25),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
@@ -741,9 +758,20 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.
-        ("build", 15),
-        ("auto-release", 60),
-        ("manual-release", 60),
+        // Issue #1076 (D5): raised from 15. The run that missed its cargo
+        // registry cache took 11.6 minutes, 77.0% of the cap; 20 puts it at
+        // 57.8%, so the next such miss fails on its merits, not on the clock.
+        ("build", 20),
+        // Issue #1076 (D5): raised from 60. Measured over 400 `main` runs the
+        // worst case was 50.6 minutes, 84.4% of that cap -- and the step budget
+        // that owns the real deadline (45 minutes on the GHCR publish, 1.4x the
+        // worst measured build) could not have fired inside it, because the
+        // rest of the job costs ~18 minutes. A step budget that the job cap
+        // pre-empts is not a budget: the run still ends as `cancelled`.
+        ("auto-release", 90),
+        // Publishes the same image through the same steps with the same
+        // budgets, so it takes the same backstop (issue #1076).
+        ("manual-release", 90),
         ("changelog-pr", 10),
         ("test-e2e-local", 40),
         // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.

@@ -226,7 +226,9 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #1076 (D5): 12.7 min worst case was 84.4% of the old 15m cap -- a
+    # deadline, not a backstop. 25 puts it at 50.7% (check-job-headroom.rs).
+    timeout-minutes: 25
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -410,7 +412,9 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #1076 (D5): 11.6 min worst case (the run that missed its cargo
+    # cache) was 77.0% of 15; 20 puts it at 57.8%, inside the 70% share.
+    timeout-minutes: 20
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -447,7 +451,9 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Issue #1076 (D5): 50.6 min worst case was 84.4% of the old 60m cap, and
+    # the 45m GHCR budget below must fire before the cap. 90m puts it at 56.2%.
+    timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -659,7 +665,9 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Issue #1076 (D5): same shape as `auto-release` -- publishes the same
+    # image with the same 45m budget, so the same 90m backstop applies.
+    timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
