@@ -179,6 +179,9 @@ part of the audit.
 | D16 | Issue #1017's "budget <= 70% of cap" sweep reads `TEST_BUDGET_SECONDS:` only, so the repository's *other* budget mechanism -- 30 step-level `timeout-minutes:` -- was never audited against the cap it must fire under | missing gate (root cause of D15) | `tests/unit/ci-cd/issue_1017.rs:94` |
 | D17 | `issue_1076::job_caps_are_audited_against_what_the_jobs_really_cost` asserted "no write permission" as `!audit.contains("write")` over the whole file, so the audit workflow's own comment — *"Nothing here writes"* — failed it | false positive (introduced by the D5 fix, caught before merge) | §4.2 |
 | D18 | Links Notation has no comment syntax, so a `#` prose line is an ordinary link. `data/meta/ci-gates/check-job-headroom.lino`, added by this PR, wrote `a commit *can* break: two of the tests` — one bare colon — and `Test (ubuntu-latest / full)` went red on prose | error (introduced by the D5 fix, caught by CI) | §4.2, `ci-logs/job-101307904713-test-full.log:2256` |
+| D19 | `experiments/agentic_cli_matrix/install_client.sh` downloads a 345 MB VS Code tarball with `curl -fsSL` and no retry, so one dropped connection reddens the build: run 33967170904 failed with `curl: (18) transfer closed with 344439862 bytes remaining to read` on a commit that changed no shell script | false positive (pre-existing) | §4.3, `ci-logs/agentic-cli-matrix-33967170904.log`, `experiments/issue-1076/repro-curl-truncated-download.sh` |
+| D20 | `issue_896_component_boundaries::build_package_budget_bounds_the_published_component_cold_build` asserts the `Build Package` cap is *exactly* `timeout-minutes: 15`, so this PR's measured raise to 20 — strictly more headroom than the invariant asks for — failed the test that exists to protect that headroom | false positive (pre-existing gate) | §4.3, `ci-logs/head-e03d1d7b/coverage-101314283147.log:4947` |
+| D21 | `Check Links` reports LEGAL-COMPLIANCE.md's EU GPAI-guidelines citation broken. The page answers **200** from a workstation for GET and HEAD, under lychee's own user agent, under `curl/8.20.0` and under a browser agent; it answers GitHub's runner range with **403**, and the Wayback fallback has no snapshot to rescue it with | false positive (pre-existing) | §4.3, `ci-logs/head-e03d1d7b/check-links-full.log:883` |
 
 ### 4.1 Why D4 was withdrawn
 
@@ -343,6 +346,101 @@ about the wrong thing. It named a file whose *data* is fine. Every other defect
 in this register is a signal that did not fire or fired for the wrong reason;
 D18 is a signal that fired correctly and could not be read, which costs the same
 time and is easier to dismiss.
+
+### 4.3 Three defects this pull request's own CI surfaced
+
+The audit that opened this issue read `main`'s history. These three came from
+watching this branch's checks instead, and none of them is caused by the change
+under test -- which is what makes them the issue's subject rather than
+collateral.
+
+**D19 -- a dropped connection is not a build failure.** `Agentic CLI Matrix`
+run 33967170904 went red on commit `2d06389c7`, which changed no shell script:
+
+```text
+-- installing opencode-vscode via tarball (1.135.0), command 'code'
+curl: (18) transfer closed with 344439862 bytes remaining to read
+!! downloading VS Code 1.135.0 failed
+```
+
+345 MB stopped arriving partway through, and `curl -fsSL` treats that as final.
+`experiments/issue-1076/repro-curl-truncated-download.sh` serves the same shape
+locally -- a `Content-Length` twice the body it sends, then a closed socket --
+and measures the fix as well as the failure against curl 8.20.0:
+
+```text
+curl without retry (what CI ran):
+curl: (18) end of response with 2016 bytes missing
+  exit=18   curl 8.20.0
+
+curl with the repository's retry idiom:
+  exit=0
+```
+
+The measurement that matters is the one that is easy to get wrong: **`--retry`
+alone does not cover exit 18**. `curl -fsSL --retry 3 --retry-delay 1` against
+the same server still exits 18 on the first attempt; only `--retry-all-errors`
+retries it. So the three network installs in `install_client.sh`, the two in
+the published `scripts/install.sh` installer and the composer bootstrap in
+`experiments/issue-1021-laravel/run.sh` now carry
+`--retry 3 --retry-delay 2 --retry-all-errors`.
+
+`network_download_retry::every_network_install_survives_a_dropped_connection` holds those
+six, counting the invocations per file so a seventh download cannot be added
+without the flags, and
+`network_download_retry::no_remote_download_is_left_out_of_that_rule` sweeps every `*.sh` in the
+repository for a curl that writes an artifact or pipes into an interpreter
+without naming the loopback address. Four fetches are exempt with their reason
+recorded: `wait-for-pages-deployment.sh`, `verify-ghcr-visibility.sh` and
+`experiments/issue-892/fetch-query.sh` each count their own attempts already --
+a curl-level retry would flatten distinctions those loops draw deliberately,
+such as 401 (private) against 000/5xx (retryable) -- and the reproduction's
+first call omits the flags on purpose.
+
+The same class exists upstream: the js template's `scripts/setup-npm.mjs`
+pipes the npm release tarball straight into `tar` with no retry, so a truncation
+abandons the strategy and leaves `tempNpmDir` half-populated.
+`experiments/issue-1076/repro-npm-tarball-truncation.sh` shows it and shows that
+the fix has to download to a file first -- a retried transfer restarts from the
+beginning, which is not something an extractor reading a pipe can absorb. Filed
+as [js#168](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/168).
+The other three templates have no unretried network download; checked, not
+assumed.
+
+**D20 -- an equality where the invariant is a floor.** Issue #896 pinned the
+`Build Package` job cap so a cold cache can compile the published crates'
+unconditional graph, and expressed it as
+
+```rust
+assert!(build.contains("    timeout-minutes: 15\n"), ...)
+```
+
+This pull request measured the job and raised the cap to 20 -- *more* headroom
+than #896 asked for -- and the test that exists to protect that headroom failed
+it. The assertion now parses the cap and compares it against a named floor,
+`MIN_BUILD_PACKAGE_CAP_MINUTES`, so a drop below 15 still fails and a
+measured raise does not. The class is worth naming, because the register
+already holds two of it (D6, D15): a budget written as a literal in one place
+and as a rule in another eventually disagrees with itself.
+
+**D21 -- a link that is only broken from CI.** `Check Links` run 33968819188
+rejected LEGAL-COMPLIANCE.md's citation of the EU's general-purpose AI model
+guidance:
+
+```text
+[403] https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers (at 359:3) | Rejected status code: 403 Forbidden
+```
+
+The page is not broken. Measured from a workstation, it answers **200** to GET
+and to HEAD, under lychee's own `formal-ai-link-checker/1.0` user agent, under
+`curl/8.20.0` and under a browser agent -- so the refusal follows the caller's
+network, not its user agent, and the European Commission's site simply declines
+GitHub's runner address space. The workflow's `--accept` list carries 429 and
+5xx for exactly this reason but deliberately not 403, which elsewhere does mean
+"gone", so the exception is named per host in `.lycheeignore` with the evidence
+beside it -- the same shape the file already uses for GitHub's anonymous 404s
+and for `web.archive.org`. The Wayback fallback could not rescue it either:
+`check-web-archive.mjs` found no snapshot.
 
 ## 5. Cache quota accounting
 

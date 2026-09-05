@@ -1,0 +1,76 @@
+Check Links	Check broken links against Web Archive	﻿2026-09-05T13:25:28.3385652Z ##[group]Run node scripts/check-web-archive.mjs
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3386045Z ^[[36;1mnode scripts/check-web-archive.mjs^[[0m
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3409102Z shell: /usr/bin/bash -e {0}
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3409378Z env:
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3409580Z   GIT_CONFIG_COUNT: 1
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3409833Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3410102Z   GIT_CONFIG_VALUE_0: main
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3410342Z   LYCHEE_OUTPUT: lychee/out.md
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3410587Z ##[endgroup]
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3713895Z === Web Archive Fallback Check ===
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3714297Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3716205Z Reading lychee output from: lychee/out.md
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3716533Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3722900Z Found 1 broken URL(s). Checking Web Archive...
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3723274Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:28.3723644Z Checking: https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:33.5731320Z   ✗ Not found in Web Archive
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0728491Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0729198Z === Web Archive Check Summary ===
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0729692Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0732294Z ✗ 1 broken link(s) have NO Web Archive version:
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0733241Z   https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0733896Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0738534Z ##[error]Broken link detected: https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0739930Z No archived version was found in the Wayback Machine.
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0740283Z How to fix:
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0740658Z   1. Find an updated URL for the same or equivalent content and replace the link.
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0741171Z   2. Remove the link if the content is no longer relevant.
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0741743Z   3. Add the URL to .lycheeignore if it is a known false positive (e.g. localhost, example.com).
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0742409Z all_archived=false
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0742661Z undetermined=0
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0742799Z 
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0742998Z Action required: Fix or remove the broken links listed above.
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0743585Z For links with Web Archive versions, you can replace them with the suggested archive.org URLs.
+Check Links	Check broken links against Web Archive	2026-09-05T13:25:34.0781459Z ##[error]Process completed with exit code 1.
+Check Links	Fail if broken links were found	﻿2026-09-05T13:25:34.1101439Z ##[group]Run echo "::error::Broken live links were detected."
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1101878Z ^[[36;1mecho "::error::Broken live links were detected."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1102307Z ^[[36;1mecho ""^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1102527Z ^[[36;1mecho "What happened:"^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1102951Z ^[[36;1mecho "  lychee found one or more broken links in the *.md and *.html files of this repository."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1103534Z ^[[36;1mecho "  The Web Archive check above provides replacement URLs when snapshots exist."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1104059Z ^[[36;1mecho ""^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1104265Z ^[[36;1mecho "How to fix:"^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1104663Z ^[[36;1mecho "  1. Review the 'Check links with lychee' step above for a full list of broken links."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1105262Z ^[[36;1mecho "  2. For links marked with a '::notice::' annotation above, a Web Archive version exists."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1105809Z ^[[36;1mecho "     Replace those broken links with the suggested archive.org URL."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1106285Z ^[[36;1mecho "  3. For links with no archive version, either:"^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1106724Z ^[[36;1mecho "     a. Find an updated URL that points to the same or equivalent content."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1107202Z ^[[36;1mecho "     b. Remove the link if the content is no longer relevant."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1107662Z ^[[36;1mecho "     c. Add the URL to .lycheeignore if it is a known false positive."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1108071Z ^[[36;1mecho ""^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1108441Z ^[[36;1mecho "Report location: lychee/out.md (available as a workflow artifact if configured)."^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1108853Z ^[[36;1mexit 1^[[0m
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1129373Z shell: /usr/bin/bash -e {0}
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1129632Z env:
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1129824Z   GIT_CONFIG_COUNT: 1
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1130073Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1130342Z   GIT_CONFIG_VALUE_0: main
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1130567Z ##[endgroup]
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1172237Z ##[error]Broken live links were detected.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1173617Z 
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1173802Z What happened:
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1174483Z   lychee found one or more broken links in the *.md and *.html files of this repository.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1175507Z   The Web Archive check above provides replacement URLs when snapshots exist.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1176053Z 
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1176173Z How to fix:
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1176734Z   1. Review the 'Check links with lychee' step above for a full list of broken links.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1182666Z   2. For links marked with a '::notice::' annotation above, a Web Archive version exists.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1183677Z      Replace those broken links with the suggested archive.org URL.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1184141Z   3. For links with no archive version, either:
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1184622Z      a. Find an updated URL that points to the same or equivalent content.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1185118Z      b. Remove the link if the content is no longer relevant.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1185581Z      c. Add the URL to .lycheeignore if it is a known false positive.
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1185901Z 
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1186165Z Report location: lychee/out.md (available as a workflow artifact if configured).
+Check Links	Fail if broken links were found	2026-09-05T13:25:34.1187485Z ##[error]Process completed with exit code 1.

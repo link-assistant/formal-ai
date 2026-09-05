@@ -4,13 +4,15 @@ Reproductions backing the five upstream reports in
 `dev/log/issues/1076/pulls/1077/upstream-reports/`, and the one defect that
 turned out to be this repository's own (D10b). Each script is self-contained and
 needs only bash, except `repro-lino-comment-colon.sh`, which also wants
-`rust-script` and optionally `node`.
+`rust-script` and optionally `node`, and `repro-curl-truncated-download.sh`,
+which wants `python3` and `curl`.
 
 | script | what it shows |
 |---|---|
 | `repro-budget-poll-interval.sh` | The rust template's budget wrapper stops enforcing entirely when `BUDGET_POLL_SECONDS` is fractional: `elapsed=$(( elapsed + POLL_SECONDS ))` is an arithmetic error, `elapsed` stays 0, and a `sleep 10` under a 2s budget exits 0 after the full 10s. |
 | `repro-actionlint-without-shellcheck.sh` | D10b: the same workflow, whose only defect is inside a `run:` block, exits 0 when actionlint cannot reach ShellCheck and 1 (three findings) when it can. The measurement behind moving actionlint to the container image and adding the canary step to `.github/workflows/workflows.yml`. |
 | `repro-lino-comment-colon.sh` | D18: the same `.lino` file fails to parse with a colon in its `#` prose and parses without one, in both the Rust and the JavaScript implementation of links-notation -- and the Rust error names no line while the JavaScript one reports line and column. Behind [links-notation#301](https://github.com/link-foundation/links-notation/issues/301) and [#302](https://github.com/link-foundation/links-notation/issues/302). |
+| `repro-curl-truncated-download.sh` | D19: a local server that declares twice the `Content-Length` it sends and then closes the socket. `curl -fsSL` exits 18, and so does `curl -fsSL --retry 3 --retry-delay 1` -- only `--retry-all-errors` recovers it. The measurement behind giving every network install in the repository `--retry 3 --retry-delay 2 --retry-all-errors`. |
 | `cases2.sh` | Runs all three templates' wrappers against a child that ignores SIGTERM. The js wrapper returns after 3s and leaves the child running; rust and python wait out the grace period and escalate to SIGKILL. |
 
 The vendored copies (`template-run-with-budget-warning.sh` = rust,
