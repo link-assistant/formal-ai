@@ -24,7 +24,7 @@ use links_notation::parse_lino as parse_canonical_lino;
 /// that cannot stand on its own. Returns `None` when every line parses in
 /// isolation, which is what a multi-line quoted string looks like -- callers
 /// print the underlying error either way, so a miss costs nothing.
-pub(crate) fn first_unparseable_lino_line(content: &str) -> Option<(usize, String)> {
+pub fn first_unparseable_lino_line(content: &str) -> Option<(usize, String)> {
     content
         .lines()
         .enumerate()
