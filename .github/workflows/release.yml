@@ -139,6 +139,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: ./.github/actions/setup-buildx-resilient
       - name: Build image
+        # Issue #1076: a step-level cap reports an overrun as a step *failure*;
+        # the job cap reports it as `cancelled` and turns nothing red. 15m is
+        # 1.7x the worst of thirteen measured pull-request builds (8.6 min).
+        timeout-minutes: 15
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -569,11 +573,11 @@ jobs:
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        # Issue #1076: a step-level cap, unlike the job cap, reports an
-        # overrun as a step *failure*. In run 33955786226 this step had been
-        # running 24.6 of the job's 60 minutes with seven steps still pending
-        # and nothing had turned red.
-        timeout-minutes: 25
+        # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
+        # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
+        # minutes here with seven steps pending and nothing red. 45m is 1.4x
+        # the worst measured build (32.5 min); see the D15 note in dev/log.
+        timeout-minutes: 45
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -581,7 +585,7 @@ jobs:
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
           cache-from: type=gha,scope=docker-image
-          cache-to: type=gha,mode=min,scope=docker-image
+          cache-to: type=gha,mode=max,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           steps.release_gate.outputs.should_release == 'true' && (
@@ -616,6 +620,9 @@ jobs:
             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
+        # Issue #1076: reuses the layers the GHCR step above exported, so 20m
+        # is generous; 45m + 20m still fires before the 90m job cap.
+        timeout-minutes: 20
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -757,11 +764,11 @@ jobs:
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        # Issue #1076: a step-level cap, unlike the job cap, reports an
-        # overrun as a step *failure*. In run 33955786226 this step had been
-        # running 24.6 of the job's 60 minutes with seven steps still pending
-        # and nothing had turned red.
-        timeout-minutes: 25
+        # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
+        # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
+        # minutes here with seven steps pending and nothing red. 45m is 1.4x
+        # the worst measured build (32.5 min); see the D15 note in dev/log.
+        timeout-minutes: 45
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -769,7 +776,7 @@ jobs:
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
           cache-from: type=gha,scope=docker-image
-          cache-to: type=gha,mode=min,scope=docker-image
+          cache-to: type=gha,mode=max,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           (steps.version.outputs.version_committed == 'true' ||
@@ -802,6 +809,9 @@ jobs:
             org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
       - name: Publish Docker image to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
+        # Issue #1076: reuses the layers the GHCR step above exported, so 20m
+        # is generous; 45m + 20m still fires before the 90m job cap.
+        timeout-minutes: 20
         uses: docker/build-push-action@v7
         with:
           context: .
