@@ -1,0 +1,59 @@
+# Workflow security audit (issue #1076).
+#
+# All four link-foundation pipeline templates ship this workflow, and it is the
+# one template file this repository had no counterpart for. actionlint already
+# runs in the CI/CD Pipeline's `lint` job and checks workflow *syntax*; nothing
+# checked workflow *security*. The gap was not theoretical: the first zizmor run
+# against these workflows found `${{ github.event.inputs.description }}`
+# interpolated directly into two `run:` blocks in release.yml, in steps that
+# hold `secrets.GITHUB_TOKEN`. Both steps already declared the value in `env:`
+# and then used the raw expression anyway.
+#
+# actionlint deliberately stays where it is. Moving it here would put it behind
+# this workflow's `paths:` filter, and it is a whole-pipeline gate today.
+name: Workflows
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/**']
+  pull_request:
+    paths: ['.github/**']
+
+# Keep the workflow read-only unless a job explicitly needs an additional scope.
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    name: Zizmor
+    runs-on: ubuntu-latest
+    # Issue #1017: a job cap must be a backstop, not the mechanism that reports
+    # the failure -- `timeout-minutes` cancels a job, and a cancelled job is not
+    # a red check. This audit takes seconds; ten minutes is unreachable except
+    # by a hang.
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Reproduce locally with exactly this configuration:
+      #   pipx run zizmor==1.30.0 --config .github/zizmor.yml \
+      #     --min-confidence medium --persona regular \
+      #     .github/workflows .github/actions
+      #
+      # Annotations rather than SARIF: the results should be a red check on the
+      # pull request that introduced them, not a Security tab entry that depends
+      # on Advanced Security being enabled.
+      - uses: zizmorcore/zizmor-action@v0.6.2
+        with:
+          advanced-security: false
+          annotations: true
+          config: .github/zizmor.yml
+          min-confidence: medium

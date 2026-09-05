@@ -148,7 +148,7 @@ jobs:
           # Publish jobs keep the default `compile`, so what ships is still
           # built from source (issue #1051).
           build-args: BINARY_SOURCE=prebuilt
-          cache-from: type=gha
+          cache-from: type=gha,scope=docker-image
           # Issue #1057: prebuilt binary, nothing worth caching; exports were
           # evicting sccache from the shared 10GB pool.
           cache-to: type=inline
@@ -268,6 +268,23 @@ jobs:
           ACTIONLINT_VERSION: 1.7.12
         run: |
           set -euo pipefail
+          # actionlint does not lint `run:` blocks itself: it shells out to
+          # ShellCheck. When that binary is absent from PATH, actionlint does
+          # not say so -- it skips every shell check and still exits 0, so this
+          # job stays green while checking half of what it appears to check.
+          # The ubuntu-latest image ships the binary today; assert it, so the
+          # day an image change drops it this job fails loudly instead of
+          # quietly narrowing its own scope (issue #1076: false negatives in
+          # CI). Nothing else is required -- actionlint's other delegate,
+          # pyflakes, applies to `shell: python` blocks, and there are none.
+          #
+          # NB: do not start a comment line in this block with the tool's name
+          # in lowercase. ShellCheck reads `# <name> ...` as a directive and
+          # fails the whole script with SC1073 when it cannot parse one.
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            echo "::error title=actionlint would skip every shell check::shellcheck is not on PATH, so actionlint lints workflow syntax only and exits 0 regardless of what the run: blocks contain. Install shellcheck on the runner before this step."
+            exit 1
+          fi
           curl -fsSL \
             "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
             | tar xz -C /tmp actionlint
@@ -346,15 +363,9 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
-      - name: Restore cargo registry cache
-        uses: actions/cache/restore@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
+          restore-only: 'true'
       - name: Check LiNo data integrity
         if: matrix.test-suite == 'full'
         run: cargo test --test unit data_files -- --nocapture
@@ -440,15 +451,9 @@ jobs:
       - uses: ./.github/actions/setup-sccache
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-build-
+          prefix: build-
       # Issue #1055: the binary exists; packaging needs no rebuild.
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
@@ -586,14 +591,19 @@ jobs:
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
+        # Issue #1076: a step-level cap, unlike the job cap, reports an
+        # overrun as a step *failure*. In run 33955786226 this step had been
+        # running 24.6 of the job's 60 minutes with seven steps still pending
+        # and nothing had turned red.
+        timeout-minutes: 25
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=docker-image
+          cache-to: type=gha,mode=min,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           steps.release_gate.outputs.should_release == 'true' && (
@@ -634,7 +644,7 @@ jobs:
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=gha,scope=docker-image
           # Issue #1057: the GHCR leg above already exported these layers.
           cache-to: type=inline
       - name: Create GitHub Release
@@ -703,7 +713,7 @@ jobs:
         env:
           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
           DESCRIPTION: ${{ github.event.inputs.description }}
-        run: rust-script scripts/version-and-commit.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+        run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Build release
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         run: cargo build --release
@@ -767,14 +777,19 @@ jobs:
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
+        # Issue #1076: a step-level cap, unlike the job cap, reports an
+        # overrun as a step *failure*. In run 33955786226 this step had been
+        # running 24.6 of the job's 60 minutes with seven steps still pending
+        # and nothing had turned red.
+        timeout-minutes: 25
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=docker-image
+          cache-to: type=gha,mode=min,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           (steps.version.outputs.version_committed == 'true' ||
@@ -813,7 +828,7 @@ jobs:
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=gha,scope=docker-image
           # Issue #1057: the GHCR leg above already exported these layers.
           cache-to: type=inline
       - name: Create GitHub Release
@@ -863,7 +878,7 @@ jobs:
         env:
           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
           DESCRIPTION: ${{ github.event.inputs.description }}
-        run: rust-script scripts/create-changelog-fragment.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+        run: rust-script scripts/create-changelog-fragment.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
@@ -1402,15 +1417,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
-      - name: Cache cargo registry
-        uses: actions/cache@v6
+      - uses: ./.github/actions/cache-cargo-registry
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-docs-
+          prefix: docs-
       - name: Generate Rust API docs (cargo doc)
         env:
           RUSTDOCFLAGS: -D warnings
