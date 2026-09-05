@@ -14,6 +14,7 @@ mod desktop_release_resolve;
 #[allow(dead_code)]
 #[path = "../../../scripts/detect-code-changes.rs"]
 mod detect_code_changes;
+mod fresh_merge_fetch_retry;
 mod issue_1001;
 mod issue_1012;
 mod issue_1014;

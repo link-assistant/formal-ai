@@ -5,11 +5,11 @@ The issue asked to reuse the four
 reference for CI/CD best practice, and the task description asked that defects
 belonging to another project be reported there with a reproducible example, a
 workaround and a code-level fix. Comparing this repository's pipeline against
-the templates surfaced four defects in the templates themselves, and fixing
+the templates surfaced five defects in the templates themselves, and fixing
 this pull request's own red build surfaced two more in `links-notation`, the
 parser every `.lino` gate in this repository is validated with.
 
-All six were reproduced locally before filing; the scripts and transcripts are
+All seven were reproduced locally before filing; the scripts and transcripts are
 in `experiments/issue-1076/`.
 
 | # | Defect | Filed | Body |
@@ -20,6 +20,7 @@ in `experiments/issue-1076/`.
 | 4 | Links Notation has no comment syntax, so a `#` prose line is an ordinary link and one bare colon in it (`... a commit can break: two of the tests`) makes the whole file unparseable | [links-notation#301](https://github.com/link-foundation/links-notation/issues/301) | `links-notation-no-comment-syntax.md` |
 | 5 | The Rust parser reports failures by `Debug`-printing the `nom` error -- no line, no column, and the entire unconsumed remainder as the payload -- while the JavaScript port of the same version reports `line`, `column` and what it expected | [links-notation#302](https://github.com/link-foundation/links-notation/issues/302) | `links-notation-rust-error-position.md` |
 | 6 | `setup-npm.mjs` pipes the npm release tarball into `tar` with no `--retry`, so a truncated transfer (curl exit 18) abandons the strategy and leaves `tempNpmDir` half-populated | [js#168](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/168) | `js-template-npm-tarball-retry.md` |
+| 7 | `simulate-fresh-merge.sh` fetches the base branch once, unretried, so a runner that loses name resolution for a moment fails a required check and skips every later step | [rust#157](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/157), [js#169](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/169), [python#70](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/70) | `templates-fresh-merge-fetch-retry.md` |
 
 ## Which templates each defect affects
 

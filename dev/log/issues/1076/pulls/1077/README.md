@@ -182,6 +182,7 @@ part of the audit.
 | D19 | `experiments/agentic_cli_matrix/install_client.sh` downloads a 345 MB VS Code tarball with `curl -fsSL` and no retry, so one dropped connection reddens the build: run 33967170904 failed with `curl: (18) transfer closed with 344439862 bytes remaining to read` on a commit that changed no shell script | false positive (pre-existing) | §4.3, `ci-logs/agentic-cli-matrix-33967170904.log`, `experiments/issue-1076/repro-curl-truncated-download.sh` |
 | D20 | `issue_896_component_boundaries::build_package_budget_bounds_the_published_component_cold_build` asserts the `Build Package` cap is *exactly* `timeout-minutes: 15`, so this PR's measured raise to 20 — strictly more headroom than the invariant asks for — failed the test that exists to protect that headroom | false positive (pre-existing gate) | §4.3, `ci-logs/head-e03d1d7b/coverage-101314283147.log:4947` |
 | D21 | `Check Links` reports LEGAL-COMPLIANCE.md's EU GPAI-guidelines citation broken. The page answers **200** from a workstation for GET and HEAD, under lychee's own user agent, under `curl/8.20.0` and under a browser agent; it answers GitHub's runner range with **403**, and the Wayback fallback has no snapshot to rescue it with | false positive (pre-existing) | §4.3, `ci-logs/head-e03d1d7b/check-links-full.log:883` |
+| D22 | `scripts/simulate-fresh-merge.sh` fetches the base branch once, unretried: run 33973154494 lost name resolution on the runner (`Could not resolve host: github.com`), failed `macOS Core Tests / Build macOS test archive` 30 seconds in and skipped its remaining nine steps. `scripts/pin-base-commit.sh` has the same single fetch, and it resolves the commit every job in the run merges | false positive (pre-existing) | §4.3, `ci-logs/head-d4f69034/macos-build-archive.log` |
 
 ### 4.1 Why D4 was withdrawn
 
@@ -347,9 +348,9 @@ in this register is a signal that did not fire or fired for the wrong reason;
 D18 is a signal that fired correctly and could not be read, which costs the same
 time and is easier to dismiss.
 
-### 4.3 Three defects this pull request's own CI surfaced
+### 4.3 Four defects this pull request's own CI surfaced
 
-The audit that opened this issue read `main`'s history. These three came from
+The audit that opened this issue read `main`'s history. These four came from
 watching this branch's checks instead, and none of them is caused by the change
 under test -- which is what makes them the issue's subject rather than
 collateral.
@@ -406,6 +407,29 @@ beginning, which is not something an extractor reading a pipe can absorb. Filed
 as [js#168](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/168).
 The other three templates have no unretried network download; checked, not
 assumed.
+
+**D22 -- the same class, one layer down.** The commit that fixed D19 was itself
+failed by a network blip, this time in git rather than curl: run 33973154494's
+`Build macOS test archive` died 30 seconds in on
+
+```text
+Fetching latest main...
+fatal: unable to access 'https://github.com/link-assistant/formal-ai/': Could not resolve host: github.com
+```
+
+and skipped its remaining nine steps. `scripts/simulate-fresh-merge.sh` fetches
+the base branch exactly once under `set -euo pipefail`, and
+`scripts/pin-base-commit.sh` -- which resolves the commit *every* job in the run
+merges, so a blip there costs the whole workflow -- does the same. Both now
+retry five times with a growing delay, and both still fail when the fetch never
+succeeds: skipping the merge simulation silently is the false negative the check
+exists to prevent. `tests/unit/ci-cd/fresh_merge_fetch_retry.rs` drives each
+script through a stand-in `git` that fails the way the runner did, and pins both
+halves of that -- recovery and refusal. The rust, js and python templates carry
+the same single fetch; filed as
+[rust#157](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/157),
+[js#169](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/169)
+and [python#70](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/70).
 
 **D20 -- an equality where the invariant is a floor.** Issue #896 pinned the
 `Build Package` job cap so a cold cache can compile the published crates'
