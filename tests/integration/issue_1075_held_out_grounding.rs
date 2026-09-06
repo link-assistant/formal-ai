@@ -305,3 +305,75 @@ fn an_explicit_default_is_still_honoured() {
     let (_, arguments) = calls.first().unwrap_or_else(|| panic!("{response}"));
     assert_eq!(arguments["visibility"], "internal", "{arguments}");
 }
+
+#[test]
+fn concurrent_clients_each_keep_their_own_workspace() {
+    // One server, many clients. The workspace is a fact about the request that
+    // carries it, so it has to be read out of that request and nowhere else --
+    // a process-wide "current workspace" would be correct exactly until a
+    // second client connected, and then it would send one client's file into
+    // the other's checkout. Sixteen interleaved requests, eight per directory.
+    let directories = [
+        "/srv/checkouts/telemetry-agent-4711",
+        "/var/lib/runners/ingest-pipeline-88",
+    ];
+    let writer = json!({
+        "type": "function",
+        "function": {
+            "name": "local_file_write",
+            "description": "Writes a file. The path parameter must be an absolute path.",
+            "parameters": {
+                "type": "object",
+                "required": ["path", "content"],
+                "properties": {
+                    "path": {"type": "string"},
+                    "content": {"type": "string"}
+                }
+            }
+        }
+    });
+
+    std::thread::scope(|scope| {
+        let handles: Vec<_> = (0..16)
+            .map(|turn| {
+                let directory = directories[turn % directories.len()];
+                let writer = writer.clone();
+                scope.spawn(move || {
+                    let response = completion(
+                        &[
+                            json!({
+                                "role": "system",
+                                "content": format!("<env>\n  Working directory: {directory}\n</env>")
+                            }),
+                            user("write backoff=250ms to docs/retry-notes.md file"),
+                        ],
+                        std::slice::from_ref(&writer),
+                    );
+                    let calls = tool_calls(&response);
+                    let (_, arguments) = calls.first().unwrap_or_else(|| panic!("{response}"));
+                    let path = arguments["path"].as_str().unwrap_or_default().to_owned();
+                    (directory, path)
+                })
+            })
+            .collect();
+
+        for handle in handles {
+            let (directory, path) = handle.join().expect("client turn");
+            // Which file the turn writes is the recipe's business -- turn one
+            // keeps the plan record. Which *directory* it writes into is this
+            // test's business, and it must be the one this request declared.
+            assert!(
+                path.starts_with(&format!("{directory}/")),
+                "a client's write landed outside the directory it declared: {path}"
+            );
+            let other = directories
+                .iter()
+                .find(|candidate| **candidate != directory)
+                .expect("a second client");
+            assert!(
+                !path.starts_with(other),
+                "one client's write landed in another client's checkout: {path}"
+            );
+        }
+    });
+}
