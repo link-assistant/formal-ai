@@ -489,3 +489,136 @@ fn a_directory_is_not_learned_from_a_result_the_client_marked_as_an_error() {
         "an error result reports where the call failed, not where the client lives"
     );
 }
+
+/// The same grounding, asked for in every registered language.
+///
+/// The scope vocabulary this fix adds lives in
+/// `data/seed/tool-resource-scopes.lino` and is written in English. *Where* an
+/// effect lands is not an English question, though: a request typed in Hindi
+/// names the same file in the same checkout as one typed in English, and must
+/// not be answered by a service connector against a blank project merely
+/// because the router recognised only the English wording.
+///
+/// Two claims, because the registry makes two different promises. A language
+/// `data/seed/languages.lino` records as `status full` has the lexemes to be
+/// routed, so its request has to reach the requested file --
+/// [`formal_ai::lexeme_import::import_languages`] is the list, not a constant
+/// here, so a language promoted to full is pinned the day it is promoted.
+/// Spanish is `status partial` with `uncovered_behavior language_gap`, and
+/// asserting a route it does not claim to have would be testing the wrong
+/// issue. What it is still held to is this one's subject: whatever it emits
+/// must not leave the client's workspace or reach for a service connector.
+///
+/// This is the whole recipe per language, for the reason
+/// `a_project_file_is_not_written_through_a_service_connector` gives: turn one
+/// is the plan record, so a first-turn assertion would score the Kotlin
+/// session's `planned_not_executed` as a pass. Every turn's path is checked, so
+/// the plan record has to be grounded in the client's workspace too -- writing
+/// *that* file into the server's sidecar is the Scala row of the issue exactly.
+#[test]
+fn every_registered_language_lands_in_the_clients_workspace() {
+    const WORKSPACE: &str = "/srv/checkouts/telemetry-agent-4711";
+    // "write backoff=250ms to config/retry-policy.yaml", once per language.
+    let requests = [
+        ("en", "write backoff=250ms to config/retry-policy.yaml file"),
+        (
+            "ru",
+            "создай файл config/retry-policy.yaml с текстом backoff=250ms",
+        ),
+        (
+            "hi",
+            "बनाओ config/retry-policy.yaml जिसमें लिखा हो backoff=250ms",
+        ),
+        (
+            "zh",
+            "创建 文件 config/retry-policy.yaml 内容为 backoff=250ms",
+        ),
+        (
+            "es",
+            "crea el archivo config/retry-policy.yaml con el texto backoff=250ms",
+        ),
+    ];
+    let writer = json!({
+        "type": "function",
+        "function": {
+            "name": "local_file_write",
+            "description": "Writes a file. The path parameter must be an absolute path.",
+            "parameters": {
+                "type": "object",
+                "required": ["path", "content"],
+                "properties": {
+                    "path": {"type": "string"},
+                    "content": {"type": "string"}
+                }
+            }
+        }
+    });
+    // The connector is advertised first, so position cannot be what saves the
+    // local write in any of these languages.
+    let tools = vec![gitlab_connector_tool(), writer];
+    let fully_supported = formal_ai::lexeme_import::import_languages();
+
+    for (language, request) in requests {
+        let mut messages = vec![
+            json!({
+                "role": "system",
+                "content": format!("<env>\n  Working directory: {WORKSPACE}\n</env>")
+            }),
+            user(request),
+        ];
+        let mut wrote_the_requested_file = false;
+
+        for _ in 0..4 {
+            let response = completion(&messages, &tools);
+            let raw = raw_tool_calls(&response);
+            if raw.is_empty() {
+                break;
+            }
+            for (name, arguments) in tool_calls(&response) {
+                assert_ne!(
+                    name, "gitlab.create_file",
+                    "{language}: a project file was routed through a service connector: {arguments}"
+                );
+                if let Some(path) = arguments["path"].as_str() {
+                    assert!(
+                        path.starts_with(&format!("{WORKSPACE}/")),
+                        "{language}: the write left the client's workspace: {arguments}"
+                    );
+                    wrote_the_requested_file |= path.ends_with("config/retry-policy.yaml")
+                        && arguments["content"]
+                            .as_str()
+                            .is_some_and(|content| content.contains("backoff=250ms"));
+                }
+            }
+            messages.push(json!({"role": "assistant", "tool_calls": raw}));
+            for call in &raw {
+                messages.push(json!({
+                    "role": "tool",
+                    "tool_call_id": call["id"],
+                    "content": "ok"
+                }));
+            }
+            if wrote_the_requested_file {
+                break;
+            }
+        }
+
+        assert!(
+            wrote_the_requested_file || !fully_supported.contains(&language),
+            "{language}: the registry records it as fully supported, so the requested file had to be written: {messages:?}"
+        );
+    }
+
+    let registered = formal_ai::language::registered_languages()
+        .into_iter()
+        .map(formal_ai::Language::slug)
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(
+        requests
+            .map(|(language, _)| language)
+            .into_iter()
+            .collect::<std::collections::BTreeSet<_>>(),
+        registered,
+        "the grounding matrix must track every registered language",
+    );
+}
