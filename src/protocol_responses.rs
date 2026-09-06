@@ -104,6 +104,7 @@ pub fn response_arguments_for_tool(
         .and_then(Value::as_array)
         .map(Vec::as_slice)
         .unwrap_or_default();
+    let creates_file = call_writes_bytes(properties, source);
     let mut projected = Map::new();
     for (name, property_schema) in properties {
         let value = source
@@ -114,7 +115,8 @@ pub fn response_arguments_for_tool(
                 required
                     .iter()
                     .any(|entry| entry.as_str() == Some(name))
-                    .then(|| schema_default(property_schema, name, user_prompt))
+                    .then(|| missing_required_value(property_schema, name, user_prompt))
+                    .flatten()
             });
         if let Some(value) = value {
             let mut value = constrain_to_schema(value, property_schema, name, user_prompt);
@@ -122,7 +124,12 @@ pub fn response_arguments_for_tool(
                 .as_str()
                 .filter(|_| demands_absolute_path(definition, name, property_schema))
             {
-                value = Value::String(absolute_path(path, workspace));
+                match absolute_path(path, workspace, creates_file) {
+                    Some(absolute) => value = Value::String(absolute),
+                    // A write with no observed workspace keeps the request's own
+                    // spelling so the client resolves it in its own directory.
+                    None => {}
+                }
             }
             projected.insert(name.clone(), value);
         }
@@ -221,26 +228,81 @@ fn tool_description(definition: &Value) -> Option<&Value> {
     })
 }
 
-/// Resolve a relative path against the client's directory, falling back to the
-/// server's own.
+/// Resolve a relative path against the client's directory.
 ///
-/// The fallback is the shared-directory case the agentic matrix runs, where both
-/// processes start in the same workspace. When the client declares a different
-/// directory — the issue-#715 E2E runs the CLI in a temporary workspace while
-/// the server stays in the repository — resolving against the server's directory
-/// writes the file somewhere the client never looks.
-fn absolute_path(path: &str, workspace: Option<&str>) -> String {
+/// An already-absolute path is preserved verbatim: the planner or the request
+/// already named a place, and rewriting it would move the effect.
+///
+/// With no observed workspace the answer depends on what the call does. A read
+/// resolved against the server's own directory is the shared-directory case the
+/// agentic matrix runs, and when the guess is wrong the read simply fails and
+/// says so. A *write* resolved the same way is the issue-#1075 defect: the Scala
+/// session wrote `/home/box/.formal-ai/general-change-plan.lino` into the
+/// server's sidecar while the task workspace was
+/// `/tmp/gh-issue-solver-1788563504540`, and the plan looked written while the
+/// pull request stayed empty. A path the server cannot ground is therefore left
+/// as the request spelled it, relative, so the one process that does know its
+/// own directory — the client — resolves it. Returning `None` says exactly that:
+/// there is no grounded absolute form of this path.
+fn absolute_path(path: &str, workspace: Option<&str>, creates_file: bool) -> Option<String> {
     let path = Path::new(path);
     if path.is_absolute() {
-        return path.to_string_lossy().into_owned();
+        return Some(path.to_string_lossy().into_owned());
     }
     if let Some(workspace) = workspace.map(Path::new).filter(|root| root.is_absolute()) {
-        return workspace.join(path).to_string_lossy().into_owned();
+        return Some(workspace.join(path).to_string_lossy().into_owned());
     }
-    std::path::absolute(path)
-        .unwrap_or_else(|_| path.to_path_buf())
-        .to_string_lossy()
-        .into_owned()
+    if creates_file {
+        return None;
+    }
+    Some(
+        std::path::absolute(path)
+            .unwrap_or_else(|_| path.to_path_buf())
+            .to_string_lossy()
+            .into_owned(),
+    )
+}
+
+/// Whether this call carries bytes to put in the file it names.
+///
+/// Read the two together: the schema advertises a content-shaped property and
+/// the planner filled it. That is what separates "write this file" from "look at
+/// this file", without asking what the tool is called.
+fn call_writes_bytes(properties: &Map<String, Value>, source: &Map<String, Value>) -> bool {
+    const CONTENT_PROPERTIES: &[&str] = &["content", "contents", "file_text", "text", "new_string"];
+    CONTENT_PROPERTIES
+        .iter()
+        .any(|name| properties.contains_key(*name) && source.contains_key(*name))
+}
+
+/// The value for a required property the planner did not supply.
+///
+/// [`None`] means the call cannot be grounded on this argument, and the argument
+/// is left out rather than invented (issue #1075). Two kinds are never invented.
+///
+/// An *identity* argument names a resource: `repository_full_name`, `owner`,
+/// `channel_id`. The empty string that used to fill it is not a neutral
+/// placeholder — `github.create_file` with `"repository_full_name": ""`
+/// addresses no repository and answered 404, having reported a file creation
+/// that never happened. The request's own URLs are read for a real identity
+/// first; when they say nothing, neither does the call.
+///
+/// A *choice* argument is a required enum with several options and no declared
+/// default. Picking the first is picking an action — the order in a schema is
+/// not a preference — so the choice is left to fail loudly instead.
+fn missing_required_value(schema: &Value, name: &str, user_prompt: &str) -> Option<Value> {
+    if schema.get("default").is_none() && crate::tool_scope::is_identity_argument(name) {
+        return crate::tool_scope::grounded_identity_argument(name, user_prompt);
+    }
+    if schema.get("default").is_none()
+        && schema
+            .get("enum")
+            .and_then(Value::as_array)
+            .is_some_and(|options| options.len() > 1)
+    {
+        return None;
+    }
+    Some(schema_default(schema, name, user_prompt))
 }
 
 fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
@@ -260,7 +322,17 @@ fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
         Some("object") => Value::Object(Map::new()),
         Some("integer" | "number") => Value::from(0),
         Some("null") => Value::Null,
-        _ if matches!(name, "prompt" | "instruction") => Value::String(user_prompt.to_owned()),
+        // A required free-text field describes the work, and the work is what
+        // the request said. `github.create_file` was called with
+        // `"message": ""` beside its empty repository; a commit message that
+        // says nothing is a fabrication too, and this one is already known.
+        _ if matches!(
+            name,
+            "prompt" | "instruction" | "message" | "commit_message" | "commitMessage"
+        ) =>
+        {
+            Value::String(user_prompt.to_owned())
+        }
         _ => Value::String(String::new()),
     }
 }

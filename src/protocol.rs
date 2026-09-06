@@ -19,9 +19,10 @@ use crate::protocol_policy::{
     matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
     tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
 };
-use crate::protocol_responses::{
-    custom_response_tool_input, is_custom_response_tool, response_arguments_for_tool,
-};
+use crate::protocol_responses::{custom_response_tool_input, is_custom_response_tool};
+// Public because grounding is a property of the *emitted call*, and issue #1075
+// asks for it to be asserted directly rather than inferred from a transcript.
+pub use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod content;
@@ -553,7 +554,21 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     // Agent mode with tools permitted: the deterministic agentic planner drives
     // the loop, emitting `tool_calls` or a final answer. An unrecognised task
     // yields `None` and falls through to the solver.
-    let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
+    //
+    // A tool whose preconditions this request cannot meet is withheld from the
+    // planner rather than called with invented ones (issue #1075). A connector
+    // that cannot be addressed without a repository, and a request that names
+    // none, is not a tool that is available here — offering it anyway is how a
+    // local file write became a 404 against `""`.
+    let grounded = groundable_tool_names(request, &owned_names);
+    if trace && grounded.len() != owned_names.len() {
+        let withheld: Vec<&String> = owned_names
+            .iter()
+            .filter(|name| !grounded.contains(name))
+            .collect();
+        eprintln!("[trace] agentic_outcome: withheld ungroundable tools: {withheld:?}");
+    }
+    let tool_names: Vec<&str> = grounded.iter().map(String::as_str).collect();
     let outcome = plan_chat_step(&request.messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     if trace {
@@ -566,6 +581,39 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         }
     }
     outcome
+}
+
+/// The advertised tools this request can actually address.
+///
+/// A tool is withheld when its own schema requires an identity the request
+/// never states — the repository, project or channel the effect would land on.
+/// Withholding is what lets the planner replan onto a tool it *can* ground,
+/// which for a workspace file is the client's own writer or patch tool.
+fn groundable_tool_names(request: &ChatCompletionRequest, names: &[String]) -> Vec<String> {
+    let context = messages_text(&request.messages);
+    let empty = serde_json::Map::new();
+    names
+        .iter()
+        .filter(|name| {
+            crate::protocol_policy::find_tool_definition(&request.tools, name).is_none_or(
+                |definition| {
+                    crate::tool_scope::ungrounded_identity_arguments(definition, &empty, &context)
+                        .is_empty()
+                },
+            )
+        })
+        .cloned()
+        .collect()
+}
+
+/// Everything the client said this turn, in order — the text an identity is
+/// grounded in.
+fn messages_text(messages: &[ChatMessage]) -> String {
+    messages
+        .iter()
+        .map(|message| message.content.plain_text())
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 /// Build a chat completion from a deterministic [`AgenticPlan`]. A

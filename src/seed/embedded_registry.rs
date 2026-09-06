@@ -190,6 +190,8 @@ pub const SHELL_INTENTS_LINO: &str = include_str!("../../data/seed/shell-intents
 pub const SOURCES_REGISTRY_LINO: &str = include_str!("../../data/seed/sources-registry.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topics.lino");
 pub const TERMINAL_COMMANDS_LINO: &str = include_str!("../../data/seed/terminal-commands.lino");
+pub const TOOL_RESOURCE_SCOPES_LINO: &str =
+    include_str!("../../data/seed/tool-resource-scopes.lino");
 pub const TOOLS_LINO: &str = include_str!("../../data/seed/tools.lino");
 
 /// Embedded copy of every Links Notation seed file. Returned in registry
@@ -343,6 +345,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/sources-registry.lino", SOURCES_REGISTRY_LINO),
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
         ("data/seed/terminal-commands.lino", TERMINAL_COMMANDS_LINO),
+        ("data/seed/tool-resource-scopes.lino", TOOL_RESOURCE_SCOPES_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
     ]
 }

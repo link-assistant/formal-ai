@@ -35,8 +35,10 @@ pub fn latest_user_request(messages: &[ChatMessage]) -> Option<String> {
 /// `agent` and `opencode` send `<env>\n  Working directory: …`, `codex` sends
 /// `<environment_context>\n<cwd>…</cwd>`, and `gemini` lists
 /// `- **Workspace Directories:**` followed by one indented path per line. A
-/// client that declares nothing gets `None`, and the caller falls back to the
-/// server's own directory, which is the shared-directory case the matrix runs.
+/// client that declares nothing is asked indirectly instead, through
+/// [`observed_directory`]; only when that is silent too does the caller fall
+/// back to the server's own directory, which is the shared-directory case the
+/// matrix runs.
 #[must_use]
 pub fn client_working_directory(messages: &[ChatMessage]) -> Option<String> {
     let text = messages
@@ -44,9 +46,74 @@ pub fn client_working_directory(messages: &[ChatMessage]) -> Option<String> {
         .map(|message| message.content.plain_text())
         .collect::<Vec<_>>()
         .join("\n");
-    declared_directory(&text)
+    declared_directory(&text).or_else(|| observed_directory(messages))
 }
 
+/// The directory the client *demonstrated*, when it declared none (issue #1075).
+///
+/// A client that says nothing about where it runs still answers the question
+/// every time it reports back: the planner names a file the way the request
+/// spelled it, relative, and the client's result echoes the path it actually
+/// resolved. `read {"filePath": "alpha.txt"}` answering
+/// `/tmp/session-31/alpha.txt` states that the workspace is `/tmp/session-31` —
+/// observed through the client rather than assumed of the server, and at no
+/// extra call.
+///
+/// Only a suffix match counts. An absolute path in a result that has nothing to
+/// do with a path the planner named says nothing about the workspace.
+#[must_use]
+pub fn observed_directory(messages: &[ChatMessage]) -> Option<String> {
+    let planned: Vec<String> = messages
+        .iter()
+        .flat_map(|message| &message.tool_calls)
+        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.function.arguments).ok())
+        .flat_map(|arguments| {
+            arguments
+                .as_object()
+                .map(|object| object.values().cloned().collect::<Vec<_>>())
+                .unwrap_or_default()
+        })
+        .filter_map(|value| value.as_str().map(ToOwned::to_owned))
+        .filter(|value| {
+            let path = std::path::Path::new(value);
+            path.is_relative() && path.file_name().is_some() && !value.contains(['\n', ' '])
+        })
+        .collect();
+    if planned.is_empty() {
+        return None;
+    }
+    messages
+        .iter()
+        .filter(|message| message.role.eq_ignore_ascii_case("tool") && !message.is_error)
+        .flat_map(|message| {
+            message
+                .content
+                .plain_text()
+                .split(|c: char| c.is_whitespace() || matches!(c, '"' | '\'' | '`' | ','))
+                .map(ToOwned::to_owned)
+                .collect::<Vec<_>>()
+        })
+        .find_map(|token| {
+            planned.iter().find_map(|relative| {
+                let root = token.strip_suffix(relative.as_str())?.trim_end_matches('/');
+                (!root.is_empty() && std::path::Path::new(root).is_absolute())
+                    .then(|| root.to_owned())
+            })
+        })
+}
+
+/// The directory the client said it is running in.
+///
+/// A declaration that exists on this machine is preferred, because a client and
+/// server sharing a host may both be able to see it. A declaration that does
+/// *not* exist here is still followed (issue #1075): the server and the client
+/// are frequently different containers, and the agentic session that failed on
+/// Scala ran the client in `/tmp/gh-issue-solver-1788563504540` while the server
+/// saw only its own sidecar. Discarding that declaration did not produce "no
+/// workspace" -- it produced the server's own directory, and the file was
+/// written into the sidecar under `/home/box`, where the task could never see
+/// it. A directory the server cannot stat is exactly the case the declaration
+/// exists to cover.
 fn declared_directory(text: &str) -> Option<String> {
     const WORKSPACE_LIST: &str = "**Workspace Directories:**";
     let tagged = text
@@ -68,20 +135,17 @@ fn declared_directory(text: &str) -> Option<String> {
                 .take_while(|line| line.trim_start().starts_with("- "))
                 .filter_map(|line| line.trim_start().strip_prefix("- "))
         });
-    tagged
+    let declared: Vec<&str> = tagged
         .chain(labelled)
         .chain(listed)
         .map(str::trim)
-        .find(|path| is_usable_directory(path))
-        .map(ToOwned::to_owned)
-}
-
-/// A declaration is only followed when it still describes this machine: the
-/// alternative is planning a call against a directory that does not exist, which
-/// is strictly worse than the request's own spelling.
-fn is_usable_directory(path: &str) -> bool {
-    let candidate = std::path::Path::new(path);
-    candidate.is_absolute() && candidate.is_dir()
+        .filter(|path| std::path::Path::new(path).is_absolute())
+        .collect();
+    declared
+        .iter()
+        .find(|path| std::path::Path::new(path).is_dir())
+        .or_else(|| declared.first())
+        .map(|path| (*path).to_string())
 }
 
 /// Everything the client said as `system`, joined in order.

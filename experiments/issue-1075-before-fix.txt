@@ -1,0 +1,47 @@
+Issue #1075, the defect reproduced before the fix.
+==================================================
+
+Captured by restoring the pre-fix `src/protocol_responses.rs` and
+`src/protocol/content.rs` over the branch and running the release tests:
+
+    git stash push src/protocol_responses.rs src/protocol/content.rs
+    cargo test --test release_tool_grounding
+    git stash pop
+
+Both failures are the ones the issue reported from the 2026-09-04 sessions:
+`"repository_full_name":""` with `"message":""` for Codex's
+`github.create_file`, and a plan written under the server's own directory
+rather than the client's workspace.
+
+   Compiling formal-ai v0.347.0 (/tmp/gh-issue-solver-1788673138683)
+    Finished `test` profile [optimized] target(s) in 3m 13s
+     Running tests/release_tool_grounding.rs (target/debug/deps/release_tool_grounding-5c7570d27b8f0f7a)
+
+running 3 tests
+test remote_write_must_not_fabricate_an_empty_repository ... FAILED
+test a_declared_client_workspace_still_grounds_the_write ... ok
+test missing_client_workspace_must_not_be_replaced_by_server_cwd ... FAILED
+
+failures:
+
+---- remote_write_must_not_fabricate_an_empty_repository stdout ----
+
+thread 'remote_write_must_not_fabricate_an_empty_repository' (49055) panicked at tests/release_tool_grounding.rs:44:5:
+an empty repository addresses no repository at all: {"content":"plan","message":"","path":".formal-ai/general-change-plan.lino","repository_full_name":""}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- missing_client_workspace_must_not_be_replaced_by_server_cwd stdout ----
+
+thread 'missing_client_workspace_must_not_be_replaced_by_server_cwd' (49054) panicked at tests/release_tool_grounding.rs:82:5:
+assertion `left != right` failed: the server's own directory is not the client's: {"content":"plan","filePath":"/tmp/gh-issue-solver-1788673138683/.formal-ai/general-change-plan.lino"}
+  left: String("/tmp/gh-issue-solver-1788673138683/.formal-ai/general-change-plan.lino")
+ right: "/tmp/gh-issue-solver-1788673138683/.formal-ai/general-change-plan.lino"
+
+
+failures:
+    missing_client_workspace_must_not_be_replaced_by_server_cwd
+    remote_write_must_not_fabricate_an_empty_repository
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test release_tool_grounding`
