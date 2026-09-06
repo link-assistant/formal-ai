@@ -78,9 +78,11 @@ pub fn scope_of_tool_name_with(
 }
 
 /// Scope from the client's own advertisement: the required arguments first,
-/// then the name. A tool whose schema requires `repository_full_name` is remote
-/// however it is named, which is what makes this a statement about the effect
-/// rather than about the spelling.
+/// then the name.
+///
+/// A tool whose schema requires `repository_full_name` is remote however it is
+/// named, which is what makes this a statement about the effect rather than
+/// about the spelling.
 #[must_use]
 pub fn scope_of_tool_definition(definition: &Value, name: &str) -> ToolResourceScope {
     let vocabulary = vocabulary();
@@ -104,21 +106,22 @@ pub fn scope_of_tool_definition(definition: &Value, name: &str) -> ToolResourceS
 /// definition is available.
 #[must_use]
 pub fn scope_of_advertised_tool(definitions: &[Value], name: &str) -> ToolResourceScope {
-    crate::protocol_policy::find_tool_definition(definitions, name)
-        .map_or_else(|| scope_of_tool_name(name), |d| scope_of_tool_definition(d, name))
+    crate::protocol_policy::find_tool_definition(definitions, name).map_or_else(
+        || scope_of_tool_name(name),
+        |d| scope_of_tool_definition(d, name),
+    )
 }
 
 /// Whether `name` is an argument that *names* a resource rather than describing
-/// one. A description can be derived from the request; an identity cannot be
+/// one.
+///
+/// A description can be derived from the request; an identity cannot be
 /// invented, because an invented one addresses a different resource — or, when
 /// it is the empty string, none at all.
 #[must_use]
 pub fn is_identity_argument(name: &str) -> bool {
     let lower = name.to_lowercase();
-    vocabulary()
-        .identity_arguments
-        .iter()
-        .any(|entry| *entry == lower)
+    vocabulary().identity_arguments.contains(&lower)
 }
 
 /// The required identity arguments of `definition` that neither the planner nor
@@ -173,7 +176,8 @@ fn first_url(context: &str) -> Option<String> {
     context
         .split_whitespace()
         .map(|token| {
-            token.trim_matches(|c: char| matches!(c, '.' | ',' | ')' | '(' | '"' | '\'' | '>' | '<'))
+            token
+                .trim_matches(|c: char| matches!(c, '.' | ',' | ')' | '(' | '"' | '\'' | '>' | '<'))
         })
         .find(|token| token.contains("://"))
         .map(str::to_owned)
@@ -186,7 +190,7 @@ fn repository_reference(context: &str) -> Option<(String, String, Option<u64>)> 
         let rest = rest
             .split_whitespace()
             .next()?
-            .trim_end_matches(|c: char| matches!(c, '.' | ',' | ')' | '"' | '\'' | '>'));
+            .trim_end_matches(['.', ',', ')', '"', '\'', '>']);
         let mut segments = rest.split('/').filter(|segment| !segment.is_empty());
         let _host = segments.next()?;
         let owner = segments.next()?;

@@ -10,7 +10,7 @@
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
 use serde_json::{Value, json};
 
-fn completion(messages: Vec<Value>, tools: Vec<Value>) -> Value {
+fn completion(messages: &[Value], tools: &[Value]) -> Value {
     enable_http_agent_mode_for_current_process();
     let body = json!({"model": "formal-ai", "messages": messages, "tools": tools});
     let response = handle_api_request("POST", "/v1/chat/completions", &body.to_string());
@@ -25,9 +25,15 @@ fn tool_calls(response: &Value) -> Vec<(String, Value)> {
             calls
                 .iter()
                 .map(|call| {
-                    let name = call["function"]["name"].as_str().unwrap_or_default().to_owned();
+                    let name = call["function"]["name"]
+                        .as_str()
+                        .unwrap_or_default()
+                        .to_owned();
                     let arguments = call["function"]["arguments"].as_str().unwrap_or("{}");
-                    (name, serde_json::from_str(arguments).unwrap_or(json!({})))
+                    (
+                        name,
+                        serde_json::from_str(arguments).unwrap_or_else(|_| json!({})),
+                    )
                 })
                 .collect()
         })
@@ -104,7 +110,7 @@ fn a_project_file_is_not_written_through_a_service_connector() {
     let mut wrote_the_requested_file = false;
 
     for _ in 0..4 {
-        let response = completion(messages.clone(), tools.clone());
+        let response = completion(&messages, &tools);
         let raw = raw_tool_calls(&response);
         if raw.is_empty() {
             break;
@@ -146,8 +152,8 @@ fn a_connector_that_needs_a_project_id_is_not_given_a_blank_one() {
     // Only the connector is advertised, and the request names no project. An
     // argument that identifies nothing must not be supplied at all.
     let response = completion(
-        vec![user("write backoff=250ms to config/retry-policy.yaml file")],
-        vec![gitlab_connector_tool()],
+        &[user("write backoff=250ms to config/retry-policy.yaml file")],
+        &[gitlab_connector_tool()],
     );
 
     for (name, arguments) in tool_calls(&response) {
@@ -163,10 +169,10 @@ fn an_identity_the_request_does_name_is_carried_into_the_call() {
     // Grounding is not refusal: when the request says which repository, the
     // call says so too, and says the one that was asked for.
     let response = completion(
-        vec![user(
+        &[user(
             "write docs/* @platform to CODEOWNERS file in https://github.com/orbit-labs/telemetry-agent",
         )],
-        vec![json!({
+        &[json!({
             "type": "function",
             "function": {
                 "name": "github.create_file",
@@ -198,14 +204,14 @@ fn a_workspace_the_server_cannot_stat_is_still_the_clients_workspace() {
     // it is the wrong one -- that substitution is how a plan came to be written
     // into the server's sidecar while the pull request stayed empty.
     let response = completion(
-        vec![
+        &[
             json!({
                 "role": "system",
                 "content": "<env>\n  Working directory: /srv/checkouts/telemetry-agent-4711\n</env>"
             }),
             user("write backoff=250ms to docs/retry-notes.md file"),
         ],
-        vec![json!({
+        &[json!({
             "type": "function",
             "function": {
                 "name": "local_file_write",
@@ -242,8 +248,8 @@ fn a_required_choice_the_request_never_makes_is_left_to_the_client() {
     // repository, only quieter: `visibility: "public"` because it was listed
     // first, on a request that said nothing about visibility.
     let response = completion(
-        vec![user("write backoff=250ms to notes/scheduler.md file")],
-        vec![json!({
+        &[user("write backoff=250ms to notes/scheduler.md file")],
+        &[json!({
             "type": "function",
             "function": {
                 "name": "local_file_write",
@@ -273,8 +279,8 @@ fn an_explicit_default_is_still_honoured() {
     // The schema itself says what to use when the request is silent. That is a
     // statement by the client, not a guess by the server, and it is kept.
     let response = completion(
-        vec![user("write backoff=250ms to notes/scheduler.md file")],
-        vec![json!({
+        &[user("write backoff=250ms to notes/scheduler.md file")],
+        &[json!({
             "type": "function",
             "function": {
                 "name": "local_file_write",

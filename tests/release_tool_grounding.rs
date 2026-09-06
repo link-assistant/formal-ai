@@ -113,8 +113,7 @@ fn a_declared_client_workspace_still_grounds_the_write() {
 
     let args: Value = serde_json::from_str(&output).unwrap();
     assert_eq!(
-        args["filePath"],
-        "/tmp/gh-issue-solver-1788563504540/.formal-ai/general-change-plan.lino",
+        args["filePath"], "/tmp/gh-issue-solver-1788563504540/.formal-ai/general-change-plan.lino",
         "{args}"
     );
 }
@@ -233,7 +232,10 @@ fn a_workspace_file_is_created_in_the_workspace_and_not_on_a_server() {
         .unwrap_or_else(|| panic!("no workspace creation call: {response}"));
     let input = patch["input"].as_str().unwrap_or_default();
     assert!(input.contains("*** Add File:"), "{patch}");
-    assert!(input.contains(".rb"), "the file is the Ruby program that was asked for: {patch}");
+    assert!(
+        input.contains(".rb"),
+        "the file is the Ruby program that was asked for: {patch}"
+    );
     assert!(
         input.to_lowercase().contains("hello, world!"),
         "the patch carries the program, not a placeholder: {patch}"

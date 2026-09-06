@@ -6,9 +6,8 @@
 
 use formal_ai::seed::parse_tool_resource_scopes;
 use formal_ai::tool_scope::{
-    ToolResourceScope, grounded_identity_argument, is_identity_argument,
-    scope_of_advertised_tool, scope_of_tool_definition, scope_of_tool_name,
-    ungrounded_identity_arguments,
+    ToolResourceScope, grounded_identity_argument, is_identity_argument, scope_of_advertised_tool,
+    scope_of_tool_definition, scope_of_tool_name, ungrounded_identity_arguments,
 };
 use serde_json::{Map, Value, json};
 
@@ -116,7 +115,8 @@ fn an_identity_names_a_resource_and_a_description_does_not() {
 
 #[test]
 fn an_identity_the_request_states_is_grounded_from_it() {
-    let request = "Please open a merge request against https://gitlab.com/orbit/tooling/-/issues/42.";
+    let request =
+        "Please open a merge request against https://gitlab.com/orbit/tooling/-/issues/42.";
     assert_eq!(
         grounded_identity_argument("repository_full_name", request),
         Some(Value::String(String::from("orbit/tooling")))
@@ -163,7 +163,9 @@ fn an_ungrounded_identity_is_reported_as_a_missing_precondition() {
     // Supplied by the caller, so the precondition holds.
     let mut provided = Map::new();
     provided.insert(String::from("channel_id"), json!("C0ABCDEF"));
-    assert!(ungrounded_identity_arguments(&definition, &provided, "Announce the release.").is_empty());
+    assert!(
+        ungrounded_identity_arguments(&definition, &provided, "Announce the release.").is_empty()
+    );
 
     // Supplied as the empty string, which is the defect itself: present in the
     // JSON, absent as an address.

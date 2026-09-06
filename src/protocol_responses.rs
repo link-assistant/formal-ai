@@ -124,11 +124,10 @@ pub fn response_arguments_for_tool(
                 .as_str()
                 .filter(|_| demands_absolute_path(definition, name, property_schema))
             {
-                match absolute_path(path, workspace, creates_file) {
-                    Some(absolute) => value = Value::String(absolute),
-                    // A write with no observed workspace keeps the request's own
-                    // spelling so the client resolves it in its own directory.
-                    None => {}
+                // A write with no observed workspace keeps the request's own
+                // spelling so the client resolves it in its own directory.
+                if let Some(absolute) = absolute_path(path, workspace, creates_file) {
+                    value = Value::String(absolute);
                 }
             }
             projected.insert(name.clone(), value);
