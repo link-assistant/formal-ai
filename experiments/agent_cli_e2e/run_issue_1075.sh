@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
 # Real Agent CLI replay of the issue #1075 sidecar boundary.
 #
-# The Scala session in the issue ran the client in
-# `/tmp/gh-issue-solver-1788563504540` while the server ran under `/home/box`,
-# and the served completion asked the client to write
-# `/home/box/.formal-ai/general-change-plan.lino`. Agent executed exactly what
-# it was given: a real file, on the wrong side of the boundary, invisible to the
-# task, and the pull request stayed empty.
+# The Scala session ran the client in `/tmp/gh-issue-solver-1788563504540` while
+# the server ran under `/home/box`, and the served completion asked the client to
+# write `/home/box/.formal-ai/general-change-plan.lino`. Agent executed exactly
+# what it was given: a real file, on the wrong side of the boundary, invisible to
+# the task, and the pull request stayed empty.
 #
-# `run_agent_cli.sh` cannot show that, because it starts the server inside the
-# CLI's own workdir -- server cwd and client cwd are the same directory there,
-# so a path rooted in the server's cwd still lands in the right place. This
-# script deliberately separates them:
+# Reproducing that needs more than two different directories. The pre-fix
+# `is_usable_directory` followed a declared workspace whenever the server could
+# `is_dir()` it, so with both processes on one host the declaration was honoured
+# and nothing went wrong. What made the session fail is that the server *could
+# not see* the client's directory -- they were different containers. So the
+# server here runs in a container with only its own sidecar mounted, and the
+# client's workspace genuinely does not exist from where the server stands.
 #
-#   SIDECAR   the server's working directory   (stands in for /home/box)
-#   WORKSPACE the Agent CLI's working directory (stands in for the task clone)
+#   SIDECAR   the server's working directory, mounted at /sidecar in the container
+#   WORKSPACE the Agent CLI's working directory, on the host, invisible to the server
 #
-# and then requires that everything the run wrote is under WORKSPACE and that
-# SIDECAR gained no authored file at all.
+# Everything the run wrote must be under WORKSPACE, and SIDECAR must gain no
+# authored file at all.
 #
 # Usage: experiments/agent_cli_e2e/run_issue_1075.sh
 #
@@ -25,6 +27,7 @@
 #   BIN       release-mode formal-ai binary (default: target/release/formal-ai)
 #   PORT      server port (default: 8975)
 #   AGENT     the agent CLI (default: `agent` on PATH)
+#   IMAGE     container base with a matching glibc (default: ubuntu:24.04)
 #   ATTEMPTS  retries for the non-deterministic third-party CLI (default: 3)
 
 set -uo pipefail
@@ -33,12 +36,23 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 PORT="${PORT:-8975}"
 AGENT="${AGENT:-agent}"
+IMAGE="${IMAGE:-ubuntu:24.04}"
 ATTEMPTS="${ATTEMPTS:-3}"
-TASK="${TASK:-Write a Rust hello world program to hello.rs, then compile and run it}"
-EXPECT_FILE="${EXPECT_FILE:-hello.rs}"
+# The phrasing the release matrix already uses for this task, so the run
+# exercises the recognised recipe rather than a paraphrase of it.
+TASK="${TASK:-Give me hello world program in Rust}"
+EXPECT_FILE="${EXPECT_FILE:-main.rs}"
+# The greeting the seed actually carries. `data/seed/hello-world-programs.lino`
+# spells it with a lowercase `w` in every language it lists, and the release
+# matrix asserts the same string, so that is what a correct run prints.
+EXPECT_GREETING="${EXPECT_GREETING:-Hello, world!}"
 
 if [ ! -x "$BIN" ]; then
   echo "!! no formal-ai binary at $BIN (cargo build --release --bin formal-ai)" >&2
+  exit 1
+fi
+if ! docker info >/dev/null 2>&1; then
+  echo "!! docker is required: the server has to run where the client's directory does not exist" >&2
   exit 1
 fi
 
@@ -46,10 +60,11 @@ LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 SIDECAR="$(mktemp -d)"
 WORKSPACE="$(mktemp -d)"
-SERVER_STATE="$(mktemp -d)"
+STATE="$(mktemp -d)"
+NAME="formal-ai-issue-1075-$PORT"
 
-echo "== sidecar (server cwd): $SIDECAR =="
-echo "== workspace (client cwd): $WORKSPACE =="
+echo "== sidecar (server cwd, in a container): $SIDECAR -> /sidecar =="
+echo "== workspace (client cwd, on the host): $WORKSPACE =="
 
 cat > "$WORKSPACE/opencode.json" <<EOF
 {
@@ -70,25 +85,32 @@ cat > "$WORKSPACE/opencode.json" <<EOF
 }
 EOF
 
-# The server is started from SIDECAR and never told about WORKSPACE. Everything
-# it knows about the client's filesystem has to come out of the requests.
-(
-  cd "$SIDECAR" || exit 1
-  FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
-    FORMAL_AI_MEMORY_PATH="$SERVER_STATE/memory.lino" FORMAL_AI_DREAMING=0 \
-    "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
-  echo $! > "$SERVER_STATE/pid"
-)
-SRV="$(cat "$SERVER_STATE/pid")"
-trap 'kill $SRV 2>/dev/null; rm -rf "$SIDECAR" "$WORKSPACE" "$SERVER_STATE"' EXIT
+cleanup() {
+  docker rm -f "$NAME" >/dev/null 2>&1
+  rm -rf "$SIDECAR" "$WORKSPACE" "$STATE"
+}
+trap cleanup EXIT
 
-if ! curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
+# The server is started in a container whose filesystem contains /sidecar and
+# not $WORKSPACE. Everything it can know about the client's directory has to
+# come out of the requests, because it cannot look.
+docker run --rm --name "$NAME" --network host \
+  --user "$(id -u):$(id -g)" \
+  -v "$BIN:/usr/local/bin/formal-ai:ro" \
+  -v "$SIDECAR:/sidecar" \
+  -v "$STATE:/state" \
+  -w /sidecar \
+  -e FORMAL_AI_AGENT_MODE=1 -e FORMAL_AI_TRACE_REQUESTS=1 \
+  -e FORMAL_AI_MEMORY_PATH=/state/memory.lino -e FORMAL_AI_DREAMING=0 \
+  "$IMAGE" formal-ai serve --host 0.0.0.0 --port "$PORT" > "$LOG" 2>&1 &
+
+if ! curl -sS --retry 40 --retry-delay 1 --retry-connrefused --max-time 60 \
      "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
   echo "!! server never came up on port $PORT"
   tail -60 "$LOG"
   exit 1
 fi
-echo "== server up on $PORT =="
+echo "== server up on $PORT, inside $NAME =="
 
 RC=1
 for attempt in $(seq 1 "$ATTEMPTS"); do
@@ -109,11 +131,10 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
   echo "== attempt $attempt did not produce $EXPECT_FILE; retrying =="
 done
 
-echo "== agent tail =="
-tail -30 "$AGENT_LOG"
-
 status=0
 
+# The server's own memory lives in /state, mounted separately, so anything under
+# /sidecar is an authored file and nothing else.
 # 1. The requested file is in the client's workspace.
 if [ -f "$WORKSPACE/$EXPECT_FILE" ]; then
   echo "PASS: $EXPECT_FILE written inside the client's workspace"
@@ -133,8 +154,10 @@ else
   status=1
 fi
 
-# 3. No emitted absolute path was rooted in the server's directory.
-if grep -F "$SIDECAR" "$LOG" > /tmp/issue-1075-sidecar-paths.txt 2>/dev/null; then
+# 3. No emitted absolute path was rooted in the server's own directory. Inside
+#    the container that directory is /sidecar, which is what the client would be
+#    handed.
+if grep -Eo '"[^"]*/sidecar/[^"]*"' "$LOG" > /tmp/issue-1075-sidecar-paths.txt 2>/dev/null; then
   echo "FAIL: the server offered the client paths inside its own directory:"
   head -5 /tmp/issue-1075-sidecar-paths.txt
   status=1
@@ -148,5 +171,26 @@ if [ -n "$plan" ]; then
   echo "PASS: the plan record stayed in the client's workspace ($plan)"
 fi
 
+# 5. The program is a program: it compiles and prints the seeded greeting. The
+#    issue's sessions all produced a well-formed *call* and no working artifact,
+#    so existence of the file is not the claim being made here.
+if [ -f "$WORKSPACE/$EXPECT_FILE" ] && command -v rustc >/dev/null 2>&1; then
+  if (cd "$WORKSPACE" && rustc -O -o hello-bin "$EXPECT_FILE" > /tmp/issue-1075-rustc.log 2>&1); then
+    greeting="$("$WORKSPACE/hello-bin" 2>&1)"
+    if [ "$greeting" = "$EXPECT_GREETING" ]; then
+      echo "PASS: the program compiles and prints exactly: $greeting"
+    else
+      echo "FAIL: the program printed '$greeting', expected '$EXPECT_GREETING'"
+      status=1
+    fi
+  else
+    echo "FAIL: $EXPECT_FILE does not compile"
+    head -20 /tmp/issue-1075-rustc.log
+    status=1
+  fi
+fi
+
 echo "== chat rounds: $(grep -c 'POST /v1/chat/completions' "$LOG" 2>/dev/null || echo 0) =="
+echo "== agent tail =="
+tail -12 "$AGENT_LOG"
 exit "$status"
