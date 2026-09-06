@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/embedded_registry.rs
   language rust
   fidelity signature
-  byte_len 26108
-  line_count 437
-  content_id source_module_a611894cd88e8a4b
-  symbol_count 121
+  byte_len 26291
+  line_count 440
+  content_id source_module_6dc07a574cfb9257
+  symbol_count 122
   symbols
     const AGENT_INFO_LINO 14 14
     const AGENTIC_TOOL_CAPABILITIES_LINO 15 16
@@ -124,7 +124,8 @@ self_ast_census
     const SOURCES_REGISTRY_LINO 190 190
     const SUMMARY_TOPICS_LINO 191 191
     const TERMINAL_COMMANDS_LINO 192 192
-    const TOOLS_LINO 193 193
-    function seed_files 198 348
-    const RESPONSE_FILES 356 375
-    const MEANING_FILES 383 437
+    const TOOL_RESOURCE_SCOPES_LINO 193 194
+    const TOOLS_LINO 195 195
+    function seed_files 200 351
+    const RESPONSE_FILES 359 378
+    const MEANING_FILES 386 440

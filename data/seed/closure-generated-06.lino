@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "algorithm discovery summary"
+  arguments
+    defined-by concept
+    lexeme en
+      surface
+        text "arguments"
   authentic
     defined-by word_surface
     lexeme en
@@ -919,6 +924,11 @@ meanings
     lexeme en
       surface
         text "tool concept lookup"
+  untouched
+    defined-by concept
+    lexeme en
+      surface
+        text "untouched"
   world_state_remaining
     defined-by intent
     lexeme en

@@ -34,6 +34,11 @@ meanings
     lexeme en
       surface
         text "artifacts"
+  belongs
+    defined-by concept
+    lexeme en
+      surface
+        text "belongs"
   brainstorm_project_ideas
     defined-by intent
     lexeme en
@@ -129,6 +134,11 @@ meanings
     lexeme en
       surface
         text "edit"
+  effect
+    defined-by concept
+    lexeme en
+      surface
+        text "effect"
   expandable
     defined-by concept
     lexeme en
@@ -204,6 +214,11 @@ meanings
     lexeme en
       surface
         text "held"
+  identifies
+    defined-by concept
+    lexeme en
+      surface
+        text "identifies"
   indent
     defined-by concept
     lexeme en
@@ -374,6 +389,11 @@ meanings
     lexeme en
       surface
         text "renderer"
+  required
+    defined-by concept
+    lexeme en
+      surface
+        text "required"
   response_agent_suggestion_active_en
     defined-by response_template
     lexeme en
@@ -919,6 +939,11 @@ meanings
     lexeme en
       surface
         text "short rule list"
+  somewhere
+    defined-by concept
+    lexeme en
+      surface
+        text "somewhere"
   statement_audit_strength_range
     defined-by intent
     lexeme en

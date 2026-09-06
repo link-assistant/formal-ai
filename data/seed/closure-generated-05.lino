@@ -974,6 +974,11 @@ meanings
     lexeme en
       surface
         text "step"
+  substring
+    defined-by concept
+    lexeme en
+      surface
+        text "substring"
   task_decomposition_depth_marker
     defined-by intent
     lexeme en

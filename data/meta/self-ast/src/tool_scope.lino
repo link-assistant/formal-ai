@@ -1,0 +1,24 @@
+self_ast_census
+  target src/tool_scope.rs
+  language rust
+  fidelity signature
+  byte_len 9223
+  line_count 242
+  content_id source_module_5e33d6081c955e87
+  symbol_count 15
+  symbols
+    function vocabulary 24 27
+    static VOCABULARY 25 25
+    enum ToolResourceScope 31 40
+    function is_client_workspace 45 47
+    function scope_of_tool_name 57 59
+    function scope_of_tool_name_with 62 78
+    function scope_of_tool_definition 85 101
+    function scope_of_advertised_tool 106 109
+    function is_identity_argument 116 122
+    function ungrounded_identity_arguments 131 146
+    function grounded_identity_argument 155 168
+    function first_url 172 180
+    function repository_reference 184 202
+    function address_segments 206 212
+    function required_argument_names 215 242

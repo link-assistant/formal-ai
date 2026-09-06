@@ -15,8 +15,8 @@
 #   names       an exact tool name, for effects that no argument set reveals
 #
 # `identity` lists the arguments that name a resource rather than describe one.
-# They are grounded from what the request actually says or the call is not made:
-# a fabricated empty repository is an API call against no repository at all.
+# They are grounded from what the request actually says, or the call is not
+# made -- a fabricated empty repository is an API call against no repository.
 tool_resource_scopes
   scope remote_service
     arguments ("repository_full_name" "repository" "repo" "repo_name" "owner" "org" "organization" "project_id" "issue_number" "pull_number" "channel_id" "page_id" "workspace_id" "database_id")
