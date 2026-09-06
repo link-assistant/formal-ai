@@ -135,6 +135,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "append_memory"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_56bf09a974664ba0
+    source "data/seed/closure-generated-03.lino"
+    record "beside"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f28e717730ab9990
     source "data/seed/closure-generated-03.lino"
     record "general_plan_command_verification_evidence"
@@ -371,6 +375,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "thinking_narrative_wellbeing"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_c4ec986dfec40ad0
+    source "data/seed/closure-generated-07.lino"
+    record "lands"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8a27c3452bd1d5a0
     source "data/seed/closure-generated-07.lino"
     record "memory_program_complete"
@@ -534,6 +542,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_ec1dc7c43af80290
     source "data/seed/closure-generated-10.lino"
     record "lexeme_import_refused_batch"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_625b35108d8f08f0
+    source "data/seed/closure-generated-10.lino"
+    record "only"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e797f4369fa3d0c0
     source "data/seed/closure-generated-10.lino"
@@ -843,6 +855,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "wikibooks"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f1f1158f51931c40
+    source "data/seed/closure-generated-15.lino"
+    record "actually"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_66ad2623bc1d7240
     source "data/seed/closure-generated-15.lino"
     record "cooldown"
@@ -894,6 +910,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_cbadbcb6a4198850
     source "data/seed/closure-generated-15.lino"
     record "thinking_step_policy_refusal"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_45b527b215a41290
+    source "data/seed/closure-generated-16.lino"
+    record "belongs"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f56c9866d0cccca0
     source "data/seed/closure-generated-16.lino"

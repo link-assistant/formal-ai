@@ -539,6 +539,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "pattern_concept_prefix_whats"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_af0e22f7ae3f3f16
+    source "data/seed/closure-generated-12.lino"
+    record "remote"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2019819c3e8a2316
     source "data/seed/closure-generated-12.lino"
     record "response_how_to_guide_conflicts_heading_hi"

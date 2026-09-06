@@ -377,3 +377,115 @@ fn concurrent_clients_each_keep_their_own_workspace() {
         }
     });
 }
+
+/// A client that declares no directory is still asked -- indirectly.
+///
+/// The issue asks for the workspace to be *discovered through the client* when
+/// it is missing, rather than substituted from the server. A client answers the
+/// question every time it reports back: the planner names the file the way the
+/// request spelled it, relative, and the result echoes the path the client
+/// actually resolved. Nothing here declares an `<env>` block.
+#[test]
+fn a_workspace_no_one_declared_is_discovered_from_what_the_client_echoed() {
+    let messages = vec![
+        json!({
+            "role": "assistant",
+            "tool_calls": [{
+                "id": "call_1",
+                "type": "function",
+                "function": {
+                    "name": "local_file_read",
+                    "arguments": "{\"path\": \"config/retry-policy.yaml\"}"
+                }
+            }]
+        }),
+        json!({
+            "role": "tool",
+            "tool_call_id": "call_1",
+            "name": "local_file_read",
+            "content": "Read /srv/checkouts/telemetry-agent-4711/config/retry-policy.yaml (3 lines)"
+        }),
+    ];
+    let request: formal_ai::protocol::ChatCompletionRequest =
+        serde_json::from_value(json!({"model": "formal-ai", "messages": messages}))
+            .expect("request");
+
+    assert_eq!(
+        formal_ai::protocol::observed_directory(&request.messages).as_deref(),
+        Some("/srv/checkouts/telemetry-agent-4711"),
+        "the directory the client demonstrated is the one to use"
+    );
+}
+
+/// A suffix that lands inside a path segment is a splice, not a directory.
+///
+/// `strip_suffix` alone is too generous: a planned `ls` would carve
+/// `/usr/bin/too` out of `/usr/bin/tools`, and the whole point of #1075 is to
+/// stop inventing directories. The planned name has to be preceded by a
+/// separator in the echoed path.
+#[test]
+fn a_match_through_the_middle_of_a_path_segment_is_not_a_workspace() {
+    let messages = vec![
+        json!({
+            "role": "assistant",
+            "tool_calls": [{
+                "id": "call_1",
+                "type": "function",
+                "function": {"name": "local_shell", "arguments": "{\"command\": \"ls\"}"}
+            }]
+        }),
+        json!({
+            "role": "tool",
+            "tool_call_id": "call_1",
+            "name": "local_shell",
+            "content": "/usr/bin/tools"
+        }),
+    ];
+    let request: formal_ai::protocol::ChatCompletionRequest =
+        serde_json::from_value(json!({"model": "formal-ai", "messages": messages}))
+            .expect("request");
+
+    assert_eq!(
+        formal_ai::protocol::observed_directory(&request.messages),
+        None,
+        "a mid-segment splice names a directory that does not exist"
+    );
+}
+
+/// A failed result proves nothing about where the client is.
+///
+/// The Scala session's answer was an error: the client reported the path it was
+/// *told* to use, not one it resolved. Learning the workspace from that would
+/// learn the server's own directory back.
+#[test]
+fn a_directory_is_not_learned_from_a_result_the_client_marked_as_an_error() {
+    let messages = vec![
+        json!({
+            "role": "assistant",
+            "tool_calls": [{
+                "id": "call_1",
+                "type": "function",
+                "function": {
+                    "name": "local_file_read",
+                    "arguments": "{\"path\": \"config/retry-policy.yaml\"}"
+                }
+            }]
+        }),
+        json!({
+            "role": "tool",
+            "tool_call_id": "call_1",
+            "name": "local_file_read",
+            "is_error": true,
+            "content": "ENOENT: no such file or directory, open '/sidecar/config/retry-policy.yaml'"
+        }),
+    ];
+    let request: formal_ai::protocol::ChatCompletionRequest =
+        serde_json::from_value(json!({"model": "formal-ai", "messages": messages}))
+            .expect("request");
+
+    assert_eq!(
+        formal_ai::protocol::observed_directory(&request.messages),
+        None,
+        "an error result reports where the call failed, not where the client lives"
+    );
+}

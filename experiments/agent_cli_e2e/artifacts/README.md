@@ -12,7 +12,7 @@ September 4 sessions fail. Two directories on one host are *not* enough to
 reproduce it: the pre-fix code followed any declaration it could `is_dir()`, so
 a visible workspace was honoured and nothing went wrong.
 
-## `issue-1075-before-fix.log` — `origin/main`
+## `issue-1075-before-fix.txt` — `origin/main`
 
 ```
 FAIL[agent]:  main.rs missing from /tmp/tmp.VEab1Xm2u5
@@ -27,7 +27,7 @@ Both did exactly as they were told, both failed — Agent with `ENOENT`, Claude
 with `EACCES: permission denied, mkdir '/sidecar'` — and both task workspaces
 stayed empty. That is the issue's Scala row, reproduced twice.
 
-## `issue-1075-after-fix.log` — this branch
+## `issue-1075-after-fix.txt` — this branch
 
 ```
 PASS[agent]:  main.rs written inside the client's workspace

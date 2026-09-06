@@ -59,8 +59,10 @@ pub fn client_working_directory(messages: &[ChatMessage]) -> Option<String> {
 /// observed through the client rather than assumed of the server, and at no
 /// extra call.
 ///
-/// Only a suffix match counts. An absolute path in a result that has nothing to
-/// do with a path the planner named says nothing about the workspace.
+/// Only a whole-segment suffix match counts. The planned name has to be
+/// preceded by a separator in the echoed path, or the match is a splice through
+/// the middle of a segment rather than a directory: `/usr/bin/tools` does not
+/// say that a planned `ls` resolved under `/usr/bin/too`.
 #[must_use]
 pub fn observed_directory(messages: &[ChatMessage]) -> Option<String> {
     let planned: Vec<String> = messages
@@ -95,7 +97,10 @@ pub fn observed_directory(messages: &[ChatMessage]) -> Option<String> {
         })
         .find_map(|token| {
             planned.iter().find_map(|relative| {
-                let root = token.strip_suffix(relative.as_str())?.trim_end_matches('/');
+                let root = token
+                    .strip_suffix(relative.as_str())
+                    .and_then(|root| root.strip_suffix('/'))?
+                    .trim_end_matches('/');
                 (!root.is_empty() && std::path::Path::new(root).is_absolute())
                     .then(|| root.to_owned())
             })

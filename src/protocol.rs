@@ -26,7 +26,9 @@ pub use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod content;
-pub use content::{client_working_directory, latest_user_request, system_prompt_text};
+pub use content::{
+    client_working_directory, latest_user_request, observed_directory, system_prompt_text,
+};
 mod output;
 mod recording;
 mod responses_input;
