@@ -283,3 +283,137 @@ fn a_connector_call_never_leaves_its_repository_blank() {
         }
     }
 }
+
+/// The whole task, executed: a program derived from the request, written to a
+/// real directory, compiled and run, with a remote connector advertised
+/// throughout.
+///
+/// Every earlier assertion in this file is about one call. This one is about
+/// the composition of all of them, which is what the three failing sessions
+/// actually lost: Codex reported a file creation that 404'd, the Kotlin run
+/// stopped at its own plan, and the Scala run wrote into the server's home.
+/// Nothing here is replayed from a transcript -- the patch is applied to disk,
+/// `rustc` is invoked, and the binary's own bytes are compared.
+#[test]
+fn the_whole_task_produces_a_program_that_runs_with_a_connector_advertised() {
+    let workspace = std::env::temp_dir().join(format!(
+        "formal-ai-issue-1075-{}-{}",
+        std::process::id(),
+        line!()
+    ));
+    let _ = std::fs::remove_dir_all(&workspace);
+    std::fs::create_dir_all(&workspace).expect("workspace");
+
+    let tools = codex_tools_with_a_github_connector();
+    let mut input = vec![
+        json!({
+            "type": "message",
+            "role": "system",
+            "content": format!("<env>\n  Working directory: {}\n</env>", workspace.display())
+        }),
+        json!({
+            "type": "message",
+            "role": "user",
+            "content": "Give me hello world program in Rust"
+        }),
+    ];
+    let mut program_output = String::new();
+
+    for _ in 0..6 {
+        let response = responses_for(&json!(input), &tools);
+        let calls = emitted_calls(&response);
+        if calls.is_empty() {
+            break;
+        }
+        for call in calls {
+            let name = call["name"].as_str().unwrap_or_default();
+            assert!(
+                !name.contains("github") && name != "write_stdin",
+                "the workspace's own program went to a connector: {call}"
+            );
+            let call_id = call["call_id"].clone();
+            let output = if call["type"] == "custom_tool_call" {
+                apply_patch_on_disk(&workspace, call["input"].as_str().unwrap_or_default());
+                input.push(call.clone());
+                input.push(json!({
+                    "type": "custom_tool_call_output",
+                    "call_id": call_id,
+                    "output": "Done!"
+                }));
+                continue;
+            } else {
+                let arguments: Value =
+                    serde_json::from_str(call["arguments"].as_str().unwrap_or("{}")).unwrap();
+                let command = arguments["cmd"]
+                    .as_str()
+                    .or_else(|| arguments["command"].as_str())
+                    .unwrap_or_else(|| panic!("no command in {call}"));
+                run_in(&workspace, command)
+            };
+            if output.contains("ello") {
+                program_output = output.clone();
+            }
+            input.push(call.clone());
+            input.push(json!({
+                "type": "function_call_output",
+                "call_id": call_id,
+                "output": output
+            }));
+        }
+    }
+
+    let source = workspace.join("main.rs");
+    assert!(source.is_file(), "no program was written to {workspace:?}");
+    let written = std::fs::read_to_string(&source).expect("program source");
+    assert!(written.contains("fn main()"), "{written}");
+    // The program's own greeting, byte for byte from the binary that was built
+    // in the workspace -- not from a transcript, and not from this test.
+    assert_eq!(program_output, "Hello, world!\n", "{written}");
+
+    let _ = std::fs::remove_dir_all(&workspace);
+}
+
+/// Apply the `*** Add File:` sections of a Codex patch to `workspace`.
+fn apply_patch_on_disk(workspace: &std::path::Path, patch: &str) {
+    let mut target: Option<std::path::PathBuf> = None;
+    let mut body = String::new();
+    let flush = |target: &mut Option<std::path::PathBuf>, body: &mut String| {
+        if let Some(path) = target.take() {
+            if let Some(parent) = path.parent() {
+                std::fs::create_dir_all(parent).expect("parent");
+            }
+            std::fs::write(&path, std::mem::take(body)).expect("write patched file");
+        }
+    };
+    for line in patch.lines() {
+        if let Some(path) = line.strip_prefix("*** Add File: ") {
+            flush(&mut target, &mut body);
+            target = Some(workspace.join(path.trim()));
+        } else if line.starts_with("*** ") {
+            flush(&mut target, &mut body);
+        } else if let Some(added) = line.strip_prefix('+') {
+            body.push_str(added);
+            body.push('\n');
+        }
+    }
+    flush(&mut target, &mut body);
+}
+
+/// Run `command` in `workspace` and return what the client would report back.
+fn run_in(workspace: &std::path::Path, command: &str) -> String {
+    let output = std::process::Command::new("sh")
+        .arg("-c")
+        .arg(command)
+        .current_dir(workspace)
+        .output()
+        .unwrap_or_else(|error| panic!("running `{command}`: {error}"));
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    if stdout.is_empty() {
+        format!(
+            "Process exited with code {}",
+            output.status.code().unwrap_or(-1)
+        )
+    } else {
+        stdout
+    }
+}

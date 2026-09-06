@@ -4,6 +4,7 @@ mod http_server;
 mod issue_1021_client_preflight;
 mod issue_1069_attributed_dispatch;
 mod issue_1069_link_cli_store;
+mod issue_1075_held_out_grounding;
 mod issue_349_reverse_sort;
 mod issue_386_cancel_sort;
 mod issue_395_sort_numbers;

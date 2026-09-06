@@ -69,3 +69,30 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.35s
 
 error: test failed, to rerun pass `--test release_tool_grounding`
+
+Held-out requests, before the fix.
+==================================
+
+Different service, repository, paths and wording; the same defect. With
+all three source files restored to their previous state:
+
+test issue_1075_held_out_grounding::a_workspace_the_server_cannot_stat_is_still_the_clients_workspace ... FAILED
+test issue_1075_held_out_grounding::an_identity_the_request_does_name_is_carried_into_the_call ... ok
+test issue_1075_held_out_grounding::a_project_file_is_not_written_through_a_service_connector ... ok
+test issue_1075_held_out_grounding::a_connector_that_needs_a_project_id_is_not_given_a_blank_one ... ok
+test issue_1075_held_out_grounding::a_required_choice_the_request_never_makes_is_left_to_the_client ... FAILED
+test issue_1075_held_out_grounding::an_explicit_default_is_still_honoured ... ok
+
+failures:
+--
+thread 'issue_1075_held_out_grounding::a_workspace_the_server_cannot_stat_is_still_the_clients_workspace' (65736) panicked at tests/integration/issue_1075_held_out_grounding.rs:194:5:
+the write left the client's workspace: {"content":"general_change_plan\n  id \"general_change_plan_f18ff64bd520b987\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"write backoff=250ms to docs/retry-notes.md file\"\n  target \"docs/retry-notes.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"w
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+--
+thread 'issue_1075_held_out_grounding::a_required_choice_the_request_never_makes_is_left_to_the_client' (65735) panicked at tests/integration/issue_1075_held_out_grounding.rs:231:5:
+an unmade choice was made for the user: {"content":"general_change_plan\n  id \"general_change_plan_faafeaa0ed916ec7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"write backoff=250ms to notes/scheduler.md file\"\n  target \"notes/scheduler.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"wr
+
+--
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 359 filtered out; finished in 15.33s
+
+error: test failed, to rerun pass `--test integration`

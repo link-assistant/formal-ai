@@ -243,6 +243,7 @@ mod shared_dialog;
 mod software_project;
 mod specification;
 mod test_status;
+mod tool_scope;
 mod total_closure;
 mod user_journeys;
 mod web_requests;

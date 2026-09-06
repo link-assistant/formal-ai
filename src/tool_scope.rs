@@ -149,17 +149,34 @@ pub fn ungrounded_identity_arguments(
 ///
 /// The only identities a request states outright are the ones inside the URLs
 /// it carries: `https://host/owner/repo/issues/7` names the repository, its
-/// owner and the issue. Anything else stays ungrounded and the call is not made.
+/// owner and the issue, and a bare `https://example.com` names itself. Anything
+/// else stays ungrounded and the call is not made.
 #[must_use]
 pub fn grounded_identity_argument(name: &str, context: &str) -> Option<Value> {
+    let lower = name.to_lowercase();
+    if matches!(lower.as_str(), "url" | "uri") {
+        return first_url(context).map(Value::String);
+    }
     let (owner, repo, number) = repository_reference(context)?;
-    match name.to_lowercase().as_str() {
+    match lower.as_str() {
         "repository_full_name" | "repository" => Some(Value::String(format!("{owner}/{repo}"))),
         "repo" | "repo_name" => Some(Value::String(repo)),
         "owner" | "org" | "organization" => Some(Value::String(owner)),
         "issue_number" | "pull_number" => number.map(Value::from),
         _ => None,
     }
+}
+
+/// The first whole URL `context` states, with its scheme, trimmed of the
+/// punctuation prose puts after one.
+fn first_url(context: &str) -> Option<String> {
+    context
+        .split_whitespace()
+        .map(|token| {
+            token.trim_matches(|c: char| matches!(c, '.' | ',' | ')' | '(' | '"' | '\'' | '>' | '<'))
+        })
+        .find(|token| token.contains("://"))
+        .map(str::to_owned)
 }
 
 /// The `owner`, `repository` and trailing number of the first repository URL in

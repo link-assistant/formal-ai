@@ -242,10 +242,15 @@ fn gemini_workspace_directory_list_declares_the_directory() {
 }
 
 #[test]
-fn a_declaration_that_no_longer_exists_falls_back_to_the_server() {
-    // A recorded transcript replayed on another machine names a directory that
-    // is not there. Planning a call against it would be strictly worse than the
-    // shared-directory assumption the matrix runs under.
+fn a_declaration_the_server_cannot_stat_is_still_the_clients_own() {
+    // This test used to require the opposite, on the reasoning that a directory
+    // the server cannot see is worse than the shared-directory assumption the
+    // matrix runs under. Issue #1075 recorded what that substitution costs when
+    // the assumption does not hold: the Scala session declared
+    // `/tmp/gh-issue-solver-1788563504540` while the server ran under
+    // `/home/box`, and the plan was written to `/home/box/.formal-ai/` -- a real
+    // file, on the wrong machine, invisible to the task. The client is the only
+    // party that knows its own filesystem, and it said which directory it is.
     let arguments = read_call_arguments_with_context(
         &absolute_path_tool(),
         vec![json!({
@@ -254,10 +259,14 @@ fn a_declaration_that_no_longer_exists_falls_back_to_the_server() {
         })],
     );
 
-    let expected = std::env::current_dir().unwrap().join("alpha.txt");
     assert_eq!(
+        arguments["filePath"], "/nonexistent/formal-ai/issue-671/alpha.txt",
+        "{arguments}"
+    );
+    let server = std::env::current_dir().unwrap();
+    assert_ne!(
         arguments["filePath"],
-        expected.to_string_lossy().as_ref(),
+        server.join("alpha.txt").to_string_lossy().as_ref(),
         "{arguments}"
     );
 }
