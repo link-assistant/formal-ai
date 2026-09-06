@@ -1,45 +1,46 @@
 #!/usr/bin/env bash
-# Real Agent CLI replay of the issue #1075 sidecar boundary.
+# The issue #1075 sidecar boundary, replayed through the real coding CLIs.
 #
 # The Scala session ran the client in `/tmp/gh-issue-solver-1788563504540` while
 # the server ran under `/home/box`, and the served completion asked the client to
-# write `/home/box/.formal-ai/general-change-plan.lino`. Agent executed exactly
-# what it was given: a real file, on the wrong side of the boundary, invisible to
-# the task, and the pull request stayed empty.
+# write `/home/box/.formal-ai/general-change-plan.lino`. The client executed
+# exactly what it was given: a real file, on the wrong side of the boundary,
+# invisible to the task, and the pull request stayed empty.
 #
 # Reproducing that needs more than two different directories. The pre-fix
 # `is_usable_directory` followed a declared workspace whenever the server could
 # `is_dir()` it, so with both processes on one host the declaration was honoured
 # and nothing went wrong. What made the session fail is that the server *could
 # not see* the client's directory -- they were different containers. So the
-# server here runs in a container with only its own sidecar mounted, and the
+# server here runs in a container with only its own sidecar mounted, and each
 # client's workspace genuinely does not exist from where the server stands.
 #
 #   SIDECAR   the server's working directory, mounted at /sidecar in the container
-#   WORKSPACE the Agent CLI's working directory, on the host, invisible to the server
+#   WORKSPACE a fresh host directory per client, invisible to the server
 #
-# Everything the run wrote must be under WORKSPACE, and SIDECAR must gain no
-# authored file at all.
+# Each client must leave the program in its own workspace, leave the sidecar
+# empty, and produce something that compiles and prints the seeded greeting.
 #
 # Usage: experiments/agent_cli_e2e/run_issue_1075.sh
 #
 # Environment knobs:
 #   BIN       release-mode formal-ai binary (default: target/release/formal-ai)
 #   PORT      server port (default: 8975)
-#   AGENT     the agent CLI (default: `agent` on PATH)
+#   CLIENTS   which CLIs to drive (default: "agent claude")
 #   IMAGE     container base with a matching glibc (default: ubuntu:24.04)
-#   ATTEMPTS  retries for the non-deterministic third-party CLI (default: 3)
+#   ATTEMPTS  retries for the non-deterministic third-party CLIs (default: 3)
 
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 PORT="${PORT:-8975}"
-AGENT="${AGENT:-agent}"
 IMAGE="${IMAGE:-ubuntu:24.04}"
 ATTEMPTS="${ATTEMPTS:-3}"
+CLIENTS="${CLIENTS:-agent claude}"
 # The phrasing the release matrix already uses for this task, so the run
-# exercises the recognised recipe rather than a paraphrase of it.
+# exercises the recognised recipe rather than a paraphrase of it
+# (.github/workflows/release.yml:1091).
 TASK="${TASK:-Give me hello world program in Rust}"
 EXPECT_FILE="${EXPECT_FILE:-main.rs}"
 # The greeting the seed actually carries. `data/seed/hello-world-programs.lino`
@@ -57,43 +58,23 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
-AGENT_LOG="/tmp/agent-out-$PORT.log"
 SIDECAR="$(mktemp -d)"
-WORKSPACE="$(mktemp -d)"
 STATE="$(mktemp -d)"
 NAME="formal-ai-issue-1075-$PORT"
-
-echo "== sidecar (server cwd, in a container): $SIDECAR -> /sidecar =="
-echo "== workspace (client cwd, on the host): $WORKSPACE =="
-
-cat > "$WORKSPACE/opencode.json" <<EOF
-{
-  "\$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "formal-ai": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Formal AI",
-      "options": {
-        "baseURL": "http://127.0.0.1:$PORT/v1",
-        "apiKey": "local"
-      },
-      "models": {
-        "formal-ai": { "name": "Formal AI Symbolic Production" }
-      }
-    }
-  }
-}
-EOF
+WORKSPACES=""
 
 cleanup() {
   docker rm -f "$NAME" >/dev/null 2>&1
-  rm -rf "$SIDECAR" "$WORKSPACE" "$STATE"
+  # shellcheck disable=SC2086
+  rm -rf "$SIDECAR" "$STATE" $WORKSPACES
 }
 trap cleanup EXIT
 
-# The server is started in a container whose filesystem contains /sidecar and
-# not $WORKSPACE. Everything it can know about the client's directory has to
-# come out of the requests, because it cannot look.
+echo "== sidecar (server cwd, in a container): $SIDECAR -> /sidecar =="
+
+# The server runs in a container whose filesystem contains /sidecar and none of
+# the client workspaces. Everything it can know about a client's directory has
+# to come out of that client's requests, because it cannot look.
 docker run --rm --name "$NAME" --network host \
   --user "$(id -u):$(id -g)" \
   -v "$BIN:/usr/local/bin/formal-ai:ro" \
@@ -112,39 +93,105 @@ if ! curl -sS --retry 40 --retry-delay 1 --retry-connrefused --max-time 60 \
 fi
 echo "== server up on $PORT, inside $NAME =="
 
-RC=1
-for attempt in $(seq 1 "$ATTEMPTS"); do
-  echo "== agent attempt $attempt/$ATTEMPTS =="
-  rm -f "$AGENT_LOG"
-  (
-    cd "$WORKSPACE" || exit 1
-    timeout 180 "$AGENT" run \
-      --prompt "$TASK" \
-      --disable-stdin \
-      --no-summarize-session \
-      --compaction-model same \
-      --model "formal-ai/formal-ai"
-  ) > "$AGENT_LOG" 2>&1
-  RC=$?
-  echo "== agent exit: $RC =="
-  [ "$RC" -eq 0 ] && [ -f "$WORKSPACE/$EXPECT_FILE" ] && break
-  echo "== attempt $attempt did not produce $EXPECT_FILE; retrying =="
-done
-
 status=0
 
-# The server's own memory lives in /state, mounted separately, so anything under
-# /sidecar is an authored file and nothing else.
-# 1. The requested file is in the client's workspace.
-if [ -f "$WORKSPACE/$EXPECT_FILE" ]; then
-  echo "PASS: $EXPECT_FILE written inside the client's workspace"
-else
-  echo "FAIL: $EXPECT_FILE missing from $WORKSPACE"
-  status=1
-fi
+# Drive one client in a fresh workspace of its own. Each gets the same task and
+# is judged on the same four things.
+drive() {
+  client="$1"
+  if ! command -v "$client" >/dev/null 2>&1; then
+    echo "SKIP: $client is not installed"
+    return 0
+  fi
 
-# 2. Nothing was authored into the server's own directory. This is the exact
+  workspace="$(mktemp -d)"
+  WORKSPACES="$WORKSPACES $workspace"
+  log="/tmp/issue-1075-$client-$PORT.log"
+  echo
+  echo "== $client: workspace (client cwd, on the host): $workspace =="
+
+  case "$client" in
+    agent)
+      cat > "$workspace/opencode.json" <<EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Formal AI",
+      "options": { "baseURL": "http://127.0.0.1:$PORT/v1", "apiKey": "local" },
+      "models": { "formal-ai": { "name": "Formal AI Symbolic Production" } }
+    }
+  }
+}
+EOF
+      ;;
+  esac
+
+  for attempt in $(seq 1 "$ATTEMPTS"); do
+    echo "== $client attempt $attempt/$ATTEMPTS =="
+    case "$client" in
+      agent)
+        ( cd "$workspace" && timeout 180 agent run --prompt "$TASK" \
+            --disable-stdin --no-summarize-session --compaction-model same \
+            --model "formal-ai/formal-ai" ) > "$log" 2>&1
+        ;;
+      claude)
+        # Claude Code speaks the Anthropic Messages API, served at
+        # /api/anthropic/v1/messages (README "Claude Code").
+        ( cd "$workspace" && ANTHROPIC_BASE_URL="http://127.0.0.1:$PORT/api/anthropic" \
+            ANTHROPIC_API_KEY="local-test-token" \
+            timeout 180 claude -p "$TASK" --permission-mode bypassPermissions \
+              --model formal-ai ) > "$log" 2>&1
+        ;;
+      *)
+        echo "!! unknown client $client"
+        return 1
+        ;;
+    esac
+    echo "== $client exit: $? =="
+    [ -f "$workspace/$EXPECT_FILE" ] && break
+    echo "== attempt $attempt did not produce $EXPECT_FILE; retrying =="
+  done
+
+  # 1. The requested file is in the client's own workspace.
+  if [ -f "$workspace/$EXPECT_FILE" ]; then
+    echo "PASS[$client]: $EXPECT_FILE written inside the client's workspace"
+  else
+    echo "FAIL[$client]: $EXPECT_FILE missing from $workspace"
+    status=1
+  fi
+
+  # 2. The program is a program. Every session in the issue produced a
+  #    well-formed call and no working artifact, so existence is not the claim.
+  if [ -f "$workspace/$EXPECT_FILE" ] && command -v rustc >/dev/null 2>&1; then
+    if ( cd "$workspace" && rustc -O -o issue-1075-bin "$EXPECT_FILE" ) \
+         > "/tmp/issue-1075-rustc-$client.log" 2>&1; then
+      greeting="$("$workspace/issue-1075-bin" 2>&1)"
+      if [ "$greeting" = "$EXPECT_GREETING" ]; then
+        echo "PASS[$client]: the program compiles and prints exactly: $greeting"
+      else
+        echo "FAIL[$client]: the program printed '$greeting', expected '$EXPECT_GREETING'"
+        status=1
+      fi
+    else
+      echo "FAIL[$client]: $EXPECT_FILE does not compile"
+      head -20 "/tmp/issue-1075-rustc-$client.log"
+      status=1
+    fi
+  fi
+}
+
+for client in $CLIENTS; do
+  drive "$client"
+done
+
+echo
+
+# 3. Nothing was authored into the server's own directory. This is the exact
 #    Scala regression: `.formal-ai/general-change-plan.lino` under the sidecar.
+#    The server's own memory lives in /state, mounted separately, so anything
+#    under /sidecar is an authored file and nothing else.
 leaked="$(find "$SIDECAR" -type f 2>/dev/null)"
 if [ -z "$leaked" ]; then
   echo "PASS: the server's directory gained no authored file"
@@ -154,43 +201,16 @@ else
   status=1
 fi
 
-# 3. No emitted absolute path was rooted in the server's own directory. Inside
-#    the container that directory is /sidecar, which is what the client would be
-#    handed.
-if grep -Eo '"[^"]*/sidecar/[^"]*"' "$LOG" > /tmp/issue-1075-sidecar-paths.txt 2>/dev/null; then
-  echo "FAIL: the server offered the client paths inside its own directory:"
-  head -5 /tmp/issue-1075-sidecar-paths.txt
+# 4. No absolute path the server emitted was rooted in its own directory. Inside
+#    the container that directory is /sidecar, which is what a client is handed.
+if grep -Eo '"[^"]*/sidecar/[^"]*"' "$LOG" | sort -u > /tmp/issue-1075-sidecar-paths.txt \
+   && [ -s /tmp/issue-1075-sidecar-paths.txt ]; then
+  echo "FAIL: the server offered clients paths inside its own directory:"
+  head -8 /tmp/issue-1075-sidecar-paths.txt
   status=1
 else
   echo "PASS: no emitted path was rooted in the server's directory"
 fi
 
-# 4. The plan record, when the recipe keeps one, is the client's file too.
-plan="$(find "$WORKSPACE" -name 'general-change-plan.lino' 2>/dev/null | head -1)"
-if [ -n "$plan" ]; then
-  echo "PASS: the plan record stayed in the client's workspace ($plan)"
-fi
-
-# 5. The program is a program: it compiles and prints the seeded greeting. The
-#    issue's sessions all produced a well-formed *call* and no working artifact,
-#    so existence of the file is not the claim being made here.
-if [ -f "$WORKSPACE/$EXPECT_FILE" ] && command -v rustc >/dev/null 2>&1; then
-  if (cd "$WORKSPACE" && rustc -O -o hello-bin "$EXPECT_FILE" > /tmp/issue-1075-rustc.log 2>&1); then
-    greeting="$("$WORKSPACE/hello-bin" 2>&1)"
-    if [ "$greeting" = "$EXPECT_GREETING" ]; then
-      echo "PASS: the program compiles and prints exactly: $greeting"
-    else
-      echo "FAIL: the program printed '$greeting', expected '$EXPECT_GREETING'"
-      status=1
-    fi
-  else
-    echo "FAIL: $EXPECT_FILE does not compile"
-    head -20 /tmp/issue-1075-rustc.log
-    status=1
-  fi
-fi
-
-echo "== chat rounds: $(grep -c 'POST /v1/chat/completions' "$LOG" 2>/dev/null || echo 0) =="
-echo "== agent tail =="
-tail -12 "$AGENT_LOG"
+echo "== chat rounds: $(grep -c 'POST /' "$LOG" 2>/dev/null || echo 0) =="
 exit "$status"
