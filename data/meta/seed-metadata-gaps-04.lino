@@ -475,6 +475,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "who_is_unknown_entity"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_c84f46c1c5cefef4
+    source "data/seed/closure-generated-11.lino"
+    record "against"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_eb83499fcd05d804
     source "data/seed/closure-generated-11.lino"
     record "analogy"
@@ -486,6 +490,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_e73e596cc6d4f224
     source "data/seed/closure-generated-11.lino"
     record "count_unique_words"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f0b4124fddb887d4
+    source "data/seed/closure-generated-11.lino"
+    record "made"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1b0a2791d15061a4
     source "data/seed/closure-generated-11.lino"
@@ -639,6 +647,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_thinking_step_extract_term_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_4a67d859f07e3574
+    source "data/seed/closure-generated-13.lino"
+    record "schema"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bc9a6f344b6cd074
     source "data/seed/closure-generated-13.lino"
     record "thinking_narrative_greeting"
@@ -742,6 +754,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_8c504199b9cc64c4
     source "data/seed/closure-generated-16.lino"
     record "formal-ai"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9ec6fbe7ed3d8ee4
+    source "data/seed/closure-generated-16.lino"
+    record "identifies"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_259191980f30fcb4
     source "data/seed/closure-generated-16.lino"

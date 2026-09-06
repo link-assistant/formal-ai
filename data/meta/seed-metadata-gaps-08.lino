@@ -91,6 +91,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "move"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_dcf70cef810b0a38
+    source "data/seed/closure-generated-02.lino"
+    record "namespaced"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_baa35c0c505e6958
     source "data/seed/closure-generated-02.lino"
     record "pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en"
@@ -695,6 +699,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "composes"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b1167fd0f8949548
+    source "data/seed/closure-generated-15.lino"
+    record "connector"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8fe9cd065f53cfd8
     source "data/seed/closure-generated-15.lino"
     record "criterion"
@@ -750,6 +758,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_d1ae017899e73b38
     source "data/seed/closure-generated-15.lino"
     record "response_thinking_trace_heading_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d44988d000e42d88
+    source "data/seed/closure-generated-15.lino"
+    record "say"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d45684d000eeb118
     source "data/seed/closure-generated-15.lino"

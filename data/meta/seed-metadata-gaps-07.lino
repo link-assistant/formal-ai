@@ -227,9 +227,17 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "response_task_plan_stage_implementation_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1e6d137c02d006e7
+    source "data/seed/closure-generated-05.lino"
+    record "substring"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c36ce25d129894e7
     source "data/seed/closure-generated-05.lino"
     record "tool_append_memory"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_0f12c44865ea6ba7
+    source "data/seed/closure-generated-06.lino"
+    record "arguments"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6419c8e7b6c3b8f7
     source "data/seed/closure-generated-06.lino"

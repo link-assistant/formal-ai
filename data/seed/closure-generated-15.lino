@@ -9,6 +9,11 @@ meanings
     lexeme en
       surface
         text "above"
+  actually
+    defined-by concept
+    lexeme en
+      surface
+        text "actually"
   agent_procedure_execution_failed
     defined-by intent
     lexeme en
@@ -99,6 +104,11 @@ meanings
     lexeme en
       surface
         text "configure response language"
+  connector
+    defined-by concept
+    lexeme en
+      surface
+        text "connector"
   cooldown
     defined-by word_surface
     lexeme en
@@ -324,6 +334,11 @@ meanings
     lexeme en
       surface
         text "my"
+  namespaces
+    defined-by concept
+    lexeme en
+      surface
+        text "namespaces"
   next
     defined-by concept
     lexeme en
@@ -419,6 +434,11 @@ meanings
     lexeme en
       surface
         text "pattern wikipedia article question grammar context zh"
+  proves
+    defined-by concept
+    lexeme en
+      surface
+        text "proves"
   react-chat-ui
     defined-by name
     lexeme en
@@ -434,6 +454,11 @@ meanings
     lexeme en
       surface
         text "recall name"
+  remote_service
+    defined-by concept
+    lexeme en
+      surface
+        text "remote service"
   removed
     defined-by category
     lexeme en
@@ -914,6 +939,11 @@ meanings
     lexeme en
       surface
         text "reverse sort list files arg"
+  say
+    defined-by concept
+    lexeme en
+      surface
+        text "say"
   see
     defined-by concept
     lexeme en

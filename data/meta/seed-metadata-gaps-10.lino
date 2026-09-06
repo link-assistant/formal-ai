@@ -587,9 +587,17 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_thinking_step_invoke_tool_zh"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_edacebe6ba35ba6a
+    source "data/seed/closure-generated-13.lino"
+    record "else"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_27f47b7cc2ac392a
     source "data/seed/closure-generated-13.lino"
     record "issue_report_memory_note"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a4f2c82efa3b6b3a
+    source "data/seed/closure-generated-13.lino"
+    record "left"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_14f0c1879634e6fa
     source "data/seed/closure-generated-13.lino"

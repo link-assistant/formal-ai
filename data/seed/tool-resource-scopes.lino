@@ -1,0 +1,28 @@
+# Where an advertised agentic tool actually puts its effect (issue #1075).
+#
+# A capability name says what a tool does; it does not say which resource the
+# doing lands on. Codex advertised `github.create_file` beside its own
+# `apply_patch`, and a router that reads only the name substring `create_file`
+# selected the remote connector to create a file in the client's checkout. The
+# call left the workspace untouched and answered 404.
+#
+# Scope is therefore read from the tool's own advertisement, in this order.
+#   arguments   a required argument that identifies a resource the client
+#               workspace does not define -- a repository, a channel, a live
+#               process -- proves the effect lands somewhere else
+#   namespaces  the service a namespaced tool belongs to, for a client that
+#               advertises the connector without a schema
+#   names       an exact tool name, for effects that no argument set reveals
+#
+# `identity` lists the arguments that name a resource rather than describe one.
+# They are grounded from what the request actually says, or the call is not
+# made -- a fabricated empty repository is an API call against no repository.
+tool_resource_scopes
+  scope remote_service
+    arguments ("repository_full_name" "repository" "repo" "repo_name" "owner" "org" "organization" "project_id" "issue_number" "pull_number" "channel_id" "page_id" "workspace_id" "database_id")
+    namespaces ("github" "gitlab" "bitbucket" "gitea" "forgejo" "jira" "atlassian" "linear" "slack" "notion" "sentry" "asana" "trello" "azure_devops")
+  scope process_input
+    arguments ("session_id" "process_id" "shell_id" "pid" "terminal_id")
+    names ("write_stdin" "send_input" "stdin_write" "process_write" "send_keys")
+  identity
+    arguments ("repository_full_name" "repository" "repo" "repo_name" "owner" "org" "organization" "project_id" "issue_number" "pull_number" "channel_id" "page_id" "workspace_id" "database_id" "session_id" "process_id" "shell_id" "pid" "terminal_id" "branch" "ref" "base" "head" "url" "uri")

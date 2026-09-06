@@ -24,6 +24,11 @@ meanings
     lexeme en
       surface
         text "agent suggestion active"
+  agentic
+    defined-by concept
+    lexeme en
+      surface
+        text "agentic"
   agentic_action_search
     defined-by intent
     lexeme en
@@ -364,6 +369,11 @@ meanings
     lexeme en
       surface
         text "process"
+  process_input
+    defined-by concept
+    lexeme en
+      surface
+        text "process input"
   project_targets
     defined-by concept
     lexeme en
@@ -1139,6 +1149,11 @@ meanings
     lexeme en
       surface
         text "will"
+  workspace
+    defined-by concept
+    lexeme en
+      surface
+        text "workspace"
   write_program_request_unspecified_name
     defined-by intent
     lexeme en

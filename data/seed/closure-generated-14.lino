@@ -319,6 +319,11 @@ meanings
     lexeme en
       surface
         text "relocate"
+  resource
+    defined-by concept
+    lexeme en
+      surface
+        text "resource"
   response_agent_procedure_readback_unavailable_en
     defined-by response_template
     lexeme en

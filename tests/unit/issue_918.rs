@@ -455,5 +455,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // expands each into a generated record, so computing trust rather than
     // assuming it arrives here as described data, on the same terms as every
     // vocabulary addition above.
-    assert_eq!(expected_gaps.len(), 3_944);
+    // The last forty-two arrive the same way, from issue #1075's
+    // `data/seed/tool-resource-scopes.lino`: the words that let a tool say
+    // *where* its effect lands rather than only what it does --
+    // `remote_service`, `process_input`, `connector`, `namespaced`,
+    // `substring`, `router`, `advertised`, `grounded`, `untouched` and the
+    // prose around them. Every one is a `closure-generated-*.lino` record for a
+    // token the new seed prose pulled into the total closure, not a
+    // hand-written gap, which is the shape this floor exists to show.
+    assert_eq!(expected_gaps.len(), 3_986);
 }

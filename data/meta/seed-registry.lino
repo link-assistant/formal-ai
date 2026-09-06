@@ -421,6 +421,8 @@ seed_registry
   seed terminal-commands
     bundle true
     web true
+  seed tool-resource-scopes
+    bundle true
   seed tools
     bundle true
     web true

@@ -55,6 +55,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "response_thinking_step_resolve_response_language_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_734aa5079f55259d
+    source "data/seed/closure-generated-01.lino"
+    record "router"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a2524558fc87807d
     source "data/seed/closure-generated-02.lino"
     record "issue_report_timestamp_label"
@@ -294,6 +298,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_81a65583871ba0bd
     source "data/seed/closure-generated-06.lino"
     record "response_thinking_step_formalize_resolved_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_188138d90de528ad
+    source "data/seed/closure-generated-07.lino"
+    record "advertised"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_c67c41531b1ccd4d
+    source "data/seed/closure-generated-07.lino"
+    record "exact"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_cbd3c7191a99170d
     source "data/seed/closure-generated-07.lino"
@@ -795,6 +807,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "draft_comparison_explanation"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d524608c53b5922d
+    source "data/seed/closure-generated-16.lino"
+    record "effect"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_40e0694c78c6037d
     source "data/seed/closure-generated-16.lino"
     record "lexeme_import_surface_missing"
@@ -802,6 +818,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_8d66e6fd703ea61d
     source "data/seed/closure-generated-16.lino"
     record "match"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5dd650e4022d42ed
+    source "data/seed/closure-generated-16.lino"
+    record "required"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e3b61c0f3c6dbd0d
     source "data/seed/closure-generated-16.lino"

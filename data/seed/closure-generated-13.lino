@@ -114,6 +114,11 @@ meanings
     lexeme en
       surface
         text "downstream"
+  else
+    defined-by concept
+    lexeme en
+      surface
+        text "else"
   external_benchmark_egg_too_few_laws
     defined-by intent
     lexeme en
@@ -194,6 +199,11 @@ meanings
     lexeme en
       surface
         text "issue report memory note"
+  left
+    defined-by concept
+    lexeme en
+      surface
+        text "left"
   lexeme_import_cache_invalid_json
     defined-by intent
     lexeme en
@@ -909,6 +919,21 @@ meanings
     lexeme en
       surface
         text "reveal"
+  reveals
+    defined-by concept
+    lexeme en
+      surface
+        text "reveals"
+  schema
+    defined-by concept
+    lexeme en
+      surface
+        text "schema"
+  selected
+    defined-by concept
+    lexeme en
+      surface
+        text "selected"
   self_published
     defined-by concept
     lexeme en

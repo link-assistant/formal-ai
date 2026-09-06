@@ -1,0 +1,13 @@
+self_ast_census
+  target src/seed/tool_resource_scopes.rs
+  language rust
+  fidelity signature
+  byte_len 2538
+  line_count 62
+  content_id source_module_7e5ccd2d2b410a39
+  symbol_count 4
+  symbols
+    struct ToolResourceScopeVocabulary 12 24
+    function tool_resource_scope_vocabulary 27 29
+    function parse_tool_resource_scopes 32 55
+    function lowercase_list 57 62

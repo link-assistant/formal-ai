@@ -48,6 +48,7 @@ mod shell_intents;
 mod sources;
 mod summary_topics;
 mod terminal_commands;
+mod tool_resource_scopes;
 
 use std::collections::BTreeMap;
 
@@ -90,7 +91,7 @@ pub use embedded::{
     PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
     PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
     SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO,
-    TERMINAL_COMMANDS_LINO, TOOLS_LINO, seed_files,
+    TERMINAL_COMMANDS_LINO, TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
 };
 pub use entity_names::{EntityName, entity_names};
 pub use facts::{FactRecord, LocalizedFact, facts};
@@ -132,6 +133,9 @@ pub use sources::{
 };
 pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
 pub use terminal_commands::{TerminalCommandVocabulary, terminal_command_vocabulary};
+pub use tool_resource_scopes::{
+    ToolResourceScopeVocabulary, parse_tool_resource_scopes, tool_resource_scope_vocabulary,
+};
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///

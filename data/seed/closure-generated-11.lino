@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "release timeline"
+  against
+    defined-by concept
+    lexeme en
+      surface
+        text "against"
   agent_procedure_readback_unavailable
     defined-by intent
     lexeme en
@@ -159,6 +164,11 @@ meanings
     lexeme en
       surface
         text "directories"
+  effects
+    defined-by concept
+    lexeme en
+      surface
+        text "effects"
   exact_title
     defined-by coverage_group
     lexeme en
@@ -229,6 +239,11 @@ meanings
     lexeme en
       surface
         text "lexeme import duplicate qid"
+  made
+    defined-by concept
+    lexeme en
+      surface
+        text "made"
   map_matches
     defined-by concept
     lexeme en

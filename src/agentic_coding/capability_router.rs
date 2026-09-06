@@ -13,7 +13,20 @@ use crate::seed;
 /// canonical aliases first: a generic namespaced `_execute` helper must not
 /// outrank Codex's purpose-built `exec_command`. Compatibility classification
 /// remains the final fallback for namespaced tools used by other harnesses.
+///
+/// Every candidate is filtered by *where* its effect lands before any of that
+/// runs (issue #1075). A capability that acts on the task workspace is only
+/// satisfied by a tool that acts on the client's workspace: Codex advertises
+/// `codex_apps__github.create_file` beside `apply_patch`, and choosing the
+/// remote connector to create a workspace file produced a 404 against an empty
+/// repository while the checkout stayed untouched.
 pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+    let in_scope: Vec<&'a str> = tool_names
+        .iter()
+        .copied()
+        .filter(|name| acts_in_capability_scope(name, capability))
+        .collect();
+    let tool_names: &[&'a str] = &in_scope;
     if matches!(capability, Capability::Search | Capability::Fetch)
         && let Some(name) = tool_names.iter().copied().find(|name| {
             name.to_ascii_lowercase().starts_with("mcp__")
@@ -40,6 +53,22 @@ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Op
                 .copied()
                 .find(|name| classify_tool(name) == Some(capability))
         })
+}
+
+/// Whether a tool's effect lands where `capability` needs it to.
+///
+/// Research capabilities are about reaching *out*, so any scope answers them.
+/// Everything else in the recipe -- reading, writing, editing, listing, running
+/// -- is about the checkout the task is being done in, and only a tool scoped to
+/// the client's workspace can do it there.
+fn acts_in_capability_scope(name: &str, capability: Capability) -> bool {
+    if matches!(
+        capability,
+        Capability::Search | Capability::Fetch | Capability::Todo | Capability::AskUser
+    ) {
+        return true;
+    }
+    crate::tool_scope::scope_of_tool_name(name).is_client_workspace()
 }
 
 fn tool_matches_capability(name: &str, capability: Capability) -> bool {
@@ -127,6 +156,11 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
 /// patch grammar as an edit capability, but an add-file patch satisfies the
 /// same recipe step. Process-input tools such as `write_stdin` satisfy neither.
 pub(super) fn is_workspace_creation_tool(name: &str) -> bool {
+    // A remote connector's `create_file` creates a file in a repository on a
+    // server, not in the workspace the recipe is building (issue #1075).
+    if !crate::tool_scope::scope_of_tool_name(name).is_client_workspace() {
+        return false;
+    }
     if classify_tool(name) == Some(Capability::Write) {
         return true;
     }

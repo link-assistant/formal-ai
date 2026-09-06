@@ -1,0 +1,18 @@
+== sidecar (server cwd, in a container): /tmp/tmp.nh3InCPg4Q -> /sidecar ==
+== server up on 8983, inside formal-ai-issue-1075-8983 ==
+
+== agent: workspace (client cwd, on the host): /tmp/tmp.0KKDUAhlar ==
+== agent attempt 1/2 ==
+== agent exit: 0 ==
+PASS[agent]: main.rs written inside the client's workspace
+PASS[agent]: the program compiles and prints exactly: Hello, world!
+
+== claude: workspace (client cwd, on the host): /tmp/tmp.2R9iJO6Lxf ==
+== claude attempt 1/2 ==
+== claude exit: 0 ==
+PASS[claude]: main.rs written inside the client's workspace
+PASS[claude]: the program compiles and prints exactly: Hello, world!
+
+PASS: the server's directory gained no authored file
+PASS: no emitted path was rooted in the server's directory
+== chat rounds: 8 ==

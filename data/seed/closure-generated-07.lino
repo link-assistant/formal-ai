@@ -1,4 +1,9 @@
 meanings
+  advertised
+    defined-by concept
+    lexeme en
+      surface
+        text "advertised"
   agentic_action_read
     defined-by intent
     lexeme en
@@ -34,6 +39,11 @@ meanings
     lexeme en
       surface
         text "claim"
+  client
+    defined-by concept
+    lexeme en
+      surface
+        text "client"
   client_server_version_mismatch
     defined-by field
     lexeme en
@@ -74,6 +84,11 @@ meanings
     lexeme en
       surface
         text "draft"
+  exact
+    defined-by concept
+    lexeme en
+      surface
+        text "exact"
   external_benchmark_swe_clear_logs_error
     defined-by intent
     lexeme en
@@ -139,6 +154,11 @@ meanings
     lexeme en
       surface
         text "join lines"
+  lands
+    defined-by concept
+    lexeme en
+      surface
+        text "lands"
   lexeme_import_fetch_invalid_json
     defined-by intent
     lexeme en
@@ -1019,6 +1039,11 @@ meanings
     lexeme en
       surface
         text "task plan stage verification"
+  therefore
+    defined-by concept
+    lexeme en
+      surface
+        text "therefore"
   thinking_step_generic_plain
     defined-by intent
     lexeme en

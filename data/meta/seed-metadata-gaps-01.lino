@@ -243,6 +243,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "trace_"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_999f0d5daeceae91
+    source "data/seed/closure-generated-04.lino"
+    record "without"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a3c19f6c275e7331
     source "data/seed/closure-generated-05.lino"
     record "criteria"
@@ -503,6 +507,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "thinking_step_agent_plan"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_0275393640666781
+    source "data/seed/closure-generated-10.lino"
+    record "answered"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_91023eb6e5620ed1
     source "data/seed/closure-generated-10.lino"
     record "ficheros"
@@ -762,6 +770,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_54572c99c4776251
     source "data/seed/closure-generated-15.lino"
     record "explicit"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_90fd9fb24a7a7e11
+    source "data/seed/closure-generated-15.lino"
+    record "namespaces"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a2488c09b9dd6591
     source "data/seed/closure-generated-15.lino"

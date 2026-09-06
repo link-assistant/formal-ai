@@ -1,0 +1,98 @@
+Issue #1075, the defect reproduced before the fix.
+==================================================
+
+Captured by restoring the pre-fix `src/protocol_responses.rs` and
+`src/protocol/content.rs` over the branch and running the release tests:
+
+    git stash push src/protocol_responses.rs src/protocol/content.rs
+    cargo test --test release_tool_grounding
+    git stash pop
+
+Both failures are the ones the issue reported from the 2026-09-04 sessions:
+`"repository_full_name":""` with `"message":""` for Codex's
+`github.create_file`, and a plan written under the server's own directory
+rather than the client's workspace.
+
+   Compiling formal-ai v0.347.0 (/tmp/gh-issue-solver-1788673138683)
+    Finished `test` profile [optimized] target(s) in 3m 13s
+     Running tests/release_tool_grounding.rs (target/debug/deps/release_tool_grounding-5c7570d27b8f0f7a)
+
+running 3 tests
+test remote_write_must_not_fabricate_an_empty_repository ... FAILED
+test a_declared_client_workspace_still_grounds_the_write ... ok
+test missing_client_workspace_must_not_be_replaced_by_server_cwd ... FAILED
+
+failures:
+
+---- remote_write_must_not_fabricate_an_empty_repository stdout ----
+
+thread 'remote_write_must_not_fabricate_an_empty_repository' (49055) panicked at tests/release_tool_grounding.rs:44:5:
+an empty repository addresses no repository at all: {"content":"plan","message":"","path":".formal-ai/general-change-plan.lino","repository_full_name":""}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- missing_client_workspace_must_not_be_replaced_by_server_cwd stdout ----
+
+thread 'missing_client_workspace_must_not_be_replaced_by_server_cwd' (49054) panicked at tests/release_tool_grounding.rs:82:5:
+assertion `left != right` failed: the server's own directory is not the client's: {"content":"plan","filePath":"/tmp/gh-issue-solver-1788673138683/.formal-ai/general-change-plan.lino"}
+  left: String("/tmp/gh-issue-solver-1788673138683/.formal-ai/general-change-plan.lino")
+ right: "/tmp/gh-issue-solver-1788673138683/.formal-ai/general-change-plan.lino"
+
+
+failures:
+    missing_client_workspace_must_not_be_replaced_by_server_cwd
+    remote_write_must_not_fabricate_an_empty_repository
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test release_tool_grounding`
+
+Routing, before the fix.
+========================
+
+With `src/agentic_coding/capability_router.rs` restored to its previous
+state (the projection fixes still in place), the same request routes the
+workspace's file creation to the connector -- the call the 2026-09-04
+Codex session made:
+
+test remote_write_must_not_fabricate_an_empty_repository ... ok
+test a_declared_client_workspace_still_grounds_the_write ... ok
+test missing_client_workspace_must_not_be_replaced_by_server_cwd ... ok
+test a_workspace_file_is_created_in_the_workspace_and_not_on_a_server ... FAILED
+test a_connector_call_never_leaves_its_repository_blank ... ok
+
+failures:
+--
+thread 'a_workspace_file_is_created_in_the_workspace_and_not_on_a_server' (54807) panicked at tests/release_tool_grounding.rs:219:9:
+the file belongs in the checkout, not in a repository on a server: {"arguments":"{\"content\":\"puts \\\"Hello, world!\\\"\",\"message\":\"Write a Ruby program that prints Hello, World! and run it.\",\"path\":\"main.rb\"}","call_id":"call_6c601ae41f42c5ef","id":"fc_6c601ae41f42c5ef","name":"github.create_file","namespace":"codex_apps","status":"completed","type":"function_call"}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+--
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.35s
+
+error: test failed, to rerun pass `--test release_tool_grounding`
+
+Held-out requests, before the fix.
+==================================
+
+Different service, repository, paths and wording; the same defect. With
+all three source files restored to their previous state:
+
+test issue_1075_held_out_grounding::a_workspace_the_server_cannot_stat_is_still_the_clients_workspace ... FAILED
+test issue_1075_held_out_grounding::an_identity_the_request_does_name_is_carried_into_the_call ... ok
+test issue_1075_held_out_grounding::a_project_file_is_not_written_through_a_service_connector ... ok
+test issue_1075_held_out_grounding::a_connector_that_needs_a_project_id_is_not_given_a_blank_one ... ok
+test issue_1075_held_out_grounding::a_required_choice_the_request_never_makes_is_left_to_the_client ... FAILED
+test issue_1075_held_out_grounding::an_explicit_default_is_still_honoured ... ok
+
+failures:
+--
+thread 'issue_1075_held_out_grounding::a_workspace_the_server_cannot_stat_is_still_the_clients_workspace' (65736) panicked at tests/integration/issue_1075_held_out_grounding.rs:194:5:
+the write left the client's workspace: {"content":"general_change_plan\n  id \"general_change_plan_f18ff64bd520b987\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"write backoff=250ms to docs/retry-notes.md file\"\n  target \"docs/retry-notes.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"w
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+--
+thread 'issue_1075_held_out_grounding::a_required_choice_the_request_never_makes_is_left_to_the_client' (65735) panicked at tests/integration/issue_1075_held_out_grounding.rs:231:5:
+an unmade choice was made for the user: {"content":"general_change_plan\n  id \"general_change_plan_faafeaa0ed916ec7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"write backoff=250ms to notes/scheduler.md file\"\n  target \"notes/scheduler.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"wr
+
+--
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 359 filtered out; finished in 15.33s
+
+error: test failed, to rerun pass `--test integration`
