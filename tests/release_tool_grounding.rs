@@ -118,3 +118,168 @@ fn a_declared_client_workspace_still_grounds_the_write() {
         "{args}"
     );
 }
+
+// ---------------------------------------------------------------------------
+// Routing: four tools, three scopes, one of them the right one.
+// ---------------------------------------------------------------------------
+
+use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
+
+/// Codex's advertised set from the 2026-09-04 session: a remote connector, a
+/// workspace patch grammar, a workspace shell, and a process-input tool.
+///
+/// `github.create_file` and `apply_patch` both create a file, `exec_command`
+/// and `write_stdin` both accept text to run. Nothing in the *names* separates
+/// them; what separates them is where the bytes land.
+fn codex_tools_with_a_github_connector() -> Value {
+    json!([
+        {
+            "type": "namespace",
+            "name": "codex_apps",
+            "description": "Connected applications.",
+            "tools": [{
+                "type": "function",
+                "name": "github.create_file",
+                "description": "Create a file in a GitHub repository.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "repository_full_name": {"type": "string"},
+                        "message": {"type": "string"},
+                        "path": {"type": "string"},
+                        "content": {"type": "string"}
+                    },
+                    "required": ["repository_full_name", "message", "path", "content"]
+                }
+            }]
+        },
+        {
+            "type": "function",
+            "name": "exec_command",
+            "parameters": {
+                "type": "object",
+                "properties": {"cmd": {"type": "string"}},
+                "required": ["cmd"],
+                "additionalProperties": false
+            }
+        },
+        {
+            "type": "function",
+            "name": "write_stdin",
+            "parameters": {
+                "type": "object",
+                "properties": {"session_id": {"type": "number"}, "chars": {"type": "string"}},
+                "required": ["session_id", "chars"],
+                "additionalProperties": false
+            }
+        },
+        {
+            "type": "custom",
+            "name": "apply_patch",
+            "format": {"type": "grammar", "syntax": "lark", "definition": "start: /.+/"}
+        }
+    ])
+}
+
+fn responses_for(input: &Value, tools: &Value) -> Value {
+    enable_http_agent_mode_for_current_process();
+    let body = json!({"model": "formal-ai", "input": input, "tools": tools});
+    let response = handle_api_request("POST", "/v1/responses", &body.to_string());
+    assert_eq!(response.status_code, 200, "{}", response.body);
+    serde_json::from_str(&response.body).expect("Responses JSON")
+}
+
+fn emitted_calls(response: &Value) -> Vec<&Value> {
+    response["output"]
+        .as_array()
+        .map(|items| {
+            items
+                .iter()
+                .filter(|item| item["type"] != "message" && item["type"] != "reasoning")
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+#[test]
+fn a_workspace_file_is_created_in_the_workspace_and_not_on_a_server() {
+    let response = responses_for(
+        &json!([{
+            "type": "message",
+            "role": "user",
+            "content": "Write a Ruby program that prints Hello, World! and run it."
+        }]),
+        &codex_tools_with_a_github_connector(),
+    );
+
+    let calls = emitted_calls(&response);
+    assert!(!calls.is_empty(), "the turn produced no call: {response}");
+    for call in &calls {
+        let name = call["name"].as_str().unwrap_or_default();
+        assert!(
+            !name.contains("github"),
+            "the file belongs in the checkout, not in a repository on a server: {call}"
+        );
+        assert_ne!(
+            name, "write_stdin",
+            "no process is running, so there is no stdin to write to: {call}"
+        );
+    }
+
+    // The scope that is left is the workspace, and the call carries the program.
+    let patch = calls
+        .iter()
+        .find(|call| call["name"] == "apply_patch")
+        .unwrap_or_else(|| panic!("no workspace creation call: {response}"));
+    let input = patch["input"].as_str().unwrap_or_default();
+    assert!(input.contains("*** Add File:"), "{patch}");
+    assert!(input.contains(".rb"), "the file is the Ruby program that was asked for: {patch}");
+    assert!(
+        input.to_lowercase().contains("hello, world!"),
+        "the patch carries the program, not a placeholder: {patch}"
+    );
+}
+
+#[test]
+fn a_connector_call_never_leaves_its_repository_blank() {
+    // The connector alone, so routing cannot sidestep the question. Whatever is
+    // emitted, an empty identity is not an answer: GitHub replied 404 to it.
+    let response = responses_for(
+        &json!([{
+            "type": "message",
+            "role": "user",
+            "content": "Add a NOTICE file to https://github.com/acme/widgets."
+        }]),
+        &json!([{
+            "type": "function",
+            "name": "github.create_file",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "repository_full_name": {"type": "string"},
+                    "message": {"type": "string"},
+                    "path": {"type": "string"},
+                    "content": {"type": "string"}
+                },
+                "required": ["repository_full_name", "message", "path", "content"]
+            }
+        }]),
+    );
+
+    for call in emitted_calls(&response) {
+        let Some(arguments) = call["arguments"].as_str() else {
+            continue;
+        };
+        let arguments: Value = serde_json::from_str(arguments).expect("arguments JSON");
+        for identity in ["repository_full_name", "message"] {
+            assert!(
+                !arguments.get(identity).is_some_and(|value| value == ""),
+                "{identity} was invented to satisfy the schema: {arguments}"
+            );
+        }
+        // When the repository *is* named, it is the one the request named.
+        if let Some(repository) = arguments["repository_full_name"].as_str() {
+            assert_eq!(repository, "acme/widgets", "{arguments}");
+        }
+    }
+}

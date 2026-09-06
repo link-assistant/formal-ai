@@ -45,3 +45,27 @@ failures:
 test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 error: test failed, to rerun pass `--test release_tool_grounding`
+
+Routing, before the fix.
+========================
+
+With `src/agentic_coding/capability_router.rs` restored to its previous
+state (the projection fixes still in place), the same request routes the
+workspace's file creation to the connector -- the call the 2026-09-04
+Codex session made:
+
+test remote_write_must_not_fabricate_an_empty_repository ... ok
+test a_declared_client_workspace_still_grounds_the_write ... ok
+test missing_client_workspace_must_not_be_replaced_by_server_cwd ... ok
+test a_workspace_file_is_created_in_the_workspace_and_not_on_a_server ... FAILED
+test a_connector_call_never_leaves_its_repository_blank ... ok
+
+failures:
+--
+thread 'a_workspace_file_is_created_in_the_workspace_and_not_on_a_server' (54807) panicked at tests/release_tool_grounding.rs:219:9:
+the file belongs in the checkout, not in a repository on a server: {"arguments":"{\"content\":\"puts \\\"Hello, world!\\\"\",\"message\":\"Write a Ruby program that prints Hello, World! and run it.\",\"path\":\"main.rb\"}","call_id":"call_6c601ae41f42c5ef","id":"fc_6c601ae41f42c5ef","name":"github.create_file","namespace":"codex_apps","status":"completed","type":"function_call"}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+--
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.35s
+
+error: test failed, to rerun pass `--test release_tool_grounding`
