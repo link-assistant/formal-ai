@@ -67,7 +67,7 @@ asks for it.
 | Template practice | State here before this PR | Now |
 |---|---|---|
 | actionlint via `docker://rhysd/actionlint` (the image bundles ShellCheck, so `run:` blocks are actually linted) | already adopted in #1076 — and this repository added a ShellCheck canary fixture on top, which no template has, because a bare binary silently skips every `run:` check and still exits 0 | kept, and both references to the image now carry the same digest |
-| `persist-credentials: false` on `actions/checkout` | 46 checkout sites do not set it (`artipacked`, Low confidence) | tracked, not fixed here — several sites legitimately need credentials, so this is a per-site review rather than a sweep |
+| `persist-credentials: false` on `actions/checkout` | 46 of 48 checkout sites do not set it (`artipacked`, Low confidence, below both configured gates) | adopted — the per-site review was done and is recorded in [`../analysis/artipacked-sweep.md`](../analysis/artipacked-sweep.md). 44 sites drop the credential; the two jobs that push with it keep it behind a comment naming the push. Measured 46 findings → 2 |
 
 ## Cross-references filed on the issues themselves
 
