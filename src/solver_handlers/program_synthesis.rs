@@ -1,8 +1,8 @@
 use std::{fmt::Write as _, time::Duration};
 
 use crate::agent::{AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
-use crate::{engine::SymbolicAnswer, event_log::EventLog};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
+use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
 use super::finalize_simple;
 
@@ -245,7 +245,7 @@ pub fn try_program_synthesis(
     );
     MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
 
-    let body = render_python_answer(&candidate);
+    let body = render_python_answer(prompt, &candidate);
     Some(finalize_simple(
         prompt,
         log,
@@ -508,13 +508,44 @@ fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<
         &config,
     )
     .ok()?;
-    workspace.create_file("solution.py", &verification_script(candidate));
+    workspace.create_file("solution.py", &verification_script(prompt, candidate));
     workspace.run_command("python3 solution.py");
     Some(workspace.finish())
 }
 
-fn verification_script(candidate: &PythonCandidate) -> String {
-    let mut script = candidate.function.render();
+/// The import statements a prompt declares before its signature.
+///
+/// Issue #1085 (D5.3): upstream HumanEval prompts annotate `numbers:
+/// List[float]` and begin with `from typing import List`. A candidate that
+/// copies the signature but not the import raises `NameError` the moment
+/// Python evaluates the annotation, so the verification failed on every
+/// upstream case, including the seeded ones, while the curated wording
+/// (`list[float]`) passed. The imports are part of the specification.
+fn prompt_import_preamble(prompt: &str) -> String {
+    let mut seen = Vec::new();
+    for line in prompt.lines().map(str::trim) {
+        let is_import =
+            line.starts_with("import ") || (line.starts_with("from ") && line.contains(" import "));
+        if is_import && !seen.iter().any(|known: &String| known == line) {
+            seen.push(line.to_owned());
+        }
+    }
+    seen.join("\n")
+}
+
+/// The candidate's source with the prompt's imports ahead of it.
+fn candidate_source(prompt: &str, candidate: &PythonCandidate) -> String {
+    let preamble = prompt_import_preamble(prompt);
+    let function = candidate.function.render();
+    if preamble.is_empty() {
+        function
+    } else {
+        format!("{preamble}\n\n{function}")
+    }
+}
+
+fn verification_script(prompt: &str, candidate: &PythonCandidate) -> String {
+    let mut script = candidate_source(prompt, candidate);
     script.push_str("\n\nif __name__ == \"__main__\":\n");
     for test in &candidate.tests {
         script.push_str("    ");
@@ -549,8 +580,8 @@ fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
     }
 }
 
-fn render_python_answer(candidate: &PythonCandidate) -> String {
-    let code = candidate.function.render();
+fn render_python_answer(prompt: &str, candidate: &PythonCandidate) -> String {
+    let code = candidate_source(prompt, candidate);
     format!(
         "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.",
         code,
@@ -590,7 +621,58 @@ fn declared_signature(prompt: &str, function_name: &str) -> Option<String> {
         let return_start = end + (tail.len() - trimmed.len());
         end = return_annotation_end(prompt, return_start).unwrap_or(end);
     }
+    // Issue #1085 (D5.3): an MBPP prompt carries no signature, only tests, and
+    // `similar_elements((3, 4, 5, 6), (5, 7, 4, 10))` in an assertion is a call.
+    // Copying it produced `def similar_elements((3, 4, 5, 6), ...)`, which does
+    // not parse, so the seeded task failed upstream. Only a parameter list is a
+    // signature; anything else defers to the task's declared default.
+    if !is_parameter_list(&prompt[after_name + 1..close - 1]) {
+        return None;
+    }
     Some(prompt[start..end].trim().trim_end_matches('.').to_owned())
+}
+
+/// Whether the text between a signature's parentheses is a parameter list.
+///
+/// Comma-separated names, each optionally starred, annotated or given a
+/// default, or nothing at all.
+fn is_parameter_list(inside: &str) -> bool {
+    if inside.trim().is_empty() {
+        return true;
+    }
+    split_top_level_commas(inside).iter().all(|parameter| {
+        let name = parameter
+            .trim()
+            .trim_start_matches('*')
+            .split([':', '='])
+            .next()
+            .unwrap_or_default()
+            .trim();
+        let mut characters = name.chars();
+        characters
+            .next()
+            .is_some_and(|first| first == '_' || first.is_ascii_alphabetic())
+            && characters.all(|character| character == '_' || character.is_ascii_alphanumeric())
+    })
+}
+
+fn split_top_level_commas(text: &str) -> Vec<&str> {
+    let mut parts = Vec::new();
+    let mut depth = 0usize;
+    let mut start = 0;
+    for (index, character) in text.char_indices() {
+        match character {
+            '(' | '[' | '{' => depth += 1,
+            ')' | ']' | '}' => depth = depth.saturating_sub(1),
+            ',' if depth == 0 => {
+                parts.push(&text[start..index]);
+                start = index + 1;
+            }
+            _ => {}
+        }
+    }
+    parts.push(&text[start..]);
+    parts
 }
 
 fn return_annotation_end(prompt: &str, arrow_start: usize) -> Option<usize> {

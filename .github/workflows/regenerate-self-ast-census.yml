@@ -1,0 +1,60 @@
+name: Regenerate self-AST census
+
+# Issue #1085. The per-module census under `data/meta/self-ast/` is a pure
+# function of the sources (`cargo run --example regenerate_self_ast_census`),
+# and `tests/unit/issue_673_self_ast_census.rs` fails on drift. A contributor
+# whose machine cannot build the crate has no way to regenerate it; this
+# dispatchable job builds it here and hands the documents back as an artifact
+# to commit. It writes nothing to the repository.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+
+jobs:
+  regenerate:
+    name: Build the census and upload it
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - name: Regenerate the census
+        env:
+          TEST_BUDGET_SECONDS: 2400
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "self-AST census regeneration" \
+            cargo run --locked --example regenerate_self_ast_census
+      - name: Show what changed
+        run: |
+          git status --short -- data/meta/self-ast | tee "$RUNNER_TEMP/census-changes.txt"
+          {
+            echo "### Self-AST census changes"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/census-changes.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload the census
+        uses: actions/upload-artifact@v7
+        with:
+          name: self-ast-census
+          path: data/meta/self-ast
+          retention-days: 7
+          if-no-files-found: error

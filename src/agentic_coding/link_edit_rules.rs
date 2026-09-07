@@ -41,7 +41,7 @@ pub enum LinkEditRule {
 impl LinkEditRule {
     /// The rule's name in `data/meta/link-edit-rules.lino`.
     #[must_use]
-    pub fn name(&self) -> &'static str {
+    pub const fn name(&self) -> &'static str {
         match self {
             Self::InsertMember { .. } => "insert_member",
             Self::ReplaceLiteral { .. } => "replace_literal",
@@ -234,7 +234,7 @@ pub fn apply_link_edit(
     // Rewrite from the end of the file towards the start: every earlier range
     // keeps its offsets while the network reparses after each edit.
     let mut ordered = edits;
-    ordered.sort_by(|left, right| right.0.start().cmp(&left.0.start()));
+    ordered.sort_by_key(|(range, _)| std::cmp::Reverse(range.start()));
     ordered.dedup_by(|later, earlier| later.0.start() == earlier.0.start());
     let count = ordered.len();
     for (range, replacement) in ordered {
@@ -275,10 +275,11 @@ pub fn apply_link_edit(
     Err(LinkEditError::EngineUnavailable)
 }
 
-/// Insert every value of `values` into the list `list` introduces, one rule
-/// application each; `None` when the list cannot be reached through the links
-/// network (the caller keeps its byte-level path for those shapes), and a value
-/// already present is left in place rather than duplicated.
+/// Insert every value of `values` into the list `list` introduces.
+///
+/// One rule application per value. `None` when the list cannot be reached
+/// through the links network, so the caller keeps its byte-level path for those
+/// shapes; a value already present is left in place rather than duplicated.
 #[must_use]
 pub fn insert_members_via_links(
     source: &str,
@@ -401,7 +402,7 @@ fn member_insertion_edit(
         });
     }
 
-    let Some(last) = elements.last() else {
+    let Some(final_member) = elements.last() else {
         // An empty list: insert right after its opening bracket.
         let slice = text.get(array.start()..array.end()).unwrap_or("");
         let open = slice.find('[').map_or(0, |index| index + 1);

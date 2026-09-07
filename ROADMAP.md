@@ -579,7 +579,9 @@ one branch, and this section records what each push delivered.
 | D4 ladder leaves compile | Delivered (`cargo check`); test run, composite merge and requirement-shaped nodes in progress | `experiments/issue_1028_agent_cli_ladder/verify-node.sh` |
 | D5.4 upstream numbers beside every curated citation | Delivered | this file, `VISION.md` |
 | #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |
-| D2 links-to-code edit rules, D5.1-D5.3, D6-D9 | In progress / sub-issues | `docs/case-studies/issue-1085/solution-plan.md` |
+| D2.1 links-to-code edit rules | Delivered (three ladder shapes as link substitutions) | `src/agentic_coding/link_edit_rules.rs`, `data/meta/link-edit-rules.lino`, `tests/unit/issue_1085_link_edit_rules.rs` |
+| D5.3 upstream transfer of the seeded tasks | Delivered: HumanEval/0 lost `from typing import List`, MBPP/2 took an `assert` call for a signature | `src/solver_handlers/program_synthesis.rs`, `tests/unit/issue_1085_upstream_prompt_transfer.rs` |
+| D2.2, D5.1, D6-D9 | In progress / sub-issues | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Verification Contract
 

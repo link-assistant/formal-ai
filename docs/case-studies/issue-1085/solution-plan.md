@@ -23,6 +23,18 @@ this file says which slice carried what.
 6. **D5.4, documents.** Upstream numbers beside 13/13; VISION, GOALS,
    NON-GOALS, ROADMAP, REQUIREMENTS, traceability, README, troubleshooting.
 
+## Push 2
+
+- D2.1 `link_edit_rules.rs` and its rule file; `structured_edit` delegates.
+- D3.4 `--replay-epoch` over 84 releases: every one 0.00 % (204 commits without
+  `Formal-AI-Model`, 164 hosted-model sessions); version 1 and 2 rows archived
+  verbatim beside the ledger to stay under the 1,500-line cap.
+- D5.3 diagnosis from the scheduled run's log (`ci-evidence/`): HumanEval/0's
+  candidate lost `from typing import List`; MBPP/2's "signature" was an
+  `assert` call. Both fixed in `program_synthesis.rs` with an upstream-shaped
+  regression test.
+- Push-1 CI feedback folded in.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the
