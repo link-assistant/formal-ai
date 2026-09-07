@@ -56,6 +56,22 @@ on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows: ["CI/CD Pipeline"]
     types: [completed]
+    # Issue #1081 (D8): without this filter the event fires for EVERY pipeline
+    # completion, including the pull_request runs of every feature branch. The
+    # `resolve` job below then rejects them on `head_branch == 'main'`, so the
+    # whole run concludes `skipped`. Measured over 2026-08-31..2026-09-07: 107
+    # workflow_run-triggered runs, 102 of them skipped (95.3%), and 99 of those
+    # 102 correlate 1:1 with a pull-request pipeline finishing on a feature
+    # branch (dev/log/issues/1081/pulls/1082/measurements/desktop-release-workflow-run-noise.md).
+    # Every run that did real work was triggered by a `push` pipeline on main.
+    # `branches` on workflow_run matches the TRIGGERING workflow's branch --
+    # "You can use the `branches` or `branches-ignore` filter to specify what
+    # branches the triggering workflow must run on in order to trigger your
+    # workflow" -- so this drops exactly the noise and keeps all five useful
+    # runs. The `head_branch == 'main'` guard in `resolve` stays: it is one of
+    # the two counts that make this `workflow_run` trigger safe (see the header
+    # comment), and a trigger filter is not a substitute for that argument.
+    branches: [main]
   # Issue #808: packaging and macOS signing used to run only after a release
   # existed, so a desktop regression was always discovered post-merge -- which is
   # exactly how the "unsealed contents present in the root directory of an

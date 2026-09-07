@@ -1,0 +1,21 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# Only the inline tests run here, for the reason `check-job-headroom.lino`
+# gives -- the audit itself asks the Actions API which commits on the default
+# branch produced a run, and a pull request's own branch has no bearing on that
+# answer. It runs weekly from `.github/workflows/job-headroom.yml`.
+#
+# What this gate holds is the classification, which is the part a commit can
+# break and the part that decides whether the audit cries wolf -- a tip younger
+# than the grace period is `unknown` rather than a gap, uncovered commits
+# beneath a covered tip are not a gap at all, because a batch push creates one
+# run for its last commit, and an empty sample -- a failed query -- is never a
+# pass.
+ci_gate check_head_pipeline_coverage
+  stage rust
+  description "The default-branch coverage audit still tells a gap apart from a run that has not appeared yet."
+  run "rust-script --test scripts/check-head-pipeline-coverage.rs"
