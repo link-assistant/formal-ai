@@ -68,7 +68,7 @@ jobs:
             echo
             echo "Share of behaviour-changing lines authored by the formal-ai model: $(tail -n 1 "$RUNNER_TEMP/share.txt")"
           } >> "$GITHUB_STEP_SUMMARY"
-      - name: Kernel shrink since the last tag (issue #1085 D1.4)
+      - name: 'Kernel shrink since the last tag (issue #1085 D1.4)'
         run: rust-script scripts/check-kernel-ratchet.rs --release
-      - name: Self-development floor (issue #924, #1066, #1085)
+      - name: 'Self-development floor (issue #924, #1066, #1085)'
         run: rust-script scripts/check-self-development-release.rs

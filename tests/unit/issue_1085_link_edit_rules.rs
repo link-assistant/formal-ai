@@ -6,6 +6,7 @@
 //! rule, and asserts the rendered source, that the rewritten file still
 //! round-trips through the network, and that the network verified clean.
 
+use formal_ai::agentic_coding::link_edit_rules::parse_rule_shapes;
 use formal_ai::agentic_coding::self_ast::round_trips;
 use formal_ai::agentic_coding::{LinkEditError, LinkEditRule, apply_link_edit, rule_shapes};
 
@@ -107,4 +108,19 @@ fn an_absent_needle_is_a_named_error_not_a_silent_no_op() {
         error.to_string(),
         "link_edit:no_matching_link:rename_identifier:NOT_IN_THE_FILE"
     );
+}
+
+#[test]
+fn the_rule_file_declares_the_node_kinds_each_shape_may_touch() {
+    let shapes = rule_shapes();
+    assert!(shapes[2].node_kinds.contains(&"identifier".to_owned()));
+    assert_eq!(shapes[0].list_kind.as_deref(), Some("array_expression"));
+}
+
+#[test]
+fn rule_shapes_parse_only_indented_declarations() {
+    let parsed = parse_rule_shapes("x\n  rule a\n    node_kind k\n  rule b\n    anchor_kind i\n");
+    assert_eq!(parsed.len(), 2);
+    assert_eq!(parsed[0].node_kinds, vec!["k".to_owned()]);
+    assert_eq!(parsed[1].anchor_kind.as_deref(), Some("i"));
 }

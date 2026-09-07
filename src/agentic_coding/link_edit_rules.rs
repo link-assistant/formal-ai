@@ -124,7 +124,9 @@ pub fn rule_shapes() -> Vec<RuleShape> {
     parse_rule_shapes(RULES)
 }
 
-fn parse_rule_shapes(text: &str) -> Vec<RuleShape> {
+/// Parse rule shapes from Links Notation text in the rule file's layout.
+#[must_use]
+pub fn parse_rule_shapes(text: &str) -> Vec<RuleShape> {
     let mut shapes: Vec<RuleShape> = Vec::new();
     for line in text.lines() {
         let trimmed = line.trim();
@@ -421,33 +423,4 @@ fn member_insertion_edit(
         ByteRange::new(final_member.end(), final_member.end()),
         format!("{separator}{quoted}"),
     ))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn the_rule_file_declares_the_three_ladder_shapes() {
-        let shapes = rule_shapes();
-        let names = shapes
-            .iter()
-            .map(|shape| shape.rule.as_str())
-            .collect::<Vec<_>>();
-        assert_eq!(
-            names,
-            ["insert_member", "replace_literal", "rename_identifier"]
-        );
-        assert!(shapes[2].node_kinds.contains(&"identifier".to_owned()));
-        assert_eq!(shapes[0].list_kind.as_deref(), Some("array_expression"));
-    }
-
-    #[test]
-    fn rule_shapes_parse_only_indented_declarations() {
-        let parsed =
-            parse_rule_shapes("x\n  rule a\n    node_kind k\n  rule b\n    anchor_kind i\n");
-        assert_eq!(parsed.len(), 2);
-        assert_eq!(parsed[0].node_kinds, vec!["k".to_owned()]);
-        assert_eq!(parsed[1].anchor_kind.as_deref(), Some("i"));
-    }
 }

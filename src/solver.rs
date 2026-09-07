@@ -556,6 +556,19 @@ impl UniversalSolver {
         // name ("Rust") as an encyclopedia definition instead of returning the
         // requested program. Policy guards still run for these prompts below.
         let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
+        // Issue #1085 (D5.3): a verified derivation beats a catalog template.
+        // `Write a function to …` selects the write_program rule, and a concrete
+        // rule skips the specialized handlers below, so the synthesis handler
+        // never saw an MBPP prompt and the answer was the hello-world template.
+        if is_concrete_write_program
+            && let Some(answer) = crate::solver_handlers::try_program_synthesis(
+                prompt,
+                &prompt.to_lowercase(),
+                &mut log,
+            )
+        {
+            return answer;
+        }
         if !is_concrete_write_program
             && let Some(answer) = crate::meta_method_dispatch::try_dispatch(
                 self,

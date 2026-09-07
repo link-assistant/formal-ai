@@ -306,13 +306,17 @@ fn issue_924_release_path_enforces_the_loop_before_versioning() {
             "reviewed Formal AI-authored work before cutting the release",
         ],
     );
+    // Issue #1085 (D3.5): the release path records the row and no longer gates
+    // on the floor; the floor is reported red-until-true from its own workflow.
+    let version_script = read(root.join("scripts/version-and-commit.rs"));
     assert_contains_all(
         "version release integration",
-        &read(root.join("scripts/version-and-commit.rs")),
-        &[
-            "ensure_self_development_release",
-            "Self-development release gate passed",
-        ],
+        &version_script,
+        &["record_release_with_policy", "Issue #1085 (D3.5)"],
+    );
+    assert!(
+        !version_script.contains("ensure_self_development_release("),
+        "the release path must not gate on the self-development floor"
     );
 }
 
