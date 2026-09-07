@@ -1281,6 +1281,17 @@ jobs:
         run: |
           examples/self-coding/run.sh
           cargo test self_coding_session_replays
+      # Issue #1079: a failed harness prints nothing into the job log -- it
+      # redirects the CLI's streams to files, and `set -e` ends it before
+      # `scripts/classify-agent-cli-stderr.sh` can read them. Reading the same
+      # paths the upload below collects turns `exit code 1` back into a cause.
+      - name: Show the Agent CLI evidence on failure
+        if: failure()
+        run: |
+          scripts/dump-agent-cli-evidence.sh \
+            /tmp/formal-ai-serve-*.log \
+            /tmp/agent-out-*.log \
+            /tmp/formal-ai-issue-*-evidence
       - name: Upload E2E logs on failure
         if: failure()
         uses: actions/upload-artifact@v7

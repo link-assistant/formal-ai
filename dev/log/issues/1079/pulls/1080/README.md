@@ -40,11 +40,14 @@ GitHub access.
 | `analysis/zizmor-1.29.0-csharp-template.log` | The four templates' zizmor invocation applied to the one template that has no zizmor job. |
 | `ci-logs/self-hosting-evidence-101601575998.log` | The complete log of the first job that failed on this branch, kept for line-level citation: line 1570 is the finding D8 is about. |
 | `ci-logs/lint-and-format-101616345954.log` | The complete log of the second job that failed on this branch, for the same reason: lines 2630-2631 are the two files D10 is about. |
+| `ci-logs/job-101622336256-agent-cli-failure-report.tail.log`, `ci-logs/proactive-e2e-34083226911.log` | The Agent CLI E2E step that failed on this branch: two seconds, exit code 1, and no line saying why. The basis for the *false negative* half of D11, and for D12. |
+| `ci-logs/issue-864-artifact/` | The evidence artifact that same step uploads, where the diagnosis actually was: `agent-stderr.log` is the complete file and carries the `MissingSessionID` rejection. |
+| `analysis/agent-cli-hosted-summarization.md` | The measured reconstruction of D11: which model the CLI reaches for, why the flag that was supposed to prevent it does nothing, and why a failed session title aborts the turn. |
 | `analysis/self-hosting-evidence-deadlock.md` | The ruleset query, the rejected force-push, and the design argument for the retraction trailer. The basis for D8. |
 | `analysis/template-diffs/` | Per-file diffs of this repository's workflows against all five templates. |
 | `references/CI-CD-BEST-PRACTICES.md` | The Hive Mind guidance as of collection (R4). |
 | `references/templates/{rust,js,python,php,csharp}-template/` | Complete immutable copies of all five template trees, with `.git` removed and manifests carrying the `.snapshot` suffix required by issue #1014, so no scanner treats archived evidence as a live project. `*.HEAD` and `*.HEADINFO` record the commit each snapshot is of. |
-| `upstream-reports/` | The six reports filed against other repositories, with their reproductions; `upstream-reports/README.md` indexes them against the thirteen issue URLs they were filed as. |
+| `upstream-reports/` | The eight reports filed against other repositories, with their reproductions; `upstream-reports/README.md` indexes them against the fifteen issue URLs they were filed as. |
 
 ## 2. Reconstructed timeline
 
@@ -119,6 +122,14 @@ Defects 2 and 3 are the same failure at one remove: the audit that would have
 caught the unpinned image was itself misconfigured, and the misconfiguration
 was invisible because its own version pin was a comment rather than a setting.
 
+D11 is the mirror image of that shape and was found later, from the branch's
+own runs rather than from `main`'s. Here a gate turned **red** and said nothing
+about why: the step printed `##[error]Process completed with exit code 1` two
+seconds in, and the reason -- a session *title* the CLI had tried to generate
+through a hosted model nobody configured -- was only in an uploaded artifact.
+A green check that cannot fail and a red check that cannot explain itself are
+the same defect in a maintainer's hands: neither carries information. §4.6.
+
 ## 4. Defect register
 
 | ID | Defect | Class | Evidence | Disposition |
@@ -133,6 +144,8 @@ was invisible because its own version pin was a comment rather than a setting.
 | D8 | `Self-Hosting Evidence Check` errors on a half-trailered commit and tells the author to amend it, in a repository whose ruleset forbids non-fast-forward pushes on `~ALL` branches with no bypass actors | true positive with no available remedy | `analysis/self-hosting-evidence-deadlock.md`, `ci-logs/self-hosting-evidence-101601575998.log:1570` | fixed: `Formal-AI-Retract`, a trailer that can only lower the measured share |
 | D9 | `trailer_values` trims each line before matching, so an *indented* `Formal-AI-*: …` line inside a commit message is read as a declared trailer; `git interpret-trailers --parse` ignores it | false positive | `analysis/self-hosting-evidence-deadlock.md` | fixed: an indented line is not a trailer |
 | D10 | `check_file_size` failed `Lint and Format Check` at `087d5fb9b`: the D8 fix pushed `scripts/self-hosting-metric.rs` to 1021 lines and `tests/unit/specification/self_hosting_metric.rs` to 1118, both past the 1000-line Rust ceiling | **true positive** about this branch | `ci-logs/lint-and-format-101616345954.log:2630`, `analysis/self-hosting-evidence-deadlock.md` | fixed: retraction split into `scripts/self-hosting-retraction.rs` and `.../self_hosting_metric/retraction.rs` (960 and 898 lines) |
+| D11 | The two Agent CLI E2E jobs fail on a *session title*: `@link-assistant/agent` summarizes every session by default, `--compaction-model same` is silently ignored so the summarizer reaches the hosted `opencode/big-pickle`, and that rejection is neither awaited nor caught — it exits 1 and aborts the running turn, leaving a red step whose log says only `exit code 1` | **true positive** about an upstream default, plus a false negative about its own diagnosis | `analysis/agent-cli-hosted-summarization.md`, `ci-logs/issue-864-artifact/agent-stderr.log`, `ci-logs/job-101622336256-agent-cli-failure-report.tail.log` | fixed at all three sites that launch the CLI — §4.6 — and filed upstream as agent#303 and agent#304 |
+| D12 | A failed Agent CLI harness prints nothing but its exit status: it redirects the client's streams to files and classifies them with `scripts/classify-agent-cli-stderr.sh` afterwards, but `set -e` ends the harness on the client's non-zero exit one line before that classification runs, so the component built to report an unexpected diagnostic is unreachable exactly when it has one | false negative about its own failure | `ci-logs/job-101622336256-agent-cli-failure-report.tail.log` (two seconds, one `##[error]` line, nothing else) against `ci-logs/issue-864-artifact/agent-stderr.log` (the cause) | fixed: `scripts/dump-agent-cli-evidence.sh` on an `if: failure()` step in all three Agent CLI jobs — §7 |
 
 ### 4.1 Why D1 is reported rather than fixed
 
@@ -292,6 +305,45 @@ cannot be distinguished from an audit that stopped early.
   present upstream; the instance is not, which is why the report there is
   framed as latent.
 
+
+### 4.6 D11: the defect that was not only in CI
+
+D11 is the one defect in this register whose fix had to leave `.github/`. The
+red job was `Proactive failure report E2E`, but the cause -- an ineffective
+Agent CLI flag -- was equally present in `data/seed/client-integrations.lino`,
+which is what this repository *ships*: `src/client_integrations.rs:592-599`
+appends `no_summarize_args` to every `formal-ai with agent …` invocation a user
+runs. Fixing the failing job alone would have left every user of that command
+passing a flag that does nothing, with no red build to say so.
+
+The sweep therefore went by mechanism rather than by symptom -- every path that
+launches the CLI -- and found three:
+
+| Site | Count | Fix |
+| --- | --- | --- |
+| Shell harnesses under `experiments/` that a workflow reaches | 25 | `--no-summarize-session --compaction-models "(same)"` |
+| Workflow jobs that reach the CLI through a script | 2 | `LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"` |
+| `data/seed/client-integrations.lino` (product) | 1 | `no_summarize_args` carries the plural spelling |
+
+Three tests in `tests/unit/ci-cd/issue_1079.rs` pin one site each, so a new
+harness, a new job or an edit to the seed cannot reintroduce it silently.
+
+Two properties of this defect are worth keeping in mind when reading the rest
+of the register, because they are what made it survive so long:
+
+* **It is intermittent by construction.** Whether the run dies is a race
+  between the summary's rejection and the turn's completion, and the hosted
+  gateway's refusal is itself sporadic. That reads as flakiness, and flakiness
+  gets re-run rather than diagnosed.
+* **The job log does not contain the reason.** The step printed `exit code 1`
+  and nothing else; the diagnosis was in an uploaded artifact. A maintainer
+  reading the log -- which is what a maintainer reads -- had no way to reach
+  the cause.
+
+The measured reconstruction, including the two upstream code paths and the
+offline reproduction, is in
+[`analysis/agent-cli-hosted-summarization.md`](analysis/agent-cli-hosted-summarization.md).
+
 ## 5. Requirement-by-requirement: root cause and plan
 
 ### R1 — every false positive, false negative, warning and error
@@ -306,6 +358,8 @@ cannot be distinguished from an audit that stopped early.
 | D8 | The pull-request evidence gate is strict on the premise that a commit in review can still be amended. Ruleset 21300712 applies `deletion` and `non_fast_forward` to `~ALL` branches with an empty `bypass_actors`, so no commit message in this repository can ever be rewritten. A correct finding therefore had no remedy — the same deadlock shape #796/#810/#812 removed from the release path, surviving on the pull-request path only because nobody had mis-trailered a commit there yet. | `Formal-AI-Retract: <full sha>`: a later commit in the same range withdraws an earlier claim. It can only move a commit *out* of the numerator, the target must be a full 40-character sha inside the measured range, and it cannot name itself — so it cannot raise the measured share. Applied on both walks, because applying it on one would let a commit leave the metric and still count toward the release floor. | `self_hosting_metric::retraction::a_retraction_unblocks_a_branch_whose_history_cannot_be_rewritten`, `..::a_retraction_can_only_lower_the_measured_share`, `..::a_retraction_also_withdraws_the_commit_from_the_release_floor`, `..::a_retraction_must_name_a_full_sha_inside_the_measured_range`, `..::a_stale_retraction_does_not_restore_the_claims_the_others_withdraw` |
 | D9 | `trailer_values` deliberately scans the whole commit body rather than using git's `%(trailers)` placeholder (issue #796, where a blank line hid a trailer), and it `trim()`s each line before matching the key. Indentation is the one part of git's rule that mattered: a message that *documents* a trailer in an indented example thereby declares one. Reproduced immediately — the commit introducing `Formal-AI-Retract` showed the format in its own message and the gate answered `must name a full 40-character sha, found <full 40-character sha>`. | Skip lines beginning with a space or tab, matching `git interpret-trailers --parse`, which returns nothing for an indented line. The blank-line tolerance #796 needs is untouched. | `self_hosting_metric::retraction::an_indented_example_of_a_trailer_is_not_a_trailer` |
 | D10 | The D8 fix itself crossed a gate. `check_file_size` holds Rust files under 1000 lines, and the retraction logic plus its tests carried `scripts/self-hosting-metric.rs` to 1021 lines and `tests/unit/specification/self_hosting_metric.rs` to 1118 — a true positive about this branch, found only because the gate ran on the pushed commit. | Split along the seam the feature already had: `scripts/self-hosting-retraction.rs` (a `#[path]` module of the metric script, the pattern `self-development-loop.rs` established) and `tests/unit/specification/self_hosting_metric/retraction.rs`. 960 and 898 lines after the split. | `rust-script scripts/check-file-size.rs` (the gate itself), plus the six tests in the new `retraction` submodule |
+| D11 | Two upstream defaults compose. `--summarize-session` is on by default, and `--compaction-model same` -- the flag every harness here passed to prevent exactly this -- is silently ignored, because `src/cli/model-config.js` resolves the *cascade* argument first and falls back to a non-empty default, making the single-model branch unreachable. So the summarizer reaches `opencode/big-pickle`; its rejection is neither awaited nor caught at either call site, and `process.on('unhandledRejection')` exits 1, aborting the turn. | The plural spelling, `--compaction-models "(same)"`, plus `--no-summarize-session`, at all 25 harnesses; `LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"` at the 2 workflow jobs that reach the CLI indirectly; and the same pair in `data/seed/client-integrations.lino`, which is the product path, not CI. Filed upstream as agent#303 and agent#304 with an offline reproduction. | `issue_1079::agent_cli::every_agent_cli_harness_ci_runs_keeps_the_session_local`, `..::every_ci_job_that_launches_the_agent_cli_disables_hosted_summarization`, `..::the_wrapper_pins_agent_compaction_to_the_session_model`, plus `experiments/issue_1079_agent_compaction_flag/run.sh` as a canary against the upstream fix |
+| D12 | The harness redirects the client's stdout and stderr to files and reads them afterwards with `scripts/classify-agent-cli-stderr.sh`, which is built to print any unexpected diagnostic and refuse to hide it. Under `set -euo pipefail` the client's own non-zero exit ends the harness at the invocation line — one line before the classifier — so the failing job emits its exit status and nothing else. The cause was in the uploaded artifact and only there. | `scripts/dump-agent-cli-evidence.sh` reads those same files into the job log from an `if: failure()` step beside each job's existing artifact upload, stderr first, missing paths reported, always exiting 0 so a diagnostic cannot become a second failure. Wired into all three Agent CLI jobs; `agentic_cli_matrix` already did this through `matrix_fail`. | `issue_1079::agent_cli::every_ci_job_that_launches_the_agent_cli_reads_its_evidence_into_the_log`, `..::the_evidence_dump_reports_a_failure_without_becoming_one` |
 | D1 | Not a pipeline defect. §4.1. | — | existing `self-development-loop` tests |
 | D4, D5 | Warnings behaving as designed. §4.2. | — | existing size and budget gates |
 
@@ -325,10 +379,19 @@ repository's 48 checkouts. That is D7, and it is swept here — see §4.3.
 
 ### R3 — file upstream
 
-Thirteen issues, indexed with their URLs and the report body each was filed
+Fifteen issues, indexed with their URLs and the report body each was filed
 from, in [`upstream-reports/README.md`](upstream-reports/README.md). Each
-carries a reproduction that runs at the snapshotted template commit, a
-workaround, and the code-level fix.
+carries a reproduction, a workaround, and the code-level fix.
+
+Thirteen are against the five pipeline templates and `web-capture`, and each
+reproduces at the snapshotted template commit. The remaining two --
+[agent#303](https://github.com/link-assistant/agent/issues/303) and
+[agent#304](https://github.com/link-assistant/agent/issues/304) -- are against
+`link-assistant/agent`, the CLI this repository drives, and are the root cause
+of D11. Their reproduction is committed here as
+`experiments/issue_1079_agent_compaction_flag/`: it needs no account and no
+network beyond loopback, and it exits non-zero when either defect stops
+reproducing, so the workaround can be dropped the day they are fixed.
 
 ### R4 — hive-mind CI/CD best practices
 
@@ -370,11 +433,68 @@ switch (issue #1076), and remains default-off; nothing in this pull request
 sets it to `true`, and
 `issue_1076::runner_telemetry_exists_and_defaults_to_off` enforces that.
 
-No new switch was needed here, because none of D1–D6 was undiagnosable. Each
-root cause was reached by direct measurement rather than by inference, and each
-measurement is committed in `analysis/` so the next reader re-runs it instead
-of trusting this document. The one place where more output *was* the fix is
-`actionlint -verbose`, added in #1076 and kept: it costs one line per workflow
-and carries the fact the exit status does not — how many files were actually
-read. A silent 0 and a 0 after "Found 0 errors in 19 files" are not the same
-result.
+For D1–D10 no new switch was needed: each root cause was reached by direct
+measurement rather than by inference, and each measurement is committed in
+`analysis/` so the next reader re-runs it instead of trusting this document.
+The one place where more output *was* the fix is `actionlint -verbose`, added
+in #1076 and kept: it costs one line per workflow and carries the fact the exit
+status does not — how many files were actually read. A silent 0 and a 0 after
+"Found 0 errors in 19 files" are not the same result.
+
+D11 was the exception, and it is exactly the case the instruction anticipates.
+The failing job printed one line:
+
+```text
+2026-09-07T04:32:30.2855326Z experiments/agent_cli_e2e/run_issue_864.sh
+2026-09-07T04:32:32.2836030Z ##[error]Process completed with exit code 1.
+```
+
+Two seconds, no message, no stack, no exit path. Nothing in that log names a
+model, a provider or a rejection. The root cause was not reachable from it —
+only from the uploaded artifact, whose `agent-stderr.log` held the single line
+that decided the whole investigation.
+
+Two additions answer that, and both are off unless something asks for them.
+
+**A default-off reproduction.** `experiments/issue_1079_agent_compaction_flag/`
+carries two switches on its mock provider, `MOCK_FAIL_NON_STREAMING` and
+`MOCK_STREAM_DELAY`, both unset by default and both inert when unset. Together
+they reconstruct the ordering CI saw — a summary that fails while the turn is
+still streaming — in about twelve seconds, offline, with no account and no
+network beyond loopback. `run.sh` exits non-zero if either upstream defect
+stops reproducing, so the evidence behind agent#303 and agent#304 keeps
+checking itself rather than aging into a claim.
+
+**A failure-only dump, D12.** The deeper problem was not that the log was
+terse; it was that the one component built to speak could not be reached.
+`scripts/classify-agent-cli-stderr.sh` prints any unexpected client diagnostic
+and refuses to hide it — every `agent_cli_e2e` harness calls it — but it is
+called *after* the client, and `set -e` ends the harness on the client's own
+non-zero exit one line earlier. The classifier is unreachable in precisely the
+case it exists for.
+
+`scripts/dump-agent-cli-evidence.sh` (new) reads those stream files back into
+the job log, wired into `release.yml`, `proactive-failure-report-e2e.yml` and
+`issue-1028-agent-ladder.yml` as an `if: failure()` step beside the artifact
+upload each already had. A green run never reaches it, so no output is added to
+a passing job. It prints `*stderr*` files first, because that is where the
+cause is; it reports a missing path instead of passing over it; and it always
+exits 0, since a diagnostic that fails would turn one failure into two and bury
+the first.
+
+This is not a new practice, only an unevenly applied one:
+`experiments/agentic_cli_matrix/lib.sh` has had it since the matrix legs were
+written — `matrix_fail` calls `matrix_dump_logs`, which tails the serve, proxy
+and client logs to stderr before exiting. The `agent_cli_e2e` jobs never
+adopted it. That is the same one-file-gate shape as D11's missing flags, and
+the sweep required by "if an issue exists in multiple places, apply it in all
+of them".
+
+Both gates are enforced rather than described:
+`issue_1079::agent_cli::every_ci_job_that_launches_the_agent_cli_reads_its_evidence_into_the_log`
+requires the failure-time step in every job that starts the client, and
+`issue_1079::agent_cli::the_evidence_dump_reports_a_failure_without_becoming_one` runs the
+dump against the evidence the real failure left behind. That second test
+matters more than its size suggests: a diagnostic only executes on a red run,
+where nobody is positioned to notice that it printed nothing. Left untested it
+would be the next silent failure rather than the cure for one.

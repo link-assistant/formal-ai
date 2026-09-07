@@ -80,6 +80,12 @@ jobs:
           NODE_FILTER: ${{ env.NODE_FILTER }}
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
+      # Issue #1079: the ladder harness redirects each rung's Agent CLI streams
+      # to files under the run directory, so a failed rung leaves the job log
+      # with an exit status and no cause. On failure, read them out.
+      - name: Show the Agent CLI evidence on failure
+        if: failure()
+        run: scripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run
       - name: Upload tree evidence
         if: always()
         uses: actions/upload-artifact@v7

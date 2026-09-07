@@ -177,7 +177,12 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         // of the four checkouts that must keep their credential are here too,
         // and each carries the comment that argues for it, because an
         // exception nobody has to justify in place is one that spreads.
-        (".github/workflows/release.yml", 1_565),
+        // The same issue's D12 added eleven more: a failing Agent CLI harness
+        // printed its exit status and nothing else, so this job now reads the
+        // stream files it already uploads back into the log from an
+        // `if: failure()` step. That step is per-job by construction -- the
+        // paths it reads are the paths the job's own upload collects.
+        (".github/workflows/release.yml", 1_576),
         ("src/intent_formalization.rs", 900),
         ("src/agentic_coding/general_planner.rs", 900),
         ("src/web/worker/formal_ai_worker_20.js", 1_400),

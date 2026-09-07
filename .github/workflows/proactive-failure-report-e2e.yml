@@ -54,6 +54,15 @@ jobs:
         run: cargo build --release --bin formal-ai
       - name: Failed command proactively offers an issue report
         run: experiments/agent_cli_e2e/run_issue_864.sh
+      # Issue #1079: run 34061511110 failed this job with `Process completed
+      # with exit code 1.` and not one further byte -- the harness redirects the
+      # CLI's streams to files, and `set -e` ends it before
+      # `scripts/classify-agent-cli-stderr.sh` can read them. The artifact held
+      # the answer; the log a reviewer actually opens did not. This step puts it
+      # there, and a green run never reaches it.
+      - name: Show the Agent CLI evidence
+        if: failure()
+        run: scripts/dump-agent-cli-evidence.sh /tmp/formal-ai-issue-864-evidence
       - name: Upload failure evidence
         if: failure()
         uses: actions/upload-artifact@v7
