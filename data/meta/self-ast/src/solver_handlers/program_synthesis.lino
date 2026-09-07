@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/program_synthesis.rs
   language rust
   fidelity signature
-  byte_len 22111
-  line_count 658
-  content_id source_module_b0d1595299170fa0
-  symbol_count 33
+  byte_len 25269
+  line_count 740
+  content_id source_module_a1215eb9819e16cb
+  symbol_count 37
   symbols
     struct PythonCandidate 9 14
     struct PythonFunctionTree 16 19
@@ -31,12 +31,16 @@ self_ast_census
     function is_reserved_python_identifier 362 382
     function synthesize_python_candidate 384 499
     function verify_python_candidate 501 514
-    function verification_script 516 530
-    function append_agent_run 532 550
-    function render_python_answer 552 560
-    function identifier_after_ascii_marker 562 578
-    function declared_signature 580 594
-    function return_annotation_end 596 627
-    function next_non_whitespace 629 633
-    function is_return_annotation_char 635 641
-    function matching_close_paren 643 658
+    function prompt_import_preamble 524 534
+    function candidate_source 537 545
+    function verification_script 547 561
+    function append_agent_run 563 581
+    function render_python_answer 583 591
+    function identifier_after_ascii_marker 593 609
+    function declared_signature 611 633
+    function is_parameter_list 639 657
+    function split_top_level_commas 659 676
+    function return_annotation_end 678 709
+    function next_non_whitespace 711 715
+    function is_return_annotation_char 717 723
+    function matching_close_paren 725 740
