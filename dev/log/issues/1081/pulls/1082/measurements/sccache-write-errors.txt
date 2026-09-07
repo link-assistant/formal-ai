@@ -1,0 +1,16 @@
+run                    job                                        reqs   hits  miss  writes  w_err  c_fail  r_err
+job-101661665455-test- 2026-09-07T08:06:35.3382400Z {"stats":{"   1183    963    66      66      0       6      0
+run-34095902372.log    Summarization quality ratchet (issue #89   1177    876   150      13    137       6      0
+run-34095902391.log    Write-Effect Ladder (issue #916 rungs)     1177    871   155      44    111       6      0
+run-34095902445.log    Question necessity ratchet (issue #920)    1257    816   265     176     89       6      0
+run-34095902471.log    Code Coverage                                98     67     0       0      0       1      0
+run-34095902554.log    Task Ladder (issue #840 dataset)           1177    897   129       3    126       6      0
+run-34095902681.log    Build binaries and tests                   1214    936    92      62     30       6      0
+run-34095902681.log    Lint and Format Check                      2206   1030   751     377    374       9      0
+run-34095902681.log    macOS Core Tests / Build macOS test arch   1291   1046    37      36      1       6      0
+run-34095902681.log    Test (ubuntu-latest / full)                   1      1     0       0      0       0      0
+run-34095902681.log    Test (macos-15-intel / specification)      1183    963    66      66      0       6      0
+
+samples: 11
+total cache_writes=843  cache_write_errors=868  (50.7% of write attempts failed)
+total compile_fails=58  cache_read_errors=0
