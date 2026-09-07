@@ -8,7 +8,10 @@
 //! verification raised `NameError`; the `MBPP` candidate copied a *call* out of an
 //! `assert` as if it were a signature and did not parse. These tests drive the
 //! benchmark solver with the exact prompt shapes `src/external_benchmarks/cases.rs`
-//! builds and grade the answers with the upstream criterion.
+//! builds and grade the answers with the upstream criterion. The MBPP shape is
+//! then repeated in Russian, Hindi, Chinese and Spanish: the synthesis
+//! vocabulary is seed data in every registered language, and the assertion
+//! lines that name the function are language-neutral.
 
 use std::path::PathBuf;
 
@@ -80,7 +83,7 @@ fn the_upstream_humaneval_prompt_shape_is_answered_and_graded_by_the_upstream_te
 }
 
 #[test]
-fn the_upstream_mbpp_prompt_shape_does_not_mistake_an_assertion_for_a_signature() {
+fn the_upstream_mbpp_prompt_shape_in_english_does_not_mistake_an_assertion_for_a_signature() {
     if !python_available() {
         eprintln!("python3 is not available; the upstream grader cannot run here");
         return;
@@ -114,4 +117,76 @@ fn the_upstream_mbpp_prompt_shape_does_not_mistake_an_assertion_for_a_signature(
     let outcome = grade::grade_case(&case, Grading::PythonAsserts, &response.answer, &dir);
     std::fs::remove_dir_all(&dir).ok();
     assert!(outcome.passed, "{}", outcome.detail);
+}
+
+const MBPP_2_ASSERTS: [&str; 3] = [
+    "assert similar_elements((3, 4, 5, 6),(5, 7, 4, 10)) == (4, 5)",
+    "assert similar_elements((1, 2, 3, 4),(5, 4, 3, 7)) == (3, 4)",
+    "assert similar_elements((11, 12, 14, 13),(17, 15, 14, 13)) == (13, 14)",
+];
+
+/// The MBPP/2 task worded in `language`, with the language-neutral assertions.
+fn mbpp_case_in(language: &str) -> BenchmarkCase {
+    let wording = match language {
+        "ru" => {
+            "Напиши функцию на Python, которая находит общие элементы двух кортежей.\nОтветь кодом на Python в блоке ```python. Он должен пройти эти тесты:"
+        }
+        "hi" => {
+            "Python फंक्शन लिखें जो दो टपल के समान तत्व लौटाए।\nजवाब ```python ब्लॉक में Python कोड के रूप में दें। इसे ये टेस्ट पास करने चाहिए:"
+        }
+        "zh" => {
+            "编写一个 Python 函数，找出两个元组中的相同元素。\n用 ```python 代码块回复 Python 代码。它必须通过这些测试："
+        }
+        "es" => {
+            "Escribe una función en Python que encuentre los elementos similares de dos tuplas.\nResponde con el código Python en un bloque ```python. Debe pasar estas pruebas:"
+        }
+        _ => {
+            "Write a function to find the similar elements from the given two tuple lists.\nReply with the Python code in a ```python code block. It must pass these tests:"
+        }
+    };
+    BenchmarkCase {
+        id: format!("MBPP/2-{language}"),
+        prompt: format!("{wording}\n{}", MBPP_2_ASSERTS.join("\n")),
+        expectation: Expectation::PythonAsserts {
+            setup: String::new(),
+            asserts: MBPP_2_ASSERTS
+                .iter()
+                .map(|line| (*line).to_owned())
+                .collect(),
+        },
+    }
+}
+
+fn assert_mbpp_derivation_in(language: &str) {
+    if !python_available() {
+        eprintln!("python3 is not available; the upstream grader cannot run here");
+        return;
+    }
+    let case = mbpp_case_in(language);
+    let response = benchmark_solver().solve(&case.prompt);
+    assert_eq!(response.answer, MBPP_2_ANSWER, "language {language}");
+    let dir = workspace(&format!("mbpp-{language}"));
+    let outcome = grade::grade_case(&case, Grading::PythonAsserts, &response.answer, &dir);
+    std::fs::remove_dir_all(&dir).ok();
+    assert!(outcome.passed, "{language}: {}", outcome.detail);
+}
+
+#[test]
+fn the_mbpp_prompt_shape_in_russian_derives_the_same_function() {
+    assert_mbpp_derivation_in("ru");
+}
+
+#[test]
+fn the_mbpp_prompt_shape_in_hindi_derives_the_same_function() {
+    assert_mbpp_derivation_in("hi");
+}
+
+#[test]
+fn the_mbpp_prompt_shape_in_chinese_derives_the_same_function() {
+    assert_mbpp_derivation_in("zh");
+}
+
+#[test]
+fn the_mbpp_prompt_shape_in_spanish_derives_the_same_function() {
+    assert_mbpp_derivation_in("es");
 }
