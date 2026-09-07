@@ -1130,7 +1130,7 @@ jobs:
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
-    # Issue #1081 moved the 324 steps behind this call into their own file; the
+    # Issue #1081 moved the 51 steps behind this call into their own file; the
     # reasoning is in its header. The cap moved with them, because a caller job
     # declares none.
     uses: ./.github/workflows/agent-cli-e2e.yml

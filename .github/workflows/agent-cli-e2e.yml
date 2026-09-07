@@ -1,18 +1,19 @@
 name: Agent CLI E2E
 
 # Issue #1081 moved this job out of `.github/workflows/release.yml`. That file
-# had reached 1653 lines against the 1576 its own gate allows, and every
+# had reached 1576 lines against the 1576 its own gate allowed, and every
 # previous overrun had been answered by raising the allowance to whatever the
 # file then measured -- which is how a warning band ends up unable to warn: at
 # 1576 of 1576 the next line added is a failure, and there is no band left in
-# between. `tests/unit/ci-cd/issue_999.rs` no longer names this file at all.
+# between. The same issue's other fixes would have taken it to 1707. The gate
+# is back to the ordinary 1500-line band, and `release.yml` to 1407 lines.
 #
-# This job was the one to move. It is the largest in the workflow (324 lines,
-# a fifth of it) and it is a leaf: nothing `needs:` it except the terminal
-# `pipeline-status` gate, so lifting it changes no ordering -- the same
-# argument issue #895 used for `coverage.yml` and issue #1014 for
-# `macos-core-tests.yml`. It also removes a fifth of the surface from the
-# repository's third most conflicted path
+# This job was the one to move. It was the largest block in the workflow (312
+# lines and 51 steps, a fifth of the file) and it is a leaf: nothing `needs:`
+# it except the terminal `pipeline-status` gate, so lifting it changes no
+# ordering -- the same argument issue #895 used for `coverage.yml` and issue
+# #1014 for `macos-core-tests.yml`. It also removes a fifth of the surface from
+# the repository's third most conflicted path
 # (`data/meta/merge-conflict-ledger.lino`).
 #
 # The `if:`, `needs:` and `concurrency:` stay behind on the calling job, which
