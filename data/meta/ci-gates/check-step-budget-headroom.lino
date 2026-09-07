@@ -5,7 +5,7 @@
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
 # Only the inline tests run here, for the reason `check-job-headroom.lino`
-# gives: the audit itself reads the Actions API, which a pull request has no
+# gives -- the audit itself reads the Actions API, which a pull request has no
 # measurements of its own to consult, so it runs weekly from
 # `.github/workflows/job-headroom.yml`. What this gate holds is the part a
 # commit can break -- one test parses the repository's real
