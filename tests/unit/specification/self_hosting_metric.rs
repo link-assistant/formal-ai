@@ -416,12 +416,12 @@ fn release_eligibility_retry_excludes_the_existing_tag() {
     fs::write(
         &ledger,
         "self_hosting_ledger\n  current_metric_version \"3\"\n  release\n    \
-         metric_version \"3\"\n    tag \"v0.7.0\"\n    since \"v0.6.0\"\n    until \
+         metric_version \"2\"\n    tag \"v0.7.0\"\n    since \"v0.6.0\"\n    until \
          \"a\"\n    self_authored_lines \"0\"\n    changed_lines \"100\"\n    \
          self_authored_commits \"0\"\n    commits \"1\"\n    percentage_basis_points \
          \"0\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
          \"0\"\n    target_percentage_basis_points \"0\"\n  release\n    metric_version \
-         \"2\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \"b\"\n    \
+         \"3\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \"b\"\n    \
          self_authored_lines \"100\"\n    changed_lines \"100\"\n    self_authored_commits \
          \"1\"\n    commits \"1\"\n    percentage_basis_points \"10000\"\n    trailing_window \
          \"3\"\n    trailing_percentage_basis_points \"5000\"\n    target_percentage_basis_points \
@@ -655,6 +655,9 @@ fn captured_artifacts_and_lockfiles_do_not_move_the_metric() {
         "Cargo.lock",
         "desktop/bun.lock",
         "\"dev/log/issues/812/nasty\\346\\227\\245.log\"",
+        // Issue #1085 (D3): the whole `dev/` tree is process record, not
+        // behaviour, whatever the file's extension.
+        "dev/log/issues/812/pulls/813/analysis.md",
     ] {
         assert!(
             metric_script::is_non_authored_path(captured),
@@ -663,7 +666,7 @@ fn captured_artifacts_and_lockfiles_do_not_move_the_metric() {
     }
     for authored in [
         "scripts/self-hosting-metric.rs",
-        "dev/log/issues/812/pulls/813/analysis.md",
+        "src/solver.rs",
         ".github/workflows/release.yml",
         "logger.rs",
     ] {
@@ -718,11 +721,12 @@ fn rows_from_an_older_measurement_epoch_are_never_compared() {
     fs::write(repo.join("human-code.txt"), "human change\n").expect("code must be written");
     commit(&repo, "human change");
     let row = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
-        .expect("a 99% epoch-1 row must not ratchet against an epoch-2 measurement");
-    assert_eq!(row.metric_version, 2);
+        .expect("a 99% epoch-1 row must not ratchet against a current-epoch measurement");
+    // Metric version 3 (issue #1085 D3): the row is stamped with the current epoch.
+    assert_eq!(row.metric_version, 3);
     assert_eq!(
         row.trailing_percentage_basis_points, 0,
-        "the trailing window must average epoch-2 rows only"
+        "the trailing window must average current-epoch rows only"
     );
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
