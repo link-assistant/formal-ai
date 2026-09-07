@@ -418,7 +418,7 @@ fn member_insertion_edit(
         .filter(|gap| !gap.is_empty())
         .map_or_else(|| ", ".to_owned(), str::to_owned);
     Ok((
-        ByteRange::new(last.end(), last.end()),
+        ByteRange::new(final_member.end(), final_member.end()),
         format!("{separator}{quoted}"),
     ))
 }
