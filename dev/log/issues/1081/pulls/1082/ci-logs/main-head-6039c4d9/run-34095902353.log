@@ -1,0 +1,1213 @@
+stock-rust-install	UNKNOWN STEP	﻿2026-09-07T07:31:45.4230078Z Current runner version: '2.337.0'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4249801Z ##[group]Runner Image Provisioner
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4250547Z Hosted Compute Agent
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4251015Z Version: 20260828.587
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4251579Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4252232Z Build Date: 2026-08-28T16:44:25Z
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4253201Z Worker ID: {e5149afb-255a-4313-8414-1c4eb33c01de}
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4253803Z Azure Region: westus3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4254249Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4255446Z ##[group]Operating System
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4255942Z Ubuntu
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4256370Z 24.04.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4256810Z LTS
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4257229Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4257682Z ##[group]Runner Image
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4258183Z Image: ubuntu-24.04
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4258637Z Version: 20260831.293.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4259682Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4260975Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4261776Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4262865Z ##[group]GITHUB_TOKEN Permissions
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4264648Z Contents: read
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4265185Z Metadata: read
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4265651Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4267309Z Secret source: Actions
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4268207Z Prepare workflow directory
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4595293Z Prepare all required actions
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.4635759Z Getting action download info
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:45.7679934Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:46.2835916Z Complete job name: stock-rust-install
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:46.3229734Z ##[group]Checking docker version
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:46.3240414Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1169618Z '1.48'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1181350Z Docker daemon API version: '1.48'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1183191Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1349042Z '1.48'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1358474Z Docker client API version: '1.48'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1364354Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1366790Z ##[group]Clean up resources from previous jobs
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1371916Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=8ced10"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1508342Z ##[command]/usr/bin/docker network prune --force --filter "label=8ced10"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1621274Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1622524Z ##[group]Create local container network
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.1633940Z ##[command]/usr/bin/docker network create --label 8ced10 github_network_0d0d5f7cd21244ba81fabc8d2e292a13
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.2548050Z 2ee380d5efe67596066dccc684b8bfd89aa870e452a167ccb8e47445539e50cb
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.2566596Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.2591362Z ##[group]Starting job container
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:47.2611804Z ##[command]/usr/bin/docker pull rust:1.98-slim-bookworm
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:48.1312323Z 1.98-slim-bookworm: Pulling from library/rust
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:48.4147367Z a8ac7f6c67ab: Pulling fs layer
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:48.4147934Z 461f979ecc97: Pulling fs layer
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:48.7092512Z a8ac7f6c67ab: Verifying Checksum
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:48.7093635Z a8ac7f6c67ab: Download complete
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:49.2377454Z 461f979ecc97: Verifying Checksum
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:49.2378741Z 461f979ecc97: Download complete
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:31:49.5971585Z a8ac7f6c67ab: Pull complete
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.4676377Z 461f979ecc97: Pull complete
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.6325666Z Digest: sha256:1469a27c125cb5a3aebfa4f4e4665d935b02fb72cc093b2c974b3d740e43f157
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.6340407Z Status: Downloaded newer image for rust:1.98-slim-bookworm
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.6349700Z docker.io/library/rust:1.98-slim-bookworm
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.6430245Z ##[command]/usr/bin/docker create --name 481a473dc5b14025bb7b475578884901_rust198slimbookworm_abf110 --label 8ced10 --workdir /__w/formal-ai/formal-ai --network github_network_0d0d5f7cd21244ba81fabc8d2e292a13  -e "HOME=/github/home" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work":"/__w" -v "/home/runner/actions-runner/cached/2.337.0/externals":"/__e":ro -v "/home/runner/work/_temp":"/__w/_temp" -v "/home/runner/work/_actions":"/__w/_actions" -v "/opt/hostedtoolcache":"/__t" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" --entrypoint "tail" rust:1.98-slim-bookworm "-f" "/dev/null"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.7767844Z 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:01.7786630Z ##[command]/usr/bin/docker start 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1699235Z 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1736093Z ##[command]/usr/bin/docker ps --all --filter id=3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1850072Z 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a Up Less than a second
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1864155Z ##[command]/usr/bin/docker inspect --format "{{range .Config.Env}}{{println .}}{{end}}" 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1975043Z HOME=/github/home
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1981182Z GITHUB_ACTIONS=true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1981738Z CI=true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1982450Z PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1983189Z RUSTUP_HOME=/usr/local/rustup
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1983569Z CARGO_HOME=/usr/local/cargo
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1984122Z RUST_VERSION=1.98.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.1992144Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2000521Z ##[group]Waiting for all services to be ready
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2002155Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2278217Z ##[group]Run actions/checkout@v7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2278786Z with:
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2279090Z   persist-credentials: false
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2279406Z   repository: link-assistant/formal-ai
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2281399Z   token: ***
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2281642Z   ssh-strict: true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2281916Z   ssh-user: git
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2282180Z   clean: true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2282447Z   sparse-checkout-cone-mode: true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2282936Z   fetch-depth: 1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2283196Z   fetch-tags: false
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2283501Z   show-progress: true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2283793Z   lfs: false
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2284042Z   submodules: false
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2284312Z   set-safe-directory: true
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2284605Z   allow-unsafe-pr-checkout: false
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2285071Z env:
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2285354Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2285649Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.2339302Z ##[command]/usr/bin/docker exec  3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a sh -c "cat /etc/*release | grep ^ID"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4262265Z Syncing repository: link-assistant/formal-ai
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4264056Z ##[group]Getting Git version info
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4264518Z Working directory is '/__w/formal-ai/formal-ai'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4265204Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4265689Z Deleting the contents of '/__w/formal-ai/formal-ai'
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4266095Z The repository will be downloaded using the GitHub REST API
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4266579Z To create a local Git repository instead, add Git 2.18 or higher to the PATH
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:02.4267030Z Downloading the archive
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:27.7463180Z Writing archive to disk
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:27.8570463Z Extracting the archive
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:27.8719245Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /__w/formal-ai/formal-ai/cb611169-1b9d-4fdf-94d4-5fb2c31f3a07 -f /__w/formal-ai/formal-ai/cb611169-1b9d-4fdf-94d4-5fb2c31f3a07.tar.gz
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6380061Z Resolved version link-assistant-formal-ai-6039c4d
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6899314Z ##[group]Run set -eu
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6899819Z ^[[36;1mset -eu^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6900463Z ^[[36;1mcargo tree --locked --prefix none --format '{p}' > /tmp/formal-ai-dependency-tree.txt^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6901103Z ^[[36;1mif grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt; then^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6901693Z ^[[36;1m  echo "openssl-sys unexpectedly remains in the default dependency graph" >&2^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6902219Z ^[[36;1m  exit 1^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6902551Z ^[[36;1mfi^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6906331Z shell: sh -e {0}
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6906652Z env:
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6906984Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.6907402Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:32.8079951Z     Updating crates.io index
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.4829154Z  Downloading crates ...
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5482170Z   Downloaded aead v0.5.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5507645Z   Downloaded adler2 v2.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5606845Z   Downloaded abnf-core v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5676006Z   Downloaded atomic-waker v1.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5686447Z   Downloaded base16ct v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5704249Z   Downloaded lazy_static v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5716541Z   Downloaded leak_slice v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5747622Z   Downloaded data-encoding v2.11.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5767904Z   Downloaded abnf v0.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5781064Z   Downloaded async-broadcast v0.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5792492Z   Downloaded async-channel v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5811049Z   Downloaded async-trait v0.1.92
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5833777Z   Downloaded autocfg v1.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5845569Z   Downloaded block-buffer v0.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5856218Z   Downloaded bytecheck_derive v0.6.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5863592Z   Downloaded cfg-if v1.0.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5882882Z   Downloaded cfg_aliases v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5890062Z   Downloaded bytecheck v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5899849Z   Downloaded cpufeatures v0.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5915305Z   Downloaded ctor-proc-macro v0.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5935033Z   Downloaded block-padding v0.3.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5937058Z   Downloaded asn1-rs-derive v0.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5948102Z   Downloaded beef v0.5.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5974186Z   Downloaded bytecheck v0.6.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.5974698Z   Downloaded bytecheck_derive v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6007647Z   Downloaded crypto-common v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6020531Z   Downloaded clap_lex v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6034142Z   Downloaded curve25519-dalek-derive v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6043376Z   Downloaded darling_macro v0.20.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6049843Z   Downloaded asn1-rs-impl v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6056717Z   Downloaded block-buffer v0.10.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6064001Z   Downloaded crc v3.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6078899Z   Downloaded ctor v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6089625Z   Downloaded maplit v1.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6099604Z   Downloaded crypto-common v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6134957Z   Downloaded colorchoice v1.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6135614Z   Downloaded crc32c v0.6.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6142453Z   Downloaded cssparser-macros v0.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6148246Z   Downloaded ctr v0.9.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6165590Z   Downloaded is_terminal_polyfill v1.70.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6177686Z   Downloaded links-notation-macro v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6186788Z   Downloaded lino-env v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6202724Z   Downloaded aes v0.8.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6230213Z   Downloaded ahash v0.7.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6249731Z   Downloaded anstyle-parse v1.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6269481Z   Downloaded anstyle-query v1.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6287565Z   Downloaded bitflags v1.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6314246Z   Downloaded byteorder v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6327916Z   Downloaded cfg_aliases v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6338302Z   Downloaded chacha20 v0.9.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6373709Z   Downloaded cmake v0.1.58
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6385884Z   Downloaded concurrent-queue v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6392914Z   Downloaded cpufeatures v0.2.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6409074Z   Downloaded symbol_table v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6420172Z   Downloaded tokio-macros v2.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6432280Z   Downloaded links-notation v0.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6454602Z   Downloaded bit-vec v0.9.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6477296Z   Downloaded cbc v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6487336Z   Downloaded anstyle v1.0.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6499351Z   Downloaded asn1-rs-derive v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6508407Z   Downloaded cipher v0.4.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6524543Z   Downloaded counter v0.7.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6543707Z   Downloaded crc-catalog v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6556536Z   Downloaded crossbeam-deque v0.8.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6569803Z   Downloaded csv-core v0.1.13
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6582776Z   Downloaded dashmap v6.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6603942Z   Downloaded anyhow v1.0.104
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6642228Z   Downloaded arrayvec v0.7.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6663258Z   Downloaded base64ct v1.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6685080Z   Downloaded crossbeam-utils v0.8.22
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6706049Z   Downloaded strum_macros v0.27.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6732844Z   Downloaded tinystr v0.8.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6753977Z   Downloaded toml_datetime v1.1.1+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6765731Z   Downloaded bitflags v2.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6797726Z   Downloaded darling v0.20.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6836475Z   Downloaded lindera-jieba v3.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6846691Z   Downloaded lino-arguments v0.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6862318Z   Downloaded proc-macro-crate v3.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6879309Z   Downloaded md5 v0.8.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6885734Z   Downloaded memoffset v0.9.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6919194Z   Downloaded num-conv v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6951389Z   Downloaded percent-encoding v2.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.6983456Z   Downloaded ahash v0.8.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7032711Z   Downloaded anstream v1.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7096972Z   Downloaded borsh-derive v1.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7189237Z   Downloaded chacha20 v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7262810Z   Downloaded clap_derive v4.6.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7331305Z   Downloaded const-oid v0.9.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7369150Z   Downloaded crossbeam-epoch v0.9.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7418681Z   Downloaded cssparser v0.34.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7457274Z   Downloaded tokio-rustls v0.26.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7492991Z   Downloaded tree-sitter-html v0.23.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7542176Z   Downloaded tree-sitter-ini v1.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7562298Z   Downloaded unicase v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7585747Z   Downloaded utf-8 v0.7.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7600767Z   Downloaded version_check v0.9.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7613054Z   Downloaded want v0.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7624753Z   Downloaded allocator-api2 v0.2.21
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7651328Z   Downloaded base64 v0.22.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7725902Z   Downloaded bnf v0.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7753124Z   Downloaded bytes v1.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7776820Z   Downloaded chacha20poly1305 v0.10.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7788269Z   Downloaded clap v4.6.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7845793Z   Downloaded crc32fast v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7859680Z   Downloaded lru-slab v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7865095Z   Downloaded phf_shared v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7871870Z   Downloaded platform-num v0.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7878260Z   Downloaded potential_utf v0.1.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7885679Z   Downloaded munge_macro v0.4.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7891215Z   Downloaded new_debug_unreachable v1.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7899388Z   Downloaded mac v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7905762Z   Downloaded match_token v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7910421Z   Downloaded precomputed-hash v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7914888Z   Downloaded allocator-api2 v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7932017Z   Downloaded darling_core v0.20.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7965413Z   Downloaded toml_edit v0.25.13+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.7990925Z   Downloaded tree-sitter-css v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8006654Z   Downloaded tree-sitter-xml v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8029304Z   Downloaded unicode-ident v1.0.24
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8047285Z   Downloaded walkdir v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8059328Z   Downloaded asn1-rs v0.6.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8099789Z   Downloaded asn1-rs v0.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8141547Z   Downloaded base64 v0.23.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8168393Z   Downloaded borsh v1.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8212533Z   Downloaded bumpalo v3.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8232985Z   Downloaded cc v1.2.67
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8253944Z   Downloaded const-oid v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8271525Z   Downloaded crypto-bigint v0.5.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8315900Z   Downloaded daachorse v2.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8338978Z   Downloaded js-sys v0.3.104
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8361418Z   Downloaded tungstenite v0.30.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8385602Z   Downloaded command-stream v0.16.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8424066Z   Downloaded dtoa-short v0.3.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8444704Z   Downloaded openssl-probe v0.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8445251Z   Downloaded parking v2.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8445726Z   Downloaded phf_generator v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8453106Z   Downloaded ptr_meta v0.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8458863Z   Downloaded oid-registry v0.7.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8468102Z   Downloaded phf_codegen v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8474824Z   Downloaded lindera v3.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8504133Z   Downloaded litemap v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8520718Z   Downloaded md-5 v0.10.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8531651Z   Downloaded mutate_once v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8537632Z   Downloaded opaque-debug v0.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8543980Z   Downloaded wasm-bindgen v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8562250Z   Downloaded zmij v1.0.23
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8575004Z   Downloaded aes-gcm v0.10.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8598939Z   Downloaded deranged v0.5.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8609498Z   Downloaded derive_builder v0.20.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8640776Z   Downloaded derive_builder_core v0.20.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8654236Z   Downloaded derive_builder_macro v0.20.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8659777Z   Downloaded dtor v0.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8666511Z   Downloaded dtor-proc-macro v0.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8671085Z   Downloaded dunce v1.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8677420Z   Downloaded ebnf v0.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8688916Z   Downloaded ecdsa v0.16.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8701396Z   Downloaded ego-tree v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8713314Z   Downloaded either v1.18.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8723858Z   Downloaded encoding_rs_io v0.1.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8733396Z   Downloaded glob v0.3.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8743241Z   Downloaded group v0.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8753045Z   Downloaded lock_api v0.4.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8762485Z   Downloaded num_cpus v1.17.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8781279Z   Downloaded tree-sitter-java v0.23.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8816383Z   Downloaded x509-parser v0.16.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8852020Z   Downloaded x509-parser v0.18.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8890329Z   Downloaded aho-corasick v1.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.8929535Z   Downloaded bitvec v1.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9042712Z   Downloaded ccm v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9077586Z   Downloaded clap_builder v4.6.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9125873Z   Downloaded elliptic-curve v0.13.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9151790Z   Downloaded hyper-rustls v0.27.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9161753Z   Downloaded ident_case v1.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9167762Z   Downloaded idna_adapter v1.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9175227Z   Downloaded include_dir v0.7.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9185456Z   Downloaded include_dir_macros v0.7.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9191085Z   Downloaded inout v0.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9198724Z   Downloaded munge v0.4.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9212318Z   Downloaded num-integer v0.1.47
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9227415Z   Downloaded num-rational v0.4.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9236026Z   Downloaded pem-rfc7468 v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9257773Z   Downloaded pest_derive v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9266751Z   Downloaded phf v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9275661Z   Downloaded phf_macros v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9282556Z   Downloaded pkg-config v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9292848Z   Downloaded poly1305 v0.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9308763Z   Downloaded polyval v0.6.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9320093Z   Downloaded portable-pty v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9333403Z   Downloaded ppv-lite86 v0.2.21
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9345097Z   Downloaded primeorder v0.13.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9353280Z   Downloaded rand_chacha v0.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9361509Z   Downloaded rkyv_derive v0.8.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9373768Z   Downloaded aws-lc-rs v1.18.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9444047Z   Downloaded chrono v0.4.45
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9492761Z   Downloaded egg v0.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9521566Z   Downloaded env_home v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9529822Z   Downloaded icu_provider v2.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9548517Z   Downloaded indexmap v2.14.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9577660Z   Downloaded pem v3.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9588096Z   Downloaded powerfmt v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9596253Z   Downloaded rand v0.8.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9620837Z   Downloaded rand v0.9.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9654743Z   Downloaded rand v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9686176Z   Downloaded rkyv_derive v0.7.46
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9698942Z   Downloaded syn v3.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9776009Z   Downloaded thread-priority v3.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9788848Z   Downloaded tree-sitter-rust v0.24.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9861641Z   Downloaded unicode-width v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9903476Z   Downloaded webrtc v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:33.9997924Z   Downloaded zeroize_derive v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0005601Z   Downloaded curve25519-dalek v4.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0064824Z   Downloaded hyper v1.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0110127Z   Downloaded idna v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0136889Z   Downloaded links-notation v0.16.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0153578Z   Downloaded lino-objects-codec v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0173772Z   Downloaded log v0.4.33
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0191058Z   Downloaded markup5ever v0.14.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0203700Z   Downloaded memmap2 v0.9.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0215504Z   Downloaded oid-registry v0.8.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0224533Z   Downloaded once_cell v1.21.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0241602Z   Downloaded parking_lot v0.12.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0258532Z   Downloaded parking_lot_core v0.9.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0273122Z   Downloaded parse-hyperlinks v0.23.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0285287Z   Downloaded pest_generator v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0294450Z   Downloaded pest_meta v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0309390Z   Downloaded pin-project-lite v0.2.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0343928Z   Downloaded pkcs8 v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0361960Z   Downloaded platform-data v2.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0386754Z   Downloaded proc-macro2 v1.0.107
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0406589Z   Downloaded rkyv v0.7.46
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0459630Z   Downloaded rkyv v0.8.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0537351Z   Downloaded rustc-hash v2.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0547120Z   Downloaded rustc_version v0.4.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0556255Z   Downloaded scopeguard v1.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0564508Z   Downloaded sha2 v0.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0588278Z   Downloaded shell-words v1.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0595442Z   Downloaded shlex v2.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0604470Z   Downloaded signal-hook-registry v1.4.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0612368Z   Downloaded signature v2.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0622819Z   Downloaded simd-adler32 v0.3.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0635783Z   Downloaded simdutf8 v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0650144Z   Downloaded siphasher v1.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0659749Z   Downloaded sync_wrapper v1.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0666257Z   Downloaded synstructure v0.13.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0674320Z   Downloaded tap v1.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0681892Z   Downloaded temp-env v0.3.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0690426Z   Downloaded tempfile v3.27.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0708401Z   Downloaded tendril v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0722411Z   Downloaded thiserror v1.0.69
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0756534Z   Downloaded thiserror v2.0.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0794627Z   Downloaded thiserror-impl v1.0.69
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0804418Z   Downloaded thiserror-impl v2.0.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0815301Z   Downloaded time-core v0.1.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0822350Z   Downloaded time-macros v0.2.32
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0839508Z   Downloaded console_error_panic_hook v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0872735Z   Downloaded downcast-rs v1.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0881380Z   Downloaded dtoa v1.0.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0892286Z   Downloaded env_logger v0.9.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0907479Z   Downloaded num-traits v0.2.19
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0925509Z   Downloaded p256 v0.13.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0948409Z   Downloaded scraper v0.21.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.0962771Z   Downloaded syn v2.0.119
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1035222Z   Downloaded tinyvec v1.12.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1054026Z   Downloaded tree-sitter-ruby v0.23.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1183007Z   Downloaded universal-hash v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1189283Z   Downloaded untrusted v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1200016Z   Downloaded web-sys v0.3.104
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1881714Z   Downloaded xattr v1.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1894080Z   Downloaded miniz_oxide v0.8.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1911744Z   Downloaded platform-mem v0.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1942146Z   Downloaded tar v0.4.46
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.1962932Z   Downloaded time v0.3.55
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2058378Z   Downloaded zerovec-derive v0.11.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2070858Z   Downloaded csv v1.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2210218Z   Downloaded fastrand v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2220153Z   Downloaded ff v0.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2231108Z   Downloaded filedescriptor v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2239229Z   Downloaded filetime v0.2.29
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2250286Z   Downloaded find-msvc-tools v0.1.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2261562Z   Downloaded flate2 v1.1.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2293757Z   Downloaded fnv v1.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2300074Z   Downloaded foldhash v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2308812Z   Downloaded foldhash v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2318045Z   Downloaded form_urlencoded v1.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2323475Z   Downloaded fs2 v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2331117Z   Downloaded fs_extra v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2341942Z   Downloaded funty v2.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2349379Z   Downloaded icu_collections v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2389270Z   Downloaded icu_locale_core v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2432358Z   Downloaded icu_normalizer_data v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2448232Z   Downloaded lindera-dictionary v3.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2474497Z   Downloaded rancor v0.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2483894Z   Downloaded rend v0.5.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2494568Z   Downloaded serde_derive v1.0.229
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2515133Z   Downloaded yasna v0.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2530146Z   Downloaded encoding_rs v0.8.35
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2687771Z   Downloaded hyper-util v0.1.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2727159Z   Downloaded icu_normalizer v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2800166Z   Downloaded lingua-chinese-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2817329Z   Downloaded memchr v2.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2852110Z   Downloaded minimal-lexical v0.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2881944Z   Downloaded mio v1.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2920778Z   Downloaded nom v7.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2954983Z   Downloaded nom v8.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.2991536Z   Downloaded num-bigint v0.4.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3022951Z   Downloaded rand_chacha v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3032011Z   Downloaded rand_core v0.6.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3042104Z   Downloaded rand_core v0.9.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3052327Z   Downloaded ring v0.17.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3343378Z   Downloaded rtc-media v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3362499Z   Downloaded rtc-rtcp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3389614Z   Downloaded rtc-turn v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3416357Z   Downloaded rustls-webpki v0.103.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3438614Z   Downloaded rustversion v1.0.23
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3456608Z   Downloaded streaming-iterator v0.1.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3465002Z   Downloaded string_cache v0.8.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3475010Z   Downloaded unsafe-libyaml v0.2.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3496718Z   Downloaded url v2.5.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3516065Z   Downloaded wasm-bindgen-shared v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3524118Z   Downloaded zerotrie v0.2.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3550962Z   Downloaded link-cli v0.2.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3608251Z   Downloaded p384 v0.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3642260Z   Downloaded pest v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3675752Z   Downloaded sec1 v0.7.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3687076Z   Downloaded selectors v0.26.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3703231Z   Downloaded semver v1.0.28
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3718138Z   Downloaded serde-wasm-bindgen v0.6.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3729113Z   Downloaded serde_core v1.0.229
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3748320Z   Downloaded serde_json v1.0.151
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3798417Z   Downloaded serde_yaml_ng v0.10.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3821376Z   Downloaded serial2 v0.2.38
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3841698Z   Downloaded servo_arc v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3848580Z   Downloaded sha1 v0.10.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3858975Z   Downloaded sha1 v0.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3870662Z   Downloaded sha2 v0.10.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3888375Z   Downloaded slab v0.4.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3897306Z   Downloaded smallvec v1.15.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3908585Z   Downloaded socket2 v0.6.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3923302Z   Downloaded spki v0.7.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3934911Z   Downloaded stable_deref_trait v1.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3941330Z   Downloaded wasm-bindgen-macro v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3947908Z   Downloaded which v7.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3958566Z   Downloaded which v8.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3971464Z   Downloaded writeable v0.6.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3985948Z   Downloaded wyz v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.3994884Z   Downloaded zerovec v0.11.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4033708Z   Downloaded errno v0.3.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4044589Z   Downloaded fst v0.4.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4240641Z   Downloaded ptr_meta v0.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4246925Z   Downloaded ptr_meta_derive v0.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4251707Z   Downloaded rust_decimal v1.42.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4296095Z   Downloaded serde v1.0.229
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4320714Z   Downloaded tree-sitter-javascript v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4360572Z   Downloaded typenum v1.20.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4385144Z   Downloaded ucd-trie v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4396661Z   Downloaded unicode-bidi v0.3.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4413032Z   Downloaded unicode-blocks v0.1.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4420946Z   Downloaded unicode-general-category v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4431344Z   Downloaded unicode-segmentation v1.13.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4453292Z   Downloaded utf8_iter v1.0.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4460866Z   Downloaded utf8parse v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4467057Z   Downloaded uuid v1.24.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4488221Z   Downloaded vt100 v0.15.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4499282Z   Downloaded vte v0.11.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4512016Z   Downloaded vte_generate_state_changes v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4517876Z   Downloaded wasm-bindgen-futures v0.4.77
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4524076Z   Downloaded wasm-bindgen-macro-support v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4540701Z   Downloaded web-search v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4568299Z   Downloaded whatlang v0.18.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4594457Z   Downloaded x25519-dalek v2.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4606715Z   Downloaded yoke v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4619318Z   Downloaded der v0.7.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4652980Z   Downloaded der-parser v9.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4676256Z   Downloaded equivalent v1.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4683769Z   Downloaded ipnet v2.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4695698Z   Downloaded itertools v0.14.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4741754Z   Downloaded platform-trees v0.3.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4797753Z   Downloaded rand_core v0.10.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4808782Z   Downloaded rand_pcg v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4819287Z   Downloaded raw-cpuid v11.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4844906Z   Downloaded reqwest v0.13.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4884215Z   Downloaded tinyvec_macros v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4890480Z   Downloaded unicode-normalization v0.1.25
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4916157Z   Downloaded unicode-width v0.1.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4957519Z   Downloaded der-parser v10.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.4981009Z   Downloaded derive_more v0.99.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5012910Z   Downloaded digest v0.10.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5024563Z   Downloaded digest v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5039949Z   Downloaded web-capture v0.3.37
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5085444Z   Downloaded lingua-hindi-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5118197Z   Downloaded nix v0.28.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5191711Z   Downloaded nix v0.29.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5267395Z   Downloaded nix v0.31.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5346658Z   Downloaded quote v1.0.47
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5363659Z   Downloaded try-lock v0.2.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5370899Z   Downloaded winnow v1.0.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5432389Z   Downloaded yoke-derive v0.8.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5441259Z   Downloaded hybrid-array v0.4.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5457197Z   Downloaded iana-time-zone v0.1.65
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5477592Z   Downloaded itoa v1.0.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5486823Z   Downloaded jobserver v0.1.35
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5501158Z   Downloaded json5_nodes v2.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5509481Z   Downloaded lingua-bengali-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5547376Z   Downloaded ptr_meta_derive v0.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5553300Z   Downloaded quinn-udp v0.5.15
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5565991Z   Downloaded radium v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5573489Z   Downloaded rayon-core v1.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5597801Z   Downloaded rend v0.4.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5606970Z   Downloaded rfc6979 v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5614382Z   Downloaded seahash v4.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5624858Z   Downloaded dotenvy v0.15.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5642443Z   Downloaded event-listener v5.4.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5654968Z   Downloaded getrandom v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5679829Z   Downloaded heck v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5688920Z   Downloaded http-body v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5696120Z   Downloaded kamadak-exif v0.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5715346Z   Downloaded kanaria v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5771488Z   Downloaded quanta v0.12.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5788717Z   Downloaded quinn-udp v0.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5802131Z   Downloaded rcgen v0.14.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5818994Z   Downloaded zerofrom v0.1.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5825802Z   Downloaded zerofrom-derive v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5833544Z   Downloaded zeroize v1.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5843833Z   Downloaded displaydoc v0.2.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5857602Z   Downloaded doublets v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5890795Z   Downloaded getrandom v0.3.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5913657Z   Downloaded ghash v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5921341Z   Downloaded hashbrown v0.12.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5947493Z   Downloaded hashlink v0.10.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5960069Z   Downloaded hex v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5970401Z   Downloaded hmac v0.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5983191Z   Downloaded html-escape v0.2.15
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.5997553Z   Downloaded html5ever v0.29.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6019752Z   Downloaded http-body-util v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6032742Z   Downloaded httparse v1.10.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6049115Z   Downloaded icu_properties v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6072517Z   Downloaded meta-language v0.58.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6179623Z   Downloaded quinn v0.11.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6203149Z   Downloaded toml_parser v1.1.3+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6219109Z   Downloaded toml_writer v1.1.2+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6229935Z   Downloaded hashbrown v0.14.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6262730Z   Downloaded hashbrown v0.15.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6297221Z   Downloaded hashbrown v0.16.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6332393Z   Downloaded hashbrown v0.17.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6368997Z   Downloaded hkdf v0.12.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6386865Z   Downloaded http v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6412871Z   Downloaded icu_properties_data v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6480630Z   Downloaded regex v1.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6517643Z   Downloaded rtc-interceptor-derive v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6525163Z   Downloaded tower-http v0.6.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6584858Z   Downloaded quinn-proto v0.11.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6633274Z   Downloaded rayon v1.12.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6694582Z   Downloaded rtc-mdns v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6714337Z   Downloaded string_cache_codegen v0.5.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6719523Z   Downloaded zerocopy v0.8.56
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6852570Z   Downloaded generic-array v0.14.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6862996Z   Downloaded rtc-interceptor v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6882980Z   Downloaded rtc-rtp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6910832Z   Downloaded tower v0.5.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6970880Z   Downloaded event-listener-strategy v0.5.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6979868Z   Downloaded futf v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6987838Z   Downloaded futures-core v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.6997040Z   Downloaded futures-executor v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7007037Z   Downloaded futures-io v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7013774Z   Downloaded futures-macro v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7021310Z   Downloaded futures-sink v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7028005Z   Downloaded futures-task v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7036269Z   Downloaded fxhash v0.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7041110Z   Downloaded getopts v0.2.24
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7052715Z   Downloaded rtc-datachannel v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7063483Z   Downloaded futures v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7095474Z   Downloaded futures-channel v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7108687Z   Downloaded getrandom v0.2.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7128015Z   Downloaded regex-syntax v0.8.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7180475Z   Downloaded rtc-ice v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7208168Z   Downloaded libc v0.2.189
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7471518Z   Downloaded rtc-dtls v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7525881Z   Downloaded rusticata-macros v4.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7535429Z   Downloaded rustls-native-certs v0.8.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7544934Z   Downloaded same-file v1.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7553922Z   Downloaded sansio v1.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7562127Z   Downloaded strsim v0.11.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7571515Z   Downloaded strum v0.27.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7578372Z   Downloaded strum v0.28.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7584265Z   Downloaded substring v1.4.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7590915Z   Downloaded subtle v2.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7600082Z   Downloaded symbolic_expressions v5.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7610619Z   Downloaded futures-util v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7690805Z   Downloaded rtc-shared v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7708232Z   Downloaded rtc-srtp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7724720Z   Downloaded rustls-pki-types v1.15.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7741668Z   Downloaded ryu v1.0.23
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7762290Z   Downloaded strum_macros v0.28.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7778252Z   Downloaded rtc-stun v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7800251Z   Downloaded rustls-platform-verifier v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7826869Z   Downloaded rtc-sdp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.7842045Z   Downloaded tree-sitter-sequel v0.3.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8023714Z   Downloaded rtc-sctp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8050849Z   Downloaded tree-sitter-proto v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8065398Z   Downloaded tree-sitter-toml-ng v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8077600Z   Downloaded tower-layer v0.3.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8084521Z   Downloaded tower-service v0.3.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8089702Z   Downloaded tree-sitter-json v0.24.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8098827Z   Downloaded tree-sitter-language v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8109217Z   Downloaded tree-sitter-graphql v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8123616Z   Downloaded tracing-core v0.1.36
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8142687Z   Downloaded tree-sitter-lua v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8157682Z   Downloaded regex-automata v0.4.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8261818Z   Downloaded tree-sitter-go v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8291042Z   Downloaded syn v1.0.109
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8355345Z   Downloaded tree-sitter-python v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8398591Z   Downloaded tree-sitter-r v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8443958Z   Downloaded tree-sitter v0.25.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8487343Z   Downloaded tree-sitter-yaml v0.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8516015Z   Downloaded rustls v0.23.43
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8595817Z   Downloaded tokio v1.53.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.8880297Z   Downloaded rustix v1.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9044996Z   Downloaded tree-sitter-pascal v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9091712Z   Downloaded tree-sitter-c v0.24.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9141328Z   Downloaded tree-sitter-scala v0.25.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9480926Z   Downloaded tree-sitter-vb-dotnet v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9578627Z   Downloaded tracing v0.1.44
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9683940Z   Downloaded ts-parser-perl v1.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:34.9997982Z   Downloaded tree-sitter-php v0.24.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.0133212Z   Downloaded tree-sitter-typescript v0.23.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.0320110Z   Downloaded tree-sitter-swift v0.7.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.0627166Z   Downloaded tree-sitter-cpp v0.23.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.0793777Z   Downloaded tree-sitter-kotlin-ng v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.0995310Z   Downloaded tree-sitter-c-sharp v0.23.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.1236706Z   Downloaded lingua-portuguese-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.1400546Z   Downloaded lingua-spanish-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.1584862Z   Downloaded lingua-french-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.1764364Z   Downloaded lingua-english-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.1946543Z   Downloaded linux-raw-sys v0.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.2413012Z   Downloaded aws-lc-sys v0.44.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.4219137Z   Downloaded lingua v1.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.6243003Z   Downloaded lingua-russian-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.6468037Z   Downloaded lingua-urdu-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.6735185Z   Downloaded rtc v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.7089686Z   Downloaded lingua-arabic-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:35.7463080Z   Downloaded link-calculator v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5090460Z ##[group]Run echo "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5090893Z ^[[36;1mecho "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5091285Z ^[[36;1mexport PATH="$CARGO_INSTALL_ROOT/bin:$PATH"^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5091652Z ^[[36;1mcargo install --path . --locked^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5092049Z shell: sh -e {0}
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5092302Z env:
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5092583Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.5093153Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.6055079Z   Installing formal-ai v0.347.0 (/__w/formal-ai/formal-ai)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:36.6718538Z     Updating crates.io index
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.1269486Z    Compiling unicode-ident v1.0.24
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.1270360Z    Compiling proc-macro2 v1.0.107
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.1270871Z    Compiling quote v1.0.47
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.1271721Z    Compiling libc v0.2.189
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.1807304Z    Compiling find-msvc-tools v0.1.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.2534653Z    Compiling shlex v2.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.3674247Z    Compiling cfg-if v1.0.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.4017061Z    Compiling tree-sitter-language v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.4939409Z    Compiling serde_core v1.0.229
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.6384765Z    Compiling version_check v0.9.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:37.8705446Z    Compiling typenum v1.20.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:38.0486890Z    Compiling syn v2.0.119
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:38.1249456Z    Compiling jobserver v0.1.35
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:38.3412150Z    Compiling cc v1.2.67
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:38.6012169Z    Compiling syn v3.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:38.9189384Z    Compiling getrandom v0.2.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:39.1133140Z    Compiling generic-array v0.14.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:39.2164261Z    Compiling serde v1.0.229
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:39.3727973Z    Compiling memchr v2.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:39.6998347Z    Compiling rand_core v0.6.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:39.9021695Z    Compiling autocfg v1.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:40.5646668Z    Compiling subtle v2.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:40.6904460Z    Compiling icu_normalizer_data v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:40.7614786Z    Compiling icu_properties_data v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:40.8373973Z    Compiling smallvec v1.15.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:41.0059064Z    Compiling stable_deref_trait v1.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:41.0446347Z    Compiling synstructure v0.13.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:41.4388204Z    Compiling bitflags v2.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:41.7652061Z    Compiling thiserror v2.0.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:41.9208664Z    Compiling const-oid v0.9.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.1614549Z    Compiling cpufeatures v0.2.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.2232141Z    Compiling writeable v0.6.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.2443038Z    Compiling once_cell v1.21.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.4208322Z    Compiling litemap v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.4270382Z    Compiling zeroize_derive v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.4346142Z    Compiling zerofrom-derive v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.5673494Z    Compiling yoke-derive v0.8.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.6021857Z    Compiling displaydoc v0.2.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:42.7650417Z    Compiling zeroize v1.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.0754352Z    Compiling zerovec-derive v0.11.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.3599392Z    Compiling serde_derive v1.0.229
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.3635860Z    Compiling crypto-common v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.3823964Z    Compiling zerofrom v0.1.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.4423396Z    Compiling yoke v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.4484616Z    Compiling thiserror-impl v2.0.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.5869590Z    Compiling block-buffer v0.10.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.6735697Z    Compiling digest v0.10.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.8640022Z    Compiling zerotrie v0.2.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:43.8649179Z    Compiling zerovec v0.11.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.2467219Z    Compiling base64ct v1.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.4223249Z    Compiling tinystr v0.8.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.4400579Z    Compiling potential_utf v0.1.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.5077997Z    Compiling log v0.4.33
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.5336839Z    Compiling cfg_aliases v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.5637026Z    Compiling icu_locale_core v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.5700884Z    Compiling utf8_iter v1.0.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.6591683Z    Compiling icu_collections v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:44.6837285Z    Compiling pem-rfc7468 v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.2854191Z    Compiling block-padding v0.3.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.3139194Z    Compiling num-traits v0.2.19
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.3664854Z    Compiling rand_core v0.10.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.3833318Z    Compiling getrandom v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.4775308Z    Compiling icu_provider v2.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.5535081Z    Compiling inout v0.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:45.7603626Z    Compiling der v0.7.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:46.0235029Z    Compiling num-conv v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:46.1127093Z    Compiling percent-encoding v2.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:46.3068600Z    Compiling time-core v0.1.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:46.3303179Z    Compiling icu_properties v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:46.4300760Z    Compiling time-macros v0.2.32
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:47.4370080Z    Compiling spki v0.7.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:47.4783913Z    Compiling icu_normalizer v2.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:47.6498305Z    Compiling cipher v0.4.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.0325287Z    Compiling hmac v0.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.1178651Z    Compiling powerfmt v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.5135601Z    Compiling deranged v0.5.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.5228477Z    Compiling idna_adapter v1.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.5347027Z    Compiling pkcs8 v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.5945809Z    Compiling ff v0.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.6706557Z    Compiling ring v0.17.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.6819545Z    Compiling base16ct v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:48.8310663Z    Compiling sec1 v0.7.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:49.2214443Z    Compiling group v0.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:49.3521860Z    Compiling idna v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:49.4468561Z    Compiling time v0.3.55
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:49.6419313Z    Compiling hkdf v0.12.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:49.7378496Z    Compiling form_urlencoded v1.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:49.9150026Z    Compiling universal-hash v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:50.0520256Z    Compiling crypto-bigint v0.5.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:51.5060423Z    Compiling zmij v1.0.23
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:51.6184613Z    Compiling opaque-debug v0.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:51.6484040Z    Compiling cpufeatures v0.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:51.7908565Z    Compiling elliptic-curve v0.13.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:51.8493846Z    Compiling url v2.5.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:52.1043671Z    Compiling ptr_meta_derive v0.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:52.2821647Z    Compiling bytes v1.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:52.3572539Z    Compiling untrusted v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:52.8801136Z    Compiling rfc6979 v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:52.9480857Z    Compiling signature v2.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.0077576Z    Compiling aead v0.5.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.0107699Z    Compiling rustls-pki-types v1.15.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.1066346Z    Compiling memoffset v0.9.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.1720304Z    Compiling thiserror v1.0.69
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.2946215Z    Compiling itoa v1.0.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.4366034Z    Compiling ecdsa v0.16.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.7172460Z    Compiling primeorder v0.13.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:53.9181378Z    Compiling chacha20 v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.1205985Z    Compiling polyval v0.6.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.1586118Z    Compiling ctr v0.9.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.2829477Z    Compiling nix v0.31.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.2934722Z    Compiling sha2 v0.10.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.3169481Z    Compiling thiserror-impl v1.0.69
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.4838628Z    Compiling substring v1.4.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.5468432Z    Compiling cmake v0.1.58
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:54.7999949Z    Compiling pkg-config v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.1667475Z    Compiling dunce v1.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.1890793Z    Compiling fs_extra v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.2034802Z    Compiling base64 v0.22.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.3589696Z    Compiling aws-lc-sys v0.44.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.5671633Z    Compiling pem v3.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.7464203Z    Compiling ghash v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:55.8074105Z    Compiling rand v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:56.2144089Z    Compiling yasna v0.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:56.2150517Z    Compiling aes v0.8.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:56.4354427Z    Compiling tokio-macros v2.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:57.0805037Z    Compiling pin-project-lite v0.2.17
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:57.1220171Z    Compiling aes-gcm v0.10.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:57.6709052Z    Compiling p256 v0.13.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.3086696Z    Compiling bytecheck_derive v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.4063675Z    Compiling siphasher v1.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.4873943Z    Compiling futures-core v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.5478808Z    Compiling heck v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.6421741Z    Compiling phf_shared v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.6751729Z    Compiling rand v0.8.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.8134773Z    Compiling aws-lc-rs v1.18.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:58.9885413Z    Compiling crossbeam-utils v0.8.22
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:59.1004861Z    Compiling httparse v1.10.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:59.2664957Z    Compiling phf_generator v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:59.5934022Z    Compiling munge_macro v0.4.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:32:59.9151690Z    Compiling mio v1.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:00.1294003Z    Compiling rcgen v0.14.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:00.2186169Z    Compiling socket2 v0.6.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:00.4990289Z    Compiling parking_lot_core v0.9.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:00.5722327Z    Compiling fnv v1.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:00.6084061Z    Compiling rtc-shared v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:01.7425323Z    Compiling wasm-bindgen-shared v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:01.8492391Z    Compiling strsim v0.11.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:02.0377416Z    Compiling anyhow v1.0.104
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:02.1723643Z    Compiling ident_case v1.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:02.3917187Z    Compiling minimal-lexical v0.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:02.6175929Z    Compiling nom v7.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:02.9770592Z    Compiling darling_core v0.20.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:03.2812831Z    Compiling tokio v1.53.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:04.7517828Z    Compiling http v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.0502199Z    Compiling include_dir_macros v0.7.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.2661767Z    Compiling semver v1.0.28
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.3994130Z    Compiling byteorder v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.4564739Z    Compiling scopeguard v1.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.4958533Z    Compiling equivalent v1.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.5292194Z    Compiling lock_api v0.4.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.5566438Z    Compiling rustc_version v0.4.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.7257612Z    Compiling include_dir v0.7.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:05.8180666Z    Compiling http-body v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:06.0081142Z    Compiling darling_macro v0.20.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:06.3290404Z    Compiling rkyv_derive v0.8.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:06.5919670Z    Compiling rustversion v1.0.23
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:06.7239825Z    Compiling slab v0.4.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:06.8216712Z    Compiling hashbrown v0.17.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:07.3643934Z    Compiling rustls v0.23.43
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:07.5758795Z    Compiling futures-task v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:07.6313626Z    Compiling darling v0.20.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:07.6545984Z    Compiling futures-util v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.2130292Z    Compiling ptr_meta v0.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.3378179Z    Compiling serde_json v1.0.151
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.4644839Z    Compiling try-lock v0.2.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.4841526Z    Compiling tower-service v0.3.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.5469600Z    Compiling indexmap v2.14.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.6298822Z    Compiling want v0.3.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:08.9477249Z    Compiling rancor v0.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.0414323Z    Compiling derive_builder_core v0.20.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.1775328Z    Compiling tracing-core v0.1.36
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.4714183Z    Compiling futures-channel v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.5287642Z    Compiling aho-corasick v1.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.5997007Z    Compiling regex-syntax v0.8.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.7160361Z    Compiling simdutf8 v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.8392216Z    Compiling futures-sink v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:09.9006827Z    Compiling rustix v1.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:10.0537367Z    Compiling zerocopy v0.8.56
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:10.2256938Z    Compiling getrandom v0.3.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:10.3590380Z    Compiling utf8parse v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:10.4007305Z    Compiling atomic-waker v1.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:10.4473210Z    Compiling hyper v1.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:11.3039934Z    Compiling regex-automata v0.4.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:14.9347832Z    Compiling bytecheck v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:15.1233730Z    Compiling derive_builder_macro v0.20.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:15.4482783Z    Compiling tracing v0.1.44
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:17.7191067Z    Compiling phf_codegen v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:17.7769067Z    Compiling strum_macros v0.28.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:17.9889995Z    Compiling sync_wrapper v1.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:18.0347316Z    Compiling num-integer v0.1.47
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:18.4713188Z    Compiling futures-macro v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.0163530Z    Compiling ipnet v2.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.1970173Z    Compiling futures-io v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.2879977Z    Compiling openssl-probe v0.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.3660329Z    Compiling bumpalo v3.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.5012821Z    Compiling tower-layer v0.3.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.6153035Z    Compiling allocator-api2 v0.2.21
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.6286308Z    Compiling crc32fast v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:19.7364190Z    Compiling linux-raw-sys v0.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:21.3796794Z    Compiling tower v0.5.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:21.7443402Z    Compiling wasm-bindgen-macro-support v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:22.4357451Z    Compiling hyper-util v0.1.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:22.8424417Z    Compiling rustls-native-certs v0.8.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:23.5364321Z    Compiling num-bigint v0.4.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:24.3305558Z    Compiling rend v0.5.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:27.1117466Z    Compiling regex v1.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:27.7540501Z    Compiling wasm-bindgen v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:27.8519673Z    Compiling parking_lot v0.12.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:27.9629056Z    Compiling munge v0.4.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:28.4459225Z    Compiling lazy_static v1.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:28.4731642Z    Compiling new_debug_unreachable v1.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:28.4967005Z    Compiling sansio v1.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:28.5388758Z    Compiling simd-adler32 v0.3.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:28.6400287Z    Compiling adler2 v2.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:28.7909234Z    Compiling miniz_oxide v0.8.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:29.2955325Z    Compiling rkyv v0.8.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:30.4587175Z    Compiling wasm-bindgen-macro v0.2.127
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:30.5631593Z    Compiling tower-http v0.6.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:31.6386877Z    Compiling xattr v1.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:31.9060291Z    Compiling filetime v0.2.29
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:32.0091902Z    Compiling encoding_rs v0.8.35
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:32.8007331Z    Compiling http-body-util v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:32.9645739Z    Compiling rusticata-macros v4.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.0635541Z    Compiling phf_macros v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.1311027Z    Compiling csv-core v0.1.13
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.2731552Z    Compiling asn1-rs-impl v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.2733048Z    Compiling asn1-rs-derive v0.5.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.4294555Z    Compiling memmap2 v0.9.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.6434834Z    Compiling foldhash v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.6464095Z    Compiling ryu v1.0.23
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:33.8690060Z    Compiling crossbeam-epoch v0.9.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:34.1369232Z    Compiling hashbrown v0.15.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:34.2449765Z    Compiling csv v1.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:34.5442140Z    Compiling asn1-rs v0.6.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:35.2068604Z    Compiling phf v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:36.6524098Z    Compiling encoding_rs_io v0.1.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:36.7373849Z    Compiling tar v0.4.46
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.2238269Z    Compiling flate2 v1.1.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.4924013Z    Compiling strum v0.28.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.5055077Z    Compiling derive_builder v0.20.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.5485341Z    Compiling anstyle-parse v1.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.5547883Z    Compiling crc32c v0.6.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.6654537Z    Compiling curve25519-dalek v4.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.6723954Z    Compiling string_cache_codegen v0.5.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.7412336Z    Compiling nom v8.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:37.9431997Z    Compiling hybrid-array v0.4.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.3827864Z    Compiling num_cpus v1.17.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.5549556Z    Compiling anstyle v1.0.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.5596190Z    Compiling colorchoice v1.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.5954516Z    Compiling precomputed-hash v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.6170866Z    Compiling anstyle-query v1.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.7356776Z    Compiling glob v0.3.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.7705986Z    Compiling fastrand v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.9460842Z    Compiling crossbeam-deque v0.8.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.9635113Z    Compiling mac v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:38.9952358Z    Compiling either v1.18.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.0400861Z    Compiling md5 v0.8.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.1492193Z    Compiling ucd-trie v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.2705360Z    Compiling is_terminal_polyfill v1.70.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.3010195Z    Compiling oid-registry v0.7.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.3983193Z    Compiling crc-catalog v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.4555070Z    Compiling daachorse v2.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.4715606Z    Compiling crc v3.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.5931242Z    Compiling anstream v1.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:39.7484834Z    Compiling pest v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:40.0126884Z    Compiling futf v0.1.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:40.0814031Z    Compiling markup5ever v0.14.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:40.6764101Z    Compiling rtc-rtp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:40.6851270Z    Compiling md-5 v0.10.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:40.7703317Z    Compiling curve25519-dalek-derive v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:42.4246344Z    Compiling data-encoding v2.11.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:42.7843807Z    Compiling clap_lex v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.0235844Z    Compiling rayon-core v1.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.0762229Z    Compiling rustc-hash v2.1.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.1378362Z    Compiling cfg_aliases v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.2375368Z    Compiling utf-8 v0.7.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.3508093Z    Compiling parking v2.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.4541605Z    Compiling arrayvec v0.7.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.6267846Z    Compiling dtoa v1.0.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.7105765Z    Compiling dtoa-short v0.3.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:43.7994675Z    Compiling event-listener v5.4.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:44.0041260Z    Compiling tendril v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:44.2183845Z    Compiling nix v0.28.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:44.4066746Z    Compiling clap_builder v4.6.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:46.1196566Z    Compiling rtc-stun v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:48.0505369Z    Compiling pest_meta v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:49.1161843Z    Compiling string_cache v0.8.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:49.2564409Z    Compiling crypto-common v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:49.2857004Z    Compiling block-buffer v0.12.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:49.3904014Z    Compiling js-sys v0.3.104
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:50.3834022Z    Compiling der-parser v9.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:51.4776827Z    Compiling ppv-lite86 v0.2.21
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:51.7364130Z    Compiling rand_core v0.9.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:51.9570857Z    Compiling selectors v0.26.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:52.1856748Z    Compiling rtc-rtcp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:54.2767610Z    Compiling rustls-webpki v0.103.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:55.1140983Z    Compiling clap_derive v4.6.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:55.2073844Z    Compiling poly1305 v0.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:55.6381963Z    Compiling platform-num v0.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:55.6921534Z    Compiling chacha20 v0.9.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:55.8473796Z    Compiling sha1 v0.10.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.2209397Z    Compiling cssparser-macros v0.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.2285634Z    Compiling errno v0.3.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.4007184Z    Compiling ahash v0.8.12
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.4874514Z    Compiling fst v0.4.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.5301638Z    Compiling const-oid v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.5930453Z    Compiling tinyvec_macros v0.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:56.6127802Z    Compiling html-escape v0.2.15
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:57.3129039Z    Compiling dtor-proc-macro v0.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:57.4293364Z    Compiling dtor v0.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:57.4573531Z    Compiling lindera-dictionary v3.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:57.5215687Z    Compiling digest v0.11.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:57.6294440Z    Compiling tinyvec v1.12.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:58.0231879Z    Compiling cssparser v0.34.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:58.4634935Z    Compiling signal-hook-registry v1.4.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:58.7609864Z    Compiling clap v4.6.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:58.7939715Z    Compiling chacha20poly1305 v0.10.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:59.1140877Z    Compiling rand_chacha v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:33:59.5609172Z    Compiling x509-parser v0.16.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:06.6976992Z    Compiling tokio-rustls v0.26.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:06.8759236Z    Compiling hyper-rustls v0.27.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:07.0230628Z    Compiling rustls-platform-verifier v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:07.1292274Z    Compiling reqwest v0.13.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:07.7689178Z    Compiling pest_generator v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:08.3727358Z    Compiling rtc-sctp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:10.6801318Z    Compiling x25519-dalek v2.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:10.7703651Z    Compiling event-listener-strategy v0.5.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:10.8484375Z    Compiling tempfile v3.27.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:10.9982536Z    Compiling lindera-jieba v3.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:11.6818488Z    Compiling rtc-mdns v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:13.5856014Z    Compiling tree-sitter v0.25.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:13.7020741Z    Compiling fxhash v0.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:13.7647324Z    Compiling p384 v0.13.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:14.7990342Z    Compiling ccm v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:14.9820214Z    Compiling uuid v1.24.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:15.4293132Z    Compiling cbc v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:15.5161859Z    Compiling quinn-udp v0.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:15.6823057Z    Compiling nix v0.29.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:15.8866966Z    Compiling links-notation-macro v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:15.9847315Z    Compiling derive_more v0.99.20
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.0300819Z    Compiling rtc-interceptor-derive v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.1053899Z    Compiling match_token v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.2559301Z    Compiling servo_arc v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.3401184Z    Compiling tree-sitter-cpp v0.23.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.3654737Z    Compiling tree-sitter-javascript v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.3881933Z    Compiling tree-sitter-ruby v0.23.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.4371490Z    Compiling tree-sitter-sequel v0.3.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.4619341Z    Compiling tree-sitter-kotlin-ng v1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.4851958Z    Compiling tree-sitter-css v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.5213401Z    Compiling tree-sitter-pascal v0.10.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.5538868Z    Compiling tree-sitter-swift v0.7.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.5934516Z    Compiling tree-sitter-vb-dotnet v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.6207864Z    Compiling tree-sitter-html v0.23.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.6423439Z    Compiling tree-sitter-php v0.24.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.6730796Z    Compiling tree-sitter-scala v0.25.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.7059697Z    Compiling tree-sitter-graphql v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.7345417Z    Compiling tree-sitter-typescript v0.23.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.7679830Z    Compiling tree-sitter-rust v0.24.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.7935258Z    Compiling tree-sitter-yaml v0.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.8249996Z    Compiling tree-sitter-c v0.24.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.8481177Z    Compiling tree-sitter-c-sharp v0.23.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.8770320Z    Compiling tree-sitter-ini v1.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.9265800Z    Compiling tree-sitter-r v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.9554418Z    Compiling tree-sitter-java v0.23.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:16.9579929Z    Compiling tree-sitter-proto v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.0169852Z    Compiling tree-sitter-toml-ng v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.0345016Z    Compiling ts-parser-perl v1.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.0424478Z    Compiling tree-sitter-json v0.24.8
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.1081686Z    Compiling tree-sitter-go v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.1263997Z    Compiling tree-sitter-python v0.25.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.1335720Z    Compiling tree-sitter-xml v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.2009133Z    Compiling tree-sitter-lua v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.2239699Z    Compiling vte_generate_state_changes v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.2924471Z    Compiling foldhash v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.3476977Z    Compiling unicode-width v0.2.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.4407767Z    Compiling bitflags v1.3.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.4750354Z    Compiling hashbrown v0.14.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.5205189Z    Compiling unsafe-libyaml v0.2.11
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.7672235Z    Compiling ctor-proc-macro v0.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.8970514Z    Compiling beef v0.5.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:17.9821803Z    Compiling allocator-api2 v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:18.0518817Z    Compiling iana-time-zone v0.1.65
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:18.3322766Z    Compiling rust_decimal v1.42.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:18.3839539Z    Compiling platform-mem v0.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:18.4666072Z    Compiling chrono v0.4.45
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:18.5422009Z    Compiling serde_yaml_ng v0.10.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:19.8066225Z    Compiling dashmap v6.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:20.2732128Z    Compiling platform-data v2.0.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:20.4024655Z    Compiling ctor v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:20.4399646Z    Compiling getopts v0.2.24
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:21.4081013Z    Compiling kanaria v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:21.8472921Z    Compiling hashbrown v0.16.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:22.1863443Z    Compiling vte v0.11.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:42.0523813Z    Compiling html5ever v0.29.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:42.2148433Z    Compiling rtc-interceptor v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:42.6723051Z    Compiling links-notation v0.16.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:42.9788319Z    Compiling rtc-dtls v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:43.0385331Z    Compiling rtc-ice v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:46.0438294Z    Compiling rayon v1.12.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:46.9634436Z    Compiling rtc-datachannel v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:47.3301437Z    Compiling pest_derive v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:47.4525685Z    Compiling rand v0.9.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:48.2140988Z    Compiling unicode-normalization v0.1.25
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:48.6482937Z    Compiling parse-hyperlinks v0.23.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:49.0609435Z    Compiling rtc-srtp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:50.3732461Z    Compiling platform-trees v0.3.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:50.4656138Z    Compiling rtc-turn v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:50.5133297Z    Compiling rtc-media v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:51.0305287Z    Compiling itertools v0.14.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:51.7942250Z    Compiling hashlink v0.10.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.0744170Z    Compiling futures-executor v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.4846771Z    Compiling lingua-arabic-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.5129429Z    Compiling lingua-bengali-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.5501859Z    Compiling lingua-chinese-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.5600493Z    Compiling lingua-urdu-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.5934392Z    Compiling lingua-french-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.6211053Z    Compiling lingua-english-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.6492518Z    Compiling lingua-portuguese-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.6745540Z    Compiling lingua-spanish-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.7001739Z    Compiling lingua-hindi-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.7270589Z    Compiling lingua-russian-language-model v1.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.7399337Z    Compiling concurrent-queue v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.7769864Z    Compiling abnf-core v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.8409097Z    Compiling rtc-sdp v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.8970414Z    Compiling strum_macros v0.27.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:52.9086852Z    Compiling filedescriptor v0.8.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:53.0777903Z    Compiling counter v0.7.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:53.2022280Z    Compiling async-trait v0.1.92
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:53.7778080Z    Compiling raw-cpuid v11.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:54.3785067Z    Compiling serial2 v0.2.38
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:54.7892513Z    Compiling leak_slice v0.2.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:54.8247895Z    Compiling unicase v2.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.0109011Z    Compiling strum v0.27.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.0683865Z    Compiling downcast-rs v1.2.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.1010009Z    Compiling unicode-blocks v0.1.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.2454287Z    Compiling shell-words v1.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.2804029Z    Compiling ego-tree v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.3236446Z    Compiling streaming-iterator v0.1.9
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.4267371Z    Compiling unicode-segmentation v1.13.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.4910904Z    Compiling lino-env v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.5670297Z    Compiling maplit v1.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.6058696Z    Compiling winnow v1.0.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:55.9602238Z    Compiling env_home v0.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.0170754Z    Compiling dotenvy v0.15.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.2477167Z    Compiling tap v1.0.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.3061225Z    Compiling hex v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.5179013Z    Compiling unicode-width v0.1.14
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.6739567Z    Compiling vt100 v0.15.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.6862456Z    Compiling rtc v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:56.8110538Z    Compiling toml_parser v1.1.3+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:57.0559571Z    Compiling doublets v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:57.8448296Z    Compiling lino-arguments v0.3.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:58.1353332Z    Compiling which v7.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:58.3505584Z    Compiling lindera v3.0.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:34:58.5518606Z    Compiling lingua v1.8.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:01.4248570Z    Compiling scraper v0.21.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:06.7506880Z    Compiling portable-pty v0.9.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:08.7250757Z    Compiling quanta v0.12.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:09.1806158Z    Compiling async-channel v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:09.3031320Z    Compiling abnf v0.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:09.3257624Z    Compiling futures v0.3.34
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:09.3621239Z    Compiling json5_nodes v2.0.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:09.6353888Z    Compiling ebnf v0.1.4
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:10.4464787Z    Compiling bnf v0.6.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:12.5006918Z    Compiling async-broadcast v0.7.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:12.6761544Z    Compiling sha1 v0.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:13.0418940Z    Compiling wasm-bindgen-futures v0.4.77
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:13.0811608Z    Compiling web-sys v0.3.104
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:14.3673896Z    Compiling serde-wasm-bindgen v0.6.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:14.4760644Z    Compiling links-notation v0.13.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:14.7932781Z    Compiling console_error_panic_hook v0.1.7
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:14.8483581Z    Compiling symbol_table v0.4.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:14.8893517Z    Compiling whatlang v0.18.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:15.1588004Z    Compiling num-rational v0.4.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:16.4242354Z    Compiling env_logger v0.9.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:17.7140814Z    Compiling base64 v0.23.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:17.7232188Z    Compiling mutate_once v0.1.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:17.7801873Z    Compiling unicode-bidi v0.3.18
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.0524027Z    Compiling toml_datetime v1.1.1+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.3381792Z    Compiling same-file v1.0.6
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.3491352Z    Compiling formal-ai v0.347.0 (/__w/formal-ai/formal-ai)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.4294042Z    Compiling symbolic_expressions v5.0.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.5645330Z    Compiling toml_writer v1.1.2+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.7561694Z    Compiling toml_edit v0.25.13+spec-1.1.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:18.9511968Z    Compiling egg v0.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:19.2262823Z    Compiling walkdir v2.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:19.7813373Z    Compiling meta-language v0.58.2
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:19.8701779Z    Compiling lino-objects-codec v0.7.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:20.4340875Z    Compiling kamadak-exif v0.6.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:22.4142918Z    Compiling command-stream v0.16.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:22.6652386Z    Compiling tungstenite v0.30.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:23.7270772Z    Compiling link-calculator v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:25.6363570Z    Compiling webrtc v0.20.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:31.4242085Z    Compiling web-capture v0.3.37
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:33.4049565Z    Compiling link-cli v0.2.10
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:36.4195629Z    Compiling sha2 v0.11.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:38.0673484Z    Compiling thread-priority v3.1.1
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:38.4577661Z    Compiling web-search v0.5.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:39.9194998Z    Compiling which v8.0.5
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:35:40.2828428Z    Compiling fs2 v0.4.3
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.4059680Z     Finished `release` profile [optimized] target(s) in 4m 39s
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.4938713Z   Installing /tmp/formal-ai-install/bin/formal-ai
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.4939441Z   Installing /tmp/formal-ai-install/bin/with-formal-ai
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.4940720Z    Installed package `formal-ai v0.347.0 (/__w/formal-ai/formal-ai)` (executables `formal-ai`, `with-formal-ai`)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5078128Z ##[group]Run ldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5078639Z ^[[36;1mldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5079068Z ^[[36;1mif grep -Eq 'libssl|libcrypto' /tmp/formal-ai-ldd.txt; then^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5079481Z ^[[36;1m  echo "formal-ai unexpectedly links a system OpenSSL library" >&2^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5079903Z ^[[36;1m  exit 1^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5080141Z ^[[36;1mfi^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5080400Z ^[[36;1mformal-ai --version^[[0m
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5081078Z shell: sh -e {0}
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5081303Z env:
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5081594Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5081890Z ##[endgroup]
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5546049Z 	linux-vdso.so.1 (0x00007f6de7bdc000)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5547949Z 	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f6ddc54f000)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5548667Z 	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f6ddc46f000)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5549609Z 	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6ddc28d000)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5550127Z 	/lib64/ld-linux-x86-64.so.2 (0x00007f6de7bde000)
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5578574Z formal-ai 0.347.0
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5714692Z Post job cleanup.
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.5721972Z ##[command]/usr/bin/docker exec  3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a sh -c "cat /etc/*release | grep ^ID"
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.7337541Z Stop and remove container: 481a473dc5b14025bb7b475578884901_rust198slimbookworm_abf110
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:16.7343652Z ##[command]/usr/bin/docker rm --force 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:19.6744504Z 3fda5806010c04fd4f7ab0f05021fce919372a4f6ed15ac5496071d281775f1a
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:19.6778222Z Remove container network: github_network_0d0d5f7cd21244ba81fabc8d2e292a13
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:19.6781864Z ##[command]/usr/bin/docker network rm github_network_0d0d5f7cd21244ba81fabc8d2e292a13
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:19.8491536Z github_network_0d0d5f7cd21244ba81fabc8d2e292a13
+stock-rust-install	UNKNOWN STEP	2026-09-07T07:37:19.8559128Z Cleaning up orphan processes
