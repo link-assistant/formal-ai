@@ -176,7 +176,10 @@ fn issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             .all(|line| !line.trim_start().starts_with("rg ")),
         "issue 917 Agent CLI replay must only require tools installed by its CI job"
     );
-    let workflow = read(root.join(".github/workflows/release.yml"));
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert_contains_all(
         "issue 917 Agent CLI CI gate",
         &workflow,

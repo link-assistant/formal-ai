@@ -335,8 +335,11 @@ fn committed_real_sessions_produce_a_deterministic_review_artifact() {
 
 #[test]
 fn formal_ai_executes_contract_learning_through_the_real_agent_cli() {
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
     assert!(
-        read(".github/workflows/release.yml").contains("run_issue_671_contract_learning.sh"),
+        crate::ci_gates::pipeline_workflows().contains("run_issue_671_contract_learning.sh"),
         "the required real Agent CLI execution must run in CI"
     );
     let expected = read(

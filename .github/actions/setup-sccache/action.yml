@@ -20,6 +20,40 @@ runs:
         echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
         echo "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"
 
+    # Issue #1081 (D9): this used to run *after* the server was started, which
+    # made it a verbose mode that produced nothing. sccache's logging belongs to
+    # the server process -- "You can set the `SCCACHE_ERROR_LOG` environment
+    # variable to a path and set `SCCACHE_LOG` to get the server process to
+    # redirect its logging there" -- and the daemon reads its environment once,
+    # at spawn. The configuration docs say the same from the other side: "Note
+    # that some env variables may need sccache server restart to take effect."
+    # Writing the variables to $GITHUB_ENV after `--start-server` therefore
+    # configured every future job except the one being debugged. It now runs
+    # before the server exists: the runner applies a step's `$GITHUB_ENV` writes
+    # before the *next* step starts, and the next step is now the one that
+    # spawns the daemon. The variables are deliberately not repeated as an
+    # `env:` block on that step -- a step-level `env:` key cannot be conditional,
+    # so they would have to be written unconditionally, and an empty
+    # `SCCACHE_ERROR_LOG` is still a path sccache would try to open.
+    #
+    # Keep this disabled in normal runs. When issue triage needs the actual
+    # cache-backend response -- the evidence that separates rate limiting from
+    # concurrent writers of the same key, see
+    # scripts/check-sccache-write-health.sh -- set the FORMAL_AI_CI_VERBOSE
+    # repository variable to true and rerun the affected workflow.
+    - name: Enable opt-in sccache diagnostics
+      if: env.FORMAL_AI_CI_VERBOSE == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        error_log="${RUNNER_TEMP:-/tmp}/sccache-server.log"
+        {
+          echo "SCCACHE_LOG=debug"
+          echo "SCCACHE_LOG_MILLIS=1"
+          echo "SCCACHE_ERROR_LOG=${error_log}"
+        } >> "$GITHUB_ENV"
+        echo "sccache backend debug logging enabled by FORMAL_AI_CI_VERBOSE; server log: ${error_log}"
+
     # Start the server explicitly, before any cargo step runs.
     #
     # Measured on run 32500015304: `Test (ubuntu-latest / full)` compiled 514
@@ -42,13 +76,3 @@ runs:
         # documented in experiments/agentic_cli_matrix/lib.sh.
         sccache --show-stats
 
-    - name: Enable opt-in sccache diagnostics
-      if: env.FORMAL_AI_CI_VERBOSE == 'true'
-      shell: bash
-      run: |
-        # Keep this disabled in normal runs. When issue triage needs the actual
-        # cache-backend response, set the FORMAL_AI_CI_VERBOSE repository
-        # variable to true and rerun the affected workflow.
-        echo "SCCACHE_LOG=debug" >> "$GITHUB_ENV"
-        echo "SCCACHE_LOG_MILLIS=1" >> "$GITHUB_ENV"
-        echo "sccache backend debug logging enabled by FORMAL_AI_CI_VERBOSE"

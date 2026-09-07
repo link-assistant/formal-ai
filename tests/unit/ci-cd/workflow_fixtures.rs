@@ -37,6 +37,17 @@ pub fn desktop_release_workflow() -> String {
     .replace("\r\n", "\n")
 }
 
+/// The same workflow with every run of whitespace collapsed to one space.
+///
+/// Issue #1081: two gates pinned one line-wrapping of `links.yml`'s `if:`
+/// expression as a literal, so folding a condition across lines to add a term
+/// to it read to them as a deletion -- a true failure for a change that removed
+/// nothing. A condition means the same thing however it is wrapped, so the
+/// assertions that care about one ask it of this rather than of the raw file.
+pub fn unwrapped(workflow: &str) -> String {
+    workflow.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
 pub fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
     let marker = format!("  {job_name}:\n");
     let start = workflow.find(&marker).unwrap();

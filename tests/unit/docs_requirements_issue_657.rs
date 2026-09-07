@@ -76,7 +76,10 @@ fn issue_657_self_hosting_evidence_is_traceable() {
     }
 
     // The E2E is wired into CI; an unrun E2E gate is not a gate.
-    let workflow = read(".github/workflows/release.yml");
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert!(
         workflow.contains("experiments/agent_cli_e2e/run_issue_657_metric.sh"),
         "the issue #657 Agent CLI E2E must run in CI"

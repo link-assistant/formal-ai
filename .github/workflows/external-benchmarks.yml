@@ -89,7 +89,7 @@ jobs:
       # One of the four checkouts in this repository that keep their
       # credential (issue #1079); every other one sets
       # `persist-credentials: false`. This one cannot: the last step of this
-      # job runs `git push origin "HEAD:${GITHUB_REF_NAME}"` to record the
+      # job pushes through `scripts/push-to-shared-branch.sh` to record the
       # scheduled upstream results, and that push authenticates with exactly the
       # credential `persist-credentials: false` removes. The job is already
       # narrowed to `github.event_name != 'pull_request'`, so the credential is
@@ -164,6 +164,29 @@ jobs:
             target/formal-ai-benchmarks/learning/*.lino
           if-no-files-found: warn
 
+      # This push does not trigger a pipeline run, and that is documented
+      # behaviour rather than a fault here (issue #1081, D4):
+      #
+      #   "When you use the repository's GITHUB_TOKEN to perform tasks, events
+      #    triggered by the GITHUB_TOKEN [...] will not create a new workflow
+      #    run. This prevents you from accidentally creating recursive workflow
+      #    runs."
+      #   https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
+      #
+      # So the tree at the tip of the default branch after this step has never
+      # been validated, and -- because there is no run at all, rather than a
+      # failed one -- the branch page keeps showing the previous commit's green.
+      # Measured on 2026-09-07: `dda02efb` received zero push-triggered runs
+      # while `6039c4d9` under it received the full fan-out.
+      #
+      # Neither available remedy is safe. A personal access token would restore
+      # the runs and restore the recursion the rule exists to prevent, and
+      # `release.yml`'s `workflow_dispatch` means "publish a release" (it
+      # requires `release_mode` and `bump_type`, and its `detect-changes` job is
+      # skipped on that event), not "validate this commit". What is fixed is the
+      # invisibility: `scripts/check-head-pipeline-coverage.rs` runs weekly from
+      # `.github/workflows/job-headroom.yml` and says out loud when the tip has
+      # no run and how many commits back the last validated tree is.
       - name: Commit the refreshed ledger
         if: github.event_name == 'schedule' || inputs.commit
         run: |
@@ -176,4 +199,12 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/benchmarks/external-results.lino
           git commit -m 'chore(benchmarks): record scheduled upstream results (#698)'
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          # Issue #1081 (D13). `concurrency: formal-ai-repository-writes` above
+          # orders this job against the release writers; it does not rebase it.
+          # This job is checked out at the commit its cron fired on, so a
+          # release that lands while it waits in the queue leaves it behind the
+          # branch and its push is rejected non-fast-forward -- a red scheduled
+          # run with nothing wrong in it, and a ledger update lost. The helper
+          # rebases and retries, and refuses to retry a rejection a rebase
+          # cannot fix.
+          bash scripts/push-to-shared-branch.sh origin "${GITHUB_REF_NAME}"

@@ -410,13 +410,37 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     // unbudgeted setup -- checkout, disk cleanup, the data-file and self-AST
     // census gates and the doc tests measured 455s on run 31937348472 -- or the
     // job clock still wins and the overrun is reported as `cancelled`.
+    //
+    // Issue #1081 replaced the two exact numbers this used to pin with floors,
+    // and both moved the same day. Pinning an exact budget is what makes a
+    // budget unable to grow when the work under it grows, which is how the
+    // macOS specification shard reached 100.1% of its budget twice with no
+    // warning; the arithmetic that decides what the numbers should be now
+    // lives in `tests/unit/ci-cd/issue_1081.rs`, which recomputes the whole
+    // job from the workflow instead of memorising one figure from it. What
+    // this test still defends is the shape: a plain-number cap, a budget on
+    // the suite, and the wrapper that makes the overrun red rather than grey.
+    let cap_minutes: u64 = test_job
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the test job declares a plain-number timeout-minutes");
     assert!(
-        test_job.contains("timeout-minutes: 35"),
-        "every slice must retain a job budget above the measured 25min suite"
+        cap_minutes >= 35,
+        "the test job's cap is {cap_minutes}m; the measured 25min suite plus          its setup needs at least 35m of backstop behind it"
+    );
+    let suite_budget: u64 = workflow_step_block(test_job, "Run tests")
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("TEST_BUDGET_SECONDS:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the full-suite step declares a plain-number execution budget");
+    assert!(
+        suite_budget >= 1_200,
+        "the full suite's execution budget is {suite_budget}s, below the 1200s          that issue #1017 measured it needs"
     );
     assert!(
-        test_job.contains("TEST_BUDGET_SECONDS: 1200"),
-        "the execution warning must leave setup and teardown headroom inside the job budget"
+        suite_budget <= cap_minutes * 60,
+        "the full suite's {suite_budget}s budget cannot expire before the          {cap_minutes}m cap that is supposed to be its backstop"
     );
     assert!(
         test_job.contains("scripts/run-with-budget-warning.sh"),
@@ -543,7 +567,10 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
 /// but execute its search and fetch through the repository-owned MCP fixture.
 #[test]
 fn meaning_detail_e2e_uses_the_local_research_fixture() {
-    let workflow = release_workflow();
+    // Issue #1081 moved these steps into `.github/workflows/agent-cli-e2e.yml`.
+    // The spliced surface keeps them inside the job that calls them, so this
+    // still reads what CI runs for `test-agent-cli-e2e`.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
@@ -660,7 +687,11 @@ fn the_disk_policy_reads_every_workflow_not_a_hand_listed_few() {
 /// exits before returning the tool result to Formal AI.
 #[test]
 fn agent_cli_e2e_disables_hosted_session_summarization() {
-    let workflow = release_workflow();
+    // Issue #1081: the job now delegates to a reusable workflow, and the
+    // `env:` that disables hosted summarization moved with the steps it
+    // protects. Read the spliced surface so the guard is checked where CI
+    // applies it.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
@@ -723,6 +754,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),
+        // Issue #1081 (D15): probes every publishing credential with a write
+        // before the pipeline spends 90 minutes building what it cannot
+        // publish. Five probes over HTTP against five registries; the cap is a
+        // backstop for a hung TLS handshake, not a work budget.
+        ("release-preflight", 5),
         // Issue #1017: resolves the base-branch commit once so `lint`, `test`
         // and the macOS lane all merge the same one instead of each resolving
         // the tip at its own start time. A reusable workflow, so it owns its
@@ -744,7 +780,15 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1017 raised this from 25: 455s of the job runs outside the
         // budgeted step, so a 20-minute budget under a 25-minute cap could
         // never expire first.
-        ("test", 35),
+        // Issue #1081 raised this from 35. The job is a matrix, and its two
+        // legs are budgeted separately: the `full` leg now declares 2640s
+        // across four steps and the `specification` leg 2460s across two, after
+        // the compile that was 86% of `Run specification tests` was split into
+        // a step of its own. One cap covers both legs, so it has to hold the
+        // larger sum at or under the 70% share
+        // `issue_1081::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
+        // enforces: 2640/3900 is 67.7%.
+        ("test", 65),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
         ("macos-core-tests", 0),
@@ -773,7 +817,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // *cancelled* job that looked like a regression but was only variance.
         // Raised from 32 (issue #1069): 19m54s green, of which the two
         // computer-use steps cost 5m32s, is 39m24s at their 900s+600s budgets.
-        ("test-agent-cli-e2e", 45),
+        // Issue #1081 moved those 324 steps, and the 45-minute cap with them,
+        // into `.github/workflows/agent-cli-e2e.yml`; what is left here is the
+        // call. See that file's header for why.
+        ("test-agent-cli-e2e", 0),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
         ("build-artifacts", 20),

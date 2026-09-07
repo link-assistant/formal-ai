@@ -1,0 +1,141 @@
+diff --git a/tests/ci-timeouts.test.js b/tests/ci-timeouts.test.js
+index f0e384d..fa9628f 100644
+--- a/tests/ci-timeouts.test.js
++++ b/tests/ci-timeouts.test.js
+@@ -65,21 +65,104 @@ function getStepBlock(workflow, stepName) {
+ // A step declares its deadline either by wrapping a command in
+ // run-with-budget-warning.sh or, for `uses:` steps that cannot be wrapped,
+ // with a step-level timeout-minutes.
++function getEnvValue(workflow, jobName, step, name) {
++  // Nearest scope first: the step's own `env:`, then the job's, then the
++  // workflow's. Only the shapes these workflows actually use are resolved.
++  const scopes = [
++    step,
++    getJobBlock(workflow, jobName),
++    normalizeNewlines(workflow),
++  ];
++
++  for (const scope of scopes) {
++    for (const line of scope.split('\n')) {
++      const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*):\s*'?"?(\d+)'?"?\s*$/);
++
++      if (match && match[1] === name) {
++        return Number(match[2]);
++      }
++    }
++  }
++
++  return undefined;
++}
++
+ function getStepBudgetSeconds(workflow, jobName) {
+   const block = getJobBlock(workflow, jobName);
+-  const wrapped = Array.from(
+-    block.matchAll(/run-with-budget-warning\.sh\s+(\d+)\s+"([^"]+)"/g),
+-    (match) => ({ label: match[2], seconds: Number(match[1]) })
+-  );
+-  const stepTimeouts = Array.from(
+-    block.matchAll(/^[ ]{8}timeout-minutes:\s*(\d+)\s*$/gm),
+-    (match) => ({
+-      label: 'step timeout-minutes',
+-      seconds: Number(match[1]) * 60,
+-    })
+-  );
++  // Steps within a job block start at `      - `. Splitting on that keeps each
++  // budget together with the `if:` that decides whether the step runs at all.
++  const steps = block.split(/\n {6}- /).slice(1);
++  const budgets = [];
++
++  for (const rawStep of steps) {
++    // A wrapped invocation may be split over lines with a backslash; the
++    // budget and the label then live on the continuation line.
++    const step = rawStep.replaceAll(/\\\n\s*/g, ' ');
++    const condition = rawStep.match(/^ {8}if:\s*(.+)$/m);
++    const conditionText = condition ? condition[1].trim() : '';
++    const invocation = step.match(
++      /run-with-budget-warning\.sh\s+(?:(\d+)|"\$(?:\{)?([A-Za-z_][A-Za-z0-9_]*)(?:\})?")\s+"([^"]+)"/
++    );
++    const stepTimeout = step.match(/^ {8}timeout-minutes:\s*(\d+)\s*$/m);
++
++    if (invocation) {
++      const [, literal, variable, label] = invocation;
++      const seconds =
++        literal !== undefined
++          ? Number(literal)
++          : getEnvValue(workflow, jobName, rawStep, variable);
++
++      budgets.push({
++        label,
++        // An unresolved budget is reported rather than skipped: silently
++        // dropping it would remove the step from an invariant that exists to
++        // bound it.
++        seconds,
++        source: literal !== undefined ? 'literal' : `$${variable}`,
++        condition: conditionText,
++      });
++    } else if (/run-with-budget-warning\.sh/.test(step) && !/^\s*#/m.test(step)) {
++      budgets.push({
++        label: 'unparsed run-with-budget-warning.sh invocation',
++        seconds: undefined,
++        source: 'unparsed',
++        condition: conditionText,
++      });
++    } else if (stepTimeout) {
++      budgets.push({
++        label: 'step timeout-minutes',
++        seconds: Number(stepTimeout[1]) * 60,
++        source: 'timeout-minutes',
++        condition: conditionText,
++      });
++    }
++  }
+ 
+-  return [...wrapped, ...stepTimeouts];
++  return budgets;
++}
++
++// Budgets guarded by different `if:` conditions are alternatives, not a
++// sequence: a matrix leg that runs the Node.js suite never runs the Bun or
++// Deno one, so their budgets never share a single job clock. Summing them all
++// rejects configurations that cannot exceed the backstop at runtime. The spend
++// a job can actually incur is every unconditional budget plus the largest
++// single conditional group.
++function getConcurrentBudgetSeconds(budgets) {
++  const groups = new Map();
++
++  for (const budget of budgets) {
++    groups.set(
++      budget.condition,
++      (groups.get(budget.condition) ?? 0) + budget.seconds
++    );
++  }
++
++  const unconditional = groups.get('') ?? 0;
++  const conditional = Array.from(groups.entries())
++    .filter(([condition]) => condition !== '')
++    .map(([, seconds]) => seconds);
++
++  return unconditional + (conditional.length > 0 ? Math.max(...conditional) : 0);
+ }
+ 
+ describe('CI timeout policy', () => {
+@@ -178,9 +261,16 @@ describe('CI execution budgets', () => {
+       const allowedSeconds = Math.floor(
+         (backstop * 60 * MAX_BUDGET_SHARE_PERCENT) / 100
+       );
+-      const totalSeconds = budgets.reduce(
+-        (sum, budget) => sum + budget.seconds,
+-        0
++      for (const budget of budgets) {
++        if (!Number.isFinite(budget.seconds)) {
++          violations.push(
++            `${jobName}: "${budget.label}" declares a budget this check cannot read (${budget.source}); the step is not covered by the invariant`
++          );
++        }
++      }
++
++      const totalSeconds = getConcurrentBudgetSeconds(
++        budgets.filter((budget) => Number.isFinite(budget.seconds))
+       );
+ 
+       for (const budget of budgets) {

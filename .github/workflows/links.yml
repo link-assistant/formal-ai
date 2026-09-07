@@ -11,6 +11,8 @@ on:
       - '.lycheeignore'
       - 'scripts/check-web-archive.mjs'
       - 'scripts/check-web-archive.test.mjs'
+      - 'scripts/recheck-broken-links.mjs'
+      - 'scripts/recheck-broken-links.test.mjs'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
@@ -20,6 +22,8 @@ on:
       - '.lycheeignore'
       - 'scripts/check-web-archive.mjs'
       - 'scripts/check-web-archive.test.mjs'
+      - 'scripts/recheck-broken-links.mjs'
+      - 'scripts/recheck-broken-links.test.mjs'
   workflow_dispatch:
 
 # Least-privilege default; jobs escalate individually when needed.
@@ -55,7 +59,10 @@ jobs:
       # "broken" links (a false positive) or drops real failures (a false
       # negative). It runs before lychee so a parser bug fails in seconds.
       - name: Test Web Archive report parser
-        run: node --test scripts/check-web-archive.test.mjs
+        run: |
+          node --test \
+            scripts/check-web-archive.test.mjs \
+            scripts/recheck-broken-links.test.mjs
 
       - name: Prepare reconstructable release history for link checking
         run: |
@@ -99,11 +106,22 @@ jobs:
           # happens below HTTP, so it carries no status code -- neither the
           # accept list nor `--cache-exclude-status` can name it, and one of the
           # four came back as `Error (cached)`, a reset replayed from cache.
-          # `--max-retries 6` with a growing `--retry-wait-time` outlasts the
-          # burst instead of caching it; the recorded lychee report under
-          # `experiments/` is excluded outright because it is captured evidence
-          # of a past failure, not live documentation, and its URLs are supposed
-          # to be broken.
+          # `--max-retries 6` with a growing `--retry-wait-time` was meant to
+          # outlast the burst instead of caching it; the recorded lychee report
+          # under `experiments/` is excluded outright because it is captured
+          # evidence of a past failure, not live documentation, and its URLs are
+          # supposed to be broken.
+          #
+          # Issue #1081: those retries do not run. Run 34134986294 reported the
+          # same reset on the same host 1.5 s into this step, which six retries
+          # and a growing wait cannot fit inside, and lychee's own source says
+          # why -- `lychee-lib/src/retry.rs` answers `is_connect()` with a flat
+          # `false` before it ever reaches `should_retry_io`, where
+          # `ConnectionReset` is listed as retryable. A reset during connect or
+          # the TLS handshake is therefore never retried at any setting. The
+          # retry that does happen is the `Re-check` step below, outside lychee.
+          # `--max-retries` stays because it still covers the classes lychee
+          # does retry.
           args: >-
             --verbose
             --no-progress
@@ -133,22 +151,46 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check broken links against Web Archive
+      # Ask the links lychee never got an answer for again, directly, spread
+      # over time. A reset, a refused connection or a failed handshake is a
+      # statement about one moment on one runner; a status code is a statement
+      # about the link, and those are passed straight through and never
+      # re-checked. `all_recovered` is 'true' only when every link lychee
+      # reported answered here -- an unset output, from a crash or a skip,
+      # reads as "not recovered" and the build still fails.
+      - name: Re-check links that never got an answer
         if: steps.lychee.outputs.exit_code != 0
+        id: recheck
+        # 3 attempts x 20 s, plus 15 s of waits, inside a 180 s total budget:
+        # bounded well under this job's 10-minute cap however many links fail.
+        run: node scripts/recheck-broken-links.mjs
+        env:
+          LYCHEE_OUTPUT: lychee/out.md
+          RECOVERED_OUTPUT: lychee/recovered.txt
+
+      - name: Check broken links against Web Archive
+        if: >-
+          steps.lychee.outputs.exit_code != 0 &&
+          steps.recheck.outputs.all_recovered != 'true'
         id: webarchive
         run: node scripts/check-web-archive.mjs
         env:
           LYCHEE_OUTPUT: lychee/out.md
+          RECOVERED_URLS: lychee/recovered.txt
 
       - name: Fail if broken links were found
         # `!cancelled()`, not `always()`: a cancelled job must not append a
         # "broken links" error to a run that never finished checking them.
-        if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}
+        if: >-
+          ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 &&
+          steps.recheck.outputs.all_recovered != 'true' }}
         run: |
           echo "::error::Broken live links were detected."
           echo ""
           echo "What happened:"
           echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
+          echo "  Every link that failed without a status code was asked again directly by the"
+          echo "  're-check' step above; the ones still listed there did not answer either."
           echo "  The Web Archive check above provides replacement URLs when snapshots exist."
           echo ""
           echo "How to fix:"

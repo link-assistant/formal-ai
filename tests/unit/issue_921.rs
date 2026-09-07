@@ -246,9 +246,12 @@ fn issue_921_formal_ai_direction_has_a_canonical_hash_chained_replay() {
     assert_eq!(failed_session.exit_code, Some(23));
     assert!(!failed_session.passed());
 
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
     assert_contains_all(
         "issue 921 release gate",
-        &read(root.join(".github/workflows/release.yml")),
+        &crate::ci_gates::pipeline_workflows(),
         &[
             "Install @link-assistant/hive-mind CLI",
             "Hive Mind full-circle integration gate (issue #921)",

@@ -164,7 +164,10 @@ fn real_agent_cli_run_authored_the_requested_evidence_without_filing_an_issue() 
     assert!(stream.contains("agent-authored-finding.md"));
     assert!(!stream.contains("gh issue create"));
 
-    let release = workflow("release.yml");
+    // Issue #1081 moved these steps into `.github/workflows/agent-cli-e2e.yml`
+    // and left the call in `release.yml`. The question here is whether CI still
+    // runs the prompt, not which file holds it, so read the spliced surface.
+    let release = crate::ci_gates::pipeline_workflows();
     assert!(release.contains("existing issue reference does not file a duplicate"));
     assert!(release.contains("For existing issue-730, create file issue-730-finding.md"));
     assert!(release.contains("EXPECT_TEXT: provenance paths are portable"));

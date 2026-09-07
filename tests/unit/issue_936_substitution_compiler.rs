@@ -541,7 +541,9 @@ fn live_agent_cli_export_and_self_authored_contract_are_preserved() {
             .contains("ses_ff77c472cffej9Hmz346niSMgQ")
     );
 
-    let workflow =
-        fs::read_to_string(root.join(".github/workflows/release.yml")).expect("release workflow");
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert!(workflow.contains("experiments/agent_cli_e2e/run_issue_936.sh"));
 }

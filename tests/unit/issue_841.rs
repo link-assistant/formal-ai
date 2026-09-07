@@ -204,7 +204,10 @@ fn committed_real_tui_sessions_produce_a_deterministic_review_artifact() {
 
 #[test]
 fn formal_ai_executes_tui_contract_learning_through_the_real_agent_cli() {
-    let workflow = read(".github/workflows/release.yml");
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert!(workflow.contains("run_issue_841_tui_learning.sh"));
     assert!(workflow.contains(
         "/tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl"

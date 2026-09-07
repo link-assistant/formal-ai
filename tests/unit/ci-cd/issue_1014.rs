@@ -229,7 +229,11 @@ fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
 
 #[test]
 fn javascript_installs_apply_a_scoped_lifecycle_policy() {
-    let workflow = release_workflow();
+    // Issue #1081 moved the agent-CLI end-to-end steps -- which is where every
+    // `bun add -g` in the pipeline lives -- into their own reusable workflow.
+    // The policy is about what CI installs, not about which file spells the
+    // install, so read the spliced surface and keep asking the same question.
+    let workflow = crate::ci_gates::pipeline_workflows();
     for line in workflow.lines().filter(|line| line.contains("npm ci")) {
         assert!(
             line.contains("--no-audit") && line.contains("--no-fund"),
@@ -239,6 +243,7 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
 
     for path in [
         ".github/workflows/release.yml",
+        ".github/workflows/agent-cli-e2e.yml",
         ".github/workflows/proactive-failure-report-e2e.yml",
         "experiments/agentic_cli_matrix/install_client.sh",
     ] {
@@ -253,7 +258,7 @@ fn javascript_installs_apply_a_scoped_lifecycle_policy() {
             );
             if line.contains("--trust") {
                 assert!(
-                    (path == ".github/workflows/release.yml"
+                    (path == ".github/workflows/agent-cli-e2e.yml"
                         && line.contains("opencode-ai@1.18.25"))
                         || (path == "experiments/agentic_cli_matrix/install_client.sh"
                             && line.contains("\"$spec\"")),

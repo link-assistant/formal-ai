@@ -1,0 +1,60 @@
+dda02efb475c0042cdad3583ff74bdd3e90ee5df	2026-09-07T09:31:42Z	github-actions[bot]	NONE	chore(benchmarks): record scheduled upstream results (#698)
+6039c4d94634beb62c9d853fcdbd59c1ece8d541	2026-09-07T07:31:38Z	konard	push	Merge pull request #1080 from link-assistant/issue-1079-92eb3dd8a0fa
+169b9b10fe44eeebc8fc1917e059d2b72da38bd5	2026-09-07T06:11:16Z	konard	pull_request	fix(ci): read the Agent CLI's own evidence into the job log on failure (#1079)
+89f97a261716a97fd63b176c8f44044f04c8627c	2026-09-07T05:39:12Z	konard	pull_request	fix(ci): stop the Agent CLI from summarizing sessions through a hosted model (#1079)
+a04c4ac308983be24aaae1467ef63872e4c2bbf8	2026-09-07T04:28:19Z	konard	pull_request	docs(evidence): register D10 beside the nine defects it followed from (#1079)
+e16d7ecd4ac1f7ae7bf774ecf5d79580fcf3f0dc	2026-09-07T04:24:46Z	konard	pull_request	docs(evidence): keep the log of the file-size failure the fix caused (#1079)
+75ae58989d64a9e02a7b55518f9f04cc7a2d1365	2026-09-07T04:13:29Z	konard	pull_request	fix(ci): keep a stale retraction from restoring the claims beside it (#1079)
+087d5fb9be60a19fc9b947ebf5f6514cb2d02ffd	2026-09-07T03:50:13Z	konard	pull_request	docs(evidence): record that D8 and D9 do not reproduce in any template (#1079)
+d667a5b1bbb2f695cf7988d065b6409475b6aa9b	2026-09-07T03:32:03Z	konard	pull_request	fix(ci): let a later commit withdraw an evidence claim it cannot amend (#1079)
+3cf6b5dc1fba4a516ac784422f2162de57cd4adf	2026-09-07T02:38:46Z	konard	NONE	chore: remove the pull request placeholder (#1079)
+ef3bb4aff3fbcceaa54d705325773f1ca2f083af	2026-09-07T02:17:32Z	konard	pull_request	fix(ci): keep the credential on the four checkouts whose jobs push (#1079)
+e310d544cbb9565e0f2dd1e3b8697e17ce01880d	2026-09-07T01:59:17Z	konard	pull_request	docs(changelog): state the checkout count as a total, not only the delta (#1079)
+265d1339580d4c4ec9cb8f2d206d10c882449304	2026-09-07T01:56:08Z	konard	pull_request	docs(evidence): record the persist-credentials sweep as adopted, not deferred (#1079)
+bd511432a6f9aa83446c155ff94dbff009403dae	2026-09-07T01:55:49Z	konard	NONE	fix(ci): drop the persisted job credential from every checkout that does not push (#1079)
+d922574d26153e60fe75109d2fb75e13d0d8a325	2026-09-07T01:06:11Z	konard	pull_request	docs(changelog): record the three unenforced gates #1079 fixed (#1079)
+408a3431f5b9a65b8678005d1cbfaf6a78f51b9e	2026-09-07T01:05:28Z	konard	NONE	docs(ci): reconstruct #1079 from the collected evidence (#1079)
+0c3c7c8b8d864c239cd4ebb129d88ea7c95fdfe1	2026-09-07T01:05:12Z	konard	NONE	test(ci): pin the three CI/CD defects #1079 fixed as invariants (#1079)
+8bcb8be1e329baed10dc69dfd26745ae9c3dc4b2	2026-09-07T00:37:49Z	konard	NONE	docs(ci): record the twelve upstream reports filed from #1079 (#1079)
+7c516f0303c040430eeaeac2a98caffbdee838d4	2026-09-07T00:28:00Z	konard	NONE	fix(ci): enforce the hash-pin policy on container images (#1079)
+37c96bfd009f87e44d72c72fb52c24b2e334860c	2026-09-07T00:17:41Z	konard	pull_request	fix(ci): digest-pin the actionlint container image (#1079)
+fa7663eace9716cff370928048d4523254f12714	2026-09-07T00:17:30Z	konard	NONE	fix(ci): a cargo audit warning is a finding, not a footnote (#1079)
+d08f0f464b067834f6a805cb096ac1b240d4fa4e	2026-09-07T00:17:15Z	konard	NONE	docs(evidence): collect the CI/CD evidence bundle for issue #1079
+5b69c8b9c697af54b5536bb575b368d1452fdd74	2026-09-06T23:48:44Z	konard	pull_request	Initial commit with task details
+f971b82052e523f6478f6bf1815c89a326153a23	2026-09-06T21:34:52Z	konard	push	Merge pull request #1078 from link-assistant/issue-1075-9e9c96124ed3
+6f3c4f677e4844a4c344cdcc5c508c882816abb1	2026-09-06T15:35:51Z	konard	pull_request	test(protocol): pin the workspace grounding in every registered language (#1075)
+56d6aba7d55d78747d8bb73aada0555ab5e47f51	2026-09-06T11:38:15Z	konard	pull_request	fix(protocol): a workspace is only discovered at a segment boundary (#1075)
+ecec9d947166d48779044a415747740c30283cee	2026-09-06T10:16:10Z	konard	pull_request	test(issue-1075): drive Claude Code through the same boundary as Agent
+b806d2ee5275d5b11cce07ed6fb96200c81d2aa4	2026-09-06T10:07:37Z	konard	pull_request	test(issue-1075): reproduce the sidecar boundary with a containerized server
+435fcf29a3bf0e1af39c5639d6849d7a6396b99b	2026-09-06T09:48:22Z	konard	pull_request	test(issue-1075): replay the sidecar boundary through the real Agent CLI
+901ec47975e7634c1917b05937ccc4481a6a8db2	2026-09-06T09:42:14Z	konard	pull_request	Cover concurrent clients with their own workspaces (#1075)
+81468a304d3a73e24197000c4ebd59bc1168f382	2026-09-06T09:13:24Z	konard	pull_request	Clear the clippy warnings the scope model introduced (#1075)
+7217e46b002310311c59ff0c38eb495db7d61fcb	2026-09-06T08:25:41Z	konard	NONE	Drop the branch-scaffolding .gitkeep
+6d9c0d24737e189ad944720d97e06637bb61e6ef	2026-09-06T08:24:40Z	konard	NONE	Regenerate the self-AST census and reference closure for the scope model (#1075)
+635895b93f4f5f0abd0ef1bb6f4507d6b5d16d21	2026-09-06T07:56:55Z	konard	pull_request	Hold the grounding rules with held-out and whole-task tests (#1075)
+b1475b1ad9baaa6664fc4f49d32f09310da1811c	2026-09-06T06:26:34Z	konard	pull_request	Route the workspace's own file creation away from a connector (#1075)
+83baedb297e7e6cad72c2f173b6eaa9e73898ec3	2026-09-06T06:14:31Z	konard	pull_request	Ground a tool call's resource scope before the call is emitted (#1075)
+a5d4fe49def330d463136c6fa6d324db867e2cd3	2026-09-06T05:39:45Z	konard	pull_request	Initial commit with task details
+6dcec2eae0e8254e8642fed60a38e4beea6be167	2026-09-05T21:58:37Z	konard	push	Merge pull request #1077 from link-assistant/issue-1076-e89a27662479
+b666a87b2e02c109666fa6445c74247c5c96655d	2026-09-05T15:29:18Z	konard	pull_request	fix(ci): retry a name-resolution blip in the fresh-merge and base-pinning fetches (D22)
+d4f690341e597a9c133068c1937d38d8e03a9284	2026-09-05T14:53:26Z	konard	pull_request	fix(ci): stop a dropped connection, a pinned cap and a runner-only 403 from reddening CI (D19-D21)
+d5868fb31006b7c5f2b7f4c7ab738f5efb0d6154	2026-09-05T13:24:35Z	konard	pull_request	Auto-commit: Changes made by Claude during problem-solving session
+e03d1d7bcfe98dd0b0851f2baa05723507bcc2a7	2026-09-05T13:16:49Z	konard	pull_request	fix(ci): make a `.lino` parse failure name the line it happened on (D18)
+2d06389c7de1c88ab16d5bb1d326094a381b428d	2026-09-05T12:50:07Z	konard	pull_request	test(issue-1076): make D10b reproducible from a script, not a claim
+38b6ab2028c7674541186516cf43d07c6fcee6f4	2026-09-05T12:47:20Z	konard	pull_request	docs(issue-1076): keep the run that proves the actionlint canary fires
+fb3e45c7df94c42e66c573b80f327f66b77f230b	2026-09-05T12:44:32Z	konard	pull_request	docs(issue-1076): record that D10b does not reproduce in the templates
+a055112ac5d9c220ad3cf81c388465cd788e3474	2026-09-05T12:42:09Z	konard	pull_request	test(issue-1076): make the actionlint gate prove it can see inside run:
+7a4516f1b6c476f9b9bfd60eab7322b6589545d6	2026-09-05T12:28:58Z	konard	pull_request	chore(issue-1076): declare the release fragment this branch owes
+d565b4282cb6cca0fbcb0f564cd4d2062ebb8646	2026-09-05T12:22:00Z	konard	NONE	ci(issue-1076): keep the audit trail inside the gates it has to pass
+1664b7d43735558cab6f5562ee6b95a3613378f6	2026-09-05T12:09:41Z	konard	NONE	chore: drop the placeholder the branch was opened with
+b42cdd38e89909069b7e946d91f7d09e30a4f129	2026-09-05T12:09:24Z	konard	NONE	docs(issue-1076): the evidence, the register, the plans and the upstream reports
+17d48a274eafa83cff08e47103773e0056713a59	2026-09-05T12:08:58Z	konard	NONE	test(issue-1076): pin every property this issue's fixes established
+5816d9d40b1be5160c17faffc97eaeb6d3fbf428	2026-09-05T12:08:43Z	konard	NONE	ci(issue-1076): quote the workflow names YAML was truncating at a comment
+d1cd79f65a687062c83e5431179158f1f1c3a10d	2026-09-05T12:07:46Z	konard	NONE	ci(issue-1076): budget the Docker publish steps from their measurements
+6c2d5790c5d09d0a968f641e4a48cad3803432bd	2026-09-05T12:07:28Z	konard	NONE	ci(issue-1076): audit measured job runtime against the caps that bound it
+94ac8b0782fb6fb85f09dcf1f8d2a0e07c0136ae	2026-09-05T12:07:01Z	konard	NONE	ci(issue-1076): give the coverage run a deadline it can fail on
+553df396d2e168022acb0d841317e4e4d56f0083	2026-09-05T12:06:29Z	konard	NONE	ci(issue-1076): route every cargo registry cache through the shared action
+83cfc861e338c862a73106fa1fb5033d1bbd8b4b	2026-09-05T12:06:04Z	konard	NONE	ci(issue-1076): run actionlint where ShellCheck is guaranteed
+7ba4ff409aad22e14541eef0b15fe59814a547c4	2026-09-05T10:25:18Z	?	NONE	ci(issue-1076): audit workflows for security, not only syntax
+dbc6f3ada57dc266bf4ec65e19774908b5d476d2	2026-09-05T10:08:26Z	?	NONE	docs(issue-1076): capture CI evidence and locate the Coverage root cause
+016263f71bb31f9f051259347c5bf1bd15ec4f5a	2026-09-05T09:37:24Z	konard	pull_request	Initial commit with task details

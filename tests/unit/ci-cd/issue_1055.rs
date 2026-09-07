@@ -38,16 +38,88 @@ fn repository_file(path: &str) -> String {
         .replace("\r\n", "\n")
 }
 
+/// What a job waits for, however its `needs:` is written.
+///
+/// Issue #1081: this read the rest of the `needs:` line and stopped there, so
+/// the moment a list grew long enough to be wrapped
+///
+/// ```yaml
+///     needs:
+///       [
+///         lint,
+///         test,
+///       ]
+/// ```
+///
+/// -- which is the same YAML, and what a formatter produces -- every assertion
+/// below saw an empty dependency list and passed. A helper that answers "this
+/// job waits for nothing" when it waits for six things is the false negative
+/// this repository's whole test surface is built to avoid, so the value is
+/// read as a value: the key's line plus every line indented under it.
 fn job_needs(workflow: &str, job: &str) -> String {
     let block = workflow
         .split(&format!("\n  {job}:\n"))
         .nth(1)
         .unwrap_or_else(|| panic!("workflow declares a `{job}` job"));
-    block
-        .lines()
-        .find_map(|line| line.trim().strip_prefix("needs:"))
+    let lines: Vec<&str> = block.lines().collect();
+    let job_level = |line: &str| line.starts_with("    ") && !line.starts_with("     ");
+    let Some(key) = lines
+        .iter()
+        .position(|line| job_level(line) && line.trim_start().starts_with("needs:"))
+    else {
+        return String::new();
+    };
+
+    let mut value = lines[key]
+        .trim()
+        .strip_prefix("needs:")
         .unwrap_or_default()
-        .to_string()
+        .trim()
+        .to_string();
+    for line in &lines[key + 1..] {
+        if !line.starts_with("     ") {
+            break;
+        }
+        value.push(' ');
+        value.push_str(line.trim());
+    }
+    value
+}
+
+/// The helper above is a parser, so it gets a parser's test.
+///
+/// Both forms are the same YAML and GitHub reads them the same way; a test
+/// that can only read one of them reports "no dependencies" for a job that has
+/// six, which is worse than failing.
+#[test]
+fn a_wrapped_dependency_list_reads_the_same_as_an_inline_one() {
+    let inline = "\n  release:\n    needs: [lint, test, build]\n    runs-on: ubuntu-latest\n";
+    let wrapped = "\n  release:\n    needs:\n      [\n        lint,\n        test,\n        build,\n      ]\n    runs-on: ubuntu-latest\n";
+    let block = "\n  release:\n    needs:\n      - lint\n      - test\n      - build\n    runs-on: ubuntu-latest\n";
+
+    for form in [inline, wrapped, block] {
+        let needs = job_needs(form, "release");
+        for dependency in ["lint", "test", "build"] {
+            assert!(
+                needs.contains(dependency),
+                "`{dependency}` is missing from {needs:?}"
+            );
+        }
+    }
+
+    assert_eq!(
+        job_needs("\n  release:\n    runs-on: ubuntu-latest\n", "release"),
+        "",
+        "a job that really waits for nothing still reads as nothing"
+    );
+    assert!(
+        !job_needs(
+            "\n  release:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: ./a.yml\n        needs: nonsense\n",
+            "release"
+        )
+        .contains("nonsense"),
+        "only a job-level `needs:` is the job's dependency list"
+    );
 }
 
 /// Link-time optimization stays off, so no job waits on a serial stage.
@@ -81,7 +153,11 @@ fn the_release_profile_does_not_serialize_the_build() {
 /// Exactly one job compiles; everything else downloads.
 #[test]
 fn one_job_builds_and_the_rest_download() {
-    let workflow = release_workflow();
+    // Issue #1081 moved the agent CLI E2E steps into their own file and
+    // left the call behind; `pipeline_workflows()` splices the called
+    // workflow back in at the job that calls it, so this still asks
+    // "what does the pipeline run?" rather than "what is in this file?".
+    let workflow = crate::ci_gates::pipeline_workflows();
 
     let compiles = workflow
         .split("\n      - name: ")

@@ -1,0 +1,15 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# Issue #1081. `scripts/*.rs` are rust-script programs with their own
+# dependency manifests, so `cargo test` never builds them. Four of them carried
+# 23 passing test cases that no job executed -- a suite nobody runs is a false
+# negative wearing a green tick. This gate runs exactly the suites the other
+# two mechanisms miss; `scripts/test-scripts.sh --list` names them.
+ci_gate test_script_suites
+  stage rust
+  description "Every standalone script's inline test suite runs somewhere in CI, including the ones no other mechanism compiles."
+  run "scripts/test-scripts.sh"

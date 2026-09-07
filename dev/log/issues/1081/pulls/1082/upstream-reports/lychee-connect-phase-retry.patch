@@ -1,0 +1,44 @@
+diff --git a/lychee-lib/src/retry.rs b/lychee-lib/src/retry.rs
+index 0021c73..bfbfe0f 100644
+--- a/lychee-lib/src/retry.rs
++++ b/lychee-lib/src/retry.rs
+@@ -31,7 +31,10 @@ impl RetryExt for reqwest::Error {
+         if self.is_timeout() {
+             true
+         } else if self.is_connect() {
+-            false
++            // A reset or an abort during connect or the TLS handshake is as
++            // transient as the same error one byte later; classify it by its
++            // io kind rather than by the phase it happened in.
++            get_source_error_type::<io::Error>(self).is_some_and(should_retry_io)
+         } else if self.is_body() || self.is_decode() || self.is_builder() || self.is_redirect() {
+             false
+         } else if self.is_request() {
+@@ -121,10 +124,25 @@ impl RetryExt for Status {
+ 
+ /// Classifies an `io::Error` into retryable or not.
+ fn should_retry_io(error: &io::Error) -> bool {
+-    matches!(
++    if matches!(
+         error.kind(),
+         io::ErrorKind::ConnectionReset | io::ErrorKind::ConnectionAborted | io::ErrorKind::TimedOut
+-    )
++    ) {
++        return true;
++    }
++
++    // The transport layer hands us the OS error wrapped in another `io::Error`,
++    // whose kind is `Other`; the kind that decides this is on the error inside.
++    // `io::Error::source` skips that inner error, so the chain walk above
++    // cannot see it -- unwrap it here.
++    if let Some(inner) = error
++        .get_ref()
++        .and_then(|inner| inner.downcast_ref::<io::Error>())
++    {
++        return should_retry_io(inner);
++    }
++
++    false
+ }
+ 
+ /// Downcasts the given err source into T.

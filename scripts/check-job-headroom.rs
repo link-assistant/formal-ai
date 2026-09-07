@@ -27,6 +27,21 @@
 //! observations from the Actions API; this compares them with what the
 //! workflows declare.
 //!
+//! ## Why a truncated run is still an observation
+//!
+//! The first version of this audit kept only jobs that finished green, on the
+//! reasoning that "a cancelled or failed job says nothing about how long the
+//! work takes". Issue #1081 showed that reasoning inverted: the runs a cap or
+//! a budget cuts short are *exactly* the runs at or over the limit, so
+//! discarding them is survivorship bias, and it hides the very thing the audit
+//! looks for. Measured on `Test (macos-15-intel / specification)`, dropping the
+//! two terminated runs reported 62.9% of the cap; keeping them reports 74.7%,
+//! which is the warning band.
+//!
+//! A truncated run is a *lower bound* on how long its work needed. It may
+//! therefore raise a worst case but never lower one, and the report marks it
+//! with a leading `>=` so nobody reads it as a completed measurement.
+//!
 //! ## Why a scheduled audit and not a pull-request gate
 //!
 //! Headroom is a property of a *trend*, not of a commit. A pull request that
@@ -45,8 +60,8 @@
 //!   cap, and warning about it every week is the CI noise issue #1076 exists to
 //!   remove.
 //!
-//! A job is judged only once it has [`MIN_SAMPLES`] successful observations, so
-//! a newly added job is not failed on a single unlucky cold-cache run.
+//! A job is judged only once it has [`MIN_SAMPLES`] observations, so a newly
+//! added job is not failed on a single unlucky cold-cache run.
 //!
 //! Usage:
 //!   rust-script scripts/check-job-headroom.rs --durations <file.tsv>
@@ -73,8 +88,12 @@ const FAIL_SHARE_PERCENT: f64 = 85.0;
 /// saying out loud.
 const WARN_SHARE_PERCENT: f64 = 70.0;
 
-/// How many successful observations a job needs before its worst case is
-/// treated as its worst case. One cold-cache run is not a trend.
+/// Fields in a job row of `scripts/collect-job-durations.sh`. A step row has
+/// eight and is read by `scripts/check-step-budget-headroom.rs` instead.
+const JOB_ROW_FIELDS: usize = 6;
+
+/// How many observations a job needs before its worst case is treated as its
+/// worst case. One cold-cache run is not a trend.
 const MIN_SAMPLES: usize = 5;
 
 /// Jobs allowed to sit in the warning band without being reported, each with
@@ -113,6 +132,10 @@ struct Measurement {
     workflow: String,
     job: String,
     minutes: f64,
+    /// The job did not run to a green finish, so its clock is a lower bound on
+    /// the work rather than a measurement of it. Kept, because the runs that
+    /// end early are the ones at the limit (issue #1081).
+    truncated: bool,
 }
 
 /// Seconds since the Unix epoch for an RFC 3339 timestamp in UTC, the only
@@ -208,13 +231,25 @@ fn declared_jobs(workflow_directory: &Path) -> Vec<DeclaredJob> {
     jobs
 }
 
-/// Parse the collector's TSV, keeping only jobs that ran to a green finish --
-/// a cancelled or failed job says nothing about how long the work takes.
+/// Parse the job rows of the collector's TSV.
+///
+/// The collector emits six fields for a job and eight for a step
+/// (`scripts/collect-job-durations.sh`); the step rows belong to
+/// `scripts/check-step-budget-headroom.rs` and are skipped here on the field
+/// count, not on their content.
+///
+/// A job that ran is kept whatever its conclusion, with `truncated` set unless
+/// it finished green. A job that never ran -- `skipped`, or no conclusion at
+/// all -- is not an observation of anything and is dropped.
 fn measurements(text: &str) -> Vec<Measurement> {
     let mut parsed = Vec::new();
     for line in text.lines() {
         let fields: Vec<&str> = line.split('\t').collect();
-        if fields.len() < 6 || fields[3] != "success" {
+        if fields.len() != JOB_ROW_FIELDS {
+            continue;
+        }
+        let conclusion = fields[3];
+        if !matches!(conclusion, "success" | "failure" | "cancelled" | "timed_out") {
             continue;
         }
         let (Some(started), Some(completed)) =
@@ -230,6 +265,7 @@ fn measurements(text: &str) -> Vec<Measurement> {
             workflow: fields[1].to_string(),
             job: fields[2].to_string(),
             minutes: (completed - started) as f64 / 60.0,
+            truncated: conclusion != "success",
         });
     }
     parsed
@@ -285,7 +321,7 @@ fn match_declared<'a>(
     best.map(|(_, _, job)| job)
 }
 
-/// The worst case for one declared job across every successful observation.
+/// The worst case for one declared job across every observation of it.
 #[derive(Debug, Clone)]
 struct Headroom {
     workflow: String,
@@ -295,6 +331,17 @@ struct Headroom {
     worst_minutes: f64,
     worst_run: String,
     samples: usize,
+    /// The worst case came from a run that was cut short, so the real figure is
+    /// at least this and the report says `>=`.
+    worst_truncated: bool,
+}
+
+impl Headroom {
+    /// `>= ` when the worst case is a lower bound, empty when it is a
+    /// completed measurement.
+    fn bound_marker(&self) -> &'static str {
+        if self.worst_truncated { ">=" } else { "" }
+    }
 }
 
 impl Headroom {
@@ -328,11 +375,13 @@ fn audit(declared: &[DeclaredJob], measured: &[Measurement]) -> (Vec<Headroom>, 
             worst_minutes: 0.0,
             worst_run: String::new(),
             samples: 0,
+            worst_truncated: false,
         });
         entry.samples += 1;
         if measurement.minutes > entry.worst_minutes {
             entry.worst_minutes = measurement.minutes;
             entry.worst_run.clone_from(&measurement.run_id);
+            entry.worst_truncated = measurement.truncated;
         }
     }
 
@@ -345,7 +394,7 @@ fn audit(declared: &[DeclaredJob], measured: &[Measurement]) -> (Vec<Headroom>, 
     let unmatched = unmatched
         .into_iter()
         .filter(|(_, count)| *count >= MIN_SAMPLES)
-        .map(|(name, count)| format!("{name} ({count} successful runs)"))
+        .map(|(name, count)| format!("{name} ({count} runs)"))
         .collect();
     (rows, unmatched)
 }
@@ -366,7 +415,11 @@ fn report(rows: &[Headroom], unmatched: &[String]) -> String {
         "`timeout-minutes` against the worst measured duration of the same job. \
          A job killed by its cap reports `cancelled`, not `failure` (issue #977), \
          so a cap the work routinely approaches is a false negative waiting to \
-         happen (issue #1076).\n"
+         happen (issue #1076).\n\n\
+         A `>=` marks a worst case taken from a run that was cut short. Its \
+         clock is a lower bound on the work, and dropping such runs is what let \
+         a job read as 62.9% of its cap while the runs that were killed said \
+         74.7% (issue #1081).\n"
     );
     let _ = writeln!(out, "| Share | Cap (min) | Worst (min) | Runs | Workflow | Job | Worst run |");
     let _ = writeln!(out, "| ---: | ---: | ---: | ---: | --- | --- | --- |");
@@ -380,9 +433,10 @@ fn report(rows: &[Headroom], unmatched: &[String]) -> String {
         } else {
             ""
         };
+        let bound = row.bound_marker();
         let _ = writeln!(
             out,
-            "| {:.1}%{marker} | {:.0} | {:.1} | {} | {} | {} | {} |",
+            "| {bound}{:.1}%{marker} | {:.0} | {bound}{:.1} | {} | {} | {} | {} |",
             row.share_percent(),
             row.cap_minutes,
             row.worst_minutes,
@@ -396,7 +450,7 @@ fn report(rows: &[Headroom], unmatched: &[String]) -> String {
         let _ = writeln!(
             out,
             "\n### Measured but not matched to a declared job\n\n\
-             These ran green often enough to matter but their display name matches \
+             These ran often enough to matter but their display name matches \
              no job in `.github/workflows/`, so their cap could not be audited. \
              The usual cause is a job that was renamed inside the sampled window.\n"
         );
@@ -448,17 +502,31 @@ fn main() {
         if share >= FAIL_SHARE_PERCENT {
             failures += 1;
             println!(
-                "::error title=Job cap has become the deadline::{} / {} used {:.1}% of its \
-                 {:.0}-minute timeout-minutes (worst of {} runs, run {}). A job killed by its \
+                "::error title=Job cap has become the deadline::{} / {} used {}{:.1}% of its \
+                 {:.0}-minute timeout-minutes (worst of {} runs, run {}{}). A job killed by its \
                  cap reports `cancelled`, not `failure`. Raise the cap, or give the dominant \
                  step a budget through scripts/run-with-budget-warning.sh.",
-                row.workflow, row.display_name, share, row.cap_minutes, row.samples, row.worst_run
+                row.workflow,
+                row.display_name,
+                row.bound_marker(),
+                share,
+                row.cap_minutes,
+                row.samples,
+                row.worst_run,
+                if row.worst_truncated { ", which was cut short" } else { "" }
             );
         } else if share >= WARN_SHARE_PERCENT && acknowledgement(&row.job).is_none() {
             println!(
-                "::warning title=Job is approaching its cap::{} / {} used {:.1}% of its \
-                 {:.0}-minute timeout-minutes (worst of {} runs, run {}).",
-                row.workflow, row.display_name, share, row.cap_minutes, row.samples, row.worst_run
+                "::warning title=Job is approaching its cap::{} / {} used {}{:.1}% of its \
+                 {:.0}-minute timeout-minutes (worst of {} runs, run {}{}).",
+                row.workflow,
+                row.display_name,
+                row.bound_marker(),
+                share,
+                row.cap_minutes,
+                row.samples,
+                row.worst_run,
+                if row.worst_truncated { ", which was cut short" } else { "" }
             );
         }
     }
@@ -523,6 +591,7 @@ mod tests {
             workflow: workflow.into(),
             job: job.into(),
             minutes,
+            truncated: false,
         }
     }
 
@@ -538,24 +607,73 @@ mod tests {
     }
 
     #[test]
-    fn only_successful_runs_with_both_timestamps_are_measured() {
+    fn every_run_that_ran_is_measured_and_the_rest_are_dropped() {
         let text = "1\tCI\tLint\tsuccess\t2026-09-05T08:00:00Z\t2026-09-05T08:12:42Z\n\
                     2\tCI\tLint\tcancelled\t2026-09-05T08:00:00Z\t2026-09-05T08:40:00Z\n\
                     3\tCI\tLint\tskipped\t\t\n\
-                    4\tCI\tLint\tsuccess\t2026-09-05T08:00:00Z\t\n";
+                    4\tCI\tLint\tsuccess\t2026-09-05T08:00:00Z\t\n\
+                    5\tCI\tLint\tnull\t2026-09-05T08:00:00Z\t2026-09-05T08:01:00Z\n";
         let parsed = measurements(text);
-        assert_eq!(parsed.len(), 1, "only the green, fully timestamped row counts");
+        assert_eq!(parsed.len(), 2, "green and cut-short runs both count: {parsed:?}");
         assert!((parsed[0].minutes - 12.7).abs() < 0.01);
+        assert!(!parsed[0].truncated);
+        assert!((parsed[1].minutes - 40.0).abs() < 0.01);
+        assert!(parsed[1].truncated, "a cancelled run is a lower bound, not a measurement");
     }
 
     #[test]
-    fn a_cancelled_run_cannot_lower_the_worst_case() {
-        // The failure mode this whole audit exists for: a job killed by its cap
-        // is reported `cancelled`, and its truncated duration must not be read
-        // as evidence that the job fits.
-        let text = "1\tCI/CD Pipeline\tLint and Format Check\tcancelled\t\
-                    2026-09-05T08:00:00Z\t2026-09-05T08:25:00Z\n";
+    fn a_step_row_is_not_read_as_a_job() {
+        // `scripts/collect-job-durations.sh` emits both kinds into one file and
+        // marks a step row by its width. Reading one as a job would attribute
+        // a step's duration to the job's cap.
+        let text = "1\tCI\tTest\tsuccess\t2026-09-05T08:00:00Z\t2026-09-05T08:20:00Z\
+                    \tstep\tRun tests\n";
         assert!(measurements(text).is_empty());
+    }
+
+    #[test]
+    fn a_cut_short_run_raises_the_worst_case_and_is_marked_as_a_lower_bound() {
+        // The failure mode this whole audit exists for: a job killed by its cap
+        // is reported `cancelled`. Dropping it -- as this audit first did --
+        // removes the only evidence that the cap is being reached, because a
+        // run at the limit is precisely the run that does not finish green.
+        let declared = fixture();
+        let mut measured: Vec<Measurement> = (0..MIN_SAMPLES)
+            .map(|_| measurement("CI/CD Pipeline", "Lint and Format Check", 6.0))
+            .collect();
+        measured.push(Measurement {
+            run_id: "cut-short".into(),
+            truncated: true,
+            ..measurement("CI/CD Pipeline", "Lint and Format Check", 25.0)
+        });
+
+        let (rows, _) = audit(&declared, &measured);
+        let lint = rows.iter().find(|r| r.job == "Lint and Format Check").expect("audited");
+        assert_eq!(lint.worst_run, "cut-short");
+        assert!((lint.share_percent() - 100.0).abs() < 0.01, "25 of a 25-minute cap");
+        assert!(lint.worst_truncated);
+        assert!(report(&rows, &[]).contains(">=100.0%"), "the report says it is a lower bound");
+    }
+
+    #[test]
+    fn a_cut_short_run_cannot_lower_the_worst_case() {
+        // A job cancelled after 30 seconds -- a superseded pull-request run --
+        // is a lower bound of 30 seconds, which is true and useless. It must
+        // not displace a longer completed observation.
+        let declared = fixture();
+        let mut measured: Vec<Measurement> = (0..MIN_SAMPLES)
+            .map(|_| measurement("CI/CD Pipeline", "Lint and Format Check", 12.7))
+            .collect();
+        measured.push(Measurement {
+            run_id: "superseded".into(),
+            truncated: true,
+            ..measurement("CI/CD Pipeline", "Lint and Format Check", 0.5)
+        });
+
+        let (rows, _) = audit(&declared, &measured);
+        let lint = rows.iter().find(|r| r.job == "Lint and Format Check").expect("audited");
+        assert!((lint.worst_minutes - 12.7).abs() < 0.01);
+        assert!(!lint.worst_truncated, "the worst case is still a completed run");
     }
 
     #[test]
@@ -691,6 +809,7 @@ mod tests {
             worst_minutes: worst,
             worst_run: "42".into(),
             samples,
+            worst_truncated: false,
         };
         let acknowledged = ACKNOWLEDGED[0].0;
         let rows = vec![

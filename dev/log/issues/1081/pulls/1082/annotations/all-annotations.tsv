@@ -1,0 +1,25 @@
+run_id	job_id	job_name	level	line	path	title	message
+34095902372	101659389859	Summarization quality ratchet (issue #893)	notice	50	.github	sccache stats - summarization-ratchet	85% - 876 hits, 150 misses, 0 errors
+34095902391	101659389892	Write-Effect Ladder (issue #916 rungs)	notice	50	.github	sccache stats - write-effect-ladder	85% - 871 hits, 155 misses, 0 errors
+34095902423	101659390084	Check Links	notice	936	.github		Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/34095902423#summary-101659390084
+34095902445	101659390284	Question necessity ratchet (issue #920)	notice	49	.github	sccache stats - question-necessity-ratchet	75% - 816 hits, 265 misses, 0 errors
+34095902471	101659723710	Code Coverage	notice	43	.github	sccache stats - coverage	100% - 67 hits, 0 misses, 0 errors
+34095902471	101659723710	Code Coverage	notice	20	.github	Codecov upload not configured	The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+34095902554	101659390228	Task Ladder (issue #840 dataset)	notice	49	.github	sccache stats - task-ladder	87% - 897 hits, 129 misses, 0 errors
+34095902681	101659725034	Build binaries and tests	notice	48	.github	sccache stats - build-artifacts	91% - 936 hits, 92 misses, 0 errors
+34095902681	101659725136	Lint and Format Check	notice	52	.github	sccache stats - lint	58% - 1030 hits, 751 misses, 0 errors
+34095902681	101659725136	Lint and Format Check	warning	0	.github/workflows/release.yml		GitHub Actions workflow file has 1576 lines (approaching limit of 2000). Consider extracting content to keep at or below 1500 lines and prevent review and merge conflicts.
+34095902681	101659725136	Lint and Format Check	warning	0	scripts/self-hosting-metric.rs		Rust file has 960 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+34095902681	101659725136	Lint and Format Check	notice	0	data/cache/wordnet/en		Closure-driven cache bucket holds 338 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+34095902681	101659725136	Lint and Format Check	notice	0	data/cache/wiktionary/en		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+34095902681	101659725136	Lint and Format Check	notice	0	data/cache/wikidata/entity		Closure-driven cache bucket holds 410 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+34095902681	101659725201	macOS Core Tests / Build macOS test archive	notice	49	.github	sccache stats - build-archive	97% - 1046 hits, 37 misses, 0 errors
+34095902681	101661665327	E2E Tests (agent CLI ↔ formal-ai)	notice	47	.github	sccache stats - test-agent-cli-e2e	100% - 1031 hits, 0 misses, 0 errors
+34095902681	101661665345	Test (ubuntu-latest / full)	notice	36	.github	sccache stats - test	100% - 1 hit, 0 misses, 0 errors
+34095902681	101661665345	Test (ubuntu-latest / full)	warning	2530	.github	Test suite is approaching its timeout	The command is still running after 840s (70% of its 1200s execution budget). Speed up or repartition it before the budget terminates the step.
+34095902681	101661665455	Test (macos-15-intel / specification)	notice	48	.github	sccache stats - test	94% - 963 hits, 66 misses, 0 errors
+34095902681	101661665455	Test (macos-15-intel / specification)	failure	3016	.github		Process completed with exit code 124.
+34095902681	101661665455	Test (macos-15-intel / specification)	failure	2976	.github	Specification test shard exceeded its execution budget	The command was terminated after 1400s, its full 1400s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout.
+34095902681	101661665455	Test (macos-15-intel / specification)	warning	1876	.github	Specification test shard is approaching its timeout	The command is still running after 980s (70% of its 1400s execution budget). Speed up or repartition it before the budget terminates the step.
+34095902681	101668455124	Pipeline Status	failure	112	.github		Process completed with exit code 1.
+34095902681	101668455124	Pipeline Status	failure	111	.github		Pipeline failed. Failing jobs: test

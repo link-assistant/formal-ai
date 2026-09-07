@@ -83,7 +83,10 @@ fn captured_agent_artifacts_match_their_committed_leaves() {
 
 #[test]
 fn literal_payload_planner_fix_is_exercised_by_the_required_agent_cli_job() {
-    let workflow = include_str!("../../.github/workflows/release.yml");
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let harness = include_str!("../../experiments/agent_cli_e2e/run_issue_708.sh");
 
     assert!(workflow.contains("experiments/agent_cli_e2e/run_issue_708.sh"));

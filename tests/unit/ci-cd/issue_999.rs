@@ -2,7 +2,7 @@
 
 use std::fs;
 
-use super::workflow_fixtures::{desktop_release_workflow, job_block, release_workflow};
+use super::workflow_fixtures::{desktop_release_workflow, job_block, release_workflow, unwrapped};
 
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
@@ -25,8 +25,12 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     assert!(test.contains("test-suite: specification"));
     assert_eq!(test.matches("os: macos-15-intel").count(), 1);
     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
-    // Issue #1055 raised the archive cap to 35m; see issue_1012 for the math.
-    assert!(macos.contains("timeout-minutes: 35"));
+    // Issue #1055 raised the archive cap to 35m and issue #1081 to 45m; see
+    // issue_1012 for the math, which is where the cap is checked. Pinning an
+    // exact backstop from two places means every future widening has to be
+    // argued twice, so this one only asserts that the partitioning below did
+    // not remove it.
+    assert!(macos.contains("\n    timeout-minutes:"));
     assert!(macos.contains("cargo nextest archive"));
     assert!(macos.contains("cargo nextest run --archive-file"));
     assert!(macos.contains("--macos-platform"));
@@ -105,7 +109,10 @@ fn current_template_security_and_link_gates_are_present() {
     // Issue #1017 narrowed this from `always()`: a cancelled link check has no
     // verdict to report, so it must not append a "broken links" error to a run
     // that never finished checking them.
-    assert!(links.contains("if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}"));
+    // Issue #1081 added a second term to this condition, which folded it across
+    // lines. The property is the two guards, not the wrapping that carried them.
+    assert!(unwrapped(&links).contains("!cancelled() && steps.lychee.outputs.exit_code != 0"));
+    assert!(!links.contains("if: ${{ always()"));
     assert!(!links.contains("steps.webarchive.outputs.all_archived != 'true'"));
     assert!(
         repository_file("scripts/check-web-archive.mjs").contains("archive.org/wayback/available")
@@ -153,36 +160,16 @@ fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
 #[test]
 fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
     for (path, warning_limit) in [
-        // Issue #921 added the Hive Mind full-circle gate (a two-step install
-        // and run in `test-agent-cli-e2e`), which is this pull request's
-        // deliverable and cannot live anywhere cheaper: extracting it to a
-        // reusable workflow would duplicate the release build the E2E job
-        // already produces, and `tests/unit/issue_921.rs` pins both step names
-        // in this file. Main left three lines of headroom at 1497, so the band
-        // moves by the gate's real cost and no further.
-        // Issue #1069 moved this by the deadline the computer-use E2E steps
-        // had to be given: run 33880485514 was killed by `timeout-minutes`
-        // rather than by a budget, so both steps now pass through
-        // `run-with-budget-warning.sh`, which costs the block form of `run:`
-        // and a `TEST_BUDGET_SECONDS` beside each. The wrapper is the
-        // repository's own mechanism for this (issues #977 and #1017) and has
-        // nowhere cheaper to live: the step it guards is the one being timed.
-        // Issue #1079 moved this by the cost of the one template practice
-        // this repository had not adopted: `persist-credentials: false` on
-        // `actions/checkout`. Eighteen of the repository's forty-eight
-        // checkouts are in this file, and the input has nowhere cheaper to
-        // live -- it is an input to the action that *performs* the checkout,
-        // and a local composite action cannot wrap it because a local
-        // composite action does not exist until the checkout has run. Three
-        // of the four checkouts that must keep their credential are here too,
-        // and each carries the comment that argues for it, because an
-        // exception nobody has to justify in place is one that spreads.
-        // The same issue's D12 added eleven more: a failing Agent CLI harness
-        // printed its exit status and nothing else, so this job now reads the
-        // stream files it already uploads back into the log from an
-        // `if: failure()` step. That step is per-job by construction -- the
-        // paths it reads are the paths the job's own upload collects.
-        (".github/workflows/release.yml", 1_576),
+        // Issue #1081 (D6) moved the agent-CLI E2E steps out to
+        // `.github/workflows/agent-cli-e2e.yml`, which returned this file to
+        // the ordinary 1500-line warning band `scripts/check-file-size.rs`
+        // applies to every workflow. The exemptions issues #921, #1069 and
+        // #1079 each needed -- the Hive Mind full-circle gate, the
+        // `run-with-budget-warning.sh` wrappers, `persist-credentials: false`
+        // on eighteen checkouts and D12's failure-time evidence dump -- are
+        // all still here; they simply fit again. Anything that puts this file
+        // back over 1500 should extract a job, not raise the number.
+        (".github/workflows/release.yml", 1_500),
         ("src/intent_formalization.rs", 900),
         ("src/agentic_coding/general_planner.rs", 900),
         ("src/web/worker/formal_ai_worker_20.js", 1_400),

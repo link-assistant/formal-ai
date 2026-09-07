@@ -22,7 +22,14 @@
 #   TEST_BUDGET_GRACE_SECONDS  SIGTERM -> SIGKILL grace period (15)
 #   TEST_BUDGET_POLL_SECONDS   deadline polling interval (1)
 #   FORMAL_AI_CI_VERBOSE       `true` prints periodic progress lines (false)
+#
+# After the command finishes -- whatever its outcome -- the compiler cache's
+# write-rejection rate is checked once (issue #1081, D9). That check is silent
+# unless the rate crosses its threshold, so a healthy step stays exactly as
+# quiet as it was before.
 set -euo pipefail
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 budget_seconds="${1:?budget seconds are required}"
 label="${2:?a warning label is required}"
@@ -72,6 +79,25 @@ report_compiler_cache() {
   # died reporting why a step was slow would replace the finding with a worse
   # one.
   "$sccache" --show-stats 2>&1 | sed 's/^/[budget] /' >&2 || true
+}
+
+# Issue #1081 (D9): the counter that says how much of the compilation this step
+# just did will actually be there for the next one. `Cache write errors` is
+# printed by --show-stats above, but only when the budget is already in trouble,
+# and nothing has ever compared it to a threshold -- so a run whose cache
+# accepted half of what it was offered looked identical to a healthy one. Run
+# 34095902681 refused 868 of 1711 writes (50.7%) across eight jobs with no
+# annotation anywhere. This runs on every budgeted step and is silent unless the
+# share crosses SCCACHE_WRITE_ERROR_WARN_PERCENT, and it can never fail the
+# step: it is a diagnostic, and `set -e` is in force.
+report_compiler_cache_write_health() {
+  case "${RUSTC_WRAPPER:-}" in
+    *sccache*) ;;
+    *) return 0 ;;
+  esac
+  local checker="${script_dir}/check-sccache-write-health.sh"
+  [ -x "$checker" ] || return 0
+  SCCACHE_HEALTH_LABEL="${label}" "$checker" || true
 }
 
 signal_command_tree() {
@@ -127,6 +153,8 @@ wait "$command_pid"
 status=$?
 set -e
 trap - INT TERM
+
+report_compiler_cache_write_health
 
 elapsed=$((SECONDS - started))
 if [ "$terminated" = true ]; then
