@@ -541,13 +541,13 @@ fn every_ignored_advisory_carries_a_proof_that_ci_rechecks() {
         .collect();
 
     for advisory in ignored {
+        // Issue #1079 added `blocked-upstream`: it fails once the crate leaves.
         assert!(
-            config.contains(&format!("# {advisory} unreachable = \"")),
-            "{advisory} is ignored without a `# {advisory} unreachable = \
-             \"<crate>@<version>\"` proof line; \
-             scripts/check-rust-dependencies.sh re-derives that proof with \
-             `cargo tree --invert`, so an ignore expires the moment the crate \
-             enters the build graph (issue #1017)"
+            config.contains(&format!("# {advisory} unreachable = \""))
+                || config.contains(&format!("# {advisory} blocked-upstream = \"")),
+            "{advisory} is ignored without an `unreachable = \"<crate>@<ver>\"` \
+             or `blocked-upstream = \"<crate>@<ver>\" report = \"<url>\"` proof \
+             line, so it never expires (issues #1017, #1079)"
         );
     }
 }

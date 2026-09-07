@@ -290,7 +290,7 @@ PY
   (cd "$work" && \
     FORMAL_AI_API_KEY=local \
     LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
-    "$AGENT" --no-summarize-session --compaction-model same \
+    "$AGENT" --no-summarize-session --compaction-models "(same)" \
       --model formalai/formal-ai --permission-mode auto \
       --output-format stream-json --compact-json --disable-stdin \
       --prompt "$full_prompt") \

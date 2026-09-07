@@ -164,10 +164,12 @@ echo "== server up on $PORT =="
 
 # `--disable-stdin` prevents the CLI from opening its interactive prompt (this
 # script drives a single prompt through). `--no-summarize-session` and
-# `--compaction-model same` keep the round-trip on the formal-ai provider under
-# test: Agent otherwise may call an unrelated hosted model between local tool
-# turns. 180s is generous for a 4-step loop where each POST is deterministic
-# and finishes in <100ms — the extra time absorbs npm-install setup on a cold CI
+# `--compaction-models "(same)"` keep the round-trip on the formal-ai provider
+# under test: Agent otherwise may call an unrelated hosted model between local
+# tool turns. The plural spelling is load-bearing -- the singular
+# `--compaction-model same` is silently ignored while the plural default is set
+# (issue #1079). 180s is generous for a 4-step loop where each POST is
+# deterministic and finishes in <100ms — the extra time absorbs npm-install setup on a cold CI
 # runner.
 #
 # The external `@link-assistant/agent` CLI is *non-deterministic*: it
@@ -188,7 +190,7 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
     --prompt "$TASK" \
     --disable-stdin \
     --no-summarize-session \
-    --compaction-model same \
+    --compaction-models "(same)" \
     --model "formal-ai/formal-ai" \
     > "$AGENT_SETUP_LOG" 2>&1
   RC=$?
@@ -206,7 +208,7 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
         --prompt "$FOLLOW_UP" \
         --disable-stdin \
         --no-summarize-session \
-        --compaction-model same \
+        --compaction-models "(same)" \
         --model "formal-ai/formal-ai" \
         > "$AGENT_FOLLOW_UP_LOG" 2>&1
       RC=$?

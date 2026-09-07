@@ -3,6 +3,7 @@
 mod metric_script;
 
 mod authorship_composition;
+mod retraction;
 
 use std::fs;
 use std::path::{Path, PathBuf};

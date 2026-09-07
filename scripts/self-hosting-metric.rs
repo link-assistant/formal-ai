@@ -29,6 +29,9 @@ const PULL_REQUEST_TRAILER: &str = "Formal-AI-Pull-Request";
 const DEFAULT_LEDGER: &str = "data/meta/self-hosting-ledger.lino";
 const DEFAULT_TRAILING_WINDOW: usize = 3;
 
+#[path = "self-hosting-retraction.rs"]
+mod retraction;
+use retraction::retracted_commits;
 #[path = "self-development-loop.rs"]
 mod self_development_loop;
 #[allow(unused_imports)]
@@ -166,20 +169,26 @@ pub fn measure_with_policy(
     let mut self_authored_lines = 0_u64;
     let mut self_authored_commits = 0_u64;
 
+    let retracted = retracted_commits(repo, &commits, policy)?;
+
     for commit in &commits {
         let lines = changed_lines_for_commit(repo, commit)?;
         changed_lines = changed_lines
             .checked_add(lines)
             .ok_or_else(|| "changed-line total overflowed u64".to_owned())?;
-        let attributed = match commit_has_formal_ai_evidence(repo, commit) {
-            Ok(attributed) => attributed,
-            Err(error) => match policy {
-                EvidencePolicy::Strict => return Err(error),
-                EvidencePolicy::Lenient => {
-                    eprintln!("warning: not attributing {commit}: {error}");
-                    false
-                }
-            },
+        let attributed = if retracted.iter().any(|sha| sha == commit) {
+            false
+        } else {
+            match commit_has_formal_ai_evidence(repo, commit) {
+                Ok(attributed) => attributed,
+                Err(error) => match policy {
+                    EvidencePolicy::Strict => return Err(error),
+                    EvidencePolicy::Lenient => {
+                        eprintln!("warning: not attributing {commit}: {error}");
+                        false
+                    }
+                },
+            }
         };
         if attributed {
             self_authored_lines = self_authored_lines
@@ -340,11 +349,17 @@ fn evidence_files(repo: &Path, commit: &str, path: &str) -> Result<Vec<(String, 
 /// and `Formal-AI-Evidence` trailers with a blank line, git reported only the
 /// evidence trailer, and the resulting "must record both" error failed the
 /// whole Auto Release job (issue #796).
+///
+/// It does keep one of git's rules: an indented line is not a trailer.
+/// `git interpret-trailers --parse` ignores `    Formal-AI-Retract: <sha>` and
+/// so does this, so a commit message may show the format of a trailer in an
+/// indented example without thereby declaring one (issue #1079).
 fn trailer_values(repo: &Path, commit: &str, key: &str) -> Result<Vec<String>, String> {
     let body = git(repo, &["show", "-s", "--format=%B", commit])?;
     let prefix = format!("{key}:");
     Ok(body
         .lines()
+        .filter(|line| !line.starts_with([' ', '\t']))
         .filter_map(|line| {
             let line = line.trim();
             // Trailer keys are case-insensitive per `git interpret-trailers`.

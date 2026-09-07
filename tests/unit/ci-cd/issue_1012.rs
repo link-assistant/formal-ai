@@ -228,8 +228,13 @@ fn audited_warning_band_sources_stay_below_their_limits() {
         "src/solver.rs has {solver_lines} lines; keep it below the 900-line warning band"
     );
     let workflow_lines = release_workflow().lines().count();
+    // Issue #1079: raised by the `persist-credentials: false` sweep, which has
+    // nowhere cheaper to live than beside each `actions/checkout`, and again by
+    // D12's failure-time evidence dump. The reasoning is written out once,
+    // beside the same number in
+    // `issue_999::warning_band_files_are_small_and_split_responses_cover_the_registry`.
     assert!(
-        workflow_lines <= 1_522,
+        workflow_lines <= 1_576,
         ".github/workflows/release.yml has {workflow_lines} lines"
     );
 }

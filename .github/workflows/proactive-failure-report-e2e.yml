@@ -18,6 +18,16 @@ jobs:
   agent-cli-failure-report:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # Issue #1079: the Agent CLI summarizes a session with the head of its
+      # default compaction cascade, `opencode/big-pickle`, not with the
+      # session's own model. This job configures exactly one provider -- the
+      # local `formal-ai serve` -- so that hosted call is both unwanted and
+      # fatal: the gateway rejects it with `Request is missing
+      # x-opencode-session` and the CLI reports an unhandled rejection, which
+      # `scripts/classify-agent-cli-stderr.sh` refuses to hide. The harness
+      # passes `--no-summarize-session` too; this is the belt to that brace.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     # Issue #1017: this workflow had no concurrency control at any level, so
     # every push to a pull request added another twenty-minute release build of
     # `formal-ai` while the superseded one kept its runner. It only reads, so
@@ -28,6 +38,8 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - uses: oven-sh/setup-bun@v2
@@ -42,6 +54,15 @@ jobs:
         run: cargo build --release --bin formal-ai
       - name: Failed command proactively offers an issue report
         run: experiments/agent_cli_e2e/run_issue_864.sh
+      # Issue #1079: run 34061511110 failed this job with `Process completed
+      # with exit code 1.` and not one further byte -- the harness redirects the
+      # CLI's streams to files, and `set -e` ends it before
+      # `scripts/classify-agent-cli-stderr.sh` can read them. The artifact held
+      # the answer; the log a reviewer actually opens did not. This step puts it
+      # there, and a green run never reaches it.
+      - name: Show the Agent CLI evidence
+        if: failure()
+        run: scripts/dump-agent-cli-evidence.sh /tmp/formal-ai-issue-864-evidence
       - name: Upload failure evidence
         if: failure()
         uses: actions/upload-artifact@v7

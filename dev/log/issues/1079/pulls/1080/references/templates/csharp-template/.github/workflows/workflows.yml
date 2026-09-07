@@ -1,0 +1,44 @@
+name: Workflows
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+  workflow_dispatch:
+
+# Least-privilege default; this workflow only ever reads the tree.
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Lint Workflows
+    runs-on: ubuntu-latest
+    # Typical run: <1min. 10min prevents an image pull stall from hanging.
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
+      cancel-in-progress: true
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # The Docker image bundles shellcheck and pyflakes, so this also lints
+      # every `run:` block - that is what catches script injection sinks such as
+      # `${{ github.head_ref }}` pasted into a shell script (issue #49).
+      # A *native* actionlint binary without shellcheck on PATH silently skips
+      # the shell checks and exits 0, so keep using the Docker image here.
+      - uses: docker://rhysd/actionlint:1.7.7
+        with:
+          args: -color

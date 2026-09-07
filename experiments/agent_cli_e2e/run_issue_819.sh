@@ -165,7 +165,8 @@ run_client() {
             --prompt "$PROMPT" \
             --disable-stdin \
             --model formal-ai/formal-ai \
-            --no-summarize-session
+            --no-summarize-session \
+            --compaction-models "(same)"
         ) >> "$client_log" 2>&1 || true
         if grep -q 'agentic_outcome: planned Final' "$server_log"; then
           break

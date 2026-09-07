@@ -122,11 +122,20 @@ fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
     let workflow = repository_file(".github/workflows/workflows.yml");
     let config = repository_file(".github/actionlint.yaml");
 
+    // Issue #1079 replaced the tag with the digest it resolved to: a tag is a
+    // mutable pointer, and `.github/zizmor.yml` forbids those. The tag it was
+    // resolved from stays in the comment beside it, so a bump is still a
+    // readable diff rather than an opaque hash swap.
     assert!(
-        workflow.contains("docker://rhysd/actionlint:1.7.12"),
-        "actionlint must run as the pinned Docker image -- the image bundles \
-         ShellCheck, and a bare binary without ShellCheck on PATH skips every \
-         `run:` block check and still exits 0 (issue #1076)"
+        workflow.contains("docker://rhysd/actionlint@sha256:"),
+        "actionlint must run as the digest-pinned Docker image -- the image \
+         bundles ShellCheck, and a bare binary without ShellCheck on PATH skips \
+         every `run:` block check and still exits 0 (issues #1076, #1079)"
+    );
+    assert!(
+        workflow.contains("rhysd/actionlint:<tag>"),
+        "workflows.yml must keep the command that re-resolves the digest, or \
+         the next bump has no way to check what the hash points at (issue #1079)"
     );
     assert!(config.contains("rhysd/actionlint/issues/657"));
     assert!(config.contains("unexpected key \"queue\" for \"concurrency\" section"));
@@ -158,7 +167,22 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         // and a `TEST_BUDGET_SECONDS` beside each. The wrapper is the
         // repository's own mechanism for this (issues #977 and #1017) and has
         // nowhere cheaper to live: the step it guards is the one being timed.
-        (".github/workflows/release.yml", 1_522),
+        // Issue #1079 moved this by the cost of the one template practice
+        // this repository had not adopted: `persist-credentials: false` on
+        // `actions/checkout`. Eighteen of the repository's forty-eight
+        // checkouts are in this file, and the input has nowhere cheaper to
+        // live -- it is an input to the action that *performs* the checkout,
+        // and a local composite action cannot wrap it because a local
+        // composite action does not exist until the checkout has run. Three
+        // of the four checkouts that must keep their credential are here too,
+        // and each carries the comment that argues for it, because an
+        // exception nobody has to justify in place is one that spreads.
+        // The same issue's D12 added eleven more: a failing Agent CLI harness
+        // printed its exit status and nothing else, so this job now reads the
+        // stream files it already uploads back into the log from an
+        // `if: failure()` step. That step is per-job by construction -- the
+        // paths it reads are the paths the job's own upload collects.
+        (".github/workflows/release.yml", 1_576),
         ("src/intent_formalization.rs", 900),
         ("src/agentic_coding/general_planner.rs", 900),
         ("src/web/worker/formal_ai_worker_20.js", 1_400),

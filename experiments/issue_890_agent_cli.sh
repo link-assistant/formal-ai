@@ -59,6 +59,8 @@ config="$(
     --output-format stream-json \
     --compact-json \
     --disable-stdin \
+    --no-summarize-session \
+    --compaction-models "(same)" \
     --prompt "$TASK"
 ) >"$OUT/agent-stream.raw.log" 2>"$OUT/agent-stderr.log"
 

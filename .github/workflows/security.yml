@@ -50,6 +50,8 @@ jobs:
       CODEQL_RUST_SYSROOT_TOOLCHAIN: '1.94.0'
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       # Both variables are required: setting only `_SYSROOT_SRC` leaves the
       # extractor on the discovered (ambient) binary sysroot and the macro
@@ -95,6 +97,8 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -133,6 +137,8 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - uses: actions/dependency-review-action@v5
         with:

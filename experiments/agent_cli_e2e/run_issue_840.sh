@@ -121,6 +121,7 @@ run_agent_case() {
         --disable-stdin \
         --model formal-ai/formal-ai \
         --no-summarize-session \
+        --compaction-models "(same)" \
         --read-only
     ) >> "$client_log" 2>&1 || true
     if grep -q 'agentic_outcome: planned Final' "$server_log"; then

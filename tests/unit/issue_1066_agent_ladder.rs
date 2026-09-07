@@ -461,7 +461,7 @@ fn the_ladder_keeps_every_tool_turn_on_the_formal_ai_session() {
 
     assert!(
         script.contains(concat!(
-            "\"$AGENT\" --no-summarize-session --compaction-model same \\\n",
+            "\"$AGENT\" --no-summarize-session --compaction-models \"(same)\" \\\n",
             "      --model formalai/formal-ai",
         )),
         "the real Agent run must not replace the task with an unrelated session summary",

@@ -55,6 +55,8 @@ jobs:
       matrix: ${{ steps.matrix-plan.outputs.matrix }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -92,6 +94,8 @@ jobs:
         include: ${{ fromJSON(needs.build.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -238,6 +242,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Replay every committed transcript
         run: experiments/agentic_cli_matrix/replay.sh
 

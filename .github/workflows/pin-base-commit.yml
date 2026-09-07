@@ -37,6 +37,8 @@ jobs:
       commit: ${{ steps.pin.outputs.commit }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - id: pin
         env:
           BASE_REF: ${{ github.base_ref }}

@@ -58,6 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -107,6 +108,8 @@ jobs:
       FORMAL_AI_CI_VERBOSE: ${{ inputs.verbose || vars.FORMAL_AI_CI_VERBOSE || 'false' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -247,6 +250,8 @@ jobs:
       )
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v7

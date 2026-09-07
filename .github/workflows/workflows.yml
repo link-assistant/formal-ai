@@ -53,12 +53,26 @@ jobs:
 
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
-      #   docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12 -color
+      #   docker run --rm -v "$PWD:/repo" -w /repo \
+      #     rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -color
       #
       # `-verbose` costs one line per workflow and buys the one fact the exit
       # status does not carry: how many files were actually read. A silent 0 and
       # a 0 after "Found 0 errors in 19 files" are not the same result.
-      - uses: docker://rhysd/actionlint:1.7.12
+      #
+      # Pinned by digest, not by tag (issue #1079, defect D3). `.github/zizmor.yml`
+      # declares `'*': hash-pin` for every namespace this repository does not
+      # explicitly trust, and `rhysd/*` is not one of the trusted ones -- but that
+      # policy governs `unpinned-uses`, which only looks at action references.
+      # A container image is covered by the separate `unpinned-images` audit,
+      # which zizmor classifies as `pedantic`, and the Zizmor job below runs
+      # `--persona regular`. So the stated hash-pin policy did not reach the two
+      # images this pipeline runs, and `rhysd/actionlint:1.7.12` is a mutable
+      # Docker tag executing with the repository checked out. The digest is
+      # 1.7.12 as published on 2026-09-07; re-resolve it when bumping with
+      #   docker pull rhysd/actionlint:<tag> &&
+      #   docker inspect --format='{{index .RepoDigests 0}}' rhysd/actionlint:<tag>
+      - uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
         with:
           args: -color -verbose
 
@@ -77,7 +91,8 @@ jobs:
           set -euo pipefail
           canary=tests/fixtures/actionlint/shellcheck-canary.yml
           if docker run --rm -v "${PWD}:/repo" -w /repo \
-               rhysd/actionlint:1.7.12 -no-color "${canary}"; then
+               rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 \
+               -no-color "${canary}"; then
             echo "::error file=${canary}::actionlint accepted a workflow whose run: block does not parse. ShellCheck is not running, so every run: block above went unchecked."
             exit 1
           fi
@@ -102,9 +117,20 @@ jobs:
           persist-credentials: false
 
       # Reproduce locally with exactly this configuration:
-      #   pipx run zizmor==1.30.0 --config .github/zizmor.yml \
+      #   pipx run zizmor==1.29.0 --config .github/zizmor.yml \
       #     --min-confidence medium --persona regular \
       #     .github/workflows .github/actions
+      #
+      # 1.29.0, and `version:` set rather than left at its default, because
+      # "reproduce locally with X" is only true if CI runs X (issue #1079,
+      # defect D6). This comment said 1.30.0 and CI could not run it:
+      # `zizmor-action` resolves the version from a static table shipped inside
+      # the action (`support/versions`), and v0.6.2's table stops at 1.29.0 --
+      # its `latest` row is literally the same digest as its `1.29.0` row. So
+      # `latest` here does not float, it freezes, and it freezes one minor
+      # release behind what the comment told a maintainer to install. Naming
+      # the version makes the two agree and makes the next bump a visible line
+      # in the diff rather than a side effect of bumping the action.
       #
       # `inputs:` is not optional here even though it reads like it. The action
       # defaults it to `.`, i.e. the whole repository, and this repository keeps
@@ -127,3 +153,40 @@ jobs:
           config: .github/zizmor.yml
           inputs: .github/workflows .github/actions
           min-confidence: medium
+          version: 1.29.0
+
+      # The pass above runs `--persona regular`, which is the right default:
+      # pedantic turns up 164 findings here, nearly all of them stylistic, and
+      # a gate that cries wolf is a gate people learn to merge past. But the
+      # persona split is not "important vs. unimportant" -- `unpinned-images`
+      # is Pedantic, and it is the audit that enforces `'*': hash-pin` against
+      # container references. `.github/zizmor.yml` has declared that policy
+      # since issue #1076 and it has never once been applied to an image, which
+      # is how `docker://rhysd/actionlint:1.7.12` sat in the step above:
+      # a mutable third-party tag executing with the repository checked out,
+      # under a written policy forbidding exactly that (issue #1079, defect D3).
+      #
+      # There is no way to lift a single audit into the regular persona --
+      # zizmor 1.29/1.30 reject `rules.<audit>.persona` outright ("unknown
+      # field `persona`, expected one of `disable`, `ignore`, `config`,
+      # `remap`"), and `remap` only rewrites severity, which is not what filters
+      # the finding. So the whole persona is raised and then narrowed by
+      # severity *and* confidence, which is where `unpinned-images` sits and
+      # where the stylistic findings do not: 164 pedantic findings, 0 reported.
+      #
+      # Proof that it is a live gate rather than a decorative one, and the
+      # measurement above, are in
+      # `dev/log/issues/1079/pulls/1080/analysis/zizmor-narrow-pedantic-gate.md`:
+      # reverting the digest pin and dropping the stock image's explicit
+      # exception marker takes it to exit 14 with both findings named.
+      - name: 'Enforce the hash-pin policy on container images'
+        uses: zizmorcore/zizmor-action@v0.6.2
+        with:
+          advanced-security: false
+          annotations: true
+          config: .github/zizmor.yml
+          inputs: .github/workflows .github/actions
+          min-confidence: high
+          min-severity: high
+          persona: pedantic
+          version: 1.29.0

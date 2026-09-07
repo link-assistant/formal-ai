@@ -14,6 +14,29 @@
 # handing the lockfile to `cargo audit`. The ignore expires by itself: it fails
 # the moment the crate enters the build graph, and it fails just as loudly once
 # the vulnerable version leaves the lockfile and the entry is merely stale.
+#
+# Issue #1079 added a second proof form, because not every advisory this
+# repository must live with is unreachable. `fxhash` is genuinely compiled into
+# this binary, through `web-capture -> scraper -> selectors`, and no change in
+# this repository can take it out of the graph -- the fix is a version bump in
+# a dependency's manifest. Ignoring it under the `unreachable` form would have
+# meant writing a proof that is false. The honest form names the crate, names
+# the upstream report that will remove it, and expires the same way:
+#
+#     # <ADVISORY-ID> blocked-upstream = "<crate>@<version>" report = "<url>"
+#
+# `unreachable` fails when the crate *is* in the build graph; `blocked-upstream`
+# fails when it is *not*, which is exactly the moment the upstream fix has
+# landed and the entry should go. Neither can be written to mean "ignore this
+# forever".
+#
+# Issue #1079, defect D2: the audit itself now runs with `--deny warnings`.
+# `cargo audit` classifies `unmaintained`, `unsound` and `yanked` findings as
+# warnings, and a warning does not change its exit status -- it prints
+# "warning: N allowed warnings found" and exits 0. This workflow was green for
+# the whole time `Cargo.lock` pinned `chacha20 0.10.1`, a version its authors
+# had yanked. Reproduce the difference with
+# `experiments/issue-1079-cargo-audit-warning-exit-status.sh`.
 
 set -euo pipefail
 
@@ -51,11 +74,49 @@ while IFS= read -r advisory; do
     sed -n "s/^#[[:space:]]*${advisory}[[:space:]]\+unreachable[[:space:]]*=[[:space:]]*\"\([^\"]\+\)\".*/\1/p" \
       "$config" | head -n 1
   )"
-  if [[ -z "$spec" ]]; then
-    echo "::error::$config ignores $advisory without a proof line."
-    echo "  Add: # $advisory unreachable = \"<crate>@<version>\""
-    echo "  An advisory that cannot be proven unreachable must be fixed, not ignored."
+  blocked_spec="$(
+    sed -n "s/^#[[:space:]]*${advisory}[[:space:]]\+blocked-upstream[[:space:]]*=[[:space:]]*\"\([^\"]\+\)\".*/\1/p" \
+      "$config" | head -n 1
+  )"
+  report="$(
+    sed -n "s/^#[[:space:]]*${advisory}[[:space:]]\+blocked-upstream[[:space:]]*=.*[[:space:]]report[[:space:]]*=[[:space:]]*\"\([^\"]\+\)\".*/\1/p" \
+      "$config" | head -n 1
+  )"
+
+  if [[ -n "$spec" && -n "$blocked_spec" ]]; then
+    echo "::error::$config proves $advisory both ways."
+    echo "  An advisory is either unreachable or blocked upstream, never both."
     status=1
+    continue
+  fi
+
+  if [[ -z "$spec" && -z "$blocked_spec" ]]; then
+    echo "::error::$config ignores $advisory without a proof line."
+    echo "  Add one of:"
+    echo "    # $advisory unreachable = \"<crate>@<version>\""
+    echo "    # $advisory blocked-upstream = \"<crate>@<version>\" report = \"<url>\""
+    echo "  An advisory that can be neither proven unreachable nor traced to a"
+    echo "  filed upstream report must be fixed, not ignored."
+    status=1
+    continue
+  fi
+
+  if [[ -n "$blocked_spec" ]]; then
+    if [[ ! "$report" =~ ^https://github\.com/[^/]+/[^/]+/(issues|pull)/[0-9]+$ ]]; then
+      echo "::error::$config ignores $advisory as blocked upstream without a filed report."
+      echo "  Add: report = \"https://github.com/<owner>/<repo>/issues/<number>\""
+      echo "  \"Someone should fix this upstream\" is not a report; a URL is."
+      status=1
+      continue
+    fi
+    echo "Proving $advisory is still blocked upstream: $blocked_spec ($report)"
+    if ! tree="$(
+      cargo tree --locked --target all --all-features --edges all --invert "$blocked_spec" 2> /dev/null
+    )" || [[ -z "${tree//[[:space:]]/}" ]]; then
+      echo "::error::$config ignores $advisory for \`$blocked_spec\`, which no longer reaches the build graph."
+      echo "  The upstream fix has landed; drop the ignore (and its proof line) from $config."
+      status=1
+    fi
     continue
   fi
 
@@ -80,5 +141,9 @@ if [[ "$status" -ne 0 ]]; then
   exit "$status"
 fi
 
+# `--deny warnings` covers `unmaintained`, `unsound` and `yanked`, none of which
+# move the exit status on their own (issue #1079, defect D2). A yanked crate in
+# particular carries no advisory ID, so it cannot be silenced by an `ignore`
+# entry at all: the only way past this line is to change the lockfile.
 echo "Auditing $lock"
-cargo audit --file "$lock"
+cargo audit --file "$lock" --deny warnings

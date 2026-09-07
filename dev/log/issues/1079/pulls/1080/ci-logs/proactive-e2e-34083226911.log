@@ -1,0 +1,15 @@
+agent-cli-failure-report	Failed command proactively offers an issue report	﻿2026-09-07T04:32:30.2854872Z ##[group]Run experiments/agent_cli_e2e/run_issue_864.sh
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2855324Z ^[[36;1mexperiments/agent_cli_e2e/run_issue_864.sh^[[0m
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2891486Z shell: /usr/bin/bash -e {0}
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2891739Z env:
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2891939Z   CARGO_HOME: /home/runner/.cargo
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2892460Z   CARGO_INCREMENTAL: 0
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2892706Z   CARGO_TERM_COLOR: always
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2893030Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2893378Z   ACTIONS_CACHE_SERVICE_V2: on
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2893778Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2949125Z   ACTIONS_RUNTIME_TOKEN: ***
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2949401Z   SCCACHE_GHA_ENABLED: true
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2949650Z   RUSTC_WRAPPER: sccache
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:30.2949868Z ##[endgroup]
+agent-cli-failure-report	Failed command proactively offers an issue report	2026-09-07T04:32:32.2836008Z ##[error]Process completed with exit code 1.

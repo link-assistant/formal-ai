@@ -48,6 +48,7 @@ run_turn() {
       --disable-stdin \
       --model "formal-ai/formal-ai" \
       --no-summarize-session \
+      --compaction-models "(same)" \
       "$@" >> "$AGENT_LOG" 2>&1
 }
 

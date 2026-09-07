@@ -669,7 +669,7 @@ fn agent_cli_e2e_disables_hosted_session_summarization() {
     .expect("Agent CLI E2E harness");
 
     assert!(harness.contains(
-        "--no-summarize-session \\\n    --compaction-model same \\\n    --model \"formal-ai/formal-ai\""
+        "--no-summarize-session \\\n    --compaction-models \"(same)\" \\\n    --model \"formal-ai/formal-ai\""
     ));
     assert!(agent_e2e.contains("LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: \"false\""));
 
