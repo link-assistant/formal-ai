@@ -53,12 +53,26 @@ jobs:
 
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
-      #   docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12 -color
+      #   docker run --rm -v "$PWD:/repo" -w /repo \
+      #     rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -color
       #
       # `-verbose` costs one line per workflow and buys the one fact the exit
       # status does not carry: how many files were actually read. A silent 0 and
       # a 0 after "Found 0 errors in 19 files" are not the same result.
-      - uses: docker://rhysd/actionlint:1.7.12
+      #
+      # Pinned by digest, not by tag (issue #1079, defect D3). `.github/zizmor.yml`
+      # declares `'*': hash-pin` for every namespace this repository does not
+      # explicitly trust, and `rhysd/*` is not one of the trusted ones -- but that
+      # policy governs `unpinned-uses`, which only looks at action references.
+      # A container image is covered by the separate `unpinned-images` audit,
+      # which zizmor classifies as `pedantic`, and the Zizmor job below runs
+      # `--persona regular`. So the stated hash-pin policy did not reach the two
+      # images this pipeline runs, and `rhysd/actionlint:1.7.12` is a mutable
+      # Docker tag executing with the repository checked out. The digest is
+      # 1.7.12 as published on 2026-09-07; re-resolve it when bumping with
+      #   docker pull rhysd/actionlint:<tag> &&
+      #   docker inspect --format='{{index .RepoDigests 0}}' rhysd/actionlint:<tag>
+      - uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
         with:
           args: -color -verbose
 
@@ -77,7 +91,8 @@ jobs:
           set -euo pipefail
           canary=tests/fixtures/actionlint/shellcheck-canary.yml
           if docker run --rm -v "${PWD}:/repo" -w /repo \
-               rhysd/actionlint:1.7.12 -no-color "${canary}"; then
+               rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 \
+               -no-color "${canary}"; then
             echo "::error file=${canary}::actionlint accepted a workflow whose run: block does not parse. ShellCheck is not running, so every run: block above went unchecked."
             exit 1
           fi
