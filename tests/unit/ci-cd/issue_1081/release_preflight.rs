@@ -201,11 +201,16 @@ fn report_mode_states_the_problem_without_failing_the_run() {
     assert!(!report.contains("::error::"), "{report}");
 }
 
-/// The probe must leave nothing behind in the registry it probed.
+/// The probe must leave nothing behind in the registry it probed -- and no
+/// credential in the one place a secret cannot be taken back from. An argument
+/// list is world-readable while the process lives (`/proc/<pid>/cmdline`, `ps`),
+/// so the tokens have to travel to curl by another route; the stub records the
+/// two channels separately, and this test reads both.
 #[test]
 fn every_opened_blob_upload_session_is_cancelled() {
     let dir = sandbox();
     let log = dir.join("calls.log");
+    let config_log = dir.join("config.log");
     let path = format!(
         "{}:{}",
         dir.display(),
@@ -217,6 +222,7 @@ fn every_opened_blob_upload_session_is_cancelled() {
         .env("PATH", path)
         .env("FAKE_CURL_ROUTES", EVERYTHING_PUBLISHABLE)
         .env("FAKE_CURL_LOG", &log)
+        .env("FAKE_CURL_CONFIG_LOG", &config_log)
         .env("CARGO_TOKEN", "cargo-token")
         .env("GHCR_IMAGE", "ghcr.io/link-assistant/formal-ai")
         .env("GITHUB_TOKEN", "job-token")
@@ -229,6 +235,8 @@ fn every_opened_blob_upload_session_is_cancelled() {
         .output()
         .expect("the preflight must run");
     let calls = fs::read_to_string(&log).expect("the stub must record its calls");
+    let configs =
+        fs::read_to_string(&config_log).expect("the stub must record what it read on stdin");
     fs::remove_dir_all(&dir).ok();
     assert!(output.status.success(), "{}", stdout(&output));
     assert_eq!(
@@ -241,9 +249,22 @@ fn every_opened_blob_upload_session_is_cancelled() {
         2,
         "each opened session must be cancelled: {calls}"
     );
+    for secret in ["cargo-token", "hub-token", "job-token"] {
+        assert!(
+            !calls.contains(secret),
+            "no credential may reach the argument list of a logged call: {calls}"
+        );
+    }
+    // The credential still has to be sent, or the probe proves nothing: the
+    // same assertion passes trivially for a script that authenticates with
+    // nothing at all.
     assert!(
-        !calls.contains("cargo-token"),
-        "no credential may reach the argument list of a logged call: {calls}"
+        configs.contains("Authorization: cargo-token"),
+        "the crates.io token must still reach curl, by the private channel: {configs}"
+    );
+    assert!(
+        configs.contains("Authorization: Bearer"),
+        "the registry bearer token must still reach curl, by the private channel: {configs}"
     );
 }
 

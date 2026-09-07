@@ -5,6 +5,11 @@
 # so its tests have to be able to say "ghcr answers 403" without a network. Each
 # line of $FAKE_CURL_ROUTES is "<url-substring> <status> [body]"; the first
 # matching line wins, and every invocation is appended to $FAKE_CURL_LOG.
+#
+# The preflight passes its credentials in a `-K -` config document rather than
+# in `-H` arguments, so this stub reads stdin and records it in
+# $FAKE_CURL_CONFIG_LOG -- kept apart from $FAKE_CURL_LOG so a test can assert
+# both halves of that property: the header was sent, and it was not in argv.
 set -uo pipefail
 
 out=""
@@ -21,8 +26,17 @@ while [ $i -lt ${#args[@]} ]; do
   i=$((i + 1))
 done
 
+config=""
+if [ ! -t 0 ]; then
+  config="$(cat)"
+fi
+
 if [ -n "${FAKE_CURL_LOG:-}" ]; then
   printf '%s\n' "$*" >> "$FAKE_CURL_LOG"
+fi
+
+if [ -n "${FAKE_CURL_CONFIG_LOG:-}" ]; then
+  printf '%s\n' "$config" >> "$FAKE_CURL_CONFIG_LOG"
 fi
 
 status=000

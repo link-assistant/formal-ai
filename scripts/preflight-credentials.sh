@@ -107,14 +107,39 @@ record() { # record <verified|failed|unknown> <check> <detail>
   trace "$1: $2 -- $3"
 }
 
+# Headers for the next request, set by the caller immediately before it calls
+# `http_status`. They travel to curl through a config document on stdin rather
+# than through `-H` arguments, because an argument list is not private: every
+# process on the runner can read /proc/<pid>/cmdline while curl is alive, and
+# `ps` prints it. A publish token in argv is a secret published to the machine.
+curl_headers=()
+
+# Quote one value the way `curl -K` reads it: a double-quoted string in which
+# backslash escapes the next character.
+curl_quote() { # curl_quote <value>
+  local value="$1"
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  printf '%s' "$value"
+}
+
+curl_config() { # curl_config -- the document curl reads on stdin via `-K -`
+  local header
+  for header in ${curl_headers+"${curl_headers[@]}"}; do
+    printf 'header = "%s"\n' "$(curl_quote "$header")"
+  done
+}
+
 # Echo the HTTP status of one request, or 000 when curl could not speak at all.
 # Retries only what a retry can fix: a transport error, a 5xx or a 429.
+# Consumes ${curl_headers[@]}; the caller sets it before every call.
 http_status() { # http_status <body-file> [curl args...]
   local body="$1"
   shift
-  local attempt=1 status
+  local attempt=1 status config
+  config="$(curl_config)"
   while :; do
-    status="$(curl -sS -o "$body" -w '%{http_code}' -A "$user_agent" "$@" 2>/dev/null || echo 000)"
+    status="$(printf '%s' "$config" | curl -sS -o "$body" -w '%{http_code}' -A "$user_agent" -K - "$@" 2>/dev/null)" || status=000
     case "$status" in
       000 | 429 | 5??)
         if [ "$attempt" -ge "$retries" ]; then break; fi
@@ -142,7 +167,9 @@ check_crates_io() {
 
   local body status
   body="$(mktemp)"
-  status="$(http_status "$body" -H "Authorization: ${token}" "${CRATES_IO_API}/me")"
+  curl_headers=("Authorization: ${token}")
+  status="$(http_status "$body" "${CRATES_IO_API}/me")"
+  curl_headers=()
   trace "crates.io /me -> HTTP ${status}"
   case "$status" in
     200)
@@ -168,6 +195,7 @@ check_crates_io_ownership() { # check_crates_io_ownership <login>
   local login="$1"
   local body status
   body="$(mktemp)"
+  curl_headers=()
   status="$(http_status "$body" "${CRATES_IO_API}/crates/${CRATE_NAME}/owners")"
   trace "crates.io owners -> HTTP ${status}"
   case "$status" in
@@ -200,8 +228,10 @@ probe_registry_push() { # probe_registry_push <check> <registry> <token-endpoint
   headers="$(mktemp)"
   basic="$(printf '%s:%s' "$user" "$password" | base64 | tr -d '\n')"
 
-  status="$(http_status "$body" -H "Authorization: Basic ${basic}" \
+  curl_headers=("Authorization: Basic ${basic}")
+  status="$(http_status "$body" \
     "${token_endpoint}?service=${service}&scope=repository:${repository}:pull,push")"
+  curl_headers=()
   trace "${check}: token endpoint -> HTTP ${status}"
   if [ "$status" != "200" ]; then
     if [ "$status" = "401" ] || [ "$status" = "403" ]; then
@@ -221,9 +251,10 @@ probe_registry_push() { # probe_registry_push <check> <registry> <token-endpoint
     return
   fi
 
+  curl_headers=("Authorization: Bearer ${bearer}" "Content-Length: 0")
   status="$(http_status /dev/null -D "$headers" -X POST \
-    -H "Authorization: Bearer ${bearer}" -H "Content-Length: 0" \
     "${registry}/v2/${repository}/blobs/uploads/")"
+  curl_headers=()
   trace "${check}: blob upload session -> HTTP ${status}"
   case "$status" in
     201 | 202)
@@ -234,7 +265,9 @@ probe_registry_push() { # probe_registry_push <check> <registry> <token-endpoint
           /*) location="${registry}${location}" ;;
         esac
         trace "${check}: cancelling the session"
-        http_status /dev/null -X DELETE -H "Authorization: Bearer ${bearer}" "$location" > /dev/null
+        curl_headers=("Authorization: Bearer ${bearer}")
+        http_status /dev/null -X DELETE "$location" > /dev/null
+        curl_headers=()
       fi
       ;;
     401 | 403)

@@ -250,6 +250,18 @@ find, which is what a pull request from a fork — where the secrets do not
 exist — has to do. The five cases are exercised without a network in
 `experiments/issue_1081_preflight/`, where `fake-curl.sh` answers.
 
+One property of the probe is worth stating separately, because the first
+version of the script got it wrong: the credentials must not reach `curl`'s
+**argument list**. `/proc/<pid>/cmdline` is world-readable and `ps` prints it,
+so a `-H "Authorization: <token>"` publishes the secret to every process on the
+runner for as long as the request takes — a check that verifies a credential by
+disclosing it. The headers now travel in a `curl -K -` config document on
+stdin, which no other process can read. `every_opened_blob_upload_session_is_cancelled`
+asserts both halves: no credential in the recorded argument lists, *and* the
+`Authorization` header still present in what curl read on stdin — the second
+assertion is what stops the first from being satisfied by sending no
+credential at all.
+
 ### 4.6 D18: the scan that had the bug it was looking for
 
 `every_standalone_script_test_suite_is_run_by_something` asks whether each
