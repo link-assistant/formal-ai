@@ -39,6 +39,7 @@ mod intent_router;
 pub mod learning_report;
 pub mod ledger;
 pub(crate) mod lexicon;
+pub mod link_edit_rules;
 mod local_search;
 pub mod meaning_detail;
 pub mod mutating_action;
@@ -121,6 +122,7 @@ pub use learning_report::self_hosting_learning::{
 };
 pub use learning_report::{LearningReport, REPORTS};
 pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
+pub use link_edit_rules::{apply_link_edit, insert_members_via_links, rule_shapes, LinkEditError, LinkEditReport, LinkEditRule, RuleShape};
 pub use meaning_detail::{
     concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
 };

@@ -78,6 +78,7 @@ mod issue_1069_identifier_rename;
 mod issue_1069_ladder_change_tasks;
 mod issue_1069_structural_edit;
 mod issue_1073_reasoning_standard;
+mod issue_1085_link_edit_rules;
 mod issue_1963;
 mod issue_337;
 mod issue_403;

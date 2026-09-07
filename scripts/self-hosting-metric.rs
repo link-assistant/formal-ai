@@ -41,13 +41,13 @@ mod attribution;
 #[path = "self-hosting-replay.rs"]
 mod replay;
 #[allow(unused_imports)]
-pub use replay::replay_epoch;
-use replay::pull_request_authors;
-#[allow(unused_imports)]
 pub use attribution::{
     HOSTED_MODEL_MARKERS, MODEL_TRAILER, NON_BEHAVIOUR_PREFIXES, hosted_model_marker,
     is_non_authored_path,
 };
+use replay::pull_request_authors;
+#[allow(unused_imports)]
+pub use replay::replay_epoch;
 #[path = "self-development-loop.rs"]
 mod self_development_loop;
 #[allow(unused_imports)]

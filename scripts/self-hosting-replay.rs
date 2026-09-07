@@ -14,7 +14,12 @@ use super::{
 pub(super) fn pull_request_authors(pull_requests: &[String]) -> Vec<String> {
     pull_requests
         .iter()
-        .map(|reference| format!("{reference} {}", super::attribution::pull_request_author(reference)))
+        .map(|reference| {
+            format!(
+                "{reference} {}",
+                super::attribution::pull_request_author(reference)
+            )
+        })
         .collect()
 }
 
@@ -69,4 +74,3 @@ pub fn replay_epoch(
     }
     Ok(appended)
 }
-

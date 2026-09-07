@@ -103,7 +103,9 @@ fn an_ineligible_cycle_is_reported_red_without_gating_the_release() {
         "DEFERRAL_BUDGET_FRAGMENTS",
     ] {
         assert!(
-            !policy.contains(forbidden) && !preflight.contains(forbidden) && !status.contains(forbidden),
+            !policy.contains(forbidden)
+                && !preflight.contains(forbidden)
+                && !status.contains(forbidden),
             "the self-development path must carry no deferral machinery, found `{forbidden}`"
         );
     }

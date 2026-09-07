@@ -128,8 +128,7 @@ fn fixture_repo() -> PathBuf {
 #[test]
 fn release_cycle_requires_a_session_backed_merged_pull_request() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("evidence/direct"))
-        .expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence/direct")).expect("evidence directory must be created");
     fs::write(
         repo.join("evidence/direct/session.txt"),
         "formal-ai session direct-session model formal-ai/fixture\n",
@@ -565,8 +564,7 @@ fn trailers_are_recognized_even_when_separated_by_blank_lines() {
 #[test]
 fn a_committed_evidence_directory_resolves_its_nested_transcripts() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("evidence/session"))
-        .expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence/session")).expect("evidence directory must be created");
     fs::write(
         repo.join("evidence/session/agent-cli.log"),
         "formal-ai session bundled-session model formal-ai/fixture\n",
@@ -884,10 +882,9 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
         version_script.contains("record_release_with_policy"),
         "every release still records its self-hosting row"
     );
-    let status_workflow = fs::read_to_string(
-        root.join(".github/workflows/self-development-status.yml"),
-    )
-    .expect("self-development status workflow must be readable");
+    let status_workflow =
+        fs::read_to_string(root.join(".github/workflows/self-development-status.yml"))
+            .expect("self-development status workflow must be readable");
     assert!(
         status_workflow.contains("scripts/check-self-development-release.rs"),
         "the floor is still checked, from its own workflow"

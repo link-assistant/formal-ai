@@ -2,7 +2,6 @@
 
 [![CI/CD Pipeline](https://github.com/link-assistant/formal-ai/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/release.yml)
 [![Desktop Release](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml)
-[![Self-development status](https://github.com/link-assistant/formal-ai/actions/workflows/self-development-status.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/self-development-status.yml)
 [![Crates.io](https://img.shields.io/crates/v/formal-ai?label=crates.io&style=flat)](https://crates.io/crates/formal-ai)
 [![Docs.rs](https://img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat)](https://docs.rs/formal-ai)
 [![Rust Version](https://img.shields.io/badge/rust-1.98%2B-blue.svg)](https://www.rust-lang.org/)
@@ -1026,7 +1025,7 @@ assert_eq!(
 
 How much of each release the formal-ai model authored is recorded in
 `data/meta/self-hosting-ledger.lino` and reported red-until-true by the
-[Self-development status](https://github.com/link-assistant/formal-ai/actions/workflows/self-development-status.yml)
+[Self-development status](.github/workflows/self-development-status.yml)
 workflow on every push to `main`. Since issue
 [#1085](https://github.com/link-assistant/formal-ai/issues/1085) the metric
 (version 3) counts a commit only when its `Formal-AI-Model` trailer names

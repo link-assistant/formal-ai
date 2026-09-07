@@ -18,7 +18,7 @@ use serde_json::json;
 
 use super::code_artifact::{latest_result, source_from_read_result};
 use super::code_task::{render_seeded_change, render_seeded_outcome};
-use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -115,9 +115,7 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
     let lexicon = seed::lexicon();
     let changes_a_file = lexicon.mentions_role(seed::ROLE_FILE_WRITE_ACTION_CUE, &normalized)
         || lexicon.mentions_role(seed::ROLE_FILE_EDIT_ACTION_CUE, &normalized);
-    if !changes_a_file
-        || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_LIST_KIND, &normalized)
-    {
+    if !changes_a_file || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_LIST_KIND, &normalized) {
         return None;
     }
 
@@ -233,6 +231,13 @@ struct Literal {
 /// missing is discovered from the target's bytes, so it is knowledge only this
 /// function has. It is empty when the list already held everything asked for.
 fn insert_members(source: &str, edit: &MemberInsertion) -> Option<(String, Vec<String>)> {
+    // Issue #1085 (D2.1): a links-network substitution first; the byte path
+    // below remains for shapes the rule file does not declare.
+    if let Some(updated) = edit.named.first().and_then(|list| {
+        super::link_edit_rules::insert_members_via_links(source, list, &edit.values)
+    }) {
+        return Some(updated);
+    }
     let (regions, literals) = scan(source);
     let anchor = anchor_by_members(&regions, &literals, &edit.values)
         .or_else(|| anchor_by_name(source, &regions, &literals, &edit.named))?;
@@ -428,7 +433,10 @@ fn scan(source: &str) -> (Vec<Region>, Vec<Literal>) {
                 literals.push(Literal {
                     start: index,
                     end: closing + 1,
-                    value: source.get(index + 1..closing).unwrap_or_default().to_owned(),
+                    value: source
+                        .get(index + 1..closing)
+                        .unwrap_or_default()
+                        .to_owned(),
                     enclosing: open_stack.last().map(|(_, open)| *open),
                 });
                 index = closing + 1;
@@ -541,8 +549,12 @@ fn looks_like_a_declared_name(token: &str) -> bool {
     valid_identifier(token)
         && token.len() > 1
         && (token.contains('_')
-            || token.chars().all(|character| !character.is_ascii_lowercase())
-            || (token.chars().any(|character| character.is_ascii_uppercase())
+            || token
+                .chars()
+                .all(|character| !character.is_ascii_lowercase())
+            || (token
+                .chars()
+                .any(|character| character.is_ascii_uppercase())
                 && !token.starts_with(|character: char| character.is_ascii_uppercase())))
 }
 
@@ -558,9 +570,7 @@ fn bare_source_paths(task: &str, literal_spans: &[(usize, usize)]) -> Vec<(usize
         .chain(std::iter::once((task.len(), task.len())))
     {
         if let Some(gap) = task.get(cursor..start) {
-            paths.extend(
-                prose_path_tokens(gap).map(|(offset, path)| (cursor + offset, path)),
-            );
+            paths.extend(prose_path_tokens(gap).map(|(offset, path)| (cursor + offset, path)));
         }
         cursor = end.max(cursor);
     }

@@ -28,6 +28,7 @@ kernel_ratchet
   kernel_path "src/substitution.rs"
   kernel_path "src/substitution_compiler/"
   kernel_path "src/recipe_interpreter.rs"
+  kernel_path "src/agentic_coding/link_edit_rules.rs"
   kernel_path "src/event_log.rs"
   kernel_path "src/memory.rs"
   kernel_path "src/memory/"
@@ -48,8 +49,8 @@ kernel_ratchet
   kernel_path "src/trace_record.rs"
   ceiling
     measure non_kernel_rust_lines
-    value 142684
-    how "lines of every src/**/*.rs file that is not under a kernel_path"
+    value 112982
+    how "non-blank, non-comment lines of every src/**/*.rs file that is not under a kernel_path, measured at the commit that set the ceiling"
   ceiling
     measure handler_files
     value 43
@@ -57,11 +58,11 @@ kernel_ratchet
   ceiling
     measure handler_migration_pending
     value 51
-    how "occurrences of `status pending` in data/meta/handler-migration-ledger.lino"
+    how "occurrences of the phrase status pending in data/meta/handler-migration-ledger.lino"
   ceiling
     measure literal_predicates_outside_kernel
     value 526
-    how "occurrences of `contains(\"` and `starts_with(\"` in non-kernel src/**/*.rs"
+    how "occurrences of a contains( or starts_with( call with a double-quoted first argument in non-kernel src/**/*.rs"
   ceiling
     measure hardcoded_language_rows
     value 1299

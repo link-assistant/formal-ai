@@ -151,15 +151,21 @@ fn measure(root: &Path, ratchet: &Ratchet) -> Result<BTreeMap<String, u64>, Stri
         if is_kernel(&path, &ratchet.kernel_paths) {
             continue;
         }
-        non_kernel_lines += text.lines().count() as u64;
-        literals += (text.matches("contains(\"").count() + text.matches("starts_with(\"").count())
-            as u64;
+        // Code lines only: a blank line or a comment is not behaviour, so
+        // neither deleting prose nor adding it can move this measure.
+        non_kernel_lines += text
+            .lines()
+            .map(str::trim_start)
+            .filter(|line| !line.is_empty() && !line.starts_with("//"))
+            .count() as u64;
+        literals +=
+            (text.matches("contains(\"").count() + text.matches("starts_with(\"").count()) as u64;
     }
     let handler_ledger = fs::read_to_string(root.join(HANDLER_LEDGER))
         .map_err(|error| format!("{HANDLER_LEDGER}: {error}"))?;
     let pending = handler_ledger.matches("status pending").count() as u64;
-    let allowlist =
-        fs::read_to_string(root.join(ALLOWLIST)).map_err(|error| format!("{ALLOWLIST}: {error}"))?;
+    let allowlist = fs::read_to_string(root.join(ALLOWLIST))
+        .map_err(|error| format!("{ALLOWLIST}: {error}"))?;
     let rows = allowlist
         .lines()
         .filter(|line| !line.trim().is_empty() && !line.starts_with('#'))
@@ -192,11 +198,17 @@ fn check_measured(ratchet: &Ratchet, measured: &BTreeMap<String, u64>) -> Vec<St
 }
 
 /// No ceiling higher than before; with `strict_shrink`, the line ceiling lower.
-fn check_against_previous(previous: &Ratchet, current: &Ratchet, strict_shrink: bool) -> Vec<String> {
+fn check_against_previous(
+    previous: &Ratchet,
+    current: &Ratchet,
+    strict_shrink: bool,
+) -> Vec<String> {
     let mut failures = Vec::new();
     for (name, before) in &previous.ceilings {
         let Some(now) = current.ceilings.get(name) else {
-            failures.push(format!("ceiling `{name}` was removed; a ratchet is not lowered by deleting it"));
+            failures.push(format!(
+                "ceiling `{name}` was removed; a ratchet is not lowered by deleting it"
+            ));
             continue;
         };
         if now > before {
@@ -233,7 +245,9 @@ fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
 fn ratchet_at(repo: &Path, revision: &str) -> Result<Option<Ratchet>, String> {
     match git(repo, &["show", &format!("{revision}:{LEDGER}")]) {
         Ok(text) => parse_ratchet(&text).map(Some),
-        Err(error) if error.contains("does not exist") || error.contains("exists on disk, but not in") => {
+        Err(error)
+            if error.contains("does not exist") || error.contains("exists on disk, but not in") =>
+        {
             Ok(None)
         }
         Err(error) => Err(error),
@@ -282,7 +296,8 @@ fn run() -> Result<(), String> {
     } else {
         options.repo.clone()
     };
-    let text = fs::read_to_string(repo.join(LEDGER)).map_err(|error| format!("{LEDGER}: {error}"))?;
+    let text =
+        fs::read_to_string(repo.join(LEDGER)).map_err(|error| format!("{LEDGER}: {error}"))?;
     let ratchet = parse_ratchet(&text)?;
     let measured = measure(&repo, &ratchet)?;
     println!("kernel ratchet ({LEDGER}):");
@@ -296,16 +311,31 @@ fn run() -> Result<(), String> {
 
     if let Some(base) = &options.base {
         match ratchet_at(&repo, base) {
-            Ok(Some(previous)) => failures.extend(check_against_previous(&previous, &ratchet, false)),
+            Ok(Some(previous)) => {
+                failures.extend(check_against_previous(&previous, &ratchet, false))
+            }
             Ok(None) => println!("  ({base} has no {LEDGER}; nothing to compare against)"),
             Err(error) => println!("  (skipping the base comparison: {error})"),
         }
     }
     if options.release {
-        let tag = git(&repo, &["describe", "--tags", "--match", "v[0-9]*", "--abbrev=0", "HEAD"])?;
+        let tag = git(
+            &repo,
+            &[
+                "describe",
+                "--tags",
+                "--match",
+                "v[0-9]*",
+                "--abbrev=0",
+                "HEAD",
+            ],
+        )?;
         match ratchet_at(&repo, &tag)? {
             Some(previous) => {
-                println!("  previous tag {tag}: {SHRINK_MEASURE} ceiling {}", previous.ceilings[SHRINK_MEASURE]);
+                println!(
+                    "  previous tag {tag}: {SHRINK_MEASURE} ceiling {}",
+                    previous.ceilings[SHRINK_MEASURE]
+                );
                 failures.extend(check_against_previous(&previous, &ratchet, true));
             }
             None => failures.push(format!(
@@ -410,11 +440,15 @@ mod tests {
                 .unwrap_or(root)
         };
         if !root.join(LEDGER).is_file() {
-            eprintln!("repository root not found from {}; skipping", root.display());
+            eprintln!(
+                "repository root not found from {}; skipping",
+                root.display()
+            );
             return;
         }
-        let ratchet = parse_ratchet(&fs::read_to_string(root.join(LEDGER)).expect("ledger readable"))
-            .expect("ledger parses");
+        let ratchet =
+            parse_ratchet(&fs::read_to_string(root.join(LEDGER)).expect("ledger readable"))
+                .expect("ledger parses");
         let measured = measure(&root, &ratchet).expect("measurement runs");
         let failures = check_measured(&ratchet, &measured);
         assert!(failures.is_empty(), "{failures:?}");
