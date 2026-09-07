@@ -17,7 +17,15 @@ concurrency:
 jobs:
   stock-rust-install:
     runs-on: ubuntu-latest
-    container: rust:1.98-slim-bookworm
+    # Deliberately a mutable tag, and the one place in this pipeline where that
+    # is the point: this job exists to prove `cargo install` succeeds on the
+    # stock published Rust image, exactly as a user would get it. Pinning the
+    # digest would test a frozen snapshot of that image and stop testing the
+    # thing users actually pull. Every other image reference in `.github/` is
+    # digest-pinned (issue #1079, defect D3); this is the documented exception,
+    # and the narrow pedantic zizmor pass in `workflows.yml` fails on any new
+    # unpinned image that does not carry the same explicit marker.
+    container: rust:1.98-slim-bookworm # zizmor: ignore[unpinned-images]
     timeout-minutes: 40
     env:
       CARGO_INSTALL_ROOT: /tmp/formal-ai-install
