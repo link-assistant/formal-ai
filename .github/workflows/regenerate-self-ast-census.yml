@@ -3,12 +3,23 @@ name: Regenerate self-AST census
 # Issue #1085. The per-module census under `data/meta/self-ast/` is a pure
 # function of the sources (`cargo run --example regenerate_self_ast_census`),
 # and `tests/unit/issue_673_self_ast_census.rs` fails on drift. A contributor
-# whose machine cannot build the crate has no way to regenerate it; this
-# dispatchable job builds it here and hands the documents back as an artifact
-# to commit. It writes nothing to the repository.
+# whose machine cannot build the crate has no way to regenerate it; this job
+# builds it here on every pull request that touches a source module and hands
+# the documents back as an artifact to commit. It writes nothing to the
+# repository. `workflow_dispatch` only resolves on the default branch, which
+# is why the pull-request trigger exists.
 
 on:
+  pull_request:
+    paths:
+      - 'src/**/*.rs'
+      - 'examples/regenerate_self_ast_census.rs'
+      - '.github/workflows/regenerate-self-ast-census.yml'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 permissions:
   contents: read
