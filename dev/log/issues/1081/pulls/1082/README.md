@@ -155,6 +155,7 @@ exercised by the step that publishes with them, 90 minutes in (D15).
 | D16 | `pipeline_workflows()` could not splice a reusable workflow with more than one job | false positive | **fixed** — it asserted one job per called workflow and panicked on the two-job `macos-core-tests.yml` |
 | D17 | `job_needs` returned `""` for a `needs:` list written across several lines | false negative | **fixed** |
 | D18 | The scan in `issue_1081.rs` that checks "is this script's suite run by anything" had two false negatives of its own | false negative | **fixed** — see §4.6 |
+| D19 | `Broken Link Checker` failed on a healthy URL 1.5s into a step configured for six retries: lychee never retries a connection reset that arrives during connect | false positive | **fixed** — `scripts/recheck-broken-links.mjs`, because the setting that was supposed to cover this cannot; see §4.7 |
 
 D16, D17 and D18 are defects in the *tests added by this pull request*. They
 are listed because they are the same class as the ones the issue is about, and
@@ -278,7 +279,72 @@ suite that already had one. Found by comparing the Rust helper against the
 shell implementation in `scripts/test-scripts.sh`, which reads both
 directories; the two now agree.
 
-### 4.7 What was checked and found clean
+### 4.7 D19: the retry that was never running
+
+Run
+[34134986294](https://github.com/link-assistant/formal-ai/actions/runs/34134986294)
+failed `Broken Link Checker` on commit `11b399ab` with
+
+```text
+[ERROR] https://allenai.org/data/arc (at 226:27) | Network error: Connection reset by peer (os error 104)
+```
+
+The host answers 200 from a workstation and answered 200 on the next run, so
+the finding is a false positive. The interesting number is the timestamp: the
+failure is 1.5 seconds into a step configured with `--max-retries 6
+--retry-wait-time 2`. Six retries with a growing wait cannot fit inside 1.5
+seconds — the retries were not running at all.
+
+Issue #1045 had already seen this failure and answered it by raising
+`--max-retries` to 6. That is why it came back: the setting does not cover this
+class at any value. `lychee-lib/src/retry.rs` decides retryability by the phase
+the error occurred in before it looks at what the error was:
+
+```rust
+} else if self.is_connect() {
+    false
+```
+
+while `should_retry_io`, further down the same file, lists
+`ConnectionReset | ConnectionAborted | TimedOut` as retryable. A reset during
+connect or the TLS handshake is `is_connect()`, so it never reaches the
+classifier written for it. The same crate's *message* path
+(`utils/reqwest.rs::analyze_error_source_chain`) walks that source chain
+successfully and prints the io kind — so the information is available at the
+moment the retry decision is made, and is not consulted.
+
+Measured rather than inferred. `experiments/issue-1081-lychee-connect-retry/`
+runs a server that resets every connection, once on accept and once after
+reading the request, and counts the connections lychee opens:
+
+```text
+https://127.0.0.1:8443 (reset on accept)         -> 1 connection attempt  in 0s
+http://127.0.0.1:8080  (reset after the request) -> 6 connection attempts in 62s
+```
+
+Same reset, same server, same flags; 1 attempt against 6, decided by which side
+of the connect boundary it lands on.
+
+The fix moves the retry outside lychee, because none of lychee's escape hatches
+can name a failure that has no status code: `--accept` and
+`--cache-exclude-status` both take codes, and `--exclude` would suppress the
+link permanently. `scripts/recheck-broken-links.mjs` splits the report into
+failures a host *answered* (numeric marker, or `Rejected status code` in the
+detail) and failures nobody answered (`[ERROR]`, `[TIMEOUT]`, `[UNKNOWN]`), and
+re-asks only the second set — round-robin, with a doubling wait and a budget
+that expires before the job cap. A `404` is an answer and is never re-checked,
+which is the property that keeps this from hiding real breakage. The script
+exits 0 unconditionally: it can downgrade a failure, it can never raise one.
+
+`--max-retries` stays in the workflow. It still covers the classes lychee does
+retry; it was never the thing that was wrong.
+
+Filed upstream against lychee with the reproduction and a patch, and against
+all five templates, which run the same `--max-retries 3` and have no re-check:
+`upstream-reports/lychee-connect-phase-reset-not-retried.md` and
+`upstream-reports/templates-link-check-unanswered-retry.md`.
+
+### 4.8 What was checked and found clean
 
 Recorded so the next round does not re-measure it:
 
@@ -307,7 +373,7 @@ Recorded so the next round does not re-measure it:
 
 ### R1 — every false positive, false negative, warning and error
 
-Eighteen defects, seventeen fixed here and one (D7) reported with its
+Nineteen defects, eighteen fixed here and one (D7) reported with its
 measurement. The root cause common to D1, D2, D3, D5, D10 and D11 is a single
 inverted assumption: **a budget was treated as a property of the pipeline
 rather than a claim about the work.** Once a budget is a claim, it can be
@@ -319,6 +385,13 @@ The root cause common to D4, D8, D9, D14 and D15 is different and simpler: a
 true statement was being produced in a place nobody reads — a missing run, a
 `skipped` conclusion, a stats line, an uncompiled test file, an unexercised
 credential. Each fix turns one of those into an annotation or a gate.
+
+D19 belongs to neither group and is the one the issue names most directly. A
+previous round had already seen the failure and answered it with a setting; the
+setting was incapable of covering that failure, so the false positive returned
+unchanged. Its root cause is in a dependency rather than here, which is why the
+fix is a re-check placed outside the tool and the finding is filed upstream
+with a patch.
 
 ### R2 — compare all files against five templates
 
