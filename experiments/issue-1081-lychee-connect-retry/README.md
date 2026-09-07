@@ -72,6 +72,36 @@ fn should_retry_io(error: &io::Error) -> bool {
 branch and never reaches `should_retry_io` — where that exact kind is listed as
 retryable. `--max-retries` is inert for this class of failure at any value.
 
+That branch is only half of it. Letting the connect case fall through to
+`should_retry_io` changes nothing, because the io error the source chain
+exposes has kind `Other`:
+
+```text
+DEBUG is_connect=true io_source=Some(Other) inner=Some("Connection reset by peer (os error 104)")
+      inner_is_io=Some(true) inner_kind=Some(ConnectionReset)
+      chain=["client error (Connect)", "Connection reset by peer (os error 104)"]
+```
+
+The kind that decides the question is on an `io::Error` stored *inside* that
+one, reachable through `io::Error::get_ref` — and not through `source()`, whose
+`io::Error` implementation forwards to the inner error's own source and skips
+the inner error itself. lychee's message path already unwraps this exact
+wrapper (`utils/reqwest.rs::analyze_io_other_error` calls `get_ref` and
+pattern-matches the inner message); the retry path does not.
+
+## The fix, verified
+
+`upstream-reports/lychee-connect-phase-retry.patch` in this repository's dev log
+changes both halves: the `is_connect()` branch consults `should_retry_io`, and
+`should_retry_io` unwraps an inner `io::Error` before giving up. Applied to
+`master` at `81cb43e1`, built, and measured with the same script:
+
+```text
+before:  https://127.0.0.1:8443 (immediate)     -> 1 connection attempt  in 0s
+after:   https://127.0.0.1:8443 (immediate)     -> 6 connection attempts in 62s
+         http://127.0.0.1:8080  (after-request) -> 6 connection attempts in 63s  (unchanged)
+```
+
 ## Running it
 
 ```sh

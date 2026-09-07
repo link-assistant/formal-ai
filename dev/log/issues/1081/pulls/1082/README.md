@@ -308,10 +308,24 @@ the error occurred in before it looks at what the error was:
 while `should_retry_io`, further down the same file, lists
 `ConnectionReset | ConnectionAborted | TimedOut` as retryable. A reset during
 connect or the TLS handshake is `is_connect()`, so it never reaches the
-classifier written for it. The same crate's *message* path
-(`utils/reqwest.rs::analyze_error_source_chain`) walks that source chain
-successfully and prints the io kind — so the information is available at the
-moment the retry decision is made, and is not consulted.
+classifier written for it.
+
+Removing that branch is not enough, which is only visible by instrumenting the
+build. The io error the source chain exposes has kind `Other`; the real
+`ConnectionReset` is on an `io::Error` stored *inside* it, reachable through
+`io::Error::get_ref` and not through `source()`, whose `io::Error`
+implementation forwards to the inner error's own source and skips the inner
+error itself:
+
+```text
+DEBUG is_connect=true io_source=Some(Other) inner=Some("Connection reset by peer (os error 104)")
+      inner_is_io=Some(true) inner_kind=Some(ConnectionReset)
+```
+
+The same crate's *message* path unwraps that exact wrapper — `analyze_io_error`
+routes `ErrorKind::Other` to `analyze_io_other_error`, which calls `get_ref()`
+and pattern-matches the inner message. One half of the crate reads through the
+wrapper by string matching; the other half returns `false` without looking.
 
 Measured rather than inferred. `experiments/issue-1081-lychee-connect-retry/`
 runs a server that resets every connection, once on accept and once after
@@ -339,9 +353,19 @@ exits 0 unconditionally: it can downgrade a failure, it can never raise one.
 `--max-retries` stays in the workflow. It still covers the classes lychee does
 retry; it was never the thing that was wrong.
 
-Filed upstream against lychee with the reproduction and a patch, and against
+The upstream patch fixes both halves and is verified rather than proposed:
+applied to `master` at `81cb43e1` and rebuilt, the connect-phase case goes from
+1 attempt to 6 and the control stays at 6.
+
+Filed upstream against lychee with the reproduction and that patch, and against
 all five templates, which run the same `--max-retries 3` and have no re-check:
-`upstream-reports/lychee-connect-phase-reset-not-retried.md` and
+[lycheeverse/lychee#2297](https://github.com/lycheeverse/lychee/issues/2297),
+[rust#168](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/168),
+[js#182](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/182),
+[python#78](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/78),
+[php#12](https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/12),
+[csharp#58](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/58);
+bodies in `upstream-reports/lychee-connect-phase-reset-not-retried.md` and
 `upstream-reports/templates-link-check-unanswered-retry.md`.
 
 ### 4.8 What was checked and found clean
@@ -403,9 +427,13 @@ reasoning for each non-adoption: `analysis/template-comparison.md`.
 
 ### R3 — file upstream
 
-Five reports, filed as thirteen issues across the five templates, each with a
-reproduction run against the snapshotted tree, a workaround and a code-level
-fix; one carries a verified patch. Index and per-template coverage table:
+Six reports, filed as nineteen issues: thirteen across the five templates from
+the comparison, five more for the link-checker defect all five share, and one
+against the dependency that causes it
+([lycheeverse/lychee#2297](https://github.com/lycheeverse/lychee/issues/2297)).
+Each carries a reproduction, a workaround and a code-level fix; two carry a
+verified patch, and the lychee one is verified by rebuilding the tool and
+re-running the measurement. Index and per-template coverage table:
 `upstream-reports/README.md`. The #1079 round's `artipacked` claim is corrected
 there too — it was a presence-of-string check, not a coverage check, and the
 coverage is 26/26, 2/27, 18/18, 2/11 and 1/13.

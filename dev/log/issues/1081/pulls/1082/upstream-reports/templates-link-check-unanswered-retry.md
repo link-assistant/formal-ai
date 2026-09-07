@@ -1,8 +1,12 @@
 # The link checker relies on `--max-retries`, which does not cover the one failure it was added for: a connection reset during connect
 
-**Filed against:** all five `link-foundation/*-ai-driven-development-pipeline-template` repositories
+**Filed:** [rust#168](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/168),
+[js#182](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/182),
+[python#78](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/78),
+[php#12](https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/12),
+[csharp#58](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/58)
 **Reproduced at:** the snapshotted commits in `../references/templates/*-template.HEAD`
-**Upstream cause:** `lycheeverse/lychee` — see `lychee-connect-phase-reset-not-retried.md`
+**Upstream cause:** [lycheeverse/lychee#2297](https://github.com/lycheeverse/lychee/issues/2297) — `lychee-connect-phase-reset-not-retried.md`
 
 ## What happens
 
@@ -35,7 +39,7 @@ wants to be asked again.
 
 ## Why `--max-retries` cannot cover it
 
-`lychee-lib/src/retry.rs`:
+Two defects in `lychee-lib/src/retry.rs`, either of which is enough on its own:
 
 ```rust
 fn should_retry(&self) -> bool {
@@ -50,7 +54,13 @@ fn should_retry(&self) -> bool {
 ```
 
 The reset is classified by the phase it happened in rather than by its io kind,
-so it never reaches the classifier that would retry it.
+so it never reaches the classifier that would retry it — and if it did, that
+classifier would still answer `false`, because the io error the source chain
+exposes has kind `Other`: the real `ConnectionReset` sits on an inner
+`io::Error` reachable through `io::Error::get_ref`, which `source()` skips.
+
+Both are fixed and the fix is verified in the upstream report; until a release
+carries it, no lychee flag retries this class.
 
 ## Reproduction
 
