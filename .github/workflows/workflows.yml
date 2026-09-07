@@ -156,7 +156,7 @@ jobs:
           version: 1.29.0
 
       # The pass above runs `--persona regular`, which is the right default:
-      # pedantic turns up 165 findings here, nearly all of them stylistic, and
+      # pedantic turns up 164 findings here, nearly all of them stylistic, and
       # a gate that cries wolf is a gate people learn to merge past. But the
       # persona split is not "important vs. unimportant" -- `unpinned-images`
       # is Pedantic, and it is the audit that enforces `'*': hash-pin` against
@@ -172,7 +172,7 @@ jobs:
       # `remap`"), and `remap` only rewrites severity, which is not what filters
       # the finding. So the whole persona is raised and then narrowed by
       # severity *and* confidence, which is where `unpinned-images` sits and
-      # where the stylistic findings do not: 165 pedantic findings, 0 reported.
+      # where the stylistic findings do not: 164 pedantic findings, 0 reported.
       #
       # Proof that it is a live gate rather than a decorative one, and the
       # measurement above, are in
