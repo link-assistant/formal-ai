@@ -574,18 +574,12 @@ pub fn is_write_script_request(prompt: &str, normalized: &str) -> bool {
     let lexicon = crate::seed::lexicon();
     // The parametric write-program route owns the broad program genus and the
     // canonical hello-world archetype; step aside for those.
-    if lexicon.mentions_role(ROLE_PROGRAM_GENUS, normalized)
-        || lexicon.mentions_role(ROLE_HELLO_WORLD_REFERENCE, normalized)
-    {
-        return false;
-    }
     // Author a script: the write verb plus a script-or-code artifact noun.
-    if !(lexicon.mentions_role(ROLE_SCRIPT_AUTHORING_VERB, normalized)
-        && lexicon.mentions_role(ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized))
-    {
-        return false;
-    }
-    names_no_task_beyond_the_minimal_script(prompt, normalized)
+    !lexicon.mentions_role(ROLE_PROGRAM_GENUS, normalized)
+        && !lexicon.mentions_role(ROLE_HELLO_WORLD_REFERENCE, normalized)
+        && lexicon.mentions_role(ROLE_SCRIPT_AUTHORING_VERB, normalized)
+        && lexicon.mentions_role(ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized)
+        && names_no_task_beyond_the_minimal_script(prompt, normalized)
 }
 
 /// Return true when the minimal-script route can render everything the prompt
@@ -601,6 +595,15 @@ pub fn is_write_script_request(prompt: &str, normalized: &str) -> bool {
 /// render restores that order for any authoring verb, in any language, because
 /// the test is a property of the route rather than of a phrase.
 fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bool {
+    // Issue #1085: a prompt that specifies a function to derive (the synthesis
+    // subject, domain and action roles, in any language) names a task this
+    // route cannot render. Standing aside lets `program_synthesis` derive and
+    // verify it instead of answering the upstream MBPP prompt shape with the
+    // hello-world template.
+    let canonical = crate::seed::operation_vocabulary().canonicalized_prompt(normalized);
+    if crate::solver_handlers::looks_like_python_function_request(prompt, &canonical) {
+        return false;
+    }
     let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
         // No catalogued language: the route declines on its own grounds.
         return true;

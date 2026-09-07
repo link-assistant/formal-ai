@@ -263,7 +263,7 @@ pub fn try_program_synthesis(
 /// or a data kind it works over), and an *action* verb (implement/write/return).
 /// `def ` is Python syntax the user may paste directly, so a literal signature
 /// satisfies both the subject and action sides regardless of prose language.
-fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
+pub fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
     let lexicon = crate::seed::lexicon();
     let has_def = prompt.to_ascii_lowercase().contains("def ");
     (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || has_def)

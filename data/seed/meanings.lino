@@ -118,6 +118,8 @@ meanings
         text кода
       surface
         text коде
+      surface
+        text кодом
     lexeme hi
       surface
         text कोड

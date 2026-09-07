@@ -30,7 +30,7 @@ pub use pattern_inference::{
 };
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
-pub use program_synthesis::try_program_synthesis;
+pub use program_synthesis::{looks_like_python_function_request, try_program_synthesis};
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
