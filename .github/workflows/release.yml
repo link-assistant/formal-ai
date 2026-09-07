@@ -479,9 +479,18 @@ jobs:
       contents: write
       packages: write
     steps:
+      # This job and `manual-release` are two of the four checkouts in this
+      # repository that keep their credential (issue #1079); every other one
+      # sets `persist-credentials: false`. `scripts/version-and-commit.rs`
+      # below runs `git push` and `git push --tags` to publish the version
+      # bump, and `scripts/git-config.rs` sets only `user.name`/`user.email`,
+      # so that push authenticates with exactly the credential
+      # `persist-credentials: false` removes. This job requires
+      # `github.event_name == 'push' && github.ref == 'refs/heads/main'` and
+      # `manual-release` requires `workflow_dispatch`, so neither ever
+      # persists the credential on a pull request.
       - uses: actions/checkout@v7
         with:
-          persist-credentials: false
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Rust
@@ -697,9 +706,12 @@ jobs:
       contents: write
       packages: write
     steps:
+      # No `persist-credentials: false` here, for the same reason as in
+      # `auto-release` above (issue #1079): `scripts/version-and-commit.rs`
+      # pushes the version bump and its tag, and nothing else in this job
+      # supplies auth for that push.
       - uses: actions/checkout@v7
         with:
-          persist-credentials: false
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Rust
@@ -870,7 +882,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      # The second of this repository's two checkouts that keep their
+      # The last of this repository's four checkouts that keep their
       # credential (issue #1079); every other one sets
       # `persist-credentials: false`. `peter-evans/create-pull-request` below
       # commits the generated fragment and pushes a new branch, and this job

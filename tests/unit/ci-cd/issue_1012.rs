@@ -233,7 +233,7 @@ fn audited_warning_band_sources_stay_below_their_limits() {
     // reasoning is written out once, beside the same number in
     // `issue_999::warning_band_files_are_small_and_split_responses_cover_the_registry`.
     assert!(
-        workflow_lines <= 1_553,
+        workflow_lines <= 1_565,
         ".github/workflows/release.yml has {workflow_lines} lines"
     );
 }

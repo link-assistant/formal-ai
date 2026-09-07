@@ -181,31 +181,47 @@ a test rather than only with a configuration change.
 step, and every tool any of them shells out to, can read it; anything that
 archives the workspace carries it out of the run.
 
-44 of the 46 now set `persist-credentials: false`. Two do not, because a later
-step in the same job pushes with exactly the credential the input removes:
+42 of the 46 now set `persist-credentials: false`, bringing the repository to
+44 of 48. Four do not, because a later step in the same job pushes with exactly
+the credential the input removes:
 
 * `external-benchmarks.yml` — `git push origin "HEAD:${GITHUB_REF_NAME}"`
   records the scheduled upstream results. The job is already narrowed to
   `github.event_name != 'pull_request'`.
-* `release.yml` — `peter-evans/create-pull-request` commits the generated
-  changelog fragment and pushes a branch. The job only runs on
+* `release.yml`, `auto-release` and `manual-release` — both run
+  `scripts/version-and-commit.rs`, which ends in `git push` and
+  `git push --tags`. `scripts/git-config.rs` sets the committer identity and no
+  credential helper, so the persisted header is the only auth those pushes
+  have. Gated on `push` to `refs/heads/main` and on `workflow_dispatch`
+  respectively.
+* `release.yml`, `changelog-pr` — `peter-evans/create-pull-request` commits the
+  generated changelog fragment and pushes a branch. The job only runs on
   `workflow_dispatch`.
 
-Both carry the reason in a comment above the step, and
+Each carries the reason in a comment above the step, and
 `issue_1079::every_checkout_drops_its_credential_unless_it_pushes` requires
-that comment, caps the exceptions at two, and requires the other 44 to stay
+that comment, caps the exceptions at four, and requires the other 44 to stay
 swept. Measured before and after with `--persona auditor --min-confidence low`:
-46 findings → 2, the two being exactly those sites.
+46 findings → 4, the four being exactly those sites.
 
-Two things were verified rather than assumed before the sweep ran. First, that
-`git fetch origin` still succeeds without the credential: `pin-base-commit.sh`
-and `simulate-fresh-merge.sh` fetch the base branch on eight of the swept
-jobs, and the repository is public, so an anonymous `git fetch --depth=1 origin
-main` from a credential-free clone resolves the same `f971b8205`. Second, that
-no other job pushes — the sweep was driven by a per-job scan for `git
-push`/`fetch`/`pull`/`clone`/`ls-remote` across the workflows *and* across
-every script and composite action they call, not by reading the workflows that
-looked likely.
+The first pass of this sweep got the release pair wrong in the expensive
+direction — it removed a credential two jobs push with — and nothing in the
+pipeline would have caught it, because both jobs run only on `main` after a
+merge. The correction is not a note in this file but a second test,
+`issue_1079::every_job_that_pushes_still_has_a_credential_to_push_with`, which
+reads each job body for a remote git write and fails if such a job drops its
+credential. `analysis/artipacked-sweep.md` records what the first scan missed
+and why.
+
+Two things were verified rather than assumed. First, that `git fetch origin`
+still succeeds without the credential: `pin-base-commit.sh` and
+`simulate-fresh-merge.sh` fetch the base branch on eight of the swept jobs, and
+the repository is public, so an anonymous `git fetch --depth=1 origin main`
+from a credential-free clone resolves the same `f971b8205`. Second, the
+complete list of remote git writes, re-derived over every file under `.github/`
+and `scripts/` rather than over the shell scripts the first scan happened to
+read: four call sites, in the four jobs that keep their credential. No
+composite action runs git at all.
 
 The cost is 32 lines in `release.yml`, which holds 18 of the 48 checkouts, and
 that moves it from 1521 to 1553 lines — past the 1500-line warning band issue
@@ -253,7 +269,7 @@ cannot be distinguished from an audit that stopped early.
 | D2, the `fxhash` half | `fxhash 0.2.1` is unmaintained with `patched = []`, and it is genuinely compiled in through `web-capture → scraper 0.21 → selectors 0.26`. Nothing in this repository can remove it; the fix is a requirement bump in another project's manifest. | A second proof form. `unreachable` fails when the crate *enters* the graph; the new `blocked-upstream` fails when it *leaves* — which is exactly when the upstream fix lands and the entry should go. It must name a filed report URL, checked by regex. Filed as web-capture#155 with a build proving `scraper 0.25` needs no source changes. | `issue_1079::every_ignored_advisory_carries_exactly_one_proof` |
 | D3 | zizmor's persona filter is applied before severity, and `unpinned-uses` (Regular, configured by `policies:`) and `unpinned-images` (Pedantic) are different audits over different reference kinds. Writing `'*': hash-pin` therefore said nothing at all about images. | Digest-pin both actionlint references; add a second zizmor pass at `--persona pedantic --min-severity high --min-confidence high`. There is no narrower expression available: 1.29 and 1.30 both reject `rules.<audit>.persona` ("unknown field `persona`, expected one of `disable`, `ignore`, `config`, `remap`"), and `remap` rewrites severity, which is not what the persona filter reads. The narrow pass reports 0 of the 164 pedantic findings on the clean tree and 2 with the protections reverted. | `issue_1079::every_container_image_is_digest_pinned_or_explicitly_excepted`, `..::a_pedantic_pass_enforces_the_hash_pin_policy_on_images`, `..::the_actionlint_image_is_pinned_once_and_used_everywhere` |
 | D6 | `zizmor-action` does not resolve versions from PyPI. It ships `support/versions`, a static table of 37 rows, and `die`s on a version absent from it. Leaving `version:` unset selects the `latest` row, which in v0.6.2 is byte-identical to the `1.29.0` row. So the default does not float — it freezes, one minor release behind. | `version: 1.29.0` on both passes, and the reproduction comment corrected to match. The next bump is now a visible line in the diff rather than a side effect of bumping the action. | `issue_1079::every_zizmor_pass_pins_the_version_its_comment_documents` |
-| D7 | `artipacked` is a Low-confidence audit, and both gates floor confidence above it, so a practice all five templates follow could go unadopted at 46 of 48 sites with every check green. | `persist-credentials: false` at the 44 checkouts whose job never pushes; the two that do push keep it and say why in a comment above the step. | `issue_1079::every_checkout_drops_its_credential_unless_it_pushes` |
+| D7 | `artipacked` is a Low-confidence audit, and both gates floor confidence above it, so a practice all five templates follow could go unadopted at 46 of 48 sites with every check green. | `persist-credentials: false` at the 44 checkouts whose job never pushes; the four that do push keep it and say why in a comment above the step. The sweep is checked in both directions, because removing a credential a release job pushes with fails on `main`, in a workflow no pull request runs. | `issue_1079::every_checkout_drops_its_credential_unless_it_pushes`, `..::every_job_that_pushes_still_has_a_credential_to_push_with` |
 | D1 | Not a pipeline defect. §4.1. | — | existing `self-development-loop` tests |
 | D4, D5 | Warnings behaving as designed. §4.2. | — | existing size and budget gates |
 

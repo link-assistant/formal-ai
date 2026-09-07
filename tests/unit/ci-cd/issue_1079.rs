@@ -514,9 +514,19 @@ fn the_upstream_reports_are_recorded_with_the_issues_they_were_filed_as() {
 /// confidence at medium and the pedantic pass at high. That is exactly why it
 /// needs a test: an invariant no gate enforces is a comment.
 ///
-/// Two checkouts keep the credential because a later step in the same job
-/// pushes with it. Both say so in a comment, and the cap below is what stops
-/// a third from being added silently.
+/// Four checkouts keep the credential because a later step in the same job
+/// pushes with it. Each says so in a comment, and the cap below is what stops
+/// a fifth from being added silently.
+///
+/// The sweep runs in both directions, because the first pass of it broke two
+/// releases: `auto-release` and `manual-release` call
+/// `scripts/version-and-commit.rs`, which ends in `git push` and
+/// `git push --tags`, and `scripts/git-config.rs` sets only the committer
+/// identity, so those two jobs push with exactly the credential the input
+/// removes. Dropping a credential a job needs fails at release time, on
+/// `main`, in the one workflow no pull request exercises -- so the direction
+/// that matters more is the one that checks that a job which pushes still has
+/// something to push with.
 #[test]
 fn every_checkout_drops_its_credential_unless_it_pushes() {
     let mut exceptions = Vec::new();
@@ -593,9 +603,102 @@ fn every_checkout_drops_its_credential_unless_it_pushes() {
          checked"
     );
     assert!(
-        exceptions.len() <= 2,
-        "only the two pushing jobs may keep their checkout credential, found \
+        exceptions.len() <= 4,
+        "only the four pushing jobs may keep their checkout credential, found \
          {}: {exceptions:?}",
         exceptions.len()
+    );
+}
+
+/// Anything that writes to the remote over git -- rather than over the API,
+/// which reads its token from the environment instead of from `.git/config`.
+const REMOTE_GIT_WRITES: [&str; 3] = [
+    "git push",
+    "scripts/version-and-commit.rs",
+    "peter-evans/create-pull-request",
+];
+
+/// The converse of the sweep above, and the more expensive direction to get
+/// wrong: a job that drops a credential a later step pushes with fails on
+/// `main` at release time, in a workflow no pull request runs.
+///
+/// Rather than trusting a list of which jobs push, this reads each job body
+/// and asks whether anything in it writes to the remote over git. A job that
+/// does must keep its checkout credential, because nothing else in this
+/// repository supplies one: `scripts/git-config.rs` sets `user.name` and
+/// `user.email` and no credential helper, and no workflow configures one.
+#[test]
+fn every_job_that_pushes_still_has_a_credential_to_push_with() {
+    let mut pushing_jobs = Vec::new();
+
+    for path in github_yaml_files() {
+        let name = path
+            .strip_prefix(env!("CARGO_MANIFEST_DIR"))
+            .unwrap_or(&path)
+            .to_string_lossy()
+            .into_owned();
+        let body = fs::read_to_string(&path).expect("readable workflow");
+        let body = body.replace("\r\n", "\n");
+        let lines: Vec<&str> = body.lines().collect();
+
+        // Job bodies, split at the two-space job headers under `jobs:`.
+        let mut starts: Vec<usize> = lines
+            .iter()
+            .enumerate()
+            .filter(|(_, line)| {
+                line.starts_with("  ")
+                    && !line.starts_with("   ")
+                    && line.trim_end().ends_with(':')
+                    && !line.trim_start().starts_with('#')
+            })
+            .map(|(index, _)| index)
+            .collect();
+        starts.push(lines.len());
+
+        for window in starts.windows(2) {
+            let (start, end) = (window[0], window[1]);
+            let job = &lines[start..end];
+            let job_name = lines[start].trim().trim_end_matches(':');
+
+            // A comment explaining why a credential is kept names the push it
+            // is kept for, so it must not be read as the push itself.
+            let writes = job.iter().any(|line| {
+                !line.trim_start().starts_with('#')
+                    && REMOTE_GIT_WRITES.iter().any(|write| line.contains(write))
+            });
+            if !writes {
+                continue;
+            }
+
+            let checkouts = job
+                .iter()
+                .filter(|line| {
+                    line.contains("actions/checkout@") && !line.trim_start().starts_with('#')
+                })
+                .count();
+            if checkouts == 0 {
+                continue;
+            }
+
+            pushing_jobs.push(format!("{name}:{job_name}"));
+            assert!(
+                !job.iter()
+                    .any(|line| line.contains("persist-credentials: false")
+                        && !line.trim_start().starts_with('#')),
+                "{name}: job `{job_name}` writes to the remote over git but its \
+                 checkout sets `persist-credentials: false`, which removes the \
+                 only credential the push has. Nothing else supplies one -- \
+                 `scripts/git-config.rs` sets the committer identity and no \
+                 credential helper (issue #1079)"
+            );
+        }
+    }
+
+    assert_eq!(
+        pushing_jobs.len(),
+        4,
+        "expected the four jobs that write to the remote over git, found \
+         {pushing_jobs:?}. A new one must keep its checkout credential; one \
+         that stopped pushing should drop it"
     );
 }
