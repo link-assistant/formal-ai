@@ -62,6 +62,8 @@ fi
 PATH="$WORKDIR/bin:$PATH" timeout 180 "$AGENT" run \
   --prompt "Search the local code for $MARKER" \
   --disable-stdin \
+  --no-summarize-session \
+  --compaction-models "(same)" \
   --model "formal-ai/formal-ai" \
   > "$AGENT_LOG" 2>&1
 RC=$?

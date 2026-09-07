@@ -119,6 +119,7 @@ run_turn() {
     --disable-stdin \
     --model formal-ai/formal-ai \
     --no-summarize-session \
+    --compaction-models "(same)" \
     "$@" >> "$AGENT_LOG" 2>&1 || fail "$label failed"
   local now_posts turn_posts
   now_posts="$(posts_so_far)"

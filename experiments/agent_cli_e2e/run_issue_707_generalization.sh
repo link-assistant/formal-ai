@@ -162,7 +162,7 @@ EOF
         --disable-stdin \
         --model formal-ai/formal-ai \
         --no-summarize-session \
-        --compaction-model same \
+        --compaction-models "(same)" \
         --output-format stream-json \
         --compact-json
     ) >"$log" 2>&1 || session_status=$?

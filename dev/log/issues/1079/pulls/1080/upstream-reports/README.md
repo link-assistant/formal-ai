@@ -12,6 +12,12 @@ in the other direction -- template feature by template feature, rather than
 only looking for this repository's bugs upstream -- surfaced three more that
 this repository does not have, because it never adopted the gap.
 
+Reports 7 and 8 are against a different upstream: `link-assistant/agent`, the
+CLI this repository drives in 27 harnesses and two workflows. They are the root
+cause of defect **D11** in the top-level analysis -- the Agent CLI E2E jobs that
+failed on a session *title* -- and they are the reason the fix downstream is a
+flag on every invocation rather than a retry.
+
 Everything below was reproduced locally before filing, at the template commits
 snapshotted in `../references/templates/*-template.HEAD`. Transcripts are in
 `../analysis/`.
@@ -24,6 +30,8 @@ snapshotted in `../references/templates/*-template.HEAD`. Transcripts are in
 | 4 | The zizmor job leaves `version:` at its default and two templates document reproducing with `zizmor==1.30.0`, which the action cannot install: it resolves versions from a static table shipped inside itself, and v0.6.2's table stops at 1.29.0 (its `latest` row is the same digest as its `1.29.0` row) | [rust#166](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/166), [js#178](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/178), [python#76](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/76), [php#6](https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/6) | `templates-zizmor-version-mismatch.md` |
 | 5 | The csharp template is the only one of five with no zizmor job and no `.github/zizmor.yml`; running the other four templates' invocation on it reports 4 high-severity `template-injection` findings in `release.yml` (`workflow_dispatch` inputs interpolated into `run:` blocks in jobs holding `GITHUB_TOKEN` and `NUGET_API_KEY`) and 2 high-severity workflow-level `excessive-permissions` in `docs.yml` | [csharp#53](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/53) | `csharp-template-missing-zizmor.md` |
 | 6 | The php template has no `.github/workflows/security.yml` at all — no CodeQL, no dependency audit, no Dependency Review, no weekly schedule — and nothing elsewhere covers it | [php#7](https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/7) | `php-template-missing-security-workflow.md` |
+| 7 | `--compaction-model same` is accepted, parsed and then discarded: `compactionModelsArg` falls back to the non-empty *default* cascade, so `modelNames.length > 0` is always true and the single-model branch below it is unreachable — sessions that asked to compact with their own model are summarized by the hosted `opencode/big-pickle` instead | [agent#303](https://github.com/link-assistant/agent/issues/303) | `agent-compaction-model-ignored.md` |
+| 8 | `SessionSummary.summarize()` is called without `await` and without `.catch()` from two sites, and the title `generateText` it wraps is the one call in `summary.ts` with no guard; a rejection reaches `process.on('unhandledRejection')`, which calls `process.exit(1)` and aborts the turn that was still streaming — for a failure whose entire product is a session title | [agent#304](https://github.com/link-assistant/agent/issues/304) | `agent-session-summary-unhandled-rejection.md` |
 
 ## Which templates each defect affects
 
@@ -76,3 +84,6 @@ asks for it.
 - csharp#52 ↔ csharp#53: the unpinned-image finding on that template is not
   persona-suppressed, it is never looked for, so the two fixes are worth
   landing together.
+- agent#303 ↔ agent#304: independent defects -- fixing either one alone stops
+  the failures seen here -- that compose into the observed behaviour, so each
+  issue names the other and says which half it is.

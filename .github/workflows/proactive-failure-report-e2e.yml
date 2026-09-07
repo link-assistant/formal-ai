@@ -18,6 +18,16 @@ jobs:
   agent-cli-failure-report:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # Issue #1079: the Agent CLI summarizes a session with the head of its
+      # default compaction cascade, `opencode/big-pickle`, not with the
+      # session's own model. This job configures exactly one provider -- the
+      # local `formal-ai serve` -- so that hosted call is both unwanted and
+      # fatal: the gateway rejects it with `Request is missing
+      # x-opencode-session` and the CLI reports an unhandled rejection, which
+      # `scripts/classify-agent-cli-stderr.sh` refuses to hide. The harness
+      # passes `--no-summarize-session` too; this is the belt to that brace.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     # Issue #1017: this workflow had no concurrency control at any level, so
     # every push to a pull request added another twenty-minute release build of
     # `formal-ai` while the superseded one kept its runner. It only reads, so

@@ -35,6 +35,15 @@ jobs:
     env:
       TREE_DEPTH: ${{ inputs.depth || '5' }}
       NODE_FILTER: ${{ inputs.node_filter || '' }}
+      # Issue #1079: the Agent CLI summarizes a session with the head of its
+      # default compaction cascade, `opencode/big-pickle`, not with the
+      # session's own model. Against a local `formal-ai serve` that hosted
+      # call is both unwanted and fatal -- the gateway now rejects it with
+      # `Request is missing x-opencode-session`, which arrives as an unhandled
+      # rejection. The harness passes `--no-summarize-session` too; this is the
+      # belt to that pair of braces, and it also covers any client the ladder
+      # spawns for itself.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       - uses: actions/checkout@v7
         with:
