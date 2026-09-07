@@ -52,11 +52,13 @@ images is one step that reports exactly this defect and nothing else.
 ## Defects found here that the templates do **not** have
 
 Checked in the same direction, so the absence is a measurement rather than an
-assumption. Neither was filed, because neither reproduces upstream.
+assumption. None was filed, because none reproduces upstream.
 
 | Defect here | Checked | Result |
 |---|---|---|
 | **D1** — the `Auto Release` job blocks because the release cycle contains no merged Formal-AI-authored pull request | whether any template has a self-development release gate | none does; `scripts/self-development-loop.rs` and the `Formal-AI-*` commit trailers are specific to this repository. D1 is a true positive about this repository's own state, not a pipeline defect — see the top-level README |
+| **D8** — the pull-request evidence gate reports a finding whose only remedy the ruleset forbids | whether any template ships a commit-trailer evidence gate | none does. `grep -rl 'Formal-AI\|interpret-trailers\|trailer'` over all five snapshotted trees returns nothing: the `Formal-AI-*` trailers, `scripts/self-hosting-metric.rs` and `scripts/self-development-loop.rs` are specific to this repository, so neither the gate nor its deadlock exists upstream |
+| **D9** — an indented `Formal-AI-*:` line parsed as a declared trailer | the same grep, plus whether any template parses commit messages at all | same result: no template reads commit trailers, so there is no parser upstream to carry the bug |
 | **D2's second half** — a yanked crate in `Cargo.lock` (`chacha20 0.10.1`) | the rust template's `Cargo.lock` at `4d444d97`, audited both ways with cargo-audit 0.22.2 | 45 crates, no findings either way. The *mechanism* (defect 3) is present upstream; the instance is not. That is why the report is framed as latent — the gate will report success the first time it matters, with no signal that anything changed |
 
 ## Defects the templates already fixed and this repository had not adopted
