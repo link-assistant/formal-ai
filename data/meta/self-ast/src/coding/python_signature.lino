@@ -1,0 +1,25 @@
+self_ast_census
+  target src/coding/python_signature.rs
+  language rust
+  fidelity signature
+  byte_len 8821
+  line_count 263
+  content_id source_module_ca8cdc036cb3a7ae
+  symbol_count 16
+  symbols
+    function import_preamble 20 30
+    function is_parameter_list 37 55
+    function split_top_level_commas 60 77
+    function declared_function_name 83 109
+    function is_ascii_identifier_start 111 113
+    function is_ascii_identifier_continue 115 117
+    function is_reserved_python_identifier 119 139
+    function declared_signature 145 163
+    function return_annotation_end 165 196
+    function next_non_whitespace 198 202
+    function is_return_annotation_char 204 210
+    function matching_close_paren 213 228
+    module tests 231 263
+    function imports_are_collected_once_in_prompt_order 235 242
+    function a_parameter_list_is_names_and_a_call_is_not 245 254
+    function top_level_commas_respect_brackets 257 262
