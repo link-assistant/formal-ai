@@ -122,11 +122,20 @@ fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
     let workflow = repository_file(".github/workflows/workflows.yml");
     let config = repository_file(".github/actionlint.yaml");
 
+    // Issue #1079 replaced the tag with the digest it resolved to: a tag is a
+    // mutable pointer, and `.github/zizmor.yml` forbids those. The tag it was
+    // resolved from stays in the comment beside it, so a bump is still a
+    // readable diff rather than an opaque hash swap.
     assert!(
-        workflow.contains("docker://rhysd/actionlint:1.7.12"),
-        "actionlint must run as the pinned Docker image -- the image bundles \
-         ShellCheck, and a bare binary without ShellCheck on PATH skips every \
-         `run:` block check and still exits 0 (issue #1076)"
+        workflow.contains("docker://rhysd/actionlint@sha256:"),
+        "actionlint must run as the digest-pinned Docker image -- the image \
+         bundles ShellCheck, and a bare binary without ShellCheck on PATH skips \
+         every `run:` block check and still exits 0 (issues #1076, #1079)"
+    );
+    assert!(
+        workflow.contains("rhysd/actionlint:<tag>"),
+        "workflows.yml must keep the command that re-resolves the digest, or \
+         the next bump has no way to check what the hash points at (issue #1079)"
     );
     assert!(config.contains("rhysd/actionlint/issues/657"));
     assert!(config.contains("unexpected key \"queue\" for \"concurrency\" section"));

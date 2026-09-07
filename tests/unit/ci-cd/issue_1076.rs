@@ -394,12 +394,25 @@ fn workflows_are_audited_for_security_not_only_syntax() {
     // would drop findings by how bad they are, which is how a real high-severity
     // finding gets hidden behind a threshold nobody revisits. `min-confidence`
     // drops them by how sure the tool is, which is a statement about noise.
+    //
+    // Scoped to the default-persona pass, because issue #1079 added a second
+    // one. The rule is about not hiding findings the audit already reports;
+    // the second pass raises the persona to reach `unpinned-images`, which the
+    // default persona cannot report at all, and then narrows by severity *and*
+    // confidence because zizmor has no per-rule persona override. That is the
+    // opposite trade -- it adds a class of finding rather than dropping one --
+    // and `issue_1079::a_pedantic_pass_enforces_the_hash_pin_policy_on_images`
+    // pins its shape.
+    let default_persona_pass = audit
+        .split("uses: zizmorcore/zizmor-action@")
+        .nth(1)
+        .expect("workflows.yml must run zizmor at least once (issue #1076)");
     assert!(
-        audit.contains("min-confidence: medium"),
+        default_persona_pass.contains("min-confidence: medium"),
         "the zizmor job must set a confidence floor (issue #1076)"
     );
     assert!(
-        !audit.contains("min-severity"),
+        !default_persona_pass.contains("min-severity"),
         "the zizmor job must not filter by severity -- that hides real findings \
          rather than noisy ones (hive-mind CI/CD best practices, principle 14)"
     );
@@ -430,11 +443,17 @@ fn workflows_are_audited_for_security_not_only_syntax() {
 
     // Principle 14: actionlint runs as the image, because the bare binary is a
     // silent false negative whenever ShellCheck is missing from PATH.
+    //
+    // Pinned by digest rather than by tag since issue #1079: `.github/zizmor.yml`
+    // declares `'*': hash-pin`, and that policy had never once reached an image,
+    // because it configures `unpinned-uses` and images belong to the Pedantic
+    // `unpinned-images` audit that the pass above cannot run.
     assert!(
-        audit.contains("docker://rhysd/actionlint:"),
+        audit.contains("docker://rhysd/actionlint@sha256:"),
         "actionlint must run as the Docker image, which bundles ShellCheck; the \
          bare binary skips every `run:` block check and exits 0 when ShellCheck \
-         is absent (issue #1076)"
+         is absent (issue #1076) -- and the image is pinned by digest, not by a \
+         mutable tag (issue #1079)"
     );
 
     // ...and the image is not taken on trust either. `docker://` pins the form,
