@@ -107,6 +107,9 @@ recalled live; promotion remains explicitly benchmark- and human-gated.
 - Predict likely next user requests per topic from symbolic transition records and pre-learn what they need while idle, under the existing consent and priority rules.
 - Generate multiple independent candidate drafts per hard task, select by test oracle with a least-action tie-break, and record why the winner won.
 - Measure the share of each release authored by Formal AI itself, starting honestly at 0% and ratcheting upward.
+- Measure that share by the model that produced the change (`Formal-AI-Model` must be formal-ai and be named in the committed evidence) over behaviour-changing files only; documentation, logs and ledgers about Formal AI are not Formal AI authoring itself (issue #1085).
+- Define "Formal AI codes itself" as: Formal AI appends or supersedes links in `data/seed` and `data/meta` that change its own behaviour, or applies a link substitution to its own source, generates a held-out test, validates it through the interpreter and `cargo test`, and opens the pull request. Seed edits are the first rung; source edits follow through the same rule engine.
+- Keep the Rust kernel named and shrinking: everything outside `data/meta/kernel-ratchet.lino`'s allowlist is behaviour that belongs in links, measured by ceilings that can only move down.
 
 ## Documentation Goals
 

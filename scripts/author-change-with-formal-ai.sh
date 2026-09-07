@@ -12,6 +12,7 @@
 # and commits it with the three canonical trailers the self-hosting metric reads:
 #
 #   Formal-AI-Session:      the resumable session id the run reported
+#   Formal-AI-Model:        the model that produced the change (always formal-ai here)
 #   Formal-AI-Evidence:     the directory holding that run's raw traces
 #   Formal-AI-Pull-Request: the pull request the commit belongs to
 #
@@ -136,6 +137,12 @@ session_id="$(grep -Eo '"session_id":"ses_[^"]+' "$out/agent-stream.jsonl" | tai
 # One evidence file carries both markers the metric looks for: the literal
 # `formal-ai` that identifies the producer, and the session the trailer names.
 printf 'formal-ai session %s\n' "$session_id" >"$out/session-id.txt"
+# Issue #1085 (D3.1): the metric attributes by the model that produced the
+# tokens, so the evidence names it next to the session and the commit carries
+# it as `Formal-AI-Model`. This loop only ever drives the formal-ai model.
+model_version="$("$BIN" --version 2>/dev/null | awk '{ print $NF }')"
+model="formal-ai/${model_version:-unknown}"
+printf 'formal-ai model %s\n' "$model" >>"$out/session-id.txt"
 
 [[ -f "$work/$produces" ]] || die "the Agent CLI did not write $produces"
 for expected in ${contains[@]+"${contains[@]}"}; do
@@ -155,7 +162,7 @@ fi
 git -C "$ROOT" add -- "$into" "$evidence"
 git -C "$ROOT" diff --cached --quiet && die "the run reproduced the committed bytes; nothing to author"
 git -C "$ROOT" commit --quiet --message "$message" --message "$(
-  printf 'Formal-AI-Session: %s\nFormal-AI-Evidence: %s\nFormal-AI-Pull-Request: %s\n' \
-    "$session_id" "$evidence" "$pull_request"
+  printf 'Formal-AI-Session: %s\nFormal-AI-Model: %s\nFormal-AI-Evidence: %s\nFormal-AI-Pull-Request: %s\n' \
+    "$session_id" "$model" "$evidence" "$pull_request"
 )"
 git -C "$ROOT" --no-pager log -1 --format='%h %s%n%b'

@@ -142,7 +142,7 @@ Status legend:
 | 23 | Natural-language access to memory, APIs, and code execution | Built | `src/solver_handlers/`, active `natural_language_access` specs; permission-gated NL → query/call/execute paths | Implemented by E25 [#302](https://github.com/link-assistant/formal-ai/issues/302) (PR #309). |
 | 24 | General code-modifying / executing agent (not a memorizer) | Built | `src/agent.rs` bounded/isolated workspace runs allowlisted commands; `src/solver_handlers/program_synthesis.rs` synthesizes a Python function from the spec, then verifies it by executing the assertions in the workspace | Workspace execution built by E26 [#303](https://github.com/link-assistant/formal-ai/issues/303) (PR #310); spec-driven synthesis + verification added by E30 [#315](https://github.com/link-assistant/formal-ai/issues/315) (PR #321). Triggering is still English-keyword gated — see the Next Planning Batch (language parity). |
 | 25 | Measured against industry benchmark datasets | Built | `data/benchmarks/industry-suite.lino`, `tests/unit/specification/benchmarks.rs`; HumanEval/MBPP/GSM8K/MATH/BIG-bench slice runs deterministically in CI | Imported by E27 [#304](https://github.com/link-assistant/formal-ai/issues/304) (PR #311); grown to a 10-case slice and gated on a rising pass count by E32 [#317](https://github.com/link-assistant/formal-ai/issues/317) (PR #323). The suite now reports **13/13 passing** with a `minimum_pass_count` ratchet so progress cannot silently regress. |
-| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Built | The benchmark suite passes 13/13; `record_candidates` composes decomposed sub-results over the links network (E28), arithmetic/word-problem and counting answers are computed (E29), and Python functions are synthesized and verified (E30) rather than keyed on the prompt | Made general by E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)) (PRs #319-#323). Held-out paraphrased variants guard against per-case memorization. |
+| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Built | The curated benchmark suite passes 13/13 (upstream, 2026-09-07: HumanEval 0/20, MBPP 0/20, GSM8K 2/20, MATH 0/20, CoEdIT 0/20, SWE-bench Lite 0/1 -- `data/benchmarks/external-results.lino`); `record_candidates` composes decomposed sub-results over the links network (E28), arithmetic/word-problem and counting answers are computed (E29), and Python functions are synthesized and verified (E30) rather than keyed on the prompt | Made general by E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)) (PRs #319-#323). Held-out paraphrased variants guard against per-case memorization. |
 
 ## Completed Planning Batch
 
@@ -489,7 +489,7 @@ Issue #922 delivers E75's first complete method-learning lifecycle. Three real
 recursive-recipe runs feed the existing symbolic algorithm-discovery engine;
 two support traces infer recurring operation sequences and an unseen third
 trace validates them. Candidates remain proposal-only. The strongest method
-cleared fresh canonical coding (4/4), industry (13/13), and unit (12/12)
+cleared fresh canonical coding (4/4), industry (13/13; the upstream HumanEval/MBPP slices score 0/20, see `data/benchmarks/external-results.lino`), and unit (12/12)
 ratchets before explicit `--apply --confirm` materialized it into
 `data/seed/learned-methods.lino`. The live registry now records the adopted
 abstraction without claiming an executable Rust handler, so existing dispatch
@@ -560,6 +560,26 @@ recoverable memory (#946) and E95 bounded autonomy (#947) are untouched, and
 the issue's definition of done — a pull request opened against this repository
 by a real `solve` run — is not met by this branch, which a human opened.
 Evidence and the honest gap list are in `docs/case-studies/issue-1021/`.
+
+## Issue #1085 The Links Network Is Not The System That Reasons (PR in progress)
+
+Issue [#1085](https://github.com/link-assistant/formal-ai/issues/1085) is the
+E108 diagnosis: the solver reasons over Rust structures and the doublets store
+is a write-behind projection; the self-hosting metric credited Claude sessions
+by trailer; the agent ladder's 32 leaves are pre-specified single-file edits that
+were never compiled; upstream coding scores are 0/20 and flat; and most effort
+goes to gates and evidence. The pull request for the issue lands in pushes on
+one branch, and this section records what each push delivered.
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| D3.1-D3.4 metric version 3: model attribution, behaviour-only paths, pull-request author, history restated | Delivered | `scripts/self-hosting-attribution.rs`, `scripts/self-hosting-replay.rs`, `data/meta/self-hosting-ledger.lino` header, `tests/unit/specification/self_hosting_metric.rs` |
+| D3.5 floor off the release path, red-until-true status | Delivered | `.github/workflows/self-development-status.yml`; `release.yml` cuts on CI correctness; `tests/unit/ci-cd/issue_1014.rs` |
+| D1.4 kernel allowlist and measured shrink ratchets | Delivered (ceilings); D1.1-D1.3 in progress | `data/meta/kernel-ratchet.lino`, `scripts/check-kernel-ratchet.rs`, gate `check_kernel_ratchet` |
+| D4 ladder leaves compile | Delivered (`cargo check`); test run, composite merge and requirement-shaped nodes in progress | `experiments/issue_1028_agent_cli_ladder/verify-node.sh` |
+| D5.4 upstream numbers beside every curated citation | Delivered | this file, `VISION.md` |
+| #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |
+| D2 links-to-code edit rules, D5.1-D5.3, D6-D9 | In progress / sub-issues | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Verification Contract
 

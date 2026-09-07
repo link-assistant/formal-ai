@@ -22,7 +22,7 @@ fn release_cycle_counts_the_attributed_part_of_a_mixed_pull_request() {
     let repo = fixture_repo();
     let branch = "issue-42";
     let session = "fixture-session-42";
-    let evidence = "docs/evidence/42/session.txt";
+    let evidence = "evidence/42/session.txt";
     let pull_request = "https://github.com/example/formal-ai/pull/42";
 
     git(&repo, &["switch", "-c", branch]);
@@ -30,10 +30,10 @@ fn release_cycle_counts_the_attributed_part_of_a_mixed_pull_request() {
         .expect("human fixture must be written");
     commit(&repo, "human-authored part of the pull request");
 
-    fs::create_dir_all(repo.join("docs/evidence/42")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence/42")).expect("evidence directory must be created");
     fs::write(
         repo.join(evidence),
-        format!("formal-ai session {session}\n"),
+        format!("formal-ai session {session} model formal-ai/fixture\n"),
     )
     .expect("session evidence must be written");
     fs::write(repo.join("formal-ai-42.txt"), "session-backed change\n")
@@ -41,7 +41,7 @@ fn release_cycle_counts_the_attributed_part_of_a_mixed_pull_request() {
     commit(
         &repo,
         &format!(
-            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
+            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
         ),
     );
     git(&repo, &["switch", "main"]);
@@ -89,14 +89,14 @@ fn release_cycle_rejects_a_commit_claiming_another_pull_request() {
     let repo = fixture_repo();
     let branch = "issue-43";
     let session = "fixture-session-43";
-    let evidence = "docs/evidence/43/session.txt";
+    let evidence = "evidence/43/session.txt";
     let elsewhere = "https://github.com/example/formal-ai/pull/44";
 
     git(&repo, &["switch", "-c", branch]);
-    fs::create_dir_all(repo.join("docs/evidence/43")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence/43")).expect("evidence directory must be created");
     fs::write(
         repo.join(evidence),
-        format!("formal-ai session {session}\n"),
+        format!("formal-ai session {session} model formal-ai/fixture\n"),
     )
     .expect("session evidence must be written");
     fs::write(repo.join("formal-ai-43.txt"), "session-backed change\n")
@@ -104,7 +104,7 @@ fn release_cycle_rejects_a_commit_claiming_another_pull_request() {
     commit(
         &repo,
         &format!(
-            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {elsewhere}"
+            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {elsewhere}"
         ),
     );
     git(&repo, &["switch", "main"]);

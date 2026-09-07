@@ -1,8 +1,7 @@
 handler_migration_ledger
   issue 699
   batch 3
-  specialized_handler_files_max 38
-  try_dispatch_entries_max 50
+  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/kernel-ratchet.lino"
   handler conversation_control
     status pending
   handler http_fetch

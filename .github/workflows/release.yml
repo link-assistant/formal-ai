@@ -621,27 +621,31 @@ jobs:
           HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
-      - name: Apply self-development release gate
-        id: release_gate
-        if: steps.check.outputs.should_release == 'true'
-        env:
-          SKIP_BUMP: ${{ steps.check.outputs.skip_bump }}
-        run: rust-script scripts/check-self-development-release.rs
+      # Issue #1085 (D3.5): the self-development floor no longer gates the
+      # release. It is measured and reported red-until-true by
+      # `.github/workflows/self-development-status.yml` on every push to
+      # `main`; a release is cut on CI correctness alone, and the ledger row
+      # it records says honestly what the model authored in it.
       - name: Collect changelog and bump version
         id: version
-        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        env:
+          # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+          # pull request, read through `gh` with the job token.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
         run: |
           rust-script scripts/version-and-commit.rs \
             --bump-type "${{ steps.bump_type.outputs.bump_type }}"
       - name: Get current version
         id: current_version
-        if: steps.release_gate.outputs.should_release == 'true'
+        if: steps.check.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
       - name: Build release
-        if: steps.release_gate.outputs.should_release == 'true'
+        if: steps.check.outputs.should_release == 'true'
         run: cargo build --release
       - name: Publish to Crates.io
-        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
@@ -649,28 +653,28 @@ jobs:
         run: rust-script scripts/publish-crate.rs
       - name: Wait for Crate availability on Crates.io
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
       - name: Smoke test the published crate
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
       - name: Free up runner disk space
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/free-runner-disk.sh
       - name: Log in to GitHub Container Registry
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -681,14 +685,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: ./.github/actions/setup-buildx-resilient
       - name: Extract GHCR Docker metadata
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -703,7 +707,7 @@ jobs:
             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to GHCR
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -722,14 +726,14 @@ jobs:
           cache-to: type=gha,mode=max,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -768,7 +772,7 @@ jobs:
           cache-to: type=inline
       - name: Create GitHub Release
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )

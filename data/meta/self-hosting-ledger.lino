@@ -1,6 +1,7 @@
 self_hosting_ledger
   attribution_policy "commit_trailers"
   session_trailer "Formal-AI-Session"
+  model_trailer "Formal-AI-Model"
   evidence_trailer "Formal-AI-Evidence"
   pull_request_trailer "Formal-AI-Pull-Request"
   release_cycle_floor "1"
@@ -11,9 +12,12 @@ self_hosting_ledger
   target_override_procedure "commit target_override_basis_points onto the newest comparable row; it carries forward until another commit changes or removes it, and there is no flag, environment variable or workflow input that moves it"
   line_unit "added_and_deleted"
   default_trailing_window "3"
-  current_metric_version "2"
+  current_metric_version "3"
   metric_version_1 "every changed line, including captured artifacts"
   metric_version_2 "issue #812: lockfiles and captured artifacts (*.log, *.jsonl, *.diff, *.patch, *.stderr, *.stdout) excluded from both numerator and denominator"
+  metric_version_3 "issue #1085: attribution requires Formal-AI-Model naming formal-ai and named in the committed evidence, a session or model naming a hosted model is not self-authored, and docs/, dev/, experiments/ and changelog.d/ leave both numerator and denominator"
+  metric_version_3_history "earlier tags are restated under version 3 by `rust-script scripts/self-hosting-metric.rs --replay-epoch`; version 1 and 2 rows stay as recorded"
+  pull_request_author_field "self_authored_pull_request_author records `<url> <login>`; `unrecorded` when the lookup was unavailable"
   comparable_rows "only rows sharing a metric_version"
   release
     tag "v0.296.0"

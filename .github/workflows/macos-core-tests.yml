@@ -46,12 +46,18 @@ jobs:
     #
     # Issue #1081 gave the doc-test step below a budget of its own, which makes
     # the arithmetic a sum: two steps that both run in this job now claim
-    # 1400 + 400 = 1800s, and against a 35m cap that is 85.7% -- past the 70%
-    # share `tests/unit/ci-cd/issue_1081.rs` enforces, and close enough that a
-    # cold cache could put the cap ahead of the budgets and turn a real overrun
-    # grey again. 45m holds the pair at 66.7%. The job does not get slower for
-    # it; a backstop only costs time when it fires.
-    timeout-minutes: 45
+    # their budgets together against the 70% share
+    # `tests/unit/ci-cd/issue_1081.rs` enforces.
+    #
+    # Issue #1085: run 33994570842 (2026-09-05, main) was killed at the full
+    # 1400s of the archive budget with a 93% sccache hit rate -- not a cold
+    # cache, the runner itself. Over the ten `main` runs before it the same job
+    # took 11 to 26 minutes end to end, a 2.4x spread on identical work, and
+    # 1400s sat inside that spread. 1800s matches the budget the specification
+    # build in `release.yml` was given for the same compile on the same image;
+    # 1800 + 400 = 2200s against a 55m cap is 66.7%. The job does not get
+    # slower for it; a backstop only costs time when it fires.
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v7
         with:
@@ -75,7 +81,7 @@ jobs:
           restore-only: 'true'
       - name: Build one portable nextest archive
         env:
-          TEST_BUDGET_SECONDS: 1400
+          TEST_BUDGET_SECONDS: 1800
           TEST_WARN_RATIO_PERCENT: 80
         run: |
           mkdir -p "$RUNNER_TEMP/macos-core-tests"

@@ -32,7 +32,7 @@
 #   PREFLIGHT_MODE            "release" | "report" (--mode wins). Default report.
 #   CARGO_REGISTRY_TOKEN
 #   CARGO_TOKEN               crates.io token; the first one set is used.
-#   CRATE_NAME                crate to check ownership of. Default: formal-ai.
+#   CRATE_NAME                crate whose public record is looked up. Default: formal-ai.
 #   GHCR_IMAGE                e.g. ghcr.io/owner/name. Empty disables the probe.
 #   GITHUB_ACTOR/GITHUB_TOKEN credential for the GHCR probe.
 #   DOCKERHUB_IMAGE           e.g. owner/name. Empty disables the probe, exactly
@@ -165,55 +165,28 @@ check_crates_io() {
     return
   fi
 
-  local body status
-  body="$(mktemp)"
-  curl_headers=("Authorization: ${token}")
-  status="$(http_status "$body" "${CRATES_IO_API}/me")"
-  curl_headers=()
-  trace "crates.io /me -> HTTP ${status}"
-  case "$status" in
-    200)
-      local login
-      login="$(json_field "$body" login)"
-      record verified "$check" "accepted by crates.io${login:+ as ${login}}"
-      check_crates_io_ownership "$login"
-      ;;
-    401 | 403)
-      record failed "$check" "crates.io rejected the token (HTTP ${status}); it is revoked, expired or misscoped"
-      ;;
-    *)
-      record unknown "$check" "crates.io answered HTTP ${status}; the token was neither accepted nor rejected"
-      ;;
-  esac
-  rm -f "$body"
-}
-
-# A valid token that does not own the crate publishes nothing. The owners
-# endpoint is public, so this costs one anonymous request and no permissions.
-check_crates_io_ownership() { # check_crates_io_ownership <login>
-  local check="crates.io ownership of ${CRATE_NAME}"
-  local login="$1"
+  # crates.io has no read endpoint that accepts an API token. `GET /api/v1/me`
+  # is declared `AuthCheck::only_cookie()` in crates.io's `src/controllers/
+  # user/me.rs`, so every API token -- valid, revoked or expired -- is answered
+  # 403 there; the probe that shipped with issue #1081 read that 403 as "the
+  # token is revoked, expired or misscoped" and blocked the release of run
+  # 34149311523 with a token that had published v0.347.0 two days earlier
+  # (issue #1085). Endpoint-scoped tokens are rejected on every route that
+  # does not require their scope, and the only route that requires the
+  # publish scope is the publish itself. So the token is never sent anywhere
+  # from here: the one honest read-only verdict is `unknown`, stated with the
+  # reason, and `cargo publish` remains the step that proves it.
   local body status
   body="$(mktemp)"
   curl_headers=()
-  status="$(http_status "$body" "${CRATES_IO_API}/crates/${CRATE_NAME}/owners")"
-  trace "crates.io owners -> HTTP ${status}"
+  status="$(http_status "$body" "${CRATES_IO_API}/crates/${CRATE_NAME}")"
+  trace "crates.io crate lookup -> HTTP ${status}"
   case "$status" in
-    200)
-      if [ -z "$login" ]; then
-        record unknown "$check" "crates.io did not name the token's user, so ownership could not be compared"
-      elif grep -q "\"login\":\"${login}\"" "$body"; then
-        record verified "$check" "${login} is an owner"
-      else
-        record failed "$check" "${login} is not an owner of ${CRATE_NAME}; \`cargo publish\` would be rejected"
-      fi
-      ;;
-    404)
-      # The first release of a crate has no owners yet; that is not a defect.
-      record verified "$check" "${CRATE_NAME} is not published yet, so this would be a first publish"
+    200 | 404)
+      record unknown "$check" "token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only \`cargo publish\` can prove it"
       ;;
     *)
-      record unknown "$check" "crates.io answered HTTP ${status} for the owners of ${CRATE_NAME}"
+      record unknown "$check" "token present; crates.io answered HTTP ${status} to a public crate lookup, so neither the registry nor the token could be checked"
       ;;
   esac
   rm -f "$body"

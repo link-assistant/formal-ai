@@ -1,0 +1,74 @@
+name: Self-development status
+
+# Issue #1085 (D3.5). The self-development floor -- one merged pull request per
+# release cycle whose change the formal-ai model produced -- is a standing
+# report, not a release condition. It runs on every push to `main` and once a
+# day, and it is red until the floor is met: no budget, no grace period, no
+# bypass (issue #1066). A release is cut on CI correctness alone in
+# `release.yml`; this workflow says, in the same place every day, whether
+# Formal AI authored any of the work since the last tag, and whether the Rust
+# kernel shrank since that tag (D1.4).
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+
+jobs:
+  self-development-status:
+    name: 'Self-development floor and kernel shrink since the last tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Test the metric and the ratchet checker
+        env:
+          TEST_BUDGET_SECONDS: 600
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "self-development scripts" \
+            rust-script --test scripts/check-kernel-ratchet.rs
+      - name: Measure the share since the last tag (metric version 3)
+        env:
+          TEST_BUDGET_SECONDS: 600
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          since="$(git describe --tags --match 'v[0-9]*' --abbrev=0 HEAD)"
+          echo "Measuring ${since}..HEAD"
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "self-hosting measurement" \
+            rust-script scripts/self-hosting-metric.rs --since "$since" --until HEAD \
+            | tee "$RUNNER_TEMP/share.txt"
+          {
+            echo "### Self-development status"
+            echo
+            echo "Range: \`${since}..HEAD\`"
+            echo
+            echo "Share of behaviour-changing lines authored by the formal-ai model: $(tail -n 1 "$RUNNER_TEMP/share.txt")"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Kernel shrink since the last tag (issue #1085 D1.4)
+        run: rust-script scripts/check-kernel-ratchet.rs --release
+      - name: Self-development floor (issue #924, #1066, #1085)
+        run: rust-script scripts/check-self-development-release.rs

@@ -106,6 +106,21 @@ if [[ "$depth" -eq 5 ]]; then
       || fail unparsable_leaf_change
   fi
 
+  # Issue #1085 (D4): a change that parses but does not compile is not a change
+  # a reviewer could take either. The check shares one target directory across
+  # every node of a run (`LADDER_CARGO_TARGET_DIR`, set by run.sh), so the first
+  # leaf pays for the crate and the rest are incremental. `LADDER_CARGO_CHECK=0`
+  # turns it off for a machine without the registry cache.
+  if [[ "$criterion_path" == *.rs && "${LADDER_CARGO_CHECK:-1}" != 0 ]] \
+    && command -v cargo >/dev/null 2>&1; then
+    if ! (cd "$workspace" && \
+        CARGO_TARGET_DIR="${LADDER_CARGO_TARGET_DIR:-$workspace/target}" \
+        cargo check --lib --quiet >"$workspace/.agent-ladder/cargo-check.log" 2>&1); then
+      tail -40 "$workspace/.agent-ladder/cargo-check.log" >&2 || true
+      fail uncompilable_leaf_change
+    fi
+  fi
+
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
 else
   child_directory=".agent-ladder/verified-children"

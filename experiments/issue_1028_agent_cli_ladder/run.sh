@@ -37,6 +37,9 @@ STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 cp "$BIN" "$STAGE/formal-ai"
 BIN="$STAGE/formal-ai"
+# Issue #1085 (D4): every leaf's edit is compiled by verify-node.sh. One target
+# directory for the whole run keeps that incremental after the first leaf.
+export LADDER_CARGO_TARGET_DIR="${LADDER_CARGO_TARGET_DIR:-$STAGE/target}"
 
 NODES="$OUT/tree.tsv"
 RUN_LOG="$OUT/run.log"
