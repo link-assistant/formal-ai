@@ -38,7 +38,8 @@ GitHub access.
 | `analysis/zizmor-narrow-pedantic-templates.log` | The same measurement run against all five templates. |
 | `analysis/zizmor-action-v0.6.2-versions.txt` | `zizmor-action@v0.6.2`'s static version table, with the digest equality that makes `latest` a synonym for `1.29.0`. The basis for D6. |
 | `analysis/zizmor-1.29.0-csharp-template.log` | The four templates' zizmor invocation applied to the one template that has no zizmor job. |
-| `ci-logs/self-hosting-evidence-101601575998.log` | The complete log of the one job that failed on this branch, kept for line-level citation: line 1570 is the finding D8 is about. |
+| `ci-logs/self-hosting-evidence-101601575998.log` | The complete log of the first job that failed on this branch, kept for line-level citation: line 1570 is the finding D8 is about. |
+| `ci-logs/lint-and-format-101616345954.log` | The complete log of the second job that failed on this branch, for the same reason: lines 2630-2631 are the two files D10 is about. |
 | `analysis/self-hosting-evidence-deadlock.md` | The ruleset query, the rejected force-push, and the design argument for the retraction trailer. The basis for D8. |
 | `analysis/template-diffs/` | Per-file diffs of this repository's workflows against all five templates. |
 | `references/CI-CD-BEST-PRACTICES.md` | The Hive Mind guidance as of collection (R4). |
@@ -131,7 +132,7 @@ was invisible because its own version pin was a comment rather than a setting.
 | D7 | 46 of 48 `actions/checkout` steps persisted the job token into `.git/config`; all five templates set `persist-credentials: false` | false negative (below every configured confidence floor) | `analysis/artipacked-sweep.md` | fixed: 44 of 48 swept, 4 documented exceptions |
 | D8 | `Self-Hosting Evidence Check` errors on a half-trailered commit and tells the author to amend it, in a repository whose ruleset forbids non-fast-forward pushes on `~ALL` branches with no bypass actors | true positive with no available remedy | `analysis/self-hosting-evidence-deadlock.md`, `ci-logs/self-hosting-evidence-101601575998.log:1570` | fixed: `Formal-AI-Retract`, a trailer that can only lower the measured share |
 | D9 | `trailer_values` trims each line before matching, so an *indented* `Formal-AI-*: …` line inside a commit message is read as a declared trailer; `git interpret-trailers --parse` ignores it | false positive | `analysis/self-hosting-evidence-deadlock.md` | fixed: an indented line is not a trailer |
-| D10 | `check_file_size` failed `Lint and Format Check` at `087d5fb9b`: the D8 fix pushed `scripts/self-hosting-metric.rs` to 1021 lines and `tests/unit/specification/self_hosting_metric.rs` to 1118, both past the 1000-line Rust ceiling | **true positive** about this branch | `analysis/self-hosting-evidence-deadlock.md` | fixed: retraction split into `scripts/self-hosting-retraction.rs` and `.../self_hosting_metric/retraction.rs` (960 and 898 lines) |
+| D10 | `check_file_size` failed `Lint and Format Check` at `087d5fb9b`: the D8 fix pushed `scripts/self-hosting-metric.rs` to 1021 lines and `tests/unit/specification/self_hosting_metric.rs` to 1118, both past the 1000-line Rust ceiling | **true positive** about this branch | `ci-logs/lint-and-format-101616345954.log:2630`, `analysis/self-hosting-evidence-deadlock.md` | fixed: retraction split into `scripts/self-hosting-retraction.rs` and `.../self_hosting_metric/retraction.rs` (960 and 898 lines) |
 
 ### 4.1 Why D1 is reported rather than fixed
 
