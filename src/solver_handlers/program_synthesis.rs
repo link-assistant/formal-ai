@@ -309,7 +309,7 @@ fn match_synthesis_task(lexicon: &crate::seed::Lexicon, normalized: &str) -> Opt
 }
 
 fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
-    if let Some(name) = declared_function_name_from_signature(prompt) {
+    if let Some(name) = crate::coding::python_signature::declared_function_name(prompt) {
         return Some(name);
     }
     if let Some(slug) = match_synthesis_task(crate::seed::lexicon(), normalized) {
@@ -321,64 +321,6 @@ fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
         }
     }
     None
-}
-
-fn declared_function_name_from_signature(prompt: &str) -> Option<String> {
-    let bytes = prompt.as_bytes();
-    let mut index = 0;
-    while index < bytes.len() {
-        if !is_ascii_identifier_start(bytes[index]) {
-            index += 1;
-            continue;
-        }
-        let start = index;
-        index += 1;
-        while index < bytes.len() && is_ascii_identifier_continue(bytes[index]) {
-            index += 1;
-        }
-        let identifier = &prompt[start..index];
-        let mut cursor = index;
-        while cursor < bytes.len() && bytes[cursor].is_ascii_whitespace() {
-            cursor += 1;
-        }
-        if cursor < bytes.len()
-            && bytes[cursor] == b'('
-            && !is_reserved_python_identifier(identifier)
-        {
-            return Some(identifier.to_owned());
-        }
-    }
-    None
-}
-
-const fn is_ascii_identifier_start(byte: u8) -> bool {
-    byte == b'_' || byte.is_ascii_alphabetic()
-}
-
-const fn is_ascii_identifier_continue(byte: u8) -> bool {
-    byte == b'_' || byte.is_ascii_alphanumeric()
-}
-
-fn is_reserved_python_identifier(identifier: &str) -> bool {
-    matches!(
-        identifier,
-        "if" | "for"
-            | "while"
-            | "return"
-            | "def"
-            | "list"
-            | "tuple"
-            | "set"
-            | "dict"
-            | "str"
-            | "int"
-            | "float"
-            | "bool"
-            | "sum"
-            | "abs"
-            | "range"
-            | "print"
-    )
 }
 
 fn synthesize_python_candidate(
@@ -397,9 +339,10 @@ fn synthesize_python_candidate(
         })?;
 
     if task.slug == "has_close_elements" {
-        let signature = declared_signature(prompt, function_name).unwrap_or_else(|| {
-            String::from("has_close_elements(numbers: list[float], threshold: float) -> bool")
-        });
+        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
+            .unwrap_or_else(|| {
+                String::from("has_close_elements(numbers: list[float], threshold: float) -> bool")
+            });
         return Some(PythonCandidate {
             id: "pairwise_threshold_distance",
             function: PythonFunctionTree::new(
@@ -439,7 +382,7 @@ fn synthesize_python_candidate(
     }
 
     if task.slug == "similar_elements" {
-        let signature = declared_signature(prompt, function_name)
+        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
             .unwrap_or_else(|| String::from("similar_elements(test_tup1, test_tup2)"));
         return Some(PythonCandidate {
             id: "tuple_intersection_set",
@@ -464,7 +407,7 @@ fn synthesize_python_candidate(
     }
 
     if task.slug == "count_vowels" {
-        let signature = declared_signature(prompt, function_name)
+        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
             .unwrap_or_else(|| String::from("count_vowels(text: str) -> int"));
         return Some(PythonCandidate {
             id: "count_matching_characters",
@@ -513,35 +456,14 @@ fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<
     Some(workspace.finish())
 }
 
-/// The import statements a prompt declares before its signature.
-///
-/// Issue #1085 (D5.3): upstream HumanEval prompts annotate `numbers:
-/// List[float]` and begin with `from typing import List`. A candidate that
-/// copies the signature but not the import raises `NameError` the moment
-/// Python evaluates the annotation, so the verification failed on every
-/// upstream case, including the seeded ones, while the curated wording
-/// (`list[float]`) passed. The imports are part of the specification.
-fn prompt_import_preamble(prompt: &str) -> String {
-    let mut seen = Vec::new();
-    for line in prompt.lines().map(str::trim) {
-        let is_import =
-            line.starts_with("import ") || (line.starts_with("from ") && line.contains(" import "));
-        if is_import && !seen.iter().any(|known: &String| known == line) {
-            seen.push(line.to_owned());
-        }
-    }
-    seen.join("\n")
-}
-
-/// The candidate's source with the prompt's imports ahead of it.
+/// The candidate's source with the prompt's imports ahead of it (issue #1085).
 fn candidate_source(prompt: &str, candidate: &PythonCandidate) -> String {
-    let preamble = prompt_import_preamble(prompt);
-    let function = candidate.function.render();
-    if preamble.is_empty() {
-        function
-    } else {
-        format!("{preamble}\n\n{function}")
+    let mut source = crate::coding::python_signature::import_preamble(prompt);
+    if !source.is_empty() {
+        source.push_str("\n\n");
     }
+    source.push_str(&candidate.function.render());
+    source
 }
 
 fn verification_script(prompt: &str, candidate: &PythonCandidate) -> String {
@@ -606,135 +528,4 @@ fn identifier_after_ascii_marker(prompt: &str, marker: &str) -> Option<String> {
         }
     }
     (!name.is_empty()).then_some(name)
-}
-
-fn declared_signature(prompt: &str, function_name: &str) -> Option<String> {
-    let marker = format!("{function_name}(");
-    let lower = prompt.to_ascii_lowercase();
-    let start = lower.find(&marker.to_ascii_lowercase())?;
-    let after_name = start + function_name.len();
-    let close = matching_close_paren(prompt, after_name)?;
-    let mut end = close;
-    let tail = &prompt[end..];
-    let trimmed = tail.trim_start();
-    if trimmed.starts_with("->") {
-        let return_start = end + (tail.len() - trimmed.len());
-        end = return_annotation_end(prompt, return_start).unwrap_or(end);
-    }
-    // Issue #1085 (D5.3): an MBPP prompt carries no signature, only tests, and
-    // `similar_elements((3, 4, 5, 6), (5, 7, 4, 10))` in an assertion is a call.
-    // Copying it produced `def similar_elements((3, 4, 5, 6), ...)`, which does
-    // not parse, so the seeded task failed upstream. Only a parameter list is a
-    // signature; anything else defers to the task's declared default.
-    if !is_parameter_list(&prompt[after_name + 1..close - 1]) {
-        return None;
-    }
-    Some(prompt[start..end].trim().trim_end_matches('.').to_owned())
-}
-
-/// Whether the text between a signature's parentheses is a parameter list.
-///
-/// Comma-separated names, each optionally starred, annotated or given a
-/// default, or nothing at all.
-fn is_parameter_list(inside: &str) -> bool {
-    if inside.trim().is_empty() {
-        return true;
-    }
-    split_top_level_commas(inside).iter().all(|parameter| {
-        let name = parameter
-            .trim()
-            .trim_start_matches('*')
-            .split([':', '='])
-            .next()
-            .unwrap_or_default()
-            .trim();
-        let mut characters = name.chars();
-        characters
-            .next()
-            .is_some_and(|first| first == '_' || first.is_ascii_alphabetic())
-            && characters.all(|character| character == '_' || character.is_ascii_alphanumeric())
-    })
-}
-
-fn split_top_level_commas(text: &str) -> Vec<&str> {
-    let mut parts = Vec::new();
-    let mut depth = 0usize;
-    let mut start = 0;
-    for (index, character) in text.char_indices() {
-        match character {
-            '(' | '[' | '{' => depth += 1,
-            ')' | ']' | '}' => depth = depth.saturating_sub(1),
-            ',' if depth == 0 => {
-                parts.push(&text[start..index]);
-                start = index + 1;
-            }
-            _ => {}
-        }
-    }
-    parts.push(&text[start..]);
-    parts
-}
-
-fn return_annotation_end(prompt: &str, arrow_start: usize) -> Option<usize> {
-    let arrow_end = arrow_start + "->".len();
-    let mut seen_annotation = false;
-    let mut last_annotation_end = None;
-    let mut cursor = arrow_end;
-
-    while cursor < prompt.len() {
-        let character = prompt[cursor..].chars().next()?;
-        let next = cursor + character.len_utf8();
-        if character.is_whitespace() {
-            if seen_annotation
-                && next_non_whitespace(prompt, next).is_some_and(is_return_annotation_char)
-            {
-                cursor = next;
-                continue;
-            }
-            if seen_annotation {
-                break;
-            }
-            cursor = next;
-            continue;
-        }
-        if !is_return_annotation_char(character) {
-            break;
-        }
-        seen_annotation = true;
-        last_annotation_end = Some(next);
-        cursor = next;
-    }
-
-    last_annotation_end
-}
-
-fn next_non_whitespace(prompt: &str, start: usize) -> Option<char> {
-    prompt[start..]
-        .chars()
-        .find(|character| !character.is_whitespace())
-}
-
-const fn is_return_annotation_char(character: char) -> bool {
-    character.is_ascii_alphanumeric()
-        || matches!(
-            character,
-            '_' | '[' | ']' | '(' | ')' | ',' | '\'' | '"' | '|'
-        )
-}
-
-fn matching_close_paren(prompt: &str, open_index: usize) -> Option<usize> {
-    let mut depth = 0usize;
-    for (offset, character) in prompt[open_index..].char_indices() {
-        match character {
-            '(' => depth += 1,
-            ')' => {
-                depth = depth.checked_sub(1)?;
-                if depth == 0 {
-                    return Some(open_index + offset + character.len_utf8());
-                }
-            }
-            _ => {}
-        }
-    }
-    None
 }

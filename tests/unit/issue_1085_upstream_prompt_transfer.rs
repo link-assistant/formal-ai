@@ -1,11 +1,11 @@
 //! Issue #1085 (D5.3): the curated 13/13 must transfer to the upstream prompt.
 //!
-//! `data/benchmarks/external-results.lino` scored HumanEval 0/20 and MBPP 0/20
+//! `data/benchmarks/external-results.lino` scored `HumanEval` 0/20 and `MBPP` 0/20
 //! on every scheduled run while the curated slice passed, and both seeded tasks
-//! were in those twenty. The scheduled log named the causes: the HumanEval
+//! were in those twenty. The scheduled log named the causes: the `HumanEval`
 //! answer was the unknown opener because the candidate copied `List[float]`
 //! from the upstream signature without `from typing import List`, so its own
-//! verification raised `NameError`; the MBPP candidate copied a *call* out of an
+//! verification raised `NameError`; the `MBPP` candidate copied a *call* out of an
 //! `assert` as if it were a signature and did not parse. These tests drive the
 //! benchmark solver with the exact prompt shapes `src/external_benchmarks/cases.rs`
 //! builds and grade the answers with the upstream criterion.
@@ -18,6 +18,14 @@ use formal_ai::external_benchmarks::{BenchmarkCase, Expectation, benchmark_solve
 const HUMANEVAL_0_PROMPT: &str = "from typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n";
 
 const HUMANEVAL_0_TEST: &str = "METADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False\n    assert candidate([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False\n\n";
+
+/// The answer the synthesis handler renders for HumanEval/0 under the upstream
+/// prompt shape: the prompt's import travels ahead of the derived function.
+const HUMANEVAL_0_ANSWER: &str = "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\nfrom typing import List\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    for left_index, left in enumerate(numbers):\n        for right in numbers[left_index + 1:]:\n            if abs(left - right) < threshold:\n                return True\n    return False\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 4/4 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.";
+
+/// The answer for MBPP/2: the task's declared parameter names, never the
+/// argument tuples from the assertion.
+const MBPP_2_ANSWER: &str = "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\ndef similar_elements(test_tup1, test_tup2):\n    return tuple(sorted(set(test_tup1) & set(test_tup2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 3/3 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.";
 
 fn workspace(name: &str) -> PathBuf {
     let nonce = std::time::SystemTime::now()
@@ -64,6 +72,7 @@ fn the_upstream_humaneval_prompt_shape_is_answered_and_graded_by_the_upstream_te
         "the prompt's import travels with the candidate: {}",
         response.answer
     );
+    assert_eq!(response.answer, HUMANEVAL_0_ANSWER);
     let dir = workspace("humaneval");
     let outcome = grade::grade_case(&case, Grading::PythonUnitTest, &response.answer, &dir);
     std::fs::remove_dir_all(&dir).ok();
@@ -100,6 +109,7 @@ fn the_upstream_mbpp_prompt_shape_does_not_mistake_an_assertion_for_a_signature(
         "a call inside an assertion is not a signature: {}",
         response.answer
     );
+    assert_eq!(response.answer, MBPP_2_ANSWER);
     let dir = workspace("mbpp");
     let outcome = grade::grade_case(&case, Grading::PythonAsserts, &response.answer, &dir);
     std::fs::remove_dir_all(&dir).ok();
