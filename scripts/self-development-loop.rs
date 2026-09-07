@@ -94,16 +94,7 @@ pub(super) fn merged_self_authored_pull_requests(
     // only one of the two walks would let a commit stay out of the measured
     // share and still count toward the release floor, which is the direction
     // that matters -- a retraction must never leave a claim standing.
-    let retracted = match retracted_commits(repo, &commits) {
-        Ok(retracted) => retracted,
-        Err(error) => match policy {
-            EvidencePolicy::Strict => return Err(error),
-            EvidencePolicy::Lenient => {
-                eprintln!("warning: ignoring a malformed retraction: {error}");
-                Vec::new()
-            }
-        },
-    };
+    let retracted = retracted_commits(repo, &commits, policy)?;
     let mut attributed = BTreeMap::new();
     for commit in commits {
         let is_attributed = if retracted.iter().any(|sha| sha == commit) {

@@ -69,7 +69,7 @@ Formal-AI-Retract: <full 40-character sha of the commit being withdrawn>
 ```
 
 A later commit in the same measured range withdraws the earlier claim.
-`retracted_commits` in `scripts/self-hosting-metric.rs` collects them before
+`retracted_commits` in `scripts/self-hosting-retraction.rs` collects them before
 the walk; a retracted commit is not attributed, and is not consulted for
 evidence at all, so a malformed trailer on it can no longer fail the run.
 
@@ -86,17 +86,22 @@ what makes it safe to add to a gate that exists to keep a number honest:
 * a commit may not retract itself;
 * malformedness follows the existing policy split: `Strict` (the PR gate)
   errors, `Lenient` (release recording) warns and ignores, so a bad retraction
-  cannot deadlock a release either.
+  cannot deadlock a release either. `Lenient` drops **only** the trailer it
+  cannot resolve, never the whole set: a release range that begins after a
+  retraction's target makes that trailer permanently stale, and discarding its
+  siblings along with it would put the commits they withdraw back into the
+  numerator -- the one direction a retraction must never move in.
 
 It is applied on **both** walks -- `measure_with_policy` in
 `scripts/self-hosting-metric.rs` and `merged_self_authored_pull_requests` in
-`scripts/self-development-loop.rs`. Applying it on one only would let a commit
+`scripts/self-development-loop.rs`, both reading the one implementation in
+`scripts/self-hosting-retraction.rs`. Applying it on one only would let a commit
 sit outside the measured share while still counting toward the release floor,
 which is the arbitrage the floor exists to prevent.
 
 ## Tests
 
-`tests/unit/specification/self_hosting_metric.rs`:
+`tests/unit/specification/self_hosting_metric/retraction.rs`:
 
 | test | pins |
 | --- | --- |
@@ -104,6 +109,8 @@ which is the arbitrage the floor exists to prevent.
 | `a_retraction_can_only_lower_the_measured_share` | the measured share after a retraction is <= the share before it |
 | `a_retraction_also_withdraws_the_commit_from_the_release_floor` | the same commit stops counting in `self_development_release_status`, which reports `Blocked` |
 | `a_retraction_must_name_a_full_sha_inside_the_measured_range` | a short sha and an out-of-range sha are both errors |
+| `a_stale_retraction_does_not_restore_the_claims_the_others_withdraw` | a `Lenient` reader drops the unresolvable trailer alone, and the commit its sibling withdraws stays out of the numerator |
+| `an_indented_example_of_a_trailer_is_not_a_trailer` | an indented `Formal-AI-*` line in a commit message is prose, matching `git interpret-trailers --parse` |
 
 ## Applied to this pull request
 
@@ -143,4 +150,35 @@ trailers hid one of them -- but that reason never applied to indentation. It
 now skips lines beginning with a space or a tab, so documenting a trailer is
 no longer indistinguishable from using one, and the blank-line tolerance #796
 needs is untouched. Pinned by
-`self_hosting_metric::an_indented_example_of_a_trailer_is_not_a_trailer`.
+`self_hosting_metric::retraction::an_indented_example_of_a_trailer_is_not_a_trailer`.
+
+## Two more things the fix ran into
+
+**A stale retraction is the normal case, not the exceptional one.** The first
+draft treated a retraction that no longer resolves as fatal to the whole set:
+under `Lenient` it warned and then dropped *every* retraction in the range.
+That is backwards. A release range begins at the previous tag, so as soon as a
+retraction's target falls behind that tag the trailer stops resolving --
+permanently, because history cannot be rewritten. Dropping its siblings with it
+would put the commits *they* withdraw back into the numerator, which is the one
+direction a retraction must never move in. `Lenient` now drops only the trailer
+it cannot resolve. `a_stale_retraction_does_not_restore_the_claims_the_others_withdraw`
+fails with `left: 1, right: 0` against the first draft and passes against the
+second.
+
+**The fix crossed the file-size ceiling.** `check_file_size` failed the
+`Lint and Format Check` job at `087d5fb9b`:
+
+```
+tests/unit/specification/self_hosting_metric.rs: 1118 lines (exceeds Rust limit of 1000)
+scripts/self-hosting-metric.rs: 1021 lines (exceeds Rust limit of 1000)
+```
+
+A correct report about this branch, not a pipeline defect -- the gate caught
+exactly what it exists to catch. The retraction logic moved to
+`scripts/self-hosting-retraction.rs` (included with `#[path]`, the same way
+`self-development-loop.rs` already is, so `rust-script` still runs the metric
+from one entry point) and its tests to
+`tests/unit/specification/self_hosting_metric/retraction.rs`, beside the
+`authorship_composition` submodule that was already there. Both files are back
+under the ceiling: 960 and 898 lines.
