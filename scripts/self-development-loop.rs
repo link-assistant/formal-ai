@@ -2,7 +2,7 @@
 
 use super::{
     EvidencePolicy, METRIC_VERSION, PULL_REQUEST_TRAILER, ReleaseRow,
-    commit_has_formal_ai_evidence, git, read_release_rows, trailer_values,
+    commit_has_formal_ai_evidence, git, read_release_rows, retracted_commits, trailer_values,
 };
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -86,17 +86,39 @@ pub(super) fn merged_self_authored_pull_requests(
 ) -> Result<Vec<String>, String> {
     let range = format!("{since}..{until}");
     let commits = git(repo, &["rev-list", "--reverse", "--no-merges", &range])?;
+    let commits = commits
+        .lines()
+        .filter(|commit| !commit.is_empty())
+        .collect::<Vec<_>>();
+    // The same retractions the metric honours (issue #1079). Applying them on
+    // only one of the two walks would let a commit stay out of the measured
+    // share and still count toward the release floor, which is the direction
+    // that matters -- a retraction must never leave a claim standing.
+    let retracted = match retracted_commits(repo, &commits) {
+        Ok(retracted) => retracted,
+        Err(error) => match policy {
+            EvidencePolicy::Strict => return Err(error),
+            EvidencePolicy::Lenient => {
+                eprintln!("warning: ignoring a malformed retraction: {error}");
+                Vec::new()
+            }
+        },
+    };
     let mut attributed = BTreeMap::new();
-    for commit in commits.lines().filter(|commit| !commit.is_empty()) {
-        let is_attributed = match commit_has_formal_ai_evidence(repo, commit) {
-            Ok(attributed) => attributed,
-            Err(error) => match policy {
-                EvidencePolicy::Strict => return Err(error),
-                EvidencePolicy::Lenient => {
-                    eprintln!("warning: not attributing {commit}: {error}");
-                    false
-                }
-            },
+    for commit in commits {
+        let is_attributed = if retracted.iter().any(|sha| sha == commit) {
+            false
+        } else {
+            match commit_has_formal_ai_evidence(repo, commit) {
+                Ok(attributed) => attributed,
+                Err(error) => match policy {
+                    EvidencePolicy::Strict => return Err(error),
+                    EvidencePolicy::Lenient => {
+                        eprintln!("warning: not attributing {commit}: {error}");
+                        false
+                    }
+                },
+            }
         };
         if is_attributed && let Some(reference) = validated_commit_pull_request(repo, commit)? {
             attributed.insert(commit.to_owned(), reference);

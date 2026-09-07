@@ -176,6 +176,21 @@ work therefore needs no pull request of its own -- it may ride along inside
 ordinary review beside human commits, which stay unattributed and stay in the
 denominator of the metric.
 
+A trailer that turns out to be wrong cannot be corrected in place: this
+repository's ruleset forbids non-fast-forward pushes on every branch with no
+bypass actors, so a pushed commit message is permanent. A later commit in the
+same measured range withdraws the claim instead:
+
+```text
+Formal-AI-Retract: <full 40-character sha of the commit being withdrawn>
+```
+
+The retracted commit stops being attributed, in the pull-request metric and in
+the release floor alike. The trailer only ever moves a commit *out* of the
+numerator, so it cannot inflate the measured share; use it to disown a
+mis-trailered commit, never to claim one. It must name a full sha that is
+inside the range being measured, and it may not name the commit carrying it.
+
 Every release cycle must contain at least one such merged contribution. It goes
 through the ordinary pull-request review, CI, and promotion policy without an
 AI-specific bypass. The next release's target carries forward from the previous

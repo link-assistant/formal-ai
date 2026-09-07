@@ -38,6 +38,8 @@ GitHub access.
 | `analysis/zizmor-narrow-pedantic-templates.log` | The same measurement run against all five templates. |
 | `analysis/zizmor-action-v0.6.2-versions.txt` | `zizmor-action@v0.6.2`'s static version table, with the digest equality that makes `latest` a synonym for `1.29.0`. The basis for D6. |
 | `analysis/zizmor-1.29.0-csharp-template.log` | The four templates' zizmor invocation applied to the one template that has no zizmor job. |
+| `ci-logs/self-hosting-evidence-101601575998.log` | The complete log of the one job that failed on this branch, kept for line-level citation: line 1570 is the finding D8 is about. |
+| `analysis/self-hosting-evidence-deadlock.md` | The ruleset query, the rejected force-push, and the design argument for the retraction trailer. The basis for D8. |
 | `analysis/template-diffs/` | Per-file diffs of this repository's workflows against all five templates. |
 | `references/CI-CD-BEST-PRACTICES.md` | The Hive Mind guidance as of collection (R4). |
 | `references/templates/{rust,js,python,php,csharp}-template/` | Complete immutable copies of all five template trees, with `.git` removed and manifests carrying the `.snapshot` suffix required by issue #1014, so no scanner treats archived evidence as a live project. `*.HEAD` and `*.HEADINFO` record the commit each snapshot is of. |
@@ -126,7 +128,9 @@ was invisible because its own version pin was a comment rather than a setting.
 | D4 | Two files are inside the warning band of `scripts/check-file-size.rs`: `src/protocol.rs` at 981/1000 and `src/seed.rs` at 946/1000 | warning | `annotations/all-annotations.tsv` | §4.2 |
 | D5 | Two steps report at 70% of their execution budget: the instrumented coverage run (1680s of 2400s) and the specification test shard (980s of 1400s) | warning | `annotations/all-annotations.tsv` | §4.2 |
 | D6 | `zizmor-action@v0.6.2` resolves versions from a static table whose `latest` row *is* its `1.29.0` row, while the reproduction comment named 1.30.0 | error (unrunnable instruction) | `analysis/zizmor-action-v0.6.2-versions.txt` | fixed: `version: 1.29.0` on both passes, comment corrected |
-| D7 | 46 of 48 `actions/checkout` steps persisted the job token into `.git/config`; all five templates set `persist-credentials: false` | false negative (below every configured confidence floor) | `analysis/artipacked-sweep.md` | fixed: swept to 2 documented exceptions |
+| D7 | 46 of 48 `actions/checkout` steps persisted the job token into `.git/config`; all five templates set `persist-credentials: false` | false negative (below every configured confidence floor) | `analysis/artipacked-sweep.md` | fixed: 44 of 48 swept, 4 documented exceptions |
+| D8 | `Self-Hosting Evidence Check` errors on a half-trailered commit and tells the author to amend it, in a repository whose ruleset forbids non-fast-forward pushes on `~ALL` branches with no bypass actors | true positive with no available remedy | `analysis/self-hosting-evidence-deadlock.md`, `ci-logs/self-hosting-evidence-101601575998.log:1570` | fixed: `Formal-AI-Retract`, a trailer that can only lower the measured share |
+| D9 | `trailer_values` trims each line before matching, so an *indented* `Formal-AI-*: …` line inside a commit message is read as a declared trailer; `git interpret-trailers --parse` ignores it | false positive | `analysis/self-hosting-evidence-deadlock.md` | fixed: an indented line is not a trailer |
 
 ### 4.1 Why D1 is reported rather than fixed
 
@@ -223,20 +227,47 @@ and `scripts/` rather than over the shell scripts the first scan happened to
 read: four call sites, in the four jobs that keep their credential. No
 composite action runs git at all.
 
-The cost is 32 lines in `release.yml`, which holds 18 of the 48 checkouts, and
-that moves it from 1521 to 1553 lines — past the 1500-line warning band issue
+The cost is 44 lines in `release.yml`, which holds 18 of the 48 checkouts, and
+that moves it from 1521 to 1565 lines — past the 1500-line warning band issue
 #812 set and into a `check-file-size` warning annotation, because the gate
 warns on a file that is both over the band and growing. That is the gate
 working, and the growth is paid for deliberately rather than absorbed: the
-band in `issue_999` and `issue_1012` moves to 1553 with the reason written
-beside it, in the same form as the two moves before it. `persist-credentials`
+band in `issue_999` and `issue_1012` moves to 1565 with the reason written
+beside it, in the same form as the two moves before it. Three of the four
+exceptions live in this file, and their comments are most of the difference
+between 1553 — the sweep without them — and 1565. `persist-credentials`
 is an input to the action that *performs* the checkout, and a local composite
 action cannot wrap it, because a local composite action does not exist until
 the checkout has run. The alternative was to leave the release path — the one
 place credentials matter most, and the only place either legitimate exception
 lives — as the single part of the repository the sweep did not reach.
 
-### 4.4 What was checked and found clean
+### 4.4 D8: a correct finding with no available remedy
+
+`Self-Hosting Evidence Check` failed on this very pull request, at `ef3bb4aff`
+(`ci-logs/self-hosting-evidence-101601575998.log:1570`), because commit
+`bd511432a` records `Formal-AI-Evidence` without `Formal-AI-Session`. The
+finding is correct and the commit is mine.
+
+The remedy the check implies — amend the commit — does not exist here.
+Ruleset 21300712 applies `deletion` and `non_fast_forward` to `~ALL` branches
+with an empty `bypass_actors`, and a `filter-branch` rewrite that passed the
+metric locally was rejected on push with `GH013 … Cannot force-push to this
+branch`. A gate keyed to commit-message content, in a repository where commit
+messages are immutable once pushed, is a gate whose only escape is to abandon
+the branch. That is a CI/CD defect in its own right — the same deadlock shape
+that `a_malformed_historical_evidence_record_cannot_deadlock_a_release`
+already removed from the release path after #796/#810/#812; it survived on the
+pull-request path only because nobody had mis-trailered a commit there yet.
+
+The fix is the `Formal-AI-Retract` trailer, and its whole design is the
+argument that it is safe to add to a gate whose job is to keep a number
+honest: it can only move a commit *out* of the numerator, so no retraction can
+raise the measured share. Full transcript, including the ruleset query and the
+rejected push, in
+[`analysis/self-hosting-evidence-deadlock.md`](analysis/self-hosting-evidence-deadlock.md).
+
+### 4.5 What was checked and found clean
 
 Recorded because "found nothing" is a result, and an audit that only lists hits
 cannot be distinguished from an audit that stopped early.
@@ -270,6 +301,8 @@ cannot be distinguished from an audit that stopped early.
 | D3 | zizmor's persona filter is applied before severity, and `unpinned-uses` (Regular, configured by `policies:`) and `unpinned-images` (Pedantic) are different audits over different reference kinds. Writing `'*': hash-pin` therefore said nothing at all about images. | Digest-pin both actionlint references; add a second zizmor pass at `--persona pedantic --min-severity high --min-confidence high`. There is no narrower expression available: 1.29 and 1.30 both reject `rules.<audit>.persona` ("unknown field `persona`, expected one of `disable`, `ignore`, `config`, `remap`"), and `remap` rewrites severity, which is not what the persona filter reads. The narrow pass reports 0 of the 164 pedantic findings on the clean tree and 2 with the protections reverted. | `issue_1079::every_container_image_is_digest_pinned_or_explicitly_excepted`, `..::a_pedantic_pass_enforces_the_hash_pin_policy_on_images`, `..::the_actionlint_image_is_pinned_once_and_used_everywhere` |
 | D6 | `zizmor-action` does not resolve versions from PyPI. It ships `support/versions`, a static table of 37 rows, and `die`s on a version absent from it. Leaving `version:` unset selects the `latest` row, which in v0.6.2 is byte-identical to the `1.29.0` row. So the default does not float — it freezes, one minor release behind. | `version: 1.29.0` on both passes, and the reproduction comment corrected to match. The next bump is now a visible line in the diff rather than a side effect of bumping the action. | `issue_1079::every_zizmor_pass_pins_the_version_its_comment_documents` |
 | D7 | `artipacked` is a Low-confidence audit, and both gates floor confidence above it, so a practice all five templates follow could go unadopted at 46 of 48 sites with every check green. | `persist-credentials: false` at the 44 checkouts whose job never pushes; the four that do push keep it and say why in a comment above the step. The sweep is checked in both directions, because removing a credential a release job pushes with fails on `main`, in a workflow no pull request runs. | `issue_1079::every_checkout_drops_its_credential_unless_it_pushes`, `..::every_job_that_pushes_still_has_a_credential_to_push_with` |
+| D8 | The pull-request evidence gate is strict on the premise that a commit in review can still be amended. Ruleset 21300712 applies `deletion` and `non_fast_forward` to `~ALL` branches with an empty `bypass_actors`, so no commit message in this repository can ever be rewritten. A correct finding therefore had no remedy — the same deadlock shape #796/#810/#812 removed from the release path, surviving on the pull-request path only because nobody had mis-trailered a commit there yet. | `Formal-AI-Retract: <full sha>`: a later commit in the same range withdraws an earlier claim. It can only move a commit *out* of the numerator, the target must be a full 40-character sha inside the measured range, and it cannot name itself — so it cannot raise the measured share. Applied on both walks, because applying it on one would let a commit leave the metric and still count toward the release floor. | `self_hosting_metric::a_retraction_unblocks_a_branch_whose_history_cannot_be_rewritten`, `..::a_retraction_can_only_lower_the_measured_share`, `..::a_retraction_also_withdraws_the_commit_from_the_release_floor`, `..::a_retraction_must_name_a_full_sha_inside_the_measured_range` |
+| D9 | `trailer_values` deliberately scans the whole commit body rather than using git's `%(trailers)` placeholder (issue #796, where a blank line hid a trailer), and it `trim()`s each line before matching the key. Indentation is the one part of git's rule that mattered: a message that *documents* a trailer in an indented example thereby declares one. Reproduced immediately — the commit introducing `Formal-AI-Retract` showed the format in its own message and the gate answered `must name a full 40-character sha, found <full 40-character sha>`. | Skip lines beginning with a space or tab, matching `git interpret-trailers --parse`, which returns nothing for an indented line. The blank-line tolerance #796 needs is untouched. | `self_hosting_metric::an_indented_example_of_a_trailer_is_not_a_trailer` |
 | D1 | Not a pipeline defect. §4.1. | — | existing `self-development-loop` tests |
 | D4, D5 | Warnings behaving as designed. §4.2. | — | existing size and budget gates |
 
