@@ -80,7 +80,11 @@ fn pull_request_ci_rejects_an_unsynchronized_cargo_lock() {
 
 #[test]
 fn parallel_e2e_jobs_do_not_race_to_save_the_bun_cache() {
-    let workflow = read(".github/workflows/release.yml");
+    // Issue #1081 moved the agent CLI E2E steps into their own file and
+    // left the call behind; `pipeline_workflows()` splices the called
+    // workflow back in at the job that calls it, so this still asks
+    // "what does the pipeline run?" rather than "what is in this file?".
+    let workflow = crate::ci_gates::pipeline_workflows();
 
     assert_eq!(
         workflow.matches("no-cache: true").count(),

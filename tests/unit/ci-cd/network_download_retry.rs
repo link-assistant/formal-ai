@@ -56,6 +56,13 @@ const FETCHES_WITH_THEIR_OWN_RETRY_LOOP: &[(&str, &str)] = &[
          000/5xx (retryable), which a curl-level retry would flatten",
     ),
     (
+        "scripts/preflight-credentials.sh",
+        "issue #1081 (D15): the probe reads the HTTP status as its answer, and \
+         retries only what a retry can fix -- 000, 429 and 5xx. A curl-level \
+         retry would flatten the 401/403 that *is* the verdict into another \
+         attempt at the same denial",
+    ),
+    (
         "experiments/issue-892/fetch-query.sh",
         "40 attempts against a Wikidata endpoint that rate-limits the shared \
          runner IP with HTTP 403",

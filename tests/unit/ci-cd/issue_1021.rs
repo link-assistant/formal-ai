@@ -13,7 +13,6 @@
 //! These tests hold the rule for every third-party CLI CI installs, so the next
 //! floating install is caught at review time rather than by a red job.
 
-use super::workflow_fixtures::release_workflow;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
@@ -130,7 +129,11 @@ fn every_third_party_cli_a_workflow_installs_globally_carries_an_explicit_versio
 
 #[test]
 fn the_codex_pin_names_the_upstream_defect_and_the_bisect_that_would_lift_it() {
-    let workflow = release_workflow();
+    // Issue #1081 moved the agent CLI E2E steps into their own file and
+    // left the call behind; `pipeline_workflows()` splices the called
+    // workflow back in at the job that calls it, so this still asks
+    // "what does the pipeline run?" rather than "what is in this file?".
+    let workflow = crate::ci_gates::pipeline_workflows();
     let step = workflow
         .split("- name: Install external agent CLIs")
         .nth(1)

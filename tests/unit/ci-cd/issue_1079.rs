@@ -616,8 +616,14 @@ fn every_checkout_drops_its_credential_unless_it_pushes() {
 
 /// Anything that writes to the remote over git -- rather than over the API,
 /// which reads its token from the environment instead of from `.git/config`.
-const REMOTE_GIT_WRITES: [&str; 3] = [
+const REMOTE_GIT_WRITES: [&str; 4] = [
     "git push",
+    // Issue #1081 (D13) moved one `git push` behind a rebase-and-retry helper.
+    // A push through a script is still a push, and a sweep that only knows the
+    // literal command answers "no job here pushes" the moment one is wrapped --
+    // which would have dropped `external-benchmarks` out of this count in the
+    // same commit that made its push more reliable.
+    "scripts/push-to-shared-branch.sh",
     "scripts/version-and-commit.rs",
     "peter-evans/create-pull-request",
 ];

@@ -566,7 +566,10 @@ fn reference_differential_is_machine_checked_and_wired_into_release_ci() {
         "a PEM-decoy regression must fail the differential gate"
     );
 
-    let workflow = std::fs::read_to_string(root.join(".github/workflows/release.yml")).unwrap();
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert!(
         workflow.contains("issue_840_reference_agents/run_differential_gate.sh"),
         "the differential comparison must execute in release CI"

@@ -183,9 +183,12 @@ fn issue_922_promotion_and_agent_cli_evidence_are_reproducible() {
             "cmp \"$promotion_work/$TARGET\" \"$external_work/$TARGET\"",
         ],
     );
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
     assert_contains_all(
         "Agent CLI CI gate",
-        &read(root.join(".github/workflows/release.yml")),
+        &crate::ci_gates::pipeline_workflows(),
         &[
             "promoted method learning (issue #922)",
             "examples/issue-922-method-learning/run.sh",

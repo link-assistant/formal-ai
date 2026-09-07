@@ -141,7 +141,12 @@ fn the_authorship_route_neither_opens_a_pull_request_nor_pushes() {
 /// `timeout-minutes` is left as the backstop it is supposed to be.
 #[test]
 fn computer_use_e2e_steps_bound_the_run_and_not_only_each_session() {
-    let workflow = repository_file(".github/workflows/release.yml");
+    // Issue #1081 moved this job's steps into
+    // `.github/workflows/agent-cli-e2e.yml`. Whether a step owns its deadline
+    // is a property of the step, not of the file it is written in, so read the
+    // spliced pipeline surface -- `job_block` still finds the calling job, now
+    // with the called workflow's steps in it.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let job = job_block(&workflow, "test-agent-cli-e2e");
 
     for (step_name, script_path) in [

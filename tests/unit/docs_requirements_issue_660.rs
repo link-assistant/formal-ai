@@ -52,6 +52,9 @@ fn issue_660_evidence_and_ci_are_traceable() {
         );
     }
 
-    let workflow = read(".github/workflows/release.yml");
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert!(workflow.contains("experiments/agent_cli_e2e/run_issue_660_learning.sh"));
 }

@@ -567,7 +567,10 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
 /// but execute its search and fetch through the repository-owned MCP fixture.
 #[test]
 fn meaning_detail_e2e_uses_the_local_research_fixture() {
-    let workflow = release_workflow();
+    // Issue #1081 moved these steps into `.github/workflows/agent-cli-e2e.yml`.
+    // The spliced surface keeps them inside the job that calls them, so this
+    // still reads what CI runs for `test-agent-cli-e2e`.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
@@ -684,7 +687,11 @@ fn the_disk_policy_reads_every_workflow_not_a_hand_listed_few() {
 /// exits before returning the tool result to Formal AI.
 #[test]
 fn agent_cli_e2e_disables_hosted_session_summarization() {
-    let workflow = release_workflow();
+    // Issue #1081: the job now delegates to a reusable workflow, and the
+    // `env:` that disables hosted summarization moved with the steps it
+    // protects. Read the spliced surface so the guard is checked where CI
+    // applies it.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
@@ -747,6 +754,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),
+        // Issue #1081 (D15): probes every publishing credential with a write
+        // before the pipeline spends 90 minutes building what it cannot
+        // publish. Five probes over HTTP against five registries; the cap is a
+        // backstop for a hung TLS handshake, not a work budget.
+        ("release-preflight", 5),
         // Issue #1017: resolves the base-branch commit once so `lint`, `test`
         // and the macOS lane all merge the same one instead of each resolving
         // the tip at its own start time. A reusable workflow, so it owns its
@@ -805,7 +817,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // *cancelled* job that looked like a regression but was only variance.
         // Raised from 32 (issue #1069): 19m54s green, of which the two
         // computer-use steps cost 5m32s, is 39m24s at their 900s+600s budgets.
-        ("test-agent-cli-e2e", 45),
+        // Issue #1081 moved those 324 steps, and the 45-minute cap with them,
+        // into `.github/workflows/agent-cli-e2e.yml`; what is left here is the
+        // call. See that file's header for why.
+        ("test-agent-cli-e2e", 0),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
         ("build-artifacts", 20),

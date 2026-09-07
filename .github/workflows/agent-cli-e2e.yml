@@ -1,0 +1,355 @@
+name: Agent CLI E2E
+
+# Issue #1081 moved this job out of `.github/workflows/release.yml`. That file
+# had reached 1653 lines against the 1576 its own gate allows, and every
+# previous overrun had been answered by raising the allowance to whatever the
+# file then measured -- which is how a warning band ends up unable to warn: at
+# 1576 of 1576 the next line added is a failure, and there is no band left in
+# between. `tests/unit/ci-cd/issue_999.rs` no longer names this file at all.
+#
+# This job was the one to move. It is the largest in the workflow (324 lines,
+# a fifth of it) and it is a leaf: nothing `needs:` it except the terminal
+# `pipeline-status` gate, so lifting it changes no ordering -- the same
+# argument issue #895 used for `coverage.yml` and issue #1014 for
+# `macos-core-tests.yml`. It also removes a fifth of the surface from the
+# repository's third most conflicted path
+# (`data/meta/merge-conflict-ledger.lino`).
+#
+# The `if:`, `needs:` and `concurrency:` stay behind on the calling job, which
+# is where GitHub evaluates them. What moves is `runs-on`, the cap, and the
+# steps.
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+# A reusable workflow inherits nothing from its caller's `env:`, so the block
+# below is a copy of `release.yml`'s, narrowed to what these steps read.
+# `RUSTFLAGS: -Dwarnings` is the load-bearing one: dropping it in the move
+# would have left this job compiling without the setting the rest of CI uses,
+# which is a false negative introduced by a refactor meant to remove one.
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+  RUSTFLAGS: -Dwarnings
+
+jobs:
+  agent-cli-e2e:
+    name: E2E Tests (agent CLI ↔ formal-ai)
+    runs-on: ubuntu-latest
+    # Issue #1069: raised from 32 so it outlasts the 900s and 600s deadlines
+    # the computer-use steps below now own; see tests/unit/ci-cd/.
+    timeout-minutes: 45
+    env:
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: agentcli-e2e-
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+      - name: Install @link-assistant/agent CLI
+        run: |
+          bun add -g --ignore-scripts @link-assistant/agent
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Install external agent CLIs
+        run: |
+          # OpenCode's pinned postinstall selects its platform binary. Trust
+          # only that reviewed package; suppress lifecycle scripts elsewhere.
+          bun add -g --trust opencode-ai@1.18.25
+          # Pinned for the reason experiments/agentic_cli_matrix/clients.lock
+          # gives: a leg must fail because our server changed, not because a CLI
+          # shipped overnight — @openai/codex@0.148.0 drops the ENTER answering
+          # its first-run trust dialog (https://github.com/openai/codex/issues/39487).
+          # Before bumping, run experiments/issue_1021_codex_tui_version.
+          bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
+      - uses: ./.github/actions/download-formal-ai-binary
+      - name: 'Run Agent CLI E2E — held-out algorithm discovery (issue #531)'
+        timeout-minutes: 5
+        env: { PORT: 8896 }
+        run: experiments/agent_cli_e2e/run_issue_531.sh
+      - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+        env:
+          PORT: 8768
+          EXPECT_FILE: meanings-tomato-detail.lino
+          EXPECT_TEXT: томаты
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
+        env:
+          PORT: 8769
+          TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
+          EXPECT_FILE: meanings-potato-detail.lino
+          EXPECT_TEXT: potatoes
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+        env:
+          PORT: 8770
+          TASK: "Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools."
+          EXPECT_FILE: agentic-recipes.md
+          EXPECT_TEXT: flowchart
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: Run agent CLI E2E — self-inspection CST/AST census (no web step)
+        env:
+          PORT: 8771
+          TASK: "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
+          EXPECT_FILE: self-ast.lino
+          EXPECT_TEXT: named_node_count
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"
+        env:
+          PORT: 8772
+          TASK: "Here you can learn the trending topics from Google Trends: https://trends.google.com/trending/rss?geo=US"
+          EXPECT_FILE: google-trends-learning.lino
+          EXPECT_TEXT: human_gated
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — general unpinned change plan (issue #654)"
+        env:
+          PORT: 8773
+          TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
+          EXPECT_FILE: artifacts/general-agent-plan.txt
+          EXPECT_TEXT: general planner e2e passed
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
+        run: PORT=8808 experiments/agent_cli_e2e/run_issue_708.sh
+      - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
+        env:
+          PORT: 8775
+          TASK: "Create a file named hello.txt with the content hello world"
+          EXPECT_FILE: hello.txt
+          EXPECT_TEXT: hello world
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
+        env:
+          PORT: 8781
+          TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
+          EXPECT_FILE: issue-730-finding.md
+          EXPECT_TEXT: provenance paths are portable
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — capability-first local code search (issue #758)"
+        run: PORT=8782 experiments/agent_cli_e2e/run_issue_758.sh
+      - name: "Run gemini CLI E2E — caller framing does not hijack the request (issue #907)"
+        run: PORT=8907 experiments/agent_cli_e2e/run_issue_907.sh
+      - name: "Run agent CLI E2E — a recorded finding is an answer, not a heading (issue #1066)"
+        timeout-minutes: 6
+        run: NODE_PORT=8944 SPLIT_PORT=8945 experiments/agent_cli_e2e/run_issue_1066.sh
+      - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
+        env:
+          PORT: 8776
+          TASK: "Give me hello world program in Rust"
+          EXPECT_FILE: main.rs
+          EXPECT_TEXT: "Hello, world!"
+          MIN_POSTS: 4
+          EXPECT_SERVER_TEXTS: |-
+            rustc main.rs -o main
+            ./main
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — compile and execute a resumed substitution export (issue #936)"
+        timeout-minutes: 5
+        env: { PORT: 8936 }
+        run: experiments/agent_cli_e2e/run_issue_936.sh
+      - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
+        env:
+          PORT: 8777
+          TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
+          EXPECT_FILE: client-execution-learning-report.lino
+          EXPECT_TEXT: "lesson:typed-execution-artifact"
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — declarative new-file phrasing (issue #712)"
+        env:
+          PORT: 8776
+          TASK: "new file: notes.txt, contents: hello"
+          EXPECT_FILE: notes.txt
+          EXPECT_TEXT: hello
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+      - name: "Run agent CLI E2E — report action executes gh (issue #714)"
+        timeout-minutes: 3
+        env:
+          PORT: 8780
+        run: experiments/issue_714_agentic_mode/run_report_e2e.sh
+      - name: "Run agent CLI E2E — research, report, recall, and learn (issue #687)"
+        env:
+          PORT: 8776
+        run: experiments/agent_cli_e2e/run_issue_687.sh
+      # Issue #1069: green runs of this step measured 131s, 136s and 533s --
+      # serial live-model latency -- and run 33880485514 was killed by the
+      # runner at 10 minutes with no scenario named. The wrapper and the script
+      # own the deadline now; the backstop only outlasts it (issue #1017).
+      - name: "Run agent CLI E2E — verified computer-use record/replay (issue #707)"
+        timeout-minutes: 17
+        env:
+          PORT: 8907
+          BIN: ${{ github.workspace }}/target/release/formal-ai
+          EVIDENCE_DIR: /tmp/formal-ai-issue-707-evidence
+          TEST_BUDGET_SECONDS: 900
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Computer-use record/replay E2E" \
+            experiments/agent_cli_e2e/run_issue_707.sh
+      - name: "Run agent CLI E2E — held-out computer-use generalization (issue #707)"
+        timeout-minutes: 12
+        env:
+          PORT: 8909
+          BIN: ${{ github.workspace }}/target/release/formal-ai
+          EVIDENCE_DIR: /tmp/formal-ai-issue-707-generalization-evidence
+          TEST_BUDGET_SECONDS: 600
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Held-out computer-use generalization E2E" \
+            experiments/agent_cli_e2e/run_issue_707_generalization.sh
+      - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
+        env:
+          PORT: 8781
+        run: experiments/agent_cli_e2e/run_issue_771.sh
+      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        timeout-minutes: 10
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_822.sh
+      - name: "Run four-client E2E — narrated compatibility research (issue #781)"
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_781.sh
+      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        timeout-minutes: 15
+        env:
+          PORT: 8784
+          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
+        run: experiments/agent_cli_e2e/run_issue_840.sh
+      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        timeout-minutes: 5
+        env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
+        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
+      - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        timeout-minutes: 5
+        env:
+          PORT: 8785
+        run: experiments/issue_840_reference_agents/run_differential_gate.sh
+      - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
+        timeout-minutes: 3
+        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
+        run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
+      - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
+        timeout-minutes: 3
+        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
+        run: experiments/issue_840_task_ladder/run_ladder.sh
+      - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
+        timeout-minutes: 5
+        env:
+          PORT: 8879
+        run: experiments/agent_cli_e2e/run_issue_715_learning.sh
+      - name: "Run agent CLI E2E — self-hosting auto-learning (issue #657)"
+        timeout-minutes: 5
+        env:
+          PORT: 8881
+        run: experiments/agent_cli_e2e/run_issue_657_metric.sh
+      - name: "Run agent CLI E2E — hardcoded-language auto-learning (issue #659)"
+        timeout-minutes: 5
+        env:
+          PORT: 8882
+        run: experiments/agent_cli_e2e/run_issue_659_learning.sh
+      - name: "Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)"
+        timeout-minutes: 5
+        env:
+          PORT: 8883
+        run: experiments/agent_cli_e2e/run_issue_660_learning.sh
+      - name: "Run agent CLI E2E — handler-precedence auto-learning (issue #663)"
+        timeout-minutes: 5
+        env:
+          PORT: 8885
+        run: experiments/agent_cli_e2e/run_issue_663_learning.sh
+      - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
+        timeout-minutes: 5
+        env:
+          PORT: 8886
+        run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
+      - name: "Run agent CLI E2E — repository statement audit (issue #661)"
+        timeout-minutes: 5
+        env:
+          PORT: 8884
+        run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
+      - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
+        timeout-minutes: 5
+        env:
+          PORT: 8895
+        run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
+      - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
+        run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
+      - name: "Run agent CLI E2E — formal projection invariant (issue #917)"
+        run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
+      - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
+        run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
+      - name: Install @link-assistant/hive-mind CLI
+        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.15.1
+      - name: "Run Hive Mind full-circle integration gate (issue #921)"
+        timeout-minutes: 5
+        run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
+      - name: "Run agent CLI E2E — promoted method learning (issue #922)"
+        run: PORT=8922 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence examples/issue-922-method-learning/run.sh
+      # Issue #1081: this was the one heavy step in the job with neither a step
+      # backstop nor a budget, so the only limit on it was the 45m job cap --
+      # and a *job* cap kill is reported as `cancelled`, which turns nothing
+      # red (issue #977). The step caps its neighbours carry do fail the job,
+      # which is why they were never the gap; this step simply had none.
+      # Measured worst on main is 128s against a 121s median (n=7), so 300s
+      # leaves room for a slow replay without letting a hang run for 45m, and
+      # the 8m backstop only outlasts the deadline it guards.
+      - name: "Replay Hive Mind self-coding inner loop (issue #655)"
+        timeout-minutes: 8
+        env:
+          PORT: 8774
+          TEST_BUDGET_SECONDS: 300
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Hive Mind self-coding replay" \
+            bash -c 'examples/self-coding/run.sh && cargo test self_coding_session_replays'
+      # Issue #1079: a failed harness prints nothing into the job log -- it
+      # redirects the CLI's streams to files, and `set -e` ends it before
+      # `scripts/classify-agent-cli-stderr.sh` can read them. Reading the same
+      # paths the upload below collects turns `exit code 1` back into a cause.
+      - name: Show the Agent CLI evidence on failure
+        if: failure()
+        run: |
+          scripts/dump-agent-cli-evidence.sh \
+            /tmp/formal-ai-serve-*.log \
+            /tmp/agent-out-*.log \
+            /tmp/formal-ai-issue-*-evidence
+      - name: Upload E2E logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: agent-cli-e2e-logs
+          path: |
+            /tmp/formal-ai-serve-*.log
+            /tmp/agent-out-*.log
+            /tmp/formal-ai-issue-*-evidence
+          retention-days: 7
+      - name: Upload TUI transcripts and replay artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }

@@ -157,36 +157,16 @@ fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
 #[test]
 fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
     for (path, warning_limit) in [
-        // Issue #921 added the Hive Mind full-circle gate (a two-step install
-        // and run in `test-agent-cli-e2e`), which is this pull request's
-        // deliverable and cannot live anywhere cheaper: extracting it to a
-        // reusable workflow would duplicate the release build the E2E job
-        // already produces, and `tests/unit/issue_921.rs` pins both step names
-        // in this file. Main left three lines of headroom at 1497, so the band
-        // moves by the gate's real cost and no further.
-        // Issue #1069 moved this by the deadline the computer-use E2E steps
-        // had to be given: run 33880485514 was killed by `timeout-minutes`
-        // rather than by a budget, so both steps now pass through
-        // `run-with-budget-warning.sh`, which costs the block form of `run:`
-        // and a `TEST_BUDGET_SECONDS` beside each. The wrapper is the
-        // repository's own mechanism for this (issues #977 and #1017) and has
-        // nowhere cheaper to live: the step it guards is the one being timed.
-        // Issue #1079 moved this by the cost of the one template practice
-        // this repository had not adopted: `persist-credentials: false` on
-        // `actions/checkout`. Eighteen of the repository's forty-eight
-        // checkouts are in this file, and the input has nowhere cheaper to
-        // live -- it is an input to the action that *performs* the checkout,
-        // and a local composite action cannot wrap it because a local
-        // composite action does not exist until the checkout has run. Three
-        // of the four checkouts that must keep their credential are here too,
-        // and each carries the comment that argues for it, because an
-        // exception nobody has to justify in place is one that spreads.
-        // The same issue's D12 added eleven more: a failing Agent CLI harness
-        // printed its exit status and nothing else, so this job now reads the
-        // stream files it already uploads back into the log from an
-        // `if: failure()` step. That step is per-job by construction -- the
-        // paths it reads are the paths the job's own upload collects.
-        (".github/workflows/release.yml", 1_576),
+        // Issue #1081 (D6) moved the agent-CLI E2E steps out to
+        // `.github/workflows/agent-cli-e2e.yml`, which returned this file to
+        // the ordinary 1500-line warning band `scripts/check-file-size.rs`
+        // applies to every workflow. The exemptions issues #921, #1069 and
+        // #1079 each needed -- the Hive Mind full-circle gate, the
+        // `run-with-budget-warning.sh` wrappers, `persist-credentials: false`
+        // on eighteen checkouts and D12's failure-time evidence dump -- are
+        // all still here; they simply fit again. Anything that puts this file
+        // back over 1500 should extract a job, not raise the number.
+        (".github/workflows/release.yml", 1_500),
         ("src/intent_formalization.rs", 900),
         ("src/agentic_coding/general_planner.rs", 900),
         ("src/web/worker/formal_ai_worker_20.js", 1_400),
