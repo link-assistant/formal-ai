@@ -1,0 +1,251 @@
+Resolve target release	UNKNOWN STEP	﻿2026-09-06T22:08:22.7059008Z Current runner version: '2.337.0'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7083828Z ##[group]Runner Image Provisioner
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7084710Z Hosted Compute Agent
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7085296Z Version: 20260828.587
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7086034Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7086849Z Build Date: 2026-08-28T16:44:25Z
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7087607Z Worker ID: {65958521-b666-48e8-ba5d-04f2e6aa248f}
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7088378Z Azure Region: westus
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7088942Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7090739Z ##[group]Operating System
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7091437Z Ubuntu
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7092055Z 24.04.4
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7092626Z LTS
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7093149Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7093767Z ##[group]Runner Image
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7094445Z Image: ubuntu-24.04
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7095079Z Version: 20260831.293.1
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7096358Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7098003Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7099015Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7100318Z ##[group]GITHUB_TOKEN Permissions
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7102523Z Contents: read
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7103200Z Metadata: read
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7103828Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7105880Z Secret source: Actions
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7107045Z Prepare workflow directory
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7507099Z Prepare all required actions
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:22.7556982Z Getting action download info
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.1037671Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3055785Z Complete job name: Resolve target release
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3834827Z ##[group]Run actions/checkout@v7
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3835742Z with:
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3836215Z   repository: link-assistant/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3840484Z   token: ***
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3840957Z   ssh-strict: true
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3841426Z   ssh-user: git
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3841888Z   persist-credentials: true
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3842388Z   clean: true
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3842920Z   sparse-checkout-cone-mode: true
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3843509Z   fetch-depth: 1
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3843951Z   fetch-tags: false
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3844407Z   show-progress: true
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3844865Z   lfs: false
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3845289Z   submodules: false
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3845856Z   set-safe-directory: true
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3846416Z   allow-unsafe-pr-checkout: false
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3847218Z env:
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3847645Z   GIT_CONFIG_COUNT: 1
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3848133Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3848734Z   GIT_CONFIG_VALUE_0: main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3849223Z   CARGO_NET_RETRY: 10
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3849697Z   CARGO_HTTP_MULTIPLEXING: false
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3850418Z   RUSTFLAGS: -Dwarnings
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.3850905Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.4867000Z Syncing repository: link-assistant/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.4868877Z ##[group]Getting Git version info
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.4869685Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.4871282Z [command]/usr/bin/git version
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.4953375Z git version 2.55.0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.4977777Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5001890Z Temporarily overriding HOME='/home/runner/work/_temp/6f3f000c-b17d-4acd-96d5-68f3ac66aace' before making global git config changes
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5004205Z Adding repository directory to the temporary git global config as a safe directory
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5008783Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5058784Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5062586Z ##[group]Determining repository object format
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5064186Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5064941Z ##[group]Initializing the repository
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5069926Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5193099Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5204100Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5256086Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5256931Z ##[group]Disabling automatic garbage collection
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5260436Z [command]/usr/bin/git config --local gc.auto 0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5292899Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5293996Z ##[group]Setting up auth
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5294747Z Removing SSH command configuration
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5299927Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5341109Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5751900Z Removing HTTP extra header
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5757221Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.5794536Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6019131Z Removing includeIf entries pointing to credentials config files
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6025613Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6064364Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6294474Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6334285Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6367469Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6404487Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6439005Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6470722Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6471657Z ##[group]Fetching the repository
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:23.6476898Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f971b82052e523f6478f6bf1815c89a326153a23:refs/remotes/origin/main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4839595Z From https://github.com/link-assistant/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4840971Z  * [new ref]         f971b82052e523f6478f6bf1815c89a326153a23 -> origin/main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4848638Z [command]/usr/bin/git branch --list --remote origin/main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4882210Z   origin/main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4889905Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4917847Z f971b82052e523f6478f6bf1815c89a326153a23
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4921954Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4922885Z ##[group]Determining the checkout info
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4923875Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4927705Z [command]/usr/bin/git sparse-checkout disable
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.4981533Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.5014197Z ##[group]Checking out the ref
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:41.5020683Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:42.6213833Z Updating files:  39% (6616/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:42.7104494Z Updating files:  40% (6704/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:42.7856265Z Updating files:  41% (6871/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:42.9888344Z Updating files:  42% (7039/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.0775132Z Updating files:  43% (7206/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.3363103Z Updating files:  44% (7374/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.3550090Z Updating files:  45% (7542/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.3698825Z Updating files:  46% (7709/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.3812890Z Updating files:  47% (7877/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.4428692Z Updating files:  48% (8044/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.5318167Z Updating files:  49% (8212/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.5534908Z Updating files:  49% (8254/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.5762002Z Updating files:  50% (8379/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.6014665Z Updating files:  51% (8547/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.6149365Z Updating files:  52% (8715/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.6273141Z Updating files:  53% (8882/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.6826859Z Updating files:  54% (9050/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.7583455Z Updating files:  55% (9217/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.7873324Z Updating files:  56% (9385/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.7962027Z Updating files:  57% (9553/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.8123782Z Updating files:  58% (9720/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.8381963Z Updating files:  59% (9888/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.8535308Z Updating files:  60% (10055/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.8825614Z Updating files:  61% (10223/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.9564557Z Updating files:  62% (10390/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:43.9810989Z Updating files:  63% (10558/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.0309259Z Updating files:  64% (10726/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.0903485Z Updating files:  65% (10893/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.1874593Z Updating files:  66% (11061/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.2139507Z Updating files:  67% (11228/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.2812356Z Updating files:  68% (11396/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.3230832Z Updating files:  69% (11564/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.3390991Z Updating files:  70% (11731/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.3567773Z Updating files:  71% (11899/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.3719526Z Updating files:  72% (12066/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.4067078Z Updating files:  73% (12234/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.4310915Z Updating files:  74% (12401/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.4481239Z Updating files:  75% (12569/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.4725962Z Updating files:  76% (12737/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.4833811Z Updating files:  77% (12904/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.4916362Z Updating files:  78% (13072/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.5148506Z Updating files:  79% (13239/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.5233829Z Updating files:  80% (13407/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.5429071Z Updating files:  80% (13428/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.5545773Z Updating files:  81% (13574/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.5681768Z Updating files:  82% (13742/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6006388Z Updating files:  83% (13910/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6135316Z Updating files:  84% (14077/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6551395Z Updating files:  85% (14245/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6633922Z Updating files:  86% (14412/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6730482Z Updating files:  87% (14580/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6859232Z Updating files:  88% (14748/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.6976844Z Updating files:  89% (14915/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.7095823Z Updating files:  90% (15083/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.7239671Z Updating files:  91% (15250/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.7396088Z Updating files:  92% (15418/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.7600812Z Updating files:  93% (15585/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.7847767Z Updating files:  94% (15753/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.7957359Z Updating files:  95% (15921/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.8153420Z Updating files:  96% (16088/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.8287343Z Updating files:  97% (16256/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.8425360Z Updating files:  98% (16423/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.8558933Z Updating files:  99% (16591/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.8559763Z Updating files: 100% (16758/16758)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:44.8561131Z Updating files: 100% (16758/16758), done.
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2240534Z Reset branch 'main'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2245523Z branch 'main' set up to track 'origin/main'.
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2355588Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2388524Z [command]/usr/bin/git log -1 --format=%H
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2421121Z f971b82052e523f6478f6bf1815c89a326153a23
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2651083Z ##[group]Run bash scripts/desktop-release-resolve.sh
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2651559Z ^[[36;1mbash scripts/desktop-release-resolve.sh^[[0m
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2692063Z shell: /usr/bin/bash -e {0}
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2692326Z env:
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2692519Z   GIT_CONFIG_COUNT: 1
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2692768Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2693049Z   GIT_CONFIG_VALUE_0: main
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2693275Z   CARGO_NET_RETRY: 10
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2693508Z   CARGO_HTTP_MULTIPLEXING: false
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2693755Z   RUSTFLAGS: -Dwarnings
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2696557Z   GH_TOKEN: ***
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2696799Z   EVENT: workflow_run
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2697019Z   INPUT_TAG: 
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2697213Z   RELEASE_TAG: 
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2697421Z   REPO: link-assistant/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2697745Z   WORKFLOW_RUN_HEAD_SHA: f971b82052e523f6478f6bf1815c89a326153a23
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2698145Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2802303Z ##[group]desktop-release resolve inputs
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2803020Z [desktop-release-resolve] event                 = workflow_run
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2803926Z [desktop-release-resolve] input_tag             = <none>
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2804741Z [desktop-release-resolve] release_tag           = <none>
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2805474Z [desktop-release-resolve] repo                  = link-assistant/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2806396Z [desktop-release-resolve] workflow_run_head_sha = f971b82052e523f6478f6bf1815c89a326153a23
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2807459Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:45.2808333Z ##[group]Tier 1: exact tag on head SHA f971b82052e523f6478f6bf1815c89a326153a23
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:47.9735767Z [desktop-release-resolve] exact-match tag: <none>
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:47.9737406Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:47.9738160Z ##[group]Tier 2: latest published release (auto-release child commit)
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:48.3877387Z [desktop-release-resolve] latest release tag: v0.347.0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:48.8762469Z [desktop-release-resolve] note: v0.347.0 commit parent='701d6a4516699e9bb6a5ac25e419c0cac6a03e27' != head SHA; using latest release as self-healing fallback.
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:48.8763940Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.2452054Z [desktop-release-resolve] Resolved release tag: v0.347.0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.2454135Z ##[group]Idempotency guard: required desktop assets on v0.347.0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6482169Z [desktop-release-resolve] release version: 0.347.0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6482875Z [desktop-release-resolve] existing desktop assets: 23
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6483494Z [desktop-release-resolve] required desktop assets: 17
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6484189Z [desktop-release-resolve] all required desktop assets are present.
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6485505Z ##[endgroup]
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6486166Z [desktop-release-resolve] Release v0.347.0 already has the complete desktop asset set; skipping automatic build.
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6487652Z [desktop-release-resolve] result: tag='v0.347.0' should_build='false' resolution='workflow_run-latest-fallback+already-has-all-assets'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.6701351Z Post job cleanup.
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7554569Z [command]/usr/bin/git version
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7607180Z git version 2.55.0
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7644873Z Temporarily overriding HOME='/home/runner/work/_temp/1be7d354-aa6b-41de-a869-40f8d82a86d0' before making global git config changes
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7646192Z Adding repository directory to the temporary git global config as a safe directory
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7649800Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7684306Z Removing SSH command configuration
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7691264Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.7727741Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8012576Z Removing HTTP extra header
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8018846Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8063004Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8344273Z Removing includeIf entries pointing to credentials config files
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8365333Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8393509Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8394319Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8394986Z includeif.gitdir:/github/workspace/.git.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8395489Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8408343Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8438325Z /home/runner/work/_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8461621Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d5d8cbed\-d2c4\-4698\-866c\-03d839549b49\.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8495349Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8527212Z /home/runner/work/_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8546383Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d5d8cbed\-d2c4\-4698\-866c\-03d839549b49\.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8589103Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8615738Z /github/runner_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8623221Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-d5d8cbed\-d2c4\-4698\-866c\-03d839549b49\.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8659133Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8685220Z /github/runner_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8693123Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d5d8cbed\-d2c4\-4698\-866c\-03d839549b49\.config
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8730598Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.8969190Z Removing credentials config '/home/runner/work/_temp/git-credentials-d5d8cbed-d2c4-4698-866c-03d839549b49.config'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.9123817Z Evaluate and set job outputs
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.9131064Z Set output 'tag'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.9132739Z Set output 'should_build'
+Resolve target release	UNKNOWN STEP	2026-09-06T22:08:49.9133435Z Cleaning up orphan processes

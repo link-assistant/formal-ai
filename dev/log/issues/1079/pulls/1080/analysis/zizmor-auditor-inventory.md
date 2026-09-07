@@ -1,0 +1,570 @@
+# zizmor 1.30.0 full inventory (`--persona auditor --min-confidence low`)
+
+The Workflows job runs `--persona regular --min-confidence medium`, which
+reports none of these. Recorded so the gap between what zizmor *can* see and
+what this pipeline *asks* it to see is a number, not a guess.
+
+| audit | severity | confidence | persona | count |
+| --- | --- | --- | --- | --- |
+| `artipacked` | Low | Low | Regular | 46 |
+| `superfluous-actions` | Informational | Medium | Pedantic | 31 |
+| `template-injection` | Low | High | Pedantic | 29 |
+| `secrets-outside-env` | Medium | High | Auditor | 22 |
+| `template-injection` | Informational | Low | Regular | 12 |
+| `undocumented-permissions` | Low | High | Pedantic | 12 |
+| `cache-poisoning` | High | Low | Regular | 3 |
+| `github-env` | High | Low | Regular | 3 |
+| `anonymous-definition` | Informational | High | Pedantic | 2 |
+| `unpinned-images` | High | High | Pedantic | 2 |
+| `concurrency-limits` | Low | High | Pedantic | 1 |
+| `superfluous-actions` | Informational | Low | Pedantic | 1 |
+
+Total: 164 findings.
+
+
+## High severity (8)
+
+- **github-env** (Low confidence, Regular persona) — dangerous use of environment file
+  - `.github/actions/setup-sccache/action.yml:19` — write to GITHUB_ENV may allow code execution
+- **github-env** (Low confidence, Regular persona) — dangerous use of environment file
+  - `.github/actions/setup-sccache/action.yml:19` — write to GITHUB_ENV may allow code execution
+- **github-env** (Low confidence, Regular persona) — dangerous use of environment file
+  - `.github/workflows/desktop-release.yml:222` — write to GITHUB_ENV may allow code execution
+- **cache-poisoning** (Low confidence, Regular persona) — runtime artifacts potentially vulnerable to a cache poisoning attack
+  - `.github/workflows/desktop-release.yml:47` — generally used when publishing artifacts generated at runtime
+  - `.github/workflows/desktop-release.yml:261` — always restores from cache
+  - `.github/workflows/desktop-release.yml:256` — this step
+- **cache-poisoning** (Low confidence, Regular persona) — runtime artifacts potentially vulnerable to a cache poisoning attack
+  - `.github/workflows/desktop-release.yml:47` — generally used when publishing artifacts generated at runtime
+  - `.github/workflows/desktop-release.yml:284` — omitting `package-manager-cache` enables caching
+  - `.github/workflows/desktop-release.yml:283` — this step
+- **cache-poisoning** (Low confidence, Regular persona) — runtime artifacts potentially vulnerable to a cache poisoning attack
+  - `.github/workflows/desktop-release.yml:47` — generally used when publishing artifacts generated at runtime
+  - `.github/workflows/desktop-release.yml:679` — omitting `package-manager-cache` enables caching
+  - `.github/workflows/desktop-release.yml:678` — this step
+- **unpinned-images** (High confidence, Pedantic persona) — unpinned image references
+  - `.github/workflows/stock-rust-install.yml:20` — container image is not pinned to a SHA256 hash
+- **unpinned-images** (High confidence, Pedantic persona) — unpinned image references
+  - `.github/workflows/workflows.yml:61` — container image is not pinned to a SHA256 hash
+
+## Medium severity (22)
+
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/coverage.yml:74` — this job
+  - `.github/workflows/coverage.yml:74` — this job
+  - `.github/workflows/coverage.yml:207` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/coverage.yml:74` — this job
+  - `.github/workflows/coverage.yml:74` — this job
+  - `.github/workflows/coverage.yml:219` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:319` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:320` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:321` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:322` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:323` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:362` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:363` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:364` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:365` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:163` — this job
+  - `.github/workflows/desktop-release.yml:366` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:465` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:466` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:513` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:513` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:443` — this job
+  - `.github/workflows/release.yml:514` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:682` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:683` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:711` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:711` — secret is accessed outside of a dedicated environment
+- **secrets-outside-env** (High confidence, Auditor persona) — secrets referenced without a dedicated environment
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:660` — this job
+  - `.github/workflows/release.yml:712` — secret is accessed outside of a dedicated environment
+
+## Low severity (88)
+
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/agentic-cli-matrix.yml:57` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/agentic-cli-matrix.yml:94` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/agentic-cli-matrix.yml:240` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/agentic-cli-matrix.yml:196` — this step
+  - `.github/workflows/agentic-cli-matrix.yml:200` — may expand into attacker-controllable code
+  - `.github/workflows/agentic-cli-matrix.yml:197` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/agentic-cli-matrix.yml:202` — this step
+  - `.github/workflows/agentic-cli-matrix.yml:211` — may expand into attacker-controllable code
+  - `.github/workflows/agentic-cli-matrix.yml:210` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/agentic-cli-matrix.yml:302` — this step
+  - `.github/workflows/agentic-cli-matrix.yml:306` — may expand into attacker-controllable code
+  - `.github/workflows/agentic-cli-matrix.yml:305` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/agentic-cli-matrix.yml:302` — this step
+  - `.github/workflows/agentic-cli-matrix.yml:310` — may expand into attacker-controllable code
+  - `.github/workflows/agentic-cli-matrix.yml:305` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/agentic-cli-matrix.yml:302` — this step
+  - `.github/workflows/agentic-cli-matrix.yml:314` — may expand into attacker-controllable code
+  - `.github/workflows/agentic-cli-matrix.yml:305` — this run block
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/coverage.yml:59` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/coverage.yml:109` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/coverage.yml:249` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/desktop-release.yml:131` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/desktop-release.yml:227` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/desktop-release.yml:660` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:347` — this step
+  - `.github/workflows/desktop-release.yml:356` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:356` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:358` — this step
+  - `.github/workflows/desktop-release.yml:371` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:371` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:384` — this step
+  - `.github/workflows/desktop-release.yml:416` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:416` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:422` — this step
+  - `.github/workflows/desktop-release.yml:432` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:427` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:422` — this step
+  - `.github/workflows/desktop-release.yml:436` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:427` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:517` — this step
+  - `.github/workflows/desktop-release.yml:525` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:521` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:517` — this step
+  - `.github/workflows/desktop-release.yml:527` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:521` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:517` — this step
+  - `.github/workflows/desktop-release.yml:535` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:521` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:517` — this step
+  - `.github/workflows/desktop-release.yml:542` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:521` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:564` — this step
+  - `.github/workflows/desktop-release.yml:579` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:567` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:564` — this step
+  - `.github/workflows/desktop-release.yml:594` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:567` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:564` — this step
+  - `.github/workflows/desktop-release.yml:594` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:567` — this run block
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/desktop-release.yml:206` — needs an explanatory comment
+  - `.github/workflows/desktop-release.yml:207` — needs an explanatory comment
+  - `.github/workflows/desktop-release.yml:208` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/desktop-release.yml:653` — needs an explanatory comment
+  - `.github/workflows/desktop-release.yml:654` — needs an explanatory comment
+  - `.github/workflows/desktop-release.yml:655` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/desktop-release.yml:772` — needs an explanatory comment
+  - `.github/workflows/desktop-release.yml:773` — needs an explanatory comment
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/external-benchmarks.yml:56` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/external-benchmarks.yml:88` — does not set persist-credentials: false
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/external-benchmarks.yml:86` — needs an explanatory comment
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/issue-1028-agent-ladder.yml:39` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/job-headroom.yml:57` — does not set persist-credentials: false
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/job-headroom.yml:41` — needs an explanatory comment
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/learning-cycle.yml:29` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/links.yml:49` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/macos-core-tests.yml:48` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/macos-core-tests.yml:140` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/macos-core-tests.yml:188` — this step
+  - `.github/workflows/macos-core-tests.yml:198` — may expand into attacker-controllable code
+  - `.github/workflows/macos-core-tests.yml:196` — this run block
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/pin-base-commit.yml:39` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/proactive-failure-report-e2e.yml:30` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/question-necessity-ratchet.yml:44` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:63` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:86` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:106` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:135` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:189` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:209` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:250` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:328` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:428` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:471` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:688` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:860` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:902` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:984` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:1284` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:1337` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:1393` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:1460` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/release.yml:1516` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1238` — this step
+  - `.github/workflows/release.yml:1240` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1240` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1342` — this step
+  - `.github/workflows/release.yml:1343` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1343` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1344` — this step
+  - `.github/workflows/release.yml:1345` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1345` — this run block
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/release.yml:127` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/release.yml:468` — needs an explanatory comment
+  - `.github/workflows/release.yml:469` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/release.yml:685` — needs an explanatory comment
+  - `.github/workflows/release.yml:686` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/release.yml:857` — needs an explanatory comment
+  - `.github/workflows/release.yml:858` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/release.yml:1376` — needs an explanatory comment
+  - `.github/workflows/release.yml:1377` — needs an explanatory comment
+- **concurrency-limits** (High confidence, Pedantic persona) — insufficient job-level concurrency limits
+  - `.github/workflows/release.yml:2` — workflow is missing concurrency setting
+  - `.github/workflows/release.yml:1506` — job affected by missing workflow concurrency
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/security.yml:52` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/security.yml:97` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/security.yml:135` — does not set persist-credentials: false
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/security.yml:28` — needs an explanatory comment
+  - `.github/workflows/security.yml:30` — needs an explanatory comment
+- **undocumented-permissions** (High confidence, Pedantic persona) — permissions without explanatory comments
+  - `.github/workflows/security.yml:133` — needs an explanatory comment
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/stock-rust-install.yml:25` — does not set persist-credentials: false
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/summarization-ratchet.yml:69` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/summarization-ratchet.yml:84` — this step
+  - `.github/workflows/summarization-ratchet.yml:88` — may expand into attacker-controllable code
+  - `.github/workflows/summarization-ratchet.yml:85` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/summarization-ratchet.yml:90` — this step
+  - `.github/workflows/summarization-ratchet.yml:94` — may expand into attacker-controllable code
+  - `.github/workflows/summarization-ratchet.yml:92` — this run block
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/task-ladder.yml:66` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/task-ladder.yml:83` — this step
+  - `.github/workflows/task-ladder.yml:91` — may expand into attacker-controllable code
+  - `.github/workflows/task-ladder.yml:89` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/task-ladder.yml:93` — this step
+  - `.github/workflows/task-ladder.yml:97` — may expand into attacker-controllable code
+  - `.github/workflows/task-ladder.yml:95` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/task-ladder.yml:93` — this step
+  - `.github/workflows/task-ladder.yml:107` — may expand into attacker-controllable code
+  - `.github/workflows/task-ladder.yml:95` — this run block
+- **artipacked** (Low confidence, Regular persona) — credential persistence through GitHub Actions artifacts
+  - `.github/workflows/write-effect-ladder.yml:69` — does not set persist-credentials: false
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/write-effect-ladder.yml:86` — this step
+  - `.github/workflows/write-effect-ladder.yml:94` — may expand into attacker-controllable code
+  - `.github/workflows/write-effect-ladder.yml:91` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/write-effect-ladder.yml:96` — this step
+  - `.github/workflows/write-effect-ladder.yml:100` — may expand into attacker-controllable code
+  - `.github/workflows/write-effect-ladder.yml:98` — this run block
+- **template-injection** (High confidence, Pedantic persona) — code injection via template expansion
+  - `.github/workflows/write-effect-ladder.yml:96` — this step
+  - `.github/workflows/write-effect-ladder.yml:110` — may expand into attacker-controllable code
+  - `.github/workflows/write-effect-ladder.yml:98` — this run block
+
+## Informational severity (46)
+
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/agentic-cli-matrix.yml:59` — this step
+  - `.github/workflows/agentic-cli-matrix.yml:60` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/agentic-cli-matrix.yml:59` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/coverage.yml:62` — this step
+  - `.github/workflows/coverage.yml:63` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/coverage.yml:62` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/coverage.yml:111` — this step
+  - `.github/workflows/coverage.yml:112` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/coverage.yml:111` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/coverage.yml:256` — this step
+  - `.github/workflows/coverage.yml:257` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/coverage.yml:256` — this step
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:738` — this step
+  - `.github/workflows/desktop-release.yml:745` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:745` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/desktop-release.yml:877` — this step
+  - `.github/workflows/desktop-release.yml:880` — may expand into attacker-controllable code
+  - `.github/workflows/desktop-release.yml:879` — this run block
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/desktop-release.yml:253` — this step
+  - `.github/workflows/desktop-release.yml:254` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/desktop-release.yml:253` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/external-benchmarks.yml:60` — this step
+  - `.github/workflows/external-benchmarks.yml:61` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/external-benchmarks.yml:60` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/external-benchmarks.yml:92` — this step
+  - `.github/workflows/external-benchmarks.yml:93` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/external-benchmarks.yml:92` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/issue-1028-agent-ladder.yml:41` — this step
+  - `.github/workflows/issue-1028-agent-ladder.yml:42` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/issue-1028-agent-ladder.yml:41` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/job-headroom.yml:58` — this step
+  - `.github/workflows/job-headroom.yml:59` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/job-headroom.yml:58` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/learning-cycle.yml:31` — this step
+  - `.github/workflows/learning-cycle.yml:31` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/learning-cycle.yml:31` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/macos-core-tests.yml:59` — this step
+  - `.github/workflows/macos-core-tests.yml:60` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/macos-core-tests.yml:59` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/macos-core-tests.yml:156` — this step
+  - `.github/workflows/macos-core-tests.yml:157` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/macos-core-tests.yml:156` — this step
+- **anonymous-definition** (High confidence, Pedantic persona) — workflow or action definition without a name
+  - `.github/workflows/proactive-failure-report-e2e.yml:18` — this job
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/proactive-failure-report-e2e.yml:31` — this step
+  - `.github/workflows/proactive-failure-report-e2e.yml:31` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/proactive-failure-report-e2e.yml:31` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/question-necessity-ratchet.yml:47` — this step
+  - `.github/workflows/question-necessity-ratchet.yml:48` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/question-necessity-ratchet.yml:47` — this step
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:496` — this step
+  - `.github/workflows/release.yml:501` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:499` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:516` — this step
+  - `.github/workflows/release.yml:522` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:522` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:523` — this step
+  - `.github/workflows/release.yml:529` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:529` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:714` — this step
+  - `.github/workflows/release.yml:719` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:719` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:720` — this step
+  - `.github/workflows/release.yml:725` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:725` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1429` — this step
+  - `.github/workflows/release.yml:1430` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1430` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1429` — this step
+  - `.github/workflows/release.yml:1430` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1430` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1429` — this step
+  - `.github/workflows/release.yml:1430` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1430` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1490` — this step
+  - `.github/workflows/release.yml:1493` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1493` — this run block
+- **template-injection** (Low confidence, Regular persona) — code injection via template expansion
+  - `.github/workflows/release.yml:1494` — this step
+  - `.github/workflows/release.yml:1497` — may expand into attacker-controllable code
+  - `.github/workflows/release.yml:1495` — this run block
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:66` — this step
+  - `.github/workflows/release.yml:67` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:66` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:89` — this step
+  - `.github/workflows/release.yml:90` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:89` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:109` — this step
+  - `.github/workflows/release.yml:110` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:109` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:212` — this step
+  - `.github/workflows/release.yml:213` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:212` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:259` — this step
+  - `.github/workflows/release.yml:260` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:259` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:339` — this step
+  - `.github/workflows/release.yml:340` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:339` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:429` — this step
+  - `.github/workflows/release.yml:430` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:429` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:475` — this step
+  - `.github/workflows/release.yml:476` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:475` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:692` — this step
+  - `.github/workflows/release.yml:693` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:692` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:863` — this step
+  - `.github/workflows/release.yml:864` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:863` — this step
+- **superfluous-actions** (Low confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:872` — this step
+  - `.github/workflows/release.yml:873` — use `gh pr create` in a script step
+  - `.github/workflows/release.yml:872` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:985` — this step
+  - `.github/workflows/release.yml:986` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:985` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:1287` — this step
+  - `.github/workflows/release.yml:1288` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:1287` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/release.yml:1406` — this step
+  - `.github/workflows/release.yml:1407` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/release.yml:1406` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/security.yml:99` — this step
+  - `.github/workflows/security.yml:100` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/security.yml:99` — this step
+- **anonymous-definition** (High confidence, Pedantic persona) — workflow or action definition without a name
+  - `.github/workflows/stock-rust-install.yml:18` — this job
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/summarization-ratchet.yml:71` — this step
+  - `.github/workflows/summarization-ratchet.yml:72` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/summarization-ratchet.yml:71` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/task-ladder.yml:68` — this step
+  - `.github/workflows/task-ladder.yml:69` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/task-ladder.yml:68` — this step
+- **superfluous-actions** (Medium confidence, Pedantic persona) — action functionality is already included by the runner
+  - `.github/workflows/write-effect-ladder.yml:71` — this step
+  - `.github/workflows/write-effect-ladder.yml:72` — use `rustup` and/or `cargo` in a script step
+  - `.github/workflows/write-effect-ladder.yml:71` — this step
