@@ -1,12 +1,22 @@
 # Configuration for `cargo audit`, run by `scripts/check-rust-dependencies.sh`.
-# Every entry in `ignore` must be paired with an `unreachable` proof line of the
-# form
+# Every entry in `ignore` must be paired with exactly one proof line, in one of
+# two forms:
 #
 #     # <ADVISORY-ID> unreachable = "<crate>@<version>"
+#     # <ADVISORY-ID> blocked-upstream = "<crate>@<version>" report = "<url>"
 #
-# `scripts/check-rust-dependencies.sh` re-derives that proof on every run with
-# `cargo tree --invert`, so an ignore expires by itself the moment the crate
-# enters the build graph. An ignore without a proof line is a hard error.
+# `scripts/check-rust-dependencies.sh` re-derives the proof on every run with
+# `cargo tree --invert`. The two forms expire in opposite directions, and
+# neither can be written to mean "ignore this forever":
+#
+#   * `unreachable` fails the moment the crate *enters* the build graph, and
+#     just as loudly once the version leaves `Cargo.lock` and the entry is
+#     merely stale;
+#   * `blocked-upstream` fails the moment the crate *leaves* the build graph --
+#     which is exactly when the upstream fix has landed and the entry should go.
+#
+# An ignore without a proof line is a hard error, and so is an ignore carrying
+# both.
 #
 # RUSTSEC-2026-0235 unreachable = "rkyv@0.7.46"
 #   `rkyv` 0.7.46 is listed in `Cargo.lock` only because `rust_decimal` 1.42.1
@@ -21,5 +31,35 @@
 #
 #   The workspace's own `rkyv` is 0.8.17 (via `lindera-dictionary` and
 #   `rtc-dtls`), which is past the advisory's `>=0.8.17` fix.
+#
+# RUSTSEC-2025-0057 blocked-upstream = "fxhash@0.2.1" report = "https://github.com/link-assistant/web-capture/issues/155"
+#   `fxhash` is unmaintained and has no patched version (`patched = []`), so no
+#   lockfile edit clears it. Unlike the entry above it is genuinely compiled
+#   into this binary:
+#
+#       cargo tree --locked --target all --all-features --edges all \
+#         --invert fxhash@0.2.1
+#       fxhash v0.2.1
+#       └── fxhash feature "default"
+#           └── selectors v0.26.0
+#               └── scraper v0.21.0
+#                   └── web-capture v0.3.37
+#                       └── web-capture feature "search"
+#                           └── formal-ai v0.347.0
+#
+#   so the `unreachable` form above would be a proof this repository cannot
+#   honestly write. Nothing here can remove the crate either: `scraper 0.21.0`
+#   is the newest release satisfying `web-capture`'s `^0.21`, and every
+#   `selectors 0.26.x` it can resolve depends on `fxhash`. `selectors` swapped
+#   `fxhash` for `rustc-hash` in 0.32.0, first reachable through `scraper 0.25`
+#   (`scraper 0.24` requires `selectors ^0.31`, which does not cross the minor
+#   boundary), so the fix is a one-line requirement bump in `web-capture`'s
+#   `rust/Cargo.toml`. That bump is filed, with the reproduction and a build
+#   proving it needs no source changes, at the `report` URL above; the local
+#   copy is `dev/log/issues/1079/pulls/1080/upstream-reports/`.
+#
+#   This entry removes itself: `check-rust-dependencies.sh` fails once
+#   `cargo tree --invert fxhash@0.2.1` finds nothing, which is the moment the
+#   bump reaches this lockfile.
 [advisories]
-ignore = ["RUSTSEC-2026-0235"]
+ignore = ["RUSTSEC-2025-0057", "RUSTSEC-2026-0235"]
