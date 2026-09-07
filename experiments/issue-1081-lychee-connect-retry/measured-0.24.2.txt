@@ -1,0 +1,9 @@
+lychee: lychee 0.24.2
+--max-retries 5 --retry-wait-time 2 (so five retries cost at least 30s)
+
+https://127.0.0.1:8443 (immediate) -> 1 connection attempt(s) in 0s
+    [ERROR] https://127.0.0.1:8443/ (at 1:1) | I/O error (ConnectionReset). Check network connectivity and server status
+    [ERROR] https://127.0.0.1:8443/ (at 1:1) | I/O error (ConnectionReset). Check network connectivity and server status
+http://127.0.0.1:8080 (after-request) -> 6 connection attempt(s) in 62s
+    [ERROR] http://127.0.0.1:8080/ (at 1:1) | Connection failed. Check network connectivity and firewall settings
+    [ERROR] http://127.0.0.1:8080/ (at 1:1) | Connection failed. Check network connectivity and firewall settings

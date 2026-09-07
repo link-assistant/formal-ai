@@ -33,6 +33,7 @@ use super::workflow_fixtures::workflow_job_names;
 /// are paid once per job, not once per budgeted step.
 const MAX_BUDGET_SHARE_PERCENT: u64 = 70;
 
+mod link_recheck;
 mod release_preflight;
 
 fn repository_file(path: &str) -> String {

@@ -14,6 +14,9 @@
  *
  * Environment variables:
  *   - LYCHEE_OUTPUT: Path to lychee markdown output file (default: lychee/out.md)
+ *   - RECOVERED_URLS: Path to the list of URLs that answered on a direct
+ *     re-check (written by scripts/recheck-broken-links.mjs). Those are not
+ *     broken, so they get no archive.org suggestion.
  *
  * GitHub Actions outputs:
  *   - all_archived: 'true' if all broken links have a web archive version
@@ -50,33 +53,29 @@ function setOutput(name, value) {
 }
 
 /**
- * Extract broken URLs from lychee markdown output
- * Lychee markdown format includes lines like:
- *   * [404] https://example.com/broken-link
- *   * [ERROR] https://another-broken.com
+ * Split a lychee report into the sections that describe a failure.
+ *
+ * Lychee's Markdown report groups links into level-two sections, one per
+ * outcome: `## Errors per input`, `## Timeouts per input`, `## Redirects per
+ * input`, and so on. It writes only the sections it has links for, so which
+ * headings appear varies run to run. The permissive bullet parser below has to
+ * be restricted to the failing sections, or a healthy redirect gets sent to
+ * Wayback and reported as an error.
+ *
+ * The selection is by exclusion, not inclusion: every section counts as a
+ * failure unless it is one of the outcomes known to be healthy. Listing the
+ * failures instead would mean a category this list has not heard of -- a new
+ * lychee release, a renamed heading -- is silently dropped, turning a real
+ * broken link into a green build. Getting it wrong in this direction reports a
+ * healthy link, which is loud and gets fixed; the other direction is silent.
+ * Naming only `## Errors per input` here is what let a report whose sole
+ * failure was a timeout fall through to the whole-document fallback and report
+ * sixteen of its healthy redirects as broken links (issue #1021).
+ *
  * @param {string} content - The markdown content from lychee
- * @returns {string[]} Array of broken URLs
+ * @returns {string} The concatenated bodies of the failing sections
  */
-export function extractBrokenUrls(content) {
-  const urls = [];
-
-  // Lychee's Markdown report groups links into level-two sections, one per
-  // outcome: `## Errors per input`, `## Timeouts per input`, `## Redirects per
-  // input`, and so on. It writes only the sections it has links for, so which
-  // headings appear varies run to run. The permissive bullet parser below has
-  // to be restricted to the failing sections, or a healthy redirect gets sent
-  // to Wayback and reported as an error.
-  //
-  // The selection is by exclusion, not inclusion: every section counts as a
-  // failure unless it is one of the outcomes known to be healthy. Listing the
-  // failures instead would mean a category this list has not heard of -- a new
-  // lychee release, a renamed heading -- is silently dropped, turning a real
-  // broken link into a green build. Getting it wrong in this direction reports
-  // a healthy link, which is loud and gets fixed; the other direction is
-  // silent. Naming only `## Errors per input` here is what let a report whose
-  // sole failure was a timeout fall through to the whole-document fallback and
-  // report sixteen of its healthy redirects as broken links (issue #1021).
-  //
+export function failingSections(content) {
   // `sectionHeading` is built per call rather than hoisted: it carries the `g`
   // flag, and a shared global regex keeps its `lastIndex` between calls.
   const sectionHeading = /^##\s+(.+?)\s+per input\s*$/gm;
@@ -95,22 +94,66 @@ export function extractBrokenUrls(content) {
 
   // Older/plain Lychee output has no per-input headings, so keep parsing the
   // complete report in that case.
-  let errorContent = content;
-  if (sections.length > 0) {
-    errorContent = sections
-      .map((section, index) => ({
-        ...section,
-        body: content.slice(
-          section.bodyStart,
-          index + 1 < sections.length
-            ? sections[index + 1].headingStart
-            : content.length,
-        ),
-      }))
-      .filter((section) => !HEALTHY_SECTIONS.test(section.category))
-      .map((section) => section.body)
-      .join('\n');
+  if (sections.length === 0) {
+    return content;
   }
+
+  return sections
+    .map((section, index) => ({
+      ...section,
+      body: content.slice(
+        section.bodyStart,
+        index + 1 < sections.length
+          ? sections[index + 1].headingStart
+          : content.length,
+      ),
+    }))
+    .filter((section) => !HEALTHY_SECTIONS.test(section.category))
+    .map((section) => section.body)
+    .join('\n');
+}
+
+/**
+ * Describe one failing link: the marker lychee printed for it and the note it
+ * wrote after the pipe.
+ *
+ * The marker is what separates a verdict from the host -- `[404]`, `[502]` --
+ * from a failure that never got one: `[ERROR] <url> | Network error:
+ * Connection reset by peer (os error 104)` is the transport giving up below
+ * HTTP, and it carries no status code at all. Callers that need to know which
+ * kind of failure they are holding read `marker`.
+ *
+ * @param {string} errorContent - The failing sections of the report
+ * @param {string} url - The URL to describe
+ * @returns {{marker: string|null, detail: string, line: string}}
+ */
+function describeFailure(errorContent, url) {
+  const line = errorContent.split('\n').find((entry) => entry.includes(url));
+  if (line === undefined) {
+    return { marker: null, detail: '', line: '' };
+  }
+
+  const marker = /\[([^\]\s]+)\]/.exec(line);
+  const pipe = line.indexOf('|');
+
+  return {
+    marker: marker ? marker[1].toUpperCase() : null,
+    detail: pipe === -1 ? '' : line.slice(pipe + 1).trim(),
+    line: line.trim(),
+  };
+}
+
+/**
+ * Extract the failing links from lychee markdown output.
+ * Lychee markdown format includes lines like:
+ *   * [404] https://example.com/broken-link
+ *   * [ERROR] <https://another-broken.com> (at 1:1) | Network error: ...
+ * @param {string} content - The markdown content from lychee
+ * @returns {{url: string, marker: string|null, detail: string, line: string}[]}
+ */
+export function extractFailures(content) {
+  const errorContent = failingSections(content);
+  const urls = [];
 
   // Match lines with error status codes or ERROR markers followed by URLs
   // Lychee output format: [STATUS_CODE] URL or bullet points with links
@@ -137,7 +180,16 @@ export function extractBrokenUrls(content) {
     }
   }
 
-  return urls;
+  return urls.map((url) => ({ url, ...describeFailure(errorContent, url) }));
+}
+
+/**
+ * Extract broken URLs from lychee markdown output
+ * @param {string} content - The markdown content from lychee
+ * @returns {string[]} Array of broken URLs
+ */
+export function extractBrokenUrls(content) {
+  return extractFailures(content).map((failure) => failure.url);
 }
 
 /**
@@ -228,6 +280,31 @@ export async function checkWaybackMachine(url, fetchImpl = fetch) {
 }
 
 /**
+ * Read the URLs a direct re-check reached, written one per line by
+ * `scripts/recheck-broken-links.mjs`.
+ *
+ * lychee reports a link it could not *connect* to the same way it reports a
+ * link the host says is gone, and only the second of those is a broken link.
+ * When the re-check step has since fetched the page itself, suggesting an
+ * archive.org copy of it is a suggestion to replace a working link.
+ *
+ * @returns {Set<string>} The recovered URLs, empty when there is no such file
+ */
+function readRecoveredUrls() {
+  const path = process.env.RECOVERED_URLS;
+  if (!path || !existsSync(path)) {
+    return new Set();
+  }
+
+  return new Set(
+    readFileSync(path, 'utf-8')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+  );
+}
+
+/**
  * Format a timestamp from Wayback Machine (YYYYMMDDHHmmss) to readable date
  * @param {string} timestamp - e.g. "20231015143022"
  * @returns {string} - e.g. "2023-10-15"
@@ -258,7 +335,16 @@ async function main() {
   }
 
   const content = readFileSync(lycheeOutput, 'utf-8');
-  const brokenUrls = extractBrokenUrls(content);
+  const recovered = readRecoveredUrls();
+  const reported = extractBrokenUrls(content);
+  const brokenUrls = reported.filter((url) => !recovered.has(url));
+
+  if (recovered.size > 0) {
+    console.log(
+      `${reported.length - brokenUrls.length} of ${reported.length} reported link(s) ` +
+        'answered a direct re-check and are not treated as broken here.\n'
+    );
+  }
 
   if (brokenUrls.length === 0) {
     console.log('No broken URLs found in lychee output.');
