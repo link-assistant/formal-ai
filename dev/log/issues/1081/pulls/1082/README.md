@@ -46,7 +46,7 @@ GitHub access.
 | `analysis/container-image-architectures.md` | The one R4 gap not fixed here, with its evidence and an implementation sketch. Filed as #1084. |
 | `references/CI-CD-BEST-PRACTICES.md` | The Hive Mind guidance as of collection (R4). |
 | `references/templates/*.HEAD` | The commit each template snapshot is of. The snapshots themselves are reused from `../../../1079/pulls/1080/references/templates/`, unchanged, rather than copied twice. |
-| `upstream-reports/` | The five reports filed against the templates this round, with their reproductions; `upstream-reports/README.md` indexes them against the thirteen issue URLs they were filed as. |
+| `upstream-reports/` | The seven reports filed this round — six against the templates, one against the dependency behind D19 — with their reproductions and two verified patches; `upstream-reports/README.md` indexes them against the nineteen issue URLs they were filed as. |
 | `issue-1081.json`, `pull-1082.json` | The issue and pull request as the API returned them at collection time. |
 
 ## 2. Reconstructed timeline
@@ -156,10 +156,15 @@ exercised by the step that publishes with them, 90 minutes in (D15).
 | D17 | `job_needs` returned `""` for a `needs:` list written across several lines | false negative | **fixed** |
 | D18 | The scan in `issue_1081.rs` that checks "is this script's suite run by anything" had two false negatives of its own | false negative | **fixed** — see §4.6 |
 | D19 | `Broken Link Checker` failed on a healthy URL 1.5s into a step configured for six retries: lychee never retries a connection reset that arrives during connect | false positive | **fixed** — `scripts/recheck-broken-links.mjs`, because the setting that was supposed to cover this cannot; see §4.7 |
+| D20 | `release_preflight.rs` read `CARGO_REGISTRY_TOKEN` from whatever the machine exported, so the probe authenticated with the runner's real credential while the assertion looked for the fixture's: green locally, red in CI | false positive **and** false negative | **fixed** — the suite now clears all twenty variables the script reads, and a test keeps that list honest; see §4.9 |
+| D21 | `real_agent_cli_record_replay_is_a_required_ci_gate` asserted that `release.yml` names the issue #707 harness, which D6's extraction moved into the reusable workflow it calls | true positive on a gate that could not tell a move from a deletion | **fixed** — the gate follows the call and checks both ends; see §4.9 |
+| D22 | Two older gates asserted on the exact line-wrapping of `links.yml` — the `node --test` step and the `Fail if broken links were found` condition — and D19's fix reflowed both while removing nothing from either | true positive on gates that could not tell an edit from a deletion | **fixed** — each now asks its property (an ordering; the two guards) of a whitespace-normalised workflow; see §4.9 |
 
-D16, D17 and D18 are defects in the *tests added by this pull request*. They
-are listed because they are the same class as the ones the issue is about, and
-because a register that only contains other people's mistakes is not a register.
+D16, D17, D18 and D20–D22 are defects in the *tests added, moved or broken by
+this pull request*, three of them found by running it through the pipeline it
+changes. They are listed because they are the same class as the ones the issue
+is about, and because a register that only contains other people's mistakes is
+not a register.
 
 ### 4.1 D4: why the fix is a report and not a trigger
 
@@ -393,11 +398,103 @@ Recorded so the next round does not re-measure it:
   carries would fire only on artifacts nobody hand-edits. Deliberately not
   adopted; the reasoning is in `analysis/best-practices-audit.md` §4.
 
+### 4.9 What this pull request's own CI caught
+
+The changes above were themselves put through the pipeline they change, and it
+found four things. Recorded here because three of them are the failure classes
+this issue is about, arriving in the one place where they can be measured
+rather than argued about.
+
+**D20 -- a test whose verdict the machine decided.**
+`Test (ubuntu-latest / full)` failed on run
+[34136192028](https://github.com/link-assistant/formal-ai/actions/runs/34136192028)
+at `tests/unit/ci-cd/issue_1081/release_preflight.rs:261`:
+
+```
+the crates.io token must still reach curl, by the private channel: header = "Authorization: ***"
+```
+
+The same test passed on every developer machine. `preflight-credentials.sh`
+reads `CARGO_REGISTRY_TOKEN` in preference to `CARGO_TOKEN`; the test set only
+the second and inherited the first from the job, whose `env:` block carries the
+real one -- visible three lines above the failure in the job log as
+`CARGO_REGISTRY_TOKEN: ***`. So the probe authenticated with the runner's
+credential while the assertion looked for the fixture's, and the `***` in the
+message is the runner masking the secret it had just been made to send. A test
+that reads its inputs from the ambient environment is a **false negative
+locally and a false positive in CI at the same time** -- the same verdict
+disagreeing with itself depending on where it runs.
+
+The fix clears all twenty variables the script reads before setting the ones a
+case means to provide (`PREFLIGHT_INPUTS`), and
+`the_preflight_env_list_covers_every_variable_the_script_reads` scans the
+script for upper-case expansions and fails if the list has fallen behind -- the
+list is the fix, so an unmaintained list is the defect again.
+
+**D21 -- a gate pinned to a path instead of to the property.**
+`real_agent_cli_record_replay_is_a_required_ci_gate`
+(`tests/issue_707_computer_use.rs`) asserted that `.github/workflows/release.yml`
+contains `experiments/agent_cli_e2e/run_issue_707.sh`. D6 moved those 51 steps
+into `.github/workflows/agent-cli-e2e.yml`, which is where the string went, so
+the gate failed on run
+[34139022164](https://github.com/link-assistant/formal-ai/actions/runs/34139022164)
+under `Coverage` even though the release pipeline still runs the harness.
+
+The gate was right to fail -- a refactor did move the thing it guards, and it
+had no way to tell a move from a deletion. It is fixed by following the hop and
+checking both ends: `release.yml` must still call the reusable workflow *and*
+be observed by `pipeline-status`, and the called workflow must still run the
+harness. A caller that stops calling and a callee that stops running the
+harness are the same false negative, and neither the old assertion nor a
+weakened one would see both.
+
+**D22 -- two more gates pinned to a formatting rather than to a property.**
+D19's fix edited `.github/workflows/links.yml` twice: the parser's unit-test
+step gained a second suite, which wrapped its argument list across three lines,
+and the `Fail if broken links were found` condition gained the
+`steps.recheck.outputs.all_recovered != 'true'` term, which folded it across
+two. Neither edit removed anything. Two gates written in earlier rounds read
+both as removals, and failed under `Test (ubuntu-latest / full)` on run
+[34140698099](https://github.com/link-assistant/formal-ai/actions/runs/34140698099):
+
+```
+tests/unit/ci-cd/issue_1017.rs:600  links.yml must run the parser's unit tests before lychee (issue #1017)
+tests/unit/ci-cd/issue_999.rs:112   assertion failed: links.contains("if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}")
+```
+
+This is D21's class a second time, and finding it twice in one pull request is
+the argument for treating it as a class rather than as two incidents: an
+assertion that quotes a workflow verbatim tests the *typography* of a file that
+YAML lets you write several ways, so every legitimate edit to a guarded line is
+a failure and the gate trains its reader to re-write the literal without
+reading what changed -- at which point it guards nothing.
+
+Both are fixed by asking what the gate actually means. `issue_1017.rs` wanted
+an ordering, so it asks for one: `node --test` occurs before
+`lycheeverse/lychee-action`, and the parser's suite is named between them.
+`issue_999.rs` wanted two guards on a condition, so it asks for the two guards
+against `unwrapped(&links)` -- the workflow with runs of whitespace collapsed --
+plus the negative that the file has not widened back to `always()`, which is
+the regression #1017 introduced the condition to prevent. `unwrapped` lives in
+`tests/unit/ci-cd/workflow_fixtures.rs` beside the other shared readers, so the
+next assertion about a condition has somewhere correct to start.
+
+The negative matters as much as the positive here. Dropping the literal without
+replacing it would have converted a false failure into a silent one, which is
+the trade the issue exists to refuse.
+
+**The fourth was ordinary.** `clippy::struct_field_names` on
+`Step::step_cap_minutes` in `tests/unit/ci-cd/issue_1081.rs:53`, which
+`cargo clippy --lib --bins --tests` catches and `cargo test` does not; the
+field is now `cap_minutes`. It is listed because it is the reason §8's
+local-verification list runs clippy over `--tests` rather than over the library
+alone, and runs `cargo test --tests` rather than `--test unit`.
+
 ## 5. Requirement-by-requirement: root cause and plan
 
 ### R1 — every false positive, false negative, warning and error
 
-Nineteen defects, eighteen fixed here and one (D7) reported with its
+Twenty-two defects, twenty-one fixed here and one (D7) reported with its
 measurement. The root cause common to D1, D2, D3, D5, D10 and D11 is a single
 inverted assumption: **a budget was treated as a property of the pipeline
 rather than a claim about the work.** Once a budget is a claim, it can be
@@ -417,19 +514,32 @@ unchanged. Its root cause is in a dependency rather than here, which is why the
 fix is a re-check placed outside the tool and the finding is filed upstream
 with a patch.
 
+D20, D21 and D22 arrived last and from the pipeline itself, once these changes
+were run through it. They are the same two directions in miniature: a test that
+read its inputs from the machine (so its verdict differed by where it ran), and
+three gates pinned to the text of a workflow rather than to the property they
+guard (so a legitimate move, and then two legitimate edits, read as deletions).
+That last root cause appearing three times in one pull request is why §4.9
+states it as a class: **a gate that quotes a file cannot distinguish a change
+from a removal**, and the repair is always to name the property. §4.9 has the
+runs and the fixes.
+
 ### R2 — compare all files against five templates
 
 Three passes — every path, every capability, every countable dimension — over
 the five snapshots. Two controls adopted (`scripts/test-scripts.sh`;
 `release-preflight` from principle 16), three deliberately not, four defects
-filed upstream, and one control none of the five has. Method, findings and the
-reasoning for each non-adoption: `analysis/template-comparison.md`.
+filed upstream out of the comparison itself, and one control none of the five
+has. A fifth template defect (the link-checker retry, D19) came from the other
+direction — this repository's own red run, root-caused, then measured against
+all five snapshots. Method, findings and the reasoning for each non-adoption:
+`analysis/template-comparison.md`.
 
 ### R3 — file upstream
 
-Six reports, filed as nineteen issues: thirteen across the five templates from
-the comparison, five more for the link-checker defect all five share, and one
-against the dependency that causes it
+Seven reports, filed as nineteen issues: thirteen across the five templates
+from the comparison, five more for the link-checker defect all five share, and
+one against the dependency that causes it
 ([lycheeverse/lychee#2297](https://github.com/lycheeverse/lychee/issues/2297)).
 Each carries a reproduction, a workaround and a code-level fix; two carry a
 verified patch, and the lychee one is verified by rebuilding the tool and
@@ -488,3 +598,25 @@ Per the instruction to add tracing where the evidence ran out, default off:
 * `PUSH_MAX_ATTEMPTS`, `PUSH_RETRY_DELAY_SECONDS` — retry behaviour is
   overridable without editing the script, so a run can be re-executed with more
   attempts to test whether a rejection is a race or a rule.
+* `RECHECK_VERBOSE=1` — `scripts/recheck-broken-links.mjs` prints every URL it
+  parsed out of the lychee report, the reason it did or did not re-ask it, and
+  each attempt's outcome. Off by default because the ordinary case is "nothing
+  to re-check" and a quiet step is one a reader trusts.
+
+## 8. Local verification
+
+The commands this branch is checked with before every push, and why each is
+here rather than left to CI. D20, D21 and D22 (§4.9) are all defects the first
+two would have caught and `cargo test --test unit` alone would not.
+
+| Command | What it covers that the others do not |
+| --- | --- |
+| `cargo +1.98.1 clippy --lib --bins --tests --all-features -- -D warnings` | The lint gate compiles the **test** crates; `cargo test` compiles them without clippy's lints, so a `clippy::` finding in a test file is invisible to a test run. This is how `struct_field_names` reached CI twice (§4.9). |
+| `cargo +1.98.1 test --tests --no-fail-fast` | The 27 integration binaries under `tests/*.rs`, which `--test unit` does not build. `--no-fail-fast` because cargo stops at the first failing binary, and a stopped run reports one defect where there may be several. |
+| `cargo +1.98.1 test --test unit` | The unit crate on its own, for iteration; a subset of the line above and not a substitute for it. |
+| `cargo +1.98.1 fmt --all --check` | — |
+| `scripts/test-scripts.sh` | The 23 standalone-script test cases from D14, which no `cargo` invocation builds. |
+| `node --test scripts/*.test.mjs` | The JavaScript suites, which no Rust command reaches. |
+
+The toolchain is pinned: `cargo` without `+1.98.1` resolves to 1.96.0 here,
+which cannot build the workspace.

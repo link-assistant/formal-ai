@@ -51,7 +51,7 @@ struct Step {
     budget_seconds: Option<u64>,
     /// A step-level `timeout-minutes`, which -- unlike the job-level one --
     /// fails the step and so turns the job red.
-    step_cap_minutes: Option<u64>,
+    cap_minutes: Option<u64>,
     body: String,
 }
 
@@ -77,7 +77,7 @@ fn steps_of(job: &str) -> Vec<Step> {
                 name,
                 condition: None,
                 budget_seconds: None,
-                step_cap_minutes: None,
+                cap_minutes: None,
                 body: String::new(),
             });
         }
@@ -103,7 +103,7 @@ fn steps_of(job: &str) -> Vec<Step> {
             step.budget_seconds = value.trim().parse().ok();
         }
         if let Some(value) = line.strip_prefix("        timeout-minutes:") {
-            step.step_cap_minutes = value.trim().parse().ok();
+            step.cap_minutes = value.trim().parse().ok();
         }
     }
     steps
@@ -207,7 +207,7 @@ fn a_test_step_inside_a_budgeted_job_owns_a_deadline_that_reports_as_failure() {
                 }
                 checked += 1;
                 assert!(
-                    step.budget_seconds.is_some() || step.step_cap_minutes.is_some(),
+                    step.budget_seconds.is_some() || step.cap_minutes.is_some(),
                     "{file}: job `{job_name}` budgets its other steps but runs the test suite \
                      in `{}` with no deadline of its own. The only limit left is the job cap, \
                      and GitHub reports a job cap kill as `cancelled` -- green-looking, and \

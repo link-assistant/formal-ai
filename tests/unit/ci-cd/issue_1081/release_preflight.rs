@@ -52,32 +52,79 @@ fn sandbox() -> PathBuf {
     dir
 }
 
-/// Run the preflight with every credential present and `routes` deciding what
-/// each registry answers.
-fn run(mode: &str, routes: &str) -> Output {
-    let dir = sandbox();
+/// Every environment variable `scripts/preflight-credentials.sh` reads.
+///
+/// A test that sets only the variables it cares about is not testing the
+/// script -- it is testing the script plus whatever the machine happens to
+/// export. Run 34136192028 failed exactly there: the runner sets
+/// `CARGO_REGISTRY_TOKEN`, the script prefers it over the `CARGO_TOKEN` the
+/// test had set, and the probe went out with the runner's real credential
+/// while the assertion looked for the fixture's. The suite passed on every
+/// developer machine, where that variable is absent. So clear the whole set
+/// first and set back only what the case means to provide; the ambient
+/// environment then cannot decide the verdict either way.
+///
+/// `the_preflight_env_list_covers_every_variable_the_script_reads` keeps this
+/// list honest against the script.
+const PREFLIGHT_INPUTS: &[&str] = &[
+    "CARGO_REGISTRY_TOKEN",
+    "CARGO_TOKEN",
+    "CRATES_IO_API",
+    "CRATE_NAME",
+    "DOCKERHUB_IMAGE",
+    "DOCKERHUB_REGISTRY",
+    "DOCKERHUB_TOKEN",
+    "DOCKERHUB_TOKEN_ENDPOINT",
+    "DOCKERHUB_USERNAME",
+    "GHCR_IMAGE",
+    "GHCR_REGISTRY",
+    "GHCR_TOKEN_ENDPOINT",
+    "GITHUB_ACTOR",
+    "GITHUB_REPOSITORY",
+    "GITHUB_STEP_SUMMARY",
+    "GITHUB_TOKEN",
+    "PREFLIGHT_MODE",
+    "PREFLIGHT_RETRIES",
+    "PREFLIGHT_RETRY_DELAY",
+    "PREFLIGHT_VERBOSE",
+];
+
+/// A command that runs the preflight against the stubbed `curl` in `dir`, with
+/// every credential present and `routes` deciding what each registry answers.
+/// The caller may still add or remove variables; it starts from a known state.
+fn preflight(dir: &std::path::Path, mode: &str, routes: &str) -> Command {
     let path = format!(
         "{}:{}",
         dir.display(),
         std::env::var("PATH").unwrap_or_default()
     );
-    let output = Command::new("bash")
-        .arg(script())
-        .args(["--mode", mode])
+    let mut command = Command::new("bash");
+    command.arg(script()).args(["--mode", mode]);
+    for name in PREFLIGHT_INPUTS {
+        command.env_remove(name);
+    }
+    command
         .env("PATH", path)
         .env("FAKE_CURL_ROUTES", routes)
-        .env("FAKE_CURL_LOG", dir.join("calls.log"))
         .env("CARGO_TOKEN", "cargo-token")
-        .env("CARGO_REGISTRY_TOKEN", "cargo-token")
         .env("CRATE_NAME", "formal-ai")
         .env("GHCR_IMAGE", "ghcr.io/link-assistant/formal-ai")
+        .env("GITHUB_ACTOR", "konard")
         .env("GITHUB_TOKEN", "job-token")
         .env("DOCKERHUB_IMAGE", "linkassistant/formal-ai")
         .env("DOCKERHUB_USERNAME", "user")
         .env("DOCKERHUB_TOKEN", "hub-token")
         .env("PREFLIGHT_RETRIES", "1")
-        .env("PREFLIGHT_RETRY_DELAY", "0")
-        .env_remove("GITHUB_STEP_SUMMARY")
+        .env("PREFLIGHT_RETRY_DELAY", "0");
+    command
+}
+
+/// Run the preflight with every credential present and `routes` deciding what
+/// each registry answers.
+fn run(mode: &str, routes: &str) -> Output {
+    let dir = sandbox();
+    let output = preflight(&dir, mode, routes)
+        .env("FAKE_CURL_LOG", dir.join("calls.log"))
         .output()
         .expect("the preflight must run");
     fs::remove_dir_all(&dir).ok();
@@ -211,27 +258,9 @@ fn every_opened_blob_upload_session_is_cancelled() {
     let dir = sandbox();
     let log = dir.join("calls.log");
     let config_log = dir.join("config.log");
-    let path = format!(
-        "{}:{}",
-        dir.display(),
-        std::env::var("PATH").unwrap_or_default()
-    );
-    let output = Command::new("bash")
-        .arg(script())
-        .args(["--mode", "release"])
-        .env("PATH", path)
-        .env("FAKE_CURL_ROUTES", EVERYTHING_PUBLISHABLE)
+    let output = preflight(&dir, "release", EVERYTHING_PUBLISHABLE)
         .env("FAKE_CURL_LOG", &log)
         .env("FAKE_CURL_CONFIG_LOG", &config_log)
-        .env("CARGO_TOKEN", "cargo-token")
-        .env("GHCR_IMAGE", "ghcr.io/link-assistant/formal-ai")
-        .env("GITHUB_TOKEN", "job-token")
-        .env("DOCKERHUB_IMAGE", "linkassistant/formal-ai")
-        .env("DOCKERHUB_USERNAME", "user")
-        .env("DOCKERHUB_TOKEN", "hub-token")
-        .env("PREFLIGHT_RETRIES", "1")
-        .env("PREFLIGHT_RETRY_DELAY", "0")
-        .env_remove("GITHUB_STEP_SUMMARY")
         .output()
         .expect("the preflight must run");
     let calls = fs::read_to_string(&log).expect("the stub must record its calls");
@@ -331,5 +360,62 @@ fn the_preflight_probes_every_credential_the_release_publishes_with() {
     assert!(
         probe.contains("GITHUB_TOKEN"),
         "the job token is what pushes to ghcr.io, so it is a release credential too"
+    );
+}
+
+/// The hermetic-environment fix is only as good as its list. If the script
+/// grows a variable and `PREFLIGHT_INPUTS` does not, the suite silently goes
+/// back to reading the machine for that one input -- which is how run
+/// 34136192028 failed in the first place, and the kind of regression that
+/// shows up months later on a runner rather than here.
+#[test]
+fn the_preflight_env_list_covers_every_variable_the_script_reads() {
+    let source = fs::read_to_string(script()).expect("the preflight script must be readable");
+
+    // `${NAME:-default}`, `${NAME}` and `$NAME` in the forms this script uses.
+    // Local variables are lower case by convention here, so upper case is the
+    // environment; `FAKE_CURL_*` belongs to the stub, not to the script.
+    let mut missing: Vec<String> = Vec::new();
+    let bytes: Vec<char> = source.chars().collect();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] != '$' {
+            index += 1;
+            continue;
+        }
+        let mut cursor = index + 1;
+        if cursor < bytes.len() && bytes[cursor] == '{' {
+            cursor += 1;
+        }
+        let start = cursor;
+        while cursor < bytes.len()
+            && (bytes[cursor].is_ascii_uppercase()
+                || bytes[cursor].is_ascii_digit()
+                || bytes[cursor] == '_')
+        {
+            cursor += 1;
+        }
+        let name: String = bytes[start..cursor].iter().collect();
+        index = cursor.max(index + 1);
+        if name.len() < 2
+            || name
+                .chars()
+                .next()
+                .is_some_and(|first| first.is_ascii_digit())
+        {
+            continue;
+        }
+        if name.starts_with("FAKE_CURL") || name == "PATH" || name == "HOME" {
+            continue;
+        }
+        if !PREFLIGHT_INPUTS.contains(&name.as_str()) && !missing.contains(&name) {
+            missing.push(name);
+        }
+    }
+
+    assert!(
+        missing.is_empty(),
+        "scripts/preflight-credentials.sh reads {missing:?}, which the tests do not clear; \
+         add them to PREFLIGHT_INPUTS so no ambient value can decide a verdict"
     );
 }

@@ -7,8 +7,8 @@ to file an issue upstream wherever the same defect exists in a template. The
 task description added that each report must carry a reproducible example, a
 workaround and a code-level fix.
 
-A sixth report went to a dependency rather than to a template, and is indexed
-below the table.
+A seventh report went to a dependency rather than to a template, and is
+indexed below the table.
 
 Issue #1079 ran the same comparison one round earlier and filed eight reports
 (`../../../1079/pulls/1080/upstream-reports/README.md`). Nothing below repeats
@@ -20,13 +20,13 @@ template's own invariant check: a gate that both rejects correct
 configurations and passes unbounded ones. The fifth is the one control none of
 the five has, found by working through `CI-CD-BEST-PRACTICES.md` principle by
 principle rather than by diffing the templates against each other. The sixth
-came from the other direction entirely: a false positive that reddened this
-repository, root-caused into a dependency, then found to be shared by all five
-templates.
+and seventh came from the other direction entirely: a false positive that
+reddened this repository, root-caused into a dependency (report 7), then found
+to be shared by all five templates (report 6).
 
 Everything below was reproduced locally before filing, at the template commits
-snapshotted in `../references/templates/*-template.HEAD` -- except defect 6,
-whose reproduction is against lychee itself and is in
+snapshotted in `../references/templates/*-template.HEAD` -- except defects 6
+and 7, whose reproduction is against lychee itself and is in
 `../../../../../../experiments/issue-1081-lychee-connect-retry/`. Transcripts
 and measurement tables are in `../analysis/`.
 

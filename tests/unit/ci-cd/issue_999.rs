@@ -2,7 +2,7 @@
 
 use std::fs;
 
-use super::workflow_fixtures::{desktop_release_workflow, job_block, release_workflow};
+use super::workflow_fixtures::{desktop_release_workflow, job_block, release_workflow, unwrapped};
 
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
@@ -109,7 +109,10 @@ fn current_template_security_and_link_gates_are_present() {
     // Issue #1017 narrowed this from `always()`: a cancelled link check has no
     // verdict to report, so it must not append a "broken links" error to a run
     // that never finished checking them.
-    assert!(links.contains("if: ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 }}"));
+    // Issue #1081 added a second term to this condition, which folded it across
+    // lines. The property is the two guards, not the wrapping that carried them.
+    assert!(unwrapped(&links).contains("!cancelled() && steps.lychee.outputs.exit_code != 0"));
+    assert!(!links.contains("if: ${{ always()"));
     assert!(!links.contains("steps.webarchive.outputs.all_archived != 'true'"));
     assert!(
         repository_file("scripts/check-web-archive.mjs").contains("archive.org/wayback/available")
