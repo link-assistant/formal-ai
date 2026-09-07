@@ -48,12 +48,42 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
     // Issue #1055 raised the archive cap 30m -> 35m so its budget could grow to
     // 1400s for a cold rebuild while staying at 66% of the cap; issue #1017's
     // gate allows 70%.
-    assert!(macos.contains("timeout-minutes: 35"));
+    //
+    // Issue #1081 made this a floor too, and the cap moved to 45m: the doc
+    // tests in the same job stopped being unbudgeted, so the 70% share is now
+    // measured against 1400 + 400 = 1800s rather than 1400s alone. An equality
+    // here would have made giving a step its budget look like a regression.
+    let archive_cap: u64 = job_block(&macos, "build-archive")
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the archive job declares a plain-number timeout-minutes");
+    assert!(
+        archive_cap >= 35,
+        "the archive job's cap is {archive_cap}m, but issue #1055's cold \
+         rebuild alone needs 35m of backstop behind it"
+    );
     // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
     // retrying artifact download. `issue_1039::the_download_retry_is_bounded_to
     // _fit_the_job_cap` checks the arithmetic that justifies it, so this only
-    // pins that the cap is still declared as a plain number.
-    assert!(macos.contains("timeout-minutes: 25"));
+    // pins that the cap is still declared as a plain number and never falls
+    // back below what that arithmetic needed.
+    //
+    // Issue #1081 made this a floor rather than an equality, and the cap moved
+    // to 30m the same day: an equality is what stops a backstop from growing,
+    // which is exactly what issue #1055 hit when the archive budget went 1200s
+    // -> 1400s. The cap grew so the job's two step budgets stay under the 70%
+    // share of it that `tests/unit/ci-cd/issue_1081.rs` enforces everywhere.
+    let slice_cap: u64 = job_block(&macos, "test-archive")
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the slice job declares a plain-number timeout-minutes");
+    assert!(
+        slice_cap >= 25,
+        "the slice job's cap is {slice_cap}m, but issue #1039's download retry \
+         alone needs 25m of backstop behind it"
+    );
     assert!(!macos.contains("2100"));
     assert!(macos.contains("taiki-e/install-action@nextest"));
     assert!(macos.contains("scripts/run-with-budget-warning.sh"));

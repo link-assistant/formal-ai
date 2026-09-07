@@ -15,11 +15,25 @@
 # supposed to bound is only ever observed on GitHub. This script fetches the
 # observations so `scripts/check-job-headroom.rs` can compare the two.
 #
+# The same blind spot exists one level down. Issue #1081 found the macOS
+# specification shard killed at 100.1% of the *step* budget that was supposed
+# to be its deadline, twice, while every gate in the repository only ever
+# compared that budget upward against the job cap. A budget is also a constant
+# in a YAML file, so this script now fetches the step observations too.
+#
 # OUTPUT
 #
-# One tab-separated row per job per run, no header, to stdout:
+# Tab-separated rows, no header, to stdout. The field count says which kind a
+# row is -- six fields is a job, eight is a step:
 #
 #   run_id <TAB> workflow <TAB> job <TAB> conclusion <TAB> started_at <TAB> completed_at
+#   run_id <TAB> workflow <TAB> job <TAB> conclusion <TAB> started_at <TAB> completed_at
+#            <TAB> step <TAB> step_name
+#
+# On a step row the conclusion and the timestamps are the *step's*, the literal
+# `step` in field seven marks the kind, and field eight is the step's name as
+# the workflow writes it. Steps that never ran are omitted: a skipped step
+# carries null timestamps and says nothing about how long the work takes.
 #
 # `job` is the job's *display* name as GitHub reports it, which for a job
 # reached through `workflow_call` is "<caller job> / <inner job>", and for a
@@ -71,13 +85,21 @@ while IFS=$'\t' read -r run_id workflow; do
   count=$((count + 1))
   # A run whose jobs have aged out of retention returns an empty list rather
   # than an error, so an absent run costs one request and produces no rows.
+  # One job row followed by that job's step rows. `gh api --jq` takes no
+  # `--arg`, so the run id and workflow name are prefixed by the shell rather
+  # than built into the filter, and the row is passed through whole.
   gh api --paginate \
     "repos/${REPOSITORY}/actions/runs/${run_id}/jobs?per_page=100&filter=latest" \
-    --jq '.jobs[] | [.name, (.conclusion // "null"), (.started_at // ""), (.completed_at // "")] | @tsv' \
+    --jq '.jobs[] | . as $job
+          | ([$job.name, ($job.conclusion // "null"), ($job.started_at // ""),
+              ($job.completed_at // "")] | @tsv),
+            ($job.steps[]?
+             | select(.started_at != null and .completed_at != null)
+             | [$job.name, (.conclusion // "null"), .started_at, .completed_at,
+                "step", .name] | @tsv)' \
     2>/dev/null \
-    | while IFS=$'\t' read -r job conclusion started completed; do
-        printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
-          "${run_id}" "${workflow}" "${job}" "${conclusion}" "${started}" "${completed}"
+    | while IFS= read -r row; do
+        printf '%s\t%s\t%s\n' "${run_id}" "${workflow}" "${row}"
       done
   if [ $((count % 25)) -eq 0 ]; then
     log "  ... ${count} runs"

@@ -18,6 +18,14 @@ name: Job Headroom
 # pull request that touches no workflow can still be the one that pushes a job
 # over, and a pull request that does touch one has no measurements of its own
 # to be judged against.
+#
+# Issue #1081 found the same blind spot one level further down. Issue #1017's
+# step budgets were only ever compared *upward*, against the job cap they sit
+# under; nothing compared a budget against the work it bounds. `Run
+# specification tests` grew from 424s to 1181s against a fixed 1400s budget,
+# crossed it in two separate runs, and the only signal either time was the
+# pipeline going red. So the collector now emits a row per step as well as per
+# job, and this workflow audits both from the one sample.
 
 on:
   schedule:
@@ -79,6 +87,13 @@ jobs:
           wc -l job-durations.tsv
       - name: Check every declared cap against what the job really costs
         run: rust-script scripts/check-job-headroom.rs --durations job-durations.tsv
+      # `if: always()` because the two audits answer different questions and a
+      # job whose cap has become its deadline is exactly the case where the
+      # step budgets underneath it are most worth reading. Stopping at the
+      # first red would hide the second verdict behind the first.
+      - name: Check every declared budget against what the step really costs
+        if: always()
+        run: rust-script scripts/check-step-budget-headroom.rs --durations job-durations.tsv
       - name: Publish the measurements behind the verdict
         if: always()
         uses: actions/upload-artifact@v7

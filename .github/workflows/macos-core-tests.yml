@@ -43,7 +43,15 @@ jobs:
     # the budget stays at 66% of it rather than the 77% a 30m cap would give --
     # `issue_1017`'s gate allows 70%, and the margin pays for checkout and
     # toolchain setup outside the budgeted step.
-    timeout-minutes: 35
+    #
+    # Issue #1081 gave the doc-test step below a budget of its own, which makes
+    # the arithmetic a sum: two steps that both run in this job now claim
+    # 1400 + 400 = 1800s, and against a 35m cap that is 85.7% -- past the 70%
+    # share `tests/unit/ci-cd/issue_1081.rs` enforces, and close enough that a
+    # cold cache could put the cap ahead of the budgets and turn a real overrun
+    # grey again. 45m holds the pair at 66.7%. The job does not get slower for
+    # it; a backstop only costs time when it fires.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
         with:
@@ -85,8 +93,28 @@ jobs:
           bash scripts/install-rust-script.sh
           rust-script scripts/plan-test-partition.rs --macos-platform --of 1 \
             > "$RUNNER_TEMP/macos-core-tests/platform.filter"
-      - name: Run doc tests
-        run: cargo test --doc --verbose
+      # Issue #1081. Two things were wrong with this step and only one of them
+      # was visible. The invisible one: it ran `cargo test` with no execution
+      # budget inside a job that has one, so the only limit on it was the job
+      # cap -- and a cap kill reports as `cancelled`, the grey non-signal issue
+      # #977 exists to remove. Worst observed here is 205s against a 12s median
+      # (run 33902725025), which is the shape of a step that compiles when the
+      # cache misses, so the gap between the two limits was real.
+      #
+      # The visible one: it was called `Run doc tests`, and so is the budgeted
+      # step in `release.yml`'s ubuntu job, where the same name costs 8s. The
+      # step budget audit joins measurements to budgets on the step name, so
+      # two steps sharing a name are two different jobs' work under one label.
+      # Renamed rather than deduplicated -- these are different runs of the doc
+      # tests on different platforms, and the name should say which.
+      - name: Run doc tests on macOS
+        env:
+          TEST_BUDGET_SECONDS: 400
+          TEST_WARN_RATIO_PERCENT: 80
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "macOS doc tests" \
+            cargo test --doc --verbose
       - name: Upload macOS test archive
         uses: actions/upload-artifact@v7
         with:
@@ -131,7 +159,18 @@ jobs:
     # one.
     # `issue_1039::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
     # this from the workflow, so the numbers cannot drift out of agreement.
-    timeout-minutes: 25
+    #
+    # Issue #1081 kept that arithmetic and widened the margin it leaves. The
+    # sum above is built from one measured setup figure, and a measured figure
+    # is a description of the runs that have happened, not a bound on the next
+    # one: at 25 minutes the two budgets already claimed 79.3% of the cap, so a
+    # setup slower than the 133s that was measured would put the cap ahead of
+    # the budgets again and turn a real overrun back into a grey `cancelled`.
+    # 30 minutes holds the budgets at 66.1%, under the 70% share
+    # `tests/unit/ci-cd/issue_1081.rs` now enforces for every job in the
+    # repository. Nothing runs longer for it -- a backstop only costs time when
+    # it fires, and this one is now sized never to fire first.
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
