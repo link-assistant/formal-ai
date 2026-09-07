@@ -31,6 +31,8 @@ jobs:
       CARGO_INSTALL_ROOT: /tmp/formal-ai-install
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Reject a system OpenSSL dependency
         run: |
           set -eu

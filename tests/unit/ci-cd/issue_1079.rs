@@ -56,18 +56,17 @@ fn code_and_comment(line: &str) -> (&str, &str) {
     }
 }
 
-/// Every container image `.github/` runs, as `(file, line number, reference,
-/// trailing comment)`.
+/// Every YAML file anywhere under `.github/`, in a stable order.
 ///
-/// Three spellings reach a registry: a `docker://` step, a job-level
-/// `container:`, and a service's `image:`. zizmor's `unpinned-images` audit
-/// covers all three, so this sweep does too -- a fix applied only to the
-/// spelling that happened to be in the tree is not a fix.
-fn image_references() -> Vec<(String, usize, String, String)> {
-    let root = format!("{}/.github", env!("CARGO_MANIFEST_DIR"));
-    let mut found = Vec::new();
-
-    let mut stack = vec![std::path::PathBuf::from(&root)];
+/// The sweeps below read the directory rather than a hand-written list: a
+/// defect that only holds for the files someone remembered to enumerate is
+/// not an invariant, and every one of these defects was originally introduced
+/// by a file nobody thought to look at.
+fn github_yaml_files() -> Vec<std::path::PathBuf> {
+    let mut stack = vec![std::path::PathBuf::from(format!(
+        "{}/.github",
+        env!("CARGO_MANIFEST_DIR")
+    ))];
     let mut files = Vec::new();
     while let Some(dir) = stack.pop() {
         for entry in fs::read_dir(&dir).expect("readable .github directory") {
@@ -83,8 +82,20 @@ fn image_references() -> Vec<(String, usize, String, String)> {
         }
     }
     files.sort();
+    files
+}
 
-    for path in files {
+/// Every container image `.github/` runs, as `(file, line number, reference,
+/// trailing comment)`.
+///
+/// Three spellings reach a registry: a `docker://` step, a job-level
+/// `container:`, and a service's `image:`. zizmor's `unpinned-images` audit
+/// covers all three, so this sweep does too -- a fix applied only to the
+/// spelling that happened to be in the tree is not a fix.
+fn image_references() -> Vec<(String, usize, String, String)> {
+    let mut found = Vec::new();
+
+    for path in github_yaml_files() {
         let name = path
             .strip_prefix(env!("CARGO_MANIFEST_DIR"))
             .unwrap_or(&path)
@@ -487,5 +498,104 @@ fn the_upstream_reports_are_recorded_with_the_issues_they_were_filed_as() {
     assert!(
         bodies >= 5,
         "expected the six report bodies this sweep produced, found {bodies}"
+    );
+}
+
+/// `actions/checkout` writes the job's token into `.git/config` as an
+/// `http.extraheader`, where it stays for the rest of the job. Every later
+/// step -- and every tool any of them shells out to -- can read it, and
+/// anything that archives the workspace carries it out of the run. zizmor
+/// calls this `artipacked`, and reported it 46 times here before this sweep.
+///
+/// All five `link-foundation/*-ai-driven-development-pipeline-template`
+/// repositories set `persist-credentials: false`; this one did not, at 46 of
+/// its 48 checkouts. It is a Low-confidence finding, so neither of the two
+/// live gates was ever going to report it -- the default pass floors
+/// confidence at medium and the pedantic pass at high. That is exactly why it
+/// needs a test: an invariant no gate enforces is a comment.
+///
+/// Two checkouts keep the credential because a later step in the same job
+/// pushes with it. Both say so in a comment, and the cap below is what stops
+/// a third from being added silently.
+#[test]
+fn every_checkout_drops_its_credential_unless_it_pushes() {
+    let mut exceptions = Vec::new();
+    let mut swept = 0_usize;
+
+    for path in github_yaml_files() {
+        let name = path
+            .strip_prefix(env!("CARGO_MANIFEST_DIR"))
+            .unwrap_or(&path)
+            .to_string_lossy()
+            .into_owned();
+        let body = fs::read_to_string(&path).expect("readable workflow");
+        let body = body.replace("\r\n", "\n");
+        let lines: Vec<&str> = body.lines().collect();
+
+        for (index, line) in lines.iter().enumerate() {
+            if !line.contains("actions/checkout@") || line.trim_start().starts_with('#') {
+                continue;
+            }
+
+            // A `- uses:` line opens the step, so its sibling keys sit one
+            // level deeper; a bare `uses:` is already at that level.
+            let indent = line.len() - line.trim_start().len();
+            let key_indent = if line.trim_start().starts_with("- ") {
+                indent + 2
+            } else {
+                indent
+            };
+
+            let mut drops_credential = false;
+            for following in &lines[index + 1..] {
+                if following.trim().is_empty() {
+                    continue;
+                }
+                let following_indent = following.len() - following.trim_start().len();
+                if following_indent < key_indent || following.trim_start().starts_with("- ") {
+                    break;
+                }
+                if following.contains("persist-credentials: false") {
+                    drops_credential = true;
+                    break;
+                }
+            }
+
+            if drops_credential {
+                swept += 1;
+                continue;
+            }
+
+            // An exception has to be argued for where it is written, not in a
+            // list somewhere else that drifts out of date.
+            let reason: String = lines[..index]
+                .iter()
+                .rev()
+                .take_while(|previous| previous.trim_start().starts_with('#'))
+                .map(|previous| previous.trim_start().trim_start_matches('#'))
+                .collect();
+            assert!(
+                reason.contains("#1079") && reason.contains("persist-credentials"),
+                "{name}:{} keeps its checkout credential without a comment \
+                 saying why. Set `persist-credentials: false`, or, if a later \
+                 step in this job pushes with it, write the reason directly \
+                 above the step and name issue #1079 (issue #1079)",
+                index + 1
+            );
+            exceptions.push(format!("{name}:{}", index + 1));
+        }
+    }
+
+    assert!(
+        swept >= 44,
+        "expected the 44 swept checkouts, found {swept}: a checkout that \
+         stopped being read by this sweep is a checkout that stopped being \
+         checked"
+    );
+    assert!(
+        exceptions.len() <= 2,
+        "only the two pushing jobs may keep their checkout credential, found \
+         {}: {exceptions:?}",
+        exceptions.len()
     );
 }

@@ -28,6 +28,8 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - uses: oven-sh/setup-bun@v2

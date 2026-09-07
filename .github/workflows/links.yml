@@ -47,6 +47,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       # Issue #1017: the rust pipeline template guards this parser with a unit
       # test because a parser regression silently turns healthy redirects into

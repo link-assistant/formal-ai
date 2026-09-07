@@ -167,7 +167,17 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         // and a `TEST_BUDGET_SECONDS` beside each. The wrapper is the
         // repository's own mechanism for this (issues #977 and #1017) and has
         // nowhere cheaper to live: the step it guards is the one being timed.
-        (".github/workflows/release.yml", 1_522),
+        // Issue #1079 moved this by the cost of the one template practice
+        // this repository had not adopted: `persist-credentials: false` on
+        // `actions/checkout`. Eighteen of the repository's forty-eight
+        // checkouts are in this file, and the input has nowhere cheaper to
+        // live -- it is an input to the action that *performs* the checkout,
+        // and a local composite action cannot wrap it because a local
+        // composite action does not exist until the checkout has run. The
+        // alternative was to leave the release path, which holds the only two
+        // checkouts that legitimately keep their credential, as the one place
+        // the sweep did not reach.
+        (".github/workflows/release.yml", 1_553),
         ("src/intent_formalization.rs", 900),
         ("src/agentic_coding/general_planner.rs", 900),
         ("src/web/worker/formal_ai_worker_20.js", 1_400),

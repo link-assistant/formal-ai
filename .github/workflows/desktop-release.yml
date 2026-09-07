@@ -129,6 +129,8 @@ jobs:
       # script only needs to *exist*; it queries the GitHub API for everything
       # else, so checking out the default ref is sufficient.
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Resolve tag and whether desktop assets are needed
         id: pick
@@ -226,6 +228,7 @@ jobs:
 
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           # On pull requests there is no resolved tag: build the PR head, which
           # is the whole point of the dry run.
           ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
@@ -659,6 +662,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           # On pull requests there is no resolved tag: build the PR head, which
           # is the whole point of the dry run.
           ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}

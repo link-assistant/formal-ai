@@ -47,6 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Simulate fresh merge with base branch (PR only)
         if: github.event_name == 'pull_request'
@@ -139,6 +140,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       # Issue #1017: merge the commit the caller pinned, which is the same one
       # the archive job merged, rather than resolving the base branch tip at

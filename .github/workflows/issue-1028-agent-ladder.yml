@@ -37,6 +37,8 @@ jobs:
       NODE_FILTER: ${{ inputs.node_filter || '' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

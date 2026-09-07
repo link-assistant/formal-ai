@@ -126,6 +126,7 @@ was invisible because its own version pin was a comment rather than a setting.
 | D4 | Two files are inside the warning band of `scripts/check-file-size.rs`: `src/protocol.rs` at 981/1000 and `src/seed.rs` at 946/1000 | warning | `annotations/all-annotations.tsv` | §4.2 |
 | D5 | Two steps report at 70% of their execution budget: the instrumented coverage run (1680s of 2400s) and the specification test shard (980s of 1400s) | warning | `annotations/all-annotations.tsv` | §4.2 |
 | D6 | `zizmor-action@v0.6.2` resolves versions from a static table whose `latest` row *is* its `1.29.0` row, while the reproduction comment named 1.30.0 | error (unrunnable instruction) | `analysis/zizmor-action-v0.6.2-versions.txt` | fixed: `version: 1.29.0` on both passes, comment corrected |
+| D7 | 46 of 48 `actions/checkout` steps persisted the job token into `.git/config`; all five templates set `persist-credentials: false` | false negative (below every configured confidence floor) | `analysis/artipacked-sweep.md` | fixed: swept to 2 documented exceptions |
 
 ### 4.1 Why D1 is reported rather than fixed
 
@@ -166,7 +167,60 @@ coverage run at 1680/2400s and the specification shard at 980/1400s are the
 warning firing as designed, on a run that then finished successfully. Raising
 either budget would remove the signal without changing the runtime.
 
-### 4.3 What was checked and found clean
+### 4.3 D7: the finding no configured gate could report
+
+zizmor's `artipacked` audit reported 46 findings on this tree, every one of
+them at **Low** confidence. The default pass floors confidence at `medium` and
+the narrow pedantic pass at `high`, so neither gate was ever going to report a
+single one of them — this is the same shape as D3, one floor lower. An
+invariant that no gate enforces is a comment, which is why the fix ships with
+a test rather than only with a configuration change.
+
+`actions/checkout` writes the job's token into `.git/config` as an
+`http.extraheader` and leaves it there for the rest of the job. Every later
+step, and every tool any of them shells out to, can read it; anything that
+archives the workspace carries it out of the run.
+
+44 of the 46 now set `persist-credentials: false`. Two do not, because a later
+step in the same job pushes with exactly the credential the input removes:
+
+* `external-benchmarks.yml` — `git push origin "HEAD:${GITHUB_REF_NAME}"`
+  records the scheduled upstream results. The job is already narrowed to
+  `github.event_name != 'pull_request'`.
+* `release.yml` — `peter-evans/create-pull-request` commits the generated
+  changelog fragment and pushes a branch. The job only runs on
+  `workflow_dispatch`.
+
+Both carry the reason in a comment above the step, and
+`issue_1079::every_checkout_drops_its_credential_unless_it_pushes` requires
+that comment, caps the exceptions at two, and requires the other 44 to stay
+swept. Measured before and after with `--persona auditor --min-confidence low`:
+46 findings → 2, the two being exactly those sites.
+
+Two things were verified rather than assumed before the sweep ran. First, that
+`git fetch origin` still succeeds without the credential: `pin-base-commit.sh`
+and `simulate-fresh-merge.sh` fetch the base branch on eight of the swept
+jobs, and the repository is public, so an anonymous `git fetch --depth=1 origin
+main` from a credential-free clone resolves the same `f971b8205`. Second, that
+no other job pushes — the sweep was driven by a per-job scan for `git
+push`/`fetch`/`pull`/`clone`/`ls-remote` across the workflows *and* across
+every script and composite action they call, not by reading the workflows that
+looked likely.
+
+The cost is 32 lines in `release.yml`, which holds 18 of the 48 checkouts, and
+that moves it from 1521 to 1553 lines — past the 1500-line warning band issue
+#812 set and into a `check-file-size` warning annotation, because the gate
+warns on a file that is both over the band and growing. That is the gate
+working, and the growth is paid for deliberately rather than absorbed: the
+band in `issue_999` and `issue_1012` moves to 1553 with the reason written
+beside it, in the same form as the two moves before it. `persist-credentials`
+is an input to the action that *performs* the checkout, and a local composite
+action cannot wrap it, because a local composite action does not exist until
+the checkout has run. The alternative was to leave the release path — the one
+place credentials matter most, and the only place either legitimate exception
+lives — as the single part of the repository the sweep did not reach.
+
+### 4.4 What was checked and found clean
 
 Recorded because "found nothing" is a result, and an audit that only lists hits
 cannot be distinguished from an audit that stopped early.
@@ -199,6 +253,7 @@ cannot be distinguished from an audit that stopped early.
 | D2, the `fxhash` half | `fxhash 0.2.1` is unmaintained with `patched = []`, and it is genuinely compiled in through `web-capture → scraper 0.21 → selectors 0.26`. Nothing in this repository can remove it; the fix is a requirement bump in another project's manifest. | A second proof form. `unreachable` fails when the crate *enters* the graph; the new `blocked-upstream` fails when it *leaves* — which is exactly when the upstream fix lands and the entry should go. It must name a filed report URL, checked by regex. Filed as web-capture#155 with a build proving `scraper 0.25` needs no source changes. | `issue_1079::every_ignored_advisory_carries_exactly_one_proof` |
 | D3 | zizmor's persona filter is applied before severity, and `unpinned-uses` (Regular, configured by `policies:`) and `unpinned-images` (Pedantic) are different audits over different reference kinds. Writing `'*': hash-pin` therefore said nothing at all about images. | Digest-pin both actionlint references; add a second zizmor pass at `--persona pedantic --min-severity high --min-confidence high`. There is no narrower expression available: 1.29 and 1.30 both reject `rules.<audit>.persona` ("unknown field `persona`, expected one of `disable`, `ignore`, `config`, `remap`"), and `remap` rewrites severity, which is not what the persona filter reads. The narrow pass reports 0 of the 164 pedantic findings on the clean tree and 2 with the protections reverted. | `issue_1079::every_container_image_is_digest_pinned_or_explicitly_excepted`, `..::a_pedantic_pass_enforces_the_hash_pin_policy_on_images`, `..::the_actionlint_image_is_pinned_once_and_used_everywhere` |
 | D6 | `zizmor-action` does not resolve versions from PyPI. It ships `support/versions`, a static table of 37 rows, and `die`s on a version absent from it. Leaving `version:` unset selects the `latest` row, which in v0.6.2 is byte-identical to the `1.29.0` row. So the default does not float — it freezes, one minor release behind. | `version: 1.29.0` on both passes, and the reproduction comment corrected to match. The next bump is now a visible line in the diff rather than a side effect of bumping the action. | `issue_1079::every_zizmor_pass_pins_the_version_its_comment_documents` |
+| D7 | `artipacked` is a Low-confidence audit, and both gates floor confidence above it, so a practice all five templates follow could go unadopted at 46 of 48 sites with every check green. | `persist-credentials: false` at the 44 checkouts whose job never pushes; the two that do push keep it and say why in a comment above the step. | `issue_1079::every_checkout_drops_its_credential_unless_it_pushes` |
 | D1 | Not a pipeline defect. §4.1. | — | existing `self-development-loop` tests |
 | D4, D5 | Warnings behaving as designed. §4.2. | — | existing size and budget gates |
 
@@ -212,13 +267,9 @@ defects fixed here reproduce in every template that has the relevant job, and
 that three template-side gaps exist which this repository does not share
 because it never adopted the gap.
 
-The one practice a template has that this repository still lacks:
-`persist-credentials: false` on `actions/checkout`. zizmor reports 46
-`artipacked` findings here, at Low confidence. It is not swept in this pull
-request, because several of those checkouts legitimately need credentials (the
-release jobs push tags and commits), so a blanket sweep would trade a Low
-finding for a broken release. It is a per-site review and is called out here
-rather than silently dropped.
+The one practice a template had that this repository lacked:
+`persist-credentials: false` on `actions/checkout`, missing at 46 of this
+repository's 48 checkouts. That is D7, and it is swept here — see §4.3.
 
 ### R3 — file upstream
 

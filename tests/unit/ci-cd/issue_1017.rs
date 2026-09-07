@@ -541,26 +541,13 @@ fn every_ignored_advisory_carries_a_proof_that_ci_rechecks() {
         .collect();
 
     for advisory in ignored {
-        // Issue #1079 added a second proof form. `unreachable` cannot be
-        // written honestly for a crate that *is* compiled in, so an advisory
-        // whose only fix is upstream had no way to be ignored at all except
-        // by an unconditional suppression. `blocked-upstream` carries the
-        // same weight in the other direction: it fails once the crate leaves
-        // the graph, which is the moment the upstream fix lands. Both forms
-        // are re-derived from `cargo tree --invert` on every run; neither can
-        // be written to mean "ignore this forever". `issue_1079::
-        // every_ignored_advisory_carries_exactly_one_proof` additionally
-        // rejects an entry carrying both.
+        // Issue #1079 added `blocked-upstream`: it fails once the crate leaves.
         assert!(
             config.contains(&format!("# {advisory} unreachable = \""))
                 || config.contains(&format!("# {advisory} blocked-upstream = \"")),
-            "{advisory} is ignored without a `# {advisory} unreachable = \
-             \"<crate>@<version>\"` or `# {advisory} blocked-upstream = \
-             \"<crate>@<version>\" report = \"<url>\"` proof line; \
-             scripts/check-rust-dependencies.sh re-derives both proofs with \
-             `cargo tree --invert`, so an ignore expires the moment the crate \
-             enters the build graph -- or, for the second form, leaves it \
-             (issues #1017, #1079)"
+            "{advisory} is ignored without an `unreachable = \"<crate>@<ver>\"` \
+             or `blocked-upstream = \"<crate>@<ver>\" report = \"<url>\"` proof \
+             line, so it never expires (issues #1017, #1079)"
         );
     }
 }

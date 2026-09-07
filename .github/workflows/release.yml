@@ -62,6 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -85,6 +86,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -105,6 +107,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -133,6 +136,8 @@ jobs:
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
@@ -188,6 +193,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -208,6 +214,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -249,6 +256,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Simulate fresh merge with base branch (PR only)
         if: github.event_name == 'pull_request'
@@ -327,6 +335,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Simulate fresh merge with base branch (PR only)
         if: github.event_name == 'pull_request'
@@ -426,6 +435,8 @@ jobs:
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && needs.macos-core-tests.result == 'success' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
@@ -470,6 +481,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Rust
@@ -687,6 +699,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Rust
@@ -857,6 +870,12 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # The second of this repository's two checkouts that keep their
+      # credential (issue #1079); every other one sets
+      # `persist-credentials: false`. `peter-evans/create-pull-request` below
+      # commits the generated fragment and pushes a new branch, and this job
+      # only runs on `workflow_dispatch`, so the credential exists solely for a
+      # manually triggered release and never on a pull request.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -900,6 +919,8 @@ jobs:
       )
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -982,6 +1003,8 @@ jobs:
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
@@ -1282,6 +1305,8 @@ jobs:
       )
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
@@ -1335,6 +1360,8 @@ jobs:
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
@@ -1392,6 +1419,7 @@ jobs:
           echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           ref: ${{ steps.pages_ref.outputs.sha }}
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
@@ -1458,6 +1486,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -1514,6 +1544,8 @@ jobs:
             test-e2e-pages]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Fail the run when a required job was cancelled or failed
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}

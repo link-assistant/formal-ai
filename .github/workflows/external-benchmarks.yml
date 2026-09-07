@@ -55,6 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Setup Rust
@@ -85,6 +86,13 @@ jobs:
     permissions:
       contents: write
     steps:
+      # Every other checkout in this repository sets `persist-credentials:
+      # false` (issue #1079). This one cannot: the last step of this job runs
+      # `git push origin "HEAD:${GITHUB_REF_NAME}"` to record the scheduled
+      # upstream results, and that push authenticates with exactly the
+      # credential `persist-credentials: false` removes. The job is already
+      # narrowed to `github.event_name != 'pull_request'`, so the credential is
+      # never persisted on a fork's pull request.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
