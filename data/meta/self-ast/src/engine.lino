@@ -2,9 +2,9 @@ self_ast_census
   target src/engine.rs
   language rust
   fidelity signature
-  byte_len 38595
-  line_count 973
-  content_id source_module_487786e1f4fec485
+  byte_len 38498
+  line_count 968
+  content_id source_module_b6d8f3c00b1f701f
   symbol_count 45
   symbols
     const DEFAULT_MODEL 43 43
@@ -25,30 +25,30 @@ self_ast_census
     struct GraphNode 349 353
     struct GraphEdge 357 361
     struct KnowledgeGraph 366 369
-    function known_intent_slugs 371 387
+    function known_intent_slugs 371 382
     static CELL 372 372
-    function trace_prefixes 389 393
-    static CELL 390 390
-    function is_known_trace_id 396 406
-    function knowledge_graph 409 549
-    function knowledge_graph_dot 552 568
-    function stable_id 571 573
-    enum SelectedRule 575 590
-    function intent 593 611
-    function response_link 613 630
-    function answer 632 650
-    function language_aware_intent_for 653 655
-    function language_aware_answer_for 657 725
-    function response_link_for_intent 727 729
-    function hello_world_program_by_alias 732 735
-    function normalize_prompt 737 755
-    function is_script_combining_mark 757 770
-    function answer_links_notation 772 818
-    function format_write_program_rule_record 820 844
-    function program_template_sources 846 854
-    function write_program_answer 856 888
-    function write_program_intro 890 901
-    function execution_report 903 935
-    function execution_status_phrase 937 947
-    function execution_output_label 949 960
-    function execution_command_lines 968 973
+    function trace_prefixes 384 388
+    static CELL 385 385
+    function is_known_trace_id 391 401
+    function knowledge_graph 404 544
+    function knowledge_graph_dot 547 563
+    function stable_id 566 568
+    enum SelectedRule 570 585
+    function intent 588 606
+    function response_link 608 625
+    function answer 627 645
+    function language_aware_intent_for 648 650
+    function language_aware_answer_for 652 720
+    function response_link_for_intent 722 724
+    function hello_world_program_by_alias 727 730
+    function normalize_prompt 732 750
+    function is_script_combining_mark 752 765
+    function answer_links_notation 767 813
+    function format_write_program_rule_record 815 839
+    function program_template_sources 841 849
+    function write_program_answer 851 883
+    function write_program_intro 885 896
+    function execution_report 898 930
+    function execution_status_phrase 932 942
+    function execution_output_label 944 955
+    function execution_command_lines 963 968
