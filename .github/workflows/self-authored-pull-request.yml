@@ -77,6 +77,15 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref }}
 
+      # Every later step runs with the bot branch checked out, where these
+      # scripts are whatever that branch happens to carry -- for a branch
+      # opened by an earlier run, the version this run is fixing. Run 34224940281
+      # died that way: the guard on the bot branch was the pre-fix one.
+      - name: Stage this run's own scripts outside the worktree
+        run: |
+          set -euo pipefail
+          cp scripts/self-authored-commit-count.sh scripts/push-to-shared-branch.sh "$RUNNER_TEMP/"
+
       - name: Resolve the task issue
         id: task
         env:
@@ -166,7 +175,7 @@ jobs:
             # Once a commit on the pull request names it in its trailer the
             # task is authored; a re-run must not author it again. Decided in
             # jq over the API, not with `grep -q` over a pipe (see the header).
-            authored=$(scripts/self-authored-commit-count.sh "$existing")
+            authored=$("$RUNNER_TEMP/self-authored-commit-count.sh" "$existing")
             if [[ "$authored" != 0 ]]; then
               echo "::notice::$existing already carries the authored commit; waiting for review"
               echo "done=true" >> "$GITHUB_OUTPUT"
@@ -188,7 +197,7 @@ jobs:
           git add "$evidence/README.md"
           git commit -q -m "chore(self-authored): open the pull request Formal AI will author for #$NUMBER"
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          scripts/push-to-shared-branch.sh origin "$branch"
+          "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$branch"
           url=$(gh pr create --repo "$GITHUB_REPOSITORY" --draft --base "$BASE_BRANCH" --head "$branch" \
             --title "$TITLE (authored by Formal AI, #$NUMBER)" \
             --body "$(printf 'Formal AI authors this change through the Agent CLI in [this run](%s/%s/actions/runs/%s); the pull request was opened first so the authored commit can name it (issue #1085 D2.3).\n\nCloses #%s.\n\n- [ ] Formal AI authored the change (commit with Formal-AI-Session, Formal-AI-Model, Formal-AI-Evidence and Formal-AI-Pull-Request trailers)\n- [ ] CI is green with no human commit on the branch' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$NUMBER")")
@@ -232,13 +241,13 @@ jobs:
           # task twice; check once more against the pull request before pushing.
           # A plain assignment, so a failing count stops the step instead of
           # reading as "another run authored it" and discarding this commit.
-          authored=$(scripts/self-authored-commit-count.sh "$PULL_REQUEST")
+          authored=$("$RUNNER_TEMP/self-authored-commit-count.sh" "$PULL_REQUEST")
           if [[ "$authored" != 0 ]]; then
             echo "::notice::$PULL_REQUEST received its authored commit while this run was authoring; this run's commit is discarded"
             exit 0
           fi
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          scripts/push-to-shared-branch.sh origin "$BRANCH"
+          "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$BRANCH"
           git --no-pager log -1 --format='%H %s%n%b' > authored-commit.txt
           fence=$(printf '\x60\x60\x60')
           gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \

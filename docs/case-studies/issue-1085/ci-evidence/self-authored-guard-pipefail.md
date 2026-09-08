@@ -51,3 +51,14 @@ commit Formal AI had just authored for #1097. The helper now fetches the commit
 bodies with a single `--jq` expression and counts with `grep -c` (which reads
 all of its input, so it cannot repeat the SIGPIPE), and both callers assign the
 count to a variable so a failure stops the step.
+
+## And the fix reached the runner one run late
+
+Run 34224940281 failed with the same `accepts at most 1 arg(s), received 4`
+although its head carried the corrected helper. The step had already run
+`git checkout -B "$branch" "origin/$branch"` to continue on the bot branch, so
+`scripts/self-authored-commit-count.sh` resolved to that branch's copy: the
+pre-fix version, committed when the branch was opened. Every script the
+workflow runs after that checkout comes from the branch being authored, not
+from the run's own head. The workflow now copies both scripts into
+`$RUNNER_TEMP` before anything switches branches and runs them from there.
