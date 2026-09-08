@@ -187,6 +187,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "response_thinking_step_unnamed_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_4899a54debd7a8c8
+    source "data/seed/closure-generated-03.lino"
+    record "trimmed"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_12c08daf53ff7458
     source "data/seed/closure-generated-04.lino"
     record "cli_to_cli"

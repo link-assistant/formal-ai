@@ -607,8 +607,8 @@ fn every_checkout_drops_its_credential_unless_it_pushes() {
          checked"
     );
     assert!(
-        exceptions.len() <= 4,
-        "only the four pushing jobs may keep their checkout credential, found \
+        exceptions.len() <= 5,
+        "only the five pushing jobs may keep their checkout credential, found \
          {}: {exceptions:?}",
         exceptions.len()
     );

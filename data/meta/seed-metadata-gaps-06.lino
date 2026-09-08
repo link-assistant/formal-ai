@@ -351,6 +351,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "coding_workspace_effect_observed"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a1c1a4d9f42f9626
+    source "data/seed/closure-generated-08.lino"
+    record "external_benchmark_frontier_recorded_from"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8c9525a83e695ee6
     source "data/seed/closure-generated-08.lino"
     record "parity"
@@ -538,6 +542,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_854311b194dc4966
     source "data/seed/closure-generated-12.lino"
     record "pattern_concept_prefix_whats"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9e9084888d6b2b56
+    source "data/seed/closure-generated-12.lino"
+    record "punctuation_only_prompt"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1b849ad201d63b86
+    source "data/seed/closure-generated-12.lino"
+    record "raw"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_af0e22f7ae3f3f16
     source "data/seed/closure-generated-12.lino"

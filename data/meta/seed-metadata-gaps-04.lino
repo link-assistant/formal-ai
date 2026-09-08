@@ -275,6 +275,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "capabilities_more"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_019555cf4ef819a4
+    source "data/seed/closure-generated-07.lino"
+    record "external_benchmark_frontier_summary"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bdb2d5a5cd9ef014
     source "data/seed/closure-generated-07.lino"
     record "remove_text"
@@ -318,6 +322,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_7aa252851042aae4
     source "data/seed/closure-generated-08.lino"
     record "pull-request"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_2d0f199be5462e64
+    source "data/seed/closure-generated-08.lino"
+    record "punctuation_only"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_68c971b44806b564
     source "data/seed/closure-generated-08.lino"
@@ -715,6 +723,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "summarization_criterion_compression"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d5f2d2131fe92824
+    source "data/seed/closure-generated-15.lino"
+    record "backticks"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fadb1fcab3dd7194
     source "data/seed/closure-generated-15.lino"
     record "gets"
@@ -734,6 +746,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_147bb6e447ad7af4
     source "data/seed/closure-generated-15.lino"
     record "response_general_plan_completed_es"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5632f24e87a92ec4
+    source "data/seed/closure-generated-15.lino"
+    record "response_punctuation_only_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_5ad49a1aa5e7e2d4
     source "data/seed/closure-generated-15.lino"

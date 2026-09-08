@@ -293,7 +293,15 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
             );
             assert!(paths.contains(&node.left), "missing {}", node.left);
             assert!(paths.contains(&node.right), "missing {}", node.right);
-            assert_eq!(node.criterion, "new_composite_effect");
+            // Issue #1085 (D4) split the inner nodes: depth 4 composes two
+            // verified child effects, depth 3 and above are requirement-shaped
+            // prompts that name behaviour and no file.
+            let expected = if node.depth == 4 {
+                "new_composite_effect"
+            } else {
+                "requirement_changes"
+            };
+            assert_eq!(node.criterion, expected, "criterion of {}", node.path);
             assert!(
                 node.criterion_path.is_empty(),
                 "{} criterion path",

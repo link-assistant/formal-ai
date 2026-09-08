@@ -15,6 +15,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "one_paragraph"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1c9ff24d4b6eabc5
+    source "data/seed/closure-generated-01.lino"
+    record "response_docs_method_explanation_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f39f692396327a35
     source "data/seed/closure-generated-01.lino"
     record "response_thinking_language_name_unknown_zh"
@@ -170,6 +174,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_fb9a74bac2b5c505
     source "data/seed/closure-generated-05.lino"
     record "filing"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fb964315b8af62f5
+    source "data/seed/closure-generated-05.lino"
+    record "pandas"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_7f11df7703ee6585
     source "data/seed/closure-generated-05.lino"

@@ -465,5 +465,14 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // prose around them. Every one is a `closure-generated-*.lino` record for a
     // token the new seed prose pulled into the total closure, not a
     // hand-written gap, which is the shape this floor exists to show.
-    assert_eq!(expected_gaps.len(), 3_986);
+    //
+    // The last fifty-four arrive that way too, from issue #1085: the tokens
+    // `data/seed/handler-rules.lino` and
+    // `data/seed/multilingual-responses-policy.lino` introduced when eleven
+    // handlers stopped being Rust -- the rule vocabulary (`agent_info`,
+    // `backticks`, `cleaned`, `raw`, `literal`, `prompt`, `forms`), the
+    // handler names themselves, and the response ids of their four-language
+    // wording. Behaviour moving from Rust into seed data arrives as generated
+    // closure records, which is what this floor is for.
+    assert_eq!(expected_gaps.len(), 4_040);
 }

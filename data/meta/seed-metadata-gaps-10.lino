@@ -143,6 +143,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "agentic_report_target_question"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_92101d288cfa4e2a
+    source "data/seed/closure-generated-04.lino"
+    record "forms"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0471386da5cd072a
     source "data/seed/closure-generated-04.lino"
     record "issue_report_created"

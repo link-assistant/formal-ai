@@ -4,6 +4,7 @@
 use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::{AnthropicMessagesRequest, ChatMessage, ResponsesRequest, ToolCall};
 use std::fs;
+use std::path::{Path, PathBuf};
 
 const PROMPT: &str = "Create a file hello.txt containing exactly: Hello World";
 const TOOLS: [&str; 3] = ["read_file", "write_file", "run_command"];
@@ -414,11 +415,40 @@ fn issue_905_case_study_and_self_authorship_are_preserved() {
     .expect("canonical invariant");
     assert_eq!(authored, canonical);
 
-    let refreshed = fs::read(format!(
+    let refreshed = repair_case_without_source_counts(&PathBuf::from(format!(
         "{case}/self-hosting-fixture-refresh/self-healing-case.lino"
-    ))
-    .expect("Agent CLI refreshed self-healing fixture");
-    let canonical = fs::read(format!("{root}/data/meta/self-healing-case.lino"))
-        .expect("canonical self-healing fixture");
+    )));
+    let canonical = repair_case_without_source_counts(&PathBuf::from(format!(
+        "{root}/data/meta/self-healing-case.lino"
+    )));
     assert_eq!(refreshed, canonical);
+}
+
+/// The repair case with the two counts that track the planner source removed.
+///
+/// The committed artifact is what a real Agent CLI run produced, and it may
+/// not be rewritten: it is the evidence for that run. The canonical document
+/// is generated from `src/agentic_coding/planner.rs` and
+/// `tests/unit/issue_558_self_healing.rs` fails when it drifts from that
+/// source. Byte equality between the two therefore held only while the planner
+/// was frozen; issue #1085 moved eleven handlers out of Rust and the planner's
+/// link count moved with it. What still has to hold -- and does -- is that
+/// every clause the run authored is the clause the recipe still produces.
+fn repair_case_without_source_counts(path: &Path) -> String {
+    let text =
+        fs::read_to_string(path).unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+    text.lines()
+        .map(|line| {
+            let trimmed = line.trim_start();
+            if trimmed.starts_with("total_link_count ") || trimmed.starts_with("named_node_count ")
+            {
+                let indent = &line[..line.len() - trimmed.len()];
+                let key = trimmed.split_whitespace().next().unwrap_or_default();
+                format!("{indent}{key} <tracks the planner source>")
+            } else {
+                line.to_owned()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
 }
