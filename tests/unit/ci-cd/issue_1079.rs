@@ -724,8 +724,13 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
         authoring.contains("uses: ./.github/actions/author-with-formal-ai"),
         "the self-authored workflow drives the loop through the action"
     );
+    // The comment above that checkout says the words `persist-credentials:
+    // false` to explain why they are absent, so this reads the setting rather
+    // than the file: only a line that actually sets it counts.
     assert!(
-        !authoring.contains("persist-credentials: false"),
+        !authoring
+            .lines()
+            .any(|line| line.trim().starts_with("persist-credentials: false")),
         "the author job's checkout keeps its credential: the action pushes the bot branch with \
          it when the repository provides no FORMAL_AI_BOT_TOKEN (issue #1079)"
     );
