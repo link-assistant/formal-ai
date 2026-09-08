@@ -131,6 +131,23 @@ this file says which slice carried what.
   evidence bundle the version-3 metric attributes; that gap is filed upstream
   (see the case study README).
 
+## Pushes 18 to 22
+
+- First self-authored run: `formal-ai serve` was silent past the port wait
+  because the native seed mirror ran before bind; the mirror now runs on a
+  thread after the listener is up (`FORMAL_AI_SEED_LINKS_MIRROR=0` skips
+  it). The second run authored #1093: commit `72b133c` under
+  `github-actions[bot]` with the four trailers and the evidence bundle, adding
+  `Gemfile.lock` to the lockfile names (#1091); #1092 (bootstrap only) was
+  closed as superseded and the workflow now reuses the open bot pull request
+  for a task.
+- A push made with `GITHUB_TOKEN` starts no workflow run, so #1093 had no
+  checks until it was closed and reopened; the workflow uses the
+  `FORMAL_AI_BOT_TOKEN` secret when the repository provides it and says so
+  when it does not. `release.yml` cannot be dispatched for checks because its
+  dispatch inputs are release inputs.
+- The self-AST census is regenerated for pushes 13 to 19.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the
