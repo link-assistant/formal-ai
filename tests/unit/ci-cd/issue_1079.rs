@@ -706,11 +706,33 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
 
     assert_eq!(
         pushing_jobs.len(),
-        5,
-        "expected the five jobs that write to the remote over git (the three \
-         release writers, the benchmark ledger writer, and the self-authored \
-         pull-request author from issue #1085), found {pushing_jobs:?}. A new \
-         one must keep its checkout credential; one that stopped pushing should \
-         drop it"
+        4,
+        "expected the four jobs that write to the remote over git (the three \
+         release writers and the benchmark ledger writer), found \
+         {pushing_jobs:?}. A new one must keep its checkout credential; one \
+         that stopped pushing should drop it"
+    );
+
+    // The fifth writer is the self-authored author job, and its pushes moved
+    // into `.github/actions/author-with-formal-ai` when the loop became an
+    // action another repository can install (issue #1085). The job still has
+    // to keep its checkout credential, because that is what the action pushes
+    // with when no bot token is configured -- so the pair is asserted here
+    // rather than being lost with the `git push` line that used to be visible.
+    let authoring = repository_file(".github/workflows/self-authored-pull-request.yml");
+    assert!(
+        authoring.contains("uses: ./.github/actions/author-with-formal-ai"),
+        "the self-authored workflow drives the loop through the action"
+    );
+    assert!(
+        !authoring.contains("persist-credentials: false"),
+        "the author job's checkout keeps its credential: the action pushes the bot branch with \
+         it when the repository provides no FORMAL_AI_BOT_TOKEN (issue #1079)"
+    );
+    let action =
+        repository_file(".github/actions/author-with-formal-ai/scripts/push-formal-ai-commit.sh");
+    assert!(
+        action.contains("push-to-shared-branch.sh"),
+        "the action pushes through the retrying helper like every other writer"
     );
 }

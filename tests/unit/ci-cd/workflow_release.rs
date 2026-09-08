@@ -312,9 +312,14 @@ fn test_job_skips_non_code_changes() {
         test.contains("needs.detect-changes.outputs.toml-changed == 'true'"),
         "test job should run when Cargo manifests changed"
     );
+    // Issue #1107: `workflow-changed` is true for any file under
+    // `.github/workflows/`, so gating the compiled test matrix on it made an
+    // edit to a scheduled benchmark pay for the whole suite. What the matrix
+    // cares about is the pipeline it runs inside -- its own definition, a
+    // composite action it calls, or a script those run.
     assert!(
-        test.contains("needs.detect-changes.outputs.workflow-changed == 'true'"),
-        "test job should run when the CI workflow itself changed"
+        test.contains("needs.detect-changes.outputs.pipeline-changed == 'true'"),
+        "test job should run when the pipeline it runs inside changed"
     );
     assert!(
         !test.contains("github.event_name == 'push'")

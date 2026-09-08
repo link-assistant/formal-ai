@@ -24,6 +24,7 @@ use std::collections::BTreeMap;
 use std::fs;
 
 use super::issue_1017::{job_timeout, workflow_files};
+use super::workflow_fixtures::ci_shell_files;
 use super::workflow_fixtures::workflow_job_names;
 
 /// The share of a job's cap that *everything budgeted inside it* may claim
@@ -550,7 +551,7 @@ fn a_rejection_no_rebase_can_fix_is_reported_instead_of_retried() {
 fn every_shared_branch_writer_pushes_through_the_retrying_helper() {
     let mut bare_pushes = Vec::new();
 
-    for (name, body) in workflow_files() {
+    for (name, body) in ci_shell_files() {
         for (number, line) in body.lines().enumerate() {
             let statement = line.trim().trim_start_matches("if ! ");
             if !statement.starts_with("git push") {
@@ -574,7 +575,7 @@ fn every_shared_branch_writer_pushes_through_the_retrying_helper() {
     // (run 34278539348 rebased a stale bot branch cleanly and was refused at
     // the push). A branch that has fallen behind catches up by merging its
     // base, which fast-forwards like every other write here (issue #1085).
-    for (name, body) in workflow_files() {
+    for (name, body) in ci_shell_files() {
         for line in body.lines() {
             assert!(
                 !line
