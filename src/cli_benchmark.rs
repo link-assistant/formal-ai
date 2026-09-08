@@ -50,6 +50,11 @@ pub enum BenchmarkAction {
         /// failures in this run.
         #[arg(long)]
         learning_report: Option<PathBuf>,
+
+        /// Rewrite the committed learning frontier of failed upstream cases
+        /// (issue #1085 D5.1), relative to the repository root.
+        #[arg(long)]
+        frontier_record: Option<PathBuf>,
     },
     /// Verify the ledger's monotonic ratchet without running any suite.
     Ratchet {
@@ -79,6 +84,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
             date,
             repository_root,
             learning_report,
+            frontier_record,
         } => {
             let root = resolve_root(repository_root);
             let date = date.unwrap_or_else(external_benchmarks::today_utc);
@@ -90,6 +96,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
                 &date,
                 &root,
                 learning_report.as_deref(),
+                frontier_record.as_deref(),
             )
         }
         BenchmarkAction::Ratchet {
@@ -135,6 +142,7 @@ fn run_suites(
     date: &str,
     repository_root: &Path,
     learning_report: Option<&Path>,
+    frontier_record: Option<&Path>,
 ) -> Result<(), Box<dyn Error>> {
     let selected: Vec<&manifest::SuiteManifest> = if selector == "all" {
         manifest::SUITES.iter().collect()
@@ -169,6 +177,23 @@ fn run_suites(
         } else {
             println!("no failed benchmark outcomes; no learning report written");
         }
+    }
+    if let Some(relative_path) = frontier_record {
+        let path = repository_root.join(relative_path);
+        let existing = fs::read_to_string(&path).unwrap_or_default();
+        let document =
+            external_benchmarks::learning::render_frontier_record(&existing, &runs, date);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::write(&path, document)?;
+        println!(
+            "{}",
+            vocabulary::render(
+                "external_benchmark_frontier_written",
+                &[("path", &path.display().to_string())],
+            )
+        );
     }
     Ok(())
 }
@@ -258,6 +283,9 @@ fn check_ratchet(
             let previous = Ledger::parse(&String::from_utf8(output.stdout)?)?;
             violations.extend(ratchet::regressions(&previous, &ledger));
         }
+    }
+    for stall in ratchet::stagnant(&ledger) {
+        println!("::warning::{stall}");
     }
     if violations.is_empty() {
         println!(

@@ -51,6 +51,22 @@ this file says which slice carried what.
   pending 51 to 40 (the D1 test's target); every ratchet ceiling lowered to
   the measured value.
 
+## Push 14
+
+- **D5.1, D5.2.** `formal-ai benchmark run --frontier-record` rewrites
+  `data/meta/learning-frontier-upstream-benchmarks.lino` from the run's failed
+  cases (one `frontier_prompt` per case, prompt excerpt from the upstream
+  record, suites that ran replace their items, suites that did not run keep
+  theirs); the scheduled workflow commits it beside the ledger and
+  `formal-ai learn cycle --frontier upstream-benchmarks` replays it. The first
+  committed record comes from the 2026-09-07 scheduled run's failure artifact,
+  so its prompt column carries the grader detail until the next run writes
+  excerpts. The ledger gate already failed a fallen pass count
+  (`non_monotonic_history`); `benchmark ratchet` now prints a GitHub warning
+  for a suite whose last three runs scored the same.
+- **D6-D9** filed as #1087, #1088, #1089, #1090, sub-issues of #1085 and
+  blocked by it, each carrying the section 7 clauses.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the

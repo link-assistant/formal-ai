@@ -581,7 +581,9 @@ one branch, and this section records what each push delivered.
 | #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |
 | D2.1 links-to-code edit rules | Delivered (three ladder shapes as link substitutions) | `src/agentic_coding/link_edit_rules.rs`, `data/meta/link-edit-rules.lino`, `tests/unit/issue_1085_link_edit_rules.rs` |
 | D5.3 upstream transfer of the seeded tasks | Delivered: HumanEval/0 lost `from typing import List`, MBPP/2 took an `assert` call for a signature | `src/solver_handlers/program_synthesis.rs`, `tests/unit/issue_1085_upstream_prompt_transfer.rs` |
-| D2.2, D5.1, D6-D9 | In progress / sub-issues | `docs/case-studies/issue-1085/solution-plan.md` |
+| D5.1-D5.2 upstream failures as frontier inputs; red on a fallen suite, yellow after three equal runs | Delivered | `data/meta/learning-frontier-upstream-benchmarks.lino`, `src/external_benchmarks/ratchet.rs`, `tests/unit/issue_1085_upstream_frontier.rs` |
+| D6-D9 | Sub-issues #1087, #1088, #1089, #1090, blocked by #1085 | `docs/case-studies/issue-1085/solution-plan.md` |
+| D1.1-D1.2, D2.2, D4 second half | In progress on the pull request | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Verification Contract
 

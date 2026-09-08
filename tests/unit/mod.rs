@@ -82,6 +82,7 @@ mod issue_1085_link_edit_rules;
 mod issue_1085_python_signature;
 mod issue_1085_rule_interpreter;
 mod issue_1085_upstream_prompt_transfer;
+mod issue_1085_upstream_frontier;
 mod issue_1963;
 mod issue_337;
 mod issue_403;

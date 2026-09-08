@@ -16,7 +16,7 @@ the remaining failures of #1081 that konard asked to land in the same pull reque
 | R1085-8 | D3.5 | Floor off the release path; red-until-true status | `release.yml` has no gate; status workflow runs the floor on push and schedule |
 | R1085-9 | D4 | Leaves compile and test; composites merge; depth >= 3 requirement-shaped; root is a real issue | `verify-node.sh` fails an uncompilable leaf |
 | R1085-10 | D5.4 | Upstream row beside every curated citation | `VISION.md`, `ROADMAP.md` |
-| R1085-11 | D5.1-D5.3 | Upstream failures feed the learning cycle; red on regression; HumanEval task 0 explained | workflow red when a suite falls |
+| R1085-11 | D5.1-D5.3 | Upstream failures feed the learning cycle; red on regression; HumanEval task 0 explained | delivered: frontier record, stagnation warning, transfer fixed |
 | R1085-12 | #1081 | crates.io probe never uses `/me`; read-only verdict is `unknown` | test asserts `/api/v1/me` is not called and the token is not sent |
 | R1085-13 | #1081 | macOS archive budget from measured durations | budget sum <= 70% of the cap |
 | R1085-14..17 | D6-D9 | Frontier queue, evidence store, gate collapse, traceability column | sub-issues of #1085 |

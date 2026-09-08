@@ -63,3 +63,19 @@ multilingual_responses
     intent docs_method_explanation
     language zh
     text "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
+  response response_external_benchmark_stagnant_suite_en
+    intent external_benchmark_stagnant_suite
+    language en
+    text "{suite}: passed={passed} unchanged over the last three runs at slice {slice} ({first}, {second}, {third}); a stalled suite is a warning until it moves (issue #1085 D5.2)"
+  response response_external_benchmark_frontier_summary_en
+    intent external_benchmark_frontier_summary
+    language en
+    text "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks."
+  response response_external_benchmark_frontier_recorded_from_en
+    intent external_benchmark_frontier_recorded_from
+    language en
+    text "formal-ai benchmark run --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino in .github/workflows/external-benchmarks.yml"
+  response response_external_benchmark_frontier_written_en
+    intent external_benchmark_frontier_written
+    language en
+    text "upstream failure frontier written: {path}"

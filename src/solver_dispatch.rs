@@ -63,12 +63,6 @@ impl SpecializedHandler {
             Self::Rule(name) => crate::rule_interpreter::run_handler(name, prompt, normalized, log),
         }
     }
-
-    /// Whether the handler is seed data rather than a native function.
-    #[must_use]
-    pub const fn is_rule(self) -> bool {
-        matches!(self, Self::Rule(_))
-    }
 }
 
 fn handle_arithmetic(
