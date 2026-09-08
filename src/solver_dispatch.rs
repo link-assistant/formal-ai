@@ -439,7 +439,7 @@ fn resolve_handler(
     rule_names
         .iter()
         .find(|candidate| **candidate == name)
-        .map(|rule| (*rule, SpecializedHandler::Rule(*rule)))
+        .map(|rule| (*rule, SpecializedHandler::Rule(rule)))
 }
 
 /// Return the executable handler for a registry method name implemented by the

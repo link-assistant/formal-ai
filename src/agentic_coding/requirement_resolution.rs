@@ -45,7 +45,7 @@ pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<Require
             .filter_map(|module| module.symbol(token).map(|symbol| (module, symbol)))
             .collect();
         if !named.is_empty() {
-            return unique(named, &tokens);
+            return unique(&named, &tokens);
         }
     }
 
@@ -82,14 +82,14 @@ pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<Require
     if best.is_empty() {
         return None;
     }
-    unique(best, &tokens)
+    unique(&best, &tokens)
 }
 
 fn unique(
-    candidates: Vec<(&ModuleCensus, &SymbolSpan)>,
+    candidates: &[(&ModuleCensus, &SymbolSpan)],
     tokens: &[String],
 ) -> Option<RequirementTarget> {
-    if let [(module, symbol)] = candidates.as_slice() {
+    if let [(module, symbol)] = candidates {
         return Some(target(module, symbol));
     }
     let words: Vec<String> = tokens

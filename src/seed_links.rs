@@ -106,7 +106,7 @@ impl SeedLinkNetwork {
 
     /// Number of projected documents.
     #[must_use]
-    pub fn document_count(&self) -> usize {
+    pub const fn document_count(&self) -> usize {
         self.documents.len()
     }
 
