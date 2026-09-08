@@ -3,13 +3,21 @@ handler_migration_ledger
   batch 3
   ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/kernel-ratchet.lino"
   handler conversation_control
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: Both turns are role recognition plus a backtick capture rendered through seeded responses; the rule interpreter walks them with no handler-specific Rust."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler http_fetch
     status pending
   handler url_navigate
     status pending
   handler github_repository_traffic
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-web-search.lino|data/seed/multilingual-responses.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: Four role conjunctions in the detected language and English, seeded reply with the documentation links as rule values."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler document_originality_check
     status pending
   handler web_search
@@ -21,7 +29,11 @@ handler_migration_ledger
   handler research_result_followup
     status pending
   handler docs_method_explanation
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-docs.lino|data/seed/multilingual-responses-policy.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: The scoped pandas explanation is role and word conditions over the prompt with the four-language wording moved from Rust into seed responses."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler procedural_how_to
     status pending
   handler procedural_how_to_followup
@@ -49,7 +61,11 @@ handler_migration_ledger
   handler response_language_followup
     status pending
   handler capabilities
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: Capability queries are role conditions with the assistant-free-time route excluded; the prior-web-search note is a history condition."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler calendar_reasoning
     status pending
   handler calendar_create_event
@@ -119,20 +135,48 @@ handler_migration_ledger
   handler source_conflict
     status pending
   handler clarification
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: A single role condition and the seeded clarification reply."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler punctuation_only_prompt
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: A character-set condition over the trimmed prompt; the wording moved from a Rust format string into seed responses."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler ill_formed
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: A phrase and an unbalanced-parentheses condition answering with the shared unknown response."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler physical_action_question
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: A raw role condition with the seeded reply and its Russian fallback expressed as rule data."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler kupi_slona
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: A raw role condition with the seeded idiom explanation and its Russian fallback expressed as rule data."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler shell_refusal
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: Substring conditions over the normalized prompt with an agent-mode exclusion; the refusal wording moved into seed responses in four languages."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler proof_request
     status pending
   handler opinion_question
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1085 D1.3: Fifteen opener prefixes as rule data; the no-opinion wording moved into seed responses in four languages."
+    held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler incompatible_units
     status pending

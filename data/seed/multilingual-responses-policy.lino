@@ -1,0 +1,65 @@
+multilingual_responses
+  response response_opinion_question_en
+    intent opinion_question
+    language en
+    text 'I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — every answer I give is derived from an explicit Links Notation rule. If you are looking for factual information on this topic, try asking "what is <topic>" and I will look it up in my knowledge base.'
+  response response_opinion_question_ru
+    intent opinion_question
+    language ru
+    text 'Я детерминированный символьный ИИ. У меня нет мнений, убеждений или чувств — каждый мой ответ выводится из явного правила в Links Notation. Если вам нужна фактическая информация по этой теме, спросите «что такое <тема>», и я найду её в своей базе знаний.'
+  response response_opinion_question_hi
+    intent opinion_question
+    language hi
+    text 'मैं एक नियतात्मक प्रतीकात्मक AI हूँ। मेरी कोई राय, मान्यता या भावना नहीं है — मेरा हर उत्तर किसी स्पष्ट Links Notation नियम से निकलता है। यदि आप इस विषय पर तथ्यात्मक जानकारी चाहते हैं, तो "<विषय> क्या है" पूछें और मैं इसे अपने ज्ञान आधार में खोजूँगा।'
+  response response_opinion_question_zh
+    intent opinion_question
+    language zh
+    text '我是一个确定性的符号 AI。我没有观点、信念或感受——我给出的每个回答都源自明确的 Links Notation 规则。如果你想了解这个主题的事实信息，请问“<主题>是什么”，我会在知识库中查找。'
+  response response_policy_bounded_autonomy_en
+    intent policy_bounded_autonomy
+    language en
+    text "I can only respond with a chat reply. Running shell commands on your behalf is not allowed without explicit agent mode opt-in, and even then only inside an isolated sandbox."
+  response response_policy_bounded_autonomy_ru
+    intent policy_bounded_autonomy
+    language ru
+    text "Я могу ответить только сообщением в чате. Выполнять команды оболочки от вашего имени нельзя без явного включения агентного режима, и даже тогда только в изолированной песочнице."
+  response response_policy_bounded_autonomy_hi
+    intent policy_bounded_autonomy
+    language hi
+    text "मैं केवल चैट उत्तर दे सकता हूँ। आपकी ओर से शेल कमांड चलाना स्पष्ट एजेंट मोड सहमति के बिना अनुमत नहीं है, और तब भी केवल एक अलग सैंडबॉक्स के भीतर।"
+  response response_policy_bounded_autonomy_zh
+    intent policy_bounded_autonomy
+    language zh
+    text "我只能以聊天回复的方式作答。未经明确启用代理模式，不允许代表你运行 shell 命令；即使启用，也只能在隔离的沙箱中运行。"
+  response response_punctuation_only_en
+    intent punctuation_only
+    language en
+    text "I received only punctuation (`{prompt}`). What would you like me to do next?"
+  response response_punctuation_only_ru
+    intent punctuation_only
+    language ru
+    text "Я получил только знаки препинания (`{prompt}`). Что мне сделать дальше?"
+  response response_punctuation_only_hi
+    intent punctuation_only
+    language hi
+    text "मुझे केवल विराम चिह्न मिले (`{prompt}`)। अब आप मुझसे क्या करवाना चाहेंगे?"
+  response response_punctuation_only_zh
+    intent punctuation_only
+    language zh
+    text "我只收到了标点符号（`{prompt}`）。接下来你想让我做什么？"
+  response response_docs_method_explanation_en
+    intent docs_method_explanation
+    language en
+    text "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
+  response response_docs_method_explanation_ru
+    intent docs_method_explanation
+    language ru
+    text "pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.\n\nВ рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.\n\nИсточник: [pandas.DataFrame.join]({docs_url}) (официальная документация pandas)."
+  response response_docs_method_explanation_hi
+    intent docs_method_explanation
+    language hi
+    text "pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.\n\nइस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
+  response response_docs_method_explanation_zh
+    intent docs_method_explanation
+    language zh
+    text "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."

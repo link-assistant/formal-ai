@@ -9,9 +9,9 @@ use super::comparison;
 use super::conversation_recall;
 use super::diagram;
 use super::document_recipe::{
-    plan_change_request_step, plan_diagram_step, plan_dreaming_audit_step,
-    plan_explain_step, plan_google_trends_catalog_step, plan_google_trends_learning_step,
-    plan_ledger_step, plan_meaning_detail_step, plan_question_catalog_step, plan_rebuild_step,
+    plan_change_request_step, plan_diagram_step, plan_dreaming_audit_step, plan_explain_step,
+    plan_google_trends_catalog_step, plan_google_trends_learning_step, plan_ledger_step,
+    plan_meaning_detail_step, plan_question_catalog_step, plan_rebuild_step,
     plan_repair_strategy_step, plan_self_ast_step, plan_self_heal_step, plan_source_links_step,
 };
 use super::dreaming_audit;
@@ -43,15 +43,14 @@ use super::self_heal;
 use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
-use super::workspace_inspection;
 use super::statement_audit;
 use super::structured_edit;
 use super::task_structure;
 use super::tool_result;
 use super::web_research;
+use super::workspace_inspection;
 use super::{algorithm_learning, capability_router};
 use super::{change_request, code_artifact};
-use crate::conversation_control::is_conversation_control_prompt;
 use crate::protocol::ChatMessage;
 use crate::skill_compiler::looks_like_skill_description;
 
@@ -187,7 +186,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
-    if is_conversation_control_prompt(&task) || looks_like_skill_description(&task) {
+    if crate::rule_interpreter::handler_matches("conversation_control", &task)
+        || looks_like_skill_description(&task)
+    {
         return None;
     }
     // Issue #707: seed-defined computer-use plans own their exact multilingual
@@ -204,9 +205,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         && let Some(plan) = tool_for(tool_names, Capability::Write)
             .and_then(|_| compose_general_change_plan(&task))
             .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-        {
-            return Some(plan);
-        }
+    {
+        return Some(plan);
+    }
     // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
     // of every route that reads a request's lone file-shaped token, because that
     // token is the *destination* here and opening it for reading ends the run with
@@ -420,9 +421,10 @@ pub(super) fn plan_settled_routes(
     // exposes its typed read capability. The shared read-many route remains
     // available for CLIs that advertise only a batch reader.
     if tool_for(tool_names, Capability::Read).is_some()
-        && let Some(file_task) = file_read_task_for(task) {
-            return Some(plan_file_read_step(&file_task, messages, tool_names));
-        }
+        && let Some(file_task) = file_read_task_for(task)
+    {
+        return Some(plan_file_read_step(&file_task, messages, tool_names));
+    }
     // A meanings-driven explicit local scope dominates generic search verbs.
     // This state machine observes each result and widens only after emptiness.
     if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
@@ -431,8 +433,7 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = comparison::plan_comparison_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = capability_router::plan_shared_capability_step(task, messages, tool_names)
-    {
+    if let Some(plan) = capability_router::plan_shared_capability_step(task, messages, tool_names) {
         return Some(plan);
     }
     if let Some(command) = shell_command::shell_command_for_task(task) {
@@ -475,19 +476,17 @@ pub(super) fn plan_settled_routes(
     // genuinely external question out of this route.
     if !tool_result::has_latest_turn_result(messages)
         && let Some(search) = workspace_inspection::workspace_inspection_search_for_task(task)
-            && let Some(tool) = tool_for(tool_names, Capability::Grep) {
-                let mut arguments = json!({
-                    "query": search.query,
-                    "pattern": search.pattern,
-                });
-                if let Some(include) = search.include {
-                    arguments["include"] = include.into();
-                }
-                return Some(plan_one(
-                    tool,
-                    arguments.to_string(),
-                ));
-            }
+        && let Some(tool) = tool_for(tool_names, Capability::Grep)
+    {
+        let mut arguments = json!({
+            "query": search.query,
+            "pattern": search.pattern,
+        });
+        if let Some(include) = search.include {
+            arguments["include"] = include.into();
+        }
+        return Some(plan_one(tool, arguments.to_string()));
+    }
     // A question about how a task decomposes is answered by decomposing it. It
     // has to be resolved before the research routers for the same reason the
     // workspace inspection above does: the question shape alone would otherwise
@@ -500,9 +499,10 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(query) = web_research::web_research_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
-            return Some(plan);
-        }
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
+    {
+        return Some(plan);
+    }
     if let Some(plan) = intent_router::plan_web_search_step(task, messages, tool_names) {
         return Some(plan);
     }
@@ -514,17 +514,19 @@ pub(super) fn plan_settled_routes(
     // earlier local tool steal a web-research request.
     if !tool_result::has_latest_turn_result(messages)
         && let Some(query) = shell_command::code_search_query_for_task(task)
-            && let Some(tool) = tool_for(tool_names, Capability::Grep) {
-                return Some(plan_one(
-                    tool,
-                    json!({ "query": query, "pattern": query }).to_string(),
-                ));
-            }
+        && let Some(tool) = tool_for(tool_names, Capability::Grep)
+    {
+        return Some(plan_one(
+            tool,
+            json!({ "query": query, "pattern": query }).to_string(),
+        ));
+    }
     if web_research::has_successful_search_result(messages)
         && let Some(query) = web_research::unresolved_web_research_query_for(messages)
-            && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
-                return Some(plan);
-            }
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
+    {
+        return Some(plan);
+    }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, task) {
         return Some(AgenticPlan::Final(answer));
     }
@@ -543,9 +545,10 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(query) = web_research::unresolved_web_research_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
-            return Some(plan);
-        }
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
+    {
+        return Some(plan);
+    }
     None
 }
 
@@ -624,25 +627,23 @@ fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String
     let latest_user = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    messages[..latest_user]
-        .iter()
-        .rev()
-        .find_map(|message| {
-            if !message.role.eq_ignore_ascii_case("assistant") {
-                return None;
-            }
-            let envelope = message.content.plain_text();
-            // Agent may compact an already compacted conversation. In that
-            // case its new summary repeats the protocol continuation before
-            // embedding the prior `Conversation summary:` envelope. The
-            // continuation remains trusted only as a protocol trigger; recover
-            // the objective from the last summary marker in the assistant's
-            // compaction response rather than requiring that marker at byte 0.
-            let summary = envelope
-                .rsplit_once("Conversation summary:")?
-                .1
-                .trim_start();
-            preserved_first_user_turn(summary).or_else(|| {
+    messages[..latest_user].iter().rev().find_map(|message| {
+        if !message.role.eq_ignore_ascii_case("assistant") {
+            return None;
+        }
+        let envelope = message.content.plain_text();
+        // Agent may compact an already compacted conversation. In that
+        // case its new summary repeats the protocol continuation before
+        // embedding the prior `Conversation summary:` envelope. The
+        // continuation remains trusted only as a protocol trigger; recover
+        // the objective from the last summary marker in the assistant's
+        // compaction response rather than requiring that marker at byte 0.
+        let summary = envelope
+            .rsplit_once("Conversation summary:")?
+            .1
+            .trim_start();
+        preserved_first_user_turn(summary)
+            .or_else(|| {
                 summary
                     .split_once("\n\nTitle:")
                     .map(|(task, _)| task.trim())
@@ -650,7 +651,7 @@ fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String
                     .map(str::to_owned)
             })
             .map(repair_compacted_dot_paths)
-        })
+    })
 }
 
 /// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
@@ -680,9 +681,7 @@ fn repair_compacted_dot_paths(mut task: String) -> String {
             .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | ';'))
             .trim_end_matches(['.', '!', '?']);
         let candidate = format!(".{token}");
-        if standalone
-            && token.contains('/')
-            && super::write_request::safe_relative_path(&candidate)
+        if standalone && token.contains('/') && super::write_request::safe_relative_path(&candidate)
         {
             task.replace_range(after_dot..path_start, "");
             search_from = dot + 1;

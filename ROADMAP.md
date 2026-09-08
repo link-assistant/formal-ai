@@ -575,7 +575,7 @@ one branch, and this section records what each push delivered.
 | --- | --- | --- |
 | D3.1-D3.4 metric version 3: model attribution, behaviour-only paths, pull-request author, history restated | Delivered | `scripts/self-hosting-attribution.rs`, `scripts/self-hosting-replay.rs`, `data/meta/self-hosting-ledger.lino` header, `tests/unit/specification/self_hosting_metric.rs` |
 | D3.5 floor off the release path, red-until-true status | Delivered | `.github/workflows/self-development-status.yml`; `release.yml` cuts on CI correctness; `tests/unit/ci-cd/issue_1014.rs` |
-| D1.4 kernel allowlist and measured shrink ratchets | Delivered (ceilings); D1.1-D1.3 in progress | `data/meta/kernel-ratchet.lino`, `scripts/check-kernel-ratchet.rs`, gate `check_kernel_ratchet` |
+| D1.3 rule interpreter, D1.4 kernel allowlist and shrink ratchets | Delivered: eleven handlers are seed rules (ledger pending 51 to 40, handler files 43 to 42, literal predicates 529 to 504); D1.1-D1.2 in progress | `data/meta/kernel-ratchet.lino`, `scripts/check-kernel-ratchet.rs`, gate `check_kernel_ratchet` |
 | D4 ladder leaves compile | Delivered (`cargo check`); test run, composite merge and requirement-shaped nodes in progress | `experiments/issue_1028_agent_cli_ladder/verify-node.sh` |
 | D5.4 upstream numbers beside every curated citation | Delivered | this file, `VISION.md` |
 | #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |

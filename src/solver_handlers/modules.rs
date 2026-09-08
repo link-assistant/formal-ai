@@ -21,7 +21,6 @@ mod document_originality;
 mod document_request;
 mod fact_checking;
 mod feature_capability;
-mod github_repository_traffic;
 mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;

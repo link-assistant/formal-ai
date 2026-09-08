@@ -1,10 +1,10 @@
 core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
-  source_file_count_max 46
-  source_lines_max 19233
-  outside_core_file_count_max 46
-  outside_core_lines_max 19233
+  source_file_count_max 45
+  source_lines_max 18865
+  outside_core_file_count_max 45
+  outside_core_lines_max 18865
   source src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
@@ -100,11 +100,6 @@ core_boundary_ledger
     baseline_lines 650
     data_target "feature capability concepts and responses"
     reason "Capability vocabulary and claims must remain auditable seed facts."
-  source src/solver_handlers/github_repository_traffic.rs
-    disposition migrate
-    baseline_lines 110
-    data_target "repository traffic request rules"
-    reason "Provider-specific metric vocabulary belongs in data over a network surface."
   source src/solver_handlers/installation_conversion.rs
     disposition migrate
     baseline_lines 866
@@ -117,7 +112,7 @@ core_boundary_ledger
     reason "Descriptions of the meta algorithm belong in inspectable seed knowledge."
   source src/solver_handlers/mod.rs
     disposition migrate
-    baseline_lines 945
+    baseline_lines 941
     data_target "handler routing, response, and domain rules"
     reason "This mixed dispatcher embeds specialized behavior and must be split before any primitive is promoted."
   source src/solver_handlers/natural_language_tools.rs
@@ -212,7 +207,7 @@ core_boundary_ledger
     reason "Transformation names, parsing policy, and rendering are domain knowledge."
   source src/solver_handlers/user_intent.rs
     disposition migrate
-    baseline_lines 490
+    baseline_lines 236
     data_target "user intent concepts and routing rules"
     reason "Intent classification is seed knowledge consumed by the meta algorithm."
   source src/solver_handlers/web_requests.rs

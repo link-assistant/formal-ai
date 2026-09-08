@@ -35,6 +35,22 @@ this file says which slice carried what.
   regression test.
 - Push-1 CI feedback folded in.
 
+## Push 13
+
+- **D1.3 rule interpreter.** `src/rule_interpreter.rs` (kernel) walks
+  `data/seed/handler-rules.lino`: a `handler` block per precedence name, each
+  `rule` with a `when` tree over seed roles and prompt shape, captured values,
+  `log` steps and a seeded `respond`. `specialized_handlers()` resolves a
+  precedence name to a rule set when no native function claims it, so the
+  precedence file did not change. Eleven handlers (fourteen rules) migrated
+  and their Rust was deleted: conversation_control, github_repository_traffic,
+  docs_method_explanation, capabilities, clarification,
+  punctuation_only_prompt, ill_formed, physical_action_question, kupi_slona,
+  shell_refusal, opinion_question. English wording that lived in Rust moved to
+  `data/seed/multilingual-responses-policy.lino` in four languages. Ledger
+  pending 51 to 40 (the D1 test's target); every ratchet ceiling lowered to
+  the measured value.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the

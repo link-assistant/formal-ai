@@ -77,6 +77,8 @@ seed_registry
   seed handler-precedence
     bundle true
     web true
+  seed handler-rules
+    bundle true
   seed hello-world-programs
     bundle true
     web true
@@ -348,6 +350,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-pattern
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-policy
     bundle true
     lexicon response
     web true

@@ -19,7 +19,6 @@ pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
-pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::{is_install_conversion_request, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
@@ -42,10 +41,7 @@ pub use software_project_followup::try_software_project_followup;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
 pub use text_manipulation::{names_a_quoted_replacement, text_outside_quoted_segments};
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
-pub use user_intent::{
-    try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
-    try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
-};
+pub use user_intent::{try_proof_request, try_proof_request_with_config};
 pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
     try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,

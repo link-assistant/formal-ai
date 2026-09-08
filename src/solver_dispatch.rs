@@ -5,7 +5,6 @@
 //! registry: the registry chooses method names, then this module supplies the
 //! Rust function for names implemented as regular solver handlers.
 
-use crate::conversation_control::try_conversation_control;
 use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
 use crate::entity_resolution::resolve_who_is;
@@ -13,7 +12,6 @@ use crate::event_log::EventLog;
 use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::{ConversationTurn, SolverConfig};
-use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
 };
@@ -21,30 +19,57 @@ use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
     SelfAwarenessRuntime, try_algorithm, try_arithmetic, try_brainstorming_request,
-    try_calendar_create_event, try_calendar_reasoning, try_capabilities, try_clarification,
-    try_compound_interest, try_concept_lookup, try_conversation_memory,
-    try_conversation_topic_request, try_coreference_request, try_document_originality_check,
-    try_document_request, try_execution_failure, try_fact_checking, try_fact_lookup,
-    try_github_repository_traffic, try_http_fetch, try_http_fetch_with_offline, try_ill_formed,
-    try_installation_conversion, try_javascript_execution, try_learn_from_source,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
-    try_numeric_list_with_history, try_opinion_question, try_pattern_inference,
-    try_program_synthesis, try_proof_request, try_proof_request_with_config,
-    try_punctuation_only_prompt, try_research_comparison_table, try_research_result_followup,
+    try_calendar_create_event, try_calendar_reasoning, try_compound_interest, try_concept_lookup,
+    try_conversation_memory, try_conversation_topic_request, try_coreference_request,
+    try_document_originality_check, try_document_request, try_execution_failure, try_fact_checking,
+    try_fact_lookup, try_http_fetch, try_http_fetch_with_offline, try_installation_conversion,
+    try_javascript_execution, try_learn_from_source, try_meta_explanation,
+    try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
+    try_numeric_list_with_history, try_pattern_inference, try_program_synthesis, try_proof_request,
+    try_proof_request_with_config, try_research_comparison_table, try_research_result_followup,
     try_response_language_followup, try_roleplay_request, try_shell_command_transform,
-    try_shell_command_transform_with_history, try_shell_refusal, try_software_project_followup,
+    try_shell_command_transform_with_history, try_software_project_followup,
     try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_task_decomposition_with_depth, try_text_manipulation,
     try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
     try_web_search_with_offline, try_world_state, try_write_script,
 };
-use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
 /// Uniform signature every specialized handler conforms to. Handlers that
 /// don't need `normalized` go through tiny adapter wrappers below so the
 /// dispatch registry stays homogeneous and the registry executor can call every
 /// regular table entry through one function shape.
-pub type SpecializedHandler = fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>;
+pub type NativeHandler = fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>;
+
+/// An executable method: a native function, or a rule set interpreted from
+/// `data/seed/handler-rules.lino` (issue #1085 D1.3).
+#[derive(Clone, Copy, Debug)]
+pub enum SpecializedHandler {
+    Native(NativeHandler),
+    Rule(&'static str),
+}
+
+impl SpecializedHandler {
+    /// Run the handler the way the dispatch loop runs every table entry.
+    #[must_use]
+    pub fn call(
+        self,
+        prompt: &str,
+        normalized: &str,
+        log: &mut EventLog,
+    ) -> Option<SymbolicAnswer> {
+        match self {
+            Self::Native(handler) => handler(prompt, normalized, log),
+            Self::Rule(name) => crate::rule_interpreter::run_handler(name, prompt, normalized, log),
+        }
+    }
+
+    /// Whether the handler is seed data rather than a native function.
+    #[must_use]
+    pub const fn is_rule(self) -> bool {
+        matches!(self, Self::Rule(_))
+    }
+}
 
 fn handle_arithmetic(
     prompt: &str,
@@ -257,11 +282,9 @@ pub fn try_contextual_override(
 /// reviewability — it is not the dispatch authority. [`specialized_handlers`]
 /// asserts the two are an exact permutation, so this registry and the seed can
 /// never silently drift.
-const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
-    ("conversation_control", try_conversation_control),
+const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
-    ("github_repository_traffic", try_github_repository_traffic),
     ("document_originality_check", try_document_originality_check),
     ("web_search", try_web_search),
     // Issue #499: a "learn from this data source" directive (a user pointing the
@@ -274,7 +297,6 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     ("learn_from_source", try_learn_from_source),
     ("research_comparison_table", try_research_comparison_table),
     ("research_result_followup", try_research_result_followup),
-    ("docs_method_explanation", try_docs_method_explanation),
     ("procedural_how_to", try_how_to_procedure),
     // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
     // give me specific instructions?") carries no "how to" lead-in of its own.
@@ -303,7 +325,6 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
         "response_language_followup",
         response_language_followup_noop,
     ),
-    ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
     ("calendar_create_event", try_calendar_create_event),
     ("compound_interest", try_compound_interest),
@@ -355,17 +376,10 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     ("algorithm", try_algorithm),
     ("source_refresh", try_source_refresh),
     ("source_conflict", try_source_conflict),
-    ("clarification", try_clarification),
-    ("punctuation_only_prompt", try_punctuation_only_prompt),
-    ("ill_formed", try_ill_formed),
-    ("physical_action_question", try_physical_action_question),
-    ("kupi_slona", try_kupi_slona),
-    ("shell_refusal", try_shell_refusal),
     // Proof requests must beat `opinion_question` so prompts like
     // "Do you think you can prove …" land on the formalization pipeline
     // explanation instead of the no-opinion policy.
     ("proof_request", try_proof_request),
-    ("opinion_question", try_opinion_question),
     ("incompatible_units", try_incompatible_units),
 ];
 
@@ -380,13 +394,15 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
 #[must_use]
 pub fn specialized_handlers() -> Vec<(&'static str, SpecializedHandler)> {
     let precedence = crate::seed::handler_precedence();
+    let rule_names = crate::rule_interpreter::handler_names();
     assert_eq!(
         precedence.len(),
-        HANDLER_FUNCTIONS.len(),
-        "handler-precedence.lino lists {} handlers but {} are registered in \
-         HANDLER_FUNCTIONS; the seed must be an exact permutation of the registry",
+        HANDLER_FUNCTIONS.len() + rule_names.len(),
+        "handler-precedence.lino lists {} handlers but {} native functions and {} rule sets \
+         are registered; the seed must be an exact permutation of both",
         precedence.len(),
         HANDLER_FUNCTIONS.len(),
+        rule_names.len(),
     );
     let mut seen = std::collections::BTreeSet::new();
     let ordered: Vec<(&'static str, SpecializedHandler)> = precedence
@@ -396,31 +412,45 @@ pub fn specialized_handlers() -> Vec<(&'static str, SpecializedHandler)> {
                 seen.insert(name.clone()),
                 "handler-precedence.lino lists handler `{name}` more than once"
             );
-            let entry = HANDLER_FUNCTIONS
-                .iter()
-                .find(|(candidate, _)| candidate == name)
-                .unwrap_or_else(|| {
-                    panic!(
-                        "handler-precedence.lino names handler `{name}`, which is not \
-                         registered in HANDLER_FUNCTIONS"
-                    )
-                });
-            *entry
+            resolve_handler(name, &rule_names).unwrap_or_else(|| {
+                panic!(
+                    "handler-precedence.lino names handler `{name}`, which is neither registered \
+                     in HANDLER_FUNCTIONS nor declared in data/seed/handler-rules.lino"
+                )
+            })
         })
         .collect();
     debug_assert_eq!(
         seen.len(),
-        HANDLER_FUNCTIONS.len(),
+        HANDLER_FUNCTIONS.len() + rule_names.len(),
         "every registered handler must appear in handler-precedence.lino exactly once"
     );
     ordered
 }
 
+fn resolve_handler(
+    name: &str,
+    rule_names: &[&'static str],
+) -> Option<(&'static str, SpecializedHandler)> {
+    if let Some((registered, handler)) = HANDLER_FUNCTIONS
+        .iter()
+        .find(|(candidate, _)| *candidate == name)
+    {
+        assert!(
+            !rule_names.contains(registered),
+            "handler `{name}` is both a native function and a seed rule set"
+        );
+        return Some((*registered, SpecializedHandler::Native(*handler)));
+    }
+    rule_names
+        .iter()
+        .find(|candidate| **candidate == name)
+        .map(|rule| (*rule, SpecializedHandler::Rule(*rule)))
+}
+
 /// Return the executable handler for a registry method name implemented by the
-/// regular solver-handler table.
+/// regular solver-handler table or by a seed rule set.
 #[must_use]
 pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
-    HANDLER_FUNCTIONS
-        .iter()
-        .find_map(|(candidate, handler)| (*candidate == name).then_some(*handler))
+    resolve_handler(name, &crate::rule_interpreter::handler_names()).map(|(_, handler)| handler)
 }
