@@ -204,13 +204,19 @@ impl SeedLinkNetwork {
 
 /// Whether `formal-ai serve` mirrors the network into the native store.
 ///
-/// `FORMAL_AI_SEED_LINKS_MIRROR=0` (or `false`, `off`) skips the on-disk
-/// mirror; the in-process network routing reads is unaffected.
+/// Opt-in through `FORMAL_AI_SEED_LINKS_MIRROR=1` (or `true`, `on`). The
+/// mirror writes tens of thousands of doublets through the transaction log,
+/// and a server started per scenario pays that once per server: the held-out
+/// generalization end-to-end run starts 24 of them and went from 265 s to over
+/// its 540 s budget with the mirror on by default. Routing does not read the
+/// mirror -- it reads the in-process network, which is built once either way --
+/// so what the mirror buys is the on-disk projection, and that is worth asking
+/// for where it is wanted (issue #1085 D1.2).
 #[must_use]
 pub fn native_mirror_enabled() -> bool {
-    !matches!(
+    matches!(
         std::env::var("FORMAL_AI_SEED_LINKS_MIRROR").as_deref(),
-        Ok("0" | "false" | "off")
+        Ok("1" | "true" | "on")
     )
 }
 

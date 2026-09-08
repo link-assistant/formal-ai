@@ -86,3 +86,20 @@ needs no separate issue.
   holds what a real Agent CLI run authored and is not rewritten; the two tests
   that pinned it byte-for-byte against the canonical document now compare every
   clause except the two counts that track the planner source.
+
+## The cost the same run measured
+
+The held-out computer-use generalization end-to-end run starts one server per
+scenario, 24 of them, and takes 194 to 269 s on `main`. On this branch it took
+284 s, then 469 s, then past its 540 s loop budget. Two costs the D1.2 work
+added, both per server or per request rather than per process:
+
+- The on-disk mirror of the seed network wrote tens of thousands of doublets
+  through the transaction log on every `formal-ai serve`. Routing never reads
+  that mirror -- it reads the in-process network -- so the mirror is now opt-in
+  through `FORMAL_AI_SEED_LINKS_MIRROR=1`.
+- `intent_routing()` and `handler_precedence()` rebuilt their tables from the
+  network on every call, and both are called inside a request: the rule
+  interpreter's `route_exact` condition asks for the routing table, and
+  `specialized_handlers()` asks for the precedence on every dispatch. Both are
+  built once now, like `cue_sets()` already was.

@@ -331,11 +331,11 @@ fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
     }
     seed::intent_routing()
         .intents
-        .into_iter()
+        .iter()
         .find(|route| matches_route(normalized, route))
         .map(|route| MatchedRoute {
-            slug: route.slug,
-            response_link: route.response_link,
+            slug: route.slug.clone(),
+            response_link: route.response_link.clone(),
         })
 }
 
