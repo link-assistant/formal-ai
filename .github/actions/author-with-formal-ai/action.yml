@@ -184,6 +184,23 @@ runs:
         PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
       run: "$RUNNER_TEMP/push-formal-ai-commit.sh"
 
+    # The steps above leave the worktree on the bot branch, where this action's
+    # own directory does not exist -- the runner's post-step for a local action
+    # then fails with "Can't find 'action.yml'". Return to the branch the run
+    # checked out, which is also what a caller with later steps expects.
+    - name: Return to the branch the run checked out
+      if: always()
+      shell: bash
+      env:
+        STARTING_REF: ${{ github.head_ref || github.ref_name }}
+      run: |
+        set -euo pipefail
+        current=$(git rev-parse --abbrev-ref HEAD)
+        if [[ "$current" != "$STARTING_REF" ]]; then
+          git checkout --force "$STARTING_REF"
+          echo "returned to $STARTING_REF from $current"
+        fi
+
     - name: Report a failed attempt on the pull request
       if: failure() && steps.pull_request.outputs.url != ''
       shell: bash
