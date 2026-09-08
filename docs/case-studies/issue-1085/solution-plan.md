@@ -114,6 +114,23 @@ this file says which slice carried what.
   formal-ai server from CI with permission to open pull requests; that
   remains open and is stated as such in the requirement table.
 
+## Push 17
+
+- **D2.3 bot-opened pull request.**
+  `.github/workflows/self-authored-pull-request.yml` takes an open issue
+  labelled `formal-ai-solve` whose body carries the authoring contract
+  (`task`, `seed`, `produces`, `into`, `contains`, `message`), opens a draft
+  pull request under `github-actions[bot]` first so the authored commit can
+  name it, runs `scripts/author-change-with-formal-ai.sh` against a local
+  `formal-ai serve` through the pinned Agent CLI, and pushes the commit with
+  the `Formal-AI-Session`, `Formal-AI-Model`, `Formal-AI-Evidence` and
+  `Formal-AI-Pull-Request` trailers. It runs on the label, on dispatch, weekly,
+  and on a pull request that changes it. #1091 is the first task: a lockfile
+  name the metric should never count. Hive Mind's `solve --model formal-ai`
+  is not on this path because its commits carry neither the trailers nor the
+  evidence bundle the version-3 metric attributes; that gap is filed upstream
+  (see the case study README).
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the

@@ -1,0 +1,202 @@
+name: Self-authored pull request
+
+# Issue #1085 (D2.3): Formal AI authors a change and the pull request is opened
+# under the github-actions bot, with no human commit on the branch. The task
+# comes from an open issue labelled `formal-ai-solve`; its body carries the
+# contract `scripts/author-change-with-formal-ai.sh` needs:
+#
+#   task: <the prompt the Agent CLI gives Formal AI>
+#   seed: <repository directory copied into the scratch workspace>
+#   produces: <path, inside the workspace, the agent must write>
+#   into: <repository path the artifact is copied to>
+#   contains: <text the artifact must contain>   (repeatable)
+#   message: <conventional commit subject>
+#
+# The pull request is opened first so the authored commit can name it in its
+# Formal-AI-Pull-Request trailer; the evidence bundle and the four trailers are
+# what the version-3 self-hosting metric attributes.
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'Issue number carrying the task (default: the oldest open issue labelled formal-ai-solve)'
+        required: false
+        default: ''
+        type: string
+  issues:
+    types: [labeled]
+  pull_request:
+    paths:
+      - '.github/workflows/self-authored-pull-request.yml'
+      - 'scripts/author-change-with-formal-ai.sh'
+  schedule:
+    - cron: '41 5 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: self-authored-pull-request
+  cancel-in-progress: false
+
+jobs:
+  author:
+    name: Formal AI authors a change and opens the pull request
+    if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+      BASE_BRANCH: ${{ github.head_ref || github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Resolve the task issue
+        id: task
+        run: |
+          set -euo pipefail
+          number="${{ inputs.issue }}"
+          if [[ -z "$number" && "${{ github.event_name }}" == "issues" ]]; then
+            number="${{ github.event.issue.number }}"
+          fi
+          if [[ -z "$number" ]]; then
+            number=$(gh issue list --repo "$GITHUB_REPOSITORY" --label formal-ai-solve --state open \
+              --search 'sort:created-asc' --json number --jq '.[0].number // empty')
+          fi
+          if [[ -z "$number" ]]; then
+            echo '::notice::no open issue labelled formal-ai-solve; nothing to author'
+            echo "number=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json body,title --jq .body > task-body.txt
+          title=$(gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json title --jq .title)
+          field() { sed -n "s/^$1: *//p" task-body.txt | head -1; }
+          for required in task seed produces into message; do
+            [[ -n "$(field "$required")" ]] || { echo "::error::issue #$number lacks the '$required:' line"; exit 1; }
+          done
+          {
+            echo "number=$number"
+            echo "title=$title"
+            echo "task=$(field task)"
+            echo "seed=$(field seed)"
+            echo "produces=$(field produces)"
+            echo "into=$(field into)"
+            echo "message=$(field message)"
+          } >> "$GITHUB_OUTPUT"
+          sed -n 's/^contains: *//p' task-body.txt > contains.txt
+
+      - name: Setup Rust
+        if: steps.task.outputs.number != ''
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Bun
+        if: steps.task.outputs.number != ''
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+
+      - uses: ./.github/actions/cache-cargo-registry
+        if: steps.task.outputs.number != ''
+        with:
+          prefix: self-authored-
+
+      - name: Build Formal AI
+        if: steps.task.outputs.number != ''
+        run: cargo build --release --bin formal-ai
+
+      - name: Install pinned Agent CLI
+        if: steps.task.outputs.number != ''
+        run: bun add -g @link-assistant/agent@0.26.0
+
+      - name: Open the pull request under the bot identity
+        if: steps.task.outputs.number != ''
+        id: pull_request
+        env:
+          NUMBER: ${{ steps.task.outputs.number }}
+          TITLE: ${{ steps.task.outputs.title }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          branch="formal-ai/issue-$NUMBER-${GITHUB_RUN_ID}"
+          git checkout -b "$branch"
+          evidence="dev/log/self-authored/issue-$NUMBER"
+          mkdir -p "$evidence"
+          {
+            echo "# Self-authored change for issue #$NUMBER"
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo 'Task:'
+            echo
+            cat task-body.txt
+          } > "$evidence/README.md"
+          git add "$evidence/README.md"
+          git commit -q -m "chore(self-authored): open the pull request Formal AI will author for #$NUMBER"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$branch"
+          url=$(gh pr create --repo "$GITHUB_REPOSITORY" --draft --base "$BASE_BRANCH" --head "$branch" \
+            --title "$TITLE (authored by Formal AI, #$NUMBER)" \
+            --body "$(printf 'Formal AI authors this change through the Agent CLI in [this run](%s/%s/actions/runs/%s); the pull request was opened first so the authored commit can name it (issue #1085 D2.3).\n\nCloses #%s.\n\n- [ ] Formal AI authored the change (commit with Formal-AI-Session, Formal-AI-Model, Formal-AI-Evidence and Formal-AI-Pull-Request trailers)\n- [ ] CI is green with no human commit on the branch' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$NUMBER")")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "evidence=$evidence/evidence" >> "$GITHUB_OUTPUT"
+
+      - name: Author the change with Formal AI
+        if: steps.task.outputs.number != ''
+        env:
+          TASK: ${{ steps.task.outputs.task }}
+          SEED: ${{ steps.task.outputs.seed }}
+          PRODUCES: ${{ steps.task.outputs.produces }}
+          INTO: ${{ steps.task.outputs.into }}
+          MESSAGE: ${{ steps.task.outputs.message }}
+          NUMBER: ${{ steps.task.outputs.number }}
+          PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
+          EVIDENCE: ${{ steps.pull_request.outputs.evidence }}
+        run: |
+          set -euo pipefail
+          contains=()
+          while IFS= read -r expected; do
+            [[ -n "$expected" ]] && contains+=(--contains "$expected")
+          done < contains.txt
+          AGENT=agent PORT=8931 scripts/author-change-with-formal-ai.sh \
+            --task "$TASK" --seed "$SEED" --produces "$PRODUCES" --into "$INTO" \
+            --evidence "$EVIDENCE" --pull-request "$PULL_REQUEST" \
+            --message "$MESSAGE (#$NUMBER)" "${contains[@]}"
+
+      - name: Push the authored commit and report
+        if: steps.task.outputs.number != ''
+        env:
+          NUMBER: ${{ steps.task.outputs.number }}
+          BRANCH: ${{ steps.pull_request.outputs.branch }}
+          PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
+        run: |
+          set -euo pipefail
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$BRANCH"
+          git --no-pager log -1 --format='%H %s%n%b' > authored-commit.txt
+          gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
+            --body "$(printf 'Formal AI authored this commit in run %s/%s/actions/runs/%s:\n\n```\n%s\n```' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(cat authored-commit.txt)")"
+          gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Formal AI opened $PULL_REQUEST for this task."
+
+      - name: Report a failed attempt on the pull request
+        if: failure() && steps.pull_request.outputs.url != ''
+        env:
+          PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
+        run: |
+          gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
+            --body "Formal AI could not author the change in run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID; see the evidence artifact. The pull request stays open and red until a later run succeeds."
+
+      - name: Upload evidence
+        if: always() && steps.task.outputs.number != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: self-authored-issue-${{ steps.task.outputs.number }}
+          path: dev/log/self-authored
+          retention-days: 30
+          if-no-files-found: warn

@@ -584,7 +584,7 @@ one branch, and this section records what each push delivered.
 | D5.1-D5.2 upstream failures as frontier inputs; red on a fallen suite, yellow after three equal runs | Delivered | `data/meta/learning-frontier-upstream-benchmarks.lino`, `src/external_benchmarks/ratchet.rs`, `tests/unit/issue_1085_upstream_frontier.rs` |
 | D6-D9 | Sub-issues #1087, #1088, #1089, #1090, blocked by #1085 | `docs/case-studies/issue-1085/solution-plan.md` |
 | D2.2 requirement-derived edits | Delivered: `src/agentic_coding/requirement_resolution.rs` resolves behaviour wording through the self-AST census; all 32 leaf requirements resolve to their files | `tests/unit/issue_1085_requirement_resolution.rs` |
-| D2.3 real-issue root and bot-opened pull request | Open: needs `hive-mind solve --model formal-ai` to open a pull request under a bot identity; tracked in the case study | `docs/case-studies/issue-1085/solution-plan.md` |
+| D2.3 bot-opened pull request | Delivered as a workflow: `self-authored-pull-request.yml` opens the pull request under `github-actions[bot]` and Formal AI authors the commit with the metric trailers; first task #1091; the real-issue root is #1087 | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Verification Contract
 
