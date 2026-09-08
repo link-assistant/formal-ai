@@ -202,6 +202,18 @@ impl SeedLinkNetwork {
     }
 }
 
+/// Whether `formal-ai serve` mirrors the network into the native store.
+///
+/// `FORMAL_AI_SEED_LINKS_MIRROR=0` (or `false`, `off`) skips the on-disk
+/// mirror; the in-process network routing reads is unaffected.
+#[must_use]
+pub fn native_mirror_enabled() -> bool {
+    !matches!(
+        std::env::var("FORMAL_AI_SEED_LINKS_MIRROR").as_deref(),
+        Ok("0" | "false" | "off")
+    )
+}
+
 /// Where a native build keeps the seed network beside the memory store.
 #[must_use]
 pub fn seed_link_database_path(memory_path: &Path) -> PathBuf {

@@ -23,15 +23,21 @@ pub fn serve(address: &str) -> std::io::Result<()> {
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()
     );
-    match crate::seed_links::mirror_native_store() {
-        Ok(Some((path, count))) => {
-            eprintln!("formal-ai seed links: {count} at {}", path.display());
-        }
-        Ok(None) => {}
-        Err(error) => eprintln!("formal-ai seed links: {error}"),
-    }
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
+    // Issue #1085 (D1.2): the seed network is mirrored into the native store
+    // beside the memory file. Writing tens of thousands of doublets through the
+    // transaction log takes longer than a harness waits for the port, so the
+    // mirror runs after the listener is bound and reports when it is done.
+    if crate::seed_links::native_mirror_enabled() {
+        std::thread::spawn(|| match crate::seed_links::mirror_native_store() {
+            Ok(Some((path, count))) => {
+                eprintln!("formal-ai seed links: {count} at {}", path.display());
+            }
+            Ok(None) => {}
+            Err(error) => eprintln!("formal-ai seed links: {error}"),
+        });
+    }
 
     for stream in listener.incoming() {
         match stream {

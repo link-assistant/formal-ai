@@ -125,9 +125,22 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          evidence="dev/log/self-authored/issue-$NUMBER"
+          # A previous run may already have opened the pull request for this
+          # issue; keep authoring on its branch instead of opening another.
+          existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName,url \
+            --jq ".[] | select(.headRefName | startswith(\"formal-ai/issue-$NUMBER-\")) | .url" | head -1)
+          if [[ -n "$existing" ]]; then
+            branch=$(gh pr view "$existing" --repo "$GITHUB_REPOSITORY" --json headRefName --jq .headRefName)
+            git fetch origin "$branch"
+            git checkout -B "$branch" "origin/$branch"
+            echo "url=$existing" >> "$GITHUB_OUTPUT"
+            echo "branch=$branch" >> "$GITHUB_OUTPUT"
+            echo "evidence=$evidence/evidence" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           branch="formal-ai/issue-$NUMBER-${GITHUB_RUN_ID}"
           git checkout -b "$branch"
-          evidence="dev/log/self-authored/issue-$NUMBER"
           mkdir -p "$evidence"
           {
             echo "# Self-authored change for issue #$NUMBER"
