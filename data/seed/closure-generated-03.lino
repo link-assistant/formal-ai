@@ -444,6 +444,11 @@ meanings
     lexeme en
       surface
         text "response definition merge sources label ru"
+  response_docs_method_explanation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation es"
   response_draft_comparison_explanation_ru
     defined-by response_template
     lexeme en
