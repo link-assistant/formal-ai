@@ -1,0 +1,2 @@
+formal-ai session ses_f7eb2d734ffecTzbKzazRhgUPu
+formal-ai model formal-ai/0.347.0
