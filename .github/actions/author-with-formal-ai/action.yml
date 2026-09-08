@@ -1,0 +1,203 @@
+name: Author a change with Formal AI
+description: >-
+  Take a task issue, open a draft pull request under the GitHub Actions bot, and
+  have Formal AI author one commit on it through the Agent CLI, carrying the
+  four self-hosting trailers and its session evidence. Installable from another
+  repository: everything it runs ships with the action, and Formal AI comes from
+  a published container unless the caller asks for a source build.
+
+inputs:
+  issue:
+    description: >-
+      Issue number carrying the task. Defaults to the issue of an `issues` event,
+      then to the oldest open issue with `label`.
+    required: false
+    default: ''
+  label:
+    description: Label that marks an issue as a task when no issue number is given.
+    required: false
+    default: formal-ai-solve
+  require-contract:
+    description: >-
+      `true` fails an issue whose body lacks the `task:`/`seed:`/`produces:`/
+      `into:`/`message:` contract. `false` derives a task from the issue title
+      and body instead, which is what a repository attempting *every* new issue
+      wants: a draft that fails is the evidence, not an error.
+    required: false
+    default: 'true'
+  formal-ai-source:
+    description: >-
+      Where the `formal-ai` binary comes from: `container` (default, pulled from
+      `formal-ai-image`), or `source` to build it from the checked-out sources,
+      which only the repository that owns them can do.
+    required: false
+    default: container
+  formal-ai-image:
+    description: Container image carrying the `formal-ai` binary.
+    required: false
+    default: ghcr.io/link-assistant/formal-ai:latest
+  formal-ai-ref:
+    description: >-
+      Git ref of `link-assistant/formal-ai` the authoring scripts are taken
+      from. They are not vendored into this action: one copy, in
+      `scripts/`, is the copy every caller runs.
+    required: false
+    default: main
+  agent-version:
+    description: Pinned `@link-assistant/agent` version driving Formal AI.
+    required: false
+    default: 0.26.0
+  base-branch:
+    description: Branch the draft pull request targets. Defaults to the checked-out branch.
+    required: false
+    default: ''
+  port:
+    description: Port `formal-ai serve` listens on.
+    required: false
+    default: '8931'
+  evidence-root:
+    description: Directory the session evidence bundle is committed under.
+    required: false
+    default: dev/log/self-authored
+
+outputs:
+  pull-request:
+    description: URL of the draft pull request, empty when there was no task to author.
+    value: ${{ steps.pull_request.outputs.url }}
+  issue:
+    description: Issue number that was authored, empty when there was none.
+    value: ${{ steps.task.outputs.number }}
+  authored:
+    description: '`true` when this run pushed an authored commit.'
+    value: ${{ steps.push.outputs.authored }}
+
+runs:
+  using: composite
+  steps:
+    # Two reasons this stages outside the worktree rather than running scripts
+    # from it. A consuming repository has none of them; and every later step
+    # runs with the bot branch checked out, where even this repository's own
+    # copies are whatever that branch carried when it was cut -- run 34224940281
+    # failed on a bug its own head had already fixed, because the guard it ran
+    # came off the bot branch.
+    #
+    # The four shared scripts are fetched from `formal-ai-ref` rather than
+    # vendored here, so there is exactly one copy of each to fix.
+    - name: Stage the authoring scripts outside the worktree
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        FORMAL_AI_REF: ${{ inputs.formal-ai-ref }}
+      run: |
+        set -euo pipefail
+        cp "$ACTION_PATH/scripts/"*.sh "$RUNNER_TEMP/"
+        base="https://raw.githubusercontent.com/link-assistant/formal-ai/$FORMAL_AI_REF/scripts"
+        for script in author-change-with-formal-ai.sh self-authored-commit-count.sh \
+                      push-to-shared-branch.sh classify-agent-cli-stderr.sh; do
+          if [[ -f "scripts/$script" ]]; then
+            # The repository that owns the scripts runs the branch's own copies:
+            # a change to them has to be testable in the pull request making it.
+            cp "scripts/$script" "$RUNNER_TEMP/$script"
+          else
+            curl --fail --silent --show-error --location \
+              "$base/$script" --output "$RUNNER_TEMP/$script"
+          fi
+        done
+        chmod +x "$RUNNER_TEMP/"*.sh
+
+    - name: Resolve the task issue
+      id: task
+      shell: bash
+      env:
+        INPUT_ISSUE: ${{ inputs.issue }}
+        LABEL: ${{ inputs.label }}
+        REQUIRE_CONTRACT: ${{ inputs.require-contract }}
+        EVENT_NAME: ${{ github.event_name }}
+        EVENT_ISSUE: ${{ github.event.issue.number }}
+      run: "$RUNNER_TEMP/resolve-formal-ai-task.sh"
+
+    - name: Setup Bun
+      if: steps.task.outputs.number != ''
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+        no-cache: true
+
+    - name: Install the pinned Agent CLI
+      if: steps.task.outputs.number != ''
+      shell: bash
+      env:
+        AGENT_VERSION: ${{ inputs.agent-version }}
+      run: bun add -g "@link-assistant/agent@${AGENT_VERSION}"
+
+    - name: Setup Rust
+      if: steps.task.outputs.number != '' && inputs.formal-ai-source == 'source'
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Build Formal AI from the checked-out sources
+      if: steps.task.outputs.number != '' && inputs.formal-ai-source == 'source'
+      shell: bash
+      run: cargo build --release --bin formal-ai
+
+    # A consuming repository has no sources to build. The published container
+    # already carries the binary, so the action copies it out and runs it on
+    # the runner like any other binary -- no compiler, no local resources.
+    - name: Take Formal AI from the published container
+      if: steps.task.outputs.number != '' && inputs.formal-ai-source != 'source'
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.formal-ai-image }}
+      run: "$RUNNER_TEMP/extract-formal-ai-binary.sh"
+
+    - name: Open the draft pull request under the bot identity
+      if: steps.task.outputs.number != ''
+      id: pull_request
+      shell: bash
+      env:
+        NUMBER: ${{ steps.task.outputs.number }}
+        TITLE: ${{ steps.task.outputs.title }}
+        MESSAGE: ${{ steps.task.outputs.message }}
+        EVIDENCE_ROOT: ${{ inputs.evidence-root }}
+        BASE_BRANCH: ${{ inputs.base-branch || github.head_ref || github.ref_name }}
+      run: "$RUNNER_TEMP/open-formal-ai-pull-request.sh"
+
+    - name: Author the change with Formal AI
+      if: steps.task.outputs.number != '' && steps.pull_request.outputs.done != 'true'
+      shell: bash
+      env:
+        TASK: ${{ steps.task.outputs.task }}
+        SEED: ${{ steps.task.outputs.seed }}
+        MESSAGE: ${{ steps.task.outputs.message }}
+        NUMBER: ${{ steps.task.outputs.number }}
+        PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
+        EVIDENCE: ${{ steps.pull_request.outputs.evidence }}
+        PORT: ${{ inputs.port }}
+      run: "$RUNNER_TEMP/author-formal-ai-change.sh"
+
+    - name: Push the authored commit and report
+      if: steps.task.outputs.number != '' && steps.pull_request.outputs.done != 'true'
+      id: push
+      shell: bash
+      env:
+        NUMBER: ${{ steps.task.outputs.number }}
+        BRANCH: ${{ steps.pull_request.outputs.branch }}
+        PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
+      run: "$RUNNER_TEMP/push-formal-ai-commit.sh"
+
+    - name: Report a failed attempt on the pull request
+      if: failure() && steps.pull_request.outputs.url != ''
+      shell: bash
+      env:
+        PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
+      run: |
+        gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
+          --body "Formal AI could not author the change in run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID; see the evidence artifact. The pull request stays open and red until a later run succeeds."
+
+    - name: Upload the evidence
+      if: always() && steps.task.outputs.number != ''
+      uses: actions/upload-artifact@v7
+      with:
+        name: self-authored-issue-${{ steps.task.outputs.number }}
+        path: ${{ inputs.evidence-root }}
+        retention-days: 30
+        if-no-files-found: warn

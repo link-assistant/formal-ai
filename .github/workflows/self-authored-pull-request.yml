@@ -1,35 +1,18 @@
 name: Self-authored pull request
 
 # Issue #1085 (D2.3): Formal AI authors a change and the pull request is opened
-# under the github-actions bot, with no human commit on the branch. The task
-# comes from an open issue labelled `formal-ai-solve`; its body carries the
-# contract `scripts/author-change-with-formal-ai.sh` needs:
+# under the github-actions bot, with no human commit on the branch.
 #
-#   task: <the prompt the Agent CLI gives Formal AI>
-#   seed: <repository directory copied into the scratch workspace>
-#   produces: <path, inside the workspace, the agent must write>
-#   into: <repository path the artifact is copied to>
-#   contains: <text one of the artifacts must contain>   (repeatable)
-#   message: <conventional commit subject>
+# The loop itself lives in `.github/actions/author-with-formal-ai`, a composite
+# action another repository can install: hive-mind#2233 asks for it on every new
+# issue there, so a wrong draft fails fast and in public, which is the evidence
+# the next improvement is made from. This workflow is that action's first
+# consumer, and it runs with `formal-ai-source: source` because this is the
+# repository that owns the sources -- a change to the meta algorithm has to be
+# measured by the branch making it, not by the last release.
 #
-# `produces:` and `into:` are read in order and paired, so one authoring run can
-# write more than one artifact. The changelog fragment a source change needs is
-# not one of them: it goes in the bootstrap commit that opens the pull request,
-# because `changelog.d/` is one of the trees the version-3 self-hosting metric
-# excludes from authored work, and because a compound task truncates -- run
-# 34231781135 asked for the source change and the fragment in one prompt and
-# Formal AI answered after the first clause, in five seconds (#1099).
-#
-# The pull request is opened first so the authored commit can name it in its
-# trailer, and a re-run stops once a commit on the pull request carries that
-# trailer. The check reads the pull request's commits through the API and
-# decides with jq: the first version piped the branch's whole `git log` into
-# `grep -q`, and under `pipefail` grep's early exit turned every match into a
-# failure, so each run authored the task again (six duplicate commits on the
-# second bot pull request, two on the third). Runs share one concurrency group
-# so two of them never author the same task at once, and the push step checks
-# again right before pushing. The evidence bundle and the four trailers are
-# what the version-3 self-hosting metric attributes.
+# The task contract, the re-run guard and the base-branch rule are documented in
+# the action and in `docs/case-studies/issue-1085/ci-evidence/`.
 on:
   workflow_dispatch:
     inputs:
@@ -43,6 +26,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/self-authored-pull-request.yml'
+      - '.github/actions/author-with-formal-ai/**'
       - 'scripts/author-change-with-formal-ai.sh'
       - 'scripts/self-authored-commit-count.sh'
   schedule:
@@ -59,13 +43,13 @@ jobs:
     name: Formal AI authors a change and opens the pull request
     if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     # Scoped to this job, not the workflow: the job pushes the bot branch,
     # opens and comments on the pull request, and comments on the task issue.
     permissions:
       contents: write
       pull-requests: write
       issues: write
-    timeout-minutes: 60
     env:
       # A push or pull request made with GITHUB_TOKEN starts no workflow run.
       # When the repository provides FORMAL_AI_BOT_TOKEN (a fine-grained token
@@ -74,16 +58,9 @@ jobs:
       GH_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN || github.token }}
       FORMAL_AI_BOT_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN }}
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
-      # The branch the run checked out, which is the branch the pull request
-      # must target. `github.head_ref` is empty outside a pull-request event, so
-      # a dispatched run fell back to the default branch: run 34241163195 opened
-      # #1102 against `main`, carrying all 37 commits of the branch it was
-      # authored on. `github.ref_name` is the checked-out branch for dispatch,
-      # schedule and the issue trigger alike.
-      BASE_BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       # This checkout keeps its credential (no `persist-credentials: false`):
-      # the two push steps below write the bot branch with it when the
+      # the action's push steps write the bot branch with it when the
       # repository provides no FORMAL_AI_BOT_TOKEN, and nothing else supplies
       # one (issue #1079).
       - uses: actions/checkout@v7
@@ -91,219 +68,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref }}
 
-      # Every later step runs with the bot branch checked out, where these
-      # scripts are whatever that branch happens to carry -- for a branch
-      # opened by an earlier run, the version this run is fixing. Run 34224940281
-      # died that way: the guard on the bot branch was the pre-fix one.
-      - name: Stage this run's own scripts outside the worktree
-        run: |
-          set -euo pipefail
-          cp scripts/self-authored-commit-count.sh scripts/push-to-shared-branch.sh "$RUNNER_TEMP/"
-
-      - name: Resolve the task issue
-        id: task
-        env:
-          INPUT_ISSUE: ${{ inputs.issue }}
-          EVENT_NAME: ${{ github.event_name }}
-          EVENT_ISSUE: ${{ github.event.issue.number }}
-        run: |
-          set -euo pipefail
-          number="$INPUT_ISSUE"
-          if [[ -z "$number" && "$EVENT_NAME" == "issues" ]]; then
-            number="$EVENT_ISSUE"
-          fi
-          if [[ -z "$number" ]]; then
-            number=$(gh issue list --repo "$GITHUB_REPOSITORY" --label formal-ai-solve --state open \
-              --search 'sort:created-asc' --json number --jq '.[0].number // empty')
-          fi
-          if [[ -z "$number" ]]; then
-            echo '::notice::no open issue labelled formal-ai-solve; nothing to author'
-            echo "number=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json body,title --jq .body > task-body.txt
-          title=$(gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json title --jq .title)
-          field() { sed -n "s/^$1: *//p" task-body.txt | head -1; }
-          for required in task seed produces into message; do
-            [[ -n "$(field "$required")" ]] || { echo "::error::issue #$number lacks the '$required:' line"; exit 1; }
-          done
-          {
-            echo "number=$number"
-            echo "title=$title"
-            echo "task=$(field task)"
-            echo "seed=$(field seed)"
-            echo "message=$(field message)"
-          } >> "$GITHUB_OUTPUT"
-          sed -n 's/^contains: *//p' task-body.txt > contains.txt
-          sed -n 's/^produces: *//p' task-body.txt > produces.txt
-          sed -n 's/^into: *//p' task-body.txt > into.txt
-          [[ "$(wc -l < produces.txt)" == "$(wc -l < into.txt)" ]] \
-            || { echo "::error::issue #$number pairs $(wc -l < produces.txt) 'produces:' lines with $(wc -l < into.txt) 'into:' lines"; exit 1; }
-
-      - name: Setup Rust
-        if: steps.task.outputs.number != ''
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup Bun
-        if: steps.task.outputs.number != ''
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-          no-cache: true
-
       - uses: ./.github/actions/cache-cargo-registry
-        if: steps.task.outputs.number != ''
         with:
           prefix: self-authored-
 
-      - name: Build Formal AI
-        if: steps.task.outputs.number != ''
-        run: cargo build --release --bin formal-ai
-
-      - name: Install pinned Agent CLI
-        if: steps.task.outputs.number != ''
-        run: bun add -g @link-assistant/agent@0.26.0
-
-      - name: Open the pull request under the bot identity
-        if: steps.task.outputs.number != ''
-        id: pull_request
-        env:
-          NUMBER: ${{ steps.task.outputs.number }}
-          TITLE: ${{ steps.task.outputs.title }}
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          evidence="dev/log/self-authored/issue-$NUMBER"
-          # A previous run may already have opened the pull request for this
-          # issue; keep authoring on its branch instead of opening another.
-          existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName,url \
-            --jq ".[] | select(.headRefName | startswith(\"formal-ai/issue-$NUMBER-\")) | .url" | head -1)
-          if [[ -n "$existing" ]]; then
-            branch=$(gh pr view "$existing" --repo "$GITHUB_REPOSITORY" --json headRefName --jq .headRefName)
-            git fetch origin "+refs/heads/$branch:refs/remotes/origin/$branch"
-            git checkout -B "$branch" "origin/$branch"
-            {
-              echo "url=$existing"
-              echo "branch=$branch"
-              echo "evidence=$evidence/evidence"
-            } >> "$GITHUB_OUTPUT"
-            # Once a commit on the pull request names it in its trailer the
-            # task is authored; a re-run must not author it again. Decided in
-            # jq over the API, not with `grep -q` over a pipe (see the header).
-            authored=$("$RUNNER_TEMP/self-authored-commit-count.sh" "$existing")
-            if [[ "$authored" != 0 ]]; then
-              echo "::notice::$existing already carries the authored commit; waiting for review"
-              echo "done=true" >> "$GITHUB_OUTPUT"
-            fi
-            exit 0
-          fi
-          branch="formal-ai/issue-$NUMBER-${GITHUB_RUN_ID}"
-          git checkout -b "$branch"
-          mkdir -p "$evidence"
-          {
-            echo "# Self-authored change for issue #$NUMBER"
-            echo
-            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-            echo
-            echo 'Task:'
-            echo
-            cat task-body.txt
-          } > "$evidence/README.md"
-          # The changelog fragment every source change needs. It is process
-          # record, not authored behaviour -- `changelog.d/` is excluded from
-          # both sides of the self-hosting share -- so it belongs to this
-          # bootstrap commit rather than to what Formal AI authors.
-          fragment="changelog.d/$(date -u +%Y%m%d_%H%M%S)_issue_${NUMBER}_self_authored.md"
-          {
-            echo '---'
-            echo 'bump: patch'
-            echo '---'
-            echo
-            echo '### Fixed'
-            echo "- Issue #$NUMBER: $(sed -n 's/^message: *//p' task-body.txt | head -1). Authored by Formal AI through the Agent CLI (issue #1085 D2.3)."
-          } > "$fragment"
-          git add "$evidence/README.md" "$fragment"
-          git commit -q -m "chore(self-authored): open the pull request Formal AI will author for #$NUMBER"
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$branch"
-          url=$(gh pr create --repo "$GITHUB_REPOSITORY" --draft --base "$BASE_BRANCH" --head "$branch" \
-            --title "$TITLE (authored by Formal AI, #$NUMBER)" \
-            --body "$(printf 'Formal AI authors this change through the Agent CLI in [this run](%s/%s/actions/runs/%s); the pull request was opened first so the authored commit can name it (issue #1085 D2.3).\n\nCloses #%s.\n\n- [ ] Formal AI authored the change (commit with Formal-AI-Session, Formal-AI-Model, Formal-AI-Evidence and Formal-AI-Pull-Request trailers)\n- [ ] CI is green with no human commit on the branch' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$NUMBER")")
-          {
-            echo "url=$url"
-            echo "branch=$branch"
-            echo "evidence=$evidence/evidence"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Author the change with Formal AI
-        if: steps.task.outputs.number != '' && steps.pull_request.outputs.done != 'true'
-        env:
-          TASK: ${{ steps.task.outputs.task }}
-          SEED: ${{ steps.task.outputs.seed }}
-          MESSAGE: ${{ steps.task.outputs.message }}
-          NUMBER: ${{ steps.task.outputs.number }}
-          PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
-          EVIDENCE: ${{ steps.pull_request.outputs.evidence }}
-        run: |
-          set -euo pipefail
-          contains=()
-          while IFS= read -r expected; do
-            [[ -n "$expected" ]] && contains+=(--contains "$expected")
-          done < contains.txt
-          artifacts=()
-          while IFS= read -r produced; do
-            [[ -n "$produced" ]] && artifacts+=(--produces "$produced")
-          done < produces.txt
-          while IFS= read -r destination; do
-            [[ -n "$destination" ]] && artifacts+=(--into "$destination")
-          done < into.txt
-          AGENT=agent PORT=8931 scripts/author-change-with-formal-ai.sh \
-            --task "$TASK" --seed "$SEED" "${artifacts[@]}" \
-            --evidence "$EVIDENCE" --pull-request "$PULL_REQUEST" \
-            --message "$MESSAGE (#$NUMBER)" "${contains[@]}"
-
-      - name: Push the authored commit and report
-        if: steps.task.outputs.number != '' && steps.pull_request.outputs.done != 'true'
-        env:
-          NUMBER: ${{ steps.task.outputs.number }}
-          BRANCH: ${{ steps.pull_request.outputs.branch }}
-          PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
-        run: |
-          set -euo pipefail
-          # A run that started before the previous one pushed would author the
-          # task twice; check once more against the pull request before pushing.
-          # A plain assignment, so a failing count stops the step instead of
-          # reading as "another run authored it" and discarding this commit.
-          authored=$("$RUNNER_TEMP/self-authored-commit-count.sh" "$PULL_REQUEST")
-          if [[ "$authored" != 0 ]]; then
-            echo "::notice::$PULL_REQUEST received its authored commit while this run was authoring; this run's commit is discarded"
-            exit 0
-          fi
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$BRANCH"
-          git --no-pager log -1 --format='%H %s%n%b' > authored-commit.txt
-          fence=$(printf '\x60\x60\x60')
-          gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
-            --body "$(printf 'Formal AI authored this commit in run %s/%s/actions/runs/%s:\n\n%s\n%s\n%s' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$fence" "$(cat authored-commit.txt)" "$fence")"
-          gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Formal AI opened $PULL_REQUEST for this task."
-          if [[ -z "${FORMAL_AI_BOT_TOKEN:-}" ]]; then
-            echo "::notice::pushed with GITHUB_TOKEN, which starts no workflow run; a maintainer must close and reopen $PULL_REQUEST to get checks, or set the FORMAL_AI_BOT_TOKEN secret"
-          fi
-
-      - name: Report a failed attempt on the pull request
-        if: failure() && steps.pull_request.outputs.url != ''
-        env:
-          PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
-        run: |
-          gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
-            --body "Formal AI could not author the change in run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID; see the evidence artifact. The pull request stays open and red until a later run succeeds."
-
-      - name: Upload evidence
-        if: always() && steps.task.outputs.number != ''
-        uses: actions/upload-artifact@v7
+      - uses: ./.github/actions/author-with-formal-ai
         with:
-          name: self-authored-issue-${{ steps.task.outputs.number }}
-          path: dev/log/self-authored
-          retention-days: 30
-          if-no-files-found: warn
+          issue: ${{ inputs.issue }}
+          formal-ai-source: source

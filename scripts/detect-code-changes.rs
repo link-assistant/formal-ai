@@ -195,6 +195,7 @@ struct ChangeFlags {
     toml_changed: bool,
     docs_changed: bool,
     workflow_changed: bool,
+    pipeline_changed: bool,
     any_code_changed: bool,
 }
 
@@ -215,6 +216,19 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         workflow_changed: relevant_files
             .iter()
             .any(|file| file.starts_with(".github/workflows/")),
+        // Only the files the pipeline itself executes. `workflow_changed` is
+        // true for any file under `.github/workflows/`, and the heavy jobs of
+        // the pipeline -- the macOS archive, the Docker check, six box images
+        // and a 25-minute agent E2E -- were gated on it, so editing an
+        // unrelated workflow bought the full 310 job-minutes of a code push
+        // (issue #1107). A change to the pipeline's own definition, to a
+        // composite action it calls, or to a script those run still unlocks
+        // them, because those are the files that change what the jobs do.
+        pipeline_changed: relevant_files.iter().any(|file| {
+            file.as_str() == ".github/workflows/release.yml"
+                || file.starts_with(".github/actions/")
+                || file.starts_with("scripts/")
+        }),
         any_code_changed: relevant_files
             .iter()
             .filter(|file| !is_excluded_from_code_changes(file))
@@ -253,6 +267,14 @@ fn main() {
     set_output(
         "workflow-changed",
         if flags.workflow_changed {
+            "true"
+        } else {
+            "false"
+        },
+    );
+    set_output(
+        "pipeline-changed",
+        if flags.pipeline_changed {
             "true"
         } else {
             "false"
@@ -366,9 +388,38 @@ mod tests {
                 rs_changed: true,
                 docs_changed: true,
                 workflow_changed: true,
+                pipeline_changed: true,
                 any_code_changed: true,
                 ..ChangeFlags::default()
             }
         );
+    }
+
+    /// The flag that decides whether a push pays for the heavy jobs.
+    ///
+    /// Issue #1107: `workflow_changed` is true for every file under
+    /// `.github/workflows/`, so editing a scheduled benchmark unlocked the
+    /// macOS archive, the Docker check, six box images and a 25-minute agent
+    /// end-to-end run. `pipeline_changed` is true only for the files those
+    /// jobs actually execute.
+    #[test]
+    fn an_unrelated_workflow_does_not_unlock_the_pipeline_heavy_jobs() {
+        let unrelated = classify_changes(&[".github/workflows/external-benchmarks.yml".to_string()]);
+        assert!(unrelated.workflow_changed);
+        assert!(
+            !unrelated.pipeline_changed,
+            "a scheduled benchmark's workflow does not change what the pipeline jobs do"
+        );
+
+        for path in [
+            ".github/workflows/release.yml",
+            ".github/actions/author-with-formal-ai/action.yml",
+            "scripts/author-change-with-formal-ai.sh",
+        ] {
+            assert!(
+                classify_changes(&[path.to_string()]).pipeline_changed,
+                "{path} changes what a pipeline job runs"
+            );
+        }
     }
 }

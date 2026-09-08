@@ -67,18 +67,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - uses: ./.github/actions/setup-sccache
 
       - name: Test the falsifiable ladder judge
         run: |
           cd experiments/issue_840_task_ladder
           python3 -m unittest -v test_ladder.py
 
-      - name: Build the server
-        run: cargo build --release --bin formal-ai
+      # Reused across every workflow that only needs to *run* the binary: the
+      # cache key is the content of the sources it is built from, so a push that
+      # changed neither pays nothing (issue #1107).
+      - uses: ./.github/actions/formal-ai-binary
 
       # The committed results.json is both the record of the last measurement
       # and the floor this run must not fall below.
