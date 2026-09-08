@@ -79,7 +79,7 @@ fn routing_precedence_from_seed() {
 
     // Shipped seed keeps today's behaviour: numeric_list wins over arithmetic.
     assert_eq!(
-        route(&shipped, &both),
+        route(shipped, &both),
         Some("numeric_list"),
         "the shipped precedence routes a numeric-code request to numeric_list"
     );
@@ -358,7 +358,7 @@ fn routing_precedence_stays_language_agnostic() {
             "the {language_name} ({language}) request must be non-empty"
         );
         assert_eq!(
-            route(&shipped, &both),
+            route(shipped, &both),
             Some("numeric_list"),
             "numeric-code routing must stay numeric_list-first in {language_name} ({language})"
         );
