@@ -58,6 +58,7 @@ pub const LOCKFILE_NAMES: &[&str] = &[
     "pnpm-lock.yaml",
     "poetry.lock",
     "uv.lock",
+    "Gemfile.lock",
 ];
 
 /// Whether a path holds something other than authored behaviour.
