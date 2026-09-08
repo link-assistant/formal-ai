@@ -209,13 +209,15 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
         .collect::<BTreeSet<_>>();
 
     assert_eq!(active, actual);
-    assert_eq!(actual.len(), 46);
+    // 46 until issue #1085 moved `github_repository_traffic.rs` into
+    // `data/seed/handler-rules.lino`; the ledger and the tree dropped together.
+    assert_eq!(actual.len(), 45);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        46
+        45
     );
     assert_eq!(
         entries

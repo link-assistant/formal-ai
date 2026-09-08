@@ -594,6 +594,11 @@ meanings
     lexeme en
       surface
         text "response memory root links en"
+  response_opinion_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response opinion question ru"
   response_orchestration_cross_agent_denial_hi
     defined-by response_template
     lexeme en

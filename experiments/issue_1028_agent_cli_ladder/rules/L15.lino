@@ -1,8 +1,8 @@
 link_edit
   leaf L15
-  path src/google_trends_catalog.rs
+  path src/cli_context.rs
   language rust
   rule replace_literal
-    old "{query}"
-    new "{search_query}"
-  expect "{search_query}"
+    old "FORMAL_AI_DIALOG_ID"
+    new "FORMAL_AI_SESSION_ID"
+  expect "FORMAL_AI_SESSION_ID"

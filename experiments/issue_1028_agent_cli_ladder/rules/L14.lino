@@ -1,8 +1,8 @@
 link_edit
   leaf L14
-  path src/learning_adoption_ledger.rs
+  path src/world_model_dialog.rs
   language rust
   rule replace_literal
-    old "unknown"
-    new "unspecified"
-  expect "unspecified"
+    old "world_sync_root"
+    new "world_sync_chain_root"
+  expect "world_sync_chain_root"

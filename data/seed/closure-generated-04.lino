@@ -154,6 +154,11 @@ meanings
     lexeme en
       surface
         text "formal ai bundle"
+  forms
+    defined-by concept
+    lexeme en
+      surface
+        text "forms"
   gates
     defined-by concept
     lexeme en
@@ -349,6 +354,11 @@ meanings
     lexeme en
       surface
         text "periodic or manual"
+  prompt
+    defined-by value
+    lexeme en
+      surface
+        text "prompt"
   proof_datalog_counterexample
     defined-by intent
     lexeme en
@@ -1000,7 +1010,7 @@ meanings
       surface
         text "statement audit selector required"
   sudo
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "sudo"
@@ -1054,6 +1064,11 @@ meanings
     lexeme en
       surface
         text "trace"
+  traffic_ui_docs
+    defined-by value
+    lexeme en
+      surface
+        text "traffic ui docs"
   ui
     defined-by concept
     lexeme en

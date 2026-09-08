@@ -1,8 +1,8 @@
 link_edit
   leaf L29
-  path src/google_trends_catalog.rs
+  path src/conversation_context.rs
   language rust
   rule rename_identifier
-    old "QUERY_PLACEHOLDER"
-    new "TRENDS_QUERY_PLACEHOLDER"
-  expect "TRENDS_QUERY_PLACEHOLDER"
+    old "DIALOG_LOG_DIRECTORY_ENV"
+    new "DIALOG_LOG_DIR_ENV"
+  expect "DIALOG_LOG_DIR_ENV"

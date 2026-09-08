@@ -84,7 +84,7 @@ fn each_committed_leaf_rule_applies_to_the_current_source() {
         match (&document.rule, leaf.trim_start_matches('L').parse::<u32>()) {
             (LinkEditRule::InsertMember { .. }, Ok(n)) => assert!(n <= 11, "{leaf}"),
             (LinkEditRule::ReplaceLiteral { .. }, Ok(n)) => {
-                assert!((12..=22).contains(&n), "{leaf}")
+                assert!((12..=22).contains(&n), "{leaf}");
             }
             (LinkEditRule::RenameIdentifier { .. }, Ok(n)) => assert!(n >= 23, "{leaf}"),
             (_, Err(error)) => panic!("{leaf}: {error}"),
@@ -114,6 +114,7 @@ fn the_ladder_compiles_tests_merges_and_verifies_requirement_levels() {
         "leaves.tsv",
         "ladder-result.lino",
         "deepest_passing_level",
+        "leaf_nodes_passing",
         "change.diff",
     ] {
         assert!(runner.contains(needle), "run.sh must contain {needle:?}");
@@ -132,5 +133,17 @@ fn the_ladder_compiles_tests_merges_and_verifies_requirement_levels() {
     }
     let ratchet =
         fs::read_to_string(root().join("data/meta/ladder-ratchet.lino")).expect("ratchet");
-    assert!(ratchet.contains("  deepest_passing_level 5\n"));
+    // What is ratcheted is how many of the 32 leaves Formal AI actually
+    // changed. The first run under the compile-and-test criteria passed 15;
+    // the record may only rise (issue #1085 D4).
+    assert!(ratchet.contains("  leaf_nodes_selected 32\n"));
+    let passing = ratchet
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("leaf_nodes_passing "))
+        .and_then(|value| value.parse::<u32>().ok())
+        .expect("the ratchet records how many leaves pass");
+    assert!(
+        (15..=32).contains(&passing),
+        "leaf_nodes_passing is {passing}, outside the 15 the first measured run passed and the 32 leaves there are"
+    );
 }

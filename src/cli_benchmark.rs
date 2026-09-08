@@ -95,8 +95,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
                 &root.join(&ledger),
                 &date,
                 &root,
-                learning_report.as_deref(),
-                frontier_record.as_deref(),
+                (learning_report.as_deref(), frontier_record.as_deref()),
             )
         }
         BenchmarkAction::Ratchet {
@@ -141,9 +140,11 @@ fn run_suites(
     ledger_path: &Path,
     date: &str,
     repository_root: &Path,
-    learning_report: Option<&Path>,
-    frontier_record: Option<&Path>,
+    // The review-gated documents a run may write beside the ledger: the
+    // learning report and the frontier record.
+    review_outputs: (Option<&Path>, Option<&Path>),
 ) -> Result<(), Box<dyn Error>> {
+    let (learning_report, frontier_record) = review_outputs;
     let selected: Vec<&manifest::SuiteManifest> = if selector == "all" {
         manifest::SUITES.iter().collect()
     } else {

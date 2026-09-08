@@ -29,7 +29,7 @@ fn result_row(template: &LedgerRecord, date: &str, passed: usize, slice: usize) 
     );
     for (key, value) in &mut row.fields {
         match key.as_str() {
-            "date" => *value = date.to_owned(),
+            "date" => date.clone_into(value),
             "passed" => *value = passed.to_string(),
             "failed" => *value = (slice - passed).to_string(),
             _ => {}

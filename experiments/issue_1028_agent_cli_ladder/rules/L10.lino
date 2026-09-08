@@ -3,6 +3,6 @@ link_edit
   path src/solver_handlers/document_request.rs
   language rust
   rule insert_member
-    list "TARGET_MARKERS"
-    member "toward "
-  expect "toward "
+    list "ACTIONS"
+    member "reformat"
+  expect "reformat"

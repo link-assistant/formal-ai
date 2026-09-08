@@ -69,6 +69,11 @@ meanings
     lexeme en
       surface
         text "deduplication"
+  default
+    defined-by value
+    lexeme en
+      surface
+        text "default"
   default_language
     defined-by field
     lexeme en
@@ -89,6 +94,11 @@ meanings
     lexeme en
       surface
         text "env"
+  external_benchmark_stagnant_suite
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark stagnant suite"
   external_benchmark_swe_inspect_error
     defined-by intent
     lexeme en
@@ -479,6 +489,11 @@ meanings
     lexeme en
       surface
         text "response external benchmark egg too few laws zh"
+  response_external_benchmark_frontier_written_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark frontier written en"
   response_external_benchmark_not_swe_case_en
     defined-by response_template
     lexeme en
@@ -704,6 +719,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence constant hi"
+  response_policy_bounded_autonomy_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response policy bounded autonomy ru"
   response_search_fusion_read_more_es
     defined-by response_template
     lexeme en

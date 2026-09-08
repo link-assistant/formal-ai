@@ -754,6 +754,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence count en"
+  response_policy_bounded_autonomy_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response policy bounded autonomy hi"
   response_proof_datalog_counterexample_en
     defined-by response_template
     lexeme en
@@ -1099,6 +1104,11 @@ meanings
     lexeme en
       surface
         text "unknown reasoning trace"
+  views_uniques_clones_referrers_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "views uniques clones referrers paths"
   visitor
     defined-by word_surface
     lexeme en

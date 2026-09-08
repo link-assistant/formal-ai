@@ -55,22 +55,20 @@ fn read(path: &str) -> String {
     fs::read_to_string(root().join(path)).unwrap_or_else(|error| panic!("read {path}: {error}"))
 }
 
-/// The leaves the workflow actually runs, lifted out of the committed script so
+/// The leaves the workflow actually runs, read from the committed table so
 /// this test can never drift from the ladder.
 fn leaves() -> Vec<Leaf> {
-    let script = read(LADDER);
-    let body = script
-        .split_once("cat > \"$OUT/leaves.tsv\" <<'EOF'\n")
-        .expect("the ladder writes its leaves")
-        .1
-        .split_once("\nEOF\n")
-        .expect("the leaves heredoc is closed")
-        .0;
+    let body = read("experiments/issue_1028_agent_cli_ladder/leaves.tsv");
+    // The table now has six tab-separated columns; the sixth is the requirement
+    // sentence added in issue #1085.  Read only the first five.
     let leaves = body
         .lines()
         .map(|line| {
             let fields = line.split('\t').collect::<Vec<_>>();
-            assert_eq!(fields.len(), 5, "every leaf row has five fields: {line:?}");
+            assert!(
+                fields.len() >= 5,
+                "every leaf row has at least five fields: {line:?}"
+            );
             Leaf {
                 id: fields[0].to_owned(),
                 task: fields[1].to_owned(),

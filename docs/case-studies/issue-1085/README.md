@@ -59,6 +59,24 @@ evidence absorbed the effort. Each remedy in the issue maps to a requirement in
 - The `Self-development status` workflow on `main` — floor and kernel shrink,
   red until true.
 
+## 5. The re-run guard the bot pull requests exposed
+
+Two bot pull requests (#1093, #1094) each received the same authored commit
+more than once. The guard that should have stopped a re-run piped the whole
+branch history into `grep -q` under `pipefail`, so a present trailer made the
+pipeline fail and the run authored again. Timeline and fix:
+`ci-evidence/self-authored-guard-pipefail.md`.
+
+## 6. What the ladder measured
+
+The first run under the compile-and-test criteria passed 15 of 32 leaves. The
+seventeen failures are three mechanisms, not seventeen problems: a continuation
+cue routed to web search (8 leaves, #1095), an edit verified against a file the
+planner generated (7 leaves, #1096), and a change reported without being made
+(2 leaves, which is what these criteria exist to catch).
+`ci-evidence/ladder-leaf-failures.md` carries the per-leaf table and the log
+lines. `data/meta/ladder-ratchet.lino` now records 15 and may only rise.
+
 ## Upstream and sub-issues
 
 - link-assistant/hive-mind#2229: `solve --model formal-ai` commits carry none of
@@ -68,4 +86,6 @@ evidence absorbed the effort. Each remedy in the issue maps to a requirement in
   instead; the first task is #1091.
 - #1087 (D6), #1088 (D7), #1089 (D8), #1090 (D9): sub-issues of #1085, blocked
   by it, each carrying the section 7 clauses.
+- #1095 (E113), #1096 (E114): the two behaviour defects the compile-and-test
+  ladder found, also sub-issues of #1085 and blocked by it.
 

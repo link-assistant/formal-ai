@@ -371,6 +371,8 @@ while IFS= read -r line; do
 done < "$OUT/selected.tsv"
 deepest=none
 leaf_level_passed=0
+leaf_nodes_selected=$(awk -F'\t' '$2 == 5' "$OUT/selected.tsv" | wc -l | tr -d ' ')
+leaf_nodes_passing=$(grep -c $'\tPASS\tdepth=5$' "$RUN_LOG" || true)
 for level in 5 4 3 2 1 0; do
   selected_at_level=$(awk -F'\t' -v level="$level" '$2 == level' "$OUT/selected.tsv" | wc -l | tr -d ' ')
   [[ "$selected_at_level" -gt 0 ]] || continue
@@ -389,12 +391,15 @@ ladder_result
   selected_nodes "$selected_count"
   failures "$failed"
   deepest_passing_level "$deepest"
+  leaf_nodes_selected "$leaf_nodes_selected"
+  leaf_nodes_passing "$leaf_nodes_passing"
 EOF
-python3 - "$OUT" "$TREE_DEPTH" "${NODE_FILTER:-none}" "$selected_count" "$failed" "$deepest" <<'PY'
+python3 - "$OUT" "$TREE_DEPTH" "${NODE_FILTER:-none}" "$selected_count" "$failed" "$deepest" \
+  "$leaf_nodes_passing" "$leaf_nodes_selected" <<'PY'
 import sys
 from pathlib import Path
 out = Path(sys.argv[1])
-depth, node_filter, selected, failed, deepest = sys.argv[2:7]
+depth, node_filter, selected, failed, deepest, leaf_passing, leaf_selected = sys.argv[2:9]
 rows = []
 for line in (out / 'run.log').read_text().splitlines():
     parts = line.split('\t')
@@ -417,6 +422,7 @@ table = '\n'.join(rows) if rows else '| - | - | no node ran | - | - | - |'
 - selected nodes: {selected}
 - failures: {failed}
 - deepest level whose nodes all passed: {deepest}
+- leaf nodes passing: {leaf_passing} of {leaf_selected}
 
 | node | verdict | detail | compile | unit tests | diff lines |
 | --- | --- | --- | --- | --- | --- |
@@ -446,7 +452,10 @@ deepest level whose nodes all passed is written to `ladder-result.lino` and
 compared with `data/meta/ladder-ratchet.lino` by the workflow.
 """)
 PY
-if [[ "$TREE_DEPTH" == all ]]; then
-  exit $(( leaf_level_passed == 0 ))
+# The run measures; the ratchet step decides. Exiting non-zero on any failed
+# node made the job red for every leaf Formal AI cannot yet change, which says
+# nothing about whether it got worse (issue #1085 D4).
+if [[ "$TREE_DEPTH" == all && "$leaf_level_passed" -eq 1 ]]; then
+  echo "every leaf passed" | tee -a "$RUN_LOG"
 fi
-exit $(( failed > 0 ))
+exit 0

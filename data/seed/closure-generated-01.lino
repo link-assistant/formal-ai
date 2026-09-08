@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "chmod"
+  cleaned
+    defined-by concept
+    lexeme en
+      surface
+        text "cleaned"
   client_integration_invalid_typed_json_setting
     defined-by intent
     lexeme en
@@ -99,6 +104,11 @@ meanings
     lexeme en
       surface
         text "context bsd operating systems"
+  conversation_control
+    defined-by concept
+    lexeme en
+      surface
+        text "conversation control"
   cooldowns
     defined-by word_surface
     lexeme en
@@ -189,6 +199,11 @@ meanings
     lexeme en
       surface
         text "languages"
+  last_14_days
+    defined-by concept
+    lexeme en
+      surface
+        text "last 14 days"
   lexeme_import_cannot_inspect
     defined-by intent
     lexeme en
@@ -204,6 +219,11 @@ meanings
     lexeme en
       surface
         text "lexeme import invalid slug"
+  literal
+    defined-by value
+    lexeme en
+      surface
+        text "literal"
   local
     defined-by concept
     lexeme en
@@ -489,6 +509,11 @@ meanings
     lexeme en
       surface
         text "response definition merge sources label hi"
+  response_docs_method_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation en"
   response_evidence_exact_composition_en
     defined-by response_template
     lexeme en

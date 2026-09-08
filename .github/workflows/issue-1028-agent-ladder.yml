@@ -79,24 +79,40 @@ jobs:
           AGENT: agent
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
-      - name: Compare the deepest passing level with the record
+      - name: Compare the measured ladder with the record
         if: always()
         run: |
           set -euo pipefail
           result="$OUT/ladder-result.lino"
           [[ -f "$result" ]] || { echo '::error::the run wrote no ladder-result.lino'; exit 1; }
-          recorded=$(sed -n 's/^  deepest_passing_level //p' data/meta/ladder-ratchet.lino)
-          measured=$(sed -n 's/^  deepest_passing_level "\(.*\)"$/\1/p' "$result")
-          echo "recorded deepest passing level: $recorded; this run: $measured"
+          field() { sed -n "s/^  $1 \"\(.*\)\"$/\1/p" "$result"; }
+          recorded_leaves=$(sed -n 's/^  leaf_nodes_passing //p' data/meta/ladder-ratchet.lino)
+          measured_leaves=$(field leaf_nodes_passing)
+          selected_leaves=$(field leaf_nodes_selected)
+          echo "leaf nodes passing: recorded $recorded_leaves, this run $measured_leaves of $selected_leaves"
           cat "$result" >> "$GITHUB_STEP_SUMMARY"
-          if [[ "$TREE_DEPTH" == all ]]; then
-            [[ "$measured" != none ]] || { echo '::error::no level passed completely'; exit 1; }
-            if (( measured > recorded )); then
-              echo "::error::deepest passing level $measured is shallower than the recorded $recorded (data/meta/ladder-ratchet.lino)"
+          # Only a full-width run is comparable with the record: a filtered or
+          # shallower run selects fewer leaves and would always look worse.
+          if [[ "$selected_leaves" == 32 ]]; then
+            if (( measured_leaves < recorded_leaves )); then
+              echo "::error::$measured_leaves of 32 leaves passed; the record is $recorded_leaves (data/meta/ladder-ratchet.lino). A leaf Formal AI could change no longer changes."
               exit 1
             fi
-            if (( measured < recorded )); then
-              echo "::notice::deepest passing level improved to $measured; lower deepest_passing_level in data/meta/ladder-ratchet.lino in a reviewed commit"
+            if (( measured_leaves > recorded_leaves )); then
+              echo "::notice::leaf nodes passing improved to $measured_leaves; raise leaf_nodes_passing in data/meta/ladder-ratchet.lino in a reviewed commit"
+            fi
+          fi
+          if [[ "$TREE_DEPTH" == all ]]; then
+            deepest=$(field deepest_passing_level)
+            recorded_depth=$(sed -n 's/^  deepest_passing_level //p' data/meta/ladder-ratchet.lino)
+            echo "deepest passing level: recorded $recorded_depth, this run $deepest"
+            if [[ "$recorded_depth" != none && "$deepest" == none ]]; then
+              echo "::error::no level passed completely; the record is level $recorded_depth"
+              exit 1
+            fi
+            if [[ "$recorded_depth" != none && "$deepest" != none ]] && (( deepest < recorded_depth )); then
+              echo "::error::deepest passing level $deepest is shallower than the recorded $recorded_depth (level 5 is the leaves)"
+              exit 1
             fi
           fi
 

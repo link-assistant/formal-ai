@@ -384,6 +384,11 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase how are you en"
+  policy_bounded_autonomy
+    defined-by intent
+    lexeme en
+      surface
+        text "policy bounded autonomy"
   renderer
     defined-by word_surface
     lexeme en
@@ -479,6 +484,11 @@ meanings
     lexeme en
       surface
         text "response document originality check sample missing zh"
+  response_external_benchmark_frontier_recorded_from_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark frontier recorded from en"
   response_external_benchmark_invalid_rust_string_es
     defined-by response_template
     lexeme en
@@ -499,6 +509,11 @@ meanings
     lexeme en
       surface
         text "response external benchmark ratchet reference suffix en"
+  response_external_benchmark_stagnant_suite_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark stagnant suite en"
   response_external_benchmark_swe_report_error_en
     defined-by response_template
     lexeme en
@@ -699,6 +714,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence report ru"
+  response_policy_bounded_autonomy_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response policy bounded autonomy zh"
   response_proof_datalog_counterexample_ru
     defined-by response_template
     lexeme en

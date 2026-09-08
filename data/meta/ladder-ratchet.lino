@@ -1,8 +1,11 @@
 ladder_ratchet
   issue 1085
-  purpose "The Agent CLI ladder is a compile-and-test coding ladder. The deepest level whose nodes all passed is recorded here and may only move deeper, which is a smaller number; a scheduled all-levels run that reaches a shallower level is red, and a pull-request run must pass the leaf level."
+  purpose "The Agent CLI ladder is a compile-and-test coding ladder over the 32 committed leaves. What is ratcheted is how many leaves Formal AI actually changed: leaf_nodes_passing may rise and never fall, and a full-width run that passes fewer is red. deepest_passing_level records the deepest level whose nodes all passed, where level 5 is the leaves; it may only move deeper."
   criteria "leaf: one tracked file modified, marker present and absent from HEAD, anchor kept, rustfmt parses, cargo check --lib, cargo test --test unit for the module; depth 4: both verified child effects composed and both children's diffs applied to one tree that compiles; depth 3 and above: requirement-shaped prompt, every leaf marker under the node present, only those files modified, compile and the tests of every touched module"
-  deepest_passing_level 5
+  leaf_nodes_selected 32
+  leaf_nodes_passing 15
+  deepest_passing_level none
   recorded_on 2026-09-08
-  baseline "the 2026-08-28 run passed 63 of 63 nodes under the read-and-echo criteria; under the compile-and-test criteria the record starts at the leaf level and the scheduled all-levels run moves it"
-  checker ".github/workflows/issue-1028-agent-ladder.yml step Compare the deepest passing level with the record"
+  measured_by "run 34206203615 on branch issue-1085-9c2f4e7a1b3d, the first pull-request run under the compile-and-test criteria"
+  baseline "the 2026-08-28 run passed 63 of 63 nodes under the read-and-echo criteria, where an effect file describing a change was enough. Under the compile-and-test criteria 15 of 32 leaves change their file and pass its tests; the seventeen that do not are three named mechanisms, recorded in docs/case-studies/issue-1085/ci-evidence/ladder-leaf-failures.md and filed as sub-issues of #1085."
+  checker ".github/workflows/issue-1028-agent-ladder.yml step Compare the measured ladder with the record"

@@ -69,22 +69,24 @@ struct Node {
 /// Run the committed generator over the committed leaves and read back the tree.
 fn generate_tree(directory: &Path) -> Vec<Node> {
     let script = read(LADDER);
-    let leaves = heredoc(&script, "cat > \"$OUT/leaves.tsv\" <<'EOF'\n", "\nEOF\n");
+    // Leaves are committed beside the script; the heredoc was removed when the
+    // table grew to six columns (issue #1085).  Read the file directly.
+    let leaves_source = read("experiments/issue_1028_agent_cli_ladder/leaves.tsv");
+    assert_eq!(
+        leaves_source.lines().count(),
+        LEAF_COUNT,
+        "the ladder must formulate exactly {LEAF_COUNT} atomic leaves",
+    );
     let generator = heredoc(
         &script,
         "python3 - \"$OUT/leaves.tsv\" \"$NODES\" <<'PY'\n",
         "\nPY\n",
     );
-    assert_eq!(
-        leaves.lines().count(),
-        LEAF_COUNT,
-        "the ladder must formulate exactly {LEAF_COUNT} atomic leaves",
-    );
 
     let leaves_path = directory.join("leaves.tsv");
     let generator_path = directory.join("generate.py");
     let tree_path = directory.join("tree.tsv");
-    fs::write(&leaves_path, format!("{leaves}\n")).expect("write leaves");
+    fs::write(&leaves_path, &leaves_source).expect("write leaves");
     fs::write(&generator_path, generator).expect("write generator");
 
     let output = Command::new("python3")

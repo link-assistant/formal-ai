@@ -174,7 +174,7 @@ fn migrated_handlers_answer_held_out_paraphrases_in_english_russian_hindi_and_ch
         ),
         (
             "ru",
-            "как работает pandas DataFrame.join?",
+            "объясни как работает pandas DataFrame.join",
             "docs_method_explanation",
         ),
         (

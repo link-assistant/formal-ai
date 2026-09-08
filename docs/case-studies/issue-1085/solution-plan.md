@@ -148,6 +148,55 @@ this file says which slice carried what.
   dispatch inputs are release inputs.
 - The self-AST census is regenerated for pushes 13 to 19.
 
+## Pushes 23 to 25
+
+- Both bot pull requests were closed with duplicate authored commits: #1093
+  carried six, #1094 two, each run authoring #1091 again. The re-run guard was
+  `git log "origin/$branch" --format=%B | grep -Fxq "$trailer"` under
+  `set -o pipefail`: `grep -q` exits at the first match, `git log` dies of
+  SIGPIPE writing the rest of the history, and the pipeline reports failure on
+  exactly the runs where the trailer is present. The decision is now made by
+  `scripts/self-authored-commit-count.sh`, jq over the pull request's commits
+  from the API, and it is made again right before the push. Pushes go through
+  `scripts/push-to-shared-branch.sh`, the checkout says above it why it keeps
+  its credential (#1079), and the event fields reach the shell through `env`
+  (zizmor). The run triggered by push 25 opens the clean pull request for
+  #1091 (`ci-evidence/self-authored-guard-pipefail.md`).
+- The first full-suite run on the migrated seed (the ubuntu job stops at its
+  first failing module, the coverage job runs everything) listed what the
+  migration still owed: 54 tokens introduced by `handler-rules.lino` and
+  `multilingual-responses-policy.lino` had no meaning in the total closure,
+  so `python3 scripts/close-total.py` regenerated
+  `data/seed/closure-generated-01..16.lino`; the census and method-registry
+  tests resolve a rule-backed handler to `rule_interpreter::run_handler`
+  instead of demanding a table row; the handler-source count is 45 since
+  `github_repository_traffic.rs` became rules; the ladder tests read
+  `leaves.tsv` instead of the heredoc the old generator wrote, and the
+  node-verifier fixtures sit at depth 4, the only composite depth now; L10
+  inserts into `ACTIONS` because `TARGET_MARKERS` is referenced before it is
+  defined and the applier anchors on the first identifier; L14 names the
+  ledger because `UNKNOWN_INTENT` is declared in two modules; the held-out
+  Russian docs paraphrase opens with `объясни` because a prompt opening with
+  `как …` is claimed by web search ahead of the docs handler on `main` too.
+- Three planner-derived documents (`data/meta/self-ast.lino`,
+  `data/meta/self-healing-case.lino`,
+  `docs/case-studies/issue-538/agent-cli-session-self-ast.json`) moved with
+  `planner.rs`; the census workflow regenerates them into its artifact and
+  they are committed from it.
+- The ladder now records how many of the 32 leaves Formal AI actually changed
+  (15) and the workflow fails a full-width run that passes fewer; its previous
+  comparison was inverted, erroring when the measured level was *deeper* than
+  the record. The seventeen failures are three mechanisms: a continuation cue
+  routed to web search (8 leaves, #1095), an edit verified against a file the
+  planner generated (7 leaves, #1096), and a change reported without being
+  made (2 leaves). Evidence:
+  `ci-evidence/ladder-leaf-failures.md`.
+- Two leaf targets were also wrong in the leaf table itself: the UNKNOWN_INTENT leaf's change renamed every `unknown`
+  identifier in the ledger module (the issue-701 tests no longer compiled),
+  and two leaves targeted `google_trends_catalog.rs`, whose catalog and
+  Agent CLI session are byte-pinned so any edit fails its tests. Those leaves
+  moved to targets without pinned artifacts.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the

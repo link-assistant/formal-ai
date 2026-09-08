@@ -52,9 +52,21 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "self-AST census regeneration" \
             cargo run --locked --example regenerate_self_ast_census
+      # The three byte-pinned documents derived from the planner source move
+      # whenever `src/agentic_coding/planner.rs` does (`issue_538_agentic` and
+      # `issue_558_self_healing` fail on drift); they are regenerated with the
+      # same binary and handed back in the same artifact (issue #1085).
+      - name: Regenerate the planner-derived documents
+        run: |
+          set -euo pipefail
+          cargo run --locked --quiet --example dump_self_ast > data/meta/self-ast.lino
+          cargo run --locked --quiet --example dump_self_healing_case > data/meta/self-healing-case.lino
+          cargo run --locked --quiet --example dump_self_ast_agent_cli_session \
+            > docs/case-studies/issue-538/agent-cli-session-self-ast.json
       - name: Show what changed
         run: |
-          git status --short -- data/meta/self-ast | tee "$RUNNER_TEMP/census-changes.txt"
+          git status --short -- data/meta/self-ast data/meta/self-ast.lino data/meta/self-healing-case.lino docs/case-studies/issue-538 \
+            | tee "$RUNNER_TEMP/census-changes.txt"
           {
             echo "### Self-AST census changes"
             echo
@@ -66,6 +78,10 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: self-ast-census
-          path: data/meta/self-ast
+          path: |
+            data/meta/self-ast
+            data/meta/self-ast.lino
+            data/meta/self-healing-case.lino
+            docs/case-studies/issue-538/agent-cli-session-self-ast.json
           retention-days: 7
           if-no-files-found: error

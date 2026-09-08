@@ -89,6 +89,11 @@ meanings
     lexeme en
       surface
         text "exact"
+  external_benchmark_frontier_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark frontier summary"
   external_benchmark_swe_clear_logs_error
     defined-by intent
     lexeme en
