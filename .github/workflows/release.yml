@@ -294,7 +294,8 @@ jobs:
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
       )
     steps:
       - uses: actions/checkout@v7

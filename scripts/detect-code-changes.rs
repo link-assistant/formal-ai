@@ -206,6 +206,15 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         .collect();
     let code_pattern =
         Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
+    // A workflow is code for the gates that read it, but it is not the code
+    // the compiled jobs test. Counting it in `any_code_changed` made every
+    // workflow edit buy the macOS archive, the Docker check, six box images
+    // and a 25-minute agent end-to-end run; `pipeline_changed` below is what
+    // says whether those jobs' own behaviour moved (issue #1107). A workflow
+    // edit still runs lint and the workflow gates through `workflow_changed`.
+    let is_workflow_only_change = |file: &str| {
+        file.starts_with(".github/workflows/") && file != ".github/workflows/release.yml"
+    };
 
     ChangeFlags {
         rs_changed: relevant_files.iter().any(|file| has_extension(file, "rs")),
@@ -232,6 +241,7 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         any_code_changed: relevant_files
             .iter()
             .filter(|file| !is_excluded_from_code_changes(file))
+            .filter(|file| !is_workflow_only_change(file))
             .any(|file| code_pattern.is_match(file)),
     }
 }
@@ -405,10 +415,19 @@ mod tests {
     #[test]
     fn an_unrelated_workflow_does_not_unlock_the_pipeline_heavy_jobs() {
         let unrelated = classify_changes(&[".github/workflows/external-benchmarks.yml".to_string()]);
-        assert!(unrelated.workflow_changed);
+        assert!(
+            unrelated.workflow_changed,
+            "the workflow gates still have to run for it"
+        );
         assert!(
             !unrelated.pipeline_changed,
             "a scheduled benchmark's workflow does not change what the pipeline jobs do"
+        );
+        assert!(
+            !unrelated.any_code_changed,
+            "a workflow is not the compiled code the heavy jobs test; counting it here is what \
+             made every workflow edit pay for the macOS archive, the Docker check, six box \
+             images and a 25-minute agent end-to-end run"
         );
 
         for path in [

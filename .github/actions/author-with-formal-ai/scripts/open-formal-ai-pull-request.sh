@@ -14,6 +14,9 @@ set -euo pipefail
 
 git config user.name 'github-actions[bot]'
 git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+# Set once, before anything pushes: the resume path below rebases and pushes
+# before reaching the bootstrap path that used to configure this.
+git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 evidence="${EVIDENCE_ROOT:-dev/log/self-authored}/issue-$NUMBER"
 
 # A previous run may already have opened the pull request for this issue; keep
@@ -24,6 +27,30 @@ if [[ -n "$existing" ]]; then
   branch=$(gh pr view "$existing" --repo "$GITHUB_REPOSITORY" --json headRefName --jq .headRefName)
   git fetch origin "+refs/heads/$branch:refs/remotes/origin/$branch"
   git checkout -B "$branch" "origin/$branch"
+  # A branch opened by an earlier run sits at the base as it was then, so it
+  # fails for every fix the base has landed since -- #1103 went red on two
+  # tests its own base had already fixed, eight commits back. Rebase it onto
+  # the current base before judging or continuing the work. A conflict is left
+  # alone: it means the authored change and the base touched the same lines,
+  # which a human has to read.
+  git fetch origin "+refs/heads/$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"
+  behind=$(git rev-list --count "HEAD..origin/$BASE_BRANCH")
+  if [[ "$behind" != 0 ]]; then
+    if git rebase "origin/$BASE_BRANCH"; then
+      echo "::notice::rebased $branch onto $BASE_BRANCH ($behind commits behind)"
+      # A rebase rewrites the branch, so this is the one push here that cannot
+      # fast-forward. `--force-with-lease` refuses if anything else moved the
+      # branch since the fetch above, which is what keeps it from clobbering a
+      # concurrent run; `push-to-shared-branch.sh` is for the append case and
+      # would rebase the rewrite away.
+      if ! git push --force-with-lease origin "HEAD:$branch"; then
+        echo "::warning::could not push the rebased $branch; judging it against a stale base"
+      fi
+    else
+      git rebase --abort 2>/dev/null || true
+      echo "::warning::$branch conflicts with $BASE_BRANCH; it stays where it is for a human to read"
+    fi
+  fi
   {
     echo "url=$existing"
     echo "branch=$branch"
@@ -69,7 +96,6 @@ if [[ -d changelog.d ]]; then
 fi
 
 git commit -q -m "chore(self-authored): open the pull request Formal AI will author for #$NUMBER"
-git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$branch"
 url=$(gh pr create --repo "$GITHUB_REPOSITORY" --draft --base "$BASE_BRANCH" --head "$branch" \
   --title "$TITLE (authored by Formal AI, #$NUMBER)" \
