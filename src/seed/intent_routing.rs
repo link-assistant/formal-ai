@@ -5,7 +5,6 @@
 //! `intent_routing_from` keeps the tree parser it replaced so a test can show
 //! both read the same routes.
 
-use super::INTENT_ROUTING_LINO;
 use super::parser::parse_lino;
 
 /// Intent routing record from `data/seed/intent-routing.lino`.
