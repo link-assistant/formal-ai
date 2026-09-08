@@ -58,3 +58,14 @@ evidence absorbed the effort. Each remedy in the issue maps to a requirement in
   branch measured.
 - The `Self-development status` workflow on `main` — floor and kernel shrink,
   red until true.
+
+## Upstream and sub-issues
+
+- link-assistant/hive-mind#2229: `solve --model formal-ai` commits carry none of
+  the `Formal-AI-*` trailers or the evidence bundle the version-3 metric
+  attributes, so the bot-opened pull request runs through
+  `.github/workflows/self-authored-pull-request.yml` and the pinned Agent CLI
+  instead; the first task is #1091.
+- #1087 (D6), #1088 (D7), #1089 (D8), #1090 (D9): sub-issues of #1085, blocked
+  by it, each carrying the section 7 clauses.
+
