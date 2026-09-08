@@ -556,15 +556,6 @@ fn every_shared_branch_writer_pushes_through_the_retrying_helper() {
             if !statement.starts_with("git push") {
                 continue;
             }
-            // One exemption, and it is the opposite case: rebasing a bot branch
-            // onto its base rewrites it, so that push *cannot* fast-forward and
-            // the retrying helper -- which pulls with `--rebase` and pushes
-            // again -- would rebase the rewrite away. `--force-with-lease`
-            // carries the safety the helper provides here: it refuses when
-            // anything else moved the branch since the fetch (issue #1085).
-            if statement.starts_with("git push --force-with-lease") {
-                continue;
-            }
             bare_pushes.push(format!("{name}:{} -- {}", number + 1, line.trim()));
         }
     }
@@ -578,23 +569,19 @@ fn every_shared_branch_writer_pushes_through_the_retrying_helper() {
         bare_pushes.join("\n")
     );
 
-    // The exemption is narrow: a lease-protected force push is allowed only
-    // where a rebase made one necessary, and nowhere else.
-    let rebasing = repository_file(
-        ".github/actions/author-with-formal-ai/scripts/open-formal-ai-pull-request.sh",
-    );
-    assert!(
-        rebasing.contains("git push --force-with-lease origin \"HEAD:$branch\""),
-        "the bot-branch rebase is the one writer that force-pushes; if it stopped, the \
-         exemption above should go with it"
-    );
+    // No exemption, because the repository's own rules leave no room for one:
+    // a force push is answered with "GH013: Cannot force-push to this branch"
+    // (run 34278539348 rebased a stale bot branch cleanly and was refused at
+    // the push). A branch that has fallen behind catches up by merging its
+    // base, which fast-forwards like every other write here (issue #1085).
     for (name, body) in workflow_files() {
         for line in body.lines() {
-            let statement = line.trim().trim_start_matches("if ! ");
             assert!(
-                !statement.starts_with("git push --force")
-                    || name.contains("open-formal-ai-pull-request.sh"),
-                "{name} force-pushes outside the bot-branch rebase: {}",
+                !line
+                    .trim()
+                    .trim_start_matches("if ! ")
+                    .starts_with("git push --force"),
+                "{name} force-pushes, which this repository's rules reject: {}",
                 line.trim()
             );
         }

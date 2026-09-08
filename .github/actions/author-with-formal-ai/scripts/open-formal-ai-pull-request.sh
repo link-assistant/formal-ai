@@ -28,26 +28,30 @@ if [[ -n "$existing" ]]; then
   git fetch origin "+refs/heads/$branch:refs/remotes/origin/$branch"
   git checkout -B "$branch" "origin/$branch"
   # A branch opened by an earlier run sits at the base as it was then, so it
-  # fails for every fix the base has landed since -- #1103 went red on two
-  # tests its own base had already fixed, eight commits back. Rebase it onto
-  # the current base before judging or continuing the work. A conflict is left
-  # alone: it means the authored change and the base touched the same lines,
-  # which a human has to read.
+  # fails for every fix the base has landed since -- #1103 was nine commits
+  # behind and red on two tests its own base had already fixed, which measures
+  # the base rather than the authored change.
+  #
+  # It catches up by *merging* the base, not by rebasing onto it: this
+  # repository's rules answer a force push with "GH013: Cannot force-push to
+  # this branch", so a rebase can never land (run 34278539348 rebased cleanly
+  # and was refused at the push). A merge commit is made by the bot, not by
+  # Formal AI, and it carries no attribution trailers, so it is not counted as
+  # authored work by the metric -- the same reasoning that puts the changelog
+  # fragment in the bootstrap commit.
+  #
+  # A conflict is left alone: it means the authored change and the base touched
+  # the same lines, which a human has to read.
   git fetch origin "+refs/heads/$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"
   behind=$(git rev-list --count "HEAD..origin/$BASE_BRANCH")
   if [[ "$behind" != 0 ]]; then
-    if git rebase "origin/$BASE_BRANCH"; then
-      echo "::notice::rebased $branch onto $BASE_BRANCH ($behind commits behind)"
-      # A rebase rewrites the branch, so this is the one push here that cannot
-      # fast-forward. `--force-with-lease` refuses if anything else moved the
-      # branch since the fetch above, which is what keeps it from clobbering a
-      # concurrent run; `push-to-shared-branch.sh` is for the append case and
-      # would rebase the rewrite away.
-      if ! git push --force-with-lease origin "HEAD:$branch"; then
-        echo "::warning::could not push the rebased $branch; judging it against a stale base"
-      fi
+    if git merge --no-edit -m "chore(self-authored): catch up with $BASE_BRANCH" \
+         "origin/$BASE_BRANCH"; then
+      echo "::notice::merged $BASE_BRANCH into $branch ($behind commits behind)"
+      "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$branch" \
+        || echo "::warning::could not push $branch after catching up; judging it against a stale base"
     else
-      git rebase --abort 2>/dev/null || true
+      git merge --abort 2>/dev/null || true
       echo "::warning::$branch conflicts with $BASE_BRANCH; it stays where it is for a human to read"
     fi
   fi
