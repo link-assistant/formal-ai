@@ -123,6 +123,7 @@ pub mod search_fusion;
 pub mod search_fusion_grammar;
 pub mod search_fusion_learning;
 pub mod seed;
+pub mod seed_links;
 pub mod selection;
 pub mod self_ast_census;
 pub mod self_explanation;

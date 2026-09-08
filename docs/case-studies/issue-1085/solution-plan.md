@@ -67,6 +67,20 @@ this file says which slice carried what.
 - **D6-D9** filed as #1087, #1088, #1089, #1090, sub-issues of #1085 and
   blocked by it, each carrying the section 7 clauses.
 
+## Push 15
+
+- **D1.1, D1.2.** `src/seed_links.rs` (kernel) projects every bundled seed
+  document and the routing meta documents into one links network the first
+  time routing needs it: a node link `(parent -> name)` per Links Notation
+  node and a value link `(node -> value)` where a node carries one. Handler
+  precedence, cue sets and intent routes now read that network through link
+  queries; their former text parsers stay as `*_from(text)` so
+  `tests/unit/issue_1085_seed_links.rs` can show both read the same records,
+  including through the generic `(root $child)` pattern of
+  `links_substitution_query`. On a native build `formal-ai serve` rebuilds a
+  link-cli store from the same links beside the memory store
+  (`<memory>.seed.links`) and keeps it open for the process.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the

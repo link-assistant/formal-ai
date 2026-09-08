@@ -23,6 +23,13 @@ pub fn serve(address: &str) -> std::io::Result<()> {
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()
     );
+    match crate::seed_links::mirror_native_store() {
+        Ok(Some((path, count))) => {
+            eprintln!("formal-ai seed links: {count} at {}", path.display());
+        }
+        Ok(None) => {}
+        Err(error) => eprintln!("formal-ai seed links: {error}"),
+    }
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
 

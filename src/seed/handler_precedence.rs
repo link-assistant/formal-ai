@@ -15,15 +15,29 @@
 //! `src/web/seed_loader.js`, and a routing-parity fixture pins the shared
 //! precedence invariants across the Rust and browser surfaces.
 
-use super::HANDLER_PRECEDENCE_LINO;
 use super::parser::parse_lino;
 
 /// Ordered specialized-handler names, in dispatch precedence order (first wins),
 /// as declared by the shipped `data/seed/handler-precedence.lino`.
 #[must_use]
 pub fn handler_precedence() -> Vec<String> {
-    handler_precedence_from(HANDLER_PRECEDENCE_LINO)
+    let network = crate::seed_links::network();
+    let Some(root) = network
+        .top_level(HANDLER_PRECEDENCE_PATH)
+        .into_iter()
+        .next()
+    else {
+        return Vec::new();
+    };
+    network
+        .nodes_under(&root.index)
+        .into_iter()
+        .map(|row| row.to.clone())
+        .collect()
 }
+
+/// Repository path of the precedence seed, its name in the seed links network.
+pub const HANDLER_PRECEDENCE_PATH: &str = "data/seed/handler-precedence.lino";
 
 /// Parse an arbitrary handler-precedence document into its ordered handler names.
 ///

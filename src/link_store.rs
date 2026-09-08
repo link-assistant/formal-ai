@@ -367,6 +367,32 @@ impl LinkCliLinkStore {
         Ok(store)
     }
 
+    /// Rebuild `database` from scratch so that `links` is its whole content.
+    ///
+    /// Issue #1085 (D1.2): the seed links network is mirrored this way beside
+    /// the memory store when the server starts; the previous mirror is
+    /// discarded first, so a restart never accumulates duplicates.
+    ///
+    /// # Errors
+    ///
+    /// Returns the backend error when the store cannot be opened or written.
+    pub fn rebuild_with_doublets(
+        database: &Path,
+        links: &[DoubletLink],
+    ) -> Result<Self, LinkStoreError> {
+        cleanup_link_cli_files(database);
+        let mut store = Self::open_at(database)?;
+        store.begin_transaction()?;
+        for link in links {
+            if let Err(error) = store.append_native_doublet(&link.from, &link.to) {
+                let _ = store.rollback_transaction();
+                return Err(error);
+            }
+        }
+        store.commit_transaction()?;
+        Ok(store)
+    }
+
     /// Return the imported or appended memory events in append order.
     #[must_use]
     pub fn events(&self) -> &[MemoryEvent] {

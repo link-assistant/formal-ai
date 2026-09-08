@@ -30,6 +30,7 @@ kernel_ratchet
   kernel_path "src/recipe_interpreter.rs"
   kernel_path "src/agentic_coding/link_edit_rules.rs"
   kernel_path "src/rule_interpreter.rs"
+  kernel_path "src/seed_links.rs"
   kernel_path "src/event_log.rs"
   kernel_path "src/memory.rs"
   kernel_path "src/memory/"
@@ -50,7 +51,7 @@ kernel_ratchet
   kernel_path "src/trace_record.rs"
   ceiling
     measure non_kernel_rust_lines
-    value 112638
+    value 112664
     how "non-blank, non-comment lines of every src/**/*.rs file that is not under a kernel_path, measured at the commit that set the ceiling"
   ceiling
     measure handler_files

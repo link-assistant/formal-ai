@@ -7,7 +7,7 @@ the remaining failures of #1081 that konard asked to land in the same pull reque
 | ID | Item | Requirement | Acceptance |
 | --- | --- | --- | --- |
 | R1085-1 | D1.4 | Kernel allowlist; five measured ceilings outside it; down-only; release shows the line ceiling lower than at the previous tag | gate fails on any measured value above its ceiling or any raised ceiling; status workflow fails when the line ceiling did not fall since the last tag |
-| R1085-2 | D1.1-D1.3 | Seed loaded into the doublets store at startup; matching by link query; one generic interpreter; migrate pending handlers smallest-first | rule interpreter delivered, pending 40; store loading next |
+| R1085-2 | D1.1-D1.3 | Seed loaded into the doublets store at startup; matching by link query; one generic interpreter; migrate pending handlers smallest-first | delivered: network at startup, link-query routing, rule interpreter, pending 40 |
 | R1085-3 | D2 | Edits as link substitutions over the CST network, rendered, formatted, compiled, tested; requirement-shaped edits resolved by link query | each ladder leaf reproduced by a committed rule and `cargo check`; one prompt with no file name resolved to the right file |
 | R1085-4 | D3.1 | Attribution by model | a commit with Claude-named evidence is not attributed; a missing `Formal-AI-Model` is a strict-gate error |
 | R1085-5 | D3.2 | Behaviour-only paths | replay shows no numerator path under `docs/` or `dev/` |
