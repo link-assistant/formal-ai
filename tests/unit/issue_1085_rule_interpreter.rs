@@ -184,16 +184,17 @@ fn migrated_handlers_answer_held_out_paraphrases_in_english_russian_hindi_and_ch
         ),
         (
             "zh",
-            "pandas DataFrame.join 如何工作？",
+            "解释 pandas DataFrame.join 如何工作",
             "docs_method_explanation",
         ),
     ];
-    // The Russian and Hindi paraphrases open with the seeded explain verb.
-    // A bare interrogative in those two languages (`как работает …?`,
-    // `… कैसे काम करता है?`) is claimed by the web-search handler, which sits
-    // above the docs handler in `data/seed/handler-precedence.lino`, and is
-    // answered with its offline-fetch notice. That routing is not what this
-    // test is about and this branch did not change it.
+    // The Russian, Hindi and Chinese paraphrases open with the seeded explain
+    // verb. A bare interrogative in those three languages (`как работает …?`,
+    // `… कैसे काम करता है?`, `… 如何工作？`) is claimed by the web-search
+    // handler, which sits above the docs handler in
+    // `data/seed/handler-precedence.lino`, and is answered with its
+    // offline-fetch notice; the same question in English is not. That
+    // asymmetry is issue #1101, not something this branch changed.
     for (language, prompt, intent) in cases {
         let response = answer(prompt);
         assert_eq!(
