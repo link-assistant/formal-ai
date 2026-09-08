@@ -2,35 +2,35 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 34559
-  line_count 718
-  content_id source_module_e001fd55d727a4f7
+  byte_len 34223
+  line_count 717
+  content_id source_module_56d4389616cf8150
   symbol_count 18
   symbols
-    enum AgenticPlan 62 67
-    struct PlannedToolCall 71 76
-    enum Capability 86 101
-    function permission_key 109 126
-    function registry_id 128 145
-    function tool_capability 154 156
-    function plan_chat_step 161 230
-    function plan_settled_routes 246 550
-    function plan_shell_step 553 570
-    function plan_one 572 577
-    function write_arguments 585 593
-    function fetch_arguments 602 608
-    function classify_tool 610 612
-    function latest_user_text 615 617
-    function compacted_agent_task 620 654
-    function repair_compacted_dot_paths 662 694
-    function preserved_first_user_turn 702 708
-    function trace_route 714 718
+    enum AgenticPlan 61 66
+    struct PlannedToolCall 70 75
+    enum Capability 85 100
+    function permission_key 108 125
+    function registry_id 127 144
+    function tool_capability 153 155
+    function plan_chat_step 160 231
+    function plan_settled_routes 247 553
+    function plan_shell_step 556 573
+    function plan_one 575 580
+    function write_arguments 588 596
+    function fetch_arguments 605 611
+    function classify_tool 613 615
+    function latest_user_text 618 620
+    function compacted_agent_task 623 655
+    function repair_compacted_dot_paths 663 693
+    function preserved_first_user_turn 701 707
+    function trace_route 713 717
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16074
+    total_link_count 16058
     named_node_count 3195
     distinct_node_kinds 76
     node_kinds
@@ -63,7 +63,7 @@ self_ast_census
       function_item 15
       function_modifiers 2
       generic_type 8
-      identifier 915
+      identifier 914
       if_expression 62
       impl_item 1
       index_expression 8
@@ -95,8 +95,8 @@ self_ast_census
       self 4
       self_parameter 2
       source_file 1
-      string_content 57
-      string_literal 59
+      string_content 58
+      string_literal 60
       struct_item 1
       super 53
       token_tree 20
@@ -106,7 +106,7 @@ self_ast_census
       type_arguments 8
       type_identifier 35
       unary_expression 6
-      use_declaration 46
+      use_declaration 45
       use_list 6
       visibility_modifier 18
       while_expression 1

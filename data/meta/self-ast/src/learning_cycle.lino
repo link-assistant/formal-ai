@@ -2,43 +2,45 @@ self_ast_census
   target src/learning_cycle.rs
   language rust
   fidelity signature
-  byte_len 23766
-  line_count 588
-  content_id source_module_f4c8832d624ff67b
-  symbol_count 35
+  byte_len 24462
+  line_count 602
+  content_id source_module_f7b1705aa0d10dbf
+  symbol_count 37
   symbols
     const GOOGLE_TRENDS_FRONTIER 54 54
     const GOOGLE_TRENDS_FRONTIER_RECORD 57 58
     const LANGUAGE_GAP_FRONTIER 61 61
     const LANGUAGE_GAP_FRONTIER_RECORD 65 66
-    struct RecordedFrontier 74 81
-    function recorded_frontiers 85 99
-    function recorded_frontier 103 107
-    const LEARNED_REQUEST_OPENERS_SEED_FILE 110 110
-    const TERM_INFORMATION_ROLE 115 115
-    const MINIMUM_SUPPORT 119 119
-    struct FrontierItem 124 137
-    struct HeldOutTest 142 150
-    struct CandidateSurface 155 168
-    function validated 173 175
-    function passed_count 179 181
-    function failed_count 185 187
-    struct BlockedClass 193 202
-    struct LearningCycleRun 206 217
-    function validated_candidates 222 227
-    function held_out_count 231 236
-    function links_notation 241 281
-    function parse_frontier_record 286 305
-    function recorded_google_trends_frontier 309 311
-    function run_learning_cycle 315 365
-    function language_gap_learning_cycle 369 374
-    function google_trends_learning_cycle 378 380
-    function derive_candidate 387 439
-    function frame_of 444 455
-    function classify_slot 459 466
-    function recovers_query 473 485
-    function build_proposals 497 534
-    function held_out_gate 538 553
-    function meaning_block 557 569
-    function language_order 573 578
-    function slot_slug 581 588
+    const UPSTREAM_BENCHMARKS_FRONTIER 69 69
+    const UPSTREAM_BENCHMARKS_FRONTIER_RECORD 74 75
+    struct RecordedFrontier 83 90
+    function recorded_frontiers 94 113
+    function recorded_frontier 117 121
+    const LEARNED_REQUEST_OPENERS_SEED_FILE 124 124
+    const TERM_INFORMATION_ROLE 129 129
+    const MINIMUM_SUPPORT 133 133
+    struct FrontierItem 138 151
+    struct HeldOutTest 156 164
+    struct CandidateSurface 169 182
+    function validated 187 189
+    function passed_count 193 195
+    function failed_count 199 201
+    struct BlockedClass 207 216
+    struct LearningCycleRun 220 231
+    function validated_candidates 236 241
+    function held_out_count 245 250
+    function links_notation 255 295
+    function parse_frontier_record 300 319
+    function recorded_google_trends_frontier 323 325
+    function run_learning_cycle 329 379
+    function language_gap_learning_cycle 383 388
+    function google_trends_learning_cycle 392 394
+    function derive_candidate 401 453
+    function frame_of 458 469
+    function classify_slot 473 480
+    function recovers_query 487 499
+    function build_proposals 511 548
+    function held_out_gate 552 567
+    function meaning_block 571 583
+    function language_order 587 592
+    function slot_slug 595 602

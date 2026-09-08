@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/modules.rs
   language rust
   fidelity signature
-  byte_len 1346
-  line_count 47
-  content_id source_module_5f84ed2ac826235c
-  symbol_count 39
+  byte_len 1315
+  line_count 46
+  content_id source_module_2a164e45af00215f
+  symbol_count 38
   symbols
     module agent_workspace 9 9
     module behavior_rule_followups 10 10
@@ -22,27 +22,26 @@ self_ast_census
     module document_request 21 21
     module fact_checking 22 22
     module feature_capability 23 23
-    module github_repository_traffic 24 24
-    module installation_conversion 25 25
-    module meta_explanation 26 26
-    module natural_language_tools 27 27
-    module numeric_list 28 28
-    module pattern_inference 29 29
-    module playwright_script 30 30
-    module procedure_rules 31 31
-    module program_blueprint 32 32
-    module program_synthesis 33 33
-    module research_table 34 34
-    module response_language_followup 35 35
-    module self_awareness 36 36
-    module shell_command_transform 37 37
-    module software_project 38 38
-    module software_project_code 39 39
-    module software_project_followup 40 40
-    module task_decomposition 41 41
-    module text_edit_ops 42 42
-    module text_manipulation 43 43
-    module user_intent 44 44
-    module web_requests 45 45
-    module web_search_intent 46 46
-    module world_state 47 47
+    module installation_conversion 24 24
+    module meta_explanation 25 25
+    module natural_language_tools 26 26
+    module numeric_list 27 27
+    module pattern_inference 28 28
+    module playwright_script 29 29
+    module procedure_rules 30 30
+    module program_blueprint 31 31
+    module program_synthesis 32 32
+    module research_table 33 33
+    module response_language_followup 34 34
+    module self_awareness 35 35
+    module shell_command_transform 36 36
+    module software_project 37 37
+    module software_project_code 38 38
+    module software_project_followup 39 39
+    module task_decomposition 40 40
+    module text_edit_ops 41 41
+    module text_manipulation 42 42
+    module user_intent 43 43
+    module web_requests 44 44
+    module web_search_intent 45 45
+    module world_state 46 46
