@@ -13,7 +13,8 @@ name: Self-authored pull request
 #   message: <conventional commit subject>
 #
 # The pull request is opened first so the authored commit can name it in its
-# Formal-AI-Pull-Request trailer; the evidence bundle and the four trailers are
+# trailer, and a re-run stops once that trailer is on the branch.
+# The evidence bundle and the four trailers are
 # what the version-3 self-hosting metric attributes.
 on:
   workflow_dispatch:
