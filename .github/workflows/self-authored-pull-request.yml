@@ -48,7 +48,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      GH_TOKEN: ${{ github.token }}
+      # A push or pull request made with GITHUB_TOKEN starts no workflow run.
+      # When the repository provides FORMAL_AI_BOT_TOKEN (a fine-grained token
+      # with contents and pull-requests write), it is used instead so the bot
+      # pull request gets its checks without a human touching the branch.
+      GH_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN || github.token }}
+      FORMAL_AI_BOT_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN }}
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
       BASE_BRANCH: ${{ github.head_ref || github.event.repository.default_branch }}
     steps:
@@ -196,10 +201,9 @@ jobs:
           gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
             --body "$(printf 'Formal AI authored this commit in run %s/%s/actions/runs/%s:\n\n```\n%s\n```' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(cat authored-commit.txt)")"
           gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Formal AI opened $PULL_REQUEST for this task."
-          # A push made with GITHUB_TOKEN starts no workflow run, so the pull
-          # request would stay unchecked; dispatch the pipeline on its branch.
-          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH" || \
-            echo "::warning::could not dispatch the pipeline on $BRANCH; run it by hand"
+          if [[ -z "${FORMAL_AI_BOT_TOKEN:-}" ]]; then
+            echo "::notice::pushed with GITHUB_TOKEN, which starts no workflow run; a maintainer must close and reopen $PULL_REQUEST to get checks, or set the FORMAL_AI_BOT_TOKEN secret"
+          fi
 
       - name: Report a failed attempt on the pull request
         if: failure() && steps.pull_request.outputs.url != ''
