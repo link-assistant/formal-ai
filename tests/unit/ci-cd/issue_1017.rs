@@ -17,8 +17,11 @@
 //! `dev/log/issues/1017/pulls/1018/README.md`.
 
 use std::fs;
-use std::path::{Path, PathBuf};
 use std::process::Command;
+
+// Moved to `workflow_fixtures` when this file reached the 1000-line cap; the
+// two modules that import it from here keep working through this re-export.
+pub use super::workflow_fixtures::workflow_files;
 use std::time::Instant;
 
 use super::issue_796::{run_classifier, sandbox};
@@ -33,57 +36,6 @@ fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
         .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
         .replace("\r\n", "\n")
-}
-
-/// Every file CI executes: the workflows, and the composite actions and shell
-/// scripts they call.
-///
-/// Issue #1085 moved the self-authored authoring loop into
-/// `.github/actions/author-with-formal-ai/` so another repository can install
-/// it (hive-mind#2233). Every gate in this module reads this list, so a scan of
-/// `.github/workflows` alone would have let a `git push` or a credentialed
-/// checkout escape review by moving one directory across -- the shell CI runs
-/// is the same shell either way.
-pub fn workflow_files() -> Vec<(String, String)> {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let mut files = Vec::new();
-    collect_ci_files(&root.join(".github/workflows"), &root, &mut files);
-    collect_ci_files(&root.join(".github/actions"), &root, &mut files);
-    files.sort();
-    assert!(!files.is_empty(), "no workflow files found");
-    files
-}
-
-fn collect_ci_files(dir: &Path, root: &Path, files: &mut Vec<(String, String)>) {
-    let Ok(entries) = fs::read_dir(dir) else {
-        return;
-    };
-    for entry in entries {
-        let path = entry.expect("workflow entry").path();
-        if path.is_dir() {
-            collect_ci_files(&path, root, files);
-            continue;
-        }
-        if !path
-            .extension()
-            .is_some_and(|ext| ext == "yml" || ext == "yaml" || ext == "sh")
-        {
-            continue;
-        }
-        let name = path
-            .strip_prefix(root)
-            .unwrap_or(&path)
-            .to_string_lossy()
-            .into_owned();
-        let name = name
-            .strip_prefix(".github/workflows/")
-            .unwrap_or(&name)
-            .to_owned();
-        files.push((
-            name,
-            fs::read_to_string(&path).unwrap().replace("\r\n", "\n"),
-        ));
-    }
 }
 
 /// `timeout-minutes:` as written, which may be a `${{ ... }}` expression when a
