@@ -9,8 +9,13 @@ name: Self-authored pull request
 #   seed: <repository directory copied into the scratch workspace>
 #   produces: <path, inside the workspace, the agent must write>
 #   into: <repository path the artifact is copied to>
-#   contains: <text the artifact must contain>   (repeatable)
+#   contains: <text one of the artifacts must contain>   (repeatable)
 #   message: <conventional commit subject>
+#
+# `produces:` and `into:` are read in order and paired, so a change that has to
+# land with a changelog fragment beside it is one authoring run with two
+# artifacts. A source change without a fragment fails the changelog gate, which
+# is what a self-authored pull request has to satisfy like any other.
 #
 # The pull request is opened first so the authored commit can name it in its
 # trailer, and a re-run stops once a commit on the pull request carries that
@@ -118,11 +123,13 @@ jobs:
             echo "title=$title"
             echo "task=$(field task)"
             echo "seed=$(field seed)"
-            echo "produces=$(field produces)"
-            echo "into=$(field into)"
             echo "message=$(field message)"
           } >> "$GITHUB_OUTPUT"
           sed -n 's/^contains: *//p' task-body.txt > contains.txt
+          sed -n 's/^produces: *//p' task-body.txt > produces.txt
+          sed -n 's/^into: *//p' task-body.txt > into.txt
+          [[ "$(wc -l < produces.txt)" == "$(wc -l < into.txt)" ]] \
+            || { echo "::error::issue #$number pairs $(wc -l < produces.txt) 'produces:' lines with $(wc -l < into.txt) 'into:' lines"; exit 1; }
 
       - name: Setup Rust
         if: steps.task.outputs.number != ''
@@ -212,8 +219,6 @@ jobs:
         env:
           TASK: ${{ steps.task.outputs.task }}
           SEED: ${{ steps.task.outputs.seed }}
-          PRODUCES: ${{ steps.task.outputs.produces }}
-          INTO: ${{ steps.task.outputs.into }}
           MESSAGE: ${{ steps.task.outputs.message }}
           NUMBER: ${{ steps.task.outputs.number }}
           PULL_REQUEST: ${{ steps.pull_request.outputs.url }}
@@ -224,8 +229,15 @@ jobs:
           while IFS= read -r expected; do
             [[ -n "$expected" ]] && contains+=(--contains "$expected")
           done < contains.txt
+          artifacts=()
+          while IFS= read -r produced; do
+            [[ -n "$produced" ]] && artifacts+=(--produces "$produced")
+          done < produces.txt
+          while IFS= read -r destination; do
+            [[ -n "$destination" ]] && artifacts+=(--into "$destination")
+          done < into.txt
           AGENT=agent PORT=8931 scripts/author-change-with-formal-ai.sh \
-            --task "$TASK" --seed "$SEED" --produces "$PRODUCES" --into "$INTO" \
+            --task "$TASK" --seed "$SEED" "${artifacts[@]}" \
             --evidence "$EVIDENCE" --pull-request "$PULL_REQUEST" \
             --message "$MESSAGE (#$NUMBER)" "${contains[@]}"
 

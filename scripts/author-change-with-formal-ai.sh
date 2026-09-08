@@ -25,6 +25,7 @@
 #     --task "<prompt>" \
 #     --produces <workspace-relative file the CLI must write> \
 #     --into <repo-relative destination> \
+#     [--produces <file> --into <destination>]...   (repeatable, in pairs) \
 #     --evidence <repo-relative evidence directory> \
 #     --pull-request <https://github.com/owner/repo/pull/N> \
 #     --message "<commit subject>" \
@@ -39,8 +40,10 @@ AGENT="${AGENT:-agent}"
 PORT="${PORT:-8899}"
 
 task=""
-produces=""
-into=""
+# Repeatable in pairs: a change that has to land with a changelog fragment
+# beside it is two artifacts of one authoring run, not two runs (issue #1085).
+produces=()
+into=()
 evidence=""
 pull_request=""
 message=""
@@ -56,8 +59,8 @@ die() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --task) task="$2"; shift 2 ;;
-    --produces) produces="$2"; shift 2 ;;
-    --into) into="$2"; shift 2 ;;
+    --produces) produces+=("$2"); shift 2 ;;
+    --into) into+=("$2"); shift 2 ;;
     --evidence) evidence="$2"; shift 2 ;;
     --pull-request) pull_request="$2"; shift 2 ;;
     --message) message="$2"; shift 2 ;;
@@ -70,11 +73,14 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$task" ]] || die "--task is required"
-[[ -n "$produces" ]] || die "--produces is required"
+[[ "${#produces[@]}" -gt 0 ]] || die "--produces is required"
+[[ "${#into[@]}" -le "${#produces[@]}" ]] || die "more --into than --produces"
+while [[ "${#into[@]}" -lt "${#produces[@]}" ]]; do
+  into+=("${produces[${#into[@]}]}")
+done
 [[ -n "$evidence" ]] || die "--evidence is required"
 [[ -n "$pull_request" ]] || die "--pull-request is required"
 [[ -n "$message" ]] || die "--message is required"
-into="${into:-$produces}"
 
 # The trailer is only meaningful if the metric can parse it, so reject a
 # malformed pull-request reference here rather than at release time.
@@ -144,22 +150,38 @@ model_version="$("$BIN" --version 2>/dev/null | awk '{ print $NF }')"
 model="formal-ai/${model_version:-unknown}"
 printf 'formal-ai model %s\n' "$model" >>"$out/session-id.txt"
 
-[[ -f "$work/$produces" ]] || die "the Agent CLI did not write $produces"
+for index in "${!produces[@]}"; do
+  [[ -f "$work/${produces[index]}" ]] \
+    || die "the Agent CLI did not write ${produces[index]}"
+done
+# Every `--contains` is checked against the whole set, because the text that
+# proves the change landed lives in one of the artifacts, not in each of them.
 for expected in ${contains[@]+"${contains[@]}"}; do
-  grep -Fq "$expected" "$work/$produces" \
-    || die "the artifact does not contain: $expected"
+  found=0
+  for produced in "${produces[@]}"; do
+    if grep -Fq "$expected" "$work/$produced"; then
+      found=1
+      break
+    fi
+  done
+  [[ "$found" -eq 1 ]] || die "no artifact contains: $expected"
 done
 
-mkdir -p "$(dirname "$ROOT/$into")"
-cp "$work/$produces" "$ROOT/$into"
-echo "Formal AI wrote $into in session $session_id; evidence in $evidence"
+destinations=()
+for index in "${!produces[@]}"; do
+  destination="${into[index]}"
+  mkdir -p "$(dirname "$ROOT/$destination")"
+  cp "$work/${produces[index]}" "$ROOT/$destination"
+  destinations+=("$destination")
+done
+echo "Formal AI wrote ${destinations[*]} in session $session_id; evidence in $evidence"
 
 if [[ "$commit" -eq 0 ]]; then
-  echo "--no-commit: leaving $into and $evidence staged for review"
+  echo "--no-commit: leaving ${destinations[*]} and $evidence staged for review"
   exit 0
 fi
 
-git -C "$ROOT" add -- "$into" "$evidence"
+git -C "$ROOT" add -- "${destinations[@]}" "$evidence"
 git -C "$ROOT" diff --cached --quiet && die "the run reproduced the committed bytes; nothing to author"
 git -C "$ROOT" commit --quiet --message "$message" --message "$(
   printf 'Formal-AI-Session: %s\nFormal-AI-Model: %s\nFormal-AI-Evidence: %s\nFormal-AI-Pull-Request: %s\n' \

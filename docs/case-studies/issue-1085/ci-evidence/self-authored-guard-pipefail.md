@@ -62,3 +62,19 @@ pre-fix version, committed when the branch was opened. Every script the
 workflow runs after that checkout comes from the branch being authored, not
 from the run's own head. The workflow now copies both scripts into
 `$RUNNER_TEMP` before anything switches branches and runs them from there.
+
+## What the bot pull request's own CI then showed
+
+#1097 carried exactly one authored commit, by `github-actions[bot]`, with the
+four trailers and the evidence bundle, and no human commit. Its checks were red
+for one reason of its own: a source change with no changelog fragment. The
+authoring contract produced a single artifact, so Formal AI could not satisfy a
+gate that every other pull request satisfies.
+
+`scripts/author-change-with-formal-ai.sh` now takes `--produces`/`--into` in
+pairs and the workflow reads repeated `produces:`/`into:` lines from the issue,
+so one Agent CLI session authors the change and its fragment together. #1091
+carries the two-artifact contract; #1097 was closed for a run under it.
+
+(The same run's `check_minimal_core_boundary` failure was the pull request's
+base being older than the branch, not the authored change.)
