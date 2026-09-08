@@ -58,6 +58,12 @@ jobs:
       toml-changed: ${{ steps.changes.outputs.toml-changed }}
       docs-changed: ${{ steps.changes.outputs.docs-changed }}
       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      # Only the files a pipeline job executes: its own definition, a composite
+      # action it calls, or a script those run. `workflow-changed` fires for any
+      # file under `.github/workflows/`, which made an edit to a scheduled
+      # benchmark pay for the macOS archive, the Docker check, six box images
+      # and a 25-minute agent E2E (issue #1107).
+      pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
     steps:
       - uses: actions/checkout@v7
@@ -188,7 +194,7 @@ jobs:
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     steps:
       - uses: actions/checkout@v7
@@ -288,6 +294,7 @@ jobs:
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.pipeline-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     steps:
@@ -369,7 +376,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     strategy:
       fail-fast: false
@@ -517,7 +524,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     uses: ./.github/workflows/macos-core-tests.yml
     # Issue #1017: archive and slices must merge the same base commit.
@@ -1132,7 +1139,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     # Issue #1081 moved the 51 steps behind this call into their own file; the
     # reasoning is in its header. The cap moved with them, because a caller job
@@ -1158,7 +1165,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     steps:
       - uses: actions/checkout@v7
@@ -1207,7 +1214,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     strategy:
       fail-fast: false

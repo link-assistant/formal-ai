@@ -135,7 +135,7 @@ this file says which slice carried what.
 
 - First self-authored run: `formal-ai serve` was silent past the port wait
   because the native seed mirror ran before bind; the mirror now runs on a
-  thread after the listener is up (`FORMAL_AI_SEED_LINKS_MIRROR=0` skips
+  thread after the listener is up (`FORMAL_AI_SEED_LINKS_MIRROR=1` asks for
   it). The second run authored #1093: commit `72b133c` under
   `github-actions[bot]` with the four trailers and the evidence bundle, adding
   `Gemfile.lock` to the lockfile names (#1091); #1092 (bootstrap only) was

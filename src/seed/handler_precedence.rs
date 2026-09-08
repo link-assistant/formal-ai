@@ -19,8 +19,18 @@ use super::parser::parse_lino;
 
 /// Ordered specialized-handler names, in dispatch precedence order (first wins),
 /// as declared by the shipped `data/seed/handler-precedence.lino`.
+/// Built once from the seed links network.
+///
+/// `specialized_handlers()` asks for the precedence on every dispatch, so
+/// rebuilding it from the network per call is per-request work that grows with
+/// the seed (issue #1085 D1.2).
 #[must_use]
-pub fn handler_precedence() -> Vec<String> {
+pub fn handler_precedence() -> &'static [String] {
+    static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+    CELL.get_or_init(load_handler_precedence)
+}
+
+fn load_handler_precedence() -> Vec<String> {
     let network = crate::seed_links::network();
     let Some(root) = network
         .top_level(HANDLER_PRECEDENCE_PATH)

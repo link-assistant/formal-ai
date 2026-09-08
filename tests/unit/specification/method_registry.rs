@@ -262,9 +262,9 @@ fn the_registry_is_the_sole_authority_that_closes_over_the_route_corpus() {
 
     // The full vocabulary the system can ever emit (a superset of must_resolve).
     let mut corpus = must_resolve.clone();
-    for intent in intent_routing().intents {
+    for intent in &intent_routing().intents {
         if !intent.slug.is_empty() {
-            corpus.push(intent.slug);
+            corpus.push(intent.slug.clone());
         }
     }
     corpus.sort_unstable();

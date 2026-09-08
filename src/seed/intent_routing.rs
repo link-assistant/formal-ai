@@ -34,8 +34,21 @@ pub struct IntentRouting {
     pub trace_prefixes: Vec<String>,
 }
 
+/// The intent routing table, built once from the seed links network.
+///
+/// Rebuilding it per call cost real time: `rule_interpreter`'s `route_exact`
+/// condition and `intent_formalization` both ask for it inside a request, and
+/// the held-out generalization end-to-end run went from 265 s on `main` to
+/// over its 540 s budget on the branch that made routing a link query
+/// (issue #1085 D1.2). The network itself is already a process-wide cache;
+/// this is the table derived from it.
 #[must_use]
-pub fn intent_routing() -> IntentRouting {
+pub fn intent_routing() -> &'static IntentRouting {
+    static CELL: std::sync::OnceLock<IntentRouting> = std::sync::OnceLock::new();
+    CELL.get_or_init(load_intent_routing)
+}
+
+fn load_intent_routing() -> IntentRouting {
     let network = crate::seed_links::network();
     let mut routing = IntentRouting::default();
     let Some(root) = network.top_level(INTENT_ROUTING_PATH).into_iter().next() else {

@@ -473,6 +473,8 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // `backticks`, `cleaned`, `raw`, `literal`, `prompt`, `forms`), the
     // handler names themselves, and the response ids of their four-language
     // wording. Behaviour moving from Rust into seed data arrives as generated
-    // closure records, which is what this floor is for.
-    assert_eq!(expected_gaps.len(), 4_040);
+    // closure records, which is what this floor is for. Four more followed when
+    // those responses were given their Spanish text, which every supported
+    // locale owes the others.
+    assert_eq!(expected_gaps.len(), 4_044);
 }

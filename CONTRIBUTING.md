@@ -115,6 +115,158 @@ the local Formal AI server:
 solve ISSUE_URL --tool agent --model formal-ai --attach-logs --verbose
 ```
 
+### Delegate the next commit to Formal AI: task issue, bot branch, review, merge
+
+The replay above runs the loop by hand on one machine. The loop we actually
+develop by is the same one driven from GitHub Actions, so that no local
+resources are spent and every step leaves reviewable evidence. Each commit we
+would otherwise write by hand becomes a task Formal AI performs for us, and the
+share of hand-written commits falls over time.
+
+The target chain is our own products end to end: **GitHub Actions -> Hive Mind
+-> Agent CLI -> Formal AI**. The action compiles Formal AI from the sources on
+the branch under review and takes everything else from packages or containers,
+so a run always exercises the meta algorithm as it exists on that branch, spends
+no local resources, and can be adjusted by an ordinary reviewed change to the
+branch.
+
+Today `.github/workflows/self-authored-pull-request.yml` runs
+**Actions -> Agent CLI -> Formal AI**: it drives the pinned
+`@link-assistant/agent` against a locally built `formal-ai serve` directly,
+because `solve --model formal-ai` used to commit none of the trailers or the
+evidence bundle the self-hosting metric attributes
+([hive-mind#2229](https://github.com/link-assistant/hive-mind/issues/2229)).
+Hive Mind fixed that in
+[hive-mind#2230](https://github.com/link-assistant/hive-mind/pull/2230),
+released in v2.24.0; this repository still pins 2.15.1 in
+`.github/workflows/agent-cli-e2e.yml`. Moving the authoring step onto
+`solve … --tool agent --model formal-ai --attach-logs --verbose` behind the
+updated pin is the remaining step, and it belongs in this loop like any other:
+raise the pin, run one task through it, and compare the commit it produces with
+what the direct path produces.
+
+The steps, in order:
+
+1. **Write the task as an issue.** Small and self-contained: one behaviour, one
+   file where possible. Label it `formal-ai-solve` and give it the contract
+   `.github/workflows/self-authored-pull-request.yml` reads, which is documented
+   in that workflow's header (`task:`, `seed:`, `produces:`, `into:`,
+   `contains:`, `message:`). Make it a sub-issue of the pull request's issue so
+   the delegation is visible from the work it belongs to.
+2. **Let the action author it.** Labelling the issue starts the run. It opens a
+   draft pull request under `github-actions[bot]` first, so the authored commit
+   can name it in its `Formal-AI-Pull-Request` trailer, and it targets the
+   branch the run checked out — the pull request we are working in, not `main`.
+   Then it drives the pinned Agent CLI against a locally built `formal-ai
+   serve` and pushes one commit carrying the four trailers and its evidence
+   bundle. No human commit goes on that branch; a human commit there is the one
+   thing that invalidates the claim.
+3. **Judge the quality on that branch, not in the abstract.** The bot pull
+   request runs the full CI of the repository. Read the diff and the session
+   evidence: did Formal AI make the change asked for, or answer around it? Did
+   it stop after the first clause of a two-part task? Did it route the request
+   somewhere unrelated? The branch is disposable, so this is a cheap experiment.
+4. **If the quality is poor, fix the meta algorithm, not the commit.** Do not
+   hand-correct the bot's work and merge it. Close the branch, record what the
+   session actually did as evidence, file the defect, and improve and generalise
+   Formal AI so the same class of task succeeds — then run the task again. The
+   defects found this way are the point of the exercise, not a detour:
+   [#1095](https://github.com/link-assistant/formal-ai/issues/1095),
+   [#1096](https://github.com/link-assistant/formal-ai/issues/1096),
+   [#1099](https://github.com/link-assistant/formal-ai/issues/1099) and
+   [#1101](https://github.com/link-assistant/formal-ai/issues/1101) were all
+   found by running tasks this way and reading what came back.
+5. **When satisfied, merge the bot pull request into the working pull request.**
+   Its commits arrive with their trailers intact, so the self-hosting metric
+   attributes them, and the work reaches `main` through the ordinary review of
+   the pull request they merged into.
+
+A draft is finished in one of exactly two ways: **merged**, or **closed with the
+defect it exposed filed** against the meta algorithm. Leaving it open is
+neither, and it is the failure mode this loop falls into by default — seven bot
+pull requests were opened on 2026-09-08 and none was merged. The
+`Self-authored backlog` workflow reports every open one daily with its age, its
+check state and how far its base has moved, and fails once one has been open
+more than three days. Merging the green ones is what turns the loop into
+commits Formal AI wrote; reading the red ones is what improves it.
+
+Two rules keep the loop honest. Process record is not authored behaviour: the
+changelog fragment a source change needs is written by the bootstrap commit that
+opens the bot pull request, because `changelog.d/` is one of the trees the
+metric excludes from both sides of the share. And the base a run authors against
+must be current — a bot branch cut before a fix on the working branch fails for
+that fix's absence, so rerun the task rather than pushing the fix onto the bot
+branch.
+
+[#1103](https://github.com/link-assistant/formal-ai/pull/1103) is the worked
+example: two commits, both by `github-actions[bot]`, one of them Formal AI's own
+change to the self-hosting metric with its session evidence beside it.
+
+#### The action is installable in other repositories
+
+The loop is worth as much to our other repositories as to this one, and it is
+worth most where the volume of new issues is highest. The target is that any
+repository can install one action and have Formal AI open a draft attempt at
+every new issue — Hive Mind first, whose issues are the ones we read most often.
+A draft that is wrong is not waste: it fails in public, on a branch nobody
+depends on, and the failure is the input the next improvement is made from. Fail
+fast to learn fast.
+
+The loop therefore lives in `.github/actions/author-with-formal-ai`, a composite
+action, and this repository's `self-authored-pull-request.yml` is its first
+consumer rather than a separate implementation. Three inputs are what make it
+installable elsewhere:
+
+- **`formal-ai-source`** — `container` by default, pulling the binary out of
+  `ghcr.io/link-assistant/formal-ai`, so a consuming repository spends no
+  compile. This repository passes `source`, because a change to the meta
+  algorithm has to be measured by the branch making it, not by the last release.
+- **`require-contract`** — `true` demands the `task:`/`seed:`/`produces:`/
+  `into:`/`message:` lines. `false` derives the task from the issue title and
+  body, which is what a repository attempting *every new issue* wants: a draft
+  that fails is the evidence it asked for, not an error.
+- **`formal-ai-ref`** — where the shared scripts come from. They are fetched
+  from this repository rather than vendored into the action, so there is one
+  copy of each to fix; the repository that owns them runs its own branch's
+  copies, so a change to them is testable in the pull request making it.
+
+Every script the action runs is staged into `RUNNER_TEMP` before anything
+switches branches. That is not tidiness: run 34224940281 failed on a bug its own
+head had already fixed, because after `git checkout` of the bot branch the
+script it ran came off that branch. The CI contract tests read
+`.github/actions/**` as well as `.github/workflows/**` for the same reason — the
+shell CI executes is the same shell whichever directory it sits in.
+
+[hive-mind#2233](https://github.com/link-assistant/hive-mind/issues/2233) asks
+for the first outside installation, on `issues: opened`, so every new issue
+there gets a draft attempt. The drafts it opens are read the same way as here:
+judge the quality on the branch, and when it is poor, improve the meta
+algorithm.
+
+#### A branch pays for what it changed
+
+The loop is only as fast as the CI bill it pays. One push to a feature branch
+cost about 310 job-minutes across 16 workflows, and a day of iterating on one
+branch cost roughly 4,600 — a budget every self-authored draft competes for.
+Two rules keep that down, and both are measured in
+[#1107](https://github.com/link-assistant/formal-ai/issues/1107):
+
+- **Build the binary once per source change, not once per workflow.** Seven
+  workflows compiled the same `formal-ai` release binary on every push, two to
+  five minutes each. `.github/actions/formal-ai-binary` keys a cache by the
+  content of `src`, `Cargo.toml`, `Cargo.lock` and `build.rs`, so a push that
+  changed none of them reuses the build and installs no toolchain at all. Use
+  it from any workflow that only needs to *run* the binary.
+- **Gate the heavy jobs on the files they execute.** `detect-changes` publishes
+  `pipeline-changed` beside `workflow-changed`: the former is true only for the
+  pipeline's own definition, a composite action it calls, or a script those run.
+  The macOS archive, the Docker check, the six box images and the 25-minute
+  agent end-to-end run are gated on it, so editing an unrelated workflow no
+  longer buys them.
+
+Neither rule may become a silent skip. A job that does not run on a branch is
+reported as not-run, never as passed, and `main` still runs everything.
+
 ### Always run automated `solve` sessions with `--attach-logs --verbose`
 
 Every automated session started against this repository — by hand or by a

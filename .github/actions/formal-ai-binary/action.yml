@@ -1,0 +1,64 @@
+name: Provide the formal-ai binary
+description: >-
+  Put `target/release/formal-ai` on the runner, reusing a cached build of the
+  exact same sources when one exists. Seven workflows compiled the same binary
+  on every push; a release build costs two to five minutes each time, so the
+  cache is the difference between a branch paying once per source change and
+  paying once per workflow (issue #1107).
+
+inputs:
+  cache-key-prefix:
+    description: Prefix for the binary cache key, so an unrelated cache never matches.
+    required: false
+    default: formal-ai-binary
+
+runs:
+  using: composite
+  steps:
+    # The key is the content of everything the binary is built from. Two pushes
+    # that change only workflows or documentation therefore share one build,
+    # and a push that changes a single source file gets a new one -- which is
+    # what makes an iterating agent cheap without ever serving a stale binary.
+    - name: Key the binary by the sources it is built from
+      id: key
+      shell: bash
+      run: |
+        set -euo pipefail
+        digest=$(git ls-files -s src Cargo.toml Cargo.lock build.rs 2>/dev/null \
+          | git hash-object --stdin)
+        echo "digest=$digest" >> "$GITHUB_OUTPUT"
+        echo "source digest: $digest"
+
+    - name: Restore the binary built from these sources
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: target/release/formal-ai
+        key: ${{ inputs.cache-key-prefix }}-${{ runner.os }}-${{ steps.key.outputs.digest }}
+
+    - name: Setup Rust
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: dtolnay/rust-toolchain@stable
+
+    - uses: ./.github/actions/setup-sccache
+      if: steps.cache.outputs.cache-hit != 'true'
+
+    - uses: ./.github/actions/cache-cargo-registry
+      if: steps.cache.outputs.cache-hit != 'true'
+      with:
+        restore-only: 'true'
+
+    - name: Build formal-ai
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: cargo build --release --locked --bin formal-ai
+
+    - name: Report which binary this is
+      shell: bash
+      env:
+        CACHE_HIT: ${{ steps.cache.outputs.cache-hit || 'false' }}
+      run: |
+        set -euo pipefail
+        chmod +x target/release/formal-ai
+        printf 'formal-ai %s (cache hit: %s)\n' \
+          "$(target/release/formal-ai --version)" "$CACHE_HIT"

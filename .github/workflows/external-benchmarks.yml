@@ -116,8 +116,10 @@ jobs:
           python -m pip install \
             "git+https://github.com/SWE-bench/SWE-bench.git@f7bbbb2ccdf479001d6467c9e34af59e44a840f9"
 
-      - name: Build the harness
-        run: cargo build --release --bin formal-ai
+      # Reused across every workflow that only needs to *run* the binary: the
+      # cache key is the content of the sources it is built from, so a push that
+      # changed neither pays nothing (issue #1107).
+      - uses: ./.github/actions/formal-ai-binary
 
       - name: Run the bounded upstream slice
         env:

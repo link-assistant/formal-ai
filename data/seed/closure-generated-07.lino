@@ -644,6 +644,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence repetition hi"
+  response_policy_bounded_autonomy_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response policy bounded autonomy es"
   response_proof_datalog_counterexample_hi
     defined-by response_template
     lexeme en

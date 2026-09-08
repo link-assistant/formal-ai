@@ -30,7 +30,10 @@ fn every_seed_and_meta_document_is_loaded_into_the_network_once() {
 #[test]
 fn handler_precedence_read_through_link_queries_equals_the_document() {
     let from_links = handler_precedence();
-    assert_eq!(from_links, handler_precedence_from(HANDLER_PRECEDENCE_LINO));
+    assert_eq!(
+        from_links,
+        handler_precedence_from(HANDLER_PRECEDENCE_LINO).as_slice()
+    );
     assert!(from_links.len() > 40);
     // The same rows through the generic pattern `(root $child)`.
     let loaded = network();
@@ -53,7 +56,7 @@ fn cue_sets_and_intent_routing_read_the_same_records_as_their_former_parsers() {
     assert_eq!(cue_sets(), cue_sets_from(CUE_LEXICON_LINO).as_slice());
     assert!(cue_sets().iter().any(|set| set.name == "write_script"));
     let routing = intent_routing();
-    assert_eq!(routing, intent_routing_from(INTENT_ROUTING_LINO));
+    assert_eq!(*routing, intent_routing_from(INTENT_ROUTING_LINO));
     assert!(routing.intents.iter().any(|route| route.slug == "greeting"));
     assert!(network().document(INTENT_ROUTING_PATH).is_some());
 }

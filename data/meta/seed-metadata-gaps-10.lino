@@ -287,6 +287,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "response_general_plan_command_output_evidence_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_46f975d401d18c3a
+    source "data/seed/closure-generated-07.lino"
+    record "response_policy_bounded_autonomy_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1bbb123cf74fa19a
     source "data/seed/closure-generated-07.lino"
     record "response_summarization_evidence_summary_en"
