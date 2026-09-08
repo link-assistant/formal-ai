@@ -142,6 +142,12 @@ jobs:
             echo "url=$existing" >> "$GITHUB_OUTPUT"
             echo "branch=$branch" >> "$GITHUB_OUTPUT"
             echo "evidence=$evidence/evidence" >> "$GITHUB_OUTPUT"
+            # Once a commit on the branch names this pull request in its
+            # trailer the task is authored; a re-run must not author it again.
+            if git log "origin/$branch" --format=%B | grep -Fxq "Formal-AI-Pull-Request: $existing"; then
+              echo "::notice::$existing already carries the authored commit; waiting for review"
+              echo "done=true" >> "$GITHUB_OUTPUT"
+            fi
             exit 0
           fi
           branch="formal-ai/issue-$NUMBER-${GITHUB_RUN_ID}"
@@ -167,7 +173,7 @@ jobs:
           echo "evidence=$evidence/evidence" >> "$GITHUB_OUTPUT"
 
       - name: Author the change with Formal AI
-        if: steps.task.outputs.number != ''
+        if: steps.task.outputs.number != '' && steps.pull_request.outputs.done != 'true'
         env:
           TASK: ${{ steps.task.outputs.task }}
           SEED: ${{ steps.task.outputs.seed }}
@@ -189,7 +195,7 @@ jobs:
             --message "$MESSAGE (#$NUMBER)" "${contains[@]}"
 
       - name: Push the authored commit and report
-        if: steps.task.outputs.number != ''
+        if: steps.task.outputs.number != '' && steps.pull_request.outputs.done != 'true'
         env:
           NUMBER: ${{ steps.task.outputs.number }}
           BRANCH: ${{ steps.pull_request.outputs.branch }}
