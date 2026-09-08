@@ -52,6 +52,15 @@ bodies with a single `--jq` expression and counts with `grep -c` (which reads
 all of its input, so it cannot repeat the SIGPIPE), and both callers assign the
 count to a variable so a failure stops the step.
 
+## The base a dispatched run opens against
+
+`BASE_BRANCH` was `github.head_ref || github.event.repository.default_branch`.
+`github.head_ref` is empty outside a pull-request event, so the dispatched run
+34241163195 opened #1102 against `main`: a pull request carrying all 37 commits
+of the branch the change was authored on, instead of the one authored commit.
+The base is now `github.head_ref || github.ref_name`, the branch the run checked
+out, for dispatch, schedule and the issue trigger alike.
+
 ## And the fix reached the runner one run late
 
 Run 34224940281 failed with the same `accepts at most 1 arg(s), received 4`

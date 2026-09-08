@@ -15,6 +15,10 @@ multilingual_responses
     intent opinion_question
     language zh
     text '我是一个确定性的符号 AI。我没有观点、信念或感受——我给出的每个回答都源自明确的 Links Notation 规则。如果你想了解这个主题的事实信息，请问“<主题>是什么”，我会在知识库中查找。'
+  response response_opinion_question_es
+    intent opinion_question
+    language es
+    text 'Soy una IA simbólica determinista. No tengo opiniones, creencias ni sentimientos: cada respuesta que doy se deriva de una regla explícita en Links Notation. Si buscas información factual sobre este tema, pregunta "qué es <tema>" y lo buscaré en mi base de conocimiento.'
   response response_policy_bounded_autonomy_en
     intent policy_bounded_autonomy
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent policy_bounded_autonomy
     language zh
     text "我只能以聊天回复的方式作答。未经明确启用代理模式，不允许代表你运行 shell 命令；即使启用，也只能在隔离的沙箱中运行。"
+  response response_policy_bounded_autonomy_es
+    intent policy_bounded_autonomy
+    language es
+    text "Solo puedo responder con un mensaje de chat. Ejecutar comandos de shell en tu nombre no está permitido sin activar explícitamente el modo agente, y aun así solo dentro de un entorno aislado."
   response response_punctuation_only_en
     intent punctuation_only
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent punctuation_only
     language zh
     text "我只收到了标点符号（`{prompt}`）。接下来你想让我做什么？"
+  response response_punctuation_only_es
+    intent punctuation_only
+    language es
+    text "Solo recibí signos de puntuación (`{prompt}`). ¿Qué quieres que haga a continuación?"
   response response_docs_method_explanation_en
     intent docs_method_explanation
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent docs_method_explanation
     language zh
     text "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
+  response response_docs_method_explanation_es
+    intent docs_method_explanation
+    language es
+    text "pandas `DataFrame.join` une las columnas del DataFrame `other` o de una Series con nombre al DataFrame que lo llama y devuelve un DataFrame nuevo.\n\nEn el ámbito de este método: de forma predeterminada hace un left join usando el índice del DataFrame que llama. Si se indica `on`, pandas compara esa columna o ese nivel de índice con el índice del objeto `other`. El parámetro `how` controla la combinación de claves (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` o `right_anti`). Usa `lsuffix` y `rsuffix` cuando los nombres de columna coinciden, `sort` para ordenar las claves del join y `validate` para comprobar relaciones one-to-one, one-to-many, many-to-one o many-to-many. Para joins de columna a columna, la documentación de pandas remite a `DataFrame.merge`.\n\nFuente: [pandas.DataFrame.join]({docs_url}) (documentación oficial de pandas)."
   response response_external_benchmark_stagnant_suite_en
     intent external_benchmark_stagnant_suite
     language en
