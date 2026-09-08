@@ -111,7 +111,9 @@ fn the_leg_is_gated_like_the_other_slow_legs() {
         "github.event_name == 'workflow_dispatch'",
         "needs.detect-changes.outputs.any-code-changed == 'true'",
         "needs.detect-changes.outputs.rs-changed == 'true'",
-        "needs.detect-changes.outputs.workflow-changed == 'true'",
+        // Issue #1107: this leg is one of the heavy ones, so it follows the
+        // pipeline's own files rather than any workflow edit.
+        "needs.detect-changes.outputs.pipeline-changed == 'true'",
     ] {
         assert!(job.contains(gate), "missing gate {gate}");
     }
