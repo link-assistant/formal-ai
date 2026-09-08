@@ -196,6 +196,10 @@ jobs:
           gh pr comment "$PULL_REQUEST" --repo "$GITHUB_REPOSITORY" \
             --body "$(printf 'Formal AI authored this commit in run %s/%s/actions/runs/%s:\n\n```\n%s\n```' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(cat authored-commit.txt)")"
           gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Formal AI opened $PULL_REQUEST for this task."
+          # A push made with GITHUB_TOKEN starts no workflow run, so the pull
+          # request would stay unchecked; dispatch the pipeline on its branch.
+          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH" || \
+            echo "::warning::could not dispatch the pipeline on $BRANCH; run it by hand"
 
       - name: Report a failed attempt on the pull request
         if: failure() && steps.pull_request.outputs.url != ''
