@@ -94,7 +94,7 @@ fn routing_precedence_from_seed() {
     );
 
     // The reorder is behaviour-only: the same set of handlers, differently ordered.
-    let mut shipped_sorted = shipped;
+    let mut shipped_sorted = shipped.to_vec();
     shipped_sorted.sort();
     let mut swapped_sorted = swapped;
     swapped_sorted.sort();
@@ -284,7 +284,7 @@ fn reordering_is_the_only_thing_a_seed_edit_can_change() {
         shipped.last(),
         "a reversed fixture flips the precedence order"
     );
-    let mut shipped_sorted = shipped;
+    let mut shipped_sorted = shipped.to_vec();
     shipped_sorted.sort();
     reversed.sort();
     assert_eq!(
