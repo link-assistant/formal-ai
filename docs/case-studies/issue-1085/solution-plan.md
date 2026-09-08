@@ -81,6 +81,39 @@ this file says which slice carried what.
   link-cli store from the same links beside the memory store
   (`<memory>.seed.links`) and keeps it open for the process.
 
+## Push 16
+
+- **D2.2.** `src/agentic_coding/requirement_resolution.rs` resolves a
+  requirement that names behaviour or a declaration through the self-AST
+  census: an identifier named verbatim wins, otherwise the `const` or
+  `static` whose identifier words all occur in the requirement, ties broken by
+  module path words, remaining ties resolve to nothing. `structured_edit`
+  falls back to it when a task names no file. Every one of the 32 leaf
+  requirements resolves to its leaf file.
+- **D2.3 rules.** `experiments/issue_1028_agent_cli_ladder/leaves.tsv` is the
+  one committed leaf table (a sixth column carries the requirement wording),
+  and `rules/L01.lino` to `rules/L32.lino` express each leaf as a link-edit
+  rule that `parse_rule_document` reads and `apply_link_edit` applies; the
+  unit test applies all 32 to the current source.
+- **D4.** `verify-node.sh` runs `cargo test --test unit <module>` after
+  `cargo check` for every leaf and records compile, test and diff-size
+  results per node; a depth-4 composite applies both children's diffs to one
+  tree and compiles it; depth 3 and above are requirement-shaped (the prompt
+  lists the subtree's requirements, never files) and are verified by every
+  leaf marker, the modified-file set, formatting, compile and the tests of
+  every touched module. `run.sh` finishes a level before stopping, writes
+  `ladder-result.lino` with the deepest level whose nodes all passed and a
+  per-node README table. The workflow runs on pull requests that touch the
+  ladder or `src/agentic_coding` (leaf level), weekly over all levels, and on
+  dispatch, and compares the deepest passing level with
+  `data/meta/ladder-ratchet.lino` (record 5; deeper only).
+- **Not done in this push.** The root is the full 32-requirement composite,
+  not the real frontier issue the plan named; fixing a frontier issue end to
+  end is #1087 (D6). A pull request opened by the formal-ai model through
+  `hive-mind solve` under a bot identity needs Hive Mind to run against a
+  formal-ai server from CI with permission to open pull requests; that
+  remains open and is stated as such in the requirement table.
+
 ## Following pushes on the same branch
 
 7. **D3.4 rows.** Run `--replay-epoch` in CI, read the restated rows from the

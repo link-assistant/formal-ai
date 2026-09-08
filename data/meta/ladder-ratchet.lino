@@ -1,0 +1,8 @@
+ladder_ratchet
+  issue 1085
+  purpose "The Agent CLI ladder is a compile-and-test coding ladder. The deepest level whose nodes all passed is recorded here and may only move deeper, which is a smaller number; a scheduled all-levels run that reaches a shallower level is red, and a pull-request run must pass the leaf level."
+  criteria "leaf: one tracked file modified, marker present and absent from HEAD, anchor kept, rustfmt parses, cargo check --lib, cargo test --test unit for the module; depth 4: both verified child effects composed and both children's diffs applied to one tree that compiles; depth 3 and above: requirement-shaped prompt, every leaf marker under the node present, only those files modified, compile and the tests of every touched module"
+  deepest_passing_level 5
+  recorded_on 2026-09-08
+  baseline "the 2026-08-28 run passed 63 of 63 nodes under the read-and-echo criteria; under the compile-and-test criteria the record starts at the leaf level and the scheduled all-levels run moves it"
+  checker ".github/workflows/issue-1028-agent-ladder.yml step Compare the deepest passing level with the record"

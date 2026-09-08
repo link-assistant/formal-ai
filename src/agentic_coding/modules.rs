@@ -53,6 +53,7 @@ pub mod rebuild_plan;
 pub mod repair_strategy;
 mod report_issue;
 mod report_script;
+pub mod requirement_resolution;
 pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;
@@ -122,7 +123,7 @@ pub use learning_report::self_hosting_learning::{
 };
 pub use learning_report::{LearningReport, REPORTS};
 pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
-pub use link_edit_rules::{apply_link_edit, insert_members_via_links, rule_shapes, LinkEditError, LinkEditReport, LinkEditRule, RuleShape};
+pub use link_edit_rules::{apply_link_edit, insert_members_via_links, parse_rule_document, rule_shapes, LinkEditError, LinkEditReport, LinkEditRule, RuleDocument, RuleShape};
 pub use meaning_detail::{
     concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
 };
@@ -135,6 +136,7 @@ pub use question_catalog::{
 };
 pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
 pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
+pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirement_target};
 pub use routing_learning::{
     is_routing_learning_task, ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK,
 };

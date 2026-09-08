@@ -1,0 +1,8 @@
+link_edit
+  leaf L29
+  path src/google_trends_catalog.rs
+  language rust
+  rule rename_identifier
+    old "QUERY_PLACEHOLDER"
+    new "TRENDS_QUERY_PLACEHOLDER"
+  expect "TRENDS_QUERY_PLACEHOLDER"

@@ -186,11 +186,23 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
     // `issue_1069_every_ladder_leaf_reaches_a_real_change`, which requires all
     // 32 ladder leaves to reach the file their contract names.
     candidates.sort_by_key(|(offset, path)| (!path.contains('/'), *offset));
-    let target = candidates
+    let mut target = candidates
         .into_iter()
         .next()
         .map(|(_, path)| path)
-        .or(literal_target)?;
+        .or(literal_target);
+    // Issue #1085 (D2.2): a request that names behaviour and no file is
+    // resolved through the self-AST census, the links network over the
+    // workspace's own source.
+    if target.is_none()
+        && let Some(resolved) = super::requirement_resolution::resolve_requirement_target(task)
+    {
+        if !named.contains(&resolved.symbol) {
+            named.push(resolved.symbol.clone());
+        }
+        target = Some(resolved.module_path);
+    }
+    let target = target?;
     for token in prose
         .replacen(&target, " ", 1)
         .split(|character: char| !character.is_ascii_alphanumeric() && character != '_')

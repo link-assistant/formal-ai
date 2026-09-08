@@ -1,0 +1,8 @@
+link_edit
+  leaf L21
+  path src/solver_handler_how_synthesis.rs
+  language rust
+  rule replace_literal
+    old "FORMAL_AI_SOURCE_CACHE_DIR"
+    new "FORMAL_AI_HOW_SOURCE_CACHE_DIR"
+  expect "FORMAL_AI_HOW_SOURCE_CACHE_DIR"

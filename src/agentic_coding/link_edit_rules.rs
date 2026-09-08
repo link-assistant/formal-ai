@@ -81,6 +81,8 @@ pub enum LinkEditError {
     MemberPresent { list: String, member: String },
     /// An empty pattern would match everywhere.
     EmptyPattern,
+    /// A committed rule document lacks a field or names an unknown shape.
+    MalformedRule(String),
     /// The network refused the byte-range edit.
     EditRejected { start: usize, end: usize },
 }
@@ -88,6 +90,7 @@ pub enum LinkEditError {
 impl fmt::Display for LinkEditError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::MalformedRule(reason) => write!(f, "link_edit:malformed_rule:{reason}"),
             Self::EngineUnavailable => write!(f, "link_edit:engine_unavailable"),
             Self::RuleUndeclared(rule) => write!(f, "link_edit:rule_undeclared:{rule}"),
             Self::NotParsed(language) => write!(f, "link_edit:not_parsed:{language}"),
@@ -423,4 +426,83 @@ fn member_insertion_edit(
         ByteRange::new(final_member.end(), final_member.end()),
         format!("{separator}{quoted}"),
     ))
+}
+
+/// A committed rule document: one leaf's edit as data, applied by
+/// [`apply_link_edit`] (issue #1085 D2.3).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RuleDocument {
+    pub leaf: String,
+    pub path: String,
+    pub language: String,
+    pub rule: LinkEditRule,
+    /// Text the edited source must contain afterwards.
+    pub expect: Vec<String>,
+}
+
+/// Parse a `link_edit` document.
+///
+/// # Errors
+///
+/// Returns [`LinkEditError::MalformedRule`] when the path, the rule name or a
+/// rule field is missing.
+pub fn parse_rule_document(text: &str) -> Result<RuleDocument, LinkEditError> {
+    let mut leaf = String::new();
+    let mut path = String::new();
+    let mut language = String::from("rust");
+    let mut expect = Vec::new();
+    let mut rule_name = String::new();
+    let mut fields: Vec<(String, String)> = Vec::new();
+    for raw in text.lines() {
+        let trimmed = raw.trim_start();
+        if trimmed.is_empty() || trimmed.starts_with('#') || trimmed == "link_edit" {
+            continue;
+        }
+        let indent = raw.len() - trimmed.len();
+        let (name, value) = trimmed
+            .split_once(' ')
+            .map_or((trimmed, ""), |(name, value)| (name, value.trim()));
+        let value = value.trim_matches('"').to_owned();
+        match (indent, name) {
+            (2, "leaf") => leaf = value,
+            (2, "path") => path = value,
+            (2, "language") => language = value,
+            (2, "expect") => expect.push(value),
+            (2, "rule") => rule_name = value,
+            (4, field) => fields.push((field.to_owned(), value)),
+            _ => {}
+        }
+    }
+    if path.is_empty() {
+        return Err(LinkEditError::MalformedRule(String::from("path")));
+    }
+    let field = |name: &str| {
+        fields
+            .iter()
+            .find(|(candidate, _)| candidate == name)
+            .map(|(_, value)| value.clone())
+            .ok_or_else(|| LinkEditError::MalformedRule(name.to_owned()))
+    };
+    let rule = match rule_name.as_str() {
+        "insert_member" => LinkEditRule::InsertMember {
+            list: field("list")?,
+            member: field("member")?,
+        },
+        "replace_literal" => LinkEditRule::ReplaceLiteral {
+            old: field("old")?,
+            new: field("new")?,
+        },
+        "rename_identifier" => LinkEditRule::RenameIdentifier {
+            old: field("old")?,
+            new: field("new")?,
+        },
+        other => return Err(LinkEditError::MalformedRule(other.to_owned())),
+    };
+    Ok(RuleDocument {
+        leaf,
+        path,
+        language,
+        rule,
+        expect,
+    })
 }

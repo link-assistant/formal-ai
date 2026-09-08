@@ -47,48 +47,17 @@ RUN_LOG="$OUT/run.log"
 : > "$RUN_LOG"
 declare -A VERIFIED_EFFECTS=()
 
-cat > "$OUT/leaves.tsv" <<'EOF'
-L01	Edit the tracked file `src/web_search_core.rs`: add "wikiquote" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.	src/web_search_core.rs	"wikiquote"	WEB_SEARCH_PROVIDERS
-L02	Edit the tracked file `src/thinking.rs`: add "sensor_fusion" to the PLAIN_STEPS list. Change only that file and keep it valid Rust.	src/thinking.rs	"sensor_fusion"	PLAIN_STEPS
-L03	Edit the tracked file `src/seed/meanings/parse.rs`: add "provenance" to the FACET_KINDS list. Change only that file and keep it valid Rust.	src/seed/meanings/parse.rs	"provenance"	FACET_KINDS
-L04	Edit the tracked file `src/solver_handlers/pattern_inference.rs`: add "alternating" to the INTENT_MARKERS list. Change only that file and keep it valid Rust.	src/solver_handlers/pattern_inference.rs	"alternating"	INTENT_MARKERS
-L05	Edit the tracked file `src/how_to_guide.rs`: add "about" to the TOPIC_STOPWORDS list. Change only that file and keep it valid Rust.	src/how_to_guide.rs	"about"	TOPIC_STOPWORDS
-L06	Edit the tracked file `src/solver_handlers/web_requests.rs`: add "deep-foundation" to the PROMOTED_PROJECT_ORGS list. Change only that file and keep it valid Rust.	src/solver_handlers/web_requests.rs	"deep-foundation"	PROMOTED_PROJECT_ORGS
-L07	Edit the tracked file `src/engine_responses.rs`: add "Good morning" to the GREETING_EXAMPLES list. Change only that file and keep it valid Rust.	src/engine_responses.rs	"Good morning"	GREETING_EXAMPLES
-L08	Edit the tracked file `src/solver_dispatch.rs`: add "workspace_change" to the CONTEXTUAL_HANDLER_NAMES list. Change only that file and keep it valid Rust.	src/solver_dispatch.rs	"workspace_change"	CONTEXTUAL_HANDLER_NAMES
-L09	Edit the tracked file `src/agentic_coding/shell_command_policy.rs`: add "kindly" to the PROSE_WORDS list. Change only that file and keep it valid Rust.	src/agentic_coding/shell_command_policy.rs	"kindly"	PROSE_WORDS
-L10	Edit the tracked file `src/solver_handlers/document_request.rs`: add "toward " to the TARGET_MARKERS list. Change only that file and keep it valid Rust.	src/solver_handlers/document_request.rs	"toward "	TARGET_MARKERS
-L11	Edit the tracked file `src/program_skill_gap.rs`: add "structured_edit" to the SYNTHESIS_ROUTES list. Change only that file and keep it valid Rust.	src/program_skill_gap.rs	"structured_edit"	SYNTHESIS_ROUTES
-L12	In the file src/protocol_memory.rs, replace "request_history" with "conversation_history". Change only that file and keep it valid Rust.	src/protocol_memory.rs	conversation_history	REQUEST_HISTORY_CONVERSATION_ID
-L13	In the file src/dialog_log.rs, replace "x-formal-ai-dialog-id" with "x-formal-ai-conversation-id". Change only that file and keep it valid Rust.	src/dialog_log.rs	x-formal-ai-conversation-id	DIALOG_ID_HEADER
-L14	In the file src/learning_adoption_ledger.rs, replace "unknown" with "unspecified". Change only that file and keep it valid Rust.	src/learning_adoption_ledger.rs	unspecified	UNKNOWN_INTENT
-L15	In the file src/google_trends_catalog.rs, replace "{query}" with "{search_query}". Change only that file and keep it valid Rust.	src/google_trends_catalog.rs	{search_query}	QUERY_PLACEHOLDER
-L16	In the file src/service_accessibility.rs, replace "ttl_seconds" with "time_to_live_seconds". Change only that file and keep it valid Rust.	src/service_accessibility.rs	time_to_live_seconds	FIELD_TTL_SECONDS
-L17	In the file src/web_search_fusion_core.rs, replace "statement_negation_cue" with "statement_negation_marker". Change only that file and keep it valid Rust.	src/web_search_fusion_core.rs	statement_negation_marker	NEGATION_ROLE
-L18	In the file src/client_integrations.rs, replace "http://127.0.0.1:8080" with "http://127.0.0.1:8099". Change only that file and keep it valid Rust.	src/client_integrations.rs	http://127.0.0.1:8099	DEFAULT_BASE_URL
-L19	In the file src/cli_report.rs, replace "agentic-cli" with "agentic-command-line". Change only that file and keep it valid Rust.	src/cli_report.rs	agentic-command-line	DEFAULT_SURFACE
-L20	In the file src/entity_resolution.rs, replace "{term}" with "{entity_term}". Change only that file and keep it valid Rust.	src/entity_resolution.rs	{entity_term}	TERM_PLACEHOLDER
-L21	In the file src/solver_handler_how_synthesis.rs, replace "FORMAL_AI_SOURCE_CACHE_DIR" with "FORMAL_AI_HOW_SOURCE_CACHE_DIR". Change only that file and keep it valid Rust.	src/solver_handler_how_synthesis.rs	FORMAL_AI_HOW_SOURCE_CACHE_DIR	CACHE_DIR_ENV
-L22	In the file src/skill_procedure.rs, replace "https://example.com/article" with "https://example.com/document". Change only that file and keep it valid Rust.	src/skill_procedure.rs	https://example.com/document	PROCEDURE_CONFORMANCE_TRIGGER
-L23	In the file src/cli_context.rs, rename the constant ERROR_JOIN to ERROR_LIST_JOIN. Change only that file and keep it valid Rust.	src/cli_context.rs	ERROR_LIST_JOIN	"; "
-L24	In the file src/issue_report.rs, rename the constant TITLE_JOIN to TITLE_SEGMENT_JOIN. Change only that file and keep it valid Rust.	src/issue_report.rs	TITLE_SEGMENT_JOIN	"` + `"
-L25	In the file src/service_accessibility.rs, rename the constant RECORD_INDENT to RECORD_LINE_INDENT. Change only that file and keep it valid Rust.	src/service_accessibility.rs	RECORD_LINE_INDENT	FIELD_INDENT
-L26	In the file src/web_search_fusion_core.rs, rename the constant ENTITY_ROLE to WIKIDATA_ENTITY_ROLE. Change only that file and keep it valid Rust.	src/web_search_fusion_core.rs	WIKIDATA_ENTITY_ROLE	"wikidata_entity_anchor"
-L27	In the file src/cli_report.rs, rename the constant TRACE_SEPARATOR to TRACE_FIELD_SEPARATOR. Change only that file and keep it valid Rust.	src/cli_report.rs	TRACE_FIELD_SEPARATOR	DEFAULT_SURFACE
-L28	In the file src/client_integrations.rs, rename the constant EMPTY_BACKUP_SENTINEL to EMPTY_CONFIG_BACKUP_SENTINEL. Change only that file and keep it valid Rust.	src/client_integrations.rs	EMPTY_CONFIG_BACKUP_SENTINEL	formal-ai-empty-config-backup-v1
-L29	In the file src/google_trends_catalog.rs, rename the constant QUERY_PLACEHOLDER to TRENDS_QUERY_PLACEHOLDER. Change only that file and keep it valid Rust.	src/google_trends_catalog.rs	TRENDS_QUERY_PLACEHOLDER	"{query}"
-L30	In the file src/entity_resolution.rs, rename the constant CORRECTED_PLACEHOLDER to CORRECTED_TERM_PLACEHOLDER. Change only that file and keep it valid Rust.	src/entity_resolution.rs	CORRECTED_TERM_PLACEHOLDER	"{corrected}"
-L31	In the file src/learning_adoption_ledger.rs, rename the constant UNKNOWN_INTENT to UNKNOWN_INTENT_NAME. Change only that file and keep it valid Rust.	src/learning_adoption_ledger.rs	UNKNOWN_INTENT_NAME	"unknown"
-L32	In the file src/links_format.rs, rename the constant PROBE to NOTATION_PROBE. Change only that file and keep it valid Rust.	src/links_format.rs	NOTATION_PROBE	: &str = "v";
-EOF
+# Issue #1085 (D2.3, D4): the leaf table is committed beside this script so
+# the unit tests, the 32 rule files under rules/ and this run read one source.
+cp "$ROOT/experiments/issue_1028_agent_cli_ladder/leaves.tsv" "$OUT/leaves.tsv"
 
 python3 - "$OUT/leaves.tsv" "$NODES" <<'PY'
 import sys
 from pathlib import Path
 leaves = {}
 for line in Path(sys.argv[1]).read_text().splitlines():
-    leaf, text, change_path, change_marker, change_guard = line.split('\t', 4)
-    leaves[int(leaf[1:])] = (text, change_path, change_marker, change_guard)
+    leaf, text, change_path, change_marker, change_guard, requirement = line.split('\t', 5)
+    leaves[int(leaf[1:])] = (text, change_path, change_marker, change_guard, requirement)
 
 def child(path, branch):
     return path + ("." if path else "") + str(branch)
@@ -97,15 +66,22 @@ def leaf_index(path):
     bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))
     return int(bits, 2) + 1
 
+def requirement_text(start, end):
+    listed = ' '.join(f'({k}) {leaves[k][4]}' for k in range(start, end + 1))
+    return ('Deliver these requirements in this repository; each names behaviour '
+            'or a declaration, never a file, so find the declaration in the '
+            'source tree first: ' + listed)
 def emit(path, depth, out):
     if depth == 0:
-        text = 'Verify Formal AI supports recursive binary task decomposition from atomic leaves through the complete 32-leaf level.'
-        criterion = 'new_composite_effect'
+        # Issue #1085 (D4): the root and every node down to depth 3 are
+        # requirement-shaped; the prompt names behaviour, never a file.
+        text = 'Root task: ' + requirement_text(1, 32)
+        criterion = 'requirement_changes'
         node_id = 'R'
     elif depth == 5:
         i = leaf_index(path)
         node_id = path
-        leaf_text, criterion_path, criterion_marker, criterion_guard = leaves[i]
+        leaf_text, criterion_path, criterion_marker, criterion_guard, _requirement = leaves[i]
         text = f'Atomic task L{i:02d}: {leaf_text}'
         criterion = 'tracked_source_change'
     else:
@@ -115,8 +91,12 @@ def emit(path, depth, out):
         span = 2 ** (5 - depth)
         start = prefix * span + 1
         end = (prefix + 1) * span
-        text = f'Complete recursive decomposition node {path}, covering atomic tasks L{start:02d}–L{end:02d}; both child nodes must produce independently checkable evidence.'
-        criterion = 'new_composite_effect'
+        if depth <= 3:
+            text = f'Decomposition node {path}: ' + requirement_text(start, end)
+            criterion = 'requirement_changes'
+        else:
+            text = f'Complete recursive decomposition node {path}, covering atomic tasks L{start:02d}–L{end:02d}; both child nodes must produce independently checkable evidence.'
+            criterion = 'new_composite_effect'
     if depth < 5:
         criterion_path = ''
         criterion_marker = ''
@@ -247,18 +227,38 @@ PY
   git -C "$work" commit -qm ladder-fixture
   mkdir -p "$work/.agent-ladder"
 
-  if [[ "$depth" -lt 5 ]]; then
+  local child_diffs="" leaf_span=""
+  if [[ "$depth" -eq 4 ]]; then
     local left_effect_source="${VERIFIED_EFFECTS[$left]:-}"
     local right_effect_source="${VERIFIED_EFFECTS[$right]:-}"
     if [[ ! -s "$left_effect_source" || ! -s "$right_effect_source" ]]; then
       printf '%s\tFAIL\tmissing_current_run_child_effect\n' "$id" >> "$RUN_LOG"
       return 1
     fi
+    # Issue #1085 (D4): a composite must also merge both children's diffs.
+    if [[ ! -s "$OUT/$left/change.diff" || ! -s "$OUT/$right/change.diff" ]]; then
+      printf '%s\tFAIL\tmissing_current_run_child_diff\n' "$id" >> "$RUN_LOG"
+      return 1
+    fi
+    child_diffs="$OUT/$left/change.diff $OUT/$right/change.diff"
     mkdir -p "$work/.agent-ladder/verified-children"
     cp "$left_effect_source" "$work/.agent-ladder/verified-children/node-$left.lino"
     cp "$right_effect_source" "$work/.agent-ladder/verified-children/node-$right.lino"
     git -C "$work" add .agent-ladder/verified-children
     git -C "$work" commit -qm ladder-verified-child-effects
+  elif [[ "$depth" -le 3 ]]; then
+    leaf_span=$(python3 - "$id" "$depth" <<'PY'
+import sys
+node, depth = sys.argv[1], int(sys.argv[2])
+if node == 'R':
+    print('1-32')
+else:
+    bits = ''.join('0' if p == '1' else '1' for p in node.split('.'))
+    span = 2 ** (5 - depth)
+    start = int(bits, 2) * span + 1
+    print(f'{start}-{start + span - 1}')
+PY
+)
   fi
 
   setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
@@ -278,6 +278,9 @@ PY
   if [[ "$depth" -eq 5 ]]; then
     printf -v effect_contract 'Apply the change to the tracked file `%s` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text %s.' \
       "$criterion_path" "$id" "$id" "$depth" "$criterion_marker"
+  elif [[ "$depth" -le 3 ]]; then
+    printf -v effect_contract 'Apply every listed requirement to the tracked source files themselves -- locate each declaration in the repository first (for example with grep), change only the files those requirements touch, and keep them valid Rust. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=requirement`, and `result=<the files you changed and what changed in each, at least four words>`.' \
+      "$id" "$id" "$depth"
   else
     printf -v effect_contract 'Read the committed child effects in `.agent-ladder/verified-children/node-%s.lino` and `.agent-ladder/verified-children/node-%s.lino`. Inspect both files before writing anything. Extract each raw child value with `sed -n "s/^result=//p" FILE` or an equivalent command that returns undecorated file bytes. Treat only the single line beginning exactly `result=` as that child result. Do not copy tool-rendered line numbers, `<file>` wrappers, or any other fields. Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, `left_result=` followed by the exact left child `result=` value, `right_result=` followed by the exact right child `result=` value, and `result=` followed by at least four words that include both exact child result values and state how they compose.' \
       "$left" "$right" "$id" "$id" "$depth" "$left" "$right"
@@ -322,7 +325,8 @@ PY
 
   effect="$work/agent-ladder-effects/node-${id}.lino"
   set +e
-  verifier_verdict=$("$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard")
+  verifier_verdict=$(LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
+    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard")
   verifier_status=$?
   set -e
   if [[ "$verifier_status" -ne 0 ]]; then
@@ -332,45 +336,117 @@ PY
 
   cp "$proof" "$session_dir/proof.md"
   cp "$effect" "$session_dir/effect.lino"
+  [[ -f "$work/.agent-ladder/verify.tsv" ]] && cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv"
+  if [[ "$depth" -eq 5 ]]; then
+    git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff"
+  elif [[ "$depth" -eq 4 ]]; then
+    cat "$OUT/$left/change.diff" "$OUT/$right/change.diff" > "$session_dir/change.diff"
+  else
+    git -C "$work" diff > "$session_dir/change.diff"
+  fi
   VERIFIED_EFFECTS["$id"]="$session_dir/effect.lino"
   printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" >> "$RUN_LOG"
 }
 
 failed=0
+current_level=""
+level_failed=0
+# Issue #1085 (D4): a level is finished before the run stops, so the record
+# says which level passed completely; in `all` mode a failed level ends the run
+# because the level above builds on it.
 while IFS= read -r line; do
   [[ -z "$line" ]] && continue
   node=$(printf '%s\n' "$line" | cut -f1)
+  level=$(printf '%s\n' "$line" | cut -f2)
+  if [[ "$current_level" != "$level" ]]; then
+    if [[ -n "$current_level" && "$level_failed" -eq 1 && "$TREE_DEPTH" == all ]]; then
+      echo "level $current_level failed; not attempting level $level" | tee -a "$RUN_LOG"
+      break
+    fi
+    current_level="$level"
+    level_failed=0
+  fi
   echo "=== $node ===" | tee -a "$RUN_LOG"
-  if run_one "$line"; then :; else failed=1; break; fi
+  if run_one "$line"; then :; else failed=$((failed + 1)); level_failed=1; fi
 done < "$OUT/selected.tsv"
+deepest=none
+leaf_level_passed=0
+for level in 5 4 3 2 1 0; do
+  selected_at_level=$(awk -F'\t' -v level="$level" '$2 == level' "$OUT/selected.tsv" | wc -l | tr -d ' ')
+  [[ "$selected_at_level" -gt 0 ]] || continue
+  passed_at_level=$(grep -c $'\tPASS\tdepth='"$level"'$' "$RUN_LOG" || true)
+  if [[ "$passed_at_level" -eq "$selected_at_level" ]]; then
+    deepest="$level"
+    [[ "$level" -eq 5 ]] && leaf_level_passed=1
+  else
+    break
+  fi
+done
+cat > "$OUT/ladder-result.lino" <<EOF
+ladder_result
+  requested_depth "$TREE_DEPTH"
+  node_filter "${NODE_FILTER:-none}"
+  selected_nodes "$selected_count"
+  failures "$failed"
+  deepest_passing_level "$deepest"
+EOF
+python3 - "$OUT" "$TREE_DEPTH" "${NODE_FILTER:-none}" "$selected_count" "$failed" "$deepest" <<'PY'
+import sys
+from pathlib import Path
+out = Path(sys.argv[1])
+depth, node_filter, selected, failed, deepest = sys.argv[2:7]
+rows = []
+for line in (out / 'run.log').read_text().splitlines():
+    parts = line.split('\t')
+    if len(parts) != 3:
+        continue
+    node, verdict, detail = parts
+    report = {}
+    verify = out / node / 'verify.tsv'
+    if verify.exists():
+        for entry in verify.read_text().splitlines():
+            key, _, value = entry.partition('\t')
+            report[key] = value
+    tests = ', '.join(f'{k[6:]} {v}' for k, v in report.items() if k.startswith('tests:')) or '-'
+    rows.append(f"| {node} | {verdict} | {detail} | {report.get('compile', '-')} | {tests} | {report.get('diff_lines', '-')} |")
+table = '\n'.join(rows) if rows else '| - | - | no node ran | - | - | - |'
+(out / 'README.md').write_text(f"""# Agent CLI binary-tree ladder run
 
-cat > "$OUT/README.md" <<EOF
-# Recursive Formal AI decomposition tree run
+- requested depth: {depth}
+- node filter: {node_filter}
+- selected nodes: {selected}
+- failures: {failed}
+- deepest level whose nodes all passed: {deepest}
 
-- requested depth: $TREE_DEPTH
-- node filter: ${NODE_FILTER:-none}
-- selected nodes: $selected_count
-- failures: $failed
+| node | verdict | detail | compile | unit tests | diff lines |
+| --- | --- | --- | --- | --- | --- |
+{table}
 
 The canonical decomposition is a complete binary tree: depth 0 has 1 node,
 depth 1 has 2, depth 2 has 4, depth 3 has 8, depth 4 has 16, and depth 5 has 32.
 Each selected node runs in a fresh temporary repository copy against the real
-\`@link-assistant/agent\` CLI and a local \`formal-ai serve --agent-mode\`.
-Every leaf is *change-shaped*: its task is a member insertion, a literal
-replacement or an identifier rename in a tracked source, and PASS requires the
-worktree to show exactly that one file modified, with the marker absent from
-\`HEAD\`, the anchor still present, and the file still parsing. An effect file
-that merely describes the change never passes.
+`@link-assistant/agent` CLI and a local `formal-ai serve --agent-mode`.
 
-PASS requires the external harness to accept a non-hollow proof and a newly
-added \`agent-ladder-effects/node-<id>.lino\` Git effect. Composite effects must
-consume the immutable, committed effects that both children passed earlier in
-this invocation, copy both exact child results, and compose them. Agent exit
-zero or a self-authored proof alone never pass.
+Every leaf is *change-shaped*: a member insertion, a literal replacement or an
+identifier rename in a tracked source (the committed `leaves.tsv`, each also a
+link-edit rule under `rules/`). PASS requires the worktree to show exactly that
+one file modified, the marker absent from `HEAD`, the anchor still present, the
+file formatting, `cargo check --lib` compiling it, and `cargo test --test unit`
+passing for its module (issue #1085 D4). A depth-4 composite must compose both
+verified child effects and both children's diffs must apply to one tree and
+compile. Depth 3 and above are *requirement-shaped*: the prompt lists behaviour
+and declarations, never files; every leaf marker under the node must be
+present, only those files may change, and the tree must compile and pass the
+tests of every touched module. An effect file that merely describes a change
+never passes.
 
-The \`all\` mode verifies the smallest atomic tasks first (32 leaves), then
-16, 8, 4, 2, and finally the root, stopping on the first real failure so the
-underlying capability can be repaired before larger composite tasks are tested.
-EOF
-
-exit "$failed"
+The `all` mode verifies the 32 leaves first, then 16, 8, 4, 2, and the root; a
+level is finished before the run stops, and a failed level ends the run. The
+deepest level whose nodes all passed is written to `ladder-result.lino` and
+compared with `data/meta/ladder-ratchet.lino` by the workflow.
+""")
+PY
+if [[ "$TREE_DEPTH" == all ]]; then
+  exit $(( leaf_level_passed == 0 ))
+fi
+exit $(( failed > 0 ))

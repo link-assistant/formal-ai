@@ -62,9 +62,9 @@ enum RoleMode {
 
 #[derive(Debug)]
 enum Condition {
-    All(Vec<Condition>),
-    Any(Vec<Condition>),
-    None(Vec<Condition>),
+    All(Vec<Self>),
+    Any(Vec<Self>),
+    None(Vec<Self>),
     Role(String, RoleMode, Subject),
     RoleLead(String, Subject),
     RolePrefix(String, Subject),
@@ -120,7 +120,7 @@ struct Node {
     line: usize,
     name: String,
     args: Vec<String>,
-    children: Vec<Node>,
+    children: Vec<Self>,
 }
 
 struct Context<'a> {
@@ -477,14 +477,8 @@ impl Condition {
                 .iter()
                 .find(|route| route.slug == *slug)
                 .is_some_and(|route| {
-                    route
-                        .keywords
-                        .iter()
-                        .any(|keyword| *keyword == context.cleaned)
-                        || route
-                            .phrases
-                            .iter()
-                            .any(|phrase| *phrase == context.cleaned)
+                    route.keywords.contains(&context.cleaned)
+                        || route.phrases.contains(&context.cleaned)
                 }),
             Self::HistoryRole(role) => log
                 .events()
@@ -516,10 +510,10 @@ fn parse_rule(node: &Node) -> Result<Rule, String> {
             "value" => values.push(parse_value(child)?),
             "log" => {
                 let kind = child.first_arg()?;
-                let value = match child.args.get(1) {
-                    Some(raw) => parse_value_ref(raw),
-                    None => ValueRef::Literal(String::new()),
-                };
+                let value = child.args.get(1).map_or_else(
+                    || ValueRef::Literal(String::new()),
+                    |raw| parse_value_ref(raw),
+                );
                 steps.push(Step::Log {
                     kind: Box::leak(kind.into_boxed_str()),
                     value,
@@ -750,14 +744,13 @@ fn tokenize(line: &str) -> Vec<String> {
                 quote = None;
                 tokens.push(std::mem::take(&mut current));
             }
-            Some(_) => current.push(ch),
             None if ch == '"' || ch == '\'' => quote = Some(ch),
             None if ch.is_whitespace() => {
                 if !current.is_empty() {
                     tokens.push(std::mem::take(&mut current));
                 }
             }
-            None => current.push(ch),
+            _ => current.push(ch),
         }
     }
     if !current.is_empty() {

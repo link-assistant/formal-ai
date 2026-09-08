@@ -576,14 +576,15 @@ one branch, and this section records what each push delivered.
 | D3.1-D3.4 metric version 3: model attribution, behaviour-only paths, pull-request author, history restated | Delivered | `scripts/self-hosting-attribution.rs`, `scripts/self-hosting-replay.rs`, `data/meta/self-hosting-ledger.lino` header, `tests/unit/specification/self_hosting_metric.rs` |
 | D3.5 floor off the release path, red-until-true status | Delivered | `.github/workflows/self-development-status.yml`; `release.yml` cuts on CI correctness; `tests/unit/ci-cd/issue_1014.rs` |
 | D1.1-D1.4 seed network at startup, link-query routing, rule interpreter, kernel allowlist and shrink ratchets | Delivered: the seed and routing meta documents load as one links network (`src/seed_links.rs`) mirrored into a native link-cli store at server start; precedence, cues and intent routes are link queries; eleven handlers are seed rules (ledger pending 51 to 40, handler files 43 to 42, literal predicates 529 to 504) | `data/meta/kernel-ratchet.lino`, `scripts/check-kernel-ratchet.rs`, gate `check_kernel_ratchet` |
-| D4 ladder leaves compile | Delivered (`cargo check`); test run, composite merge and requirement-shaped nodes in progress | `experiments/issue_1028_agent_cli_ladder/verify-node.sh` |
+| D4 compile-and-test ladder | Delivered: per-leaf `cargo check` and `cargo test`, depth-4 diff merge, requirement-shaped depth 0 to 3, pull-request and weekly runs, deepest-level ratchet (`data/meta/ladder-ratchet.lino`) | `experiments/issue_1028_agent_cli_ladder/{run.sh,verify-node.sh,leaves.tsv,rules/}` |
 | D5.4 upstream numbers beside every curated citation | Delivered | this file, `VISION.md` |
 | #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |
 | D2.1 links-to-code edit rules | Delivered (three ladder shapes as link substitutions) | `src/agentic_coding/link_edit_rules.rs`, `data/meta/link-edit-rules.lino`, `tests/unit/issue_1085_link_edit_rules.rs` |
 | D5.3 upstream transfer of the seeded tasks | Delivered: HumanEval/0 lost `from typing import List`, MBPP/2 took an `assert` call for a signature | `src/solver_handlers/program_synthesis.rs`, `tests/unit/issue_1085_upstream_prompt_transfer.rs` |
 | D5.1-D5.2 upstream failures as frontier inputs; red on a fallen suite, yellow after three equal runs | Delivered | `data/meta/learning-frontier-upstream-benchmarks.lino`, `src/external_benchmarks/ratchet.rs`, `tests/unit/issue_1085_upstream_frontier.rs` |
 | D6-D9 | Sub-issues #1087, #1088, #1089, #1090, blocked by #1085 | `docs/case-studies/issue-1085/solution-plan.md` |
-| D2.2, D4 second half | In progress on the pull request | `docs/case-studies/issue-1085/solution-plan.md` |
+| D2.2 requirement-derived edits | Delivered: `src/agentic_coding/requirement_resolution.rs` resolves behaviour wording through the self-AST census; all 32 leaf requirements resolve to their files | `tests/unit/issue_1085_requirement_resolution.rs` |
+| D2.3 real-issue root and bot-opened pull request | Open: needs `hive-mind solve --model formal-ai` to open a pull request under a bot identity; tracked in the case study | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Verification Contract
 

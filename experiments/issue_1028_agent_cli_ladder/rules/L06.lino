@@ -1,0 +1,8 @@
+link_edit
+  leaf L06
+  path src/solver_handlers/web_requests.rs
+  language rust
+  rule insert_member
+    list "PROMOTED_PROJECT_ORGS"
+    member "deep-foundation"
+  expect "deep-foundation"

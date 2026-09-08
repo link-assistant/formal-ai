@@ -1,0 +1,8 @@
+link_edit
+  leaf L03
+  path src/seed/meanings/parse.rs
+  language rust
+  rule insert_member
+    list "FACET_KINDS"
+    member "provenance"
+  expect "provenance"

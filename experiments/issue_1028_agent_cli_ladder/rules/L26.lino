@@ -1,0 +1,8 @@
+link_edit
+  leaf L26
+  path src/web_search_fusion_core.rs
+  language rust
+  rule rename_identifier
+    old "ENTITY_ROLE"
+    new "WIKIDATA_ENTITY_ROLE"
+  expect "WIKIDATA_ENTITY_ROLE"
