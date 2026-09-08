@@ -73,8 +73,17 @@ gate that every other pull request satisfies.
 
 `scripts/author-change-with-formal-ai.sh` now takes `--produces`/`--into` in
 pairs and the workflow reads repeated `produces:`/`into:` lines from the issue,
-so one Agent CLI session authors the change and its fragment together. #1091
-carries the two-artifact contract; #1097 was closed for a run under it.
+so one session can write more than one artifact. Asking for the fragment that
+way did not work: run 34231781135 gave Formal AI one prompt naming both files,
+and it edited the first, answered `Final`, and exited after five seconds
+without writing the second. The second clause reached it -- the trace records
+the whole prompt -- so it was read and dropped (#1099).
+
+The fragment therefore rides in the bootstrap commit that opens the pull
+request. `changelog.d/` is one of the trees the version-3 metric excludes from
+both sides of the share, so the fragment is process record either way, and
+writing it there keeps the authored commit to the behaviour change. #1097 and
+#1098 were closed for a run under the contract that followed.
 
 (The same run's `check_minimal_core_boundary` failure was the pull request's
 base being older than the branch, not the authored change.)

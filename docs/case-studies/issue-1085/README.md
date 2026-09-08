@@ -86,6 +86,7 @@ lines. `data/meta/ladder-ratchet.lino` now records 15 and may only rise.
   instead; the first task is #1091.
 - #1087 (D6), #1088 (D7), #1089 (D8), #1090 (D9): sub-issues of #1085, blocked
   by it, each carrying the section 7 clauses.
-- #1095 (E113), #1096 (E114): the two behaviour defects the compile-and-test
-  ladder found, also sub-issues of #1085 and blocked by it.
+- #1095 (E113), #1096 (E114), #1099 (E115): the behaviour defects the
+  compile-and-test ladder and the self-authored run found, also sub-issues of
+  #1085 and blocked by it.
 

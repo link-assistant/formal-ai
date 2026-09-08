@@ -12,10 +12,13 @@ name: Self-authored pull request
 #   contains: <text one of the artifacts must contain>   (repeatable)
 #   message: <conventional commit subject>
 #
-# `produces:` and `into:` are read in order and paired, so a change that has to
-# land with a changelog fragment beside it is one authoring run with two
-# artifacts. A source change without a fragment fails the changelog gate, which
-# is what a self-authored pull request has to satisfy like any other.
+# `produces:` and `into:` are read in order and paired, so one authoring run can
+# write more than one artifact. The changelog fragment a source change needs is
+# not one of them: it goes in the bootstrap commit that opens the pull request,
+# because `changelog.d/` is one of the trees the version-3 self-hosting metric
+# excludes from authored work, and because a compound task truncates -- run
+# 34231781135 asked for the source change and the fragment in one prompt and
+# Formal AI answered after the first clause, in five seconds (#1099).
 #
 # The pull request is opened first so the authored commit can name it in its
 # trailer, and a re-run stops once a commit on the pull request carries that
@@ -201,7 +204,20 @@ jobs:
             echo
             cat task-body.txt
           } > "$evidence/README.md"
-          git add "$evidence/README.md"
+          # The changelog fragment every source change needs. It is process
+          # record, not authored behaviour -- `changelog.d/` is excluded from
+          # both sides of the self-hosting share -- so it belongs to this
+          # bootstrap commit rather than to what Formal AI authors.
+          fragment="changelog.d/$(date -u +%Y%m%d_%H%M%S)_issue_${NUMBER}_self_authored.md"
+          {
+            echo '---'
+            echo 'bump: patch'
+            echo '---'
+            echo
+            echo '### Fixed'
+            echo "- Issue #$NUMBER: $(sed -n 's/^message: *//p' task-body.txt | head -1). Authored by Formal AI through the Agent CLI (issue #1085 D2.3)."
+          } > "$fragment"
+          git add "$evidence/README.md" "$fragment"
           git commit -q -m "chore(self-authored): open the pull request Formal AI will author for #$NUMBER"
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           "$RUNNER_TEMP/push-to-shared-branch.sh" origin "$branch"
