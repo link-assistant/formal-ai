@@ -38,5 +38,16 @@ the history was short enough to fit in the pipe buffer.
   request, and checks the count once more immediately before pushing a newly
   authored commit, discarding it if another run landed first.
 - Both pushes go through `scripts/push-to-shared-branch.sh` (issue #1081).
-- #1093 and #1094 were closed; the run triggered by the fix opens the clean
-  pull request for #1091.
+- #1093 and #1094 were closed; the run triggered by the fix opened #1097.
+
+## The first version of the replacement was also wrong
+
+`gh pr view --json commits --jq --arg trailer "..." '<expr>'` is not valid:
+`--jq` takes one argument, so gh answered `accepts at most 1 arg(s), received
+4`. In the push step the count was read inside an `if [[ "$(...)" != 0 ]]`,
+where a failing command substitution is not fatal under `set -e`, so the empty
+output read as "another run authored it" and run 34223865082 discarded the
+commit Formal AI had just authored for #1097. The helper now fetches the commit
+bodies with a single `--jq` expression and counts with `grep -c` (which reads
+all of its input, so it cannot repeat the SIGPIPE), and both callers assign the
+count to a variable so a failure stops the step.

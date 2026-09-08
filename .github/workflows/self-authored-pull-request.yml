@@ -40,10 +40,7 @@ on:
   schedule:
     - cron: '41 5 * * 1'
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+permissions: {}
 
 concurrency:
   group: self-authored-pull-request
@@ -54,6 +51,12 @@ jobs:
     name: Formal AI authors a change and opens the pull request
     if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
     runs-on: ubuntu-latest
+    # Scoped to this job, not the workflow: the job pushes the bot branch,
+    # opens and comments on the pull request, and comments on the task issue.
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     timeout-minutes: 60
     env:
       # A push or pull request made with GITHUB_TOKEN starts no workflow run.
@@ -227,7 +230,10 @@ jobs:
           set -euo pipefail
           # A run that started before the previous one pushed would author the
           # task twice; check once more against the pull request before pushing.
-          if [[ "$(scripts/self-authored-commit-count.sh "$PULL_REQUEST")" != 0 ]]; then
+          # A plain assignment, so a failing count stops the step instead of
+          # reading as "another run authored it" and discarding this commit.
+          authored=$(scripts/self-authored-commit-count.sh "$PULL_REQUEST")
+          if [[ "$authored" != 0 ]]; then
             echo "::notice::$PULL_REQUEST received its authored commit while this run was authoring; this run's commit is discarded"
             exit 0
           fi
