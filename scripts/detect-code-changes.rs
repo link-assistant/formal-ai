@@ -414,7 +414,8 @@ mod tests {
     /// jobs actually execute.
     #[test]
     fn an_unrelated_workflow_does_not_unlock_the_pipeline_heavy_jobs() {
-        let unrelated = classify_changes(&[".github/workflows/external-benchmarks.yml".to_string()]);
+        let unrelated =
+            classify_changes(&[".github/workflows/external-benchmarks.yml".to_string()]);
         assert!(
             unrelated.workflow_changed,
             "the workflow gates still have to run for it"

@@ -83,6 +83,7 @@ mod issue_1085_python_signature;
 mod issue_1085_requirement_resolution;
 mod issue_1085_rule_interpreter;
 mod issue_1085_seed_links;
+mod issue_1085_self_authored_backlog;
 mod issue_1085_upstream_frontier;
 mod issue_1085_upstream_prompt_transfer;
 mod issue_1963;

@@ -181,6 +181,15 @@ The steps, in order:
    attributes them, and the work reaches `main` through the ordinary review of
    the pull request they merged into.
 
+A draft is finished in one of exactly two ways: **merged**, or **closed with the
+defect it exposed filed** against the meta algorithm. Leaving it open is
+neither, and it is the failure mode this loop falls into by default — seven bot
+pull requests were opened on 2026-09-08 and none was merged. The
+`Self-authored backlog` workflow reports every open one daily with its age, its
+check state and how far its base has moved, and fails once one has been open
+more than three days. Merging the green ones is what turns the loop into
+commits Formal AI wrote; reading the red ones is what improves it.
+
 Two rules keep the loop honest. Process record is not authored behaviour: the
 changelog fragment a source change needs is written by the bootstrap commit that
 opens the bot pull request, because `changelog.d/` is one of the trees the
