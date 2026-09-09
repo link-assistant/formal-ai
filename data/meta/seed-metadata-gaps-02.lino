@@ -811,6 +811,10 @@ seed_metadata_gaps
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_gap_gui_rendering"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_fefe5ad9257380d2
+    source "data/seed/meanings-conversation.lino"
+    record "agentic_continuation_cue"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_743c3f330e594ba2
     source "data/seed/meanings-conversation.lino"
     record "conversation_topic_opener"
