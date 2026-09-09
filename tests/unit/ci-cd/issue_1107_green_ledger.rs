@@ -92,6 +92,49 @@ fn the_action_saves_only_on_success_and_announces_a_skip() {
     );
 }
 
+/// Two defects the first CI run of this action found, both of which made every
+/// consumer job fail to even start.
+///
+/// GitHub evaluates `${{ }}` inside an action's `description:` as a template,
+/// not as prose, and `github.*` is not in scope in a composite action's
+/// manifest -- an example expression written in the description of `enabled`
+/// therefore failed the manifest to load for every job that used it. And an
+/// input interpolated straight into a `run:` block is a code-injection surface
+/// (zizmor `template-injection`), so every value this action passes to the
+/// shell goes through `env:` instead.
+#[test]
+fn the_action_neither_templates_its_prose_nor_interpolates_into_a_script() {
+    let action = read(ACTION);
+    let (documentation, steps) = action
+        .split_once("\nruns:")
+        .expect("the manifest declares its inputs before its steps");
+    // `outputs.<id>.value` is the one place above `runs:` where an expression
+    // belongs; a description is prose and is evaluated all the same.
+    let mut in_outputs = false;
+    for line in documentation.lines() {
+        if !line.starts_with(char::is_whitespace) {
+            in_outputs = line.starts_with("outputs:");
+        }
+        if in_outputs && line.trim_start().starts_with("value:") {
+            continue;
+        }
+        assert!(
+            !line.contains("${{"),
+            "an action's description and input descriptions are evaluated as templates, \
+             and `github.*` is not in scope in a composite manifest: write the expression \
+             in prose, or the manifest fails to load for every job that uses it:\n{line}"
+        );
+    }
+    for block in steps.split("      run: |").skip(1) {
+        let script = block.split("\n    - ").next().unwrap_or(block);
+        assert!(
+            !script.contains("${{"),
+            "a value interpolated into a run block is a code-injection surface; \
+             pass it through env: instead:\n{script}"
+        );
+    }
+}
+
 #[test]
 fn every_ledgered_job_gates_all_later_steps_and_names_its_own_workflow() {
     for (path, jobs) in LEDGERED {

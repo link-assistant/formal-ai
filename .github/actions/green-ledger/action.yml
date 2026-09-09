@@ -24,8 +24,11 @@ inputs:
     required: true
   enabled:
     description: >-
-      Whether an identical-input hit may skip the check. Callers pass
-      `${{ github.ref != 'refs/heads/main' }}`: `main` re-verifies everything.
+      Whether an identical-input hit may skip the check. Callers pass a
+      github.ref comparison so that main re-verifies everything and only a
+      branch may skip. (Written in prose deliberately: GitHub evaluates
+      template expressions inside an action's description too, so an example
+      here would be parsed as one and fail the manifest to load.)
     required: false
     default: 'true'
 
@@ -44,13 +47,14 @@ runs:
       id: key
       shell: bash
       env:
+        CHECK: ${{ inputs.check }}
         PATHS: ${{ inputs.paths }}
       run: |
         set -euo pipefail
         # shellcheck disable=SC2086
         digest=$(git ls-files -s -- $PATHS 2>/dev/null | git hash-object --stdin)
         echo "digest=$digest" >> "$GITHUB_OUTPUT"
-        echo "${{ inputs.check }} inputs digest: $digest"
+        echo "$CHECK inputs digest: $digest"
 
     - name: Look up a previous green result for these inputs
       id: cache
