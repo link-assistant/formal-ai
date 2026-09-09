@@ -243,13 +243,16 @@ fn dialog_id(directory: &Path, headers: &[(&str, &str)], request_body: &str, pat
     // rejoin it, because a continuing request carries the same first user
     // message), and the epoch separates two threads that happen to open alike.
     let basis = first_user_prompt(request_body).unwrap_or_else(|| path.to_owned());
-    // The log directory is part of the epoch key, not of the id: two clients
-    // that both open with "Hi" write to different directories, which is what
-    // separates them when their words cannot.
+    // The scope -- log directory and opening prompt -- goes into the id, not
+    // only into the epoch lookup. Hashing the epoch and the prompt alone made
+    // two clients who began in the same millisecond one conversation again,
+    // because a millisecond is not fine-grained enough to separate them on a
+    // fast machine: the id collided in CI while differing locally, which is
+    // the same defect this whole change removes, one layer down.
     let scope = format!("{}\u{1f}{basis}", directory.display());
     stable_id(
         "dialog",
-        &format!("{}\u{1f}{basis}", conversation_epoch(&scope)),
+        &format!("{}\u{1f}{scope}", conversation_epoch(&scope)),
     )
 }
 
@@ -267,16 +270,24 @@ fn dialog_id(directory: &Path, headers: &[(&str, &str)], request_body: &str, pat
 /// log already holds far more.
 fn conversation_epoch(scope: &str) -> u128 {
     static EPOCHS: OnceLock<Mutex<BTreeMap<String, u128>>> = OnceLock::new();
+    static ARRIVALS: AtomicU64 = AtomicU64::new(0);
     let epochs = EPOCHS.get_or_init(|| Mutex::new(BTreeMap::new()));
+    // A millisecond is not a fine enough clock to separate two conversations
+    // that begin at once, so the marker is the arrival time with a
+    // monotonically increasing count beside it. Two first-requests in the same
+    // millisecond still take different markers, and every later request of a
+    // conversation reads its own marker back rather than minting a new one.
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(0, |elapsed| elapsed.as_millis());
+    let arrival = u128::from(ARRIVALS.fetch_add(1, Ordering::Relaxed));
+    let marker = now << 20 | (arrival & 0xf_ffff);
     let Ok(mut epochs) = epochs.lock() else {
         // A poisoned lock must not cost the caller their response; falling back
-        // to the arrival time keeps ids distinct, never merged.
-        return now;
+        // to the arrival marker keeps ids distinct, never merged.
+        return marker;
     };
-    *epochs.entry(scope.to_owned()).or_insert(now)
+    *epochs.entry(scope.to_owned()).or_insert(marker)
 }
 
 /// The caller-declared session id, validated as a safe path component.

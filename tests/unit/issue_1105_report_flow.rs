@@ -59,6 +59,27 @@ mod dialog_identity {
         );
     }
 
+    /// Many conversations opening alike, begun as fast as the machine can:
+    /// every one keeps its own identity. This is the shape the reported store
+    /// was in -- one dialog had absorbed 52 % of every exchange.
+    #[test]
+    fn many_conversations_opening_alike_in_one_burst_all_stay_distinct() {
+        let ids: Vec<String> = (0..12)
+            .map(|index| {
+                let directory = super::scratch(&format!("burst-{index}"));
+                record(&directory, &[], "Hi")
+            })
+            .collect();
+        let mut unique = ids.clone();
+        unique.sort_unstable();
+        unique.dedup();
+        assert_eq!(
+            unique.len(),
+            ids.len(),
+            "conversations merged inside one burst: {ids:?}"
+        );
+    }
+
     /// The turns of one conversation still land in one log: a later request in
     /// the same dialog repeats its opening message, and that is what rejoins it.
     #[test]
