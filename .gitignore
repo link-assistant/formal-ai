@@ -132,3 +132,4 @@ data/source-cache/
 # service; the committed evidence is the QA capture manifest, not this file.
 data/service-accessibility.lino
 .green-ledger/
+2026-*-httpsgithubcom*.txt
