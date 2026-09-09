@@ -45,6 +45,7 @@ use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
 use super::structured_edit;
+use super::task_obligations;
 use super::task_structure;
 use super::tool_result;
 use super::web_research;
@@ -275,6 +276,17 @@ pub(super) fn plan_settled_routes(
     // Unambiguous is the operative word: a request that also pins the target
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
+    // A request that names several artifacts is planned one artifact at a time,
+    // and is not finished until none is outstanding (issue #1099). With a
+    // single artifact named -- the overwhelmingly common case -- this yields
+    // nothing and the composer below plans the request whole, unchanged.
+    if let Some(plan) = tool_for(tool_names, Capability::Write)
+        .and_then(|_| task_obligations::outstanding(task, messages))
+        .and_then(|obligation| compose_general_change_plan(&obligation.request))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
     if let Some(plan) = tool_for(tool_names, Capability::Write)
         .and_then(|_| compose_general_change_plan(task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))

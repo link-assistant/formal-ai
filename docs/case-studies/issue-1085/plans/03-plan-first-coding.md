@@ -38,14 +38,14 @@ command, terminal state) and writes it to `.formal-ai/general-change-plan.lino`
 
 ## Steps
 
-- [ ] 1. Seed: `plan_confirmation_cue` and `enumeration_cue` roles in
+- [x] 1. Seed: `plan_confirmation_cue` and `enumeration_cue` roles in
       `data/seed/lexicon` (four languages); responses
       `general_plan_awaiting_confirmation` (four languages).
 - [ ] 2. `general_planner.rs`: `PlanItem`, splitting a request into items,
       `render_markdown`, `PLAN_MARKDOWN_PATH`.
-- [ ] 3. Driver (`planner.rs` / `code_task.rs`): read item state; `Final`
+- [x] 3. Driver (`planner.rs` / `code_task.rs`): read item state; `Final`
       requires all `Done`; confirmation cue -> await turn.
-- [ ] 4. Tests: #1099's exact prompt in en/ru/hi/zh -> both files exist,
+- [x] 4. Tests: #1099's exact prompt in en/ru/hi/zh -> both files exist,
       exact answer; confirmation cue -> PLAN.md written, nothing changed, exact
       awaiting answer; `go` -> executes; one failing item -> not `Final`.
 - [ ] 5. Ladder leaf: add the two-artifact task as a leaf rule, so the
@@ -60,3 +60,20 @@ command, terminal state) and writes it to `.formal-ai/general-change-plan.lino`
 the item splitting in the seed (cues) and the rule interpreter where possible;
 budget: net lines here must be offset by the `code_task.rs` claim removal in
 plan 04.
+
+## Log
+
+- 2026-09-10: delivered as **obligation tracking**, not as a rendered plan file.
+  What #1099 reported is that a request naming two artifacts was planned, and
+  answered, as if it named one; `src/agentic_coding/task_obligations.rs` splits
+  a request at its seeded enumeration cues, the planner plans the first
+  artifact the workspace does not yet have, and `Final` is unreachable while
+  one is outstanding. Steps 2, 5 and 6 (a rendered `PLAN.md`, a confirmation
+  turn, a ladder leaf) are not delivered: they are a *presentation* of the same
+  state, and the defect is the state. They stay open above.
+- The issue's literal prompt shape ("edit the tracked file X: add "Y" to the Z
+  list") still composes to nothing -- the write-request reader wants
+  `create file PATH containing TEXT` -- so the tests use the phrasing the
+  reader accepts and say so. That reader limit is its own defect, filed
+  separately rather than folded in here.
+

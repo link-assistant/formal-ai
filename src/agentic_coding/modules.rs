@@ -33,6 +33,7 @@ mod formalization_recipe;
 pub mod formalize;
 mod general_execution;
 pub mod general_planner;
+pub mod task_obligations;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 mod intent_router;
