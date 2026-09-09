@@ -2,56 +2,55 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 10845
-  line_count 305
-  content_id source_module_082ffe9d90026890
-  symbol_count 18
+  byte_len 10679
+  line_count 298
+  content_id source_module_b239c645a605bd6f
+  symbol_count 17
   symbols
     function plan_symbolic_command_reroute 26 77
     function one_call 79 84
     function final_answer 87 109
     struct RecipeProgress 113 118
     struct StepFailure 123 127
-    function report 136 158
+    function report 136 160
     const STEP_PLACEHOLDER 137 137
     const PATH_PLACEHOLDER 138 138
     const CODE_PLACEHOLDER 139 139
     const REPORT_PLACEHOLDER 140 140
-    function latest_user_text 161 168
-    function after_latest_user 171 209
-    const EXIT_CODE_LABELS 213 213
-    const ABSENT_FIELD_VALUES 221 221
-    function reported_exit_code 236 246
-    function from_result 257 270
-    function reports_failure_in_prose 274 296
-    function tool_from_call_id 298 305
+    function after_latest_user 164 202
+    const EXIT_CODE_LABELS 206 206
+    const ABSENT_FIELD_VALUES 214 214
+    function reported_exit_code 229 239
+    function from_result 250 263
+    function reports_failure_in_prose 267 289
+    function tool_from_call_id 291 298
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7462
-    named_node_count 1508
+    total_link_count 7258
+    named_node_count 1466
     distinct_node_kinds 84
     node_kinds
-      arguments 116
+      arguments 111
       array_expression 4
-      array_type 9
+      array_type 8
       assignment_expression 1
       attribute 2
       attribute_item 2
-      binary_expression 11
-      block 32
+      binary_expression 10
+      block 31
       boolean_literal 1
       break_expression 1
-      call_expression 116
+      call_expression 111
       char_literal 1
-      closure_expression 28
-      closure_parameters 28
+      closure_expression 26
+      closure_parameters 26
       compound_assignment_expr 2
       const_item 6
       continue_expression 1
-      crate 4
+      crate 5
       declaration_list 4
       doc_comment 36
       else_clause 2
@@ -59,15 +58,15 @@ self_ast_census
       expression_statement 23
       field_declaration 7
       field_declaration_list 2
-      field_expression 124
-      field_identifier 133
+      field_expression 117
+      field_identifier 126
       field_initializer 2
       field_initializer_list 2
       for_expression 3
-      function_item 10
+      function_item 9
       generic_function 1
       generic_type 8
-      identifier 302
+      identifier 296
       if_expression 9
       impl_item 4
       index_expression 1
@@ -85,23 +84,23 @@ self_ast_census
       match_pattern 3
       mutable_specifier 2
       outer_doc_comment_marker 29
-      parameter 20
-      parameters 10
+      parameter 19
+      parameters 9
       parenthesized_expression 2
       primitive_type 24
       range_expression 1
       reference_expression 16
-      reference_type 23
+      reference_type 22
       return_expression 5
-      scoped_identifier 27
+      scoped_identifier 29
       scoped_type_identifier 1
       scoped_use_list 2
       self 10
       self_parameter 2
       shorthand_field_initializer 4
       source_file 1
-      string_content 42
-      string_literal 33
+      string_content 41
+      string_literal 32
       struct_expression 2
       struct_item 2
       super 4
@@ -111,7 +110,7 @@ self_ast_census
       tuple_pattern 3
       tuple_struct_pattern 6
       type_arguments 9
-      type_identifier 36
+      type_identifier 34
       type_parameters 1
       unary_expression 4
       use_as_clause 1

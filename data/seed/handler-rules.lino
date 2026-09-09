@@ -180,3 +180,11 @@ handler_rules
       respond opinion_question
       link "response:opinion_question"
       confidence 1.0
+  handler agentic_continuation
+    rule continuation_cue
+      when
+        role agentic_continuation_cue whole of cleaned
+      log "agentic_continuation:cue" $prompt
+      respond agentic_continuation
+      link "response:agentic_continuation"
+      confidence 1.0

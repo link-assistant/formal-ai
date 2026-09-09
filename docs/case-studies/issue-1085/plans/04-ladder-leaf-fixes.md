@@ -14,18 +14,18 @@ steps` after a **tool result**; there is no envelope, the function returns
 `plan_web_search_step`. The English string is also matched exactly, so ru/hi/zh
 cues never enter this path at all.
 
-- [ ] 1. Seed role `agentic_continuation_cue` in the lexicon, four languages
+- [x] 1. Seed role `agentic_continuation_cue` in the lexicon, four languages
       (en "continue if you have next steps", "continue", "go on"; ru
       "продолжай", "продолжи, если есть следующие шаги"; hi "जारी रखें"; zh
       "继续" / "如果还有下一步请继续"). Exact-phrase entries, not stems, so an
       ordinary request containing the word keeps its meaning (the existing
       comment's constraint).
-- [ ] 2. `continued_agent_task(messages, latest)`: if `latest` is only a cue
+- [x] 2. `continued_agent_task(messages, latest)`: if `latest` is only a cue
       (whole normalized text matches the role), return the objective of the
       most recent earlier user turn that is *not* a cue -- after the compaction
       envelope path has been tried first (keep that; it is more specific).
-- [ ] 3. Replace the exact string at `planner.rs:624` with the role check.
-- [ ] 4. Tests (`tests/unit/issue_1095_continuation_cue.rs`): task turn, tool
+- [x] 3. Replace the exact string at `planner.rs:624` with the role check.
+- [x] 4. Tests (`tests/unit/issue_1095_continuation_cue.rs`): task turn, tool
       result, cue in each of the four languages -> the plan resumes the task
       (assert `agentic_task` trace equals the task, and no `web_search`
       capability in the plan); an ordinary request that merely contains
@@ -39,12 +39,12 @@ claims any task that mentions a program-request role ("keep it valid Rust")
 and names a `.rs` path. A replacement in an existing tracked file is then
 verified against the artifact the generator synthesised.
 
-- [ ] 1. In `plan_generated_source_step`, before claiming: if the task carries
+- [x] 1. In `plan_generated_source_step`, before claiming: if the task carries
       an edit cue (role `ROLE_EDIT_ACTION` / the `compose_edit_request` path
       already recognises "replace X with Y") **and** the named path exists in
       the workspace, do not claim; let `compose_edit_request` /
       `structured_edit` own it.
-- [ ] 2. Tests: the leaf's exact task shape (`In the file src/x.rs, replace
+- [x] 2. Tests: the leaf's exact task shape (`In the file src/x.rs, replace
       "A" with "B". Change only that file and keep it valid Rust.`) plans an
       edit step, not a generated-source step, in four languages; a genuine
       "write a new file src/y.rs with a function that returns 3, keep it valid

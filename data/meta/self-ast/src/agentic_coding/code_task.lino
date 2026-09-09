@@ -2,46 +2,46 @@ self_ast_census
   target src/agentic_coding/code_task.rs
   language rust
   fidelity full_ast
-  byte_len 13527
-  line_count 362
-  content_id source_module_2899ff9546087eb6
+  byte_len 14173
+  line_count 371
+  content_id source_module_ced5692cb4b5c67c
   symbol_count 15
   symbols
     enum RustItemKind 19 23
     struct GeneratedSource 26 29
-    function plan_generated_source_step 31 75
-    function rust_source_for_task 79 180
-    function render_rust_template 182 187
-    function render_seeded_outcome 191 197
-    function render_seeded_change 212 225
-    function render_template 227 232
-    function rust_path 234 247
-    function is_path_character 249 251
-    function requested_identifier 253 275
-    function slot_identifier 277 308
-    function identifier_tokens 310 313
-    function valid_identifier 315 326
-    function numeric_literals 328 362
+    function plan_generated_source_step 31 84
+    function rust_source_for_task 88 189
+    function render_rust_template 191 196
+    function render_seeded_outcome 200 206
+    function render_seeded_change 221 234
+    function render_template 236 241
+    function rust_path 243 256
+    function is_path_character 258 260
+    function requested_identifier 262 284
+    function slot_identifier 286 317
+    function identifier_tokens 319 322
+    function valid_identifier 324 335
+    function numeric_literals 337 371
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10390
-    named_node_count 2079
+    total_link_count 10494
+    named_node_count 2088
     distinct_node_kinds 81
     node_kinds
       abstract_type 1
-      arguments 182
+      arguments 180
       array_expression 6
       array_type 5
       assignment_expression 3
       attribute 5
       attribute_item 5
       binary_expression 36
-      block 52
+      block 53
       boolean_literal 1
-      call_expression 182
+      call_expression 180
       char_literal 14
       closure_expression 22
       closure_parameters 22
@@ -49,11 +49,11 @@ self_ast_census
       continue_expression 2
       crate 5
       doc_comment 18
-      else_clause 10
+      else_clause 11
       enum_item 1
       enum_variant 3
       enum_variant_list 1
-      expression_statement 37
+      expression_statement 35
       field_declaration 2
       field_declaration_list 1
       field_expression 142
@@ -70,14 +70,14 @@ self_ast_census
       inner_doc_comment_marker 8
       integer_literal 17
       let_chain 1
-      let_condition 4
-      let_declaration 47
-      line_comment 22
+      let_condition 3
+      let_declaration 48
+      line_comment 30
       macro_invocation 3
-      match_arm 7
-      match_block 2
-      match_expression 2
-      match_pattern 7
+      match_arm 9
+      match_block 3
+      match_expression 3
+      match_pattern 9
       mutable_specifier 7
       outer_doc_comment_marker 10
       parameter 26
@@ -85,10 +85,10 @@ self_ast_census
       parenthesized_expression 3
       primitive_type 29
       range_expression 8
-      reference_expression 38
+      reference_expression 37
       reference_type 30
-      return_expression 10
-      scoped_identifier 55
+      return_expression 9
+      scoped_identifier 56
       scoped_use_list 2
       self 1
       shorthand_field_initializer 2
@@ -97,9 +97,9 @@ self_ast_census
       string_literal 46
       struct_expression 1
       struct_item 1
-      super 10
+      super 11
       token_tree 11
-      try_expression 34
+      try_expression 33
       tuple_expression 19
       tuple_pattern 6
       tuple_struct_pattern 6

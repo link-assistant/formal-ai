@@ -86,6 +86,8 @@ mod issue_1085_seed_links;
 mod issue_1085_self_authored_backlog;
 mod issue_1085_upstream_frontier;
 mod issue_1085_upstream_prompt_transfer;
+mod issue_1095_continuation_cue;
+mod issue_1096_edit_is_not_generation;
 mod issue_1963;
 mod issue_337;
 mod issue_403;

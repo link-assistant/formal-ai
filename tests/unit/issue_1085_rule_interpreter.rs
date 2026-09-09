@@ -7,7 +7,7 @@ use formal_ai::seed::{HANDLER_RULES_LINO, parse_lexicon_text};
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
 /// The precedence names that are now data rather than Rust functions.
-const MIGRATED_HANDLERS: [&str; 11] = [
+const MIGRATED_HANDLERS: [&str; 12] = [
     "conversation_control",
     "github_repository_traffic",
     "docs_method_explanation",
@@ -19,6 +19,7 @@ const MIGRATED_HANDLERS: [&str; 11] = [
     "kupi_slona",
     "shell_refusal",
     "opinion_question",
+    "agentic_continuation",
 ];
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -30,7 +31,7 @@ fn the_embedded_rule_document_declares_every_migrated_handler() {
     let parsed = HandlerRules::parse(HANDLER_RULES_LINO).expect("embedded rules must parse");
     let names: Vec<&str> = parsed.handler_names().collect();
     assert_eq!(names, MIGRATED_HANDLERS);
-    assert_eq!(parsed.rule_count(), 14);
+    assert_eq!(parsed.rule_count(), 15);
     let precedence = formal_ai::seed::handler_precedence();
     for name in MIGRATED_HANDLERS {
         assert!(

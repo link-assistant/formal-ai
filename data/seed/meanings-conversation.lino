@@ -570,3 +570,47 @@ meanings
         text 替换
       surface
         text 更换
+  agentic_continuation_cue
+    defined-by conversation_reference
+    role agentic_continuation_cue
+    lexeme en
+      surface
+        text "continue if you have next steps"
+      surface
+        text "continue"
+      surface
+        text "go on"
+      surface
+        text "please continue"
+      surface
+        text "next steps"
+    lexeme ru
+      surface
+        text "продолжай"
+      surface
+        text "продолжи"
+      surface
+        text "продолжи если есть следующие шаги"
+      surface
+        text "продолжай если есть следующие шаги"
+    lexeme hi
+      surface
+        text "जारी रखें"
+      surface
+        text "जारी रखो"
+      surface
+        text "अगर अगले कदम हैं तो जारी रखें"
+    lexeme zh
+      surface
+        text 继续
+      surface
+        text 请继续
+      surface
+        text 如果还有下一步请继续
+      surface
+        text 如果还有下一步 请继续
+    lexeme es
+      surface
+        text "continúa"
+      surface
+        text "continua si tienes próximos pasos"

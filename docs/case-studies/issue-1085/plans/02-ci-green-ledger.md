@@ -50,11 +50,11 @@ check re-runs it).
 
 ## Steps
 
-- [ ] 1. Write `.github/actions/green-ledger/action.yml` (+ `scripts/`
+- [x] 1. Write `.github/actions/green-ledger/action.yml` (+ `scripts/`
       digest helper reused from `formal-ai-binary`).
-- [ ] 2. Wire the eight checks above. Each: `ledger` step after checkout,
+- [x] 2. Wire the eight checks above. Each: `ledger` step after checkout,
       `if:` on the body steps, `save` step at the end.
-- [ ] 3. `main` never skips: the action takes `enabled` =
+- [x] 3. `main` never skips: the action takes `enabled` =
       `github.ref != 'refs/heads/main'`, so every merge re-verifies.
 - [ ] 4. Contract test in `tests/unit/ci-cd/`: every job that uses the ledger
       has (a) a save step gated on `success()`, (b) the notice line, (c) its own

@@ -8,6 +8,12 @@ handler_migration_ledger
     primitive "src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Both turns are role recognition plus a backtick capture rendered through seeded responses; the rule interpreter walks them with no handler-specific Rust."
     held_out "tests/unit/issue_1085_rule_interpreter.rs"
+  handler agentic_continuation
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses-agentic.lino"
+    primitive "src/rule_interpreter.rs"
+    justification "issue #1095: a turn that is only a continuation cue is whole-prompt role equality (the interpreter's `whole` mode) rendered through seeded responses; the agentic planner asks the same rule whether to resume the established task, so no handler-specific Rust decides it."
+    held_out "tests/unit/issue_1095_continuation_cue.rs"
   handler http_fetch
     status pending
   handler url_navigate

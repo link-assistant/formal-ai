@@ -139,7 +139,9 @@ impl StepFailure {
         const CODE_PLACEHOLDER: &str = "{code}";
         const REPORT_PLACEHOLDER: &str = "{report}";
 
-        let language = crate::language::detect(&latest_user_text(messages)).slug();
+        let language =
+            crate::language::detect(&crate::protocol::latest_user_request(messages).unwrap_or_default())
+                .slug();
         let intent = if self.exit_code.is_some() {
             "agentic_step_failed_with_exit_code"
         } else {
@@ -156,15 +158,6 @@ impl StepFailure {
             .replace(CODE_PLACEHOLDER, &code)
             .replace(REPORT_PLACEHOLDER, self.reported.trim())
     }
-}
-
-fn latest_user_text(messages: &[ChatMessage]) -> String {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role == "user")
-        .map(|message| message.content.plain_text())
-        .unwrap_or_default()
 }
 
 impl RecipeProgress {

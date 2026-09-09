@@ -151,14 +151,14 @@ impl Capability {
 /// *same* function the planner uses.
 #[must_use]
 pub fn tool_capability(name: &str) -> Option<Capability> {
-    classify_tool(name)
+    capability_router::classify_tool(name)
 }
 
 /// Plan the next agentic step from the conversation and advertised tools.
 /// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
-    let received = latest_user_text(messages)?;
+    let received = crate::protocol::latest_user_request(messages)?;
     trace_route("agentic_received", &received);
     // Agent compacts a long tool loop by asking the model to summarize it, then
     // starts the next request with the protocol turn "Continue if you have next
@@ -168,7 +168,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Recover only our own summary envelope, immediately before the exact
     // continuation turn; ordinary user requests that happen to say "continue"
     // keep their normal meaning.
-    let effective = compacted_agent_task(messages, &received).unwrap_or(received);
+    let effective = continued_agent_task(messages, &received).unwrap_or(received);
     // An *unmarked* harness preamble is still the caller talking (issue #907,
     // follow-up). `<session_context>`-style markup is stripped upstream in
     // `crate::protocol`, but Hive Mind's adapters concatenated their workflow
@@ -186,7 +186,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
+    // A bare continuation cue with nothing to resume is still the cue here,
+    // and the `agentic_continuation` conversation handler answers it; the
+    // words of the cue are never a request (issue #1095).
     if crate::rule_interpreter::handler_matches("conversation_control", &task)
+        || is_continuation_cue(&task)
         || looks_like_skill_description(&task)
     {
         return None;
@@ -559,7 +563,9 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
         return AgenticPlan::Final(tool_result::render(
             command,
             progress.run_outputs.last().map_or("", String::as_str),
-            latest_user_text(messages).as_deref().unwrap_or_default(),
+            crate::protocol::latest_user_request(messages)
+                .as_deref()
+                .unwrap_or_default(),
         ));
     }
 
@@ -610,24 +616,47 @@ pub(super) fn fetch_arguments(url: &str) -> String {
     .to_string()
 }
 
-pub(super) fn classify_tool(name: &str) -> Option<Capability> {
-    capability_router::classify_tool(name)
+
+/// Whether a turn is nothing but a continuation cue (issue #1095).
+///
+/// The rule `agentic_continuation` in `data/seed/handler-rules.lino` compares
+/// the whole cleaned prompt with the role's surfaces -- "continue the migration
+/// in src/queue.rs" contains the word and keeps its own route.
+fn is_continuation_cue(text: &str) -> bool {
+    crate::rule_interpreter::handler_matches("agentic_continuation", text)
 }
 
-/// The text of the most recent `user` turn.
-fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    crate::protocol::latest_user_request(messages)
-}
-
-/// Restore the objective carried through Agent's compaction protocol.
-fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
-    if crate::engine::normalize_prompt(latest) != "continue if you have next steps" {
+/// The task a continuation cue continues.
+///
+/// Two places can hold it. After Agent's compaction the objective survives only
+/// inside the assistant's `Conversation summary:` envelope, and that is read
+/// first because it is the more specific record. After an ordinary tool result
+/// there is no envelope: the task is simply the last user turn that was not
+/// itself a cue. The ladder's eight #1095 leaves were this second case -- the
+/// envelope path found nothing, the bare cue became the request, and the words
+/// "continue" and "next step" went to web search.
+fn continued_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
+    if !is_continuation_cue(latest) {
         return None;
     }
     let latest_user = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    messages[..latest_user].iter().rev().find_map(|message| {
+    let earlier = &messages[..latest_user];
+    compacted_agent_task(earlier).or_else(|| {
+        earlier
+            .iter()
+            .rev()
+            .filter(|message| message.role.eq_ignore_ascii_case("user"))
+            .map(|message| message.content.plain_text())
+            .find(|text| !text.trim().is_empty() && !is_continuation_cue(text))
+    })
+}
+
+/// Restore the objective carried through Agent's compaction protocol from the
+/// turns before the continuation.
+fn compacted_agent_task(earlier: &[ChatMessage]) -> Option<String> {
+    earlier.iter().rev().find_map(|message| {
         if !message.role.eq_ignore_ascii_case("assistant") {
             return None;
         }

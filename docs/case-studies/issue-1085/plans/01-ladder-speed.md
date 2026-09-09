@@ -11,7 +11,7 @@ recompile every leaf. Plus unbounded agent turns.
 
 ## Steps
 
-- [ ] 1. **One workspace, reused.** `run.sh` creates a single
+- [x] 1. **One workspace, reused.** `run.sh` creates a single
       `git worktree add --detach "$STAGE/work" HEAD` once. Between nodes:
       `git -C "$work" checkout -q -- . && git -C "$work" clean -qfdx
       -e .agent-ladder` then re-apply the node's fixture commit. Same path
@@ -22,20 +22,20 @@ recompile every leaf. Plus unbounded agent turns.
       - The agent's project identity is the root commit. A worktree shares the
         repository's real root commit, so `@link-assistant/agent` reuses one
         snapshot store instead of minting one per node (#1072 §2, 31 GB).
-- [ ] 2. **Sparse checkout.** `git -C "$work" sparse-checkout set --no-cone
+- [x] 2. **Sparse checkout.** `git -C "$work" sparse-checkout set --no-cone
       '/*' '!/dev/' '!/docs/case-studies/' '!/docs/assets/'` before the first
       checkout. Leaves edit `src/`; verify-node compiles `src/` and runs
       `tests/unit`. Confirm `cargo check --lib` in the sparse tree passes before
       relying on it (build.rs / include_str! may read `data/`; `data/` stays).
-- [ ] 3. **Per-node budget.** Wrap the agent call in `timeout --kill-after=10
+- [x] 3. **Per-node budget.** Wrap the agent call in `timeout --kill-after=10
       "${LADDER_NODE_BUDGET:-240}"`; record `FAIL agent_timeout` in run.log.
       Worst case 32 x 4 min = 128 min, still inside the job's 180. Default 240 s
       is 10x the median leaf (22 s) and above every passing leaf measured.
-- [ ] 4. **Stream progress to the job log.** `run_one` prints one line per node
+- [x] 4. **Stream progress to the job log.** `run_one` prints one line per node
       (`node id start`, `node id PASS|FAIL reason elapsed`) to stdout, not only
       to run.log, so the Actions log is not blank for 90 minutes. This is what
       the maintainer's screenshot showed: a long step with nothing to read.
-- [ ] 5. **#1109 orphan sweep.** In `LinkCliLinkStore::open_at`, before
+- [x] 5. **#1109 orphan sweep.** In `LinkCliLinkStore::open_at`, before
       acquiring the lock, remove sibling
       `.<name>.database.<pid>.<n>.tmp*` files whose `<pid>` is not alive
       (`kill(pid, 0)` via `libc`, or `/proc/<pid>` on Linux and
@@ -61,3 +61,17 @@ Each step is independent. Step 1 is the one with correctness risk (a stale
 file surviving between nodes): the `clean -fdx` plus a `git status --porcelain`
 assertion before each node makes a dirty tree a hard failure, never a silent
 one.
+
+## Log
+
+- 2026-09-09: steps 1-5 landed. Local two-leaf run on macOS exercised the
+  worktree, sparse checkout, reset, budget and progress path end to end; the
+  leaves themselves failed because the rename recipe emits GNU-only `sed -i`
+  with `\b` (filed as #1110), so the incremental-`cargo` timing comes from the
+  CI job log (verify-node now prints it). Two macOS portability fixes went into
+  the harness on the way (`setsid`, BSD `sed -i`); `declare -A` still needs
+  bash 4+, so on a Mac run it with Homebrew bash.
+- Step 4 in `04-ladder-leaf-fixes.md` moved the cue check into a seed rule
+  (`agentic_continuation`, new interpreter mode `whole`) after the kernel
+  ratchet refused the Rust version: 112,824 lines against a 112,805 ceiling.
+

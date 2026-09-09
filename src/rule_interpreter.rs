@@ -58,6 +58,8 @@ enum RoleMode {
     Raw,
     Languages,
     Forms,
+    /// The whole subject equals one of the role's surfaces (issue #1095).
+    Whole,
 }
 
 #[derive(Debug)]
@@ -419,6 +421,18 @@ impl Condition {
                         .role_word_forms(role)
                         .into_iter()
                         .any(|form| !form.text.is_empty() && text.contains(&form.text)),
+                    // Equality, not containment: a turn that *is* a surface
+                    // ("continue") carries the role; a request that contains
+                    // the word ("continue the migration in src/queue.rs")
+                    // keeps its own meaning (issue #1095).
+                    RoleMode::Whole => {
+                        !text.is_empty()
+                            && context
+                                .lexicon
+                                .words_for_role(role)
+                                .iter()
+                                .any(|surface| surface == text)
+                    }
                 }
             }
             Self::RoleLead(role, subject) => {
@@ -591,6 +605,7 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
                 Some("raw") => RoleMode::Raw,
                 Some("languages") => RoleMode::Languages,
                 Some("forms") => RoleMode::Forms,
+                Some("whole") => RoleMode::Whole,
                 Some(_) => return Err(node.error("unknown_role_mode")),
             };
             Condition::Role(node.first_arg()?, mode, subject)
