@@ -2,40 +2,40 @@ self_ast_census
   target src/cli_report.rs
   language rust
   fidelity signature
-  byte_len 17800
-  line_count 491
-  content_id source_module_b0807d1e80c4e07f
+  byte_len 18267
+  line_count 497
+  content_id source_module_7cac7cb67f7da738
   symbol_count 32
   symbols
-    const DEFAULT_INLINE_BYTES 31 31
-    const DEFAULT_EXCERPT_BYTES 33 33
-    const MAX_ISSUE_BODY_BYTES 39 39
-    const DEFAULT_SURFACE 41 41
-    const LINO 43 43
-    const TRACE_SEPARATOR 46 46
-    const ERROR_PLACEHOLDER 47 47
-    const SESSION_PLACEHOLDER 48 48
-    const SOURCE_PLACEHOLDER 49 49
-    const URL_PLACEHOLDER 50 50
-    struct ReportArgs 53 56
-    enum ReportAction 59 99
-    enum OversizeContext 103 108
-    enum GistVisibility 115 120
-    function run_report 122 173
-    function bound_report_body 182 193
-    function context_path 197 199
-    function context_filename 201 203
-    function safe_session_component 205 216
-    function report_body 218 254
-    function separate_context_attachments 256 302
-    function version 304 306
-    function ui_language 309 319
-    function export_trace 324 339
-    function report_turns 341 347
-    function report_turn 349 357
-    function message_text 364 385
-    function collect_text 387 405
-    struct AttachmentSettings 407 412
-    function attach_context 420 452
-    function upload_gist 455 485
-    function config 487 491
+    const DEFAULT_INLINE_BYTES 37 37
+    const DEFAULT_EXCERPT_BYTES 39 39
+    const MAX_ISSUE_BODY_BYTES 45 45
+    const DEFAULT_SURFACE 47 47
+    const LINO 49 49
+    const TRACE_SEPARATOR 52 52
+    const ERROR_PLACEHOLDER 53 53
+    const SESSION_PLACEHOLDER 54 54
+    const SOURCE_PLACEHOLDER 55 55
+    const URL_PLACEHOLDER 56 56
+    struct ReportArgs 59 62
+    enum ReportAction 65 105
+    enum OversizeContext 109 114
+    enum GistVisibility 121 126
+    function run_report 128 179
+    function bound_report_body 188 199
+    function context_path 203 205
+    function context_filename 207 209
+    function safe_session_component 211 222
+    function report_body 224 260
+    function separate_context_attachments 262 308
+    function version 310 312
+    function ui_language 315 325
+    function export_trace 330 345
+    function report_turns 347 353
+    function report_turn 355 363
+    function message_text 370 391
+    function collect_text 393 411
+    struct AttachmentSettings 413 418
+    function attach_context 426 458
+    function upload_gist 461 491
+    function config 493 497

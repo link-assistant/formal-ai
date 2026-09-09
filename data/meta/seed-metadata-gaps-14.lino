@@ -907,6 +907,10 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "conversation_preference_avoid"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_29796ef82597986e
+    source "data/seed/meanings-conversation.lino"
+    record "enumeration_cue"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_08c9574468aba89e
     source "data/seed/meanings-definition-merge.lino"
     record "definition_artifact_request"

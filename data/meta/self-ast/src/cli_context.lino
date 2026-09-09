@@ -2,10 +2,10 @@ self_ast_census
   target src/cli_context.rs
   language rust
   fidelity signature
-  byte_len 15278
-  line_count 426
-  content_id source_module_48766f672428bed4
-  symbol_count 30
+  byte_len 17417
+  line_count 463
+  content_id source_module_8f55f24c9efea4f1
+  symbol_count 31
   symbols
     const ERROR_PLACEHOLDER 12 12
     const SESSION_PLACEHOLDER 13 13
@@ -13,27 +13,28 @@ self_ast_census
     const ERROR_JOIN 17 17
     const LATEST_SESSION 20 20
     const SESSION_ENV 22 22
-    struct ContextArgs 25 28
-    enum ContextAction 31 80
-    enum ContextSource 84 95
-    function name 99 107
-    enum ContextFormat 111 114
-    function run_context 116 152
-    function exported_context 161 177
-    function session_candidates 188 216
-    function context_document 218 232
-    function ensure_records 235 260
-    function load_server_context 262 269
-    function render_context 271 280
-    function harness_context 283 290
-    function merged_context 298 336
-    function take_messages 339 349
-    function resolve_session 352 361
-    function declared_session 364 369
-    function harness_session 372 379
-    function unresolved_session 381 383
-    function run_extractor 386 401
-    const EXTRACTOR 387 387
-    function config 403 407
-    function read_input 409 417
-    function write_output 419 426
+    const RECORDED_PLACEHOLDER 26 26
+    struct ContextArgs 29 32
+    enum ContextAction 35 88
+    enum ContextSource 92 103
+    function name 107 115
+    enum ContextFormat 119 122
+    function run_context 124 171
+    function exported_context 180 196
+    function session_candidates 207 253
+    function context_document 255 269
+    function ensure_records 272 297
+    function load_server_context 299 306
+    function render_context 308 317
+    function harness_context 320 327
+    function merged_context 335 373
+    function take_messages 376 386
+    function resolve_session 389 398
+    function declared_session 401 406
+    function harness_session 409 416
+    function unresolved_session 418 420
+    function run_extractor 423 438
+    const EXTRACTOR 424 424
+    function config 440 444
+    function read_input 446 454
+    function write_output 456 463

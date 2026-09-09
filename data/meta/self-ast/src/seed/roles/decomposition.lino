@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/roles/decomposition.rs
   language rust
   fidelity signature
-  byte_len 4032
-  line_count 64
-  content_id source_module_97eb04d7d2b4fb98
-  symbol_count 8
+  byte_len 4673
+  line_count 75
+  content_id source_module_eec9da7a198835cd
+  symbol_count 9
   symbols
     const ROLE_TASK_DECOMPOSITION_ACTION 15 15
     const ROLE_SUBTASK_UNIT_NOUN 21 21
@@ -15,3 +15,4 @@ self_ast_census
     const ROLE_TASK_FIRST_STEP_CUE 48 48
     const ROLE_OBSERVABLE_TASK_ACTION 55 55
     const ROLE_UNOBSERVABLE_TASK_ACTION 64 64
+    const ROLE_ENUMERATION_CUE 75 75

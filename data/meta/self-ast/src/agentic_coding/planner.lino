@@ -2,51 +2,51 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 35697
-  line_count 746
-  content_id source_module_c4b0671663cdf0a0
+  byte_len 36362
+  line_count 758
+  content_id source_module_3a4784e0147d57db
   symbol_count 18
   symbols
-    enum AgenticPlan 61 66
-    struct PlannedToolCall 70 75
-    enum Capability 85 100
-    function permission_key 108 125
-    function registry_id 127 144
-    function tool_capability 153 155
-    function plan_chat_step 160 235
-    function plan_settled_routes 251 557
-    function plan_shell_step 560 579
-    function plan_one 581 586
-    function write_arguments 594 602
-    function fetch_arguments 611 617
-    function is_continuation_cue 625 627
-    function continued_agent_task 638 654
-    function compacted_agent_task 658 684
-    function repair_compacted_dot_paths 692 722
-    function preserved_first_user_turn 730 736
-    function trace_route 742 746
+    enum AgenticPlan 62 67
+    struct PlannedToolCall 71 76
+    enum Capability 86 101
+    function permission_key 109 126
+    function registry_id 128 145
+    function tool_capability 154 156
+    function plan_chat_step 161 236
+    function plan_settled_routes 252 569
+    function plan_shell_step 572 591
+    function plan_one 593 598
+    function write_arguments 606 614
+    function fetch_arguments 623 629
+    function is_continuation_cue 637 639
+    function continued_agent_task 650 666
+    function compacted_agent_task 670 696
+    function repair_compacted_dot_paths 704 734
+    function preserved_first_user_turn 742 748
+    function trace_route 754 758
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16561
-    named_node_count 3318
+    total_link_count 16889
+    named_node_count 3387
     distinct_node_kinds 76
     node_kinds
-      arguments 249
+      arguments 257
       array_expression 1
       array_type 8
       assignment_expression 3
       attribute 6
       attribute_item 6
       binary_expression 11
-      block 84
+      block 85
       break_expression 1
-      call_expression 249
+      call_expression 257
       char_literal 9
-      closure_expression 18
-      closure_parameters 18
+      closure_expression 21
+      closure_parameters 21
       crate 7
       declaration_list 1
       doc_comment 86
@@ -55,25 +55,25 @@ self_ast_census
       enum_variant 16
       enum_variant_list 2
       escape_sequence 6
-      expression_statement 131
+      expression_statement 133
       field_declaration 2
       field_declaration_list 1
-      field_expression 80
-      field_identifier 80
+      field_expression 84
+      field_identifier 84
       function_item 15
       function_modifiers 2
       generic_type 7
-      identifier 928
-      if_expression 62
+      identifier 949
+      if_expression 63
       impl_item 1
       index_expression 8
       inner_doc_comment_marker 2
       integer_literal 5
       let_chain 7
-      let_condition 45
+      let_condition 46
       let_declaration 22
       lifetime 2
-      line_comment 248
+      line_comment 252
       macro_invocation 10
       match_arm 28
       match_block 2
@@ -87,10 +87,10 @@ self_ast_census
       parenthesized_expression 1
       primitive_type 20
       range_expression 8
-      reference_expression 27
+      reference_expression 29
       reference_type 25
-      return_expression 58
-      scoped_identifier 172
+      return_expression 59
+      scoped_identifier 175
       scoped_use_list 6
       self 4
       self_parameter 2
@@ -98,15 +98,15 @@ self_ast_census
       string_content 59
       string_literal 61
       struct_item 1
-      super 52
+      super 53
       token_tree 20
       try_expression 5
       tuple_pattern 1
-      tuple_struct_pattern 46
+      tuple_struct_pattern 47
       type_arguments 7
       type_identifier 33
       unary_expression 9
-      use_declaration 45
+      use_declaration 46
       use_list 6
       visibility_modifier 17
       while_expression 1
