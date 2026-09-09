@@ -61,7 +61,12 @@ fn an_unrelated_request_is_answered_while_a_completion_is_in_flight() {
                 "model": "formal-ai",
                 "messages": [{"role": "user", "content": "Hi"}],
             }),
-            Duration::from_secs(120),
+            // Generous, because this budget is not what the test measures. The
+            // assertion below is about the *unrelated* request's latency; this
+            // completion merely has to still be in flight while that happens.
+            // A tighter bound only makes the case flaky when a sibling test is
+            // seeding a store of its own on the same machine.
+            Duration::from_secs(600),
         )
     });
 

@@ -173,6 +173,30 @@ pub fn server_link_database_path(memory_path: &Path) -> PathBuf {
     memory_path.with_extension("links")
 }
 
+/// Path of the marker recording how much of the memory the projection holds.
+///
+/// The HTTP server opens a fresh [`SyncStore`] per request, so how much of the
+/// memory the native projection already holds cannot be remembered in a field
+/// -- it has to outlive the process that observed it. This file is that record,
+/// written beside the database it describes.
+fn server_link_projection_marker_path(memory_path: &Path) -> PathBuf {
+    memory_path.with_extension("links.projected")
+}
+
+/// How many leading events the projection beside `memory_path` is known to hold.
+///
+/// Any unreadable, malformed, or absent marker reads as unknown, which makes the
+/// next write rebuild. That is the safe direction: a rebuild is correct whatever
+/// the database contains, whereas a wrong count would append onto a prefix that
+/// was never there.
+fn read_projected_event_count(memory_path: &Path) -> Option<usize> {
+    std::fs::read_to_string(server_link_projection_marker_path(memory_path))
+        .ok()?
+        .trim()
+        .parse::<usize>()
+        .ok()
+}
+
 /// A small file-backed event log used by the HTTP sync endpoints.
 ///
 /// Each request loads the current log, applies its operation, and (for writes)
@@ -394,7 +418,7 @@ impl SyncStore {
     }
 
     fn persist(&self) -> std::io::Result<()> {
-        let Some(path) = self.path.as_ref() else {
+        let Some(path) = self.path.as_deref() else {
             return Ok(());
         };
         if !self.compatible {
@@ -412,6 +436,18 @@ impl SyncStore {
         self.synchronize_link_cli_projection()
     }
 
+    /// Bring the native projection in line with the events held here.
+    ///
+    /// Issue #1106: rebuilding the whole graph on every append made one chat
+    /// completion against a 400-event store take 78 seconds, and the cost grew
+    /// with the square of the history. When the marker beside the database says
+    /// the projection already holds a prefix of these events, only the
+    /// remainder is appended.
+    ///
+    /// The marker is removed before the write and rewritten only after it
+    /// succeeds, so an interrupted or failed synchronization leaves no claim
+    /// standing: the next write rebuilds, and `.lino` stays the deterministic
+    /// recovery source it is documented to be.
     fn synchronize_link_cli_projection(&self) -> std::io::Result<()> {
         #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
         {
@@ -419,11 +455,30 @@ impl SyncStore {
                 return Ok(());
             };
             let database = server_link_database_path(memory_path);
+            let marker = server_link_projection_marker_path(memory_path);
+            let already_projected = read_projected_event_count(memory_path)
+                .filter(|projected| *projected <= self.events.len());
+            let _ = std::fs::remove_file(&marker);
             let mut store = crate::link_store::LinkCliLinkStore::open_at(&database)
                 .map_err(std::io::Error::other)?;
-            store
-                .replace_memory_events_transactionally(&self.events)
-                .map_err(std::io::Error::other)?;
+            // Appending is an optimization, never a correctness requirement.
+            // If the recorded prefix turns out not to describe this database --
+            // a `.lino` replaced underneath it, a half-written address map --
+            // the append refuses, and the rebuild that is always correct runs
+            // instead. Reporting the refusal would lose the caller's write for
+            // a condition the store can recover from by itself.
+            let appended = already_projected.is_some_and(|projected| {
+                store
+                    .append_memory_events_transactionally(&self.events, projected)
+                    .is_ok()
+            });
+            if !appended {
+                store
+                    .replace_memory_events_transactionally(&self.events)
+                    .map_err(std::io::Error::other)?;
+            }
+            drop(store);
+            crate::memory::write_locked_atomic(&marker, &format!("{}\n", self.events.len()))?;
         }
         Ok(())
     }

@@ -457,6 +457,125 @@ impl LinkCliLinkStore {
             .map_err(LinkStoreError::from)
     }
 
+    /// Transactionally append events the open database does not yet hold.
+    ///
+    /// [`Self::replace_memory_events_transactionally`] rebuilds the whole graph,
+    /// which is the right recovery behaviour when opening a database whose
+    /// `.lino` source may be ahead of it. It is the wrong behaviour on the
+    /// steady-state write path: issue #1106 measured a chat completion against a
+    /// 400-event store taking 78 seconds, because every appended event rebuilt
+    /// all 400 from scratch, and the cost grows with the square of the history.
+    ///
+    /// This method is that write path. The caller states how many leading events
+    /// the database already holds; only the remainder is appended, inside one
+    /// transaction whose rollback restores the in-memory projection. When the
+    /// claim does not hold -- a shorter database, or a divergent prefix -- there
+    /// is nothing to append onto, and the caller is told to rebuild instead.
+    pub fn append_memory_events_transactionally(
+        &mut self,
+        events: &[MemoryEvent],
+        already_projected: usize,
+    ) -> Result<(), LinkStoreError> {
+        if self.transaction_snapshot.is_some() {
+            return Err(LinkStoreError::Backend(String::from(
+                "cannot append memory inside an open link-cli transaction",
+            )));
+        }
+        if already_projected > events.len() {
+            return Err(LinkStoreError::Backend(String::from(
+                "link-cli projection does not extend the recorded memory prefix",
+            )));
+        }
+        if already_projected == events.len() {
+            return Ok(());
+        }
+        // A freshly-opened store holds the database's doublets on disk but an
+        // empty in-memory projection. Appending needs both: the sequence
+        // numbers must continue past the prefix, and `node_id` must resolve a
+        // string that the prefix already created to that same address rather
+        // than minting a second one. Restoring those two maps writes nothing to
+        // the database.
+        if self.events.len() < already_projected {
+            self.restore_projected_prefix(&events[..already_projected])?;
+        } else if self.events.len() != already_projected {
+            return Err(LinkStoreError::Backend(String::from(
+                "link-cli projection does not extend the recorded memory prefix",
+            )));
+        }
+        self.begin_transaction()?;
+        for event in events[already_projected..].iter().cloned() {
+            if let Err(error) = self.append_memory_event_in_open_transaction(event) {
+                let rollback = self.rollback_transaction();
+                return rollback.and(Err(error));
+            }
+        }
+        self.commit_transaction()?;
+        self.write_node_addresses()
+    }
+
+    /// Restore the in-memory maps for a prefix the database already stores.
+    ///
+    /// Only one thing here cannot be recomputed from the events: the
+    /// string-to-address map, whose addresses were handed out by link-cli when
+    /// the prefix was written. Recomputing it by replaying the prefix through a
+    /// scratch database is what the first attempt at issue #1106 did, and it
+    /// measured 46.8 seconds of a 47.2-second projection -- the whole rebuild,
+    /// merely relocated. So the map is saved when the projection is written and
+    /// read back here; the records and events, which are pure functions of the
+    /// events, are still derived.
+    ///
+    /// A missing or unreadable sidecar is not an error. It means the addresses
+    /// are unknown, and the caller falls back to a full rebuild.
+    fn restore_projected_prefix(&mut self, prefix: &[MemoryEvent]) -> Result<(), LinkStoreError> {
+        let nodes = read_node_addresses(&node_address_path(&self.database)).ok_or_else(|| {
+            LinkStoreError::Backend(String::from(
+                "link-cli node addresses are unavailable for the recorded prefix",
+            ))
+        })?;
+        let mut events = Vec::with_capacity(prefix.len());
+        let mut records = Vec::with_capacity(prefix.len());
+        for (sequence, event) in prefix.iter().enumerate() {
+            let mut event = event.clone();
+            ensure_event_id(&mut event, sequence);
+            records.push(memory_event_to_link_record(&event, sequence));
+            events.push(event);
+        }
+        // Every string the prefix projected must have a recorded address; if one
+        // is missing the sidecar does not describe this database, and appending
+        // onto it would mint a second address for an existing node.
+        for record in &records {
+            for link in &record.links {
+                if !nodes.contains_key(&link.from) || !nodes.contains_key(&link.to) {
+                    return Err(LinkStoreError::Backend(String::from(
+                        "link-cli node addresses do not cover the recorded prefix",
+                    )));
+                }
+            }
+        }
+        self.events = events;
+        self.records = records;
+        self.nodes = nodes;
+        Ok(())
+    }
+
+    /// Save the string-to-address map so a later append can resume from it.
+    fn write_node_addresses(&self) -> Result<(), LinkStoreError> {
+        let mut rendered = String::new();
+        for (node, address) in &self.nodes {
+            // Node strings are arbitrary content, and this format is line-based,
+            // so newlines are escaped -- and the escape character with them,
+            // without which a node containing a literal backslash-n would read
+            // back as a newline.
+            let encoded = node.replace('\\', "\\\\").replace('\n', "\\n");
+            let _ = writeln!(rendered, "{address}\t{encoded}");
+        }
+        let path = node_address_path(&self.database);
+        let temporary = replacement_path(&path, "nodes");
+        std::fs::write(&temporary, rendered)
+            .and_then(|()| replace_file(&temporary, &path))
+            .map_err(|error| LinkStoreError::Backend(error.to_string()))
+    }
+
     /// Transactionally build and atomically publish a complete replacement.
     ///
     /// This is the server synchronization boundary. Rebuilding makes the
@@ -531,7 +650,9 @@ impl LinkCliLinkStore {
         self.transactions = Some(reopen_result?);
         replacement_result?;
         self.restore_snapshot(snapshot);
-        Ok(())
+        // Record the addresses this rebuild handed out, so the next write can
+        // append onto it instead of rebuilding again (issue #1106).
+        self.write_node_addresses()
     }
 
     fn append_memory_event_in_open_transaction(
@@ -759,6 +880,49 @@ fn cleanup_link_cli_files(database: &Path) {
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 fn link_cli_debug_enabled() -> bool {
     std::env::var("FORMAL_AI_LINK_CLI_DEBUG").as_deref() == Ok("1")
+}
+
+/// Path of the saved string-to-address map beside a link-cli database.
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn node_address_path(database: &Path) -> PathBuf {
+    let mut name = database.as_os_str().to_os_string();
+    name.push(".nodes");
+    PathBuf::from(name)
+}
+
+/// Read a saved string-to-address map, or `None` when it is absent or malformed.
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn read_node_addresses(path: &Path) -> Option<BTreeMap<String, usize>> {
+    let text = std::fs::read_to_string(path).ok()?;
+    let mut nodes = BTreeMap::new();
+    for line in text.lines() {
+        let (address, node) = line.split_once('\t')?;
+        nodes.insert(decode_node_name(node)?, address.parse::<usize>().ok()?);
+    }
+    Some(nodes)
+}
+
+/// Decode one escaped node name, rejecting an escape the encoder cannot emit.
+///
+/// Scanning left to right is what makes this the exact inverse of the encoder:
+/// a `\\` consumes its own escape before the following character is examined,
+/// so the two characters `\n` inside a node name never decode as a newline.
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+fn decode_node_name(encoded: &str) -> Option<String> {
+    let mut decoded = String::with_capacity(encoded.len());
+    let mut characters = encoded.chars();
+    while let Some(character) = characters.next() {
+        if character != '\\' {
+            decoded.push(character);
+            continue;
+        }
+        match characters.next()? {
+            'n' => decoded.push('\n'),
+            '\\' => decoded.push('\\'),
+            _ => return None,
+        }
+    }
+    Some(decoded)
 }
 
 fn ensure_event_id(event: &mut MemoryEvent, sequence: usize) {

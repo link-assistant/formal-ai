@@ -2,10 +2,10 @@ self_ast_census
   target src/link_store.rs
   language rust
   fidelity signature
-  byte_len 33810
-  line_count 938
-  content_id source_module_33f9babc75dde6b0
-  symbol_count 77
+  byte_len 41724
+  line_count 1102
+  content_id source_module_7ce1f0051334e718
+  symbol_count 83
   symbols
     struct DoubletLink 26 30
     struct LinkRecord 34 40
@@ -50,37 +50,43 @@ self_ast_census
     function begin_transaction 423 434
     function commit_transaction 437 445
     function rollback_transaction 448 458
-    function replace_memory_events_transactionally 467 535
-    function append_memory_event_in_open_transaction 537 547
-    function insert_record 549 555
-    function append_native_doublet 557 564
-    function node_id 566 576
-    function transactions 578 582
-    function transactions_mut 584 588
-    function snapshot 590 596
-    function restore_snapshot 598 602
-    function backend 607 609
-    function append_memory_event 611 630
-    function import_memory_links_notation 632 645
-    function export_memory_links_notation 647 649
-    function records 651 653
-    function drop 658 670
-    function server_link_transition_log_path 675 685
-    function from 689 691
-    function open_link_cli_transactions 695 710
-    function replacement_path 713 725
-    static NEXT_REPLACEMENT 714 714
-    function replace_file 728 750
-    function cleanup_link_cli_files 753 757
-    function link_cli_debug_enabled 760 762
-    function ensure_event_id 764 770
-    function validate_demo_memory_document 772 789
-    function validate_schema_version_line 791 805
-    function validate_event_line 807 814
-    function validate_field_line 816 831
-    function validate_strict_quoted 833 860
-    function event_source_id 862 868
-    function canonical_memory_event 870 906
-    function push_canonical 908 914
-    function push_optional_field 916 930
-    function push_doublet 932 938
+    function append_memory_events_transactionally 474 514
+    function restore_projected_prefix 529 559
+    function write_node_addresses 562 577
+    function replace_memory_events_transactionally 586 656
+    function append_memory_event_in_open_transaction 658 668
+    function insert_record 670 676
+    function append_native_doublet 678 685
+    function node_id 687 697
+    function transactions 699 703
+    function transactions_mut 705 709
+    function snapshot 711 717
+    function restore_snapshot 719 723
+    function backend 728 730
+    function append_memory_event 732 751
+    function import_memory_links_notation 753 766
+    function export_memory_links_notation 768 770
+    function records 772 774
+    function drop 779 791
+    function server_link_transition_log_path 796 806
+    function from 810 812
+    function open_link_cli_transactions 816 831
+    function replacement_path 834 846
+    static NEXT_REPLACEMENT 835 835
+    function replace_file 849 871
+    function cleanup_link_cli_files 874 878
+    function link_cli_debug_enabled 881 883
+    function node_address_path 887 891
+    function read_node_addresses 895 903
+    function decode_node_name 911 926
+    function ensure_event_id 928 934
+    function validate_demo_memory_document 936 953
+    function validate_schema_version_line 955 969
+    function validate_event_line 971 978
+    function validate_field_line 980 995
+    function validate_strict_quoted 997 1024
+    function event_source_id 1026 1032
+    function canonical_memory_event 1034 1070
+    function push_canonical 1072 1078
+    function push_optional_field 1080 1094
+    function push_doublet 1096 1102
