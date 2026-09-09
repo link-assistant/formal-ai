@@ -60,7 +60,22 @@ BIN="$STAGE/formal-ai"
 BASE_SHA=$(git -C "$ROOT" rev-parse HEAD)
 git -C "$ROOT" worktree add --detach --no-checkout "$WORK" "$BASE_SHA" >/dev/null
 git -C "$WORK" sparse-checkout init --no-cone >/dev/null
-git -C "$WORK" sparse-checkout set --no-cone '/*' '!/dev/' '!/docs/case-studies/' '!/docs/assets/' >/dev/null
+# `dev/` is 693 MB of captured logs and nothing compiles from it. `docs/` has
+# to stay: 31 `include_str!` call sites in the test suite read
+# `docs/case-studies/`, one of them from a `raw-data/` log, so excluding it
+# made `cargo test` fail to compile inside the node -- which the harness
+# scored as the leaf's own `failing_leaf_tests` rather than as its own
+# breakage. `docs/assets/` holds only images no source reads.
+# `dev/` is 693 MB of captured logs, but the test suite compiles exactly one
+# file out of it (`issue_991_incremental_decomposition.rs` reads a learning
+# report through `include_str!`), so that one path is added back. `docs/` has
+# to stay whole: 31 `include_str!` sites read `docs/case-studies/`, one of them
+# a `raw-data/` log. Excluding either made `cargo test` fail to compile inside
+# the node, which the harness scored as the leaf's own `failing_leaf_tests`
+# rather than as the harness's breakage -- a false verdict about Formal AI.
+# `docs/assets/` holds only images no source reads.
+git -C "$WORK" sparse-checkout set --no-cone '/*' '!/dev/' \
+  '/dev/log/issues/702/pulls/818/agent-cli/' '!/docs/assets/' >/dev/null
 git -C "$WORK" checkout -q --detach "$BASE_SHA"
 git -C "$WORK" config user.email agent-ladder@example.invalid
 git -C "$WORK" config user.name agent-ladder

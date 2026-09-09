@@ -14,16 +14,16 @@ effect`. A Mac user asking for a rename gets a confident failure.
 
 ## Steps
 
-- [ ] 1. `repeated_identifier_rewrite_command` emits `perl -pi -e` instead:
+- [x] 1. `repeated_identifier_rewrite_command` emits `perl -pi -e` instead:
       `perl -pi -e 's/\bX\b/Y/g' -- FILE`. `\b` and in-place editing behave
       identically on GNU and BSD systems, and perl is present on both the
       Ubuntu runners and macOS. Escaping: the identifiers are already
       constrained to `[A-Za-z0-9_]` by `shell_safe_identifier`, so neither
       side of the substitution can carry a metacharacter.
-- [ ] 2. Move the two pinned strings with it:
+- [x] 2. Move the two pinned strings with it:
       `tests/unit/issue_848_coding_ladder.rs` and
       `tests/unit/issue_1069_ladder_change_tasks.rs`.
-- [ ] 3. A test that the emitted command is portable: no `sed -i` without a
+- [x] 3. A test that the emitted command is portable: no `sed -i` without a
       suffix, no `\b` inside a `sed` script.
-- [ ] 4. Verify by running the ladder leaf locally on macOS and watching it
+- [x] 4. Verify by running the ladder leaf locally on macOS and watching it
       pass where it failed.

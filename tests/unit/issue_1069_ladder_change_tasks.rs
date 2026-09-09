@@ -433,14 +433,16 @@ fn run_command(workspace: &mut Workspace, command: &str) -> Result<String, Strin
             .to_owned();
         return Ok(format!("{}  {path}", sha256sum(&held)));
     }
-    if let Some(rest) = command.strip_prefix("sed -i 's/") {
+    // Issue #1110: the emitted rewrite is `perl -pi -e`, which means the same
+    // thing on GNU and BSD systems where `sed -i` does not.
+    if let Some(rest) = command.strip_prefix("perl -pi -e 's/") {
         let (script, target) = rest
             .split_once("' -- ")
-            .ok_or_else(|| format!("unparsed sed command: {command}"))?;
+            .ok_or_else(|| format!("unparsed rewrite command: {command}"))?;
         let (pattern, replacement) = script
             .trim_end_matches("/g")
             .split_once('/')
-            .ok_or_else(|| format!("unparsed sed script: {command}"))?;
+            .ok_or_else(|| format!("unparsed rewrite script: {command}"))?;
         let target = target.trim();
         let source = workspace_get(workspace, target)
             .ok_or_else(|| format!("sed on a file that is not there: {target}"))?
