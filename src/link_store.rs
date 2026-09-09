@@ -67,6 +67,14 @@ impl fmt::Display for LinkStoreError {
 
 impl Error for LinkStoreError {}
 
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod node_addresses;
+mod validation;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+use node_addresses::{node_address_path, read_node_addresses};
+use validation::validate_demo_memory_document;
+
 /// Store abstraction used by memory and event-log projections.
 pub trait LinkStore {
     /// Returns the active physical backend.
@@ -882,145 +890,12 @@ fn link_cli_debug_enabled() -> bool {
     std::env::var("FORMAL_AI_LINK_CLI_DEBUG").as_deref() == Ok("1")
 }
 
-/// Path of the saved string-to-address map beside a link-cli database.
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn node_address_path(database: &Path) -> PathBuf {
-    let mut name = database.as_os_str().to_os_string();
-    name.push(".nodes");
-    PathBuf::from(name)
-}
-
-/// Read a saved string-to-address map, or `None` when it is absent or malformed.
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn read_node_addresses(path: &Path) -> Option<BTreeMap<String, usize>> {
-    let text = std::fs::read_to_string(path).ok()?;
-    let mut nodes = BTreeMap::new();
-    for line in text.lines() {
-        let (address, node) = line.split_once('\t')?;
-        nodes.insert(decode_node_name(node)?, address.parse::<usize>().ok()?);
-    }
-    Some(nodes)
-}
-
-/// Decode one escaped node name, rejecting an escape the encoder cannot emit.
-///
-/// Scanning left to right is what makes this the exact inverse of the encoder:
-/// a `\\` consumes its own escape before the following character is examined,
-/// so the two characters `\n` inside a node name never decode as a newline.
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn decode_node_name(encoded: &str) -> Option<String> {
-    let mut decoded = String::with_capacity(encoded.len());
-    let mut characters = encoded.chars();
-    while let Some(character) = characters.next() {
-        if character != '\\' {
-            decoded.push(character);
-            continue;
-        }
-        match characters.next()? {
-            'n' => decoded.push('\n'),
-            '\\' => decoded.push('\\'),
-            _ => return None,
-        }
-    }
-    Some(decoded)
-}
-
 fn ensure_event_id(event: &mut MemoryEvent, sequence: usize) {
     if !event.id.is_empty() {
         return;
     }
     let canonical = canonical_memory_event(event);
     event.id = stable_id("memory_event", &format!("{sequence}:{canonical}"));
-}
-
-fn validate_demo_memory_document(text: &str) -> Result<(), LinkStoreError> {
-    for line in text.lines().filter(|line| !line.trim().is_empty()) {
-        let indent = line.chars().take_while(|ch| *ch == ' ').count();
-        let content = &line[indent..];
-        match indent {
-            0 if content == ROOT_HEADER => {}
-            2 if content.starts_with("schema_version ") => validate_schema_version_line(content)?,
-            2 => validate_event_line(content)?,
-            4 => validate_field_line(content)?,
-            _ => {
-                return Err(LinkStoreError::IllFormedLinksNotation(format!(
-                    "unexpected indentation or record line: {content}"
-                )));
-            }
-        }
-    }
-    Ok(())
-}
-
-fn validate_schema_version_line(content: &str) -> Result<(), LinkStoreError> {
-    let Some(rest) = content.strip_prefix("schema_version ") else {
-        return Err(LinkStoreError::IllFormedLinksNotation(String::from(
-            "invalid schema version marker",
-        )));
-    };
-    validate_strict_quoted(rest)?;
-    let value = crate::memory::parse_quoted(rest).unwrap_or_default();
-    if value.parse::<u32>().is_err() {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "invalid_schema_version:value={value}"
-        )));
-    }
-    Ok(())
-}
-
-fn validate_event_line(content: &str) -> Result<(), LinkStoreError> {
-    let Some(rest) = content.strip_prefix("event ") else {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "expected event record, got {content}"
-        )));
-    };
-    validate_strict_quoted(rest)
-}
-
-fn validate_field_line(content: &str) -> Result<(), LinkStoreError> {
-    let Some((key, rest)) = content.split_once(' ') else {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "expected field value, got {content}"
-        )));
-    };
-    if !key
-        .chars()
-        .all(|ch| ch.is_ascii_alphanumeric() || ch == '_')
-    {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "invalid field name {key}"
-        )));
-    }
-    validate_strict_quoted(rest)
-}
-
-fn validate_strict_quoted(rest: &str) -> Result<(), LinkStoreError> {
-    let trimmed = rest.trim_start();
-    let bytes = trimmed.as_bytes();
-    if bytes.first() != Some(&b'"') {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "expected quoted value, got {rest}"
-        )));
-    }
-    let mut index = 1;
-    while index < bytes.len() {
-        match bytes[index] {
-            b'\\' => index += 2,
-            b'"' => {
-                if trimmed[index + 1..].trim().is_empty() {
-                    return Ok(());
-                }
-                return Err(LinkStoreError::IllFormedLinksNotation(format!(
-                    "unexpected trailing content after quoted value: {}",
-                    &trimmed[index + 1..]
-                )));
-            }
-            _ => index += 1,
-        }
-    }
-    Err(LinkStoreError::IllFormedLinksNotation(String::from(
-        "unterminated quoted value",
-    )))
 }
 
 fn event_source_id(event: &MemoryEvent, sequence: usize, canonical: &str) -> String {

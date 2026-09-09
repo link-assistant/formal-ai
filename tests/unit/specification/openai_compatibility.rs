@@ -630,7 +630,18 @@ fn http_responses_route_queries_persisted_memory_with_natural_language() {
 }
 
 fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
-    let dir = std::env::temp_dir().join(format!("formal-ai-memory-query-{}", std::process::id()));
+    // Two tests call this, the harness runs them concurrently, and the first
+    // thing each does is delete this directory -- so keying it on the process
+    // id alone let one wipe the other's store mid-run, and the loser reported
+    // "No mentions of \"rust\" found in memory". A per-call counter gives each
+    // its own directory; `temp_env::with_var` still serializes the environment
+    // variable itself.
+    static NEXT_RECALL_STORE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+    let sequence = NEXT_RECALL_STORE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let dir = std::env::temp_dir().join(format!(
+        "formal-ai-memory-query-{}-{sequence}",
+        std::process::id()
+    ));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("temp dir");
     let path = dir.join("memory.lino");
