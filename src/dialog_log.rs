@@ -8,6 +8,7 @@
 //! its location.
 
 use std::cell::RefCell;
+use std::collections::BTreeMap;
 use std::fs::{self, OpenOptions};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -178,7 +179,7 @@ pub fn write_dialog_exchange(
     let timestamp_unix_ms = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(0, |duration| duration.as_millis());
-    let dialog_id = dialog_id(headers, request_body, path);
+    let dialog_id = dialog_id(directory, headers, request_body, path);
     let sequence = REQUEST_SEQUENCE.fetch_add(1, Ordering::Relaxed);
     let request_id = stable_id(
         "request",
@@ -224,11 +225,58 @@ pub fn write_dialog_exchange(
     Ok(path)
 }
 
-fn dialog_id(headers: &[(&str, &str)], request_body: &str, path: &str) -> String {
-    explicit_dialog_id(headers).unwrap_or_else(|| {
-        let basis = first_user_prompt(request_body).unwrap_or_else(|| path.to_owned());
-        stable_id("dialog", &basis)
-    })
+fn dialog_id(directory: &Path, headers: &[(&str, &str)], request_body: &str, path: &str) -> String {
+    if let Some(declared) = explicit_dialog_id(headers) {
+        return declared;
+    }
+    // Issue #1105 (RC5): with no `x-formal-ai-dialog-id` -- which is every
+    // opencode session -- the id used to be `stable_id("dialog", first user
+    // message)` and nothing else. Two conversations that open with "Hi" are
+    // then the same conversation: in the reported store one collided dialog had
+    // absorbed 52 % of every exchange, and exporting it returned somebody
+    // else's turns.
+    //
+    // A conversation is not its first sentence. What separates two of them is
+    // that they began at different moments, so the fallback mixes in a marker
+    // that is constant for one conversation and different for the next: the
+    // first prompt still identifies the thread (later turns in the same dialog
+    // rejoin it, because a continuing request carries the same first user
+    // message), and the epoch separates two threads that happen to open alike.
+    let basis = first_user_prompt(request_body).unwrap_or_else(|| path.to_owned());
+    // The log directory is part of the epoch key, not of the id: two clients
+    // that both open with "Hi" write to different directories, which is what
+    // separates them when their words cannot.
+    let scope = format!("{}\u{1f}{basis}", directory.display());
+    stable_id(
+        "dialog",
+        &format!("{}\u{1f}{basis}", conversation_epoch(&scope)),
+    )
+}
+
+/// A marker that is stable for one conversation and distinct across two.
+///
+/// The first request of a conversation records the moment it arrived, keyed by
+/// its log directory and opening prompt; every later request with that same
+/// opening reads the recorded moment back, so all of them derive one id.
+///
+/// The directory is in the key because it is what separates two conversations
+/// a content hash cannot: each client of this server writes its own dialog log.
+///
+/// The map is bounded: one short entry per distinct (directory, opening) pair
+/// seen by this process, and a server that accumulates many is one whose dialog
+/// log already holds far more.
+fn conversation_epoch(scope: &str) -> u128 {
+    static EPOCHS: OnceLock<Mutex<BTreeMap<String, u128>>> = OnceLock::new();
+    let epochs = EPOCHS.get_or_init(|| Mutex::new(BTreeMap::new()));
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(0, |elapsed| elapsed.as_millis());
+    let Ok(mut epochs) = epochs.lock() else {
+        // A poisoned lock must not cost the caller their response; falling back
+        // to the arrival time keeps ids distinct, never merged.
+        return now;
+    };
+    *epochs.entry(scope.to_owned()).or_insert(now)
 }
 
 /// The caller-declared session id, validated as a safe path component.

@@ -23,12 +23,18 @@ use serde_json::Value;
 
 use crate::cli_context::{ContextSource, exported_context, write_output};
 
-/// Largest context attached inline before the full copy moves elsewhere.
+/// Largest context attached inline before the full copy moves to a gist.
 ///
-/// GitHub accepts a 65 536-character issue body; the six sections and the
-/// transcript need room beside the attachment, so the context gets most but
-/// not all of it.
-const DEFAULT_INLINE_BYTES: usize = 50_000;
+/// GitHub accepts a 65 536-character issue body, and this was 50 000 of them:
+/// a gist was a fallback for the very largest captures rather than the normal
+/// home of a transcript. Issue #1105 (RC2) is what that produced -- a filed
+/// issue carrying 45 KB of pasted session log, under the threshold and so
+/// inline, which no reader scrolls through and which buries the report's own
+/// six sections. A reader can take in a couple of screens of context; past
+/// that the transcript belongs behind a link, with an excerpt left in place.
+/// The `--max-inline-bytes` flag still raises it for a caller who wants the
+/// old behaviour.
+const DEFAULT_INLINE_BYTES: usize = 20_000;
 /// Largest excerpt kept in the body once the full context lives in a gist.
 const DEFAULT_EXCERPT_BYTES: usize = 12_000;
 /// Conservative whole-body budget below GitHub's 65,536-character limit.

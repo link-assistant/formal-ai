@@ -48,6 +48,13 @@ kernel_ratchet
   kernel_path "src/json_lino.rs"
   kernel_path "src/storage_policy.rs"
   kernel_path "src/shared_memory.rs"
+  # Issue #1105 (RC5): session identity is transport infrastructure, decided
+  # per request beside the memory path `src/shared_memory.rs` already owns, and
+  # read by `src/server.rs`, `src/main.rs` and `src/client_integrations/server.rs`
+  # -- all kernel. It is not behaviour that could live in links: which
+  # conversation a request belongs to is a property of the connection, not of
+  # the words in it, which is exactly what the collision this fixed proved.
+  kernel_path "src/dialog_log.rs"
   kernel_path "src/associative_persistence.rs"
   kernel_path "src/trace_record.rs"
   ceiling

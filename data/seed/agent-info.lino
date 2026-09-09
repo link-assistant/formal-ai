@@ -47,6 +47,8 @@ agent_info
     value "Filed the issue on GitHub: {url}"
   field issue_report_failed
     value "I couldn't file the issue on GitHub."
+  field context_session_guessed_notice
+    value "note: no session was declared and the harness could not name one, so `latest` resolved to the most recently recorded conversation ({recorded}). Pass `--session <id>` or set {variable} to export a specific conversation."
   field issue_report_ran_command
     value "Ran {command} to file the issue on GitHub."
   field issue_report_tool_missing
