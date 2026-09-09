@@ -1145,6 +1145,13 @@ jobs:
     # reasoning is in its header. The cap moved with them, because a caller job
     # declares none.
     uses: ./.github/workflows/agent-cli-e2e.yml
+    # Issue #1107 (item 4): the full replay is 25 of the pipeline's minutes. On
+    # `main`, on a schedule and on manual dispatch it still runs in full; on a
+    # feature branch the held-out generalization gates run and the recorded
+    # scenarios do not. The skipped steps report as skipped, never as passed,
+    # and `main` gates every merge on the complete set.
+    with:
+      full-replay: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
     permissions:
       contents: read
   # Build the host binary once for the seven Box image legs. The audited run

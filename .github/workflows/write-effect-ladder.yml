@@ -30,15 +30,19 @@ on:
       - 'data/seed/**'
       - 'experiments/issue_916_write_effect_ladder/**'
       - '.github/workflows/write-effect-ladder.yml'
+  # Issue #1107 (item 3): four ladders each booted Formal AI and drove an agent
+  # on every Rust-touching branch push. One of them proving the path is the
+  # branch signal; running all four is four times the bill for the same answer.
+  # This one now runs on a branch only when the branch changes the ladder
+  # itself, and otherwise on `main` and on the schedule below -- so it still
+  # gates every merge, and a regression cannot reach a release unreported.
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - '**.rs'
-      - '**/Cargo.toml'
-      - 'Cargo.lock'
-      - 'data/seed/**'
       - 'experiments/issue_916_write_effect_ladder/**'
       - '.github/workflows/write-effect-ladder.yml'
+  schedule:
+    - cron: '41 4 * * *'
   workflow_dispatch:
 
 permissions:
