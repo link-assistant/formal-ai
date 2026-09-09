@@ -1,0 +1,95 @@
+name: Green ledger
+description: >-
+  Skip a check that already passed on identical inputs. The check's inputs are
+  named as paths; their content is hashed (the same key `formal-ai-binary`
+  uses), and a marker saved under that hash by a previous *successful* job means
+  this job has nothing new to verify. It says so in the log and the step
+  summary, and finishes green -- a reported skip, never a silent one (issue
+  #1107). `detect-changes` compares the whole pull-request range, so a branch
+  that once touched `src/` re-ran every Rust check on every later docs-only
+  push; this is what stops that.
+
+  The marker is saved by actions/cache's post step, whose `post-if` is
+  `success()`: a job that fails never records itself green.
+
+inputs:
+  check:
+    description: Name of the check; part of the cache key and of the notice.
+    required: true
+  paths:
+    description: >-
+      Space-separated paths whose content decides the check's result. Always
+      include the workflow (and action) files the check runs from, so editing
+      the check re-runs it.
+    required: true
+  enabled:
+    description: >-
+      Whether an identical-input hit may skip the check. Callers pass
+      `${{ github.ref != 'refs/heads/main' }}`: `main` re-verifies everything.
+    required: false
+    default: 'true'
+
+outputs:
+  already-green:
+    description: "'true' when this check passed before on identical inputs and skipping is enabled."
+    value: ${{ steps.decide.outputs.already-green }}
+  digest:
+    description: Content digest of the named paths.
+    value: ${{ steps.key.outputs.digest }}
+
+runs:
+  using: composite
+  steps:
+    - name: Key the check by the inputs that decide it
+      id: key
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+      run: |
+        set -euo pipefail
+        # shellcheck disable=SC2086
+        digest=$(git ls-files -s -- $PATHS 2>/dev/null | git hash-object --stdin)
+        echo "digest=$digest" >> "$GITHUB_OUTPUT"
+        echo "${{ inputs.check }} inputs digest: $digest"
+
+    - name: Look up a previous green result for these inputs
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: .green-ledger/${{ inputs.check }}.txt
+        key: green-ledger-${{ inputs.check }}-${{ runner.os }}-${{ steps.key.outputs.digest }}
+
+    - name: Decide, and say so
+      id: decide
+      shell: bash
+      env:
+        CHECK: ${{ inputs.check }}
+        ENABLED: ${{ inputs.enabled }}
+        HIT: ${{ steps.cache.outputs.cache-hit }}
+        DIGEST: ${{ steps.key.outputs.digest }}
+      run: |
+        set -euo pipefail
+        marker=".green-ledger/$CHECK.txt"
+        if [[ "$HIT" == 'true' && "$ENABLED" == 'true' ]]; then
+          previous=$(cat "$marker" 2>/dev/null || echo 'unknown run')
+          echo "already-green=true" >> "$GITHUB_OUTPUT"
+          echo "::notice title=$CHECK already green::identical inputs ($DIGEST) passed before: $previous"
+          {
+            echo "### $CHECK: already green"
+            echo
+            echo "Inputs digest \`$DIGEST\` passed before: $previous."
+            echo "Nothing in this check's inputs changed, so it did not run again."
+            echo "Edit the check's workflow file or run it by \`workflow_dispatch\` to force it."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+        echo "already-green=false" >> "$GITHUB_OUTPUT"
+        if [[ "$HIT" == 'true' ]]; then
+          echo "$CHECK: identical inputs passed before, but skipping is disabled on this ref; running"
+        else
+          echo "$CHECK: no previous green result for these inputs; running"
+        fi
+        # Written now, saved by actions/cache's post step only if the job
+        # succeeds (post-if: success()). A failing job leaves no marker.
+        mkdir -p .green-ledger
+        printf '%s %s/%s/actions/runs/%s\n' "$GITHUB_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" > "$marker"

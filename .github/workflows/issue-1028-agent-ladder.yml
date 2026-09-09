@@ -53,9 +53,18 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
 
 
       - name: Setup Bun
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -65,18 +74,20 @@ jobs:
       # cache key is the content of the sources it is built from, so a push that
       # changed neither pays nothing (issue #1107).
       - uses: ./.github/actions/formal-ai-binary
-        if: ${{ inputs.skip_build != true }}
+        if: ${{ (inputs.skip_build != true) && steps.ledger.outputs.already-green != 'true' }}
 
       - name: Install pinned Agent CLI
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bun add -g @link-assistant/agent@0.26.0
 
       - name: Run recursive Agent CLI tree
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           AGENT: agent
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
       - name: Compare the measured ladder with the record
-        if: always()
+        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
         run: |
           set -euo pipefail
           result="$OUT/ladder-result.lino"
@@ -113,10 +124,10 @@ jobs:
           fi
 
       - name: Show the Agent CLI evidence on failure
-        if: failure()
+        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         run: scripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run
       - name: Upload tree evidence
-        if: always()
+        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: issue-1028-agent-cli-binary-tree

@@ -264,6 +264,19 @@ Two rules keep that down, and both are measured in
   agent end-to-end run are gated on it, so editing an unrelated workflow no
   longer buys them.
 
+- **Do not run a check twice on identical inputs.** `detect-changes` compares
+  the whole pull-request range, so a branch that once touched `src/` used to
+  re-run every Rust check on every later docs-only push. Eight heavy checks
+  now consult `.github/actions/green-ledger`: the content of the check's
+  inputs is hashed (the same key `formal-ai-binary` uses), and a marker saved
+  under that hash by a previous *successful* job means the job announces
+  "already green" in its log and step summary and finishes without running
+  its body. The marker rides on `actions/cache`, whose post step runs only on
+  success, so a failing job can never record itself green; `main` never skips.
+  To force a check, edit its workflow file (always part of its inputs) or run
+  it by `workflow_dispatch`. `tests/unit/ci-cd/issue_1107_green_ledger.rs`
+  pins the contract.
+
 Neither rule may become a silent skip. A job that does not run on a branch is
 reported as not-run, never as passed, and `main` still runs everything.
 

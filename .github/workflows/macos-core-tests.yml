@@ -30,6 +30,8 @@ jobs:
   build-archive:
     name: Build macOS test archive
     runs-on: macos-15-intel
+    outputs:
+      already-green: ${{ steps.ledger.outputs.already-green }}
     # Issue #1017: `timeout-minutes` is the backstop, never the deadline. The
     # step budget below (1200s) plus its SIGTERM grace has to expire first, or
     # an overrun reports as a cancelled job instead of a failed one, so the job
@@ -69,17 +71,31 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           BASE_COMMIT: ${{ inputs.base-commit }}
         run: bash scripts/simulate-fresh-merge.sh
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: macos-core-archive
+          paths: >-
+            src tests data examples build.rs Cargo.toml Cargo.lock scripts .github/workflows/macos-core-tests.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: dtolnay/rust-toolchain@stable
       - name: Install cargo-nextest
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: taiki-e/install-action@nextest
       - uses: ./.github/actions/setup-sccache
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - uses: ./.github/actions/cache-cargo-registry
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         with:
           restore-only: 'true'
       - name: Build one portable nextest archive
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           TEST_BUDGET_SECONDS: 1800
           TEST_WARN_RATIO_PERCENT: 80
@@ -95,6 +111,7 @@ jobs:
       # every slice reads the same file -- a plan recomputed per machine could
       # disagree if the durations file changed mid-run.
       - name: Plan the macOS platform test filter
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
           bash scripts/install-rust-script.sh
           rust-script scripts/plan-test-partition.rs --macos-platform --of 1 \
@@ -114,6 +131,7 @@ jobs:
       # Renamed rather than deduplicated -- these are different runs of the doc
       # tests on different platforms, and the name should say which.
       - name: Run doc tests on macOS
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           TEST_BUDGET_SECONDS: 400
           TEST_WARN_RATIO_PERCENT: 80
@@ -122,6 +140,7 @@ jobs:
             "$TEST_BUDGET_SECONDS" "macOS doc tests" \
             cargo test --doc --verbose
       - name: Upload macOS test archive
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
@@ -184,6 +203,7 @@ jobs:
           - { partition: 1 }
     steps:
       - uses: actions/checkout@v7
+        if: ${{ needs.build-archive.outputs.already-green != 'true' }}
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -195,16 +215,18 @@ jobs:
       # the base branch mid-run failed the tree check below on every slice that
       # started after it, with nothing wrong in the pull request.
       - name: Simulate fresh merge with base branch (PR only)
-        if: github.event_name == 'pull_request'
+        if: ${{ (github.event_name == 'pull_request') && needs.build-archive.outputs.already-green != 'true' }}
         env:
           BASE_REF: ${{ github.base_ref }}
           BASE_COMMIT: ${{ inputs.base-commit }}
         run: bash scripts/simulate-fresh-merge.sh
       - name: Setup Rust
+        if: ${{ needs.build-archive.outputs.already-green != 'true' }}
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
       - name: Install cargo-nextest
+        if: ${{ needs.build-archive.outputs.already-green != 'true' }}
         uses: taiki-e/install-action@nextest
       # Issue #1039: the action's own five retries are spent back-to-back, so a
       # storage backend having a bad minute exhausts them and reddens a slice
@@ -233,6 +255,7 @@ jobs:
       # reintroduce. `TEST_BUDGET_SECONDS` makes the wrapper enforce that
       # itself rather than trusting this comment.
       - name: Download macOS test archive
+        if: ${{ needs.build-archive.outputs.already-green != 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TEST_BUDGET_SECONDS: 590
@@ -245,6 +268,7 @@ jobs:
             "macos-core-tests-${{ github.run_id }}" \
             "$RUNNER_TEMP/macos-core-tests"
       - name: Verify archive source tree
+        if: ${{ needs.build-archive.outputs.already-green != 'true' }}
         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
       # Issue #1059: macOS runs the tests whose behaviour can differ from
       # Linux, not the whole suite. `data/meta/macos-platform-tests.lino` names
@@ -253,6 +277,7 @@ jobs:
       # toolchain and a 916MB artifact download across eight machines, and two
       # slices of run 32706091539 could not finish that download at all.
       - name: Run macOS platform tests
+        if: ${{ needs.build-archive.outputs.already-green != 'true' }}
         env:
           TEST_BUDGET_SECONDS: 600
           TEST_WARN_RATIO_PERCENT: 75
