@@ -22,6 +22,7 @@ kernel_ratchet
   kernel_path "src/network_endpoint.rs"
   kernel_path "src/web/"
   kernel_path "src/link_store.rs"
+  kernel_path "src/link_store/"
   kernel_path "src/links_format.rs"
   kernel_path "src/links_query.rs"
   kernel_path "src/links_substitution_query/"

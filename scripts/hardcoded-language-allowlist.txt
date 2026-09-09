@@ -374,13 +374,13 @@ src/learning_cycle.rs	    defined-by inquiry\n
 src/learning_cycle.rs	  blocked_class\n
 src/learning_cycle.rs	Adopt {} learned request-opener surface(s) for the '{variation}' frontier class ({}), derived from {MINIMUM_SUPPORT} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s).
 src/learning_ledger.rs	Approved lesson `{}` (rule `{}`) for failure `{}` → `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
-src/link_store.rs	expected event record, got {content}
-src/link_store.rs	expected field value, got {content}
-src/link_store.rs	expected quoted value, got {rest}
 src/link_store.rs	expected {ROOT_HEADER} or {BUNDLE_HEADER}, got {other}
-src/link_store.rs	invalid field name {key}
-src/link_store.rs	unexpected indentation or record line: {content}
-src/link_store.rs	unexpected trailing content after quoted value: {}
+src/link_store/validation.rs	expected event record, got {content}
+src/link_store/validation.rs	expected field value, got {content}
+src/link_store/validation.rs	expected quoted value, got {rest}
+src/link_store/validation.rs	invalid field name {key}
+src/link_store/validation.rs	unexpected indentation or record line: {content}
+src/link_store/validation.rs	unexpected trailing content after quoted value: {}
 src/links_query.rs	  edge\n    from \"
 src/links_query.rs	\"\n    links_notation \"
 src/links_query.rs	filter needs `=` or CONTAINS: {clause}
