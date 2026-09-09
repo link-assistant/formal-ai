@@ -69,7 +69,14 @@ impl Error for LinkStoreError {}
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 mod node_addresses;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod orphans;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod projection_sync;
 mod validation;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+pub use projection_sync::synchronize_memory_events;
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 use node_addresses::{node_address_path, read_node_addresses};
@@ -350,6 +357,11 @@ impl LinkCliLinkStore {
 
     /// Open or create a file-mapped link-cli database with an exclusive lock.
     pub fn open_at(database: &Path) -> Result<Self, LinkStoreError> {
+        // Issue #1109: before taking the lock, collect what dead processes left.
+        let swept = orphans::sweep_dead_replacements(database);
+        if swept > 0 && link_cli_debug_enabled() {
+            eprintln!("[link-cli] removed {swept} orphaned replacement file(s)");
+        }
         let database_lock = link_cli::FileLock::acquire(
             link_cli::lock_file_path(database),
             link_cli::LockMode::Exclusive,

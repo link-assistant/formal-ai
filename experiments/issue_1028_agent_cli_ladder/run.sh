@@ -34,9 +34,66 @@ mkdir -p "$OUT"
 # indistinguishable in the log from a node that failed on its merits. Copy the
 # binary out once, and every node is measured against the same bytes.
 STAGE="$(mktemp -d)"
-trap 'rm -rf "$STAGE"' EXIT
+WORK="$STAGE/work"
+cleanup_stage() {
+  git -C "$ROOT" worktree remove --force "$WORK" >/dev/null 2>&1 || true
+  git -C "$ROOT" worktree prune >/dev/null 2>&1 || true
+  rm -rf "$STAGE"
+}
+trap cleanup_stage EXIT
 cp "$BIN" "$STAGE/formal-ai"
 BIN="$STAGE/formal-ai"
+
+# Issue #1072: every node used to extract a full `git archive` (966 MB, most of
+# it `dev/` and `docs/` evidence) into a fresh temporary directory, `git init`
+# it, and commit it -- then compile there. Measured on run 34326451343: 110
+# minutes for 32 leaves, 25 of them Agent CLI work. Two costs made up the rest:
+# copying and re-hashing a gigabyte per node, and a workspace path cargo had
+# never seen, so every leaf recompiled the crate from scratch, shared target
+# directory or not. The fresh `git init` also minted a new root commit per
+# node, which is the project identity `@link-assistant/agent` keys its
+# snapshot store on: 115 stores, 31 GB, in six hours.
+#
+# One worktree, created once at one path, sparse so the evidence trees are
+# never checked out, and reset between nodes. Same path, so the second leaf's
+# `cargo check` is incremental; same root commit, so one snapshot store.
+BASE_SHA=$(git -C "$ROOT" rev-parse HEAD)
+git -C "$ROOT" worktree add --detach --no-checkout "$WORK" "$BASE_SHA" >/dev/null
+git -C "$WORK" sparse-checkout init --no-cone >/dev/null
+git -C "$WORK" sparse-checkout set --no-cone '/*' '!/dev/' '!/docs/case-studies/' '!/docs/assets/' >/dev/null
+git -C "$WORK" checkout -q --detach "$BASE_SHA"
+git -C "$WORK" config user.email agent-ladder@example.invalid
+git -C "$WORK" config user.name agent-ladder
+
+# Return the shared worktree to the base commit with nothing left over from the
+# previous node. A leftover would let one node inherit another's edit, so a tree
+# that is still dirty after the reset is a hard failure, not a warning.
+reset_work() {
+  git -C "$WORK" checkout -q --detach "$BASE_SHA"
+  git -C "$WORK" reset -q --hard "$BASE_SHA"
+  git -C "$WORK" clean -qfdx
+  local leftover
+  leftover=$(git -C "$WORK" status --porcelain)
+  if [[ -n "$leftover" ]]; then
+    echo "reset_work: worktree still dirty after reset:" >&2
+    printf '%s\n' "$leftover" >&2
+    return 1
+  fi
+}
+
+# GNU timeout bounds one node's Agent CLI turn (plan 01 step 3): the leaves
+# that produced no proof ran 236 s, 162 s and 125 s against a 22 s median, and
+# nothing stopped them. The default is ten times that median and above every
+# passing leaf measured. Where `timeout` is absent (macOS without coreutils)
+# the node runs unbounded, and the summary says so.
+if command -v setsid >/dev/null 2>&1; then SETSID=(setsid); else SETSID=(); fi
+NODE_BUDGET="${LADDER_NODE_BUDGET:-240}"
+if command -v timeout >/dev/null 2>&1; then
+  BOUND=(timeout --kill-after=10 "$NODE_BUDGET")
+else
+  BOUND=()
+  echo "warning: no timeout binary; nodes run without the ${NODE_BUDGET}s budget" >&2
+fi
 # Issue #1085 (D4): every leaf's edit is compiled by verify-node.sh. One target
 # directory for the whole run keeps that incremental after the first leaf.
 export LADDER_CARGO_TARGET_DIR="${LADDER_CARGO_TARGET_DIR:-$STAGE/target}"
@@ -161,7 +218,19 @@ if [[ "$TREE_DEPTH" = all ]]; then
     expected=$(( (1 << (6 - filter_depth)) - 1 ))
   fi
 elif [[ -n "$NODE_FILTER" ]]; then
-  expected=1
+  # A filter names a subtree; a fixed depth selects that subtree's nodes at the
+  # depth. `R` at depth 5 is all 32 leaves, a depth-4 node is its two leaves,
+  # a leaf is itself. The old `expected=1` rejected every filter above a leaf.
+  if [[ "$NODE_FILTER" == R ]]; then
+    filter_depth=0
+  else
+    filter_depth=$(awk -F. '{ print NF }' <<< "$NODE_FILTER")
+  fi
+  if (( filter_depth > TREE_DEPTH )); then
+    expected=0
+  else
+    expected=$((1 << (TREE_DEPTH - filter_depth)))
+  fi
 else
   expected=$((1 << TREE_DEPTH))
 fi
@@ -175,7 +244,9 @@ run_one() {
   row=${1//$'\t'/$'\x1f'}
   IFS=$'\x1f' read -r id depth prompt criterion left right criterion_path criterion_marker criterion_guard <<< "$row"
   session_dir="$OUT/$id"
-  work=$(mktemp -d)
+  work="$WORK"
+  local started=$SECONDS
+  echo "node $id start"
   mkdir -p "$session_dir"
   # A focused replay reuses its stable evidence directory. Remove only the
   # known outputs for this node so a failed attempt cannot retain a prior
@@ -209,22 +280,14 @@ PY
       kill -- "-${server_pid}" 2>/dev/null || kill "$server_pid" 2>/dev/null || true
       wait "$server_pid" 2>/dev/null || true
     fi
-    local attempt
-    for attempt in 1 2 3; do
-      rm -rf "$work" 2>/dev/null && return 0
-      sleep 1
-    done
-    echo "cleanup: could not remove $work; leaving it in place" >&2
+    # One line per node in the job log, so a ninety-minute step is readable
+    # while it runs rather than blank until it ends (plan 01 step 4).
+    echo "node $id done in $((SECONDS - started))s"
     return 0
   }
   trap cleanup_one RETURN
 
-  git -C "$ROOT" archive HEAD | tar -x -C "$work"
-  git -C "$work" init -q
-  git -C "$work" config user.email agent-ladder@example.invalid
-  git -C "$work" config user.name agent-ladder
-  git -C "$work" add .
-  git -C "$work" commit -qm ladder-fixture
+  reset_work || { printf '%s\tFAIL\tworktree_reset\n' "$id" | tee -a "$RUN_LOG"; return 1; }
   mkdir -p "$work/.agent-ladder"
 
   local child_diffs="" leaf_span=""
@@ -232,12 +295,12 @@ PY
     local left_effect_source="${VERIFIED_EFFECTS[$left]:-}"
     local right_effect_source="${VERIFIED_EFFECTS[$right]:-}"
     if [[ ! -s "$left_effect_source" || ! -s "$right_effect_source" ]]; then
-      printf '%s\tFAIL\tmissing_current_run_child_effect\n' "$id" >> "$RUN_LOG"
+      printf '%s\tFAIL\tmissing_current_run_child_effect\n' "$id" | tee -a "$RUN_LOG"
       return 1
     fi
     # Issue #1085 (D4): a composite must also merge both children's diffs.
     if [[ ! -s "$OUT/$left/change.diff" || ! -s "$OUT/$right/change.diff" ]]; then
-      printf '%s\tFAIL\tmissing_current_run_child_diff\n' "$id" >> "$RUN_LOG"
+      printf '%s\tFAIL\tmissing_current_run_child_diff\n' "$id" | tee -a "$RUN_LOG"
       return 1
     fi
     child_diffs="$OUT/$left/change.diff $OUT/$right/change.diff"
@@ -261,14 +324,17 @@ PY
 )
   fi
 
-  setsid env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
-    FORMAL_AI_MEMORY_PATH="$work/.git/formal-ai-memory/memory.lino" \
+  # `setsid` gives the server its own process group so `kill -- -pid` takes
+  # its children with it. macOS has no setsid; there the plain kill in
+  # cleanup_one still stops the server, so a developer can run one node.
+  "${SETSID[@]}" env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+    FORMAL_AI_MEMORY_PATH="$STAGE/memory/node-$id/memory.lino" \
     FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$port" \
     >"$session_dir/formal-ai.log" 2>&1 &
   server_pid=$!
 
   if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused "http://127.0.0.1:$port/health" >/dev/null; then
-    printf '%s\tFAIL\tformal_ai_server_start\n' "$id" >> "$RUN_LOG"
+    printf '%s\tFAIL\tformal_ai_server_start\n' "$id" | tee -a "$RUN_LOG"
     tail -100 "$session_dir/formal-ai.log" >&2 || true
     return 1
   fi
@@ -296,30 +362,39 @@ PY
   (cd "$work" && \
     FORMAL_AI_API_KEY=local \
     LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
-    "$AGENT" --no-summarize-session --compaction-models "(same)" \
+    "${BOUND[@]}" "$AGENT" --no-summarize-session --compaction-models "(same)" \
       --model formalai/formal-ai --permission-mode auto \
       --output-format stream-json --compact-json --disable-stdin \
       --prompt "$full_prompt") \
       >"$session_dir/agent-stream.jsonl" 2>"$session_dir/agent-stderr.log"
   status=$?
   set -e
+  if [[ "$status" -eq 124 || "$status" -eq 137 ]]; then
+    printf '%s\tFAIL\tagent_timeout_%ss\n' "$id" "$NODE_BUDGET" | tee -a "$RUN_LOG"
+    return 1
+  fi
   if [[ "$status" -ne 0 ]]; then
-    printf '%s\tFAIL\tagent_exit_%s\n' "$id" "$status" >> "$RUN_LOG"
+    printf '%s\tFAIL\tagent_exit_%s\n' "$id" "$status" | tee -a "$RUN_LOG"
     return 1
   fi
 
   # Agent CLI terminates stream-json output with a presentation-only blank
   # line. Keep the committed JSONL canonical so every line is a JSON record
   # and the generated evidence passes Git's whitespace check.
-  sed -i '${/^$/d;}' "$session_dir/agent-stream.jsonl"
+  # GNU sed edits in place with `-i`; BSD sed wants an (empty) suffix argument.
+  if sed --version >/dev/null 2>&1; then
+    sed -i '${/^$/d;}' "$session_dir/agent-stream.jsonl"
+  else
+    sed -i '' '${/^$/d;}' "$session_dir/agent-stream.jsonl"
+  fi
 
   proof="$work/.agent-ladder/node-${id}-proof.md"
   if [[ ! -s "$proof" ]]; then
-    printf '%s\tFAIL\tmissing_proof\n' "$id" >> "$RUN_LOG"
+    printf '%s\tFAIL\tmissing_proof\n' "$id" | tee -a "$RUN_LOG"
     return 1
   fi
   if ! grep -q "^node_path=$id$" "$proof"; then
-    printf '%s\tFAIL\tbad_proof_marker\n' "$id" >> "$RUN_LOG"
+    printf '%s\tFAIL\tbad_proof_marker\n' "$id" | tee -a "$RUN_LOG"
     return 1
   fi
 
@@ -330,7 +405,7 @@ PY
   verifier_status=$?
   set -e
   if [[ "$verifier_status" -ne 0 ]]; then
-    printf '%s\tFAIL\t%s\n' "$id" "$verifier_verdict" >> "$RUN_LOG"
+    printf '%s\tFAIL\t%s\n' "$id" "$verifier_verdict" | tee -a "$RUN_LOG"
     return 1
   fi
 
@@ -345,7 +420,7 @@ PY
     git -C "$work" diff > "$session_dir/change.diff"
   fi
   VERIFIED_EFFECTS["$id"]="$session_dir/effect.lino"
-  printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" >> "$RUN_LOG"
+  printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" | tee -a "$RUN_LOG"
 }
 
 failed=0

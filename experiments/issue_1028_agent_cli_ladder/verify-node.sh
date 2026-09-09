@@ -58,8 +58,10 @@ module_filter() {
 cargo_check() {
   [[ "${LADDER_CARGO_CHECK:-1}" != 0 ]] || { record compile skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record compile unavailable; return 0; }
+  local started=$SECONDS
   if (cd "$workspace" && CARGO_TARGET_DIR="$(target_dir)" \
       cargo check --lib --quiet >"$workspace/.agent-ladder/cargo-check.log" 2>&1); then
+    echo "verify $node: cargo check --lib took $((SECONDS - started))s" >&2
     record compile ok
     return 0
   fi
@@ -74,8 +76,10 @@ cargo_test() {
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
   log="$workspace/.agent-ladder/cargo-test-$filter.log"
+  local started=$SECONDS
   if (cd "$workspace" && CARGO_TARGET_DIR="$(target_dir)" \
       cargo test --test unit --quiet -- "$filter" >"$log" 2>&1); then
+    echo "verify $node: cargo test --test unit $filter took $((SECONDS - started))s" >&2
     passed=$(sed -n 's/^test result: ok\. \([0-9]*\) passed.*/\1/p' "$log" | tail -1)
     record "tests:$filter" "passed=${passed:-0}"
     return 0

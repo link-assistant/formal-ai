@@ -7,6 +7,7 @@ mod issue_1069_link_cli_store;
 mod issue_1075_held_out_grounding;
 mod issue_1106_concurrent_requests;
 mod issue_1106_projection_reuse;
+mod issue_1109_orphan_sweep;
 mod issue_349_reverse_sort;
 mod issue_386_cancel_sort;
 mod issue_395_sort_numbers;
