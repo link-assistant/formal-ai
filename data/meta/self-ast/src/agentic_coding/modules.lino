@@ -4,7 +4,7 @@ self_ast_census
   fidelity full_ast
   byte_len 5789
   line_count 148
-  content_id source_module_3ab57f06f7fe65f8
+  content_id source_module_bf226c828ffe5b68
   symbol_count 64
   symbols
     module algorithm_learning 10 10
@@ -33,38 +33,38 @@ self_ast_census
     module formalize 33 33
     module general_execution 34 34
     module general_planner 35 35
-    module task_obligations 36 36
-    module google_trends_catalog 37 37
-    module google_trends_learning 38 38
-    module intent_router 39 39
-    module learning_report 40 40
-    module ledger 41 41
-    module lexicon 42 42
-    module link_edit_rules 43 43
-    module local_search 44 44
-    module meaning_detail 45 45
-    module mutating_action 46 46
-    module narration 47 47
-    module note_composition 48 48
-    module planner 49 49
-    module procedure 50 50
-    module progress 51 51
-    module question_catalog 52 52
-    module rebuild_plan 53 53
-    module repair_strategy 54 54
-    module report_issue 55 55
-    module report_script 56 56
-    module requirement_resolution 57 57
-    module routing_learning 58 58
-    module self_ast 59 59
-    module self_heal 60 60
-    module shell_command 61 61
-    module shell_command_policy 62 62
-    module shell_file_fallback 63 63
-    module source_links 64 64
-    module stated_request 65 65
-    module statement_audit 66 66
-    module structured_edit 67 67
+    module google_trends_catalog 36 36
+    module google_trends_learning 37 37
+    module intent_router 38 38
+    module learning_report 39 39
+    module ledger 40 40
+    module lexicon 41 41
+    module link_edit_rules 42 42
+    module local_search 43 43
+    module meaning_detail 44 44
+    module mutating_action 45 45
+    module narration 46 46
+    module note_composition 47 47
+    module planner 48 48
+    module procedure 49 49
+    module progress 50 50
+    module question_catalog 51 51
+    module rebuild_plan 52 52
+    module repair_strategy 53 53
+    module report_issue 54 54
+    module report_script 55 55
+    module requirement_resolution 56 56
+    module routing_learning 57 57
+    module self_ast 58 58
+    module self_heal 59 59
+    module shell_command 60 60
+    module shell_command_policy 61 61
+    module shell_file_fallback 62 62
+    module source_links 63 63
+    module stated_request 64 64
+    module statement_audit 65 65
+    module structured_edit 66 66
+    module task_obligations 67 67
     module task_structure 68 68
     module tool_result 69 69
     module web_research 70 70
