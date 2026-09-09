@@ -81,13 +81,25 @@ jobs:
         run: bun add -g @link-assistant/agent@0.26.0
 
       - name: Run recursive Agent CLI tree
+        id: tree
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           AGENT: agent
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
+      # `always()` so a ladder that ran and measured fewer leaves than the record
+      # is still compared -- that is the regression this gate exists to catch.
+      # But only when it ran: the tree step is skipped whenever setup failed
+      # (on 2026-09-09 the pinned Agent CLI could not be installed at all,
+      # npm failing to resolve `@ai-sdk/provider-utils`), and this step then
+      # failed on the result file the skipped run never wrote. That reported a
+      # second failure blaming the ladder for a registry outage, which is
+      # exactly the false verdict the harness must not produce.
       - name: Compare the measured ladder with the record
-        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
+        if: >-
+          ${{ (success() || failure())
+              && steps.tree.conclusion != 'skipped'
+              && steps.ledger.outputs.already-green != 'true' }}
         run: |
           set -euo pipefail
           result="$OUT/ladder-result.lino"

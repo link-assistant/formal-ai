@@ -63,7 +63,18 @@ fn steps(job: &[&str]) -> Vec<(String, Option<String>)> {
         } else if let Some(rest) = line.strip_prefix("        if:")
             && let Some(last) = out.last_mut()
         {
+            // A block scalar (`if: >-`) carries its condition on the following
+            // lines; take the marker as the start and let them accumulate.
             last.1 = Some(rest.trim().to_owned());
+        } else if let Some(last) = out.last_mut()
+            && last
+                .1
+                .as_ref()
+                .is_some_and(|condition| condition.starts_with(['>', '|']))
+            && line.starts_with("          ")
+        {
+            let condition = last.1.take().unwrap_or_default();
+            last.1 = Some(format!("{condition} {}", line.trim()));
         }
     }
     out

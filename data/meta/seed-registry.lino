@@ -322,6 +322,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-agentic-continuation
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-agentic-tools
     bundle true
     lexicon response

@@ -316,8 +316,12 @@ fn every_ci_job_that_launches_the_agent_cli_reads_its_evidence_into_the_log() {
                  shape of run 34061511110 (issue #1079)",
                 path.display()
             );
+            // The condition may carry other terms -- the green ledger (#1107)
+            // wraps it as `${{ (failure()) && steps.ledger... }}` -- but
+            // `failure()` has to be one of them, so a green run does not spend
+            // time dumping evidence for a failure that did not happen.
             assert!(
-                job_body.contains("if: failure()"),
+                job_body.contains("if: failure()") || job_body.contains("(failure())"),
                 "job `{job}` of {} must read the evidence only when the run \
                  failed; a green run has nothing to explain (issue #1079)",
                 path.display()
