@@ -38,11 +38,13 @@ fn an_unrelated_request_is_answered_while_a_completion_is_in_flight() {
     ));
     let mut document = String::from("demo_memory\n");
     for index in 0..400 {
-        document.push_str("  event \"chat_user_");
-        document.push_str(&format!("{index:08x}"));
-        document.push_str("\"\n    kind \"message\"\n    role \"user\"\n    content \"recorded ");
-        document.push_str(&format!("exchange {index} about solving something"));
-        document.push_str("\"\n    writeCount \"1\"\n");
+        use std::fmt::Write as _;
+        let _ = write!(
+            document,
+            "  event \"chat_user_{index:08x}\"\n    kind \"message\"\n    role \"user\"\n    \
+             content \"recorded exchange {index} about solving something\"\n    \
+             writeCount \"1\"\n"
+        );
     }
     std::fs::write(&store, &document).expect("seed the memory store");
     let store_path = store.to_string_lossy().into_owned();

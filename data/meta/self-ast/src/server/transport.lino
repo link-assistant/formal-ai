@@ -2,16 +2,16 @@ self_ast_census
   target src/server/transport.rs
   language rust
   fidelity signature
-  byte_len 6443
-  line_count 187
-  content_id source_module_2c271332712e3227
+  byte_len 7423
+  line_count 204
+  content_id source_module_a4a1774677e1ca2e
   symbol_count 8
   symbols
     struct ParsedHttpRequest 13 18
-    function serve 20 57
-    function handle_connection 59 71
-    function read_request 73 120
-    function write_response 122 158
-    function find_header_end 160 162
-    function request_headers 164 173
-    function content_length 175 187
+    function serve 20 74
+    function handle_connection 76 88
+    function read_request 90 137
+    function write_response 139 175
+    function find_header_end 177 179
+    function request_headers 181 190
+    function content_length 192 204
