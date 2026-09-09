@@ -34,7 +34,17 @@
 #     [--port <port>] [--no-commit]
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# The repository this authors in. Derived from the script's own location when
+# it runs from the repository, but the composite action stages it into
+# `$RUNNER_TEMP` before anything switches branches (so it runs *this* run's
+# copy, not the bot branch's), and there `dirname $0/..` is the temp directory.
+# `FORMAL_AI_REPO_ROOT` is how the action says where the checkout actually is;
+# run 34294396281 died as `--seed is not a directory` without it.
+if [[ -n "${FORMAL_AI_REPO_ROOT:-}" ]]; then
+  ROOT="$FORMAL_AI_REPO_ROOT"
+else
+  ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+fi
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8899}"

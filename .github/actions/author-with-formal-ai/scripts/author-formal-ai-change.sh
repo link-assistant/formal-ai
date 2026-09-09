@@ -20,6 +20,7 @@ while IFS= read -r destination; do
 done < into.txt
 
 AGENT=agent PORT="${PORT:-8931}" BIN="$PWD/target/release/formal-ai" \
+  FORMAL_AI_REPO_ROOT="$PWD" \
   "$RUNNER_TEMP/author-change-with-formal-ai.sh" \
   --task "$TASK" --seed "$SEED" ${artifacts[@]+"${artifacts[@]}"} \
   --evidence "$EVIDENCE" --pull-request "$PULL_REQUEST" \

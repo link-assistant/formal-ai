@@ -33,6 +33,21 @@ if [[ -z "$number" ]]; then
   exit 0
 fi
 
+# A task whose pull request already merged is done, even though its issue is
+# still open: GitHub closes a linked issue only when the pull request merges
+# into the DEFAULT branch, and a task belonging to a working branch merges into
+# that branch instead. Run 34294396281 re-attempted #1091 four minutes after
+# #1103 landed it, opening a duplicate pull request for work already in the
+# tree (issue #1085).
+merged=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --limit 20 \
+  --json number,headRefName \
+  --jq "[.[] | select(.headRefName | startswith(\"formal-ai/issue-$number-\"))] | length")
+if [[ "$merged" != 0 ]]; then
+  echo "::notice::issue #$number already has a merged self-authored pull request; nothing to author"
+  echo "number=" >> "$GITHUB_OUTPUT"
+  exit 0
+fi
+
 gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json body --jq .body > task-body.txt
 title=$(gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json title --jq .title)
 field() { sed -n "s/^$1: *//p" task-body.txt | head -1; }
