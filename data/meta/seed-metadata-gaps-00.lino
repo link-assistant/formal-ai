@@ -503,6 +503,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "vladimir_putin"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_27652ef56b91d3f0
+    source "data/seed/closure-generated-09.lino"
+    record "context_session_guessed_notice"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_084c8f0b625d4730
     source "data/seed/closure-generated-09.lino"
     record "document_originality_check_sample_missing"

@@ -475,6 +475,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // wording. Behaviour moving from Rust into seed data arrives as generated
     // closure records, which is what this floor is for. Four more followed when
     // those responses were given their Spanish text, which every supported
-    // locale owes the others.
-    assert_eq!(expected_gaps.len(), 4_044);
+    // locale owes the others. Ten more arrived the same way with issues #1095
+    // and #1099: two seed roles (`agentic_continuation_cue`,
+    // `enumeration_cue`), the `agentic_continuation` handler and its
+    // `continuation_cue` rule, that handler's five-language wording, and the
+    // seeded notice `context_session_guessed_notice` from #1105 RC6. Every one
+    // is behaviour that used to be Rust -- a hardcoded English phrase, an
+    // exact-string comparison in the planner -- arriving as described data,
+    // which is what this floor exists to record.
+    assert_eq!(expected_gaps.len(), 4_054);
 }

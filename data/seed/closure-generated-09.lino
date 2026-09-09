@@ -99,6 +99,11 @@ meanings
     lexeme en
       surface
         text "context command failed"
+  context_session_guessed_notice
+    defined-by field
+    lexeme en
+      surface
+        text "context session guessed notice"
   context_signal_processing
     defined-by context
     lexeme en

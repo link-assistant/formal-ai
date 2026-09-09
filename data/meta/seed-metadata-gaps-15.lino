@@ -159,6 +159,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "preferred"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f114fa43a84f0aff
+    source "data/seed/closure-generated-03.lino"
+    record "response_agentic_continuation_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_393e5fd9c720225f
     source "data/seed/closure-generated-03.lino"
     record "response_external_benchmark_rust_adapter_missing_en"

@@ -384,6 +384,11 @@ meanings
     lexeme en
       surface
         text "response agentic action search code zh"
+  response_agentic_continuation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation en"
   response_agentic_report_contents_question_zh
     defined-by response_template
     lexeme en

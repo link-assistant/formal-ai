@@ -489,6 +489,16 @@ meanings
     lexeme en
       surface
         text "response agent procedure verification failed hi"
+  response_agentic_continuation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation hi"
+  response_agentic_continuation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation ru"
   response_agentic_report_exported_hi
     defined-by response_template
     lexeme en

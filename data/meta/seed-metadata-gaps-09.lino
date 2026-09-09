@@ -87,6 +87,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "read"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3975a22482aaa049
+    source "data/seed/closure-generated-02.lino"
+    record "response_agentic_continuation_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8500da276b515d39
     source "data/seed/closure-generated-02.lino"
     record "response_task_decomposition_depth_marker_ru"

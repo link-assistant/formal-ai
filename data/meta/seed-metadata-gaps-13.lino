@@ -831,6 +831,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "sentence_case"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a49763e72cac327d
+    source "data/seed/closure-generated-16.lino"
+    record "agentic_continuation"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a21baabc1b30bb5d
     source "data/seed/closure-generated-16.lino"
     record "draft_comparison_explanation"

@@ -349,6 +349,11 @@ meanings
     lexeme en
       surface
         text "response agentic action list home zh"
+  response_agentic_continuation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation es"
   response_agentic_report_contents_question_ru
     defined-by response_template
     lexeme en

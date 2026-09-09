@@ -69,6 +69,11 @@ meanings
     lexeme en
       surface
         text "context machine learning"
+  continuation_cue
+    defined-by rule
+    lexeme en
+      surface
+        text "continuation cue"
   contributor_fact_count_summary
     defined-by concept
     lexeme en

@@ -394,6 +394,11 @@ meanings
     lexeme en
       surface
         text "response agentic action list home en"
+  response_agentic_continuation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation zh"
   response_algorithm_invalid_binding_en
     defined-by response_template
     lexeme en

@@ -739,6 +739,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "pattern_concept_prefix_rasskazhi_pro"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a5612b3318153ed4
+    source "data/seed/closure-generated-15.lino"
+    record "response_agentic_continuation_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_261f7083c2565184
     source "data/seed/closure-generated-15.lino"
     record "response_algorithm_dreaming_applied_en"
