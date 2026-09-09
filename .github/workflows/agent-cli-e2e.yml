@@ -392,7 +392,6 @@ jobs:
       # `scripts/classify-agent-cli-stderr.sh` can read them. Reading the same
       # paths the upload below collects turns `exit code 1` back into a cause.
       - name: Show the Agent CLI evidence on failure
-        if: ${{ inputs.full-replay }}
         if: failure()
         run: |
           scripts/dump-agent-cli-evidence.sh \
@@ -400,7 +399,6 @@ jobs:
             /tmp/agent-out-*.log \
             /tmp/formal-ai-issue-*-evidence
       - name: Upload E2E logs on failure
-        if: ${{ inputs.full-replay }}
         if: failure()
         uses: actions/upload-artifact@v7
         with:
@@ -411,7 +409,6 @@ jobs:
             /tmp/formal-ai-issue-*-evidence
           retention-days: 7
       - name: Upload TUI transcripts and replay artifacts
-        if: ${{ inputs.full-replay }}
         if: always()
         uses: actions/upload-artifact@v7
         with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
