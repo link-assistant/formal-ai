@@ -70,9 +70,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
-        if: ${{ inputs.full-replay }}
       - uses: ./.github/actions/cache-cargo-registry
-        if: ${{ inputs.full-replay }}
         with:
           prefix: agentcli-e2e-
       - name: Setup Bun
@@ -96,7 +94,6 @@ jobs:
           # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
       - uses: ./.github/actions/download-formal-ai-binary
-        if: ${{ inputs.full-replay }}
       - name: 'Run Agent CLI E2E — held-out algorithm discovery (issue #531)'
         timeout-minutes: 5
         env: { PORT: 8896 }
