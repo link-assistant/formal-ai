@@ -156,7 +156,11 @@ fn the_ladder_clears_prior_node_artifacts_before_a_replay() {
         .split_once("run_one() {\n")
         .expect("ladder defines run_one")
         .1
-        .split_once("\n  setsid env ")
+        // The server launch opens with a `setsid` that is optional: macOS has
+        // no such binary, so issue #1110's work made it an array that expands
+        // to nothing there (`"${SETSID[@]}" env ...`). Split on the `env` that
+        // carries the server's variables, which both spellings share.
+        .split_once("\n  \"${SETSID[@]}\" env ")
         .expect("ladder starts the Formal AI server after node setup")
         .0;
 
@@ -178,9 +182,21 @@ fn the_ladder_clears_prior_node_artifacts_before_a_replay() {
 fn the_ladder_keeps_server_memory_out_of_agent_authored_effects() {
     let script = read(LADDER);
 
+    // The invariant is that server state lives outside the tree the Agent
+    // authors in, so a snapshot cannot read it as a repository effect. It used
+    // to sit under `$work/.git/`, which worked while every node got its own
+    // `git init`. Issue #1072 replaced that with one shared worktree, where
+    // `.git` is a *file* pointing at the real repository -- so that path could
+    // not be a directory at all. The state moved beside the staged binary in
+    // `$STAGE`, which is outside `$work` entirely: the same guarantee, and the
+    // shape `run_agent_cli.sh` already used (`$SERVER_STATE`).
     assert!(
-        script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\""),
-        "server-private .lino and binary .links state must stay below .git so Agent snapshots cannot mistake it for an authored repository effect",
+        script.contains("FORMAL_AI_MEMORY_PATH=\"$STAGE/memory/node-$id/memory.lino\""),
+        "server-private .lino and binary .links state must live outside the Agent workspace so Agent snapshots cannot mistake it for an authored repository effect",
+    );
+    assert!(
+        !script.contains("FORMAL_AI_MEMORY_PATH=\"$work/"),
+        "server memory must not live inside the worktree the Agent authors in",
     );
     assert!(
         !script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.agent-ladder/memory.lino\""),
