@@ -190,12 +190,13 @@ fn migrated_handlers_answer_held_out_paraphrases_in_english_russian_hindi_and_ch
         ),
     ];
     // The Russian, Hindi and Chinese paraphrases open with the seeded explain
-    // verb. A bare interrogative in those three languages (`как работает …?`,
-    // `… कैसे काम करता है?`, `… 如何工作？`) is claimed by the web-search
-    // handler, which sits above the docs handler in
-    // `data/seed/handler-precedence.lino`, and is answered with its
-    // offline-fetch notice; the same question in English is not. That
-    // asymmetry is issue #1101, not something this branch changed.
+    // verb. The bare interrogatives in those three languages (`как работает …?`,
+    // `… कैसे काम करता है?`, `… 如何工作？`) used to be claimed by the web-search
+    // handler and answered with its offline-fetch notice while the same
+    // question in English was not; that asymmetry was issue #1101 and is fixed.
+    // `tests/unit/issue_1101_documentation_question_parity.rs` asserts the bare
+    // forms directly, so this case no longer needs the explain verb to stand in
+    // for them.
     for (language, prompt, intent) in cases {
         let response = answer(prompt);
         assert_eq!(

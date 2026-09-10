@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/web_search_intent.rs
   language rust
   fidelity signature
-  byte_len 35125
+  byte_len 35267
   line_count 872
-  content_id source_module_29eee9e51031e8cd
+  content_id source_module_66245e1a2ee03f19
   symbol_count 47
   symbols
     function probable_local_file_name 32 58
