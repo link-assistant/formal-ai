@@ -1,5 +1,9 @@
 name: Issue 1028 Agent CLI binary-tree ladder
 
+# Issue #1085 (D4): the ladder runs on pull requests that touch it or the
+# agentic coding modules (leaf level), weekly over every level, and on
+# dispatch. The deepest level whose nodes all pass is compared with
+# data/meta/ladder-ratchet.lino and may only move deeper.
 on:
   workflow_dispatch:
     inputs:
@@ -19,13 +23,21 @@ on:
         required: false
         default: false
         type: boolean
+  pull_request:
+    paths:
+      - 'experiments/issue_1028_agent_cli_ladder/**'
+      - 'src/agentic_coding/**'
+      - 'data/meta/ladder-ratchet.lino'
+      - '.github/workflows/issue-1028-agent-ladder.yml'
+  schedule:
+    - cron: '23 3 * * 0'
 
 permissions:
   contents: read
 
 concurrency:
-  group: issue-1028-agent-cli-binary-tree
-  cancel-in-progress: false
+  group: issue-1028-agent-cli-binary-tree-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ladder:
@@ -33,61 +45,101 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      TREE_DEPTH: ${{ inputs.depth || '5' }}
+      TREE_DEPTH: ${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
       NODE_FILTER: ${{ inputs.node_filter || '' }}
-      # Issue #1079: the Agent CLI summarizes a session with the head of its
-      # default compaction cascade, `opencode/big-pickle`, not with the
-      # session's own model. Against a local `formal-ai serve` that hosted
-      # call is both unwanted and fatal -- the gateway now rejects it with
-      # `Request is missing x-opencode-session`, which arrives as an unhandled
-      # rejection. The harness passes `--no-summarize-session` too; this is the
-      # belt to that pair of braces, and it also covers any client the ladder
-      # spawns for itself.
+      OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-tree-run
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
 
       - name: Setup Bun
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
           no-cache: true
 
-      # Only the registry is cached. Issue #534 forbids caching the `target`
-      # tree — it is what evicted the shared compiler cache — and the step's own
-      # name is the honest description of what it keeps.
-      - uses: ./.github/actions/cache-cargo-registry
-        with:
-          prefix: issue-1028-agent-tree-
-
-      - name: Build Formal AI
-        if: ${{ inputs.skip_build != true }}
-        run: cargo build --release --bin formal-ai
+      # Reused across every workflow that only needs to *run* the binary: the
+      # cache key is the content of the sources it is built from, so a push that
+      # changed neither pays nothing (issue #1107).
+      - uses: ./.github/actions/formal-ai-binary
+        if: ${{ (inputs.skip_build != true) && steps.ledger.outputs.already-green != 'true' }}
 
       - name: Install pinned Agent CLI
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bun add -g @link-assistant/agent@0.26.0
 
       - name: Run recursive Agent CLI tree
+        id: tree
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           AGENT: agent
-          OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-tree-run
-          TREE_DEPTH: ${{ env.TREE_DEPTH }}
-          NODE_FILTER: ${{ env.NODE_FILTER }}
         run: experiments/issue_1028_agent_cli_ladder/run.sh
 
-      # Issue #1079: the ladder harness redirects each rung's Agent CLI streams
-      # to files under the run directory, so a failed rung leaves the job log
-      # with an exit status and no cause. On failure, read them out.
+      # `always()` so a ladder that ran and measured fewer leaves than the record
+      # is still compared -- that is the regression this gate exists to catch.
+      # But only when it ran: the tree step is skipped whenever setup failed
+      # (on 2026-09-09 the pinned Agent CLI could not be installed at all,
+      # npm failing to resolve `@ai-sdk/provider-utils`), and this step then
+      # failed on the result file the skipped run never wrote. That reported a
+      # second failure blaming the ladder for a registry outage, which is
+      # exactly the false verdict the harness must not produce.
+      - name: Compare the measured ladder with the record
+        if: >-
+          ${{ (success() || failure())
+              && steps.tree.conclusion != 'skipped'
+              && steps.ledger.outputs.already-green != 'true' }}
+        run: |
+          set -euo pipefail
+          result="$OUT/ladder-result.lino"
+          [[ -f "$result" ]] || { echo '::error::the run wrote no ladder-result.lino'; exit 1; }
+          field() { sed -n "s/^  $1 \"\(.*\)\"$/\1/p" "$result"; }
+          recorded_leaves=$(sed -n 's/^  leaf_nodes_passing //p' data/meta/ladder-ratchet.lino)
+          measured_leaves=$(field leaf_nodes_passing)
+          selected_leaves=$(field leaf_nodes_selected)
+          echo "leaf nodes passing: recorded $recorded_leaves, this run $measured_leaves of $selected_leaves"
+          cat "$result" >> "$GITHUB_STEP_SUMMARY"
+          # Only a full-width run is comparable with the record: a filtered or
+          # shallower run selects fewer leaves and would always look worse.
+          if [[ "$selected_leaves" == 32 ]]; then
+            if (( measured_leaves < recorded_leaves )); then
+              echo "::error::$measured_leaves of 32 leaves passed; the record is $recorded_leaves (data/meta/ladder-ratchet.lino). A leaf Formal AI could change no longer changes."
+              exit 1
+            fi
+            if (( measured_leaves > recorded_leaves )); then
+              echo "::notice::leaf nodes passing improved to $measured_leaves; raise leaf_nodes_passing in data/meta/ladder-ratchet.lino in a reviewed commit"
+            fi
+          fi
+          if [[ "$TREE_DEPTH" == all ]]; then
+            deepest=$(field deepest_passing_level)
+            recorded_depth=$(sed -n 's/^  deepest_passing_level //p' data/meta/ladder-ratchet.lino)
+            echo "deepest passing level: recorded $recorded_depth, this run $deepest"
+            if [[ "$recorded_depth" != none && "$deepest" == none ]]; then
+              echo "::error::no level passed completely; the record is level $recorded_depth"
+              exit 1
+            fi
+            if [[ "$recorded_depth" != none && "$deepest" != none ]] && (( deepest < recorded_depth )); then
+              echo "::error::deepest passing level $deepest is shallower than the recorded $recorded_depth (level 5 is the leaves)"
+              exit 1
+            fi
+          fi
+
       - name: Show the Agent CLI evidence on failure
-        if: failure()
+        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         run: scripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run
       - name: Upload tree evidence
-        if: always()
+        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: issue-1028-agent-cli-binary-tree

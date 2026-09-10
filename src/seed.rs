@@ -34,6 +34,7 @@ mod entity_names;
 mod facts;
 mod grounding_overrides;
 mod handler_precedence;
+mod intent_routing;
 mod market_price_references;
 mod meanings;
 mod model_aliases;
@@ -78,9 +79,9 @@ pub use embedded::{
     COMPUTER_USE_TASKS_LINO, CONCEPT_CONTEXTS_LINO, CONCEPTS_LINO, CONTRIBUTION_ARTIFACTS_LINO,
     COREFERENCE_LINO, DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO,
     ENVIRONMENTS_LINO, FACTS_LINO, FORMAL_LANGUAGE_PROJECTIONS_LINO, GREETINGS_LINO,
-    HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
-    LANGUAGE_DETECTION_LINO, LANGUAGES_LINO, LEARNED_METHODS_LINO, LEARNING_SOURCES_LINO,
-    MARKET_PRICE_REFERENCES_LINO, MEANING_FILES, MEANINGS_CALENDAR_LINO,
+    HANDLER_PRECEDENCE_LINO, HANDLER_RULES_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
+    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LANGUAGES_LINO, LEARNED_METHODS_LINO,
+    LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO, MEANING_FILES, MEANINGS_CALENDAR_LINO,
     MEANINGS_CODING_TASKS_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
     MEANINGS_NUMBER_CONSTRAINTS_LINO, MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
     MEANINGS_UNITS_LINO, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
@@ -98,7 +99,12 @@ pub use facts::{FactRecord, LocalizedFact, facts};
 pub use grounding_overrides::{
     OverrideFact, cache_contains, override_facts, override_reason, parse_record, resolve,
 };
-pub use handler_precedence::{handler_precedence, handler_precedence_from};
+pub use handler_precedence::{
+    HANDLER_PRECEDENCE_PATH, handler_precedence, handler_precedence_from,
+};
+pub use intent_routing::{
+    INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_routing, intent_routing_from,
+};
 pub use market_price_references::{MarketPriceAsset, MarketPricePeriod, market_price_assets};
 pub use meanings::{
     ArithmeticOperator, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm, lexicon,
@@ -651,81 +657,6 @@ pub fn concept_contexts() -> Vec<ContextRecord> {
         }
     }
     out
-}
-
-/// Intent routing record from `data/seed/intent-routing.lino`.
-///
-/// Match semantics (mirrored in `src/web/formal_ai_worker.js`):
-/// - `keywords`: exact match of the entire normalized prompt
-/// - `phrases`: exact match of the entire normalized prompt (kept as a
-///   separate label so multi-word entries are easy to spot in `.lino`)
-/// - `tokens`: any single whitespace-separated token equals the value
-/// - `combos`: every token in the combo appears as a whitespace-separated
-///   token in the prompt (in any order)
-#[derive(Debug, Clone, Default)]
-pub struct IntentRoute {
-    pub id: String,
-    pub slug: String,
-    pub response_link: String,
-    pub keywords: Vec<String>,
-    pub phrases: Vec<String>,
-    pub tokens: Vec<String>,
-    pub combos: Vec<Vec<String>>,
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct IntentRouting {
-    pub intents: Vec<IntentRoute>,
-    pub article_prefixes: Vec<String>,
-    pub trace_prefixes: Vec<String>,
-}
-
-#[must_use]
-pub fn intent_routing() -> IntentRouting {
-    let tree = parse_lino(INTENT_ROUTING_LINO);
-    let mut routing = IntentRouting::default();
-    if let Some(root) = tree.children.first() {
-        for child in &root.children {
-            match child.name.as_str() {
-                "intent" => {
-                    let mut keywords = Vec::new();
-                    let mut phrases = Vec::new();
-                    let mut tokens = Vec::new();
-                    let mut combos = Vec::new();
-                    for entry in &child.children {
-                        match entry.name.as_str() {
-                            "keyword" => keywords.push(entry.id.clone()),
-                            "phrase" => phrases.push(entry.id.clone()),
-                            "token" => tokens.push(entry.id.clone()),
-                            "combo" => combos.push(
-                                entry
-                                    .id
-                                    .split('+')
-                                    .map(str::trim)
-                                    .filter(|s| !s.is_empty())
-                                    .map(ToOwned::to_owned)
-                                    .collect(),
-                            ),
-                            _ => {}
-                        }
-                    }
-                    routing.intents.push(IntentRoute {
-                        id: child.id.clone(),
-                        slug: child.find_child_value("slug").to_string(),
-                        response_link: child.find_child_value("response_link").to_string(),
-                        keywords,
-                        phrases,
-                        tokens,
-                        combos,
-                    });
-                }
-                "article" => routing.article_prefixes.push(child.id.clone()),
-                "trace_prefix" => routing.trace_prefixes.push(child.id.clone()),
-                _ => {}
-            }
-        }
-    }
-    routing
 }
 
 /// One learnable data source declared by `learning-sources.lino` (issue #499).

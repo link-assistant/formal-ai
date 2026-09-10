@@ -55,11 +55,11 @@ test.describe('Issue #479 — landing page (/) chooser', () => {
     });
   });
 
-  test('renders six navigation cards pointing at every interface', async ({ page }) => {
+  test('renders seven navigation cards pointing at every interface', async ({ page }) => {
     await expect(page.locator('.hero h1')).toHaveText('formal-ai');
 
     const cards = page.locator('[data-testid="nav-cards"] .nav-card');
-    await expect(cards).toHaveCount(6);
+    await expect(cards).toHaveCount(7);
 
     // In-site routes are relative so the Pages path prefix is preserved.
     await expect(page.locator('[data-testid="nav-app"]')).toHaveAttribute('href', 'app/');
@@ -68,6 +68,14 @@ test.describe('Issue #479 — landing page (/) chooser', () => {
     await expect(page.locator('[data-testid="nav-vscode"]')).toHaveAttribute('href', 'vscode/');
     await expect(page.locator('[data-testid="nav-cli"]')).toHaveAttribute('href', 'cli/');
     await expect(page.locator('[data-testid="nav-telegram"]')).toHaveAttribute('href', 'telegram/');
+
+    // The GitHub Action is documented in the repository, not on this site, so
+    // its card is the one external destination (issue #1085 D2.3).
+    await expect(page.locator('[data-testid="nav-action"]')).toHaveAttribute(
+      'href',
+      'https://github.com/link-assistant/formal-ai/blob/main/docs/github-action.md',
+    );
+    await expect(page.locator('[data-testid="nav-action"]')).toHaveAttribute('target', '_blank');
 
     // In-site cards stay in the same tab so theme/locale carry over; the brand
     // returns home.

@@ -1021,6 +1021,40 @@ assert_eq!(
 );
 ```
 
+## Self-Development Share
+
+How much of each release the formal-ai model authored is recorded in
+`data/meta/self-hosting-ledger.lino` and reported red-until-true by the
+[Self-development status](.github/workflows/self-development-status.yml)
+workflow on every push to `main`. Since issue
+[#1085](https://github.com/link-assistant/formal-ai/issues/1085) the metric
+(version 3) counts a commit only when its `Formal-AI-Model` trailer names
+formal-ai and the committed evidence names that model too, and it counts only
+behaviour-changing paths: `docs/`, `dev/`, `experiments/` and `changelog.d/`
+are outside both the numerator and the denominator. Earlier versions credited
+trailer-bearing commits produced by hosted models and counted case studies as
+authored work; their rows stay in the ledger as recorded, and the history is
+restated under version 3 beside them. A figure of 0.00% is an honest figure.
+
+## Formal AI as a GitHub Action
+
+Any repository can hand a task to Formal AI and get back a pull request Formal
+AI wrote itself — one commit under `github-actions[bot]`, with the session
+evidence and attribution trailers on it and no human commit on the branch:
+
+```yaml
+      - uses: link-assistant/formal-ai/.github/actions/author-with-formal-ai@main
+        with:
+          require-contract: 'false'
+```
+
+On `issues: opened` that opens a draft attempt at every new issue. The binary
+comes from the published container, so a run costs a pull rather than a build,
+and a draft that fails is the point: it fails on a branch nobody depends on,
+with its session attached, and the defect goes to the meta algorithm rather than
+being hand-corrected. Installation, inputs, the task contract and how to read a
+draft are in [docs/github-action.md](docs/github-action.md).
+
 ## Current Symbolic Behavior
 
 The engine normalizes a prompt, selects a deterministic symbolic rule, and returns the rule output with evidence link identifiers and indented Links Notation. It can also consume an explicit `ProbabilityStore`: append-only Bayesian-style evidence and Markov transition evidence rank symbolic candidate IDs before the temperature / clarify-vs-guess policy runs. This stays non-neural; evidence is Links Notation data with provenance, timestamps, cached-source fingerprints, and deterministic replay.

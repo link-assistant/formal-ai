@@ -2,27 +2,27 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 38285
-  line_count 945
-  content_id source_module_aeb69e0ce35cc01b
+  byte_len 38123
+  line_count 941
+  content_id source_module_b31e34bef30401bf
   symbol_count 19
   symbols
-    function try_arithmetic 85 201
-    function render_calculation_reasoning_step 203 209
-    function try_concept_lookup 211 213
-    function try_concept_lookup_with_response_language 222 291
-    function render_concept_plain 296 319
-    function render_source_link 324 331
-    function render_concept_in_context 348 394
-    function try_javascript_execution 396 419
-    function try_network_query 421 477
-    function try_translation 479 679
-    function render_translation_gap 681 693
-    function try_write_script 695 731
-    function try_algorithm 733 757
-    function try_execution_failure 759 788
-    function try_source_refresh 790 815
-    function try_learn_from_source 828 854
-    function learning_source_summary 861 880
-    function try_source_conflict 882 908
-    function finalize_simple 910 945
+    function try_arithmetic 81 197
+    function render_calculation_reasoning_step 199 205
+    function try_concept_lookup 207 209
+    function try_concept_lookup_with_response_language 218 287
+    function render_concept_plain 292 315
+    function render_source_link 320 327
+    function render_concept_in_context 344 390
+    function try_javascript_execution 392 415
+    function try_network_query 417 473
+    function try_translation 475 675
+    function render_translation_gap 677 689
+    function try_write_script 691 727
+    function try_algorithm 729 753
+    function try_execution_failure 755 784
+    function try_source_refresh 786 811
+    function try_learn_from_source 824 850
+    function learning_source_summary 857 876
+    function try_source_conflict 878 904
+    function finalize_simple 906 941

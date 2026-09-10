@@ -29,7 +29,7 @@ pub(super) fn append_prompt_relevants(prompt: &str, normalized: &str, relevants:
     let handlers = [
         (
             "handler:conversation_control",
-            crate::conversation_control::is_conversation_control_prompt(prompt),
+            crate::rule_interpreter::handler_matches("conversation_control", prompt),
         ),
         (
             "handler:execution_failure",

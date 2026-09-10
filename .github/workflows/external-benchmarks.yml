@@ -116,8 +116,10 @@ jobs:
           python -m pip install \
             "git+https://github.com/SWE-bench/SWE-bench.git@f7bbbb2ccdf479001d6467c9e34af59e44a840f9"
 
-      - name: Build the harness
-        run: cargo build --release --bin formal-ai
+      # Reused across every workflow that only needs to *run* the binary: the
+      # cache key is the content of the sources it is built from, so a push that
+      # changed neither pays nothing (issue #1107).
+      - uses: ./.github/actions/formal-ai-binary
 
       - name: Run the bounded upstream slice
         env:
@@ -132,7 +134,8 @@ jobs:
               --suite "$1" \
               --slice "$2" \
               --append \
-              --learning-report "target/formal-ai-benchmarks/learning/$1.lino"
+              --learning-report "target/formal-ai-benchmarks/learning/$1.lino" \
+              --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
           }
           if [[ "${BENCHMARK_SUITE}" == 'all' ]]; then
             for suite in humaneval mbpp gsm8k math object_counting coedit egg_math editeval; do
@@ -191,14 +194,14 @@ jobs:
         if: github.event_name == 'schedule' || inputs.commit
         run: |
           set -euo pipefail
-          if git diff --quiet -- data/benchmarks/external-results.lino; then
+          if git diff --quiet -- data/benchmarks/external-results.lino data/meta/learning-frontier-upstream-benchmarks.lino; then
             echo 'ledger unchanged; nothing to commit'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/benchmarks/external-results.lino
-          git commit -m 'chore(benchmarks): record scheduled upstream results (#698)'
+          git add data/benchmarks/external-results.lino data/meta/learning-frontier-upstream-benchmarks.lino
+          git commit -m 'chore(benchmarks): record scheduled upstream results and the failure frontier (#698, #1085)'
           # Issue #1081 (D13). `concurrency: formal-ai-repository-writes` above
           # orders this job against the release writers; it does not rebase it.
           # This job is checked out at the commit its cron fired on, so a

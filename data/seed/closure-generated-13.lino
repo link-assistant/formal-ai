@@ -69,6 +69,11 @@ meanings
     lexeme en
       surface
         text "context machine learning"
+  continuation_cue
+    defined-by rule
+    lexeme en
+      surface
+        text "continuation cue"
   contributor_fact_count_summary
     defined-by concept
     lexeme en
@@ -94,6 +99,11 @@ meanings
     lexeme en
       surface
         text "docker microservice"
+  docs_method_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "docs method explanation"
   document
     defined-by word_surface
     lexeme en
@@ -504,6 +514,11 @@ meanings
     lexeme en
       surface
         text "response definition followup clarify ru"
+  response_docs_method_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation hi"
   response_evidence_exact_composition_zh
     defined-by response_template
     lexeme en

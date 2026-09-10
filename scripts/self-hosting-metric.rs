@@ -2,12 +2,16 @@
 //!
 //! Run with `rust-script scripts/self-hosting-metric.rs --since <tag>`.
 //!
-//! Attribution requires `Formal-AI-Session` and `Formal-AI-Evidence`; release-loop
-//! proof also requires a canonical GitHub URL in `Formal-AI-Pull-Request`.
+//! Attribution requires `Formal-AI-Session`, `Formal-AI-Model` and
+//! `Formal-AI-Evidence`; release-loop proof also requires a canonical GitHub URL
+//! in `Formal-AI-Pull-Request`.
 //!
-//! The evidence path must contain both `formal-ai` and the recorded session id.
-//! Changed lines are additions plus deletions reported by `git show --numstat`;
-//! merge commits, binary files and captured artifacts do not contribute.
+//! The evidence path must contain `formal-ai`, the recorded session id and the
+//! recorded model, and the model must be formal-ai (issue #1085). Changed lines
+//! are additions plus deletions reported by `git show --numstat`; merge commits,
+//! binary files, captured artifacts and paths that describe the system rather
+//! than change it (`docs/`, `dev/`, `experiments/`, `changelog.d/`) do not
+//! contribute.
 //!
 //! ```cargo
 //! [package]
@@ -32,6 +36,18 @@ const DEFAULT_TRAILING_WINDOW: usize = 3;
 #[path = "self-hosting-retraction.rs"]
 mod retraction;
 use retraction::retracted_commits;
+#[path = "self-hosting-attribution.rs"]
+mod attribution;
+#[path = "self-hosting-replay.rs"]
+mod replay;
+#[allow(unused_imports)]
+pub use attribution::{
+    HOSTED_MODEL_MARKERS, MODEL_TRAILER, NON_BEHAVIOUR_PREFIXES, hosted_model_marker,
+    is_non_authored_path,
+};
+use replay::pull_request_authors;
+#[allow(unused_imports)]
+pub use replay::replay_epoch;
 #[path = "self-development-loop.rs"]
 mod self_development_loop;
 #[allow(unused_imports)]
@@ -48,29 +64,20 @@ pub use self_development_loop::{
 /// published share described log volume rather than authored work — in both
 /// directions. Version 2 excludes captured artifacts.
 ///
+/// Issue #1085: version 3 attributes by the model that produced the change
+/// (`Formal-AI-Model`, which must be formal-ai and must be named in the
+/// committed evidence; a session or model naming a hosted model is not
+/// self-authored) and counts only behaviour-changing paths (`docs/`, `dev/`,
+/// `experiments/` and `changelog.d/` leave both sides). Under version 2, 72 of
+/// the 125 attributed commits on `main` were Claude sessions and the numerator
+/// was dominated by case studies and ledgers. See `self-hosting-attribution.rs`.
+///
 /// Rows measured under different definitions are not comparable, so the ratchet
 /// and the trailing window only ever look at rows of the *same* version. A
 /// definition change therefore starts a new epoch instead of silently averaging
-/// two different quantities.
-const METRIC_VERSION: u64 = 2;
-
-/// File extensions whose content is captured, not authored: CI run logs, agent
-/// transcripts, saved diffs and process output. Committing them is deliberate
-/// (they are the evidence bundles this repository requires), but they are not
-/// release work and must not move the metric.
-const CAPTURED_ARTIFACT_EXTENSIONS: &[&str] =
-    &["log", "jsonl", "diff", "patch", "stderr", "stdout"];
-
-/// Dependency lockfiles: written by a package manager, never hand-authored.
-const LOCKFILE_NAMES: &[&str] = &[
-    "Cargo.lock",
-    "bun.lock",
-    "package-lock.json",
-    "yarn.lock",
-    "pnpm-lock.yaml",
-    "poetry.lock",
-    "uv.lock",
-];
+/// two different quantities; `--replay-epoch` appends the new definition's rows
+/// for every earlier tag so the history is restated, never rewritten.
+const METRIC_VERSION: u64 = 3;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Measurement {
@@ -119,6 +126,10 @@ pub struct ReleaseRow {
     pub target_override_basis_points: Option<u64>,
     /// Reviewed PRs containing valid session-backed commits in this cycle.
     pub self_authored_pull_requests: Vec<String>,
+    /// Who opened each of those pull requests (`<url> <login>`), so a row can be
+    /// read for whether the model or a person carried the change to review
+    /// (issue #1085 D3.3). `unrecorded` when the lookup was unavailable.
+    pub self_authored_pull_request_authors: Vec<String>,
 }
 
 pub fn format_percentage(basis_points: u64) -> String {
@@ -207,26 +218,6 @@ pub fn measure_with_policy(
     })
 }
 
-/// Whether a path holds captured output rather than authored work.
-///
-/// Applied symmetrically to the numerator and the denominator, so a commit that
-/// only files evidence contributes nothing either way and the share it reports
-/// is unchanged by how much log volume happened to be attached to it.
-pub fn is_non_authored_path(path: &str) -> bool {
-    // `git show --numstat` C-quotes any path with non-printable or non-ASCII
-    // bytes, so the raw field can arrive wrapped in double quotes.
-    let path = path.trim().trim_matches('"');
-    let name = path.rsplit('/').next().unwrap_or(path);
-    if LOCKFILE_NAMES.contains(&name) {
-        return true;
-    }
-    name.rsplit_once('.').is_some_and(|(_, extension)| {
-        CAPTURED_ARTIFACT_EXTENSIONS
-            .iter()
-            .any(|candidate| extension.eq_ignore_ascii_case(candidate))
-    })
-}
-
 fn changed_lines_for_commit(repo: &Path, commit: &str) -> Result<u64, String> {
     let output = git(
         repo,
@@ -290,17 +281,17 @@ fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, Stri
         evidence.extend(identifying_files);
     }
 
-    for session in sessions {
+    for session in &sessions {
         if !evidence
             .iter()
-            .any(|(_, content)| content.contains(&session))
+            .any(|(_, content)| content.contains(session.as_str()))
         {
             return Err(format!(
                 "no committed {EVIDENCE_TRAILER} in {commit} records session {session}"
             ));
         }
     }
-    Ok(true)
+    Ok(attribution::model_attribution(repo, commit, &sessions, &evidence)?.is_some())
 }
 
 /// Resolve a committed evidence file or every file below a committed evidence
@@ -501,13 +492,19 @@ pub fn record_release_with_policy(
             until,
             EvidencePolicy::Lenient,
         )?,
+        self_authored_pull_request_authors: Vec::new(),
     };
+    row.self_authored_pull_request_authors = pull_request_authors(&row.self_authored_pull_requests);
     window_rows.push(row.clone());
     row.trailing_percentage_basis_points = weighted_percentage(&window_rows);
 
-    // Idempotency is checked against the whole ledger, not just this epoch: a
-    // tag must never be recorded twice, whatever definition produced it.
-    if let Some(existing) = all_rows.iter().find(|existing| existing.tag == tag) {
+    // Idempotency is checked per epoch: a tag is recorded once under each
+    // definition. An earlier epoch's row for the same tag is history that
+    // `--replay-epoch` restates beside it, never a duplicate (issue #1085).
+    if let Some(existing) = all_rows
+        .iter()
+        .find(|existing| existing.tag == tag && existing.metric_version == METRIC_VERSION)
+    {
         if existing == &row {
             return Ok(existing.clone());
         }
@@ -583,6 +580,7 @@ pub fn project_trailing_share(
         target_percentage_basis_points: None,
         target_override_basis_points: None,
         self_authored_pull_requests: Vec::new(),
+        self_authored_pull_request_authors: Vec::new(),
     });
     Ok(weighted_percentage(&window_rows))
 }
@@ -720,6 +718,15 @@ fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
                     .map(str::to_owned)
             })
             .collect(),
+        self_authored_pull_request_authors: fields
+            .iter()
+            .filter_map(|field| {
+                field
+                    .strip_prefix("self_authored_pull_request_author \"")
+                    .and_then(|value| value.strip_suffix('"'))
+                    .map(str::to_owned)
+            })
+            .collect(),
     })
 }
 
@@ -769,6 +776,9 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
     }
     for pull_request in &row.self_authored_pull_requests {
         let _ = writeln!(record, "    self_authored_pull_request \"{pull_request}\"");
+    }
+    for author in &row.self_authored_pull_request_authors {
+        let _ = writeln!(record, "    self_authored_pull_request_author \"{author}\"");
     }
     write!(file, "{record}")
         .map_err(|error| format!("could not append {}: {error}", ledger.display()))
@@ -835,6 +845,8 @@ struct Options {
     record_release: Option<String>,
     /// Base revision to compare against; see [`ratchet_check`].
     check_ratchet: Option<String>,
+    /// Restate every earlier-epoch row under the current definition.
+    replay_epoch: bool,
     trailing_window: usize,
 }
 
@@ -845,6 +857,7 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
     let mut ledger = PathBuf::from(DEFAULT_LEDGER);
     let mut record_release = None;
     let mut check_ratchet = None;
+    let mut replay_epoch = false;
     let mut trailing_window = DEFAULT_TRAILING_WINDOW;
     let mut args = args.into_iter();
     while let Some(arg) = args.next() {
@@ -858,6 +871,7 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
             "--ledger" => ledger = PathBuf::from(value(&mut args)?),
             "--record-release" => record_release = Some(value(&mut args)?),
             "--check-ratchet" => check_ratchet = Some(value(&mut args)?),
+            "--replay-epoch" => replay_epoch = true,
             "--trailing-window" => {
                 trailing_window = value(&mut args)?
                     .parse::<usize>()
@@ -866,15 +880,15 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
             "--help" | "-h" => {
                 return Err(
                     "usage: self-hosting-metric.rs --since <tag> [--until <rev>] \
-                     [--record-release <tag>] [--check-ratchet <base-rev>] [--ledger <path>] \
-                     [--repo <path>]"
+                     [--record-release <tag>] [--check-ratchet <base-rev>] [--replay-epoch] \
+                     [--ledger <path>] [--repo <path>]"
                         .to_owned(),
                 );
             }
             _ => return Err(format!("unknown argument: {arg}")),
         }
     }
-    if since.is_none() && check_ratchet.is_none() {
+    if since.is_none() && check_ratchet.is_none() && !replay_epoch {
         return Err("--since <tag> is required".to_owned());
     }
     let ledger = if ledger.is_absolute() {
@@ -889,12 +903,21 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
         ledger,
         record_release,
         check_ratchet,
+        replay_epoch,
         trailing_window,
     })
 }
 
 fn run() -> Result<(), String> {
     let options = parse_options(env::args().skip(1))?;
+    if options.replay_epoch {
+        let appended = replay_epoch(&options.repo, &options.ledger, options.trailing_window)?;
+        println!(
+            "restated {} release(s) under metric version {METRIC_VERSION}",
+            appended.len()
+        );
+        return Ok(());
+    }
     if let Some(base) = &options.check_ratchet {
         if let Some(regression) = ratchet_check(
             &options.repo,
@@ -912,14 +935,9 @@ fn run() -> Result<(), String> {
         .since
         .ok_or_else(|| "--since <tag> is required".to_owned())?;
     let measurement = if let Some(tag) = options.record_release {
-        ensure_self_development_release(
-            &options.repo,
-            &options.ledger,
-            &tag,
-            &since,
-            &options.until,
-            options.trailing_window,
-        )?;
+        // Issue #1085 (D3.5): recording is unconditional. The self-development
+        // floor is reported by `check-self-development-release.rs` from its own
+        // workflow, not enforced here.
         let row = record_release_with_policy(
             &options.repo,
             &options.ledger,

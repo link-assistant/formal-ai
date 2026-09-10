@@ -143,6 +143,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "agentic_report_target_question"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_92101d288cfa4e2a
+    source "data/seed/closure-generated-04.lino"
+    record "forms"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0471386da5cd072a
     source "data/seed/closure-generated-04.lino"
     record "issue_report_created"
@@ -282,6 +286,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_1451e0bff10df47a
     source "data/seed/closure-generated-07.lino"
     record "response_general_plan_command_output_evidence_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_46f975d401d18c3a
+    source "data/seed/closure-generated-07.lino"
+    record "response_policy_bounded_autonomy_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1bbb123cf74fa19a
     source "data/seed/closure-generated-07.lino"

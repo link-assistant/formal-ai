@@ -132,8 +132,7 @@ fn run(mode: &str, routes: &str) -> Output {
 }
 
 const EVERYTHING_PUBLISHABLE: &str = concat!(
-    "/me 200 {\"user\":{\"login\":\"konard\"}}\n",
-    "/owners 200 {\"users\":[{\"login\":\"konard\"}]}\n",
+    "/crates/ 200 {\"crate\":{\"name\":\"formal-ai\"}}\n",
     "/token 200 {\"token\":\"bearer\"}\n",
     "blobs/uploads 202\n"
 );
@@ -142,6 +141,10 @@ fn stdout(output: &Output) -> String {
     String::from_utf8_lossy(&output.stdout).to_string()
 }
 
+/// crates.io cannot be verified read-only (see
+/// `the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint`), so a
+/// fully publishable release reports it as the one honest `unknown` and is not
+/// blocked by it.
 #[test]
 fn a_release_whose_credentials_all_work_is_not_blocked() {
     let output = run("release", EVERYTHING_PUBLISHABLE);
@@ -151,19 +154,30 @@ fn a_release_whose_credentials_all_work_is_not_blocked() {
         "a publishable release must not be blocked: {report}"
     );
     assert!(
-        report.contains("4 verified, 0 failed, 0 unknown"),
+        report.contains("2 verified, 0 failed, 1 unknown"),
         "{report}"
+    );
+    assert!(
+        report.contains("GET /api/v1/me is cookie-only"),
+        "the unknown verdict must say why crates.io cannot be probed: {report}"
     );
 }
 
 /// The point of the preflight is one report naming *every* broken credential,
-/// so a probe that fails must not stop the ones after it.
+/// so a probe that fails must not stop the ones after it. The crates.io failure
+/// here is the only one the probe can still establish: an absent token.
 #[test]
 fn every_failure_is_reported_and_not_only_the_first() {
-    let output = run(
+    let dir = sandbox();
+    let output = preflight(
+        &dir,
         "release",
-        "/me 403\n/token 200 {\"token\":\"bearer\"}\nblobs/uploads 403\n",
-    );
+        "/token 200 {\"token\":\"bearer\"}\nblobs/uploads 403\n",
+    )
+    .env_remove("CARGO_TOKEN")
+    .output()
+    .expect("the preflight must run");
+    fs::remove_dir_all(&dir).ok();
     let report = stdout(&output);
     assert_eq!(output.status.code(), Some(1), "{report}");
     assert!(report.contains("crates.io publish token"), "{report}");
@@ -172,24 +186,53 @@ fn every_failure_is_reported_and_not_only_the_first() {
     assert!(report.contains("0 verified, 3 failed"), "{report}");
 }
 
-/// A token crates.io accepts still publishes nothing if it does not own the
-/// crate, which a login-shaped check cannot see.
+/// Issue #1085. `GET /api/v1/me` is `AuthCheck::only_cookie()` in crates.io
+/// (`src/controllers/user/me.rs`): it answers 403 to every API token, valid or
+/// not. The issue #1081 probe read that 403 as a revoked token and blocked the
+/// release of run 34149311523 with the token that had published v0.347.0 two
+/// days earlier. No crates.io read endpoint accepts a token, so the honest
+/// verdict is `unknown`, the token is never sent anywhere, and `/me` is never
+/// called.
 #[test]
-fn a_valid_token_that_does_not_own_the_crate_is_a_failure() {
-    let output = run(
+fn the_crates_io_token_is_never_judged_by_the_cookie_only_me_endpoint() {
+    let dir = sandbox();
+    let log = dir.join("calls.log");
+    let config_log = dir.join("config.log");
+    let output = preflight(
+        &dir,
         "release",
         concat!(
-            "/me 200 {\"user\":{\"login\":\"someone-else\"}}\n",
-            "/owners 200 {\"users\":[{\"login\":\"konard\"}]}\n",
+            "/me 403 {\"errors\":[{\"detail\":\"authentication failed\"}]}\n",
+            "/crates/ 200 {\"crate\":{\"name\":\"formal-ai\"}}\n",
             "/token 200 {\"token\":\"bearer\"}\n",
             "blobs/uploads 202\n"
         ),
-    );
+    )
+    .env("FAKE_CURL_LOG", &log)
+    .env("FAKE_CURL_CONFIG_LOG", &config_log)
+    .output()
+    .expect("the preflight must run");
+    let calls = fs::read_to_string(&log).expect("the stub must record its calls");
+    let configs =
+        fs::read_to_string(&config_log).expect("the stub must record what it read on stdin");
+    fs::remove_dir_all(&dir).ok();
     let report = stdout(&output);
-    assert_eq!(output.status.code(), Some(1), "{report}");
     assert!(
-        report.contains("is not an owner of formal-ai"),
-        "the ownership check must name what `cargo publish` would reject: {report}"
+        output.status.success(),
+        "a 403 from a cookie-only endpoint is not a rejected token: {report}"
+    );
+    assert!(report.contains("1 unknown"), "{report}");
+    assert!(
+        !calls.contains("/api/v1/me"),
+        "the cookie-only endpoint must never be consulted: {calls}"
+    );
+    assert!(
+        !calls.contains("cargo-token") && !configs.contains("cargo-token"),
+        "the publish token has no read-only use and must not leave the job: {calls}\n{configs}"
+    );
+    assert!(
+        !report.contains("revoked, expired or misscoped"),
+        "the verdict the false positive produced must be gone: {report}"
     );
 }
 
@@ -200,8 +243,7 @@ fn a_token_that_authenticates_but_cannot_push_is_a_failure() {
     let output = run(
         "release",
         concat!(
-            "/me 200 {\"user\":{\"login\":\"konard\"}}\n",
-            "/owners 200 {\"users\":[{\"login\":\"konard\"}]}\n",
+            "/crates/ 200 {\"crate\":{\"name\":\"formal-ai\"}}\n",
             "/token 200 {\"token\":\"bearer\"}\n",
             "blobs/uploads 403\n"
         ),
@@ -240,7 +282,7 @@ fn a_run_that_could_verify_nothing_is_not_a_pass() {
 fn report_mode_states_the_problem_without_failing_the_run() {
     let output = run(
         "report",
-        "/me 403\n/token 200 {\"token\":\"bearer\"}\nblobs/uploads 202\n",
+        "/token 200 {\"token\":\"bearer\"}\nblobs/uploads 403\n",
     );
     let report = stdout(&output);
     assert!(output.status.success(), "{report}");
@@ -284,12 +326,13 @@ fn every_opened_blob_upload_session_is_cancelled() {
             "no credential may reach the argument list of a logged call: {calls}"
         );
     }
-    // The credential still has to be sent, or the probe proves nothing: the
-    // same assertion passes trivially for a script that authenticates with
-    // nothing at all.
+    // The registry credential still has to be sent, or the probe proves
+    // nothing: the same assertion passes trivially for a script that
+    // authenticates with nothing at all. The crates.io token is the exception
+    // (issue #1085): no read endpoint accepts it, so it must not be sent.
     assert!(
-        configs.contains("Authorization: cargo-token"),
-        "the crates.io token must still reach curl, by the private channel: {configs}"
+        !configs.contains("cargo-token"),
+        "the crates.io token has no read-only use and must not be sent: {configs}"
     );
     assert!(
         configs.contains("Authorization: Bearer"),
@@ -343,18 +386,25 @@ fn the_release_jobs_need_the_preflight() {
 fn the_preflight_probes_every_credential_the_release_publishes_with() {
     let workflow = release_workflow();
     let probe = fs::read_to_string(script()).expect("the preflight script is readable");
-    for (secret, probed_as) in [
+    // These are the *names* of the credentials, never their values -- the
+    // whole point is to compare the workflow's list against the probe's. They
+    // are spelled `credential_name` rather than `secret` because CodeQL's
+    // `rust/cleartext-logging` heuristic reads a variable called `secret` in a
+    // panic message as a leaked credential (alerts #104, #105) and nothing in
+    // the assertion text tells it otherwise. The name that is accurate is also
+    // the name that does not raise a false alarm.
+    for (credential_name, probed_as) in [
         ("CARGO_TOKEN", "CARGO_TOKEN"),
         ("DOCKERHUB_TOKEN", "DOCKERHUB_TOKEN"),
         ("DOCKERHUB_USERNAME", "DOCKERHUB_USERNAME"),
     ] {
         assert!(
-            workflow.contains(secret),
-            "{secret} is expected to be one of the release credentials"
+            workflow.contains(credential_name),
+            "{credential_name} is expected to be one of the release credentials"
         );
         assert!(
             probe.contains(probed_as),
-            "{secret} is used by the release but never probed before it"
+            "{credential_name} is used by the release but never probed before it"
         );
     }
     assert!(

@@ -2,10 +2,13 @@ self_ast_census
   target src/seed/handler_precedence.rs
   language rust
   fidelity signature
-  byte_len 1972
-  line_count 44
-  content_id source_module_97e644a8ac4888d0
-  symbol_count 2
+  byte_len 2784
+  line_count 68
+  content_id source_module_3b2bfe10b79037e3
+  symbol_count 5
   symbols
-    function handler_precedence 24 26
-    function handler_precedence_from 33 44
+    function handler_precedence 28 31
+    static CELL 29 29
+    function load_handler_precedence 33 47
+    const HANDLER_PRECEDENCE_PATH 50 50
+    function handler_precedence_from 57 68

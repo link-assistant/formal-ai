@@ -1,0 +1,8 @@
+link_edit
+  leaf L25
+  path src/service_accessibility.rs
+  language rust
+  rule rename_identifier
+    old "RECORD_INDENT"
+    new "RECORD_LINE_INDENT"
+  expect "RECORD_LINE_INDENT"

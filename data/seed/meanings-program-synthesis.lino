@@ -42,6 +42,11 @@ meanings
     lexeme zh
       surface
         text 函数
+    lexeme es
+      surface
+        text función
+      surface
+        text funcion
   synthesis_domain_python
     defined-by program_synthesis
     defined-by language_python
@@ -140,6 +145,11 @@ meanings
     lexeme zh
       surface
         text 实现
+    lexeme es
+      surface
+        text implementa
+      surface
+        text implementar
   synthesis_action_write
     defined-by program_synthesis
     defined-by write
@@ -162,6 +172,11 @@ meanings
         text 编写
       surface
         text 写
+    lexeme es
+      surface
+        text escribe
+      surface
+        text escribir
   synthesis_action_return
     defined-by program_synthesis
     defined-by output

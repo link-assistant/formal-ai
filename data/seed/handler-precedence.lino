@@ -1,5 +1,6 @@
 handler_precedence
   conversation_control # explicit preferences and corrections stay local instead of becoming web searches
+  agentic_continuation # a turn that is only a continuation cue resumes the agentic task; with nothing to resume it is answered here, never searched for (issue 1095)
   http_fetch
   url_navigate
   github_repository_traffic

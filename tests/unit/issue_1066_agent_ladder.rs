@@ -69,22 +69,24 @@ struct Node {
 /// Run the committed generator over the committed leaves and read back the tree.
 fn generate_tree(directory: &Path) -> Vec<Node> {
     let script = read(LADDER);
-    let leaves = heredoc(&script, "cat > \"$OUT/leaves.tsv\" <<'EOF'\n", "\nEOF\n");
+    // Leaves are committed beside the script; the heredoc was removed when the
+    // table grew to six columns (issue #1085).  Read the file directly.
+    let leaves_source = read("experiments/issue_1028_agent_cli_ladder/leaves.tsv");
+    assert_eq!(
+        leaves_source.lines().count(),
+        LEAF_COUNT,
+        "the ladder must formulate exactly {LEAF_COUNT} atomic leaves",
+    );
     let generator = heredoc(
         &script,
         "python3 - \"$OUT/leaves.tsv\" \"$NODES\" <<'PY'\n",
         "\nPY\n",
     );
-    assert_eq!(
-        leaves.lines().count(),
-        LEAF_COUNT,
-        "the ladder must formulate exactly {LEAF_COUNT} atomic leaves",
-    );
 
     let leaves_path = directory.join("leaves.tsv");
     let generator_path = directory.join("generate.py");
     let tree_path = directory.join("tree.tsv");
-    fs::write(&leaves_path, format!("{leaves}\n")).expect("write leaves");
+    fs::write(&leaves_path, &leaves_source).expect("write leaves");
     fs::write(&generator_path, generator).expect("write generator");
 
     let output = Command::new("python3")
@@ -154,7 +156,11 @@ fn the_ladder_clears_prior_node_artifacts_before_a_replay() {
         .split_once("run_one() {\n")
         .expect("ladder defines run_one")
         .1
-        .split_once("\n  setsid env ")
+        // The server launch opens with a `setsid` that is optional: macOS has
+        // no such binary, so issue #1110's work made it an array that expands
+        // to nothing there (`"${SETSID[@]}" env ...`). Split on the `env` that
+        // carries the server's variables, which both spellings share.
+        .split_once("\n  \"${SETSID[@]}\" env ")
         .expect("ladder starts the Formal AI server after node setup")
         .0;
 
@@ -176,9 +182,21 @@ fn the_ladder_clears_prior_node_artifacts_before_a_replay() {
 fn the_ladder_keeps_server_memory_out_of_agent_authored_effects() {
     let script = read(LADDER);
 
+    // The invariant is that server state lives outside the tree the Agent
+    // authors in, so a snapshot cannot read it as a repository effect. It used
+    // to sit under `$work/.git/`, which worked while every node got its own
+    // `git init`. Issue #1072 replaced that with one shared worktree, where
+    // `.git` is a *file* pointing at the real repository -- so that path could
+    // not be a directory at all. The state moved beside the staged binary in
+    // `$STAGE`, which is outside `$work` entirely: the same guarantee, and the
+    // shape `run_agent_cli.sh` already used (`$SERVER_STATE`).
     assert!(
-        script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\""),
-        "server-private .lino and binary .links state must stay below .git so Agent snapshots cannot mistake it for an authored repository effect",
+        script.contains("FORMAL_AI_MEMORY_PATH=\"$STAGE/memory/node-$id/memory.lino\""),
+        "server-private .lino and binary .links state must live outside the Agent workspace so Agent snapshots cannot mistake it for an authored repository effect",
+    );
+    assert!(
+        !script.contains("FORMAL_AI_MEMORY_PATH=\"$work/"),
+        "server memory must not live inside the worktree the Agent authors in",
     );
     assert!(
         !script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.agent-ladder/memory.lino\""),
@@ -291,7 +309,15 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
             );
             assert!(paths.contains(&node.left), "missing {}", node.left);
             assert!(paths.contains(&node.right), "missing {}", node.right);
-            assert_eq!(node.criterion, "new_composite_effect");
+            // Issue #1085 (D4) split the inner nodes: depth 4 composes two
+            // verified child effects, depth 3 and above are requirement-shaped
+            // prompts that name behaviour and no file.
+            let expected = if node.depth == 4 {
+                "new_composite_effect"
+            } else {
+                "requirement_changes"
+            };
+            assert_eq!(node.criterion, expected, "criterion of {}", node.path);
             assert!(
                 node.criterion_path.is_empty(),
                 "{} criterion path",

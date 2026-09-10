@@ -29,7 +29,7 @@ use crate::world_model_context::{ContextHierarchy, ExternalLookup, InheritancePo
 /// The blocks are tried in order, so a request that states its subject before
 /// its framing keeps the subject it stated.
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
-    let task = latest_user_text(messages)?;
+    let task = crate::protocol::latest_user_request(messages)?;
     let query = super::stated_request::request_blocks(&task)
         .into_iter()
         .find_map(|block| {
@@ -61,7 +61,7 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
 /// and the whole request stays the query when no single block qualifies --
 /// which is what a one-block prompt always is.
 pub(super) fn unresolved_web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
-    let task = latest_user_text(messages)?;
+    let task = crate::protocol::latest_user_request(messages)?;
     // Once every specialized local route has declined, any unresolved request
     // is an open-world research task. This is deliberately intent-driven rather
     // than punctuation-driven: instructions can require missing knowledge just
@@ -738,6 +738,3 @@ fn trim_question_punctuation(text: &str) -> String {
         .to_owned()
 }
 
-fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    crate::protocol::latest_user_request(messages)
-}

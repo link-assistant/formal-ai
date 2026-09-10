@@ -1,0 +1,8 @@
+link_edit
+  leaf L17
+  path src/web_search_fusion_core.rs
+  language rust
+  rule replace_literal
+    old "statement_negation_cue"
+    new "statement_negation_marker"
+  expect "statement_negation_marker"

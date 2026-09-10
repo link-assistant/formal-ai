@@ -26,6 +26,9 @@ pub struct CaseOutcome {
     pub passed: bool,
     /// Why the case failed (empty when it passed), truncated for the report.
     pub detail: String,
+    /// The first line of the upstream prompt, for the learning frontier
+    /// (issue #1085 D5.1).
+    pub prompt_excerpt: String,
 }
 
 /// Grade `answer` (the solver's reply) against the upstream expectation.
@@ -88,6 +91,7 @@ pub fn grade_case_with_trace(
         } else {
             truncate(&detail)
         },
+        prompt_excerpt: super::learning::one_line(&case.prompt, 160),
     }
 }
 
@@ -394,6 +398,7 @@ fn outcomes_from_swebench_report(
                     id: case.id.clone(),
                     passed: true,
                     detail: String::new(),
+                    prompt_excerpt: super::learning::one_line(&case.prompt, 160),
                 }
             } else if empty.contains(&case.id) {
                 failure(
@@ -425,6 +430,7 @@ fn failure(case: &BenchmarkCase, detail: &str) -> CaseOutcome {
         id: case.id.clone(),
         passed: false,
         detail: detail.to_string(),
+        prompt_excerpt: super::learning::one_line(&case.prompt, 160),
     }
 }
 

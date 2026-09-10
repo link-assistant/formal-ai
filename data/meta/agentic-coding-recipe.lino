@@ -24,7 +24,7 @@ step_classify_tools
   id "classify_tools"
   title "Classify advertised tools into capabilities by substring"
   detail "classify_tool maps whatever tool names the agentic CLI advertised onto the Capability enum (Search/Fetch/Read/Write/Run) by substring, mirroring the naming conventions agentic CLIs use (web_search, web_fetch, read, write_file, run_command, bash, …). The planner therefore adapts to any subset of tools a given CLI exposes."
-  seed_file "src/agentic_coding/planner.rs"
+  seed_file "src/agentic_coding/capability_router.rs"
 step_plan_each_step
   record_type "meta_step"
   order "4"
@@ -124,7 +124,7 @@ fn_plan_chat_step
 fn_classify_tool
   record_type "meta_function"
   function "classify_tool"
-  source_file "src/agentic_coding/planner.rs"
+  source_file "src/agentic_coding/capability_router.rs"
   kind "tool_classifier"
 fn_is_formalization_task
   record_type "meta_function"

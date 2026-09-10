@@ -6,7 +6,8 @@
 //! choosing the next step — [`Progress::scan`] answers what happened, and
 //! `planner` decides what happens next.
 
-use super::planner::{classify_tool, Capability};
+use super::capability_router::classify_tool;
+use super::planner::Capability;
 use crate::protocol::ChatMessage;
 
 /// One observed client-owned tool execution in transcript order.

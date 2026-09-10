@@ -374,13 +374,13 @@ src/learning_cycle.rs	    defined-by inquiry\n
 src/learning_cycle.rs	  blocked_class\n
 src/learning_cycle.rs	Adopt {} learned request-opener surface(s) for the '{variation}' frontier class ({}), derived from {MINIMUM_SUPPORT} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s).
 src/learning_ledger.rs	Approved lesson `{}` (rule `{}`) for failure `{}` → `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
-src/link_store.rs	expected event record, got {content}
-src/link_store.rs	expected field value, got {content}
-src/link_store.rs	expected quoted value, got {rest}
 src/link_store.rs	expected {ROOT_HEADER} or {BUNDLE_HEADER}, got {other}
-src/link_store.rs	invalid field name {key}
-src/link_store.rs	unexpected indentation or record line: {content}
-src/link_store.rs	unexpected trailing content after quoted value: {}
+src/link_store/validation.rs	expected event record, got {content}
+src/link_store/validation.rs	expected field value, got {content}
+src/link_store/validation.rs	expected quoted value, got {rest}
+src/link_store/validation.rs	invalid field name {key}
+src/link_store/validation.rs	unexpected indentation or record line: {content}
+src/link_store/validation.rs	unexpected trailing content after quoted value: {}
 src/links_query.rs	  edge\n    from \"
 src/links_query.rs	\"\n    links_notation \"
 src/links_query.rs	filter needs `=` or CONTAINS: {clause}
@@ -760,10 +760,6 @@ src/solver_diagnostics.rs	{answer}\n\n[diagnostic]\n{}
 src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
 src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
 src/solver_formalization.rs	top=formalization:{top_index} runner_up=formalization:{runner_up_index} margin={margin:.6} epsilon={epsilon:.6}
-src/solver_handler_docs.rs	pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
-src/solver_handler_docs.rs	pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.\n\nВ рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.\n\nИсточник: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (официальная документация pandas).
-src/solver_handler_docs.rs	pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.\n\nइस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
-src/solver_handler_docs.rs	pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
 src/solver_handler_how.rs	For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\x20
 src/solver_handler_how.rs	I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try \"how does X work?\" where X is a concept I know (e.g. \"how does Wikipedia work?\"). The evidence and trace events are appended to the log; see the trace link for the full chain.
 src/solver_handler_how.rs	Mechanism discovery plan for `{subject}`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {provider_summary}. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details.
@@ -990,7 +986,6 @@ src/solver_handlers/feature_capability.rs	विकिपीडिया क्�
 src/solver_handlers/feature_capability.rs	हाँ। इस configuration में `{label}` available है। Example message: `{example}`.
 src/solver_handlers/feature_capability.rs	हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं \"हाँ\" कहने के बजाय स्थिति बताऊँगा।
 src/solver_handlers/feature_capability.rs	可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {WEB_SEARCH_RRF_K}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。
-src/solver_handlers/github_repository_traffic.rs	Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}.
 src/solver_handlers/installation_conversion.rs	1. Detect the source surface and requested target surface(s).\n
 src/solver_handlers/installation_conversion.rs	2. Extract command-like install/deploy steps in original order.\n
 src/solver_handlers/installation_conversion.rs	3. Render every target from the same install-step IR.\n
@@ -1202,11 +1197,6 @@ src/solver_handlers/software_project_followup.rs	software_project_followup\n
 src/solver_handlers/text_manipulation.rs	bytes={} chars={}
 src/solver_handlers/text_manipulation.rs	stage:{index} -> {}
 src/solver_handlers/text_manipulation.rs	stage:{} -> operation:{}
-src/solver_handlers/user_intent.rs	I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — every answer I give is derived from an explicit Links Notation rule. If you are looking for factual information on this topic, try asking \"what is <topic>\" and I will look it up in my knowledge base.
-src/solver_handlers/user_intent.rs	I can only respond with a chat reply. Running shell commands on your behalf is not allowed without explicit agent mode opt-in, and even then only inside an isolated sandbox.
-src/solver_handlers/user_intent.rs	I received only punctuation (`{trimmed}`). What would you like me to do next?
-src/solver_handlers/user_intent.rs	I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (\"what is X?\"), arithmetic, and Hello World programs.
-src/solver_handlers/user_intent.rs	Missing localized response seed: {intent}/{language}
 src/solver_handlers/user_intent.rs	\n\nSupported pipeline: impulse → formalize (Wikidata-backed) → context → proof plan → verification in relative-meta-logic → deformalize → finalize.
 src/solver_handlers/user_intent.rs	\n\nПоддерживаемый конвейер: impulse → formalize (Викиданные) → context → план доказательства → проверка в relative-meta-logic → deformalize → finalize.
 src/solver_handlers/web_requests.rs	I suggest opening this in a new tab: [{url}]({url}).\n\nIn the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead.
@@ -1228,8 +1218,6 @@ src/solver_handlers/web_requests.rs	यह {label} पर रिपॉजिट�
 src/solver_handlers/web_requests.rs	在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 [{repo_slug}]({project_url}) — {description}\n\n浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。
 src/solver_handlers/web_requests.rs	这是 {label} 上的仓库查询：[{slug}]({url})。\n\n通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted organizations 且 promotion 已开启，它会优先显示。
 src/solver_handlers/web_requests.rs	这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。
-src/solver_handlers_policy.rs	«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет».
-src/solver_handlers_policy.rs	Нет. У меня нет физического тела.
 src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
 src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
 src/solver_helpers/code.rs	from {lang}

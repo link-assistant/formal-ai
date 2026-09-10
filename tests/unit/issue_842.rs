@@ -137,11 +137,10 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
     assert!(self_heal_stream.contains("ses_0321e6e65ffefzct0vPr3Uc0ip"));
     assert!(self_heal_stream.contains("formal-ai"));
     assert_eq!(
-        fs::read(root.join("data/meta/self-healing-case.lino")).expect("canonical repair case"),
-        fs::read(root.join(
+        repair_case_without_source_counts(&root.join("data/meta/self-healing-case.lino")),
+        repair_case_without_source_counts(&root.join(
             "docs/case-studies/issue-905/self-hosting-fixture-refresh/self-healing-case.lino",
-        ),)
-        .expect("latest Agent-authored repair case"),
+        )),
         "the committed repair case must match the latest real Agent CLI artifact"
     );
 
@@ -172,4 +171,33 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
         indexed.ends_with(content_id),
         "historical index and module content ids disagree: {indexed}"
     );
+}
+
+/// The repair case with the two counts that track the planner source removed.
+///
+/// The committed artifact is what a real Agent CLI run produced, and it may
+/// not be rewritten: it is the evidence for that run. The canonical document
+/// is generated from `src/agentic_coding/planner.rs` and
+/// `tests/unit/issue_558_self_healing.rs` fails when it drifts from that
+/// source. Byte equality between the two therefore held only while the planner
+/// was frozen; issue #1085 moved eleven handlers out of Rust and the planner's
+/// link count moved with it. What still has to hold -- and does -- is that
+/// every clause the run authored is the clause the recipe still produces.
+fn repair_case_without_source_counts(path: &Path) -> String {
+    let text =
+        fs::read_to_string(path).unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+    text.lines()
+        .map(|line| {
+            let trimmed = line.trim_start();
+            if trimmed.starts_with("total_link_count ") || trimmed.starts_with("named_node_count ")
+            {
+                let indent = &line[..line.len() - trimmed.len()];
+                let key = trimmed.split_whitespace().next().unwrap_or_default();
+                format!("{indent}{key} <tracks the planner source>")
+            } else {
+                line.to_owned()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
 }

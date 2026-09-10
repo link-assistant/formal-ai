@@ -62,15 +62,15 @@ fn commit(repo: &Path, message: &str) {
 fn merge_formal_ai_pull_request(repo: &Path, number: u64) -> String {
     let branch = format!("issue-{number}");
     let session = format!("fixture-session-{number}");
-    let evidence = format!("docs/evidence/{number}/session.txt");
+    let evidence = format!("evidence/{number}/session.txt");
     let pull_request = format!("https://github.com/example/formal-ai/pull/{number}");
 
     git(repo, &["switch", "-c", &branch]);
-    fs::create_dir_all(repo.join(format!("docs/evidence/{number}")))
+    fs::create_dir_all(repo.join(format!("evidence/{number}")))
         .expect("evidence directory must be created");
     fs::write(
         repo.join(&evidence),
-        format!("formal-ai session {session}\n"),
+        format!("formal-ai session {session} model formal-ai/fixture\n"),
     )
     .expect("session evidence must be written");
     fs::write(
@@ -81,7 +81,7 @@ fn merge_formal_ai_pull_request(repo: &Path, number: u64) -> String {
     commit(
         repo,
         &format!(
-            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
+            "formal ai change\n\nFormal-AI-Session: {session}\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}"
         ),
     );
     git(repo, &["switch", "main"]);
@@ -128,19 +128,18 @@ fn fixture_repo() -> PathBuf {
 #[test]
 fn release_cycle_requires_a_session_backed_merged_pull_request() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence/direct"))
-        .expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence/direct")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/direct/session.txt"),
-        "formal-ai session direct-session\n",
+        repo.join("evidence/direct/session.txt"),
+        "formal-ai session direct-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     fs::write(repo.join("direct.txt"), "generated directly\n")
         .expect("generated artifact must be written");
     commit(
         &repo,
-        "direct change\n\nFormal-AI-Session: direct-session\nFormal-AI-Evidence: \
-         docs/evidence/direct/session.txt\nFormal-AI-Pull-Request: \
+        "direct change\n\nFormal-AI-Session: direct-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/direct/session.txt\nFormal-AI-Pull-Request: \
          https://github.com/example/formal-ai/pull/40",
     );
 
@@ -333,12 +332,12 @@ fn a_reviewed_override_lowers_the_bar_and_removing_it_restores_the_ratchet() {
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
     let history = |override_target: &str| {
         format!(
-            "self_hosting_ledger\n  current_metric_version \"2\"\n  release\n    \
-             metric_version \"2\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \
+            "self_hosting_ledger\n  current_metric_version \"3\"\n  release\n    \
+             metric_version \"3\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \
              \"b\"\n    self_authored_lines \"0\"\n    changed_lines \"100\"\n    \
              self_authored_commits \"0\"\n    commits \"1\"\n    percentage_basis_points \
              \"0\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
-             \"0\"\n  release\n    metric_version \"2\"\n    tag \"v0.9.0\"\n    since \
+             \"0\"\n  release\n    metric_version \"3\"\n    tag \"v0.9.0\"\n    since \
              \"v0.8.0\"\n    until \"c\"\n    self_authored_lines \"0\"\n    changed_lines \
              \"100\"\n    self_authored_commits \"0\"\n    commits \"1\"\n    \
              percentage_basis_points \"0\"\n    trailing_window \"3\"\n    \
@@ -416,17 +415,17 @@ fn release_eligibility_retry_excludes_the_existing_tag() {
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
     fs::write(
         &ledger,
-        "self_hosting_ledger\n  current_metric_version \"2\"\n  release\n    \
+        "self_hosting_ledger\n  current_metric_version \"3\"\n  release\n    \
          metric_version \"2\"\n    tag \"v0.7.0\"\n    since \"v0.6.0\"\n    until \
          \"a\"\n    self_authored_lines \"0\"\n    changed_lines \"100\"\n    \
          self_authored_commits \"0\"\n    commits \"1\"\n    percentage_basis_points \
          \"0\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
          \"0\"\n    target_percentage_basis_points \"0\"\n  release\n    metric_version \
-         \"2\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \"b\"\n    \
+         \"3\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \"b\"\n    \
          self_authored_lines \"100\"\n    changed_lines \"100\"\n    self_authored_commits \
          \"1\"\n    commits \"1\"\n    percentage_basis_points \"10000\"\n    trailing_window \
          \"3\"\n    trailing_percentage_basis_points \"5000\"\n    target_percentage_basis_points \
-         \"0\"\n  release\n    metric_version \"2\"\n    tag \"v0.9.0\"\n    since \"v0.8.0\"\n    \
+         \"0\"\n  release\n    metric_version \"3\"\n    tag \"v0.9.0\"\n    since \"v0.8.0\"\n    \
          until \"c\"\n    self_authored_lines \"100\"\n    changed_lines \"100\"\n    \
          self_authored_commits \"1\"\n    commits \"1\"\n    percentage_basis_points \
          \"10000\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
@@ -465,10 +464,10 @@ fn release_eligibility_retry_excludes_the_existing_tag() {
 #[test]
 fn recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session fixture-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session fixture-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     fs::write(
@@ -478,8 +477,8 @@ fn recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet() {
     .expect("generated code must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
     fs::write(repo.join("human-code.txt"), "human change\n").expect("human code must be written");
     commit(&repo, "human change");
@@ -533,17 +532,17 @@ fn recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet() {
 #[test]
 fn trailers_are_recognized_even_when_separated_by_blank_lines() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session spaced-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session spaced-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: spaced-session\n\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai change\n\nFormal-AI-Session: spaced-session\nFormal-AI-Model: formal-ai/fixture\n\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
 
     let measurement =
@@ -565,18 +564,17 @@ fn trailers_are_recognized_even_when_separated_by_blank_lines() {
 #[test]
 fn a_committed_evidence_directory_resolves_its_nested_transcripts() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence/session"))
-        .expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence/session")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session/agent-cli.log"),
-        "formal-ai session bundled-session\n",
+        repo.join("evidence/session/agent-cli.log"),
+        "formal-ai session bundled-session model formal-ai/fixture\n",
     )
     .expect("session transcript must be written");
     fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: bundled-session\nFormal-AI-Evidence: \
-         docs/evidence/session",
+        "formal ai change\n\nFormal-AI-Session: bundled-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session",
     );
 
     let measurement = metric_script::measure(&repo, "v1.0.0", "HEAD")
@@ -597,19 +595,19 @@ fn a_committed_evidence_directory_resolves_its_nested_transcripts() {
 #[test]
 fn a_malformed_historical_evidence_record_cannot_deadlock_a_release() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     // Mentions formal-ai, but never names the session it claims to document --
     // exactly the shape of commit 10e65ae2.
     fs::write(
-        repo.join("docs/evidence/analysis.md"),
+        repo.join("evidence/analysis.md"),
         "formal-ai analysis without the session id\n",
     )
     .expect("evidence must be written");
     fs::write(repo.join("code.txt"), "base\nchanged\n").expect("code must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: orphan-session\nFormal-AI-Evidence: \
-         docs/evidence/analysis.md",
+        "formal ai change\n\nFormal-AI-Session: orphan-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/analysis.md",
     );
 
     let strict = metric_script::measure(&repo, "v1.0.0", "HEAD");
@@ -657,6 +655,9 @@ fn captured_artifacts_and_lockfiles_do_not_move_the_metric() {
         "Cargo.lock",
         "desktop/bun.lock",
         "\"dev/log/issues/812/nasty\\346\\227\\245.log\"",
+        // Issue #1085 (D3): the whole `dev/` tree is process record, not
+        // behaviour, whatever the file's extension.
+        "dev/log/issues/812/pulls/813/analysis.md",
     ] {
         assert!(
             metric_script::is_non_authored_path(captured),
@@ -665,7 +666,7 @@ fn captured_artifacts_and_lockfiles_do_not_move_the_metric() {
     }
     for authored in [
         "scripts/self-hosting-metric.rs",
-        "dev/log/issues/812/pulls/813/analysis.md",
+        "src/solver.rs",
         ".github/workflows/release.yml",
         "logger.rs",
     ] {
@@ -720,11 +721,12 @@ fn rows_from_an_older_measurement_epoch_are_never_compared() {
     fs::write(repo.join("human-code.txt"), "human change\n").expect("code must be written");
     commit(&repo, "human change");
     let row = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
-        .expect("a 99% epoch-1 row must not ratchet against an epoch-2 measurement");
-    assert_eq!(row.metric_version, 2);
+        .expect("a 99% epoch-1 row must not ratchet against a current-epoch measurement");
+    // Metric version 3 (issue #1085 D3): the row is stamped with the current epoch.
+    assert_eq!(row.metric_version, 3);
     assert_eq!(
         row.trailing_percentage_basis_points, 0,
-        "the trailing window must average epoch-2 rows only"
+        "the trailing window must average current-epoch rows only"
     );
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
@@ -739,16 +741,16 @@ fn rows_from_an_older_measurement_epoch_are_never_compared() {
 fn a_falling_ratchet_reports_at_release_time_instead_of_blocking_it() {
     let repo = fixture_repo();
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session fixture-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session fixture-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
     let first = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
         .expect("the first release row must be recorded");
@@ -794,16 +796,16 @@ fn a_falling_ratchet_reports_at_release_time_instead_of_blocking_it() {
 fn the_pull_request_gate_only_judges_the_branchs_own_delta() {
     let repo = fixture_repo();
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session fixture-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session fixture-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
     metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
         .expect("baseline release row must be recorded");
@@ -813,8 +815,8 @@ fn the_pull_request_gate_only_judges_the_branchs_own_delta() {
     fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
     commit(
         &repo,
-        "formal ai follow-up\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai follow-up\n\nFormal-AI-Session: fixture-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
     assert_eq!(
         metric_script::ratchet_check(&repo, &ledger, "v1.1.0", "HEAD", 3)
@@ -873,17 +875,39 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
          Formal-AI attribution"
     );
     assert!(version_script.contains("self-hosting-metric.rs"));
+    // Issue #1085 (D3.5): the reviewed-contribution floor is reported by
+    // `.github/workflows/self-development-status.yml`, red until true, and no
+    // longer decides whether a release is cut. The record itself is kept.
     assert!(
-        version_script.contains("ensure_self_development_release"),
-        "issue #924: the release path must require its reviewed Formal AI contribution"
+        !version_script.contains("ensure_self_development_release("),
+        "the release path must record the share, not gate on it"
+    );
+    assert!(
+        version_script.contains("record_release_with_policy"),
+        "every release still records its self-hosting row"
+    );
+    let status_workflow =
+        fs::read_to_string(root.join(".github/workflows/self-development-status.yml"))
+            .expect("self-development status workflow must be readable");
+    assert!(
+        status_workflow.contains("scripts/check-self-development-release.rs"),
+        "the floor is still checked, from its own workflow"
+    );
+    assert!(
+        !workflow.contains("check-self-development-release.rs"),
+        "the release workflow no longer runs the floor as a gate"
     );
     assert!(
         version_script.contains("RatchetPolicy::Report"),
         "issue #812: a release must never be blocked by immutable history"
     );
     assert!(
-        ledger.contains("current_metric_version \"2\""),
+        ledger.contains("current_metric_version \"3\""),
         "issue #812: the ledger must name the definition its newest rows use"
+    );
+    assert!(
+        ledger.contains("model_trailer \"Formal-AI-Model\""),
+        "issue #1085: the ledger must name the trailer that carries the model"
     );
     assert!(ledger.contains("pull_request_trailer \"Formal-AI-Pull-Request\""));
     assert!(ledger.contains("release_cycle_floor \"1\""));

@@ -1,0 +1,52 @@
+name: Self-authored backlog
+
+# Issue #1085 (D2.3). A draft Formal AI wrote is only worth its cost when it
+# lands: an open bot pull request nobody merges taught us nothing, and a branch
+# left open quietly rots against a moving base. Seven were opened on
+# 2026-09-08 and none was merged, which is the state this workflow exists to
+# make impossible to ignore.
+#
+# It does not merge anything. It reports, every day and on every push to main:
+# what is open, how old it is, whether it is still red, and whether its base
+# has moved underneath it. The job fails when a draft has been open past the
+# age below, so the backlog is a red check rather than a list nobody reads.
+on:
+  schedule:
+    - cron: '17 7 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/self-authored-backlog.yml'
+  workflow_dispatch:
+    inputs:
+      max-age-days:
+        description: 'Days a self-authored pull request may stay open before this fails'
+        required: false
+        default: '3'
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: self-authored-backlog
+  cancel-in-progress: false
+
+jobs:
+  report:
+    name: Report the self-authored pull requests still open
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MAX_AGE_DAYS: ${{ inputs.max-age-days || '3' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Report the backlog
+        run: scripts/self-authored-backlog.sh

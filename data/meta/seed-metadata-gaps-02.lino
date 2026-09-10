@@ -15,6 +15,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "contents"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_8d30bef0beac9282
+    source "data/seed/closure-generated-01.lino"
+    record "last_14_days"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_08c1881e60fa2e62
     source "data/seed/closure-generated-01.lino"
     record "pattern_concept_prefix_v_chem_smysl_alt"
@@ -62,6 +66,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_cc7ae9a18bcb51f2
     source "data/seed/closure-generated-02.lino"
     record "pattern_wellbeing_phrase_aapka_kya_haal_hai_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_6529e6ba592c4242
+    source "data/seed/closure-generated-02.lino"
+    record "push_or_write_access_required"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_94a8300c613f43d2
     source "data/seed/closure-generated-02.lino"
@@ -802,6 +810,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_72b6f1ca9a398d62
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_gap_gui_rendering"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_fefe5ad9257380d2
+    source "data/seed/meanings-conversation.lino"
+    record "agentic_continuation_cue"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_743c3f330e594ba2
     source "data/seed/meanings-conversation.lino"

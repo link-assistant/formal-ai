@@ -65,6 +65,15 @@ pub const LANGUAGE_GAP_FRONTIER: &str = "language-gap";
 pub const LANGUAGE_GAP_FRONTIER_RECORD: &str =
     include_str!("../data/meta/learning-frontier-language-gap.lino");
 
+/// The frontier slug of the upstream benchmark failures (issue #1085 D5.1).
+pub const UPSTREAM_BENCHMARKS_FRONTIER: &str = "upstream-benchmarks";
+
+/// The committed record of the upstream benchmark frontier, rewritten by the
+/// scheduled external-benchmarks run through
+/// `formal-ai benchmark run --frontier-record`.
+pub const UPSTREAM_BENCHMARKS_FRONTIER_RECORD: &str =
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks.lino");
+
 /// One recorded frontier the CLI can replay.
 ///
 /// Issue #706: `formal-ai learn cycle --frontier <slug>` resolves its argument
@@ -94,6 +103,11 @@ pub fn recorded_frontiers() -> Vec<RecordedFrontier> {
             document: LANGUAGE_GAP_FRONTIER_RECORD,
             summary: "prompts a registered language supplied that the engine cannot answer in \
                       that language (issue #706)",
+        },
+        RecordedFrontier {
+            slug: UPSTREAM_BENCHMARKS_FRONTIER,
+            document: UPSTREAM_BENCHMARKS_FRONTIER_RECORD,
+            summary: "upstream benchmark cases the last scheduled run failed (issue #1085 D5.1)",
         },
     ]
 }

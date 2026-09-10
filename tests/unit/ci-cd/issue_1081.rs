@@ -24,6 +24,7 @@ use std::collections::BTreeMap;
 use std::fs;
 
 use super::issue_1017::{job_timeout, workflow_files};
+use super::workflow_fixtures::ci_shell_files;
 use super::workflow_fixtures::workflow_job_names;
 
 /// The share of a job's cap that *everything budgeted inside it* may claim
@@ -550,11 +551,13 @@ fn a_rejection_no_rebase_can_fix_is_reported_instead_of_retried() {
 fn every_shared_branch_writer_pushes_through_the_retrying_helper() {
     let mut bare_pushes = Vec::new();
 
-    for (name, body) in workflow_files() {
+    for (name, body) in ci_shell_files() {
         for (number, line) in body.lines().enumerate() {
-            if line.trim().starts_with("git push") {
-                bare_pushes.push(format!("{name}:{} -- {}", number + 1, line.trim()));
+            let statement = line.trim().trim_start_matches("if ! ");
+            if !statement.starts_with("git push") {
+                continue;
             }
+            bare_pushes.push(format!("{name}:{} -- {}", number + 1, line.trim()));
         }
     }
 
@@ -566,6 +569,24 @@ fn every_shared_branch_writer_pushes_through_the_retrying_helper() {
          `scripts/push-to-shared-branch.sh` instead (issue #1081, D13):\n{}",
         bare_pushes.join("\n")
     );
+
+    // No exemption, because the repository's own rules leave no room for one:
+    // a force push is answered with "GH013: Cannot force-push to this branch"
+    // (run 34278539348 rebased a stale bot branch cleanly and was refused at
+    // the push). A branch that has fallen behind catches up by merging its
+    // base, which fast-forwards like every other write here (issue #1085).
+    for (name, body) in ci_shell_files() {
+        for line in body.lines() {
+            assert!(
+                !line
+                    .trim()
+                    .trim_start_matches("if ! ")
+                    .starts_with("git push --force"),
+                "{name} force-pushes, which this repository's rules reject: {}",
+                line.trim()
+            );
+        }
+    }
 
     // The helper only earns that rule if the repository actually uses it.
     let benchmarks = repository_file(".github/workflows/external-benchmarks.yml");

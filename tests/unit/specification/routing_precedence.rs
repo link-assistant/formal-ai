@@ -79,7 +79,7 @@ fn routing_precedence_from_seed() {
 
     // Shipped seed keeps today's behaviour: numeric_list wins over arithmetic.
     assert_eq!(
-        route(&shipped, &both),
+        route(shipped, &both),
         Some("numeric_list"),
         "the shipped precedence routes a numeric-code request to numeric_list"
     );
@@ -94,7 +94,7 @@ fn routing_precedence_from_seed() {
     );
 
     // The reorder is behaviour-only: the same set of handlers, differently ordered.
-    let mut shipped_sorted = shipped;
+    let mut shipped_sorted = shipped.to_vec();
     shipped_sorted.sort();
     let mut swapped_sorted = swapped;
     swapped_sorted.sort();
@@ -284,7 +284,7 @@ fn reordering_is_the_only_thing_a_seed_edit_can_change() {
         shipped.last(),
         "a reversed fixture flips the precedence order"
     );
-    let mut shipped_sorted = shipped;
+    let mut shipped_sorted = shipped.to_vec();
     shipped_sorted.sort();
     reversed.sort();
     assert_eq!(
@@ -358,7 +358,7 @@ fn routing_precedence_stays_language_agnostic() {
             "the {language_name} ({language}) request must be non-empty"
         );
         assert_eq!(
-            route(&shipped, &both),
+            route(shipped, &both),
             Some("numeric_list"),
             "numeric-code routing must stay numeric_list-first in {language_name} ({language})"
         );

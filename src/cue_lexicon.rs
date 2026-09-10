@@ -87,7 +87,11 @@ impl CueSet {
     }
 }
 
-const CUE_LEXICON_LINO: &str = include_str!("../data/meta/cue-lexicon.lino");
+/// The cue lexicon document, embedded for the seed links network.
+pub const CUE_LEXICON_LINO: &str = include_str!("../data/meta/cue-lexicon.lino");
+
+/// Repository path of the cue lexicon, its name in the seed links network.
+pub const CUE_LEXICON_PATH: &str = "data/meta/cue-lexicon.lino";
 
 /// The cue-set catalogue, parsed once from the embedded link data.
 #[must_use]
@@ -96,8 +100,41 @@ pub fn cue_sets() -> &'static [CueSet] {
     CELL.get_or_init(load_cue_sets)
 }
 
+/// Read the cue sets from the seed links network (issue #1085 D1.2).
 fn load_cue_sets() -> Vec<CueSet> {
-    let tree = parse_lino(CUE_LEXICON_LINO);
+    let network = crate::seed_links::network();
+    let mut out = Vec::new();
+    for record in network.top_level(CUE_LEXICON_PATH) {
+        if network.field(&record.index, "record_type") != Some("cue_set") {
+            continue;
+        }
+        let name = network.field(&record.index, "name").unwrap_or_default();
+        let Some(match_mode) =
+            CueMatch::from_slug(network.field(&record.index, "match").unwrap_or_default())
+        else {
+            continue;
+        };
+        if name.is_empty() {
+            continue;
+        }
+        out.push(CueSet {
+            name: name.to_owned(),
+            handler: network
+                .field(&record.index, "handler")
+                .unwrap_or_default()
+                .to_owned(),
+            match_mode,
+            cues: network.field_values(&record.index, "cue"),
+        });
+    }
+    out
+}
+
+/// Parse cue sets from a document's text; the line parser the network
+/// replaced, kept so a test can show both read the same sets.
+#[must_use]
+pub fn cue_sets_from(text: &str) -> Vec<CueSet> {
+    let tree = parse_lino(text);
     let mut out = Vec::new();
     for record in &tree.children {
         if record.find_child_value("record_type") != "cue_set" {

@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/roles/tooling.rs
   language rust
   fidelity signature
-  byte_len 36684
-  line_count 564
-  content_id source_module_7d26c577cd2e397d
-  symbol_count 57
+  byte_len 37593
+  line_count 578
+  content_id source_module_35a71b2425a1f77e
+  symbol_count 58
   symbols
     const ROLE_DEFINITION_MERGE_ACTION 17 17
     const ROLE_DEFINITION_ARTIFACT_REQUEST 27 27
@@ -64,3 +64,4 @@ self_ast_census
     const ROLE_TRANSLATION_PROPERTY 542 542
     const ROLE_DOCUMENT_COMPOSITION_ACTION 552 552
     const ROLE_COMPOSED_DOCUMENT_KIND 564 564
+    const ROLE_AGENTIC_CONTINUATION_CUE 578 578

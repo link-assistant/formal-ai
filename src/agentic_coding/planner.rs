@@ -9,9 +9,9 @@ use super::comparison;
 use super::conversation_recall;
 use super::diagram;
 use super::document_recipe::{
-    plan_change_request_step, plan_diagram_step, plan_dreaming_audit_step,
-    plan_explain_step, plan_google_trends_catalog_step, plan_google_trends_learning_step,
-    plan_ledger_step, plan_meaning_detail_step, plan_question_catalog_step, plan_rebuild_step,
+    plan_change_request_step, plan_diagram_step, plan_dreaming_audit_step, plan_explain_step,
+    plan_google_trends_catalog_step, plan_google_trends_learning_step, plan_ledger_step,
+    plan_meaning_detail_step, plan_question_catalog_step, plan_rebuild_step,
     plan_repair_strategy_step, plan_self_ast_step, plan_self_heal_step, plan_source_links_step,
 };
 use super::dreaming_audit;
@@ -43,15 +43,15 @@ use super::self_heal;
 use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
-use super::workspace_inspection;
 use super::statement_audit;
 use super::structured_edit;
+use super::task_obligations;
 use super::task_structure;
 use super::tool_result;
 use super::web_research;
+use super::workspace_inspection;
 use super::{algorithm_learning, capability_router};
 use super::{change_request, code_artifact};
-use crate::conversation_control::is_conversation_control_prompt;
 use crate::protocol::ChatMessage;
 use crate::skill_compiler::looks_like_skill_description;
 
@@ -152,14 +152,14 @@ impl Capability {
 /// *same* function the planner uses.
 #[must_use]
 pub fn tool_capability(name: &str) -> Option<Capability> {
-    classify_tool(name)
+    capability_router::classify_tool(name)
 }
 
 /// Plan the next agentic step from the conversation and advertised tools.
 /// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
-    let received = latest_user_text(messages)?;
+    let received = crate::protocol::latest_user_request(messages)?;
     trace_route("agentic_received", &received);
     // Agent compacts a long tool loop by asking the model to summarize it, then
     // starts the next request with the protocol turn "Continue if you have next
@@ -169,7 +169,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Recover only our own summary envelope, immediately before the exact
     // continuation turn; ordinary user requests that happen to say "continue"
     // keep their normal meaning.
-    let effective = compacted_agent_task(messages, &received).unwrap_or(received);
+    let effective = continued_agent_task(messages, &received).unwrap_or(received);
     // An *unmarked* harness preamble is still the caller talking (issue #907,
     // follow-up). `<session_context>`-style markup is stripped upstream in
     // `crate::protocol`, but Hive Mind's adapters concatenated their workflow
@@ -187,7 +187,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
-    if is_conversation_control_prompt(&task) || looks_like_skill_description(&task) {
+    // A bare continuation cue with nothing to resume is still the cue here,
+    // and the `agentic_continuation` conversation handler answers it; the
+    // words of the cue are never a request (issue #1095).
+    if crate::rule_interpreter::handler_matches("conversation_control", &task)
+        || is_continuation_cue(&task)
+        || looks_like_skill_description(&task)
+    {
         return None;
     }
     // Issue #707: seed-defined computer-use plans own their exact multilingual
@@ -204,9 +210,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         && let Some(plan) = tool_for(tool_names, Capability::Write)
             .and_then(|_| compose_general_change_plan(&task))
             .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-        {
-            return Some(plan);
-        }
+    {
+        return Some(plan);
+    }
     // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
     // of every route that reads a request's lone file-shaped token, because that
     // token is the *destination* here and opening it for reading ends the run with
@@ -270,6 +276,17 @@ pub(super) fn plan_settled_routes(
     // Unambiguous is the operative word: a request that also pins the target
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
+    // A request that names several artifacts is planned one artifact at a time,
+    // and is not finished until none is outstanding (issue #1099). With a
+    // single artifact named -- the overwhelmingly common case -- this yields
+    // nothing and the composer below plans the request whole, unchanged.
+    if let Some(plan) = tool_for(tool_names, Capability::Write)
+        .and_then(|_| task_obligations::outstanding(task, messages))
+        .and_then(|obligation| compose_general_change_plan(&obligation.request))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
     if let Some(plan) = tool_for(tool_names, Capability::Write)
         .and_then(|_| compose_general_change_plan(task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
@@ -420,9 +437,10 @@ pub(super) fn plan_settled_routes(
     // exposes its typed read capability. The shared read-many route remains
     // available for CLIs that advertise only a batch reader.
     if tool_for(tool_names, Capability::Read).is_some()
-        && let Some(file_task) = file_read_task_for(task) {
-            return Some(plan_file_read_step(&file_task, messages, tool_names));
-        }
+        && let Some(file_task) = file_read_task_for(task)
+    {
+        return Some(plan_file_read_step(&file_task, messages, tool_names));
+    }
     // A meanings-driven explicit local scope dominates generic search verbs.
     // This state machine observes each result and widens only after emptiness.
     if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
@@ -431,8 +449,7 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = comparison::plan_comparison_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = capability_router::plan_shared_capability_step(task, messages, tool_names)
-    {
+    if let Some(plan) = capability_router::plan_shared_capability_step(task, messages, tool_names) {
         return Some(plan);
     }
     if let Some(command) = shell_command::shell_command_for_task(task) {
@@ -475,19 +492,17 @@ pub(super) fn plan_settled_routes(
     // genuinely external question out of this route.
     if !tool_result::has_latest_turn_result(messages)
         && let Some(search) = workspace_inspection::workspace_inspection_search_for_task(task)
-            && let Some(tool) = tool_for(tool_names, Capability::Grep) {
-                let mut arguments = json!({
-                    "query": search.query,
-                    "pattern": search.pattern,
-                });
-                if let Some(include) = search.include {
-                    arguments["include"] = include.into();
-                }
-                return Some(plan_one(
-                    tool,
-                    arguments.to_string(),
-                ));
-            }
+        && let Some(tool) = tool_for(tool_names, Capability::Grep)
+    {
+        let mut arguments = json!({
+            "query": search.query,
+            "pattern": search.pattern,
+        });
+        if let Some(include) = search.include {
+            arguments["include"] = include.into();
+        }
+        return Some(plan_one(tool, arguments.to_string()));
+    }
     // A question about how a task decomposes is answered by decomposing it. It
     // has to be resolved before the research routers for the same reason the
     // workspace inspection above does: the question shape alone would otherwise
@@ -500,9 +515,10 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(query) = web_research::web_research_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
-            return Some(plan);
-        }
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
+    {
+        return Some(plan);
+    }
     if let Some(plan) = intent_router::plan_web_search_step(task, messages, tool_names) {
         return Some(plan);
     }
@@ -514,17 +530,19 @@ pub(super) fn plan_settled_routes(
     // earlier local tool steal a web-research request.
     if !tool_result::has_latest_turn_result(messages)
         && let Some(query) = shell_command::code_search_query_for_task(task)
-            && let Some(tool) = tool_for(tool_names, Capability::Grep) {
-                return Some(plan_one(
-                    tool,
-                    json!({ "query": query, "pattern": query }).to_string(),
-                ));
-            }
+        && let Some(tool) = tool_for(tool_names, Capability::Grep)
+    {
+        return Some(plan_one(
+            tool,
+            json!({ "query": query, "pattern": query }).to_string(),
+        ));
+    }
     if web_research::has_successful_search_result(messages)
         && let Some(query) = web_research::unresolved_web_research_query_for(messages)
-            && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
-                return Some(plan);
-            }
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
+    {
+        return Some(plan);
+    }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, task) {
         return Some(AgenticPlan::Final(answer));
     }
@@ -543,9 +561,10 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(query) = web_research::unresolved_web_research_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
-            return Some(plan);
-        }
+        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
+    {
+        return Some(plan);
+    }
     None
 }
 
@@ -556,7 +575,9 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
         return AgenticPlan::Final(tool_result::render(
             command,
             progress.run_outputs.last().map_or("", String::as_str),
-            latest_user_text(messages).as_deref().unwrap_or_default(),
+            crate::protocol::latest_user_request(messages)
+                .as_deref()
+                .unwrap_or_default(),
         ));
     }
 
@@ -607,42 +628,63 @@ pub(super) fn fetch_arguments(url: &str) -> String {
     .to_string()
 }
 
-pub(super) fn classify_tool(name: &str) -> Option<Capability> {
-    capability_router::classify_tool(name)
+
+/// Whether a turn is nothing but a continuation cue (issue #1095).
+///
+/// The rule `agentic_continuation` in `data/seed/handler-rules.lino` compares
+/// the whole cleaned prompt with the role's surfaces -- "continue the migration
+/// in src/queue.rs" contains the word and keeps its own route.
+fn is_continuation_cue(text: &str) -> bool {
+    crate::rule_interpreter::handler_matches("agentic_continuation", text)
 }
 
-/// The text of the most recent `user` turn.
-fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    crate::protocol::latest_user_request(messages)
-}
-
-/// Restore the objective carried through Agent's compaction protocol.
-fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
-    if crate::engine::normalize_prompt(latest) != "continue if you have next steps" {
+/// The task a continuation cue continues.
+///
+/// Two places can hold it. After Agent's compaction the objective survives only
+/// inside the assistant's `Conversation summary:` envelope, and that is read
+/// first because it is the more specific record. After an ordinary tool result
+/// there is no envelope: the task is simply the last user turn that was not
+/// itself a cue. The ladder's eight #1095 leaves were this second case -- the
+/// envelope path found nothing, the bare cue became the request, and the words
+/// "continue" and "next step" went to web search.
+fn continued_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
+    if !is_continuation_cue(latest) {
         return None;
     }
     let latest_user = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    messages[..latest_user]
-        .iter()
-        .rev()
-        .find_map(|message| {
-            if !message.role.eq_ignore_ascii_case("assistant") {
-                return None;
-            }
-            let envelope = message.content.plain_text();
-            // Agent may compact an already compacted conversation. In that
-            // case its new summary repeats the protocol continuation before
-            // embedding the prior `Conversation summary:` envelope. The
-            // continuation remains trusted only as a protocol trigger; recover
-            // the objective from the last summary marker in the assistant's
-            // compaction response rather than requiring that marker at byte 0.
-            let summary = envelope
-                .rsplit_once("Conversation summary:")?
-                .1
-                .trim_start();
-            preserved_first_user_turn(summary).or_else(|| {
+    let earlier = &messages[..latest_user];
+    compacted_agent_task(earlier).or_else(|| {
+        earlier
+            .iter()
+            .rev()
+            .filter(|message| message.role.eq_ignore_ascii_case("user"))
+            .map(|message| message.content.plain_text())
+            .find(|text| !text.trim().is_empty() && !is_continuation_cue(text))
+    })
+}
+
+/// Restore the objective carried through Agent's compaction protocol from the
+/// turns before the continuation.
+fn compacted_agent_task(earlier: &[ChatMessage]) -> Option<String> {
+    earlier.iter().rev().find_map(|message| {
+        if !message.role.eq_ignore_ascii_case("assistant") {
+            return None;
+        }
+        let envelope = message.content.plain_text();
+        // Agent may compact an already compacted conversation. In that
+        // case its new summary repeats the protocol continuation before
+        // embedding the prior `Conversation summary:` envelope. The
+        // continuation remains trusted only as a protocol trigger; recover
+        // the objective from the last summary marker in the assistant's
+        // compaction response rather than requiring that marker at byte 0.
+        let summary = envelope
+            .rsplit_once("Conversation summary:")?
+            .1
+            .trim_start();
+        preserved_first_user_turn(summary)
+            .or_else(|| {
                 summary
                     .split_once("\n\nTitle:")
                     .map(|(task, _)| task.trim())
@@ -650,7 +692,7 @@ fn compacted_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String
                     .map(str::to_owned)
             })
             .map(repair_compacted_dot_paths)
-        })
+    })
 }
 
 /// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
@@ -680,9 +722,7 @@ fn repair_compacted_dot_paths(mut task: String) -> String {
             .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | ';'))
             .trim_end_matches(['.', '!', '?']);
         let candidate = format!(".{token}");
-        if standalone
-            && token.contains('/')
-            && super::write_request::safe_relative_path(&candidate)
+        if standalone && token.contains('/') && super::write_request::safe_relative_path(&candidate)
         {
             task.replace_range(after_dot..path_start, "");
             search_from = dot + 1;

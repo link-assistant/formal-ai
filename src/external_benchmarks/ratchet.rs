@@ -8,6 +8,7 @@
 use std::collections::BTreeMap;
 
 use super::ledger::{Ledger, ResultEntry};
+use super::vocabulary;
 
 /// Check a ledger on its own: internally consistent rows that clear their floor.
 #[must_use]
@@ -147,4 +148,43 @@ fn non_monotonic_history(results: &[ResultEntry]) -> Vec<String> {
         }
     }
     violations
+}
+
+/// Suites whose last three recorded runs at a slice scored the same.
+///
+/// Issue #1085 (D5.2): a ledger that never falls can still stand still, and a
+/// green check hides that. The workflow prints these as warnings; a suite that
+/// moves in either direction leaves the list.
+#[must_use]
+pub fn stagnant(ledger: &Ledger) -> Vec<String> {
+    let results = ledger.results();
+    let mut grouped: BTreeMap<(String, usize), Vec<&ResultEntry>> = BTreeMap::new();
+    for result in &results {
+        grouped
+            .entry((result.suite.clone(), result.slice))
+            .or_default()
+            .push(result);
+    }
+    let mut stalls = Vec::new();
+    for ((suite, slice), mut rows) in grouped {
+        rows.sort_by(|left, right| left.date.cmp(&right.date));
+        let Some(start) = rows.len().checked_sub(3) else {
+            continue;
+        };
+        let window = &rows[start..];
+        if window.iter().all(|row| row.passed == window[0].passed) {
+            stalls.push(vocabulary::render(
+                "external_benchmark_stagnant_suite",
+                &[
+                    ("suite", &suite),
+                    ("slice", &slice.to_string()),
+                    ("passed", &window[0].passed.to_string()),
+                    ("first", &window[0].date),
+                    ("second", &window[1].date),
+                    ("third", &window[2].date),
+                ],
+            ));
+        }
+    }
+    stalls
 }

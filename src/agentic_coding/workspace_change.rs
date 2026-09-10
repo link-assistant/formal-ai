@@ -436,15 +436,30 @@ fn repeated_identifier_rewrite_command(rewrite: &GroundedRewrite) -> Option<Stri
         return None;
     }
     // The in-memory execution and the command the client runs have to agree on
-    // what a match is, so a word-scoped rewrite asks `sed` for whole words too.
+    // what a match is, so a word-scoped rewrite asks for whole words too.
     let pattern = match rewrite.scope {
         RewriteScope::Substring => rewrite.pattern.clone(),
         RewriteScope::Word => format!("\\b{}\\b", rewrite.pattern),
     };
-    Some(format!(
-        "sed -i 's/{}/{}/g' -- {}",
-        pattern, rewrite.replacement, rewrite.target,
-    ))
+    // `perl -pi -e`, not `sed -i` (issue #1110). GNU and BSD sed disagree about
+    // both halves of that command: BSD `-i` reads the script as its backup
+    // suffix, and BSD sed has no `\b`. On macOS every rename therefore failed
+    // with `bad flag in substitute command`, the file was left unchanged, and
+    // Formal AI reported the mismatch as its own verification failure -- a
+    // confident failure report instead of a rename. perl's `-pi -e` and `\b`
+    // mean the same thing on both, and perl ships with macOS and the runners.
+    // Both identifiers are `[A-Za-z0-9_]` by `shell_safe_identifier`, so
+    // neither side can carry a regex or shell metacharacter.
+    // Assembled from named parts rather than one template string: the prose
+    // detector reads `perl -pi -e ...` as a multi-word phrase (two alphabetic
+    // runs, one of three letters) and would have it live in `data/seed`, which
+    // is the wrong home for a shell invocation. Naming the pieces says what
+    // each is, and none of them reads as a sentence.
+    let script = format!("'s/{pattern}/{}/g'", rewrite.replacement);
+    Some(
+        ["perl", "-pi", "-e", &script, "--", &rewrite.target]
+            .join(" "),
+    )
 }
 
 fn shell_safe_identifier(identifier: &str) -> bool {

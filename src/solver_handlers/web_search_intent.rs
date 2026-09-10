@@ -579,10 +579,10 @@ fn extract_externally_verifiable_question(prompt: &str, normalized: &str) -> Opt
     if !prompt_names_engineered_brand(prompt) {
         return None;
     }
-    // Never poach a prompt the solver can already resolve locally: a seeded
-    // concept or a self-introduction / capability question stays with its own
-    // handler.
-    if concept_lookup_resolves(prompt) || term_information_prompt_is_local_context(normalized) {
+    // Never poach a prompt the solver resolves locally: a seeded concept, a
+    // self-introduction / capability question, or a documentation rule (issue
+    // #1101 -- the rule decides, not English's `does`) keeps its own handler.
+    if concept_lookup_resolves(prompt) || term_information_prompt_is_local_context(normalized) || crate::rule_interpreter::handler_matches("docs_method_explanation", prompt) {
         return None;
     }
     // The residual subject, once the question opener is removed, must be a real

@@ -5,6 +5,7 @@
 //! `release_publishing.rs` can stay focused and small.
 
 use std::fs;
+use std::path::{Path, PathBuf};
 
 /// Everything CI executes for a pull request, workflow and gate registry as one
 /// text.
@@ -108,4 +109,90 @@ pub fn workflow_job_names(workflow: &str) -> Vec<&str> {
                 .then(|| line.trim().trim_end_matches(':'))
         })
         .collect()
+}
+
+/// The workflow files, and only those.
+///
+/// Most callers parse what they get here as a workflow -- `jobs:`, job caps,
+/// concurrency groups -- so a composite action, which has none of those, makes
+/// them panic rather than fail with a reason. `ci_shell_files` is the list for
+/// contracts about the shell CI runs, wherever it lives.
+pub fn workflow_files() -> Vec<(String, String)> {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut files = Vec::new();
+    collect_ci_files(
+        &root.join(".github/workflows"),
+        &root,
+        &mut files,
+        &["yml", "yaml"],
+    );
+    files.sort();
+    assert!(!files.is_empty(), "no workflow files found");
+    files
+}
+
+/// Everything CI executes as shell: the workflows, the composite actions, and
+/// the scripts either of them runs.
+///
+/// Issue #1085 moved the self-authored authoring loop into
+/// `.github/actions/author-with-formal-ai/` so another repository can install
+/// it. A contract about the shell -- no bare `git push`, no credentialed
+/// checkout without a reason -- has to read this list, or moving a line one
+/// directory across would move it out of review. The shell CI runs is the same
+/// shell either way.
+pub fn ci_shell_files() -> Vec<(String, String)> {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut files = Vec::new();
+    collect_ci_files(
+        &root.join(".github/workflows"),
+        &root,
+        &mut files,
+        &["yml", "yaml"],
+    );
+    collect_ci_files(
+        &root.join(".github/actions"),
+        &root,
+        &mut files,
+        &["yml", "yaml", "sh"],
+    );
+    files.sort();
+    assert!(!files.is_empty(), "no CI shell files found");
+    files
+}
+
+fn collect_ci_files(
+    dir: &Path,
+    root: &Path,
+    files: &mut Vec<(String, String)>,
+    extensions: &[&str],
+) {
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries {
+        let path = entry.expect("workflow entry").path();
+        if path.is_dir() {
+            collect_ci_files(&path, root, files, extensions);
+            continue;
+        }
+        if !path
+            .extension()
+            .is_some_and(|ext| extensions.iter().any(|allowed| ext == *allowed))
+        {
+            continue;
+        }
+        let name = path
+            .strip_prefix(root)
+            .unwrap_or(&path)
+            .to_string_lossy()
+            .into_owned();
+        let name = name
+            .strip_prefix(".github/workflows/")
+            .unwrap_or(&name)
+            .to_owned();
+        files.push((
+            name,
+            fs::read_to_string(&path).unwrap().replace("\r\n", "\n"),
+        ));
+    }
 }

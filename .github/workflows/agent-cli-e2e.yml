@@ -22,6 +22,19 @@ name: Agent CLI E2E
 
 on:
   workflow_call:
+    inputs:
+      full-replay:
+        description: >-
+          Replay every recorded scenario. `main`, scheduled runs and manual
+          dispatches pass true; a feature branch passes false and runs the
+          held-out generalization gates instead (issue #1107, item 4). Those
+          gates are the ones that fail when the planner has been overfitted to
+          the recorded scenarios, which is the regression a branch can
+          introduce; the remaining steps re-verify scenarios already pinned on
+          `main`, and every one of them still runs before a merge lands.
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -54,22 +67,36 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: agent-cli-e2e-full-replay-${{ inputs.full-replay }}
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock experiments/agent_cli_e2e experiments/issue_921_hive_mind_full_circle scripts tests/e2e .github/workflows/agent-cli-e2e.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Setup Rust
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - uses: ./.github/actions/cache-cargo-registry
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         with:
           prefix: agentcli-e2e-
       - name: Setup Bun
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
           no-cache: true
       - name: Install @link-assistant/agent CLI
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
           bun add -g --ignore-scripts @link-assistant/agent
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       - name: Install external agent CLIs
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
           # OpenCode's pinned postinstall selects its platform binary. Trust
           # only that reviewed package; suppress lifecycle scripts elsewhere.
@@ -81,11 +108,14 @@ jobs:
           # Before bumping, run experiments/issue_1021_codex_tui_version.
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
       - uses: ./.github/actions/download-formal-ai-binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - name: 'Run Agent CLI E2E — held-out algorithm discovery (issue #531)'
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env: { PORT: 8896 }
         run: experiments/agent_cli_e2e/run_issue_531.sh
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8768
           EXPECT_FILE: meanings-tomato-detail.lino
@@ -93,6 +123,7 @@ jobs:
           RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8769
           TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
@@ -101,6 +132,7 @@ jobs:
           RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8770
           TASK: "Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools."
@@ -109,6 +141,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: Run agent CLI E2E — self-inspection CST/AST census (no web step)
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8771
           TASK: "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
@@ -117,6 +150,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8772
           TASK: "Here you can learn the trending topics from Google Trends: https://trends.google.com/trending/rss?geo=US"
@@ -125,6 +159,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — general unpinned change plan (issue #654)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8773
           TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
@@ -133,8 +168,10 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8808 experiments/agent_cli_e2e/run_issue_708.sh
       - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8775
           TASK: "Create a file named hello.txt with the content hello world"
@@ -143,6 +180,7 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8781
           TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
@@ -151,13 +189,17 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — capability-first local code search (issue #758)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8782 experiments/agent_cli_e2e/run_issue_758.sh
       - name: "Run gemini CLI E2E — caller framing does not hijack the request (issue #907)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8907 experiments/agent_cli_e2e/run_issue_907.sh
       - name: "Run agent CLI E2E — a recorded finding is an answer, not a heading (issue #1066)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 6
         run: NODE_PORT=8944 SPLIT_PORT=8945 experiments/agent_cli_e2e/run_issue_1066.sh
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8776
           TASK: "Give me hello world program in Rust"
@@ -169,10 +211,12 @@ jobs:
             ./main
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — compile and execute a resumed substitution export (issue #936)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env: { PORT: 8936 }
         run: experiments/agent_cli_e2e/run_issue_936.sh
       - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8777
           TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
@@ -181,6 +225,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — declarative new-file phrasing (issue #712)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8776
           TASK: "new file: notes.txt, contents: hello"
@@ -189,11 +234,13 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — report action executes gh (issue #714)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 3
         env:
           PORT: 8780
         run: experiments/issue_714_agentic_mode/run_report_e2e.sh
       - name: "Run agent CLI E2E — research, report, recall, and learn (issue #687)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8776
         run: experiments/agent_cli_e2e/run_issue_687.sh
@@ -202,6 +249,7 @@ jobs:
       # runner at 10 minutes with no scenario named. The wrapper and the script
       # own the deadline now; the backstop only outlasts it (issue #1017).
       - name: "Run agent CLI E2E — verified computer-use record/replay (issue #707)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 17
         env:
           PORT: 8907
@@ -213,6 +261,7 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Computer-use record/replay E2E" \
             experiments/agent_cli_e2e/run_issue_707.sh
       - name: "Run agent CLI E2E — held-out computer-use generalization (issue #707)"
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 12
         env:
           PORT: 8909
@@ -224,93 +273,115 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Held-out computer-use generalization E2E" \
             experiments/agent_cli_e2e/run_issue_707_generalization.sh
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
       - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 10
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_822.sh
       - name: "Run four-client E2E — narrated compatibility research (issue #781)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
       - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 15
         env:
           PORT: 8784
           ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
         run: experiments/agent_cli_e2e/run_issue_840.sh
       - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
         run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
       - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8785
         run: experiments/issue_840_reference_agents/run_differential_gate.sh
       - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 3
         env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
         run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
       - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 3
         env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
         run: experiments/issue_840_task_ladder/run_ladder.sh
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8879
         run: experiments/agent_cli_e2e/run_issue_715_learning.sh
       - name: "Run agent CLI E2E — self-hosting auto-learning (issue #657)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8881
         run: experiments/agent_cli_e2e/run_issue_657_metric.sh
       - name: "Run agent CLI E2E — hardcoded-language auto-learning (issue #659)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8882
         run: experiments/agent_cli_e2e/run_issue_659_learning.sh
       - name: "Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8883
         run: experiments/agent_cli_e2e/run_issue_660_learning.sh
       - name: "Run agent CLI E2E — handler-precedence auto-learning (issue #663)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8885
         run: experiments/agent_cli_e2e/run_issue_663_learning.sh
       - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8886
         run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8884
         run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
       - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8895
         run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
       - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
       - name: "Run agent CLI E2E — formal projection invariant (issue #917)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
       - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
       - name: Install @link-assistant/hive-mind CLI
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.15.1
       - name: "Run Hive Mind full-circle integration gate (issue #921)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
       - name: "Run agent CLI E2E — promoted method learning (issue #922)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8922 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence examples/issue-922-method-learning/run.sh
       # Issue #1081: this was the one heavy step in the job with neither a step
       # backstop nor a budget, so the only limit on it was the 45m job cap --
@@ -321,6 +392,7 @@ jobs:
       # leaves room for a slow replay without letting a hang run for 45m, and
       # the 8m backstop only outlasts the deadline it guards.
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
+        if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 8
         env:
           PORT: 8774
@@ -334,14 +406,14 @@ jobs:
       # `scripts/classify-agent-cli-stderr.sh` can read them. Reading the same
       # paths the upload below collects turns `exit code 1` back into a cause.
       - name: Show the Agent CLI evidence on failure
-        if: failure()
+        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         run: |
           scripts/dump-agent-cli-evidence.sh \
             /tmp/formal-ai-serve-*.log \
             /tmp/agent-out-*.log \
             /tmp/formal-ai-issue-*-evidence
       - name: Upload E2E logs on failure
-        if: failure()
+        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: agent-cli-e2e-logs
@@ -351,6 +423,6 @@ jobs:
             /tmp/formal-ai-issue-*-evidence
           retention-days: 7
       - name: Upload TUI transcripts and replay artifacts
-        if: always()
+        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }

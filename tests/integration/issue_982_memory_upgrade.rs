@@ -621,6 +621,16 @@ fn ordinary_server_write_preserves_released_schema_and_unknown_metadata() {
     expected.extend([
         "memory.links",
         "memory.links.lock",
+        // Issue #1106 added these two beside the database. `.projected` records
+        // how many events the projection holds and `.nodes` the addresses
+        // link-cli assigned, which together let a write append instead of
+        // rebuilding the whole graph. They are listed here rather than the
+        // assertion being loosened: this test exists to catch a write that
+        // leaves a file nobody chose, and that is exactly what it should still
+        // fail on.
+        "memory.links.nodes",
+        "memory.links.projected",
+        "memory.links.projected.lock",
         "memory.transitions.links",
     ]);
     expected.sort_unstable();

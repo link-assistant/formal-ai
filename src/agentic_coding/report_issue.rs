@@ -342,12 +342,22 @@ fn commands_for_targets(
     report_index: usize,
     dialog_id: &str,
 ) -> Vec<String> {
-    let mut ordered = targets.to_vec();
-    ordered.sort_by_key(|target| usize::from(*target == ReportTarget::GithubIssue));
-    ordered
+    execution_order(targets)
         .iter()
         .map(|target| command_for(*target, contents, messages, report_index, dialog_id))
         .collect()
+}
+
+/// The order the targets' commands run in: the GitHub issue last, so a filed
+/// issue can quote exports that already succeeded.
+///
+/// `report_finished` pairs each command's output with the target that produced
+/// it, so both must read this one function -- pairing against the caller's
+/// order would name the wrong destination in a failure (issue #1105, RC7).
+fn execution_order(targets: &[ReportTarget]) -> Vec<ReportTarget> {
+    let mut ordered = targets.to_vec();
+    ordered.sort_by_key(|target| usize::from(*target == ReportTarget::GithubIssue));
+    ordered
 }
 
 fn command_for(
@@ -447,6 +457,16 @@ fn github_command(
     script.render()
 }
 
+/// The destination a failed command was reporting to, named in the answer.
+const fn target_label(target: ReportTarget) -> &'static str {
+    match target {
+        ReportTarget::HarnessLog => "harness log export",
+        ReportTarget::ServerLog => "server log export",
+        ReportTarget::GithubIssue => "GitHub issue",
+        ReportTarget::FormalAi => "Formal AI learning",
+    }
+}
+
 const fn source_name(contents: ReportContents) -> &'static str {
     match contents {
         ReportContents::Both => "both",
@@ -496,6 +516,34 @@ fn title_turns(messages: &[ChatMessage], report_index: usize) -> Vec<ReportTurn>
 
 /// Narrate what the destinations reported, over every command that ran.
 fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &str) -> String {
+    // Issue #1105 (RC7): the reported session answered "Reported to GitHub" with
+    // the server export having failed, because the only evidence this function
+    // read was the issue URL. Every target ran its own command and every one of
+    // those outputs is here, so a failure in any of them is checkable -- and a
+    // report that names one destination while another silently failed is the
+    // false success the issue was filed for.
+    //
+    // `step_outcome` is the same classifier the verification path already uses,
+    // so "failed" means here what it means everywhere else: a non-zero status,
+    // an explicit error field, or output that reads as one.
+    let ordered = execution_order(targets);
+    let failures = ordered
+        .iter()
+        .zip(run_outputs)
+        .filter(|(_, output)| {
+            super::tool_result::step_outcome(output) == super::tool_result::StepOutcome::Failed
+        })
+        .map(|(target, output)| (*target, output.trim()))
+        .collect::<Vec<_>>();
+    if !failures.is_empty() {
+        let detail = failures
+            .iter()
+            .map(|(target, output)| format!("{}: {output}", target_label(*target)))
+            .collect::<Vec<_>>()
+            .join("\n");
+        let failed = config("issue_report_failed");
+        return format!("{failed}\n\n```text\n{detail}\n```");
+    }
     let trimmed = run_outputs
         .iter()
         .map(|output| output.trim())

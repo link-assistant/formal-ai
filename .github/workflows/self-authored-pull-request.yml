@@ -1,0 +1,78 @@
+name: Self-authored pull request
+
+# Issue #1085 (D2.3): Formal AI authors a change and the pull request is opened
+# under the github-actions bot, with no human commit on the branch.
+#
+# The loop itself lives in `.github/actions/author-with-formal-ai`, a composite
+# action another repository can install: hive-mind#2233 asks for it on every new
+# issue there, so a wrong draft fails fast and in public, which is the evidence
+# the next improvement is made from. This workflow is that action's first
+# consumer, and it runs with `formal-ai-source: source` because this is the
+# repository that owns the sources -- a change to the meta algorithm has to be
+# measured by the branch making it, not by the last release.
+#
+# The task contract, the re-run guard and the base-branch rule are documented in
+# the action and in `docs/case-studies/issue-1085/ci-evidence/`.
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'Issue number carrying the task (default: the oldest open issue labelled formal-ai-solve)'
+        required: false
+        default: ''
+        type: string
+  issues:
+    types: [labeled]
+  pull_request:
+    paths:
+      - '.github/workflows/self-authored-pull-request.yml'
+      - '.github/actions/author-with-formal-ai/**'
+      - 'scripts/author-change-with-formal-ai.sh'
+      - 'scripts/self-authored-commit-count.sh'
+  schedule:
+    - cron: '41 5 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: self-authored-pull-request
+  cancel-in-progress: false
+
+jobs:
+  author:
+    name: Formal AI authors a change and opens the pull request
+    if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # Scoped to this job, not the workflow: the job pushes the bot branch,
+    # opens and comments on the pull request, and comments on the task issue.
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    env:
+      # A push or pull request made with GITHUB_TOKEN starts no workflow run.
+      # When the repository provides FORMAL_AI_BOT_TOKEN (a fine-grained token
+      # with contents and pull-requests write), it is used instead so the bot
+      # pull request gets its checks without a human touching the branch.
+      GH_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN || github.token }}
+      FORMAL_AI_BOT_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN }}
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+    steps:
+      # This checkout keeps its credential (no `persist-credentials: false`):
+      # the action's push steps write the bot branch with it when the
+      # repository provides no FORMAL_AI_BOT_TOKEN, and nothing else supplies
+      # one (issue #1079).
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref }}
+
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: self-authored-
+
+      - uses: ./.github/actions/author-with-formal-ai
+        with:
+          issue: ${{ inputs.issue }}
+          formal-ai-source: source

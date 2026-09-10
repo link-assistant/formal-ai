@@ -78,6 +78,19 @@ mod issue_1069_identifier_rename;
 mod issue_1069_ladder_change_tasks;
 mod issue_1069_structural_edit;
 mod issue_1073_reasoning_standard;
+mod issue_1085_link_edit_rules;
+mod issue_1085_python_signature;
+mod issue_1085_requirement_resolution;
+mod issue_1085_rule_interpreter;
+mod issue_1085_seed_links;
+mod issue_1085_self_authored_backlog;
+mod issue_1085_upstream_frontier;
+mod issue_1085_upstream_prompt_transfer;
+mod issue_1095_continuation_cue;
+mod issue_1096_edit_is_not_generation;
+mod issue_1099_multiple_obligations;
+mod issue_1105_report_flow;
+mod issue_1110_portable_rewrite;
 mod issue_1963;
 mod issue_337;
 mod issue_403;
@@ -250,3 +263,4 @@ mod web_requests;
 
 #[path = "ci-cd/mod.rs"]
 mod ci_cd;
+mod issue_1101_documentation_question_parity;

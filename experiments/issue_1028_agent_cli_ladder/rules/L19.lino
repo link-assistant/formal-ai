@@ -1,0 +1,8 @@
+link_edit
+  leaf L19
+  path src/cli_report.rs
+  language rust
+  rule replace_literal
+    old "agentic-cli"
+    new "agentic-command-line"
+  expect "agentic-command-line"

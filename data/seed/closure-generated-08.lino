@@ -69,6 +69,11 @@ meanings
     lexeme en
       surface
         text "external benchmark failure observation"
+  external_benchmark_frontier_recorded_from
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark frontier recorded from"
   external_benchmark_swe_predictions_write_error
     defined-by intent
     lexeme en
@@ -169,6 +174,11 @@ meanings
     lexeme en
       surface
         text "nikola tesla"
+  no_individual_identity
+    defined-by concept
+    lexeme en
+      surface
+        text "no individual identity"
   nobody
     defined-by concept
     lexeme en
@@ -279,6 +289,11 @@ meanings
     lexeme en
       surface
         text "pull request"
+  punctuation_only
+    defined-by intent
+    lexeme en
+      surface
+        text "punctuation only"
   puts
     defined-by concept
     lexeme en
@@ -554,6 +569,16 @@ meanings
     lexeme en
       surface
         text "response mutating action completed hi"
+  response_opinion_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response opinion question hi"
+  response_opinion_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response opinion question zh"
   response_pattern_sequence_constant_en
     defined-by response_template
     lexeme en
@@ -584,6 +609,11 @@ meanings
     lexeme en
       surface
         text "response proof datalog conclusion ru"
+  response_punctuation_only_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response punctuation only en"
   response_search_fusion_header_hi
     defined-by response_template
     lexeme en

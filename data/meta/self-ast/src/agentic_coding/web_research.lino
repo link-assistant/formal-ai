@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 31792
-  line_count 743
-  content_id source_module_711ebe0d3c25664c
-  symbol_count 40
+  byte_len 31713
+  line_count 740
+  content_id source_module_7cb35211016b5091
+  symbol_count 39
   symbols
     function web_research_query_for 31 47
     function unresolved_web_research_query_for 63 87
@@ -46,32 +46,31 @@ self_ast_census
     function topic_from_history 677 724
     function is_conversation_meta_request 726 732
     function trim_question_punctuation 734 739
-    function latest_user_text 741 743
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18889
-    named_node_count 4065
+    total_link_count 18815
+    named_node_count 4052
     distinct_node_kinds 74
     node_kinds
-      arguments 394
+      arguments 393
       array_expression 3
-      array_type 11
+      array_type 10
       assignment_expression 1
       attribute 1
       attribute_item 1
       binary_expression 31
-      block 77
+      block 76
       boolean_literal 1
       break_expression 2
-      call_expression 394
+      call_expression 393
       char_literal 28
       closure_expression 61
       closure_parameters 61
       const_item 5
-      crate 32
+      crate 33
       doc_comment 141
       else_clause 2
       escape_sequence 9
@@ -80,11 +79,11 @@ self_ast_census
       field_identifier 305
       float_literal 3
       for_expression 2
-      function_item 35
+      function_item 34
       function_modifiers 1
       generic_function 4
-      generic_type 29
-      identifier 833
+      generic_type 28
+      identifier 830
       if_expression 23
       index_expression 3
       inner_doc_comment_marker 6
@@ -101,15 +100,15 @@ self_ast_census
       mutable_specifier 12
       or_pattern 1
       outer_doc_comment_marker 135
-      parameter 55
-      parameters 35
+      parameter 54
+      parameters 34
       parenthesized_expression 2
       primitive_type 66
       range_expression 4
       reference_expression 50
-      reference_type 58
+      reference_type 57
       return_expression 14
-      scoped_identifier 143
+      scoped_identifier 145
       scoped_type_identifier 3
       scoped_use_list 3
       self 1
@@ -123,9 +122,9 @@ self_ast_census
       tuple_pattern 8
       tuple_struct_pattern 6
       tuple_type 1
-      type_arguments 33
+      type_arguments 32
       type_cast_expression 2
-      type_identifier 73
+      type_identifier 70
       unary_expression 20
       use_declaration 7
       use_list 3

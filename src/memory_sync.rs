@@ -394,7 +394,7 @@ impl SyncStore {
     }
 
     fn persist(&self) -> std::io::Result<()> {
-        let Some(path) = self.path.as_ref() else {
+        let Some(path) = self.path.as_deref() else {
             return Ok(());
         };
         if !self.compatible {
@@ -412,18 +412,18 @@ impl SyncStore {
         self.synchronize_link_cli_projection()
     }
 
+    /// Bring the native projection in line with the events held here.
+    ///
+    /// The store owns how (issue #1106): it appends when its marker proves the
+    /// prefix and rebuilds otherwise; see `link_store::synchronize_memory_events`.
     fn synchronize_link_cli_projection(&self) -> std::io::Result<()> {
         #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-        {
-            let Some(memory_path) = self.path.as_deref() else {
-                return Ok(());
-            };
-            let database = server_link_database_path(memory_path);
-            let mut store = crate::link_store::LinkCliLinkStore::open_at(&database)
-                .map_err(std::io::Error::other)?;
-            store
-                .replace_memory_events_transactionally(&self.events)
-                .map_err(std::io::Error::other)?;
+        if let Some(memory_path) = self.path.as_deref() {
+            crate::link_store::synchronize_memory_events(
+                &server_link_database_path(memory_path),
+                &self.events,
+            )
+            .map_err(std::io::Error::other)?;
         }
         Ok(())
     }

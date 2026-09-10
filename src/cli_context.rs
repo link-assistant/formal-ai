@@ -20,6 +20,10 @@ const ERROR_JOIN: &str = "; ";
 const LATEST_SESSION: &str = "latest";
 /// Environment override for the session id, matching the HTTP header (#839).
 const SESSION_ENV: &str = "FORMAL_AI_DIALOG_ID";
+/// Slot the seeded `latest`-was-guessed notice fills with the chosen dialog
+/// (issue #1105, RC6). Split so it does not read as a formatting argument to a
+/// macro that is not one; `VARIABLE_PLACEHOLDER` above is reused for the other.
+const RECORDED_PLACEHOLDER: &str = concat!("{", "recorded", "}");
 
 #[derive(Debug, Args)]
 pub struct ContextArgs {
@@ -70,9 +74,13 @@ enum ContextAction {
     },
     /// Store one complete conversation so this Formal AI instance can learn.
     Learn {
-        /// Formal AI conversation/session identifier.
-        #[arg(long)]
+        /// Formal AI conversation/session identifier; `latest` resolves the
+        /// session this shell is in, exactly as `export` and `report` do.
+        #[arg(long, default_value = LATEST_SESSION)]
         session: String,
+        /// `OpenCode` `SQLite` database path, used to resolve `latest`.
+        #[arg(long)]
+        db: Option<PathBuf>,
         /// Explicit Formal AI dialog-log directory.
         #[arg(long)]
         log_dir: Option<PathBuf>,
@@ -137,7 +145,18 @@ pub fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
             let session = resolve_session(LATEST_SESSION, db.as_deref())?;
             write_output(Path::new("-"), &format!("{session}\n"))?;
         }
-        ContextAction::Learn { session, log_dir } => {
+        ContextAction::Learn {
+            session,
+            db,
+            log_dir,
+        } => {
+            // Issue #1105 (RC4): `--session latest` reached this arm verbatim
+            // and was looked up as a conversation literally named "latest",
+            // which never exists -- so the one command that teaches Formal AI
+            // from a session could not name the session the user was in, while
+            // `export` beside it resolved the same word correctly. One
+            // resolver, used by every subcommand that takes a session.
+            let session = resolve_session(&session, db.as_deref())?;
             let result = formal_ai::conversation_context::learn_from_conversation(
                 &session,
                 log_dir.as_deref(),
@@ -202,11 +221,29 @@ fn session_candidates(
         return Ok(vec![harness_session(db)?]);
     }
 
+    // Issue #1105 (RC6): the newest dialog file on disk is not "this caller's
+    // conversation", it is whichever conversation was written to most recently
+    // by any client of this server. The reported session exported a different
+    // conversation than the one being reported on, and nothing said so. It
+    // stays as the last candidate, because with one client it is right and it
+    // is all there is -- but a caller that can be identified is never guessed
+    // at: the harness answer and `FORMAL_AI_DIALOG_ID` are both tried first,
+    // and when the recorded fallback is what answered, the caller is told.
     let harness = harness_session(db);
     let mut candidates: Vec<String> = harness.as_ref().ok().cloned().into_iter().collect();
     if let Some(recorded) = formal_ai::conversation_context::latest_recorded_dialog(log_dir)
         && !candidates.contains(&recorded)
     {
+        if candidates.is_empty() {
+            eprintln!(
+                "{}",
+                formal_ai::seed::agent_info()
+                    .remove("context_session_guessed_notice")
+                    .unwrap_or_default()
+                    .replace(RECORDED_PLACEHOLDER, &recorded)
+                    .replace(VARIABLE_PLACEHOLDER, SESSION_ENV)
+            );
+        }
         candidates.push(recorded);
     }
     if candidates.is_empty() {

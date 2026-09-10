@@ -224,6 +224,10 @@ fn the_index_resolves_every_path_symbol_the_method_registry_knows() {
         "method registry looks empty: {}",
         registry.methods.len()
     );
+    // A handler declared in `data/seed/handler-rules.lino` has no function of
+    // its own: its entry point is the interpreter that runs its rules (issue
+    // #1085), so it resolves to `run_handler` rather than to a table entry.
+    let rule_backed = formal_ai::rule_interpreter::handler_names();
     let mut unresolved = Vec::new();
     for method in &registry.methods {
         let declared = |identifier: &str| {
@@ -234,7 +238,12 @@ fn the_index_resolves_every_path_symbol_the_method_registry_knows() {
                         .is_some_and(|symbol| symbol.kind == "function")
                 })
         };
-        let Some(symbol) = entry_point(&source, &method.name, &declared) else {
+        let entry = entry_point(&source, &method.name, &declared).or_else(|| {
+            rule_backed
+                .contains(&method.name.as_str())
+                .then(|| "run_handler".to_owned())
+        });
+        let Some(symbol) = entry else {
             unresolved.push(format!("{} (no entry point)", method.name));
             continue;
         };

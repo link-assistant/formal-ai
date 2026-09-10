@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 5439
-  line_count 143
-  content_id source_module_5d36831a2463cba4
-  symbol_count 61
+  byte_len 5789
+  line_count 148
+  content_id source_module_bf226c828ffe5b68
+  symbol_count 64
   symbols
     module algorithm_learning 10 10
     module associative_learning 11 11
@@ -39,52 +39,55 @@ self_ast_census
     module learning_report 39 39
     module ledger 40 40
     module lexicon 41 41
-    module local_search 42 42
-    module meaning_detail 43 43
-    module mutating_action 44 44
-    module narration 45 45
-    module note_composition 46 46
-    module planner 47 47
-    module procedure 48 48
-    module progress 49 49
-    module question_catalog 50 50
-    module rebuild_plan 51 51
-    module repair_strategy 52 52
-    module report_issue 53 53
-    module report_script 54 54
-    module routing_learning 55 55
-    module self_ast 56 56
-    module self_heal 57 57
-    module shell_command 58 58
-    module shell_command_policy 59 59
-    module shell_file_fallback 60 60
-    module source_links 61 61
-    module stated_request 62 62
-    module statement_audit 63 63
-    module structured_edit 64 64
-    module task_structure 65 65
-    module tool_result 66 66
-    module web_research 67 67
-    module workspace_change 68 68
-    module workspace_inspection 69 69
-    module write_request 70 70
+    module link_edit_rules 42 42
+    module local_search 43 43
+    module meaning_detail 44 44
+    module mutating_action 45 45
+    module narration 46 46
+    module note_composition 47 47
+    module planner 48 48
+    module procedure 49 49
+    module progress 50 50
+    module question_catalog 51 51
+    module rebuild_plan 52 52
+    module repair_strategy 53 53
+    module report_issue 54 54
+    module report_script 55 55
+    module requirement_resolution 56 56
+    module routing_learning 57 57
+    module self_ast 58 58
+    module self_heal 59 59
+    module shell_command 60 60
+    module shell_command_policy 61 61
+    module shell_file_fallback 62 62
+    module source_links 63 63
+    module stated_request 64 64
+    module statement_audit 65 65
+    module structured_edit 66 66
+    module task_obligations 67 67
+    module task_structure 68 68
+    module tool_result 69 69
+    module web_research 70 70
+    module workspace_change 71 71
+    module workspace_inspection 72 72
+    module write_request 73 73
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2953
-    named_node_count 456
+    total_link_count 3147
+    named_node_count 487
     distinct_node_kinds 11
     node_kinds
       crate 6
-      identifier 207
+      identifier 224
       line_comment 8
-      mod_item 61
+      mod_item 64
       scoped_identifier 10
-      scoped_use_list 30
+      scoped_use_list 32
       source_file 1
       use_as_clause 1
-      use_declaration 34
-      use_list 30
-      visibility_modifier 68
+      use_declaration 36
+      use_list 32
+      visibility_modifier 73

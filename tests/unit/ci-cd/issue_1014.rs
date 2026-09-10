@@ -65,27 +65,36 @@ fn every_named_baseline_and_initial_pull_request_run_has_preserved_evidence() {
     );
 }
 
+/// Issue #1085 (D3.5). The self-development floor still exists and still fails
+/// an ineligible cycle from the first push with no deferral machinery -- but it
+/// reports from `.github/workflows/self-development-status.yml`, red until
+/// true, and no longer decides whether a release is cut. The floor #924 put on
+/// the release path had become satisfiable by a documentation commit carrying
+/// trailers, and it held a downstream-critical fix back for 268 commits
+/// (issue #1064). Neither release job may grow the gate back, and neither may
+/// grow a bypass: the floor is honest exactly because nothing needs to escape it.
 #[test]
-fn an_ineligible_cycle_blocks_the_release_without_weakening_the_manual_gate() {
+fn an_ineligible_cycle_is_reported_red_without_gating_the_release() {
     let workflow = release_workflow();
     let automatic = job_block(&workflow, "auto-release");
     let manual = job_block(&workflow, "manual-release");
     let policy = repository_file("scripts/self-development-loop.rs");
     let preflight = repository_file("scripts/check-self-development-release.rs");
+    let status = repository_file(".github/workflows/self-development-status.yml");
 
     assert!(policy.contains("SelfDevelopmentReleaseStatus"));
     assert!(policy.contains("Blocked"));
     assert!(preflight.contains("set_output(\"should_release\", \"false\")"));
     // Issue #1066: work is not deferred in this repository, however hard it is.
-    // An ineligible cycle fails the preflight from the first push, so there is
-    // no state in which the pipeline reports success while publishing nothing.
+    // An ineligible cycle fails the status check from the first push, so there
+    // is no state in which the status reports success while nothing was done.
     assert!(
         preflight.contains("SelfDevelopmentReleaseStatus::Blocked"),
         "the preflight must classify an ineligible cycle as blocked"
     );
     assert!(
         preflight.contains("return Err(reason)"),
-        "a blocked cycle must fail the preflight rather than report success"
+        "a blocked cycle must fail the check rather than report success"
     );
     for forbidden in [
         "Deferred",
@@ -94,21 +103,37 @@ fn an_ineligible_cycle_blocks_the_release_without_weakening_the_manual_gate() {
         "DEFERRAL_BUDGET_FRAGMENTS",
     ] {
         assert!(
-            !policy.contains(forbidden) && !preflight.contains(forbidden),
-            "the release path must carry no deferral machinery, found `{forbidden}`"
+            !policy.contains(forbidden)
+                && !preflight.contains(forbidden)
+                && !status.contains(forbidden),
+            "the self-development path must carry no deferral machinery, found `{forbidden}`"
         );
     }
     assert!(
         !preflight.contains("::notice title=Release deferred::"),
         "an ineligible cycle must not be downgraded to a notice"
     );
-    assert!(automatic.contains("id: release_gate"));
-    assert!(automatic.contains("steps.release_gate.outputs.should_release == 'true'"));
-    assert!(manual.contains("scripts/version-and-commit.rs"));
     assert!(
-        repository_file("scripts/version-and-commit.rs")
-            .contains("ensure_self_development_release")
+        status.contains("scripts/check-self-development-release.rs"),
+        "the floor is checked by the status workflow"
     );
+    assert!(
+        status.contains("branches: [main]") && status.contains("schedule:"),
+        "the status runs on every push to main and on a schedule, so red stays visible"
+    );
+    for (job_name, job) in [("auto-release", automatic), ("manual-release", manual)] {
+        assert!(
+            !job.contains("check-self-development-release.rs") && !job.contains("release_gate"),
+            "{job_name} must not gate the release on the self-development floor"
+        );
+    }
+    assert!(manual.contains("scripts/version-and-commit.rs"));
+    let version_script = repository_file("scripts/version-and-commit.rs");
+    assert!(
+        !version_script.contains("ensure_self_development_release("),
+        "the manual path must not gate either; the record is kept, the gate is not"
+    );
+    assert!(version_script.contains("record_release_with_policy"));
 }
 
 #[test]

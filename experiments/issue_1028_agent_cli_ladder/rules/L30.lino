@@ -1,0 +1,8 @@
+link_edit
+  leaf L30
+  path src/entity_resolution.rs
+  language rust
+  rule rename_identifier
+    old "CORRECTED_PLACEHOLDER"
+    new "CORRECTED_TERM_PLACEHOLDER"
+  expect "CORRECTED_TERM_PLACEHOLDER"

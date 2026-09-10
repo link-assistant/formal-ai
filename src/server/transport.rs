@@ -25,12 +25,45 @@ pub fn serve(address: &str) -> std::io::Result<()> {
     );
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
+    // Issue #1085 (D1.2): with `FORMAL_AI_SEED_LINKS_MIRROR=1`, the seed
+    // network is mirrored into the native store beside the memory file.
+    // Writing tens of thousands of doublets through the transaction log takes
+    // longer than a harness waits for the port, so the mirror runs after the
+    // listener is bound and reports when it is done. It is opt-in because a
+    // harness that starts one server per scenario pays it once per server and
+    // routing never reads it.
+    if crate::seed_links::native_mirror_enabled() {
+        std::thread::spawn(|| match crate::seed_links::mirror_native_store() {
+            Ok(Some((path, count))) => {
+                eprintln!("formal-ai seed links: {count} at {}", path.display());
+            }
+            Ok(None) => {}
+            Err(error) => eprintln!("formal-ai seed links: {error}"),
+        });
+    }
 
+    // One connection per thread. The loop used to handle each connection
+    // inline, so a single slow request stopped the server answering anything
+    // at all -- issue #1106 reported that as a permanent wedge, because a
+    // `GET /v1/models` that answered a second earlier stopped responding while
+    // one chat completion was still being solved. A slow answer is a slow
+    // answer; it must not be an outage for every other caller.
+    //
+    // A thread per connection rather than a pool: this server is a local,
+    // single-user surface, connections are short, and the alternative is a
+    // queue whose depth is one more thing to tune wrongly.
     for stream in listener.incoming() {
         match stream {
             Ok(mut stream) => {
-                if let Err(error) = handle_connection(&mut stream) {
-                    eprintln!("request failed: {error}");
+                if let Err(error) = std::thread::Builder::new()
+                    .name(String::from("formal-ai-connection"))
+                    .spawn(move || {
+                        if let Err(error) = handle_connection(&mut stream) {
+                            eprintln!("request failed: {error}");
+                        }
+                    })
+                {
+                    eprintln!("connection thread failed: {error}");
                 }
             }
             Err(error) => eprintln!("connection failed: {error}"),

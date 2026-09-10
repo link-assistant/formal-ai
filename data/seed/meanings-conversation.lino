@@ -570,3 +570,120 @@ meanings
         text 替换
       surface
         text 更换
+  agentic_continuation_cue
+    defined-by conversation_reference
+    role agentic_continuation_cue
+    lexeme en
+      surface
+        text "continue if you have next steps"
+      surface
+        text "continue"
+      surface
+        text "go on"
+      surface
+        text "please continue"
+      surface
+        text "next steps"
+    lexeme ru
+      surface
+        text "продолжай"
+      surface
+        text "продолжи"
+      surface
+        text "продолжи если есть следующие шаги"
+      surface
+        text "продолжай если есть следующие шаги"
+    lexeme hi
+      surface
+        text "जारी रखें"
+      surface
+        text "जारी रखो"
+      surface
+        text "अगर अगले कदम हैं तो जारी रखें"
+    lexeme zh
+      surface
+        text 继续
+      surface
+        text 请继续
+      surface
+        text 如果还有下一步请继续
+      surface
+        text 如果还有下一步 请继续
+    lexeme es
+      surface
+        text "continúa"
+      surface
+        text "continua si tienes próximos pasos"
+  enumeration_cue
+    defined-by conversation_reference
+    role enumeration_cue
+    lexeme en
+      surface
+        text "first"
+      surface
+        text "second"
+      surface
+        text "third"
+      surface
+        text "then"
+      surface
+        text "next"
+      surface
+        text "after that"
+      surface
+        text "also"
+      surface
+        text "finally"
+      surface
+        text "lastly"
+    lexeme ru
+      surface
+        text "сначала"
+      surface
+        text "во-первых"
+      surface
+        text "во-вторых"
+      surface
+        text "затем"
+      surface
+        text "потом"
+      surface
+        text "далее"
+      surface
+        text "также"
+      surface
+        text "наконец"
+    lexeme hi
+      surface
+        text "पहले"
+      surface
+        text "दूसरा"
+      surface
+        text "फिर"
+      surface
+        text "उसके बाद"
+      surface
+        text "अंत में"
+    lexeme zh
+      surface
+        text 首先
+      surface
+        text 其次
+      surface
+        text 然后
+      surface
+        text 接着
+      surface
+        text 最后
+    lexeme es
+      surface
+        text "primero"
+      surface
+        text "segundo"
+      surface
+        text "luego"
+      surface
+        text "después"
+      surface
+        text "finalmente"
+

@@ -1,8 +1,8 @@
 use std::{fmt::Write as _, time::Duration};
 
 use crate::agent::{AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
-use crate::{engine::SymbolicAnswer, event_log::EventLog};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
+use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
 use super::finalize_simple;
 
@@ -245,7 +245,7 @@ pub fn try_program_synthesis(
     );
     MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
 
-    let body = render_python_answer(&candidate);
+    let body = render_python_answer(prompt, &candidate);
     Some(finalize_simple(
         prompt,
         log,
@@ -263,7 +263,7 @@ pub fn try_program_synthesis(
 /// or a data kind it works over), and an *action* verb (implement/write/return).
 /// `def ` is Python syntax the user may paste directly, so a literal signature
 /// satisfies both the subject and action sides regardless of prose language.
-fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
+pub fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
     let lexicon = crate::seed::lexicon();
     let has_def = prompt.to_ascii_lowercase().contains("def ");
     (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || has_def)
@@ -309,7 +309,7 @@ fn match_synthesis_task(lexicon: &crate::seed::Lexicon, normalized: &str) -> Opt
 }
 
 fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
-    if let Some(name) = declared_function_name_from_signature(prompt) {
+    if let Some(name) = crate::coding::python_signature::declared_function_name(prompt) {
         return Some(name);
     }
     if let Some(slug) = match_synthesis_task(crate::seed::lexicon(), normalized) {
@@ -321,64 +321,6 @@ fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
         }
     }
     None
-}
-
-fn declared_function_name_from_signature(prompt: &str) -> Option<String> {
-    let bytes = prompt.as_bytes();
-    let mut index = 0;
-    while index < bytes.len() {
-        if !is_ascii_identifier_start(bytes[index]) {
-            index += 1;
-            continue;
-        }
-        let start = index;
-        index += 1;
-        while index < bytes.len() && is_ascii_identifier_continue(bytes[index]) {
-            index += 1;
-        }
-        let identifier = &prompt[start..index];
-        let mut cursor = index;
-        while cursor < bytes.len() && bytes[cursor].is_ascii_whitespace() {
-            cursor += 1;
-        }
-        if cursor < bytes.len()
-            && bytes[cursor] == b'('
-            && !is_reserved_python_identifier(identifier)
-        {
-            return Some(identifier.to_owned());
-        }
-    }
-    None
-}
-
-const fn is_ascii_identifier_start(byte: u8) -> bool {
-    byte == b'_' || byte.is_ascii_alphabetic()
-}
-
-const fn is_ascii_identifier_continue(byte: u8) -> bool {
-    byte == b'_' || byte.is_ascii_alphanumeric()
-}
-
-fn is_reserved_python_identifier(identifier: &str) -> bool {
-    matches!(
-        identifier,
-        "if" | "for"
-            | "while"
-            | "return"
-            | "def"
-            | "list"
-            | "tuple"
-            | "set"
-            | "dict"
-            | "str"
-            | "int"
-            | "float"
-            | "bool"
-            | "sum"
-            | "abs"
-            | "range"
-            | "print"
-    )
 }
 
 fn synthesize_python_candidate(
@@ -397,9 +339,10 @@ fn synthesize_python_candidate(
         })?;
 
     if task.slug == "has_close_elements" {
-        let signature = declared_signature(prompt, function_name).unwrap_or_else(|| {
-            String::from("has_close_elements(numbers: list[float], threshold: float) -> bool")
-        });
+        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
+            .unwrap_or_else(|| {
+                String::from("has_close_elements(numbers: list[float], threshold: float) -> bool")
+            });
         return Some(PythonCandidate {
             id: "pairwise_threshold_distance",
             function: PythonFunctionTree::new(
@@ -439,7 +382,7 @@ fn synthesize_python_candidate(
     }
 
     if task.slug == "similar_elements" {
-        let signature = declared_signature(prompt, function_name)
+        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
             .unwrap_or_else(|| String::from("similar_elements(test_tup1, test_tup2)"));
         return Some(PythonCandidate {
             id: "tuple_intersection_set",
@@ -464,7 +407,7 @@ fn synthesize_python_candidate(
     }
 
     if task.slug == "count_vowels" {
-        let signature = declared_signature(prompt, function_name)
+        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
             .unwrap_or_else(|| String::from("count_vowels(text: str) -> int"));
         return Some(PythonCandidate {
             id: "count_matching_characters",
@@ -508,13 +451,23 @@ fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<
         &config,
     )
     .ok()?;
-    workspace.create_file("solution.py", &verification_script(candidate));
+    workspace.create_file("solution.py", &verification_script(prompt, candidate));
     workspace.run_command("python3 solution.py");
     Some(workspace.finish())
 }
 
-fn verification_script(candidate: &PythonCandidate) -> String {
-    let mut script = candidate.function.render();
+/// The candidate's source with the prompt's imports ahead of it (issue #1085).
+fn candidate_source(prompt: &str, candidate: &PythonCandidate) -> String {
+    let mut source = crate::coding::python_signature::import_preamble(prompt);
+    if !source.is_empty() {
+        source.push_str("\n\n");
+    }
+    source.push_str(&candidate.function.render());
+    source
+}
+
+fn verification_script(prompt: &str, candidate: &PythonCandidate) -> String {
+    let mut script = candidate_source(prompt, candidate);
     script.push_str("\n\nif __name__ == \"__main__\":\n");
     for test in &candidate.tests {
         script.push_str("    ");
@@ -549,8 +502,8 @@ fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
     }
 }
 
-fn render_python_answer(candidate: &PythonCandidate) -> String {
-    let code = candidate.function.render();
+fn render_python_answer(prompt: &str, candidate: &PythonCandidate) -> String {
+    let code = candidate_source(prompt, candidate);
     format!(
         "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.",
         code,
@@ -575,84 +528,4 @@ fn identifier_after_ascii_marker(prompt: &str, marker: &str) -> Option<String> {
         }
     }
     (!name.is_empty()).then_some(name)
-}
-
-fn declared_signature(prompt: &str, function_name: &str) -> Option<String> {
-    let marker = format!("{function_name}(");
-    let lower = prompt.to_ascii_lowercase();
-    let start = lower.find(&marker.to_ascii_lowercase())?;
-    let after_name = start + function_name.len();
-    let close = matching_close_paren(prompt, after_name)?;
-    let mut end = close;
-    let tail = &prompt[end..];
-    let trimmed = tail.trim_start();
-    if trimmed.starts_with("->") {
-        let return_start = end + (tail.len() - trimmed.len());
-        end = return_annotation_end(prompt, return_start).unwrap_or(end);
-    }
-    Some(prompt[start..end].trim().trim_end_matches('.').to_owned())
-}
-
-fn return_annotation_end(prompt: &str, arrow_start: usize) -> Option<usize> {
-    let arrow_end = arrow_start + "->".len();
-    let mut seen_annotation = false;
-    let mut last_annotation_end = None;
-    let mut cursor = arrow_end;
-
-    while cursor < prompt.len() {
-        let character = prompt[cursor..].chars().next()?;
-        let next = cursor + character.len_utf8();
-        if character.is_whitespace() {
-            if seen_annotation
-                && next_non_whitespace(prompt, next).is_some_and(is_return_annotation_char)
-            {
-                cursor = next;
-                continue;
-            }
-            if seen_annotation {
-                break;
-            }
-            cursor = next;
-            continue;
-        }
-        if !is_return_annotation_char(character) {
-            break;
-        }
-        seen_annotation = true;
-        last_annotation_end = Some(next);
-        cursor = next;
-    }
-
-    last_annotation_end
-}
-
-fn next_non_whitespace(prompt: &str, start: usize) -> Option<char> {
-    prompt[start..]
-        .chars()
-        .find(|character| !character.is_whitespace())
-}
-
-const fn is_return_annotation_char(character: char) -> bool {
-    character.is_ascii_alphanumeric()
-        || matches!(
-            character,
-            '_' | '[' | ']' | '(' | ')' | ',' | '\'' | '"' | '|'
-        )
-}
-
-fn matching_close_paren(prompt: &str, open_index: usize) -> Option<usize> {
-    let mut depth = 0usize;
-    for (offset, character) in prompt[open_index..].char_indices() {
-        match character {
-            '(' => depth += 1,
-            ')' => {
-                depth = depth.checked_sub(1)?;
-                if depth == 0 {
-                    return Some(open_index + offset + character.len_utf8());
-                }
-            }
-            _ => {}
-        }
-    }
-    None
 }

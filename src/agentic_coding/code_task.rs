@@ -34,6 +34,17 @@ pub(super) fn plan_generated_source_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
+    // Issue #1096: "In the file src/x.rs, replace "A" with "B" ... keep it valid
+    // Rust" is an edit of a tracked file, not a request to generate one. The
+    // program-request cue ("valid Rust") made this path claim it, synthesise
+    // its own artifact, and then verify the agent's correct edit against that
+    // artifact -- seven ladder leaves failed on the resulting byte mismatch.
+    // An edit request is recognised by the same reader the edit route uses, so
+    // the two routes cannot disagree about what counts as one; this step
+    // simply declines, and the edit step, later in the router, claims it.
+    if super::general_planner::compose_edit_request(task).is_some() {
+        return None;
+    }
     let artifact = rust_source_for_task(task)?;
     let write_tool = tool_for(tool_names, Capability::Write)?;
     let latest_user = messages
@@ -42,31 +53,29 @@ pub(super) fn plan_generated_source_step(
     let current_turn = &messages[latest_user + 1..];
 
     if let Some(observed) = latest_result(current_turn, Capability::Run) {
-        if observed == artifact.content {
-            return Some(AgenticPlan::Final(render_seeded_outcome(
-                "coding_workspace_effect_observed",
-                task,
-                &artifact.path,
-            )?));
-        }
+        let outcome = if observed == artifact.content {
+            "coding_workspace_effect_observed"
+        } else {
+            "coding_workspace_verification_failed"
+        };
         return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
+            outcome,
             task,
             &artifact.path,
         )?));
     }
     if latest_result(current_turn, Capability::Write).is_some() {
-        if let Some(run_tool) = tool_for(tool_names, Capability::Run) {
-            return Some(plan_one(
+        return Some(match tool_for(tool_names, Capability::Run) {
+            Some(run_tool) => plan_one(
                 run_tool,
                 json!({"command": format!("cat {}", artifact.path)}).to_string(),
-            ));
-        }
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_written_unverified",
-            task,
-            &artifact.path,
-        )?));
+            ),
+            None => AgenticPlan::Final(render_seeded_outcome(
+                "coding_workspace_written_unverified",
+                task,
+                &artifact.path,
+            )?),
+        });
     }
     Some(plan_one(
         write_tool,

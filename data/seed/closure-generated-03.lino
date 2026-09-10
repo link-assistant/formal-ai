@@ -104,6 +104,11 @@ meanings
     lexeme en
       surface
         text "django"
+  docs_url
+    defined-by value
+    lexeme en
+      surface
+        text "docs url"
   every
     defined-by concept
     lexeme en
@@ -379,6 +384,11 @@ meanings
     lexeme en
       surface
         text "response agentic action search code zh"
+  response_agentic_continuation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation en"
   response_agentic_report_contents_question_zh
     defined-by response_template
     lexeme en
@@ -439,6 +449,11 @@ meanings
     lexeme en
       surface
         text "response definition merge sources label ru"
+  response_docs_method_explanation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation es"
   response_draft_comparison_explanation_ru
     defined-by response_template
     lexeme en
@@ -1014,6 +1029,11 @@ meanings
     lexeme en
       surface
         text "trim"
+  trimmed
+    defined-by concept
+    lexeme en
+      surface
+        text "trimmed"
   very
     defined-by concept
     lexeme en

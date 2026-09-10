@@ -69,6 +69,7 @@ fn task_decomposition_has_one_configured_contextual_dispatch_path() {
 fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
     let registry = MethodRegistry::from_dispatch();
     let source = dispatch_source();
+    let rule_backed = formal_ai::rule_interpreter::handler_names();
     for method in registry
         .methods
         .iter()
@@ -85,12 +86,17 @@ fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
         .iter()
         .filter(|m| m.surface == MethodSurface::Specialized)
     {
-        // Each specialized handler appears as a `("name", try_...)` table entry.
+        // Each specialized handler appears as a `("name", try_...)` table entry,
+        // or is a handler the rule interpreter runs from
+        // `data/seed/handler-rules.lino` (issue #1085).
         let inline_needle = format!("(\"{}\",", method.name);
         let multiline_needle = format!("(\n        \"{}\",", method.name);
         assert!(
-            source.contains(&inline_needle) || source.contains(&multiline_needle),
-            "specialized method `{}` must be a real entry in HANDLER_FUNCTIONS",
+            source.contains(&inline_needle)
+                || source.contains(&multiline_needle)
+                || rule_backed.contains(&method.name.as_str()),
+            "specialized method `{}` must be a real entry in HANDLER_FUNCTIONS or a \
+             handler declared in data/seed/handler-rules.lino",
             method.name
         );
     }
@@ -256,9 +262,9 @@ fn the_registry_is_the_sole_authority_that_closes_over_the_route_corpus() {
 
     // The full vocabulary the system can ever emit (a superset of must_resolve).
     let mut corpus = must_resolve.clone();
-    for intent in intent_routing().intents {
+    for intent in &intent_routing().intents {
         if !intent.slug.is_empty() {
-            corpus.push(intent.slug);
+            corpus.push(intent.slug.clone());
         }
     }
     corpus.sort_unstable();

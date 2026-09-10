@@ -1,0 +1,190 @@
+handler_rules
+  issue 1085
+  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it."
+  handler conversation_control
+    rule conversation_preference
+      when
+        role conversation_preference_avoid forms of cleaned
+      value term backticks
+      log "conversation_preference:avoid_term" $term
+      respond conversation_preference
+        fallback exact
+      link "response:conversation_preference"
+      confidence 1.0
+    rule action_correction
+      when
+        role unauthorized_mutation_correction forms of cleaned
+      log "action_correction:unauthorized_mutation" $prompt
+      respond action_correction
+      link "response:action_correction"
+      confidence 1.0
+  handler github_repository_traffic
+    rule github_repository_traffic
+      when
+        role github_repository_platform languages
+        role repository_reference languages
+        role github_repository_traffic_signal languages
+        role github_repository_traffic_question languages
+      value repository agent_info repository default link-assistant/formal-ai
+      value traffic_ui_docs literal "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository"
+      value traffic_api_docs literal "https://docs.github.com/en/rest/metrics/traffic"
+      log "github_repository_traffic:platform" github
+      log "github_repository_traffic:repository" $repository
+      log "github_repository_traffic:access" push_or_write_access_required
+      log "github_repository_traffic:window" last_14_days
+      log "github_repository_traffic:aggregate" views_uniques_clones_referrers_paths
+      log "github_repository_traffic:privacy" no_individual_identity
+      log source $traffic_ui_docs
+      log source $traffic_api_docs
+      respond github_repository_traffic
+      link "response:github_repository_traffic"
+      confidence 0.92
+  handler docs_method_explanation
+    rule docs_method_explanation
+      when
+        none
+          all
+            role_prefix web_search_imperative_lead of trimmed
+            role_padded web_medium of trimmed
+        word pandas of trimmed
+        role_lead explanation_request_lead of trimmed
+        any
+          substring dataframe.join of lowercase
+          substring df.join of lowercase
+          all
+            word join of trimmed
+            word dataframe of trimmed
+          all
+            word join of trimmed
+            role code_method_noun of trimmed
+      value docs_url literal "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html"
+      log "docs_method:request" $prompt
+      log "docs_method:project" pandas
+      log "docs_method:method" pandas.DataFrame.join
+      log "docs_method:source_kind" official-docs
+      log "docs_method:source" $docs_url
+      respond docs_method_explanation
+      link "response:docs_method_explanation"
+      confidence 0.92
+  handler capabilities
+    rule capabilities_more_after_search
+      when
+        role capability_query_more of cleaned
+        none
+          route_exact assistant_free_time
+        history_role web_search_history_signal
+      log "capabilities:history" prior_web_search
+      respond capabilities_more
+      intent capabilities
+      link "response:capabilities"
+      confidence 1.0
+    rule capabilities_more
+      when
+        role capability_query_more of cleaned
+        none
+          route_exact assistant_free_time
+      respond capabilities_more
+      intent capabilities
+      link "response:capabilities"
+      confidence 1.0
+    rule capabilities
+      when
+        role capability_query of cleaned
+        none
+          route_exact assistant_free_time
+      respond capabilities
+      intent capabilities
+      link "response:capabilities"
+      confidence 1.0
+  handler clarification
+    rule clarification
+      when
+        role clarification_request of cleaned
+      respond clarification
+      link "response:clarification"
+      confidence 0.9
+  handler punctuation_only_prompt
+    rule punctuation_only_prompt
+      when
+        only_characters ".?!…。？！"
+      value prompt trimmed_prompt
+      log "clarification:punctuation_only" $trimmed
+      respond punctuation_only
+      intent clarification
+      link "response:clarification"
+      confidence 0.8
+  handler ill_formed
+    rule ill_formed
+      when
+        substring "teach this fact"
+        unbalanced_parentheses
+      log error "unbalanced links notation"
+      respond_unknown
+      intent unknown
+      link "response:unknown"
+      confidence 0.0
+  handler physical_action_question
+    rule physical_action_question
+      when
+        role physical_action_trigger raw
+      respond physical_action_question
+        fallback ru
+      link "response:physical_action_question"
+      confidence 1.0
+  handler kupi_slona
+    rule kupi_slona
+      when
+        role circular_joke_phrase raw
+      respond kupi_slona
+        fallback ru
+      link "response:kupi_slona"
+      confidence 1.0
+  handler shell_refusal
+    rule shell_refusal
+      when
+        none
+          substring "[agent]"
+          substring "agent mode"
+        any
+          substring "run `"
+          substring "execute `"
+        any
+          substring "rm "
+          substring sudo
+          substring "on my behalf"
+      log "policy:chat_bounded_autonomy" $prompt
+      respond policy_bounded_autonomy
+      intent policy_bounded_autonomy
+      link "response:policy:bounded_autonomy"
+      confidence 0.5
+  handler opinion_question
+    rule opinion_question
+      when
+        any
+          prefix "do you think"
+          prefix "what do you think"
+          prefix "what is your opinion"
+          prefix "what's your opinion"
+          prefix "in your opinion"
+          prefix "do you believe"
+          prefix "what do you believe"
+          prefix "do you feel"
+          prefix "what do you feel"
+          prefix "would you say"
+          prefix "how do you feel"
+          prefix "give me your opinion"
+          prefix "share your opinion"
+          prefix "share your thoughts"
+          prefix "what are your thoughts"
+      log "policy:no_opinion" $prompt
+      respond opinion_question
+      link "response:opinion_question"
+      confidence 1.0
+  handler agentic_continuation
+    rule continuation_cue
+      when
+        role agentic_continuation_cue whole of cleaned
+      log "agentic_continuation:cue" $prompt
+      respond agentic_continuation
+      link "response:agentic_continuation"
+      confidence 1.0

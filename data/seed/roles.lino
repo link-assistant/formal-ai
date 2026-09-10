@@ -15,6 +15,8 @@ roles
     kind predicate
   agent_action_report_verb
     kind predicate
+  agentic_continuation_cue
+    kind meaning
   answer_rationale_lead
     kind predicate
   architecture_concept
@@ -214,6 +216,8 @@ roles
   document_originality_subject
     kind meaning
   enumeration_constraint
+    kind meaning
+  enumeration_cue
     kind meaning
   enumeration_request_opener
     kind meaning

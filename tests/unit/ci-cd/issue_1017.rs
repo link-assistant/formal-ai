@@ -18,6 +18,10 @@
 
 use std::fs;
 use std::process::Command;
+
+// Moved to `workflow_fixtures` when this file reached the 1000-line cap; the
+// two modules that import it from here keep working through this re-export.
+pub use super::workflow_fixtures::workflow_files;
 use std::time::Instant;
 
 use super::issue_796::{run_classifier, sandbox};
@@ -32,28 +36,6 @@ fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
         .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
         .replace("\r\n", "\n")
-}
-
-pub fn workflow_files() -> Vec<(String, String)> {
-    let dir = format!("{}/.github/workflows", env!("CARGO_MANIFEST_DIR"));
-    let mut files: Vec<(String, String)> = fs::read_dir(&dir)
-        .expect("workflows directory")
-        .map(|entry| entry.expect("workflow entry").path())
-        .filter(|path| {
-            path.extension()
-                .is_some_and(|ext| ext == "yml" || ext == "yaml")
-        })
-        .map(|path| {
-            let name = path.file_name().unwrap().to_string_lossy().into_owned();
-            (
-                name,
-                fs::read_to_string(&path).unwrap().replace("\r\n", "\n"),
-            )
-        })
-        .collect();
-    files.sort();
-    assert!(!files.is_empty(), "no workflow files found");
-    files
 }
 
 /// `timeout-minutes:` as written, which may be a `${{ ... }}` expression when a

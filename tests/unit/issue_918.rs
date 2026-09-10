@@ -209,13 +209,15 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
         .collect::<BTreeSet<_>>();
 
     assert_eq!(active, actual);
-    assert_eq!(actual.len(), 46);
+    // 46 until issue #1085 moved `github_repository_traffic.rs` into
+    // `data/seed/handler-rules.lino`; the ledger and the tree dropped together.
+    assert_eq!(actual.len(), 45);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        46
+        45
     );
     assert_eq!(
         entries
@@ -463,5 +465,23 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // prose around them. Every one is a `closure-generated-*.lino` record for a
     // token the new seed prose pulled into the total closure, not a
     // hand-written gap, which is the shape this floor exists to show.
-    assert_eq!(expected_gaps.len(), 3_986);
+    //
+    // The last fifty-four arrive that way too, from issue #1085: the tokens
+    // `data/seed/handler-rules.lino` and
+    // `data/seed/multilingual-responses-policy.lino` introduced when eleven
+    // handlers stopped being Rust -- the rule vocabulary (`agent_info`,
+    // `backticks`, `cleaned`, `raw`, `literal`, `prompt`, `forms`), the
+    // handler names themselves, and the response ids of their four-language
+    // wording. Behaviour moving from Rust into seed data arrives as generated
+    // closure records, which is what this floor is for. Four more followed when
+    // those responses were given their Spanish text, which every supported
+    // locale owes the others. Ten more arrived the same way with issues #1095
+    // and #1099: two seed roles (`agentic_continuation_cue`,
+    // `enumeration_cue`), the `agentic_continuation` handler and its
+    // `continuation_cue` rule, that handler's five-language wording, and the
+    // seeded notice `context_session_guessed_notice` from #1105 RC6. Every one
+    // is behaviour that used to be Rust -- a hardcoded English phrase, an
+    // exact-string comparison in the planner -- arriving as described data,
+    // which is what this floor exists to record.
+    assert_eq!(expected_gaps.len(), 4_054);
 }

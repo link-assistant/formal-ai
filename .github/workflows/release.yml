@@ -58,6 +58,12 @@ jobs:
       toml-changed: ${{ steps.changes.outputs.toml-changed }}
       docs-changed: ${{ steps.changes.outputs.docs-changed }}
       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      # Only the files a pipeline job executes: its own definition, a composite
+      # action it calls, or a script those run. `workflow-changed` fires for any
+      # file under `.github/workflows/`, which made an edit to a scheduled
+      # benchmark pay for the macOS archive, the Docker check, six box images
+      # and a 25-minute agent E2E (issue #1107).
+      pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
     steps:
       - uses: actions/checkout@v7
@@ -138,12 +144,24 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: docker-image
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - name: Set up Docker Buildx
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: ./.github/actions/setup-buildx-resilient
       - name: Build image
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         # Issue #1076: a step-level cap reports an overrun as a step *failure*;
         # the job cap reports it as `cancelled` and turns nothing red. 15m is
         # 1.7x the worst of thirteen measured pull-request builds (8.6 min).
@@ -162,16 +180,19 @@ jobs:
           # evicting sccache from the shared 10GB pool.
           cache-to: type=inline
       - name: Verify image runtime contract
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
           set -euo pipefail
           docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
       - name: Log in to GHCR for the released upgrade fixture
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Test released-to-candidate memory upgrade
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
       - if: ${{ !cancelled() }}
         run: scripts/prune-docker.sh
@@ -188,7 +209,7 @@ jobs:
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     steps:
       - uses: actions/checkout@v7
@@ -288,6 +309,7 @@ jobs:
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.pipeline-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
     steps:
@@ -369,7 +391,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     strategy:
       fail-fast: false
@@ -388,14 +410,26 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}
+          paths: >-
+            src tests data examples build.rs Cargo.toml Cargo.lock scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - uses: ./.github/actions/cache-cargo-registry
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         with:
           restore-only: 'true'
       # Issue #1081: this is the ubuntu leg's first compiling step, worst
@@ -403,7 +437,7 @@ jobs:
       # the job cap, whose expiry reports `cancelled` rather than `failure`
       # (issue #977).
       - name: Check LiNo data integrity
-        if: matrix.test-suite == 'full'
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' }}
         env:
           TEST_BUDGET_SECONDS: 780
           TEST_WARN_RATIO_PERCENT: 70
@@ -412,9 +446,10 @@ jobs:
             "$TEST_BUDGET_SECONDS" "LiNo data integrity" \
             cargo test --test unit data_files -- --nocapture
       - name: sccache counters after the first compiling step
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: sccache --show-stats
       - name: Check self-AST census freshness
-        if: matrix.test-suite == 'full'
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' }}
         env:
           # Issue #1081: 153s worst measured over 39 runs.
           TEST_BUDGET_SECONDS: 300
@@ -428,7 +463,7 @@ jobs:
       # into each executable at compile time -- 109 call sites across 36 test
       # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
-        if: matrix.test-suite == 'full'
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
@@ -436,9 +471,9 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
       - uses: ./.github/actions/download-formal-ai-binary
-        if: matrix.test-suite == 'full'
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' }}
       - name: Run tests
-        if: matrix.test-suite == 'full'
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' }}
         env:
           # Issue #1081: 961s worst measured over 38 runs was 80.1% of the old
           # 1200s budget -- inside the band the step audit now warns on, and
@@ -463,7 +498,7 @@ jobs:
       # actually bounds -- the shape `macos-core-tests.yml` already uses, where
       # the archive build and the run own separate budgets.
       - name: Build the specification test binary
-        if: matrix.test-suite == 'specification'
+        if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' }}
         env:
           # 1800s over the 1201s of rustc measured on run 34095902681, with
           # sccache at an 88.5% hit rate and its 66 misses costing 953s.
@@ -480,7 +515,7 @@ jobs:
       # compiled as well -- 1401s of them -- and report 212% for weeks. A step
       # name is the identity of the work it names.
       - name: Run specification tests from the prebuilt binary
-        if: matrix.test-suite == 'specification'
+        if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' }}
         env:
           # The binary is built above, so this budget bounds execution only.
           # The fastest observed combined step was 424s *including* its
@@ -492,7 +527,7 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
             cargo test --test unit --all-features --verbose specification::
       - name: Run doc tests
-        if: matrix.test-suite == 'full'
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' }}
         env:
           # Issue #1081: 28s worst measured; budgeted because an unbudgeted
           # step is one the audit cannot see.
@@ -517,7 +552,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     uses: ./.github/workflows/macos-core-tests.yml
     # Issue #1017: archive and slices must merge the same base commit.
@@ -621,27 +656,31 @@ jobs:
           HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
-      - name: Apply self-development release gate
-        id: release_gate
-        if: steps.check.outputs.should_release == 'true'
-        env:
-          SKIP_BUMP: ${{ steps.check.outputs.skip_bump }}
-        run: rust-script scripts/check-self-development-release.rs
+      # Issue #1085 (D3.5): the self-development floor no longer gates the
+      # release. It is measured and reported red-until-true by
+      # `.github/workflows/self-development-status.yml` on every push to
+      # `main`; a release is cut on CI correctness alone, and the ledger row
+      # it records says honestly what the model authored in it.
       - name: Collect changelog and bump version
         id: version
-        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        env:
+          # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+          # pull request, read through `gh` with the job token.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
         run: |
           rust-script scripts/version-and-commit.rs \
             --bump-type "${{ steps.bump_type.outputs.bump_type }}"
       - name: Get current version
         id: current_version
-        if: steps.release_gate.outputs.should_release == 'true'
+        if: steps.check.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
       - name: Build release
-        if: steps.release_gate.outputs.should_release == 'true'
+        if: steps.check.outputs.should_release == 'true'
         run: cargo build --release
       - name: Publish to Crates.io
-        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
@@ -649,28 +688,28 @@ jobs:
         run: rust-script scripts/publish-crate.rs
       - name: Wait for Crate availability on Crates.io
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
       - name: Smoke test the published crate
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
       - name: Free up runner disk space
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/free-runner-disk.sh
       - name: Log in to GitHub Container Registry
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -681,14 +720,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: ./.github/actions/setup-buildx-resilient
       - name: Extract GHCR Docker metadata
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -703,7 +742,7 @@ jobs:
             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to GHCR
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -722,14 +761,14 @@ jobs:
           cache-to: type=gha,mode=max,scope=docker-image
       - name: Verify the published GHCR image is anonymously pullable
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -768,7 +807,7 @@ jobs:
           cache-to: type=inline
       - name: Create GitHub Release
         if: |
-          steps.release_gate.outputs.should_release == 'true' && (
+          steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
@@ -1056,26 +1095,40 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: e2e-local
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock tests/e2e package.json package-lock.json scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Setup Bun
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
           no-cache: true
       - name: Setup Node.js
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: actions/setup-node@v7
         with:
           node-version: '24.x'
           cache: npm
           cache-dependency-path: tests/e2e/package-lock.json
       - name: Install web bundle dependencies
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bun install --frozen-lockfile
       - name: Build web vendor bundle
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bun run build:web
       - name: Install Playwright and dependencies
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
           cd tests/e2e
           npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         id: playwright-cache
         uses: actions/cache@v6
         with:
@@ -1084,30 +1137,35 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
       - name: Install Playwright system dependencies (best effort)
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 6
         continue-on-error: true
         run: |
           cd tests/e2e
           npx playwright install-deps chromium
       - name: Install Playwright browsers
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 10
         run: |
           cd tests/e2e
           npx playwright install chromium
       - name: Sync data/seed into src/web/seed (deployment mirror)
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: scripts/sync-seed.sh
       - name: Run local e2e tests
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
           cd tests/e2e
           npx playwright test --config=playwright.local.config.js
       - name: Upload Playwright report on failure
-        if: failure()
+        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-local
           path: tests/e2e/playwright-report/
           retention-days: 7
       - name: Upload generated /download screenshots
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: download-page-screenshots
@@ -1128,12 +1186,19 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     # Issue #1081 moved the 51 steps behind this call into their own file; the
     # reasoning is in its header. The cap moved with them, because a caller job
     # declares none.
     uses: ./.github/workflows/agent-cli-e2e.yml
+    # Issue #1107 (item 4): the full replay is 25 of the pipeline's minutes. On
+    # `main`, on a schedule and on manual dispatch it still runs in full; on a
+    # feature branch the held-out generalization gates run and the recorded
+    # scenarios do not. The skipped steps report as skipped, never as passed,
+    # and `main` gates every merge on the complete set.
+    with:
+      full-replay: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
     permissions:
       contents: read
   # Build the host binary once for the seven Box image legs. The audited run
@@ -1154,7 +1219,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     steps:
       - uses: actions/checkout@v7
@@ -1203,7 +1268,7 @@ jobs:
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     strategy:
       fail-fast: false
@@ -1215,16 +1280,28 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: box-project-${{ matrix.language }}
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
       # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - name: Generate the ${{ matrix.language }} project from Formal-AI answers
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
       - name: Build and run it inside its link-foundation/box image
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: STRICT=1 SKIP_GENERATE=1 scripts/verify-box-language-projects.sh ${{ matrix.language }}
       - name: Upload the generated project
-        if: always()
+        if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: box-language-corpus-${{ matrix.language }}

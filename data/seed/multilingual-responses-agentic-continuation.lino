@@ -1,0 +1,21 @@
+multilingual_responses
+  response response_agentic_continuation_en
+    intent agentic_continuation
+    language en
+    text "Nothing is in progress to continue. Tell me the task and I will start it."
+  response response_agentic_continuation_ru
+    intent agentic_continuation
+    language ru
+    text "Продолжать нечего: сейчас нет незавершённой задачи. Назовите задачу, и я начну."
+  response response_agentic_continuation_hi
+    intent agentic_continuation
+    language hi
+    text "जारी रखने के लिए कुछ भी प्रगति में नहीं है। मुझे कार्य बताइए और मैं उसे शुरू कर दूँगा।"
+  response response_agentic_continuation_zh
+    intent agentic_continuation
+    language zh
+    text "当前没有正在进行的任务可以继续。请告诉我任务，我会开始。"
+  response response_agentic_continuation_es
+    intent agentic_continuation
+    language es
+    text "No hay nada en curso que continuar. Dime la tarea y la empezaré."

@@ -52,29 +52,37 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
+      already-green: ${{ steps.ledger.outputs.already-green }}
       matrix: ${{ steps.matrix-plan.outputs.matrix }}
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - uses: ./.github/actions/cache-cargo-registry
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
         with:
-          prefix: cli-matrix-
+          check: agentic-cli-matrix
+          paths: >-
+            src data build.rs Cargo.toml Cargo.lock experiments/agentic_cli_matrix scripts .github/workflows/agentic-cli-matrix.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Build formal-ai (release)
-        run: cargo build --release --bin formal-ai
+
+      # Reused across every workflow that only needs to *run* the binary: the
+      # cache key is the content of the sources it is built from, so a push that
+      # changed neither pays nothing (issue #1107).
+      - uses: ./.github/actions/formal-ai-binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
 
       - name: Derive client legs from the seed registry
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         id: matrix-plan
         run: |
           matrix="$(BIN=target/release/formal-ai experiments/agentic_cli_matrix/plan_matrix.sh)"
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
       - name: Upload formal-ai binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: formal-ai-binary
@@ -94,10 +102,12 @@ jobs:
         include: ${{ fromJSON(needs.build.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v7
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         with:
           persist-credentials: false
 
       - name: Setup Bun
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -105,6 +115,7 @@ jobs:
           no-cache: true
 
       - name: Download formal-ai binary
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         uses: actions/download-artifact@v8
         env:
           # v8's bundled unzip dependency still calls Buffer(); suppress only
@@ -116,10 +127,11 @@ jobs:
           path: target/release
 
       - name: Make formal-ai executable
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         run: chmod +x target/release/formal-ai
 
       - name: Install Xvfb
-        if: matrix.display
+        if: ${{ (matrix.display) && needs.build.outputs.already-green != 'true' }}
         # The GUI clients (VS Code extension host, OpenCode Desktop's Electron
         # shell, Cursor) need a display server. docs/case-studies/issue-762
         # records the same setup for the desktop AppImage.
@@ -154,7 +166,7 @@ jobs:
           scripts/apt-install-with-retry.sh xvfb
 
       - name: Pin Node for clients with native addons
-        if: matrix.installer == 'npm-native'
+        if: ${{ (matrix.installer == 'npm-native') && needs.build.outputs.already-green != 'true' }}
         # t3 declares `engines.node ^22.16 || ^23.11 || >=24.10` and builds
         # node-pty from source during install. `bun add -g` skips lifecycle
         # scripts, and bun's bundled Node 20 cannot build node-pty at all — the
@@ -166,7 +178,7 @@ jobs:
           node-version: '22'
 
       - name: Pin Python for pipx-installed clients
-        if: matrix.installer == 'pipx'
+        if: ${{ (matrix.installer == 'pipx') && needs.build.outputs.already-green != 'true' }}
         # aider-chat declares `Requires-Python >=3.10,<3.13`. Without a pinned
         # interpreter pip resolves *backwards* to a 2024 release rather than
         # failing, which would install a two-year-old CLI under a pinned name.
@@ -175,7 +187,7 @@ jobs:
           python-version: '3.12'
 
       - name: Allow the user namespaces codex's own sandbox needs
-        if: matrix.user_namespaces
+        if: ${{ (matrix.user_namespaces) && needs.build.outputs.already-green != 'true' }}
         # Codex runs every command it executes inside bubblewrap, and it ships
         # its *own* `bwrap` (`codex-resources/bwrap` in the vendored package).
         # Ubuntu 24.04 runners set `kernel.apparmor_restrict_unprivileged_userns=1`,
@@ -198,12 +210,14 @@ jobs:
           }
 
       - name: Install ${{ matrix.client }} (pinned)
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         run: |
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           experiments/agentic_cli_matrix/install_client.sh ${{ matrix.client }}
 
       - name: Run ${{ matrix.client }} leg
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         env:
           CLIENT: ${{ matrix.client }}
           BASE_PORT: ${{ matrix.base_port }}
@@ -223,7 +237,7 @@ jobs:
         # advertised tools, the planned calls and the round count. Uploaded on
         # success too, because a green leg's transcript is the recorded session
         # issue #671 asks for on claude, grok and aider.
-        if: always()
+        if: ${{ (always()) && needs.build.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: transcripts-${{ matrix.client }}
@@ -254,6 +268,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Download formal-ai binary
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         uses: actions/download-artifact@v8
         env:
           # https://github.com/actions/download-artifact/issues/484
@@ -263,6 +278,7 @@ jobs:
           path: target/release
 
       - name: Download every real-client observation
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         uses: actions/download-artifact@v8
         env:
           # https://github.com/actions/download-artifact/issues/484
@@ -273,6 +289,7 @@ jobs:
           merge-multiple: true
 
       - name: Infer human-gated contract amendments
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         run: |
           chmod +x target/release/formal-ai
           mapfile -t observations < <(
@@ -288,6 +305,7 @@ jobs:
           grep -q 'independently_worded_groups "[1-9]' client-contract-learning.lino
 
       - name: Upload contract-learning review artifact
+        if: ${{ needs.build.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: client-contract-learning

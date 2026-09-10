@@ -67,6 +67,21 @@ impl fmt::Display for LinkStoreError {
 
 impl Error for LinkStoreError {}
 
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod node_addresses;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod orphans;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod projection_sync;
+mod validation;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+pub use projection_sync::synchronize_memory_events;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+use node_addresses::{node_address_path, read_node_addresses};
+use validation::validate_demo_memory_document;
+
 /// Store abstraction used by memory and event-log projections.
 pub trait LinkStore {
     /// Returns the active physical backend.
@@ -342,6 +357,11 @@ impl LinkCliLinkStore {
 
     /// Open or create a file-mapped link-cli database with an exclusive lock.
     pub fn open_at(database: &Path) -> Result<Self, LinkStoreError> {
+        // Issue #1109: before taking the lock, collect what dead processes left.
+        let swept = orphans::sweep_dead_replacements(database);
+        if swept > 0 && link_cli_debug_enabled() {
+            eprintln!("[link-cli] removed {swept} orphaned replacement file(s)");
+        }
         let database_lock = link_cli::FileLock::acquire(
             link_cli::lock_file_path(database),
             link_cli::LockMode::Exclusive,
@@ -364,6 +384,32 @@ impl LinkCliLinkStore {
     pub fn from_links_notation(text: &str) -> Result<Self, LinkStoreError> {
         let mut store = Self::new()?;
         store.import_memory_links_notation(text)?;
+        Ok(store)
+    }
+
+    /// Rebuild `database` from scratch so that `links` is its whole content.
+    ///
+    /// Issue #1085 (D1.2): the seed links network is mirrored this way beside
+    /// the memory store when the server starts; the previous mirror is
+    /// discarded first, so a restart never accumulates duplicates.
+    ///
+    /// # Errors
+    ///
+    /// Returns the backend error when the store cannot be opened or written.
+    pub fn rebuild_with_doublets(
+        database: &Path,
+        links: &[DoubletLink],
+    ) -> Result<Self, LinkStoreError> {
+        cleanup_link_cli_files(database);
+        let mut store = Self::open_at(database)?;
+        store.begin_transaction()?;
+        for link in links {
+            if let Err(error) = store.append_native_doublet(&link.from, &link.to) {
+                let _ = store.rollback_transaction();
+                return Err(error);
+            }
+        }
+        store.commit_transaction()?;
         Ok(store)
     }
 
@@ -429,6 +475,125 @@ impl LinkCliLinkStore {
         self.transactions_mut()
             .flush()
             .map_err(LinkStoreError::from)
+    }
+
+    /// Transactionally append events the open database does not yet hold.
+    ///
+    /// [`Self::replace_memory_events_transactionally`] rebuilds the whole graph,
+    /// which is the right recovery behaviour when opening a database whose
+    /// `.lino` source may be ahead of it. It is the wrong behaviour on the
+    /// steady-state write path: issue #1106 measured a chat completion against a
+    /// 400-event store taking 78 seconds, because every appended event rebuilt
+    /// all 400 from scratch, and the cost grows with the square of the history.
+    ///
+    /// This method is that write path. The caller states how many leading events
+    /// the database already holds; only the remainder is appended, inside one
+    /// transaction whose rollback restores the in-memory projection. When the
+    /// claim does not hold -- a shorter database, or a divergent prefix -- there
+    /// is nothing to append onto, and the caller is told to rebuild instead.
+    pub fn append_memory_events_transactionally(
+        &mut self,
+        events: &[MemoryEvent],
+        already_projected: usize,
+    ) -> Result<(), LinkStoreError> {
+        if self.transaction_snapshot.is_some() {
+            return Err(LinkStoreError::Backend(String::from(
+                "cannot append memory inside an open link-cli transaction",
+            )));
+        }
+        if already_projected > events.len() {
+            return Err(LinkStoreError::Backend(String::from(
+                "link-cli projection does not extend the recorded memory prefix",
+            )));
+        }
+        if already_projected == events.len() {
+            return Ok(());
+        }
+        // A freshly-opened store holds the database's doublets on disk but an
+        // empty in-memory projection. Appending needs both: the sequence
+        // numbers must continue past the prefix, and `node_id` must resolve a
+        // string that the prefix already created to that same address rather
+        // than minting a second one. Restoring those two maps writes nothing to
+        // the database.
+        if self.events.len() < already_projected {
+            self.restore_projected_prefix(&events[..already_projected])?;
+        } else if self.events.len() != already_projected {
+            return Err(LinkStoreError::Backend(String::from(
+                "link-cli projection does not extend the recorded memory prefix",
+            )));
+        }
+        self.begin_transaction()?;
+        for event in events[already_projected..].iter().cloned() {
+            if let Err(error) = self.append_memory_event_in_open_transaction(event) {
+                let rollback = self.rollback_transaction();
+                return rollback.and(Err(error));
+            }
+        }
+        self.commit_transaction()?;
+        self.write_node_addresses()
+    }
+
+    /// Restore the in-memory maps for a prefix the database already stores.
+    ///
+    /// Only one thing here cannot be recomputed from the events: the
+    /// string-to-address map, whose addresses were handed out by link-cli when
+    /// the prefix was written. Recomputing it by replaying the prefix through a
+    /// scratch database is what the first attempt at issue #1106 did, and it
+    /// measured 46.8 seconds of a 47.2-second projection -- the whole rebuild,
+    /// merely relocated. So the map is saved when the projection is written and
+    /// read back here; the records and events, which are pure functions of the
+    /// events, are still derived.
+    ///
+    /// A missing or unreadable sidecar is not an error. It means the addresses
+    /// are unknown, and the caller falls back to a full rebuild.
+    fn restore_projected_prefix(&mut self, prefix: &[MemoryEvent]) -> Result<(), LinkStoreError> {
+        let nodes = read_node_addresses(&node_address_path(&self.database)).ok_or_else(|| {
+            LinkStoreError::Backend(String::from(
+                "link-cli node addresses are unavailable for the recorded prefix",
+            ))
+        })?;
+        let mut events = Vec::with_capacity(prefix.len());
+        let mut records = Vec::with_capacity(prefix.len());
+        for (sequence, event) in prefix.iter().enumerate() {
+            let mut event = event.clone();
+            ensure_event_id(&mut event, sequence);
+            records.push(memory_event_to_link_record(&event, sequence));
+            events.push(event);
+        }
+        // Every string the prefix projected must have a recorded address; if one
+        // is missing the sidecar does not describe this database, and appending
+        // onto it would mint a second address for an existing node.
+        for record in &records {
+            for link in &record.links {
+                if !nodes.contains_key(&link.from) || !nodes.contains_key(&link.to) {
+                    return Err(LinkStoreError::Backend(String::from(
+                        "link-cli node addresses do not cover the recorded prefix",
+                    )));
+                }
+            }
+        }
+        self.events = events;
+        self.records = records;
+        self.nodes = nodes;
+        Ok(())
+    }
+
+    /// Save the string-to-address map so a later append can resume from it.
+    fn write_node_addresses(&self) -> Result<(), LinkStoreError> {
+        let mut rendered = String::new();
+        for (node, address) in &self.nodes {
+            // Node strings are arbitrary content, and this format is line-based,
+            // so newlines are escaped -- and the escape character with them,
+            // without which a node containing a literal backslash-n would read
+            // back as a newline.
+            let encoded = node.replace('\\', "\\\\").replace('\n', "\\n");
+            let _ = writeln!(rendered, "{address}\t{encoded}");
+        }
+        let path = node_address_path(&self.database);
+        let temporary = replacement_path(&path, "nodes");
+        std::fs::write(&temporary, rendered)
+            .and_then(|()| replace_file(&temporary, &path))
+            .map_err(|error| LinkStoreError::Backend(error.to_string()))
     }
 
     /// Transactionally build and atomically publish a complete replacement.
@@ -505,7 +670,9 @@ impl LinkCliLinkStore {
         self.transactions = Some(reopen_result?);
         replacement_result?;
         self.restore_snapshot(snapshot);
-        Ok(())
+        // Record the addresses this rebuild handed out, so the next write can
+        // append onto it instead of rebuilding again (issue #1106).
+        self.write_node_addresses()
     }
 
     fn append_memory_event_in_open_transaction(
@@ -741,96 +908,6 @@ fn ensure_event_id(event: &mut MemoryEvent, sequence: usize) {
     }
     let canonical = canonical_memory_event(event);
     event.id = stable_id("memory_event", &format!("{sequence}:{canonical}"));
-}
-
-fn validate_demo_memory_document(text: &str) -> Result<(), LinkStoreError> {
-    for line in text.lines().filter(|line| !line.trim().is_empty()) {
-        let indent = line.chars().take_while(|ch| *ch == ' ').count();
-        let content = &line[indent..];
-        match indent {
-            0 if content == ROOT_HEADER => {}
-            2 if content.starts_with("schema_version ") => validate_schema_version_line(content)?,
-            2 => validate_event_line(content)?,
-            4 => validate_field_line(content)?,
-            _ => {
-                return Err(LinkStoreError::IllFormedLinksNotation(format!(
-                    "unexpected indentation or record line: {content}"
-                )));
-            }
-        }
-    }
-    Ok(())
-}
-
-fn validate_schema_version_line(content: &str) -> Result<(), LinkStoreError> {
-    let Some(rest) = content.strip_prefix("schema_version ") else {
-        return Err(LinkStoreError::IllFormedLinksNotation(String::from(
-            "invalid schema version marker",
-        )));
-    };
-    validate_strict_quoted(rest)?;
-    let value = crate::memory::parse_quoted(rest).unwrap_or_default();
-    if value.parse::<u32>().is_err() {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "invalid_schema_version:value={value}"
-        )));
-    }
-    Ok(())
-}
-
-fn validate_event_line(content: &str) -> Result<(), LinkStoreError> {
-    let Some(rest) = content.strip_prefix("event ") else {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "expected event record, got {content}"
-        )));
-    };
-    validate_strict_quoted(rest)
-}
-
-fn validate_field_line(content: &str) -> Result<(), LinkStoreError> {
-    let Some((key, rest)) = content.split_once(' ') else {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "expected field value, got {content}"
-        )));
-    };
-    if !key
-        .chars()
-        .all(|ch| ch.is_ascii_alphanumeric() || ch == '_')
-    {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "invalid field name {key}"
-        )));
-    }
-    validate_strict_quoted(rest)
-}
-
-fn validate_strict_quoted(rest: &str) -> Result<(), LinkStoreError> {
-    let trimmed = rest.trim_start();
-    let bytes = trimmed.as_bytes();
-    if bytes.first() != Some(&b'"') {
-        return Err(LinkStoreError::IllFormedLinksNotation(format!(
-            "expected quoted value, got {rest}"
-        )));
-    }
-    let mut index = 1;
-    while index < bytes.len() {
-        match bytes[index] {
-            b'\\' => index += 2,
-            b'"' => {
-                if trimmed[index + 1..].trim().is_empty() {
-                    return Ok(());
-                }
-                return Err(LinkStoreError::IllFormedLinksNotation(format!(
-                    "unexpected trailing content after quoted value: {}",
-                    &trimmed[index + 1..]
-                )));
-            }
-            _ => index += 1,
-        }
-    }
-    Err(LinkStoreError::IllFormedLinksNotation(String::from(
-        "unterminated quoted value",
-    )))
 }
 
 fn event_source_id(event: &MemoryEvent, sequence: usize, canonical: &str) -> String {

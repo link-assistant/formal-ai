@@ -562,3 +562,17 @@ pub const ROLE_DOCUMENT_COMPOSITION_ACTION: &str = "document_composition_action"
 /// "create `list.txt` containing apples, bananas and cherries", where the words
 /// after the lead are the file.
 pub const ROLE_COMPOSED_DOCUMENT_KIND: &str = "composed_document_kind";
+
+/// Semantic role: a turn that is only a continuation cue inside an agentic
+/// session.
+///
+/// `@link-assistant/agent` sends "Continue if you have next steps" after a tool
+/// result and after compaction; other harnesses and people write "continue",
+/// "go on", "продолжай", "जारी रखें", "继续". The surfaces are whole normalized
+/// prompts, compared for equality by the agentic planner, never as substrings:
+/// a request that merely contains the word keeps its own meaning. A turn that
+/// matches resumes the task already established in the session and opens no
+/// route of its own -- eight ladder leaves ended in web searches for the words
+/// "continue" and "next step" before this role existed (issue #1095). Carried
+/// by `agentic_continuation_cue` in `data/seed/meanings-conversation.lino`.
+pub const ROLE_AGENTIC_CONTINUATION_CUE: &str = "agentic_continuation_cue";

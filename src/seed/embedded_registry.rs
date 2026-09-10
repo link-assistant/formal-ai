@@ -35,6 +35,7 @@ pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
     include_str!("../../data/seed/formal-language-projections.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str = include_str!("../../data/seed/handler-precedence.lino");
+pub const HANDLER_RULES_LINO: &str = include_str!("../../data/seed/handler-rules.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
     include_str!("../../data/seed/hello-world-programs.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
@@ -138,6 +139,8 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-agentic.lino");
+pub const MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-agentic-continuation.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-agentic-tools.lino");
 pub const MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO: &str =
@@ -154,6 +157,8 @@ pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-orchestration.lino");
 pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-pattern.lino");
+pub const MULTILINGUAL_RESPONSES_POLICY_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-policy.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-procedure.lino");
 pub const MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO: &str =
@@ -219,6 +224,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
+        ("data/seed/handler-rules.lino", HANDLER_RULES_LINO),
         ("data/seed/hello-world-programs.lino", HELLO_WORLD_PROGRAMS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
@@ -285,6 +291,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/multilingual-responses.lino", MULTILINGUAL_RESPONSES_LINO),
         ("data/seed/multilingual-responses-agentic.lino", MULTILINGUAL_RESPONSES_AGENTIC_LINO),
         (
+            "data/seed/multilingual-responses-agentic-continuation.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-agentic-tools.lino",
             MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,
         ),
@@ -310,6 +320,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
         ),
         ("data/seed/multilingual-responses-pattern.lino", MULTILINGUAL_RESPONSES_PATTERN_LINO),
+        ("data/seed/multilingual-responses-policy.lino", MULTILINGUAL_RESPONSES_POLICY_LINO),
         ("data/seed/multilingual-responses-procedure.lino", MULTILINGUAL_RESPONSES_PROCEDURE_LINO),
         (
             "data/seed/multilingual-responses-substitution-compiler.lino",
@@ -359,6 +370,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+    MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,
     MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
@@ -367,6 +379,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
+    MULTILINGUAL_RESPONSES_POLICY_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,

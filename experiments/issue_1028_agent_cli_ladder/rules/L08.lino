@@ -1,0 +1,8 @@
+link_edit
+  leaf L08
+  path src/solver_dispatch.rs
+  language rust
+  rule insert_member
+    list "CONTEXTUAL_HANDLER_NAMES"
+    member "workspace_change"
+  expect "workspace_change"

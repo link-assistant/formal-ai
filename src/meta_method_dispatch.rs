@@ -115,7 +115,7 @@ pub fn try_dispatch(
             ));
         }
         if let Some(handler) = handler_for_method(&name)
-            && let Some(answer) = handler(prompt, &normalized, log)
+            && let Some(answer) = handler.call(prompt, &normalized, log)
         {
             return Some(record_method_answer(prompt, log, answer, &name));
         }

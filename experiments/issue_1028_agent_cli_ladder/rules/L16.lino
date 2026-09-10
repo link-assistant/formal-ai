@@ -1,0 +1,8 @@
+link_edit
+  leaf L16
+  path src/service_accessibility.rs
+  language rust
+  rule replace_literal
+    old "ttl_seconds"
+    new "time_to_live_seconds"
+  expect "time_to_live_seconds"

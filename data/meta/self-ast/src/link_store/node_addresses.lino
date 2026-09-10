@@ -1,0 +1,12 @@
+self_ast_census
+  target src/link_store/node_addresses.rs
+  language rust
+  fidelity signature
+  byte_len 2317
+  line_count 54
+  content_id source_module_58681e063105d599
+  symbol_count 3
+  symbols
+    function node_address_path 15 19
+    function read_node_addresses 23 31
+    function decode_node_name 39 54

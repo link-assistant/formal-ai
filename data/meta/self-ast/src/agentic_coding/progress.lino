@@ -2,41 +2,41 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 11166
-  line_count 286
-  content_id source_module_5b1fc4f362cd3417
+  byte_len 11194
+  line_count 287
+  content_id source_module_eb36161999bcad92
   symbol_count 22
   symbols
-    struct ToolAttempt 14 19
-    struct Progress 22 40
-    function scan 43 122
-    function done 125 127
-    function count 129 134
-    function successful_count 137 142
-    function latest_successful_output 145 151
-    function attempted_write_for 153 161
-    function successful_write_for 163 172
-    function successful_write_content_for 179 187
-    function last 195 197
-    function latest_failure 201 203
-    function previous_attempt 205 207
-    function failed_write_count_for 211 223
-    function fetch_result 225 227
-    function search_result 229 231
-    function argument_path 234 240
-    function argument_content 242 248
-    function argument_targets 250 256
-    function result_capability 261 268
-    function result_tool_call 270 277
-    function fetch_call_url 279 286
+    struct ToolAttempt 15 20
+    struct Progress 23 41
+    function scan 44 123
+    function done 126 128
+    function count 130 135
+    function successful_count 138 143
+    function latest_successful_output 146 152
+    function attempted_write_for 154 162
+    function successful_write_for 164 173
+    function successful_write_content_for 180 188
+    function last 196 198
+    function latest_failure 202 204
+    function previous_attempt 206 208
+    function failed_write_count_for 212 224
+    function fetch_result 226 228
+    function search_result 230 232
+    function argument_path 235 241
+    function argument_content 243 249
+    function argument_targets 251 257
+    function result_capability 262 269
+    function result_tool_call 271 278
+    function fetch_call_url 280 287
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8075
-    named_node_count 1694
-    distinct_node_kinds 69
+    total_link_count 8090
+    named_node_count 1698
+    distinct_node_kinds 67
     node_kinds
       arguments 138
       array_expression 2
@@ -63,7 +63,7 @@ self_ast_census
       for_expression 1
       function_item 20
       generic_type 23
-      identifier 323
+      identifier 324
       if_expression 10
       impl_item 1
       index_expression 3
@@ -83,9 +83,8 @@ self_ast_census
       reference_expression 10
       reference_type 18
       return_expression 1
-      scoped_identifier 43
+      scoped_identifier 46
       scoped_type_identifier 5
-      scoped_use_list 1
       self 26
       self_parameter 13
       shorthand_field_initializer 12
@@ -94,7 +93,7 @@ self_ast_census
       string_literal 10
       struct_expression 2
       struct_item 2
-      super 31
+      super 32
       token_tree 1
       try_expression 4
       tuple_expression 1
@@ -104,6 +103,5 @@ self_ast_census
       type_arguments 23
       type_identifier 63
       unary_expression 13
-      use_declaration 2
-      use_list 1
+      use_declaration 3
       visibility_modifier 28

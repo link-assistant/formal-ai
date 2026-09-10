@@ -19,16 +19,16 @@ use super::{commit, fixture_repo, git, merge_formal_ai_pull_request, metric_scri
 #[test]
 fn an_indented_example_of_a_trailer_is_not_a_trailer() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session documented-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session documented-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
     commit(
         &repo,
-        "document the retraction trailer\n\nWithdraw a claim with:\n\n             Formal-AI-Retract: <full 40-character sha>\n\nFormal-AI-Session:          documented-session\nFormal-AI-Evidence: docs/evidence/session.txt",
+        "document the retraction trailer\n\nWithdraw a claim with:\n\n             Formal-AI-Retract: <full 40-character sha>\n\nFormal-AI-Session:          documented-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: evidence/session.txt",
     );
 
     let measurement = metric_script::measure(&repo, "v1.0.0", "HEAD")
@@ -53,16 +53,16 @@ fn an_indented_example_of_a_trailer_is_not_a_trailer() {
 #[test]
 fn a_retraction_unblocks_a_branch_whose_history_cannot_be_rewritten() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/sweep.md"),
+        repo.join("evidence/sweep.md"),
         "formal-ai sweep without the session id\n",
     )
     .expect("evidence must be written");
     fs::write(repo.join("code.txt"), "base\nchanged\n").expect("code must be written");
     commit(
         &repo,
-        "half-attributed change\n\nFormal-AI-Evidence: docs/evidence/sweep.md",
+        "half-attributed change\n\nFormal-AI-Evidence: evidence/sweep.md",
     );
     let broken = git(&repo, &["rev-parse", "HEAD"]);
 
@@ -101,10 +101,10 @@ fn a_retraction_unblocks_a_branch_whose_history_cannot_be_rewritten() {
 #[test]
 fn a_retraction_can_only_lower_the_measured_share() {
     let repo = fixture_repo();
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session fixture-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session fixture-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     fs::write(
@@ -114,8 +114,8 @@ fn a_retraction_can_only_lower_the_measured_share() {
     .expect("generated code must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
     let attributed = git(&repo, &["rev-parse", "HEAD"]);
 
@@ -242,10 +242,10 @@ fn a_retraction_must_name_a_full_sha_inside_the_measured_range() {
 fn a_stale_retraction_does_not_restore_the_claims_the_others_withdraw() {
     let repo = fixture_repo();
     let outside_the_range = git(&repo, &["rev-parse", "v1.0.0"]);
-    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::create_dir_all(repo.join("evidence")).expect("evidence directory must be created");
     fs::write(
-        repo.join("docs/evidence/session.txt"),
-        "formal-ai session fixture-session\n",
+        repo.join("evidence/session.txt"),
+        "formal-ai session fixture-session model formal-ai/fixture\n",
     )
     .expect("session evidence must be written");
     fs::write(
@@ -255,8 +255,8 @@ fn a_stale_retraction_does_not_restore_the_claims_the_others_withdraw() {
     .expect("generated code must be written");
     commit(
         &repo,
-        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
-         docs/evidence/session.txt",
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Model: formal-ai/fixture\nFormal-AI-Evidence: \
+         evidence/session.txt",
     );
     let attributed = git(&repo, &["rev-parse", "HEAD"]);
 

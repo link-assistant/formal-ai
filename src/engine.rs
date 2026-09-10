@@ -373,14 +373,9 @@ fn known_intent_slugs() -> &'static [String] {
     CELL.get_or_init(|| {
         seed::intent_routing()
             .intents
-            .into_iter()
-            .filter_map(|route| {
-                if route.slug.is_empty() {
-                    None
-                } else {
-                    Some(route.slug)
-                }
-            })
+            .iter()
+            .filter(|route| !route.slug.is_empty())
+            .map(|route| route.slug.clone())
             .collect()
     })
     .as_slice()
@@ -388,7 +383,7 @@ fn known_intent_slugs() -> &'static [String] {
 
 fn trace_prefixes() -> &'static [String] {
     static CELL: OnceLock<Vec<String>> = OnceLock::new();
-    CELL.get_or_init(|| seed::intent_routing().trace_prefixes)
+    CELL.get_or_init(|| seed::intent_routing().trace_prefixes.clone())
         .as_slice()
 }
 

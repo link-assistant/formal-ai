@@ -124,6 +124,11 @@ meanings
     lexeme en
       surface
         text "external benchmark baseline read error"
+  external_benchmark_frontier_written
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark frontier written"
   external_benchmark_learning_task
     defined-by intent
     lexeme en
@@ -164,6 +169,11 @@ meanings
     lexeme en
       surface
         text "human"
+  ill_formed
+    defined-by concept
+    lexeme en
+      surface
+        text "ill formed"
   imprime
     defined-by concept
     lexeme en
@@ -279,6 +289,11 @@ meanings
     lexeme en
       surface
         text "original first party"
+  pandas
+    defined-by concept
+    lexeme en
+      surface
+        text "pandas"
   paperwork
     defined-by concept
     lexeme en
@@ -499,6 +514,11 @@ meanings
     lexeme en
       surface
         text "response completion recovery decompose into leaf zh"
+  response_docs_method_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation ru"
   response_document_originality_check_sample_present_ru
     defined-by response_template
     lexeme en
@@ -689,6 +709,11 @@ meanings
     lexeme en
       surface
         text "response physical action question hi"
+  response_policy_bounded_autonomy_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response policy bounded autonomy en"
   response_proof_datalog_conclusion_zh
     defined-by response_template
     lexeme en
@@ -1034,6 +1059,11 @@ meanings
     lexeme en
       surface
         text "tool append memory"
+  traffic_api_docs
+    defined-by value
+    lexeme en
+      surface
+        text "traffic api docs"
   trim_whitespace
     defined-by operation
     lexeme en

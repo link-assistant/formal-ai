@@ -15,6 +15,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "one_paragraph"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1c9ff24d4b6eabc5
+    source "data/seed/closure-generated-01.lino"
+    record "response_docs_method_explanation_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f39f692396327a35
     source "data/seed/closure-generated-01.lino"
     record "response_thinking_language_name_unknown_zh"
@@ -171,6 +175,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "filing"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fb964315b8af62f5
+    source "data/seed/closure-generated-05.lino"
+    record "pandas"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_7f11df7703ee6585
     source "data/seed/closure-generated-05.lino"
     record "pattern_concept_prefix_chto_oznachaet_slovo"
@@ -262,6 +270,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_18024bfc7cab3ed5
     source "data/seed/closure-generated-06.lino"
     record "response_lexeme_import_refused_batch_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_aaedc0afdda80dc5
+    source "data/seed/closure-generated-06.lino"
+    record "response_opinion_question_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_bbf9179743aaa3d5
     source "data/seed/closure-generated-06.lino"

@@ -1,0 +1,123 @@
+self_ast_census
+  target src/agentic_coding/link_edit_rules.rs
+  language rust
+  fidelity full_ast
+  byte_len 19025
+  line_count 508
+  content_id source_module_4c954cffa3c0348e
+  symbol_count 18
+  symbols
+    const RULES 28 28
+    enum LinkEditRule 32 39
+    function name 44 50
+    struct LinkEditReport 55 66
+    enum LinkEditError 69 88
+    function fmt 91 109
+    struct RuleShape 116 122
+    function rule_shapes 126 128
+    function parse_rule_shapes 132 157
+    function shape_for 160 165
+    function apply_link_edit 177 267
+    function apply_link_edit 275 281
+    function insert_members_via_links 289 311
+    function has_syntax_links 314 318
+    function spans_of_kinds 323 343
+    function member_insertion_edit 348 429
+    struct RuleDocument 434 441
+    function parse_rule_document 449 508
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 14752
+    named_node_count 3039
+    distinct_node_kinds 87
+    node_kinds
+      arguments 263
+      array_type 2
+      assignment_expression 8
+      attribute 16
+      attribute_item 16
+      base_field_initializer 1
+      binary_expression 27
+      block 52
+      call_expression 263
+      char_literal 6
+      closure_expression 32
+      closure_parameters 32
+      compound_assignment_expr 1
+      const_item 1
+      continue_expression 4
+      declaration_list 3
+      doc_comment 74
+      else_clause 4
+      enum_item 2
+      enum_variant 12
+      enum_variant_list 2
+      escape_sequence 2
+      expression_statement 51
+      field_declaration 29
+      field_declaration_list 9
+      field_expression 209
+      field_identifier 259
+      field_initializer 23
+      field_initializer_list 12
+      field_pattern 12
+      for_expression 5
+      function_item 12
+      function_modifiers 1
+      generic_function 4
+      generic_type 22
+      identifier 614
+      if_expression 17
+      impl_item 3
+      index_expression 3
+      inner_doc_comment_marker 21
+      integer_literal 14
+      let_condition 6
+      let_declaration 52
+      lifetime 2
+      line_comment 80
+      macro_invocation 13
+      match_arm 29
+      match_block 6
+      match_expression 6
+      match_pattern 29
+      mutable_specifier 15
+      ordered_field_declaration_list 4
+      outer_doc_comment_marker 53
+      parameter 21
+      parameters 12
+      primitive_type 21
+      range_expression 8
+      reference_expression 11
+      reference_type 23
+      remaining_field_pattern 4
+      return_expression 13
+      scoped_identifier 46
+      scoped_type_identifier 23
+      scoped_use_list 1
+      self 4
+      self_parameter 2
+      shorthand_field_identifier 12
+      shorthand_field_initializer 8
+      source_file 1
+      string_content 50
+      string_literal 52
+      struct_expression 12
+      struct_item 3
+      struct_pattern 10
+      token_tree 29
+      try_expression 11
+      tuple_expression 11
+      tuple_pattern 13
+      tuple_struct_pattern 16
+      tuple_type 5
+      type_arguments 26
+      type_identifier 115
+      unary_expression 5
+      use_declaration 2
+      use_list 1
+      visibility_modifier 29
+      while_expression 1
