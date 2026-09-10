@@ -39,6 +39,7 @@ mod issue_1076;
 mod issue_1079;
 mod issue_1081;
 mod issue_1107_green_ledger;
+mod issue_1111_non_linux_switch;
 mod issue_717;
 mod issue_730;
 mod issue_739;
