@@ -57,12 +57,7 @@ fn every_check_still_runs_and_none_is_conditional_on_the_event() {
 #[test]
 fn making_the_status_visible_earlier_introduced_no_bypass() {
     let workflow = unwrapped(&self_development_status_workflow());
-    for bypass in [
-        "continue-on-error",
-        "|| true",
-        "|| exit 0",
-        "if: false",
-    ] {
+    for bypass in ["continue-on-error", "|| true", "|| exit 0", "if: false"] {
         assert!(
             !workflow.contains(bypass),
             "`{bypass}` would let the self-development floor pass while unmet (issue #1066)"
