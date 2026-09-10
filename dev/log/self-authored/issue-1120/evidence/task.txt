@@ -1,0 +1,1 @@
+In the file self-hosting-attribution.rs replace "    \"Gemfile.lock\"," with "    \"Gemfile.lock\",\n    \"composer.lock\","
