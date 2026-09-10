@@ -113,3 +113,82 @@ fn the_linux_leg_is_not_guarded_by_the_switch() {
         "the skip must be expressed as 'not ubuntu' so Linux can never be switched off by it"
     );
 }
+
+/// The green ledger's skip has to reach every job that depends on the skipped
+/// work, not just the one that consults the ledger.
+///
+/// `agentic-cli-matrix.yml` failed on this branch's first run while passing on
+/// `main`, and the cause was latent rather than new: on a ledger hit, `build`
+/// skips the step that plans the client legs, so `needs.build.outputs.matrix`
+/// is empty and `fromJSON('')` is a strategy error -- the `matrix` job fails,
+/// `learn` skips, and the summary reports a red workflow for inputs that had
+/// already passed. A cache hit must never be able to turn a workflow red.
+mod agentic_cli_matrix_ledger {
+    use std::fs;
+
+    fn workflow() -> String {
+        fs::read_to_string(format!(
+            "{}/.github/workflows/agentic-cli-matrix.yml",
+            env!("CARGO_MANIFEST_DIR")
+        ))
+        .expect("the agentic CLI matrix workflow should be readable")
+        .replace("\r\n", "\n")
+    }
+
+    #[test]
+    fn a_ledger_hit_skips_the_jobs_that_need_the_planned_matrix() {
+        let workflow = workflow();
+        // Job-level, not step-level: the same expression guards individual
+        // steps throughout the file, and a step guard would not stop
+        // `fromJSON('')` from failing the job's own strategy.
+        let job_guard = "\n    if: ${{ needs.build.outputs.already-green != 'true' }}\n";
+        for job in ["  matrix:\n", "  learn:\n"] {
+            let body = workflow
+                .split(job)
+                .nth(1)
+                .unwrap_or_else(|| panic!("{job} must still be defined"));
+            let header = body.split("steps:").next().expect("a job has a header");
+            assert!(
+                header.contains(job_guard.trim_end_matches('\n')),
+                "{job} must skip at the job level on a ledger hit"
+            );
+        }
+    }
+
+    /// A skip is not a pass for the one leg that can always run.
+    #[test]
+    fn the_summary_still_requires_the_replay_on_a_ledger_hit() {
+        let workflow = workflow();
+        assert!(
+            workflow.contains("ALREADY_GREEN: ${{ needs.build.outputs.already-green }}"),
+            "the summary must read the ledger result through env, never interpolated into run:"
+        );
+        let summary = workflow
+            .split("name: Matrix summary")
+            .nth(1)
+            .expect("the summary job exists");
+        let early_exit = summary
+            .split("if [ \"$ALREADY_GREEN\" = \"true\" ]; then")
+            .nth(1)
+            .expect("the ledger-hit branch exists");
+        let branch = early_exit.split("exit 0").next().expect("it exits");
+        assert!(
+            branch.contains("needs.replay.result"),
+            "replay needs only jq, so it runs on a ledger hit and must still be required"
+        );
+    }
+
+    /// The early exit must not swallow a genuine leg failure.
+    #[test]
+    fn a_real_leg_failure_still_fails_the_summary() {
+        let workflow = workflow();
+        assert!(
+            workflow.contains("one or more client legs failed"),
+            "a failed client leg must still fail the matrix when the legs actually ran"
+        );
+        assert!(
+            workflow.contains("client-contract learning failed"),
+            "learning must still be required when it actually ran"
+        );
+    }
+}
