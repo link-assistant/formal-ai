@@ -29,6 +29,15 @@ pub fn coverage_workflow() -> String {
     .replace("\r\n", "\n")
 }
 
+pub fn self_development_status_workflow() -> String {
+    fs::read_to_string(format!(
+        "{}/.github/workflows/self-development-status.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n")
+}
+
 pub fn desktop_release_workflow() -> String {
     fs::read_to_string(format!(
         "{}/.github/workflows/desktop-release.yml",

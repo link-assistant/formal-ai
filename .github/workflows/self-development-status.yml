@@ -12,6 +12,13 @@ name: Self-development status
 on:
   push:
     branches: [main]
+  # Issue #1113: without this, the first anyone learns that a change leaves the
+  # release path red is *after* it merges -- which is what happened on
+  # `7f3d61fee` and again on `5b0973f65`. The same three checks run on the merge
+  # commit a pull request proposes, so the answer arrives before the merge, not
+  # after. The condition itself is unchanged: still red when the floor is unmet,
+  # still no budget, grace period or bypass (issue #1066).
+  pull_request:
   schedule:
     - cron: '17 6 * * *'
   workflow_dispatch:
