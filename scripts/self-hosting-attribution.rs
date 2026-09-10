@@ -58,6 +58,7 @@ pub const LOCKFILE_NAMES: &[&str] = &[
     "pnpm-lock.yaml",
     "poetry.lock",
     "uv.lock",
+    "composer.lock",
     "Gemfile.lock",
 ];
 
