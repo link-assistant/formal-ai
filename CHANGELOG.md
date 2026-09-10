@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.348.1] - 2026-09-10
+
+### Fixed
+- Issue #1120: fix(metric): composer.lock is a lockfile the self-hosting share never counts. Authored by Formal AI through the Agent CLI.
+
 ## [0.348.0] - 2026-09-10
 
 ### Added
