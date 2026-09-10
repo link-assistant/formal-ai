@@ -92,6 +92,11 @@ jobs:
   matrix:
     name: E2E (${{ matrix.client }})
     needs: [build]
+    # Issue #1111: when the green ledger already passed these inputs, `build`
+    # skips its planning step and publishes no matrix, and `fromJSON('')` is a
+    # strategy error rather than an empty run. The ledger's own skip therefore
+    # has to reach this job too, or a hit turns the workflow red.
+    if: ${{ needs.build.outputs.already-green != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -264,6 +269,8 @@ jobs:
   learn:
     name: Learn reusable client contracts
     needs: [build, matrix]
+    # Issue #1111: nothing to learn from when the legs did not run.
+    if: ${{ needs.build.outputs.already-green != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -314,7 +321,7 @@ jobs:
 
   summary:
     name: Matrix summary
-    needs: [matrix, replay, learn]
+    needs: [build, matrix, replay, learn]
     runs-on: ubuntu-latest
     # Issue #1017: the only job in the repository without a cap. It inherits
     # GitHub's 360-minute default, so a runner that wedges while evaluating this
@@ -326,7 +333,21 @@ jobs:
       - name: Fail if any leg failed
         # A single red leg fails the matrix. Issue #671 exists because
         # "inferred from the shared adapters" was accepted as coverage once.
+        env:
+          ALREADY_GREEN: ${{ needs.build.outputs.already-green }}
         run: |
+          # Issue #1111: a green-ledger hit skips the legs, and a skip is not a
+          # failure. `replay` needs only jq, so it runs either way and is still
+          # required to succeed -- the committed transcripts keep being checked
+          # even when everything else is skipped.
+          if [ "$ALREADY_GREEN" = "true" ]; then
+            if [ "${{ needs.replay.result }}" != "success" ]; then
+              echo "a committed transcript no longer replays" >&2
+              exit 1
+            fi
+            echo "identical inputs already passed; client legs skipped"
+            exit 0
+          fi
           if [ "${{ needs.matrix.result }}" != "success" ]; then
             echo "one or more client legs failed" >&2
             exit 1
