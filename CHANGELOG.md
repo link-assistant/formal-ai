@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.348.2] - 2026-09-11
+
+### Fixed
+- Issue #1123: fix(metric): go.sum is a lockfile the self-hosting share never counts. Authored by Formal AI through the Agent CLI.
+
+### Fixed
+- The self-development status now runs on pull requests, not only on pushes to `main` and the daily schedule. Both `7f3d61fee` and `5b0973f65` merged green and left `main` red, because no pull request could see the check that would have caught it (issue #1113).
+- Lowered the `non_kernel_rust_lines` ceiling from 112805 to its measured value 112713, the shrink since `v0.348.0` that the kernel ratchet requires of a release (issue #1085 D1.4).
+
 ## [0.348.1] - 2026-09-10
 
 ### Fixed

@@ -632,3 +632,5 @@ changelog.d/20260910_092000_issue_1110_portable_rewrite.md	0.348.0
 changelog.d/20260910_120000_issue_1101_documentation_parity.md	0.348.0
 changelog.d/20260910_160000_issue_1111_non_linux_ci.md	0.348.0
 changelog.d/20260910_211925_issue_1120_self_authored.md	0.348.1
+changelog.d/20260910_233845_issue_1123_self_authored.md	0.348.2
+changelog.d/20260911_042110_pull_request_visible_self_development_status.md	0.348.2
