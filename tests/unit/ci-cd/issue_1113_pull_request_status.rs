@@ -37,7 +37,10 @@ fn every_check_still_runs_and_none_is_conditional_on_the_event() {
     let workflow = self_development_status_workflow();
     for check in [
         "rust-script scripts/self-hosting-metric.rs",
-        "rust-script scripts/check-kernel-ratchet.rs --release",
+        // Not `--release`: issue #1085 D1.4's demand that a release show the
+        // Rust line count falling is withdrawn (ARCHITECT-VISION.md). The
+        // ceilings still hold; the release-shrink rule is gone.
+        "rust-script scripts/check-kernel-ratchet.rs",
         "rust-script scripts/check-self-development-release.rs",
     ] {
         assert!(

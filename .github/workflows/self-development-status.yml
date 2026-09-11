@@ -75,7 +75,16 @@ jobs:
             echo
             echo "Share of behaviour-changing lines authored by the formal-ai model: $(tail -n 1 "$RUNNER_TEMP/share.txt")"
           } >> "$GITHUB_STEP_SUMMARY"
-      - name: 'Kernel shrink since the last tag (issue #1085 D1.4)'
-        run: rust-script scripts/check-kernel-ratchet.rs --release
+      # Issue #1085 D1.4 demanded that the non-kernel Rust line count be lower
+      # at every release. That demand is withdrawn (ARCHITECT-VISION.md): the
+      # meta-language representation is the system and Rust is one target it is
+      # emitted into, so a Rust line count measures an output and may grow while
+      # the algorithm becomes more general. Requiring it to shrink obstructs
+      # progression to the vision, which is the one thing a requirement may not
+      # do. The shrink-only ceilings themselves still hold on every pull request
+      # through the `check_kernel_ratchet` gate; what is gone is the rule that a
+      # *release* must show the line count falling.
+      - name: 'Kernel ratchet holds (ceilings move down, never up)'
+        run: rust-script scripts/check-kernel-ratchet.rs
       - name: 'Self-development floor (issue #924, #1066, #1085)'
         run: rust-script scripts/check-self-development-release.rs

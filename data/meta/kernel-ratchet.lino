@@ -1,9 +1,9 @@
 kernel_ratchet
   issue 1085
-  purpose "Behaviour belongs in links; Rust outside the kernel may only shrink. Each ceiling is the measured value at the commit that set it, and a ceiling can only move down (D1.4)."
+  purpose "Behaviour belongs in links. Each ceiling is the measured value at the commit that set it, and a ceiling can only move down. What this does NOT claim, since ARCHITECT-VISION.md withdrew it: that Rust as a whole must shrink, or that a release must show it shrinking. The meta-language representation is the system and Rust is one target it is emitted into, so a Rust line count measures an output and may grow while the algorithm becomes more general."
   note "issue 1105 RC5: src/dialog_log.rs is kernel because session identity is transport infrastructure, decided per request beside the memory path src/shared_memory.rs already owns and read by src/server.rs, src/main.rs and src/client_integrations/server.rs, all kernel. Which conversation a request belongs to is a property of the connection, not of the words in it, which is what the content-hash collision it replaced proved."
   checker "rust-script scripts/check-kernel-ratchet.rs"
-  release_rule "the non_kernel_rust_lines ceiling must be strictly lower than at the previous tag; the other ceilings must not rise"
+  release_rule "withdrawn. D1.4 required the non_kernel_rust_lines ceiling to be strictly lower at every release; that demand obstructed progression to the vision and was removed from .github/workflows/self-development-status.yml. The ceilings still hold on every pull request: they move down and never up."
   kernel_path "src/lib.rs"
   kernel_path "src/main.rs"
   kernel_path "src/bin/"
