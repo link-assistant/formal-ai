@@ -1,4 +1,4 @@
 ci_gate check_kernel_ratchet
   stage rust
-  description "Rust outside the kernel only shrinks: five measured ceilings in data/meta/kernel-ratchet.lino may be lowered by a pull request and never raised (issue #1085 D1.4)."
+  description "Five measured ceilings in data/meta/kernel-ratchet.lino may be lowered by a pull request and never raised. This does not claim Rust must shrink: ARCHITECT-VISION.md withdrew that, since Rust is one target the meta language is emitted into and its line count measures an output."
   run "rust-script --test scripts/check-kernel-ratchet.rs && rust-script scripts/check-kernel-ratchet.rs"

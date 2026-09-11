@@ -97,9 +97,29 @@ fn the_goals_do_not_rate_a_task_before_splitting_it() {
 /// so the history stays honest about what was built and then withdrawn.
 #[test]
 fn the_withdrawn_requirement_says_so_where_it_was_claimed() {
-    let requirements = read("REQUIREMENTS.md");
-    assert!(
-        requirements.contains("| R1085-1 | Superseded, and the kernel/non-kernel split with it."),
-        "R1085-1 must record that it is superseded rather than silently disappear"
-    );
+    // `REQUIREMENTS.md` is assembled from `docs/requirements/` by
+    // `scripts/assemble-requirements.rs`, so the shard is asserted too: an edit
+    // to the assembled file alone is overwritten by the next regeneration.
+    for document in [
+        "REQUIREMENTS.md",
+        "docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md",
+    ] {
+        let text = read(document);
+        let row = text
+            .lines()
+            .find(|line| line.starts_with("| R1085-1 |"))
+            .unwrap_or_else(|| panic!("{document} no longer carries an R1085-1 row"));
+        // The substance, not one phrasing: the row has to say it is superseded
+        // and to name what was superseded with it.
+        assert!(
+            row.contains("Superseded") || row.contains("superseded"),
+            "{document}: R1085-1 must record that it is superseded rather than \
+             silently disappear, but reads: {row}"
+        );
+        assert!(
+            row.contains("kernel"),
+            "{document}: R1085-1 must say the kernel/non-kernel split went with it, \
+             but reads: {row}"
+        );
+    }
 }
