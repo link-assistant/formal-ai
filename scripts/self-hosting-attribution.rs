@@ -59,6 +59,7 @@ pub const LOCKFILE_NAMES: &[&str] = &[
     "poetry.lock",
     "uv.lock",
     "composer.lock",
+    "go.sum",
     "Gemfile.lock",
 ];
 
