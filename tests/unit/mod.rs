@@ -1,6 +1,7 @@
 mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;
+mod architect_vision;
 mod assistant_name;
 mod budget_search;
 mod bulk_lexeme_import;
@@ -263,4 +264,5 @@ mod web_requests;
 
 #[path = "ci-cd/mod.rs"]
 mod ci_cd;
+mod hive_mind_hello_world;
 mod issue_1101_documentation_question_parity;

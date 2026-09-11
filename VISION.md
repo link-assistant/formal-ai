@@ -233,10 +233,15 @@ is parsed into Rust tables by `src/seed.rs`, and `src/solver.rs`, `src/engine.rs
 and `src/main.rs` never read the doublets store. The link-cli store is a
 write-behind projection, filled by `memory_sync.rs` after each `.lino` write.
 Behaviour lives in compiled Rust handlers with `.lino` recipes that describe
-them. Closing that gap is the current direction: the kernel (notation, store,
-interpreter, event log, loader, transports, sandbox, the universal loop) is
-named in `data/meta/kernel-ratchet.lino`, Rust outside it may only shrink, and
-new behaviour lands as links executed by a generic interpreter.
+them. Closing that gap is the current direction: the entire source is translated to
+links / meta language and back again (issue #558), so the meta-language
+representation is the system and Rust is one of the languages it is emitted
+into -- JavaScript or any other target is the same projection of the same
+links. A modification is made in the meta language and recompiled back out, and
+that recompilation is an action the user approves rather than something that
+happens silently. The Rust line count is therefore a property of one emitted
+target and not a measure of the system: it may grow while the algorithm becomes
+more general.
 
 The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `src/seed.rs` (Rust) and `src/web/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
 

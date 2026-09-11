@@ -2,6 +2,12 @@
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
+**Read [ARCHITECT-VISION.md](ARCHITECT-VISION.md) first.** It is the standing guideline, in the architect's
+own words: the goal is the meta algorithm; code is held in the meta language and Rust is one emission
+target of it; self-modification is an action the user approves; algorithms are arrived at by
+deduplication; and no task is rated hard -- split it until each leaf is directly solvable. Where any
+other document, gate or requirement contradicts that page, the other one is wrong and must be fixed.
+
 ## How we develop Formal AI: drive the Agent CLI, never defer
 
 **From issue #538 forward, this is the only way we develop the Formal AI
@@ -1081,6 +1087,7 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 ├── README.md             # Project README
 ├── REQUIREMENTS.md       # Issue-by-issue requirement matrix
 ├── ROADMAP.md            # Requirement-level implementation status
+├── ARCHITECT-VISION.md   # Standing guideline in the architect's words; read first
 └── VISION.md             # Values and long-term direction
 ```
 

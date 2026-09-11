@@ -1,0 +1,106 @@
+hello_world_languages
+  purpose "The top 20 languages create-test-repo.mjs picks from, each with what is needed to produce a working Hello World: the file name, how it is run, and what it must print. Data, so adding a language is a data change and never a Rust branch (ARCHITECT-VISION.md section 1)."
+  programs "The program text itself lives beside this file, one per language, in examples/hello-world/<slug>/<file>. It is not embedded here because canonical Links Notation has no escape for a quote inside a quoted scalar, and every Hello World but one contains a quote. Keeping source in source files is the honest reading of that constraint rather than a workaround for it."
+  source "https://github.com/link-assistant/hive-mind/blob/main/create-test-repo.mjs"
+  expected_output "Hello, World!"
+  verified "Each program below was written to a file and executed on 2026-09-12. Eleven printed exactly Hello, World! on this machine: python, javascript, typescript, go, rust, ruby, java, cpp, csharp, swift, fsharp. Nine had no toolchain installed locally and are unverified: kotlin, scala, haskell, elixir, clojure, ocaml, erlang, julia, r. The unverified nine are the reason the ladder runs in CI rather than only here."
+  language
+    name Python
+    slug python
+    file hello.py
+    run "python3 hello.py"
+  language
+    name JavaScript
+    slug javascript
+    file hello.js
+    run "node hello.js"
+  language
+    name TypeScript
+    slug typescript
+    file hello.ts
+    run "npx tsx hello.ts"
+  language
+    name Go
+    slug go
+    file hello.go
+    run "go run hello.go"
+  language
+    name Rust
+    slug rust
+    file hello.rs
+    run "rustc hello.rs -o hello && ./hello"
+  language
+    name Ruby
+    slug ruby
+    file hello.rb
+    run "ruby hello.rb"
+  language
+    name Java
+    slug java
+    file Hello.java
+    run "java Hello.java"
+  language
+    name "C++"
+    slug cpp
+    file hello.cpp
+    run "g++ hello.cpp -o hello && ./hello"
+  language
+    name "C#"
+    slug csharp
+    file Hello.cs
+    run "dotnet script Hello.cs"
+  language
+    name Swift
+    slug swift
+    file hello.swift
+    run "swift hello.swift"
+  language
+    name Kotlin
+    slug kotlin
+    file Hello.kt
+    run "kotlinc Hello.kt -include-runtime -d hello.jar && java -jar hello.jar"
+  language
+    name Scala
+    slug scala
+    file Hello.scala
+    run "scala Hello.scala"
+  language
+    name Haskell
+    slug haskell
+    file hello.hs
+    run "runghc hello.hs"
+  language
+    name Elixir
+    slug elixir
+    file hello.exs
+    run "elixir hello.exs"
+  language
+    name Clojure
+    slug clojure
+    file hello.clj
+    run "clojure -M hello.clj"
+  language
+    name "F#"
+    slug fsharp
+    file hello.fsx
+    run "dotnet fsi hello.fsx"
+  language
+    name OCaml
+    slug ocaml
+    file hello.ml
+    run "ocaml hello.ml"
+  language
+    name Erlang
+    slug erlang
+    file hello.erl
+    run "escript hello.erl"
+  language
+    name Julia
+    slug julia
+    file hello.jl
+    run "julia hello.jl"
+  language
+    name R
+    slug r
+    file hello.R
+    run "Rscript hello.R"
