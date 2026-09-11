@@ -1,0 +1,1 @@
+In the file self-hosting-attribution.rs replace "uv.lock" with "uv.lock", "composer.lock"

@@ -1,0 +1,1 @@
+In the file self-hosting-attribution.rs replace "composer.lock" with "composer.lock", "go.sum"
