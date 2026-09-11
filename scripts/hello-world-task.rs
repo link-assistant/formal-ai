@@ -142,8 +142,8 @@ fn parse_table(text: &str) -> Vec<Language> {
 /// with unique names in place of throwaway repositories: two runs for the same
 /// language must not collide, and a failed branch stays readable next to the
 /// one that replaced it.
-fn default_branch(slug: &str, nonce: &str) -> String {
-    format!("hello-world/{slug}-{nonce}")
+fn default_branch(slug: &str, suffix: &str) -> String {
+    format!("hello-world/{slug}-{suffix}")
 }
 
 /// The task contract for one language.
@@ -241,14 +241,14 @@ fn main() {
         eprintln!("hello-world-task: no language with slug {slug} in {TABLE_PATH}");
         exit(1);
     };
-    let nonce = env::var("HELLO_WORLD_NONCE").unwrap_or_else(|_| {
+    let suffix = env::var("HELLO_WORLD_BRANCH_SUFFIX").unwrap_or_else(|_| {
         // Wall-clock seconds are enough: one run generates one branch.
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .map(|elapsed| elapsed.as_secs().to_string())
             .unwrap_or_else(|_| "0".to_string())
     });
-    let branch = branch.unwrap_or_else(|| default_branch(&entry.slug, &nonce));
+    let branch = branch.unwrap_or_else(|| default_branch(&entry.slug, &suffix));
     print!("{}", contract(entry, &branch));
 }
 
