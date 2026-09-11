@@ -54,7 +54,7 @@ kernel_ratchet
   kernel_path "src/trace_record.rs"
   ceiling
     measure non_kernel_rust_lines
-    value 112805
+    value 112713
     how "non-blank, non-comment lines of every src/**/*.rs file that is not under a kernel_path, measured at the commit that set the ceiling"
   ceiling
     measure handler_files
