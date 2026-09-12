@@ -256,16 +256,40 @@ pub const RATCHET_EVIDENCE_FLOOR: u64 = 100;
 /// the ratchet; it is still recorded, still reported, and still counts in the
 /// trailing share the release notes carry.
 pub fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
-    rows.iter()
+    let Some(newest) = rows
+        .iter()
         .rfind(|row| row.metric_version == METRIC_VERSION)
-        .map_or(0, |row| {
-            row.target_override_basis_points.unwrap_or_else(|| {
-                let carried = row.target_percentage_basis_points.unwrap_or(0);
-                if row.changed_lines < RATCHET_EVIDENCE_FLOOR {
-                    return carried;
-                }
-                carried.max(row.trailing_percentage_basis_points)
-            })
+    else {
+        return 0;
+    };
+    // A reviewed override replaces the ratchet outright, and it is read from the
+    // newest row alone: a decision is about the level from here on, not about
+    // how the level was reached.
+    if let Some(override_target) = newest.target_override_basis_points {
+        return override_target;
+    }
+    // The bar is recomputed from the rows that were *entitled* to set it rather
+    // than read off the newest row's carried value. `target_percentage_basis_points`
+    // is a cache of this same walk, and a bar a degenerate cycle manufactured
+    // once would otherwise be carried forward verbatim by every row after it --
+    // v0.349.0 is a legitimate 4050-line cycle and still carried the 291 that the
+    // one-line v0.348.1 created two releases earlier. Refusing the source while
+    // honouring its cached result would fix nothing.
+    ratcheted_target(rows)
+}
+
+/// The bar implied by every comparable row that was entitled to raise it.
+///
+/// A reviewed override anywhere in the history replaces everything before it,
+/// because that is what a decision about the level means; after it, the ordinary
+/// ratchet resumes from the level it set.
+fn ratcheted_target(rows: &[ReleaseRow]) -> u64 {
+    rows.iter()
+        .filter(|row| row.metric_version == METRIC_VERSION)
+        .fold(0, |target, row| match row.target_override_basis_points {
+            Some(override_target) => override_target,
+            None if row.changed_lines < RATCHET_EVIDENCE_FLOOR => target,
+            None => target.max(row.trailing_percentage_basis_points),
         })
 }
 

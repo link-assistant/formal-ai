@@ -974,16 +974,46 @@ fn a_cycle_too_small_to_measure_does_not_raise_the_ratchet() {
         self_authored_pull_request_authors: Vec::new(),
     };
 
+    // A real cycle that precedes the tiny one, so there is a genuine bar to
+    // preserve and the assertions distinguish "carried" from "raised".
+    let real = metric_script::ReleaseRow {
+        tag: "v0.348.0".to_owned(),
+        changed_lines: 49_484,
+        percentage_basis_points: 0,
+        trailing_percentage_basis_points: 40,
+        target_percentage_basis_points: None,
+        ..row(1)
+    };
+
     assert_eq!(
-        metric_script::target_from_rows(&[row(1)]),
-        1,
-        "a one-line cycle must carry the previous target forward, not its own \
-         trailing share: one line is not evidence of a sustained share"
+        metric_script::target_from_rows(&[real.clone(), row(1)]),
+        40,
+        "a one-line cycle must leave the bar where the real cycles put it, not \
+         raise it: one line is not evidence of a sustained share"
     );
     assert_eq!(
-        metric_script::target_from_rows(&[row(metric_script::RATCHET_EVIDENCE_FLOOR)]),
+        metric_script::target_from_rows(&[real, row(metric_script::RATCHET_EVIDENCE_FLOOR)]),
         291,
         "the very same trailing share measured over a real cycle must still \
          ratchet: this is a floor on evidence, not a way out of the ratchet"
+    );
+
+    // The bar is recomputed from the rows entitled to set it, so a value a
+    // degenerate cycle manufactured is not preserved by the rows after it.
+    // `v0.349.0` is a legitimate 4050-line cycle that carried forward the 291
+    // the one-line `v0.348.1` created two releases earlier; reading the cached
+    // number would keep the defect alive one row further along.
+    let inheritor = metric_script::ReleaseRow {
+        tag: "v0.349.0".to_owned(),
+        changed_lines: 4_050,
+        trailing_percentage_basis_points: 5,
+        target_percentage_basis_points: Some(291),
+        ..row(1)
+    };
+    assert_eq!(
+        metric_script::target_from_rows(&[row(1), inheritor]),
+        5,
+        "a bar a one-line cycle manufactured must not survive in the rows that \
+         merely carried it forward"
     );
 }
