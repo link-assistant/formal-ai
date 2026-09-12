@@ -133,12 +133,19 @@ curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
   || die "formal-ai serve never came up on port $PORT"
 
 agent_config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-sdk/openai-compatible","options":{"baseURL":"http://127.0.0.1:%s/api/openai/v1","apiKey":"local"},"models":{"formal-ai":{"name":"Formal AI"}}}},"model":"formalai/formal-ai"}' "$PORT")"
+# `--summarize-session` and `--generate-title` default to true, and both make a
+# *second* model call that ignores `--model` and goes to the CLI's own default
+# provider. With no credentials that provider answers "OpenCode's free tier can
+# only be used in OpenCode", which aborted the run *after* Formal AI had already
+# written the artifact -- so the loop looked broken when only the session
+# bookkeeping was. Neither call is needed to author a change.
 (
   cd "$work"
   PATH="$(dirname "$BIN"):$PATH" \
   FORMAL_AI_API_KEY=local \
   LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$agent_config" \
   "$AGENT" --model formalai/formal-ai --permission-mode auto \
+    --no-summarize-session --no-generate-title \
     --output-format stream-json --compact-json --disable-stdin --prompt "$task"
 ) >"$state/agent-stream.raw.log" 2>"$out/agent-stderr.log"
 
