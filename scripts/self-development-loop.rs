@@ -78,12 +78,19 @@ fn pull_request_number(reference: &str) -> Option<u64> {
     number.parse::<u64>().ok().filter(|number| *number > 0)
 }
 
-pub(super) fn merged_self_authored_pull_requests(
+/// Commits in `since..until` whose Formal AI attribution survives validation.
+///
+/// The keys are commits; the values are the pull request each one names. Split
+/// out of [`merged_self_authored_pull_requests`] so the pull-request reading of
+/// the self-development floor validates a commit exactly as the merged reading
+/// does -- same retractions, same evidence check, same pull-request agreement.
+/// A second, looser walk would be a bypass wearing the same name.
+pub fn attributed_commits(
     repo: &Path,
     since: &str,
     until: &str,
     policy: EvidencePolicy,
-) -> Result<Vec<String>, String> {
+) -> Result<BTreeMap<String, String>, String> {
     let range = format!("{since}..{until}");
     let commits = git(repo, &["rev-list", "--reverse", "--no-merges", &range])?;
     let commits = commits
@@ -115,6 +122,17 @@ pub(super) fn merged_self_authored_pull_requests(
             attributed.insert(commit.to_owned(), reference);
         }
     }
+    Ok(attributed)
+}
+
+pub(super) fn merged_self_authored_pull_requests(
+    repo: &Path,
+    since: &str,
+    until: &str,
+    policy: EvidencePolicy,
+) -> Result<Vec<String>, String> {
+    let range = format!("{since}..{until}");
+    let attributed = attributed_commits(repo, since, until, policy)?;
 
     let merges = git(
         repo,
@@ -221,6 +239,16 @@ pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
                     .max(row.trailing_percentage_basis_points)
             })
         })
+}
+
+/// How many commits in `since..until` carry validated Formal AI attribution.
+///
+/// The pull-request reading of the self-development floor: on a `pull_request`
+/// event the cycle cannot contain a *merged* Formal AI pull request, because
+/// this branch is the pull request and it merges after the check runs. The
+/// commits counted here are the ones that become that merged pull request.
+pub fn attributed_commits_in_range(repo: &Path, since: &str, until: &str) -> Result<usize, String> {
+    Ok(attributed_commits(repo, since, until, super::EvidencePolicy::Lenient)?.len())
 }
 
 pub fn self_development_release_status(

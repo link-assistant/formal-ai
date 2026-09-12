@@ -164,6 +164,36 @@ fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     era * 146_097 + day_of_era - 719_468
 }
 
+/// Whether this run is evaluating a pull request.
+///
+/// GitHub substitutes an empty string for
+/// `github.event.pull_request.created_at` on a push, so a blank value means
+/// "no pull request" just as an absent one does.
+fn is_pull_request_event(created_at: Option<&str>) -> bool {
+    created_at.is_some_and(|value| !value.trim().is_empty())
+}
+
+/// Attributed commits on the pull request under evaluation, if this is one.
+///
+/// `None` outside a pull request, so a push to `main` keeps the literal reading
+/// and this path cannot be reached there.
+///
+/// The commits are validated by the same
+/// `merged_self_authored_pull_requests` walk the merged reading uses, against a
+/// range that ends at the branch tip instead of requiring a merge commit that
+/// does not exist yet. That keeps every claim the trailers make under the same
+/// scrutiny -- valid session evidence, an evidence path present in the commit,
+/// and no attributed commit naming a different pull request -- rather than
+/// trusting a bare `Formal-AI-Model:` line, which is exactly the shortcut that
+/// would turn this into a bypass.
+fn pull_request_attributed_commits(repo: &PathBuf, since: &str) -> Result<Option<usize>, String> {
+    if !is_pull_request_event(env::var("PULL_REQUEST_CREATED_AT").ok().as_deref()) {
+        return Ok(None);
+    }
+    let attributed = self_hosting_metric::attributed_commits_in_range(repo, since, "HEAD")?;
+    Ok(Some(attributed))
+}
+
 fn run() -> Result<(), String> {
     if env::var("SKIP_BUMP").as_deref() == Ok("true") {
         println!("Existing release artifacts are incomplete; preserving the recovery path.");
@@ -180,6 +210,30 @@ fn run() -> Result<(), String> {
         "--abbrev=0",
         "HEAD",
     ])?;
+    // On a pull request the cycle cannot yet contain a *merged* Formal AI pull
+    // request: this branch is the pull request, and it merges after this check
+    // runs, not before. Measured literally the floor was therefore unsatisfiable
+    // on every `pull_request` event, which is not a floor being enforced -- it
+    // is a question asked of the wrong commit.
+    //
+    // What the branch *can* answer is whether the work Formal AI authored is
+    // here, which is exactly what will be in the pull request once it merges.
+    // So a pull request carrying attributed commits satisfies the floor
+    // prospectively, and says so. Nothing is waived: the same commits are
+    // re-measured as a merged pull request on the push to `main`, where the
+    // literal reading applies and this branch is gone.
+    if let Some(commits) = pull_request_attributed_commits(&repo, &since)?
+        && commits > 0
+    {
+        println!(
+            "Self-development floor satisfied prospectively: {commits} commit(s) on this pull \
+             request carry Formal AI session evidence, and become a merged Formal AI pull request \
+             when it lands. Re-measured literally on the push to `main`."
+        );
+        set_output("should_release", "true")?;
+        return Ok(());
+    }
+
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
     match self_hosting_metric::self_development_release_status(
         &repo,
@@ -247,6 +301,26 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_pull_request_reading_is_skipped_without_a_pull_request() {
+        // GitHub substitutes an empty string for
+        // `github.event.pull_request.created_at` on a push, so "absent" and
+        // "blank" must both mean "not a pull request". Treating a blank value
+        // as a zero-hour-old pull request would apply the prospective reading
+        // to `main`, where the literal merged reading has to stand.
+        //
+        // `std::env::set_var` is unsafe in edition 2024 and this file has no
+        // dev-dependency to scope it, so the decision is exercised through the
+        // same predicate the guard uses rather than by mutating the process.
+        for absent in [None, Some(""), Some("   ")] {
+            assert!(
+                !is_pull_request_event(absent),
+                "{absent:?} must not be read as a pull request"
+            );
+        }
+        assert!(is_pull_request_event(Some("2026-09-11T22:08:24Z")));
+    }
 
     #[test]
     fn the_window_matches_the_contribution_gate() {
