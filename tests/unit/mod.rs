@@ -1,6 +1,7 @@
 mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;
+mod architect_notes;
 mod assistant_name;
 mod budget_search;
 mod bulk_lexeme_import;
@@ -253,6 +254,7 @@ mod sequences_patterns_1d;
 mod sequences_store;
 mod sequences_symbols;
 mod shared_dialog;
+mod shared_memory_isolation;
 mod software_project;
 mod specification;
 mod test_status;
@@ -263,4 +265,5 @@ mod web_requests;
 
 #[path = "ci-cd/mod.rs"]
 mod ci_cd;
+mod hive_mind_hello_world;
 mod issue_1101_documentation_question_parity;

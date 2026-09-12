@@ -2,14 +2,21 @@ self_ast_census
   target src/shared_memory.rs
   language rust
   fidelity signature
-  byte_len 1733
-  line_count 63
-  content_id source_module_953c77c78b3ed0f1
-  symbol_count 6
+  byte_len 7773
+  line_count 193
+  content_id source_module_54c6126fadbeefc0
+  symbol_count 13
   symbols
     const MEMORY_PATH_ENV 6 6
     const MEMORY_DIRECTORY_NAME 7 7
     const MEMORY_FILE_NAME 8 8
-    function resolve_memory_path_from 11 35
-    function shared_memory_path 38 45
-    function ensure_shared_memory_file 47 63
+    function test_memory_directory 29 34
+    static IS_TEST_PROCESS 61 61
+    const TEST_TARGET_NAMES 65 65
+    function declare_test_process 71 73
+    function running_under_cargo_test 76 84
+    function is_test_executable 93 104
+    function resolve_memory_path_from 107 131
+    function shared_memory_path 134 160
+    function is_relocated_home 173 175
+    function ensure_shared_memory_file 177 193

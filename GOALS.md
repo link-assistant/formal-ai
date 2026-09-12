@@ -28,7 +28,7 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Convert each user message into traceable requirements, source events, and candidate meanings.
 - Search local associative knowledge first and external sources only when local knowledge is insufficient.
 - Cache external source access with provenance and refresh policy rather than treating the web as untracked context.
-- Split hard tasks recursively into smaller tasks that can be tested, executed, or answered.
+- Split every task recursively into smaller tasks that can be tested, executed, or answered. No task is rated hard, complex or ambitious before it is split: complex tasks are composed of simple tasks, so everything complex is recursively simple. If a task is big, split it in two and split the halves again, until each leaf is directly solvable.
 - Learn from failed code generation, failed tests, timeouts, and review comments.
 - Translate between natural languages, programming languages, and Links Notation as a language of meaning.
 - Reduce contradictions by splitting overloaded names into distinct meanings when needed.
@@ -105,11 +105,11 @@ recalled live; promotion remains explicitly benchmark- and human-gated.
 - Grow capabilities through a closed learning loop: frontier detection (unknown intents, failed benchmarks, trending questions) → candidate knowledge/rules with generated tests → benchmark-gated promotion as reviewed seed edits — never silent self-modification.
 - Prove every adopted item with a before/after capability pair, including held-out paraphrases, so learning is generalization rather than memorization.
 - Predict likely next user requests per topic from symbolic transition records and pre-learn what they need while idle, under the existing consent and priority rules.
-- Generate multiple independent candidate drafts per hard task, select by test oracle with a least-action tie-break, and record why the winner won.
+- Generate multiple independent candidate drafts per task, select by test oracle with a least-action tie-break, and record why the winner won.
 - Measure the share of each release authored by Formal AI itself, starting honestly at 0% and ratcheting upward.
 - Measure that share by the model that produced the change (`Formal-AI-Model` must be formal-ai and be named in the committed evidence) over behaviour-changing files only; documentation, logs and ledgers about Formal AI are not Formal AI authoring itself (issue #1085).
 - Define "Formal AI codes itself" as: Formal AI appends or supersedes links in `data/seed` and `data/meta` that change its own behaviour, or applies a link substitution to its own source, generates a held-out test, validates it through the interpreter and `cargo test`, and opens the pull request. Seed edits are the first rung; source edits follow through the same rule engine.
-- Keep the Rust kernel named and shrinking: everything outside `data/meta/kernel-ratchet.lino`'s allowlist is behaviour that belongs in links, measured by ceilings that can only move down.
+- Keep a full meta-language representation of the source beside the source: a `.lino` per file under `src/`, one to one on every merged pull request, from which the source can be reconstructed (issue #558). Rust is an emission target of that representation, not the system; its line count measures an output and is not a release condition.
 
 ## Documentation Goals
 

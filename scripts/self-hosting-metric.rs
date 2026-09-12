@@ -52,7 +52,8 @@ pub use replay::replay_epoch;
 mod self_development_loop;
 #[allow(unused_imports)]
 pub use self_development_loop::{
-    SelfDevelopmentReleaseStatus, ensure_self_development_release, self_development_release_status,
+    SelfDevelopmentReleaseStatus, attributed_commits_in_range, ensure_self_development_release,
+    self_development_release_status,
 };
 
 /// Measurement-definition epoch of the rows this build writes.
