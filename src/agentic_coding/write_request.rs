@@ -473,3 +473,35 @@ pub(super) fn safe_relative_path(path: &str) -> bool {
             .chars()
             .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
 }
+
+/// Whether the payload starting at `from` is a block that outlives its first line.
+///
+/// A marker alone on its line already introduces the whole block below it, and
+/// that is the shape this route was built for. The same request written with the
+/// payload starting on the marker's own line -- "with exactly this content: #
+/// Title\n\nbody..." -- means exactly the same thing, but the sentence bound cut
+/// it at the first line and delivered a 58-byte file for a 1478-byte document.
+///
+/// That is not a bound the author of the request can see. It made every
+/// multi-line literal write silently lossy: `alpha\nbeta\ngamma` was written as
+/// `alpha`, and the self-authoring loop produced a one-line stub of the document
+/// it was handed, which is how it looked broken while reporting success.
+///
+/// A payload whose first line ends but whose block continues is therefore read
+/// to `limit`, exactly as the marker-only spelling always was. The sentence bound
+/// still governs a payload that stays on one line, so "write the following: hello
+/// to `x.txt`" is unaffected -- there is no continuation to find.
+pub(super) fn payload_continues_past_its_first_line(request: &str, from: usize, sentence_end: usize) -> bool {
+    let Some(tail) = request.get(from..) else {
+        return false;
+    };
+    let Some(break_at) = tail.find('\n') else {
+        return false;
+    };
+    // Only a payload the sentence bound would actually truncate qualifies: the
+    // newline has to fall inside the sentence being cut, and real content has to
+    // follow it. Otherwise the sentence bound is already returning the whole
+    // payload and there is nothing to widen.
+    from + break_at < sentence_end
+        && tail[break_at..].chars().any(char::is_alphanumeric)
+}

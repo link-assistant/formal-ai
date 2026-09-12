@@ -402,3 +402,48 @@ fn agentic_general_planner_rejects_punctuation_only_payload() {
         );
     }
 }
+
+/// A multi-line payload is written whole, whichever line the marker ends on.
+///
+/// The content lead alone on its line already introduced the whole block below
+/// it. The same request with the payload starting on the marker's own line means
+/// exactly the same thing, but the sentence bound cut it at the first line: a
+/// 1478-byte document was written as its 58-byte title, and `alpha\nbeta\ngamma`
+/// was written as `alpha`. Nothing in the request said the rest would be
+/// dropped, and the write reported success, so the self-authoring loop produced
+/// one-line stubs of the documents it was handed and looked broken for a reason
+/// that was never in its own logs.
+///
+/// Both spellings are pinned to the identical result, so neither can drift back
+/// into truncating the other. The one-line payload keeps the sentence bound --
+/// "write the following: hello to `x.txt`" must still stop at the clause.
+#[test]
+fn a_multi_line_payload_survives_a_marker_that_shares_its_line() {
+    let body = "alpha\nbeta\ngamma";
+    let inline = compose_general_change_plan(&format!(
+        "Create a file out.md with exactly this content: {body}"
+    ))
+    .expect("an inline multi-line payload must compose a plan");
+    let own_line = compose_general_change_plan(&format!(
+        "Create a file out.md with exactly this content:\n{body}"
+    ))
+    .expect("a marker-led block must compose a plan");
+
+    assert_eq!(
+        inline.content, body,
+        "the payload must survive whole when the marker shares its first line"
+    );
+    assert_eq!(
+        inline.content, own_line.content,
+        "the two spellings of one request must deliver the same bytes"
+    );
+
+    // A payload that never leaves its line is unaffected: there is no
+    // continuation to widen to, so it still stops where it always did.
+    let bounded = compose_general_change_plan(EN_TASK)
+        .expect("a single-line payload must still compose a plan");
+    assert_eq!(
+        bounded.content, "planner fallback works",
+        "a payload that stays on one line is bounded exactly as before"
+    );
+}

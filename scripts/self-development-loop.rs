@@ -203,6 +203,14 @@ pub(super) fn merged_self_authored_pull_requests(
     Ok(pull_requests)
 }
 
+/// How many changed lines a cycle needs before its share may raise the ratchet.
+///
+/// Below this the percentage is dominated by whichever handful of lines the
+/// cycle happened to contain: `v0.348.1` changed one line and measured 100%.
+/// Such a row still records and reports its share -- it simply may not set the
+/// floor every later cycle has to clear.
+pub const RATCHET_EVIDENCE_FLOOR: u64 = 100;
+
 /// The share the next release must reach, read off the newest comparable row.
 ///
 /// A row that records no target derives one from its own measured trailing
@@ -229,15 +237,59 @@ pub(super) fn merged_self_authored_pull_requests(
 /// quietly is not.
 ///
 /// [decision]: https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300
-pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
-    rows.iter()
+///
+/// One measured share is refused as a source for the ratchet: the one a cycle
+/// too small to mean anything produced. `v0.348.1` changed a single line, that
+/// line happened to be Formal AI's, and the cycle therefore measured 100%.
+/// Weighted into the trailing window that one line carried the bar to 2.91%,
+/// and the next cycle -- PR #1125, thousands of reviewed lines with a document
+/// Formal AI authored inside it -- projected 0.05% and was blocked. The bar had
+/// been set by a release too small to measure, and it punished the next cycle
+/// for containing real work.
+///
+/// That inverts the rule the architect actually stated: each pull request
+/// carries Formal AI-authored work, "as big as it can be, but as small as it
+/// actually can", and a release must still be producible
+/// (`docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md`). A share
+/// measured over fewer than [`RATCHET_EVIDENCE_FLOOR`] changed lines is noise,
+/// so it is not allowed to *raise* the bar. It is ignored only as a source for
+/// the ratchet; it is still recorded, still reported, and still counts in the
+/// trailing share the release notes carry.
+pub fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
+    let Some(newest) = rows
+        .iter()
         .rfind(|row| row.metric_version == METRIC_VERSION)
-        .map_or(0, |row| {
-            row.target_override_basis_points.unwrap_or_else(|| {
-                row.target_percentage_basis_points
-                    .unwrap_or(0)
-                    .max(row.trailing_percentage_basis_points)
-            })
+    else {
+        return 0;
+    };
+    // A reviewed override replaces the ratchet outright, and it is read from the
+    // newest row alone: a decision is about the level from here on, not about
+    // how the level was reached.
+    if let Some(override_target) = newest.target_override_basis_points {
+        return override_target;
+    }
+    // The bar is recomputed from the rows that were *entitled* to set it rather
+    // than read off the newest row's carried value. `target_percentage_basis_points`
+    // is a cache of this same walk, and a bar a degenerate cycle manufactured
+    // once would otherwise be carried forward verbatim by every row after it --
+    // v0.349.0 is a legitimate 4050-line cycle and still carried the 291 that the
+    // one-line v0.348.1 created two releases earlier. Refusing the source while
+    // honouring its cached result would fix nothing.
+    ratcheted_target(rows)
+}
+
+/// The bar implied by every comparable row that was entitled to raise it.
+///
+/// A reviewed override anywhere in the history replaces everything before it,
+/// because that is what a decision about the level means; after it, the ordinary
+/// ratchet resumes from the level it set.
+fn ratcheted_target(rows: &[ReleaseRow]) -> u64 {
+    rows.iter()
+        .filter(|row| row.metric_version == METRIC_VERSION)
+        .fold(0, |target, row| match row.target_override_basis_points {
+            Some(override_target) => override_target,
+            None if row.changed_lines < RATCHET_EVIDENCE_FLOOR => target,
+            None => target.max(row.trailing_percentage_basis_points),
         })
 }
 

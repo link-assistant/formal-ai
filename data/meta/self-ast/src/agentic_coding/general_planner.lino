@@ -2,65 +2,65 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 41376
-  line_count 871
-  content_id source_module_22b8d8ecc82343b4
+  byte_len 41495
+  line_count 872
+  content_id source_module_052184b170f18207
   symbol_count 37
   symbols
-    const PLAN_PATH 20 20
-    const TARGET_PLACEHOLDER 21 21
-    enum GeneralPlanMode 24 31
-    function slug 33 39
-    enum PlanTerminalState 48 53
-    function slug 55 60
-    struct GeneralPlanStep 64 69
-    struct GeneralChangePlan 72 84
-    function links_notation 88 108
-    function planned_not_executed_answer 112 126
-    const BODY_PLACEHOLDER 113 113
-    function objective_text 132 138
-    function line_anchored 142 148
-    function compose_general_change_plan 150 254
-    function compose_repository_work_plan 255 284
-    function work_item_step 288 300
-    function repository_work_reference 305 326
-    function parse_command_output_request 334 388
-    function mentions_bare_role 389 416
-    function shell_quote 417 419
-    function command_plan_text 420 424
-    function has_file_write_intent 437 439
-    function has_authoritative_literal_write 446 455
-    function parse_write_request 480 565
-    function end_of_statement 593 608
-    function positions_share_statement 619 626
-    function is_literal_content 632 634
-    function is_non_referential_content 641 647
-    function names_deferred_work_product 666 676
-    function ends_with_head_noun 685 693
-    function resolve_census_target 712 719
-    function compose_edit_request 745 838
-    function capability_slug 839 856
-    function language 857 859
-    function escape 860 865
-    function field 866 868
-    function field_nested 869 871
+    const PLAN_PATH 21 21
+    const TARGET_PLACEHOLDER 22 22
+    enum GeneralPlanMode 25 32
+    function slug 34 40
+    enum PlanTerminalState 49 54
+    function slug 56 61
+    struct GeneralPlanStep 65 70
+    struct GeneralChangePlan 73 85
+    function links_notation 89 109
+    function planned_not_executed_answer 113 127
+    const BODY_PLACEHOLDER 114 114
+    function objective_text 133 139
+    function line_anchored 143 149
+    function compose_general_change_plan 151 255
+    function compose_repository_work_plan 256 285
+    function work_item_step 289 301
+    function repository_work_reference 306 327
+    function parse_command_output_request 335 389
+    function mentions_bare_role 390 417
+    function shell_quote 418 420
+    function command_plan_text 421 425
+    function has_file_write_intent 438 440
+    function has_authoritative_literal_write 447 456
+    function parse_write_request 481 566
+    function end_of_statement 594 609
+    function positions_share_statement 620 627
+    function is_literal_content 633 635
+    function is_non_referential_content 642 648
+    function names_deferred_work_product 667 677
+    function ends_with_head_noun 686 694
+    function resolve_census_target 713 720
+    function compose_edit_request 746 839
+    function capability_slug 840 857
+    function language 858 860
+    function escape 861 866
+    function field 867 869
+    function field_nested 870 872
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21553
-    named_node_count 4390
+    total_link_count 21615
+    named_node_count 4403
     distinct_node_kinds 85
     node_kinds
-      arguments 317
+      arguments 318
       array_expression 1
       attribute 11
       attribute_item 11
-      binary_expression 70
+      binary_expression 71
       block 82
       boolean_literal 3
-      call_expression 317
+      call_expression 318
       char_literal 27
       closure_expression 47
       closure_parameters 47
@@ -78,15 +78,15 @@ self_ast_census
       expression_statement 56
       field_declaration 12
       field_declaration_list 2
-      field_expression 258
-      field_identifier 297
+      field_expression 260
+      field_identifier 299
       field_initializer 27
       field_initializer_list 6
       for_expression 2
       function_item 30
       function_modifiers 3
       generic_type 10
-      identifier 979
+      identifier 984
       if_expression 26
       impl_item 3
       index_expression 13
@@ -132,7 +132,7 @@ self_ast_census
       tuple_type 3
       type_arguments 10
       type_identifier 56
-      unary_expression 22
+      unary_expression 23
       use_as_clause 1
       use_declaration 8
       use_list 4
