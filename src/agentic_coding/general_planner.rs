@@ -9,7 +9,8 @@ use super::shell_command_policy::prose_sentences;
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
     first_action_cue_end, first_content_lead_end, first_prefix_lead_end,
-    honouring_pinned_first_line, looks_like_file_path, safe_relative_path, tokens,
+    honouring_pinned_first_line, looks_like_file_path, payload_continues_past_its_first_line,
+    safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
@@ -600,7 +601,7 @@ fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
     let says_more = request
         .get(from..sentence.span.end)
         .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
-    if says_more {
+    if says_more && !payload_continues_past_its_first_line(request, from, sentence.span.end) {
         sentence.span.end.min(limit)
     } else {
         limit
