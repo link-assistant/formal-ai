@@ -392,8 +392,8 @@ pub use shared_dialog::{
     convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,
 };
 pub use shared_memory::{
-    MEMORY_PATH_ENV, ensure_shared_memory_file, is_cargo_deps_directory, resolve_memory_path_from,
-    running_under_cargo_test, shared_memory_path, test_memory_directory,
+    MEMORY_PATH_ENV, declare_test_process, ensure_shared_memory_file, is_test_executable,
+    resolve_memory_path_from, running_under_cargo_test, shared_memory_path, test_memory_directory,
 };
 pub use skill_compiler::{
     CompiledSkillEffect, CompiledSkillExpectedTest, CompiledSkillHandlerStub, CompiledSkillInput,

@@ -34,8 +34,15 @@
 //! edition = "2021"
 //! ```
 
+// `--test` compiles this without `main`, so everything only `main` reaches is
+// unreachable there and warns as dead code -- and the `rust-script --test`
+// gate turns warnings into errors. The pure decision functions below are what
+// the tests exercise; the git and argument plumbing is main-only.
+#[cfg(not(test))]
 use std::env;
+#[cfg(not(test))]
 use std::path::{Path, PathBuf};
+#[cfg(not(test))]
 use std::process::Command;
 #[cfg(not(test))]
 use std::process::exit;
@@ -98,6 +105,7 @@ fn decide(formal_ai_commits: usize, age_hours: i64) -> Verdict {
     Verdict::Unsatisfied { hours: age_hours }
 }
 
+#[cfg(not(test))]
 fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
     let output = Command::new("git")
         .arg("-C")
@@ -118,6 +126,7 @@ fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
 
 /// Count commits in `since..until` whose `Formal-AI-Model` trailer names
 /// formal-ai. A trailer naming a hosted model is not self-authored (R1085-4).
+#[cfg(not(test))]
 fn count_formal_ai_commits(repo: &Path, since: &str, until: &str) -> Result<usize, String> {
     let log = git(repo, &["log", "--format=%B%x00", &format!("{since}..{until}")])?;
     Ok(log

@@ -33,41 +33,74 @@ pub fn test_memory_directory() -> Option<PathBuf> {
     Some(std::env::temp_dir().join(format!("formal-ai-tests-{}", std::process::id())))
 }
 
-/// Whether this process is a `cargo test` binary.
+/// Set by a test harness to say "this process is a test".
 ///
-/// The obvious signals do not work here. `CARGO_TARGET_TMPDIR` is a
-/// *compile-time* variable cargo passes to integration tests; it is absent from
-/// the runtime environment, which was measured on this repository:
+/// Inferring it does not work. `CARGO_TARGET_TMPDIR` is a *compile-time*
+/// variable cargo passes to integration tests and is absent at runtime;
+/// `cfg!(test)` is false because the library is built as a plain dependency of
+/// each integration-test binary. Both compile and both silently answer "no".
+///
+/// Inferring it from the executable path does not work either, and that failure
+/// is worth recording because it passed locally and failed in CI. Cargo builds
+/// test binaries into `target/<profile>/deps/`, so that looked decisive -- until
+/// issue #1055 had the shared build job compile them once and
+/// `scripts/run-prebuilt-tests.sh` run them from `dist/tests/unit`, where
+/// nothing about the path says "test":
 ///
 /// ```text
-/// CARGO_TARGET_TMPDIR = None
-/// exe = Some(".../target/debug/deps/probe_env-70a1c6defe99c803")
+/// current_exe Ok("/home/runner/work/formal-ai/formal-ai/dist/tests/unit")
 /// ```
 ///
-/// `cfg!(test)` is false too, because the library is compiled as a plain
-/// dependency of each integration-test binary rather than in test mode.
+/// What both layouts do share is the name cargo gives the binary.
+/// `dist/tests/unit` and `target/debug/deps/unit-<hash>` differ in every
+/// component except that final `unit`, so the check is on the file name, with
+/// `deps/` still accepted for the per-file integration binaries whose names are
+/// not known in advance. A harness may also say so outright via
+/// `declare_test_process()`, which is the escape hatch when a new layout
+/// appears rather than another silent "no".
+static IS_TEST_PROCESS: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// The test targets this repository builds (`Cargo.toml` `[[test]]` names) plus
+/// the per-file integration binaries, which cargo names after their source.
+const TEST_TARGET_NAMES: [&str; 3] = ["unit", "integration", "source"];
+
+/// Declare that this process is a test harness.
 ///
-/// What is left is the executable itself. Cargo builds every test binary into
-/// `target/<profile>/deps/` with a hash suffix, and installs nothing there, so
-/// a parent directory named `deps` whose grandparent is `target` identifies a
-/// test (or bench) binary and not a shipped one.
-#[must_use]
-pub fn running_under_cargo_test() -> bool {
-    std::env::current_exe()
-        .ok()
-        .as_deref()
-        .and_then(std::path::Path::parent)
-        .is_some_and(is_cargo_deps_directory)
+/// Available for a layout the inference below does not recognise. Calling it is
+/// always correct for a test binary and never correct for a shipped one.
+pub fn declare_test_process() {
+    IS_TEST_PROCESS.store(true, std::sync::atomic::Ordering::Relaxed);
 }
 
 #[must_use]
-pub fn is_cargo_deps_directory(directory: &std::path::Path) -> bool {
-    directory.file_name() == Some(OsStr::new("deps"))
-        && directory
+pub fn running_under_cargo_test() -> bool {
+    if IS_TEST_PROCESS.load(std::sync::atomic::Ordering::Relaxed) {
+        return true;
+    }
+    std::env::current_exe()
+        .ok()
+        .as_deref()
+        .is_some_and(is_test_executable)
+}
+
+/// Whether an executable path names a libtest harness this repository builds.
+///
+/// Covers both layouts in use: `target/<profile>/deps/<target>-<hash>` from a
+/// plain `cargo test`, and `dist/tests/<target>` from the prebuilt binaries
+/// issue #1055 introduced. The shipped binary is `formal-ai`, which is not a
+/// test target name, so it is never matched.
+#[must_use]
+pub fn is_test_executable(executable: &std::path::Path) -> bool {
+    let Some(name) = executable.file_name().and_then(|name| name.to_str()) else {
+        return false;
+    };
+    // `cargo test` appends `-<hash>`; the prebuilt copies do not.
+    let target = name.split_once('-').map_or(name, |(stem, _)| stem);
+    TEST_TARGET_NAMES.contains(&target)
+        || executable
             .parent()
-            .and_then(std::path::Path::parent)
             .and_then(std::path::Path::file_name)
-            == Some(OsStr::new("target"))
+            .is_some_and(|parent| parent == OsStr::new("deps"))
 }
 
 #[must_use]

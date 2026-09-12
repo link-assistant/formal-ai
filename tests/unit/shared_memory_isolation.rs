@@ -14,29 +14,39 @@
 use std::path::{Path, PathBuf};
 
 #[test]
-fn a_cargo_test_binary_lives_in_target_deps() {
-    assert!(formal_ai::is_cargo_deps_directory(Path::new(
-        "/repo/target/debug/deps"
-    )));
-    assert!(formal_ai::is_cargo_deps_directory(Path::new(
-        "/repo/target/release/deps"
-    )));
+fn both_test_layouts_are_recognised() {
+    for test_binary in [
+        // A plain `cargo test`.
+        "/repo/target/debug/deps/unit-70a1c6defe99c803",
+        "/repo/target/release/deps/integration-abc123",
+        // The prebuilt binaries issue #1055 introduced, run by
+        // `scripts/run-prebuilt-tests.sh`. This is the exact path that failed
+        // in CI when the check looked only for `target/*/deps`.
+        "/home/runner/work/formal-ai/formal-ai/dist/tests/unit",
+        "/home/runner/work/formal-ai/formal-ai/dist/tests/integration",
+        "/home/runner/work/formal-ai/formal-ai/dist/tests/source",
+    ] {
+        assert!(
+            formal_ai::is_test_executable(Path::new(test_binary)),
+            "{test_binary} was not recognised as a test binary"
+        );
+    }
 }
 
 #[test]
-fn an_installed_binary_does_not() {
+fn a_shipped_binary_is_not_recognised_as_a_test() {
     // The shipped paths a release actually runs from. None of them may send the
     // memory store into a temporary directory: doing so would silently discard
     // a user's memory between runs.
     for shipped in [
-        "/usr/local/bin",
-        "/repo/target/debug",
-        "/repo/target/release",
-        "/home/user/.cargo/bin",
-        "/repo/deps",
+        "/usr/local/bin/formal-ai",
+        "/repo/target/release/formal-ai",
+        "/repo/target/debug/formal-ai",
+        "/home/user/.cargo/bin/formal-ai",
+        "/opt/formal-ai/bin/formal-ai",
     ] {
         assert!(
-            !formal_ai::is_cargo_deps_directory(Path::new(shipped)),
+            !formal_ai::is_test_executable(Path::new(shipped)),
             "{shipped} was mistaken for a test binary"
         );
     }
