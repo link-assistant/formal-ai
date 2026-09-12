@@ -45,8 +45,11 @@ fn rust_script_install_steps_use_retry_wrapper() {
         workflow
             .matches("run: bash scripts/install-rust-script.sh")
             .count(),
-        // +1 for the evidence-check job added for issue #808.
-        9,
+        // The evidence-check job (issue #808) moved to its own workflow when
+        // extracting it brought `release.yml` back under the 1500-line warning
+        // band (issues #999, #1012); its install step is counted by
+        // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
+        8,
         "each rust-script install step should use the retry wrapper"
     );
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
@@ -753,9 +756,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
     let expected_timeouts = [
         ("detect-changes", 5),
         ("changelog", 10),
-        // Issue #808: pull-request gates for the trailer invariant, the Docker
-        // image and committed credentials.
-        ("evidence-check", 10),
+        // Issue #808's evidence-check job now lives in
+        // `.github/workflows/evidence-check.yml`; its timeout is asserted by
+        // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),

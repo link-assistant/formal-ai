@@ -254,6 +254,7 @@ mod sequences_patterns_1d;
 mod sequences_store;
 mod sequences_symbols;
 mod shared_dialog;
+mod shared_memory_isolation;
 mod software_project;
 mod specification;
 mod test_status;
