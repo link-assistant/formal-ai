@@ -131,6 +131,23 @@ jobs:
           merge_base="$(git merge-base "$base" HEAD)"
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
+      # The architect asked for both halves of one rule: force each pull request
+      # to use Formal AI to code part of it, and relax that once the pull request
+      # has been open for more than a day so the requirement never stops a
+      # release (docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md).
+      # A relaxed result is reported as relaxed, never as satisfied, which is the
+      # thing issue #1066 actually objected to.
+      - name: Formal AI authored part of this pull request
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          PULL_REQUEST_CREATED_AT: ${{ github.event.pull_request.created_at }}
+        run: |
+          set -euo pipefail
+          base="origin/${GITHUB_BASE_REF}"
+          merge_base="$(git merge-base "$base" HEAD)"
+          rust-script scripts/check-formal-ai-contribution.rs \
+            --since "$merge_base" --until HEAD
   docker-build:
     name: Docker Image Build & Runtime Check
     runs-on: ubuntu-latest

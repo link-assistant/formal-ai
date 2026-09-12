@@ -123,7 +123,7 @@ fn the_ladder_covers_the_top_twenty_languages() {
 
 /// The ladder's table is data. Adding the twenty-first language must be a
 /// change to `{TABLE}` and never a branch in Rust
-/// (ARCHITECT-VISION.md, section 1), so neither the generator nor this test
+/// (VISION.md, section 1), so neither the generator nor this test
 /// names a language.
 ///
 /// The scope is the ladder, not the whole tree: `src/coding/catalog/` still

@@ -18,7 +18,7 @@
 //!   message: ...
 //!
 //! The language table is data, so adding the twenty-first language is a data
-//! change and never a branch in this file (ARCHITECT-VISION.md, section 1).
+//! change and never a branch in this file (VISION.md, section 1).
 //!
 //! Two rules the emitted contract has to respect, both paid for in defects:
 //!

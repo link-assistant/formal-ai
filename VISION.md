@@ -38,6 +38,97 @@ produced it — is walked end to end in
 mapped to the surfaces below and to the principles in this file, so the vision
 makes a concrete promise rather than only describing the machine.
 
+## The Goal Is The Meta Algorithm
+
+Stated by the architect, in his words
+([note, 2026-09-11](docs/architect-notes/2026-09-11-the-goal-is-the-meta-algorithm.md)):
+
+> The goal of the project is to produce the meta algorithm - it is not the
+> kernel or non-kernel. The entire src must be dedicated to that meta algorithm.
+> It should be capable of producting algorithms.
+
+There is no division of the source into a privileged part and the rest. All of
+`src/` serves the meta algorithm.
+
+**Code is held in the meta language and emitted into languages.**
+
+> What I asked links network meta language representation of Rust code, that is
+> translatable by our own Formal AI system into any programming language, for
+> example to JavaScript. [...] For auto-learning system it is important to be
+> able to make modification in meta language version of the code and recompile
+> it back to Rust, JavaScript or any other language.
+
+> We must have .lino files containing full representation of rust code, and we
+> must have /src folder with Rust code all 1 to 1 on each pull request merged.
+
+Rust is therefore one emission target of that representation, not the system. A
+count of Rust lines measures an output: a more general meta algorithm may emit
+*more* Rust. **No release condition may be a Rust line count.**
+
+**Self-modification is an action the user approves.**
+
+> which should be translatable to Rust by a function call and be an action that
+> can be approved by user once or approvable automatically - by default not
+> approved for safety without user permission, and only if user approves it
+> second time - we can ask him to aprove it forever.
+
+Three states in order: not approved by default; approved once; and only after a
+second approval may approve-forever be offered.
+
+**Algorithms are arrived at by deduplication.**
+
+> doublet links are capable of representing each and every data structure or
+> sequence (as nested pairs), that means doublet-links structure is effectively
+> natural deduplicator. Each algorithm at the moment of execution or learning is
+> essentially flat sequence. [...] if some operations are repeated they contain
+> loops or recursion, if there are alternative branches based of input it is
+> equalivalent to if statements or match statements. So if we just record
+> sequence of events, actions, transformations, we can infer algorithms from
+> them purely algorithmically.
+
+> Meta algorithm at the end must arrive to situation where it is capable to
+> modify itself when asked or required by task.
+
+**Nothing is a hard task.**
+
+> nothing is hard task, forget any rating/judjement/assesment [...] if that task
+> is big, we can split it in 2 halves and it will be much easier to deal with
+> them. Complex tasks are composed from simple tasks. So everything complex, is
+> essentially recursively simple in our phylosophy.
+
+Split a task in two, split the halves, and continue until each leaf is directly
+solvable. Do not rate a task before splitting it.
+
+**Requirements must not obstruct progression to the vision.**
+
+> Everything that is in the way especially by made up reasons must be
+> eliminated, we must keep my vision, but we should not place unresonalbe
+> requirements for progression to the vision. [...] we should force each pull
+> request to use Formal AI to code part of it (as big as it can be, but as small
+> as it actually can [...]). So if pull request exists for for more than a day we
+> can relax our requirements, and still be able to produce the release.
+
+The practical aim this serves: *"it is critical to be able to produce formal-ai
+releases for testing in Hive Mind on real GitHub issues."*
+
+**Start from a working Hello World.**
+
+> We must provide Formal AI with all capability nessesary to start with a simple
+> hello world application in top 10-20 languages. If we don't do that, the
+> result will be, that we will never be able to actually start iterating, and it
+> will never trully work.
+
+> instead of creating complete repositories for our formal-ai tests, we may use
+> separate branches with unique names
+
+### Where the architect's notes live
+
+This section is kept up to date from
+[`docs/architect-notes/`](docs/architect-notes/), which records his statements in
+chronological order, quoted and referenced. Where a document, gate, requirement
+or plan contradicts the latest note, the document is wrong and must be fixed. Do
+not invent terminology the architect does not use.
+
 ## Core Idea
 
 The system should prefer deep understanding of user needs, intent, context, and available evidence over answer memoization. A prompt should trigger enough data collection and reasoning to justify the response for that prompt. What the system learns along the way should remain available as reviewable knowledge, with source links and execution traces attached.

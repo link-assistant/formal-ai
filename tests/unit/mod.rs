@@ -1,7 +1,7 @@
 mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;
-mod architect_vision;
+mod architect_notes;
 mod assistant_name;
 mod budget_search;
 mod bulk_lexeme_import;

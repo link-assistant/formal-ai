@@ -6,8 +6,8 @@ name: Self-development status
 # day, and it is red until the floor is met: no budget, no grace period, no
 # bypass (issue #1066). A release is cut on CI correctness alone in
 # `release.yml`; this workflow says, in the same place every day, whether
-# Formal AI authored any of the work since the last tag, and whether the Rust
-# kernel shrank since that tag (D1.4).
+# Formal AI authored any of the work since the last tag, and, separately, that named debt
+# has not grown.
 
 on:
   push:
@@ -37,7 +37,7 @@ env:
 
 jobs:
   self-development-status:
-    name: 'Self-development floor and kernel shrink since the last tag'
+    name: 'Self-development floor and debt ratchet since the last tag'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -56,7 +56,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "self-development scripts" \
-            rust-script --test scripts/check-kernel-ratchet.rs
+            rust-script --test scripts/check-debt-ratchet.rs
       - name: Measure the share since the last tag (metric version 3)
         env:
           TEST_BUDGET_SECONDS: 600
@@ -76,15 +76,15 @@ jobs:
             echo "Share of behaviour-changing lines authored by the formal-ai model: $(tail -n 1 "$RUNNER_TEMP/share.txt")"
           } >> "$GITHUB_STEP_SUMMARY"
       # Issue #1085 D1.4 demanded that the non-kernel Rust line count be lower
-      # at every release. That demand is withdrawn (ARCHITECT-VISION.md): the
+      # at every release. That demand is withdrawn (VISION.md, docs/architect-notes/): the
       # meta-language representation is the system and Rust is one target it is
       # emitted into, so a Rust line count measures an output and may grow while
       # the algorithm becomes more general. Requiring it to shrink obstructs
       # progression to the vision, which is the one thing a requirement may not
       # do. The shrink-only ceilings themselves still hold on every pull request
-      # through the `check_kernel_ratchet` gate; what is gone is the rule that a
+      # through the `check_debt_ratchet` gate; what is gone is the rule that a
       # *release* must show the line count falling.
-      - name: 'Kernel ratchet holds (ceilings move down, never up)'
-        run: rust-script scripts/check-kernel-ratchet.rs
+      - name: 'Debt ratchet holds (ceilings move down, never up)'
+        run: rust-script scripts/check-debt-ratchet.rs
       - name: 'Self-development floor (issue #924, #1066, #1085)'
         run: rust-script scripts/check-self-development-release.rs

@@ -1,5 +1,5 @@
 hello_world_languages
-  purpose "The top 20 languages create-test-repo.mjs picks from, each with what is needed to produce a working Hello World: the file name, how it is run, and what it must print. Data, so adding a language is a data change and never a Rust branch (ARCHITECT-VISION.md section 1)."
+  purpose "The top 20 languages create-test-repo.mjs picks from, each with what is needed to produce a working Hello World: the file name, how it is run, and what it must print. Data, so adding a language is a data change and never a Rust branch (VISION.md, section: The Goal Is The Meta Algorithm)."
   programs "The program text itself lives beside this file, one per language, in examples/hello-world/<slug>/<file>. It is not embedded here because canonical Links Notation has no escape for a quote inside a quoted scalar, and every Hello World but one contains a quote. Keeping source in source files is the honest reading of that constraint rather than a workaround for it."
   source "https://github.com/link-assistant/hive-mind/blob/main/create-test-repo.mjs"
   expected_output "Hello, World!"
