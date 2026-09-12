@@ -138,14 +138,18 @@ fn hours_between(opened: &str, now: &str) -> Result<i64, String> {
     Ok((epoch_seconds(now)? - epoch_seconds(opened)?) / 3600)
 }
 
-/// Seconds since the epoch for an RFC3339 timestamp such as
-/// `2026-09-12T06:22:31Z`. Only the UTC form GitHub emits is accepted.
+/// Seconds since the epoch for an RFC3339 timestamp.
+///
+/// Both forms in play are accepted: GitHub emits UTC (`2026-09-12T06:22:31Z`),
+/// while `git log %cI` emits the committer's offset
+/// (`2026-09-12T07:35:30+07:00`). Ignoring an offset would have made a commit
+/// look up to a day older or younger than it is, so it is subtracted.
 fn epoch_seconds(stamp: &str) -> Result<i64, String> {
     let stamp = stamp.trim();
     let (date, rest) = stamp
         .split_once('T')
         .ok_or_else(|| format!("`{stamp}` is not an RFC3339 timestamp"))?;
-    let time = rest.trim_end_matches('Z');
+    let (time, offset_seconds) = split_offset(rest)?;
     let part = |value: &str| -> Result<i64, String> {
         value
             .parse::<i64>()
@@ -167,7 +171,37 @@ fn epoch_seconds(stamp: &str) -> Result<i64, String> {
     let day_of_year = (153 * month_shift + 2) / 5 + day - 1;
     let day_of_era = year_of_era * 365 + year_of_era / 4 - year_of_era / 100 + day_of_year;
     let days = era * 146_097 + day_of_era - 719_468;
-    Ok(days * 86_400 + part(time[0])? * 3600 + part(time[1])? * 60 + seconds)
+    Ok(days * 86_400 + part(time[0])? * 3600 + part(time[1])? * 60 + seconds - offset_seconds)
+}
+
+/// Split the time from its zone, returning the offset in seconds to subtract.
+/// `Z` and a bare time are UTC; `+hh:mm` / `-hh:mm` are not.
+fn split_offset(rest: &str) -> Result<(&str, i64), String> {
+    if let Some(time) = rest.strip_suffix('Z') {
+        return Ok((time, 0));
+    }
+    // Search after the hour so the `-` in a negative offset is not confused
+    // with anything earlier in the string.
+    let sign_at = rest
+        .char_indices()
+        .skip(1)
+        .find(|(_, ch)| *ch == '+' || *ch == '-')
+        .map(|(index, _)| index);
+    let Some(index) = sign_at else {
+        return Ok((rest, 0));
+    };
+    let (time, zone) = rest.split_at(index);
+    let negative = zone.starts_with('-');
+    let zone = &zone[1..];
+    let (hours, minutes) = zone.split_once(':').unwrap_or((zone, "0"));
+    let hours: i64 = hours
+        .parse()
+        .map_err(|error| format!("`{zone}` is not a UTC offset: {error}"))?;
+    let minutes: i64 = minutes
+        .parse()
+        .map_err(|error| format!("`{zone}` is not a UTC offset: {error}"))?;
+    let seconds = hours * 3600 + minutes * 60;
+    Ok((time, if negative { -seconds } else { seconds }))
 }
 
 #[cfg(not(test))]
@@ -324,6 +358,21 @@ mod tests {
         assert_eq!(
             hours_between("2024-02-28T00:00:00Z", "2024-03-01T00:00:00Z").unwrap(),
             48
+        );
+    }
+
+    /// `git log %cI` reports the committer's offset, not UTC. Ignoring it would
+    /// make a commit look up to a day older or younger than it is.
+    #[test]
+    fn a_zone_offset_is_subtracted_rather_than_ignored() {
+        // Same instant, three spellings.
+        let utc = epoch_seconds("2026-09-12T00:35:30Z").unwrap();
+        assert_eq!(epoch_seconds("2026-09-12T07:35:30+07:00").unwrap(), utc);
+        assert_eq!(epoch_seconds("2026-09-11T20:35:30-04:00").unwrap(), utc);
+        // And the age computed across the two forms is the real elapsed time.
+        assert_eq!(
+            hours_between("2026-09-11T22:08:24Z", "2026-09-12T07:35:30+07:00").unwrap(),
+            2
         );
     }
 
