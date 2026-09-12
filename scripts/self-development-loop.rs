@@ -203,6 +203,14 @@ pub(super) fn merged_self_authored_pull_requests(
     Ok(pull_requests)
 }
 
+/// How many changed lines a cycle needs before its share may raise the ratchet.
+///
+/// Below this the percentage is dominated by whichever handful of lines the
+/// cycle happened to contain: `v0.348.1` changed one line and measured 100%.
+/// Such a row still records and reports its share -- it simply may not set the
+/// floor every later cycle has to clear.
+pub const RATCHET_EVIDENCE_FLOOR: u64 = 100;
+
 /// The share the next release must reach, read off the newest comparable row.
 ///
 /// A row that records no target derives one from its own measured trailing
@@ -229,14 +237,34 @@ pub(super) fn merged_self_authored_pull_requests(
 /// quietly is not.
 ///
 /// [decision]: https://github.com/link-assistant/formal-ai/pull/1070#issuecomment-5535449300
-pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
+///
+/// One measured share is refused as a source for the ratchet: the one a cycle
+/// too small to mean anything produced. `v0.348.1` changed a single line, that
+/// line happened to be Formal AI's, and the cycle therefore measured 100%.
+/// Weighted into the trailing window that one line carried the bar to 2.91%,
+/// and the next cycle -- PR #1125, thousands of reviewed lines with a document
+/// Formal AI authored inside it -- projected 0.05% and was blocked. The bar had
+/// been set by a release too small to measure, and it punished the next cycle
+/// for containing real work.
+///
+/// That inverts the rule the architect actually stated: each pull request
+/// carries Formal AI-authored work, "as big as it can be, but as small as it
+/// actually can", and a release must still be producible
+/// (`docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md`). A share
+/// measured over fewer than [`RATCHET_EVIDENCE_FLOOR`] changed lines is noise,
+/// so it is not allowed to *raise* the bar. It is ignored only as a source for
+/// the ratchet; it is still recorded, still reported, and still counts in the
+/// trailing share the release notes carry.
+pub fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
     rows.iter()
         .rfind(|row| row.metric_version == METRIC_VERSION)
         .map_or(0, |row| {
             row.target_override_basis_points.unwrap_or_else(|| {
-                row.target_percentage_basis_points
-                    .unwrap_or(0)
-                    .max(row.trailing_percentage_basis_points)
+                let carried = row.target_percentage_basis_points.unwrap_or(0);
+                if row.changed_lines < RATCHET_EVIDENCE_FLOOR {
+                    return carried;
+                }
+                carried.max(row.trailing_percentage_basis_points)
             })
         })
 }
