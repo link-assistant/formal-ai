@@ -8,8 +8,8 @@
 //!
 //! Authored by Formal AI through `scripts/author-change-with-formal-ai.sh`.
 
-use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::ChatMessage;
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 
 /// The tool set the Kotlin run advertised, shortened to the pair that decides
 /// the routing: the client's fetch tool and one browser-automation tool.
