@@ -430,3 +430,78 @@ fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
          scripts/check-file-size.rs"
     );
 }
+
+/// Issue #1131: the token decides Docker Hub publishing, not the image.
+///
+/// Every release since Docker Hub publishing was added skipped it and still
+/// reported success, because `DOCKERHUB_IMAGE` was the switch and nothing ever
+/// set it. Now that the image and the username carry defaults, only the secret
+/// separates a repository that can push from a fork that cannot.
+#[test]
+fn dockerhub_publishing_is_decided_by_the_token() {
+    let root = env!("CARGO_MANIFEST_DIR");
+    let script = format!("{root}/scripts/configure-dockerhub-publishing.sh");
+
+    let run = |image: &str, username: &str, token: &str, dockerfile: bool| {
+        let workspace = std::env::temp_dir().join(format!(
+            "formal-ai-dockerhub-{}-{}",
+            std::process::id(),
+            u64::from(dockerfile) + image.len() as u64 * 2 + token.len() as u64 * 4
+        ));
+        std::fs::create_dir_all(&workspace).expect("workspace");
+        let output_file = workspace.join("github-output.txt");
+        std::fs::write(&output_file, "").expect("output file");
+        if dockerfile {
+            std::fs::write(workspace.join("Dockerfile"), "FROM scratch\n").expect("Dockerfile");
+        } else {
+            let _ = std::fs::remove_file(workspace.join("Dockerfile"));
+        }
+        let output = std::process::Command::new("bash")
+            .arg(&script)
+            .current_dir(&workspace)
+            .env("GITHUB_OUTPUT", &output_file)
+            .env("DOCKERHUB_IMAGE", image)
+            .env("DOCKERHUB_USERNAME", username)
+            .env("DOCKERHUB_TOKEN", token)
+            .output()
+            .expect("the configure script runs");
+        let written = std::fs::read_to_string(&output_file).unwrap_or_default();
+        let _ = std::fs::remove_dir_all(&workspace);
+        (output.status.success(), written)
+    };
+
+    // A fork inherits the defaults but holds no token: quiet, green, disabled.
+    let (ok, written) = run("konard/formal-ai", "konard", "", true);
+    assert!(ok, "a fork without the token still gets a green release");
+    assert!(
+        written.contains("enabled=false"),
+        "no token disables publishing: {written}"
+    );
+
+    // This repository: token held, defaults in place.
+    let (ok, written) = run("konard/formal-ai", "konard", "dckr_pat_example", true);
+    assert!(ok, "a configured repository publishes");
+    assert!(
+        written.contains("enabled=true")
+            && written.contains("docker_hub_url=https://hub.docker.com/r/konard/formal-ai"),
+        "the token enables publishing to the defaulted image: {written}"
+    );
+
+    // A token with the default blanked out is a real misconfiguration.
+    let (ok, _) = run("", "konard", "dckr_pat_example", true);
+    assert!(
+        !ok,
+        "a token with no image to push to fails loudly rather than skipping"
+    );
+
+    // No Dockerfile: nothing to build, so nothing to push.
+    let (ok, written) = run("konard/formal-ai", "konard", "dckr_pat_example", false);
+    assert!(
+        ok,
+        "a repository with no Dockerfile still gets a green release"
+    );
+    assert!(
+        written.contains("enabled=false"),
+        "no Dockerfile disables publishing: {written}"
+    );
+}

@@ -383,6 +383,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "thinking_narrative_wellbeing"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ec58f52bc2be2f20
+    source "data/seed/closure-generated-07.lino"
+    record "inserts"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c4ec986dfec40ad0
     source "data/seed/closure-generated-07.lino"
     record "lands"

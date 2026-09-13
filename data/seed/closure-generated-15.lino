@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "actually"
+  adds
+    defined-by word_surface
+    lexeme en
+      surface
+        text "adds"
   agent_procedure_execution_failed
     defined-by intent
     lexeme en
@@ -35,7 +40,7 @@ meanings
       surface
         text "ai orchestration"
   append
-    defined-by phrase
+    defined-by word_surface
     lexeme en
       surface
         text "append"

@@ -2,58 +2,58 @@ self_ast_census
   target src/agentic_coding/structured_edit.rs
   language rust
   fidelity full_ast
-  byte_len 26397
-  line_count 654
-  content_id source_module_436b64a400010cb9
+  byte_len 27042
+  line_count 664
+  content_id source_module_5fe82072d0b8a750
   symbol_count 26
   symbols
     const MAX_MEMBER_LENGTH 31 31
     struct MemberInsertion 34 43
     function plan_structured_edit_step 45 103
-    function member_insertion 105 221
-    struct Region 225 228
-    struct Literal 232 237
-    function insert_members 245 287
-    function quoted_list 290 296
-    function anchor_by_members 302 320
-    function anchor_by_name 326 352
-    function better 355 365
-    function direct_members 367 372
-    function occurrences 375 395
-    function statement_end 399 414
-    function scan 421 480
-    function closing_delimiter 482 488
-    function string_literal_end 490 502
-    function char_literal_end 506 516
-    function without_spans 518 531
-    function is_member_literal 548 555
-    function looks_like_a_declared_name 560 571
-    function bare_source_paths 576 590
-    function prose_path_tokens 593 612
-    function is_workspace_path 614 642
-    function valid_identifier 644 650
-    function read_arguments 652 654
+    function member_insertion 105 231
+    struct Region 235 238
+    struct Literal 242 247
+    function insert_members 255 297
+    function quoted_list 300 306
+    function anchor_by_members 312 330
+    function anchor_by_name 336 362
+    function better 365 375
+    function direct_members 377 382
+    function occurrences 385 405
+    function statement_end 409 424
+    function scan 431 490
+    function closing_delimiter 492 498
+    function string_literal_end 500 512
+    function char_literal_end 516 526
+    function without_spans 528 541
+    function is_member_literal 558 565
+    function looks_like_a_declared_name 570 581
+    function bare_source_paths 586 600
+    function prose_path_tokens 603 622
+    function is_workspace_path 624 652
+    function valid_identifier 654 660
+    function read_arguments 662 664
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17962
-    named_node_count 3583
+    total_link_count 18102
+    named_node_count 3607
     distinct_node_kinds 86
     node_kinds
       abstract_type 1
-      arguments 290
+      arguments 291
       array_expression 3
       array_type 14
       assignment_expression 12
       attribute 3
       attribute_item 3
       binary_expression 93
-      block 78
+      block 79
       boolean_literal 1
       bounded_type 1
-      call_expression 290
+      call_expression 291
       captured_pattern 2
       char_literal 59
       closure_expression 44
@@ -65,11 +65,11 @@ self_ast_census
       doc_comment 73
       else_clause 3
       escape_sequence 2
-      expression_statement 100
+      expression_statement 102
       field_declaration 9
       field_declaration_list 3
-      field_expression 253
-      field_identifier 267
+      field_expression 254
+      field_identifier 268
       field_initializer 5
       field_initializer_list 3
       for_expression 11
@@ -77,8 +77,8 @@ self_ast_census
       function_modifiers 3
       generic_function 4
       generic_type 26
-      identifier 800
-      if_expression 26
+      identifier 805
+      if_expression 27
       index_expression 12
       inner_doc_comment_marker 13
       integer_literal 45
@@ -86,7 +86,7 @@ self_ast_census
       let_condition 8
       let_declaration 69
       lifetime 1
-      line_comment 141
+      line_comment 148
       macro_invocation 5
       match_arm 21
       match_block 5
@@ -100,11 +100,11 @@ self_ast_census
       parenthesized_expression 7
       primitive_type 64
       range_expression 16
-      reference_expression 41
+      reference_expression 42
       reference_pattern 1
       reference_type 33
-      return_expression 16
-      scoped_identifier 41
+      return_expression 17
+      scoped_identifier 42
       scoped_use_list 4
       shorthand_field_initializer 4
       source_file 1
@@ -123,7 +123,7 @@ self_ast_census
       type_binding 1
       type_cast_expression 2
       type_identifier 71
-      unary_expression 35
+      unary_expression 36
       use_declaration 8
       use_list 4
       visibility_modifier 1

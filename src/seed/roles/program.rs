@@ -282,6 +282,16 @@ pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
 /// separator joins it, because the structural-edit route reads both out of the
 /// target file's own bytes (issue #1069).
 pub const ROLE_CODING_MEMBER_LIST_KIND: &str = "coding_member_list_kind";
+/// Semantic role: a verb asking for members to be added to a member list.
+///
+/// The noun in [`ROLE_CODING_MEMBER_LIST_KIND`] says only that a member list is
+/// involved, which prose mentions for many reasons. Issue #1131: a request to
+/// rewrite a shell script in full was read as an insertion because the prose
+/// contained the bare word `set` -- a surface of the unordered-grouping noun,
+/// here only part of `set -euo pipefail` -- and quoted two values elsewhere in
+/// the sentence. Both quoted values were spliced into the script's nearest
+/// bracket. The noun locates the list; only this verb asks for it to grow.
+pub const ROLE_CODING_MEMBER_ADD_ACTION: &str = "coding_member_add_action";
 /// Semantic role: a natural-language source fact whose surface carries the
 /// canonical, narrow repository-search expression as an action.
 ///
