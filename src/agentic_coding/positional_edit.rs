@@ -128,11 +128,15 @@ fn cue_governed_literal(
     let gap = |literal: &QuotedLiteral| {
         occurrences
             .iter()
+            // `checked_sub` is the guard as well as the arithmetic: a cue on
+            // the wrong side of the literal yields `None` rather than a
+            // subtraction that underflows. `then_some` evaluated its argument
+            // whatever the condition said, which panicked in a debug build.
             .filter_map(|&(cue_start, cue_end, postpositional)| {
                 if postpositional {
-                    (literal.end <= cue_start).then_some(cue_start - literal.end)
+                    cue_start.checked_sub(literal.end)
                 } else {
-                    (literal.start >= cue_end).then_some(literal.start - cue_end)
+                    literal.start.checked_sub(cue_end)
                 }
             })
             .min()

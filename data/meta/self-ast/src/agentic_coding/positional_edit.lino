@@ -2,26 +2,26 @@ self_ast_census
   target src/agentic_coding/positional_edit.rs
   language rust
   fidelity full_ast
-  byte_len 7713
-  line_count 184
-  content_id source_module_1dc1519d32b45538
+  byte_len 7966
+  line_count 188
+  content_id source_module_2be8ae6169aa3936
   symbol_count 8
   symbols
     function literal_text 18 22
     function compose_positional_insert 28 66
     struct QuotedLiteral 69 73
     function quoted_literals 77 95
-    function cue_governed_literal 107 147
-    function quoted_verbatim 152 162
-    function names_local_edit 168 178
-    function unescape_prose_newlines 182 184
+    function cue_governed_literal 107 151
+    function quoted_verbatim 156 166
+    function names_local_edit 172 182
+    function unescape_prose_newlines 186 188
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5091
-    named_node_count 1003
+    total_link_count 5047
+    named_node_count 993
     distinct_node_kinds 72
     node_kinds
       arguments 78
@@ -29,7 +29,7 @@ self_ast_census
       assignment_expression 1
       attribute 1
       attribute_item 1
-      binary_expression 24
+      binary_expression 20
       block 23
       break_expression 1
       call_expression 78
@@ -43,21 +43,21 @@ self_ast_census
       expression_statement 13
       field_declaration 3
       field_declaration_list 1
-      field_expression 63
-      field_identifier 69
+      field_expression 61
+      field_identifier 67
       field_initializer 3
       field_initializer_list 1
       for_expression 3
       function_item 7
       generic_type 5
-      identifier 243
+      identifier 239
       if_expression 4
       index_expression 5
       inner_doc_comment_marker 9
       integer_literal 12
       let_condition 1
       let_declaration 30
-      line_comment 40
+      line_comment 44
       macro_invocation 1
       match_arm 5
       match_block 2
@@ -67,7 +67,7 @@ self_ast_census
       outer_doc_comment_marker 25
       parameter 11
       parameters 7
-      parenthesized_expression 3
+      parenthesized_expression 1
       primitive_type 15
       range_expression 5
       reference_expression 12
