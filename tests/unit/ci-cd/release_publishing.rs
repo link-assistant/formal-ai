@@ -413,9 +413,17 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
         workflow.contains("GHCR_IMAGE: ghcr.io/${{ github.repository }}"),
         "workflow should expose the default GHCR image name for prepared Docker releases"
     );
+    // Issue #1131: this used to require the bare `${{ vars.DOCKERHUB_IMAGE }}`,
+    // which pinned the defect -- the variable was never set, so Docker Hub was
+    // disabled on every release while the release reported success. The image
+    // and the username now default, and the token is what opts in.
     assert!(
-        workflow.contains("DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}"),
-        "workflow should expose an opt-in Docker Hub image variable"
+        workflow.contains("DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}"),
+        "workflow should default the Docker Hub image and let a fork override it"
+    );
+    assert!(
+        !workflow.contains("${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}"),
+        "every Docker Hub username site should carry the default too"
     );
     assert_eq!(
         workflow.matches("docker/login-action@v4").count(),

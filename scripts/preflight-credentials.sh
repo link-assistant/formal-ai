@@ -277,15 +277,17 @@ check_ghcr() {
 check_dockerhub() {
   local check="Docker Hub push"
   local image="${DOCKERHUB_IMAGE:-}"
-  if [ -z "$image" ]; then
-    # Docker Hub publishing is opt-in (scripts/configure-dockerhub-publishing.sh
-    # skips it quietly), so an unset image is a configuration choice, not a
-    # missing credential.
-    trace "DOCKERHUB_IMAGE is unset; Docker Hub publishing is disabled"
+  if [ -z "${DOCKERHUB_TOKEN:-}" ]; then
+    # Docker Hub publishing is opt-in and the token opts in
+    # (scripts/configure-dockerhub-publishing.sh skips it quietly), so an unset
+    # token is a configuration choice, not a missing credential. Issue #1131:
+    # this keyed off the image until the image got a default, which would have
+    # made every fork fail this check instead of skipping it.
+    trace "DOCKERHUB_TOKEN is unset; Docker Hub publishing is disabled"
     return
   fi
-  if [ -z "${DOCKERHUB_USERNAME:-}" ] || [ -z "${DOCKERHUB_TOKEN:-}" ]; then
-    record failed "$check" "DOCKERHUB_IMAGE is set but DOCKERHUB_USERNAME/DOCKERHUB_TOKEN are not; the release would fail half-published"
+  if [ -z "$image" ] || [ -z "${DOCKERHUB_USERNAME:-}" ]; then
+    record failed "$check" "DOCKERHUB_TOKEN is set but DOCKERHUB_IMAGE/DOCKERHUB_USERNAME are not; the release would fail half-published"
     return
   fi
   probe_registry_push "$check" "$DOCKERHUB_REGISTRY" "$DOCKERHUB_TOKEN_ENDPOINT" "registry.docker.io" \

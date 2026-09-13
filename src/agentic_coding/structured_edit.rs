@@ -118,6 +118,16 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
     if !changes_a_file || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_LIST_KIND, &normalized) {
         return None;
     }
+    // The noun says a member list is in play; it does not say the request wants
+    // one to grow. Issue #1131: a whole-file rewrite carried the bare word
+    // `set` in `set -euo pipefail` and quoted two values in its explanation of
+    // *why* the rewrite was needed. That was enough to route it here, and both
+    // values were spliced into the script's nearest bracket -- a shell
+    // condition -- which parses and is always true. An insertion has to be
+    // asked for, so the verb is required evidence alongside the noun.
+    if !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized) {
+        return None;
+    }
 
     // A backtick slot is prose markup; a quotation slot is a literal. The
     // delimiter says what the slot is *for*, and the slot's own text says what
