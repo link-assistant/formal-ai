@@ -165,6 +165,27 @@ const LANGUAGE_LEDGER: &str = include_str!("../data/seed/languages.lino");
 
 /// The English name of a registered language slug (`en` → `English`).
 ///
+/// Whether `slug` places its adpositions after the noun (`"on:" के बाद`,
+/// `"on:" 行后`), so a positional cue in an edit attaches to the literal
+/// *before* it rather than after it (issue #1115). Read from the `adposition`
+/// field of `data/seed/languages.lino`; a language that states nothing is
+/// prepositional.
+#[must_use]
+pub fn uses_postpositions(slug: &str) -> bool {
+    let mut current = None;
+    for line in LANGUAGE_LEDGER.lines() {
+        let Some((key, value)) = line.trim_start().split_once(' ') else {
+            continue;
+        };
+        match key {
+            "language" => current = Some(unquote(value)),
+            "adposition" if current == Some(slug) => return unquote(value) == "postposition",
+            _ => {}
+        }
+    }
+    false
+}
+
 /// Issue #706: the names live in `data/seed/languages.lino`, so a newly
 /// registered language is named by its ledger entry and never by a Rust arm.
 #[must_use]

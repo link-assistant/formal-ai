@@ -303,12 +303,15 @@ fn work_item_step(capability: Capability, slug: &str, lang: &str, target: &str) 
 ///
 /// The software action itself comes from the multilingual seed. URL host/path
 /// segments are protocol identifiers, not natural-language routing phrases.
-fn repository_work_reference(request: &str) -> Option<String> {
+pub(super) fn repository_work_reference(request: &str) -> Option<String> {
     request.split_whitespace().find_map(|token| {
+        // Sentence punctuation in any registered script: a URL that ends a
+        // Chinese sentence carries `。` the way an English one carries `.`.
         let url = token.trim_matches(|character: char| {
             matches!(
                 character,
                 '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | ',' | ';' | '.' | '"' | '\''
+                    | '。' | '，' | '、' | '；' | '：' | '（' | '）' | '「' | '」' | '«' | '»' | '।'
             )
         });
         let path = url
@@ -387,7 +390,7 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
     }
     None
 }
-fn mentions_bare_role(text: &str, role: &str) -> bool {
+pub(super) fn mentions_bare_role(text: &str, role: &str) -> bool {
     let lower = text.to_lowercase();
     seed::lexicon()
         .role_word_forms(role)
@@ -744,6 +747,9 @@ pub fn resolve_census_target(reference: &str) -> Option<CensusResolution> {
 /// old/new text keeps its original case and punctuation.
 #[must_use]
 pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+    if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
+        return Some(edit);
+    }
     let toks = tokens(request);
     let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
     let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
@@ -833,10 +839,20 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         sentence_end
     };
     let new_span = request.get(new_lead.end..new_end)?;
-    let old = clean_content(old_span)?;
-    let new = clean_content(new_span)?;
+    let old = super::positional_edit::literal_text(old_span)?;
+    let new = super::positional_edit::literal_text(new_span)?;
     Some((target, old, new))
 }
+
+
+/// Whether `text` carries a software-authoring verb (implement, resolve,
+/// develop, …) in any seeded language.
+#[must_use]
+pub fn mentions_software_authoring(text: &str) -> bool {
+    mentions_bare_role(text, seed::ROLE_SOFTWARE_AUTHORING_ACTION)
+}
+
+
 const fn capability_slug(capability: Capability) -> &'static str {
     match capability {
         Capability::Search => "Search",

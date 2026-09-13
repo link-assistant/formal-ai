@@ -24,7 +24,9 @@ use super::general_planner::{
     compose_general_change_plan, has_authoritative_literal_write, objective_text,
 };
 use super::google_trends_catalog;
+use super::git_commit;
 use super::google_trends_learning;
+use super::harness_envelope;
 use super::intent_router;
 use super::learning_report;
 use super::ledger;
@@ -160,6 +162,51 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let received = crate::protocol::latest_user_request(messages)?;
+    // A harness prompt that quotes the task to have it summarized is answered
+    // with the summary, never by doing the task again (issue #1133).
+    if let Some(summary) = harness_envelope::summarize_request(&received) {
+        return Some(AgenticPlan::Final(summary));
+    }
+    let plan = plan_chat_step_routes(messages, tool_names, received)?;
+    Some(stop_repeated_failure(plan, messages))
+}
+
+/// A tool call that has already failed twice this turn with the same report
+/// is not a plan; the third attempt is replaced by the report of the failure.
+///
+/// Issue #1133: the Kotlin run planned `mcp__playwright__browser_click` 547
+/// times, each answered by the same selector error, until the context window
+/// overflowed. No route knows it is looping -- each re-derives the same next
+/// step from the same transcript -- so the stop is applied to whatever any
+/// route planned.
+fn stop_repeated_failure(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPlan {
+    const REPEATED_FAILURES_THAT_STOP: usize = 2;
+    let AgenticPlan::ToolCalls(calls) = &plan else {
+        return plan;
+    };
+    let progress = Progress::scan(messages);
+    let Some(repeated) = calls
+        .iter()
+        .find(|call| progress.identical_failures_of(&call.tool) >= REPEATED_FAILURES_THAT_STOP)
+    else {
+        return plan;
+    };
+    let Some(failure) = progress.latest_failure_of_tool(&repeated.tool) else {
+        return plan;
+    };
+    let prompt = crate::protocol::latest_user_request(messages).unwrap_or_default();
+    AgenticPlan::Final(tool_result::render_failure(
+        &repeated.tool,
+        &failure.detail,
+        &prompt,
+    ))
+}
+
+fn plan_chat_step_routes(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    received: String,
+) -> Option<AgenticPlan> {
     trace_route("agentic_received", &received);
     // Agent compacts a long tool loop by asking the model to summarize it, then
     // starts the next request with the protocol turn "Continue if you have next
@@ -207,7 +254,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // literal bytes may themselves say "rename X to Y" (issue #708). Broader
     // file-write requests remain below the semantic coding routes.
     if has_authoritative_literal_write(&task)
-        && let Some(plan) = tool_for(tool_names, Capability::Write)
+        && let Some(plan) = capability_router::workspace_creation_tool(tool_names)
             .and_then(|_| compose_general_change_plan(&task))
             .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
@@ -254,6 +301,14 @@ pub(super) fn plan_settled_routes(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
+    // A request to commit what is already in the tree is one shell step. It
+    // is claimed first because its words ("review these changes and commit
+    // them", with a `?? Main.scala` listing) read to later routes as a search
+    // for the file; the route itself declines any request that also names the
+    // work to do (issue #1133).
+    if let Some(plan) = git_commit::plan_commit_step(task, messages, tool_names) {
+        return Some(plan);
+    }
     // A learned workspace-change procedure owns grounded repository rewrites
     // and multi-file compositions before source creation or shell routing can
     // collapse them into one incomplete action.
@@ -280,14 +335,14 @@ pub(super) fn plan_settled_routes(
     // and is not finished until none is outstanding (issue #1099). With a
     // single artifact named -- the overwhelmingly common case -- this yields
     // nothing and the composer below plans the request whole, unchanged.
-    if let Some(plan) = tool_for(tool_names, Capability::Write)
+    if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
         .and_then(|_| task_obligations::outstanding(task, messages))
         .and_then(|obligation| compose_general_change_plan(&obligation.request))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
     }
-    if let Some(plan) = tool_for(tool_names, Capability::Write)
+    if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
         .and_then(|_| compose_general_change_plan(task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
@@ -513,6 +568,12 @@ pub(super) fn plan_settled_routes(
     // is not one an answer composed from the request alone may claim.
     if let Some(plan) = task_structure::plan_task_structure_step(messages, task) {
         return Some(plan);
+    }
+    // An instruction that edits a named file is never a web question -- when
+    // no edit route above could compose it, the honest answer is that nothing
+    // was planned, not a search for the sentence (issues #1115, #1133).
+    if super::positional_edit::names_local_edit(task) {
+        return None;
     }
     if let Some(query) = web_research::web_research_query_for(messages)
         && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)

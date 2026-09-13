@@ -2,10 +2,10 @@ self_ast_census
   target src/language.rs
   language rust
   fidelity signature
-  byte_len 19222
-  line_count 543
-  content_id source_module_27c556431b25e0c7
-  symbol_count 51
+  byte_len 20013
+  line_count 564
+  content_id source_module_c6841b5153662c96
+  symbol_count 52
   symbols
     const LANGUAGE_DETECTION 22 22
     struct Language 31 31
@@ -33,28 +33,29 @@ self_ast_census
     function registered_languages 151 153
     function fallback_language 157 159
     const LANGUAGE_LEDGER 164 164
-    function language_name 171 183
-    function language_for_concept_slug 192 208
-    function surface_matches_language 217 237
-    struct ForcedLanguageGuard 240 242
-    function drop 245 247
-    struct Rule 254 268
-    function unquote 270 275
-    function parse_codepoint 277 282
-    function parse_quoted_list 285 295
-    function parse_rules 297 334
-    function with_rules 341 345
-    static RULES 343 343
-    function with_rules 348 350
-    function fallback_of 352 357
-    function fallback_script_of 359 364
-    function default_language_of 367 373
-    struct ScriptCounts 376 380
-    function of 383 388
-    function bump 390 397
-    function max_excluding 400 407
-    function total 409 411
-    function count_scripts 414 436
-    function marker_language 447 481
-    function detect 492 499
-    function detect_with 501 543
+    function uses_postpositions 174 187
+    function language_name 192 204
+    function language_for_concept_slug 213 229
+    function surface_matches_language 238 258
+    struct ForcedLanguageGuard 261 263
+    function drop 266 268
+    struct Rule 275 289
+    function unquote 291 296
+    function parse_codepoint 298 303
+    function parse_quoted_list 306 316
+    function parse_rules 318 355
+    function with_rules 362 366
+    static RULES 364 364
+    function with_rules 369 371
+    function fallback_of 373 378
+    function fallback_script_of 380 385
+    function default_language_of 388 394
+    struct ScriptCounts 397 401
+    function of 404 409
+    function bump 411 418
+    function max_excluding 421 428
+    function total 430 432
+    function count_scripts 435 457
+    function marker_language 468 502
+    function detect 513 520
+    function detect_with 522 564

@@ -29,6 +29,11 @@ meanings
     lexeme en
       surface
         text "authenticate"
+  branch
+    defined-by word_surface
+    lexeme en
+      surface
+        text "branch"
   called
     defined-by word_surface
     lexeme en

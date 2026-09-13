@@ -146,9 +146,13 @@ fn repository_work_item_run_reports_planned_not_executed_instead_of_success() {
         &["write_file", "run_command"],
     )
     .expect("the harness prompt must have an agentic plan") else {
-        panic!("the first step must persist the plan record")
+        panic!("the first step must read the work item")
     };
-    assert_eq!(calls[0].tool, "write_file");
+    // A shell is a way to read the issue (`gh issue view …`), so a client with
+    // no fetch tool reads it there before anything is recorded (issue #1133);
+    // the record follows once the read has been tried.
+    assert_eq!(calls[0].tool, "run_command");
+    assert!(calls[0].arguments.contains("gh issue view"), "{calls:?}");
 
     let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
     assert!(!outcome.hit_turn_cap);

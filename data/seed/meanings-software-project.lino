@@ -159,17 +159,36 @@ meanings
         text implement
       surface
         text solve
+      surface
+        text resolve
     lexeme ru
       surface
         text реализуй
       surface
         text реализовать
+      surface
+        text реши
+      surface
+        text решить
     lexeme hi
       surface
         text लागू
+      surface
+        text हल
     lexeme zh
       surface
         text 实现
+      surface
+        text 解决
+    lexeme es
+      surface
+        text implementa
+      surface
+        text implementar
+      surface
+        text resuelve
+      surface
+        text resolver
   develop
     defined-by program
     role software_authoring_action

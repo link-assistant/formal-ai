@@ -20,7 +20,7 @@
 tool_resource_scopes
   scope remote_service
     arguments ("repository_full_name" "repository" "repo" "repo_name" "owner" "org" "organization" "project_id" "issue_number" "pull_number" "channel_id" "page_id" "workspace_id" "database_id")
-    namespaces ("github" "gitlab" "bitbucket" "gitea" "forgejo" "jira" "atlassian" "linear" "slack" "notion" "sentry" "asana" "trello" "azure_devops")
+    namespaces ("github" "gitlab" "bitbucket" "gitea" "forgejo" "jira" "atlassian" "linear" "slack" "notion" "sentry" "asana" "trello" "azure_devops" "codex_apps")
   scope process_input
     arguments ("session_id" "process_id" "shell_id" "pid" "terminal_id")
     names ("write_stdin" "send_input" "stdin_write" "process_write" "send_keys")

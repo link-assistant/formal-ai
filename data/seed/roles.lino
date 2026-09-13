@@ -71,6 +71,8 @@ roles
     kind predicate
   causal_interrogative
     kind meaning
+  ci_workflow_request
+    kind meaning
   circular_joke_phrase
     kind predicate
   clarification_request
@@ -243,6 +245,10 @@ roles
     kind predicate
   file_edit_new_lead_cue
     kind predicate
+  file_edit_position_after
+    kind meaning
+  file_edit_position_before
+    kind meaning
   file_edit_target_cue
     kind predicate
   file_leading_line_constraint_lead
@@ -272,6 +278,10 @@ roles
   game_tracker_domain
     kind meaning
   game_tracker_mechanic
+    kind meaning
+  git_branch_cue
+    kind meaning
+  git_commit_request
     kind meaning
   github_repository_platform
     kind meaning

@@ -52,9 +52,17 @@ gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json body --jq .body > tas
 title=$(gh issue view "$number" --repo "$GITHUB_REPOSITORY" --json title --jq .title)
 field() { sed -n "s/^$1: *//p" task-body.txt | head -1; }
 
-sed -n 's/^contains: *//p' task-body.txt > contains.txt
-sed -n 's/^produces: *//p' task-body.txt > produces.txt
-sed -n 's/^into: *//p' task-body.txt > into.txt
+# The quotes an author writes around a value delimit it; they are not part of
+# it. `contains: "workflow_dispatch: {}"` used to be checked with the quote
+# characters included, and a correct artifact failed verification (issue
+# #1117). Only a matching pair at both ends is stripped, so a value that
+# itself begins with a quote is left alone.
+unquote() {
+  sed -E 's/^"(.*)"$/\1/; s/^'"'"'(.*)'"'"'$/\1/; s/^`(.*)`$/\1/'
+}
+sed -n 's/^contains: *//p' task-body.txt | unquote > contains.txt
+sed -n 's/^produces: *//p' task-body.txt | unquote > produces.txt
+sed -n 's/^into: *//p' task-body.txt | unquote > into.txt
 
 if [[ -n "$(field task)" ]]; then
   for required in task seed produces into message; do

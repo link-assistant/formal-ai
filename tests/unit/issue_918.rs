@@ -359,9 +359,15 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // edits in words the file never has to repeat, moving the floor from 92 to
     // 95. Issue #1131 added `coding_member_add`, the verb that says a member
     // list should grow, moving the floor from 95 to 96: the nouns alone had
-    // been routing whole-file rewrites into member insertion. None is allowed
-    // to become a metadata gap.
-    assert_eq!(coding_records, 96, "coding-path regression floor");
+    // been routing whole-file rewrites into member insertion. Issue #1133
+    // added five more records from the three Hive Mind runs that produced no
+    // solution -- `git_branch_cue` and `git_commit_request` (where a work
+    // item's result lands, and the request to land it), `ci_workflow_request`
+    // (the workflow an issue asks for beside the program) and the two
+    // `file_edit_position_*` cues of an additive edit -- moving the floor
+    // from 96 to 101: each was a hardcoded English sentence or a missing route
+    // before it was data. None is allowed to become a metadata gap.
+    assert_eq!(coding_records, 101, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -489,5 +495,9 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // through the total closure (`adds`, `appends`, `include`, `insert`,
     // `inserts`): the surfaces of `coding_member_add`, the verb that has to be
     // present before a member list may be grown.
-    assert_eq!(expected_gaps.len(), 4_059);
+    // Issue #1133 moved the total from 4,059 to 4,062: five coding-path
+    // records arrived (see the coding floor above) while the Spanish and
+    // "resolve" lexemes given to `implement` closed two gaps that had been
+    // waiting on exactly that wording.
+    assert_eq!(expected_gaps.len(), 4_062);
 }
