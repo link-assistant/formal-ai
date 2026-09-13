@@ -170,6 +170,15 @@ meanings
         text 添加
       surface
         text 插入
+    lexeme es
+      surface
+        text añade
+      surface
+        text añadir
+      surface
+        text inserta
+      surface
+        text insertar
   coding_module_registration
     defined-by action
     role coding_module_registration_action
@@ -383,6 +392,13 @@ meanings
     lexeme zh
       surface
         text 列表
+    lexeme es
+      surface
+        text lista
+      surface
+        text listas
+      surface
+        text secuencia
   coding_member_list_set
     defined-by code
     role coding_member_list_kind
@@ -408,6 +424,11 @@ meanings
     lexeme zh
       surface
         text 集合
+    lexeme es
+      surface
+        text conjunto
+      surface
+        text colección
   coding_member_list_group
     defined-by code
     role coding_member_list_kind
@@ -437,6 +458,9 @@ meanings
     lexeme zh
       surface
         text 元组
+    lexeme es
+      surface
+        text grupo
   coding_search_struct
     defined-by code
     role coding_search_subject_kind
