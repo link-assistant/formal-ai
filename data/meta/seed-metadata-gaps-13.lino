@@ -771,6 +771,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "thinking_step_compute_engine_plain"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3117a2db5a7ad2ed
+    source "data/seed/closure-generated-15.lino"
+    record "adds"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d4223fe4fc7bafcd
     source "data/seed/closure-generated-15.lino"
     record "bundle"

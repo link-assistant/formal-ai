@@ -357,8 +357,11 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // `coding_member_list_sequence`, `coding_member_list_set` and
     // `coding_member_list_group` -- that let a request name the collection it
     // edits in words the file never has to repeat, moving the floor from 92 to
-    // 95. None is allowed to become a metadata gap.
-    assert_eq!(coding_records, 95, "coding-path regression floor");
+    // 95. Issue #1131 added `coding_member_add`, the verb that says a member
+    // list should grow, moving the floor from 95 to 96: the nouns alone had
+    // been routing whole-file rewrites into member insertion. None is allowed
+    // to become a metadata gap.
+    assert_eq!(coding_records, 96, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -482,6 +485,9 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // seeded notice `context_session_guessed_notice` from #1105 RC6. Every one
     // is behaviour that used to be Rust -- a hardcoded English phrase, an
     // exact-string comparison in the planner -- arriving as described data,
-    // which is what this floor exists to record.
-    assert_eq!(expected_gaps.len(), 4_054);
+    // which is what this floor exists to record. Issue #1131 brought five more
+    // through the total closure (`adds`, `appends`, `include`, `insert`,
+    // `inserts`): the surfaces of `coding_member_add`, the verb that has to be
+    // present before a member list may be grown.
+    assert_eq!(expected_gaps.len(), 4_059);
 }

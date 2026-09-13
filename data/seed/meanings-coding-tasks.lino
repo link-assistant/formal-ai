@@ -117,6 +117,59 @@ meanings
     lexeme zh
       surface
         text 除以
+  coding_member_add
+    defined-by action
+    role coding_member_add_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to member insertion"
+    unit "not applicable"
+    example "add"
+    lexeme en
+      surface
+        text add
+      surface
+        text adds
+      surface
+        text insert
+      surface
+        text inserts
+      surface
+        text append
+      surface
+        text appends
+      surface
+        text include
+      surface
+        text includes
+      surface
+        text into
+      surface
+        text "also holds"
+      surface
+        text "also hold"
+      surface
+        text "also contains"
+      surface
+        text "also contain"
+    lexeme ru
+      surface
+        text добавь
+      surface
+        text добавить
+      surface
+        text вставь
+      surface
+        text вставить
+    lexeme hi
+      surface
+        text जोड़ें
+      surface
+        text जोड़ो
+    lexeme zh
+      surface
+        text 添加
+      surface
+        text 插入
   coding_module_registration
     defined-by action
     role coding_module_registration_action

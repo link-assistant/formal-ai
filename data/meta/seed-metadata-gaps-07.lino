@@ -103,6 +103,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "coding_text_replaced"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1ad942236cf06a07
+    source "data/seed/closure-generated-03.lino"
+    record "insert"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b78bb2fa0700dcc7
     source "data/seed/closure-generated-03.lino"
     record "reads"
