@@ -75,14 +75,22 @@ fn acts_in_capability_scope(name: &str, capability: Capability) -> bool {
 
 /// Order among the tools that can answer a research capability.
 ///
-/// Client-executed tools come first, because their result returns through the
-/// CLI: an exact alias the client runs itself (`WebFetch`, `webfetch`), then a
-/// namespaced MCP tool, then the protocol-native hosted tool (`web_search`,
-/// `web_fetch`), whose result the client never sees (issue #781). Issue #1133:
-/// the MCP guess used to come first unconditionally, and for the Claude Code
-/// tool set that made `mcp__playwright__browser_click` outrank `WebFetch` for
-/// a fetch -- 547 identical calls with an empty selector before the context
-/// window filled.
+/// A namespaced MCP research tool comes first. It is present only because the
+/// client was deliberately configured to expose and permit it, so it is the
+/// one alias the run is known to be able to execute. A client's own research
+/// alias (`WebFetch`, `webfetch`) comes next, then the protocol-native hosted
+/// tool (`web_search`, `web_fetch`), whose result the client never sees.
+///
+/// Issue #781: Claude Code advertises `WebSearch` alongside a wired-up
+/// `mcp__issue781__websearch` but grants permission only for the latter, and
+/// ranking its own alias first made every run stop at "Claude requested
+/// permissions to use `WebSearch`, but you have not granted it yet".
+///
+/// Issue #1133: only a *research* MCP tool may outrank a client alias --
+/// browser automation classifies as no capability at all, so
+/// `mcp__playwright__browser_click` can
+/// no longer win a fetch, which is what drove 547 identical empty-selector
+/// calls until the context window filled.
 fn research_tool_rank(name: &str) -> u8 {
     let hosted = HOSTED_RESEARCH_TOOLS
         .iter()
@@ -90,9 +98,9 @@ fn research_tool_rank(name: &str) -> u8 {
     let namespaced = name.to_ascii_lowercase().starts_with("mcp__");
     let client_scoped = crate::tool_scope::scope_of_tool_name(name).is_client_workspace();
     match (hosted, namespaced, client_scoped) {
-        (false, false, _) => 0,
-        (false, true, true) => 1,
-        (false, true, false) => 2,
+        (false, true, true) => 0,
+        (false, true, false) => 1,
+        (false, false, _) => 2,
         (true, _, _) => 3,
     }
 }
