@@ -72,10 +72,10 @@ wrote it.
 
 | # | Plan | Closes / delivers | Status |
 | --- | --- | --- | --- |
-| 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | local chain rebuilt; final push and CI pending |
-| 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | implemented; final evidence recheck in progress |
+| 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | rewrite and local evidence check complete; CI confirmation pending |
+| 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | implemented and re-verified |
 | 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | implemented |
-| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L14 implemented; attribution and final push in progress |
+| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L15 complete; local gates green; CI confirmation pending |
 
 ## Order of work
 
@@ -171,3 +171,18 @@ wrote it.
   Rosetta moved outside the specialized-handler core, hardcoded-language debt
   fell from 1,278 to 1,274 entries, and the reviewed outside-core ceiling fell
   from 18,854 to 18,469 lines.
+
+- 2026-09-15, final preparation: the two historical Formal AI commits were
+  rebuilt with the only model value their archived evidence supports. The old
+  and new heads have the same tree, and the strict evidence measurement passes.
+  Formal AI's successful recipe run is isolated in its own attributed commit;
+  its secret-scanned raw trace is stored in an
+  [unlisted gist](https://gist.github.com/konard/dbae44b1e547bf1a9b1ba51c6178ecf7),
+  with hashes and the non-uploadable blank stderr file recorded in the
+  repository evidence pointer. The resulting self-hosting measurement is
+  0.12% (32/27,732 changed lines; 3/35 commits).
+
+  All 32 Rust-stage gates, 82 web tests and six focused Playwright parity tests
+  pass on the final tree. The branch is delivered with one lease-protected
+  force-push; the remaining unchecked items are remote CI observations rather
+  than uncommitted implementation work.

@@ -29,7 +29,7 @@ backslash escapes; commit with `git commit -F`.
 
 - [x] L0.1 `src/web/app.js` rebuilt with bun 1.4.0
 - [x] L0.2 E2E slowdown measured, fixed, regression test added
-- [ ] L0.3 the two 2026-08-01 commits carry `Formal-AI-Model`; branch force-pushed with lease
+- [x] L0.3 the two 2026-08-01 commits carry `Formal-AI-Model`; branch force-pushed with lease
 - [ ] L0.4 CI green on the pushed head (all workflows)
 
 ## L1 — The ratchet reads history correctly
@@ -345,17 +345,17 @@ turned into a shell command; the license line is present.
 
 ## L15 — Formal AI authors one leaf
 
-- [ ] one leaf of this batch (candidate: the five-language paraphrase seed of
-      L12 or the recipe data of L14) is authored through
+- [x] one leaf of this batch (the coding-discovery recipe data of L14) is
+      authored through
       `scripts/author-change-with-formal-ai.sh` against the served branch
       binary; the commit carries `Formal-AI-Session`, `Formal-AI-Evidence`,
       `Formal-AI-Model`; the evidence goes to the gist store, not the repo
 
 ## L16 — Final preparation
 
-- [ ] `rust-script scripts/run-ci-gates.rs --stage rust` green; `npm run
+- [x] `rust-script scripts/run-ci-gates.rs --stage rust` green; `npm run
       test:web` green; Playwright parity spec green locally
-- [ ] PR body: summary, before/after numbers (upstream local measurements,
+- [x] PR body: summary, before/after numbers (upstream local measurements,
       curated slice, ladder unchanged), `Fixes #710`, `Closes #862`, `Closes
       #863`, partial note on #1071, links to the plans
 - [ ] one CI wait; every workflow green; then stop

@@ -104,4 +104,4 @@ so the audit is complete and so nobody reads their absence as "done".
 
 - [x] inputs collected; raw table generated (`../raw-data/coding-and-benchmark-requirements-2026-09-14.md`, 296 rows)
 - [x] A/B/C/D tables written against `cde14085d`
-- [ ] B-rows re-verified after plan 03 lands (each row's "What this PR does" cell becomes its evidence)
+- [x] B-rows re-verified after plan 03 lands (each row's final column records its evidence)

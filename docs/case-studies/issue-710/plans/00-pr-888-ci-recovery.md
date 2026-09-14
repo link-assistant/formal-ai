@@ -201,8 +201,8 @@ git diff cde14085d <new HEAD> --stat   # empty: same tree
 rust-script scripts/self-hosting-metric.rs measure --since de88ca251 --until HEAD
 ```
 
-**Status: rebuilt and verified locally; the single final push is pending.** On
-2026-09-15 the committed plumbing script rebuilt the chain from
+**Status: rebuilt and verified locally.** On 2026-09-15 the committed plumbing
+script rebuilt the chain from
 `20ecb3737` to `79ccdabd4`. Both heads resolve to tree
 `d7dac2a66a53179157e1f4ecc6c3093596a1e12c`, and `git diff --exit-code`
 between them is empty. The rewritten verdict and audit commits are
@@ -231,7 +231,8 @@ see the correction above for why.
 
 - [x] chain rebuilt; `git diff` against the old head is empty
 - [x] evidence check passes locally on the rebuilt range
-- [ ] pushed with `--force-with-lease`; CI evidence check green
+- [x] pushed with `--force-with-lease`
+- [ ] CI evidence check green
 
 
 ## 4. Not a defect of this branch, recorded so it is not chased twice
