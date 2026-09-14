@@ -387,7 +387,7 @@ conversational_variation_case_assistant_free_time_hi_01
   prompt "खाली समय में क्या करते हो?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+  expected_answer "मेरा खाली समय मूलतः प्रतीक्षा की स्थिति है। बातचीत में मैं तर्क, कोड, नियम और जानकारी व्यवस्थित करने में मदद करता हूँ।"
 conversational_variation_case_assistant_free_time_hi_02
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_02"
@@ -397,7 +397,7 @@ conversational_variation_case_assistant_free_time_hi_02
   prompt "आप खाली समय में क्या करते हैं?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+  expected_answer "जब कोई मुझसे बात नहीं कर रहा होता, मैं पृष्ठभूमि में कुछ नहीं करता। संदेश आने पर मैं उसी काम पर ध्यान देता हूँ।"
 conversational_variation_case_assistant_free_time_hi_03
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_03"
@@ -407,7 +407,7 @@ conversational_variation_case_assistant_free_time_hi_03
   prompt "फुर्सत में क्या करते हो?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+  expected_answer "मेरा खाली समय मूलतः प्रतीक्षा की स्थिति है। बातचीत में मैं तर्क, कोड, नियम और जानकारी व्यवस्थित करने में मदद करता हूँ।"
 conversational_variation_case_assistant_free_time_hi_04
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_04"

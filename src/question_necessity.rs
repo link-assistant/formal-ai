@@ -116,6 +116,24 @@ pub fn classify_question(question: &str) -> QuestionClassification {
     classify(question, false)
 }
 
+/// The seed's requirement-section marker for `language`, if it declares one.
+///
+/// A handler that must ask a genuinely blocking question labels it with this
+/// marker so [`enforce_questions`] reads it as a requirement rather than
+/// defaulting it to `factual` and dropping it. The markers are seed data --
+/// this only selects among the ones already declared, never adds any, and it
+/// matches them by script rather than by position so reordering the seed
+/// cannot silently hand a language the wrong marker.
+#[must_use]
+pub fn requirement_section_marker(language: &str) -> Option<String> {
+    policy()
+        .rules
+        .iter()
+        .flat_map(|rule| rule.section_markers.iter())
+        .find(|marker| crate::language::surface_matches_language(marker, language))
+        .cloned()
+}
+
 #[must_use]
 pub fn authorize_question(
     class: QuestionClass,

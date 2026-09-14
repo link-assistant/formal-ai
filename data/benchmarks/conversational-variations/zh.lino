@@ -397,7 +397,7 @@ conversational_variation_case_assistant_free_time_zh_01
   prompt "你空闲时间做什么?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。"
+  expected_answer "没有人使用我时,我不会在后台做别的事。你发来消息后,我就专注处理当前任务。"
 conversational_variation_case_assistant_free_time_zh_02
   record_type "conversational_variation_case"
   id "assistant_free_time_zh_02"
@@ -417,7 +417,7 @@ conversational_variation_case_assistant_free_time_zh_03
   prompt "你业余时间做什么?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。"
+  expected_answer "没有人使用我时,我不会在后台做别的事。你发来消息后,我就专注处理当前任务。"
 conversational_variation_case_assistant_free_time_zh_04
   record_type "conversational_variation_case"
   id "assistant_free_time_zh_04"
@@ -427,7 +427,7 @@ conversational_variation_case_assistant_free_time_zh_04
   prompt "你休息的时候做什么?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。"
+  expected_answer "我的空闲时间基本就是等待状态。在对话中,我可以帮助推理、写代码、检查规则和整理信息。"
 conversational_variation_case_assistant_free_time_zh_05
   record_type "conversational_variation_case"
   id "assistant_free_time_zh_05"

@@ -576,10 +576,22 @@ impl UniversalSolver {
             if crate::program_coreference::looks_like_ambiguous_program_modification(
                 &normalize_prompt(prompt),
             ) {
+                // Label the question with the seed's requirement-section
+                // marker. A target-less modification cannot proceed until the
+                // user names the target, so this is a blocking requirement;
+                // unlabelled it falls to the `factual` default and issue
+                // #920's necessity gate drops it, leaving an empty answer.
                 let body = seed::localized_response(
                     "ambiguous_modification_clarification",
                     language.slug(),
                 )
+                .map(|question| {
+                    crate::question_necessity::requirement_section_marker(language.slug())
+                        .map_or_else(
+                            || question.clone(),
+                            |marker| [marker, format!("- {question}")].join("\n"),
+                        )
+                })
                 .unwrap_or_default();
                 return finalize_simple(
                     prompt,

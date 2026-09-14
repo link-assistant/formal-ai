@@ -22,14 +22,14 @@ use crate::engine_assistant_name::{
 };
 use crate::engine_responses::{
     ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES,
-    TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES, chinese_assistant_free_time_answer,
-    chinese_courtesy_response_answer, chinese_farewell_answer, chinese_greeting_answer,
-    chinese_identity_answer, chinese_test_status_answer, chinese_wellbeing_answer,
-    courtesy_response_answer, hindi_assistant_free_time_answer, hindi_courtesy_response_answer,
-    hindi_farewell_answer, hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
-    hindi_wellbeing_answer, russian_assistant_free_time_answer, russian_courtesy_response_answer,
-    russian_farewell_answer, russian_greeting_answer, russian_identity_answer,
-    russian_test_status_answer, russian_wellbeing_answer, test_status_answer,
+    TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES, chinese_courtesy_response_answer,
+    chinese_farewell_answer, chinese_greeting_answer, chinese_identity_answer,
+    chinese_test_status_answer, chinese_wellbeing_answer, courtesy_response_answer,
+    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
+    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
+    russian_courtesy_response_answer, russian_farewell_answer, russian_greeting_answer,
+    russian_identity_answer, russian_test_status_answer, russian_wellbeing_answer,
+    test_status_answer,
 };
 pub(crate) use crate::engine_responses::{
     assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,

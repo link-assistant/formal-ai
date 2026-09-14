@@ -477,7 +477,7 @@ conversational_variation_case_assistant_free_time_en_01
   prompt "what do you do in your free time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+  expected_answer "My quiet time is basically waiting state. In active dialog I work on reasoning, local rules, code, and useful explanations."
 conversational_variation_case_assistant_free_time_en_02
   record_type "conversational_variation_case"
   id "assistant_free_time_en_02"
@@ -507,7 +507,7 @@ conversational_variation_case_assistant_free_time_en_04
   prompt "what do you do in free time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+  expected_answer "When nobody is using me, I am not doing anything in the background. When you write, I spend the moment helping with the current task."
 conversational_variation_case_assistant_free_time_en_05
   record_type "conversational_variation_case"
   id "assistant_free_time_en_05"
@@ -517,7 +517,7 @@ conversational_variation_case_assistant_free_time_en_05
   prompt "how do you spend your spare time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+  expected_answer "When nobody is using me, I am not doing anything in the background. When you write, I spend the moment helping with the current task."
 conversational_variation_case_assistant_name_en_01
   record_type "conversational_variation_case"
   id "assistant_name_en_01"

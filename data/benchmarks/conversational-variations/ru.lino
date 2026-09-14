@@ -437,7 +437,7 @@ conversational_variation_case_assistant_free_time_ru_01
   prompt "что делаешь в свободное время?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+  expected_answer "Хобби у меня нет, но в разговоре я могу помогать с идеями, программами, правилами и объяснениями."
 conversational_variation_case_assistant_free_time_ru_02
   record_type "conversational_variation_case"
   id "assistant_free_time_ru_02"
@@ -447,7 +447,7 @@ conversational_variation_case_assistant_free_time_ru_02
   prompt "чем занимаешься в свободное время?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+  expected_answer "Хобби у меня нет, но в разговоре я могу помогать с идеями, программами, правилами и объяснениями."
 conversational_variation_case_assistant_free_time_ru_03
   record_type "conversational_variation_case"
   id "assistant_free_time_ru_03"
@@ -457,7 +457,7 @@ conversational_variation_case_assistant_free_time_ru_03
   prompt "что делаешь когда свободен?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+  expected_answer "Мое свободное от запросов время - это состояние ожидания. В активном диалоге я помогаю рассуждать, писать код и упорядочивать знания."
 conversational_variation_case_assistant_free_time_ru_04
   record_type "conversational_variation_case"
   id "assistant_free_time_ru_04"
@@ -467,7 +467,7 @@ conversational_variation_case_assistant_free_time_ru_04
   prompt "чем ты занимаешься в свободное время?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+  expected_answer "Мое свободное от запросов время - это состояние ожидания. В активном диалоге я помогаю рассуждать, писать код и упорядочивать знания."
 conversational_variation_case_assistant_free_time_ru_05
   record_type "conversational_variation_case"
   id "assistant_free_time_ru_05"
@@ -477,7 +477,7 @@ conversational_variation_case_assistant_free_time_ru_05
   prompt "как проводишь свободное время?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
-  expected_answer "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+  expected_answer "Хобби у меня нет, но в разговоре я могу помогать с идеями, программами, правилами и объяснениями."
 conversational_variation_case_assistant_name_ru_01
   record_type "conversational_variation_case"
   id "assistant_name_ru_01"

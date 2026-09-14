@@ -8,7 +8,6 @@ use formal_ai::file_legality::{
     AssessmentStatus, FileLegalityReport, LegalCategory, SafetyDisposition,
 };
 
-
 #[test]
 fn file_legality_cli_accepts_provider_receipts_and_emits_safe_json() {
     let workspace = temp_workspace();
