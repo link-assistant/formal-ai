@@ -1,0 +1,32 @@
+coding_discovery_meta_recipe
+  record_type meta_recipe
+  topic dynamic_coding_discovery
+  issue 710
+  recognizer src/coding/task_spec.rs
+  discovery src/coding/concept_discovery.rs
+  composer src/coding/composition.rs
+  verifier src/agent.rs
+  memory src/coding/discovered_procedures.rs
+  source src/coding/function_catalog/python_docs.rs
+  source src/coding/function_catalog/wikifunctions.rs
+  source src/coding/function_catalog/rosetta_code.rs
+coding_discovery_step_recognize
+  record_type meta_step
+  order 1
+  function recognise
+coding_discovery_step_discover
+  record_type meta_step
+  order 2
+  function discover
+coding_discovery_step_compose
+  record_type meta_step
+  order 3
+  function compose
+coding_discovery_step_verify
+  record_type meta_step
+  order 4
+  function run_command
+coding_discovery_step_remember
+  record_type meta_step
+  order 5
+  function remember
