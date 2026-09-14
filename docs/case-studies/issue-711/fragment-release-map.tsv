@@ -637,3 +637,5 @@ changelog.d/20260911_042110_pull_request_visible_self_development_status.md	0.34
 changelog.d/20260911220710-manual-minor.md	0.349.0
 changelog.d/20260912153000-manual-patch.md	0.349.1
 changelog.d/20260913_010000_dockerhub_defaults.md	0.349.2
+changelog.d/20260914_030000_mcp_research_tool_precedence.md	0.350.0
+changelog.d/20260914_120000_hive_mind_hello_world_runs.md	0.350.0
