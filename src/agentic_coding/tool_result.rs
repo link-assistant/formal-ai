@@ -474,6 +474,14 @@ fn normalize(raw: &str) -> NormalizedResult {
             ..from_payload("", Some(error))
         };
     }
+    // An MCP result is read whole, so a `structuredContent` beside the
+    // `content` placeholder is not lost with the wrapper (issue #1133).
+    if let Some(text) = mcp_text_content(&value) {
+        return NormalizedResult {
+            exit_code: reported_exit,
+            ..from_payload(&text, None)
+        };
+    }
     if let Some(payload) = ["output", "stdout", "content", "result"]
         .iter()
         .find_map(|key| object.get(*key))
@@ -678,7 +686,47 @@ fn mcp_text_content(value: &Value) -> Option<String> {
                 .flatten()
         })
         .collect::<Option<Vec<_>>>()?;
-    Some(text.join("\n"))
+    let text = text.join("\n");
+    // A connector may answer with a placeholder in `content` ("Action
+    // completed.") and the real payload in `structuredContent` (issue #1133).
+    // The longer of the two is the result; a structured record that is itself
+    // a GitHub issue reads as its title and body.
+    let structured = value
+        .as_object()
+        .and_then(|object| object.get("structuredContent"))
+        .map(structured_content_text);
+    Some(match structured {
+        Some(structured) if structured.len() > text.len() => structured,
+        _ => text,
+    })
+}
+
+/// The text a connector's `structuredContent` stands for: a record with a
+/// `title` and a `body` is a work item and reads as both, anything else as
+/// itself.
+fn structured_content_text(structured: &Value) -> String {
+    let inner = structured
+        .as_object()
+        .and_then(|object| object.get("content"))
+        .unwrap_or(structured);
+    let record = match inner {
+        Value::String(text) => serde_json::from_str::<Value>(text)
+            .unwrap_or_else(|_| Value::String(text.clone())),
+        other => other.clone(),
+    };
+    match &record {
+        Value::String(text) => text.clone(),
+        Value::Object(object) => {
+            let title = object.get("title").and_then(Value::as_str);
+            let body = object.get("body").and_then(Value::as_str);
+            match (title, body) {
+                (Some(title), Some(body)) => [title, body].join("\n\n"),
+                (Some(text), None) | (None, Some(text)) => text.to_owned(),
+                (None, None) => pretty_json(&record),
+            }
+        }
+        other => pretty_json(other),
+    }
 }
 
 /// Drop the wrapper a client puts around a shell result — Codex's

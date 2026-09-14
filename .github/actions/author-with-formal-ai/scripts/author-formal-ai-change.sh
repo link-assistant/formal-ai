@@ -19,6 +19,20 @@ while IFS= read -r destination; do
   [[ -n "$destination" ]] && artifacts+=(--into "$destination")
 done < into.txt
 
+# GitHub refuses a push that creates or updates `.github/workflows/*` from a
+# token without the `workflows` scope, and GITHUB_TOKEN cannot be granted it.
+# Only FORMAL_AI_BOT_TOKEN can land such a change, so a task that targets a
+# workflow file is refused here, with the reason, before a whole authoring run
+# is spent on a commit that cannot be pushed (issue #1118, option 2).
+if [[ -z "${FORMAL_AI_BOT_TOKEN:-}" ]]; then
+  while IFS= read -r destination; do
+    if [[ "$destination" == .github/workflows/* ]]; then
+      echo "::error::the task writes $destination, but the repository provides no FORMAL_AI_BOT_TOKEN; GITHUB_TOKEN cannot push a workflow file (no 'workflows' scope). Set the secret (a fine-grained token with contents, pull-requests and workflows write) or move the change out of .github/workflows/."
+      exit 1
+    fi
+  done < into.txt
+fi
+
 AGENT=agent PORT="${PORT:-8931}" BIN="$PWD/target/release/formal-ai" \
   FORMAL_AI_REPO_ROOT="$PWD" \
   "$RUNNER_TEMP/author-change-with-formal-ai.sh" \

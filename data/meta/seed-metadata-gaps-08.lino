@@ -531,6 +531,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "pattern_how_it_works_bare_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_2cd93d8e8df02258
+    source "data/seed/closure-generated-11.lino"
+    record "postposition"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_340bf7643e2228e8
     source "data/seed/closure-generated-11.lino"
     record "prose"

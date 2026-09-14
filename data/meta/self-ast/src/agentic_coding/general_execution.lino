@@ -2,92 +2,97 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 14921
-  line_count 330
-  content_id source_module_9b2aea003072e037
-  symbol_count 14
+  byte_len 16950
+  line_count 372
+  content_id source_module_eb8c47e12f2dd0c8
+  symbol_count 16
   symbols
     const EXPECTED_PLACEHOLDER 15 15
     const OBSERVED_PLACEHOLDER 16 16
     const PLAN_PLACEHOLDER 17 17
     const PLAN_PATH_PLACEHOLDER 18 18
-    function plan_general_change_step 20 173
-    function plan_work_item_execution 189 207
-    function repository_work_item_objective 214 221
-    function finish_general_change 223 251
-    function general_plan_completed 257 271
-    function tool_argument_path 273 279
-    function read_arguments 281 288
-    function capability_label 290 307
-    function general_plan_mismatch 309 322
-    function general_plan_unverified 324 330
+    function plan_general_change_step 20 170
+    function plan_work_item_execution 186 213
+    function plan_work_item_read 223 234
+    function issue_view_command 238 249
+    function repository_work_item_objective 256 263
+    function finish_general_change 265 293
+    function general_plan_completed 299 313
+    function tool_argument_path 315 321
+    function read_arguments 323 330
+    function capability_label 332 349
+    function general_plan_mismatch 351 364
+    function general_plan_unverified 366 372
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9231
-    named_node_count 1874
-    distinct_node_kinds 61
+    total_link_count 10343
+    named_node_count 2107
+    distinct_node_kinds 64
     node_kinds
-      arguments 144
-      array_expression 1
-      array_type 4
+      arguments 162
+      array_expression 2
+      array_type 5
       assignment_expression 6
+      attribute 1
+      attribute_item 1
       binary_expression 40
-      block 42
-      call_expression 144
+      block 47
+      call_expression 162
+      char_literal 2
       closure_expression 12
       closure_parameters 12
       const_item 4
-      crate 10
-      doc_comment 24
+      crate 11
+      doc_comment 33
       else_clause 2
-      expression_statement 51
-      field_expression 138
-      field_identifier 138
-      function_item 10
+      expression_statement 57
+      field_expression 145
+      field_identifier 145
+      function_item 12
       function_modifiers 1
-      generic_type 3
-      identifier 490
-      if_expression 26
+      generic_type 4
+      identifier 543
+      if_expression 29
       inner_doc_comment_marker 1
-      integer_literal 8
-      let_chain 6
-      let_condition 14
-      let_declaration 19
+      integer_literal 9
+      let_chain 8
+      let_condition 17
+      let_declaration 21
       lifetime 1
-      line_comment 56
-      macro_invocation 9
-      match_arm 17
-      match_block 2
-      match_expression 2
-      match_pattern 17
-      mutable_specifier 3
+      line_comment 71
+      macro_invocation 10
+      match_arm 19
+      match_block 3
+      match_expression 3
+      match_pattern 19
+      mutable_specifier 4
       or_pattern 1
-      outer_doc_comment_marker 23
-      parameter 17
-      parameters 10
+      outer_doc_comment_marker 32
+      parameter 20
+      parameters 12
       parenthesized_expression 1
-      primitive_type 11
-      reference_expression 34
-      reference_type 23
-      return_expression 19
-      scoped_identifier 94
+      primitive_type 14
+      reference_expression 35
+      reference_type 27
+      return_expression 21
+      scoped_identifier 103
       scoped_type_identifier 1
       scoped_use_list 2
       source_file 1
-      string_content 45
-      string_literal 45
-      super 6
-      token_tree 14
+      string_content 52
+      string_literal 52
+      super 10
+      token_tree 18
       try_expression 2
-      tuple_expression 2
+      tuple_expression 4
       tuple_pattern 4
-      tuple_struct_pattern 16
-      type_arguments 3
-      type_identifier 24
+      tuple_struct_pattern 20
+      type_arguments 4
+      type_identifier 27
       unary_expression 10
       use_declaration 6
       use_list 2
-      visibility_modifier 1
+      visibility_modifier 2

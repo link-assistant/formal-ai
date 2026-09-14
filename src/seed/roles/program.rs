@@ -292,6 +292,36 @@ pub const ROLE_CODING_MEMBER_LIST_KIND: &str = "coding_member_list_kind";
 /// the sentence. Both quoted values were spliced into the script's nearest
 /// bracket. The noun locates the list; only this verb asks for it to grow.
 pub const ROLE_CODING_MEMBER_ADD_ACTION: &str = "coding_member_add_action";
+/// Semantic role: the word that introduces a git branch name.
+///
+/// "on branch issue-1", "в ветке issue-1". The name that follows it is where a
+/// work item's result is pushed (issue #1133). Carried by `git_branch_cue` in
+/// `data/seed/meanings-coding-tasks.lino`.
+pub const ROLE_GIT_BRANCH_CUE: &str = "git_branch_cue";
+/// Semantic role: a request to commit what is in the working tree.
+///
+/// "commit them", "закоммить изменения". Answered by a stage-commit-push shell
+/// step, never by a web search (issue #1133). Carried by `git_commit_request`.
+pub const ROLE_GIT_COMMIT_REQUEST: &str = "git_commit_request";
+/// Semantic role: a work item's requirement for a continuous-integration
+/// workflow.
+///
+/// "GitHub Actions workflow", "工作流". The execution recipe then carries the
+/// workflow as a supporting file (issue #1133). Carried by
+/// `ci_workflow_request`.
+pub const ROLE_CI_WORKFLOW_REQUEST: &str = "ci_workflow_request";
+/// Semantic role: the position cue of an additive edit that places the new
+/// text after its anchor.
+///
+/// "directly after the line", "после строки" (issue #1115). Carried by
+/// `file_edit_position_after`.
+pub const ROLE_FILE_EDIT_POSITION_AFTER: &str = "file_edit_position_after";
+/// Semantic role: the position cue of an additive edit that places the new
+/// text before its anchor.
+///
+/// "before the line", "перед строкой" (issue #1115). Carried by
+/// `file_edit_position_before`.
+pub const ROLE_FILE_EDIT_POSITION_BEFORE: &str = "file_edit_position_before";
 /// Semantic role: a natural-language source fact whose surface carries the
 /// canonical, narrow repository-search expression as an action.
 ///

@@ -28,12 +28,14 @@ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Op
         .collect();
     let tool_names: &[&'a str] = &in_scope;
     if matches!(capability, Capability::Search | Capability::Fetch)
-        && let Some(name) = tool_names.iter().copied().find(|name| {
-            name.to_ascii_lowercase().starts_with("mcp__")
-                && classify_tool(name) == Some(capability)
-        }) {
-            return Some(name);
-        }
+        && let Some(name) = tool_names
+            .iter()
+            .copied()
+            .filter(|name| classify_tool(name) == Some(capability))
+            .min_by_key(|name| research_tool_rank(name))
+    {
+        return Some(name);
+    }
     let registry = seed::agentic_tool_capabilities();
     let entry = registry
         .iter()
@@ -71,6 +73,64 @@ fn acts_in_capability_scope(name: &str, capability: Capability) -> bool {
     crate::tool_scope::scope_of_tool_name(name).is_client_workspace()
 }
 
+/// Order among the tools that can answer a research capability.
+///
+/// Client-executed tools come first, because their result returns through the
+/// CLI: an exact alias the client runs itself (`WebFetch`, `webfetch`), then a
+/// namespaced MCP tool, then the protocol-native hosted tool (`web_search`,
+/// `web_fetch`), whose result the client never sees (issue #781). Issue #1133:
+/// the MCP guess used to come first unconditionally, and for the Claude Code
+/// tool set that made `mcp__playwright__browser_click` outrank `WebFetch` for
+/// a fetch -- 547 identical calls with an empty selector before the context
+/// window filled.
+fn research_tool_rank(name: &str) -> u8 {
+    let hosted = HOSTED_RESEARCH_TOOLS
+        .iter()
+        .any(|hosted| hosted.eq_ignore_ascii_case(name));
+    let namespaced = name.to_ascii_lowercase().starts_with("mcp__");
+    let client_scoped = crate::tool_scope::scope_of_tool_name(name).is_client_workspace();
+    match (hosted, namespaced, client_scoped) {
+        (false, false, _) => 0,
+        (false, true, true) => 1,
+        (false, true, false) => 2,
+        (true, _, _) => 3,
+    }
+}
+
+/// Protocol-native research tools a provider executes on its own servers.
+const HOSTED_RESEARCH_TOOLS: [&str; 5] = [
+    "web_search",
+    "web_fetch",
+    "web_search_preview",
+    "file_search",
+    "computer_use_preview",
+];
+
+/// A browser-automation tool acts on a page the client is *driving*; it does
+/// not retrieve a document. `browser_click`, `browser_type`, `browser_snapshot`
+/// and their siblings all carry the substring `browse`, which the compatibility
+/// fallback below read as a fetch (issue #1133). None of them is a capability
+/// the planner has a use for, so they classify as nothing at all.
+fn is_browser_interaction_tool(lower: &str) -> bool {
+    BROWSER_INTERACTION_MARKERS
+        .iter()
+        .any(|marker| lower.contains(marker))
+}
+
+const BROWSER_INTERACTION_MARKERS: [&str; 11] = [
+    "browser_",
+    "click",
+    "hover",
+    "drag",
+    "snapshot",
+    "screenshot",
+    "press_key",
+    "fill_form",
+    "select_option",
+    "handle_dialog",
+    "file_upload",
+];
+
 fn tool_matches_capability(name: &str, capability: Capability) -> bool {
     seed::agentic_tool_capabilities()
         .into_iter()
@@ -107,7 +167,7 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
         }
     }
     let lower = name.to_ascii_lowercase();
-    if lower.contains("todo") {
+    if lower.contains("todo") || is_browser_interaction_tool(&lower) {
         return None;
     }
     if matches!(lower.as_str(), "computer_use" | "code_interpreter") {
@@ -148,6 +208,22 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
     } else {
         None
     }
+}
+
+/// The advertised tool that creates a workspace file: the write capability, or
+/// a patch tool whose add-file form does the same (Codex's `apply_patch`).
+///
+/// Routes that gate on "can this client create a file" ask this rather than
+/// [`tool_for`] with [`Capability::Write`]: gating on the write alias alone
+/// skipped the repository work-item route for Codex entirely, and the issue it
+/// should have planned from was narrated as a tool result instead (issue #1133).
+pub(super) fn workspace_creation_tool<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
+    tool_for(tool_names, Capability::Write).or_else(|| {
+        tool_names
+            .iter()
+            .copied()
+            .find(|name| is_workspace_creation_tool(name))
+    })
 }
 
 /// Whether a tool can create the source file that starts an execution recipe.

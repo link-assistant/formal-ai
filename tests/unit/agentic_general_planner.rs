@@ -80,14 +80,37 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     // and only thing the run does.
     assert_eq!(calls[0].tool, "web_fetch");
 
+    // A client with a shell but no fetch tool reads the work item through
+    // `gh issue view` before anything is recorded (issue #1133); the record
+    // follows once that read has been tried.
     let write_only = plan_chat_step(&messages, &["write_file", "run_command"]);
     let Some(AgenticPlan::ToolCalls(write_only)) = write_only else {
+        panic!("a write-only client still reads the work item")
+    };
+    assert_eq!(write_only[0].tool, "run_command");
+    assert!(
+        write_only[0].arguments.contains("gh issue view"),
+        "{write_only:?}"
+    );
+    // With the read tried and empty, the record is written as before.
+    let mut after_read = messages;
+    after_read.push(ChatMessage::assistant_tool_calls(vec![
+        formal_ai::ToolCall::function(
+            "c0".to_owned(),
+            "run_command".to_owned(),
+            write_only[0].arguments.clone(),
+        ),
+    ]));
+    after_read.push(ChatMessage::tool_result("c0".to_owned(), "run_command", ""));
+    let Some(AgenticPlan::ToolCalls(recorded)) =
+        plan_chat_step(&after_read, &["write_file", "run_command"])
+    else {
         panic!("a write-only client still records the reference")
     };
-    assert_eq!(write_only[0].tool, "write_file");
-    assert!(write_only[0].arguments.contains(PLAN_PATH));
+    assert_eq!(recorded[0].tool, "write_file");
+    assert!(recorded[0].arguments.contains(PLAN_PATH));
     assert!(
-        write_only[0].arguments.contains("repository_work_item"),
+        recorded[0].arguments.contains("repository_work_item"),
         "the plan must preserve the work-item execution boundary"
     );
 

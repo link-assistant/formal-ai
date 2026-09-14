@@ -295,6 +295,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "snake_case"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_32a7010cdaed2d9d
+    source "data/seed/closure-generated-06.lino"
+    record "branch"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_61ec3b1b5dee4fdd
     source "data/seed/closure-generated-06.lino"
     record "context_dialog_log_unavailable"

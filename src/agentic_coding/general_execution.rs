@@ -32,7 +32,7 @@ pub(super) fn plan_general_change_step(
     let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
         && progress
             .latest_failure()
-            .is_some_and(|failure| failure.capability == Capability::Fetch);
+            .is_some_and(|failure| failure.capability == Capability::Fetch || failure.is_work_item_read());
     if let Some(failure) = progress.latest_failure().filter(|_| !work_item_unreadable) {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
@@ -118,14 +118,11 @@ pub(super) fn plan_general_change_step(
             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
                 return step;
             }
-        } else if let Some(tool) = tool_for(tool_names, Capability::Fetch)
-            && !progress
-                .attempted_fetches
-                .iter()
-                .any(|url| url == &plan.target)
-            {
-                return plan_one(tool, fetch_arguments(&plan.target));
-            }
+        } else if !progress.attempted_fetch_of(&plan.target)
+            && let Some(step) = plan_work_item_read(tool_names, &plan.target)
+        {
+            return step;
+        }
     }
     if let Some(tool) = tool_for(tool_names, Capability::Write) {
         let plan_attempted = progress.attempted_write_for(PLAN_PATH);
@@ -195,7 +192,16 @@ fn plan_work_item_execution(
     // same `write_program` answer a user typing this request directly would get,
     // and the client — not this solver — owns execution. Opting into agent mode
     // would only add the policy branches that answer *about* agent actions.
-    let answer = crate::solver::UniversalSolver::default().solve(objective);
+    let mut answer = crate::solver::UniversalSolver::default().solve(objective);
+    // The issue that asks for the program may also ask for the workflow that
+    // runs it (issue #1133, requirement 6 of every Hello World task): the
+    // recipe then carries the workflow as a supporting file, running the same
+    // commands the harness verifies.
+    if let Some(recipe) = answer.execution_recipe.as_mut()
+        && super::ci_workflow::requested_in(objective)
+    {
+        super::ci_workflow::attach(recipe);
+    }
     if let Some(step) =
         super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
     {
@@ -204,6 +210,42 @@ fn plan_work_item_execution(
     let executable = compose_general_change_plan(objective)
         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
     Some(plan_general_change_step(messages, tool_names, &executable))
+}
+
+/// The step that reads the work item, through whichever client tool reaches it.
+///
+/// The client's own fetch tool comes first. When the only fetch tool on offer
+/// acts in a remote service -- Codex advertising the operator's `ChatGPT` GitHub
+/// connector beside a plain `shell` -- the issue is read through `gh` in the
+/// checkout instead: that answers with the issue's title and body rather than
+/// a connector's `Action completed.` placeholder, and it keeps the read inside
+/// the credential the task was given (issue #1133).
+fn plan_work_item_read(tool_names: &[&str], target: &str) -> Option<AgenticPlan> {
+    let fetch = tool_for(tool_names, Capability::Fetch);
+    if let Some(tool) = fetch
+        && crate::tool_scope::scope_of_tool_name(tool).is_client_workspace()
+    {
+        return Some(plan_one(tool, fetch_arguments(target)));
+    }
+    if let Some(run) = tool_for(tool_names, Capability::Run) {
+        return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
+    }
+    fetch.map(|tool| plan_one(tool, fetch_arguments(target)))
+}
+
+/// The `gh` command that prints a work item as its title followed by its body.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn issue_view_command(target: &str) -> String {
+    // `…/owner/repo/pull/7` reads through `gh pr`, everything else through
+    // `gh issue`; the segment before the number says which.
+    let kind = match target.trim_end_matches('/').rsplit('/').nth(1) {
+        Some("pull") => "pr",
+        _ => "issue",
+    };
+    super::work_item_steps::fill(
+        "issue_view_command",
+        &[("{kind}", kind), ("{target}", target)],
+    )
 }
 
 /// The text of the issue this work item names, once the client has fetched it.
