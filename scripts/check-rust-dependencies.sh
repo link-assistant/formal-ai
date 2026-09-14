@@ -71,15 +71,15 @@ while IFS= read -r advisory; do
   [[ -n "$advisory" ]] || continue
 
   spec="$(
-    sed -n "s/^#[[:space:]]*${advisory}[[:space:]]\+unreachable[[:space:]]*=[[:space:]]*\"\([^\"]\+\)\".*/\1/p" \
+    sed -E -n "s/^#[[:space:]]*${advisory}[[:space:]]+unreachable[[:space:]]*=[[:space:]]*\"([^\"]+)\".*/\1/p" \
       "$config" | head -n 1
   )"
   blocked_spec="$(
-    sed -n "s/^#[[:space:]]*${advisory}[[:space:]]\+blocked-upstream[[:space:]]*=[[:space:]]*\"\([^\"]\+\)\".*/\1/p" \
+    sed -E -n "s/^#[[:space:]]*${advisory}[[:space:]]+blocked-upstream[[:space:]]*=[[:space:]]*\"([^\"]+)\".*/\1/p" \
       "$config" | head -n 1
   )"
   report="$(
-    sed -n "s/^#[[:space:]]*${advisory}[[:space:]]\+blocked-upstream[[:space:]]*=.*[[:space:]]report[[:space:]]*=[[:space:]]*\"\([^\"]\+\)\".*/\1/p" \
+    sed -E -n "s/^#[[:space:]]*${advisory}[[:space:]]+blocked-upstream[[:space:]]*=.*[[:space:]]report[[:space:]]*=[[:space:]]*\"([^\"]+)\".*/\1/p" \
       "$config" | head -n 1
   )"
 

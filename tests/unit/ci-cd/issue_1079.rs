@@ -370,6 +370,24 @@ fn the_rust_dependency_audit_treats_a_warning_as_a_finding() {
     );
 }
 
+/// The proof parser runs on both GNU sed in CI and BSD sed on macOS.
+#[test]
+fn the_dependency_audit_proof_parser_uses_portable_extended_sed() {
+    let script = repository_file("scripts/check-rust-dependencies.sh");
+
+    assert_eq!(
+        script.matches("sed -E -n").count(),
+        3,
+        "all three proof fields must use extended regular expressions, whose `+` and grouping \
+         syntax are shared by GNU and BSD sed"
+    );
+    assert!(
+        !script.contains("[[:space:]]\\+") && !script.contains("[^\"]\\+"),
+        "basic-sed `\\+` is a GNU extension in this context; on macOS it made every valid audit \
+         proof look missing"
+    );
+}
+
 /// Every ignored advisory carries exactly one proof, and a `blocked-upstream`
 /// proof names a report that exists.
 ///

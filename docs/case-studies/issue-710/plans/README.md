@@ -193,3 +193,9 @@ wrote it.
   pass on the final tree. The only successful remote update is the normal
   fast-forward push; the remaining unchecked items are remote CI observations
   rather than uncommitted implementation work.
+
+  The first remote status check then caught RUSTSEC-2026-0285, published on
+  2026-09-14 against the locked `rustls` 0.23.43. The lockfile was advanced to
+  patched 0.23.45. Reproducing the exact wrapper also found that its basic-sed
+  `\+` proof patterns work under GNU sed but not BSD sed; a focused regression
+  now keeps the equivalent extended expressions portable across CI and macOS.
