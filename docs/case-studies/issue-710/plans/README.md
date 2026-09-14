@@ -72,10 +72,10 @@ wrote it.
 
 | # | Plan | Closes / delivers | Status |
 | --- | --- | --- | --- |
-| 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | sections 1-2 done, section 3 next |
-| 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | drafted |
-| 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | drafted |
-| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L14 implemented; attribution and final gates in progress |
+| 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | local chain rebuilt; final push and CI pending |
+| 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | implemented; final evidence recheck in progress |
+| 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | implemented |
+| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L14 implemented; attribution and final push in progress |
 
 ## Order of work
 
