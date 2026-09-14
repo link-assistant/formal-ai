@@ -47,7 +47,7 @@ unchanged: a PR may still never lower a recorded pass count or a floor.
 the third row has no violation; the same ledger with a fourth row `0` has one;
 a PR that rewrites the floor from 1 to 0 is a regression.
 
-- [ ] implemented and pinned; the 2026-09-14 ledger text (copied into the test)
+- [x] implemented and pinned; the 2026-09-14 ledger text (copied into the test)
       produces no violation
 
 ## L2 — `CodingTaskSpec`: one spec from three prompt shapes

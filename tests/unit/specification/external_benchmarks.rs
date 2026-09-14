@@ -350,6 +350,78 @@ fn recorded_upstream_pass_count_may_never_regress() {
     );
 }
 
+/// A floor raised by a later run must not retroactively invalidate the
+/// historical rows that established the earlier floor.
+#[test]
+fn ratchet_applies_the_floor_that_existed_when_each_result_was_recorded() {
+    let historical_progress = Ledger::parse(
+        r#"external_benchmark_suite_humaneval
+  record_type "external_benchmark_suite"
+  id "humaneval"
+  license "MIT"
+  ratchet_slice "20"
+  minimum_pass_count "1"
+external_benchmark_result_humaneval_2026_07_20_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-07-20"
+  slice "20"
+  passed "0"
+  failed "20"
+  total "20"
+  solver_version "0.300.0"
+external_benchmark_result_humaneval_2026_09_07_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-09-07"
+  slice "20"
+  passed "0"
+  failed "20"
+  total "20"
+  solver_version "0.344.0"
+external_benchmark_result_humaneval_2026_09_14_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-09-14"
+  slice "20"
+  passed "1"
+  failed "19"
+  total "20"
+  solver_version "0.350.0"
+"#,
+    )
+    .expect("the historical ledger should parse");
+
+    assert_eq!(
+        ratchet::violations(&historical_progress),
+        Vec::<String>::new(),
+        "the run that raises a floor must not make older honest rows regress"
+    );
+
+    let later_regression = Ledger::parse(&format!(
+        "{}{}",
+        historical_progress.render(),
+        r#"external_benchmark_result_humaneval_2026_09_21_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-09-21"
+  slice "20"
+  passed "0"
+  failed "20"
+  total "20"
+  solver_version "0.351.0"
+"#
+    ))
+    .expect("the regressed ledger should parse");
+
+    assert!(
+        ratchet::violations(&later_regression)
+            .iter()
+            .any(|entry| { entry.contains("humaneval") && entry.contains("minimum_pass_count=1") }),
+        "a run recorded after the floor rose must still be rejected"
+    );
+}
+
 /// R698-05: only permissively licensed suites are fetched, and the license of
 /// each suite is recorded.
 #[test]

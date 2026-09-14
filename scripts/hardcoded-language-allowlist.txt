@@ -330,7 +330,6 @@ src/external_benchmarks/ratchet.rs	result row for `{}` has no external_benchmark
 src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count fell from {} to {}
 src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}
 src/external_benchmarks/ratchet.rs	{suite_id}: the external_benchmark_suite record was removed
-src/external_benchmarks/ratchet.rs	{suite}: pass count at slice {slice} fell from {} ({}) to {} ({})
 src/external_benchmarks/ratchet.rs	{} {}: passed={} + failed={} does not equal total={}
 src/external_benchmarks/ratchet.rs	{} {}: passed={} is below the recorded minimum_pass_count={}
 src/external_benchmarks/ratchet.rs	{} {}: recorded pass count fell from {} to {}
