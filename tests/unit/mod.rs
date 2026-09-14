@@ -95,6 +95,7 @@ mod issue_1110_portable_rewrite;
 mod issue_1131_member_insertion_guard;
 mod issue_1133_browser_is_not_a_fetch_tool;
 mod issue_1133_hive_mind_three_runs;
+mod issue_1136_mcp_search_precedence;
 mod issue_1963;
 mod issue_337;
 mod issue_403;
