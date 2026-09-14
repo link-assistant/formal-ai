@@ -199,3 +199,10 @@ wrote it.
   patched 0.23.45. Reproducing the exact wrapper also found that its basic-sed
   `\+` proof patterns work under GNU sed but not BSD sed; a focused regression
   now keeps the equivalent extended expressions portable across CI and macOS.
+
+  The restarted link check then followed outbound links embedded inside the
+  byte-for-byte Python documentation replay fixtures. Three upstream targets
+  had disappeared even though the captures themselves were intact. A focused
+  workflow regression now excludes only `tests/fixtures/coding-discovery` from
+  live-link health checks, preserving the licensed snapshots unchanged while
+  keeping maintained Markdown and HTML under the existing gate.

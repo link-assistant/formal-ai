@@ -91,3 +91,20 @@ fn recorded_reports_are_not_link_checked() {
          documentation; its URLs are supposed to be broken"
     );
 }
+
+/// Third-party source captures are replay inputs, not maintained web pages.
+///
+/// The coding-discovery fixtures preserve Python documentation byte-for-byte
+/// so offline runs exercise the same licensed material as live discovery. Any
+/// outbound links inside those captures belong to the upstream snapshot and
+/// must not become repository link-health obligations.
+#[test]
+fn captured_third_party_html_is_not_link_checked() {
+    let workflow = links_workflow();
+
+    assert!(
+        workflow.contains("--exclude-path tests/fixtures/coding-discovery"),
+        "offline third-party captures must remain exact even when an upstream \
+         page links to a site that later disappears"
+    );
+}
