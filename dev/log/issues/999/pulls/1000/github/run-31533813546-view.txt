@@ -1,0 +1,82 @@
+
+X issue-999-31976d2c6ce9 Broken Link Checker link-assistant/formal-ai#1000 · 31533813546
+Triggered via pull_request about 10 minutes ago
+
+JOBS
+X Check Links in 2m30s (ID 93919988598)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Prepare reconstructable release history for link checking
+  ✓ Check links with lychee
+  X Check broken links against Web Archive
+  X Fail if broken links were found
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+
+ANNOTATIONS
+X Process completed with exit code 1.
+Check Links: .github#41
+
+X Broken live links were detected.
+Check Links: .github#25
+
+X Process completed with exit code 1.
+Check Links: .github#197
+
+X Broken link detected: https://konard.github.io/vk-bot-desktop
+Check Links: .github#187
+
+X Broken link detected: https://docs.rs/formal-ai
+Check Links: .github#181
+
+X Broken link detected: https://codecov.io/gh/link-assistant/formal-ai
+Check Links: .github#175
+
+X Broken link detected: https://calendar.google.com/calendar/render?action=TEMPLATE%E2%80%A6
+Check Links: .github#169
+
+X Broken link detected: https://gist.github.com/
+Check Links: .github#163
+
+X Broken link detected: https://docs.github.com/actions/security-guides/using-secrets-in-github-actions
+Check Links: .github#157
+
+X Broken link detected: https://scriv.readthedocs.io/
+Check Links: .github#151
+
+- Broken link detected: https://docs.mistral.ai/models/model-cards/mistral-7b-0-1
+Check Links: .github#130
+
+- Broken link detected: https://link-assistant.github.io/formal-ai
+Check Links: .github#126
+
+- Broken link detected: https://developers.openai.com/codex/config-reference
+Check Links: .github#122
+
+- Broken link detected: https://docs.anthropic.com/en/docs/claude-code/cli-usage
+Check Links: .github#118
+
+- Broken link detected: https://github.com/lm-sys/arena-hard-auto
+Check Links: .github#114
+
+- Broken link detected: https://allennlp.org/drop
+Check Links: .github#110
+
+- Broken link detected: https://allenai.org/data/arc
+Check Links: .github#106
+
+- Broken link detected: https://ai.google.com/research/NaturalQuestions
+Check Links: .github#102
+
+- Broken link detected: https://research.facebook.com/downloads/babi/
+Check Links: .github#98
+
+- Broken link detected: https://encyclopediaofmath.org/wiki/Normal_algorithm
+Check Links: .github#94
+
+- Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/31533813546#summary-93919988598
+Check Links: .github#227
+
+
+To see what failed, try: gh run view 31533813546 --log-failed
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31533813546

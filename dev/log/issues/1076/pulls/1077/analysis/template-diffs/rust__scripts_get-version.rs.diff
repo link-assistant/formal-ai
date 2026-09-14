@@ -1,0 +1,12 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/get-version.rs	2026-09-05 09:39:56.904042998 +0000
++++ scripts/get-version.rs	2026-09-05 09:37:22.108726322 +0000
+@@ -14,6 +14,9 @@
+ //!   - version: The current version from Cargo.toml
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! ```

@@ -307,7 +307,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     content,
     confidence: 0.9,
     evidence: [
-      `response:write_program:${task}:${language}`,
+      `response:write_program:${task}:${language}`, ...metaAlgorithmConstructionEvidence(activeMetaAlgorithmSurface(diagnostics.trace)),
       `program_parameter:language:${language}`,
       `program_parameter:task:${task}`,
       `program_parameters:write_program(language=${language}:task=${task})`,

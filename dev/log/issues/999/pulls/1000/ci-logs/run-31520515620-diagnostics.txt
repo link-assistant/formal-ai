@@ -1,0 +1,5 @@
+68:Verify monotonic ledger	Run actions/checkout@v6	2026-08-11T18:00:57.4572456Z hint: to use in all of your new repositories, which will suppress this warning,
+1069:Verify monotonic ledger	Setup Rust	2026-08-11T18:01:18.9262028Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+1080:Verify monotonic ledger	Setup Rust	2026-08-11T18:01:18.9409056Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+1598:Verify monotonic ledger	Compare with pull-request base	2026-08-11T18:01:22.2710508Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+1980:Verify monotonic ledger	Compare with pull-request base	2026-08-11T18:02:23.6454258Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7

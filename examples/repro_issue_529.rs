@@ -1,4 +1,4 @@
-use formal_ai::{solve_with_history, ConversationTurn};
+use formal_ai::{ConversationTurn, solve_with_history};
 
 fn main() {
     let history = [

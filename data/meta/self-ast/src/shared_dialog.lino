@@ -2,9 +2,9 @@ self_ast_census
   target src/shared_dialog.rs
   language rust
   fidelity signature
-  byte_len 19524
-  line_count 614
-  content_id source_module_60cbca77b2671e8d
+  byte_len 19476
+  line_count 613
+  content_id source_module_a41d6a8d0a405e8c
   symbol_count 34
   symbols
     enum SharedDialogFormat 13 19
@@ -31,13 +31,13 @@ self_ast_census
     function resolve_table_index 436 444
     function resolve_table_value 446 465
     function resolve_encoded_reference 467 478
-    function resolve_object_key 480 489
-    function find_object_with_array_key 491 505
-    function parse_markdown_transcript 507 536
-    function markdown_turn_prefix 538 551
-    function push_markdown_turn 553 571
-    function trimmed_content_lines 573 582
-    function string_field 584 586
-    function title_from_html 588 598
-    function chatgpt_share_id 600 607
-    function looks_like_google_ai_mode_interstitial 609 614
+    function resolve_object_key 480 488
+    function find_object_with_array_key 490 504
+    function parse_markdown_transcript 506 535
+    function markdown_turn_prefix 537 550
+    function push_markdown_turn 552 570
+    function trimmed_content_lines 572 581
+    function string_field 583 585
+    function title_from_html 587 597
+    function chatgpt_share_id 599 606
+    function looks_like_google_ai_mode_interstitial 608 613

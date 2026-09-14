@@ -4,7 +4,7 @@
 //! calculator-shaped expressions to `link-calculator` first, and preserves the
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
-use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::arithmetic::{ArithmeticError, evaluate_fallback_formatted};
 use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
 use crate::seed;

@@ -3,8 +3,8 @@ use std::fmt::{Display, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
-use crate::attachment_context::{compose_prompt_with_attachments, Attachment};
-use crate::engine::{naturalize_thinking_step_in, thinking_answer_language, ThinkingStep};
+use crate::attachment_context::{Attachment, compose_prompt_with_attachments};
+use crate::engine::{ThinkingStep, naturalize_thinking_step_in, thinking_answer_language};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";

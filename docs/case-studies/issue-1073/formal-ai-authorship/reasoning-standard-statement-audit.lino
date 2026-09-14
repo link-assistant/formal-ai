@@ -1,0 +1,1155 @@
+repository_statement_audit
+  summary
+    statement_count "70"
+    contradiction_count "0"
+    finding_count "9"
+    skipped_path_count "0"
+  statements
+    audited_statement_bd54930740c6ad82
+      type "audited_statement"
+      text "The issue asks for the audit itself as a deliverable: enumerate what defines"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "3"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_dc794b8c116a715d
+      type "audited_statement"
+      text "reasoning today, flag what contradicts the standard, update each flagged place,"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "4"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9234977aa7bc4ddf
+      type "audited_statement"
+      text "and leave a regression behind. This file is the enumeration and the disposition"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "5"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_aeeb7cbd81c8c12f
+      type "audited_statement"
+      text "of each finding. Every row was located by reading the named file, not inferred."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "6"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d848b8247ac73cbf
+      type "audited_statement"
+      text "**Flagged.** `src/seed/sources.rs::tier_from_seed` read a hand-written"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "29"
+        kind "prose"
+      claim
+        subject "`src/seed/sources.rs::tier_from_seed`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_84131fd20576d330
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_c19030578cc06c17
+      type "audited_statement"
+      text "`source_tier` out of `data/seed/sources-registry.lino` and mapped it with"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "30"
+        kind "prose"
+      claim
+        subject "`data/seed/sources-registry.lino`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_ea9b6c0d63161671
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_afa33e55714e33f1
+      type "audited_statement"
+      text "`_ => SourceTier::IndependentCorroboration`. Nothing derived the tier, and four"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "31"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_48d8af9ed66ff62b
+      type "audited_statement"
+      text "of the thirteen sources (`wikidata`, `wiktionary`, `wordnet`, `wikipedia`)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "32"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ccb178d746591c57
+      type "audited_statement"
+      text "declared no tier at all and silently took the fallback."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "33"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_3bcec71b4e39dd77
+      type "audited_statement"
+      text "**Updated.** Each source declares a `primacy` chain — the hops between it and"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "35"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_6b65083c6006cb55
+      type "audited_statement"
+      text "the primary record, each naming its upstream and the basis for the claim, which"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "36"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_02c9a23278aa22ff
+      type "audited_statement"
+      text "in every case is the site's own policy. `SourceRecord::tier` is now"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "37"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d8678a72473ca74b
+      type "audited_statement"
+      text "`primacy.derive_tier()`; `tier_from_seed` is deleted; the hand-written value"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "38"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_b4acdd9da8a97053
+      type "audited_statement"
+      text "survives only as `SourceRecord::asserted_tier`, which a test compares against"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "39"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_2ba85a0046b358c5
+      type "audited_statement"
+      text "the derivation wherever it is declared. The four sources that declared nothing"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "40"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_1d5ea5158fdc77b0
+      type "audited_statement"
+      text "now derive `independent_corroboration` — the same value the fallback produced,"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "41"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_5924c7dfe8f03609
+      type "audited_statement"
+      text "but with `DerivationReason::NamedUpstreamChain` and a named upstream behind it"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "42"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_44148a214bc23a75
+      type "audited_statement"
+      text "instead of a `_` arm."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "43"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9978bfad42f004e0
+      type "audited_statement"
+      text "**Left unchanged, deliberately:** `canonical_tier` in"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "45"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_dc63ac87a07b473b
+      type "audited_statement"
+      text "`src/web_search_fusion_core.rs` still normalizes an unrecognized tier string to"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "46"
+        kind "prose"
+      claim
+        subject "`src/web_search_fusion_core.rs`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_7ba2e70884d07111
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_1955749c324ed085
+      type "audited_statement"
+      text "`independent_corroboration`. That function parses a *wire field* arriving from"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "47"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ef41ef8671f1583a
+      type "audited_statement"
+      text "the browser worker, where the alternative to a default is dropping the source;"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "48"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_7efe30d1f1033bca
+      type "audited_statement"
+      text "the tier it receives is now the derived one, because the registry is where it"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "49"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_8d08f87417805a8f
+      type "audited_statement"
+      text "comes from."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "50"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_1474cde2d9d210a8
+      type "audited_statement"
+      text "**Flagged.** `src/fact_checking.rs`, `src/proof_engine/presenter.rs` and"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "54"
+        kind "prose"
+      claim
+        subject "`src/fact_checking.rs`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_257d272297c64705
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_84a7409df99a12c3
+      type "audited_statement"
+      text "`src/web_engine_core.rs` attempt refutation, each only for the statements its"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "55"
+        kind "prose"
+      claim
+        subject "`src/web_engine_core.rs`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_8ac6590220fa40b5
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_087e140becae4c03
+      type "audited_statement"
+      text "own route hands it. No obligation existed over conclusions in general, and"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "56"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9d45a842c1de1b82
+      type "audited_statement"
+      text "nothing anywhere required a *variety* of refutations: three restatements of one"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "57"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_896ad5f09fdf9660
+      type "audited_statement"
+      text "doubt counted as three attempts."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "58"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_1acd777995cf709f
+      type "audited_statement"
+      text "**Updated.** The `refutation_variety` gate applies to every conclusion in an"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "60"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_35f098e5c63efc8a
+      type "audited_statement"
+      text "episode, and counts distinct mechanisms across at least two of the three axes"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "61"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_740ac32cbf701b61
+      type "audited_statement"
+      text "(mechanism, source, denied assumption). Below the threshold the verdict is"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "62"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_88e3f4dc0d85a9ec
+      type "audited_statement"
+      text "`not_confirmed_not_refuted` with the blockers named. Corroboration has a floor"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "63"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_177f795bc62e3aa3
+      type "audited_statement"
+      text "too: `instruction_formalization` requires at least two distinct sources before a"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "64"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_98eae947ba43dc49
+      type "audited_statement"
+      text "gathered instruction step counts as corroborated, since a single source cannot"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "65"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_7454a1454c776de0
+      type "audited_statement"
+      text "corroborate itself."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "66"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_e6cd5f227e30362f
+      type "audited_statement"
+      text "**Flagged.** Three defaults made depth opt-in:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "70"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9eafaf92302ae80d
+      type "audited_statement"
+      text "Each was reachable through `SolverConfig` and through a `FORMAL_AI_*`"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "78"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f8f582bfaae60b30
+      type "audited_statement"
+      text 'environment variable, which is precisely "conditional on explicit prompting".'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "79"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ffc0f68c5c80eb8e
+      type "audited_statement"
+      text "The narrow modes still exist for deliberately quietening a trace; they are no"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "80"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_e5fd8eb0cdcca103
+      type "audited_statement"
+      text "longer the resting state."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "81"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_fd7a827179392ec4
+      type "audited_statement"
+      text "**Not a knob at all:** the reasoning-standard audit. `record_meta_core` calls"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "83"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_10dfdcb2132a1b80
+      type "audited_statement"
+      text "`reasoning_standard::record_reasoning_standard` with no condition in front of"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "84"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_249e4b148f21984e
+      type "audited_statement"
+      text "it, and `the_meta_core_runs_the_audit_with_no_mode_in_front_of_it` in"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "85"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_88ad5c72ba4daecf
+      type "audited_statement"
+      text "`tests/unit/specification/reasoning_standard_meta_algorithm.rs` fails if one is"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "86"
+        kind "prose"
+      claim
+        subject "`tests/unit/specification/reasoning_standard_meta_algorithm.rs`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_807970b8cd82241e
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_8b611f3d84236b9c
+      type "audited_statement"
+      text "ever added."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "87"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_b589213ec69cab7a
+      type "audited_statement"
+      text "**Also flagged, and this is what makes the trivial request covered:** an audit"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "89"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_892238ef46049ef1
+      type "audited_statement"
+      text "that only ran when there was something to audit would be conditional on task"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "90"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_4ed2be517136cd48
+      type "audited_statement"
+      text "difficulty. `open_episode` opens an episode from the formalization alone, so"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "91"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_fb474b1da3748d66
+      type "audited_statement"
+      text "every gate reports `NotTriggered` naming the trigger that was false. The"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "92"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_245c28f8f774a0d6
+      type "audited_statement"
+      text "obligations are enumerated identically on the trivial request and the hard one;"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "93"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_3645c42110c0531b
+      type "audited_statement"
+      text "only which of them fire differs."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "94"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_e9ab3c48a13d1000
+      type "audited_statement"
+      text "`data/meta/reasoning-standard-reference-episode.lino` encodes the reference"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "98"
+        kind "prose"
+      claim
+        subject "`data/meta/reasoning-standard-reference-episode.lino`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_d43cc2a989468121
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_b6308468cddf4e5f
+      type "audited_statement"
+      text "session's reasoning — its observations, claims, sources, refutations and actions"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "99"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_07da64b331720c4b
+      type "audited_statement"
+      text "— with the project-specific tooling, absolute paths and session management the"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "100"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_282ae7d460cc63ff
+      type "audited_statement"
+      text "issue asks us to drop left out. It clears all seven gates with verdict"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "101"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_8673f20aeb73f607
+      type "audited_statement"
+      text "`confirmed`, and each gate is shown to fail under a mutation that removes the"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "contradiction-audit.md"
+        line "102"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_317675cb4eabd179
+      type "audited_statement"
+      text "behaviour it enforces (`tests/unit/issue_1073_reasoning_standard.rs`)."
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "contradiction-audit.md"
+        line "103"
+        kind "prose"
+      claim
+        subject "`tests/unit/issue_1073_reasoning_standard.rs`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_22a836dc717efa1d
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_b78250c64f4b92d8
+      type "audited_statement"
+      text "Issue [#1073](https://github.com/link-assistant/formal-ai/issues/1073) takes one"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "3"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9ed81e41e9c6ffc7
+      type "audited_statement"
+      text "reference dialog -- a disk-space cleanup session -- and makes the properties that"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "4"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9e6d396e9e7e9d98
+      type "audited_statement"
+      text "made it good the *floor* rather than the ceiling. The instruction that governs"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "5"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d31fe5e06ef0ce5a
+      type "audited_statement"
+      text "every row below is the one attached to that goal: the floor holds for the trivial"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "6"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_0604e2056d0cffa9
+      type "audited_statement"
+      text "request too, and it is never conditional on being asked. See"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "7"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_cf93095326049536
+      type "audited_statement"
+      text "`docs/case-studies/issue-1073/` for the case study and the contradiction audit."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "8"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_64d4c0b492d210c8
+      type "audited_statement"
+      text "The standard is data. `data/meta/reasoning-standard.lino` declares seven gates"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "10"
+        kind "prose"
+      claim
+        subject "`data/meta/reasoning-standard.lino`"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_f6a5df2832e90228
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_f0880322d26db91e
+      type "audited_statement"
+      text "(order, trigger, requirement, the reference behaviour it was adopted from, the"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "11"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_25e6366efe3358d4
+      type "audited_statement"
+      text "slug it reports on failure) and five numeric thresholds with the reason each"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "12"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d3bcb471e86d2a12
+      type "audited_statement"
+      text "number is what it is; `src/reasoning_standard/` loads it and evaluates every gate"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "13"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ed65cf6081797c0f
+      type "audited_statement"
+      text "as a pure predicate over a `ReasoningEpisode`. Nothing on that path consults a"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "14"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_8f16a0bff8e4e29f
+      type "audited_statement"
+      text "model."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "issue-1073-reasoning-standard.md"
+        line "15"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+  contradictions
+  findings
+    audit_finding_ac52266750cb41d7
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_d848b8247ac73cbf"
+    audit_finding_123905bc533f71f0
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_c19030578cc06c17"
+    audit_finding_3604fc2615f5c12c
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_dc63ac87a07b473b"
+    audit_finding_de29a49b9c1ee7ac
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_1474cde2d9d210a8"
+    audit_finding_e37f0eef1ea3b990
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_84a7409df99a12c3"
+    audit_finding_fe2cb2c0817763c5
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_88ad5c72ba4daecf"
+    audit_finding_9e06be2a4ec6a020
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_e9ab3c48a13d1000"
+    audit_finding_cc427d921967f458
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_317675cb4eabd179"
+    audit_finding_340477ad962f812b
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_64d4c0b492d210c8"
+  associations
+    audit_association_b98b99719bd21249
+      from "audit_finding_123905bc533f71f0"
+      to "audited_statement_c19030578cc06c17"
+    audit_association_56b064a97c51729a
+      from "audit_finding_340477ad962f812b"
+      to "audited_statement_64d4c0b492d210c8"
+    audit_association_7dd0076a5cd535d3
+      from "audit_finding_3604fc2615f5c12c"
+      to "audited_statement_dc63ac87a07b473b"
+    audit_association_47171b19bdb3858a
+      from "audit_finding_9e06be2a4ec6a020"
+      to "audited_statement_e9ab3c48a13d1000"
+    audit_association_645ca8512448ff70
+      from "audit_finding_ac52266750cb41d7"
+      to "audited_statement_d848b8247ac73cbf"
+    audit_association_570f13999cc18f1f
+      from "audit_finding_cc427d921967f458"
+      to "audited_statement_317675cb4eabd179"
+    audit_association_3022976e49cfaaa3
+      from "audit_finding_de29a49b9c1ee7ac"
+      to "audited_statement_1474cde2d9d210a8"
+    audit_association_4ad9dc5a220046a0
+      from "audit_finding_e37f0eef1ea3b990"
+      to "audited_statement_84a7409df99a12c3"
+    audit_association_d50e8ff71b574c11
+      from "audit_finding_fe2cb2c0817763c5"
+      to "audited_statement_88ad5c72ba4daecf"
+    audit_association_9f52f078334eb037
+      from "audited_statement_1474cde2d9d210a8"
+      to "evidence_provenance_257d272297c64705"
+    audit_association_b00f12d3a91db774
+      from "audited_statement_317675cb4eabd179"
+      to "evidence_provenance_22a836dc717efa1d"
+    audit_association_3d6beaf387421429
+      from "audited_statement_64d4c0b492d210c8"
+      to "evidence_provenance_f6a5df2832e90228"
+    audit_association_6e9ff191e5384865
+      from "audited_statement_84a7409df99a12c3"
+      to "evidence_provenance_8ac6590220fa40b5"
+    audit_association_2a59cf402646109e
+      from "audited_statement_88ad5c72ba4daecf"
+      to "evidence_provenance_807970b8cd82241e"
+    audit_association_2ea1086d4a3e24b8
+      from "audited_statement_c19030578cc06c17"
+      to "evidence_provenance_ea9b6c0d63161671"
+    audit_association_793752b158c19d95
+      from "audited_statement_d848b8247ac73cbf"
+      to "evidence_provenance_84131fd20576d330"
+    audit_association_2e21f868fc9a4165
+      from "audited_statement_dc63ac87a07b473b"
+      to "evidence_provenance_7ba2e70884d07111"
+    audit_association_541d3573ce4447af
+      from "audited_statement_e9ab3c48a13d1000"
+      to "evidence_provenance_d43cc2a989468121"
+  skipped_paths

@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::io;
@@ -242,7 +241,7 @@ fn require_hash(
 }
 
 fn ignored(path: &Path, root: &Path) -> bool {
-    path.strip_prefix(root).ok().is_some_and(|relative| {
+    path.strip_prefix(root).is_ok_and(|relative| {
         relative.components().next().is_some_and(|part| {
             matches!(
                 part.as_os_str().to_str(),
@@ -273,5 +272,5 @@ fn safe_relative(path: &str) -> io::Result<PathBuf> {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    crate::source_fetch::sha256_hex(bytes)
 }

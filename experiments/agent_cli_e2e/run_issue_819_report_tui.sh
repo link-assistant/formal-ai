@@ -16,6 +16,7 @@ DIALOG_DIR="$WORKDIR/dialogs"
 ACTIONS_LOG="$WORKDIR/report-actions.log"
 SERVER_LOG="$WORKDIR/formal-ai.log"
 ISSUE_BODY="$WORKDIR/issue-body.md"
+GIST_DIR="$WORKDIR/gists"
 TERMINAL_DIR="$WORKDIR/terminal"
 CLIENT_LOG="$WORKDIR/client.log"
 SERVER_PID=""
@@ -47,7 +48,7 @@ preserve_artifacts() {
       cp "$source" "$ARTIFACT_DIR/$(basename "$source")"
     fi
   done
-  for source in "$TERMINAL_DIR" "$DIALOG_DIR"; do
+  for source in "$TERMINAL_DIR" "$DIALOG_DIR" "$GIST_DIR"; do
     if [ -d "$source" ]; then
       local destination
       destination="$ARTIFACT_DIR/$(basename "$source")"
@@ -57,7 +58,7 @@ preserve_artifacts() {
   done
 }
 
-mkdir -p "$FAKE_BIN" "$DIALOG_DIR"
+mkdir -p "$FAKE_BIN" "$DIALOG_DIR" "$GIST_DIR"
 cat > "$WORKDIR/opencode.json" <<EOF
 {
   "\$schema": "https://opencode.ai/config.json",
@@ -85,6 +86,23 @@ EOF
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
 echo "gh \$*" >> "$ACTIONS_LOG"
+if [ "\${1:-} \${2:-}" = "gist create" ]; then
+  filename=''
+  source_file=''
+  while [ "\$#" -gt 0 ]; do
+    if [ "\$1" = "--filename" ]; then
+      filename="\$2"
+      shift 2
+      continue
+    fi
+    source_file="\$1"
+    shift
+  done
+  [ -n "\$filename" ] && [ -n "\$source_file" ]
+  cp "\$source_file" "$GIST_DIR/\$filename"
+  printf 'https://gist.github.com/formal-ai/%s\n' "\$filename"
+  exit 0
+fi
 while [ "\$#" -gt 0 ]; do
   if [ "\$1" = "--body-file" ]; then
     cp "\$2" "$ISSUE_BODY"
@@ -118,7 +136,14 @@ ISSUE819_TUI_EXECUTABLE="$OPENCODE" \
     > "$CLIENT_LOG" 2>&1 \
   || fail "OpenCode report TUI transcript failed"
 
-for action in '--source harness' '--source server' '--source both' 'gh issue create'; do
+for action in \
+  '--source harness' \
+  '--source server' \
+  '--source both' \
+  'gh gist create --filename formal-ai-harness-context-' \
+  'gh gist create --filename formal-ai-server-context-' \
+  'gh gist create --filename context.lino' \
+  'gh issue create'; do
   grep -Fq -- "$action" "$ACTIONS_LOG" \
     || fail "selected report action did not execute: $action"
 done
@@ -126,12 +151,42 @@ for provenance in '- **Session**:' '- **Context source**: both' '- **Surface**: 
   grep -Fq -- "$provenance" "$ISSUE_BODY" \
     || fail "the resulting issue body omitted report provenance: $provenance"
 done
-grep -Fq '### Complete agentic context' "$ISSUE_BODY" \
-  || fail "the resulting issue body omitted its complete-context section"
 grep -Fq '## Reproduction of dialog' "$ISSUE_BODY" \
   || fail "the resulting issue body omitted the exported conversation"
 
+shopt -s nullglob
+harness_files=("$GIST_DIR"/formal-ai-harness-context-*.lino)
+server_files=("$GIST_DIR"/formal-ai-server-context-*.lino)
+[ "${#harness_files[@]}" -eq 1 ] \
+  || fail "expected one captured harness context"
+[ "${#server_files[@]}" -eq 1 ] \
+  || fail "expected one captured server context"
+[ -s "$GIST_DIR/context.lino" ] \
+  || fail "expected one captured merged context"
+
+grep -Fq 'conversation' "${harness_files[0]}" \
+  || fail "the harness context did not contain the conversation"
+if ! grep -Fq 'server_logs' "${server_files[0]}"; then
+  grep -Fq 'context_export_failure' "${server_files[0]}" \
+    && grep -Fq 'source server' "${server_files[0]}" \
+    || fail "the server context was neither exported nor given an explicit diagnostic"
+fi
+grep -Fq 'conversation' "$GIST_DIR/context.lino" \
+  || fail "the merged context did not contain the conversation"
+
+for heading in '### Harness context' '### Server context' '### Merged context'; do
+  grep -Fq "$heading" "$ISSUE_BODY" \
+    || fail "the resulting issue body omitted $heading"
+done
+for context_file in "${harness_files[0]}" "${server_files[0]}" "$GIST_DIR/context.lino"; do
+  grep -Fq "https://gist.github.com/formal-ai/${context_file##*/}" "$ISSUE_BODY" \
+    || fail "the resulting issue body omitted the ${context_file##*/} link"
+done
+if grep -Fq '```lino' "$ISSUE_BODY"; then
+  fail "the linked context was duplicated inline"
+fi
+
 preserve_artifacts
 
-echo "== issue #838 OpenCode report TUI OK: selections, actions, and issue body =="
+echo "== issue #819 OpenCode report TUI OK: selections, three links, and issue body =="
 cat "$ACTIONS_LOG"

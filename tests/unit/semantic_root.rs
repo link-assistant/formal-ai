@@ -1,4 +1,4 @@
-use formal_ai::seed::{lexicon, Meaning};
+use formal_ai::seed::{Meaning, lexicon};
 
 fn assert_defined_by(meaning: &Meaning, expected: &[&str]) {
     for target in expected {

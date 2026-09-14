@@ -1,19 +1,59 @@
 #!/usr/bin/env rust-script
 //! CI guard for the development disk-usage policy introduced by issue #534.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::{fs, process::ExitCode};
 
+/// Every registered CI gate shard, sorted by path so the text is stable.
+fn gate_registry() -> Vec<String> {
+    let mut shards = fs::read_dir("data/meta/ci-gates")
+        .expect("read data/meta/ci-gates")
+        .map(|entry| entry.expect("read a gate shard").path())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "lino"))
+        .collect::<Vec<_>>();
+    shards.sort();
+    shards
+        .into_iter()
+        .map(|path| {
+            fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("read {}: {error}", path.display()))
+        })
+        .collect()
+}
+
 fn main() -> ExitCode {
     let manifest = fs::read_to_string("Cargo.toml").expect("read Cargo.toml");
-    let workflows = [
-        ".github/workflows/release.yml",
-        ".github/workflows/desktop-release.yml",
-        ".github/actions/setup-sccache/action.yml",
-    ]
-    .into_iter()
-    .map(|path| fs::read_to_string(path).unwrap_or_else(|error| panic!("read {path}: {error}")))
-    .collect::<Vec<_>>()
-    .join("\n");
+    // Every workflow, not a hand-listed three: the policy read only
+    // `release.yml` and `desktop-release.yml`, so `agentic-cli-matrix.yml` and
+    // `external-benchmarks.yml` cached the target tree unnoticed -- the exact
+    // thing this gate exists to forbid.
+    let mut workflow_paths = fs::read_dir(".github/workflows")
+        .expect("read .github/workflows")
+        .map(|entry| entry.expect("read a workflow").path())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "yml"))
+        .collect::<Vec<_>>();
+    workflow_paths.sort();
+    let mut sources = workflow_paths
+        .into_iter()
+        .map(|path| {
+            fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("read {}: {error}", path.display()))
+        })
+        .collect::<Vec<_>>();
+    sources.push(
+        fs::read_to_string(".github/actions/setup-sccache/action.yml")
+            .expect("read .github/actions/setup-sccache/action.yml"),
+    );
+    // Issue #991 moved the lint job's commands into one file per gate, so the
+    // text CI executes is the workflow plus that registry. A policy that read
+    // only the workflow would score a gate's command as absent the moment it
+    // stopped being an inline step.
+    sources.extend(gate_registry());
+    let workflows = sources.join("\n");
 
     let required_profiles = [
         "[profile.dev]\ndebug = 0\nincremental = false",
@@ -45,7 +85,7 @@ fn main() -> ExitCode {
             "workflows must retain compile coverage for examples without linking them".to_owned(),
         );
     }
-    if !workflows.contains("mozilla-actions/sccache-action@v0.0.10") {
+    if !workflows.contains("mozilla-actions/sccache-action@v0.0.11") {
         errors.push("workflows must install the supported sccache action version".to_owned());
     }
     for setting in ["SCCACHE_GHA_ENABLED:", "RUSTC_WRAPPER: sccache"] {

@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use crate::associative_package::{default_package_store, PackagePermissionDecision};
+use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::engine::{SymbolicAnswer, ThinkingStep};
 
 pub fn tool_call_refusal_answer() -> SymbolicAnswer {

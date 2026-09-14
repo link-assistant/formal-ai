@@ -25,7 +25,7 @@ use crate::seed::{ClientIntegration, ClientIntegrationGlobalConfig, ConfigFormat
 
 use super::command::{command_available, resolve_integration_command};
 use super::global_config::{managed_block_end, managed_block_start};
-use super::{global_config_path, render_template, RenderContext};
+use super::{RenderContext, global_config_path, render_template};
 
 /// How long a startup probe may run before it is stopped. The probe only needs
 /// the client's first reaction to the configuration, not a full answer.

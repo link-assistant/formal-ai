@@ -1,7 +1,7 @@
 //! Public API regressions for issue #751 deterministic token accounting.
 
 use formal_ai::{engine::estimate_tokens, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const RUSSIAN_GREETING: &str = "Привет";
 const RUSSIAN_ANSWER: &str = "Здравствуйте! Чем могу помочь?";
@@ -145,17 +145,21 @@ fn responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata() {
             "messages": [{"role": "user", "content": "hi"}]
         }),
     );
-    assert!(chat["created"]
-        .as_u64()
-        .is_some_and(|timestamp| timestamp > 0));
+    assert!(
+        chat["created"]
+            .as_u64()
+            .is_some_and(|timestamp| timestamp > 0)
+    );
 
     let responses = post_json(
         "/v1/responses",
         &json!({"model": "formal-ai", "input": "hi"}),
     );
-    assert!(responses["created_at"]
-        .as_u64()
-        .is_some_and(|timestamp| timestamp > 0));
+    assert!(
+        responses["created_at"]
+            .as_u64()
+            .is_some_and(|timestamp| timestamp > 0)
+    );
 
     let models = get_json("/v1/models");
     assert!(models["data"][0].get("created").is_none());

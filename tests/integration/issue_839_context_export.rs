@@ -11,7 +11,7 @@ use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::dialog_log::write_dialog_exchange;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 fn temporary_directory(label: &str) -> PathBuf {
     let nonce = SystemTime::now()

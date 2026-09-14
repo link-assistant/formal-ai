@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use clap::CommandFactory;
-use formal_ai::{delimit_tool_args, run_with_formal_ai, WithFormalAiArgs};
+use formal_ai::{WithFormalAiArgs, delimit_tool_args, run_with_formal_ai};
 use lino_arguments::Parser;
 
 #[derive(Debug, Parser)]

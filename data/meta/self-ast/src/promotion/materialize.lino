@@ -2,9 +2,9 @@ self_ast_census
   target src/promotion/materialize.rs
   language rust
   fidelity signature
-  byte_len 6989
+  byte_len 7001
   line_count 187
-  content_id source_module_663c5d47bf1e780f
+  content_id source_module_41f984823f84768a
   symbol_count 6
   symbols
     function apply_promotions 24 112

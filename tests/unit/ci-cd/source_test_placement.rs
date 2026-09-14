@@ -39,10 +39,10 @@ fn is_inline_test_marker(trimmed: &str) -> bool {
         if attr == "test]" || attr.starts_with("test]") || attr.starts_with("test(") {
             return true;
         }
-        if let Some(suffix) = attr.split_once("::") {
-            if suffix.1.starts_with("test]") || suffix.1.starts_with("test(") {
-                return true;
-            }
+        if let Some(suffix) = attr.split_once("::")
+            && (suffix.1.starts_with("test]") || suffix.1.starts_with("test("))
+        {
+            return true;
         }
     }
     false

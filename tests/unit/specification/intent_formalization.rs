@@ -6,7 +6,7 @@
 
 use formal_ai::translation::formalize_prompt;
 use formal_ai::{
-    formalize_intent, IntentFormalizationCache, IntentKind, MemoryStore, UniversalSolver,
+    IntentFormalizationCache, IntentKind, MemoryStore, UniversalSolver, formalize_intent,
 };
 
 #[test]
@@ -83,14 +83,18 @@ fn write_program_formalization_records_language_and_task_parameters() {
 
     let response = UniversalSolver::default().solve("Write a Python program that counts to three");
     assert_eq!(response.intent, "write_program");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "program_parameter:language:python"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "program_parameter:task:count_to_three"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "program_parameter:language:python")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "program_parameter:task:count_to_three")
+    );
 }
 
 #[test]

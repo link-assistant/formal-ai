@@ -6,7 +6,7 @@
 //! `Proven`, `Disproven` or `Inconclusive` outcome with a fully spelled-out
 //! direct-calculation proof.
 
-use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::arithmetic::{ArithmeticError, evaluate_fallback_formatted};
 use crate::proof_engine::types::{Proof, ProofMethod, ProofOutcome, ProofStep, StepKind};
 
 /// Comparison operator extracted from a claim. The variants are written as

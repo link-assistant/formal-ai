@@ -1,0 +1,1 @@
+Create file hive-mind-to-formal-ai.txt containing hive mind drove agent cli through formal ai

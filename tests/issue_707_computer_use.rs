@@ -2,11 +2,11 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::process::Command;
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::computer_use::{
-    benchmark_tasks, capability_gap_for_prompt, replay_verified_plan, run_verified_plan,
-    ComputerPlanStep, ComputerUsePolicy, ComputerUsePrimitive, ComputerUseSession,
-    VerificationPhase, COMPUTER_USE_PRIMITIVES,
+    COMPUTER_USE_PRIMITIVES, ComputerPlanStep, ComputerUsePolicy, ComputerUsePrimitive,
+    ComputerUseSession, VerificationPhase, benchmark_tasks, capability_gap_for_prompt,
+    replay_verified_plan, run_verified_plan,
 };
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use serde_json::json;
@@ -209,9 +209,11 @@ fn every_primitive_is_agent_mode_permission_and_confirmation_gated() {
         };
         let record = session.execute_step(&step);
         assert!(!record.verified, "{}", primitive.name());
-        assert!(record.output["error"]
-            .as_str()
-            .is_some_and(|error| error.contains("agent_mode_required")));
+        assert!(
+            record.output["error"]
+                .as_str()
+                .is_some_and(|error| error.contains("agent_mode_required"))
+        );
         assert!(!record.events[0].passed);
         assert!(!record.events[1].passed);
         assert!(!record.events[2].passed);
@@ -232,9 +234,11 @@ fn every_primitive_is_agent_mode_permission_and_confirmation_gated() {
         "written",
     );
     assert!(!record.verified);
-    assert!(record.output["error"]
-        .as_str()
-        .is_some_and(|error| error.contains("confirmation_required")));
+    assert!(
+        record.output["error"]
+            .as_str()
+            .is_some_and(|error| error.contains("confirmation_required"))
+    );
     assert!(!session.root().join("result.txt").exists());
 }
 
@@ -253,9 +257,11 @@ fn workspace_paths_cannot_escape_the_isolation_boundary() {
         "written",
     );
     assert!(!record.verified);
-    assert!(record.output["error"]
-        .as_str()
-        .is_some_and(|error| error.contains("path_escapes_workspace")));
+    assert!(
+        record.output["error"]
+            .as_str()
+            .is_some_and(|error| error.contains("path_escapes_workspace"))
+    );
     assert!(!outside.exists());
 }
 
@@ -337,7 +343,25 @@ fn native_cli_requires_permissions_and_can_replay_a_verified_plan() {
 
 #[test]
 fn real_agent_cli_record_replay_is_a_required_ci_gate() {
-    let workflow = fs::read_to_string(".github/workflows/release.yml").expect("release workflow");
+    // Issue #1081 lifted these 51 steps out of `release.yml` into a reusable
+    // workflow, which put one hop between the release pipeline and the
+    // harness. The invariant is that a release run drives issue #707 through
+    // the real Agent CLI -- not that one particular file spells the path out
+    // -- so follow the hop rather than drop the assertion, and check both
+    // ends: a caller that no longer calls, and a callee that no longer runs
+    // the harness, are the same false negative.
+    let release = fs::read_to_string(".github/workflows/release.yml").expect("release workflow");
+    let called = ".github/workflows/agent-cli-e2e.yml";
+    assert!(
+        release.contains(&format!("uses: ./{called}")),
+        "release CI must reach the Agent CLI E2E job, directly or through {called}"
+    );
+    assert!(
+        release.contains("test-agent-cli-e2e,"),
+        "the terminal pipeline-status gate must observe the extracted job"
+    );
+
+    let workflow = fs::read_to_string(called).expect("agent CLI E2E workflow");
     assert!(
         workflow.contains("experiments/agent_cli_e2e/run_issue_707.sh"),
         "release CI must drive issue #707 through the real Agent CLI"

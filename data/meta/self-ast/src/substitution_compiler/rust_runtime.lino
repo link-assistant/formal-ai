@@ -1,0 +1,27 @@
+self_ast_census
+  target src/substitution_compiler/rust_runtime.rs
+  language rust
+  fidelity signature
+  byte_len 5278
+  line_count 178
+  content_id source_module_fd910e6890e8080a
+  symbol_count 18
+  symbols
+    function rules_source 5 28
+    function pattern_source 30 36
+    function node_source 38 50
+    const COMMON_RUNTIME 52 59
+    enum Node 55 59
+    struct Pattern 62 65
+    struct Action 67 70
+    struct Rule 72 75
+    type Link 77 77
+    type Bindings 78 78
+    function bind 80 87
+    function match_node 89 97
+    function match_pattern 99 102
+    function find_bindings 104 121
+    function instantiate_node 123 129
+    function instantiate 131 136
+    function apply_rule 138 158
+    function transform 160 177

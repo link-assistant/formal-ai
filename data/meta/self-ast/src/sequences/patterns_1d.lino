@@ -2,9 +2,9 @@ self_ast_census
   target src/sequences/patterns_1d.rs
   language rust
   fidelity signature
-  byte_len 5714
+  byte_len 5720
   line_count 165
-  content_id source_module_b718a844c6dfed87
+  content_id source_module_aeda1df30a3adf84
   symbol_count 12
   symbols
     struct RepetitionPattern 15 22

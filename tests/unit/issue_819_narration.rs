@@ -8,7 +8,7 @@
 
 use formal_ai::protocol::ChatCompletionRequest;
 use formal_ai::seed::response_for;
-use formal_ai::{create_chat_completion_with_solver, SolverConfig, UniversalSolver};
+use formal_ai::{SolverConfig, UniversalSolver, create_chat_completion_with_solver};
 
 fn agent_solver() -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
@@ -91,19 +91,27 @@ fn agentic_action_narration_is_seeded_for_every_supported_language() {
 
     // The web-search step, too, is worded distinctly per language so the user
     // can always tell a local search from an internet search.
-    assert!(response_for("agentic_action_search", "en") // english
-        .expect("English web-search narration")
-        .to_lowercase()
-        .contains("web"));
-    assert!(response_for("agentic_action_search", "ru")
-        .expect("Russian web-search narration")
-        .contains("интернете"));
-    assert!(response_for("agentic_action_search", "hi")
-        .expect("Hindi web-search narration")
-        .contains("इंटरनेट"));
-    assert!(response_for("agentic_action_search", "zh")
-        .expect("Chinese web-search narration")
-        .contains("上网"));
+    assert!(
+        response_for("agentic_action_search", "en") // english
+            .expect("English web-search narration")
+            .to_lowercase()
+            .contains("web")
+    );
+    assert!(
+        response_for("agentic_action_search", "ru")
+            .expect("Russian web-search narration")
+            .contains("интернете")
+    );
+    assert!(
+        response_for("agentic_action_search", "hi")
+            .expect("Hindi web-search narration")
+            .contains("इंटरनेट")
+    );
+    assert!(
+        response_for("agentic_action_search", "zh")
+            .expect("Chinese web-search narration")
+            .contains("上网")
+    );
 }
 
 #[test]

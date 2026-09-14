@@ -23,7 +23,7 @@
 //! in `data/seed/meanings-*.lino` and the seeded Wiktionary/Wikidata cache, so
 //! widening the covered vocabulary is a pure seed edit.
 
-use formal_ai::seed::{lexicon, LANGUAGES_LINO};
+use formal_ai::seed::{LANGUAGES_LINO, lexicon};
 use formal_ai::translation::{translate_statement, translate_via_default_pipeline};
 
 #[derive(Clone, Copy)]

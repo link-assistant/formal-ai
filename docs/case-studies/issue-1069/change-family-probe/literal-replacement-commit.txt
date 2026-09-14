@@ -1,0 +1,7 @@
+2e0f0778f9b8d42b16cb8595ca1c90a2b19f97ba formal-ai: apply verified agent effect
+Formal-AI-Session: ses_f94ec01efffeAFbpVtBglB429M
+Formal-AI-Evidence: .formal-ai-orchestration/sessions/000-agent.json
+Formal-AI-Pull-Request: https://github.com/link-assistant/formal-ai/pull/1070
+
+A	.formal-ai-orchestration/sessions/000-agent.json
+M	src/orchestration/runner.rs

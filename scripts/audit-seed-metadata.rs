@@ -10,6 +10,9 @@
 //!   rust-script --test scripts/audit-seed-metadata.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```

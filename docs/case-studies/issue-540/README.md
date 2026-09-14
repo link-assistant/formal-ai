@@ -25,25 +25,25 @@ scheduling, and cache eviction policy.
 
 The implemented slice is the deterministic memory-maintenance core:
 
-- `R396` preserves this case study and raw evidence.
-- `R397` makes dreaming a default-on background planner, not a foreground
+- `R537` preserves this case study and raw evidence.
+- `R538` makes dreaming a default-on background planner, not a foreground
   command that users must remember to run manually.
-- `R398` keeps default dreaming non-destructive; mutation requires the existing
+- `R539` keeps default dreaming non-destructive; mutation requires the existing
   explicit confirmation and backup flow.
-- `R399` recalculates event usage from memory links before deduplicating
+- `R540` recalculates event usage from memory links before deduplicating
   recomputable records.
-- `R400` protects raw messages and learned/ledger experience from automatic
+- `R541` protects raw messages and learned/ledger experience from automatic
   eviction.
-- `R401` frees only cached public-source data, deleted-thread data, or
+- `R542` frees only cached public-source data, deleted-thread data, or
   recomputable intermediate conclusions.
-- `R402` targets 20% free space when the caller supplies capacity/free-space
+- `R543` targets 20% free space when the caller supplies capacity/free-space
   data.
-- `R403` reports when bigger storage is required instead of deleting retained
+- `R544` reports when bigger storage is required instead of deleting retained
   experience.
-- `R404` exposes the planner through `formal-ai memory dream`.
-- `R405` schedules desktop dreaming at low priority.
-- `R406` documents the design and research.
-- `R407` protects the behavior with automated tests.
+- `R545` exposes the planner through `formal-ai memory dream`.
+- `R546` schedules desktop dreaming at low priority.
+- `R547` documents the design and research.
+- `R548` protects the behavior with automated tests.
 - `R408` recalculates which topics the user interacts with most so learning
   concentrates where the user actually spends time.
 - `R409` recovers the durable requirements the user has stated on those topics so

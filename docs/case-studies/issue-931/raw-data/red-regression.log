@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.341.0 (/tmp/gh-issue-solver-1786687367536)
+error[E0432]: unresolved import `formal_ai::local_transport`
+ --> tests/integration/issue_931_local_transports.rs:6:16
+  |
+6 | use formal_ai::local_transport::{
+  |                ^^^^^^^^^^^^^^^ could not find `local_transport` in `formal_ai`
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "integration") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

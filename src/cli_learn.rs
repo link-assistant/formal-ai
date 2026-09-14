@@ -5,11 +5,11 @@ use std::path::{Path, PathBuf};
 use clap::Subcommand;
 use formal_ai::algorithm_discovery::{discover_algorithms, traces_from_memory_events};
 use formal_ai::learning_cycle::{
-    recorded_frontier, recorded_frontiers, run_learning_cycle, LearningCycleRun,
-    GOOGLE_TRENDS_FRONTIER,
+    GOOGLE_TRENDS_FRONTIER, LearningCycleRun, recorded_frontier, recorded_frontiers,
+    run_learning_cycle,
 };
 use formal_ai::promotion::render_promotion_proposals;
-use formal_ai::{parse_frontier_record, render_response, FrontierItem, MemoryStore};
+use formal_ai::{FrontierItem, MemoryStore, parse_frontier_record, render_response};
 
 /// Auto-learning commands.
 #[derive(Debug, Subcommand)]

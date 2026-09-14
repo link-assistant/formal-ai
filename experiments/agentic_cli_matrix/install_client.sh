@@ -38,7 +38,17 @@ case "$installer" in
       installed="$prefix/node_modules/.bin/$command_name"
     else
       # bun installs onto $HOME/.bun/bin, which the workflow adds to PATH.
-      bun add -g "$spec" || matrix_fail "bun add -g $spec failed"
+      if [ "$CLIENT" = opencode ]; then
+        # opencode-ai's pinned launcher is replaced with the platform binary by
+        # its postinstall. Without this explicit trust Bun leaves a Windows PE
+        # placeholder at bin/opencode.exe, which Linux later reports as
+        # "Exec format error". Trust only this reviewed, lockfile-pinned package.
+        bun add -g --trust "$spec" \
+          || matrix_fail "bun add -g --trust $spec failed"
+      else
+        bun add -g --ignore-scripts "$spec" \
+          || matrix_fail "bun add -g --ignore-scripts $spec failed"
+      fi
       installed="${BUN_INSTALL:-$HOME/.bun}/bin/$command_name"
     fi
     ;;
@@ -97,7 +107,14 @@ case "$installer" in
     dest="${MATRIX_VSCODE_DIR:-$HOME/.formal-ai-matrix/vscode}"
     if [ ! -x "$dest/bin/code" ]; then
       mkdir -p "$dest"
-      curl -fsSL "https://update.code.visualstudio.com/$spec/linux-x64/stable" \
+      # 345 MB over a shared runner's link: run 33967170904 lost the transfer
+      # partway through (`curl: (18) transfer closed with 344439862 bytes
+      # remaining to read`) and failed a leg for something the commit under
+      # test had not touched. `--retry` alone does not cover exit 18 --
+      # `experiments/issue-1076/repro-curl-truncated-download.sh` measures that
+      # -- so every download here carries `--retry-all-errors` too.
+      curl -fsSL --retry 3 --retry-delay 2 --retry-all-errors \
+        "https://update.code.visualstudio.com/$spec/linux-x64/stable" \
         -o "$dest/code.tar.gz" \
         || matrix_fail "downloading VS Code $spec failed"
       tar -xzf "$dest/code.tar.gz" -C "$dest" --strip-components=1 \
@@ -111,7 +128,11 @@ case "$installer" in
     # An editor with no OpenCode extension is not the client this row names: the
     # leg would launch a bare editor and prove nothing about our server. The
     # extension is what talks to the base URL the wrapper configures.
-    "$dest/bin/code" --install-extension sst-dev.opencode --force \
+    # VS Code's bundled CLI still calls the deprecated legacy url.parse API.
+    # Suppress only that upstream diagnostic for this child process:
+    # https://github.com/microsoft/vscode/issues/319867
+    NODE_OPTIONS=--disable-warning=DEP0169 \
+      "$dest/bin/code" --install-extension sst-dev.opencode --force \
       --user-data-dir "$dest/user-data" --extensions-dir "$dest/extensions" \
       || matrix_fail "installing the sst-dev.opencode VS Code extension failed"
     ;;
@@ -124,7 +145,7 @@ case "$installer" in
     # The desktop AppImage rides the ordinary `v<version>` release tag — there is
     # no separate `desktop-v…` tag, and asking for one 404s.
     url="https://github.com/sst/opencode/releases/download/v$spec/opencode-desktop-linux-x86_64.AppImage"
-    curl -fsSL "$url" -o "$dest/app.AppImage" \
+    curl -fsSL --retry 3 --retry-delay 2 --retry-all-errors "$url" -o "$dest/app.AppImage" \
       || matrix_fail "downloading $url failed"
     chmod +x "$dest/app.AppImage"
     ( cd "$dest" && ./app.AppImage --appimage-extract > /dev/null ) \
@@ -142,7 +163,8 @@ case "$installer" in
     echo "FORMAL_AI_OPENCODE_DESKTOP_BIN=$dest/squashfs-root/AppRun" >> "${GITHUB_ENV:-/dev/null}"
     ;;
   script)
-    curl -fsSL "$spec" | bash || matrix_fail "vendor install script $spec failed"
+    curl -fsSL --retry 3 --retry-delay 2 --retry-all-errors "$spec" | bash \
+      || matrix_fail "vendor install script $spec failed"
     # A vendor script puts the binary where it likes, so this is the one kind
     # whose path has to be discovered. It is discovered *after* the install, and
     # under the client's own command name — cursor's script also drops an

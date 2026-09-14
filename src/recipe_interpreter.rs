@@ -340,6 +340,15 @@ impl ExecutionContext<'_> {
                         .is_some();
                 Ok(emitted)
             }
+            "record_reasoning_standard" => {
+                // No mode gate: the reasoning-standard checklist is enumerated on
+                // every request, so this recorder always emits (R1073).
+                crate::reasoning_standard::record_reasoning_standard(
+                    log,
+                    &crate::reasoning_standard::open_episode(self.formalization),
+                );
+                Ok(true)
+            }
             other => Err(format!("recipe binds unknown recorder `{other}`")),
         }
     }

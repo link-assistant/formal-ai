@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 5137
   line_count 129
-  content_id source_module_25add604cd30ffb3
+  content_id source_module_62ed8874c7ffe239
   symbol_count 9
   symbols
     struct MarketPriceAsset 19 33

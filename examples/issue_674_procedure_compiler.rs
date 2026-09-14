@@ -2,7 +2,7 @@
 //!
 //! Run with `cargo run --example issue_674_procedure_compiler`.
 
-use formal_ai::skill_procedure::{compile_procedure, ProcedureHost, ProcedureStep};
+use formal_ai::skill_procedure::{ProcedureHost, ProcedureStep, compile_procedure};
 
 const REFERENCE_PROCEDURE: &str = "When I paste a link, fetch its title, translate it to Russian, \
 save both, and reply with the translation.";
@@ -25,9 +25,18 @@ fn main() {
 
     let prompts = [
         ("en", REFERENCE_PROCEDURE),
-        ("ru", "Когда я вставляю ссылку, получи её заголовок, переведи его на русский, сохрани оба и ответь переводом."),
-        ("hi", "जब मैं लिंक भेजूँ, उसका शीर्षक लाओ, उसे रूसी में अनुवाद करो, दोनों सहेजो और अनुवाद के साथ जवाब दो।"),
-        ("zh", "当我粘贴链接，获取标题，翻译成俄语，保存两者，然后用译文回复。"),
+        (
+            "ru",
+            "Когда я вставляю ссылку, получи её заголовок, переведи его на русский, сохрани оба и ответь переводом.",
+        ),
+        (
+            "hi",
+            "जब मैं लिंक भेजूँ, उसका शीर्षक लाओ, उसे रूसी में अनुवाद करो, दोनों सहेजो और अनुवाद के साथ जवाब दो।",
+        ),
+        (
+            "zh",
+            "当我粘贴链接，获取标题，翻译成俄语，保存两者，然后用译文回复。",
+        ),
     ];
     for (language, prompt) in prompts {
         match compile_procedure(prompt) {

@@ -126,10 +126,12 @@ fn cli_chat_command_can_emit_chat_completion_json() {
     let json: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("stdout should be JSON");
     assert_eq!(json["object"], "chat.completion");
-    assert!(json["choices"][0]["message"]["content"]
-        .as_str()
-        .expect("assistant content should be a string")
-        .contains("```rust"));
+    assert!(
+        json["choices"][0]["message"]["content"]
+            .as_str()
+            .expect("assistant content should be a string")
+            .contains("```rust")
+    );
 }
 
 #[test]
@@ -139,11 +141,13 @@ fn cli_serve_exposes_agentic_tool_protocols_over_loopback() {
 
     let models = http_get_json(port, "/v1/models", Some("sk-local-agentic-tools"));
     assert_eq!(models["object"], "list");
-    assert!(models["data"]
-        .as_array()
-        .expect("models data should be an array")
-        .iter()
-        .any(|model| model["id"] == "formal-ai"));
+    assert!(
+        models["data"]
+            .as_array()
+            .expect("models data should be an array")
+            .iter()
+            .any(|model| model["id"] == "formal-ai")
+    );
 
     let codex_response = http_post_json(
         port,
@@ -282,7 +286,9 @@ fn cli_github_logs_plan_prints_reproducible_capture_commands() {
     assert!(stdout.contains("pr-1816-review-comments.json"));
     assert!(stdout.contains("pr-1816-conversation-comments.json"));
     assert!(stdout.contains("run-26058054431.log"));
-    assert!(stdout.contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate"));
+    assert!(
+        stdout.contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate")
+    );
 }
 
 #[test]
@@ -322,11 +328,13 @@ fn cli_shared_dialog_convert_chatgpt_share_writes_demo_memory() {
         Some("issue-552-chatgpt-share")
     );
     assert_eq!(events[0].evidence, vec![String::from(share_url)]);
-    assert!(events[3]
-        .content
-        .as_deref()
-        .unwrap_or_default()
-        .contains("screen -dmS auto-cleanup bash -c"));
+    assert!(
+        events[3]
+            .content
+            .as_deref()
+            .unwrap_or_default()
+            .contains("screen -dmS auto-cleanup bash -c")
+    );
     assert!(text.contains(r#"content "```bash\nscreen -dmS auto-cleanup"#));
 
     let _ = std::fs::remove_dir_all(&dir);

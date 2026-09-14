@@ -117,13 +117,13 @@ Status legend:
 
 | # | Vision pillar | Current status | Evidence | Remaining work |
 | --- | --- | --- | --- | --- |
-| 1 | "The associative network is the AI": one doublet-links store is the source of truth | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | `doublets-rs` made the default native physical store by [#278](https://github.com/link-assistant/formal-ai/issues/278) (PR #285). |
+| 1 | "The associative network is the AI": one doublet-links store is the source of truth | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | The default native boundary is link-cli's transactional file-mapped store; `doublets-rs` remains its physical implementation. |
 | 2 | Universal problem-solving loop runs for every prompt in the same shape | Built | `src/solver.rs::UniversalSolver`, active `reasoning_loop` specs | None in the E1-E14 backlog. |
 | 3 | Formalization to Wikidata P-ids/Q-ids with fallback sources | Built | `src/translation/formalization.rs`, `src/translation/pipeline.rs`, active `formalization` specs | Future ranking improvements feed into [#279](https://github.com/link-assistant/formal-ai/issues/279). |
 | 4 | Temperature-based interpretation selection plus clarify-vs-guess | Built | `src/translation/selection.rs`, `SolverConfig::temperature`, active tests | None in the E1-E14 backlog. |
 | 5 | Public knowledge as a cache with provenance | Built | `src/solver.rs` and `src/solver_handlers/mod.rs` source-cache handling, active `source_cache` specs; `src/knowledge.rs` adds the coding oracle that treats Rosetta Code / Wikifunctions / the Hello World Collection / Stack Overflow as cached external APIs under a `min(1%, 512)` per-source cap ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | None in the E1-E14 backlog; the oracle's gated live-refresh path follows the existing `FORMAL_AI_LIVE_API` discipline. |
 | 6 | Translation through link-native meanings | Built | `src/translation/`, active `translation_via_links` specs, issue #526 `translation_round_trip` matrix, and `docs/case-studies/issue-526/` | None in the E1-E14 backlog; issue #526 now pins round-trip survival as the quality guard. |
-| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs, Rust <-> JavaScript code-meaning round-trip coverage in `translation_via_links`; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | A task-agnostic meta-builder ("algorithm that builds algorithms", R7) is the tracked next step in [`docs/case-studies/issue-412`](docs/case-studies/issue-412/README.md). |
+| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs, Rust <-> JavaScript code-meaning round-trip coverage in `translation_via_links`; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)); #938 unifies the coding-task handler family behind one executable meta-builder | Generalizing the shared builder beyond coding tasks remains tracked work. |
 | 8 | Formal reasoning beyond a fixed answer table | Built | `src/proof_engine/decision.rs`, boolean and linear decision modules | Optional future backends can build on this, but #253 closed the planned requirement. |
 | 9 | Chat over experience: why, facts, export, retraction | Built | `src/event_log.rs`, active `transparent_state` specs | None in the E1-E14 backlog. |
 | 10 | Links-network invariants and dynamic type system | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | Native physical-store default is tracked separately in [#278](https://github.com/link-assistant/formal-ai/issues/278). |
@@ -142,7 +142,7 @@ Status legend:
 | 23 | Natural-language access to memory, APIs, and code execution | Built | `src/solver_handlers/`, active `natural_language_access` specs; permission-gated NL → query/call/execute paths | Implemented by E25 [#302](https://github.com/link-assistant/formal-ai/issues/302) (PR #309). |
 | 24 | General code-modifying / executing agent (not a memorizer) | Built | `src/agent.rs` bounded/isolated workspace runs allowlisted commands; `src/solver_handlers/program_synthesis.rs` synthesizes a Python function from the spec, then verifies it by executing the assertions in the workspace | Workspace execution built by E26 [#303](https://github.com/link-assistant/formal-ai/issues/303) (PR #310); spec-driven synthesis + verification added by E30 [#315](https://github.com/link-assistant/formal-ai/issues/315) (PR #321). Triggering is still English-keyword gated — see the Next Planning Batch (language parity). |
 | 25 | Measured against industry benchmark datasets | Built | `data/benchmarks/industry-suite.lino`, `tests/unit/specification/benchmarks.rs`; HumanEval/MBPP/GSM8K/MATH/BIG-bench slice runs deterministically in CI | Imported by E27 [#304](https://github.com/link-assistant/formal-ai/issues/304) (PR #311); grown to a 10-case slice and gated on a rising pass count by E32 [#317](https://github.com/link-assistant/formal-ai/issues/317) (PR #323). The suite now reports **13/13 passing** with a `minimum_pass_count` ratchet so progress cannot silently regress. |
-| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Built | The benchmark suite passes 13/13; `record_candidates` composes decomposed sub-results over the links network (E28), arithmetic/word-problem and counting answers are computed (E29), and Python functions are synthesized and verified (E30) rather than keyed on the prompt | Made general by E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)) (PRs #319-#323). Held-out paraphrased variants guard against per-case memorization. |
+| 26 | General synthesis: derive solutions for the benchmark domains instead of seeding them | Built | The curated benchmark suite passes 13/13 (upstream, 2026-09-07: HumanEval 0/20, MBPP 0/20, GSM8K 2/20, MATH 0/20, CoEdIT 0/20, SWE-bench Lite 0/1 -- `data/benchmarks/external-results.lino`); `record_candidates` composes decomposed sub-results over the links network (E28), arithmetic/word-problem and counting answers are computed (E29), and Python functions are synthesized and verified (E30) rather than keyed on the prompt | Made general by E28-E32 ([#313](https://github.com/link-assistant/formal-ai/issues/313)-[#317](https://github.com/link-assistant/formal-ai/issues/317)) (PRs #319-#323). Held-out paraphrased variants guard against per-case memorization. |
 
 ## Completed Planning Batch
 
@@ -418,12 +418,12 @@ Requirement-level status by area, updated:
 | Area (standing requirement) | Status 2026-08-03 |
 | --- | --- |
 | Universal 11-step solver runs for every prompt | Done (pillar 2); the recipe is data (`data/meta/recursive-core-recipe.lino`) executed by `src/recipe_interpreter.rs` |
-| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies all 46 mixed handler sources as migration debt and ratchets their 19,731 outside-core lines; dedicated generic interpreter modules remain core, while this debt must now shrink |
+| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies all 46 mixed handler sources as migration debt and ratchets their 19,543 outside-core lines; #938 removes duplicated construction ownership from installation conversion, program synthesis, coding catalog, numeric-list, and rule synthesis by making one executable builder and trace shape authoritative in Rust and the browser worker; remaining handler logic must still migrate into generic interpreters |
 | Real upstream benchmarks with honest scores | Done for #698 (was stale "Not done"): `src/external_benchmarks/` and `tests/unit/specification/external_benchmarks.rs` score external corpora with results in `data/benchmarks/external-results.lino` |
-| Self-improvement that compounds | Partial: #656/#657/#701 closed (gated promotion, release self-hosting metric, generalized adoption for one class); anticipatory learning #705 remains open; making the loop routinely produce merged work is E77 |
+| Self-improvement that compounds | Partial: #656/#657/#701/#924 closed (gated promotion, release self-hosting metric, generalized adoption for one class, and a self-development loop requiring one merged, session-backed Formal AI pull request per release cycle); anticipatory learning #705 remains open |
 | Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `tests/unit/issue_649_world_model.rs` |
 | Agentic-CLI server correctness | Reopened as Partial: #671/#681/#682/#687 closed, but the #848 coding ladder (2 of 13 rungs, zero write effects) exposed the new defect cluster [#902](https://github.com/link-assistant/formal-ai/issues/902)-[#909](https://github.com/link-assistant/formal-ai/issues/909); consolidated behind the ladder ratchet as E69 |
-| Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703; the missing piece is the end-to-end gate in both directions (hive-mind driving Formal AI as the model, per hive-mind#2059), owned by E74 |
+| Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703 and #921: release CI now crosses the real Hive Mind -> Agent CLI -> Formal AI boundary and the Formal AI -> external Agent CLI boundary, commits both fixture effects, replays the hash-chained session, and fails on nonzero child exits |
 | Parallel candidate portfolios + budget-driven search | Done for #662/#704 (was stale "Not done"): `src/draft_portfolio.rs` and `src/solver_search.rs` with `SolverConfig::compute_budget` |
 | Anticipatory learning | Not done — [#705](https://github.com/link-assistant/formal-ai/issues/705) |
 | "All languages" through the meta language | Partial: #660/#706 closed (any-language protocol, PR #880); #917 closes E70's first natural/formal statement slice for all five registered seed languages and FOL, while broader language and statement coverage remains incremental seed growth |
@@ -434,11 +434,11 @@ Requirement-level status by area, updated:
 | Silently-dropped requirements re-verified | Partial — 29 work now, 1 is superseded, and 2 focused gaps remain open ([#990](https://github.com/link-assistant/formal-ai/issues/990), [#991](https://github.com/link-assistant/formal-ai/issues/991)) |
 | Data-is-the-interface hygiene | Done for #659/#663/#664; ratchet scripts keep enforcing the burn-down |
 | Delivery breadth | Not done for PWA, npm engine, VS Code Marketplace, debugger, WebVM, cloud sync — [#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670); shareable packages (#658) closed |
-| Self-coding chain | Mechanics Done (#673 census, #656 gated promotion, #657 release metric); the measured self-authored share is still near its baseline, owned by E77 |
+| Self-coding chain | Done for the recurring release loop: #673 census, #656 gated promotion, #657 release metric, and the self-development loop (delivered by #924) with a non-decreasing target |
 | Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
 | Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
-| Learning the universal algorithm itself | Partial: `src/research_learning.rs` now versions meta-algorithm candidates through the same immutable promotion and stable recovery gate as facts/procedures; routine proposal generation and adoption remains E75 |
-| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
+| Learning the universal algorithm itself | E75 first lifecycle delivered by #922: production recipe event logs now produce held-out-validated, proposal-only method abstractions; one abstraction cleared canonical promotion and is registry-visible link data. Broader method construction and recipe mutation remain incremental work |
+| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Done for E76/#923: bounded e-graph equality saturation plus bounded function-free Datalog, measured at 20/20 egg laws and 5/5 Ascent assertions |
 
 **Open planning batch E69-E77**
 ([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924)).
@@ -448,16 +448,33 @@ over agent-harness fixes (foundation blocker), E70 general natural-formal
 translation (delivered by #917 for the seeded FOL statement slice), E71
 minimal-core boundary and seed-metadata audit (delivered by #918), E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
-hive-mind end-to-end integration gate, E75 method learning for the
-universal algorithm, E76 formal-reasoning coverage growth, E77
-self-development loop. Issue URLs are recorded in
+hive-mind end-to-end integration gate (delivered by #921), E75 method learning
+for the universal algorithm (first real-trace proposal-to-registry lifecycle
+delivered by #922), E76 formal-reasoning coverage growth, E77 self-development
+loop (delivered by #924). Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
+
+## Issue #923 Symbolic-Kernel Coverage Growth (PR #1006)
+
+Issue #923 completes E76 with two deterministic proof-engine paths. An optional
+MIT-licensed `egg` 0.11 dependency provides bounded e-graph saturation over
+generic symbolic S-expressions. A native bounded evaluator derives the least
+fixed point of function-free positive Datalog programs. Both paths emit
+structured proof certificates, refuse to turn exhausted search into a false
+disproof, and leave the existing SAT and linear paths intact.
+
+The external benchmark harness now mechanically adapts pinned Rust sources:
+the first 20 unconditional rewrite laws in egg's `tests/math.rs` score 20/20,
+and the five asserted consequences in Ascent's transitive graph closure example
+score 5/5. Provenance, permissive licenses, scores, ratchet floors, and replay
+commands live in `data/benchmarks/external-results.lino` and
+`docs/case-studies/issue-923/`.
 
 ## Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)
 
 Issue #918 completes E71's audit and enforcement layer. A recursive ledger now
 covers 46 recursive handler sources. Every current handler is mixed, so all 46
-files and 19,731 outside-core lines remain explicit migration debt under
+files and 19,543 outside-core lines remain explicit migration debt under
 shrink-only file and line ceilings; dedicated generic interpreter modules live
 outside the specialized handler tree. The seed audit defines
 role, precondition, effect, unit, and example shapes; all 37 coding-path
@@ -465,6 +482,45 @@ concepts satisfy them. The audit preserves 3,447 remaining metadata-gap records.
 Future handler migration and metadata enrichment
 can lower these ceilings, but cannot silently add debt. Evidence is in
 `docs/case-studies/issue-918/`.
+
+## Issue #922 Method Learning From Experience (PR #1005)
+
+Issue #922 delivers E75's first complete method-learning lifecycle. Three real
+recursive-recipe runs feed the existing symbolic algorithm-discovery engine;
+two support traces infer recurring operation sequences and an unseen third
+trace validates them. Candidates remain proposal-only. The strongest method
+cleared fresh canonical coding (4/4), industry (13/13; the upstream HumanEval/MBPP slices score 0/20, see `data/benchmarks/external-results.lino`), and unit (12/12)
+ratchets before explicit `--apply --confirm` materialized it into
+`data/seed/learned-methods.lino`. The live registry now records the adopted
+abstraction without claiming an executable Rust handler, so existing dispatch
+and recipe/source parity remain intact. Evidence is in
+`docs/case-studies/issue-922/`.
+
+## Issue #924 Formal AI Self-Development Loop (PR #1007)
+
+Issue #924 closes E77 at the release boundary. Every cycle now requires one
+merged, session-backed Formal AI pull request per release cycle. The ledger
+records every qualifying PR, the per-release and trailing shares, and a target
+that can only rise. Git merge ancestry proves the exact attributed commit
+passed through its claimed PR unchanged, and every non-merge commit introduced
+by that PR must carry valid attribution. The same compound task was attempted,
+failure-split, composed, verified, and learned from through Formal AI plus the
+real Agent CLI; two of six smallest leaves (33%) are preserved byte-for-byte as
+Agent-authored contracts. Normal review, CI, and promotion gates remain
+authoritative. Reproduction and replay evidence are in
+`docs/case-studies/issue-924/`.
+
+## Issue #936 Substitution-Rule Compilation (PR #1016)
+
+Issue [#936](https://github.com/link-assistant/formal-ai/issues/936) delivers
+E84 without reviving #331's dropped execution-stack requirement. Parsed
+substitution rules now lower once to a target-neutral IR and emit standalone
+Rust, Rust-to-WASM, or JavaScript interop artifacts. A verified finite
+`ProgramPlan` is the solver export gate; seeded English, Russian, Hindi, and
+Chinese requests can select a target and receive an executable recipe. The
+cross-target counter/loop regression requires byte-identical output from the
+interpreter and all three exports. Design, red/green evidence, and manual
+execution are recorded in `docs/case-studies/issue-936/`.
 
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
 
@@ -479,6 +535,56 @@ last released image and the candidate image against one named volume through
 write, preflight, migration, load/query/export, rollback, and released-image
 reopen. Evidence and design analysis are in
 `docs/case-studies/issue-982/` and `docs/case-studies/pull-request-985/`.
+
+## Issue #1021 Full-Range Coding And Contribution Artifacts (PR #1027)
+
+Issue [#1021](https://github.com/link-assistant/formal-ai/issues/1021) collects
+the range of prompts Formal AI answered wrongly — a bare `ls` (#868), `Execute
+ls command` (#866, #867), `List me files here` and `Hello` (#865), a
+copy-stdin-to-stdout request (#863), a Rosetta Code task (#862), a Laravel
+request written in Russian (#723), and a filesystem move it refused (#824) —
+and asks for them to be fixed by generalization rather than per-prompt rules.
+Each rule is corrected where it was wrong and its vocabulary moved into seed
+data, so held-out paraphrases route the same way as the reported wording. PHP
+joins the coding catalog with the same eleven task templates every other
+catalogued language carries. `src/contribution_artifacts.rs` composes the two
+process artifacts a change has to carry — a changelog fragment and a
+pull-request body that closes its issue — from
+`data/seed/contribution-artifacts.lino`, and the committed artifacts are that
+generator's output rather than hand-written fixtures.
+`src/contribution_write_path.rs` puts the publishing commands on a ladder that
+refuses by default and refuses `gh issue create` in both states, which is the
+E91 guard issue #943 asked for after the harness filed issues nobody wanted.
+The whole loop replays as a session capture. Remaining work: E94 versioned
+recoverable memory (#946) and E95 bounded autonomy (#947) are untouched, and
+the issue's definition of done — a pull request opened against this repository
+by a real `solve` run — is not met by this branch, which a human opened.
+Evidence and the honest gap list are in `docs/case-studies/issue-1021/`.
+
+## Issue #1085 The Links Network Is Not The System That Reasons (PR in progress)
+
+Issue [#1085](https://github.com/link-assistant/formal-ai/issues/1085) is the
+E108 diagnosis: the solver reasons over Rust structures and the doublets store
+is a write-behind projection; the self-hosting metric credited Claude sessions
+by trailer; the agent ladder's 32 leaves are pre-specified single-file edits that
+were never compiled; upstream coding scores are 0/20 and flat; and most effort
+goes to gates and evidence. The pull request for the issue lands in pushes on
+one branch, and this section records what each push delivered.
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| D3.1-D3.4 metric version 3: model attribution, behaviour-only paths, pull-request author, history restated | Delivered | `scripts/self-hosting-attribution.rs`, `scripts/self-hosting-replay.rs`, `data/meta/self-hosting-ledger.lino` header, `tests/unit/specification/self_hosting_metric.rs` |
+| D3.5 floor off the release path, red-until-true status | Delivered | `.github/workflows/self-development-status.yml`; `release.yml` cuts on CI correctness; `tests/unit/ci-cd/issue_1014.rs` |
+| D1.1-D1.3 seed network at startup, link-query routing, rule interpreter (D1.4's privileged-path allowlist and Rust-line shrink ratchet are withdrawn: Rust is an emission target, not the system) | Delivered: the seed and routing meta documents load as one links network (`src/seed_links.rs`) mirrored into a native link-cli store at server start; precedence, cues and intent routes are link queries; eleven handlers are seed rules (ledger pending 51 to 40, handler files 43 to 42, literal predicates 529 to 504) | `data/meta/debt-ratchet.lino`, `scripts/check-debt-ratchet.rs`, gate `check_debt_ratchet` |
+| D4 compile-and-test ladder | Delivered: per-leaf `cargo check` and `cargo test`, depth-4 diff merge, requirement-shaped depth 0 to 3, pull-request and weekly runs, deepest-level ratchet (`data/meta/ladder-ratchet.lino`) | `experiments/issue_1028_agent_cli_ladder/{run.sh,verify-node.sh,leaves.tsv,rules/}` |
+| D5.4 upstream numbers beside every curated citation | Delivered | this file, `VISION.md` |
+| #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |
+| D2.1 links-to-code edit rules | Delivered (three ladder shapes as link substitutions) | `src/agentic_coding/link_edit_rules.rs`, `data/meta/link-edit-rules.lino`, `tests/unit/issue_1085_link_edit_rules.rs` |
+| D5.3 upstream transfer of the seeded tasks | Delivered: HumanEval/0 lost `from typing import List`, MBPP/2 took an `assert` call for a signature | `src/solver_handlers/program_synthesis.rs`, `tests/unit/issue_1085_upstream_prompt_transfer.rs` |
+| D5.1-D5.2 upstream failures as frontier inputs; red on a fallen suite, yellow after three equal runs | Delivered | `data/meta/learning-frontier-upstream-benchmarks.lino`, `src/external_benchmarks/ratchet.rs`, `tests/unit/issue_1085_upstream_frontier.rs` |
+| D6-D9 | Sub-issues #1087, #1088, #1089, #1090, blocked by #1085 | `docs/case-studies/issue-1085/solution-plan.md` |
+| D2.2 requirement-derived edits | Delivered: `src/agentic_coding/requirement_resolution.rs` resolves behaviour wording through the self-AST census; all 32 leaf requirements resolve to their files | `tests/unit/issue_1085_requirement_resolution.rs` |
+| D2.3 bot-opened pull request | Delivered as a workflow: `self-authored-pull-request.yml` opens the pull request under `github-actions[bot]` and Formal AI authors the commit with the metric trailers; first task #1091; the real-issue root is #1087 | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Verification Contract
 

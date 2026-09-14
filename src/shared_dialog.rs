@@ -6,7 +6,7 @@ use std::fmt;
 
 use serde_json::{Map, Value};
 
-use crate::memory::{export_links_notation, MemoryEvent};
+use crate::memory::{MemoryEvent, export_links_notation};
 use crate::seed;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -337,10 +337,10 @@ fn message_content_text(content: &Value) -> String {
                 if !text.is_empty() {
                     texts.push(text.to_owned());
                 }
-            } else if let Some(text) = part.get("text").and_then(Value::as_str) {
-                if !text.is_empty() {
-                    texts.push(text.to_owned());
-                }
+            } else if let Some(text) = part.get("text").and_then(Value::as_str)
+                && !text.is_empty()
+            {
+                texts.push(text.to_owned());
             }
         }
         return texts.join("\n\n");
@@ -478,12 +478,11 @@ fn resolve_encoded_reference(table: &[Value], value: &Value, stack: &mut Vec<usi
 }
 
 fn resolve_object_key(table: &[Value], encoded_key: &str, stack: &mut Vec<usize>) -> String {
-    if let Some(raw_index) = encoded_key.strip_prefix('_') {
-        if let Ok(index) = raw_index.parse::<usize>() {
-            if let Value::String(key) = resolve_table_index(table, index, stack) {
-                return key;
-            }
-        }
+    if let Some(raw_index) = encoded_key.strip_prefix('_')
+        && let Ok(index) = raw_index.parse::<usize>()
+        && let Value::String(key) = resolve_table_index(table, index, stack)
+    {
+        return key;
     }
     encoded_key.to_owned()
 }

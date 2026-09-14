@@ -8,10 +8,10 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use formal_ai::{
+    BenchmarkGateReport, BundleInfo, GateCommandOutput, LEARNED_PROGRAM_RULES_SEED_FILE,
+    PromotionOutcome, PromotionProposal, PromotionRatchet, PromotionRun, SeedEdit, UnknownTrace,
     apply_promotions, demonstration_promotion_run, import_memory_full, parse_promotion_proposals,
     promotions_from_learning_run, render_promotion_proposals, replay_promotion_gates_with,
-    BenchmarkGateReport, BundleInfo, GateCommandOutput, PromotionOutcome, PromotionProposal,
-    PromotionRatchet, PromotionRun, SeedEdit, UnknownTrace, LEARNED_PROGRAM_RULES_SEED_FILE,
 };
 
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
@@ -97,8 +97,8 @@ fn promotion_protocol_materializes_pass_and_preserves_fail() {
     let outcome = apply_promotions(&run, &workspace).expect("apply promotions");
     assert_eq!(outcome.applied.len(), 1);
     assert_eq!(outcome.rejected, vec![failing_id]);
-    assert_eq!(outcome.agent_session_ids.len(), 1);
-    assert!(outcome.agent_session_ids[0].starts_with("promotion_agent_session_"));
+    assert_eq!(outcome.agent_session_digests.len(), 1);
+    assert!(outcome.agent_session_digests[0].starts_with("promotion_agent_session_"));
 
     let seed_path = workspace.join(LEARNED_PROGRAM_RULES_SEED_FILE);
     let materialized = std::fs::read_to_string(&seed_path).expect("read materialized seed");
@@ -119,10 +119,12 @@ fn promotion_protocol_materializes_pass_and_preserves_fail() {
         .find(|event| event.kind.as_deref() == Some("promotion_rejection"))
         .expect("rejection event present");
     assert_eq!(rejection.outputs.as_deref(), Some(failing_seed.as_str()));
-    assert!(rejection
-        .evidence
-        .iter()
-        .any(|link| link.contains("blocked")));
+    assert!(
+        rejection
+            .evidence
+            .iter()
+            .any(|link| link.contains("blocked"))
+    );
 
     // The applied event carries the promoted seed edit.
     let applied = events
@@ -322,9 +324,11 @@ fn gate_replay_uses_all_canonical_commands_once_and_enforces_pass_rate() {
     assert_eq!(commands.len(), 3, "each canonical gate runs once");
     assert!(commands.iter().any(|command| command.contains("issue_362")));
     assert!(commands.iter().any(|command| command.contains("issue_304")));
-    assert!(commands
-        .iter()
-        .any(|command| command == "cargo test --test unit issue_656 -- --nocapture"));
+    assert!(
+        commands
+            .iter()
+            .any(|command| command == "cargo test --test unit issue_656 -- --nocapture")
+    );
     assert_eq!(replayed[0].gates.len(), 3);
     assert_eq!(replayed[0].outcome(), PromotionOutcome::Rejected);
     assert_eq!(replayed[0].failing_gates()[0].passed, 4);
@@ -352,9 +356,11 @@ fn failed_or_malformed_gate_execution_fails_closed() {
     let malformed = replay_promotion_gates_with(vec![proposal], |_| {
         Ok(GateCommandOutput::success("no pass/fail report here"))
     });
-    assert!(malformed
-        .expect_err("missing evidence")
-        .contains("pass/fail"));
+    assert!(
+        malformed
+            .expect_err("missing evidence")
+            .contains("pass/fail")
+    );
 }
 
 #[test]
@@ -382,10 +388,12 @@ fn promotion_bridges_adoptable_learning_proposals() {
         LEARNED_PROGRAM_RULES_SEED_FILE
     );
     assert!(!promotions[0].passes_all_gates());
-    assert!(promotions[0]
-        .gates
-        .iter()
-        .all(|gate| !gate.command_succeeded));
+    assert!(
+        promotions[0]
+            .gates
+            .iter()
+            .all(|gate| !gate.command_succeeded)
+    );
 
     // Whole-task proof: the generic learned proposal becomes eligible only
     // after fresh canonical evidence, then the Formal AI Agent authors it on a
@@ -401,7 +409,7 @@ fn promotion_bridges_adoptable_learning_proposals() {
     let workspace = tmpdir("learning-whole-task");
     init_git(&workspace);
     let applied = apply_promotions(&promotion, &workspace).expect("Agent-authored promotion");
-    assert_eq!(applied.agent_session_ids.len(), 1);
+    assert_eq!(applied.agent_session_digests.len(), 1);
     let learned = std::fs::read_to_string(workspace.join(LEARNED_PROGRAM_RULES_SEED_FILE))
         .expect("learned seed");
     assert!(learned.contains("learned_reverse"), "{learned}");

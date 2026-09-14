@@ -26,8 +26,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::engine::stable_id;
 use crate::thinking_prose::{
-    language_label, normalize_language, thinking_prose, LANGUAGE_NAME_INTENT_PREFIX,
-    NARRATIVE_INTENT_PREFIX, PLAIN_INTENT_SUFFIX, STEP_INTENT_PREFIX,
+    LANGUAGE_NAME_INTENT_PREFIX, NARRATIVE_INTENT_PREFIX, PLAIN_INTENT_SUFFIX, STEP_INTENT_PREFIX,
+    language_label, normalize_language, thinking_prose,
 };
 
 /// The language a trace is narrated in when it carries no language step.

@@ -430,8 +430,7 @@ pub const RECIPES: &[BlueprintRecipe] = &[
     },
     BlueprintRecipe {
         slug: "self_source_metrics_report",
-        label:
-            "inspect its own Rust source, emit JSON metrics, and compare code with response prose",
+        label: "inspect its own Rust source, emit JSON metrics, and compare code with response prose",
         required_capabilities: &[
             "source_text",
             "source_metrics",

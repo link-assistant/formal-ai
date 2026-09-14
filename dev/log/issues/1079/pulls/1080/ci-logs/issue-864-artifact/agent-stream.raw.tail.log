@@ -1,0 +1,42 @@
+026-09-07T04:32:31.146Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.146Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.146Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.146Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.147Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.477Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-07T04:32:31.481Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.481Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.482Z","service":"ripgrep","cwd":"/tmp/formal-ai-issue-864.wtqrg7","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.647Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-09-07T04:32:31.655Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-07T04:32:31.672Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:31.672Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-07T04:32:31.679Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-09-07T04:32:31.680Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-07T04:32:32.100Z","service":"snapshot","message":"initialized"}
+

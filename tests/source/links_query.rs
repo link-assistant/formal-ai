@@ -32,7 +32,7 @@
 
 use serde::Serialize;
 
-use crate::engine::{knowledge_graph, GraphEdge, GraphNode, KnowledgeGraph};
+use crate::engine::{GraphEdge, GraphNode, KnowledgeGraph, knowledge_graph};
 
 /// A parsed LinksQL query.
 #[derive(Debug, Clone, PartialEq, Eq)]

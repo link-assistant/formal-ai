@@ -1,6 +1,6 @@
 use formal_ai::{
-    generated_question_answers, GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance,
-    QuestionGenerationConfig, QuestionGenerator, QuestionGrammarClass, QuestionWord,
+    GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig,
+    QuestionGenerator, QuestionGrammarClass, QuestionWord, generated_question_answers,
 };
 
 #[test]

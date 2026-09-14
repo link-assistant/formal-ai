@@ -7,7 +7,7 @@
 //! in theatrical release order, in the language the question was asked in, and
 //! films the snapshot dates after today must stay out of the numbered list.
 
-use formal_ai::{release_timeline, ConversationTurn, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, SymbolicAnswer, UniversalSolver, release_timeline};
 
 const REPORTED_PROMPT: &str = "Перечисли фильмы про человека-паука в порядке выхода на экран?";
 

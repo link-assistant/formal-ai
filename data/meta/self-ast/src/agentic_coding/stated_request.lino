@@ -1,0 +1,54 @@
+self_ast_census
+  target src/agentic_coding/stated_request.rs
+  language rust
+  fidelity full_ast
+  byte_len 1543
+  line_count 33
+  content_id source_module_d7cdb2189eedb414
+  symbol_count 1
+  symbols
+    function request_blocks 22 33
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 598
+    named_node_count 132
+    distinct_node_kinds 35
+    node_kinds
+      arguments 6
+      binary_expression 1
+      block 3
+      call_expression 6
+      closure_expression 1
+      closure_parameters 1
+      doc_comment 20
+      else_clause 1
+      escape_sequence 2
+      expression_statement 1
+      field_expression 6
+      field_identifier 6
+      function_item 1
+      generic_type 2
+      identifier 12
+      if_expression 1
+      inner_doc_comment_marker 14
+      integer_literal 1
+      let_declaration 1
+      line_comment 20
+      macro_invocation 1
+      outer_doc_comment_marker 6
+      parameter 1
+      parameters 1
+      primitive_type 3
+      reference_type 3
+      scoped_identifier 1
+      source_file 1
+      string_literal 1
+      super 1
+      token_tree 1
+      type_arguments 2
+      type_identifier 2
+      unary_expression 1
+      visibility_modifier 1

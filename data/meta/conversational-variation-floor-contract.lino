@@ -1,0 +1,7 @@
+conversational_variation_floor_contract
+  record_type "conversational_variation_floor_contract"
+  issue "933"
+  minimum_per_language "5"
+  languages "en|ru|hi|zh"
+  normalization "nfkc_lowercase_strip_punctuation_symbols_separators_whitespace"
+  execution "attempt_whole_then_split_on_failure"

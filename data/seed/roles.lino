@@ -9,10 +9,14 @@
 # kind meaning   -> the role name is also a defined meaning slug
 # kind predicate -> the role name is a reserved role-only identifier
 roles
+  agent_action_formalize_verb
+    kind predicate
   agent_action_report_subject
     kind predicate
   agent_action_report_verb
     kind predicate
+  agentic_continuation_cue
+    kind meaning
   answer_rationale_lead
     kind predicate
   architecture_concept
@@ -71,6 +75,8 @@ roles
     kind predicate
   causal_interrogative
     kind meaning
+  ci_workflow_request
+    kind meaning
   circular_joke_phrase
     kind predicate
   clarification_request
@@ -81,19 +87,41 @@ roles
     kind predicate
   coding_artifact_kind
     kind predicate
+  coding_bound_cue
+    kind predicate
+  coding_condition_subject_kind
+    kind predicate
   coding_division_action
     kind predicate
+  coding_documentation_fact_query
+    kind predicate
+  coding_experiment_artifact_kind
+    kind predicate
   coding_identifier_rename_action
+    kind predicate
+  coding_member_add_action
+    kind predicate
+  coding_member_list_kind
     kind predicate
   coding_module_registration_action
     kind predicate
   coding_name_slot
     kind predicate
+  coding_relationship_subject_kind
+    kind predicate
   coding_return_action
+    kind predicate
+  coding_search_fact_query
     kind predicate
   coding_search_literal_query
     kind predicate
   coding_search_subject_kind
+    kind predicate
+  coding_serialization_action
+    kind meaning
+  coding_source_implementation_subject_kind
+    kind predicate
+  coding_test_artifact_kind
     kind predicate
   coding_value_slot
     kind predicate
@@ -113,6 +141,8 @@ roles
     kind predicate
   comparison_table_trigger
     kind predicate
+  composed_document_kind
+    kind meaning
   compositional_genitive_head
     kind predicate
   compositional_lemma
@@ -131,6 +161,8 @@ roles
     kind predicate
   computer_use_resource_cue
     kind predicate
+  conversation_preference_avoid
+    kind meaning
   conversation_recall_other_query
     kind meaning
   conversation_recall_previous_message
@@ -183,6 +215,8 @@ roles
     kind meaning
   detail_modifier
     kind meaning
+  document_composition_action
+    kind meaning
   document_originality_check_action
     kind meaning
   document_originality_document
@@ -190,6 +224,8 @@ roles
   document_originality_subject
     kind meaning
   enumeration_constraint
+    kind meaning
+  enumeration_cue
     kind meaning
   enumeration_request_opener
     kind meaning
@@ -213,7 +249,13 @@ roles
     kind predicate
   file_edit_new_lead_cue
     kind predicate
+  file_edit_position_after
+    kind meaning
+  file_edit_position_before
+    kind meaning
   file_edit_target_cue
+    kind predicate
+  file_leading_line_constraint_lead
     kind predicate
   file_read_action_cue
     kind predicate
@@ -227,6 +269,8 @@ roles
     kind predicate
   file_write_content_qualifier
     kind predicate
+  file_write_deferred_content_reference
+    kind predicate
   file_write_destination_cue
     kind predicate
   file_write_target_cue
@@ -238,6 +282,10 @@ roles
   game_tracker_domain
     kind meaning
   game_tracker_mechanic
+    kind meaning
+  git_branch_cue
+    kind meaning
+  git_commit_request
     kind meaning
   github_repository_platform
     kind meaning
@@ -320,6 +368,14 @@ roles
   mechanism_predicate
     kind meaning
   memory_append_directive
+    kind meaning
+  memory_inventory_query
+    kind meaning
+  memory_link_count_query
+    kind meaning
+  memory_retrieval_correction
+    kind meaning
+  memory_root_links_query
     kind meaning
   memory_scope
     kind meaning
@@ -445,6 +501,8 @@ roles
     kind meaning
   repository_reference
     kind meaning
+  request_function_word
+    kind meaning
   request_objective_lead
     kind predicate
   research_criterion
@@ -543,6 +601,16 @@ roles
     kind meaning
   statement_negation_cue
     kind meaning
+  substitution_compiler_concept
+    kind predicate
+  substitution_export_action
+    kind predicate
+  substitution_export_intent
+    kind predicate
+  substitution_export_response
+    kind predicate
+  substitution_export_target
+    kind predicate
   subtask_enumeration_cue
     kind meaning
   subtask_unit_noun
@@ -603,6 +671,8 @@ roles
     kind predicate
   translation_unquoted_frame
     kind meaning
+  unauthorized_mutation_correction
+    kind meaning
   unobservable_task_action
     kind meaning
   url_navigate
@@ -650,6 +720,8 @@ roles
   who_question_tail
     kind predicate
   wikidata_entity_anchor
+    kind predicate
+  workspace_inspection_action
     kind predicate
   year_unit_cue
     kind predicate

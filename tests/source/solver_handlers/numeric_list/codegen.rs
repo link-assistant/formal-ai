@@ -26,8 +26,8 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::coding::catalog::ProgramLanguage;
-use crate::seed::parser::{parse_lino, LinoNode};
 use crate::seed::CODING_IDIOMS_LINO;
+use crate::seed::parser::{LinoNode, parse_lino};
 
 use super::{ListValue, Operation, ParsedListItem};
 
@@ -282,11 +282,7 @@ impl<'p> Composer<'p> {
             }
         }
         let name = default_name(key);
-        if name.is_empty() {
-            None
-        } else {
-            Some(name)
-        }
+        if name.is_empty() { None } else { Some(name) }
     }
 
     /// The language's storage type for the program's value class, from the

@@ -14,7 +14,7 @@
 //!    turn may never be replayed as the answer to the current one.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 /// The read tool as each supported CLI advertises it, with the single parameter
 /// name that CLI declares. Claude is listed for the projection assertions only;

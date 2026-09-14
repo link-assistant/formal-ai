@@ -22,7 +22,7 @@
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::intent_formalization::{
-    formalize_intent, ordered_requirement_spans, IntentFormalization, IntentKind,
+    IntentFormalization, IntentKind, formalize_intent, ordered_requirement_spans,
 };
 use crate::links_format::format_lino_record;
 use crate::seed::{self, ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR};

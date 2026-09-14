@@ -1,0 +1,81 @@
+# Issue 991 — after-fix evidence, captured 2026-08-10T20:59:37Z
+
+## 1. HTTP: a real `formal-ai serve` process, offline, replaying the committed captures
+
+$ FORMAL_AI_SOURCE_CACHE_DIR=<copy of tests/fixtures/issue-991> formal-ai serve --host 127.0.0.1 --port 8791
+$ curl -s -X POST http://127.0.0.1:8791/api/openai/v1/chat/completions \
+    -H "Authorization: Bearer sk-local-agentic-tools" -H "content-type: application/json" \
+    -d {"model":"formal-ai","stream":false,"messages":[{"role":"user","content":"how to make pancakes?"}]}
+
+## How to make pancakes
+
+1. 2 cups (18oz/510g) self-rising or all-purpose flour (See tips below) — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+2. 2 tablespoons of butter or vegetable oil — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+3. 1/2 teaspoon of vanilla extract (optional) — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+4. Crack the eggs into a bowl and beat until creamy. Add in the dry ingredients (excluding the salt and baking soda if using self-rising flour). Do not stir the mixture at this point! — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+5. Melt the butter in a microwave-safe bowl. Make sure that it's completely melted; about a minute is sufficient. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+6. Add the butter and milk to the mix. Stir gently, leaving some small clumps of dry ingredients in the batter. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+7. Overmixing your batter is going to develop strong gluten strains, which will make your pancakes very chewy. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+8. Heat the frying pan to a medium-low flame. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+9. Sprinkle a few flecks of water onto your pan. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+10. Pour about 3 tablespoons to 1/4 cup batter from the tip of a large spoon or from a pitcher onto the hot griddle or greased frying pan. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+11. Cook for about two minutes or until the pancake is golden. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+12. Cook the other side until golden and remove. — wikiHow (CC BY-NC-SA 3.0, sha256 1cbdf5f7a9d6)
+
+### Sources
+- github — unbound_template (0 page(s), 0 step(s)): https://api.github.com/repos/{owner}/{repo}/readme
+- wikihow — contributed (1 page(s), 12 step(s)): https://www.wikihow.com/api.php?action=parse&page=Make-Pancakes&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*
+- rosetta_code — no_steps (1 page(s), 0 step(s)): no_relevant_result url=https://rosettacode.org/w/api.php?action=opensearch&search=make%20pancakes&limit=5&format=json&origin=*
+- stackexchange — contributed (2 page(s), 6 step(s)): https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=make%20pancakes&site=stackoverflow&filter=withbody
+- wikibooks — no_steps (2 page(s), 0 step(s)): no_relevant_result url=https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=make%20pancakes&srlimit=5&format=json&origin=*
+- wikihow → https://www.wikihow.com/api.php?action=parse&page=Make-Pancakes&prop=text%7Csections%7Cdisplaytitle&format=json&origin=* (CC BY-NC-SA 3.0: https://creativecommons.org/licenses/by-nc-sa/3.0/)
+
+Bounds: max_depth=2 max_pages_per_service=4 max_services=4 max_steps=12 max_capture_age_seconds=5184000
+
+## 2. HTTP: no service documents the task — no procedure is asserted
+
+Procedural discovery plan for `build a nonexistent quantum flux capacitor` (action `build`, object `a nonexistent quantum flux capacitor`).
+
+I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `Build-A-Nonexistent-Quantum-Flux-Capacitor` via `https://www.wikihow.com/api.php?action=parse&page=Build-A-Nonexistent-Quantum-Flux-Capacitor&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. If those sources do not expose usable steps, the fallback path runs web search for `how to build a nonexistent quantum flux capacitor` across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews and merges the top results with reciprocal rank fusion (k = 60). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `build a nonexistent quantum flux capacitor`.
+
+## 3. Browser worker: the same captures, the same guide
+
+$ node experiments/issue_991_browser_guide.mjs "make pancakes" "reverse a string in python"
+
+
+=== make pancakes
+  outcome github unbound_template pages=0 steps=0 https://api.github.com/repos/{owner}/{repo}/readme
+  outcome wikihow contributed pages=1 steps=12 https://www.wikihow.com/api.php?action=parse&page=Make-Pancakes&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*
+  outcome rosetta_code no_steps pages=1 steps=0 no_relevant_result url=https://rosettacode.org/w/api.php?action=opensearch&search=make%20pancakes&limit=5&format=json&origin=*
+  outcome stackexchange contributed pages=2 steps=6 https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=make%20pancakes&site=stackoverflow&filter=withbody
+  outcome wikibooks no_steps pages=2 steps=0 no_relevant_result url=https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=make%20pancakes&srlimit=5&format=json&origin=*
+  1. [wikihow d0] 2 cups (18oz/510g) self-rising or all-purpose flour (See tips below)
+  2. [wikihow d0] 2 tablespoons of butter or vegetable oil
+  3. [wikihow d0] 1/2 teaspoon of vanilla extract (optional)
+  4. [wikihow d0] Crack the eggs into a bowl and beat until creamy. Add in the dry ingredients (excluding the salt and baking soda if using self-rising flour). Do not stir the mixture at this point!
+  5. [wikihow d0] Melt the butter in a microwave-safe bowl. Make sure that it's completely melted; about a minute is sufficient.
+  6. [wikihow d0] Add the butter and milk to the mix. Stir gently, leaving some small clumps of dry ingredients in the batter.
+  7. [wikihow d0] Overmixing your batter is going to develop strong gluten strains, which will make your pancakes very chewy.
+  8. [wikihow d0] Heat the frying pan to a medium-low flame.
+  9. [wikihow d0] Sprinkle a few flecks of water onto your pan.
+  10. [wikihow d0] Pour about 3 tablespoons to 1/4 cup batter from the tip of a large spoon or from a pitcher onto the hot griddle or greased frying pan.
+  11. [wikihow d0] Cook for about two minutes or until the pancake is golden.
+  12. [wikihow d0] Cook the other side until golden and remove.
+
+=== reverse a string in python
+  outcome github unbound_template pages=0 steps=0 https://api.github.com/repos/{owner}/{repo}/readme
+  outcome wikihow fallback_failed pages=1 steps=0 http_404 url=https://www.wikihow.com/api.php?action=query&list=search&srsearch=reverse%20a%20string%20in%20python&srlimit=5&format=json&origin=*
+  outcome rosetta_code no_steps pages=1 steps=0 no_relevant_result url=https://rosettacode.org/w/api.php?action=opensearch&search=reverse%20a%20string%20in%20python&limit=5&format=json&origin=*
+  outcome stackexchange contributed pages=4 steps=11 https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=reverse%20a%20string%20in%20python&site=stackoverflow&filter=withbody
+  outcome wikibooks no_steps pages=2 steps=0 no_relevant_result url=https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=reverse%20a%20string%20in%20python&srlimit=5&format=json&origin=*
+  1. [stackexchange d1] In Python, strings are immutable . Changing a string does not modify the string. It creates a new one.
+  2. [stackexchange d1] Strings are sliceable. Slicing a string gives you a new string from one point in the string, backwards or forwards, to another point, by given increments.
+  3. [stackexchange d1] Scenario: Developer wants to transform a string
+  4. [stackexchange d1] Transformation is to reverse order of all the characters
+  5. [stackexchange d1] example01 produces the desired result, using extended slice notation .
+  6. [stackexchange d1] Developer might expect something like string.reverse()
+  7. [stackexchange d1] The native idiomatic (aka " pythonic ") solution may not be readable to newer developers
+  8. [stackexchange d1] Developer may be tempted to implement his or her own version of string.reverse() to avoid slice notation.
+  9. [stackexchange d1] The output of slice notation may be counter-intuitive in some cases: see e.g., example02 print 'coup_ate_grouping'[-4:] ## => 'ping'
+  10. [stackexchange d1] print 'coup_ate_grouping'[-4:-1] ## => 'pin'
+  11. [stackexchange d1] the different outcomes of indexing on [-1] may throw some developers off

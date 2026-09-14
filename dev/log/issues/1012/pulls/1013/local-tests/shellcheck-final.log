@@ -1,0 +1,37 @@
+
+In scripts/run-with-budget-warning.sh line 26:
+cleanup_watchdog() {
+^-- SC2329 (info): This function is never invoked. Check usage (or ignored if invoked indirectly).
+
+
+In experiments/agent_cli_e2e/run_issue_907.sh line 45:
+cd "$WORKDIR"
+^-----------^ SC2164 (warning): Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+
+Did you mean:
+cd "$WORKDIR" || exit
+
+
+In experiments/agentic_cli_matrix/install_client.sh line 10:
+source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
+       ^-- SC1091 (info): Not following: ./lib.sh was not specified as input (see shellcheck -x).
+
+
+In experiments/agentic_cli_matrix/lib.sh line 1:
+# Shared plumbing for the issue-#671 multi-CLI end-to-end matrix.
+^-- SC2148 (error): Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive.
+
+
+In experiments/agentic_cli_matrix/lib.sh line 455:
+  mkdir -p "$RECORDED_DIR/$CLIENT"
+                          ^-----^ SC2153 (info): Possible misspelling: CLIENT may not be assigned. Did you mean client?
+
+
+In experiments/agentic_cli_matrix/lib.sh line 539:
+  MATRIX_CLIENT_STATUS=$?
+  ^------------------^ SC2034 (warning): MATRIX_CLIENT_STATUS appears unused. Verify use (or export if used externally).
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2148 -- Tips depend on target shell and y...
+  https://www.shellcheck.net/wiki/SC2034 -- MATRIX_CLIENT_STATUS appears unus...
+  https://www.shellcheck.net/wiki/SC2164 -- Use 'cd ... || exit' or 'cd ... |...

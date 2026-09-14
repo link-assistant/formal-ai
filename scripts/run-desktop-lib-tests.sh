@@ -6,10 +6,10 @@
 # back to its own directory discovery -- a green step that ran none of these
 # tests. Build the list explicitly and refuse to pass on an empty one.
 #
-# `web-tools.test.mjs` is excluded on purpose: it imports
-# @link-assistant/web-search through desktop/lib/web-tools.cjs, which only
-# exists after `npm ci` in desktop/, so it belongs to a job that installs the
-# desktop dependency tree rather than being silently skipped inside this one.
+# `web-tools.test.mjs` and `command-runner.test.mjs` are excluded on purpose:
+# they import production packages through desktop/lib, which only exist after
+# dependency installation in desktop/. The command-runner test is run by the
+# cross-platform Desktop Release matrix after that installation.
 #
 # Issue #977: extracted from release.yml to keep that file under the 2000-line
 # ceiling scripts/check-file-size.rs enforces, and so the empty-glob guard can
@@ -20,7 +20,7 @@ shopt -s nullglob
 tests=()
 for test_file in desktop/scripts/*.test.mjs; do
   case "$test_file" in
-    */web-tools.test.mjs) continue ;;
+    */web-tools.test.mjs|*/command-runner.test.mjs) continue ;;
   esac
   tests+=("$test_file")
 done

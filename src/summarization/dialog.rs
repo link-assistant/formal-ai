@@ -8,7 +8,7 @@
 
 use super::markdown::strip_markdown_noise;
 use super::{
-    deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig, SummarizationMode,
+    Statement, SummarizationConfig, SummarizationMode, deformalize, formalize, summarize, to_topic,
 };
 
 /// A single dialog turn passed to [`summarize_dialog`] /

@@ -1,0 +1,6 @@
+github.com
+  ✓ Logged in to github.com account konard (/home/box/.config/gh/hosts.yml)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo', 'user', 'workflow'

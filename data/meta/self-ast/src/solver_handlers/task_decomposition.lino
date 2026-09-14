@@ -2,24 +2,21 @@ self_ast_census
   target src/solver_handlers/task_decomposition.rs
   language rust
   fidelity signature
-  byte_len 10395
-  line_count 266
-  content_id source_module_f3ea370b8c6ec733
-  symbol_count 16
+  byte_len 10086
+  line_count 243
+  content_id source_module_cd577cb4ff4fa91b
+  symbol_count 13
   symbols
-    enum DecompositionQuestion 35 42
-    function looks_like_task_decomposition 50 52
-    function try_task_decomposition_with_depth 60 90
-    function slug 93 99
-    function classify 107 128
-    function mentions 133 136
-    function atomicity_answer 138 150
-    function first_step_answer 152 162
-    function split_answer 164 180
-    function with_sub_tasks 185 193
-    function response 198 200
-    function seeded 206 208
-    function extract_task 216 222
-    const QUOTE_PAIRS 226 234
-    function quoted_span 236 256
-    function after_last_colon 258 266
+    enum DecompositionQuestion 36 43
+    function looks_like_task_decomposition 51 53
+    function try_task_decomposition_with_depth 61 95
+    function slug 98 104
+    function classify 112 133
+    function mentions 143 148
+    function atomicity_answer 150 165
+    function unenumerable_intent 174 179
+    function first_step_answer 181 191
+    function split_answer 193 215
+    function with_sub_tasks 220 228
+    function response 233 235
+    function seeded 241 243

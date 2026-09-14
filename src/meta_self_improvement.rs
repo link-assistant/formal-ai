@@ -267,12 +267,11 @@ fn recipe_record_functions(recipe_lino: &str) -> BTreeSet<String> {
             in_meta_function = value == "meta_function";
             continue;
         }
-        if in_meta_function {
-            if let Some(name) = field_value(trimmed, "function") {
-                if name.starts_with("record_") {
-                    functions.insert(name);
-                }
-            }
+        if in_meta_function
+            && let Some(name) = field_value(trimmed, "function")
+            && name.starts_with("record_")
+        {
+            functions.insert(name);
         }
     }
     functions

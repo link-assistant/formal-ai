@@ -1,9 +1,9 @@
 use std::fs;
 
 use formal_ai::workspace_change_learning::{
-    execute_workspace_rewrite, execute_workspace_rewrite_with_recipe,
-    WorkspaceChangeLearningApproval, WorkspaceChangeLearningFrontier, WorkspaceChangeLearningGate,
-    WorkspaceChangeRecipeLedger, WORKSPACE_CHANGE_TASK_FAMILY,
+    WORKSPACE_CHANGE_TASK_FAMILY, WorkspaceChangeLearningApproval, WorkspaceChangeLearningFrontier,
+    WorkspaceChangeLearningGate, WorkspaceChangeRecipeLedger, execute_workspace_rewrite,
+    execute_workspace_rewrite_with_recipe,
 };
 
 #[test]
@@ -22,13 +22,17 @@ fn exact_observations_infer_a_candidate_but_cannot_activate_it() {
     .expect("second bounded rewrite");
     let mut frontier = WorkspaceChangeLearningFrontier::new();
 
-    assert!(frontier
-        .record_execution("training/search", &first, &first.output)
-        .expect("first exact observation")
-        .is_none());
-    assert!(frontier
-        .record_execution("training/unobserved", &second, "different bytes")
-        .is_err());
+    assert!(
+        frontier
+            .record_execution("training/search", &first, &first.output)
+            .expect("first exact observation")
+            .is_none()
+    );
+    assert!(
+        frontier
+            .record_execution("training/unobserved", &second, "different bytes")
+            .is_err()
+    );
     let candidate = frontier
         .record_execution("training/parser", &second, &second.output)
         .expect("second exact observation")
@@ -39,19 +43,23 @@ fn exact_observations_infer_a_candidate_but_cannot_activate_it() {
     assert_eq!(candidate.stages.len(), 7);
     assert_eq!(frontier.observation_count(), 2);
     assert!(frontier.links_notation().contains(&candidate.id));
-    assert!(frontier
-        .links_notation()
-        .contains("status \"human_review_required\""));
+    assert!(
+        frontier
+            .links_notation()
+            .contains("status \"human_review_required\"")
+    );
 
     let ledger = WorkspaceChangeRecipeLedger::new();
     assert!(ledger.plan_for(WORKSPACE_CHANGE_TASK_FAMILY).is_none());
-    assert!(execute_workspace_rewrite_with_recipe(
-        &ledger,
-        "const CACHE_LIMIT: usize = 4;",
-        "CACHE_LIMIT",
-        "CACHE_CAPACITY",
-    )
-    .is_err());
+    assert!(
+        execute_workspace_rewrite_with_recipe(
+            &ledger,
+            "const CACHE_LIMIT: usize = 4;",
+            "CACHE_LIMIT",
+            "CACHE_CAPACITY",
+        )
+        .is_err()
+    );
 }
 
 #[test]
@@ -78,20 +86,24 @@ fn only_a_green_named_review_promotes_and_replays_the_held_out_rewrite() {
         .expect("candidate");
     let mut ledger = WorkspaceChangeRecipeLedger::new();
 
-    assert!(ledger
-        .promote(
-            &candidate,
-            WorkspaceChangeLearningGate::failed("issue_848_held_out", 4, 1),
-            WorkspaceChangeLearningApproval::granted("pull_request_review"),
-        )
-        .is_err());
-    assert!(ledger
-        .promote(
-            &candidate,
-            WorkspaceChangeLearningGate::passed("issue_848_held_out", 5),
-            WorkspaceChangeLearningApproval::declined("pull_request_review"),
-        )
-        .is_err());
+    assert!(
+        ledger
+            .promote(
+                &candidate,
+                WorkspaceChangeLearningGate::failed("issue_848_held_out", 4, 1),
+                WorkspaceChangeLearningApproval::granted("pull_request_review"),
+            )
+            .is_err()
+    );
+    assert!(
+        ledger
+            .promote(
+                &candidate,
+                WorkspaceChangeLearningGate::passed("issue_848_held_out", 5),
+                WorkspaceChangeLearningApproval::declined("pull_request_review"),
+            )
+            .is_err()
+    );
     assert!(ledger.plan_for(WORKSPACE_CHANGE_TASK_FAMILY).is_none());
 
     ledger

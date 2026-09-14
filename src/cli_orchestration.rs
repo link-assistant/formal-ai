@@ -1,9 +1,9 @@
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use formal_ai::orchestration::{
-    apply_verified_translation, dispatch_agents, observe_orchestration_session, read_session,
-    resume_agent, run_agent, session_sha256, synthesize_sessions, write_session, AgentCommand,
-    AgentRunConfig, AgentRunPermission, AgentTarget, CorrectionRequest, DispatchConfig,
-    DispatchMode, VerificationCommand,
+    AgentCommand, AgentRunConfig, AgentRunPermission, AgentTarget, CorrectionRequest,
+    DispatchConfig, DispatchMode, VerificationCommand, apply_verified_translation, dispatch_agents,
+    observe_orchestration_session, read_session, resume_agent, run_agent, session_sha256,
+    synthesize_sessions, write_session,
 };
 use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
@@ -127,8 +127,16 @@ pub struct ExternalDispatchArgs {
     /// Give every CLI the same task and select one verified winner.
     #[arg(long, default_value_t = false)]
     pub compare: bool,
+    /// Attempt the whole task first and split only what actually fails,
+    /// escalating an irreducible failure to the next CLI in the list.
+    #[arg(long, default_value_t = false, conflicts_with = "compare")]
+    pub incremental: bool,
     #[arg(long)]
     pub output_dir: Option<PathBuf>,
+    /// Commit every verified incremental effect with Formal AI attribution to
+    /// this canonical GitHub pull request URL.
+    #[arg(long, requires = "incremental")]
+    pub pull_request: Option<String>,
     #[arg(long, default_value = formal_ai::DEFAULT_MODEL)]
     pub model: String,
     #[arg(long, default_value = "http://127.0.0.1:8080")]
@@ -260,6 +268,8 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     let mut config = DispatchConfig::new(args.task, &workspace, args.cli);
     config.mode = if args.compare {
         DispatchMode::Compare
+    } else if args.incremental {
+        DispatchMode::Incremental
     } else {
         DispatchMode::Decompose
     };
@@ -277,6 +287,7 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     config.verification = parse_verification(&args.verification)?;
     config.command_overrides = parse_agent_commands(&args.commands)?;
     config.max_depth = args.max_depth;
+    config.pull_request = args.pull_request;
     let report = dispatch_agents(&config)?;
     if args.synthesize {
         let mut synthesis = synthesize_sessions(&report.sessions, &args.response_language)?;
@@ -300,6 +311,12 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     }
     let passed = match report.mode {
         DispatchMode::Compare => report.ledger.winner.is_some(),
+        // A failure is the input of this mode, not its verdict: only the root
+        // task ending up solved counts, however many attempts that took.
+        DispatchMode::Incremental => report
+            .incremental
+            .as_ref()
+            .is_some_and(|trace| trace.solved),
         DispatchMode::Decompose => report
             .sessions
             .iter()

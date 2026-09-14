@@ -7,13 +7,14 @@
     "check:language-test-coverage": "node scripts/check-language-test-coverage.mjs",
     "check:language-parity": "node scripts/check-language-change-parity.mjs",
     "check:intent-coverage": "node scripts/check-multilingual-intent-coverage.mjs",
+    "check:variation-floor": "node scripts/check-conversational-variation-floor.mjs",
     "check:web-tdz": "node scripts/check-web-tdz.mjs",
     "check:web-hardcoded-ui": "node scripts/check-web-hardcoded-ui-strings.mjs",
     "test:local": "playwright test --config=playwright.local.config.js",
     "test:pages": "playwright test --config=playwright.pages.config.js"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "serve": "^14.2.6"
   },
   "dependencies": {

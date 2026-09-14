@@ -1,0 +1,33 @@
+view
+  id M-61b9efa475b8
+  lemma need
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a condition requiring relief"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "anything that is necessary but lacking"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the psychological feature that arouses an organism to action toward a desired goal; the reason for the action; that which gives purpose and direction to behavior"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state of extreme poverty or destitution"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "require as useful, just, or proper"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have need of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have or feel a need for"
+    provenance (wordnet)

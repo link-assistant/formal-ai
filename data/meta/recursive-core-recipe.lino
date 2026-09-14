@@ -3,7 +3,7 @@ recursive_core_meta_recipe
   topic "recursive_core"
   title "The recursive meta algorithm"
   summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, executed through the registry-backed method dispatcher, reasoned about in the open with white-box reasoning attached to every recursive step in both directions (the downward decomposition and the upward construction that composes children back into each answer), traced leaf by leaf so the method the single data-driven registry authority resolves for each atomic leaf is auditable, projected back into the answer from the append-only event log, and finally distilled into a proposal-only skill-accumulation ledger that turns each satisfied need into a candidate reusable skill and each blocked need into a curriculum item — with no neural inference and no skill ever auto-promoted without review. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
-  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the twelve ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, let the registry-backed dispatcher execute the selected method, let the ledger prove every need was addressed, let the method-selection trace record which method the sole registry authority resolves for each leaf, and let the skill-accumulation ledger turn the outcome into proposed reusable skills and a curriculum of what is still unsolved. The specific algorithm becomes data (a method record) reached by the same general loop, so the core reasons about and executes through its method set instead of growing new hardcoded intents. This recipe is not only a description but is executable: each trace-recorded step binds (records field) to the recorder primitive it drives, and src/recipe_interpreter.rs parses these steps into an ordered program and runs them, reproducing the live pipeline's event log event-for-event — so the algorithm-as-data and the algorithm-as-code are provably the same algorithm."
+  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the thirteen ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, let the registry-backed dispatcher execute the selected method, let the ledger prove every need was addressed, let the method-selection trace record which method the sole registry authority resolves for each leaf, and let the skill-accumulation ledger turn the outcome into proposed reusable skills and a curriculum of what is still unsolved. The specific algorithm becomes data (a method record) reached by the same general loop, so the core reasons about and executes through its method set instead of growing new hardcoded intents. This recipe is not only a description but is executable: each trace-recorded step binds (records field) to the recorder primitive it drives, and src/recipe_interpreter.rs parses these steps into an ordered program and runs them, reproducing the live pipeline's event log event-for-event — so the algorithm-as-data and the algorithm-as-code are provably the same algorithm."
 step_formalize_impulse
   record_type "meta_step"
   order "1"
@@ -97,6 +97,14 @@ step_accumulate_skills
   detail "SkillLedger::from_evidence distils the solution evidence into learning the next request can reuse: every need that was satisfied by a catalogued method becomes a proposed CandidateSkill (a named, reusable capability the solver demonstrably has), and every need that was blocked becomes a CurriculumItem (a recorded gap to close rather than a silent failure). record_skill_ledger emits this as the trace-only skill_ledger event, gated by the skill_mode knob (off default records nothing, accumulate records the ledger). Accumulation is proposal-only: a candidate skill is born proposed and its PromotionGate requires both tests and a benchmark delta before it may become stable, so the promotable count is always zero at trace time and no skill is ever auto-promoted without human review (C3). This is the deterministic analog of an agent that grows a skill library and a curriculum, and the foundation for the core to reason about and extend its own method set."
   source_file "src/skill_ledger.rs"
   records "record_skill_ledger"
+step_audit_reasoning_standard
+  record_type "meta_step"
+  order "13"
+  id "audit_reasoning_standard"
+  title "Audit the pass against the reasoning standard, unconditionally"
+  detail "reasoning_standard::audit evaluates every gate declared in data/meta/reasoning-standard.lino over the request's reasoning episode and reports each one as satisfied, violated, or not triggered together with the trigger that was false — no gate is ever omitted. record_reasoning_standard emits it as the trace-only reasoning_standard, reasoning_standard:gates and reasoning_standard:verdict events. Unlike the reasoning, selection and skill stages, this one takes no mode: a depth floor that can be switched off is not a floor, so the checklist is enumerated on the trivial request exactly as on the hard one (R1073). At this seam the episode carries only the request's task class, so the honest report is that the instruction gate is violated with the sources it is missing named and every other gate is not triggered with the trigger that was false named; a handler that observes, consults sources, refutes and acts fills the same episode in and the same gates then fire. The verdict defaults to not_confirmed_not_refuted with its blockers named rather than to a lean."
+  source_file "src/reasoning_standard/mod.rs"
+  records "record_reasoning_standard"
 fn_formalize_intent
   record_type "meta_function"
   function "formalize_intent"
@@ -197,3 +205,19 @@ fn_program_execute
   record_type "meta_function"
   function "execute"
   source_file "src/recipe_interpreter.rs"
+fn_reasoning_standard
+  record_type "meta_function"
+  function "standard"
+  source_file "src/reasoning_standard/mod.rs"
+fn_reasoning_standard_audit
+  record_type "meta_function"
+  function "audit"
+  source_file "src/reasoning_standard/mod.rs"
+fn_record_reasoning_standard
+  record_type "meta_function"
+  function "record_reasoning_standard"
+  source_file "src/reasoning_standard/mod.rs"
+fn_open_episode
+  record_type "meta_function"
+  function "open_episode"
+  source_file "src/reasoning_standard/mod.rs"

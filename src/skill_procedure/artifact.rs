@@ -1,16 +1,16 @@
 //! Durable, source-grounded artifact serialization and integrity validation.
 
-use crate::engine::{stable_id, KNOWLEDGE_SCHEMA_VERSION};
-use crate::intent_formalization::{impulse_id_for, OrderedRequirementSpan};
+use crate::engine::{KNOWLEDGE_SCHEMA_VERSION, stable_id};
+use crate::intent_formalization::{OrderedRequirementSpan, impulse_id_for};
 use crate::links_format::push_lino_node;
 use crate::seed::{
-    self, parser::LinoNode, ROLE_SKILL_PROCEDURE_STEP_OBJECT, ROLE_SKILL_PROCEDURE_STEP_VERB,
-    ROLE_TRANSLATION_LANGUAGE,
+    self, ROLE_SKILL_PROCEDURE_STEP_OBJECT, ROLE_SKILL_PROCEDURE_STEP_VERB,
+    ROLE_TRANSLATION_LANGUAGE, parser::LinoNode,
 };
 
 use super::{
-    canonical_program, meaning_has_role, requirement_id, CompiledProcedure, ProcedureArtifactError,
-    ProcedureRequirement, ProcedureStep, ProcedureTrigger, MINIMUM_STEPS,
+    CompiledProcedure, MINIMUM_STEPS, ProcedureArtifactError, ProcedureRequirement, ProcedureStep,
+    ProcedureTrigger, canonical_program, meaning_has_role, requirement_id,
 };
 
 impl CompiledProcedure {

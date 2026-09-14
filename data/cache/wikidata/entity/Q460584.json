@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "Q460584": {
+      "type": "item",
+      "id": "Q460584",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Scala"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "general-purpose programming language"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мультипарадигмальный язык программирования"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Scala语言"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Scala programming language"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

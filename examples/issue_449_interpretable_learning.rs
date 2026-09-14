@@ -10,8 +10,8 @@
 //! evidence and deterministic ranking.
 
 use formal_ai::{
-    rank_probability_candidates, symbolic_cosine_similarity, ProbabilityCandidate,
-    ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityRankingConfig, ProbabilityStore,
+    ProbabilityCandidate, ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityRankingConfig,
+    ProbabilityStore, rank_probability_candidates, symbolic_cosine_similarity,
 };
 
 fn show(title: &str, ranking: &formal_ai::ProbabilityRanking) {

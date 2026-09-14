@@ -30,9 +30,9 @@ use std::fmt;
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
-use crate::engine::{stable_id, KNOWLEDGE_SCHEMA_VERSION};
+use crate::engine::{KNOWLEDGE_SCHEMA_VERSION, stable_id};
 use crate::intent_formalization::{
-    formalize_intent, ordered_requirement_spans, OrderedRequirementSpan,
+    OrderedRequirementSpan, formalize_intent, ordered_requirement_spans,
 };
 use crate::language::detect as detect_language;
 use crate::link_store::{DoubletLink, LinkRecord};

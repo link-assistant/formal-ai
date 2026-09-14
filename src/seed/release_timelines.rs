@@ -17,8 +17,8 @@
 
 use std::sync::OnceLock;
 
-use super::parser::{parse_lino, LinoNode};
 use super::RELEASE_TIMELINES_LINO;
+use super::parser::{LinoNode, parse_lino};
 
 /// Answer wording for one language, with `{placeholder}` slots.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]

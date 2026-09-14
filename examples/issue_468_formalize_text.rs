@@ -12,7 +12,7 @@
 //! as links.
 
 use formal_ai::agentic_coding::{
-    coverage_line, formalize_text_to_links, CANONICAL_FISHERMAN_SYNOPSIS,
+    CANONICAL_FISHERMAN_SYNOPSIS, coverage_line, formalize_text_to_links,
 };
 
 fn main() {

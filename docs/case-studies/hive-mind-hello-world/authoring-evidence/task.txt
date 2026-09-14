@@ -1,0 +1,1 @@
+Write a file named test-isolation.md whose entire contents explain that a test binary must not resolve the developer own memory store, because sharing one store lets parallel rebuilds corrupt a size-balanced tree.

@@ -7,12 +7,12 @@
 
 use std::sync::OnceLock;
 
-use crate::concepts::{lookup_concept_query, ConceptQuery};
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::concepts::{ConceptQuery, lookup_concept_query};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::seed::{self, localized_response, ConceptRecord};
-use crate::solver_handlers::{answer_web_search_query, finalize_simple, WebSearchQueryKind};
+use crate::seed::{self, ConceptRecord, localized_response};
+use crate::solver_handlers::{WebSearchQueryKind, answer_web_search_query, finalize_simple};
 use crate::solver_helpers::humanize_url;
 use crate::unknown_opener::language_aware_unknown_answer;
 

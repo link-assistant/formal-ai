@@ -3,14 +3,14 @@
 //! `solver_handlers/mod.rs` to keep individual files under 1000 lines.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::proof_engine::{
-    attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
+    ProofOutcome, ProofRenderConfig, attempt_proof_with_config, render_outcome_with_config,
 };
-use crate::seed::{self, localized_response, Slot, WordForm};
+use crate::seed::{self, Slot, WordForm, localized_response};
 use crate::solver_handlers::finalize_simple;
 
 /// The literal lead-in (text before the `…` slot) of every prefix-slot form of

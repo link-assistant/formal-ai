@@ -5,14 +5,14 @@
 //! (README ingestion, dialog summarization, chat-title generation) so the
 //! pipeline contract is visible alongside the existing project-lookup tests.
 
-use formal_ai::summarization::{
-    apply_compound_words, apply_semantic_primes, deformalize, describe_readme, formalize,
-    formalize_dialog, formalize_markdown, formalize_repository_resource, generate_chat_title,
-    strip_markdown_noise, summarize_dialog, summarize_repository_file,
-    summarize_repository_resource, DialogTurn, RepositoryEntry, RepositoryResourceFormalization,
-    StatementKind, SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
-};
 use formal_ai::FormalAiEngine;
+use formal_ai::summarization::{
+    DEFAULT_MAX_STATEMENTS, DialogTurn, RepositoryEntry, RepositoryResourceFormalization,
+    StatementKind, SummarizationConfig, SummarizationMode, apply_compound_words,
+    apply_semantic_primes, deformalize, describe_readme, formalize, formalize_dialog,
+    formalize_markdown, formalize_repository_resource, generate_chat_title, strip_markdown_noise,
+    summarize_dialog, summarize_repository_file, summarize_repository_resource,
+};
 
 #[test]
 fn summarization_request_summarizes_inline_conversation_content() {

@@ -1,0 +1,68 @@
+{
+  "lemma": "examine",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00646245-v",
+      "partOfSpeech": "v",
+      "definition": "consider in detail and subject to an analysis in order to discover essential features or meaning",
+      "examples": [
+        "analyze a sonnet by Shakespeare",
+        "analyze the evidence in a criminal trial",
+        "analyze your real motives"
+      ],
+      "synonyms": [
+        "analyze",
+        "analyse",
+        "study",
+        "canvass"
+      ]
+    },
+    {
+      "id": "oewn-02135744-v",
+      "partOfSpeech": "v",
+      "definition": "observe, check out, and look over carefully or inspect",
+      "examples": [
+        "The customs agent examined the baggage",
+        "I must see your passport before you can enter the country"
+      ],
+      "synonyms": [
+        "see"
+      ]
+    },
+    {
+      "id": "oewn-00790226-v",
+      "partOfSpeech": "v",
+      "definition": "question or examine thoroughly and closely",
+      "synonyms": [
+        "probe"
+      ]
+    },
+    {
+      "id": "oewn-00788478-v",
+      "partOfSpeech": "v",
+      "definition": "question closely"
+    },
+    {
+      "id": "oewn-02537291-v",
+      "partOfSpeech": "v",
+      "definition": "put to the test, as for its quality, or give experimental use to",
+      "examples": [
+        "This approach has been tried with good results",
+        "Test this recipe"
+      ],
+      "synonyms": [
+        "test",
+        "prove",
+        "try",
+        "try out",
+        "essay"
+      ]
+    }
+  ]
+}

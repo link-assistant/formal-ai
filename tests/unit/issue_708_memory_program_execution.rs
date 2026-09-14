@@ -1,8 +1,8 @@
 use formal_ai::execute_memory_query_with_options;
-use formal_ai::memory::{isoformat_now, MemoryEvent, MemoryStore};
+use formal_ai::memory::{MemoryEvent, MemoryStore, isoformat_now};
 use formal_ai::memory_program::{
-    compile_memory_program, execute_memory_program, parse_memory_program_links_notation,
-    MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramLimits,
+    MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramLimits, compile_memory_program,
+    execute_memory_program, parse_memory_program_links_notation,
 };
 
 const LIMITS: MemoryProgramLimits = MemoryProgramLimits {
@@ -244,9 +244,11 @@ fn bounds_stop_honestly_before_partial_writes() {
         }
     );
     assert_eq!(outcome.changed, 0);
-    assert!(outcome
-        .links_notation()
-        .contains("matched 2 exceeds max_matches 1"));
+    assert!(
+        outcome
+            .links_notation()
+            .contains("matched 2 exceeds max_matches 1")
+    );
 
     let mut unbounded = MemoryStore::from_events(vec![event("a", "fact", "user", "X")]);
     let outcome =
@@ -255,9 +257,11 @@ fn bounds_stop_honestly_before_partial_writes() {
         outcome.halt,
         MemoryProgramHalt::IterationLimit { max_iterations: 3 }
     );
-    assert!(outcome
-        .links_notation()
-        .contains("max_iterations 3 reached"));
+    assert!(
+        outcome
+            .links_notation()
+            .contains("max_iterations 3 reached")
+    );
 }
 
 #[test]
@@ -275,9 +279,11 @@ fn destructive_program_requires_confirmation_and_appends_a_retraction() {
         }
     );
     assert_eq!(store.len(), 1);
-    assert!(refused
-        .links_notation()
-        .contains("policy destructive_action_requires_confirmation"));
+    assert!(
+        refused
+            .links_notation()
+            .contains("policy destructive_action_requires_confirmation")
+    );
 
     let applied = execute_memory_program(
         &program,
@@ -303,15 +309,19 @@ fn query_surface_traces_the_compiled_program_and_names_program_gaps() {
     )
     .expect("memory program route");
     assert_eq!(execution.answer.intent, "memory_program");
-    assert!(execution
-        .answer
-        .links_notation
-        .contains("memory_program_compiled"));
-    assert!(execution
-        .answer
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("memory_program_compiled:")));
+    assert!(
+        execution
+            .answer
+            .links_notation
+            .contains("memory_program_compiled")
+    );
+    assert!(
+        execution
+            .answer
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("memory_program_compiled:"))
+    );
 
     let gap = execute_memory_query_with_options(
         "Transpose every fact matrix in memory.",

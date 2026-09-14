@@ -9,8 +9,8 @@
 //! keep the order the speaker used, in any of the four supported languages.
 
 use crate::seed::{
-    lexicon, Meaning, ROLE_COMPUTER_USE_CAPABILITY_GAP_CUE, ROLE_COMPUTER_USE_OPERATION_CUE,
-    ROLE_COMPUTER_USE_RESOURCE_CUE,
+    Meaning, ROLE_COMPUTER_USE_CAPABILITY_GAP_CUE, ROLE_COMPUTER_USE_OPERATION_CUE,
+    ROLE_COMPUTER_USE_RESOURCE_CUE, lexicon,
 };
 
 /// One recognised cue: the meaning slug, where it matched, and how long the

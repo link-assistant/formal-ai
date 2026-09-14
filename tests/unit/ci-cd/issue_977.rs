@@ -12,7 +12,7 @@
 
 use std::fs;
 
-use super::workflow_fixtures::{job_block, release_workflow, workflow_job_names};
+use super::workflow_fixtures::{ci_surface, job_block, release_workflow, workflow_job_names};
 
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
@@ -176,9 +176,25 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
              an uncached release build recompiles the whole crate and blew the \
              job budget in run 31065367736 (issue #977)"
         );
+        // Issue #1057 narrowed this from "every step exports" to "every step
+        // that builds from source exports". The cache is one 10GB pool shared
+        // with sccache; it reached 10.01GB with buildkit holding 5.26GB against
+        // sccache's 2.44GB, and the compile cache was being evicted to store
+        // layers -- the macOS specification lane fell from a 48% to a 27% hit
+        // rate and died at its budget with no test run.
+        //
+        // A step that copies a prebuilt binary compiles nothing worth keeping,
+        // and a second publish step exports layers the first already wrote. Both
+        // still *read* the cache, which is what keeps the uncached release build
+        // this test was written for from coming back.
+        // `body` starts after the action name, so the step's own name is not in
+        // it; `cache-to: type=inline` is the marker a non-exporting step
+        // carries, and it is only ever set deliberately.
+        let exports_deliberately_skipped = body.contains("cache-to: type=inline");
         assert!(
-            body.contains("cache-to: type=gha,mode=max"),
-            "docker build-push step #{index} has no `cache-to: type=gha,mode=max`"
+            exports_deliberately_skipped || body.contains("cache-to: type=gha,mode=max"),
+            "docker build-push step #{index} builds from source but has no \
+             `cache-to: type=gha,mode=max`"
         );
     }
 }
@@ -368,6 +384,10 @@ fn no_workflow_pins_an_action_on_the_deprecated_node_20_runtime() {
 #[test]
 fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
     let workflow = release_workflow();
+    // Some of these scripts are release-job steps and some became registered
+    // gates in issue #991; both are CI calling the script rather than inlining
+    // it, which is what this case is about.
+    let surface = ci_surface();
 
     for script in [
         "scripts/check-pipeline-status.sh",
@@ -382,8 +402,9 @@ fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
             "{script} must exist and be non-empty"
         );
         assert!(
-            workflow.contains(script),
-            "release.yml must call {script} rather than inlining it"
+            surface.contains(script),
+            "CI must call {script} -- from a job step or a registered gate -- \
+             rather than inlining it"
         );
     }
 
@@ -407,5 +428,80 @@ fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
         lines <= 2_000,
         "release.yml is {lines} lines, over the 2000-line ceiling enforced by \
          scripts/check-file-size.rs"
+    );
+}
+
+/// Issue #1131: the token decides Docker Hub publishing, not the image.
+///
+/// Every release since Docker Hub publishing was added skipped it and still
+/// reported success, because `DOCKERHUB_IMAGE` was the switch and nothing ever
+/// set it. Now that the image and the username carry defaults, only the secret
+/// separates a repository that can push from a fork that cannot.
+#[test]
+fn dockerhub_publishing_is_decided_by_the_token() {
+    let root = env!("CARGO_MANIFEST_DIR");
+    let script = format!("{root}/scripts/configure-dockerhub-publishing.sh");
+
+    let run = |image: &str, username: &str, token: &str, dockerfile: bool| {
+        let workspace = std::env::temp_dir().join(format!(
+            "formal-ai-dockerhub-{}-{}",
+            std::process::id(),
+            u64::from(dockerfile) + image.len() as u64 * 2 + token.len() as u64 * 4
+        ));
+        std::fs::create_dir_all(&workspace).expect("workspace");
+        let output_file = workspace.join("github-output.txt");
+        std::fs::write(&output_file, "").expect("output file");
+        if dockerfile {
+            std::fs::write(workspace.join("Dockerfile"), "FROM scratch\n").expect("Dockerfile");
+        } else {
+            let _ = std::fs::remove_file(workspace.join("Dockerfile"));
+        }
+        let output = std::process::Command::new("bash")
+            .arg(&script)
+            .current_dir(&workspace)
+            .env("GITHUB_OUTPUT", &output_file)
+            .env("DOCKERHUB_IMAGE", image)
+            .env("DOCKERHUB_USERNAME", username)
+            .env("DOCKERHUB_TOKEN", token)
+            .output()
+            .expect("the configure script runs");
+        let written = std::fs::read_to_string(&output_file).unwrap_or_default();
+        let _ = std::fs::remove_dir_all(&workspace);
+        (output.status.success(), written)
+    };
+
+    // A fork inherits the defaults but holds no token: quiet, green, disabled.
+    let (ok, written) = run("konard/formal-ai", "konard", "", true);
+    assert!(ok, "a fork without the token still gets a green release");
+    assert!(
+        written.contains("enabled=false"),
+        "no token disables publishing: {written}"
+    );
+
+    // This repository: token held, defaults in place.
+    let (ok, written) = run("konard/formal-ai", "konard", "dckr_pat_example", true);
+    assert!(ok, "a configured repository publishes");
+    assert!(
+        written.contains("enabled=true")
+            && written.contains("docker_hub_url=https://hub.docker.com/r/konard/formal-ai"),
+        "the token enables publishing to the defaulted image: {written}"
+    );
+
+    // A token with the default blanked out is a real misconfiguration.
+    let (ok, _) = run("", "konard", "dckr_pat_example", true);
+    assert!(
+        !ok,
+        "a token with no image to push to fails loudly rather than skipping"
+    );
+
+    // No Dockerfile: nothing to build, so nothing to push.
+    let (ok, written) = run("konard/formal-ai", "konard", "dckr_pat_example", false);
+    assert!(
+        ok,
+        "a repository with no Dockerfile still gets a green release"
+    );
+    assert!(
+        written.contains("enabled=false"),
+        "no Dockerfile disables publishing: {written}"
     );
 }

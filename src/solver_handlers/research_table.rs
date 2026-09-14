@@ -283,14 +283,13 @@ fn extract_research_topics(prompt: &str) -> Vec<String> {
             break;
         }
     }
-    if topics.is_empty() {
-        if let Some(after_colon) = prompt.split_once(':').map(|(_, tail)| tail) {
+    if topics.is_empty()
+        && let Some(after_colon) = prompt.split_once(':').map(|(_, tail)| tail) {
             let topic = clean_search_text(after_colon);
             if !topic.is_empty() {
                 topics.push(topic);
             }
         }
-    }
     topics
 }
 
@@ -371,11 +370,10 @@ fn extract_criteria(prompt: &str) -> Vec<Criterion> {
 fn append_criteria_from_text(text: &str, criteria: &mut Vec<Criterion>) {
     let normalized = normalize_prompt(text);
     for meaning in seed::lexicon().meanings_with_role(seed::ROLE_RESEARCH_CRITERION) {
-        if meaning.words().any(|word| normalized.contains(word)) {
-            if let Some(criterion) = Criterion::from_slug(&meaning.slug) {
+        if meaning.words().any(|word| normalized.contains(word))
+            && let Some(criterion) = Criterion::from_slug(&meaning.slug) {
                 push_unique(criteria, criterion);
             }
-        }
     }
 }
 

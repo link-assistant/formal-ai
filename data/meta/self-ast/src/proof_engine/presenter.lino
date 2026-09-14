@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/presenter.rs
   language rust
   fidelity signature
-  byte_len 18676
+  byte_len 18660
   line_count 414
-  content_id source_module_5232f4600af613b0
+  content_id source_module_5d8171d580ed0901
   symbol_count 14
   symbols
     function render_outcome 19 21

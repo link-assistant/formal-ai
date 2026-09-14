@@ -1,0 +1,174 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/python-template/.github/workflows/security.yml	2026-09-05 09:39:58.647024118 +0000
++++ .github/workflows/security.yml	2026-09-05 09:37:13.888816104 +0000
+@@ -6,76 +6,135 @@
+   pull_request:
+   schedule:
+     - cron: '0 6 * * 1'
++  # Issue #1017: the js pipeline template exposes a manual trigger so a security
++  # sweep can be re-run without waiting for Monday's cron or pushing a commit.
++  workflow_dispatch:
+ 
++# Keep the workflow read-only unless a job explicitly needs an additional scope.
+ permissions:
+   contents: read
+ 
+ jobs:
+-  dependency-audit:
+-    name: Audit Resolved Python Dependencies
+-    runs-on: ubuntu-latest
+-    timeout-minutes: 15
+-    concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-audit
+-      cancel-in-progress: true
+-    steps:
+-      - uses: actions/checkout@v6
+-        with:
+-          persist-credentials: false
+-
+-      - name: Setup Python
+-        uses: actions/setup-python@v6
+-        with:
+-          python-version: '3.13'
+-
+-      - name: Audit pyproject.toml and docs/requirements.txt
+-        run: python scripts/audit_dependencies.py
+-
+   codeql:
+     name: CodeQL (${{ matrix.language }})
+     runs-on: ubuntu-latest
+     timeout-minutes: 30
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     permissions:
++      # `actions: read` is what the `actions` language extractor needs to read
++      # workflow run metadata; the templates set it on the CodeQL job.
++      actions: read
+       contents: read
+       security-events: write
+     strategy:
+       fail-fast: false
+       matrix:
+-        language: [python, actions]
++        language: [rust, actions]
++    env:
++      # Issue #1017 / github/codeql#19982. The CodeQL Rust extractor vendors its
++      # own rust-analyzer (`ra_ap_* 0.0.301` in measured CLI 2.26.3) and, with
++      # no sysroot override, resolves `std` from the runner's ambient toolchain.
++      # When that
++      # `std` is newer than the vendored parser understands, *every* call to a
++      # `std` macro fails to expand and the file is recorded as "extracted with
++      # errors" — its bodies are then not analysed at all. Re-checked
++      # 2026-09-01: github/codeql#19982 remains open and the 2.26.4 changelog
++      # contains no Rust extractor fix. Run 31937348308
++      # produced 20,725 such diagnostics across 1,023 live source files, so this
++      # is an analysis-coverage false negative, not cosmetic noise. Pinning the
++      # extractor (and only the extractor — nothing else in this repository
++      # builds with it) to the newest `std` the bundle can parse restores that
++      # coverage. Raise this as CodeQL picks up newer rust-analyzer releases.
++      CODEQL_RUST_SYSROOT_TOOLCHAIN: '1.94.0'
+     steps:
+-      - uses: actions/checkout@v6
+-        with:
+-          persist-credentials: false
++      - uses: actions/checkout@v7
++
++      # Both variables are required: setting only `_SYSROOT_SRC` leaves the
++      # extractor on the discovered (ambient) binary sysroot and the macro
++      # failures remain. A missing toolchain warns rather than fails — the
++      # override is a mitigation for an upstream defect, so losing it must not
++      # turn a security scan red while still being impossible to overlook.
++      - name: Pin the extractor sysroot to a std the CodeQL bundle can parse
++        if: matrix.language == 'rust'
++        run: |
++          set -uo pipefail
++          toolchain="$CODEQL_RUST_SYSROOT_TOOLCHAIN"
++          if ! rustup toolchain install "$toolchain" --profile minimal --component rust-src; then
++            echo "::warning title=CodeQL sysroot pin unavailable::Could not install Rust ${toolchain}; the Rust extractor will fall back to the ambient toolchain and macro expansion may fail (github/codeql#19982)."
++            exit 0
++          fi
++          sysroot="$(rustup run "$toolchain" rustc --print sysroot)"
++          src="${sysroot}/lib/rustlib/src/rust/library"
++          if [[ ! -d "$src" ]]; then
++            echo "::warning title=CodeQL sysroot pin unavailable::${src} is missing; the Rust extractor will fall back to the ambient toolchain (github/codeql#19982)."
++            exit 0
++          fi
++          echo "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT=${sysroot}" >> "$GITHUB_ENV"
++          echo "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT_SRC=${src}" >> "$GITHUB_ENV"
++          echo "Pinned the Rust extractor to ${sysroot}"
+ 
+-      - name: Initialize CodeQL
+-        uses: github/codeql-action/init@v4
++      - uses: github/codeql-action/init@v4
+         with:
+           languages: ${{ matrix.language }}
++          # Issue #1017: keeps archived evidence trees out of the extractor so a
++          # truncated documentation excerpt stops emitting parse diagnostics.
++          config-file: ./.github/codeql/codeql-config.yml
+ 
+-      - name: Autobuild
+-        uses: github/codeql-action/autobuild@v4
++      - uses: github/codeql-action/autobuild@v4
+ 
+-      - name: Analyze
+-        uses: github/codeql-action/analyze@v4
++      - uses: github/codeql-action/analyze@v4
++
++  cargo-audit:
++    name: Cargo audit
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-cargo-audit
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    steps:
++      - uses: actions/checkout@v7
++
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++
++      # Issue #1017: the rust pipeline template audits the committed lockfile on
++      # every push and pull request; this repository only had CodeQL and the
++      # pull-request-only dependency review, so an advisory landing in a
++      # transitive dependency of `Cargo.lock` went unreported on `main`. The
++      # weekly `schedule:` trigger above is what makes this job worth its own
++      # workflow: an advisory published against an unchanged lockfile surfaces
++      # on Monday instead of waiting for the next dependency bump.
++      - uses: taiki-e/install-action@v2
++        with:
++          tool: cargo-audit@0.22.2
++
++      - name: Audit committed Cargo.lock
++        run: bash scripts/check-rust-dependencies.sh
++
++  # The JavaScript side deliberately has no job here: the js pipeline template's
++  # `npm-audit` matrix is already superseded by `scripts/check-javascript-
++  # dependencies.sh`, which discovers *every* committed lockfile with `git
++  # ls-files` (so a new workspace cannot be forgotten), audits `bun.lock` as well
++  # as each `package-lock.json`, and fails at `--audit-level=moderate` instead of
++  # `high`. Adding the template's job back would be strictly weaker duplication.
+ 
+   dependency-review:
+     name: Dependency Review
+     if: github.event_name == 'pull_request'
+     runs-on: ubuntu-latest
+     timeout-minutes: 10
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     permissions:
+       contents: read
+       pull-requests: write
+     steps:
+-      - uses: actions/checkout@v6
+-        with:
+-          persist-credentials: false
++      - uses: actions/checkout@v7
+ 
+-      - name: Review dependency changes
+-        uses: actions/dependency-review-action@v5
++      - uses: actions/dependency-review-action@v5
+         with:
+           fail-on-severity: high
+           comment-summary-in-pr: on-failure

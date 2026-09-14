@@ -1,0 +1,12 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/bump-version.rs	2026-09-05 09:39:56.901043030 +0000
++++ scripts/bump-version.rs	2026-09-05 09:37:22.097726442 +0000
+@@ -8,6 +8,9 @@
+ //! - Multi-language: Cargo.toml in rust/ subfolder
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! ```

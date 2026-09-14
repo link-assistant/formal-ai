@@ -1,7 +1,7 @@
 //! Issue #659 executed through the generalized auto-learning recipe.
 
 use formal_ai::agentic_coding::learning_report::hardcoded_language_learning;
-use formal_ai::agentic_coding::{run_agentic_task, HARDCODED_LANGUAGE_LEARNING_PATH, REPORTS};
+use formal_ai::agentic_coding::{HARDCODED_LANGUAGE_LEARNING_PATH, REPORTS, run_agentic_task};
 
 const DIFFERENTLY_WORDED_TASK: &str = "Examine the R379 source-language audit observations through associative auto-learning, retain evidence for each proposed amendment, require review before adoption, and write hardcoded-language-learning-report.lino";
 

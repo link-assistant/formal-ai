@@ -62,3 +62,14 @@ pub const ROLE_OBSERVABLE_TASK_ACTION: &str = "observable_task_action";
 /// never emit, so a segment evidencing this role is merged into a neighbour
 /// instead of becoming a sub-task.
 pub const ROLE_UNOBSERVABLE_TASK_ACTION: &str = "unobservable_task_action";
+
+/// Semantic role: a word that opens one obligation in an enumerated request.
+///
+/// "First", "second", "then", "also", "finally", and their Russian, Hindi,
+/// Chinese and Spanish equivalents. Read by
+/// [`crate::agentic_coding::task_obligations`] to cut a request into the
+/// artifacts it names, and only where the cue opens a clause: issue #1099's
+/// prompt says *"the first three lines are exactly"* inside its second clause,
+/// which describes a file's contents rather than enumerating anything.
+/// Carried by `enumeration_cue` in `data/seed/meanings-conversation.lino`.
+pub const ROLE_ENUMERATION_CUE: &str = "enumeration_cue";

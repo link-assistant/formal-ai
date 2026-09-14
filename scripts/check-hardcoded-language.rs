@@ -24,6 +24,9 @@
 //!   rust-script --test scripts/check-hardcoded-language.rs
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```

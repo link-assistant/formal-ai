@@ -11,8 +11,8 @@ use std::path::PathBuf;
 
 use formal_ai::event_log::EventLog;
 use formal_ai::lexeme_import::{
-    self, import_languages, Concept, GroundedLexeme, ImportConfig, SurfaceSource, DEFINED_BY,
-    GRAMMATICAL_NUMBER, PART_OF_SPEECH,
+    self, Concept, DEFINED_BY, GRAMMATICAL_NUMBER, GroundedLexeme, ImportConfig, PART_OF_SPEECH,
+    SurfaceSource, import_languages,
 };
 
 #[test]

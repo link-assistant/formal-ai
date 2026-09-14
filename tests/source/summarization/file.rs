@@ -13,8 +13,8 @@ use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration
 use crate::links_format::flatten_lino_value;
 
 use super::{
-    deformalize, formalize, formalize_markdown, summarize, Statement, StatementKind,
-    SummarizationConfig,
+    Statement, StatementKind, SummarizationConfig, deformalize, formalize, formalize_markdown,
+    summarize,
 };
 
 /// meta-language parse evidence for a repository file or embedded grammar.

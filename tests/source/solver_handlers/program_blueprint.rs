@@ -17,9 +17,9 @@
 //! here preserves the catalog's deterministic-verified invariant while still
 //! answering the broad class of real-world coding requests the catalog cannot.
 
+use crate::coding::WRITE_PROGRAM_INTENT;
 use crate::coding::blueprint::{render, select_blueprint};
 use crate::coding::program_language_by_alias;
-use crate::coding::WRITE_PROGRAM_INTENT;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;

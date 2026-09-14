@@ -1,0 +1,133 @@
+Auto Release	Collect changelog and bump version	﻿2026-08-15T13:08:38.2887719Z ##[group]Run rust-script scripts/version-and-commit.rs \
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2888184Z ^[[36;1mrust-script scripts/version-and-commit.rs \^[[0m
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2888506Z ^[[36;1m  --bump-type "minor"^[[0m
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2924088Z shell: /usr/bin/bash -e {0}
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2924336Z env:
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2924519Z   GIT_CONFIG_COUNT: 1
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2924759Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2925026Z   GIT_CONFIG_VALUE_0: main
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2925251Z   CARGO_NET_RETRY: 10
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2925471Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2925722Z   CARGO_TERM_COLOR: always
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2925950Z   FORMAL_AI_CI_VERBOSE: false
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2926188Z   RUSTFLAGS: -Dwarnings
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2926523Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2926806Z   CARGO_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2927037Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2927321Z   DOCKERHUB_IMAGE: 
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2927523Z   DOCKERHUB_USERNAME: 
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2927827Z   DOCKERHUB_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2928054Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2928297Z   CARGO_INCREMENTAL: 0
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:38.2928510Z ##[endgroup]
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:43.0127190Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:43.6585402Z Max published version on crates.io: 0.345.0
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:43.6586021Z Initial bump (minor) from 0.345.0: 0.346.0
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:43.7630809Z Final release version: 0.346.0
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:44.2946461Z Error recording self-hosting release metric: release cycle v0.345.0..HEAD has no merged Formal AI-authored pull request; an end-to-end Formal AI-authored pull request requires valid session evidence and the same canonical PR trailer on every introduced non-merge commit
+Auto Release	Collect changelog and bump version	2026-08-15T13:08:44.2963997Z ##[error]Process completed with exit code 1.
+Pipeline Status	Fail the run when a required job was cancelled or failed	﻿2026-08-15T13:09:07.0948147Z ##[group]Run bash scripts/check-pipeline-status.sh
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0948621Z ^[[36;1mbash scripts/check-pipeline-status.sh^[[0m
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0989299Z shell: /usr/bin/bash -e {0}
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0989584Z env:
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0989811Z   GIT_CONFIG_COUNT: 1
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0990057Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0990326Z   GIT_CONFIG_VALUE_0: main
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0990549Z   CARGO_NET_RETRY: 10
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0990768Z   CARGO_HTTP_MULTIPLEXING: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0991015Z   CARGO_TERM_COLOR: always
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0991243Z   FORMAL_AI_CI_VERBOSE: false
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0991490Z   RUSTFLAGS: -Dwarnings
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0991975Z   CARGO_REGISTRY_TOKEN: ***
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0992271Z   CARGO_TOKEN: ***
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0992513Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0992814Z   DOCKERHUB_IMAGE: 
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.0996989Z   NEEDS_JSON: {
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "detect-changes": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "rs-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "toml-changed": "false",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "docs-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "workflow-changed": "true",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "any-code-changed": "true"
+Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "evidence-check": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-build": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "secrets-scan": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "version-check": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "lint": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "auto-release": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "failure",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "pages_sha": "98cb3c803a72161a880968647330358c65d9b83f",
+Pipeline Status	Fail the run when a required job was cancelled or failed	      "pages_version": "0.345.0"
+Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "manual-release": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog-pr": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-local": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-agent-cli-e2e": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-box-language-binary": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "box-language-projects": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "deploy-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-pages": {
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+Pipeline Status	Fail the run when a required job was cancelled or failed	  }
+Pipeline Status	Fail the run when a required job was cancelled or failed	}
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.1001363Z   IS_MAIN: true
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.1001561Z ##[endgroup]
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.1159352Z Failed jobs:    auto-release
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.1159830Z Cancelled jobs: <none>
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.1176164Z ##[error]Pipeline failed. Failing jobs: auto-release
+Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-15T13:09:07.1186688Z ##[error]Process completed with exit code 1.

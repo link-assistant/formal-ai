@@ -10,6 +10,8 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+use lino_objects_codec::format::parse_indented;
+
 use super::cases::{BenchmarkCase, Expectation};
 use super::manifest::Grading;
 use super::vocabulary;
@@ -24,6 +26,9 @@ pub struct CaseOutcome {
     pub passed: bool,
     /// Why the case failed (empty when it passed), truncated for the report.
     pub detail: String,
+    /// The first line of the upstream prompt, for the learning frontier
+    /// (issue #1085 D5.1).
+    pub prompt_excerpt: String,
 }
 
 /// Grade `answer` (the solver's reply) against the upstream expectation.
@@ -32,6 +37,18 @@ pub fn grade_case(
     case: &BenchmarkCase,
     grading: Grading,
     answer: &str,
+    workspace: &Path,
+) -> CaseOutcome {
+    grade_case_with_trace(case, grading, answer, "", workspace)
+}
+
+/// Grade a case with access to the solver's structured Links Notation trace.
+#[must_use]
+pub fn grade_case_with_trace(
+    case: &BenchmarkCase,
+    grading: Grading,
+    answer: &str,
+    trace: &str,
     workspace: &Path,
 ) -> CaseOutcome {
     let (passed, detail) = match &case.expectation {
@@ -52,7 +69,13 @@ pub fn grade_case(
             let program = format!("{code}\n\n{setup}\n\n{}\n", asserts.join("\n"));
             run_python(&program, workspace, &case.id)
         }
-        Expectation::Value { expected } => grade_value(grading, expected, answer),
+        Expectation::Value { expected } => {
+            if grading == Grading::ProofStatus {
+                grade_proof_status(expected, trace)
+            } else {
+                grade_value(grading, expected, answer)
+            }
+        }
         Expectation::SweBench { .. } => {
             return failure(
                 case,
@@ -68,7 +91,48 @@ pub fn grade_case(
         } else {
             truncate(&detail)
         },
+        prompt_excerpt: super::learning::one_line(&case.prompt, 160),
     }
+}
+
+fn grade_proof_status(expected: &str, trace: &str) -> (bool, String) {
+    let normalized = normalize(expected);
+    let expected_event = vocabulary::render(
+        "external_benchmark_proof_expected_event",
+        &[("expected", &normalized)],
+    );
+    let matched = expected_event
+        .split_once(' ')
+        .is_some_and(|(kind, payload)| structured_trace_has_event(trace, kind, payload));
+    (
+        matched,
+        vocabulary::render(
+            "external_benchmark_proof_status_detail",
+            &[("event", &expected_event), ("trace", &truncate(trace))],
+        ),
+    )
+}
+
+fn structured_trace_has_event(trace: &str, expected_kind: &str, expected_payload: &str) -> bool {
+    let Ok((_id, fields)) = parse_indented(trace) else {
+        return false;
+    };
+    fields.get("steps").is_some_and(|steps| {
+        steps.split("; ").any(|encoded| {
+            let Some((step, event)) = encoded.split_once(' ') else {
+                return false;
+            };
+            let Some(index) = step.strip_prefix("step_") else {
+                return false;
+            };
+            if index.is_empty() || !index.bytes().all(|byte| byte.is_ascii_digit()) {
+                return false;
+            }
+            event
+                .split_once(' ')
+                .is_some_and(|(kind, payload)| kind == expected_kind && payload == expected_payload)
+        })
+    })
 }
 
 fn grade_value(grading: Grading, expected: &str, answer: &str) -> (bool, String) {
@@ -82,7 +146,8 @@ fn grade_value(grading: Grading, expected: &str, answer: &str) -> (bool, String)
             let gold = normalize(expected);
             normalize(answer) == gold || normalize(&final_answer(answer)) == gold
         }
-        Grading::PythonUnitTest
+        Grading::ProofStatus
+        | Grading::PythonUnitTest
         | Grading::PythonAsserts
         | Grading::SweBenchTests
         | Grading::NotApplicable => false,
@@ -333,6 +398,7 @@ fn outcomes_from_swebench_report(
                     id: case.id.clone(),
                     passed: true,
                     detail: String::new(),
+                    prompt_excerpt: super::learning::one_line(&case.prompt, 160),
                 }
             } else if empty.contains(&case.id) {
                 failure(
@@ -364,6 +430,7 @@ fn failure(case: &BenchmarkCase, detail: &str) -> CaseOutcome {
         id: case.id.clone(),
         passed: false,
         detail: detail.to_string(),
+        prompt_excerpt: super::learning::one_line(&case.prompt, 160),
     }
 }
 

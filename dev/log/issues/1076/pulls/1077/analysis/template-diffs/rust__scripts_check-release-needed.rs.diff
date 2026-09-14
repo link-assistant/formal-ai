@@ -1,0 +1,31 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/check-release-needed.rs	2026-09-05 09:39:56.902043019 +0000
++++ scripts/check-release-needed.rs	2026-09-05 09:37:22.101726399 +0000
+@@ -33,6 +33,9 @@
+ //!   - max_published_version: the highest non-yanked version on crates.io (for downstream use)
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! ureq = "2"
+@@ -48,8 +51,6 @@
+ 
+ #[path = "rust-paths.rs"]
+ mod rust_paths;
+-#[path = "release-naming.rs"]
+-mod release_naming;
+ 
+ fn get_arg(name: &str) -> Option<String> {
+     let args: Vec<String> = env::args().collect();
+@@ -314,8 +315,7 @@
+ 
+     if !has_fragments {
+         let crate_published = check_version_on_crates_io(&crate_name, &current_version);
+-        let tag_prefix = get_arg("tag-prefix")
+-            .unwrap_or_else(|| release_naming::tag_prefix_for_rust_root(&rust_root).to_string());
++        let tag_prefix = get_arg("tag-prefix").unwrap_or_else(|| "v".to_string());
+         let dockerhub_image = docker_hub_image_to_check();
+         let dockerhub_required = dockerhub_image.is_some();
+         let dockerhub_published = dockerhub_image

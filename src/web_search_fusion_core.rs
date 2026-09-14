@@ -196,13 +196,13 @@ fn parse_anchor_meanings() -> Vec<Meaning> {
                     action: false,
                 });
             }
-        } else if indent == 8 && line.starts_with("action ") {
-            if let Some(form) = current
+        } else if indent == 8
+            && line.starts_with("action ")
+            && let Some(form) = current
                 .as_mut()
                 .and_then(|meaning| meaning.forms.last_mut())
-            {
-                form.action = true;
-            }
+        {
+            form.action = true;
         }
     }
     if let Some(meaning) = current {
@@ -424,30 +424,30 @@ fn formalize_in_language(
                 format!("object=wikidata:{}", object.grounded_in),
             ];
             let mut rendered = punctuated(text);
-            if source_language != target_language {
-                if let (Some(subject_word), Some(predicate_word), Some(object_word)) = (
+            if source_language != target_language
+                && let (Some(subject_word), Some(predicate_word), Some(object_word)) = (
                     target_form(subject, target_language, false),
                     target_form(relation, target_language, true),
                     target_form(object, target_language, false),
-                ) {
-                    let predicate = if denied {
-                        denied_predicate(&predicate_word, target_language, vocabulary)
-                    } else {
-                        predicate_word
-                    };
-                    let order = crate::search_fusion_grammar::role_order(target_language);
-                    let ordered = order
-                        .iter()
-                        .map(|role| match *role {
-                            "subject" => Some(subject_word.as_str()),
-                            "predicate" => Some(predicate.as_str()),
-                            "object" => Some(object_word.as_str()),
-                            _ => None,
-                        })
-                        .collect::<Option<Vec<_>>>();
-                    if let Some(ordered) = ordered {
-                        rendered = punctuated(&capitalize_first(&ordered.join(" ")));
-                    }
+                )
+            {
+                let predicate = if denied {
+                    denied_predicate(&predicate_word, target_language, vocabulary)
+                } else {
+                    predicate_word
+                };
+                let order = crate::search_fusion_grammar::role_order(target_language);
+                let ordered = order
+                    .iter()
+                    .map(|role| match *role {
+                        "subject" => Some(subject_word.as_str()),
+                        "predicate" => Some(predicate.as_str()),
+                        "object" => Some(object_word.as_str()),
+                        _ => None,
+                    })
+                    .collect::<Option<Vec<_>>>();
+                if let Some(ordered) = ordered {
+                    rendered = punctuated(&capitalize_first(&ordered.join(" ")));
                 }
             }
             return Formalization {
@@ -526,10 +526,8 @@ fn target_form(meaning: &Meaning, language: &str, prefer_action: bool) -> Option
         .forms
         .iter()
         .filter(|form| form.language == language);
-    if prefer_action {
-        if let Some(form) = forms.clone().find(|form| form.action) {
-            return Some(form.text.clone());
-        }
+    if prefer_action && let Some(form) = forms.clone().find(|form| form.action) {
+        return Some(form.text.clone());
     }
     forms.into_iter().next().map(|form| form.text.clone())
 }
@@ -858,12 +856,13 @@ fn decode_uri_component(value: &str) -> String {
     let mut decoded = Vec::with_capacity(bytes.len());
     let mut index = 0;
     while index < bytes.len() {
-        if bytes[index] == b'%' && index + 2 < bytes.len() {
-            if let (Some(high), Some(low)) = (hex(bytes[index + 1]), hex(bytes[index + 2])) {
-                decoded.push((high << 4) | low);
-                index += 3;
-                continue;
-            }
+        if bytes[index] == b'%'
+            && index + 2 < bytes.len()
+            && let (Some(high), Some(low)) = (hex(bytes[index + 1]), hex(bytes[index + 2]))
+        {
+            decoded.push((high << 4) | low);
+            index += 3;
+            continue;
         }
         decoded.push(bytes[index]);
         index += 1;

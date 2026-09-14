@@ -5,12 +5,12 @@ use serde_json::Value;
 
 use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
 use crate::agentic_coding::narration::tool_action_narration;
-use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
+use crate::agentic_coding::planner::{AgenticPlan, plan_chat_step};
 use crate::dreaming_application::{
     amended_answer, apply_retained_amendments, solve_with_standing_requirements,
 };
 use crate::engine::{
-    estimate_tokens, render_thinking_steps, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep,
+    FormalAiEngine, SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
 };
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
@@ -19,13 +19,16 @@ use crate::protocol_policy::{
     matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
     tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
 };
-use crate::protocol_responses::{
-    custom_response_tool_input, is_custom_response_tool, response_arguments_for_tool,
-};
+use crate::protocol_responses::{custom_response_tool_input, is_custom_response_tool};
+// Public because grounding is a property of the *emitted call*, and issue #1075
+// asks for it to be asserted directly rather than inferred from a transcript.
+pub use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod content;
-pub use content::{client_working_directory, latest_user_request, system_prompt_text};
+pub use content::{
+    client_working_directory, latest_user_request, observed_directory, system_prompt_text,
+};
 mod output;
 mod recording;
 mod responses_input;
@@ -407,10 +410,10 @@ impl ResponsesRequest {
     #[must_use]
     pub fn to_chat_completion_request(&self) -> ChatCompletionRequest {
         let mut messages = responses_input::messages(&self.input);
-        if let Some(instructions) = self.instructions.as_deref() {
-            if !instructions.trim().is_empty() {
-                messages.insert(0, ChatMessage::new("system", instructions.trim()));
-            }
+        if let Some(instructions) = self.instructions.as_deref()
+            && !instructions.trim().is_empty()
+        {
+            messages.insert(0, ChatMessage::new("system", instructions.trim()));
         }
         ChatCompletionRequest {
             model: self.model.clone(),
@@ -451,23 +454,21 @@ pub fn create_chat_completion_with_solver_and_memory(
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
 
-    match agentic_outcome(request, solver.config.agent_mode) {
-        AgenticOutcome::Refused(answer) => {
-            return chat_completion_from_symbolic(request, &prompt, answer)
-        }
-        AgenticOutcome::Planned(plan) => {
-            return chat_completion_from_plan(request, &prompt, plan, memory_events)
-        }
-        AgenticOutcome::Fallthrough => {}
-    }
-
     if let Some(mut symbolic_answer) =
         answer_from_memory_if_requested(&prompt, &history, memory_events)
     {
-        // Memory-recall answers honour standing requirements too — recall must
-        // not become a side door around retained learning.
         apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
+    }
+
+    match agentic_outcome(request, solver.config.agent_mode) {
+        AgenticOutcome::Refused(answer) => {
+            return chat_completion_from_symbolic(request, &prompt, answer);
+        }
+        AgenticOutcome::Planned(plan) => {
+            return chat_completion_from_plan(request, &prompt, plan, memory_events);
+        }
+        AgenticOutcome::Fallthrough => {}
     }
 
     // Standing requirements are injected into the solving context itself (as if
@@ -520,13 +521,13 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         // (issue #671). Answering from what is already here needs no tool, so
         // it belongs on this side of the gate — but still only in agent mode,
         // which is what promises the client a workspace-aware answer.
-        if agent_mode {
-            if let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages) {
-                if trace {
-                    eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
-                }
-                return AgenticOutcome::Planned(AgenticPlan::Final(answer));
+        if agent_mode
+            && let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages)
+        {
+            if trace {
+                eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
             }
+            return AgenticOutcome::Planned(AgenticPlan::Final(answer));
         }
         if trace {
             eprintln!("[trace] agentic_outcome: fallthrough (no tool execution requested)");
@@ -555,7 +556,21 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     // Agent mode with tools permitted: the deterministic agentic planner drives
     // the loop, emitting `tool_calls` or a final answer. An unrecognised task
     // yields `None` and falls through to the solver.
-    let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
+    //
+    // A tool whose preconditions this request cannot meet is withheld from the
+    // planner rather than called with invented ones (issue #1075). A connector
+    // that cannot be addressed without a repository, and a request that names
+    // none, is not a tool that is available here — offering it anyway is how a
+    // local file write became a 404 against `""`.
+    let grounded = groundable_tool_names(request, &owned_names);
+    if trace && grounded.len() != owned_names.len() {
+        let withheld: Vec<&String> = owned_names
+            .iter()
+            .filter(|name| !grounded.contains(name))
+            .collect();
+        eprintln!("[trace] agentic_outcome: withheld ungroundable tools: {withheld:?}");
+    }
+    let tool_names: Vec<&str> = grounded.iter().map(String::as_str).collect();
     let outcome = plan_chat_step(&request.messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     if trace {
@@ -568,6 +583,39 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         }
     }
     outcome
+}
+
+/// The advertised tools this request can actually address.
+///
+/// A tool is withheld when its own schema requires an identity the request
+/// never states — the repository, project or channel the effect would land on.
+/// Withholding is what lets the planner replan onto a tool it *can* ground,
+/// which for a workspace file is the client's own writer or patch tool.
+fn groundable_tool_names(request: &ChatCompletionRequest, names: &[String]) -> Vec<String> {
+    let context = messages_text(&request.messages);
+    let empty = serde_json::Map::new();
+    names
+        .iter()
+        .filter(|name| {
+            crate::protocol_policy::find_tool_definition(&request.tools, name).is_none_or(
+                |definition| {
+                    crate::tool_scope::ungrounded_identity_arguments(definition, &empty, &context)
+                        .is_empty()
+                },
+            )
+        })
+        .cloned()
+        .collect()
+}
+
+/// Everything the client said this turn, in order — the text an identity is
+/// grounded in.
+fn messages_text(messages: &[ChatMessage]) -> String {
+    messages
+        .iter()
+        .map(|message| message.content.plain_text())
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 /// Build a chat completion from a deterministic [`AgenticPlan`]. A
@@ -706,13 +754,6 @@ pub fn create_response_with_solver_and_memory(
 ) -> ResponseObject {
     let prompt = response_prompt(request);
     let chat_request = request.to_chat_completion_request();
-    match agentic_outcome(&chat_request, solver.config.agent_mode) {
-        AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
-        AgenticOutcome::Planned(plan) => {
-            return response_from_plan(request, &prompt, plan, memory_events)
-        }
-        AgenticOutcome::Fallthrough => {}
-    }
     let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
     let memory_prompt = if memory_prompt.trim().is_empty() {
         prompt.as_str()
@@ -724,6 +765,13 @@ pub fn create_response_with_solver_and_memory(
     {
         apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return response_from_symbolic(request, &prompt, symbolic_answer);
+    }
+    match agentic_outcome(&chat_request, solver.config.agent_mode) {
+        AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
+        AgenticOutcome::Planned(plan) => {
+            return response_from_plan(request, &prompt, plan, memory_events);
+        }
+        AgenticOutcome::Fallthrough => {}
     }
     let symbolic_answer =
         solve_with_standing_requirements(solver, memory_prompt, &history, memory_events);

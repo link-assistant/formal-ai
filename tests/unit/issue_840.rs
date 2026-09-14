@@ -2,7 +2,7 @@
 
 use std::process::Command;
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::seed::{
     self, ROLE_LOCAL_PATH_DIRECTORY_KIND, ROLE_LOCAL_PATH_SCOPE_DESKTOP,
@@ -566,7 +566,10 @@ fn reference_differential_is_machine_checked_and_wired_into_release_ci() {
         "a PEM-decoy regression must fail the differential gate"
     );
 
-    let workflow = std::fs::read_to_string(root.join(".github/workflows/release.yml")).unwrap();
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert!(
         workflow.contains("issue_840_reference_agents/run_differential_gate.sh"),
         "the differential comparison must execute in release CI"
@@ -596,6 +599,17 @@ fn issue_840_agent_cli_e2e_covers_every_seed_journey_including_russian_reporting
         issue_harness.contains("issue_714_agentic_mode/run_report_e2e.sh"),
         "the Russian report request must reach the real report executor"
     );
+    for timeout_setting in [
+        r#""tool_call_timeout": 120000"#,
+        r#""max_tool_call_timeout": 600000"#,
+        "--mcp-default-tool-call-timeout 120000",
+        "--mcp-max-tool-call-timeout 600000",
+    ] {
+        assert!(
+            issue_harness.contains(timeout_setting),
+            "the Agent CLI harness must set {timeout_setting} explicitly"
+        );
+    }
 
     let report_harness =
         std::fs::read_to_string(root.join("experiments/issue_714_agentic_mode/run_report_e2e.sh"))

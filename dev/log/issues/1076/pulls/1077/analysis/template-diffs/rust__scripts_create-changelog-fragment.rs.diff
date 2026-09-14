@@ -1,0 +1,12 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/create-changelog-fragment.rs	2026-09-05 09:39:56.903043008 +0000
++++ scripts/create-changelog-fragment.rs	2026-09-05 09:37:22.105726355 +0000
+@@ -7,6 +7,9 @@
+ //! Usage: rust-script scripts/create-changelog-fragment.rs --bump-type <type> [--description <desc>]
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! chrono = "0.4"
+ //! ```

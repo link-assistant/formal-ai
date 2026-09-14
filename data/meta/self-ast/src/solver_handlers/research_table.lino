@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/research_table.rs
   language rust
   fidelity signature
-  byte_len 18549
-  line_count 487
-  content_id source_module_6091ab70dc0b5777
+  byte_len 18529
+  line_count 485
+  content_id source_module_b71abbb7e38d0d8f
   symbol_count 25
   symbols
     enum Criterion 18 23
@@ -21,14 +21,14 @@ self_ast_census
     function classify_prior_research_answer 210 240
     function render_research_result_followup 242 258
     function research_prompt_preview 260 268
-    function extract_research_topics 270 295
-    function clean_topic_line 297 305
-    function strip_list_marker 307 325
-    function clean_search_text 327 340
-    function extract_criteria 342 362
-    function append_criteria_from_text 371 380
-    function push_unique 382 386
-    function render_comparison_table 388 412
-    function cell_for 414 479
-    function table_escape 481 483
-    function compact_log_value 485 487
+    function extract_research_topics 270 294
+    function clean_topic_line 296 304
+    function strip_list_marker 306 324
+    function clean_search_text 326 339
+    function extract_criteria 341 361
+    function append_criteria_from_text 370 378
+    function push_unique 380 384
+    function render_comparison_table 386 410
+    function cell_for 412 477
+    function table_escape 479 481
+    function compact_log_value 483 485

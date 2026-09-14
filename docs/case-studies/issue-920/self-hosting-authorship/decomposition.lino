@@ -1,0 +1,31 @@
+issue_920_decomposition
+  record_type "task_decomposition"
+  issue "920"
+  leaf_count "5"
+  formal_ai_authored_leaf_count "1"
+  formal_ai_authored_percent "20"
+issue_920_leaf_seed_classifier
+  record_type "smallest_leaf"
+  owner "formal_ai_agent_cli"
+  artifact "data/seed/question-necessity.lino"
+  status "complete"
+issue_920_leaf_authorization_engine
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/question_necessity.rs"
+  status "complete"
+issue_920_leaf_finalizer_integration
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/solver.rs|src/solver_handlers/mod.rs|src/solver_synthesis.rs"
+  status "complete"
+issue_920_leaf_regression_benchmark
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "tests/unit/issue_920_question_necessity.rs|data/benchmarks/question-necessity-suite.lino"
+  status "complete"
+issue_920_leaf_ci_documentation
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact ".github/workflows/question-necessity-ratchet.yml|docs/case-studies/issue-920/README.md"
+  status "complete"

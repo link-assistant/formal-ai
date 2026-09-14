@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/mod.rs
   language rust
   fidelity signature
-  byte_len 34490
+  byte_len 34534
   line_count 598
-  content_id source_module_101b777fdcc94d8a
+  content_id source_module_249cc2cbd9a27371
   symbol_count 14
   symbols
     module arithmetic 20 20

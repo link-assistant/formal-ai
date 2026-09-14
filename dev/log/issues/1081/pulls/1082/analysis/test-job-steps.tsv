@@ -1,0 +1,1285 @@
+run_id	created_at	job	job_conclusion	job_seconds	step	step_conclusion	step_seconds
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Set up job	success	1
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run actions/checkout@v7	success	19
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Simulate fresh merge with base branch (PR only)	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Free up runner disk space	success	113
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Setup Rust	success	10
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run ./.github/actions/setup-sccache	success	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run ./.github/actions/cache-cargo-registry	success	7
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Check LiNo data integrity	success	120
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	sccache counters after the first compiling step	success	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Check self-AST census freshness	success	53
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Download test executables	success	4
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run ./.github/actions/download-formal-ai-binary	success	5
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run tests	success	889
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run specification tests	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Run doc tests	success	4
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Post Run ./.github/actions/cache-cargo-registry	success	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Post Run ./.github/actions/setup-sccache	success	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Post Run actions/checkout@v7	success	0
+34095902681	2026-09-07T07:31:42Z	Test (ubuntu-latest / full)	success	1228	Complete job	success	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Set up job	success	6
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run actions/checkout@v7	success	89
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Simulate fresh merge with base branch (PR only)	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Free up runner disk space	success	1
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Setup Rust	success	42
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run ./.github/actions/setup-sccache	success	5
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run ./.github/actions/cache-cargo-registry	success	16
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Check LiNo data integrity	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	sccache counters after the first compiling step	success	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Check self-AST census freshness	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Download test executables	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run ./.github/actions/download-formal-ai-binary	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run tests	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run specification tests	failure	1401
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Run doc tests	skipped	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Post Run ./.github/actions/cache-cargo-registry	success	0
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Post Run ./.github/actions/setup-sccache	success	2
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Post Run actions/checkout@v7	success	1
+34095902681	2026-09-07T07:31:42Z	Test (macos-15-intel / specification)	failure	1568	Complete job	success	2
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Set up job	success	2
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run actions/checkout@v7	success	57
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Simulate fresh merge with base branch (PR only)	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Free up runner disk space	success	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Setup Rust	success	24
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run ./.github/actions/setup-sccache	success	3
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run ./.github/actions/cache-cargo-registry	success	13
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Check LiNo data integrity	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	sccache counters after the first compiling step	success	2
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Check self-AST census freshness	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Download test executables	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run ./.github/actions/download-formal-ai-binary	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run tests	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run specification tests	success	1028
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Run doc tests	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Post Run ./.github/actions/cache-cargo-registry	success	0
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Post Run ./.github/actions/setup-sccache	success	1
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Post Run actions/checkout@v7	success	1
+34061511110	2026-09-06T21:34:56Z	Test (macos-15-intel / specification)	success	1136	Complete job	success	1
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Set up job	success	1
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run actions/checkout@v7	success	21
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Simulate fresh merge with base branch (PR only)	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Free up runner disk space	success	36
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Setup Rust	success	10
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run ./.github/actions/setup-sccache	success	2
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run ./.github/actions/cache-cargo-registry	success	10
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Check LiNo data integrity	success	300
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	sccache counters after the first compiling step	success	0
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Check self-AST census freshness	success	67
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Download test executables	success	11
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run ./.github/actions/download-formal-ai-binary	success	8
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run tests	success	443
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run specification tests	skipped	0
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Run doc tests	success	6
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Post Run ./.github/actions/cache-cargo-registry	success	0
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Post Run ./.github/actions/setup-sccache	success	0
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Post Run actions/checkout@v7	success	0
+34061511110	2026-09-06T21:34:56Z	Test (ubuntu-latest / full)	success	920	Complete job	success	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Set up job	success	1
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run actions/checkout@v7	success	19
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Simulate fresh merge with base branch (PR only)	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Free up runner disk space	success	138
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Setup Rust	success	12
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run ./.github/actions/setup-sccache	success	1
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run ./.github/actions/cache-cargo-registry	success	6
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Check LiNo data integrity	success	328
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	sccache counters after the first compiling step	success	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Check self-AST census freshness	success	56
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Download test executables	success	4
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run ./.github/actions/download-formal-ai-binary	success	5
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run tests	success	711
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run specification tests	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Run doc tests	success	4
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Post Run ./.github/actions/cache-cargo-registry	success	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Post Run ./.github/actions/setup-sccache	success	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Post Run actions/checkout@v7	success	0
+33994570842	2026-09-05T21:58:40Z	Test (ubuntu-latest / full)	success	1287	Complete job	success	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Set up job	success	2
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run actions/checkout@v7	success	57
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Simulate fresh merge with base branch (PR only)	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Free up runner disk space	success	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Setup Rust	success	14
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run ./.github/actions/setup-sccache	success	3
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run ./.github/actions/cache-cargo-registry	success	9
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Check LiNo data integrity	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	sccache counters after the first compiling step	success	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Check self-AST census freshness	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Download test executables	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run ./.github/actions/download-formal-ai-binary	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run tests	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run specification tests	success	973
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Run doc tests	skipped	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Post Run ./.github/actions/cache-cargo-registry	success	0
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Post Run ./.github/actions/setup-sccache	success	1
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Post Run actions/checkout@v7	success	1
+33994570842	2026-09-05T21:58:40Z	Test (macos-15-intel / specification)	success	1063	Complete job	success	1
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Set up job	success	2
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Run actions/checkout@v7	success	28
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Simulate fresh merge with base branch (PR only)	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Free up runner disk space	success	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Setup Rust	success	14
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Run ./.github/actions/setup-sccache	success	3
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Restore cargo registry cache	success	3
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Check LiNo data integrity	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	sccache counters after the first compiling step	success	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Check self-AST census freshness	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Download test executables	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Run ./.github/actions/download-formal-ai-binary	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Run tests	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Run specification tests	success	898
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Run doc tests	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Post Run ./.github/actions/setup-sccache	success	0
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Post Run actions/checkout@v7	success	1
+33955786226	2026-09-05T08:37:51Z	Test (macos-15-intel / specification)	success	955	Complete job	success	0
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Set up job	success	1
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Run actions/checkout@v7	success	21
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Simulate fresh merge with base branch (PR only)	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Free up runner disk space	success	101
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Setup Rust	success	10
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Run ./.github/actions/setup-sccache	success	2
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Restore cargo registry cache	success	7
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Check LiNo data integrity	success	390
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	sccache counters after the first compiling step	success	0
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Check self-AST census freshness	success	67
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Download test executables	success	5
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Run ./.github/actions/download-formal-ai-binary	success	7
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Run tests	success	433
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Run specification tests	skipped	0
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Run doc tests	success	4
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Post Run ./.github/actions/setup-sccache	success	0
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Post Run actions/checkout@v7	success	1
+33955786226	2026-09-05T08:37:51Z	Test (ubuntu-latest / full)	success	1052	Complete job	success	0
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Set up job	success	1
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Run actions/checkout@v7	success	33
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Simulate fresh merge with base branch (PR only)	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Free up runner disk space	success	99
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Setup Rust	success	10
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Run ./.github/actions/setup-sccache	success	3
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Restore cargo registry cache	success	9
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Check LiNo data integrity	success	484
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	sccache counters after the first compiling step	success	0
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Check self-AST census freshness	success	69
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Download test executables	success	8
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Run ./.github/actions/download-formal-ai-binary	success	23
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Run tests	success	391
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Run specification tests	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Run doc tests	success	8
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Post Run ./.github/actions/setup-sccache	success	0
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Post Run actions/checkout@v7	success	0
+33902725025	2026-09-04T17:50:45Z	Test (ubuntu-latest / full)	success	1142	Complete job	success	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Set up job	success	3
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Run actions/checkout@v7	success	50
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Simulate fresh merge with base branch (PR only)	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Free up runner disk space	success	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Setup Rust	success	18
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Run ./.github/actions/setup-sccache	success	4
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Restore cargo registry cache	success	6
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Check LiNo data integrity	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	sccache counters after the first compiling step	success	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Check self-AST census freshness	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Download test executables	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Run ./.github/actions/download-formal-ai-binary	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Run tests	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Run specification tests	success	942
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Run doc tests	skipped	0
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Post Run ./.github/actions/setup-sccache	success	1
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Post Run actions/checkout@v7	success	1
+33902725025	2026-09-04T17:50:45Z	Test (macos-15-intel / specification)	success	1027	Complete job	success	0
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Set up job	success	2
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Run actions/checkout@v6	success	24
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Simulate fresh merge with base branch (PR only)	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Free up runner disk space	success	27
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Setup Rust	success	3
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Run ./.github/actions/setup-sccache	success	3
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Restore cargo registry cache	success	6
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Check LiNo data integrity	success	168
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	sccache counters after the first compiling step	success	0
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Check self-AST census freshness	success	66
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Download test executables	success	8
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Run ./.github/actions/download-formal-ai-binary	success	9
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Run tests	success	112
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Run specification tests	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Run doc tests	success	6
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Post Run ./.github/actions/setup-sccache	success	0
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Post Run actions/checkout@v6	success	1
+33310631522	2026-08-30T12:07:06Z	Test (ubuntu-latest / full)	success	438	Complete job	success	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Set up job	success	3
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Run actions/checkout@v6	success	38
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Simulate fresh merge with base branch (PR only)	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Free up runner disk space	success	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Setup Rust	success	5
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Run ./.github/actions/setup-sccache	success	3
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Restore cargo registry cache	success	4
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Check LiNo data integrity	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	sccache counters after the first compiling step	success	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Check self-AST census freshness	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Download test executables	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Run ./.github/actions/download-formal-ai-binary	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Run tests	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Run specification tests	success	616
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Run doc tests	skipped	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Post Run ./.github/actions/setup-sccache	success	0
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Post Run actions/checkout@v6	success	1
+33310631522	2026-08-30T12:07:06Z	Test (macos-15-intel / specification)	success	675	Complete job	success	1
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Set up job	success	8
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Run actions/checkout@v6	success	92
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Simulate fresh merge with base branch (PR only)	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Free up runner disk space	success	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Setup Rust	success	11
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Run ./.github/actions/setup-sccache	success	6
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Restore cargo registry cache	success	11
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Check LiNo data integrity	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	sccache counters after the first compiling step	success	1
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Check self-AST census freshness	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Download test executables	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Run ./.github/actions/download-formal-ai-binary	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Run tests	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Run specification tests	success	1181
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Run doc tests	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Post Run ./.github/actions/setup-sccache	success	2
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Post Run actions/checkout@v6	success	1
+33189772848	2026-08-28T16:23:58Z	Test (macos-15-intel / specification)	success	1320	Complete job	success	1
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Set up job	success	1
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Run actions/checkout@v6	success	21
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Simulate fresh merge with base branch (PR only)	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Free up runner disk space	success	28
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Setup Rust	success	2
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Run ./.github/actions/setup-sccache	success	1
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Restore cargo registry cache	success	6
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Check LiNo data integrity	success	144
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	sccache counters after the first compiling step	success	0
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Check self-AST census freshness	success	64
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Download test executables	success	5
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Run ./.github/actions/download-formal-ai-binary	success	6
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Run tests	success	100
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Run specification tests	skipped	0
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Run doc tests	success	5
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Post Run ./.github/actions/setup-sccache	success	0
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Post Run actions/checkout@v6	success	0
+33189772848	2026-08-28T16:23:58Z	Test (ubuntu-latest / full)	success	385	Complete job	success	0
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Set up job	success	2
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Run actions/checkout@v6	success	78
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Simulate fresh merge with base branch (PR only)	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Free up runner disk space	success	184
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Setup Rust	success	12
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Run ./.github/actions/setup-sccache	success	1
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Restore cargo registry cache	success	7
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Check LiNo data integrity	success	159
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	sccache counters after the first compiling step	success	0
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Check self-AST census freshness	success	63
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Download test executables	success	7
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Run ./.github/actions/download-formal-ai-binary	success	12
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Run tests	failure	86
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Run specification tests	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Run doc tests	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Post Run ./.github/actions/setup-sccache	success	0
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Post Run actions/checkout@v6	success	1
+32740803291	2026-08-24T14:46:44Z	Test (ubuntu-latest / full)	failure	614	Complete job	success	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Set up job	success	4
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Run actions/checkout@v6	success	44
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Simulate fresh merge with base branch (PR only)	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Free up runner disk space	success	1
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Setup Rust	success	19
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Run ./.github/actions/setup-sccache	success	2
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Restore cargo registry cache	success	7
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Check LiNo data integrity	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	sccache counters after the first compiling step	success	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Check self-AST census freshness	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Download test executables	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Run ./.github/actions/download-formal-ai-binary	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Run tests	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Run specification tests	success	711
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Run doc tests	skipped	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Post Run ./.github/actions/setup-sccache	success	0
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Post Run actions/checkout@v6	success	1
+32740803291	2026-08-24T14:46:44Z	Test (macos-15-intel / specification)	success	791	Complete job	success	0
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Set up job	success	2
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Run actions/checkout@v6	success	22
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Simulate fresh merge with base branch (PR only)	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Free up runner disk space	success	47
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Setup Rust	success	11
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Run ./.github/actions/setup-sccache	success	2
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Restore cargo registry cache	success	9
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Check LiNo data integrity	success	187
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	sccache counters after the first compiling step	success	0
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Check self-AST census freshness	success	66
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Download test executables	success	7
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Run ./.github/actions/download-formal-ai-binary	success	9
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Run tests	success	104
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Run specification tests	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Run doc tests	success	6
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Post Run ./.github/actions/setup-sccache	success	0
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Post Run actions/checkout@v6	success	1
+32720814503	2026-08-24T11:14:08Z	Test (ubuntu-latest / full)	success	477	Complete job	success	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Set up job	success	2
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Run actions/checkout@v6	success	33
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Simulate fresh merge with base branch (PR only)	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Free up runner disk space	success	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Setup Rust	success	14
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Run ./.github/actions/setup-sccache	success	2
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Restore cargo registry cache	success	4
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Check LiNo data integrity	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	sccache counters after the first compiling step	success	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Check self-AST census freshness	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Download test executables	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Run ./.github/actions/download-formal-ai-binary	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Run tests	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Run specification tests	success	424
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Run doc tests	skipped	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Post Run ./.github/actions/setup-sccache	success	0
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Post Run actions/checkout@v6	success	1
+32720814503	2026-08-24T11:14:08Z	Test (macos-15-intel / specification)	success	486	Complete job	success	1
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Set up job	success	2
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Run actions/checkout@v6	success	38
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Simulate fresh merge with base branch (PR only)	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Free up runner disk space	success	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Setup Rust	success	18
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Run ./.github/actions/setup-sccache	success	3
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Restore cargo registry cache	success	5
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Check LiNo data integrity	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	sccache counters after the first compiling step	success	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Check self-AST census freshness	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Download test executables	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Run ./.github/actions/download-formal-ai-binary	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Run tests	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Run specification tests	success	580
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Run doc tests	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Post Run ./.github/actions/setup-sccache	success	0
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Post Run actions/checkout@v6	success	1
+32706091539	2026-08-24T08:23:47Z	Test (macos-15-intel / specification)	success	651	Complete job	success	1
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Set up job	success	1
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Run actions/checkout@v6	success	21
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Simulate fresh merge with base branch (PR only)	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Free up runner disk space	success	91
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Setup Rust	success	12
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Run ./.github/actions/setup-sccache	success	2
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Restore cargo registry cache	success	9
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Check LiNo data integrity	success	185
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	sccache counters after the first compiling step	success	0
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Check self-AST census freshness	success	61
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Download test executables	success	7
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Run ./.github/actions/download-formal-ai-binary	success	12
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Run tests	success	103
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Run specification tests	skipped	0
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Run doc tests	success	7
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Post Run ./.github/actions/setup-sccache	success	0
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Post Run actions/checkout@v6	success	0
+32706091539	2026-08-24T08:23:47Z	Test (ubuntu-latest / full)	success	516	Complete job	success	0
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Set up job	success	2
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Run actions/checkout@v6	success	25
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Simulate fresh merge with base branch (PR only)	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Free up runner disk space	success	86
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Setup Rust	success	14
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Run ./.github/actions/setup-sccache	success	2
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Restore cargo registry cache	success	6
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Check LiNo data integrity	success	281
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	sccache counters after the first compiling step	success	1
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Check self-AST census freshness	success	68
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Download test executables	success	8
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Run ./.github/actions/download-formal-ai-binary	success	8
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Run tests	success	111
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Run specification tests	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Run doc tests	success	6
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Post Run ./.github/actions/setup-sccache	success	1
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Post Run actions/checkout@v6	success	0
+32688997247	2026-08-24T04:10:09Z	Test (ubuntu-latest / full)	success	622	Complete job	success	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Set up job	success	4
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Run actions/checkout@v6	success	55
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Simulate fresh merge with base branch (PR only)	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Free up runner disk space	success	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Setup Rust	success	21
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Run ./.github/actions/setup-sccache	success	2
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Restore cargo registry cache	success	7
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Check LiNo data integrity	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	sccache counters after the first compiling step	success	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Check self-AST census freshness	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Download test executables	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Run ./.github/actions/download-formal-ai-binary	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Run tests	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Run specification tests	failure	1402
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Run doc tests	skipped	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Post Run ./.github/actions/setup-sccache	success	0
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Post Run actions/checkout@v6	success	1
+32688997247	2026-08-24T04:10:09Z	Test (macos-15-intel / specification)	failure	1497	Complete job	success	1
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Set up job	success	2
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Run actions/checkout@v6	success	32
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Simulate fresh merge with base branch (PR only)	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Free up runner disk space	success	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Setup Rust	success	13
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Run ./.github/actions/setup-sccache	success	3
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Restore cargo registry cache	success	3
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Check LiNo data integrity	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	sccache counters after the first compiling step	success	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Check self-AST census freshness	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Run tests	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Run specification tests	success	955
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Run doc tests	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Post Run ./.github/actions/setup-sccache	success	0
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Post Run actions/checkout@v6	success	1
+32642782690	2026-08-23T13:35:01Z	Test (macos-15-intel / specification)	success	1146	Complete job	success	0
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Set up job	success	1
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Run actions/checkout@v6	success	21
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Simulate fresh merge with base branch (PR only)	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Free up runner disk space	success	76
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Setup Rust	success	11
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Run ./.github/actions/setup-sccache	success	1
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Restore cargo registry cache	success	4
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Check LiNo data integrity	success	376
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	sccache counters after the first compiling step	success	0
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Check self-AST census freshness	success	153
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Run tests	success	235
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Run specification tests	skipped	0
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Run doc tests	success	4
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Post Run ./.github/actions/setup-sccache	success	0
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Post Run actions/checkout@v6	success	0
+32642782690	2026-08-23T13:35:01Z	Test (ubuntu-latest / full)	success	883	Complete job	success	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Set up job	success	2
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Run actions/checkout@v6	success	57
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Simulate fresh merge with base branch (PR only)	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Free up runner disk space	success	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Setup Rust	success	25
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Run ./.github/actions/setup-sccache	success	4
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Restore cargo registry cache	success	6
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Check LiNo data integrity	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	sccache counters after the first compiling step	success	1
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Check self-AST census freshness	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Run tests	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Run specification tests	success	933
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Run doc tests	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Post Run ./.github/actions/setup-sccache	success	0
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Post Run actions/checkout@v6	success	2
+32633794101	2026-08-23T10:27:19Z	Test (macos-15-intel / specification)	success	1033	Complete job	success	1
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Set up job	success	1
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Run actions/checkout@v6	success	20
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Simulate fresh merge with base branch (PR only)	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Free up runner disk space	success	85
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Setup Rust	success	11
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Run ./.github/actions/setup-sccache	success	2
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Restore cargo registry cache	success	8
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Check LiNo data integrity	success	175
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	sccache counters after the first compiling step	success	0
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Check self-AST census freshness	success	42
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Run tests	success	593
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Run specification tests	skipped	0
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Run doc tests	success	6
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Post Run ./.github/actions/setup-sccache	success	1
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Post Run actions/checkout@v6	success	0
+32633794101	2026-08-23T10:27:19Z	Test (ubuntu-latest / full)	success	947	Complete job	success	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Set up job	success	2
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Run actions/checkout@v6	success	38
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Simulate fresh merge with base branch (PR only)	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Free up runner disk space	success	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Setup Rust	success	13
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Run ./.github/actions/setup-sccache	success	3
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Restore cargo registry cache	success	4
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Check LiNo data integrity	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	sccache counters after the first compiling step	success	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Check self-AST census freshness	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Run tests	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Run specification tests	success	779
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Run doc tests	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Post Run ./.github/actions/setup-sccache	success	0
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Post Run actions/checkout@v6	success	1
+32600760901	2026-08-22T21:50:47Z	Test (macos-15-intel / specification)	success	843	Complete job	success	0
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Set up job	success	1
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Run actions/checkout@v6	success	20
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Simulate fresh merge with base branch (PR only)	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Free up runner disk space	success	106
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Setup Rust	success	12
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Run ./.github/actions/setup-sccache	success	2
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Restore cargo registry cache	success	5
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Check LiNo data integrity	success	195
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	sccache counters after the first compiling step	success	0
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Check self-AST census freshness	success	23
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Run tests	success	578
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Run specification tests	skipped	0
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Run doc tests	success	4
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Post Run ./.github/actions/setup-sccache	success	0
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Post Run actions/checkout@v6	success	1
+32600760901	2026-08-22T21:50:47Z	Test (ubuntu-latest / full)	success	949	Complete job	success	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Set up job	success	2
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Run actions/checkout@v6	success	40
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Simulate fresh merge with base branch (PR only)	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Free up runner disk space	success	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Setup Rust	success	16
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Run ./.github/actions/setup-sccache	success	3
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Restore cargo registry cache	success	5
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Check LiNo data integrity	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	sccache counters after the first compiling step	success	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Check self-AST census freshness	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Run tests	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Run specification tests	success	736
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Run doc tests	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Post Run ./.github/actions/setup-sccache	success	0
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Post Run actions/checkout@v6	success	1
+32598315074	2026-08-22T21:00:16Z	Test (macos-15-intel / specification)	success	807	Complete job	success	0
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Set up job	success	2
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Run actions/checkout@v6	success	20
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Simulate fresh merge with base branch (PR only)	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Free up runner disk space	success	84
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Setup Rust	success	12
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Run ./.github/actions/setup-sccache	success	2
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Restore cargo registry cache	success	8
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Check LiNo data integrity	success	186
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	sccache counters after the first compiling step	success	0
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Check self-AST census freshness	success	40
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Run tests	success	588
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Run specification tests	skipped	0
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Run doc tests	success	6
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Post Run ./.github/actions/setup-sccache	success	0
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Post Run actions/checkout@v6	success	0
+32598315074	2026-08-22T21:00:16Z	Test (ubuntu-latest / full)	success	953	Complete job	success	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Set up job	success	1
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Run actions/checkout@v6	success	49
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Simulate fresh merge with base branch (PR only)	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Free up runner disk space	success	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Setup Rust	success	14
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Run ./.github/actions/setup-sccache	success	2
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Restore cargo registry cache	success	7
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Check LiNo data integrity	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	sccache counters after the first compiling step	success	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Check self-AST census freshness	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Run tests	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Run specification tests	success	803
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Run doc tests	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Post Run ./.github/actions/setup-sccache	success	0
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Post Run actions/checkout@v6	success	1
+32591020809	2026-08-22T18:32:04Z	Test (macos-15-intel / specification)	success	882	Complete job	success	1
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Set up job	success	1
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Run actions/checkout@v6	success	21
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Simulate fresh merge with base branch (PR only)	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Free up runner disk space	success	89
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Setup Rust	success	13
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Run ./.github/actions/setup-sccache	success	2
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Restore cargo registry cache	success	3
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Check LiNo data integrity	success	151
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	sccache counters after the first compiling step	success	0
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Check self-AST census freshness	success	22
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Run tests	success	576
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Run specification tests	skipped	0
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Run doc tests	success	7
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Post Run ./.github/actions/setup-sccache	success	0
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Post Run actions/checkout@v6	success	1
+32591020809	2026-08-22T18:32:04Z	Test (ubuntu-latest / full)	success	890	Complete job	success	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Set up job	success	2
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Run actions/checkout@v6	success	44
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Simulate fresh merge with base branch (PR only)	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Free up runner disk space	success	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Setup Rust	success	15
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Run ./.github/actions/setup-sccache	success	3
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Restore cargo registry cache	success	3
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Check LiNo data integrity	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	sccache counters after the first compiling step	success	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Check self-AST census freshness	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Run tests	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Run specification tests	success	824
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Run doc tests	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Post Run ./.github/actions/setup-sccache	success	0
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Post Run actions/checkout@v6	success	1
+32586546322	2026-08-22T17:02:44Z	Test (macos-15-intel / specification)	success	895	Complete job	success	0
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Set up job	success	1
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Run actions/checkout@v6	success	21
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Simulate fresh merge with base branch (PR only)	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Free up runner disk space	success	72
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Setup Rust	success	10
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Run ./.github/actions/setup-sccache	success	2
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Restore cargo registry cache	success	2
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Check LiNo data integrity	success	160
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	sccache counters after the first compiling step	success	0
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Check self-AST census freshness	success	21
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Run tests	success	569
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Run specification tests	skipped	0
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Run doc tests	success	6
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Post Run ./.github/actions/setup-sccache	success	0
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Post Run actions/checkout@v6	success	1
+32586546322	2026-08-22T17:02:44Z	Test (ubuntu-latest / full)	success	868	Complete job	success	0
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Set up job	success	1
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Run actions/checkout@v6	success	22
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Simulate fresh merge with base branch (PR only)	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Free up runner disk space	success	97
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Setup Rust	success	12
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Run ./.github/actions/setup-sccache	success	2
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Restore cargo registry cache	success	7
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Check LiNo data integrity	success	142
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	sccache counters after the first compiling step	success	0
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Check self-AST census freshness	success	21
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Run tests	success	574
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Run specification tests	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Run doc tests	success	6
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Post Run ./.github/actions/setup-sccache	success	0
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Post Run actions/checkout@v6	success	0
+32583249757	2026-08-22T15:57:17Z	Test (ubuntu-latest / full)	success	888	Complete job	success	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Set up job	success	2
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Run actions/checkout@v6	success	32
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Simulate fresh merge with base branch (PR only)	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Free up runner disk space	success	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Setup Rust	success	14
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Run ./.github/actions/setup-sccache	success	2
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Restore cargo registry cache	success	3
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Check LiNo data integrity	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	sccache counters after the first compiling step	success	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Check self-AST census freshness	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Run tests	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Run specification tests	success	766
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Run doc tests	skipped	0
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Post Run ./.github/actions/setup-sccache	success	2
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Post Run actions/checkout@v6	success	1
+32583249757	2026-08-22T15:57:17Z	Test (macos-15-intel / specification)	success	825	Complete job	success	0
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Set up job	success	1
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Run actions/checkout@v6	success	20
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Simulate fresh merge with base branch (PR only)	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Free up runner disk space	success	82
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Setup Rust	success	10
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Run ./.github/actions/setup-sccache	success	2
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Restore cargo registry cache	success	1
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Check LiNo data integrity	success	152
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	sccache counters after the first compiling step	success	0
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Check self-AST census freshness	success	40
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Run tests	success	590
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Run specification tests	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Run doc tests	success	27
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Post Run ./.github/actions/setup-sccache	success	0
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Post Run actions/checkout@v6	success	0
+32578099660	2026-08-22T14:14:08Z	Test (ubuntu-latest / full)	success	928	Complete job	success	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Set up job	success	2
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Run actions/checkout@v6	success	40
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Simulate fresh merge with base branch (PR only)	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Free up runner disk space	success	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Setup Rust	success	16
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Run ./.github/actions/setup-sccache	success	3
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Restore cargo registry cache	success	5
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Check LiNo data integrity	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	sccache counters after the first compiling step	success	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Check self-AST census freshness	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Run tests	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Run specification tests	success	720
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Run doc tests	skipped	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Post Run ./.github/actions/setup-sccache	success	1
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Post Run actions/checkout@v6	success	0
+32578099660	2026-08-22T14:14:08Z	Test (macos-15-intel / specification)	success	791	Complete job	success	1
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Set up job	success	1
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Run actions/checkout@v6	success	23
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Simulate fresh merge with base branch (PR only)	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Free up runner disk space	success	81
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Setup Rust	success	11
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Run ./.github/actions/setup-sccache	success	2
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Restore cargo registry cache	success	7
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Check LiNo data integrity	success	168
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	sccache counters after the first compiling step	success	0
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Check self-AST census freshness	success	20
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Run tests	success	567
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Run specification tests	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Run doc tests	success	5
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Post Run ./.github/actions/setup-sccache	success	1
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Post Run actions/checkout@v6	success	0
+32570465855	2026-08-22T11:30:28Z	Test (ubuntu-latest / full)	success	888	Complete job	success	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Set up job	success	2
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Run actions/checkout@v6	success	35
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Simulate fresh merge with base branch (PR only)	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Free up runner disk space	success	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Setup Rust	success	14
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Run ./.github/actions/setup-sccache	success	2
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Restore cargo registry cache	success	3
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Check LiNo data integrity	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	sccache counters after the first compiling step	success	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Check self-AST census freshness	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Run tests	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Run specification tests	success	745
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Run doc tests	skipped	0
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Post Run ./.github/actions/setup-sccache	success	1
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Post Run actions/checkout@v6	success	1
+32570465855	2026-08-22T11:30:28Z	Test (macos-15-intel / specification)	success	804	Complete job	success	1
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Set up job	success	2
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Run actions/checkout@v6	success	22
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Simulate fresh merge with base branch (PR only)	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Free up runner disk space	success	89
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Setup Rust	success	13
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Run ./.github/actions/setup-sccache	success	2
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Restore cargo registry cache	success	7
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Check LiNo data integrity	success	148
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	sccache counters after the first compiling step	success	0
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Check self-AST census freshness	success	22
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Run tests	success	804
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Run specification tests	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Run doc tests	success	5
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Post Run ./.github/actions/setup-sccache	success	0
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Post Run actions/checkout@v6	success	1
+32555911181	2026-08-22T06:02:20Z	Test (ubuntu-latest / full)	success	1117	Complete job	success	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Set up job	success	2
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Run actions/checkout@v6	success	50
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Simulate fresh merge with base branch (PR only)	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Free up runner disk space	success	1
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Setup Rust	success	17
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Run ./.github/actions/setup-sccache	success	2
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Restore cargo registry cache	success	4
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Check LiNo data integrity	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	sccache counters after the first compiling step	success	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Check self-AST census freshness	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Run tests	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Run specification tests	success	689
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Run doc tests	skipped	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Post Run ./.github/actions/setup-sccache	success	0
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Post Run actions/checkout@v6	success	1
+32555911181	2026-08-22T06:02:20Z	Test (macos-15-intel / specification)	success	769	Complete job	success	1
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Set up job	success	1
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Run actions/checkout@v6	success	22
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Simulate fresh merge with base branch (PR only)	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Free up runner disk space	success	208
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Setup Rust	success	12
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Run ./.github/actions/setup-sccache	success	3
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Restore cargo registry cache	success	5
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Check LiNo data integrity	success	130
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	sccache counters after the first compiling step	success	0
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Check self-AST census freshness	success	19
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Run tests	success	601
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Run specification tests	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Run doc tests	success	16
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Post Run ./.github/actions/setup-sccache	success	0
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Post Run actions/checkout@v6	success	0
+32526449245	2026-08-21T21:00:58Z	Test (ubuntu-latest / full)	success	1021	Complete job	success	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Set up job	success	2
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Run actions/checkout@v6	success	45
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Simulate fresh merge with base branch (PR only)	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Free up runner disk space	success	1
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Setup Rust	success	23
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Run ./.github/actions/setup-sccache	success	4
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Restore cargo registry cache	success	4
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Check LiNo data integrity	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	sccache counters after the first compiling step	success	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Check self-AST census freshness	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Run tests	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Run specification tests	success	902
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Run doc tests	skipped	0
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Post Run ./.github/actions/setup-sccache	success	1
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Post Run actions/checkout@v6	success	1
+32526449245	2026-08-21T21:00:58Z	Test (macos-15-intel / specification)	success	988	Complete job	success	1
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Set up job	success	1
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Run actions/checkout@v6	success	20
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Simulate fresh merge with base branch (PR only)	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Free up runner disk space	success	36
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Setup Rust	success	10
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Run ./.github/actions/setup-sccache	success	2
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Restore cargo registry cache	success	6
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Check LiNo data integrity	success	186
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Check self-AST census freshness	success	22
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Run tests	success	811
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Run specification tests	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Run doc tests	success	7
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Post Run ./.github/actions/setup-sccache	success	0
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Post Run actions/checkout@v6	success	0
+32521364665	2026-08-21T20:00:26Z	Test (ubuntu-latest / full)	success	1106	Complete job	success	1
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Set up job	success	2
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Run actions/checkout@v6	success	67
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Simulate fresh merge with base branch (PR only)	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Free up runner disk space	success	1
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Setup Rust	success	20
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Run ./.github/actions/setup-sccache	success	3
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Restore cargo registry cache	success	6
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Check LiNo data integrity	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Check self-AST census freshness	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Run tests	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Run specification tests	success	1021
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Run doc tests	skipped	0
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Post Run ./.github/actions/setup-sccache	success	1
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Post Run actions/checkout@v6	success	2
+32521364665	2026-08-21T20:00:26Z	Test (macos-15-intel / specification)	success	1125	Complete job	success	0
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Set up job	success	1
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Run actions/checkout@v6	success	22
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Simulate fresh merge with base branch (PR only)	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Free up runner disk space	success	90
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Setup Rust	success	10
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Run ./.github/actions/setup-sccache	success	1
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Restore cargo registry cache	success	7
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Check LiNo data integrity	success	169
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Check self-AST census freshness	success	20
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Run tests	success	793
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Run specification tests	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Run doc tests	success	7
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Post Run ./.github/actions/setup-sccache	success	0
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Post Run actions/checkout@v6	success	0
+32506738726	2026-08-21T17:10:10Z	Test (ubuntu-latest / full)	success	1125	Complete job	success	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Set up job	success	2
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Run actions/checkout@v6	success	53
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Simulate fresh merge with base branch (PR only)	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Free up runner disk space	success	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Setup Rust	success	19
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Run ./.github/actions/setup-sccache	success	2
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Restore cargo registry cache	success	4
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Check LiNo data integrity	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Check self-AST census freshness	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Run tests	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Run specification tests	success	814
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Run doc tests	skipped	0
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Post Run ./.github/actions/setup-sccache	success	1
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Post Run actions/checkout@v6	success	1
+32506738726	2026-08-21T17:10:10Z	Test (macos-15-intel / specification)	success	901	Complete job	success	2
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Set up job	success	1
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Run actions/checkout@v6	success	22
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Simulate fresh merge with base branch (PR only)	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Free up runner disk space	success	99
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Setup Rust	success	11
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Run ./.github/actions/setup-sccache	success	4
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Restore cargo registry cache	success	2
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Check LiNo data integrity	success	157
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Check self-AST census freshness	success	21
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Run tests	success	791
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Run specification tests	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Run doc tests	success	5
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Post Run ./.github/actions/setup-sccache	success	1
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Post Run actions/checkout@v6	success	0
+32500015304	2026-08-21T15:53:09Z	Test (ubuntu-latest / full)	success	1117	Complete job	success	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Set up job	success	2
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Run actions/checkout@v6	success	54
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Simulate fresh merge with base branch (PR only)	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Free up runner disk space	success	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Setup Rust	success	25
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Run ./.github/actions/setup-sccache	success	2
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Restore cargo registry cache	success	5
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Check LiNo data integrity	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Check self-AST census freshness	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Run tests	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Run specification tests	success	1171
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Run doc tests	skipped	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Post Run ./.github/actions/setup-sccache	success	0
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Post Run actions/checkout@v6	success	2
+32500015304	2026-08-21T15:53:09Z	Test (macos-15-intel / specification)	success	1265	Complete job	success	1
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Set up job	success	1
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Run actions/checkout@v6	success	45
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Simulate fresh merge with base branch (PR only)	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Free up runner disk space	success	0
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Setup Rust	success	6
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Run ./.github/actions/setup-sccache	success	2
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Restore cargo registry cache	success	4
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Check LiNo data integrity	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Check self-AST census freshness	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Run tests	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Run specification tests	success	739
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Run doc tests	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Post Run ./.github/actions/setup-sccache	success	1
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Post Run actions/checkout@v6	success	1
+32129820668	2026-08-18T11:03:22Z	Test (macos-15-intel / specification)	success	804	Complete job	success	1
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Set up job	success	1
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Run actions/checkout@v6	success	29
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Simulate fresh merge with base branch (PR only)	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Free up runner disk space	success	73
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Setup Rust	success	2
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Run ./.github/actions/setup-sccache	success	1
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Restore cargo registry cache	success	1
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Check LiNo data integrity	success	192
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Check self-AST census freshness	success	108
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Run tests	success	880
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Run specification tests	skipped	0
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Run doc tests	success	5
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Post Run ./.github/actions/setup-sccache	success	0
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Post Run actions/checkout@v6	success	0
+32129820668	2026-08-18T11:03:22Z	Test (ubuntu-latest / full)	success	1295	Complete job	success	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Set up job	success	2
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Run actions/checkout@v6	success	65
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Simulate fresh merge with base branch (PR only)	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Free up runner disk space	success	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Setup Rust	success	4
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Run ./.github/actions/setup-sccache	success	1
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Restore cargo registry cache	success	4
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Check LiNo data integrity	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Check self-AST census freshness	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Run tests	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Run specification tests	success	838
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Run doc tests	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Post Run ./.github/actions/setup-sccache	success	0
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Post Run actions/checkout@v6	success	1
+32107664418	2026-08-18T06:36:40Z	Test (macos-15-intel / specification)	success	920	Complete job	success	0
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Set up job	success	1
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Run actions/checkout@v6	success	28
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Simulate fresh merge with base branch (PR only)	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Free up runner disk space	success	76
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Setup Rust	success	2
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Run ./.github/actions/setup-sccache	success	1
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Restore cargo registry cache	success	6
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Check LiNo data integrity	success	166
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Check self-AST census freshness	success	85
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Run tests	success	853
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Run specification tests	skipped	0
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Run doc tests	success	6
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Post Run ./.github/actions/setup-sccache	success	0
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Post Run actions/checkout@v6	success	0
+32107664418	2026-08-18T06:36:40Z	Test (ubuntu-latest / full)	success	1226	Complete job	success	0
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Set up job	success	1
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Run actions/checkout@v6	success	30
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Simulate fresh merge with base branch (PR only)	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Free up runner disk space	success	102
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Setup Rust	success	2
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Run ./.github/actions/setup-sccache	success	1
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Restore cargo registry cache	success	2
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Check LiNo data integrity	success	248
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Check self-AST census freshness	success	83
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Run tests	success	821
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Run specification tests	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Run doc tests	success	6
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Post Run ./.github/actions/setup-sccache	success	0
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Post Run actions/checkout@v6	success	0
+32079577924	2026-08-17T23:14:21Z	Test (ubuntu-latest / full)	success	1299	Complete job	success	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Set up job	success	1
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Run actions/checkout@v6	success	38
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Simulate fresh merge with base branch (PR only)	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Free up runner disk space	success	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Setup Rust	success	5
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Run ./.github/actions/setup-sccache	success	3
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Restore cargo registry cache	success	4
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Check LiNo data integrity	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Check self-AST census freshness	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Run tests	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Run specification tests	success	931
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Run doc tests	skipped	0
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Post Run ./.github/actions/setup-sccache	success	2
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Post Run actions/checkout@v6	success	1
+32079577924	2026-08-17T23:14:21Z	Test (macos-15-intel / specification)	success	987	Complete job	success	1
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Set up job	success	1
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Run actions/checkout@v6	success	39
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Simulate fresh merge with base branch (PR only)	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Free up runner disk space	success	0
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Setup Rust	success	4
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Run ./.github/actions/setup-sccache	success	2
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Restore cargo registry cache	success	3
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Check LiNo data integrity	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Check self-AST census freshness	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Run tests	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Run specification tests	success	693
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Run doc tests	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Post Run ./.github/actions/setup-sccache	success	1
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Post Run actions/checkout@v6	success	1
+31937348472	2026-08-16T08:47:28Z	Test (macos-15-intel / specification)	success	749	Complete job	success	0
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Set up job	success	1
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Run actions/checkout@v6	success	29
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Simulate fresh merge with base branch (PR only)	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Free up runner disk space	success	74
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Setup Rust	success	3
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Run ./.github/actions/setup-sccache	success	1
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Restore cargo registry cache	success	9
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Check LiNo data integrity	success	205
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Check self-AST census freshness	success	104
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Run tests	success	960
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Run specification tests	skipped	0
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Run doc tests	success	28
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Post Run ./.github/actions/setup-sccache	success	0
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Post Run actions/checkout@v6	success	0
+31937348472	2026-08-16T08:47:28Z	Test (ubuntu-latest / full)	success	1419	Complete job	success	0
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Set up job	success	0
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Run actions/checkout@v6	success	28
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Simulate fresh merge with base branch (PR only)	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Free up runner disk space	success	37
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Setup Rust	success	1
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Run ./.github/actions/setup-sccache	success	1
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Restore cargo registry cache	success	1
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Check LiNo data integrity	success	161
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Check self-AST census freshness	success	109
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Run tests	success	961
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Run specification tests	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Run doc tests	success	6
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Post Run ./.github/actions/setup-sccache	success	0
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Post Run actions/checkout@v6	success	0
+31914672971	2026-08-15T23:25:08Z	Test (ubuntu-latest / full)	success	1308	Complete job	success	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Set up job	success	1
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Run actions/checkout@v6	success	53
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Simulate fresh merge with base branch (PR only)	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Free up runner disk space	success	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Setup Rust	success	2
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Run ./.github/actions/setup-sccache	success	2
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Restore cargo registry cache	success	4
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Check LiNo data integrity	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Check self-AST census freshness	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Run tests	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Run specification tests	success	743
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Run doc tests	skipped	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Post Run ./.github/actions/setup-sccache	success	0
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Post Run actions/checkout@v6	success	1
+31914672971	2026-08-15T23:25:08Z	Test (macos-15-intel / specification)	success	812	Complete job	success	1
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Set up job	success	1
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Run actions/checkout@v6	success	24
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Simulate fresh merge with base branch (PR only)	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Free up runner disk space	success	106
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Setup Rust	success	4
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Install cargo-nextest	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Run ./.github/actions/setup-sccache	success	1
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Restore cargo registry cache	success	1
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Check LiNo data integrity	success	177
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Check self-AST census freshness	success	77
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Run tests	success	734
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Run core test slice	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Run specification tests	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Run doc tests	success	5
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Post Run ./.github/actions/setup-sccache	success	1
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Post Run actions/checkout@v6	success	0
+31884932415	2026-08-15T12:34:05Z	Test (ubuntu-latest / full)	success	1134	Complete job	success	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Set up job	success	3
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Run actions/checkout@v6	success	37
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Simulate fresh merge with base branch (PR only)	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Free up runner disk space	success	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Setup Rust	success	1
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Install cargo-nextest	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Run ./.github/actions/setup-sccache	success	3
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Restore cargo registry cache	success	4
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Check LiNo data integrity	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Check self-AST census freshness	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Run tests	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Run core test slice	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Run specification tests	success	771
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Run doc tests	skipped	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Post Run ./.github/actions/setup-sccache	success	0
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Post Run actions/checkout@v6	success	1
+31884932415	2026-08-15T12:34:05Z	Test (macos-15-intel / specification)	success	822	Complete job	success	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Set up job	success	2
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Run actions/checkout@v6	success	23
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Simulate fresh merge with base branch (PR only)	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Free up runner disk space	success	1
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Setup Rust	success	1
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Run ./.github/actions/setup-sccache	success	2
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Restore cargo registry cache	success	4
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Check LiNo data integrity	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Check self-AST census freshness	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Run tests	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Run core tests	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Run specification tests	success	556
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Run doc tests	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Post Run ./.github/actions/setup-sccache	success	1
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Post Run actions/checkout@v6	success	0
+31871548846	2026-08-15T07:16:55Z	Test (macos-15-intel / specification)	success	595	Complete job	success	1
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Set up job	success	1
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Run actions/checkout@v6	success	21
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Simulate fresh merge with base branch (PR only)	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Free up runner disk space	success	63
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Setup Rust	success	1
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Run ./.github/actions/setup-sccache	success	1
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Restore cargo registry cache	success	6
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Check LiNo data integrity	success	135
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Check self-AST census freshness	success	72
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Run tests	success	650
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Run core tests	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Run specification tests	skipped	0
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Run doc tests	success	21
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Post Run ./.github/actions/setup-sccache	success	1
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Post Run actions/checkout@v6	success	0
+31871548846	2026-08-15T07:16:55Z	Test (ubuntu-latest / full)	success	975	Complete job	success	0
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Set up job	success	1
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Run actions/checkout@v6	success	24
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Simulate fresh merge with base branch (PR only)	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Free up runner disk space	success	48
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Setup Rust	success	2
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Run ./.github/actions/setup-sccache	success	1
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Restore cargo registry cache	success	3
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Check LiNo data integrity	success	234
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Check self-AST census freshness	success	87
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Run tests	success	747
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Run core tests	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Run specification tests	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Run doc tests	success	28
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Post Run ./.github/actions/setup-sccache	success	0
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Post Run actions/checkout@v6	success	0
+31867134798	2026-08-15T05:30:52Z	Test (ubuntu-latest / full)	success	1178	Complete job	success	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Set up job	success	2
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Run actions/checkout@v6	success	64
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Simulate fresh merge with base branch (PR only)	skipped	1
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Free up runner disk space	success	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Setup Rust	success	5
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Run ./.github/actions/setup-sccache	success	5
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Restore cargo registry cache	success	8
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Check LiNo data integrity	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Check self-AST census freshness	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Run tests	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Run core tests	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Run specification tests	success	1102
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Run doc tests	skipped	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Post Run ./.github/actions/setup-sccache	success	1
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Post Run actions/checkout@v6	success	0
+31867134798	2026-08-15T05:30:52Z	Test (macos-15-intel / specification)	success	1192	Complete job	success	0
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Set up job	success	1
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Run actions/checkout@v6	success	22
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Simulate fresh merge with base branch (PR only)	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Free up runner disk space	success	83
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Setup Rust	success	2
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Run ./.github/actions/setup-sccache	success	1
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Restore cargo registry cache	success	2
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Check LiNo data integrity	success	198
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Check self-AST census freshness	success	102
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Run tests	success	898
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Run core tests	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Run specification tests	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Run doc tests	success	28
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Post Run ./.github/actions/setup-sccache	success	0
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Post Run actions/checkout@v6	success	0
+31843886165	2026-08-14T21:46:40Z	Test (ubuntu-latest / full)	success	1342	Complete job	success	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Set up job	success	2
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Run actions/checkout@v6	success	55
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Simulate fresh merge with base branch (PR only)	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Free up runner disk space	success	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Setup Rust	success	5
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Run ./.github/actions/setup-sccache	success	2
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Restore cargo registry cache	success	5
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Check LiNo data integrity	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Check self-AST census freshness	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Run tests	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Run core tests	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Run specification tests	success	964
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Run doc tests	skipped	0
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Post Run ./.github/actions/setup-sccache	success	2
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Post Run actions/checkout@v6	success	1
+31843886165	2026-08-14T21:46:40Z	Test (macos-15-intel / specification)	success	1042	Complete job	success	2
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Set up job	success	1
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Run actions/checkout@v6	success	20
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Simulate fresh merge with base branch (PR only)	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Free up runner disk space	success	89
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Setup Rust	success	1
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Run ./.github/actions/setup-sccache	success	2
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Restore cargo registry cache	success	1
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Check LiNo data integrity	success	212
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Check self-AST census freshness	success	67
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Run tests	success	686
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Run core tests	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Run specification tests	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Run doc tests	success	6
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Post Run ./.github/actions/setup-sccache	success	0
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Post Run actions/checkout@v6	success	0
+31811751515	2026-08-14T14:53:23Z	Test (ubuntu-latest / full)	success	1089	Complete job	success	1
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Set up job	success	2
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Run actions/checkout@v6	success	37
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Simulate fresh merge with base branch (PR only)	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Free up runner disk space	success	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Setup Rust	success	2
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Run ./.github/actions/setup-sccache	success	1
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Restore cargo registry cache	success	4
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Check LiNo data integrity	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Check self-AST census freshness	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Run tests	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Run core tests	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Run specification tests	success	828
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Run doc tests	skipped	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Post Run ./.github/actions/setup-sccache	success	0
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Post Run actions/checkout@v6	success	2
+31811751515	2026-08-14T14:53:23Z	Test (macos-15-intel / specification)	success	879	Complete job	success	0
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Set up job	success	2
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Run actions/checkout@v6	success	22
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Simulate fresh merge with base branch (PR only)	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Free up runner disk space	success	74
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Setup Rust	success	2
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Run ./.github/actions/setup-sccache	success	2
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Restore cargo registry cache	success	4
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Check LiNo data integrity	success	174
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Check self-AST census freshness	success	73
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Run tests	success	633
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Run core tests	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Run specification tests	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Run doc tests	success	22
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Post Run ./.github/actions/setup-sccache	success	0
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Post Run actions/checkout@v6	success	0
+31802174460	2026-08-14T12:52:17Z	Test (ubuntu-latest / full)	success	1012	Complete job	success	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Set up job	success	2
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Run actions/checkout@v6	success	38
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Simulate fresh merge with base branch (PR only)	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Free up runner disk space	success	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Setup Rust	success	2
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Run ./.github/actions/setup-sccache	success	1
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Restore cargo registry cache	success	7
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Check LiNo data integrity	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Check self-AST census freshness	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Run tests	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Run core tests	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Run specification tests	success	857
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Run doc tests	skipped	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Post Run ./.github/actions/setup-sccache	success	0
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Post Run actions/checkout@v6	success	1
+31802174460	2026-08-14T12:52:17Z	Test (macos-15-intel / specification)	success	915	Complete job	success	1
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Set up job	success	2
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Run actions/checkout@v6	success	22
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Simulate fresh merge with base branch (PR only)	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Free up runner disk space	success	128
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Setup Rust	success	1
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Run ./.github/actions/setup-sccache	success	1
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Restore cargo registry cache	success	2
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Check LiNo data integrity	success	241
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Check self-AST census freshness	success	84
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Run tests	success	855
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Run core tests	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Run specification tests	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Run doc tests	success	10
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Post Run ./.github/actions/setup-sccache	success	0
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Post Run actions/checkout@v6	success	0
+31792055617	2026-08-14T10:24:02Z	Test (ubuntu-latest / full)	success	1351	Complete job	success	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Set up job	success	2
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Run actions/checkout@v6	success	54
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Simulate fresh merge with base branch (PR only)	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Free up runner disk space	success	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Setup Rust	success	3
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Run ./.github/actions/setup-sccache	success	2
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Restore cargo registry cache	success	7
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Check LiNo data integrity	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Check self-AST census freshness	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Run tests	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Run core tests	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Run specification tests	success	891
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Run doc tests	skipped	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Post Run ./.github/actions/setup-sccache	success	0
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Post Run actions/checkout@v6	success	1
+31792055617	2026-08-14T10:24:02Z	Test (macos-15-intel / specification)	success	965	Complete job	success	1
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Set up job	success	1
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Run actions/checkout@v6	success	21
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Simulate fresh merge with base branch (PR only)	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Free up runner disk space	success	79
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Setup Rust	success	2
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Run ./.github/actions/setup-sccache	success	1
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Restore cargo registry cache	success	4
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Check LiNo data integrity	success	165
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Check self-AST census freshness	success	102
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Run tests	success	864
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Run core tests	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Run specification tests	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Run doc tests	success	4
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Post Run ./.github/actions/setup-sccache	success	0
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Post Run actions/checkout@v6	success	1
+31774702295	2026-08-14T05:58:19Z	Test (ubuntu-latest / full)	success	1245	Complete job	success	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Set up job	success	2
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Run actions/checkout@v6	success	49
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Simulate fresh merge with base branch (PR only)	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Free up runner disk space	success	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Setup Rust	success	3
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Run ./.github/actions/setup-sccache	success	3
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Restore cargo registry cache	success	6
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Check LiNo data integrity	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Check self-AST census freshness	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Run tests	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Run core tests	skipped	0
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Run specification tests	success	884
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Run doc tests	skipped	1
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Post Run ./.github/actions/setup-sccache	success	1
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Post Run actions/checkout@v6	success	1
+31774702295	2026-08-14T05:58:19Z	Test (macos-15-intel / specification)	success	952	Complete job	success	1
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Set up job	success	2
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Run actions/checkout@v6	success	37
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Simulate fresh merge with base branch (PR only)	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Free up runner disk space	success	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Setup Rust	success	2
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Run ./.github/actions/setup-sccache	success	3
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Restore cargo registry cache	success	4
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Check LiNo data integrity	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Check self-AST census freshness	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Run tests	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Run core tests	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Run specification tests	success	731
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Run doc tests	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Post Run ./.github/actions/setup-sccache	success	0
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Post Run actions/checkout@v6	success	2
+31768196294	2026-08-14T03:54:10Z	Test (macos-15-intel / specification)	success	785	Complete job	success	0
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Set up job	success	1
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Run actions/checkout@v6	success	22
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Simulate fresh merge with base branch (PR only)	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Free up runner disk space	success	45
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Setup Rust	success	1
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Run ./.github/actions/setup-sccache	success	1
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Restore cargo registry cache	success	1
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Check LiNo data integrity	success	192
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Check self-AST census freshness	success	101
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Run tests	success	875
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Run core tests	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Run specification tests	skipped	0
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Run doc tests	success	5
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Post Run ./.github/actions/setup-sccache	success	1
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Post Run actions/checkout@v6	success	0
+31768196294	2026-08-14T03:54:10Z	Test (ubuntu-latest / full)	success	1248	Complete job	success	0

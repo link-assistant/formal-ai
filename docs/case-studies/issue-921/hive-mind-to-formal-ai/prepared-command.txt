@@ -1,0 +1,2 @@
+agent --model formalai/formal-ai --verbose
+execution=skipped

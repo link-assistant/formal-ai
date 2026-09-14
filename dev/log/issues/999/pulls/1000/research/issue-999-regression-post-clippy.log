@@ -1,0 +1,14 @@
+   Compiling formal-ai v0.339.1 (/tmp/gh-issue-solver-1786471194109)
+    Finished `test` profile [unoptimized] target(s) in 1m 20s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ecd6eeaa7ca9cfae)
+
+running 6 tests
+test ci_cd::issue_999::actionlint_tracks_githubs_queue_schema_without_hiding_other_errors ... ok
+test ci_cd::issue_999::current_template_security_and_link_gates_are_present ... ok
+test ci_cd::issue_999::macos_tests_are_partitioned_without_raising_the_failed_budget ... ok
+test ci_cd::issue_999::known_advisories_do_not_emit_false_warning_annotations ... ok
+test ci_cd::issue_999::write_jobs_queue_together_without_workflow_level_cancellation ... ok
+test ci_cd::issue_999::every_file_observed_in_the_ci_warning_band_is_below_it ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 2661 filtered out; finished in 0.01s
+

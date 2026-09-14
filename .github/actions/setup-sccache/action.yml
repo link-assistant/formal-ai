@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
     - name: Install sccache
-      uses: mozilla-actions/sccache-action@v0.0.10
+      uses: mozilla-actions/sccache-action@v0.0.11
       with:
         # v0.17.0 expands Rust response files before spawning rustc and can
         # exceed the Windows command-line limit (mozilla/sccache#2397).
@@ -19,3 +19,60 @@ runs:
       run: |
         echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
         echo "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"
+
+    # Issue #1081 (D9): this used to run *after* the server was started, which
+    # made it a verbose mode that produced nothing. sccache's logging belongs to
+    # the server process -- "You can set the `SCCACHE_ERROR_LOG` environment
+    # variable to a path and set `SCCACHE_LOG` to get the server process to
+    # redirect its logging there" -- and the daemon reads its environment once,
+    # at spawn. The configuration docs say the same from the other side: "Note
+    # that some env variables may need sccache server restart to take effect."
+    # Writing the variables to $GITHUB_ENV after `--start-server` therefore
+    # configured every future job except the one being debugged. It now runs
+    # before the server exists: the runner applies a step's `$GITHUB_ENV` writes
+    # before the *next* step starts, and the next step is now the one that
+    # spawns the daemon. The variables are deliberately not repeated as an
+    # `env:` block on that step -- a step-level `env:` key cannot be conditional,
+    # so they would have to be written unconditionally, and an empty
+    # `SCCACHE_ERROR_LOG` is still a path sccache would try to open.
+    #
+    # Keep this disabled in normal runs. When issue triage needs the actual
+    # cache-backend response -- the evidence that separates rate limiting from
+    # concurrent writers of the same key, see
+    # scripts/check-sccache-write-health.sh -- set the FORMAL_AI_CI_VERBOSE
+    # repository variable to true and rerun the affected workflow.
+    - name: Enable opt-in sccache diagnostics
+      if: env.FORMAL_AI_CI_VERBOSE == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        error_log="${RUNNER_TEMP:-/tmp}/sccache-server.log"
+        {
+          echo "SCCACHE_LOG=debug"
+          echo "SCCACHE_LOG_MILLIS=1"
+          echo "SCCACHE_ERROR_LOG=${error_log}"
+        } >> "$GITHUB_ENV"
+        echo "sccache backend debug logging enabled by FORMAL_AI_CI_VERBOSE; server log: ${error_log}"
+
+    # Start the server explicitly, before any cargo step runs.
+    #
+    # Measured on run 32500015304: `Test (ubuntu-latest / full)` compiled 514
+    # crates and sccache reported `Compile requests 1` -- one request, zero
+    # misses, zero write errors. A wrapper that is never asked cannot miss, so
+    # the counter says the compilations went somewhere else, not that the cache
+    # was cold. Each `run:` step is its own process; if the server is spawned
+    # lazily by the first rustc invocation and does not outlive that step, every
+    # later step starts over and the final `--show-stats` reports whatever the
+    # last one did.
+    #
+    # `--start-server` is idempotent -- it exits 0 when a server is already
+    # listening -- so this is safe to keep even once the cause is confirmed.
+    - name: Start the sccache server
+      shell: bash
+      run: |
+        sccache --start-server || true
+        # No `| head`: an early-closing reader makes sccache exit on
+        # `Broken pipe (os error 32)`, which fails the step. The same trap is
+        # documented in experiments/agentic_cli_matrix/lib.sh.
+        sccache --show-stats
+

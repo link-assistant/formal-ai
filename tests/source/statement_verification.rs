@@ -16,7 +16,7 @@
 //! classification to its exact source capture.
 
 use crate::relative_meta_logic::{
-    RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
+    ASSUMED_TRUE_PRIOR, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
 };
 
 /// Sentence terminators across the scripts the solver recognises: ASCII stops,

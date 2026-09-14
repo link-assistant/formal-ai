@@ -24,8 +24,8 @@
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 
-use crate::engine::{normalize_prompt, FormalAiEngine};
-use crate::learning_cycle::{parse_frontier_record, recorded_frontier, FrontierItem};
+use crate::engine::{FormalAiEngine, normalize_prompt};
+use crate::learning_cycle::{FrontierItem, parse_frontier_record, recorded_frontier};
 use crate::solver_handlers::web_search_query_for;
 
 /// The intent the unknown path reports.

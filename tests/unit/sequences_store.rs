@@ -4,7 +4,7 @@
 //! stays free of `#[cfg(test)]` scaffolding (see the `source_test_placement`
 //! CI gate). They exercise the public `formal_ai::sequences::store` surface.
 
-use formal_ai::sequences::{Doublet, SequenceStore, NULL_LINK};
+use formal_ai::sequences::{Doublet, NULL_LINK, SequenceStore};
 
 #[test]
 fn null_link_resolves_to_zero_doublet() {

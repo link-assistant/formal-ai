@@ -1,0 +1,18 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 36s
+     Running tests/unit/mod.rs (target/debug/deps/unit-02b03d1c4a08f71c)
+
+running 10 tests
+test ci_cd::issue_1014::macos_core_shards_reuse_one_nextest_archive ... ok
+test ci_cd::issue_1012::macos_core_tests_are_sliced_and_warn_before_the_job_timeout ... ok
+test ci_cd::issue_999::macos_tests_are_partitioned_without_raising_the_failed_budget ... ok
+test ci_cd::release_publishing::desktop_macos_package_uses_vk_bot_signing_configuration ... ok
+test ci_cd::release_publishing::desktop_release_workflow_signs_and_smoke_tests_macos_artifacts ... ok
+test ci_cd::issue_798::pull_request_ci_runs_the_macos_signing_regression ... ok
+test ci_cd::macos_package_retry::unrelated_packaging_failure_is_not_retried ... ok
+test ci_cd::macos_package_retry::retries_known_hdiutil_device_failures_and_cleans_incomplete_dmg ... ok
+test ci_cd::macos_package_retry::retries_known_hdiutil_attach_device_failure ... ok
+test ci_cd::macos_package_retry::persistent_hdiutil_failure_stops_after_three_attempts ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 2800 filtered out; finished in 0.29s
+

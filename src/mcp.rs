@@ -3,10 +3,10 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use std::sync::{Mutex, OnceLock};
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::computer_use::{
-    mcp_tool_definitions, ComputerUsePolicy, ComputerUsePrimitive, ComputerUseSession,
+    ComputerUsePolicy, ComputerUsePrimitive, ComputerUseSession, mcp_tool_definitions,
 };
 use crate::server::ApiHttpResponse;
 use crate::solver::UniversalSolver;

@@ -34,7 +34,7 @@ use std::fmt::Write as _;
 
 use crate::links_format::flatten_lino_value;
 
-use super::file::{formalize_repository_file, RepositoryFileFormalization};
+use super::file::{RepositoryFileFormalization, formalize_repository_file};
 use super::{SummarizationConfig, SummarizationMode};
 
 /// Input tree describing a repository resource to formalize.
@@ -340,11 +340,7 @@ const fn child_summary_cap(mode: SummarizationMode) -> usize {
 }
 
 const fn pluralize(count: usize, singular: &'static str, plural: &'static str) -> &'static str {
-    if count == 1 {
-        singular
-    } else {
-        plural
-    }
+    if count == 1 { singular } else { plural }
 }
 
 fn push_field(out: &mut String, indent: usize, name: &str, value: &str) {

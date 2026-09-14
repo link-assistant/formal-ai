@@ -1,9 +1,14 @@
 //! File-reading agentic recipe for local workspace prompts (issue #627).
 
+mod exact;
+
 use serde_json::json;
 
+use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::general_planner::has_file_write_intent;
 use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
+use super::shell_command_policy::sentences;
+use super::write_request;
 use crate::protocol::{ChatMessage, ToolCall};
 use crate::seed;
 
@@ -13,6 +18,10 @@ pub(super) enum FileReadTask {
         path: String,
         mode: FileReadMode,
         prefer_run: bool,
+    },
+    DirectMany {
+        paths: Vec<String>,
+        mode: FileReadMode,
     },
     ListThenRead {
         directory: String,
@@ -69,6 +78,9 @@ pub(super) fn plan_file_read_step(
             &records,
             &request,
         ),
+        FileReadTask::DirectMany { paths, mode } => {
+            exact::plan_direct_file_reads(paths, mode, read_tool, run_tool, &records, &request)
+        }
         FileReadTask::ListThenRead {
             directory,
             selection,
@@ -102,32 +114,47 @@ fn plan_direct_file_read(
     request: &str,
 ) -> AgenticPlan {
     let read_command = read_command_for(path, mode);
-    let recorded = read_result_for_path(records, path)
-        .map(|raw| (path, raw, raw.to_owned()))
-        .or_else(|| {
-            run_record_for_command(records, &read_command).map(|raw| {
-                (
-                    read_command.as_str(),
-                    raw,
-                    super::tool_result::strip_transport_envelope(raw),
-                )
+    let exact_run = exact::exact_line_key(request).is_some() && run_tool.is_some();
+    let recorded = if exact_run {
+        run_record_for_command(records, &read_command).map(|raw| {
+            (
+                read_command.as_str(),
+                raw,
+                super::tool_result::strip_transport_envelope(raw),
+            )
+        })
+    } else {
+        read_result_for_path(records, path)
+            .map(|raw| (path, raw, raw.to_owned()))
+            .or_else(|| {
+                run_record_for_command(records, &read_command).map(|raw| {
+                    (
+                        read_command.as_str(),
+                        raw,
+                        super::tool_result::strip_transport_envelope(raw),
+                    )
+                })
             })
-        });
+    };
     if let Some((label, raw, content)) = recorded {
         if let Some(failure) = failed_step_answer(label, raw, request) {
             return AgenticPlan::Final(failure);
         }
+        let content = if label == path {
+            super::code_artifact::source_from_read_result(&content)
+        } else {
+            content
+        };
         return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
     }
 
-    if prefer_run {
-        if let Some(tool) = run_tool {
+    if (prefer_run || exact_run)
+        && let Some(tool) = run_tool {
             return plan_one(
                 tool,
                 json!({ "command": read_command_for(path, mode) }).to_string(),
             );
         }
-    }
 
     if let Some(tool) = read_tool {
         return plan_one(tool, read_arguments(path));
@@ -195,11 +222,10 @@ fn plan_list_then_read(
                 .collect();
             return AgenticPlan::ToolCalls(calls);
         }
-    } else if let Some(path) = paths.first() {
-        if let Some(tool) = read_tool {
+    } else if let Some(path) = paths.first()
+        && let Some(tool) = read_tool {
             return plan_one(tool, read_arguments(path));
         }
-    }
 
     if let Some(tool) = run_tool {
         let command = if selection == FileSelection::All {
@@ -273,17 +299,67 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
         });
     }
 
-    if has_file_read_intent(&lower) {
-        if let Some(path) = first_local_file_path(prompt) {
-            return Some(FileReadTask::Direct {
-                path,
-                mode: mode_for_prompt(prompt),
-                prefer_run: false,
-            });
-        }
+    // A read cue and a path in the same sentence are about each other, and that
+    // is the ordinary case: "выведи sample.txt", "show me the contents of
+    // beta.md". Answering it from the sentence rather than from the whole prompt
+    // is what keeps the two-obligation requests below from being decided by a
+    // cue that belongs to a different clause (issue #1066).
+    let read_paths = read_paths_named_beside_their_cue(prompt);
+    if read_paths.len() > 1 {
+        return Some(FileReadTask::DirectMany {
+            paths: read_paths,
+            mode: mode_for_prompt(prompt),
+        });
+    }
+    if let Some(path) = read_paths.into_iter().next() {
+        return Some(FileReadTask::Direct {
+            path,
+            mode: mode_for_prompt(prompt),
+            prefer_run: false,
+        });
+    }
+
+    // Issue #1066: "write intent beats read intent" is decided above over the
+    // whole prompt, which settles a request that is only a write. It does not
+    // settle a request that is both -- "find X out, and leave the answer in
+    // FILE" -- because there the read cue and the path belong to different
+    // sentences and different obligations. "Leave observable evidence in
+    // `.agent-ladder/node-1.2-proof.md`. The first line must be exactly
+    // `node_path=1.2`" carries the read cue *first line* in the sentence that
+    // constrains the file's opening, and the only path in the prompt is the one
+    // the caller asked to have written. Opening it reads a file that does not
+    // exist yet, and the run ends by recording the resulting error as its
+    // evidence. Where cue and path were never in one sentence, a path the
+    // request states as a write destination is therefore not a read target.
+    if has_file_read_intent(&lower)
+        && let Some(path) = first_local_file_path(prompt)
+        && !write_request::is_stated_write_target(prompt, &path)
+    {
+        return Some(FileReadTask::Direct {
+            path,
+            mode: mode_for_prompt(prompt),
+            prefer_run: false,
+        });
     }
 
     None
+}
+
+/// The first path a request names in the same sentence as a read cue.
+///
+/// Sentence scope is what separates a cue that is *about* the path from one that
+/// merely shares a prompt with it, the same scoping
+/// [`super::evidence_record`] uses to split a delivery obligation from the work
+/// it delivers, and [`super::shell_command`] uses to tell a named command from an
+/// ordered one (issue #907).
+fn read_paths_named_beside_their_cue(prompt: &str) -> Vec<String> {
+    sentences(prompt)
+        .into_iter()
+        .find_map(|sentence| {
+            has_file_read_intent(&sentence.text.to_lowercase())
+                .then(|| local_file_paths(sentence.text))
+        })
+        .unwrap_or_default()
 }
 
 fn has_file_read_intent(lower: &str) -> bool {
@@ -327,6 +403,9 @@ fn mode_for_prompt(prompt: &str) -> FileReadMode {
     if let Some(key) = extract_value_key(prompt) {
         return FileReadMode::ExtractValue(key);
     }
+    if let Some(key) = exact::exact_line_key(prompt) {
+        return FileReadMode::ExtractValue(key);
+    }
     if lower.contains("summarize") || lower.contains("summary") {
         return FileReadMode::Summary;
     }
@@ -360,24 +439,40 @@ fn leading_cat_path(prompt: &str) -> Option<String> {
 }
 
 fn first_local_file_path(prompt: &str) -> Option<String> {
-    prompt
-        .split_whitespace()
-        .map(clean_file_token)
-        .find(|token| looks_like_local_file_path(token))
+    local_file_paths(prompt).into_iter().next()
 }
 
+fn local_file_paths(prompt: &str) -> Vec<String> {
+    let mut paths = prompt
+        .split_whitespace()
+        .map(clean_file_token)
+        .filter(|token| looks_like_local_file_path(token))
+        .collect::<Vec<_>>();
+    paths.dedup();
+    paths
+}
+
+/// A path token as prose wrote it, stripped of the punctuation the sentence put
+/// around it.
+///
+/// The terminating dot is delegated to
+/// [`trim_trailing_sentence_dot`](super::file_path_shape::trim_trailing_sentence_dot)
+/// so the read route, the write-request parser and the shell route all draw the
+/// same boundary between a path and the sentence carrying it.
 fn clean_file_token(token: &str) -> String {
-    token
-        .trim_matches('`')
-        .trim_matches('"')
-        .trim_matches('\'')
-        .trim_matches(|c: char| {
-            matches!(
-                c,
-                ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
-            )
-        })
-        .to_owned()
+    peel_sentence_punctuation(token, |token| {
+        token
+            .trim_matches('`')
+            .trim_matches('"')
+            .trim_matches('\'')
+            .trim_matches(|c: char| {
+                matches!(
+                    c,
+                    ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
+                )
+            })
+    })
+    .to_owned()
 }
 
 fn looks_like_local_file_path(token: &str) -> bool {
@@ -385,6 +480,7 @@ fn looks_like_local_file_path(token: &str) -> bool {
         || token.contains("://")
         || token.starts_with("http:")
         || token.starts_with("https:")
+        || is_dotted_number(token)
     {
         return false;
     }
@@ -567,7 +663,11 @@ fn read_arguments(path: &str) -> String {
 fn read_command_for(path: &str, mode: &FileReadMode) -> String {
     match mode {
         FileReadMode::FirstLine => format!("head -n 1 {}", shell_path(path)),
-        FileReadMode::Full | FileReadMode::ExtractValue(_) | FileReadMode::Summary => {
+        FileReadMode::ExtractValue(key) => {
+            let expression = shell_string(&format!("s/^{key}=//p"));
+            ["sed", "-n", &expression, &shell_path(path)].join(" ")
+        }
+        FileReadMode::Full | FileReadMode::Summary => {
             format!("cat {}", shell_path(path))
         }
     }
@@ -606,6 +706,10 @@ fn shell_path(path: &str) -> String {
     } else {
         format!("'{}'", path.replace('\'', "'\\''"))
     }
+}
+
+fn shell_string(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "'\\''"))
 }
 
 fn selected_paths_from_listing(
@@ -648,10 +752,20 @@ fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> St
             format!("First line of `{path}`:\n\n```text\n{first}\n```")
         }
         FileReadMode::ExtractValue(key) => {
-            let (path, content) = &files[0];
-            let value =
-                extract_jsonish_value(content, key).unwrap_or_else(|| content.trim().to_owned());
-            format!("Value of `{key}` in `{path}`: {value}")
+            if files.len() == 1 {
+                let (path, content) = &files[0];
+                let value = extract_jsonish_value(content, key)
+                    .unwrap_or_else(|| content.trim().to_owned());
+                return format!("Value of `{key}` in `{path}`: {value}");
+            }
+            let mut lines = Vec::with_capacity(files.len() * 2);
+            for (path, content) in files {
+                let value = extract_jsonish_value(content, key)
+                    .unwrap_or_else(|| content.trim().to_owned());
+                lines.push(format!("{path}:"));
+                lines.push(format!("{key}={value}"));
+            }
+            lines.join("\n")
         }
         FileReadMode::Summary => {
             let mut lines = vec![format!("Read {} file(s):", files.len())];
@@ -662,6 +776,15 @@ fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> St
             lines.join("\n")
         }
         FileReadMode::Full => {
+            if files.len() > 1 {
+                return files
+                    .iter()
+                    .map(|(path, content)| {
+                        format!("Contents of `{path}`:\n\n```text\n{}\n```", content.trim_end())
+                    })
+                    .collect::<Vec<_>>()
+                    .join("\n\n");
+            }
             let (path, content) = &files[0];
             format!(
                 "Contents of `{path}`:\n\n```text\n{}\n```",
@@ -672,14 +795,21 @@ fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> St
 }
 
 fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
-    if let Ok(value) = serde_json::from_str::<serde_json::Value>(content) {
-        if let Some(found) = value.get(key) {
+    let line_prefix = format!("{key}=");
+    if let Some(value) = content
+        .lines()
+        .map(str::trim)
+        .find_map(|line| line.strip_prefix(&line_prefix))
+    {
+        return Some(value.to_owned());
+    }
+    if let Ok(value) = serde_json::from_str::<serde_json::Value>(content)
+        && let Some(found) = value.get(key) {
             return Some(match found {
                 serde_json::Value::String(text) => text.clone(),
                 other => other.to_string(),
             });
         }
-    }
     let quoted_key = format!("\"{key}\"");
     let start = content.find(&quoted_key)?;
     let after_key = &content[start + quoted_key.len()..];

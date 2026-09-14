@@ -1,4 +1,4 @@
-use super::{export_links_notation, parse_links_notation, MemoryEvent, MemoryStore};
+use super::{MemoryEvent, MemoryStore, export_links_notation, parse_links_notation};
 
 fn sample_events() -> Vec<MemoryEvent> {
     vec![

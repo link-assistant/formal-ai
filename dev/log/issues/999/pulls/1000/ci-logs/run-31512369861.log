@@ -1,0 +1,1612 @@
+Write-Effect Ladder (issue	UNKNOWN STEP	﻿2026-08-11T16:26:12.5966144Z Current runner version: '2.336.0'
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5995732Z ##[group]Runner Image Provisioner
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5996738Z Hosted Compute Agent
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5997493Z Version: 20260707.563
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5998240Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5999081Z Build Date: 2026-07-07T19:33:50Z
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5999957Z Worker ID: {8173778c-400d-44d2-9363-fb9062ab416b}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6000843Z Azure Region: northcentralus
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6001743Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6003501Z ##[group]Operating System
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6004232Z Ubuntu
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6004902Z 24.04.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6005569Z LTS
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6006168Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6006889Z ##[group]Runner Image
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6007624Z Image: ubuntu-24.04
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6008285Z Version: 20260720.247.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6009951Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260720.247/images/ubuntu/Ubuntu2404-Readme.md
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6012872Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260720.247
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6014092Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6015395Z ##[group]GITHUB_TOKEN Permissions
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6017446Z Contents: read
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6018108Z Metadata: read
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6019148Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6022039Z Secret source: Actions
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6023663Z Prepare workflow directory
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6375905Z Prepare all required actions
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6428860Z Getting action download info
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.8775366Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.2305121Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:4360b52568e2003a75bf9bc1d59f33a8e3fc893c)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.3810992Z Download action repository 'actions/upload-artifact@v7' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.5940893Z Complete job name: Write-Effect Ladder (issue
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6596676Z ##[group]Run actions/checkout@v6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6597450Z with:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6597868Z   repository: link-assistant/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6603464Z   token: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6603863Z   ssh-strict: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6604270Z   ssh-user: git
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6604692Z   persist-credentials: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6605163Z   clean: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6605575Z   sparse-checkout-cone-mode: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6606104Z   fetch-depth: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6606496Z   fetch-tags: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6606903Z   show-progress: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6607325Z   lfs: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6607703Z   submodules: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6608121Z   set-safe-directory: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6608615Z   allow-unsafe-pr-checkout: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6609277Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6609636Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6610091Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6610699Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6611259Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6611705Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6612212Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6612690Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6613146Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.6613595Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7443426Z Syncing repository: link-assistant/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7445183Z ##[group]Getting Git version info
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7445978Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7447105Z [command]/usr/bin/git version
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7476971Z git version 2.54.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7495916Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7509533Z Temporarily overriding HOME='/home/runner/work/_temp/aa3bac63-e94b-4a72-8d75-13ddaf4a0c43' before making global git config changes
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7511797Z Adding repository directory to the temporary git global config as a safe directory
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7515616Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7548741Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7552223Z ##[group]Determining repository object format
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7554453Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7555502Z ##[group]Initializing the repository
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7559122Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7619581Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7628894Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7656313Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7657148Z ##[group]Disabling automatic garbage collection
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7659129Z [command]/usr/bin/git config --local gc.auto 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7685828Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7686839Z ##[group]Setting up auth
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7687385Z Removing SSH command configuration
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7692312Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.7720818Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8008918Z Removing HTTP extra header
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8016889Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8053314Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8257379Z Removing includeIf entries pointing to credentials config files
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8263957Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8295641Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8488967Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8525955Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8555962Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8586016Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8616840Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8641862Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8642579Z ##[group]Fetching the repository
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.8648491Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d00c61686d0a51c9932558f4be858e5a5febe153:refs/remotes/origin/main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8657240Z From https://github.com/link-assistant/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8657983Z  * [new ref]         d00c61686d0a51c9932558f4be858e5a5febe153 -> origin/main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8682761Z [command]/usr/bin/git branch --list --remote origin/main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8706387Z   origin/main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8713612Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8736887Z d00c61686d0a51c9932558f4be858e5a5febe153
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8742082Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8742658Z ##[group]Determining the checkout info
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8743563Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8745190Z [command]/usr/bin/git sparse-checkout disable
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8779425Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8868412Z ##[group]Checking out the ref
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:23.8869076Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9103222Z Updating files:  44% (5270/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9238570Z Updating files:  45% (5328/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9284513Z Updating files:  46% (5446/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9362612Z Updating files:  47% (5564/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9437306Z Updating files:  48% (5683/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9616147Z Updating files:  49% (5801/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9686395Z Updating files:  50% (5919/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9774182Z Updating files:  51% (6038/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:24.9947466Z Updating files:  52% (6156/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.0287423Z Updating files:  53% (6275/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.0474285Z Updating files:  54% (6393/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.0593762Z Updating files:  55% (6511/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.0881771Z Updating files:  56% (6630/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.1169652Z Updating files:  57% (6748/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.1340910Z Updating files:  58% (6867/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.1780178Z Updating files:  59% (6985/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2229350Z Updating files:  60% (7103/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2338800Z Updating files:  61% (7222/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2446071Z Updating files:  62% (7340/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2729105Z Updating files:  63% (7458/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2850513Z Updating files:  64% (7577/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2946019Z Updating files:  65% (7695/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3024322Z Updating files:  66% (7814/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3107345Z Updating files:  67% (7932/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3175618Z Updating files:  68% (8050/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3307439Z Updating files:  69% (8169/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3452466Z Updating files:  70% (8287/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3541332Z Updating files:  71% (8405/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3630990Z Updating files:  72% (8524/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3752450Z Updating files:  73% (8642/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3841536Z Updating files:  74% (8761/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3880629Z Updating files:  75% (8879/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.3922743Z Updating files:  76% (8997/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4046133Z Updating files:  77% (9116/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4260219Z Updating files:  78% (9234/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4334291Z Updating files:  79% (9353/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4397170Z Updating files:  80% (9471/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4588295Z Updating files:  81% (9589/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4666221Z Updating files:  82% (9708/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.4989507Z Updating files:  83% (9826/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5038206Z Updating files:  84% (9944/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5090254Z Updating files:  85% (10063/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5155793Z Updating files:  86% (10181/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5219785Z Updating files:  87% (10300/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5286108Z Updating files:  88% (10418/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5362652Z Updating files:  89% (10536/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5454760Z Updating files:  90% (10655/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5541262Z Updating files:  91% (10773/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5737524Z Updating files:  92% (10891/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5832977Z Updating files:  93% (11010/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5906352Z Updating files:  94% (11128/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.5979806Z Updating files:  95% (11247/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6060436Z Updating files:  96% (11365/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6140073Z Updating files:  97% (11483/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6211797Z Updating files:  98% (11602/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6282870Z Updating files:  99% (11720/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6283262Z Updating files: 100% (11838/11838)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6283651Z Updating files: 100% (11838/11838), done.
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6777370Z Reset branch 'main'
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6778994Z branch 'main' set up to track 'origin/main'.
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6904261Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6907140Z [command]/usr/bin/git log -1 --format=%H
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.6933692Z d00c61686d0a51c9932558f4be858e5a5febe153
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7222532Z ##[group]Run dtolnay/rust-toolchain@stable
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7222799Z with:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7222974Z   toolchain: stable
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7223149Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7223312Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7223506Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7223730Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7223927Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7224113Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7224318Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7224507Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7224689Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7224868Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7275798Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7321354Z ##[group]Run if [[ -z $toolchain ]]; then
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7321658Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7322142Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7322594Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7322833Z ^[[36;1m  exit 1^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7323103Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7323433Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7323862Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7324246Z ^[[36;1m  else^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7324560Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7324911Z ^[[36;1m  fi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7325148Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7325559Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7325911Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7326307Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7326677Z ^[[36;1melse^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7326880Z ^[[36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7327116Z ^[[36;1mfi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7370677Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7370961Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7371381Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7371635Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7371861Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7372067Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7372253Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7372454Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7372640Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7372825Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7372998Z   toolchain: stable
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7373167Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7493064Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=21]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7502869Z ##[start-action display=Construct rustup command line;id=__dtolnay_rust-toolchain.flags]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7524893Z ##[group]Run echo "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7525407Z ^[[36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7525893Z ^[[36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7526421Z ^[[36;1mecho "downgrade=" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7562159Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7562428Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7562613Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7563019Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7563247Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7563438Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7563631Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7563838Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7564027Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7564212Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7564389Z   targets: 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7564551Z   components: 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7564721Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7631592Z ##[end-action id=__dtolnay_rust-toolchain.flags;outcome=success;conclusion=success;duration_ms=12]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7633367Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7648700Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7649063Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7685298Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7685569Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7685729Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7685918Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7686134Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7686314Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7686503Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7686706Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7686892Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7687066Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7687235Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7747507Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=11]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7749244Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7769024Z ##[group]Run if ! command -v rustup &>/dev/null; then
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7769309Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7769887Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7770420Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7770640Z ^[[36;1mfi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7807922Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7808187Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7808337Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7808521Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7808731Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7808908Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7809083Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7809277Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7809455Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7809638Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7809814Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7810007Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7867810Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=11]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7869521Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7874711Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7883156Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7898565Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7898980Z ^[[36;1mrustup toolchain install stable --profile minimal --no-self-update^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7936170Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7936438Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7936729Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7936914Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7937129Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7937308Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7937593Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7937793Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7937969Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7938144Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7938322Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7938528Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7938716Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.3278105Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4198227Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4275889Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4276176Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4297104Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=641]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4322196Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4336712Z ##[group]Run rustup default stable
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4336950Z ^[[36;1mrustup default stable^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4375439Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4375703Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4375866Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4376056Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4376271Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4376451Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4376623Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4376817Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4376990Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4377164Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4377355Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4377553Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4473796Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4778398Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4778738Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4850682Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4851221Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4865108Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=54]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4867110Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4882334Z ##[group]Run DATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4882952Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4883432Z ^[[36;1mHASH=$(rustc +stable --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4883825Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4923299Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4923581Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4923751Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4923948Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4924181Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4924369Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4924553Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4924760Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4924944Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4925127Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4925317Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4925518Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5244548Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=37]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5246737Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5260333Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5260778Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5261025Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5261794Z ^[[36;1mfi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5299841Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5300109Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5300263Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5300445Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5300651Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5300822Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5300994Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5301383Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5301557Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5301726Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5301899Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5302083Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5356006Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=10]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5357664Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5370463Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5370768Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5371292Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5371544Z ^[[36;1mfi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5404583Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5404855Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5405017Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5405209Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5405433Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5405621Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5405805Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5406003Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5406185Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5406365Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5406546Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5406793Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5459333Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=10]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5460941Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5474584Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5474979Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5475516Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5476050Z ^[[36;1m  if rustc +stable --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5476481Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5476881Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5477265Z ^[[36;1m  elif rustc +stable --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5477679Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5478059Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5478321Z ^[[36;1m  fi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5478473Z ^[[36;1mfi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5511213Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5511516Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5511673Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5511863Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5512077Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5512254Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5512436Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5512629Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5512796Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5512978Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5513302Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5513495Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5813752Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=35]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5816248Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5831417Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5831989Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5832461Z ^[[36;1mif rustc +stable --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5832819Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5833075Z ^[[36;1mfi^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5870987Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5871539Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5871744Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5872019Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5872243Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5872434Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5872639Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5872844Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5873029Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5873209Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5873399Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5873595Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6053654Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=23]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6056820Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6070461Z ##[group]Run rustc +stable --version --verbose
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6070734Z ^[[36;1mrustc +stable --version --verbose^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6106863Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6107140Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6107296Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6107481Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6107697Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6107886Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6108058Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6108249Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6108430Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6108604Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6108782Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6108975Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6266508Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6267012Z binary: rustc
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6267377Z commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6267795Z commit-date: 2026-07-14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6268110Z host: x86_64-unknown-linux-gnu
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6268454Z release: 1.97.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6268733Z LLVM version: 22.1.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6287050Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=22]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6341961Z Prepare all required actions
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6342438Z Getting action download info
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.7344205Z Download action repository 'mozilla-actions/sccache-action@v0.0.10' (SHA:9e7fa8a12102821edf02ca5dbea1acd0f89a2696)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0055587Z ##[group]Run ./.github/actions/setup-sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0055813Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0055966Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0056148Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0056356Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0056530Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0056706Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0056898Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0057079Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0057260Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0057437Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0057782Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0060663Z ##[start-action display=Install sccache;id=__self.__mozilla-actions_sccache-action]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0090362Z ##[group]Run mozilla-actions/sccache-action@v0.0.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0090611Z with:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0090768Z   version: v0.16.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0092820Z   token: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0093000Z   disable_annotations: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0093188Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0093343Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0093526Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0093735Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0093915Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0094093Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0094296Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0094481Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0094656Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0094835Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0095026Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0825938Z try to setup sccache version: v0.16.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0836113Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3245886Z Correct checksum: aec995a83ad3dff3d14b6314e08858b7b73d35ca85a5bcf3d3a9ec07dee35588
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3345811Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/e7fa984e-a1cc-4467-98cc-d4e409138b51 -f /home/runner/work/_temp/e53ff6bf-2b02-45db-8ed6-107731ba6ef1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4771348Z sccache extracted to: /home/runner/work/_temp/e7fa984e-a1cc-4467-98cc-d4e409138b51
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7102567Z sccache cached to: /opt/hostedtoolcache/sccache/0.16.0/x64
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7202576Z ##[end-action id=__self.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=714]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7204803Z ##[start-action display=Enable sccache for Rust;id=__self.__run]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7218009Z ##[group]Run echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7218446Z ^[[36;1mecho "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7218772Z ^[[36;1mecho "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7260092Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7260368Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7260522Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7260713Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7260936Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7261256Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7261443Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7261643Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7261819Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7261990Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7262165Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7262417Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7262685Z   ACTIONS_CACHE_SERVICE_V2: on
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7263007Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7302881Z   ACTIONS_RUNTIME_TOKEN: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7303122Z   SCCACHE_GHA_ENABLED: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7303315Z   RUSTC_WRAPPER: sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.7303500Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8123300Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=91]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8144182Z ##[group]Run cd experiments/issue_916_write_effect_ladder
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8144528Z ^[[36;1mcd experiments/issue_916_write_effect_ladder^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8144808Z ^[[36;1mpython3 -m unittest -v test_ladder.py^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8183010Z shell: /usr/bin/bash -e {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8183218Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8183389Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8183586Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8183817Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8184006Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8184347Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8184552Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8184739Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8184920Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8185110Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8185377Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8185659Z   ACTIONS_CACHE_SERVICE_V2: on
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8186015Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8225805Z   ACTIONS_RUNTIME_TOKEN: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8226030Z   SCCACHE_GHA_ENABLED: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8226229Z   RUSTC_WRAPPER: sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.8226416Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.9566721Z test_every_rung_declares_an_observable_effect (test_ladder.DatasetTests.test_every_rung_declares_an_observable_effect) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.9567607Z test_rungs_are_rejected_without_a_stable_id_or_kind (test_ladder.DatasetTests.test_rungs_are_rejected_without_a_stable_id_or_kind) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.9568254Z test_the_committed_dataset_is_valid (test_ladder.DatasetTests.test_the_committed_dataset_is_valid) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0055566Z test_a_declared_check_is_re_run_independently (test_ladder.EffectObservationTests.test_a_declared_check_is_re_run_independently) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0058335Z test_a_file_that_should_not_exist_is_an_unmet_effect (test_ladder.EffectObservationTests.test_a_file_that_should_not_exist_is_an_unmet_effect) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0060066Z test_a_missing_file_is_an_unmet_effect (test_ladder.EffectObservationTests.test_a_missing_file_is_an_unmet_effect) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0063439Z test_exact_content_is_compared_not_merely_searched (test_ladder.EffectObservationTests.test_exact_content_is_compared_not_merely_searched) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0064579Z test_a_clean_run_may_not_report_failure (test_ladder.HonestyRuleTests.test_a_clean_run_may_not_report_failure) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0065636Z test_an_exit_code_must_reach_the_reported_outcome (test_ladder.HonestyRuleTests.test_an_exit_code_must_reach_the_reported_outcome) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0066797Z test_an_observed_effect_must_be_reported_as_completed (test_ladder.HonestyRuleTests.test_an_observed_effect_must_be_reported_as_completed) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0068014Z test_completion_claims_are_read_case_insensitively (test_ladder.HonestyRuleTests.test_completion_claims_are_read_case_insensitively) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0069176Z test_narration_cannot_pass_a_rung_whose_effect_never_landed (test_ladder.HonestyRuleTests.test_narration_cannot_pass_a_rung_whose_effect_never_landed) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0070346Z test_a_removed_or_regressed_rung_fails_by_stable_id (test_ladder.RatchetTests.test_a_removed_or_regressed_rung_fails_by_stable_id) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0071466Z test_new_green_rungs_extend_the_ladder (test_ladder.RatchetTests.test_new_green_rungs_extend_the_ladder) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0072371Z test_the_baseline_cannot_move_while_a_rung_is_red (test_ladder.RatchetTests.test_the_baseline_cannot_move_while_a_rung_is_red) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0073487Z test_the_sandbox_path_is_redacted_everywhere_it_appears (test_ladder.RecordStabilityTests.test_the_sandbox_path_is_redacted_everywhere_it_appears) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0074945Z test_two_runs_in_different_sandboxes_record_the_same_thing (test_ladder.RecordStabilityTests.test_two_runs_in_different_sandboxes_record_the_same_thing) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0076017Z test_a_forbidden_command_fails_the_rung (test_ladder.RouteAndShapeTests.test_a_forbidden_command_fails_the_rung) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0076984Z test_faults_are_injected_only_into_the_call_they_name (test_ladder.RouteAndShapeTests.test_faults_are_injected_only_into_the_call_they_name) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0078067Z test_the_qwen_envelope_names_the_status_the_harness_observed (test_ladder.RouteAndShapeTests.test_the_qwen_envelope_names_the_status_the_harness_observed) ... ok
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0078929Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0079085Z ----------------------------------------------------------------------
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0079436Z Ran 20 tests in 0.050s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0079595Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0079675Z OK
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0189112Z ##[group]Run cargo build --release --bin formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0189425Z ^[[36;1mcargo build --release --bin formal-ai^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0228568Z shell: /usr/bin/bash -e {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0228778Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0228946Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0229142Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0229371Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0229554Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0229742Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0229945Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0230131Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0230324Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0230511Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0230801Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0231253Z   ACTIONS_CACHE_SERVICE_V2: on
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0231586Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0271403Z   ACTIONS_RUNTIME_TOKEN: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0271627Z   SCCACHE_GHA_ENABLED: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0271816Z   RUSTC_WRAPPER: sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0272000Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.8181512Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.6805987Z ^[[1m^[[92m Downloading^[[0m crates ...
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7043332Z ^[[1m^[[92m  Downloaded^[[0m abnf v0.13.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7062138Z ^[[1m^[[92m  Downloaded^[[0m abnf-core v0.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7105905Z ^[[1m^[[92m  Downloaded^[[0m digest v0.10.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7151496Z ^[[1m^[[92m  Downloaded^[[0m doublets v0.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7188154Z ^[[1m^[[92m  Downloaded^[[0m dtoa-short v0.3.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7202279Z ^[[1m^[[92m  Downloaded^[[0m dunce v1.0.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7236636Z ^[[1m^[[92m  Downloaded^[[0m either v1.17.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7272701Z ^[[1m^[[92m  Downloaded^[[0m env_home v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7288151Z ^[[1m^[[92m  Downloaded^[[0m fastrand v2.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7337604Z ^[[1m^[[92m  Downloaded^[[0m find-msvc-tools v0.1.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7352481Z ^[[1m^[[92m  Downloaded^[[0m foldhash v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7414009Z ^[[1m^[[92m  Downloaded^[[0m fs2 v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7428652Z ^[[1m^[[92m  Downloaded^[[0m funty v2.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7457756Z ^[[1m^[[92m  Downloaded^[[0m futures-core v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7489166Z ^[[1m^[[92m  Downloaded^[[0m fxhash v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7517284Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.2.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7555337Z ^[[1m^[[92m  Downloaded^[[0m glob v0.3.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7596714Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.15.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7638636Z ^[[1m^[[92m  Downloaded^[[0m hashlink v0.10.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7659910Z ^[[1m^[[92m  Downloaded^[[0m http-body-util v0.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7690314Z ^[[1m^[[92m  Downloaded^[[0m html5ever v0.29.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7728098Z ^[[1m^[[92m  Downloaded^[[0m hyper-rustls v0.27.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7751378Z ^[[1m^[[92m  Downloaded^[[0m icu_collections v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7804576Z ^[[1m^[[92m  Downloaded^[[0m icu_normalizer_data v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7822933Z ^[[1m^[[92m  Downloaded^[[0m icu_provider v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7849303Z ^[[1m^[[92m  Downloaded^[[0m idna_adapter v1.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7873380Z ^[[1m^[[92m  Downloaded^[[0m indexmap v2.14.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7928360Z ^[[1m^[[92m  Downloaded^[[0m itertools v0.14.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.7988933Z ^[[1m^[[92m  Downloaded^[[0m js-sys v0.3.103
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8018196Z ^[[1m^[[92m  Downloaded^[[0m kanaria v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8096259Z ^[[1m^[[92m  Downloaded^[[0m libc v0.2.189
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8451832Z ^[[1m^[[92m  Downloaded^[[0m lindera-jieba v3.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8460212Z ^[[1m^[[92m  Downloaded^[[0m lingua-bengali-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8498434Z ^[[1m^[[92m  Downloaded^[[0m lingua-french-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8670285Z ^[[1m^[[92m  Downloaded^[[0m lingua-russian-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8879915Z ^[[1m^[[92m  Downloaded^[[0m lino-env v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8891398Z ^[[1m^[[92m  Downloaded^[[0m litemap v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8909772Z ^[[1m^[[92m  Downloaded^[[0m lru-slab v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8916905Z ^[[1m^[[92m  Downloaded^[[0m markup5ever v0.14.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8929711Z ^[[1m^[[92m  Downloaded^[[0m memchr v2.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.8973973Z ^[[1m^[[92m  Downloaded^[[0m minimal-lexical v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9010604Z ^[[1m^[[92m  Downloaded^[[0m munge v0.4.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9025940Z ^[[1m^[[92m  Downloaded^[[0m link-calculator v0.20.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9755132Z ^[[1m^[[92m  Downloaded^[[0m new_debug_unreachable v1.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9763650Z ^[[1m^[[92m  Downloaded^[[0m nom v8.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9806633Z ^[[1m^[[92m  Downloaded^[[0m nom v7.1.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9847899Z ^[[1m^[[92m  Downloaded^[[0m num_cpus v1.17.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9874628Z ^[[1m^[[92m  Downloaded^[[0m parking_lot v0.12.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9894706Z ^[[1m^[[92m  Downloaded^[[0m percent-encoding v2.3.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9901951Z ^[[1m^[[92m  Downloaded^[[0m pest_generator v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9912626Z ^[[1m^[[92m  Downloaded^[[0m phf_codegen v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9919480Z ^[[1m^[[92m  Downloaded^[[0m phf_shared v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9926739Z ^[[1m^[[92m  Downloaded^[[0m platform-data v2.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:32.9957758Z ^[[1m^[[92m  Downloaded^[[0m platform-trees v0.3.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0021737Z ^[[1m^[[92m  Downloaded^[[0m ppv-lite86 v0.2.21
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0031868Z ^[[1m^[[92m  Downloaded^[[0m proc-macro2 v1.0.107
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0055637Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0061034Z ^[[1m^[[92m  Downloaded^[[0m radium v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0069158Z ^[[1m^[[92m  Downloaded^[[0m quinn-proto v0.11.16
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0122732Z ^[[1m^[[92m  Downloaded^[[0m rand v0.9.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0153044Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0162811Z ^[[1m^[[92m  Downloaded^[[0m rayon-core v1.13.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0192363Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.10.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0205483Z ^[[1m^[[92m  Downloaded^[[0m reqwest v0.13.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0249909Z ^[[1m^[[92m  Downloaded^[[0m regex-syntax v0.8.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0304697Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.8.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0408289Z ^[[1m^[[92m  Downloaded^[[0m rust_decimal v1.42.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0461353Z ^[[1m^[[92m  Downloaded^[[0m rustls v0.23.42
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0556206Z ^[[1m^[[92m  Downloaded^[[0m rustls-platform-verifier v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0587682Z ^[[1m^[[92m  Downloaded^[[0m ryu v1.0.23
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0613701Z ^[[1m^[[92m  Downloaded^[[0m scraper v0.21.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0630535Z ^[[1m^[[92m  Downloaded^[[0m serde v1.0.229
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0658446Z ^[[1m^[[92m  Downloaded^[[0m serde_derive v1.0.229
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0682966Z ^[[1m^[[92m  Downloaded^[[0m serial2 v0.2.38
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0708054Z ^[[1m^[[92m  Downloaded^[[0m shell-words v1.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0715698Z ^[[1m^[[92m  Downloaded^[[0m simd-adler32 v0.3.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0730589Z ^[[1m^[[92m  Downloaded^[[0m simdutf8 v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0749489Z ^[[1m^[[92m  Downloaded^[[0m stable_deref_trait v1.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0756597Z ^[[1m^[[92m  Downloaded^[[0m string_cache_codegen v0.5.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0762382Z ^[[1m^[[92m  Downloaded^[[0m strum v0.28.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0769289Z ^[[1m^[[92m  Downloaded^[[0m subtle v2.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0778852Z ^[[1m^[[92m  Downloaded^[[0m syn v3.0.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0864941Z ^[[1m^[[92m  Downloaded^[[0m tap v1.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0872550Z ^[[1m^[[92m  Downloaded^[[0m tendril v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0887285Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v1.0.69
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0897595Z ^[[1m^[[92m  Downloaded^[[0m tinystr v0.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0914263Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v1.1.1+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.0924465Z ^[[1m^[[92m  Downloaded^[[0m tokio v1.53.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1289507Z ^[[1m^[[92m  Downloaded^[[0m tower-layer v0.3.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1296880Z ^[[1m^[[92m  Downloaded^[[0m toml_writer v1.1.2+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1308074Z ^[[1m^[[92m  Downloaded^[[0m tracing-core v0.1.36
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1335410Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-c-sharp v0.23.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1641977Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-go v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1673939Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-ini v1.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1687169Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-javascript v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1733447Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-lua v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1751020Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-proto v0.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1767107Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-ruby v0.23.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.1927177Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-sequel v0.3.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2132708Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-typescript v0.23.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2339404Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-yaml v0.7.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2373404Z ^[[1m^[[92m  Downloaded^[[0m typenum v1.20.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2403670Z ^[[1m^[[92m  Downloaded^[[0m unicode-blocks v0.1.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2413610Z ^[[1m^[[92m  Downloaded^[[0m unicode-segmentation v1.13.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2438301Z ^[[1m^[[92m  Downloaded^[[0m unsafe-libyaml v0.2.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2464308Z ^[[1m^[[92m  Downloaded^[[0m utf-8 v0.7.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2473857Z ^[[1m^[[92m  Downloaded^[[0m uuid v1.24.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2498019Z ^[[1m^[[92m  Downloaded^[[0m vte v0.11.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2513116Z ^[[1m^[[92m  Downloaded^[[0m want v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2520368Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2527740Z ^[[1m^[[92m  Downloaded^[[0m web-capture v0.3.36
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2581299Z ^[[1m^[[92m  Downloaded^[[0m whatlang v0.18.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2612402Z ^[[1m^[[92m  Downloaded^[[0m writeable v0.6.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2629053Z ^[[1m^[[92m  Downloaded^[[0m yoke v0.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2643992Z ^[[1m^[[92m  Downloaded^[[0m zerofrom v0.1.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2651718Z ^[[1m^[[92m  Downloaded^[[0m zerotrie v0.2.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2683823Z ^[[1m^[[92m  Downloaded^[[0m zmij v1.0.23
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2699274Z ^[[1m^[[92m  Downloaded^[[0m ahash v0.8.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2718838Z ^[[1m^[[92m  Downloaded^[[0m allocator-api2 v0.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2738868Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v1.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2751755Z ^[[1m^[[92m  Downloaded^[[0m arrayvec v0.7.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2768597Z ^[[1m^[[92m  Downloaded^[[0m autocfg v1.5.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2783596Z ^[[1m^[[92m  Downloaded^[[0m base64 v0.22.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2813896Z ^[[1m^[[92m  Downloaded^[[0m bitflags v1.3.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2839833Z ^[[1m^[[92m  Downloaded^[[0m block-buffer v0.10.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2849060Z ^[[1m^[[92m  Downloaded^[[0m bnf v0.6.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2874960Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2883489Z ^[[1m^[[92m  Downloaded^[[0m byteorder v1.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2896629Z ^[[1m^[[92m  Downloaded^[[0m cfg-if v1.0.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2906758Z ^[[1m^[[92m  Downloaded^[[0m chacha20 v0.10.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2925863Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.6.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2977122Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3010261Z ^[[1m^[[92m  Downloaded^[[0m cmake v0.1.58
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3021274Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3032455Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-deque v0.8.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3044745Z ^[[1m^[[92m  Downloaded^[[0m cssparser v0.34.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3064229Z ^[[1m^[[92m  Downloaded^[[0m csv-core v0.1.13
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3075194Z ^[[1m^[[92m  Downloaded^[[0m daachorse v2.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3102605Z ^[[1m^[[92m  Downloaded^[[0m darling_macro v0.20.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3108026Z ^[[1m^[[92m  Downloaded^[[0m derive_builder_core v0.20.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3124089Z ^[[1m^[[92m  Downloaded^[[0m derive_builder_macro v0.20.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3130297Z ^[[1m^[[92m  Downloaded^[[0m dtoa v1.0.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3143034Z ^[[1m^[[92m  Downloaded^[[0m ebnf v0.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3157977Z ^[[1m^[[92m  Downloaded^[[0m encoding_rs_io v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3168052Z ^[[1m^[[92m  Downloaded^[[0m filedescriptor v0.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3175875Z ^[[1m^[[92m  Downloaded^[[0m foldhash v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3185711Z ^[[1m^[[92m  Downloaded^[[0m fnv v1.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3193246Z ^[[1m^[[92m  Downloaded^[[0m futures-channel v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3207510Z ^[[1m^[[92m  Downloaded^[[0m generic-array v0.14.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3218845Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.16.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3260769Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3291469Z ^[[1m^[[92m  Downloaded^[[0m html-escape v0.2.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3308761Z ^[[1m^[[92m  Downloaded^[[0m httparse v1.10.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3328662Z ^[[1m^[[92m  Downloaded^[[0m icu_normalizer v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3358936Z ^[[1m^[[92m  Downloaded^[[0m iana-time-zone v0.1.65
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3382117Z ^[[1m^[[92m  Downloaded^[[0m idna v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3410164Z ^[[1m^[[92m  Downloaded^[[0m ipnet v2.12.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3423664Z ^[[1m^[[92m  Downloaded^[[0m lazy_static v1.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3437994Z ^[[1m^[[92m  Downloaded^[[0m jobserver v0.1.35
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3452915Z ^[[1m^[[92m  Downloaded^[[0m lindera-dictionary v3.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3484053Z ^[[1m^[[92m  Downloaded^[[0m lingua-chinese-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3502301Z ^[[1m^[[92m  Downloaded^[[0m links-notation v0.13.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3519832Z ^[[1m^[[92m  Downloaded^[[0m lingua-portuguese-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.3672345Z ^[[1m^[[92m  Downloaded^[[0m linux-raw-sys v0.12.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4176339Z ^[[1m^[[92m  Downloaded^[[0m mac v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4184228Z ^[[1m^[[92m  Downloaded^[[0m miniz_oxide v0.8.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4205025Z ^[[1m^[[92m  Downloaded^[[0m md5 v0.8.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4213960Z ^[[1m^[[92m  Downloaded^[[0m mutate_once v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4221012Z ^[[1m^[[92m  Downloaded^[[0m num-bigint v0.4.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4258541Z ^[[1m^[[92m  Downloaded^[[0m num-traits v0.2.19
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4279668Z ^[[1m^[[92m  Downloaded^[[0m parking_lot_core v0.9.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4297176Z ^[[1m^[[92m  Downloaded^[[0m pest_derive v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4314121Z ^[[1m^[[92m  Downloaded^[[0m phf_generator v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4323357Z ^[[1m^[[92m  Downloaded^[[0m pkg-config v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4335537Z ^[[1m^[[92m  Downloaded^[[0m portable-pty v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4349167Z ^[[1m^[[92m  Downloaded^[[0m proc-macro-crate v3.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4362146Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4367241Z ^[[1m^[[92m  Downloaded^[[0m quote v1.0.47
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4388882Z ^[[1m^[[92m  Downloaded^[[0m rand v0.10.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4419109Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.9.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4429815Z ^[[1m^[[92m  Downloaded^[[0m regex v1.13.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4473207Z ^[[1m^[[92m  Downloaded^[[0m rend v0.5.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4487194Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.7.46
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4499477Z ^[[1m^[[92m  Downloaded^[[0m rustls-webpki v0.103.13
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4524674Z ^[[1m^[[92m  Downloaded^[[0m rustix v1.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4749464Z ^[[1m^[[92m  Downloaded^[[0m scopeguard v1.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4759377Z ^[[1m^[[92m  Downloaded^[[0m serde-wasm-bindgen v0.6.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4773769Z ^[[1m^[[92m  Downloaded^[[0m serde_yaml_ng v0.10.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4800792Z ^[[1m^[[92m  Downloaded^[[0m shlex v2.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4812267Z ^[[1m^[[92m  Downloaded^[[0m slab v0.4.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4822690Z ^[[1m^[[92m  Downloaded^[[0m streaming-iterator v0.1.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4832443Z ^[[1m^[[92m  Downloaded^[[0m strum v0.27.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4839335Z ^[[1m^[[92m  Downloaded^[[0m syn v1.0.109
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4916829Z ^[[1m^[[92m  Downloaded^[[0m synstructure v0.13.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4925111Z ^[[1m^[[92m  Downloaded^[[0m thiserror v1.0.69
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4971932Z ^[[1m^[[92m  Downloaded^[[0m thread-priority v3.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4987355Z ^[[1m^[[92m  Downloaded^[[0m tokio-macros v2.7.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.4997061Z ^[[1m^[[92m  Downloaded^[[0m toml_parser v1.1.2+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5015673Z ^[[1m^[[92m  Downloaded^[[0m tower-service v0.3.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5022400Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-css v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5045106Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-c v0.24.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5103557Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-json v0.24.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5116215Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-pascal v0.10.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5171620Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-r v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5227901Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-xml v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5255553Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-swift v0.7.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5506049Z ^[[1m^[[92m  Downloaded^[[0m ucd-trie v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5516714Z ^[[1m^[[92m  Downloaded^[[0m untrusted v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5529931Z ^[[1m^[[92m  Downloaded^[[0m unicode-normalization v0.1.25
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5558656Z ^[[1m^[[92m  Downloaded^[[0m utf8parse v0.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5567607Z ^[[1m^[[92m  Downloaded^[[0m vte_generate_state_changes v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5574619Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-futures v0.4.76
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5583362Z ^[[1m^[[92m  Downloaded^[[0m web-search v0.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5624876Z ^[[1m^[[92m  Downloaded^[[0m winnow v1.0.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5739868Z ^[[1m^[[92m  Downloaded^[[0m yoke-derive v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5749674Z ^[[1m^[[92m  Downloaded^[[0m zeroize v1.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5762234Z ^[[1m^[[92m  Downloaded^[[0m zerovec v0.11.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5814349Z ^[[1m^[[92m  Downloaded^[[0m allocator-api2 v0.2.21
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5835608Z ^[[1m^[[92m  Downloaded^[[0m anstream v1.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5852723Z ^[[1m^[[92m  Downloaded^[[0m atomic-waker v1.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5866970Z ^[[1m^[[92m  Downloaded^[[0m base64 v0.23.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.5898623Z ^[[1m^[[92m  Downloaded^[[0m bitvec v1.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6041447Z ^[[1m^[[92m  Downloaded^[[0m bumpalo v3.20.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6064102Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6072012Z ^[[1m^[[92m  Downloaded^[[0m cfg_aliases v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6079973Z ^[[1m^[[92m  Downloaded^[[0m clap v4.6.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6159019Z ^[[1m^[[92m  Downloaded^[[0m colorchoice v1.0.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6166718Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.2.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6179232Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-utils v0.8.22
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6202047Z ^[[1m^[[92m  Downloaded^[[0m csv v1.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6353612Z ^[[1m^[[92m  Downloaded^[[0m darling v0.20.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6395951Z ^[[1m^[[92m  Downloaded^[[0m derive_builder v0.20.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6441752Z ^[[1m^[[92m  Downloaded^[[0m dotenvy v0.15.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6464640Z ^[[1m^[[92m  Downloaded^[[0m dtor-proc-macro v0.0.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6469705Z ^[[1m^[[92m  Downloaded^[[0m equivalent v1.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6480437Z ^[[1m^[[92m  Downloaded^[[0m flate2 v1.1.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6521735Z ^[[1m^[[92m  Downloaded^[[0m futures-util v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6636548Z ^[[1m^[[92m  Downloaded^[[0m fst v0.4.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6829294Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.12.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6863381Z ^[[1m^[[92m  Downloaded^[[0m heck v0.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6874299Z ^[[1m^[[92m  Downloaded^[[0m hyper v1.11.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6933446Z ^[[1m^[[92m  Downloaded^[[0m icu_properties v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6954372Z ^[[1m^[[92m  Downloaded^[[0m include_dir v0.7.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6963003Z ^[[1m^[[92m  Downloaded^[[0m itoa v1.0.18
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6974721Z ^[[1m^[[92m  Downloaded^[[0m leak_slice v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.6981277Z ^[[1m^[[92m  Downloaded^[[0m lingua-arabic-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9187510Z ^[[1m^[[92m  Downloaded^[[0m lino-objects-codec v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9203215Z ^[[1m^[[92m  Downloaded^[[0m lingua-spanish-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9368623Z ^[[1m^[[92m  Downloaded^[[0m memmap2 v0.9.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9385143Z ^[[1m^[[92m  Downloaded^[[0m maplit v1.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9395115Z ^[[1m^[[92m  Downloaded^[[0m nix v0.28.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9486345Z ^[[1m^[[92m  Downloaded^[[0m num-rational v0.4.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9497046Z ^[[1m^[[92m  Downloaded^[[0m phf v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9507749Z ^[[1m^[[92m  Downloaded^[[0m parse-hyperlinks v0.23.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9521673Z ^[[1m^[[92m  Downloaded^[[0m precomputed-hash v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9526680Z ^[[1m^[[92m  Downloaded^[[0m platform-mem v0.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9566549Z ^[[1m^[[92m  Downloaded^[[0m quinn v0.11.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9597219Z ^[[1m^[[92m  Downloaded^[[0m rand v0.8.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9624021Z ^[[1m^[[92m  Downloaded^[[0m rand_pcg v0.10.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9635622Z ^[[1m^[[92m  Downloaded^[[0m rend v0.4.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9647236Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.8.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9662146Z ^[[1m^[[92m  Downloaded^[[0m rustls-pki-types v1.15.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9684107Z ^[[1m^[[92m  Downloaded^[[0m seahash v4.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9697721Z ^[[1m^[[92m  Downloaded^[[0m serde_json v1.0.151
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9758770Z ^[[1m^[[92m  Downloaded^[[0m signal-hook-registry v1.4.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9768811Z ^[[1m^[[92m  Downloaded^[[0m socket2 v0.6.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9783647Z ^[[1m^[[92m  Downloaded^[[0m strum_macros v0.27.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9804006Z ^[[1m^[[92m  Downloaded^[[0m sync_wrapper v1.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9809767Z ^[[1m^[[92m  Downloaded^[[0m thiserror v2.0.19
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9864301Z ^[[1m^[[92m  Downloaded^[[0m tinyvec_macros v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9870826Z ^[[1m^[[92m  Downloaded^[[0m tower v0.5.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.9955971Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter v0.25.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0005852Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-graphql v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0022175Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-language v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0035388Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-rust v0.24.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0127485Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-vb-dotnet v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0237121Z ^[[1m^[[92m  Downloaded^[[0m unicode-bidi v0.3.18
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0257176Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0303947Z ^[[1m^[[92m  Downloaded^[[0m version_check v0.9.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0313825Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.0335325Z ^[[1m^[[92m  Downloaded^[[0m web-sys v0.3.103
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1273053Z ^[[1m^[[92m  Downloaded^[[0m zerovec-derive v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1286226Z ^[[1m^[[92m  Downloaded^[[0m xattr v1.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1302320Z ^[[1m^[[92m  Downloaded^[[0m aho-corasick v1.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1350660Z ^[[1m^[[92m  Downloaded^[[0m anyhow v1.0.104
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1386268Z ^[[1m^[[92m  Downloaded^[[0m borsh v1.8.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1445754Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.6.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1451830Z ^[[1m^[[92m  Downloaded^[[0m cfg_aliases v0.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1460194Z ^[[1m^[[92m  Downloaded^[[0m clap_lex v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1470502Z ^[[1m^[[92m  Downloaded^[[0m crc32fast v1.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.1485892Z ^[[1m^[[92m  Downloaded^[[0m aws-lc-sys v0.43.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3569673Z ^[[1m^[[92m  Downloaded^[[0m cssparser-macros v0.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3575254Z ^[[1m^[[92m  Downloaded^[[0m darling_core v0.20.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3616592Z ^[[1m^[[92m  Downloaded^[[0m displaydoc v0.2.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3632853Z ^[[1m^[[92m  Downloaded^[[0m ego-tree v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3647151Z ^[[1m^[[92m  Downloaded^[[0m futf v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3655260Z ^[[1m^[[92m  Downloaded^[[0m filetime v0.2.29
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3668768Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.3.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3696810Z ^[[1m^[[92m  Downloaded^[[0m http v1.4.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3726270Z ^[[1m^[[92m  Downloaded^[[0m icu_locale_core v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3784149Z ^[[1m^[[92m  Downloaded^[[0m include_dir_macros v0.7.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3789598Z ^[[1m^[[92m  Downloaded^[[0m kamadak-exif v0.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3812570Z ^[[1m^[[92m  Downloaded^[[0m lino-arguments v0.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3826531Z ^[[1m^[[92m  Downloaded^[[0m lingua-english-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.3997554Z ^[[1m^[[92m  Downloaded^[[0m match_token v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4002721Z ^[[1m^[[92m  Downloaded^[[0m munge_macro v0.4.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4009095Z ^[[1m^[[92m  Downloaded^[[0m once_cell v1.21.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4029900Z ^[[1m^[[92m  Downloaded^[[0m pest_meta v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4046887Z ^[[1m^[[92m  Downloaded^[[0m platform-num v0.8.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4054869Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4062575Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4071797Z ^[[1m^[[92m  Downloaded^[[0m rustc-hash v2.1.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4082490Z ^[[1m^[[92m  Downloaded^[[0m regex-automata v0.4.16
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4197197Z ^[[1m^[[92m  Downloaded^[[0m same-file v1.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4208270Z ^[[1m^[[92m  Downloaded^[[0m servo_arc v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4215860Z ^[[1m^[[92m  Downloaded^[[0m smallvec v1.15.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4227598Z ^[[1m^[[92m  Downloaded^[[0m strum_macros v0.28.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4247597Z ^[[1m^[[92m  Downloaded^[[0m tokio-rustls v0.26.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4264415Z ^[[1m^[[92m  Downloaded^[[0m tempfile v3.27.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4285311Z ^[[1m^[[92m  Downloaded^[[0m tracing v0.1.44
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4421975Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-java v0.23.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4456733Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-python v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4508348Z ^[[1m^[[92m  Downloaded^[[0m try-lock v0.2.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4515776Z ^[[1m^[[92m  Downloaded^[[0m vt100 v0.15.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4528094Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.1.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4570799Z ^[[1m^[[92m  Downloaded^[[0m wyz v0.5.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4580745Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-shared v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4589117Z ^[[1m^[[92m  Downloaded^[[0m ahash v0.7.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4608885Z ^[[1m^[[92m  Downloaded^[[0m async-trait v0.1.92
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4639040Z ^[[1m^[[92m  Downloaded^[[0m bitflags v2.13.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4675290Z ^[[1m^[[92m  Downloaded^[[0m bytes v1.12.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4704165Z ^[[1m^[[92m  Downloaded^[[0m clap_derive v4.6.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4722259Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-epoch v0.9.20
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4742503Z ^[[1m^[[92m  Downloaded^[[0m downcast-rs v1.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4753459Z ^[[1m^[[92m  Downloaded^[[0m ctor-proc-macro v0.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4759841Z ^[[1m^[[92m  Downloaded^[[0m errno v0.3.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4772167Z ^[[1m^[[92m  Downloaded^[[0m futures-task v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4782073Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.17.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4825437Z ^[[1m^[[92m  Downloaded^[[0m icu_properties_data v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4913064Z ^[[1m^[[92m  Downloaded^[[0m json5_nodes v2.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4922689Z ^[[1m^[[92m  Downloaded^[[0m log v0.4.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4943112Z ^[[1m^[[92m  Downloaded^[[0m lingua-hindi-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.4975331Z ^[[1m^[[92m  Downloaded^[[0m nix v0.29.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5064625Z ^[[1m^[[92m  Downloaded^[[0m pest v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5101658Z ^[[1m^[[92m  Downloaded^[[0m potential_utf v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5124206Z ^[[1m^[[92m  Downloaded^[[0m rancor v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5134165Z ^[[1m^[[92m  Downloaded^[[0m rustversion v1.0.23
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5157103Z ^[[1m^[[92m  Downloaded^[[0m ring v0.17.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5498914Z ^[[1m^[[92m  Downloaded^[[0m sha2 v0.10.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5519480Z ^[[1m^[[92m  Downloaded^[[0m strsim v0.11.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5530104Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v2.0.19
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5541527Z ^[[1m^[[92m  Downloaded^[[0m tower-http v0.6.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5618696Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-kotlin-ng v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5861884Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-toml-ng v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5875346Z ^[[1m^[[92m  Downloaded^[[0m url v2.5.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5896416Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro-support v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5913909Z ^[[1m^[[92m  Downloaded^[[0m zerofrom-derive v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5922287Z ^[[1m^[[92m  Downloaded^[[0m anstyle-query v1.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5932009Z ^[[1m^[[92m  Downloaded^[[0m borsh-derive v1.8.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.5958843Z ^[[1m^[[92m  Downloaded^[[0m chrono v0.4.45
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6012272Z ^[[1m^[[92m  Downloaded^[[0m crypto-common v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6019958Z ^[[1m^[[92m  Downloaded^[[0m derive_more v0.99.20
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6059286Z ^[[1m^[[92m  Downloaded^[[0m form_urlencoded v1.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6066100Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.14.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6104506Z ^[[1m^[[92m  Downloaded^[[0m ident_case v1.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6111721Z ^[[1m^[[92m  Downloaded^[[0m meta-language v0.54.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6230454Z ^[[1m^[[92m  Downloaded^[[0m openssl-probe v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.6239645Z ^[[1m^[[92m  Downloaded^[[0m lingua v1.8.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9067569Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9074689Z ^[[1m^[[92m  Downloaded^[[0m rayon v1.12.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9150451Z ^[[1m^[[92m  Downloaded^[[0m string_cache v0.8.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9163074Z ^[[1m^[[92m  Downloaded^[[0m selectors v0.26.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9181628Z ^[[1m^[[92m  Downloaded^[[0m tinyvec v1.12.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9203659Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-cpp v0.23.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9408806Z ^[[1m^[[92m  Downloaded^[[0m walkdir v2.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9423718Z ^[[1m^[[92m  Downloaded^[[0m ts-parser-perl v1.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9758202Z ^[[1m^[[92m  Downloaded^[[0m adler2 v2.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9768796Z ^[[1m^[[92m  Downloaded^[[0m beef v0.5.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9784126Z ^[[1m^[[92m  Downloaded^[[0m command-stream v0.15.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9831909Z ^[[1m^[[92m  Downloaded^[[0m dashmap v6.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9852754Z ^[[1m^[[92m  Downloaded^[[0m fs_extra v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9866371Z ^[[1m^[[92m  Downloaded^[[0m hyper-util v0.1.20
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9918066Z ^[[1m^[[92m  Downloaded^[[0m num-integer v0.1.46
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9931625Z ^[[1m^[[92m  Downloaded^[[0m quinn-udp v0.5.15
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:34.9946226Z ^[[1m^[[92m  Downloaded^[[0m lingua-urdu-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0182723Z ^[[1m^[[92m  Downloaded^[[0m rustls-native-certs v0.8.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0195105Z ^[[1m^[[92m  Downloaded^[[0m syn v2.0.119
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0280375Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-html v0.23.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0294968Z ^[[1m^[[92m  Downloaded^[[0m unicode-ident v1.0.24
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0318324Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.6.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0326296Z ^[[1m^[[92m  Downloaded^[[0m zerocopy v0.8.55
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0502821Z ^[[1m^[[92m  Downloaded^[[0m ctor v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0511846Z ^[[1m^[[92m  Downloaded^[[0m getopts v0.2.24
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0524820Z ^[[1m^[[92m  Downloaded^[[0m lindera v3.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0561824Z ^[[1m^[[92m  Downloaded^[[0m phf_macros v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0570154Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.7.46
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0642173Z ^[[1m^[[92m  Downloaded^[[0m tar v0.4.46
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0715645Z ^[[1m^[[92m  Downloaded^[[0m anstyle v1.0.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0824420Z ^[[1m^[[92m  Downloaded^[[0m counter v0.7.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.0842036Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-scala v0.25.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1250849Z ^[[1m^[[92m  Downloaded^[[0m http-body v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1259170Z ^[[1m^[[92m  Downloaded^[[0m mio v1.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1310657Z ^[[1m^[[92m  Downloaded^[[0m serde_core v1.0.229
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1333255Z ^[[1m^[[92m  Downloaded^[[0m aws-lc-rs v1.17.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1427531Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-php v0.24.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1592811Z ^[[1m^[[92m  Downloaded^[[0m pin-project-lite v0.2.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1640843Z ^[[1m^[[92m  Downloaded^[[0m encoding_rs v0.8.35
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1804018Z ^[[1m^[[92m  Downloaded^[[0m toml_edit v0.25.13+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1836641Z ^[[1m^[[92m  Downloaded^[[0m cc v1.2.67
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1860688Z ^[[1m^[[92m  Downloaded^[[0m lock_api v0.4.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1871162Z ^[[1m^[[92m  Downloaded^[[0m utf8_iter v1.0.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1879410Z ^[[1m^[[92m  Downloaded^[[0m is_terminal_polyfill v1.70.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1886883Z ^[[1m^[[92m  Downloaded^[[0m which v7.0.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1899482Z ^[[1m^[[92m  Downloaded^[[0m siphasher v1.0.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1910611Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.6.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.1921526Z ^[[1m^[[92m  Downloaded^[[0m dtor v0.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6804042Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.107
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6804552Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.24
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6804964Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.47
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6805352Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.189
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8570911Z ^[[1m^[[92m   Compiling^[[0m find-msvc-tools v0.1.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0777056Z ^[[1m^[[92m   Compiling^[[0m shlex v2.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3946503Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-language v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4613924Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8446637Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.229
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.1700084Z ^[[1m^[[92m   Compiling^[[0m jobserver v0.1.35
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.3058628Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.229
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4132881Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9141814Z ^[[1m^[[92m   Compiling^[[0m cc v1.2.67
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9742644Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.119
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.2941536Z ^[[1m^[[92m   Compiling^[[0m syn v3.0.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.3523830Z ^[[1m^[[92m   Compiling^[[0m icu_properties_data v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.4422363Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer_data v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.5363017Z ^[[1m^[[92m   Compiling^[[0m stable_deref_trait v1.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.9402589Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.6088333Z ^[[1m^[[92m   Compiling^[[0m smallvec v1.15.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.6169340Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.7252531Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.229
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.8125439Z ^[[1m^[[92m   Compiling^[[0m synstructure v0.13.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.9021690Z ^[[1m^[[92m   Compiling^[[0m zerovec-derive v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.0852481Z ^[[1m^[[92m   Compiling^[[0m displaydoc v0.2.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.4082456Z ^[[1m^[[92m   Compiling^[[0m zerofrom-derive v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.5032669Z ^[[1m^[[92m   Compiling^[[0m yoke-derive v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.5327911Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.23
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.6622436Z ^[[1m^[[92m   Compiling^[[0m cmake v0.1.58
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.0944366Z ^[[1m^[[92m   Compiling^[[0m dunce v1.0.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.1051614Z ^[[1m^[[92m   Compiling^[[0m zerofrom v0.1.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.3932265Z ^[[1m^[[92m   Compiling^[[0m pkg-config v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.4225616Z ^[[1m^[[92m   Compiling^[[0m fs_extra v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.4388414Z ^[[1m^[[92m   Compiling^[[0m yoke v0.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.9289424Z ^[[1m^[[92m   Compiling^[[0m zerovec v0.11.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.0102124Z ^[[1m^[[92m   Compiling^[[0m aws-lc-sys v0.43.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.2897274Z ^[[1m^[[92m   Compiling^[[0m ptr_meta_derive v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.3030830Z ^[[1m^[[92m   Compiling^[[0m pin-project-lite v0.2.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.5113376Z ^[[1m^[[92m   Compiling^[[0m autocfg v1.5.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.5182656Z ^[[1m^[[92m   Compiling^[[0m bytes v1.12.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.9192146Z ^[[1m^[[92m   Compiling^[[0m num-traits v0.2.19
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.0184700Z ^[[1m^[[92m   Compiling^[[0m tokio-macros v2.7.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.1115373Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.6.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.1747941Z ^[[1m^[[92m   Compiling^[[0m thiserror v2.0.19
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.2682623Z ^[[1m^[[92m   Compiling^[[0m siphasher v1.0.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.3080103Z ^[[1m^[[92m   Compiling^[[0m futures-core v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.4475574Z ^[[1m^[[92m   Compiling^[[0m rand v0.8.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.5767156Z ^[[1m^[[92m   Compiling^[[0m phf_shared v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.7212584Z ^[[1m^[[92m   Compiling^[[0m tinystr v0.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.0768057Z ^[[1m^[[92m   Compiling^[[0m writeable v0.6.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.1676038Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.4022470Z ^[[1m^[[92m   Compiling^[[0m aws-lc-rs v1.17.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.5147372Z ^[[1m^[[92m   Compiling^[[0m litemap v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.5331651Z ^[[1m^[[92m   Compiling^[[0m zeroize v1.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.7298752Z ^[[1m^[[92m   Compiling^[[0m icu_locale_core v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.7521682Z ^[[1m^[[92m   Compiling^[[0m phf_generator v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.7461965Z ^[[1m^[[92m   Compiling^[[0m potential_utf v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.7968225Z ^[[1m^[[92m   Compiling^[[0m zerotrie v0.2.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.9598744Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v2.0.19
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.2483690Z ^[[1m^[[92m   Compiling^[[0m socket2 v0.6.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.4036083Z ^[[1m^[[92m   Compiling^[[0m mio v1.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.8452234Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-shared v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.9442386Z ^[[1m^[[92m   Compiling^[[0m ident_case v1.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.9580889Z ^[[1m^[[92m   Compiling^[[0m utf8_iter v1.0.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.1154588Z ^[[1m^[[92m   Compiling^[[0m fnv v1.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.1970573Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.2541360Z ^[[1m^[[92m   Compiling^[[0m tokio v1.53.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.2773380Z ^[[1m^[[92m   Compiling^[[0m icu_collections v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.6662535Z ^[[1m^[[92m   Compiling^[[0m darling_core v0.20.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.9044964Z ^[[1m^[[92m   Compiling^[[0m icu_provider v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:50.5625582Z ^[[1m^[[92m   Compiling^[[0m rustls-pki-types v1.15.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.2235683Z ^[[1m^[[92m   Compiling^[[0m http v1.4.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.4503508Z ^[[1m^[[92m   Compiling^[[0m bytecheck_derive v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.8522559Z ^[[1m^[[92m   Compiling^[[0m include_dir_macros v0.7.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.0592703Z ^[[1m^[[92m   Compiling^[[0m log v0.4.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.2712334Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.13.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.4232392Z ^[[1m^[[92m   Compiling^[[0m anyhow v1.0.104
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.5174746Z ^[[1m^[[92m   Compiling^[[0m parking_lot_core v0.9.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.5420924Z ^[[1m^[[92m   Compiling^[[0m http-body v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.6026991Z ^[[1m^[[92m   Compiling^[[0m include_dir v0.7.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.3211620Z ^[[1m^[[92m   Compiling^[[0m darling_macro v0.20.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.4459845Z ^[[1m^[[92m   Compiling^[[0m slab v0.4.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.6496286Z ^[[1m^[[92m   Compiling^[[0m futures-task v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.7983740Z ^[[1m^[[92m   Compiling^[[0m rustversion v1.0.23
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.9076760Z ^[[1m^[[92m   Compiling^[[0m untrusted v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.0220466Z ^[[1m^[[92m   Compiling^[[0m scopeguard v1.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.1333611Z ^[[1m^[[92m   Compiling^[[0m httparse v1.10.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.1601908Z ^[[1m^[[92m   Compiling^[[0m version_check v0.9.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.2400856Z ^[[1m^[[92m   Compiling^[[0m percent-encoding v2.3.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.4133179Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.17.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.5740859Z ^[[1m^[[92m   Compiling^[[0m rustls v0.23.42
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.6302828Z ^[[1m^[[92m   Compiling^[[0m lock_api v0.4.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.6327529Z ^[[1m^[[92m   Compiling^[[0m futures-util v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.9592045Z ^[[1m^[[92m   Compiling^[[0m icu_properties v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.1025386Z ^[[1m^[[92m   Compiling^[[0m darling v0.20.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.4603360Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer v2.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.3211905Z ^[[1m^[[92m   Compiling^[[0m munge_macro v0.4.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.4134599Z ^[[1m^[[92m   Compiling^[[0m tower-service v0.3.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.6142626Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.151
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.7075433Z ^[[1m^[[92m   Compiling^[[0m subtle v2.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.9036403Z ^[[1m^[[92m   Compiling^[[0m equivalent v1.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.0675318Z ^[[1m^[[92m   Compiling^[[0m try-lock v0.2.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.2815257Z ^[[1m^[[92m   Compiling^[[0m indexmap v2.14.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.3970349Z ^[[1m^[[92m   Compiling^[[0m want v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:58.1112378Z ^[[1m^[[92m   Compiling^[[0m idna_adapter v1.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:58.2442799Z ^[[1m^[[92m   Compiling^[[0m derive_builder_core v0.20.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:58.8372066Z ^[[1m^[[92m   Compiling^[[0m tracing-core v0.1.36
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.1483292Z ^[[1m^[[92m   Compiling^[[0m futures-channel v0.3.33
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.5688346Z ^[[1m^[[92m   Compiling^[[0m ptr_meta v0.3.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.5831648Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.8565216Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.3.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.9548508Z ^[[1m^[[92m   Compiling^[[0m atomic-waker v1.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.2611341Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.3842987Z ^[[1m^[[92m   Compiling^[[0m rustix v1.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.4026396Z ^[[1m^[[92m   Compiling^[[0m zerocopy v0.8.55
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.5201902Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:01.5272838Z ^[[1m^[[92m   Compiling^[[0m hyper v1.11.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:03.1525636Z ^[[1m^[[92m   Compiling^[[0m rancor v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:03.5135057Z ^[[1m^[[92m   Compiling^[[0m tracing v0.1.44
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:03.8745767Z ^[[1m^[[92m   Compiling^[[0m derive_builder_macro v0.20.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:03.9800404Z ^[[1m^[[92m   Compiling^[[0m idna v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:04.6395227Z ^[[1m^[[92m   Compiling^[[0m form_urlencoded v1.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.0044782Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.16
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.0422282Z ^[[1m^[[92m   Compiling^[[0m phf_codegen v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.1993807Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.28.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.3932561Z ^[[1m^[[92m   Compiling^[[0m sync_wrapper v1.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.5902519Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.2182564Z ^[[1m^[[92m   Compiling^[[0m rkyv_derive v0.8.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.2372792Z ^[[1m^[[92m   Compiling^[[0m simdutf8 v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.6848779Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.9295948Z ^[[1m^[[92m   Compiling^[[0m bumpalo v3.20.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.0378707Z ^[[1m^[[92m   Compiling^[[0m openssl-probe v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.1992502Z ^[[1m^[[92m   Compiling^[[0m tower-layer v0.3.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.5492493Z ^[[1m^[[92m   Compiling^[[0m crossbeam-utils v0.8.22
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.5535872Z ^[[1m^[[92m   Compiling^[[0m linux-raw-sys v0.12.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.6504806Z ^[[1m^[[92m   Compiling^[[0m crc32fast v1.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.8264168Z ^[[1m^[[92m   Compiling^[[0m ipnet v2.12.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:08.1592679Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:08.4940611Z ^[[1m^[[92m   Compiling^[[0m hyper-util v0.1.20
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:10.3003600Z ^[[1m^[[92m   Compiling^[[0m tower v0.5.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:10.5807871Z ^[[1m^[[92m   Compiling^[[0m rustls-native-certs v0.8.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:10.7282665Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro-support v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:10.7923490Z ^[[1m^[[92m   Compiling^[[0m bytecheck v0.8.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:12.2193829Z ^[[1m^[[92m   Compiling^[[0m regex v1.13.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:13.1800410Z ^[[1m^[[92m   Compiling^[[0m url v2.5.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:13.6123112Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:14.3963435Z ^[[1m^[[92m   Compiling^[[0m byteorder v1.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:15.1458320Z ^[[1m^[[92m   Compiling^[[0m simd-adler32 v0.3.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:15.5885156Z ^[[1m^[[92m   Compiling^[[0m new_debug_unreachable v1.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:15.8688897Z ^[[1m^[[92m   Compiling^[[0m adler2 v2.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:16.9311764Z ^[[1m^[[92m   Compiling^[[0m miniz_oxide v0.8.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:17.8055373Z ^[[1m^[[92m   Compiling^[[0m tower-http v0.6.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:18.4345661Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro v0.2.126
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:19.6675486Z ^[[1m^[[92m   Compiling^[[0m rend v0.5.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:20.0223036Z ^[[1m^[[92m   Compiling^[[0m xattr v1.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:20.8684135Z ^[[1m^[[92m   Compiling^[[0m munge v0.4.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.1736191Z ^[[1m^[[92m   Compiling^[[0m parking_lot v0.12.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.1807698Z ^[[1m^[[92m   Compiling^[[0m filetime v0.2.29
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.5793411Z ^[[1m^[[92m   Compiling^[[0m encoding_rs v0.8.35
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.8742747Z ^[[1m^[[92m   Compiling^[[0m http-body-util v0.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.5439899Z ^[[1m^[[92m   Compiling^[[0m phf_macros v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.7227106Z ^[[1m^[[92m   Compiling^[[0m csv-core v0.1.13
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.7963476Z ^[[1m^[[92m   Compiling^[[0m ryu v1.0.23
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.1797934Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.2.21
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.1837132Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.10.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.1894785Z ^[[1m^[[92m   Compiling^[[0m crossbeam-epoch v0.9.20
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.3913007Z ^[[1m^[[92m   Compiling^[[0m rand v0.10.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.4858863Z ^[[1m^[[92m   Compiling^[[0m csv v1.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.8800790Z ^[[1m^[[92m   Compiling^[[0m encoding_rs_io v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:24.1712433Z ^[[1m^[[92m   Compiling^[[0m phf v0.11.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:24.8638220Z ^[[1m^[[92m   Compiling^[[0m rkyv v0.8.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:24.9839209Z ^[[1m^[[92m   Compiling^[[0m tar v0.4.46
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:25.0476346Z ^[[1m^[[92m   Compiling^[[0m flate2 v1.1.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.4963032Z ^[[1m^[[92m   Compiling^[[0m strum v0.28.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.6775515Z ^[[1m^[[92m   Compiling^[[0m derive_builder v0.20.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.7636266Z ^[[1m^[[92m   Compiling^[[0m generic-array v0.14.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.8274552Z ^[[1m^[[92m   Compiling^[[0m string_cache_codegen v0.5.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.0007803Z ^[[1m^[[92m   Compiling^[[0m memmap2 v0.9.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.2929693Z ^[[1m^[[92m   Compiling^[[0m num_cpus v1.17.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.4462580Z ^[[1m^[[92m   Compiling^[[0m daachorse v2.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.6694205Z ^[[1m^[[92m   Compiling^[[0m mac v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.7084396Z ^[[1m^[[92m   Compiling^[[0m precomputed-hash v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.9816010Z ^[[1m^[[92m   Compiling^[[0m glob v0.3.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:28.0619609Z ^[[1m^[[92m   Compiling^[[0m minimal-lexical v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:28.4746132Z ^[[1m^[[92m   Compiling^[[0m ucd-trie v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:28.5869411Z ^[[1m^[[92m   Compiling^[[0m crossbeam-deque v0.8.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:28.8836045Z ^[[1m^[[92m   Compiling^[[0m md5 v0.8.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.0457693Z ^[[1m^[[92m   Compiling^[[0m either v1.17.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.2442944Z ^[[1m^[[92m   Compiling^[[0m pest v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:30.4833351Z ^[[1m^[[92m   Compiling^[[0m nom v7.1.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:30.9079618Z ^[[1m^[[92m   Compiling^[[0m futf v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:31.0269613Z ^[[1m^[[92m   Compiling^[[0m markup5ever v0.14.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:32.5389924Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v1.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:33.0806435Z ^[[1m^[[92m   Compiling^[[0m rayon-core v1.13.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:33.7280518Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:33.9198427Z ^[[1m^[[92m   Compiling^[[0m cfg_aliases v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.1606149Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.1.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.1953514Z ^[[1m^[[92m   Compiling^[[0m arrayvec v0.7.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.3448017Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.4445508Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.4718226Z ^[[1m^[[92m   Compiling^[[0m utf-8 v0.7.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.7022811Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.7053450Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.8622679Z ^[[1m^[[92m   Compiling^[[0m typenum v1.20.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.8686998Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.9879691Z ^[[1m^[[92m   Compiling^[[0m dtoa v1.0.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.1293019Z ^[[1m^[[92m   Compiling^[[0m anstream v1.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.1814658Z ^[[1m^[[92m   Compiling^[[0m dtoa-short v0.3.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.4582533Z ^[[1m^[[92m   Compiling^[[0m tendril v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.5872326Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.15.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:36.0935934Z ^[[1m^[[92m   Compiling^[[0m nix v0.28.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:37.0579686Z ^[[1m^[[92m   Compiling^[[0m js-sys v0.3.103
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:37.8513076Z ^[[1m^[[92m   Compiling^[[0m pest_meta v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:38.4177512Z ^[[1m^[[92m   Compiling^[[0m string_cache v0.8.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:38.8593656Z ^[[1m^[[92m   Compiling^[[0m ppv-lite86 v0.2.21
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.2233611Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.9.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.5204300Z ^[[1m^[[92m   Compiling^[[0m selectors v0.26.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.6767840Z ^[[1m^[[92m   Compiling^[[0m ahash v0.8.12
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.7506060Z ^[[1m^[[92m   Compiling^[[0m cssparser-macros v0.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.8350768Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:40.5802649Z ^[[1m^[[92m   Compiling^[[0m html-escape v0.2.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:41.9612908Z ^[[1m^[[92m   Compiling^[[0m tinyvec_macros v0.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:42.1062515Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:42.4132944Z ^[[1m^[[92m   Compiling^[[0m cfg_aliases v0.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:42.7292700Z ^[[1m^[[92m   Compiling^[[0m fst v0.4.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:43.2097514Z ^[[1m^[[92m   Compiling^[[0m lindera-dictionary v3.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:44.1962902Z ^[[1m^[[92m   Compiling^[[0m nix v0.29.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:44.3686562Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.6.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:44.6138364Z ^[[1m^[[92m   Compiling^[[0m tinyvec v1.12.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:45.0944629Z ^[[1m^[[92m   Compiling^[[0m cssparser v0.34.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:46.3422054Z ^[[1m^[[92m   Compiling^[[0m rand_chacha v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:46.8214168Z ^[[1m^[[92m   Compiling^[[0m pest_generator v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:48.7985705Z ^[[1m^[[92m   Compiling^[[0m fxhash v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:48.9902762Z ^[[1m^[[92m   Compiling^[[0m tree-sitter v0.25.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.1089025Z ^[[1m^[[92m   Compiling^[[0m platform-num v0.8.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.2842594Z ^[[1m^[[92m   Compiling^[[0m num-integer v0.1.46
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.2925446Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.6.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.5618029Z ^[[1m^[[92m   Compiling^[[0m match_token v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.7262588Z ^[[1m^[[92m   Compiling^[[0m derive_more v0.99.20
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.7481742Z ^[[1m^[[92m   Compiling^[[0m servo_arc v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.9422560Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-typescript v0.23.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.1172550Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-css v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.1612207Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-go v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.1862610Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-json v0.24.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.2184433Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-rust v0.24.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.2432468Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-xml v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.2743739Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-cpp v0.23.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.3083223Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-lua v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.3305994Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c-sharp v0.23.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.3638398Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-python v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.4023011Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-graphql v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.4454164Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ini v1.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.4532542Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-javascript v0.25.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.4995056Z ^[[1m^[[92m   Compiling^[[0m ts-parser-perl v1.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.5282052Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-yaml v0.7.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.5332644Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-toml-ng v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.5983938Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-proto v0.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.6157141Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-html v0.23.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.6202544Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-sequel v0.3.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.6895126Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ruby v0.23.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.7064957Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-php v0.24.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.7095413Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-kotlin-ng v1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.7871928Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-pascal v0.10.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.7949664Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-vb-dotnet v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.7977346Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-swift v0.7.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.8737082Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c v0.24.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.8764259Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-scala v0.25.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.8797498Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-java v0.23.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.9551723Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-r v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.9581027Z ^[[1m^[[92m   Compiling^[[0m errno v0.3.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:50.9690360Z ^[[1m^[[92m   Compiling^[[0m vte_generate_state_changes v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.0449591Z ^[[1m^[[92m   Compiling^[[0m iana-time-zone v0.1.65
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.0909188Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.14.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.1463625Z ^[[1m^[[92m   Compiling^[[0m unsafe-libyaml v0.2.11
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.4087369Z ^[[1m^[[92m   Compiling^[[0m bitflags v1.3.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.5712935Z ^[[1m^[[92m   Compiling^[[0m rust_decimal v1.42.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.7035105Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.7479366Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.2.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.8962683Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.0193803Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.0807901Z ^[[1m^[[92m   Compiling^[[0m getopts v0.2.24
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.2334432Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.16.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.3580710Z ^[[1m^[[92m   Compiling^[[0m serde_yaml_ng v0.10.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.6657145Z ^[[1m^[[92m   Compiling^[[0m dashmap v6.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.9259431Z ^[[1m^[[92m   Compiling^[[0m kanaria v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.1609989Z ^[[1m^[[92m   Compiling^[[0m chrono v0.4.45
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.2896328Z ^[[1m^[[92m   Compiling^[[0m signal-hook-registry v1.4.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.6088173Z ^[[1m^[[92m   Compiling^[[0m vte v0.11.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:15.0482949Z ^[[1m^[[92m   Compiling^[[0m clap v4.6.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:15.8077022Z ^[[1m^[[92m   Compiling^[[0m html5ever v0.29.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:16.8205637Z ^[[1m^[[92m   Compiling^[[0m num-bigint v0.4.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:17.0980796Z ^[[1m^[[92m   Compiling^[[0m rayon v1.12.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:19.6399290Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.27.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:21.0483691Z ^[[1m^[[92m   Compiling^[[0m pest_derive v2.8.8
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:21.1872484Z ^[[1m^[[92m   Compiling^[[0m rand v0.9.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:22.5553919Z ^[[1m^[[92m   Compiling^[[0m unicode-normalization v0.1.25
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:23.4108184Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:23.6543105Z ^[[1m^[[92m   Compiling^[[0m parse-hyperlinks v0.23.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:24.6287816Z ^[[1m^[[92m   Compiling^[[0m hashlink v0.10.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:24.6682484Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.0050355Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.10.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.1635652Z ^[[1m^[[92m   Compiling^[[0m abnf-core v0.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.3372520Z ^[[1m^[[92m   Compiling^[[0m itertools v0.14.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.5332398Z ^[[1m^[[92m   Compiling^[[0m filedescriptor v0.8.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.5988847Z ^[[1m^[[92m   Compiling^[[0m lingua-bengali-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.9813437Z ^[[1m^[[92m   Compiling^[[0m lingua-hindi-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.0479488Z ^[[1m^[[92m   Compiling^[[0m lingua-arabic-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.4092933Z ^[[1m^[[92m   Compiling^[[0m lingua-chinese-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.6872714Z ^[[1m^[[92m   Compiling^[[0m lingua-russian-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.8082461Z ^[[1m^[[92m   Compiling^[[0m lingua-urdu-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.8366181Z ^[[1m^[[92m   Compiling^[[0m lingua-spanish-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.3875176Z ^[[1m^[[92m   Compiling^[[0m lingua-portuguese-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.4222530Z ^[[1m^[[92m   Compiling^[[0m lingua-french-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.5131346Z ^[[1m^[[92m   Compiling^[[0m lingua-english-language-model v1.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.6494209Z ^[[1m^[[92m   Compiling^[[0m counter v0.7.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.8857044Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.27.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:28.6915922Z ^[[1m^[[92m   Compiling^[[0m serial2 v0.2.38
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:28.7397617Z ^[[1m^[[92m   Compiling^[[0m shell-words v1.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.0019452Z ^[[1m^[[92m   Compiling^[[0m beef v0.5.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.0608213Z ^[[1m^[[92m   Compiling^[[0m unicode-segmentation v1.13.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.4091437Z ^[[1m^[[92m   Compiling^[[0m env_home v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.6972391Z ^[[1m^[[92m   Compiling^[[0m streaming-iterator v0.1.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.7623283Z ^[[1m^[[92m   Compiling^[[0m ego-tree v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.8406891Z ^[[1m^[[92m   Compiling^[[0m unicode-blocks v0.1.10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.2251413Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.2672875Z ^[[1m^[[92m   Compiling^[[0m winnow v1.0.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.2940989Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.3862756Z ^[[1m^[[92m   Compiling^[[0m downcast-rs v1.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.4136397Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.1.14
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.6297510Z ^[[1m^[[92m   Compiling^[[0m strum v0.27.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.6982316Z ^[[1m^[[92m   Compiling^[[0m maplit v1.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.7407528Z ^[[1m^[[92m   Compiling^[[0m portable-pty v0.9.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.8376945Z ^[[1m^[[92m   Compiling^[[0m lingua v1.8.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:31.7662774Z ^[[1m^[[92m   Compiling^[[0m toml_parser v1.1.2+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:32.0195409Z ^[[1m^[[92m   Compiling^[[0m vt100 v0.15.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:32.5394348Z ^[[1m^[[92m   Compiling^[[0m platform-mem v0.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:33.0919989Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:33.1143055Z ^[[1m^[[92m   Compiling^[[0m scraper v0.21.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:36.6442246Z ^[[1m^[[92m   Compiling^[[0m which v7.0.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:36.7887047Z ^[[1m^[[92m   Compiling^[[0m platform-data v2.0.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:37.2695041Z ^[[1m^[[92m   Compiling^[[0m ebnf v0.1.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.1091827Z ^[[1m^[[92m   Compiling^[[0m abnf v0.13.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.2486408Z ^[[1m^[[92m   Compiling^[[0m digest v0.10.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.5356620Z ^[[1m^[[92m   Compiling^[[0m rustls-webpki v0.103.13
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.7162712Z ^[[1m^[[92m   Compiling^[[0m json5_nodes v2.0.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:40.1718472Z ^[[1m^[[92m   Compiling^[[0m bnf v0.6.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:40.6153115Z ^[[1m^[[92m   Compiling^[[0m num-rational v0.4.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.3101607Z ^[[1m^[[92m   Compiling^[[0m tokio-rustls v0.26.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.3301217Z ^[[1m^[[92m   Compiling^[[0m rustls-platform-verifier v0.7.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.5558141Z ^[[1m^[[92m   Compiling^[[0m platform-trees v0.3.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.6032558Z ^[[1m^[[92m   Compiling^[[0m hyper-rustls v0.27.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.7482585Z ^[[1m^[[92m   Compiling^[[0m web-sys v0.3.103
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.8702635Z ^[[1m^[[92m   Compiling^[[0m reqwest v0.13.4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:45.1424920Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-futures v0.4.76
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:45.6522544Z ^[[1m^[[92m   Compiling^[[0m serde-wasm-bindgen v0.6.5
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:46.2034534Z ^[[1m^[[92m   Compiling^[[0m whatlang v0.18.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:46.3958541Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:46.6162927Z ^[[1m^[[92m   Compiling^[[0m async-trait v0.1.92
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.2392919Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.2.17
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.3670049Z ^[[1m^[[92m   Compiling^[[0m same-file v1.0.6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.4002436Z ^[[1m^[[92m   Compiling^[[0m tap v1.0.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.5572836Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.5777436Z ^[[1m^[[92m   Compiling^[[0m mutate_once v0.1.2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.7632390Z ^[[1m^[[92m   Compiling^[[0m leak_slice v0.2.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.9240776Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.339.1 (/home/runner/work/formal-ai/formal-ai)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.0302469Z ^[[1m^[[92m   Compiling^[[0m lazy_static v1.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.0850213Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.1085232Z ^[[1m^[[92m   Compiling^[[0m lindera-jieba v3.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.2134431Z ^[[1m^[[92m   Compiling^[[0m toml_writer v1.1.2+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.5092644Z ^[[1m^[[92m   Compiling^[[0m toml_datetime v1.1.1+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.5983820Z ^[[1m^[[92m   Compiling^[[0m unicode-bidi v0.3.18
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.6272805Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.8261558Z ^[[1m^[[92m   Compiling^[[0m toml_edit v0.25.13+spec-1.1.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:49.4542527Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:49.5783080Z ^[[1m^[[92m   Compiling^[[0m link-calculator v0.20.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:50.6212716Z ^[[1m^[[92m   Compiling^[[0m doublets v0.4.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:50.9252954Z ^[[1m^[[92m   Compiling^[[0m kamadak-exif v0.6.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:51.3753047Z ^[[1m^[[92m   Compiling^[[0m walkdir v2.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:51.8386269Z ^[[1m^[[92m   Compiling^[[0m sha2 v0.10.9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:52.1313144Z ^[[1m^[[92m   Compiling^[[0m command-stream v0.15.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:52.6392884Z ^[[1m^[[92m   Compiling^[[0m web-capture v0.3.36
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:54.0882587Z ^[[1m^[[92m   Compiling^[[0m web-search v0.5.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:54.9062683Z ^[[1m^[[92m   Compiling^[[0m thread-priority v3.1.1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:55.3802973Z ^[[1m^[[92m   Compiling^[[0m fs2 v0.4.3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:55.6102920Z ^[[1m^[[92m   Compiling^[[0m base64 v0.23.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:29:05.7137185Z ^[[1m^[[92m   Compiling^[[0m lindera v3.0.7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:29:08.9738234Z ^[[1m^[[92m   Compiling^[[0m meta-language v0.54.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.1829387Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 6m 19s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2623812Z ##[group]Run set -euo pipefail
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2624081Z ^[[36;1mset -euo pipefail^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2624375Z ^[[36;1mbash experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh \^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2624750Z ^[[36;1m  | tee "/home/runner/work/_temp/write-effect-ladder.log"^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2663420Z shell: /usr/bin/bash -e {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2663625Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2663774Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2663964Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2664182Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2664361Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2664536Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2664728Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2664897Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2665065Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2665236Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2665521Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2665801Z   ACTIONS_CACHE_SERVICE_V2: on
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2666107Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2706549Z   ACTIONS_RUNTIME_TOKEN: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2706760Z   SCCACHE_GHA_ENABLED: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2706950Z   RUSTC_WRAPPER: sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2707200Z   BASELINE: experiments/issue_916_write_effect_ladder/results.json
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2707514Z   OUT: /home/runner/work/_temp/write-effect-results.json
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2707753Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:47.2807410Z sandbox: /tmp/formal-ai-write-effect.5PTFsX
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3548038Z PASS  R916-01    #905  a lost write is not a completion
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3548412Z PASS  R916-02    #908  a silent check command does not abandon the complete
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3548755Z PASS  R916-03    #908  the failure report names the exit code, not the harn
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3549105Z PASS  R916-04    #905  an observed effect is what completion means
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3549470Z PASS  R916-05    #905  an adverbial qualifier is not part of the content
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3549790Z PASS  R916-06    #907  a caller context block does not hijack the request
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3550134Z PASS  R916-07    #907  a declarative statement of fact is not a request
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3550489Z PASS  R916-08a   #909  --global writes a gemini configuration that starts h
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3550838Z PASS  R916-08b   #909  --global writes the complete OpenAI triple for qwen
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3551216Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3551321Z TOTAL 9/9 write-effect rungs passed
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3551520Z   #905: 3/3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3551661Z   #907: 2/2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3551798Z   #908: 2/2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3551937Z   #909: 2/2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3552015Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3552135Z wrote /home/runner/work/_temp/write-effect-results.json
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3552383Z baseline 9/9 -> now 9/9
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3694777Z ##[group]Run set -euo pipefail
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3695054Z ^[[36;1mset -euo pipefail^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3695323Z ^[[36;1mresults='/home/runner/work/_temp/write-effect-results.json'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3695621Z ^[[36;1m[ -f "$results" ] || exit 0^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3695823Z ^[[36;1m{^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3696012Z ^[[36;1m  echo '### Write-effect ladder (issue #916 rungs)'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3696243Z ^[[36;1m  echo^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3696652Z ^[[36;1m  python3 -c "import json,sys;s=json.load(open(sys.argv[1]))['summary'];print(f\"**{s['passed']}/{s['total']}** write-effect rungs passed.\")" "$results"^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3697078Z ^[[36;1m  echo^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3697280Z ^[[36;1m  echo '<details><summary>Per-rung results</summary>'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3697517Z ^[[36;1m  echo^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3697664Z ^[[36;1m  echo '```'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3697889Z ^[[36;1m  cat '/home/runner/work/_temp/write-effect-ladder.log'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3698169Z ^[[36;1m  echo '```'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3698475Z ^[[36;1m  echo^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3698630Z ^[[36;1m  echo '</details>'^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3698812Z ^[[36;1m} >> "$GITHUB_STEP_SUMMARY"^[[0m
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3737494Z shell: /usr/bin/bash -e {0}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3737690Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3737841Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3738023Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3738235Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3738411Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3738586Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3738780Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3738977Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3739143Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3739320Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3739566Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3739827Z   ACTIONS_CACHE_SERVICE_V2: on
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3740138Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3779834Z   ACTIONS_RUNTIME_TOKEN: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3780044Z   SCCACHE_GHA_ENABLED: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3780228Z   RUSTC_WRAPPER: sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3780405Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4066797Z ##[group]Run actions/upload-artifact@v7
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4067018Z with:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4067223Z   name: write-effect-ladder-results
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4067470Z   path: /home/runner/work/_temp/write-effect-results.json
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4067723Z   if-no-files-found: ignore
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4067908Z   compression-level: 6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4068075Z   overwrite: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4068240Z   include-hidden-files: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4068422Z   archive: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4068569Z env:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4068710Z   GIT_CONFIG_COUNT: 1
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4068883Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4069082Z   GIT_CONFIG_VALUE_0: main
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4069252Z   CARGO_NET_RETRY: 10
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4069420Z   CARGO_HTTP_MULTIPLEXING: false
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4069627Z   CARGO_TERM_COLOR: always
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4069798Z   RUSTFLAGS: -Dwarnings
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4069965Z   CARGO_INCREMENTAL: 0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4070157Z   CARGO_HOME: /home/runner/.cargo
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4070400Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4070657Z   ACTIONS_CACHE_SERVICE_V2: on
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4070953Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4110649Z   ACTIONS_RUNTIME_TOKEN: ***
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4110866Z   SCCACHE_GHA_ENABLED: true
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4111159Z   RUSTC_WRAPPER: sccache
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.4111373Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.5221829Z With the provided path, there will be 1 file uploaded
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.5226673Z Artifact name is valid!
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.5227029Z Root directory input is valid!
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.6949642Z Uploading artifact: write-effect-ladder-results.zip
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.6986440Z Beginning upload of artifact content to blob storage
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.8470198Z Uploaded bytes 3171
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.8836429Z Finished uploading artifact content to blob storage!
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.8837266Z SHA256 digest of uploaded artifact is d06596c836adedf901faa56948d026f212f3f360dda77509fdd0dc7f1dc1e7d4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.8837932Z Finalizing artifact upload
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.1261298Z Artifact write-effect-ladder-results successfully finalized. Artifact ID 9109836378
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.1262189Z Artifact write-effect-ladder-results has been successfully uploaded! Final size is 3171 bytes. Artifact ID is 9109836378
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.1265749Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/31512369861/artifacts/9109836378
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.1393961Z Post job cleanup.
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.1396647Z ##[start-action display=Install sccache;id=__50ba8103-351a-410d-ab9e-fb9ad7c85e9f.__mozilla-actions_sccache-action]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.1419234Z Post job cleanup.
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2054208Z ##[group]Get human-readable stats
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2067274Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2144810Z Compile requests                    994
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2145337Z Compile requests executed           873
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2145703Z Cache hits                          349
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2146027Z Cache hits (Assembler)              108
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2146463Z Cache hits (C/C++)                  223
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2146799Z Cache hits (Rust)                    18
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2147115Z Cache misses                        518
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2147532Z Cache misses (Assembler)              3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2148117Z Cache misses (C/C++)                 91
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2149148Z Cache misses (Rust)                 424
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2149527Z Cache hits rate                   40.25 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2150017Z Cache hits rate (Assembler)       97.30 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2150345Z Cache hits rate (C/C++)           71.02 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2150784Z Cache hits rate (Rust)             4.07 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2151220Z Cache timeouts                        0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2151534Z Cache read errors                     0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2151844Z Forced recaches                       0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2152155Z Cache write errors                  221
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2152459Z Cache errors                          0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2152766Z Compilations                        518
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2153078Z Compilation failures                  6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2153394Z Non-cacheable compilations            0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2153722Z Non-cacheable calls                 117
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2154047Z Non-compilation calls                 4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2154369Z Unsupported compiler calls            0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2154688Z Average cache write               0.274 s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2155018Z Average compiler                  0.707 s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2155348Z Average cache read hit            0.085 s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2155682Z Failed distributed compilations       0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2155900Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2156011Z Non-cacheable reasons:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2156273Z crate-type                          106
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2156575Z -o                                    6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2156879Z -                                     3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2157191Z missing input                         2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2157404Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2157851Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2158527Z Base directories                (none)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2158848Z Version (client)                0.16.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2161595Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2162092Z ##[group]Get JSON stats
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2172174Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats --stats-format=json
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2210276Z {"stats":{"compile_requests":994,"requests_unsupported_compiler":0,"requests_not_compile":4,"requests_not_cacheable":117,"requests_executed":873,"cache_errors":{"counts":{},"adv_counts":{}},"cache_hits":{"counts":{"Assembler":108,"Rust":18,"C/C++":223},"adv_counts":{"rust":18,"c [gcc]":223,"assemblerToPreprocess [gcc]":108}},"cache_misses":{"counts":{"Assembler":3,"C/C++":91,"Rust":424},"adv_counts":{"c [gcc]":91,"rust":424,"assemblerToPreprocess [gcc]":3}},"cache_timeouts":0,"cache_read_errors":0,"non_cacheable_compilations":0,"forced_recaches":0,"cache_write_errors":221,"cache_writes":297,"cache_write_duration":{"secs":81,"nanos":621989937},"cache_read_hit_duration":{"secs":29,"nanos":986607150},"compilations":518,"compiler_write_duration":{"secs":366,"nanos":314671788},"compile_fails":6,"not_cached":{"crate-type":106,"missing input":2,"-o":6,"-":3},"dist_compiles":{},"dist_errors":0,"multi_level":null},"cache_location":"ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/","cache_size":null,"max_cache_size":null,"use_preprocessor_cache_mode":false,"version":"0.16.0","basedirs":[]}
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2215566Z ##[endgroup]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2229912Z ##[notice]40% - 349 hits, 518 misses, 0 errors
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2230195Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2230285Z Full human-readable stats:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2230521Z Compile requests                    994
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2230759Z Compile requests executed           873
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2230966Z Cache hits                          349
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2231424Z Cache hits (Assembler)              108
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2231651Z Cache hits (C/C++)                  223
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2231889Z Cache hits (Rust)                    18
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2232130Z Cache misses                        518
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2232339Z Cache misses (Assembler)              3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2232539Z Cache misses (C/C++)                 91
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2232732Z Cache misses (Rust)                 424
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2232956Z Cache hits rate                   40.25 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2233168Z Cache hits rate (Assembler)       97.30 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2233386Z Cache hits rate (C/C++)           71.02 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2233634Z Cache hits rate (Rust)             4.07 %
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2233873Z Cache timeouts                        0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2234101Z Cache read errors                     0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2234311Z Forced recaches                       0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2234527Z Cache write errors                  221
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2234746Z Cache errors                          0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2234956Z Compilations                        518
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2235160Z Compilation failures                  6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2235392Z Non-cacheable compilations            0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2235703Z Non-cacheable calls                 117
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2235940Z Non-compilation calls                 4
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2236145Z Unsupported compiler calls            0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2236375Z Average cache write               0.274 s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2236645Z Average compiler                  0.707 s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2236880Z Average cache read hit            0.085 s
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237138Z Failed distributed compilations       0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237290Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237367Z Non-cacheable reasons:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237560Z crate-type                          106
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237758Z -o                                    6
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237972Z -                                     3
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2238164Z missing input                         2
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2238310Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2238620Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2239055Z Base directories                (none)
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2239288Z Version (client)                0.16.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2239420Z 
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2318965Z ##[end-action id=__50ba8103-351a-410d-ab9e-fb9ad7c85e9f.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=92]
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2417430Z Post job cleanup.
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3145142Z [command]/usr/bin/git version
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3182045Z git version 2.54.0
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3217130Z Temporarily overriding HOME='/home/runner/work/_temp/bd0294a1-d57a-4db6-8f71-49986aeef056' before making global git config changes
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3217956Z Adding repository directory to the temporary git global config as a safe directory
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3222528Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3252571Z Removing SSH command configuration
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3258560Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3290866Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3526236Z Removing HTTP extra header
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3531712Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3567569Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3791759Z Removing includeIf entries pointing to credentials config files
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3800025Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3825850Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3826606Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3827299Z includeif.gitdir:/github/workspace/.git.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3827981Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3842177Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3859826Z /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3871854Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3909700Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3933430Z /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3945206Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3975915Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.3999127Z /github/runner_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4007353Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4038285Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4059739Z /github/runner_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4068623Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4107422Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4310226Z Removing credentials config '/home/runner/work/_temp/git-credentials-b0a24d4c-1a69-4ab1-944c-db411abbe8fc.config'
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4436131Z Cleaning up orphan processes
+Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.4752150Z Terminate orphan process: pid (2289) (sccache)

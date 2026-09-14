@@ -4,6 +4,11 @@
 //! Usage:
 //!   rust-script scripts/decode-github-issue-url.rs --url '<issues/new?...>'
 //!   pbpaste | rust-script scripts/decode-github-issue-url.rs --body-only
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::env;
 use std::io::{self, Read};

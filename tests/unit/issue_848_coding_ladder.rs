@@ -3,9 +3,8 @@
 //! A passing response is not evidence of a code change. These tests inspect the
 //! bytes that the real offline Agent CLI loop writes and then reads back.
 
-use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
-use sha2::{Digest, Sha256};
 
 const CREATE_RUST_FUNCTION: &str = "Create a new file src/si_units.rs in this repository \
     containing a single public Rust function millimetres_to_metres that takes an f64 and \
@@ -352,8 +351,9 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
     );
     assert_eq!(
         json_arguments(&rewrite.arguments)["command"],
-        "sed -i 's/WEB_SEARCH_RRF_K/WEB_SEARCH_FUSION_K/g' -- src/web_search_core.rs",
-        "the operation must be derived only from validated identifiers and path"
+        "perl -pi -e 's/\\bWEB_SEARCH_RRF_K\\b/WEB_SEARCH_FUSION_K/g' -- src/web_search_core.rs",
+        "the operation must be derived only from validated identifiers and path, \
+         and scoped to whole words so a longer name containing this one survives"
     );
     push_result(&mut messages, "agent_rewrite", &rewrite, "");
 
@@ -367,7 +367,7 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
         "sha256sum -- src/web_search_core.rs",
         "verification must not return the whole large source through Agent"
     );
-    let digest = format!("{:x}", Sha256::digest(AFTER.as_bytes()));
+    let digest = formal_ai::sha256_hex(AFTER.as_bytes());
     push_result(
         &mut messages,
         "agent_verify",
@@ -509,7 +509,7 @@ fn composite_module_uses_a_compact_agent_registration_edit() {
         json_arguments(&verify_lib.arguments)["command"],
         "sha256sum -- src/lib.rs"
     );
-    let digest = format!("{:x}", Sha256::digest(LIB_AFTER.as_bytes()));
+    let digest = formal_ai::sha256_hex(LIB_AFTER.as_bytes());
     push_result(
         &mut messages,
         "agent_verify_lib",
@@ -530,7 +530,7 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
         std::fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
     };
     let runner = read("experiments/issue_847_coding_ladder/run_coding_ladder.sh");
-    assert!(runner.contains("[\"rustc\", \"--edition=2021\""));
+    assert!(runner.contains("[\"rustc\", \"--edition=2024\""));
     assert!(runner.contains("rust_target_existed[created]"));
     assert!(runner.contains("\"dataset_total\": len(all_tasks)"));
     assert!(runner.contains("\"complete\": not only"));

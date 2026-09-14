@@ -45,7 +45,7 @@ meanings
       surface
         text "because"
   brief
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "brief"
@@ -64,6 +64,11 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  coding_member_already_present
+    defined-by intent
+    lexeme en
+      surface
+        text "coding member already present"
   coding_workspace_verification_failed
     defined-by intent
     lexeme en
@@ -74,31 +79,61 @@ meanings
     lexeme en
       surface
         text "compiled procedure"
+  contribution
+    defined-by concept
+    lexeme en
+      surface
+        text "contribution"
   dangling_meaning_review
     defined-by concept
     lexeme en
       surface
         text "dangling meaning review"
+  deprecated
+    defined-by category
+    lexeme en
+      surface
+        text "deprecated"
   desktop_local_sync
     defined-by flow
     lexeme en
       surface
         text "desktop local sync"
+  doing
+    defined-by concept
+    lexeme en
+      surface
+        text "doing"
   duplicate
     defined-by word_surface
     lexeme en
       surface
         text "duplicate"
+  entradas
+    defined-by concept
+    lexeme en
+      surface
+        text "entradas"
   eval_js
     defined-by name
     lexeme en
       surface
         text "eval js"
+  evidence_exact_composition
+    defined-by intent
+    lexeme en
+      surface
+        text "evidence exact composition"
   export_memory
     defined-by name
     lexeme en
       surface
         text "export memory"
+  external_benchmark_proof_query
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark proof query"
   external_benchmark_python_import
     defined-by intent
     lexeme en
@@ -119,11 +154,31 @@ meanings
     lexeme en
       surface
         text "formal ai bundle"
+  forms
+    defined-by concept
+    lexeme en
+      surface
+        text "forms"
+  gates
+    defined-by concept
+    lexeme en
+      surface
+        text "gates"
   github_repository_traffic
     defined-by intent
     lexeme en
       surface
         text "github repository traffic"
+  grounded
+    defined-by concept
+    lexeme en
+      surface
+        text "grounded"
+  how_to_guide_bounds
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide bounds"
   intent_assistant_name
     defined-by intent
     lexeme en
@@ -200,10 +255,15 @@ meanings
       surface
         text "localized"
   ls
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "ls"
+  major
+    defined-by concept
+    lexeme en
+      surface
+        text "major"
   marie_curie
     defined-by concept
     lexeme en
@@ -219,6 +279,11 @@ meanings
     lexeme en
       surface
         text "meta expression"
+  mutating_action_blocked
+    defined-by intent
+    lexeme en
+      surface
+        text "mutating action blocked"
   nothing
     defined-by concept
     lexeme en
@@ -289,6 +354,16 @@ meanings
     lexeme en
       surface
         text "periodic or manual"
+  prompt
+    defined-by value
+    lexeme en
+      surface
+        text "prompt"
+  proof_datalog_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "proof datalog counterexample"
   re-run
     defined-by concept
     lexeme en
@@ -299,16 +374,36 @@ meanings
     lexeme en
       surface
         text "reach"
+  refused
+    defined-by concept
+    lexeme en
+      surface
+        text "refused"
   refuses
     defined-by concept
     lexeme en
       surface
         text "refuses"
+  refusing
+    defined-by concept
+    lexeme en
+      surface
+        text "refusing"
+  relationships
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relationships"
   repositories
     defined-by word_surface
     lexeme en
       surface
         text "repositories"
+  response_action_correction_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response action correction hi"
   response_agent_procedure_executed_zh
     defined-by response_template
     lexeme en
@@ -394,6 +489,26 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped en"
+  response_coding_meta_algorithm_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading hi"
+  response_coding_meta_algorithm_solutions_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading ru"
+  response_coding_meta_algorithm_stage_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage hi"
+  response_coding_text_replaced_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced ru"
   response_compiled_procedure_explanation_hi
     defined-by response_template
     lexeme en
@@ -414,11 +529,26 @@ meanings
     lexeme en
       surface
         text "response definition merge header zh"
+  response_evidence_exact_composition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition hi"
+  response_external_benchmark_invalid_rust_string_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark invalid rust string ru"
   response_external_benchmark_provenance_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark provenance en"
+  response_external_benchmark_upstream_missing_start_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start zh"
   response_fact_check_no_statements_hi
     defined-by response_template
     lexeme en
@@ -434,6 +564,16 @@ meanings
     lexeme en
       surface
         text "response general plan repository planned es"
+  response_general_plan_repository_read_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read es"
+  response_general_plan_repository_read_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read ru"
   response_general_plan_unverified_hi
     defined-by response_template
     lexeme en
@@ -444,6 +584,16 @@ meanings
     lexeme en
       surface
         text "response github repository traffic ru"
+  response_how_to_guide_copies_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading es"
+  response_how_to_guide_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading hi"
   response_inappropriate_content_ru
     defined-by response_template
     lexeme en
@@ -499,6 +649,11 @@ meanings
     lexeme en
       surface
         text "response mcp prompt description hi"
+  response_memory_inventory_item_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item es"
   response_memory_program_complete_zh
     defined-by response_template
     lexeme en
@@ -669,11 +824,21 @@ meanings
     lexeme en
       surface
         text "response summarization report headline zh"
+  response_task_decomposition_single_need_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need zh"
   response_task_plan_stage_requirements_hi
     defined-by response_template
     lexeme en
       surface
         text "response task plan stage requirements hi"
+  response_task_plan_stage_verification_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification es"
   response_thinking_language_name_ru_es
     defined-by response_template
     lexeme en
@@ -845,7 +1010,7 @@ meanings
       surface
         text "statement audit selector required"
   sudo
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "sudo"
@@ -854,6 +1019,11 @@ meanings
     lexeme en
       surface
         text "summarization cli criteria minimum"
+  superada
+    defined-by concept
+    lexeme en
+      surface
+        text "superada"
   tail
     defined-by token
     lexeme en
@@ -894,6 +1064,11 @@ meanings
     lexeme en
       surface
         text "trace"
+  traffic_ui_docs
+    defined-by value
+    lexeme en
+      surface
+        text "traffic ui docs"
   ui
     defined-by concept
     lexeme en
@@ -919,3 +1094,8 @@ meanings
     lexeme en
       surface
         text "were"
+  without
+    defined-by concept
+    lexeme en
+      surface
+        text "without"

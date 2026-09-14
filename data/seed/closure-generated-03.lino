@@ -9,11 +9,21 @@ meanings
     lexeme en
       surface
         text "append memory"
+  archivos
+    defined-by concept
+    lexeme en
+      surface
+        text "archivos"
   below
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "below"
+  beside
+    defined-by concept
+    lexeme en
+      surface
+        text "beside"
   brainstorm_names
     defined-by intent
     lexeme en
@@ -24,6 +34,11 @@ meanings
     lexeme en
       surface
         text "browser indexeddb"
+  bump
+    defined-by concept
+    lexeme en
+      surface
+        text "bump"
   bundle_root_header
     defined-by field
     lexeme en
@@ -49,11 +64,21 @@ meanings
     lexeme en
       surface
         text "client server exited before listening"
+  coding_meta_algorithm_surface
+    defined-by intent
+    lexeme en
+      surface
+        text "coding meta algorithm surface"
   coding_source_string_constant
     defined-by intent
     lexeme en
       surface
         text "coding source string constant"
+  coding_text_replaced
+    defined-by intent
+    lexeme en
+      surface
+        text "coding text replaced"
   context_harness_unavailable
     defined-by field
     lexeme en
@@ -79,6 +104,11 @@ meanings
     lexeme en
       surface
         text "django"
+  docs_url
+    defined-by value
+    lexeme en
+      surface
+        text "docs url"
   every
     defined-by concept
     lexeme en
@@ -89,6 +119,11 @@ meanings
     lexeme en
       surface
         text "expression language"
+  external_benchmark_ascent_missing_rule
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark ascent missing rule"
   external_benchmark_swe_missing_report
     defined-by intent
     lexeme en
@@ -119,6 +154,31 @@ meanings
     lexeme en
       surface
         text "general plan command verification evidence"
+  general_plan_repository_read
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository read"
+  how_to_guide_citation
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide citation"
+  how_to_guide_copy
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide copy"
+  insert
+    defined-by word_surface
+    lexeme en
+      surface
+        text "insert"
+  installation_conversion
+    defined-by concept
+    lexeme en
+      surface
+        text "installation conversion"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -189,6 +249,11 @@ meanings
     lexeme en
       surface
         text "local search found path"
+  memory_root_links
+    defined-by intent
+    lexeme en
+      surface
+        text "memory root links"
   openai
     defined-by word_surface
     lexeme en
@@ -274,6 +339,11 @@ meanings
     lexeme en
       surface
         text "preferred"
+  problem_class_to_shared_ir_to_renderers_to_verification
+    defined-by concept
+    lexeme en
+      surface
+        text "problem class to shared ir to renderers to verification"
   protocol
     defined-by concept
     lexeme en
@@ -319,6 +389,11 @@ meanings
     lexeme en
       surface
         text "response agentic action search code zh"
+  response_agentic_continuation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation en"
   response_agentic_report_contents_question_zh
     defined-by response_template
     lexeme en
@@ -344,6 +419,21 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped ru"
+  response_coding_meta_algorithm_stage_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm stage es"
+  response_coding_repository_source_observation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation es"
+  response_coding_repository_source_observation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation zh"
   response_coding_source_string_constant_rust
     defined-by response_template
     lexeme en
@@ -364,21 +454,96 @@ meanings
     lexeme en
       surface
         text "response definition merge sources label ru"
+  response_docs_method_explanation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation es"
   response_draft_comparison_explanation_ru
     defined-by response_template
     lexeme en
       surface
         text "response draft comparison explanation ru"
+  response_external_benchmark_ascent_missing_rule_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent missing rule en"
+  response_external_benchmark_ascent_prompt_prefix_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix en"
+  response_external_benchmark_egg_too_few_laws_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws en"
+  response_external_benchmark_proof_query_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query en"
+  response_external_benchmark_proof_status_detail_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail ru"
+  response_external_benchmark_rust_adapter_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing en"
   response_fact_check_current_dialogue_zh
     defined-by response_template
     lexeme en
       surface
         text "response fact check current dialogue zh"
+  response_file_read_many_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable ru"
   response_general_plan_command_capture_action_zh
     defined-by response_template
     lexeme en
       surface
         text "response general plan command capture action zh"
+  response_general_plan_repository_read_evidence_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read evidence es"
+  response_general_plan_repository_read_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read zh"
+  response_how_to_guide_copy_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy es"
+  response_how_to_guide_copy_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy hi"
+  response_how_to_guide_insufficient_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence zh"
+  response_how_to_guide_source_outcome_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome en"
+  response_how_to_guide_source_outcome_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome ru"
   response_lexeme_import_cannot_create_zh
     defined-by response_template
     lexeme en
@@ -399,6 +564,16 @@ meanings
     lexeme en
       surface
         text "response lexeme import reparse failed ru"
+  response_link_cli_publish_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed hi"
+  response_link_cli_publish_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response link cli publish failed zh"
   response_local_search_found_closest_zh
     defined-by response_template
     lexeme en
@@ -419,6 +594,26 @@ meanings
     lexeme en
       surface
         text "response local search type directory en"
+  response_memory_inventory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory en"
+  response_memory_inventory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory hi"
+  response_memory_inventory_item_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item en"
+  response_memory_link_count_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count en"
   response_memory_program_compilation_gap_es
     defined-by response_template
     lexeme en
@@ -434,6 +629,11 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused ru"
+  response_mutating_action_blocked_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked ru"
   response_orchestration_correction_prompt_hi
     defined-by response_template
     lexeme en
@@ -479,6 +679,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence repetition zh"
+  response_proof_equality_conclusion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion ru"
   response_summarization_cli_baseline_write_failed_ru
     defined-by response_template
     lexeme en
@@ -829,6 +1034,16 @@ meanings
     lexeme en
       surface
         text "trim"
+  trimmed
+    defined-by concept
+    lexeme en
+      surface
+        text "trimmed"
+  very
+    defined-by concept
+    lexeme en
+      surface
+        text "very"
   views
     defined-by word_surface
     lexeme en

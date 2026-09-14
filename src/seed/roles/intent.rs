@@ -12,6 +12,18 @@
 /// "समझ नहीं आया", "我不明白", …). A meaning carrying this role is `defined_by`
 /// the `clarification` and `understanding` concepts.
 pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
+/// Semantic role: a dialog-local request to stop using a quoted expression.
+pub const ROLE_CONVERSATION_PREFERENCE_AVOID: &str = "conversation_preference_avoid";
+/// Semantic role: a correction that an informational request did not authorize a mutation.
+pub const ROLE_UNAUTHORIZED_MUTATION_CORRECTION: &str = "unauthorized_mutation_correction";
+/// Semantic role: a natural-language count of the links projected from memory.
+pub const ROLE_MEMORY_LINK_COUNT_QUERY: &str = "memory_link_count_query";
+/// Semantic role: a natural-language inventory of locally available memory.
+pub const ROLE_MEMORY_INVENTORY_QUERY: &str = "memory_inventory_query";
+/// Semantic role: a request for associative-memory record roots.
+pub const ROLE_MEMORY_ROOT_LINKS_QUERY: &str = "memory_root_links_query";
+/// Semantic role: a follow-up correcting document generation to memory retrieval.
+pub const ROLE_MEMORY_RETRIEVAL_CORRECTION: &str = "memory_retrieval_correction";
 /// Semantic role: the user asking what the assistant is able to do.
 ///
 /// A request to enumerate its capabilities ("what can you do", "что ты умеешь",
@@ -287,6 +299,19 @@ pub const ROLE_COMMON_TYPO: &str = "common_typo";
 /// reply; the first capitalised token that is not one of these is taken as the
 /// topic. A meaning carrying this role is `defined_by` the `concept` category.
 pub const ROLE_TOPIC_SCAN_STOP_WORD: &str = "topic_scan_stop_word";
+/// Semantic role: a closed-class word that names no artefact.
+///
+/// A pronoun, article, determiner, politeness particle, or basic
+/// preposition/conjunction — the words a request is built out of rather than
+/// the things it asks for. A recogniser that must decide whether a request
+/// names *anything besides* the artefact it recognised subtracts these, so the
+/// question "is there something else in this prompt?" is answered by the
+/// lexicon rather than by a word list in code (issue #862).
+///
+/// Distinct from [`ROLE_TOPIC_SCAN_STOP_WORD`], which also carries the
+/// "source" citation heading: that is a content word here, because "give me
+/// the source of this repository" names a subject.
+pub const ROLE_REQUEST_FUNCTION_WORD: &str = "request_function_word";
 /// Semantic role: a prompt asking to fetch a web resource over HTTP.
 ///
 /// The retrieve-this-URL request ("fetch X", "сделай запрос к X", "अनुरोध भेजें",

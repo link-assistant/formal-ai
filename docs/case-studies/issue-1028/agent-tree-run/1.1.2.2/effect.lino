@@ -1,0 +1,8 @@
+node_path=1.1.2.2
+node_depth=4
+node_kind=composite
+left_child=1.1.2.2.1
+right_child=1.1.2.2.2
+left_result=Line 374:         decomposition.leaves().len() >= 3,
+right_result=Observed repository result: Line 385:             "unresolved_single_need",
+result=Line 374:         decomposition.leaves().len() >= 3,; Observed repository result: Line 385:             "unresolved_single_need",; together these exact observations compose the result.

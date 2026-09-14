@@ -9,7 +9,7 @@
 //! ```
 
 use formal_ai::dreaming_application::amendment_line;
-use formal_ai::{solve_with_amendment_records, RetainedAmendment, UniversalSolver};
+use formal_ai::{RetainedAmendment, UniversalSolver, solve_with_amendment_records};
 
 fn main() {
     let solver = UniversalSolver::default();

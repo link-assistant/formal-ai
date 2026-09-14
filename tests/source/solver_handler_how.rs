@@ -4,7 +4,7 @@
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::seed;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::last_assistant_turn;

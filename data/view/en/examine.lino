@@ -1,0 +1,25 @@
+view
+  id M-8615eaf97f55
+  lemma examine
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "consider in detail and subject to an analysis in order to discover essential features or meaning"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "observe, check out, and look over carefully or inspect"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "question or examine thoroughly and closely"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "question closely"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put to the test, as for its quality, or give experimental use to"
+    provenance (wordnet)

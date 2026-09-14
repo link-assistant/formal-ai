@@ -1,0 +1,27 @@
+self_ast_census
+  target src/reasoning_standard/refutation.rs
+  language rust
+  fidelity signature
+  byte_len 8741
+  line_count 258
+  content_id source_module_49b6053b09b87c7a
+  symbol_count 18
+  symbols
+    enum RefutationAxis 25 32
+    function slug 37 43
+    function from_slug 47 54
+    enum ProbeOutcome 59 67
+    function slug 72 78
+    function from_slug 83 89
+    struct RefutationProbe 94 112
+    function is_evidenced 117 119
+    function blocking_reason 123 135
+    enum LedgerState 140 155
+    function slug 160 166
+    function permits_lean 170 172
+    struct RefutationLedger 177 182
+    function for_conclusion 187 196
+    function variety 201 208
+    function axis_kinds 212 218
+    function has_sufficient_variety 222 224
+    function state 232 257

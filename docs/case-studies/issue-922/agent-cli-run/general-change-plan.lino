@@ -1,0 +1,20 @@
+general_change_plan
+  id "general_change_plan_a08722c4695bb488"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Create file data/seed/learned-methods.lino containing\nlearned_method \"learned_recursive_core_740155f4b5796f69\"\n  status \"adopted\"\n  source \"algorithm_candidate:algorithm_740155f4b5796f69\"\n  algorithm_id \"algorithm_740155f4b5796f69\"\n  evidence_id \"algorithm_evidence_b758572e108b5114\"\n  support_trace \"solve-translation\"\n  support_trace \"solve-composed\"\n  held_out_trace \"solve-unknown\"\n  operation \"need:status\"\n  operation \"method_registry\"\n  operation \"method_registry:count\"\n  operation \"work_unit_reasoning\"\n  operation \"work_unit_reasoning:steps\"\n  operation \"upward_construction\"\n  operation \"upward_construction:steps\"\n  operation \"solution_evidence\"\n  operation \"solution_evidence:accounted_for\"\n  operation \"selection\"\n  operation \"skill_ledger\"\n  operation \"skill_ledger:promotable\""
+  target "data/seed/learned-methods.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_5c3626ac02f3805d"
+  step 2
+    capability "Write"
+    action "write the requested content to data/seed/learned-methods.lino"
+    expected_evidence "workspace file data/seed/learned-methods.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "learned_method \"learned_recursive_core_740155f4b5796f69\"\n  status \"adopted\"\n  source \"algorithm_candidate:algorithm_740155f4b5796f69\"\n  algorithm_id \"algorithm_740155f4b5796f69\"\n  evidence_id \"algorithm_evidence_b758572e108b5114\"\n  support_trace \"solve-translation\"\n  support_trace \"solve-composed\"\n  held_out_trace \"solve-unknown\"\n  operation \"need:status\"\n  operation \"method_registry\"\n  operation \"method_registry:count\"\n  operation \"work_unit_reasoning\"\n  operation \"work_unit_reasoning:steps\"\n  operation \"upward_construction\"\n  operation \"upward_construction:steps\"\n  operation \"solution_evidence\"\n  operation \"solution_evidence:accounted_for\"\n  operation \"selection\"\n  operation \"skill_ledger\"\n  operation \"skill_ledger:promotable\""
+    command "cat data/seed/learned-methods.lino"
+  verification_command "cat data/seed/learned-methods.lino"

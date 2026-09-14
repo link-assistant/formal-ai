@@ -1,0 +1,79 @@
+=== write me a Rust program
+-- intent: write_program_skill_gap
+I cannot write this program: no synthesis route reaches this request in language "rust".
+
+I decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.
+
+Nothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `rust`, or restate the task in steps I can already compile.
+
+=== write me a Python script
+-- intent: write_script_python
+Here is a minimal Python script:
+
+```python
+print("Hello, world!")
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `python3 -m py_compile main.py`
+Run command: `python3 main.py`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+=== write me a PHP program
+-- intent: write_program_request_unspecified
+I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.
+
+Say what the program should do and which language it should be written in, and I will derive it.
+
+=== write me PHP Laravel code
+-- intent: write_program_request_unspecified
+I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.
+
+Say what the program should do and which language it should be written in, and I will derive it.
+
+=== write me Ruby on Rails code
+-- intent: write_script_ruby
+Here is a minimal Ruby script:
+
+```ruby
+puts "Hello, world!"
+```
+
+Execution status: not compiled or run in Ruby interpreter is not configured in this repository runtime.
+Check command: `ruby -c main.rb`
+Run command: `ruby main.rb`
+Expected output after verification:
+```text
+Hello, world!
+```
+The Ruby seed is returned with this warning until a ruby-backed execution profile is available.
+
+=== напиши мне код на Python Django
+-- intent: write_script_python
+Here is a minimal Python script:
+
+```python
+print("Hello, world!")
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `python3 -m py_compile main.py`
+Run command: `python3 main.py`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+=== write a rust program that reverses a linked list
+-- intent: write_program_skill_gap
+I cannot write this program: no synthesis route reaches this request in language "rust".
+
+I decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.
+
+Nothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `rust`, or restate the task in steps I can already compile.
+

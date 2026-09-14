@@ -3,7 +3,7 @@
 //! Rust file-size limit enforced by `scripts/check-file-size.rs`.
 
 use super::{extract_fenced_block, extract_javascript_program, humanize_url, is_prime};
-use crate::concepts::{extract_concept_query, lookup_concept_query, ConceptQuery};
+use crate::concepts::{ConceptQuery, extract_concept_query, lookup_concept_query};
 use crate::solver::{SolverConfig, UniversalSolver};
 
 fn lookup_term(term: &str) -> bool {
@@ -32,18 +32,24 @@ fn defaults_are_bounded_and_offline_capable() {
 fn greeting_walks_the_universal_loop() {
     let response = UniversalSolver::default().solve("Hi");
     assert_eq!(response.intent, "greeting");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("impulse:")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("search:local")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("trace:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("impulse:"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("search:local"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("trace:"))
+    );
 }
 
 // Regression guard for the keyword/token split in intent-routing.lino:
@@ -201,10 +207,12 @@ fn universal_solver_answers_arithmetic_via_evaluator() {
     let response = UniversalSolver::default().solve("What is 7 * (3 + 4)?");
     assert_eq!(response.intent, "calculation");
     assert!(response.answer.contains("49"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("calculation")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("calculation"))
+    );
 }
 
 #[test]

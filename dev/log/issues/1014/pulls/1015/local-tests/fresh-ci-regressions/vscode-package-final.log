@@ -1,0 +1,19 @@
+
+> formal-ai-vscode@0.299.0 test:package
+> node --test scripts/bundle-web-tools.test.mjs
+
+TAP version 13
+# Subtest: desktop web tools can be bundled for the VSIX
+ok 1 - desktop web tools can be bundled for the VSIX
+  ---
+  duration_ms: 1350.145523
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1534.440449

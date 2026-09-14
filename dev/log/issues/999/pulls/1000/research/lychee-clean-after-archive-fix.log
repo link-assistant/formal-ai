@@ -1,0 +1,23 @@
+  [INFO] Cache is recent (age: 1m 20s, max age: 1d 0h 0m 0s). Using.
+ [DEBUG] add_parsable_certificates processed 121 valid and 0 invalid certs
+ [DEBUG] Loaded 121 CA root certificates from the system
+ [DEBUG] with_native_roots processed 121 valid and 0 invalid certs
+ [DEBUG] add_parsable_certificates processed 121 valid and 0 invalid certs
+ [DEBUG] Loaded 121 CA root certificates from the system
+[IGNORED] data:, (at 20:28) | Unsupported: URL is missing a hostname
+[EXCLUDED] file:///tmp/tmp.MaqR9g1E3E/src/web/app/styles.css?v=__FORMAL_AI_ASSET_VERSION__ (at 21:34) | This is due to your 'exclude' values
+[IGNORED] data:, (at 17:28) | Unsupported: URL is missing a hostname
+[IGNORED] data:, (at 22:28) | Unsupported: URL is missing a hostname
+[IGNORED] data:, (at 24:28) | Unsupported: URL is missing a hostname
+[IGNORED] data:, (at 22:28) | Unsupported: URL is missing a hostname
+[IGNORED] data:, (at 17:28) | Unsupported: URL is missing a hostname
+[IGNORED] data:, (at 23:28) | Unsupported: URL is missing a hostname
+[EXCLUDED] https://openai.com/policies/services-agreement/ (at 365:11) | This is due to your 'exclude' values
+[EXCLUDED] https://openai.com/index/introducing-simpleqa/ (at 218:28) | This is due to your 'exclude' values
+[EXCLUDED] https://artofproblemsolving.com/wiki/index.php/AIME_Problems_and_Solutions (at 227:30) | This is due to your 'exclude' values
+[EXCLUDED] https://app.docker.com/settings/personal-access-tokens (at 212:84) | This is due to your 'exclude' values
+[EXCLUDED] https://openai.com/policies/services-agreement/ (at 41:3) | This is due to your 'exclude' values
+[EXCLUDED] https://openai.com/policies/eu-terms-of-use/ (at 43:3) | This is due to your 'exclude' values
+[EXCLUDED] https://openai.com/index/introducing-gpt-oss/ (at 45:3) | This is due to your 'exclude' values
+🔍 991 Total (in 215ms) 🔗 650 Unique ✅ 976 OK 🚫 0 Errors 👻 8 Excluded ⛔ 7 Unsupported
+

@@ -2,9 +2,9 @@ self_ast_census
   target src/associative_persistence.rs
   language rust
   fidelity signature
-  byte_len 26312
-  line_count 650
-  content_id source_module_f3088323046aedae
+  byte_len 26256
+  line_count 648
+  content_id source_module_4e52294f1dea6e09
   symbol_count 38
   symbols
     struct RetentionWeights 53 62
@@ -42,6 +42,6 @@ self_ast_census
     function retain_most_used 482 488
     function links_notation 497 520
     function from_context 530 541
-    function from_memory_events 554 624
-    function add_qualifier 627 631
-    function event_expression_text 633 650
+    function from_memory_events 554 622
+    function add_qualifier 625 629
+    function event_expression_text 631 648

@@ -1,0 +1,4 @@
+node_path=1.2.1.2.1
+node_depth=5
+node_kind=leaf
+result=Line 176:             pattern.is_match("BTreeMap::from([(0, 1), (1, 2), (2, 4), (3, 8), (4, 16), (5, 32)])")

@@ -14,7 +14,7 @@
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-use crate::seed::{multilingual_responses, ResponseRecord};
+use crate::seed::{ResponseRecord, multilingual_responses};
 
 /// Every intent this module serves shares one prefix, so the index holds the
 /// summarization-quality vocabulary and nothing else.

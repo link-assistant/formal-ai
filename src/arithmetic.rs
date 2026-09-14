@@ -237,11 +237,7 @@ impl ArithValue {
                 magnitude,
             } => {
                 let f = magnitude.to_f64();
-                if *negative {
-                    -f
-                } else {
-                    f
-                }
+                if *negative { -f } else { f }
             }
             Self::Float(f) => *f,
         }
@@ -733,10 +729,10 @@ fn is_number_token(token: &str) -> bool {
 /// `8 %` form. Returns `None` when `index` is not a percentage value.
 fn match_percent_value(tokens: &[&str], index: usize) -> Option<(String, usize)> {
     let token = *tokens.get(index)?;
-    if let Some(prefix) = token.strip_suffix('%') {
-        if is_number_token(prefix) {
-            return Some((prefix.to_string(), 1));
-        }
+    if let Some(prefix) = token.strip_suffix('%')
+        && is_number_token(prefix)
+    {
+        return Some((prefix.to_string(), 1));
     }
     if is_number_token(token) && tokens.get(index + 1).copied() == Some("%") {
         return Some((token.to_string(), 2));
@@ -757,20 +753,19 @@ fn rewrite_percent_of(expression: &str) -> String {
     while index < tokens.len() {
         if let Some((percent, consumed)) = match_percent_value(&tokens, index) {
             let after = index + consumed;
-            if tokens.get(after).copied() == Some("of") {
-                if let Some(base) = tokens.get(after + 1) {
-                    if is_number_token(base) {
-                        out.push("(".to_string());
-                        out.push(percent);
-                        out.push("*".to_string());
-                        out.push((*base).to_string());
-                        out.push("/".to_string());
-                        out.push("100".to_string());
-                        out.push(")".to_string());
-                        index = after + 2;
-                        continue;
-                    }
-                }
+            if tokens.get(after).copied() == Some("of")
+                && let Some(base) = tokens.get(after + 1)
+                && is_number_token(base)
+            {
+                out.push("(".to_string());
+                out.push(percent);
+                out.push("*".to_string());
+                out.push((*base).to_string());
+                out.push("/".to_string());
+                out.push("100".to_string());
+                out.push(")".to_string());
+                index = after + 2;
+                continue;
             }
         }
         out.push(tokens[index].to_string());

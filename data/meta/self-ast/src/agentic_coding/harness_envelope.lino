@@ -1,0 +1,57 @@
+self_ast_census
+  target src/agentic_coding/harness_envelope.rs
+  language rust
+  fidelity full_ast
+  byte_len 1825
+  line_count 44
+  content_id source_module_f8aa77bbd3a39167
+  symbol_count 3
+  symbols
+    function summarize_request 12 21
+    const SUMMARIZE_LEAD 23 23
+    function summary_of 27 44
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1100
+    named_node_count 222
+    distinct_node_kinds 36
+    node_kinds
+      arguments 21
+      binary_expression 4
+      block 3
+      call_expression 21
+      char_literal 1
+      closure_expression 4
+      closure_parameters 4
+      const_item 1
+      doc_comment 12
+      field_expression 20
+      field_identifier 19
+      function_item 2
+      generic_type 1
+      identifier 40
+      index_expression 2
+      inner_doc_comment_marker 9
+      integer_literal 3
+      let_declaration 6
+      line_comment 12
+      outer_doc_comment_marker 3
+      parameter 2
+      parameters 2
+      primitive_type 3
+      range_expression 2
+      reference_type 3
+      scoped_identifier 2
+      source_file 1
+      string_content 3
+      string_literal 3
+      super 1
+      try_expression 2
+      tuple_pattern 3
+      type_arguments 1
+      type_identifier 3
+      unary_expression 2
+      visibility_modifier 1

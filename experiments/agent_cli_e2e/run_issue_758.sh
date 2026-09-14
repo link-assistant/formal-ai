@@ -28,7 +28,7 @@ mkdir -p "$WORKDIR/bin"
 printf '%s\n' '#!/usr/bin/env sh' 'echo "external gh disabled in issue #758 E2E" >&2' 'exit 1' \
   > "$WORKDIR/bin/gh"
 chmod +x "$WORKDIR/bin/gh"
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 cat > opencode.json <<EOF
 {
@@ -62,6 +62,8 @@ fi
 PATH="$WORKDIR/bin:$PATH" timeout 180 "$AGENT" run \
   --prompt "Search the local code for $MARKER" \
   --disable-stdin \
+  --no-summarize-session \
+  --compaction-models "(same)" \
   --model "formal-ai/formal-ai" \
   > "$AGENT_LOG" 2>&1
 RC=$?

@@ -32,17 +32,53 @@ fn python_path_resolution_prefers_interpreter_names_before_launcher() {
     assert_eq!(resolved, late.join("python.exe"));
 }
 
+/// The largest `python3` start-up ever observed to *complete* here: issue #1017
+/// measured 5.977 s and 7.296 s on an idle `macos-15-intel` runner against 0.14 s
+/// on Linux, and a loaded runner then exceeded the fifteen-second floor outright
+/// (job 95243737484, `timed_out: true` after 16.223 s).
+const OBSERVED_PYTHON_STARTUP: Duration = Duration::from_millis(7296);
+
 #[test]
-fn windows_python_commands_have_platform_budget_floor() {
+fn python_commands_have_cross_platform_startup_budget_floor() {
     let configured = Duration::from_secs(5);
     let effective = effective_command_time_budget("python3", configured);
 
-    if cfg!(windows) {
-        assert_eq!(effective, WINDOWS_PYTHON_TIME_BUDGET_FLOOR);
-    } else {
-        assert_eq!(effective, configured);
-    }
+    // Asserted as a relation, not as the literal `15`. Freezing the number is
+    // what made issue #1017's macOS slice fail: the constant was the *contract*,
+    // so it could only be re-frozen, never reasoned about. The property is that
+    // a `python3` command gets the floor, that the floor leaves real headroom
+    // over the slowest start-up anyone has measured, and that no other program
+    // is given one.
+    assert_eq!(effective, PYTHON_TIME_BUDGET_FLOOR);
+    assert!(
+        PYTHON_TIME_BUDGET_FLOOR >= OBSERVED_PYTHON_STARTUP * 4,
+        "the floor ({PYTHON_TIME_BUDGET_FLOOR:?}) must stay well clear of the \
+         slowest measured start-up ({OBSERVED_PYTHON_STARTUP:?}), or start-up \
+         latency decides whether a working command reports a timeout"
+    );
     assert_eq!(effective_command_time_budget("cat", configured), configured);
+    assert_eq!(
+        effective_command_time_budget("python3", PYTHON_TIME_BUDGET_FLOOR * 2),
+        PYTHON_TIME_BUDGET_FLOOR * 2,
+        "the floor raises a small budget and never lowers a generous one"
+    );
+}
+
+#[test]
+fn spawned_commands_receive_only_a_constructed_temporary_directory() {
+    let environment = command_environment();
+
+    assert_eq!(environment.len(), 1, "{environment:?}");
+    assert_eq!(environment[0].0, "TMPDIR");
+    assert_eq!(environment[0].1, std::env::temp_dir());
+}
+
+#[test]
+fn successful_exit_at_the_deadline_is_not_reported_as_a_timeout() {
+    assert!(!command_timed_out(true, true));
+    assert!(command_timed_out(true, false));
+    assert!(!command_timed_out(false, true));
+    assert!(!command_timed_out(false, false));
 }
 
 #[test]
@@ -86,10 +122,10 @@ fn parent_paths_are_rejected() {
 
 #[test]
 fn command_environment_is_cleared() {
-    std::env::set_var("FORMAL_AI_TEST_SECRET", "do-not-leak");
     let prompt = "[agent] run command `env`";
-    let run = run_agent_plan(prompt, &config("empty_env")).unwrap();
-    std::env::remove_var("FORMAL_AI_TEST_SECRET");
+    let run = temp_env::with_var("FORMAL_AI_TEST_SECRET", Some("do-not-leak"), || {
+        run_agent_plan(prompt, &config("empty_env")).unwrap()
+    });
 
     assert_eq!(run.status, AgentRunStatus::Completed);
     assert!(!run.command_results[0].stdout.contains("do-not-leak"));
@@ -117,7 +153,9 @@ fn unsupported_commands_are_rejected() {
     assert_eq!(run.status, AgentRunStatus::Failed);
     assert!(run.command_results.is_empty());
     assert_eq!(run.actions[0].status, AgentActionStatus::Failed);
-    assert!(run.actions[0]
-        .detail
-        .contains("unsupported sandbox command"));
+    assert!(
+        run.actions[0]
+            .detail
+            .contains("unsupported sandbox command")
+    );
 }

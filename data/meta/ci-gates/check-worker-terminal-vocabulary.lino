@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_worker_terminal_vocabulary
+  stage web
+  description "The browser worker's terminal vocabulary stays in sync with the seed data."
+  run "node experiments/issue-513-sync-worker-terminal.mjs --check"

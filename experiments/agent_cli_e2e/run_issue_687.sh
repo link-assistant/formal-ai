@@ -17,7 +17,7 @@ FAKE_BIN="$WORKDIR/fake-bin"
 GH_LOG="$WORKDIR/gh-invocations.log"
 
 mkdir -p "$FAKE_BIN"
-cd "$WORKDIR"
+cd "$WORKDIR" || exit 1
 
 # The context limit below is a HARNESS knob (the server never enforces it) and is
 # deliberately far larger than the deterministic fixture transcript. This keeps
@@ -119,6 +119,7 @@ run_turn() {
     --disable-stdin \
     --model formal-ai/formal-ai \
     --no-summarize-session \
+    --compaction-models "(same)" \
     "$@" >> "$AGENT_LOG" 2>&1 || fail "$label failed"
   local now_posts turn_posts
   now_posts="$(posts_so_far)"

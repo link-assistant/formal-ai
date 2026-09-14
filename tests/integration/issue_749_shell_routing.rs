@@ -1,7 +1,8 @@
 //! HTTP and strict-schema regressions for issue #749 shell routing.
 
+use formal_ai::agentic_coding::mutating_action::verified_recipe;
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[test]
 fn codex_responses_preserves_arbitrary_commands_and_uses_cmd() {
@@ -49,8 +50,13 @@ fn whole_shell_task_matrix_routes_without_web_search() {
             "rg --fixed-strings -- 'TODO' .",
         ),
     ] {
-        let arguments = chat_shell_arguments(prompt);
-        assert_eq!(arguments["command"], expected, "{prompt}");
+        // A command that changes the workspace is carried out as the verified
+        // recipe its seed intent declares (issue #944), so the matrix asserts
+        // the whole recipe over the wire rather than only its first step. A
+        // read-only command declares no effect and stays a one-step plan.
+        let expected_steps =
+            verified_recipe(expected).unwrap_or_else(|| vec![String::from(expected)]);
+        assert_eq!(chat_shell_commands(prompt), expected_steps, "{prompt}");
     }
 }
 
@@ -92,11 +98,61 @@ fn responses_shell_arguments(prompt: &str) -> Value {
     serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap()
 }
 
+/// Every command the chat endpoint asks for, in order, driven the way a client
+/// drives it: each step is reported back as having exited zero and the endpoint
+/// is asked again until it stops requesting the shell.
+fn chat_shell_commands(prompt: &str) -> Vec<String> {
+    enable_http_agent_mode_for_current_process();
+    let mut messages = vec![json!({"role": "user", "content": prompt})];
+    let mut commands = Vec::new();
+    while commands.len() <= MAX_PLAN_STEPS {
+        let response = chat_completion(&messages);
+        let Some(call) = response["choices"][0]["message"]["tool_calls"]
+            .as_array()
+            .and_then(|calls| calls.first())
+        else {
+            break;
+        };
+        assert_eq!(call["function"]["name"], "run_shell_command", "{response}");
+        let arguments: Value =
+            serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+        let command = arguments["command"].as_str().unwrap().to_owned();
+        let id = call["id"].as_str().unwrap_or("call_0").to_owned();
+        messages.push(json!({
+            "role": "assistant",
+            "tool_calls": [{
+                "id": id,
+                "type": "function",
+                "function": {"name": "run_shell_command", "arguments": call["function"]["arguments"]}
+            }]
+        }));
+        messages.push(json!({
+            "role": "tool",
+            "tool_call_id": id,
+            "name": "run_shell_command",
+            "content": format!("Command: {command}\nOutput: (empty)\nExit Code: 0")
+        }));
+        commands.push(command);
+    }
+    commands
+}
+
+/// A plan longer than this is a runaway, not an answer; the longest recipe the
+/// seed declares is six steps.
+const MAX_PLAN_STEPS: usize = 12;
+
 fn chat_shell_arguments(prompt: &str) -> Value {
     enable_http_agent_mode_for_current_process();
+    let response = chat_completion(&[json!({"role": "user", "content": prompt})]);
+    let call = &response["choices"][0]["message"]["tool_calls"][0];
+    assert_eq!(call["function"]["name"], "run_shell_command", "{response}");
+    serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap()
+}
+
+fn chat_completion(messages: &[Value]) -> Value {
     let body = json!({
         "model": "formal-ai",
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": messages,
         "tools": [{
             "type": "function",
             "function": {
@@ -125,8 +181,5 @@ fn chat_shell_arguments(prompt: &str) -> Value {
     });
     let response = handle_api_request("POST", "/v1/chat/completions", &body.to_string());
     assert_eq!(response.status_code, 200, "{}", response.body);
-    let response: Value = serde_json::from_str(&response.body).unwrap();
-    let call = &response["choices"][0]["message"]["tool_calls"][0];
-    assert_eq!(call["function"]["name"], "run_shell_command", "{response}");
-    serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap()
+    serde_json::from_str(&response.body).unwrap()
 }

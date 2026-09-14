@@ -11,10 +11,10 @@ use std::fmt;
 
 use lino_objects_codec::format::parse_indented;
 
-use crate::engine::{normalize_prompt, stable_id, GraphEdge, GraphNode, KNOWLEDGE_SCHEMA_VERSION};
+use crate::engine::{GraphEdge, GraphNode, KNOWLEDGE_SCHEMA_VERSION, normalize_prompt, stable_id};
 use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::push_lino_node;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::skill_compiler::CompiledSkillPackage;
 
 /// A package dependency by package id and optional exact version.

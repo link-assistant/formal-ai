@@ -11,7 +11,7 @@ mod model;
 mod repository;
 
 pub use audit::audit_corpus;
-pub use evidence::{parse_evidence_json, EvidenceParseError};
+pub use evidence::{EvidenceParseError, parse_evidence_json};
 pub use extract::requirement_claim;
 pub use model::{
     AttachedEvidence, AuditConfig, AuditFinding, AuditedStatement, Claim, Contradiction,

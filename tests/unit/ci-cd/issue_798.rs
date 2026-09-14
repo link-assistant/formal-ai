@@ -2,7 +2,7 @@
 
 use std::fs;
 
-use super::workflow_fixtures::desktop_release_workflow;
+use super::workflow_fixtures::{ci_surface, desktop_release_workflow};
 
 fn read(path: &str) -> String {
     fs::read_to_string(format!("{}/{}", env!("CARGO_MANIFEST_DIR"), path))
@@ -58,7 +58,9 @@ fn platform_specific_shared_memory_state_is_platform_gated() {
 
 #[test]
 fn pull_request_ci_runs_the_macos_signing_regression() {
-    let workflow = read(".github/workflows/release.yml");
+    // Registered as `data/meta/ci-gates/check-desktop-packaging.lino` since
+    // issue #991, so the surface CI runs is the workflow plus the registry.
+    let workflow = ci_surface();
 
     assert!(
         workflow.contains("node --test desktop/scripts/adhoc-sign-mac.test.cjs"),
@@ -68,7 +70,7 @@ fn pull_request_ci_runs_the_macos_signing_regression() {
 
 #[test]
 fn pull_request_ci_rejects_an_unsynchronized_cargo_lock() {
-    let workflow = read(".github/workflows/release.yml");
+    let workflow = ci_surface();
 
     assert!(
         workflow.contains("cargo metadata --locked --format-version 1"),
@@ -78,7 +80,11 @@ fn pull_request_ci_rejects_an_unsynchronized_cargo_lock() {
 
 #[test]
 fn parallel_e2e_jobs_do_not_race_to_save_the_bun_cache() {
-    let workflow = read(".github/workflows/release.yml");
+    // Issue #1081 moved the agent CLI E2E steps into their own file and
+    // left the call behind; `pipeline_workflows()` splices the called
+    // workflow back in at the job that calls it, so this still asks
+    // "what does the pipeline run?" rather than "what is in this file?".
+    let workflow = crate::ci_gates::pipeline_workflows();
 
     assert_eq!(
         workflow.matches("no-cache: true").count(),

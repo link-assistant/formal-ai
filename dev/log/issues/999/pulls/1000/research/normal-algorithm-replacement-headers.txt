@@ -1,0 +1,10 @@
+URL: https://cspages.ucalgary.ca/~eberly/Courses/CPSC513/2024/2_Models_of_Computation/L08/L08_computations_by_languages.pdf
+HTTP/1.1 200 OK
+Date: Tue, 11 Aug 2026 20:48:22 GMT
+Server: Apache/2.4.37 (Rocky Linux) OpenSSL/1.1.1k SVN/1.10.2
+Last-Modified: Mon, 02 Sep 2024 15:28:36 GMT
+ETag: "35e07-62124982eb100"
+Accept-Ranges: bytes
+Content-Length: 220679
+Content-Type: application/pdf
+

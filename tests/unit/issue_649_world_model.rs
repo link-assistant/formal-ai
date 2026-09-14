@@ -74,11 +74,12 @@ fn difference_exposes_current_to_target_delta() {
         "same-from/different-to must surface as a conflict, got {diff:?}"
     );
     // robot->outside is shared, so it appears in neither list.
-    assert!(diff
-        .to_add
-        .iter()
-        .chain(&diff.to_remove)
-        .all(|link| link.from != "robot"));
+    assert!(
+        diff.to_add
+            .iter()
+            .chain(&diff.to_remove)
+            .all(|link| link.from != "robot")
+    );
 }
 
 /// When the current state is edited to equal the target, the difference is empty
@@ -187,14 +188,18 @@ fn predict_does_not_mutate_the_context() {
     let prediction = context.predict(&open_door);
 
     // The prediction shows the consequence...
-    assert!(prediction
-        .added
-        .iter()
-        .any(|link| link.from == "door" && link.to == "open"));
-    assert!(prediction
-        .removed
-        .iter()
-        .any(|link| link.from == "door" && link.to == "closed"));
+    assert!(
+        prediction
+            .added
+            .iter()
+            .any(|link| link.from == "door" && link.to == "open")
+    );
+    assert!(
+        prediction
+            .removed
+            .iter()
+            .any(|link| link.from == "door" && link.to == "closed")
+    );
     assert!(!prediction.is_noop());
     // ...while the real context is untouched.
     assert!(context.holds("door", "closed"));

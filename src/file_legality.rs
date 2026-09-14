@@ -724,7 +724,7 @@ fn inspect_file(path: &Path, suppress_derivatives: bool) -> io::Result<Inspected
     let mut digest = Sha256::new();
     digest.update(&signature[..signature_len]);
     io::copy(&mut file, &mut DigestWriter(&mut digest))?;
-    let sha256 = Some(format!("{:x}", digest.finalize()));
+    let sha256 = Some(crate::source_fetch::hex_lower(&digest.finalize()));
     let metadata = extract_exif(path);
 
     Ok(InspectedFile {

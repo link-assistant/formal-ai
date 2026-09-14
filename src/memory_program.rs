@@ -19,7 +19,7 @@ use crate::links_format::push_lino_node;
 
 mod execution;
 pub use execution::{
-    execute_memory_program, MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramOutcome,
+    MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramOutcome, execute_memory_program,
 };
 
 const MEMORY_PROGRAMS_LINO: &str = include_str!("../data/seed/memory-programs.lino");
@@ -127,12 +127,12 @@ impl CompiledMemoryProgram {
                 push_lino_node(&mut out, 4, name, Some(value));
             }
         }
-        if let Some(step) = self.steps.iter().find(|step| step.primitive == "update") {
-            if let (Some(old), Some(new)) = (step.arguments.get("old"), step.arguments.get("new")) {
-                push_lino_node(&mut out, 2, "replace", None);
-                push_lino_node(&mut out, 4, "old", Some(old));
-                push_lino_node(&mut out, 4, "new", Some(new));
-            }
+        if let Some(step) = self.steps.iter().find(|step| step.primitive == "update")
+            && let (Some(old), Some(new)) = (step.arguments.get("old"), step.arguments.get("new"))
+        {
+            push_lino_node(&mut out, 2, "replace", None);
+            push_lino_node(&mut out, 4, "old", Some(old));
+            push_lino_node(&mut out, 4, "new", Some(new));
         }
         let first_effect = self.steps.iter().find(|step| {
             matches!(

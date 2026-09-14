@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Q3816639": {
+      "type": "item",
+      "id": "Q3816639",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "कोटलिन"
+        },
+        "en": {
+          "language": "en",
+          "value": "Kotlin"
+        }
+      },
+      "descriptions": {
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "編程語言"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "en": {
+          "language": "en",
+          "value": "general-purpose programming language derived from Java"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

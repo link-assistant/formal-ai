@@ -1,0 +1,264 @@
+{
+  "id": "program_plan_rules",
+  "max_applications": 64,
+  "rules": [
+    {
+      "id": "path_argument_list_files",
+      "order": 10,
+      "manual": true,
+      "conditions": [
+        {
+          "from": {
+            "kind": "literal",
+            "value": "request:modifier"
+          },
+          "to": {
+            "kind": "literal",
+            "value": "path_argument"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "remove": {
+            "from": {
+              "kind": "literal",
+              "value": "request:task"
+            },
+            "to": {
+              "kind": "literal",
+              "value": "list_files"
+            }
+          },
+          "add": [
+            {
+              "from": {
+                "kind": "literal",
+                "value": "request:task"
+              },
+              "to": {
+                "kind": "literal",
+                "value": "list_files_arg"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "path_argument_list_files_reverse_sort",
+      "order": 10,
+      "manual": true,
+      "conditions": [
+        {
+          "from": {
+            "kind": "literal",
+            "value": "request:modifier"
+          },
+          "to": {
+            "kind": "literal",
+            "value": "path_argument"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "remove": {
+            "from": {
+              "kind": "literal",
+              "value": "request:task"
+            },
+            "to": {
+              "kind": "literal",
+              "value": "list_files_reverse_sort"
+            }
+          },
+          "add": [
+            {
+              "from": {
+                "kind": "literal",
+                "value": "request:task"
+              },
+              "to": {
+                "kind": "literal",
+                "value": "list_files_arg_reverse_sort"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cancel_reverse_sort__reverse_sort_list_files",
+      "order": 20,
+      "manual": true,
+      "conditions": [
+        {
+          "from": {
+            "kind": "literal",
+            "value": "request:modifier"
+          },
+          "to": {
+            "kind": "literal",
+            "value": "cancel_reverse_sort"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "remove": {
+            "from": {
+              "kind": "literal",
+              "value": "request:task"
+            },
+            "to": {
+              "kind": "literal",
+              "value": "list_files_reverse_sort"
+            }
+          },
+          "add": [
+            {
+              "from": {
+                "kind": "literal",
+                "value": "request:task"
+              },
+              "to": {
+                "kind": "literal",
+                "value": "list_files"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cancel_reverse_sort__reverse_sort_list_files_arg",
+      "order": 20,
+      "manual": true,
+      "conditions": [
+        {
+          "from": {
+            "kind": "literal",
+            "value": "request:modifier"
+          },
+          "to": {
+            "kind": "literal",
+            "value": "cancel_reverse_sort"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "remove": {
+            "from": {
+              "kind": "literal",
+              "value": "request:task"
+            },
+            "to": {
+              "kind": "literal",
+              "value": "list_files_arg_reverse_sort"
+            }
+          },
+          "add": [
+            {
+              "from": {
+                "kind": "literal",
+                "value": "request:task"
+              },
+              "to": {
+                "kind": "literal",
+                "value": "list_files_arg"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reverse_sort_list_files",
+      "order": 20,
+      "manual": true,
+      "conditions": [
+        {
+          "from": {
+            "kind": "literal",
+            "value": "request:modifier"
+          },
+          "to": {
+            "kind": "literal",
+            "value": "reverse_sort"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "remove": {
+            "from": {
+              "kind": "literal",
+              "value": "request:task"
+            },
+            "to": {
+              "kind": "literal",
+              "value": "list_files"
+            }
+          },
+          "add": [
+            {
+              "from": {
+                "kind": "literal",
+                "value": "request:task"
+              },
+              "to": {
+                "kind": "literal",
+                "value": "list_files_reverse_sort"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reverse_sort_list_files_arg",
+      "order": 20,
+      "manual": true,
+      "conditions": [
+        {
+          "from": {
+            "kind": "literal",
+            "value": "request:modifier"
+          },
+          "to": {
+            "kind": "literal",
+            "value": "reverse_sort"
+          }
+        }
+      ],
+      "actions": [
+        {
+          "remove": {
+            "from": {
+              "kind": "literal",
+              "value": "request:task"
+            },
+            "to": {
+              "kind": "literal",
+              "value": "list_files_arg"
+            }
+          },
+          "add": [
+            {
+              "from": {
+                "kind": "literal",
+                "value": "request:task"
+              },
+              "to": {
+                "kind": "literal",
+                "value": "list_files_arg_reverse_sort"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

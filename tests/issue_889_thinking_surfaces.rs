@@ -14,9 +14,8 @@ use std::process::Command;
 use formal_ai::language::registered_languages;
 use formal_ai::thinking_prose::thinking_prose;
 use formal_ai::{
-    create_anthropic_message_with_solver, create_chat_completion_with_solver,
     AnthropicContentBlock, AnthropicMessagesRequest, ChatCompletionRequest, FormalAiEngine,
-    UniversalSolver,
+    UniversalSolver, create_anthropic_message_with_solver, create_chat_completion_with_solver,
 };
 
 /// One prompt per registered language, each unambiguous enough that the solver

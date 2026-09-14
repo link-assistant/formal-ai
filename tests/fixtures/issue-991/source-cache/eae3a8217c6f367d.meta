@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=reverse%20a%20string%20in%20python&site=stackoverflow&filter=withbody
+fetched_at=1786392352
+sha256=882586421370b8d918b1477488da15cfdb30c16756c94184ba64e3b664c36221

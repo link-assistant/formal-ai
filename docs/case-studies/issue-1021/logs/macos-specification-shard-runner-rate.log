@@ -1,0 +1,71 @@
+$ gh api repos/link-assistant/formal-ai/actions/runs/32463873155/jobs \
+    --jq ".jobs[] | select(.conclusion != \"success\" and .conclusion != \"skipped\")"
+96716556814  failure  Test (macos-15-intel / specification)   commit aa29d85
+
+--- the terminating lines, ci-logs/job-96716556814.log ---
+2026-08-21T08:59:49.2725940Z ##[error]The command was terminated after 1200s, its full 1200s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout.
+2026-08-21T08:59:50.2850010Z Specification test shard was terminated after 1201s, its full 1200s execution budget.
+2026-08-21T08:59:50.2872160Z ##[error]Process completed with exit code 124.
+
+--- where it was when the deadline expired ---
+2026-08-21T08:59:11.1340120Z      Running `sccache .../bin/rustc --crate-name formal_ai --edition=2024 src/lib.rs ...`
+(still compiling the library; no test had started)
+
+--- the same shard on the previous commit, run 32458078205, job 96699699539 ---
+3368:2026-08-21T07:34:39.7839010Z     Finished `test` profile [unoptimized] target(s) in 9m 26s
+3371:2026-08-21T07:34:42.3550110Z running 1039 tests
+4413:2026-08-21T07:39:09.6481500Z test result: ok. 1037 passed; 0 failed; 2 ignored; 0 measured; 1924 filtered out; finished in 267.29s
+
+--- both restored no cargo registry cache, so both compiled from cold ---
+2026-08-21T07:25:12.7318650Z Cache not found for input keys: macOS-cargo-a75c0f55944f9eff14b3cbb5169a477a1b546a396cbc75962facdf1a5a68e973, macOS-cargo-
+2026-08-21T08:39:49.1081660Z Cache not found for input keys: macOS-cargo-a75c0f55944f9eff14b3cbb5169a477a1b546a396cbc75962facdf1a5a68e973, macOS-cargo-
+
+$ python3 experiments/issue_1021_compile_rate_compare.py \
+    ci-logs/job-96699699539.log ci-logs/job-96716556814.log
+480 crates compiled by both (baseline saw 482, compared saw 480)
+decile of baseline progress      baseline   compared   ratio
+ 10% zerovec                        53.2s      73.9s   1.39x
+ 20% hashbrown                      75.7s     194.8s   2.58x
+ 30% nom                           106.5s     218.4s   2.05x
+ 40% futures_macro                 158.5s     448.9s   2.83x
+ 50% flate2                        226.8s     585.3s   2.58x
+ 60% cssparser_macros              254.6s     613.3s   2.41x
+ 70% rtc_dtls                      344.3s     848.2s   2.46x
+ 80% ego_tree                      374.0s     978.1s   2.62x
+ 90% tree_sitter_javascript        407.6s     993.4s   2.44x
+100% formal_ai                     436.3s    1139.0s   2.61x
+
+--- the same shard, same commit, re-run without any change: job 96726082312 ---
+$ gh run rerun --repo link-assistant/formal-ai --job 96716556814
+$ gh api repos/link-assistant/formal-ai/actions/jobs/96726082312 \
+    --jq '.steps[] | select(.name|test("specification"))'
+11  Run specification tests  success  2026-08-21T09:18:19Z  2026-08-21T09:28:39Z
+
+three observations of the same work on the same lockfile:
+  620s   job 96726082312  (52% of the 1200s budget)  success
+  838s   job 96699699539  (70% of the 1200s budget)  success
+ >1200s  job 96716556814  (terminated at the budget) failure
+
+--- the shard on the commit that added the counters: job 96736754559 ---
+$ gh run view 32470623196 --repo link-assistant/formal-ai --job 96736754559 --log \
+    > ci-logs/spec-shard-96736754559.log
+2026-08-21T10:14:33Z  test result: ok. 1037 passed; 0 failed; 2 ignored; ... finished in 310.16s
+2026-08-21T10:14:34Z  Specification test shard took 603s of its 1200s execution budget.
+
+$ grep -c '\[budget\]' ci-logs/spec-shard-96736754559.log
+0
+
+The lockfile did not move between aa29d8588 and 78366dcff, so this is a fourth
+observation of the same work -- and the first one taken with the reporter in
+place. 603s is 50% of the budget, below the 70% warning threshold, so the
+wrapper printed no counters at all. That is the half of the change a green run
+can confirm: silence when the step is healthy. The other half -- counters on a
+step that is actually terminated -- has still only been observed against the
+stand-in sccache the unit tests drive, because no CI step has blown its budget
+since.
+
+four observations of the same work on the same lockfile:
+  603s   job 96736754559  (50% of the 1200s budget)  success
+  620s   job 96726082312  (52% of the 1200s budget)  success
+  838s   job 96699699539  (70% of the 1200s budget)  success
+ >1200s  job 96716556814  (terminated at the budget) failure

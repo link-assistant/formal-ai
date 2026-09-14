@@ -1,0 +1,81 @@
+self_ast_census
+  target src/agentic_coding/task_obligations.rs
+  language rust
+  fidelity full_ast
+  byte_len 5501
+  line_count 134
+  content_id source_module_ec9fe87fe5ebd729
+  symbol_count 6
+  symbols
+    struct Obligation 31 36
+    function obligations 44 69
+    function split_at_enumeration_cues 77 99
+    function opens_a_clause 103 106
+    function starts_with_cue 110 118
+    function outstanding 127 133
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2940
+    named_node_count 628
+    distinct_node_kinds 57
+    node_kinds
+      arguments 42
+      array_expression 1
+      array_type 1
+      attribute 3
+      attribute_item 3
+      binary_expression 6
+      block 14
+      boolean_literal 1
+      call_expression 42
+      char_literal 6
+      closure_expression 6
+      closure_parameters 6
+      continue_expression 3
+      crate 2
+      doc_comment 46
+      expression_statement 17
+      field_declaration 2
+      field_declaration_list 1
+      field_expression 38
+      field_identifier 42
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 2
+      function_item 5
+      generic_type 5
+      identifier 110
+      if_expression 5
+      index_expression 5
+      inner_doc_comment_marker 22
+      integer_literal 7
+      let_declaration 10
+      line_comment 49
+      macro_invocation 2
+      mutable_specifier 2
+      outer_doc_comment_marker 24
+      parameter 8
+      parameters 5
+      parenthesized_expression 1
+      primitive_type 9
+      range_expression 3
+      reference_expression 3
+      reference_type 7
+      return_expression 3
+      scoped_identifier 11
+      source_file 1
+      struct_expression 1
+      struct_item 1
+      super 2
+      token_tree 4
+      try_expression 1
+      tuple_pattern 1
+      tuple_struct_pattern 2
+      type_arguments 5
+      type_identifier 14
+      unary_expression 4
+      use_declaration 4
+      visibility_modifier 5

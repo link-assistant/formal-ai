@@ -62,7 +62,7 @@ pub fn try_response_language_followup(
 
     // A replay that could not reconstruct a concrete answer is not a useful
     // re-answer; fall through so the normal handlers see the follow-up.
-    if is_inconclusive(&replay.intent) {
+    if replay.is_inconclusive() {
         return None;
     }
 
@@ -113,12 +113,6 @@ fn is_language_reanswer_followup(normalized: &str) -> bool {
     // Chinese and other scriptio-continua markers carry no inter-word spaces,
     // so a bare "用中文" counts as one word here — still terse, still a switch.
     normalized.split_whitespace().count() <= 4
-}
-
-/// Intents that mean the replay never reached a concrete answer.
-fn is_inconclusive(intent: &str) -> bool {
-    matches!(intent, "unknown" | "ill_formed" | "punctuation_only_prompt")
-        || intent.starts_with("clarify")
 }
 
 fn push_unique(links: &mut Vec<String>, link: String) {

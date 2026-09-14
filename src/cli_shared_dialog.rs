@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 
-use formal_ai::{convert_shared_dialog_to_demo_memory, SharedDialogFormat, SharedDialogMetadata};
+use formal_ai::{SharedDialogFormat, SharedDialogMetadata, convert_shared_dialog_to_demo_memory};
 
 #[derive(Debug, Subcommand)]
 pub enum SharedDialogAction {

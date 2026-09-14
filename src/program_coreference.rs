@@ -10,7 +10,7 @@
 //! this code understands the *concepts*, not the words.
 
 use crate::seed::{
-    lexicon, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_MODIFICATION_REFERENCE,
+    ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_MODIFICATION_REFERENCE, lexicon,
 };
 
 /// True when `normalized` reads like a bare follow-up that modifies an existing

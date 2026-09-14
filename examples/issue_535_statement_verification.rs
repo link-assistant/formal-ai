@@ -15,7 +15,7 @@
 //! Run with: `cargo run --example issue_535_extract_probe`
 
 use formal_ai::relative_meta_logic::{
-    RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
+    ASSUMED_TRUE_PRIOR, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
 };
 use formal_ai::statement_verification::StatementVerificationPlan;
 

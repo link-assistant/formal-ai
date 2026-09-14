@@ -57,9 +57,11 @@ fn localized_russian_overrides_statements_when_present() {
     let hive = registry.by_alias("hive mind").expect("hive-mind present");
     let ru_statements = hive.statements_for("ru");
     assert!(!ru_statements.is_empty());
-    assert!(ru_statements
-        .iter()
-        .any(|s| s.text.contains("ИИ") || s.text.contains("Hive Mind")));
+    assert!(
+        ru_statements
+            .iter()
+            .any(|s| s.text.contains("ИИ") || s.text.contains("Hive Mind"))
+    );
 }
 
 #[test]

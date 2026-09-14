@@ -54,9 +54,11 @@ fn three_drafts_are_tested_compared_and_deterministic() {
         first.links_notation
     );
     assert!(first.links_notation.contains(r#"max_attempts "3""#));
-    assert!(first
-        .links_notation
-        .contains(r#"learning_status "available_for_dreaming""#));
+    assert!(
+        first
+            .links_notation
+            .contains(r#"learning_status "available_for_dreaming""#)
+    );
     assert_eq!(first.intent, "budget_search_solution");
     assert!(first.answer.contains("= 26"));
 }
@@ -130,14 +132,7 @@ fn comparison_ledger_answers_why_in_all_supported_languages() {
 
 #[test]
 fn draft_count_can_be_configured_from_the_environment() {
-    let previous = std::env::var_os("FORMAL_AI_DRAFT_COUNT");
-    std::env::set_var("FORMAL_AI_DRAFT_COUNT", "3");
-    let config = SolverConfig::from_env();
-    if let Some(value) = previous {
-        std::env::set_var("FORMAL_AI_DRAFT_COUNT", value);
-    } else {
-        std::env::remove_var("FORMAL_AI_DRAFT_COUNT");
-    }
+    let config = temp_env::with_var("FORMAL_AI_DRAFT_COUNT", Some("3"), SolverConfig::from_env);
 
     assert_eq!(config.draft_count, 3);
 }
@@ -268,10 +263,12 @@ fn a_passing_draft_that_fails_composition_is_backtracked_past() {
     let mut log = EventLog::new();
     let selection = formal_ai::draft_portfolio::run_portfolio(&leaf, 7, 2, &mut log);
 
-    assert!(selection
-        .winner
-        .as_ref()
-        .is_some_and(|winner| winner.starts_with("rule_derivation")));
+    assert!(
+        selection
+            .winner
+            .as_ref()
+            .is_some_and(|winner| winner.starts_with("rule_derivation"))
+    );
     let results = payloads(&log, "draft:result");
     assert_eq!(results.len(), 2);
     assert!(
@@ -357,10 +354,12 @@ fn concurrent_drafts_are_merged_in_draft_index_order() {
     assert_eq!(indices, ["0", "1", "2", "3", "4"]);
     // Least action decides among the passing drafts, not the draft order:
     // `search` (size 3) beats `program_synthesis` (5) and `oracle_lookup` (8).
-    assert!(selection
-        .winner
-        .as_ref()
-        .is_some_and(|winner| winner.starts_with("search")));
+    assert!(
+        selection
+            .winner
+            .as_ref()
+            .is_some_and(|winner| winner.starts_with("search"))
+    );
 }
 
 #[test]
@@ -477,7 +476,7 @@ fn parallel_wall_clock_stays_within_single_plus_slowest_when_enabled() {
 
 #[test]
 fn losing_drafts_become_durable_lessons_the_dreaming_loop_mines() {
-    use formal_ai::dreaming::{plan_memory_dreaming, render_dreaming_plan, DreamingConfig};
+    use formal_ai::dreaming::{DreamingConfig, plan_memory_dreaming, render_dreaming_plan};
     use formal_ai::memory::MemoryStore;
 
     // Two slots fail (`reuse` exhausts its retry budget passing nothing,

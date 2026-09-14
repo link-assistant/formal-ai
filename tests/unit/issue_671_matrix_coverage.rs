@@ -11,7 +11,7 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
 use formal_ai::client_contract_learning::{
-    learn_client_contracts, load_observations, ClientContractObservation, DeliveryMode,
+    ClientContractObservation, DeliveryMode, learn_client_contracts, load_observations,
 };
 use formal_ai::seed::client_integrations;
 
@@ -188,6 +188,39 @@ fn every_client_behavior_is_a_seeded_verification_contract() {
 }
 
 #[test]
+fn t3code_0_0_37_launch_contract_covers_its_complete_surface() {
+    let clients = client_integrations();
+    let t3code = clients
+        .iter()
+        .find(|client| client.id == "t3code")
+        .expect("seeded t3code client");
+    for subcommand in ["theme", "triage"] {
+        assert!(
+            t3code
+                .verification
+                .launch_subcommands
+                .iter()
+                .any(|actual| actual == subcommand),
+            "t3code 0.0.37 exposes {subcommand}; classify it before accepting the upgraded client"
+        );
+    }
+}
+
+#[test]
+fn server_launch_waits_for_every_required_output_line() {
+    let leg = read("experiments/agentic_cli_matrix/run_leg.sh");
+    assert!(
+        leg.contains("matrix_await_log launch \"$required\" 120"),
+        "a server can announce readiness before its remaining launch contract; \
+         required output must use the bounded log wait"
+    );
+    assert!(
+        !leg.contains("matrix_log_matches \"$MATRIX_CLIENT_LOG\" \"$required\""),
+        "a one-shot required-output check races asynchronous server startup"
+    );
+}
+
+#[test]
 fn matrix_scripts_do_not_branch_on_client_identity() {
     for script in [
         "experiments/agentic_cli_matrix/lib.sh",
@@ -233,9 +266,11 @@ fn repeated_independent_observations_propose_a_human_gated_reusable_contract() {
     assert_eq!(report.proposals.len(), 1);
     assert_eq!(report.proposals[0].client_id, "future-client");
     assert_eq!(report.proposals[0].value, "workspace_read");
-    assert!(report
-        .links_notation()
-        .contains("decision \"awaiting_human_review\""));
+    assert!(
+        report
+            .links_notation()
+            .contains("decision \"awaiting_human_review\"")
+    );
 }
 
 #[test]
@@ -300,8 +335,11 @@ fn committed_real_sessions_produce_a_deterministic_review_artifact() {
 
 #[test]
 fn formal_ai_executes_contract_learning_through_the_real_agent_cli() {
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
     assert!(
-        read(".github/workflows/release.yml").contains("run_issue_671_contract_learning.sh"),
+        crate::ci_gates::pipeline_workflows().contains("run_issue_671_contract_learning.sh"),
         "the required real Agent CLI execution must run in CI"
     );
     let expected = read(

@@ -1,0 +1,8 @@
+link_edit
+  leaf L13
+  path src/dialog_log.rs
+  language rust
+  rule replace_literal
+    old "x-formal-ai-dialog-id"
+    new "x-formal-ai-conversation-id"
+  expect "x-formal-ai-conversation-id"

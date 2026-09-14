@@ -536,33 +536,21 @@ meanings
       surface
         text "screen shot"
       surface
-        text rendered
-      surface
-        text render
-      surface
         text pixels
       surface
         text pixel
       surface
         text gui
-      surface
-        text visually
     lexeme ru
       surface
         text снимок
       surface
         text скриншот
       surface
-        text отрисованной
-      surface
-        text отрисованную
-      surface
         text пикселей
     lexeme hi
       surface
         text screenshot
-      surface
-        text rendered
       surface
         text स्क्रीनशॉट
     lexeme zh
@@ -570,7 +558,5 @@ meanings
         text 截图
       surface
         text 屏幕截图
-      surface
-        text 渲染
       surface
         text 像素

@@ -1,0 +1,1216 @@
+stock-rust-install	Set up job	﻿2026-09-05T08:37:54.9766617Z Current runner version: '2.337.0'
+stock-rust-install	Set up job	2026-09-05T08:37:54.9792836Z ##[group]Runner Image Provisioner
+stock-rust-install	Set up job	2026-09-05T08:37:54.9793793Z Hosted Compute Agent
+stock-rust-install	Set up job	2026-09-05T08:37:54.9794408Z Version: 20260828.587
+stock-rust-install	Set up job	2026-09-05T08:37:54.9795085Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+stock-rust-install	Set up job	2026-09-05T08:37:54.9795918Z Build Date: 2026-08-28T16:44:25Z
+stock-rust-install	Set up job	2026-09-05T08:37:54.9796606Z Worker ID: {77f479de-7741-4106-a35d-dc5b4c0324b8}
+stock-rust-install	Set up job	2026-09-05T08:37:54.9797351Z Azure Region: westus
+stock-rust-install	Set up job	2026-09-05T08:37:54.9797940Z ##[endgroup]
+stock-rust-install	Set up job	2026-09-05T08:37:54.9799709Z ##[group]Operating System
+stock-rust-install	Set up job	2026-09-05T08:37:54.9800452Z Ubuntu
+stock-rust-install	Set up job	2026-09-05T08:37:54.9800977Z 24.04.4
+stock-rust-install	Set up job	2026-09-05T08:37:54.9801462Z LTS
+stock-rust-install	Set up job	2026-09-05T08:37:54.9802034Z ##[endgroup]
+stock-rust-install	Set up job	2026-09-05T08:37:54.9802619Z ##[group]Runner Image
+stock-rust-install	Set up job	2026-09-05T08:37:54.9803294Z Image: ubuntu-24.04
+stock-rust-install	Set up job	2026-09-05T08:37:54.9803853Z Version: 20260831.293.1
+stock-rust-install	Set up job	2026-09-05T08:37:54.9804889Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+stock-rust-install	Set up job	2026-09-05T08:37:54.9806722Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+stock-rust-install	Set up job	2026-09-05T08:37:54.9807792Z ##[endgroup]
+stock-rust-install	Set up job	2026-09-05T08:37:54.9809355Z ##[group]GITHUB_TOKEN Permissions
+stock-rust-install	Set up job	2026-09-05T08:37:54.9811387Z Contents: read
+stock-rust-install	Set up job	2026-09-05T08:37:54.9812042Z Metadata: read
+stock-rust-install	Set up job	2026-09-05T08:37:54.9812578Z ##[endgroup]
+stock-rust-install	Set up job	2026-09-05T08:37:54.9814713Z Secret source: Actions
+stock-rust-install	Set up job	2026-09-05T08:37:54.9815788Z Prepare workflow directory
+stock-rust-install	Set up job	2026-09-05T08:37:55.0252717Z Prepare all required actions
+stock-rust-install	Set up job	2026-09-05T08:37:55.0301736Z Getting action download info
+stock-rust-install	Set up job	2026-09-05T08:37:55.3733341Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+stock-rust-install	Set up job	2026-09-05T08:37:55.5797466Z Complete job name: stock-rust-install
+stock-rust-install	Initialize containers	﻿2026-09-05T08:37:55.6333378Z ##[group]Checking docker version
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.6346788Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7374811Z '1.48'
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7384861Z Docker daemon API version: '1.48'
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7385901Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7586334Z '1.48'
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7599178Z Docker client API version: '1.48'
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7604297Z ##[endgroup]
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7607131Z ##[group]Clean up resources from previous jobs
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7612821Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=09cb5f"
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7753278Z ##[command]/usr/bin/docker network prune --force --filter "label=09cb5f"
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7927001Z ##[endgroup]
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7927568Z ##[group]Create local container network
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.7937214Z ##[command]/usr/bin/docker network create --label 09cb5f github_network_a11a07ada52e402195d8fa8575e8f456
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.8427343Z 0a3f4e0bb9d39aab2a9ef4a5c1a6d1ae8297cfa045f9a359d6b7f8eaa1ef3752
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.8446778Z ##[endgroup]
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.8471411Z ##[group]Starting job container
+stock-rust-install	Initialize containers	2026-09-05T08:37:55.8492257Z ##[command]/usr/bin/docker pull rust:1.98-slim-bookworm
+stock-rust-install	Initialize containers	2026-09-05T08:37:56.7314357Z 1.98-slim-bookworm: Pulling from library/rust
+stock-rust-install	Initialize containers	2026-09-05T08:37:57.0020377Z a8ac7f6c67ab: Pulling fs layer
+stock-rust-install	Initialize containers	2026-09-05T08:37:57.0022080Z 461f979ecc97: Pulling fs layer
+stock-rust-install	Initialize containers	2026-09-05T08:37:57.3580363Z a8ac7f6c67ab: Verifying Checksum
+stock-rust-install	Initialize containers	2026-09-05T08:37:57.3609473Z a8ac7f6c67ab: Download complete
+stock-rust-install	Initialize containers	2026-09-05T08:37:58.1266148Z 461f979ecc97: Verifying Checksum
+stock-rust-install	Initialize containers	2026-09-05T08:37:58.1266934Z 461f979ecc97: Download complete
+stock-rust-install	Initialize containers	2026-09-05T08:37:58.6336981Z a8ac7f6c67ab: Pull complete
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4371695Z 461f979ecc97: Pull complete
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4416139Z Digest: sha256:1469a27c125cb5a3aebfa4f4e4665d935b02fb72cc093b2c974b3d740e43f157
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4437580Z Status: Downloaded newer image for rust:1.98-slim-bookworm
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4444424Z docker.io/library/rust:1.98-slim-bookworm
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4529220Z ##[command]/usr/bin/docker create --name 835ad8532eaf4166aaef54a9fef78f0e_rust198slimbookworm_923c16 --label 09cb5f --workdir /__w/formal-ai/formal-ai --network github_network_a11a07ada52e402195d8fa8575e8f456  -e "HOME=/github/home" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work":"/__w" -v "/home/runner/actions-runner/cached/2.337.0/externals":"/__e":ro -v "/home/runner/work/_temp":"/__w/_temp" -v "/home/runner/work/_actions":"/__w/_actions" -v "/opt/hostedtoolcache":"/__t" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" --entrypoint "tail" rust:1.98-slim-bookworm "-f" "/dev/null"
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4846452Z 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.4870452Z ##[command]/usr/bin/docker start 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.6846447Z 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.6865223Z ##[command]/usr/bin/docker ps --all --filter id=8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.6990320Z 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb Up Less than a second
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7009193Z ##[command]/usr/bin/docker inspect --format "{{range .Config.Env}}{{println .}}{{end}}" 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7133114Z HOME=/github/home
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7133748Z GITHUB_ACTIONS=true
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7134261Z CI=true
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7134698Z PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7135218Z RUSTUP_HOME=/usr/local/rustup
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7135529Z CARGO_HOME=/usr/local/cargo
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7135825Z RUST_VERSION=1.98.0
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7155679Z ##[endgroup]
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7165309Z ##[group]Waiting for all services to be ready
+stock-rust-install	Initialize containers	2026-09-05T08:38:04.7167441Z ##[endgroup]
+stock-rust-install	Run actions/checkout@v7	﻿2026-09-05T08:38:04.7472120Z ##[group]Run actions/checkout@v7
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7472860Z with:
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7473153Z   repository: link-assistant/formal-ai
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7475799Z   token: ***
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7476063Z   ssh-strict: true
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7476324Z   ssh-user: git
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7476585Z   persist-credentials: true
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7476870Z   clean: true
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7477126Z   sparse-checkout-cone-mode: true
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7477417Z   fetch-depth: 1
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7477659Z   fetch-tags: false
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7477906Z   show-progress: true
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7478159Z   lfs: false
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7478386Z   submodules: false
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7478844Z   set-safe-directory: true
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7479140Z   allow-unsafe-pr-checkout: false
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7479683Z env:
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7479969Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7480304Z ##[endgroup]
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.7544043Z ##[command]/usr/bin/docker exec  8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb sh -c "cat /etc/*release | grep ^ID"
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9485624Z Syncing repository: link-assistant/formal-ai
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9487156Z ##[group]Getting Git version info
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9487606Z Working directory is '/__w/formal-ai/formal-ai'
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9488249Z ##[endgroup]
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9488848Z Deleting the contents of '/__w/formal-ai/formal-ai'
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9489321Z The repository will be downloaded using the GitHub REST API
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9489833Z To create a local Git repository instead, add Git 2.18 or higher to the PATH
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:04.9490292Z Downloading the archive
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:28.2809198Z Writing archive to disk
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:28.3957371Z Extracting the archive
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:28.4170550Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /__w/formal-ai/formal-ai/4c983ef5-2e4f-4415-9cc7-277d9d8276d9 -f /__w/formal-ai/formal-ai/4c983ef5-2e4f-4415-9cc7-277d9d8276d9.tar.gz
+stock-rust-install	Run actions/checkout@v7	2026-09-05T08:38:33.4041723Z Resolved version link-assistant-formal-ai-701d6a4
+stock-rust-install	Reject a system OpenSSL dependency	﻿2026-09-05T08:38:33.4838799Z ##[group]Run set -eu
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4839186Z ^[[36;1mset -eu^[[0m
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4839597Z ^[[36;1mcargo tree --locked --prefix none --format '{p}' > /tmp/formal-ai-dependency-tree.txt^[[0m
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4840179Z ^[[36;1mif grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt; then^[[0m
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4840747Z ^[[36;1m  echo "openssl-sys unexpectedly remains in the default dependency graph" >&2^[[0m
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4841161Z ^[[36;1m  exit 1^[[0m
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4841361Z ^[[36;1mfi^[[0m
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4844746Z shell: sh -e {0}
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4845000Z env:
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4845230Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.4845516Z ##[endgroup]
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:33.5931179Z     Updating crates.io index
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.3340845Z  Downloading crates ...
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4098889Z   Downloaded leak_slice v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4124884Z   Downloaded abnf-core v0.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4152710Z   Downloaded adler2 v2.0.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4177397Z   Downloaded aead v0.5.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4204447Z   Downloaded itoa v1.0.18
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4236511Z   Downloaded lazy_static v1.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4277490Z   Downloaded is_terminal_polyfill v1.70.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4298744Z   Downloaded allocator-api2 v0.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4339518Z   Downloaded asn1-rs-impl v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4349546Z   Downloaded base16ct v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4370083Z   Downloaded asn1-rs-derive v0.5.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4384320Z   Downloaded beef v0.5.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4413158Z   Downloaded block-padding v0.3.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4425190Z   Downloaded block-buffer v0.12.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4443485Z   Downloaded bytecheck_derive v0.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4459924Z   Downloaded anstyle-query v1.1.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4492108Z   Downloaded asn1-rs-derive v0.6.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4512680Z   Downloaded atomic-waker v1.1.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4535964Z   Downloaded block-buffer v0.10.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4559160Z   Downloaded cfg-if v1.0.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4586899Z   Downloaded ctor-proc-macro v0.0.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4601338Z   Downloaded abnf v0.13.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4646684Z   Downloaded bytecheck v0.6.12
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4673111Z   Downloaded bytecheck v0.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4690136Z   Downloaded cfg_aliases v0.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4704963Z   Downloaded clap_lex v1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4721939Z   Downloaded colorchoice v1.0.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4744751Z   Downloaded cpufeatures v0.2.17
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4776214Z   Downloaded crc v3.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4806425Z   Downloaded crc32c v0.6.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4853471Z   Downloaded crypto-common v0.1.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4901391Z   Downloaded ctor v0.4.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4909389Z   Downloaded curve25519-dalek-derive v0.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4925567Z   Downloaded darling_macro v0.20.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.4949087Z   Downloaded anstream v1.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5008993Z   Downloaded anstyle v1.0.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5069317Z   Downloaded anstyle-parse v1.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5109243Z   Downloaded async-broadcast v0.7.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5159050Z   Downloaded async-trait v0.1.92
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5244690Z   Downloaded autocfg v1.5.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5301928Z   Downloaded bitflags v1.3.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5399628Z   Downloaded bytecheck_derive v0.6.12
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5414505Z   Downloaded byteorder v1.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5457562Z   Downloaded chacha20 v0.9.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5500110Z   Downloaded cpufeatures v0.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5529249Z   Downloaded crypto-common v0.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5546149Z   Downloaded cssparser-macros v0.6.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5559731Z   Downloaded csv-core v0.1.13
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5586137Z   Downloaded json5_nodes v2.0.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5604431Z   Downloaded links-notation-macro v0.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5618343Z   Downloaded lino-env v0.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5653734Z   Downloaded lru-slab v0.1.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5671915Z   Downloaded mac v0.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5691052Z   Downloaded string_cache v0.8.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5720255Z   Downloaded string_cache_codegen v0.5.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5734988Z   Downloaded strsim v0.11.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5761844Z   Downloaded ahash v0.7.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5802414Z   Downloaded ahash v0.8.12
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5840404Z   Downloaded anyhow v1.0.104
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5911937Z   Downloaded arrayvec v0.7.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5952705Z   Downloaded async-channel v2.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.5991667Z   Downloaded borsh-derive v1.8.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6034426Z   Downloaded cfg_aliases v0.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6050051Z   Downloaded cipher v0.4.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6084796Z   Downloaded clap_derive v4.6.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6124590Z   Downloaded cmake v0.1.58
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6161505Z   Downloaded concurrent-queue v2.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6179596Z   Downloaded counter v0.7.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6223766Z   Downloaded crc-catalog v2.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6251826Z   Downloaded crossbeam-deque v0.8.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6282382Z   Downloaded crossbeam-epoch v0.9.20
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6333377Z   Downloaded ctr v0.9.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6389179Z   Downloaded dashmap v6.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6433993Z   Downloaded data-encoding v2.11.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6452541Z   Downloaded jobserver v0.1.35
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6491758Z   Downloaded maplit v1.0.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6515832Z   Downloaded match_token v0.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6528241Z   Downloaded md-5 v0.10.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6573087Z   Downloaded md5 v0.8.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6597917Z   Downloaded memoffset v0.9.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6618928Z   Downloaded phf_generator v0.11.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6639156Z   Downloaded tinyvec_macros v0.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6655019Z   Downloaded num_cpus v1.17.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6722981Z   Downloaded openssl-probe v0.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6749680Z   Downloaded phf_shared v0.11.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6764099Z   Downloaded bit-vec v0.9.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6801843Z   Downloaded const-oid v0.9.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6826423Z   Downloaded darling v0.20.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6923038Z   Downloaded lindera-jieba v3.0.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6942072Z   Downloaded oid-registry v0.7.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6962669Z   Downloaded opaque-debug v0.3.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.6978799Z   Downloaded cbc v0.1.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7010395Z   Downloaded crc32fast v1.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7038401Z   Downloaded lock_api v0.4.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7055704Z   Downloaded allocator-api2 v0.2.21
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7091753Z   Downloaded base64ct v1.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7128792Z   Downloaded bnf v0.6.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7175057Z   Downloaded munge v0.4.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7205282Z   Downloaded new_debug_unreachable v1.0.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7222087Z   Downloaded tree-sitter-json v0.24.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7243908Z   Downloaded tree-sitter-language v0.1.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7268211Z   Downloaded bitflags v2.13.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7335760Z   Downloaded crossbeam-utils v0.8.22
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7374800Z   Downloaded munge_macro v0.4.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7386449Z   Downloaded num-conv v0.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7399113Z   Downloaded parking v2.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7414937Z   Downloaded percent-encoding v2.3.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7427296Z   Downloaded phf_codegen v0.11.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7440116Z   Downloaded platform-num v0.8.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7454431Z   Downloaded unicode-blocks v0.1.10
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7468856Z   Downloaded clap v4.6.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7616095Z   Downloaded const-oid v0.10.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7648324Z   Downloaded cssparser v0.34.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7681880Z   Downloaded links-notation v0.13.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7712192Z   Downloaded lino-arguments v0.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7736113Z   Downloaded oid-registry v0.8.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7754297Z   Downloaded phf_macros v0.11.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7768016Z   Downloaded powerfmt v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7783636Z   Downloaded precomputed-hash v0.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7794003Z   Downloaded symbolic_expressions v5.0.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7817639Z   Downloaded thiserror-impl v2.0.20
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7838694Z   Downloaded thread-priority v3.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7864796Z   Downloaded toml_writer v1.1.2+spec-1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7884122Z   Downloaded try-lock v0.2.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7897030Z   Downloaded base64 v0.22.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7951766Z   Downloaded chacha20 v0.10.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.7985130Z   Downloaded downcast-rs v1.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8004507Z   Downloaded futf v0.1.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8019882Z   Downloaded futures-task v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8038142Z   Downloaded links-notation v0.16.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8075004Z   Downloaded litemap v0.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8108036Z   Downloaded markup5ever v0.14.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8131672Z   Downloaded pkg-config v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8154361Z   Downloaded potential_utf v0.1.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8169386Z   Downloaded proc-macro-crate v3.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8189018Z   Downloaded spki v0.7.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8214751Z   Downloaded toml_parser v1.1.3+spec-1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8246492Z   Downloaded unicase v2.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8265614Z   Downloaded xattr v1.6.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8294720Z   Downloaded yoke-derive v0.8.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8309996Z   Downloaded zerofrom v0.1.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8323890Z   Downloaded zerofrom-derive v0.1.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8338206Z   Downloaded aes v0.8.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8385348Z   Downloaded asn1-rs v0.6.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8483070Z   Downloaded base64 v0.23.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8537385Z   Downloaded borsh v1.8.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8646069Z   Downloaded bytes v1.12.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8694904Z   Downloaded chacha20poly1305 v0.10.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8716766Z   Downloaded crypto-bigint v0.5.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8824611Z   Downloaded daachorse v2.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8870551Z   Downloaded darling_core v0.20.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8947402Z   Downloaded deranged v0.5.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.8966903Z   Downloaded derive_builder v0.20.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9043500Z   Downloaded derive_builder_macro v0.20.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9055427Z   Downloaded digest v0.10.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9081708Z   Downloaded displaydoc v0.2.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9111565Z   Downloaded dotenvy v0.15.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9153354Z   Downloaded fs_extra v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9175169Z   Downloaded funty v2.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9186184Z   Downloaded futures-core v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9205658Z   Downloaded futures-executor v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9226422Z   Downloaded futures-io v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9239139Z   Downloaded futures-sink v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9251171Z   Downloaded fxhash v0.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9261836Z   Downloaded generic-array v0.14.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9282441Z   Downloaded kanaria v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9382405Z   Downloaded lino-objects-codec v0.7.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9425808Z   Downloaded memmap2 v0.9.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9449676Z   Downloaded mutate_once v0.1.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9461917Z   Downloaded num-rational v0.4.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9478369Z   Downloaded once_cell v1.21.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9515384Z   Downloaded parking_lot_core v0.9.12
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9545563Z   Downloaded pem v3.0.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9566154Z   Downloaded pem-rfc7468 v0.7.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9594500Z   Downloaded pest_derive v2.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9626340Z   Downloaded pest_generator v2.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9645615Z   Downloaded phf v0.11.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9662902Z   Downloaded pin-project-lite v0.2.17
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9752909Z   Downloaded pkcs8 v0.10.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9795469Z   Downloaded portable-pty v0.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9820308Z   Downloaded ppv-lite86 v0.2.21
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9845967Z   Downloaded primeorder v0.13.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9865073Z   Downloaded sha1 v0.11.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9892022Z   Downloaded siphasher v1.0.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9912397Z   Downloaded symbol_table v0.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9928286Z   Downloaded tempfile v3.27.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9964762Z   Downloaded tower-service v0.3.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:34.9976061Z   Downloaded tree-sitter-lua v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0005476Z   Downloaded ucd-trie v0.1.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0033626Z   Downloaded unicode-bidi v0.3.18
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0071344Z   Downloaded unicode-general-category v1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0094511Z   Downloaded unicode-ident v1.0.24
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0134482Z   Downloaded utf8_iter v1.0.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0149087Z   Downloaded utf8parse v0.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0163476Z   Downloaded yasna v0.6.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0195281Z   Downloaded asn1-rs v0.7.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0297873Z   Downloaded bumpalo v3.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0332533Z   Downloaded cc v1.2.67
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0373982Z   Downloaded command-stream v0.16.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0457995Z   Downloaded der-parser v9.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0505874Z   Downloaded derive_builder_core v0.20.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0534861Z   Downloaded derive_more v0.99.20
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0605493Z   Downloaded digest v0.11.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0638907Z   Downloaded doublets v0.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0718029Z   Downloaded foldhash v0.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0735199Z   Downloaded form_urlencoded v1.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0747081Z   Downloaded fs2 v0.4.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0763471Z   Downloaded futures v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0835814Z   Downloaded futures-channel v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0862157Z   Downloaded futures-macro v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0877406Z   Downloaded num-integer v0.1.47
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0900609Z   Downloaded parking_lot v0.12.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0935865Z   Downloaded parse-hyperlinks v0.23.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0961439Z   Downloaded pest_meta v2.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.0989838Z   Downloaded platform-data v2.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1047031Z   Downloaded poly1305 v0.8.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1082619Z   Downloaded polyval v0.6.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1106546Z   Downloaded ptr_meta v0.1.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1118962Z   Downloaded sha2 v0.10.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1156783Z   Downloaded sha2 v0.11.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1219222Z   Downloaded slab v0.4.12
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1237417Z   Downloaded smallvec v1.15.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1258804Z   Downloaded tinystr v0.8.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1287471Z   Downloaded tinyvec v1.12.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1325289Z   Downloaded toml_edit v0.25.13+spec-1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1390158Z   Downloaded tracing-core v0.1.36
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1429365Z   Downloaded tungstenite v0.30.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1480181Z   Downloaded typenum v1.20.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1525597Z   Downloaded unicode-segmentation v1.13.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1564051Z   Downloaded universal-hash v0.5.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1577224Z   Downloaded untrusted v0.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1603181Z   Downloaded utf-8 v0.7.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1620409Z   Downloaded x509-parser v0.18.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1702695Z   Downloaded yoke v0.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1727687Z   Downloaded zeroize_derive v1.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1741947Z   Downloaded zerovec-derive v0.11.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1766896Z   Downloaded zmij v1.0.23
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1792723Z   Downloaded aes-gcm v0.10.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1828909Z   Downloaded clap_builder v4.6.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1916797Z   Downloaded der v0.7.10
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.1993558Z   Downloaded der-parser v10.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2043446Z   Downloaded dtoa v1.0.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2065678Z   Downloaded dtoa-short v0.3.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2077294Z   Downloaded dtor v0.0.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2090120Z   Downloaded env_home v0.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2105690Z   Downloaded env_logger v0.9.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2141172Z   Downloaded equivalent v1.0.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2156115Z   Downloaded errno v0.3.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2178641Z   Downloaded event-listener v5.4.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2203379Z   Downloaded event-listener-strategy v0.5.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2219025Z   Downloaded fastrand v2.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2238685Z   Downloaded ff v0.13.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2260520Z   Downloaded filedescriptor v0.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2275514Z   Downloaded getopts v0.2.24
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2298953Z   Downloaded getrandom v0.2.17
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2342163Z   Downloaded js-sys v0.3.104
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2379985Z   Downloaded kamadak-exif v0.6.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2421085Z   Downloaded lindera v3.0.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2480266Z   Downloaded lindera-dictionary v3.0.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2532657Z   Downloaded log v0.4.33
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2567010Z   Downloaded memchr v2.8.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2646346Z   Downloaded miniz_oxide v0.8.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2680811Z   Downloaded num-bigint v0.4.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2749550Z   Downloaded num-traits v0.2.19
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2786893Z   Downloaded p256 v0.13.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2835366Z   Downloaded platform-mem v0.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2904976Z   Downloaded proc-macro2 v1.0.107
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2946740Z   Downloaded ptr_meta v0.3.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2960187Z   Downloaded ptr_meta_derive v0.1.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2970412Z   Downloaded ptr_meta_derive v0.3.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.2982572Z   Downloaded quanta v0.12.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3020761Z   Downloaded rend v0.5.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3046838Z   Downloaded rtc-interceptor-derive v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3056751Z   Downloaded rustc-hash v2.1.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3075591Z   Downloaded rustc_version v0.4.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3094610Z   Downloaded rusticata-macros v4.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3117938Z   Downloaded same-file v1.0.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3137596Z   Downloaded scopeguard v1.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3156084Z   Downloaded shell-words v1.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3169844Z   Downloaded sync_wrapper v1.0.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3181789Z   Downloaded tree-sitter-javascript v0.25.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3250829Z   Downloaded tree-sitter-proto v0.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3278166Z   Downloaded unicode-normalization v0.1.25
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3322985Z   Downloaded unsafe-libyaml v0.2.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3368825Z   Downloaded url v2.5.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3402684Z   Downloaded vte_generate_state_changes v0.1.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3413613Z   Downloaded zerotrie v0.2.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3469409Z   Downloaded aho-corasick v1.1.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3540866Z   Downloaded dunce v1.0.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3554372Z   Downloaded itertools v0.14.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3655198Z   Downloaded lingua-chinese-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3683071Z   Downloaded minimal-lexical v0.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3749135Z   Downloaded nom v7.1.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3820498Z   Downloaded radium v0.7.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3835763Z   Downloaded rancor v0.1.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3856185Z   Downloaded rcgen v0.14.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3889732Z   Downloaded rend v0.4.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3913023Z   Downloaded rfc6979 v0.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3928588Z   Downloaded rkyv_derive v0.7.46
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3951164Z   Downloaded rkyv_derive v0.8.18
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.3977856Z   Downloaded rtc-datachannel v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4000084Z   Downloaded rtc-media v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4045826Z   Downloaded rtc-sdp v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4078232Z   Downloaded rtc-shared v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4113792Z   Downloaded rtc-turn v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4173013Z   Downloaded rust_decimal v1.42.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4262166Z   Downloaded rustls-native-certs v0.8.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4280714Z   Downloaded rustls-pki-types v1.15.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4318395Z   Downloaded rustversion v1.0.23
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4362058Z   Downloaded sansio v1.0.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4379298Z   Downloaded scraper v0.21.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4410502Z   Downloaded seahash v4.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4433164Z   Downloaded sec1 v0.7.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4457667Z   Downloaded tendril v0.4.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4484308Z   Downloaded tree-sitter-yaml v0.7.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4537660Z   Downloaded uuid v1.24.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4578797Z   Downloaded version_check v0.9.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4598696Z   Downloaded vt100 v0.15.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4620003Z   Downloaded walkdir v2.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4646548Z   Downloaded wasm-bindgen-futures v0.4.77
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4659500Z   Downloaded zeroize v1.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4682176Z   Downloaded aws-lc-rs v1.18.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.4834376Z   Downloaded bitvec v1.1.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5120517Z   Downloaded ccm v0.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5199158Z   Downloaded chrono v0.4.45
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5289400Z   Downloaded dtor-proc-macro v0.0.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5300993Z   Downloaded ebnf v0.1.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5330996Z   Downloaded ecdsa v0.16.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5354819Z   Downloaded ego-tree v0.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5380552Z   Downloaded ghash v0.5.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5396624Z   Downloaded glob v0.3.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5418178Z   Downloaded hex v0.4.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5441394Z   Downloaded http-body v1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5456888Z   Downloaded link-cli v0.2.10
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5588970Z   Downloaded mio v1.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5677963Z   Downloaded nom v8.0.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5752571Z   Downloaded pest v2.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5813979Z   Downloaded quinn v0.11.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5860173Z   Downloaded quinn-udp v0.5.15
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5884488Z   Downloaded quinn-udp v0.6.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5910307Z   Downloaded quote v1.0.47
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5952357Z   Downloaded rand_chacha v0.3.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5968339Z   Downloaded rand_pcg v0.10.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.5989866Z   Downloaded rayon-core v1.13.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6044061Z   Downloaded rtc-interceptor v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6085607Z   Downloaded rtc-mdns v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6128038Z   Downloaded rtc-rtcp v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6193655Z   Downloaded rtc-rtp v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6256175Z   Downloaded rtc-srtp v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6289477Z   Downloaded rtc-stun v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6337986Z   Downloaded rustls-platform-verifier v0.7.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6396169Z   Downloaded ryu v1.0.23
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6449523Z   Downloaded shlex v2.0.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6467257Z   Downloaded signal-hook-registry v1.4.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6485648Z   Downloaded socket2 v0.6.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6509550Z   Downloaded stable_deref_trait v1.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6523554Z   Downloaded streaming-iterator v0.1.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6539944Z   Downloaded tokio-macros v2.7.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6555604Z   Downloaded tree-sitter-css v0.25.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6587653Z   Downloaded vte v0.11.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6614008Z   Downloaded want v0.3.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6627464Z   Downloaded wasm-bindgen-macro v0.2.127
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6641415Z   Downloaded wasm-bindgen-shared v0.2.127
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6656393Z   Downloaded zerovec v0.11.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6741717Z   Downloaded either v1.18.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6762902Z   Downloaded elliptic-curve v0.13.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6818179Z   Downloaded encoding_rs_io v0.1.8
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6837643Z   Downloaded find-msvc-tools v0.1.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6861202Z   Downloaded fnv v1.0.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6874551Z   Downloaded foldhash v0.1.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.6891881Z   Downloaded futures-util v0.3.34
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7091997Z   Downloaded getrandom v0.3.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7142799Z   Downloaded getrandom v0.4.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7199368Z   Downloaded group v0.13.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7222795Z   Downloaded hashlink v0.10.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7247842Z   Downloaded heck v0.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7267861Z   Downloaded html-escape v0.2.15
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7298764Z   Downloaded http-body-util v0.1.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7328770Z   Downloaded p384 v0.13.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7385772Z   Downloaded rand_chacha v0.9.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7402647Z   Downloaded rand_core v0.6.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7421876Z   Downloaded rand_core v0.9.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7440653Z   Downloaded rand_core v0.10.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7464310Z   Downloaded rtc-ice v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7525149Z   Downloaded rustls-webpki v0.103.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7566964Z   Downloaded serde-wasm-bindgen v0.6.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7592088Z   Downloaded sha1 v0.10.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7615268Z   Downloaded signature v2.2.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7636314Z   Downloaded simd-adler32 v0.3.10
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7664731Z   Downloaded simdutf8 v0.1.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7698378Z   Downloaded strum v0.27.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7712236Z   Downloaded strum v0.28.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7725250Z   Downloaded substring v1.4.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7739326Z   Downloaded tap v1.0.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7753556Z   Downloaded temp-env v0.3.6
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7768794Z   Downloaded tokio-rustls v0.26.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7823677Z   Downloaded tree-sitter-c v0.24.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7881912Z   Downloaded tree-sitter-pascal v0.10.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7957103Z   Downloaded wasm-bindgen v0.2.127
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.7994260Z   Downloaded curve25519-dalek v4.1.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8103280Z   Downloaded filetime v0.2.29
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8128045Z   Downloaded hashbrown v0.12.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8179920Z   Downloaded hmac v0.12.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8208079Z   Downloaded httparse v1.10.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8244656Z   Downloaded hybrid-array v0.4.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8279620Z   Downloaded hyper-rustls v0.27.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8299179Z   Downloaded iana-time-zone v0.1.65
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8341715Z   Downloaded rand v0.8.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8388810Z   Downloaded rand v0.9.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8442727Z   Downloaded rkyv v0.7.46
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8569680Z   Downloaded rtc-dtls v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8697943Z   Downloaded rtc-sctp v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8773896Z   Downloaded semver v1.0.28
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8807881Z   Downloaded serde_core v1.0.229
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8845906Z   Downloaded serde_derive v1.0.229
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8891176Z   Downloaded serial2 v0.2.38
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8946268Z   Downloaded servo_arc v0.4.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8958280Z   Downloaded strum_macros v0.27.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.8994363Z   Downloaded strum_macros v0.28.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9730705Z   Downloaded subtle v2.6.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9731378Z   Downloaded synstructure v0.13.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9738211Z   Downloaded wasm-bindgen-macro-support v0.2.127
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9765617Z   Downloaded which v7.0.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9789259Z   Downloaded which v8.0.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9817796Z   Downloaded writeable v0.6.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9849063Z   Downloaded flate2 v1.1.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9921871Z   Downloaded html5ever v0.29.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9970389Z   Downloaded ident_case v1.0.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9984522Z   Downloaded idna_adapter v1.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:35.9998053Z   Downloaded include_dir v0.7.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0014130Z   Downloaded include_dir_macros v0.7.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0023770Z   Downloaded regex v1.13.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0097996Z   Downloaded reqwest v0.13.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0170338Z   Downloaded selectors v0.26.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0201644Z   Downloaded serde_yaml_ng v0.10.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0247861Z   Downloaded thiserror v1.0.69
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0336353Z   Downloaded time-core v0.1.9
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0352357Z   Downloaded toml_datetime v1.1.1+spec-1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0370512Z   Downloaded tower-layer v0.3.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0384915Z   Downloaded tree-sitter v0.25.10
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0467550Z   Downloaded tree-sitter-go v0.25.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0517108Z   Downloaded wyz v0.5.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0534501Z   Downloaded egg v0.11.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0590660Z   Downloaded platform-trees v0.3.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0698570Z   Downloaded rand v0.10.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0751520Z   Downloaded serde v1.0.229
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0800040Z   Downloaded syn v1.0.109
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0929881Z   Downloaded tar v0.4.46
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.0970234Z   Downloaded thiserror v2.0.20
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1073987Z   Downloaded thiserror-impl v1.0.69
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1093750Z   Downloaded time-macros v0.2.32
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1129239Z   Downloaded tower v0.5.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1281952Z   Downloaded tree-sitter-graphql v0.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1308498Z   Downloaded tree-sitter-ini v1.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1333106Z   Downloaded tree-sitter-python v0.25.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1407131Z   Downloaded unicode-width v0.1.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1469331Z   Downloaded hashbrown v0.14.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1533302Z   Downloaded hashbrown v0.15.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1599887Z   Downloaded hashbrown v0.16.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1668885Z   Downloaded http v1.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1719940Z   Downloaded inout v0.1.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1735735Z   Downloaded raw-cpuid v11.6.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1781250Z   Downloaded rkyv v0.8.18
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1972905Z   Downloaded tree-sitter-html v0.23.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.1998212Z   Downloaded tree-sitter-toml-ng v0.7.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2023671Z   Downloaded unicode-width v0.2.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2087536Z   Downloaded web-search v0.5.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2145764Z   Downloaded whatlang v0.18.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2199016Z   Downloaded hyper-util v0.1.20
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2287661Z   Downloaded icu_collections v2.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2379098Z   Downloaded icu_locale_core v2.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2484630Z   Downloaded icu_normalizer_data v2.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2514469Z   Downloaded icu_provider v2.3.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2551101Z   Downloaded ipnet v2.12.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2574741Z   Downloaded lingua-hindi-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2620011Z   Downloaded nix v0.28.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2771399Z   Downloaded nix v0.29.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.2925572Z   Downloaded zerocopy v0.8.56
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3245435Z   Downloaded hashbrown v0.17.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3318371Z   Downloaded hkdf v0.12.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3351763Z   Downloaded hyper v1.11.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3448695Z   Downloaded icu_properties v2.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3490630Z   Downloaded lingua-bengali-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3542912Z   Downloaded serde_json v1.0.151
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3647745Z   Downloaded syn v2.0.119
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3791443Z   Downloaded syn v3.0.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.3936715Z   Downloaded tree-sitter-r v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4023587Z   Downloaded tree-sitter-xml v0.7.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4071622Z   Downloaded web-capture v0.3.37
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4165951Z   Downloaded x25519-dalek v2.0.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4189640Z   Downloaded indexmap v2.14.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4248699Z   Downloaded nix v0.31.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4412399Z   Downloaded quinn-proto v0.11.17
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4501269Z   Downloaded rayon v1.12.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4641278Z   Downloaded x509-parser v0.16.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4718986Z   Downloaded idna v1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4763511Z   Downloaded tower-http v0.6.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4900428Z   Downloaded tree-sitter-java v0.23.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.4961223Z   Downloaded winnow v1.0.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5098920Z   Downloaded console_error_panic_hook v0.1.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5149014Z   Downloaded icu_properties_data v2.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5306538Z   Downloaded regex-syntax v0.8.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5390171Z   Downloaded rustls v0.23.43
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5552050Z   Downloaded tracing v0.1.44
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5749719Z   Downloaded meta-language v0.58.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.5963650Z   Downloaded webrtc v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.6179029Z   Downloaded rustix v1.1.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.6589555Z   Downloaded time v0.3.55
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.6799663Z   Downloaded tree-sitter-rust v0.24.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.6918135Z   Downloaded tree-sitter-php v0.24.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.7143016Z   Downloaded tree-sitter-ruby v0.23.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.7358615Z   Downloaded regex-automata v0.4.18
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.7541820Z   Downloaded tree-sitter-vb-dotnet v0.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.7696989Z   Downloaded icu_normalizer v2.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.7809774Z   Downloaded csv v1.4.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.8014671Z   Downloaded libc v0.2.189
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:36.8642760Z   Downloaded web-sys v0.3.104
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.0436746Z   Downloaded tokio v1.53.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.1089015Z   Downloaded tree-sitter-cpp v0.23.4
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.1352710Z   Downloaded tree-sitter-typescript v0.23.2
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.1630826Z   Downloaded tree-sitter-kotlin-ng v1.1.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.1951605Z   Downloaded tree-sitter-sequel v0.3.11
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.2220703Z   Downloaded tree-sitter-c-sharp v0.23.5
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.2625745Z   Downloaded tree-sitter-swift v0.7.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.2941712Z   Downloaded encoding_rs v0.8.35
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.3175992Z   Downloaded fst v0.4.7
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.3417215Z   Downloaded ring v0.17.14
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.4000173Z   Downloaded tree-sitter-scala v0.25.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.4543928Z   Downloaded ts-parser-perl v1.2.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.4987127Z   Downloaded lingua-portuguese-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.5175343Z   Downloaded lingua-spanish-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.5378049Z   Downloaded lingua-french-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.5585737Z   Downloaded lingua-english-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.5801181Z   Downloaded linux-raw-sys v0.12.1
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.6594383Z   Downloaded lingua-russian-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:37.6853606Z   Downloaded lingua v1.8.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:38.2384252Z   Downloaded lingua-urdu-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:38.2667598Z   Downloaded lingua-arabic-language-model v1.3.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:38.3104238Z   Downloaded rtc v0.20.3
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:38.3733422Z   Downloaded aws-lc-sys v0.44.0
+stock-rust-install	Reject a system OpenSSL dependency	2026-09-05T08:38:38.7200629Z   Downloaded link-calculator v0.20.3
+stock-rust-install	Install on the unmodified stock image	﻿2026-09-05T08:38:38.9424881Z ##[group]Run echo "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9425344Z ^[[36;1mecho "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"^[[0m
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9425699Z ^[[36;1mexport PATH="$CARGO_INSTALL_ROOT/bin:$PATH"^[[0m
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9426047Z ^[[36;1mcargo install --path . --locked^[[0m
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9426408Z shell: sh -e {0}
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9426604Z env:
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9426815Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:38.9427096Z ##[endgroup]
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.0298374Z   Installing formal-ai v0.346.0 (/__w/formal-ai/formal-ai)
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.1100897Z     Updating crates.io index
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.1847359Z warning: package `chacha20 v0.10.1` in Cargo.lock is yanked in registry `crates-io`
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.1848131Z   |
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.1848669Z   = help: consider running without --locked
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.6466487Z    Compiling proc-macro2 v1.0.107
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.6467025Z    Compiling unicode-ident v1.0.24
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.6467511Z    Compiling quote v1.0.47
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.6467991Z    Compiling libc v0.2.189
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.7089842Z    Compiling find-msvc-tools v0.1.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.8173965Z    Compiling shlex v2.0.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.9435126Z    Compiling cfg-if v1.0.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:39.9819249Z    Compiling tree-sitter-language v0.1.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:40.0934552Z    Compiling serde_core v1.0.229
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:40.2798861Z    Compiling typenum v1.20.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:40.7232125Z    Compiling syn v2.0.119
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:40.8786180Z    Compiling jobserver v0.1.35
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:41.1721964Z    Compiling cc v1.2.67
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:41.3830961Z    Compiling syn v3.0.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:42.0199435Z    Compiling version_check v0.9.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:42.3070338Z    Compiling getrandom v0.2.17
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:42.5330816Z    Compiling generic-array v0.14.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:42.6488907Z    Compiling memchr v2.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:42.9448199Z    Compiling serde v1.0.229
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:43.1181769Z    Compiling rand_core v0.6.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:43.3356387Z    Compiling autocfg v1.5.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:43.9941489Z    Compiling subtle v2.6.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:44.1363431Z    Compiling icu_properties_data v2.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:44.2351763Z    Compiling icu_normalizer_data v2.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:44.3210157Z    Compiling smallvec v1.15.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:44.5268329Z    Compiling stable_deref_trait v1.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:44.5713635Z    Compiling synstructure v0.13.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:45.0677365Z    Compiling bitflags v2.13.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:45.4437897Z    Compiling thiserror v2.0.20
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:45.6379718Z    Compiling const-oid v0.9.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:45.9084448Z    Compiling cpufeatures v0.2.17
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:45.9954273Z    Compiling once_cell v1.21.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.1958949Z    Compiling litemap v0.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.2403539Z    Compiling zeroize_derive v1.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.2524115Z    Compiling zerofrom-derive v0.1.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.2741008Z    Compiling yoke-derive v0.8.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.3670556Z    Compiling displaydoc v0.2.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.6440969Z    Compiling zeroize v1.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:46.9180556Z    Compiling zerovec-derive v0.11.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.2171918Z    Compiling serde_derive v1.0.229
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.3532209Z    Compiling zerofrom v0.1.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.3844908Z    Compiling crypto-common v0.1.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.4372463Z    Compiling yoke v0.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.4657180Z    Compiling thiserror-impl v2.0.20
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.5937961Z    Compiling block-buffer v0.10.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.6909153Z    Compiling digest v0.10.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.8748861Z    Compiling writeable v0.6.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:47.9091293Z    Compiling zerovec v0.11.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.1382000Z    Compiling zerotrie v0.2.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.5640022Z    Compiling tinystr v0.8.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.5710657Z    Compiling potential_utf v0.1.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.6764481Z    Compiling log v0.4.33
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.6919659Z    Compiling utf8_iter v1.0.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.7428284Z    Compiling icu_locale_core v2.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.7937344Z    Compiling cfg_aliases v0.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.8308408Z    Compiling base64ct v1.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:48.8839850Z    Compiling icu_collections v2.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:49.1215401Z    Compiling pem-rfc7468 v0.7.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:49.6444207Z    Compiling block-padding v0.3.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:49.7497066Z    Compiling num-traits v0.2.19
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:49.7799165Z    Compiling icu_provider v2.3.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:49.8569355Z    Compiling getrandom v0.4.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:49.9740633Z    Compiling rand_core v0.10.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:50.3341104Z    Compiling inout v0.1.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:50.4102206Z    Compiling der v0.7.10
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:50.4326048Z    Compiling percent-encoding v2.3.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:50.6567921Z    Compiling time-core v0.1.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:50.8133109Z    Compiling num-conv v0.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:50.9267970Z    Compiling time-macros v0.2.32
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:51.0019382Z    Compiling cipher v0.4.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:51.2390669Z    Compiling icu_normalizer v2.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:52.0962180Z    Compiling spki v0.7.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:52.1912868Z    Compiling icu_properties v2.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:52.7416648Z    Compiling hmac v0.12.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:52.8447016Z    Compiling powerfmt v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:53.2464575Z    Compiling deranged v0.5.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:53.3459544Z    Compiling pkcs8 v0.10.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:53.5775950Z    Compiling idna_adapter v1.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:53.6567884Z    Compiling ff v0.13.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:53.7634069Z    Compiling ring v0.17.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:54.1017567Z    Compiling base16ct v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:54.1584731Z    Compiling group v0.13.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:54.2830659Z    Compiling sec1 v0.7.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:54.2982929Z    Compiling idna v1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:54.5001035Z    Compiling time v0.3.55
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:55.1684626Z    Compiling hkdf v0.12.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:55.2691620Z    Compiling form_urlencoded v1.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:55.4779956Z    Compiling universal-hash v0.5.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:55.5578745Z    Compiling crypto-bigint v0.5.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:56.7668122Z    Compiling cpufeatures v0.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:56.8062241Z    Compiling zmij v1.0.23
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:56.9455605Z    Compiling opaque-debug v0.3.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:57.1201402Z    Compiling elliptic-curve v0.13.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:57.4856359Z    Compiling url v2.5.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:57.6861692Z    Compiling ptr_meta_derive v0.3.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:57.9003983Z    Compiling bytes v1.12.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.5168159Z    Compiling untrusted v0.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.5901137Z    Compiling rfc6979 v0.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.6779489Z    Compiling signature v2.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.7782615Z    Compiling aead v0.5.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.7832923Z    Compiling rustls-pki-types v1.15.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.8891621Z    Compiling memoffset v0.9.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:58.9764763Z    Compiling thiserror v1.0.69
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:59.1277797Z    Compiling itoa v1.0.18
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:59.2739546Z    Compiling ecdsa v0.16.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:59.6489609Z    Compiling primeorder v0.13.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:38:59.8945200Z    Compiling polyval v0.6.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.0507945Z    Compiling chacha20 v0.10.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.1010637Z    Compiling ctr v0.9.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.2416201Z    Compiling nix v0.31.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.2876766Z    Compiling sha2 v0.10.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.3417316Z    Compiling thiserror-impl v1.0.69
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.4742868Z    Compiling substring v1.4.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.5559253Z    Compiling cmake v0.1.58
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:00.8564990Z    Compiling fs_extra v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:01.0679857Z    Compiling dunce v1.0.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:01.1159766Z    Compiling base64 v0.22.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:01.5542460Z    Compiling pkg-config v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:01.6689972Z    Compiling pem v3.0.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:01.8974025Z    Compiling aws-lc-sys v0.44.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:02.0385195Z    Compiling rand v0.10.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:02.3306016Z    Compiling ghash v0.5.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:02.4352773Z    Compiling yasna v0.6.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:02.7170042Z    Compiling aes v0.8.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:02.8218296Z    Compiling tokio-macros v2.7.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:03.3275562Z    Compiling pin-project-lite v0.2.17
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:03.8642612Z    Compiling aes-gcm v0.10.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:04.1298703Z    Compiling p256 v0.13.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:04.9684819Z    Compiling bytecheck_derive v0.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.3400097Z    Compiling heck v0.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.4481728Z    Compiling futures-core v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.4865308Z    Compiling siphasher v1.0.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.5163661Z    Compiling rand v0.8.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.5776163Z    Compiling phf_shared v0.11.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.8139404Z    Compiling crossbeam-utils v0.8.22
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.8636397Z    Compiling httparse v1.10.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:05.9184228Z    Compiling aws-lc-rs v1.18.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:06.2428058Z    Compiling phf_generator v0.11.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:06.6539229Z    Compiling munge_macro v0.4.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.0205263Z    Compiling socket2 v0.6.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.1975040Z    Compiling mio v1.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.3786860Z    Compiling strsim v0.11.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.5711378Z    Compiling ident_case v1.0.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.6627105Z    Compiling rcgen v0.14.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.7044502Z    Compiling fnv v1.0.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.7502976Z    Compiling parking_lot_core v0.9.12
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.8490172Z    Compiling wasm-bindgen-shared v0.2.127
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:07.9744150Z    Compiling anyhow v1.0.104
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:08.0929299Z    Compiling minimal-lexical v0.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:08.3259791Z    Compiling rtc-shared v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:09.6702396Z    Compiling nom v7.1.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:10.5832620Z    Compiling darling_core v0.20.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:11.5733028Z    Compiling tokio v1.53.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:12.7512255Z    Compiling http v1.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:12.9682184Z    Compiling include_dir_macros v0.7.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.2396148Z    Compiling semver v1.0.28
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.4603275Z    Compiling equivalent v1.0.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.5006448Z    Compiling byteorder v1.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.5690701Z    Compiling scopeguard v1.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.6151463Z    Compiling lock_api v0.4.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.7207726Z    Compiling rustc_version v0.4.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.7940244Z    Compiling http-body v1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:13.9119967Z    Compiling include_dir v0.7.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:14.1568714Z    Compiling darling_macro v0.20.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:14.6042809Z    Compiling rkyv_derive v0.8.18
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:15.2690714Z    Compiling futures-task v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:15.3621352Z    Compiling slab v0.4.12
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:15.5080019Z    Compiling hashbrown v0.17.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:16.1431564Z    Compiling rustls v0.23.43
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:16.1557660Z    Compiling rustversion v1.0.23
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:16.3507199Z    Compiling futures-util v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:16.4154940Z    Compiling darling v0.20.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:16.8750639Z    Compiling ptr_meta v0.3.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:16.9872886Z    Compiling serde_json v1.0.151
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:17.4225887Z    Compiling tower-service v0.3.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:17.4650486Z    Compiling try-lock v0.2.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:17.5488388Z    Compiling indexmap v2.14.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:17.9240532Z    Compiling want v0.3.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.1123437Z    Compiling rancor v0.1.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.2220865Z    Compiling derive_builder_core v0.20.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.4453087Z    Compiling tracing-core v0.1.36
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.6301461Z    Compiling futures-channel v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.8468911Z    Compiling aho-corasick v1.1.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.8571690Z    Compiling atomic-waker v1.1.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:18.9074909Z    Compiling zerocopy v0.8.56
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.0425214Z    Compiling regex-syntax v0.8.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.1151499Z    Compiling getrandom v0.3.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.3024250Z    Compiling futures-sink v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.3594069Z    Compiling rustix v1.1.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.5558864Z    Compiling utf8parse v0.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.6054433Z    Compiling simdutf8 v0.1.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:19.7343789Z    Compiling bytecheck v0.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:20.2504537Z    Compiling derive_builder_macro v0.20.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:20.4045355Z    Compiling hyper v1.11.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:21.3437584Z    Compiling regex-automata v0.4.18
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:24.8767304Z    Compiling tracing v0.1.44
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:27.6267574Z    Compiling phf_codegen v0.11.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:27.7025392Z    Compiling sync_wrapper v1.0.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:27.7619899Z    Compiling strum_macros v0.28.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:28.7557631Z    Compiling num-integer v0.1.47
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:29.2837189Z    Compiling futures-macro v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:29.3689624Z    Compiling allocator-api2 v0.2.21
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:29.7336589Z    Compiling ipnet v2.12.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:29.9080442Z    Compiling openssl-probe v0.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:29.9999123Z    Compiling crc32fast v1.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:30.1041299Z    Compiling bumpalo v3.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:30.2415227Z    Compiling linux-raw-sys v0.12.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:30.4843287Z    Compiling futures-io v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:30.6069660Z    Compiling tower-layer v0.3.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:30.7245744Z    Compiling tower v0.5.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:30.7592099Z    Compiling hyper-util v0.1.20
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:34.0080669Z    Compiling wasm-bindgen-macro-support v0.2.127
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:34.1691102Z    Compiling rustls-native-certs v0.8.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:34.1837616Z    Compiling num-bigint v0.4.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:35.0251111Z    Compiling regex v1.13.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:37.7975461Z    Compiling rend v0.5.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:38.9794155Z    Compiling wasm-bindgen v0.2.127
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:39.0878480Z    Compiling parking_lot v0.12.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:39.8449030Z    Compiling munge v0.4.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:41.5390114Z    Compiling lazy_static v1.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:41.5470109Z    Compiling adler2 v2.0.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:41.6039890Z    Compiling new_debug_unreachable v1.0.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:41.6367382Z    Compiling simd-adler32 v0.3.10
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:41.7689554Z    Compiling sansio v1.0.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:41.8198008Z    Compiling miniz_oxide v0.8.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:42.2836241Z    Compiling rkyv v0.8.18
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:43.5711390Z    Compiling wasm-bindgen-macro v0.2.127
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:43.7481028Z    Compiling tower-http v0.6.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:44.7766424Z    Compiling xattr v1.6.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:44.9965493Z    Compiling encoding_rs v0.8.35
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:45.0409030Z    Compiling filetime v0.2.29
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:45.1665262Z    Compiling http-body-util v0.1.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:45.3913041Z    Compiling rusticata-macros v4.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:45.6965044Z    Compiling phf_macros v0.11.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:46.0790677Z    Compiling csv-core v0.1.13
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:46.1515706Z    Compiling asn1-rs-impl v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:46.2347095Z    Compiling asn1-rs-derive v0.5.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:46.6951568Z    Compiling memmap2 v0.9.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:47.2291758Z    Compiling crossbeam-epoch v0.9.20
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:47.3332906Z    Compiling foldhash v0.1.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:47.3498128Z    Compiling ryu v1.0.23
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:47.4399747Z    Compiling csv v1.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:47.4561296Z    Compiling hashbrown v0.15.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:48.1490095Z    Compiling asn1-rs v0.6.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:50.6130330Z    Compiling phf v0.11.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:50.7481704Z    Compiling encoding_rs_io v0.1.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.0392696Z    Compiling tar v0.4.46
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.1050511Z    Compiling flate2 v1.1.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.6688278Z    Compiling strum v0.28.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.7272475Z    Compiling derive_builder v0.20.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.7676951Z    Compiling anstyle-parse v1.0.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.8100786Z    Compiling crc32c v0.6.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.8767329Z    Compiling curve25519-dalek v4.1.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:51.9719451Z    Compiling string_cache_codegen v0.5.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:52.0001341Z    Compiling nom v8.0.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:52.2853483Z    Compiling hybrid-array v0.4.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:52.6023553Z    Compiling num_cpus v1.17.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:52.8139974Z    Compiling md5 v0.8.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:52.8254166Z    Compiling crossbeam-deque v0.8.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:52.9131259Z    Compiling daachorse v2.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.2340584Z    Compiling anstyle v1.0.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.2907331Z    Compiling either v1.18.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.4419653Z    Compiling crc-catalog v2.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.4787597Z    Compiling ucd-trie v0.1.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.6448836Z    Compiling anstyle-query v1.1.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.6892796Z    Compiling glob v0.3.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.6978985Z    Compiling fastrand v2.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.9191782Z    Compiling mac v0.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.9579439Z    Compiling oid-registry v0.7.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:53.9634758Z    Compiling is_terminal_polyfill v1.70.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.0100340Z    Compiling colorchoice v1.0.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.0588995Z    Compiling precomputed-hash v0.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.0974088Z    Compiling anstream v1.0.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.1566655Z    Compiling futf v0.1.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.2494798Z    Compiling pest v2.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.5640838Z    Compiling crc v3.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:54.7325458Z    Compiling markup5ever v0.14.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:55.3933911Z    Compiling rtc-rtp v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:55.4016036Z    Compiling md-5 v0.10.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:55.5053177Z    Compiling curve25519-dalek-derive v0.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:56.1496014Z    Compiling cfg_aliases v0.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:56.1871676Z    Compiling clap_lex v1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:56.4621459Z    Compiling data-encoding v2.11.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:57.4216842Z    Compiling rayon-core v1.13.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.1559656Z    Compiling arrayvec v0.7.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.3422300Z    Compiling utf-8 v0.7.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.4586965Z    Compiling parking v2.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.4619860Z    Compiling dtoa v1.0.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.5487847Z    Compiling rustc-hash v2.1.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.5733592Z    Compiling dtoa-short v0.3.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.6005191Z    Compiling event-listener v5.4.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.6745876Z    Compiling tendril v0.4.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.7978190Z    Compiling clap_builder v4.6.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:39:59.9979869Z    Compiling nix v0.28.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:01.1086312Z    Compiling rtc-stun v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:03.3241219Z    Compiling pest_meta v2.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:04.7696642Z    Compiling string_cache v0.8.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:05.0063913Z    Compiling crypto-common v0.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:05.3876851Z    Compiling block-buffer v0.12.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:05.5087763Z    Compiling js-sys v0.3.104
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:06.4322074Z    Compiling der-parser v9.0.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:07.7320017Z    Compiling ppv-lite86 v0.2.21
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:08.0574331Z    Compiling rand_core v0.9.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:08.3162994Z    Compiling selectors v0.26.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:08.5741399Z    Compiling rtc-rtcp v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:10.9394901Z    Compiling rustls-webpki v0.103.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:12.4694912Z    Compiling clap_derive v4.6.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.1421142Z    Compiling poly1305 v0.8.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.4195565Z    Compiling platform-num v0.8.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.4680626Z    Compiling chacha20 v0.9.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.6467402Z    Compiling sha1 v0.10.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.7380065Z    Compiling cssparser-macros v0.6.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.8917788Z    Compiling ahash v0.8.12
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:13.9367256Z    Compiling errno v0.3.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:14.0620052Z    Compiling const-oid v0.10.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:14.2813140Z    Compiling dtor-proc-macro v0.0.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:14.4372266Z    Compiling tinyvec_macros v0.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:14.4806399Z    Compiling fst v0.4.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:14.6290423Z    Compiling html-escape v0.2.15
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:14.7913758Z    Compiling tinyvec v1.12.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:15.1956762Z    Compiling lindera-dictionary v3.0.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:15.3359650Z    Compiling dtor v0.0.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:15.3801602Z    Compiling digest v0.11.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:15.5057840Z    Compiling signal-hook-registry v1.4.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:15.9141339Z    Compiling cssparser v0.34.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:16.7657770Z    Compiling clap v4.6.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:16.7957365Z    Compiling chacha20poly1305 v0.10.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:17.4246454Z    Compiling rand_chacha v0.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:18.0220409Z    Compiling x509-parser v0.16.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:26.3080990Z    Compiling tokio-rustls v0.26.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:26.5178038Z    Compiling hyper-rustls v0.27.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:26.6859907Z    Compiling rustls-platform-verifier v0.7.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:26.8207896Z    Compiling reqwest v0.13.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:27.4679813Z    Compiling rtc-sctp v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:31.1373479Z    Compiling pest_generator v2.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:31.8275065Z    Compiling lindera-jieba v3.0.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:31.8508799Z    Compiling x25519-dalek v2.0.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:31.9544906Z    Compiling event-listener-strategy v0.5.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:32.0374918Z    Compiling tempfile v3.27.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:32.9120456Z    Compiling rtc-mdns v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:34.8991372Z    Compiling tree-sitter v0.25.10
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:35.0109591Z    Compiling fxhash v0.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:35.0458677Z    Compiling p384 v0.13.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:35.0896189Z    Compiling ccm v0.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:35.2800919Z    Compiling uuid v1.24.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:35.7777595Z    Compiling cbc v0.1.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:35.8704187Z    Compiling nix v0.29.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.1194780Z    Compiling quinn-udp v0.6.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.3149799Z    Compiling links-notation-macro v0.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.4168266Z    Compiling rtc-interceptor-derive v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.4946808Z    Compiling derive_more v0.99.20
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.6981318Z    Compiling match_token v0.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.9692600Z    Compiling servo_arc v0.4.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:36.9871609Z    Compiling tree-sitter-rust v0.24.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.0817427Z    Compiling tree-sitter-pascal v0.10.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.1110131Z    Compiling tree-sitter-cpp v0.23.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.2017077Z    Compiling tree-sitter-c v0.24.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.2420712Z    Compiling tree-sitter-xml v0.7.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.3365543Z    Compiling tree-sitter-json v0.24.8
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.3579222Z    Compiling tree-sitter-java v0.23.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.4474054Z    Compiling tree-sitter-html v0.23.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.4558200Z    Compiling tree-sitter-swift v0.7.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.5559232Z    Compiling tree-sitter-go v0.25.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.5561422Z    Compiling tree-sitter-kotlin-ng v1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.6669706Z    Compiling tree-sitter-vb-dotnet v0.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.6720468Z    Compiling tree-sitter-ruby v0.23.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.7822291Z    Compiling tree-sitter-proto v0.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.7831283Z    Compiling tree-sitter-lua v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.8924771Z    Compiling tree-sitter-scala v0.25.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:37.8965368Z    Compiling tree-sitter-javascript v0.25.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.0043734Z    Compiling tree-sitter-c-sharp v0.23.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.0090869Z    Compiling tree-sitter-sequel v0.3.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.1264844Z    Compiling tree-sitter-graphql v0.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.1312676Z    Compiling tree-sitter-css v0.25.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.1675604Z    Compiling ts-parser-perl v1.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.2327036Z    Compiling tree-sitter-yaml v0.7.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.2717926Z    Compiling tree-sitter-ini v1.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.3010406Z    Compiling tree-sitter-r v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.3463928Z    Compiling tree-sitter-python v0.25.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.3925539Z    Compiling tree-sitter-php v0.24.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.4147755Z    Compiling tree-sitter-typescript v0.23.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.4607445Z    Compiling tree-sitter-toml-ng v0.7.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.5295007Z    Compiling vte_generate_state_changes v0.1.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.5686289Z    Compiling unsafe-libyaml v0.2.11
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.6910708Z    Compiling unicode-width v0.2.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:38.9068391Z    Compiling rust_decimal v1.42.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.0606501Z    Compiling iana-time-zone v0.1.65
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.1700889Z    Compiling beef v0.5.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.2685852Z    Compiling ctor-proc-macro v0.0.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.4664648Z    Compiling allocator-api2 v0.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.5450908Z    Compiling foldhash v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.7948936Z    Compiling bitflags v1.3.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.8878682Z    Compiling hashbrown v0.14.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:39.9251798Z    Compiling platform-mem v0.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:40.1193375Z    Compiling kanaria v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:40.4106640Z    Compiling hashbrown v0.16.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:40.5733552Z    Compiling dashmap v6.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:41.0818701Z    Compiling ctor v0.4.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:41.1011862Z    Compiling serde_yaml_ng v0.10.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:41.1279806Z    Compiling platform-data v2.0.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:41.2833547Z    Compiling chrono v0.4.45
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:41.3334709Z    Compiling getopts v0.2.24
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:40:45.1609890Z    Compiling vte v0.11.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:10.3363896Z    Compiling html5ever v0.29.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:10.8376701Z    Compiling rtc-interceptor v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:11.7056936Z    Compiling links-notation v0.16.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:11.8570831Z    Compiling rtc-dtls v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:11.8647746Z    Compiling rtc-ice v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:18.1385343Z    Compiling pest_derive v2.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:18.2989223Z    Compiling rayon v1.12.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:18.5423127Z    Compiling rtc-datachannel v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:18.9626121Z    Compiling rand v0.9.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:19.8642314Z    Compiling parse-hyperlinks v0.23.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:20.9130048Z    Compiling unicode-normalization v0.1.25
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:22.4889717Z    Compiling rtc-srtp v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:23.3658175Z    Compiling platform-trees v0.3.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:23.4261032Z    Compiling rtc-turn v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:23.4809696Z    Compiling rtc-media v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:24.0205629Z    Compiling itertools v0.14.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:24.0784786Z    Compiling hashlink v0.10.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:24.4127786Z    Compiling futures-executor v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:24.8632079Z    Compiling lingua-portuguese-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:24.9241167Z    Compiling lingua-hindi-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:24.9780036Z    Compiling lingua-chinese-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.0244636Z    Compiling lingua-arabic-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.0970938Z    Compiling lingua-russian-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.1617010Z    Compiling lingua-urdu-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.2275970Z    Compiling lingua-french-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.2851207Z    Compiling lingua-english-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.3481093Z    Compiling lingua-spanish-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.4095210Z    Compiling lingua-bengali-language-model v1.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.4649080Z    Compiling concurrent-queue v2.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.6376702Z    Compiling abnf-core v0.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.7836684Z    Compiling rtc-sdp v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.8083374Z    Compiling strum_macros v0.27.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:25.8936018Z    Compiling filedescriptor v0.8.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:26.0971580Z    Compiling counter v0.7.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:26.1557566Z    Compiling async-trait v0.1.92
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:26.2484793Z    Compiling raw-cpuid v11.6.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:26.9113118Z    Compiling serial2 v0.2.38
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:27.3989158Z    Compiling maplit v1.0.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:27.4459911Z    Compiling leak_slice v0.2.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:27.4886807Z    Compiling lino-env v0.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:27.7672084Z    Compiling ego-tree v0.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.0135790Z    Compiling unicode-segmentation v1.13.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.3060462Z    Compiling unicode-width v0.1.14
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.5228476Z    Compiling streaming-iterator v0.1.9
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.5260667Z    Compiling dotenvy v0.15.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.6175794Z    Compiling tap v1.0.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.6907170Z    Compiling unicode-blocks v0.1.10
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:28.8114417Z    Compiling unicase v2.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.0028891Z    Compiling env_home v0.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.0435499Z    Compiling shell-words v1.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.0636484Z    Compiling hex v0.4.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.2384753Z    Compiling winnow v1.0.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.3379028Z    Compiling downcast-rs v1.2.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.3901373Z    Compiling strum v0.27.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.4079582Z    Compiling portable-pty v0.9.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.4578020Z    Compiling lingua v1.8.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:29.9888155Z    Compiling rtc v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:30.9743007Z    Compiling toml_parser v1.1.3+spec-1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:31.8672818Z    Compiling which v7.0.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:32.4819612Z    Compiling lindera v3.0.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:33.8584545Z    Compiling lino-arguments v0.3.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:36.1720350Z    Compiling doublets v0.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:37.1228929Z    Compiling vt100 v0.15.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:39.2241740Z    Compiling quanta v0.12.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:39.7193761Z    Compiling scraper v0.21.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:42.0491956Z    Compiling abnf v0.13.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:42.2011945Z    Compiling async-channel v2.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:42.3729669Z    Compiling futures v0.3.34
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:42.4182174Z    Compiling json5_nodes v2.0.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:43.8862220Z    Compiling ebnf v0.1.4
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:44.8038971Z    Compiling bnf v0.6.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:48.0879595Z    Compiling async-broadcast v0.7.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:48.2936631Z    Compiling sha1 v0.11.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:48.7302354Z    Compiling serde-wasm-bindgen v0.6.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:49.1497495Z    Compiling wasm-bindgen-futures v0.4.77
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:49.1960852Z    Compiling web-sys v0.3.104
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:49.2302024Z    Compiling links-notation v0.13.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:50.3655659Z    Compiling console_error_panic_hook v0.1.7
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:50.4330422Z    Compiling symbol_table v0.4.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:50.7895670Z    Compiling whatlang v0.18.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:51.2572519Z    Compiling num-rational v0.4.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:52.7833760Z    Compiling env_logger v0.9.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:53.9092311Z    Compiling toml_writer v1.1.2+spec-1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.0200001Z    Compiling unicode-bidi v0.3.18
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.1215921Z    Compiling toml_datetime v1.1.1+spec-1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.2414441Z    Compiling base64 v0.23.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.4487932Z    Compiling same-file v1.0.6
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.5533994Z    Compiling formal-ai v0.346.0 (/__w/formal-ai/formal-ai)
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.8225142Z    Compiling mutate_once v0.1.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.8963654Z    Compiling symbolic_expressions v5.0.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:54.9955904Z    Compiling kamadak-exif v0.6.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:55.3377241Z    Compiling egg v0.11.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:55.7734268Z    Compiling lino-objects-codec v0.7.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:56.4195379Z    Compiling walkdir v2.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:57.0883872Z    Compiling meta-language v0.58.2
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:57.1581708Z    Compiling toml_edit v0.25.13+spec-1.1.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:57.2745019Z    Compiling command-stream v0.16.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:41:58.9684058Z    Compiling link-calculator v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:02.7440236Z    Compiling tungstenite v0.30.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:06.1012819Z    Compiling webrtc v0.20.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:07.5514757Z    Compiling web-capture v0.3.37
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:09.7875802Z    Compiling link-cli v0.2.10
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:18.1716822Z    Compiling sha2 v0.11.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:18.5752352Z    Compiling thread-priority v3.1.1
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:19.0322735Z    Compiling web-search v0.5.0
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:20.2747411Z    Compiling which v8.0.5
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:42:20.6580178Z    Compiling fs2 v0.4.3
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:44:09.2007256Z     Finished `release` profile [optimized] target(s) in 5m 30s
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:44:09.3049696Z   Installing /tmp/formal-ai-install/bin/formal-ai
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:44:09.3050617Z   Installing /tmp/formal-ai-install/bin/with-formal-ai
+stock-rust-install	Install on the unmodified stock image	2026-09-05T08:44:09.3056883Z    Installed package `formal-ai v0.346.0 (/__w/formal-ai/formal-ai)` (executables `formal-ai`, `with-formal-ai`)
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	﻿2026-09-05T08:44:09.3254488Z ##[group]Run ldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3255018Z ^[[36;1mldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt^[[0m
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3255461Z ^[[36;1mif grep -Eq 'libssl|libcrypto' /tmp/formal-ai-ldd.txt; then^[[0m
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3255938Z ^[[36;1m  echo "formal-ai unexpectedly links a system OpenSSL library" >&2^[[0m
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3256306Z ^[[36;1m  exit 1^[[0m
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3256495Z ^[[36;1mfi^[[0m
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3256690Z ^[[36;1mformal-ai --version^[[0m
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3257343Z shell: sh -e {0}
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3257529Z env:
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3257735Z   CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3258004Z ##[endgroup]
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3804258Z 	linux-vdso.so.1 (0x00007f22b24da000)
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3805145Z 	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f22a67f4000)
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3805924Z 	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f22a6714000)
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3806367Z 	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f22a6532000)
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3806807Z 	/lib64/ld-linux-x86-64.so.2 (0x00007f22b24dc000)
+stock-rust-install	Verify the installed binary has no OpenSSL runtime link	2026-09-05T08:44:09.3846708Z formal-ai 0.346.0
+stock-rust-install	Post Run actions/checkout@v7	﻿2026-09-05T08:44:09.3997711Z Post job cleanup.
+stock-rust-install	Post Run actions/checkout@v7	2026-09-05T08:44:09.4005554Z ##[command]/usr/bin/docker exec  8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb sh -c "cat /etc/*release | grep ^ID"
+stock-rust-install	Stop containers	﻿2026-09-05T08:44:09.5930854Z Stop and remove container: 835ad8532eaf4166aaef54a9fef78f0e_rust198slimbookworm_923c16
+stock-rust-install	Stop containers	2026-09-05T08:44:09.5937972Z ##[command]/usr/bin/docker rm --force 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb
+stock-rust-install	Stop containers	2026-09-05T08:44:11.6152983Z 8c04a2fbac2d49019576dfac5788038ec9eacd4b68c804dc674cf5b77003ffeb
+stock-rust-install	Stop containers	2026-09-05T08:44:11.6185628Z Remove container network: github_network_a11a07ada52e402195d8fa8575e8f456
+stock-rust-install	Stop containers	2026-09-05T08:44:11.6190305Z ##[command]/usr/bin/docker network rm github_network_a11a07ada52e402195d8fa8575e8f456
+stock-rust-install	Stop containers	2026-09-05T08:44:11.7201909Z github_network_a11a07ada52e402195d8fa8575e8f456
+stock-rust-install	Complete job	﻿2026-09-05T08:44:11.7276307Z Cleaning up orphan processes

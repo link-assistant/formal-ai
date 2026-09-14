@@ -1,0 +1,3 @@
+agent_exit=23
+orchestrator_exit=1
+session_status=failed

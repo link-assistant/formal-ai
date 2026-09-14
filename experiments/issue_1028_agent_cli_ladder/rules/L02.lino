@@ -1,0 +1,8 @@
+link_edit
+  leaf L02
+  path src/thinking.rs
+  language rust
+  rule insert_member
+    list "PLAIN_STEPS"
+    member "sensor_fusion"
+  expect "sensor_fusion"

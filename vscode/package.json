@@ -1,7 +1,7 @@
 {
   "name": "formal-ai-vscode",
   "displayName": "formal-ai",
-  "version": "0.299.0",
+  "version": "0.345.0",
   "private": true,
   "description": "VS Code extension (desktop + web) embedding the formal-ai symbolic chat UI",
   "publisher": "link-assistant",
@@ -130,16 +130,34 @@
     "vscode:prepublish": "node scripts/prepare-resources.mjs",
     "package": "vsce package",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs",
+    "test:package": "node --test scripts/bundle-web-tools.test.mjs"
   },
   "devDependencies": {
     "@vscode/test-web": "^0.0.81",
     "@vscode/vsce": "^3.9.2",
-    "esbuild": "^0.28.1",
+    "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@link-assistant/web-capture": "^1.10.10",
-    "@link-assistant/web-search": "^0.10.3"
+    "@link-assistant/web-capture": "^1.11.2",
+    "@link-assistant/web-search": "^0.11.0",
+    "playwright": "^1.62.1"
+  },
+  "overrides": {
+    "@link-assistant/web-capture": {
+      "@kreuzberg/html-to-markdown-node": "3.5.5",
+      "browser-commander": "0.16.1",
+      "puppeteer": "^25.9.0",
+      "puppeteer-core": "^25.9.0",
+      "qs": "^6.16.0"
+    }
+  },
+  "allowScripts": {
+    "@playwright/browser-chromium": true,
+    "@vscode/vsce-sign": true,
+    "esbuild": true,
+    "keytar": true,
+    "puppeteer": true
   }
 }

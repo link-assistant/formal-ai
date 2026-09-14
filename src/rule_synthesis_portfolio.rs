@@ -20,13 +20,13 @@
 //! the recalled lesson no longer verifies against the current artifact, the
 //! derived rule rescues the turn, and the `draft_comparison` records why.
 
-use crate::coding::{program_spec, ProgramSpec};
-use crate::draft_portfolio::{run_portfolio, DraftArtifact, DraftPlan, PortfolioLeaf};
+use crate::coding::{ProgramSpec, program_spec};
+use crate::draft_portfolio::{DraftArtifact, DraftPlan, PortfolioLeaf, run_portfolio};
 use crate::engine::SelectedRule;
 use crate::event_log::EventLog;
 use crate::intent_formalization::active_program_context;
 use crate::program_plan::ProgramPlan;
-use crate::rule_synthesis::{construct_rule_from_unknown, UnknownRuleConstruction};
+use crate::rule_synthesis::{UnknownRuleConstruction, construct_rule_from_unknown};
 use crate::solver::ConversationTurn;
 
 /// One synthesized rule candidate, with everything selection needs to judge it.

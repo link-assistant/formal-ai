@@ -8,7 +8,7 @@
 //! records, and uses the same FNV-1a 64-bit hash that `engine::stable_id`
 //! uses so identifiers stay stable across surfaces.
 
-use crate::engine::{stable_id, ThinkingStep};
+use crate::engine::{ThinkingStep, stable_id};
 use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
 

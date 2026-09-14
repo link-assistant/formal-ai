@@ -5,7 +5,7 @@
 //! reply was derived. The visualization is *optional*: it must never be
 //! required for the chat surface to work.
 
-use formal_ai::{handle_api_request, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SymbolicAnswer, handle_api_request};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -68,9 +68,7 @@ fn graph_endpoint_returns_404_for_unknown_trace() {
 
 #[test]
 fn web_demo_chat_works_even_when_graph_is_disabled() {
-    std::env::set_var("FORMAL_AI_DISABLE_GRAPH", "1");
-    let response = answer("Hi");
-    std::env::remove_var("FORMAL_AI_DISABLE_GRAPH");
+    let response = temp_env::with_var("FORMAL_AI_DISABLE_GRAPH", Some("1"), || answer("Hi"));
     assert_eq!(response.intent, "greeting");
     assert!(!response.answer.is_empty());
 }

@@ -2,9 +2,9 @@ self_ast_census
   target src/search_fusion.rs
   language rust
   fidelity signature
-  byte_len 26509
-  line_count 728
-  content_id source_module_561bb8d32e5a8095
+  byte_len 26505
+  line_count 729
+  content_id source_module_e62d163990d8a9ce
   symbol_count 29
   symbols
     const MAX_PRESENTED_MEANINGS 23 23
@@ -29,10 +29,10 @@ self_ast_census
     function complete_semantic_terms 533 552
     function render_candidate 554 588
     function select_statements 590 640
-    function split_title_excerpt 642 653
-    function visible_text 655 693
-    function first_sentence 695 699
-    function normalized_sentence 701 708
-    function sentence_terminator 710 712
-    function capitalize_first 714 720
-    function semantic_key 722 728
+    function split_title_excerpt 642 654
+    function visible_text 656 694
+    function first_sentence 696 700
+    function normalized_sentence 702 709
+    function sentence_terminator 711 713
+    function capitalize_first 715 721
+    function semantic_key 723 729

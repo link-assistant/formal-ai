@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::seed::{client_integrations, ClientIntegration, ConfigFormat};
+use formal_ai::seed::{ClientIntegration, ConfigFormat, client_integrations};
 
 fn integration(id: &str) -> ClientIntegration {
     client_integrations()
@@ -26,23 +26,28 @@ fn issue_909_headless_global_configuration_is_traceable() {
         .expect("gemini settings companion");
     assert_eq!(settings.format, ConfigFormat::Json);
     assert_eq!(settings.backup_suffix, ".formal-ai.bak");
-    assert!(settings
-        .json_settings
-        .iter()
-        .any(|(key, value)| key == "security.auth.selectedType" && value == "{google_auth_type}"));
+    assert!(
+        settings.json_settings.iter().any(
+            |(key, value)| key == "security.auth.selectedType" && value == "{google_auth_type}"
+        )
+    );
 
     // R909-4: the contract is declared apart from the settings that write it.
     assert!(settings.headless_requirements.iter().any(|(kind, target)| {
         kind == "json" && target == ".gemini/settings.json:security.auth.selectedType"
     }));
-    assert!(gemini_global
-        .headless_requirements
-        .iter()
-        .any(|(kind, target)| kind == "env" && target == "GEMINI_API_KEY"));
-    assert!(gemini_global
-        .headless_requirements
-        .iter()
-        .any(|(kind, target)| kind == "env" && target == "{protocol_base_env}"));
+    assert!(
+        gemini_global
+            .headless_requirements
+            .iter()
+            .any(|(kind, target)| kind == "env" && target == "GEMINI_API_KEY")
+    );
+    assert!(
+        gemini_global
+            .headless_requirements
+            .iter()
+            .any(|(kind, target)| kind == "env" && target == "{protocol_base_env}")
+    );
 
     // R909-2: qwen selects its OpenAI auth path only on the complete triple.
     let qwen = integration("qwen");
@@ -60,10 +65,12 @@ fn issue_909_headless_global_configuration_is_traceable() {
             "qwen should require {name} for a headless start"
         );
     }
-    assert!(qwen_global
-        .shell_env
-        .iter()
-        .any(|env| env.key == "OPENAI_MODEL" && env.value == "{model}"));
+    assert!(
+        qwen_global
+            .shell_env
+            .iter()
+            .any(|env| env.key == "OPENAI_MODEL" && env.value == "{model}")
+    );
 
     // R909-3: the refusals that make a silent misconfiguration loud.
     for refusal in ["Invalid auth method selected", "No auth type is selected"] {
@@ -148,9 +155,10 @@ fn issue_909_headless_global_configuration_is_traceable() {
     );
 
     // R909-5: the reproduction stays runnable without a live client.
-    assert!(root
-        .join("experiments/issue-909-headless-config-gaps.sh")
-        .exists());
+    assert!(
+        root.join("experiments/issue-909-headless-config-gaps.sh")
+            .exists()
+    );
 }
 
 /// The verification surface speaks to the operator, so its four intents must

@@ -12,20 +12,19 @@
 //! 3. a procedure carrying one uncompilable step yields the honest named gap plus a
 //!    `skill_gap` event, and compiles nothing partially.
 
-use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::intent_formalization::impulse_id_for;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::{
+    CompiledProcedure, PROCEDURE_CONFORMANCE_TRIGGER, ProcedureCapabilityLedger,
+    ProcedureCompileError, ProcedureHost, ProcedureLearningApproval, ProcedureLearningGate,
+    ProcedureLearningObservation, ProcedureLearningProposal, ProcedureStep, UniversalSolver,
     compile_procedure, compile_procedure_with_ledger, extract_compiled_procedure_artifact,
-    CompiledProcedure, ProcedureCapabilityLedger, ProcedureCompileError, ProcedureHost,
-    ProcedureLearningApproval, ProcedureLearningGate, ProcedureLearningObservation,
-    ProcedureLearningProposal, ProcedureStep, UniversalSolver, PROCEDURE_CONFORMANCE_TRIGGER,
 };
 
 /// The English procedure under test: five clauses, four of them steps, phrased as
 /// running prose rather than as any template the typed `skill_compiler` accepts.
-const ENGLISH_PROCEDURE: &str =
-    "When I paste a link, fetch its title, translate it to Russian, save both, \
+const ENGLISH_PROCEDURE: &str = "When I paste a link, fetch its title, translate it to Russian, save both, \
      and reply with the translation.";
 
 const RUSSIAN_PROCEDURE: &str = "Когда я вставляю ссылку, получи её заголовок, \

@@ -22,9 +22,9 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::engine::{estimate_tokens, stable_id, DEFAULT_MODEL};
+use crate::engine::{DEFAULT_MODEL, estimate_tokens, stable_id};
 use crate::protocol::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, MessageContent,
+    ChatCompletionRequest, ChatMessage, MessageContent, create_chat_completion_with_solver,
 };
 use crate::solver::UniversalSolver;
 

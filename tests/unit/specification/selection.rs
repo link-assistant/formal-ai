@@ -47,8 +47,10 @@ const CANONICAL_PROMPTS: &[&str] = &[
 // ---------------------------------------------------------------------------
 
 #[test]
-fn off_is_the_default_and_emits_no_artifact() {
-    assert_eq!(SelectionMode::default(), SelectionMode::Off);
+fn record_is_the_default_and_off_emits_no_artifact() {
+    // Issue #1073 (requirement 1): the selection trace may not be an opt-in.
+    assert_eq!(SelectionMode::default(), SelectionMode::Record);
+    assert!(SelectionMode::default().emits_artifact());
     assert!(!SelectionMode::Off.emits_artifact());
 }
 

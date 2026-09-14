@@ -1,0 +1,48 @@
+Files dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml and /tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows: security.yml
+Files dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/CHANGELOG.md and /tmp/formal-ai-issue999-templates.FZURWz/js/CHANGELOG.md differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: bun-test-final.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: changeset-status-after-stage.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: check-file-line-limits-final-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: check-mjs-syntax-final-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: deno-test-final.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: example-desktop-package-final-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: example-mobile-sync-final-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: example-web-build-final-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: npm-check-final-4.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: npm-install-root.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: npm-install-universal-app-node20-compatible.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: npm-test-final-3.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: universal-app-test-before.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: universal-app-test-final-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-56/data: validate-changeset-final.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: bun-test.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: check-file-line-limits.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: check-mjs-syntax.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: checks-and-release-25733140225.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: checks-and-release-25743983223.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: deno-test.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: example-app-25733140224.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: example-desktop-package.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: example-mobile-sync.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: example-web-build.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-check-final.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-global-install.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-install-after-metadata.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-install-universal-app.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-install.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-test-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: npm-whoami.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: regression-after-2.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: regression-after-3.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: regression-after.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: regression-before.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: secretlint.log
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/docs/case-studies/issue-58/data: validate-changeset.log
+Files dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/package-lock.json and /tmp/formal-ai-issue999-templates.FZURWz/js/package-lock.json differ
+Files dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/package.json and /tmp/formal-ai-issue999-templates.FZURWz/js/package.json differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/scripts: check-pipeline-status.sh
+Files dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/tests/ci-timeouts.test.js and /tmp/formal-ai-issue999-templates.FZURWz/js/tests/ci-timeouts.test.js differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/tests: pipeline-status.test.js
+Only in /tmp/formal-ai-issue999-templates.FZURWz/js/tests: security-workflow.test.js
+Files dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/tests/workflow-reliability.test.js and /tmp/formal-ai-issue999-templates.FZURWz/js/tests/workflow-reliability.test.js differ

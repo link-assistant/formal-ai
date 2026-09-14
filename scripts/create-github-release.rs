@@ -7,6 +7,9 @@
 //! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--self-hosting-ledger <path>] [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! serde = { version = "1", features = ["derive"] }
@@ -25,7 +28,7 @@ use std::fs;
 use std::io::Write;
 use std::path::Path;
 #[cfg(not(test))]
-use std::process::{exit, Command, Stdio};
+use std::process::{Command, Stdio, exit};
 
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
@@ -178,10 +181,9 @@ fn ghcr_image_tag_from_url(url: &str, version: &str) -> String {
         if let Some(idx) = parts
             .windows(2)
             .position(|window| window == ["pkgs", "container"])
+            && let (Some(owner), Some(package)) = (parts.first(), parts.get(idx + 2))
         {
-            if let (Some(owner), Some(package)) = (parts.first(), parts.get(idx + 2)) {
-                return format!("ghcr.io/{owner}/{package}:{version}");
-            }
+            return format!("ghcr.io/{owner}/{package}:{version}");
         }
     }
 
@@ -348,10 +350,10 @@ fn is_duplicate_release_error(output: &str) -> bool {
 
     let lowered = output.to_ascii_lowercase();
 
-    if let Some(json) = first_json_object(output) {
-        if let Ok(error) = serde_json::from_str::<GitHubApiError>(json) {
-            return validation_error_is_duplicate_release(&error);
-        }
+    if let Some(json) = first_json_object(output)
+        && let Ok(error) = serde_json::from_str::<GitHubApiError>(json)
+    {
+        return validation_error_is_duplicate_release(&error);
     }
 
     lowered.contains("\"resource\":\"release\"")

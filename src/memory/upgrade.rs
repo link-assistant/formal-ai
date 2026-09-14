@@ -13,7 +13,6 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use fs2::FileExt as _;
 use serde::Serialize;
-use sha2::{Digest as _, Sha256};
 
 use super::ROOT_HEADER;
 
@@ -24,6 +23,17 @@ const V1_TO_V2_MIGRATION_ID: &str = "demo_memory_v1_to_v2";
 const SCHEMA_MARKER: &str = "schema_version";
 
 static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
+
+struct ExclusiveFileLock(fs::File);
+
+impl Drop for ExclusiveFileLock {
+    fn drop(&mut self) {
+        // Explicitly release the advisory lock before closing the descriptor.
+        // A concurrently forked child can briefly inherit the open file
+        // description even though the descriptor is close-on-exec.
+        let _ = fs2::FileExt::unlock(&self.0);
+    }
+}
 
 /// Machine-readable state returned by preflight and `/health`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -457,6 +467,7 @@ where
         )
         .with_status(preflight_memory_upgrade(path))
     })?;
+    let _lock = ExclusiveFileLock(lock_file);
 
     let original = fs::read(path).map_err(|error| {
         MemoryUpgradeError::new(
@@ -853,5 +864,5 @@ fn sync_parent(_path: &Path) -> io::Result<()> {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    crate::source_fetch::sha256_hex(bytes)
 }

@@ -1,0 +1,211 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 47s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-a9bd70f9e8a279b7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-311c994cf5d2a5f7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/with-formal-ai.rs (target/debug/deps/with_formal_ai-d90775bd04ffa815)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-c4d6e4288837cde3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 346 filtered out; finished in 0.00s
+
+     Running tests/issue_660_cli.rs (target/debug/deps/issue_660_cli-bb1745ae1262c257)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_707_computer_use.rs (target/debug/deps/issue_707_computer_use-f5df8b5e12846984)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/issue_707_generalization.rs (target/debug/deps/issue_707_generalization-9a72df6cb4466b9d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/issue_707_learning.rs (target/debug/deps/issue_707_learning-c8f3da99f8bef0e5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/issue_707_mcp.rs (target/debug/deps/issue_707_mcp-9e0af16f70cd032c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/issue_707_mcp_denial.rs (target/debug/deps/issue_707_mcp_denial-1e76b947695bc8e4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_707_seed_taxonomy.rs (target/debug/deps/issue_707_seed_taxonomy-91c84094b7a8e637)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_712.rs (target/debug/deps/issue_712-6311aa6de6c04647)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/issue_715.rs (target/debug/deps/issue_715-be1af9cf885cfdad)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/issue_715_notation.rs (target/debug/deps/issue_715_notation-69b76f07b2cfed8c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_715_rewrite_variations.rs (target/debug/deps/issue_715_rewrite_variations-64c360ca1eb5db5d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/issue_752.rs (target/debug/deps/issue_752-b60d08644558e408)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_756.rs (target/debug/deps/issue_756-c7c7697154a4c71c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_757_session_files.rs (target/debug/deps/issue_757_session_files-cc77aab82613ba73)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_760.rs (target/debug/deps/issue_760-08eddce54d22e40c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/issue_761_docs.rs (target/debug/deps/issue_761_docs-e23e9133b3763b8e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/issue_762.rs (target/debug/deps/issue_762-86003ac9022a3aa6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/issue_763.rs (target/debug/deps/issue_763-d24de3788c97bc28)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/issue_835_cli.rs (target/debug/deps/issue_835_cli-d3c2f7b136eb6855)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_874_docs.rs (target/debug/deps/issue_874_docs-3d0d60d2aed34b04)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/issue_885_docs.rs (target/debug/deps/issue_885_docs-5004015b2ff57df6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/issue_889_thinking_surfaces.rs (target/debug/deps/issue_889_thinking_surfaces-5bb57990fb30f7c2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/issue_902.rs (target/debug/deps/issue_902-e6a373d9863ce3cd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_961_macos_portability.rs (target/debug/deps/issue_961_macos_portability-344da1be2f67dd9e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+     Running tests/issue_973_solve_flags.rs (target/debug/deps/issue_973_solve_flags-c9f401d993881966)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/source/mod.rs (target/debug/deps/source-c8d5701bedd6d50c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 488 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-02b03d1c4a08f71c)
+
+running 2 tests
+test ci_cd::issue_1012::macos_core_tests_are_sliced_and_warn_before_the_job_timeout ... FAILED
+test ci_cd::issue_1014::macos_core_shards_reuse_one_nextest_archive ... FAILED
+
+failures:
+
+---- ci_cd::issue_1012::macos_core_tests_are_sliced_and_warn_before_the_job_timeout stdout ----
+
+thread 'ci_cd::issue_1012::macos_core_tests_are_sliced_and_warn_before_the_job_timeout' (207484) panicked at tests/unit/ci-cd/issue_1012.rs:32:9:
+missing macOS core shard 9
+
+---- ci_cd::issue_1014::macos_core_shards_reuse_one_nextest_archive stdout ----
+
+thread 'ci_cd::issue_1014::macos_core_shards_reuse_one_nextest_archive' (207485) panicked at tests/unit/ci-cd/issue_1014.rs:97:5:
+assertion `left == right` failed
+  left: 8
+ right: 12
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ci_cd::issue_1012::macos_core_tests_are_sliced_and_warn_before_the_job_timeout
+    ci_cd::issue_1014::macos_core_shards_reuse_one_nextest_archive
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 2808 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

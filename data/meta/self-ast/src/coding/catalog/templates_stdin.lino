@@ -1,0 +1,13 @@
+self_ast_census
+  target src/coding/catalog/templates_stdin.rs
+  language rust
+  fidelity signature
+  byte_len 3784
+  line_count 141
+  content_id source_module_2761beeb16164aa6
+  symbol_count 4
+  symbols
+    const TEMPLATES_STDIN 16 27
+    function main 22 26
+    static void 93 95
+    static void 105 110

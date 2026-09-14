@@ -4,7 +4,7 @@
 //! thousand-line ceiling; the protocol is unchanged.
 
 use super::prose::sentence;
-use super::{ValidationReport, QUALITY_RATCHET_PERCENT};
+use super::{QUALITY_RATCHET_PERCENT, ValidationReport};
 
 /// Seed intents for the four ways a run can fail the ratchet. The keys are
 /// language-neutral; the sentences live in
@@ -25,14 +25,12 @@ pub const BASELINE_PATH: &str = "data/summarization/quality-baseline.lino";
 pub const RATCHET_RUNNER: &str = "formal-ai summarization validate --append";
 
 /// The monotonic rule the baseline enforces.
-pub const RATCHET_POLICY: &str =
-    "the measured percent may never fall below the committed ratchet_percent, which starts at \
+pub const RATCHET_POLICY: &str = "the measured percent may never fall below the committed ratchet_percent, which starts at \
      the published 80 percent minimum and may only ever be raised; the recorded percent is what \
      the committed run measured, and raising the floor to it is a deliberate reviewed edit";
 
 /// What the recorded number is, and what it is not.
-pub const HONESTY_POLICY: &str =
-    "every number here is measured by running the production summarizer over seeded random \
+pub const HONESTY_POLICY: &str = "every number here is measured by running the production summarizer over seeded random \
      repository files; a run that reaches its iteration bound without stabilizing records \
      bound_reached true rather than claiming stability";
 
@@ -132,16 +130,16 @@ pub fn ratchet_violations(
     if report.embedded_grammar_blocks == 0 {
         violations.push(sentence(NO_EMBEDDED_GRAMMAR, &[]));
     }
-    if let Some(baseline) = baseline {
-        if measured < baseline.ratchet_percent {
-            violations.push(sentence(
-                BELOW_COMMITTED,
-                &[
-                    ("measured", &measured.to_string()),
-                    ("committed", &baseline.ratchet_percent.to_string()),
-                ],
-            ));
-        }
+    if let Some(baseline) = baseline
+        && measured < baseline.ratchet_percent
+    {
+        violations.push(sentence(
+            BELOW_COMMITTED,
+            &[
+                ("measured", &measured.to_string()),
+                ("committed", &baseline.ratchet_percent.to_string()),
+            ],
+        ));
     }
     violations
 }

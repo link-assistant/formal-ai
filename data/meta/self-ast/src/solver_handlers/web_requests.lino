@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 42640
-  line_count 993
-  content_id source_module_3342e8e91041291a
+  byte_len 42628
+  line_count 992
+  content_id source_module_8c7cdc5866bb0883
   symbol_count 47
   symbols
     module live_search 14 14
@@ -25,32 +25,32 @@ self_ast_census
     function try_project_lookup 336 351
     function try_explicit_repository_lookup 353 378
     function try_project_lookup_with_response_language 380 396
-    function try_project_lookup_internal 398 455
-    function render_project_lookup 457 541
-    function render_generic_repository_lookup 543 647
-    function append_repository_evidence 649 656
-    function matched_project 660 674
-    function promoted_project_by_repo 676 683
-    function is_promoted_project 685 689
-    function repository_from_prompt 691 695
-    function repository_from_concept_term 697 704
-    function repository_from_slug 706 726
-    function repository_from_url 728 756
-    function clean_repository_segment 758 770
-    function is_text_url_extraction_prompt 772 776
-    function normalize_concept_term 778 784
-    function registry_static 789 793
-    static REGISTRY 791 791
-    function extract_http_fetch_url 795 801
-    function http_fetch_url_for 813 815
-    function agentic_fetch_url_for 823 826
-    function extract_url_navigate_url 828 834
-    function first_url_candidate 836 844
-    function trim_url_token 846 850
-    function is_url_wrapper_punctuation 852 857
-    function is_url_trailing_punctuation 859 861
-    function normalize_url_candidate 863 892
-    function looks_like_hostname 894 916
-    function role_evidences_web_intent 937 956
-    function is_http_fetch_prompt 966 973
-    function is_url_navigate_prompt 981 993
+    function try_project_lookup_internal 398 454
+    function render_project_lookup 456 540
+    function render_generic_repository_lookup 542 646
+    function append_repository_evidence 648 655
+    function matched_project 659 673
+    function promoted_project_by_repo 675 682
+    function is_promoted_project 684 688
+    function repository_from_prompt 690 694
+    function repository_from_concept_term 696 703
+    function repository_from_slug 705 725
+    function repository_from_url 727 755
+    function clean_repository_segment 757 769
+    function is_text_url_extraction_prompt 771 775
+    function normalize_concept_term 777 783
+    function registry_static 788 792
+    static REGISTRY 790 790
+    function extract_http_fetch_url 794 800
+    function http_fetch_url_for 812 814
+    function agentic_fetch_url_for 822 825
+    function extract_url_navigate_url 827 833
+    function first_url_candidate 835 843
+    function trim_url_token 845 849
+    function is_url_wrapper_punctuation 851 856
+    function is_url_trailing_punctuation 858 860
+    function normalize_url_candidate 862 891
+    function looks_like_hostname 893 915
+    function role_evidences_web_intent 936 955
+    function is_http_fetch_prompt 965 972
+    function is_url_navigate_prompt 980 992

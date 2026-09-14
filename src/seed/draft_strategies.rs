@@ -14,8 +14,8 @@
 //! plus a leaf that answers `supports` — never a new branch in the portfolio
 //! engine.
 
-use super::parser::parse_lino;
 use super::DRAFT_STRATEGIES_LINO;
+use super::parser::parse_lino;
 
 /// Ordered candidate-draft strategy names, cheapest and most reusable first, as
 /// declared by the shipped `data/seed/draft-strategies.lino`.

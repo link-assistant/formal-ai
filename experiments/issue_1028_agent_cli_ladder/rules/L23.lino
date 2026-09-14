@@ -1,0 +1,8 @@
+link_edit
+  leaf L23
+  path src/cli_context.rs
+  language rust
+  rule rename_identifier
+    old "ERROR_JOIN"
+    new "ERROR_LIST_JOIN"
+  expect "ERROR_LIST_JOIN"

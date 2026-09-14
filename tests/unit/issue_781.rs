@@ -3,12 +3,12 @@
 //! laptop's electrical requirement, its barrel dimensions, and the candidate
 //! listing. This replays that general search → multi-fetch → cited answer path.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatCompletionRequest, ChatMessage, ToolCall};
 use formal_ai::{
-    create_anthropic_message_with_solver, create_chat_completion_with_solver,
-    create_response_with_solver, AnthropicContentBlock, AnthropicMessagesRequest,
-    ResponseOutputItem, ResponsesRequest, SolverConfig, UniversalSolver,
+    AnthropicContentBlock, AnthropicMessagesRequest, ResponseOutputItem, ResponsesRequest,
+    SolverConfig, UniversalSolver, create_anthropic_message_with_solver,
+    create_chat_completion_with_solver, create_response_with_solver,
 };
 
 const TOOLS: [&str; 2] = ["websearch", "webfetch"];
@@ -259,10 +259,12 @@ fn anthropic_messages_explains_the_action_before_tool_use() {
         message.content.first(),
         Some(AnthropicContentBlock::Text { text }) if !text.trim().is_empty()
     ));
-    assert!(message
-        .content
-        .iter()
-        .any(|block| matches!(block, AnthropicContentBlock::ToolUse { .. })));
+    assert!(
+        message
+            .content
+            .iter()
+            .any(|block| matches!(block, AnthropicContentBlock::ToolUse { .. }))
+    );
 }
 
 #[test]
@@ -285,10 +287,12 @@ fn responses_explains_the_action_before_the_function_call() {
         Some(ResponseOutputItem::Message(message))
             if message.content.iter().any(|part| !part.text.trim().is_empty())
     ));
-    assert!(response
-        .output
-        .iter()
-        .any(|item| matches!(item, ResponseOutputItem::FunctionCall(_))));
+    assert!(
+        response
+            .output
+            .iter()
+            .any(|item| matches!(item, ResponseOutputItem::FunctionCall(_)))
+    );
 }
 
 #[test]
@@ -401,7 +405,7 @@ fn codex_mcp_transport_envelope_yields_clean_research_urls() {
 }
 
 #[test]
-fn a_failed_source_is_not_retried_or_used_as_evidence() {
+fn a_failed_source_reports_its_diagnostic_without_retrying() {
     let mut messages = vec![ChatMessage::user(
         "Find the voltage and connector required by this laptop?",
     )];
@@ -419,22 +423,14 @@ fn a_failed_source_is_not_retried_or_used_as_evidence() {
     );
     answer_tool_calls(&mut messages, &blocked, &["Error: HTTP 403 Forbidden"]);
 
-    let working = tool_calls(&messages);
-    assert_eq!(working.len(), 1);
-    assert_eq!(
-        arguments(&working[0])["url"],
-        "https://example.test/working",
-        "the failed source must be observed once, then research must re-plan"
-    );
-    answer_tool_calls(&mut messages, &working, &["The adapter supplies 19.5 V."]);
-
     let answer = final_answer(&messages);
-    assert!(answer.contains("19.5 V"), "{answer}");
-    assert!(!answer.contains("HTTP 403"), "{answer}");
+    assert!(answer.contains("HTTP 403 Forbidden"), "{answer}");
+    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("example.test/working"), "{answer}");
 }
 
 #[test]
-fn a_plain_text_provider_denial_is_not_used_as_research_evidence() {
+fn a_plain_text_provider_denial_is_reported_without_retrying() {
     let mut messages = vec![ChatMessage::user(
         "Find the voltage required by this laptop charger?",
     )];
@@ -456,21 +452,14 @@ fn a_plain_text_provider_denial_is_not_used_as_research_evidence() {
         &["You can't perform that action at this time."],
     );
 
-    let working = tool_calls(&messages);
-    assert_eq!(
-        arguments(&working[0])["url"],
-        "https://example.test/working",
-        "the denial is an observed failed attempt, not fetched evidence"
-    );
-    answer_tool_calls(&mut messages, &working, &["The adapter requires 19.5 V."]);
-
     let answer = final_answer(&messages);
-    assert!(answer.contains("19.5 V"), "{answer}");
-    assert!(!answer.contains("can't perform"), "{answer}");
+    assert!(answer.contains("can't perform that action"), "{answer}");
+    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("example.test/working"), "{answer}");
 }
 
 #[test]
-fn research_reports_no_content_when_every_fetch_attempt_fails() {
+fn research_reports_the_failure_when_every_fetch_attempt_fails() {
     let mut messages = vec![ChatMessage::user(
         "Find the voltage required by this laptop charger?",
     )];
@@ -489,9 +478,9 @@ fn research_reports_no_content_when_every_fetch_attempt_fails() {
     );
 
     let answer = final_answer(&messages);
-    assert!(answer.contains("returned no content"), "{answer}");
-    assert!(!answer.contains("example.test/blocked"), "{answer}");
-    assert!(!answer.contains("can't perform"), "{answer}");
+    assert!(answer.contains("can't perform that action"), "{answer}");
+    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("returned no content"), "{answer}");
 }
 
 #[test]
@@ -608,7 +597,9 @@ fn research_deepens_toward_the_part_of_the_question_the_evidence_left_open() {
     answer_tool_calls(
         &mut messages,
         &fetches,
-        &["What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector."],
+        &[
+            "What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector.",
+        ],
     );
 
     let deeper = tool_calls(&messages);
@@ -702,7 +693,9 @@ fn a_source_already_read_is_not_read_again() {
     answer_tool_calls(
         &mut messages,
         &fetches,
-        &["What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector."],
+        &[
+            "What voltage and connector does the Aspire A325 charger need, and what applies: 19.5 V with a barrel connector.",
+        ],
     );
     let deeper = tool_calls(&messages);
     // The refined search returns the same page plus a new one.
@@ -721,4 +714,53 @@ fn a_source_already_read_is_not_read_again() {
         ["https://warranty.example.test/a325"],
         "the already-read page must not be fetched a second time"
     );
+}
+
+/// Claude Code advertises its own `WebSearch` beside the MCP research tool the
+/// harness wired up, but grants permission only for the MCP one. Planning its
+/// built-in alias ended every four-client run at "Claude requested permissions
+/// to use `WebSearch`, but you have not granted it yet", so the run recorded no
+/// search at all. A namespaced research tool is present only because the client
+/// was configured to expose it, so it is the alias that gets planned.
+#[test]
+fn a_wired_up_mcp_search_outranks_the_clients_own_search_alias() {
+    let tools = [
+        "Bash",
+        "Edit",
+        "Read",
+        "WebSearch",
+        "mcp__issue781__websearch",
+        "Write",
+    ];
+    let messages = vec![ChatMessage::user(
+        "Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in",
+    )];
+    match plan_chat_step(&messages, &tools).expect("a research request has a plan") {
+        AgenticPlan::ToolCalls(calls) => {
+            assert_eq!(calls[0].tool, "mcp__issue781__websearch", "{calls:?}");
+        }
+        AgenticPlan::Final(answer) => panic!("expected a search, got {answer:?}"),
+    }
+}
+
+/// The same ordering must not let browser automation win a fetch: it carries no
+/// research capability at all, so the client's own alias stays the choice when
+/// no MCP *research* tool is advertised (issue #1133).
+#[test]
+fn browser_automation_does_not_outrank_the_clients_fetch_alias() {
+    let tools = [
+        "Bash",
+        "Write",
+        "WebFetch",
+        "mcp__playwright__browser_click",
+    ];
+    let messages = vec![ChatMessage::user(
+        "Resolve the GitHub issue at https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1 in this repository.",
+    )];
+    match plan_chat_step(&messages, &tools).expect("a work item has a plan") {
+        AgenticPlan::ToolCalls(calls) => {
+            assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+        }
+        AgenticPlan::Final(answer) => panic!("expected the work item to be read, got {answer:?}"),
+    }
 }

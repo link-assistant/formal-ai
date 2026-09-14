@@ -34,6 +34,17 @@ pub(super) fn plan_generated_source_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
+    // Issue #1096: "In the file src/x.rs, replace "A" with "B" ... keep it valid
+    // Rust" is an edit of a tracked file, not a request to generate one. The
+    // program-request cue ("valid Rust") made this path claim it, synthesise
+    // its own artifact, and then verify the agent's correct edit against that
+    // artifact -- seven ladder leaves failed on the resulting byte mismatch.
+    // An edit request is recognised by the same reader the edit route uses, so
+    // the two routes cannot disagree about what counts as one; this step
+    // simply declines, and the edit step, later in the router, claims it.
+    if super::general_planner::compose_edit_request(task).is_some() {
+        return None;
+    }
     let artifact = rust_source_for_task(task)?;
     let write_tool = tool_for(tool_names, Capability::Write)?;
     let latest_user = messages
@@ -42,31 +53,29 @@ pub(super) fn plan_generated_source_step(
     let current_turn = &messages[latest_user + 1..];
 
     if let Some(observed) = latest_result(current_turn, Capability::Run) {
-        if observed == artifact.content {
-            return Some(AgenticPlan::Final(render_seeded_outcome(
-                "coding_workspace_effect_observed",
-                task,
-                &artifact.path,
-            )?));
-        }
+        let outcome = if observed == artifact.content {
+            "coding_workspace_effect_observed"
+        } else {
+            "coding_workspace_verification_failed"
+        };
         return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
+            outcome,
             task,
             &artifact.path,
         )?));
     }
     if latest_result(current_turn, Capability::Write).is_some() {
-        if let Some(run_tool) = tool_for(tool_names, Capability::Run) {
-            return Some(plan_one(
+        return Some(match tool_for(tool_names, Capability::Run) {
+            Some(run_tool) => plan_one(
                 run_tool,
                 json!({"command": format!("cat {}", artifact.path)}).to_string(),
-            ));
-        }
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_written_unverified",
-            task,
-            &artifact.path,
-        )?));
+            ),
+            None => AgenticPlan::Final(render_seeded_outcome(
+                "coding_workspace_written_unverified",
+                task,
+                &artifact.path,
+            )?),
+        });
     }
     Some(plan_one(
         write_tool,
@@ -196,6 +205,34 @@ pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Opt
     ))
 }
 
+/// Report a change by naming it, not merely by naming the file it touched.
+///
+/// [`render_seeded_outcome`] can only say *that* a path was written, because
+/// `{path}` is all it substitutes. A caller who asked for the change and for a
+/// record of it -- the issue #1028 ladder does, and its `verify-node.sh` demands
+/// "at least four words that state the change you made" -- gets a status line
+/// where the statement should be, and the record it verifies never mentions the
+/// edit. A route that derived the new bytes already knows what it altered, so
+/// the seed sentence takes that as further slots: which members went into a
+/// list, or which name became which.
+// `{path}` is replaced in seed-owned text rather than interpolated by Rust; so
+// are the slots the caller names.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn render_seeded_change(
+    intent: &str,
+    task: &str,
+    path: &str,
+    slots: &[(&str, &str)],
+) -> Option<String> {
+    let language = crate::language::detect(task).slug();
+    let mut substitutions = vec![("{path}", path)];
+    substitutions.extend_from_slice(slots);
+    Some(render_template(
+        seed::localized_response(intent, language)?,
+        &substitutions,
+    ))
+}
+
 fn render_template(mut template: String, substitutions: &[(&str, &str)]) -> String {
     for (placeholder, value) in substitutions {
         template = template.replace(placeholder, value);
@@ -224,13 +261,11 @@ const fn is_path_character(character: char) -> bool {
 
 fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<String> {
     let normalized = task.to_lowercase();
-    if kind != RustItemKind::Constant {
-        if let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT) {
-            if valid_identifier(&name) {
+    if kind != RustItemKind::Constant
+        && let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT)
+            && valid_identifier(&name) {
                 return Some(name);
             }
-        }
-    }
     let without_path = task.replacen(path, "", 1);
     let mut candidates = identifier_tokens(&without_path)
         .filter(|candidate| valid_identifier(candidate))

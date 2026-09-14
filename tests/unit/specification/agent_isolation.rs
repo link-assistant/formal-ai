@@ -25,9 +25,11 @@ fn chat_mode_never_runs_user_supplied_shell_commands() {
 #[test]
 fn typescript_unavailable_status_is_honest_not_silenced() {
     let response = answer("hello world in TypeScript");
-    assert!(response
-        .answer
-        .contains("Execution status: not compiled or run"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: not compiled or run")
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -123,22 +125,30 @@ fn agent_mode_creates_modifies_deletes_files_and_runs_terminal_command() {
     assert!(response.answer.contains("deleted scratch.tmp"));
     assert!(response.answer.contains("Command: `cat report.txt`"));
     assert!(response.answer.contains("Output:\n```text\nbeta"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("action_log:create_file:")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("action_log:modify_file:")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("action_log:delete_file:")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("action_log:run_command:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("action_log:create_file:"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("action_log:modify_file:"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("action_log:delete_file:"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("action_log:run_command:"))
+    );
 }
 
 #[test]
@@ -180,9 +190,9 @@ fn agent_mode_enforces_time_budget() {
 
 #[test]
 fn agent_mode_does_not_leak_host_env_vars() {
-    std::env::set_var("FAKE_SECRET_FOR_TEST", "do-not-leak");
-    let response = answer("[agent] Print all environment variables");
-    std::env::remove_var("FAKE_SECRET_FOR_TEST");
+    let response = temp_env::with_var("FAKE_SECRET_FOR_TEST", Some("do-not-leak"), || {
+        answer("[agent] Print all environment variables")
+    });
     assert!(
         !response.answer.contains("do-not-leak"),
         "agent mode must not echo host environment variables back to the user"

@@ -3,8 +3,8 @@ use std::fmt::{Display, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
-use crate::attachment_context::{compose_prompt_with_attachments, Attachment};
-use crate::engine::{naturalize_thinking_step_in, thinking_answer_language, ThinkingStep};
+use crate::attachment_context::{Attachment, compose_prompt_with_attachments};
+use crate::engine::{ThinkingStep, naturalize_thinking_step_in, thinking_answer_language};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";
@@ -268,10 +268,10 @@ fn message_addresses_bot(message: &TelegramMessage) -> bool {
     {
         return true;
     }
-    if let Some(reply) = &message.reply_to_message {
-        if reply.from.as_ref().is_some_and(|user| user.is_bot) {
-            return true;
-        }
+    if let Some(reply) = &message.reply_to_message
+        && reply.from.as_ref().is_some_and(|user| user.is_bot)
+    {
+        return true;
     }
     if let Some(title) = &message.chat.title {
         let lower = title.to_lowercase();
@@ -461,38 +461,38 @@ fn telegram_inline_html(markdown: &str) -> String {
     let mut rendered = String::new();
     let mut rest = markdown;
     while !rest.is_empty() {
-        if let Some(inner) = rest.strip_prefix("**") {
-            if let Some(end) = inner.find("**") {
-                rendered.push_str("<b>");
-                rendered.push_str(&telegram_inline_html(&inner[..end]));
-                rendered.push_str("</b>");
-                rest = &inner[end + 2..];
-                continue;
-            }
+        if let Some(inner) = rest.strip_prefix("**")
+            && let Some(end) = inner.find("**")
+        {
+            rendered.push_str("<b>");
+            rendered.push_str(&telegram_inline_html(&inner[..end]));
+            rendered.push_str("</b>");
+            rest = &inner[end + 2..];
+            continue;
         }
-        if let Some(inner) = rest.strip_prefix('`') {
-            if let Some(end) = inner.find('`') {
-                rendered.push_str("<code>");
-                rendered.push_str(&html_escape(&inner[..end]));
-                rendered.push_str("</code>");
-                rest = &inner[end + 1..];
-                continue;
-            }
+        if let Some(inner) = rest.strip_prefix('`')
+            && let Some(end) = inner.find('`')
+        {
+            rendered.push_str("<code>");
+            rendered.push_str(&html_escape(&inner[..end]));
+            rendered.push_str("</code>");
+            rest = &inner[end + 1..];
+            continue;
         }
-        if let Some(label) = rest.strip_prefix('[') {
-            if let Some(label_end) = label.find("](") {
-                let after_label = &label[label_end + 2..];
-                if let Some(url_end) = after_label.find(')') {
-                    let url = &after_label[..url_end];
-                    if url.starts_with("https://") || url.starts_with("http://") {
-                        rendered.push_str("<a href=\"");
-                        rendered.push_str(&html_escape(url));
-                        rendered.push_str("\">");
-                        rendered.push_str(&html_escape(&label[..label_end]));
-                        rendered.push_str("</a>");
-                        rest = &after_label[url_end + 1..];
-                        continue;
-                    }
+        if let Some(label) = rest.strip_prefix('[')
+            && let Some(label_end) = label.find("](")
+        {
+            let after_label = &label[label_end + 2..];
+            if let Some(url_end) = after_label.find(')') {
+                let url = &after_label[..url_end];
+                if url.starts_with("https://") || url.starts_with("http://") {
+                    rendered.push_str("<a href=\"");
+                    rendered.push_str(&html_escape(url));
+                    rendered.push_str("\">");
+                    rendered.push_str(&html_escape(&label[..label_end]));
+                    rendered.push_str("</a>");
+                    rest = &after_label[url_end + 1..];
+                    continue;
                 }
             }
         }

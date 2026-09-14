@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/wiktionary.rs
   language rust
   fidelity signature
-  byte_len 26461
+  byte_len 26449
   line_count 685
-  content_id source_module_0290c17edb50dc0b
+  content_id source_module_b0cb4b25c49c8a64
   symbol_count 25
   symbols
     struct WiktionaryCandidate 26 33

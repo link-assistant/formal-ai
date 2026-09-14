@@ -62,8 +62,8 @@ A normal Markov algorithm is an ordered finite collection of string
 substitution formulas with a specified execution procedure. The formalism is
 computationally universal: complete normal algorithms can express the same
 computable functions as other standard universal models. See the
-[Encyclopedia of Mathematics entry on normal algorithms](https://encyclopediaofmath.org/wiki/Normal_algorithm)
-and A. A. Markov's cited foundational treatment.
+[University of Calgary lecture notes on Markov algorithms](https://cspages.ucalgary.ca/~eberly/Courses/CPSC513/2024/2_Models_of_Computation/L08/L08_computations_by_languages.pdf)
+for a formal definition and the equivalence theorem.
 
 The stronger sentence “each Markov substitution is Turing-complete” is false
 when read literally. One rewrite rule is only one rule; universality belongs to

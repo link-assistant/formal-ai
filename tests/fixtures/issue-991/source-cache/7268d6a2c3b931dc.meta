@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://en.wikibooks.org/w/api.php?action=parse&page=Reverse%20A%20String%20In%20Python&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*
+fetched_at=1786392353
+sha256=adc95db50a81f7752e0258320a4a1a0c647b9305df0e00ef50567c8fb3ebc922

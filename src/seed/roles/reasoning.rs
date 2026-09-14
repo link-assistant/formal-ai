@@ -254,9 +254,9 @@ pub const ROLE_SKILL_TEACHING_RESPONSE_VERB: &str = "skill_teaching_response_ver
 ///
 /// A direct instruction to change runtime behaviour ("add behavior rule", "update
 /// behavior rule", "добавь правило поведения", "添加行为规则") rather than a
-/// trigger-and-reply teaching pair. Matched as a raw substring through
-/// [`crate::seed::Lexicon::mentions_role_raw`] and recognised on its own — without
-/// needing a separate response verb — because the imperative already names both the
+/// trigger-and-reply teaching pair. Its direct role surfaces are matched as raw
+/// substrings and recognised on their own — without following `defined-by` links
+/// into generic action vocabulary — because the imperative already names both the
 /// edit and its object. Carried by `behavior_rule_edit`; read by the Rust skill
 /// compiler and the JS worker.
 pub const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE: &str = "behavior_rule_edit_directive";

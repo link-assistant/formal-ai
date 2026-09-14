@@ -19,8 +19,8 @@ use std::fmt::Write as _;
 
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
-use crate::seed::parser::{parse_lino, LinoNode};
 use crate::seed::PROGRAM_CST_GRAMMARS_LINO;
+use crate::seed::parser::{LinoNode, parse_lino};
 
 /// The slug recorded for languages validated through the meta-language network.
 pub const META_LANGUAGE_ENGINE: &str = "meta_language";

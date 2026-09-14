@@ -1,10 +1,12 @@
+use super::attribution::prepare_attribution;
+use super::incremental::{IncrementalTrace, dispatch_incrementally};
 use super::permission::AgentRunPermission;
-use super::replay::{write_session, ReplayError};
+use super::replay::{ReplayError, write_session};
 use super::runner::{
-    run_agent, AgentCommand, AgentRunConfig, AgentRunError, AgentSession, AgentTarget,
-    VerificationCommand,
+    AgentCommand, AgentRunConfig, AgentRunError, AgentSession, AgentTarget, VerificationCommand,
+    run_agent,
 };
-use super::workspace::{apply_changes, copy_workspace, validate_changes, WorkspaceChange};
+use super::workspace::{WorkspaceChange, apply_changes, copy_workspace, validate_changes};
 use crate::task_decomposition::decompose_task;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -20,6 +22,11 @@ use std::time::Duration;
 pub enum DispatchMode {
     Decompose,
     Compare,
+    /// Attempt the whole task first and split only what actually failed.
+    ///
+    /// The plan is discovered from evidence rather than committed to up front;
+    /// [`IncrementalTrace`] records every attempt, split, and blocked task.
+    Incremental,
 }
 
 #[derive(Debug, Clone)]
@@ -40,6 +47,9 @@ pub struct DispatchConfig {
     pub controller_program: PathBuf,
     pub command_overrides: BTreeMap<String, AgentCommand>,
     pub max_depth: u8,
+    /// Canonical GitHub pull request receiving attributed incremental commits.
+    /// When absent, dispatch retains its historical compose-only behavior.
+    pub pull_request: Option<String>,
 }
 
 impl DispatchConfig {
@@ -64,6 +74,7 @@ impl DispatchConfig {
             controller_program: run.controller_program,
             command_overrides: BTreeMap::new(),
             max_depth: 3,
+            pull_request: None,
         }
     }
 }
@@ -79,6 +90,7 @@ pub enum DispatchError {
     Io(io::Error),
     WorkerPanicked,
     CompositionConflict(String),
+    Attribution(String),
 }
 
 impl fmt::Display for DispatchError {
@@ -93,6 +105,7 @@ impl fmt::Display for DispatchError {
             Self::Io(error) => write!(formatter, "io:{error}"),
             Self::WorkerPanicked => formatter.write_str("worker_panicked"),
             Self::CompositionConflict(path) => write!(formatter, "composition_conflict:{path}"),
+            Self::Attribution(error) => write!(formatter, "attribution:{error}"),
         }
     }
 }
@@ -143,6 +156,11 @@ pub struct DispatchReport {
     pub sessions: Vec<AgentSession>,
     pub ledger: ComparisonLedger,
     pub composed_changes: Vec<WorkspaceChange>,
+    /// Present exactly for [`DispatchMode::Incremental`]: what was attempted,
+    /// what was split, and what stayed blocked. Absent from the other modes'
+    /// JSON entirely, so an existing report still parses.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub incremental: Option<IncrementalTrace>,
 }
 
 pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, DispatchError> {
@@ -159,6 +177,14 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
         }
     }
     let workspace = config.workspace.canonicalize().map_err(DispatchError::Io)?;
+    if let Some(pull_request) = &config.pull_request {
+        if config.mode != DispatchMode::Incremental {
+            return Err(DispatchError::Attribution(
+                "incremental_mode_required".to_string(),
+            ));
+        }
+        prepare_attribution(&workspace, pull_request)?;
+    }
     let prospective_output = prospective_canonical(&config.output_dir)?;
     if prospective_output == workspace || !prospective_output.starts_with(&workspace) {
         return Err(DispatchError::OutputOutsideWorkspace);
@@ -168,8 +194,14 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
         .output_dir
         .canonicalize()
         .map_err(DispatchError::Io)?;
+    if config.mode == DispatchMode::Incremental {
+        // The whole task is the plan until a failure says otherwise, so this
+        // mode never builds a job list: it discovers one.
+        return dispatch_incrementally(config, &workspace, &output_dir);
+    }
     let tasks = match config.mode {
         DispatchMode::Compare => vec![config.task.clone(); config.clis.len()],
+        DispatchMode::Incremental => unreachable!("incremental dispatch returned above"),
         DispatchMode::Decompose => {
             let decomposition = decompose_task(&config.task, config.max_depth);
             let leaves = decomposition.leaves();
@@ -181,6 +213,7 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
         }
     };
     let jobs = match config.mode {
+        DispatchMode::Incremental => unreachable!("incremental dispatch returned above"),
         DispatchMode::Compare => config
             .clis
             .iter()
@@ -196,12 +229,11 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
     };
     let mut handles = Vec::new();
     for (index, (cli, task)) in jobs.into_iter().enumerate() {
-        let candidate = config
-            .output_dir
-            .join("candidates")
-            .join(format!("{index:03}-{}", safe_name(&cli)));
+        let candidate_id = format!("{index:03}-{}", safe_name(&cli));
+        let candidate = config.output_dir.join("candidates").join(&candidate_id);
         copy_workspace(&workspace, &candidate, &output_dir).map_err(DispatchError::Io)?;
-        let run = candidate_run_config(config, &cli, task, &candidate);
+        let orchestration_home = output_dir.join("native-sessions").join(candidate_id);
+        let run = candidate_run_config(config, &cli, task, &candidate, &orchestration_home);
         handles.push((
             index,
             cli,
@@ -268,6 +300,7 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
             .collect(),
         ledger,
         composed_changes,
+        incremental: None,
     })
 }
 
@@ -328,11 +361,12 @@ fn prepare_output_dir(path: &Path) -> Result<(), DispatchError> {
     fs::create_dir_all(path.join("sessions")).map_err(DispatchError::Io)
 }
 
-fn candidate_run_config(
+pub(super) fn candidate_run_config(
     dispatch: &DispatchConfig,
     cli: &str,
     task: String,
     workspace: &Path,
+    orchestration_home: &Path,
 ) -> AgentRunConfig {
     let mut run = AgentRunConfig::new(cli, task, workspace)
         .with_permission(AgentRunPermission::grant_for(workspace));
@@ -347,6 +381,7 @@ fn candidate_run_config(
     run.verification.clone_from(&dispatch.verification);
     run.controller_program
         .clone_from(&dispatch.controller_program);
+    run.orchestration_home = Some(orchestration_home.to_path_buf());
     run.command_override = dispatch.command_overrides.get(cli).cloned();
     run
 }
@@ -369,6 +404,9 @@ fn compose(
             Ok(Vec::new())
         }
         DispatchMode::Decompose => compose_decomposed(workspace, completed),
+        // Incremental runs compose as they go: a passing attempt's effects are
+        // applied to the workspace before the next attempt copies it.
+        DispatchMode::Incremental => unreachable!("incremental dispatch composes during the run"),
     }
 }
 
@@ -402,7 +440,7 @@ fn compose_decomposed(
     Ok(owners.into_values().map(|(_, change)| change).collect())
 }
 
-fn safe_name(value: &str) -> String {
+pub(super) fn safe_name(value: &str) -> String {
     value
         .chars()
         .map(|character| {

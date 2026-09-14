@@ -72,12 +72,11 @@ fn role_registry() -> BTreeMap<String, String> {
         if indent == 2 {
             current = Some(trimmed.to_string());
             registry.entry(trimmed.to_string()).or_default();
-        } else if indent == 4 {
-            if let Some(role) = &current {
-                if let Some(kind) = trimmed.strip_prefix("kind ") {
-                    registry.insert(role.clone(), kind.trim().to_string());
-                }
-            }
+        } else if indent == 4
+            && let Some(role) = &current
+            && let Some(kind) = trimmed.strip_prefix("kind ")
+        {
+            registry.insert(role.clone(), kind.trim().to_string());
         }
     }
     registry

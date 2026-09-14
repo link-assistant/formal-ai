@@ -1,0 +1,82 @@
+name: Broken Link Checker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+      - '**.html'
+      - '.github/workflows/links.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**.md'
+      - '**.html'
+      - '.github/workflows/links.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+
+jobs:
+  link-checker:
+    name: Check Links
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-link-checker
+      cancel-in-progress: true
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check links with lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --cache
+            --max-cache-age 1d
+            --max-retries 3
+            --timeout 30
+            --exclude-path docs/case-studies
+            './**/*.md'
+            './**/*.html'
+          fail: false
+          output: lychee/out.md
+          jobSummary: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check broken links against Web Archive
+        if: steps.lychee.outputs.exit_code != 0
+        id: webarchive
+        run: python scripts/check_web_archive.py
+        env:
+          LYCHEE_OUTPUT: lychee/out.md
+
+      - name: Fail if broken links were found
+        if: always() && steps.lychee.outputs.exit_code != 0
+        run: |
+          echo "::error::Broken live links were detected."
+          echo ""
+          echo "What happened:"
+          echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
+          echo "  An available Web Archive snapshot is a suggested replacement; it does not make the live link valid."
+          echo ""
+          echo "How to fix:"
+          echo "  1. Review the 'Check links with lychee' step above for the broken links."
+          echo "  2. Replace links with suggested archive.org URLs when available."
+          echo "  3. Otherwise find an updated URL, remove the link, or add a known false positive to .lycheeignore."
+          echo ""
+          echo "Report location: lychee/out.md."
+          exit 1

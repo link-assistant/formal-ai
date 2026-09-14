@@ -1,7 +1,7 @@
 //! Data-driven agentic capability registry for issue #758.
 
-use super::parser::{parse_lino, split_pipe_list};
 use super::AGENTIC_TOOL_CAPABILITIES_LINO;
+use super::parser::{parse_lino, split_pipe_list};
 
 #[derive(Debug, Clone, Default)]
 pub struct AgenticToolCapability {

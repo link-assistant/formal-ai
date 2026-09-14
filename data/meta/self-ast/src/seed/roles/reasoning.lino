@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/roles/reasoning.rs
   language rust
   fidelity signature
-  byte_len 34154
+  byte_len 34159
   line_count 500
-  content_id source_module_5c9b2484c8cb717c
+  content_id source_module_670e58dcba7eb08d
   symbol_count 57
   symbols
     const ROLE_INTERROGATIVE_OPENER 18 18

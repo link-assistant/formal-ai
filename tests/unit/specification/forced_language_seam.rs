@@ -9,7 +9,7 @@
 //! supported language (`en`, `ru`, `hi`, `zh`) so the split can never silently
 //! regress one language.
 
-use formal_ai::language::{detect, set_forced_language, Language};
+use formal_ai::language::{Language, detect, set_forced_language};
 
 /// A prompt whose natural detection differs from the language we force onto it,
 /// paired with the slug the forced seam must emit.

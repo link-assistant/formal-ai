@@ -1,0 +1,14 @@
+PASS Rust         printf 'hello\nworld\n' | ./main
+PASS Python       printf 'hello\nworld\n' | python3 main.py
+PASS JavaScript   printf 'hello\nworld\n' | node main.js
+SKIP TypeScript   `tsc hello.ts`: sh: 1: tsc: not found
+PASS Go           printf 'hello\nworld\n' | go run main.go
+PASS C            printf 'hello\nworld\n' | ./main
+PASS C++          printf 'hello\nworld\n' | ./main
+PASS Java         printf 'hello\nworld\n' | java Main
+SKIP C#           `dotnet build`: 
+PASS Ruby         printf 'hello\nworld\n' | ruby main.rb
+SKIP Scala        `scalac Main.scala`: sh: 1: scalac: not found
+PASS Kotlin       printf 'hello\nworld\n' | java -jar Main.jar
+PASS PHP          printf 'hello\nworld\n' | php main.php
+pass=10 fail=0 skip=3

@@ -1,0 +1,8 @@
+node_path=1.1.1
+node_depth=3
+node_kind=composite
+left_child=1.1.1.1
+right_child=1.1.1.2
+left_result=Line 79:     pub children: Vec<Self>,; Line 180:     pub max_depth: u8,; together these exact observations compose the result.
+right_result=Line 89:             && !self.completion_criterion.starts_with("unresolved_"); Line 152:             pairs.push(("child", child.id.clone()));; together these exact observations compose the result.
+result=Line 79:     pub children: Vec<Self>,; Line 180:     pub max_depth: u8,; together these exact observations compose the result.; Line 89:             && !self.completion_criterion.starts_with("unresolved_"); Line 152:             pairs.push(("child", child.id.clone()));; together these exact observations compose the result.; together these exact observations compose the result.

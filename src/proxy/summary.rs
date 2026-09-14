@@ -62,10 +62,10 @@ pub fn summarize_sse_response(body: &str) -> ResponseSummary {
         let Ok(value) = serde_json::from_str::<Value>(data) else {
             continue;
         };
-        if value.get("type").and_then(Value::as_str) == Some("response.completed") {
-            if let Some(response) = value.get("response") {
-                return summarize_response_value(response);
-            }
+        if value.get("type").and_then(Value::as_str) == Some("response.completed")
+            && let Some(response) = value.get("response")
+        {
+            return summarize_response_value(response);
         }
     }
 
@@ -193,17 +193,15 @@ impl StreamingAnthropicAccumulator {
                     .and_then(|block| block.get("type"))
                     .and_then(Value::as_str)
                     == Some("tool_use")
-                {
-                    if let Some(name) = block
+                    && let Some(name) = block
                         .and_then(|block| block.get("name"))
                         .and_then(Value::as_str)
-                    {
-                        self.tool_calls
-                            .entry(index)
-                            .or_default()
-                            .name
-                            .push_str(name);
-                    }
+                {
+                    self.tool_calls
+                        .entry(index)
+                        .or_default()
+                        .name
+                        .push_str(name);
                 }
             }
             "content_block_delta" => {
@@ -360,13 +358,13 @@ fn apply_response_item(item: &Value, summary: &mut ResponseSummary) {
 }
 
 fn apply_gemini_part(part: &Value, summary: &mut ResponseSummary) {
-    if let Some(call) = part.get("functionCall") {
-        if let Some(name) = call.get("name").and_then(Value::as_str) {
-            summary.tool_calls.push(ProxyToolCallLog {
-                name: name.to_owned(),
-                arguments: arguments_from_value(call.get("args")),
-            });
-        }
+    if let Some(call) = part.get("functionCall")
+        && let Some(name) = call.get("name").and_then(Value::as_str)
+    {
+        summary.tool_calls.push(ProxyToolCallLog {
+            name: name.to_owned(),
+            arguments: arguments_from_value(call.get("args")),
+        });
     }
     append_content_value(part.get("text"), summary);
 }

@@ -1,0 +1,7 @@
+self_development_pull_request_contract
+  record_type "self_development_pull_request_contract"
+  issue "924"
+  authorship "end_to_end"
+  commit_coverage "every_non_merge_commit_introduced_by_pull_request"
+  evidence "session_and_committed_replay_per_commit"
+  review_ci_promotion "unchanged"

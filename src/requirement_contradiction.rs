@@ -6,7 +6,7 @@ use crate::language::Language;
 use crate::seed::response_for;
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
-use crate::statement_audit::{audit_corpus, AuditConfig, RepositoryCorpus, RepositoryDocument};
+use crate::statement_audit::{AuditConfig, RepositoryCorpus, RepositoryDocument, audit_corpus};
 
 const RESPONSE_INTENT: &str = "requirement_contradiction";
 const PRIOR_PLACEHOLDER: &str = "{prior}";

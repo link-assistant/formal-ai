@@ -1,0 +1,8 @@
+link_edit
+  leaf L20
+  path src/entity_resolution.rs
+  language rust
+  rule replace_literal
+    old "{term}"
+    new "{entity_term}"
+  expect "{entity_term}"

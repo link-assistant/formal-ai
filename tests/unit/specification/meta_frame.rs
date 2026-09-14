@@ -7,10 +7,10 @@
 //! compatibility of the *answer* is covered by the existing reasoning-loop and
 //! handler tests; here we assert the frame itself is correct and stable.
 
+use formal_ai::IntentKind;
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_frame::{AtomicityReason, NeedLedger, NeedStatus, ProblemFrame, WorkUnit};
 use formal_ai::translation::formalize_prompt;
-use formal_ai::IntentKind;
 
 fn frame_for(prompt: &str) -> ProblemFrame {
     let candidate = formalize_prompt(prompt, "en");

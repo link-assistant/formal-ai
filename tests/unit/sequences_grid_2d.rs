@@ -46,9 +46,11 @@ fn detects_symmetry() {
     let square = grid(2, 2, &[1, 1, 1, 1]);
     let sym = square.symmetries();
     assert!(sym.horizontal && sym.vertical && sym.rotational_180 && sym.diagonal);
-    assert!(square
-        .invariant_transforms()
-        .contains(&GridTransform::Rotate180));
+    assert!(
+        square
+            .invariant_transforms()
+            .contains(&GridTransform::Rotate180)
+    );
 }
 
 #[test]

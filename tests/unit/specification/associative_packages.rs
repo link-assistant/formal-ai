@@ -5,9 +5,9 @@
 //! Notation rather than one-off Rust edits.
 
 use formal_ai::{
-    compile_natural_language_skill, create_chat_completion_with_solver,
-    default_associative_packages, handle_api_request, AssociativePackage, ChatCompletionRequest,
-    PackagePermissionDecision, PackageStore, SolverConfig, UniversalSolver,
+    AssociativePackage, ChatCompletionRequest, PackagePermissionDecision, PackageStore,
+    SolverConfig, UniversalSolver, compile_natural_language_skill,
+    create_chat_completion_with_solver, default_associative_packages, handle_api_request,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -38,10 +38,12 @@ fn package_definition_exports_handlers_triggers_and_permissions() {
     assert!(notation.contains("handler"));
     assert!(notation.contains("trigger"));
     assert!(notation.contains("permission"));
-    assert!(package
-        .link_records()
-        .iter()
-        .any(|record| record.record_type == "PackagePermission"));
+    assert!(
+        package
+            .link_records()
+            .iter()
+            .any(|record| record.record_type == "PackagePermission")
+    );
 }
 
 #[test]
@@ -100,10 +102,12 @@ fn generalized_compiled_skill_package_carries_generated_tests_and_permissions() 
     let notation = package.links_notation();
     parse_indented(&notation).expect("package export must be valid Links Notation");
 
-    assert!(package
-        .permissions
-        .iter()
-        .any(|permission| permission.capability == "tool:local_shell"));
+    assert!(
+        package
+            .permissions
+            .iter()
+            .any(|permission| permission.capability == "tool:local_shell")
+    );
     assert!(notation.contains("permission"));
     assert!(notation.contains("tool:local_shell"));
 
@@ -157,11 +161,13 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
     .unwrap();
 
     let denied = create_chat_completion_with_solver(&request, &UniversalSolver::default());
-    assert!(denied.choices[0]
-        .message
-        .content
-        .plain_text()
-        .contains("agent mode"));
+    assert!(
+        denied.choices[0]
+            .message
+            .content
+            .plain_text()
+            .contains("agent mode")
+    );
 
     let solver = UniversalSolver::new(SolverConfig {
         agent_mode: true,

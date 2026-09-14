@@ -2,20 +2,24 @@
 //! aliases and transliterations, the popular-language sweep, execution
 //! evidence, and the parameterized `write_program` templates (issue #386 split).
 
-use super::{answer, assert_write_program_parameters, POPULAR_LANGUAGES};
+use super::{POPULAR_LANGUAGES, answer, assert_write_program_parameters};
 
 #[test]
 fn rust_hello_world_seed_compiles_and_runs() {
     let response = answer("Write me hello world program in Rust");
     assert_write_program_parameters(&response, "rust", "hello_world");
-    assert!(response
-        .links_notation
-        .contains("legacy_intent hello_world_rust"));
+    assert!(
+        response
+            .links_notation
+            .contains("legacy_intent hello_world_rust")
+    );
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("fn main()"));
-    assert!(response
-        .answer
-        .contains("Execution status: compiled and ran"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: compiled and ran")
+    );
     assert!(response.answer.contains("Check command: `rustc"));
     assert!(response.answer.contains("Run command: `./main`"));
     assert!(response.answer.contains("Hello, world!"));
@@ -97,9 +101,11 @@ fn python_hello_world_seed_runs() {
     assert_write_program_parameters(&response, "python", "hello_world");
     assert!(response.answer.contains("```python"));
     assert!(response.answer.contains("print(\"Hello, world!\")"));
-    assert!(response
-        .answer
-        .contains("Execution status: compiled and ran"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: compiled and ran")
+    );
     assert!(response.answer.contains("python3"));
 }
 
@@ -140,9 +146,11 @@ fn go_hello_world_seed_runs() {
     assert_write_program_parameters(&response, "go", "hello_world");
     assert!(response.answer.contains("```go"));
     assert!(response.answer.contains("fmt.Println"));
-    assert!(response
-        .answer
-        .contains("Execution status: compiled and ran"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: compiled and ran")
+    );
 }
 
 #[test]
@@ -151,9 +159,11 @@ fn c_hello_world_seed_compiles_and_runs() {
     assert_write_program_parameters(&response, "c", "hello_world");
     assert!(response.answer.contains("```c"));
     assert!(response.answer.contains("#include <stdio.h>"));
-    assert!(response
-        .answer
-        .contains("Execution status: compiled and ran"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: compiled and ran")
+    );
 }
 
 #[test]
@@ -161,12 +171,16 @@ fn typescript_hello_world_seed_reports_unavailable_execution() {
     let response = answer("hello world in TypeScript");
     assert_write_program_parameters(&response, "typescript", "hello_world");
     assert!(response.answer.contains("```typescript"));
-    assert!(response
-        .answer
-        .contains("Execution status: not compiled or run"));
-    assert!(response
-        .answer
-        .contains("Expected output after verification"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: not compiled or run")
+    );
+    assert!(
+        response
+            .answer
+            .contains("Expected output after verification")
+    );
 }
 
 #[test]
@@ -412,9 +426,11 @@ fn english_list_files_in_python_returns_program() {
     assert_write_program_parameters(&response, "python", "list_files");
     assert!(response.answer.contains("```python"));
     assert!(response.answer.contains("listdir"));
-    assert!(response
-        .answer
-        .contains("Execution status: compiled and ran"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: compiled and ran")
+    );
 }
 
 #[test]

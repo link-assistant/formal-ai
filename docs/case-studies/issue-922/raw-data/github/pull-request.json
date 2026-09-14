@@ -1,0 +1,12 @@
+{
+  "number": 1005,
+  "title": "[WIP] E75: Method learning for the universal problem-solving algorithm — propose recipe improvements from experience",
+  "state": "OPEN",
+  "isDraft": true,
+  "url": "https://github.com/link-assistant/formal-ai/pull/1005",
+  "author": "konard",
+  "baseRefName": "main",
+  "headRefName": "issue-922-d8d07e0db7e9",
+  "createdAt": "2026-08-13T20:40:19Z",
+  "capturedBeforeImplementation": true
+}

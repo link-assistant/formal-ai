@@ -1,9 +1,9 @@
 //! Regression coverage for issue #750's tool-result presentation and recall.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::protocol::{chat_tool_executions, ChatMessage, ToolCall};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+use formal_ai::protocol::{ChatMessage, ToolCall, chat_tool_executions};
 use formal_ai::{
-    create_chat_completion_with_solver, ChatCompletionRequest, SolverConfig, UniversalSolver,
+    ChatCompletionRequest, SolverConfig, UniversalSolver, create_chat_completion_with_solver,
 };
 
 fn completed_tool_turn(

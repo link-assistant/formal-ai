@@ -1,0 +1,1077 @@
+repository_statement_audit
+  summary
+    statement_count "80"
+    contradiction_count "0"
+    finding_count "1"
+    skipped_path_count "0"
+  statements
+    audited_statement_9e725831baf4329e
+      type "audited_statement"
+      text "This guide covers common CI/CD issues and their solutions for Rust projects using this template."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "3"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9d0b58d1a137c3ec
+      type "audited_statement"
+      text "1. [Release Jobs Skipped](#release-jobs-skipped)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "7"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_4eb504ee6bf7a06d
+      type "audited_statement"
+      text "2. [Version Already Released (False Positive)](#version-already-released-false-positive)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "8"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f7a28e56750bec26
+      type "audited_statement"
+      text "3. [GitHub Pages Deploy Succeeds but Site Is Not Updated](#github-pages-deploy-succeeds-but-site-is-not-updated)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "9"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_a48e0bf309aa0d05
+      type "audited_statement"
+      text "4. [Crates.io Publishing Fails](#cratesio-publishing-fails)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "10"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_37a0a0aaec77687a
+      type "audited_statement"
+      text "5. [Docker Hub Publishing Fails](#docker-hub-publishing-fails)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "11"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ce0a5dc1f64220b5
+      type "audited_statement"
+      text "6. [Secret Configuration Issues](#secret-configuration-issues)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "12"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_fd3fa10107c100c7
+      type "audited_statement"
+      text "7. [Multi-Language Repository Issues](#multi-language-repository-issues)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "13"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_4a23eb23375e6f4f
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "15"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_30509f47edac1580
+      type "audited_statement"
+      text "Release jobs (auto-release or manual-release) are skipped even though you expected them to run."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "20"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_1864e003824be0c8
+      type "audited_statement"
+      text "When a job like `detect-changes` is skipped (e.g., on `workflow_dispatch`), all dependent jobs are also skipped by default."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "25"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_2f60f4882ba5f328
+      type "audited_statement"
+      text "**Solution:** Ensure dependent jobs use `always() && !cancelled()` in their conditions:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "27"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_14cae7ea234ee85c
+      type "audited_statement"
+      text "Release jobs depend on `build` which depends on `lint` and `test`. If any of these fail, release jobs won't run."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "38"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_844836af6dbb9311
+      type "audited_statement"
+      text "**Solution:** Check the logs for lint, test, and build jobs. Fix any failures before releasing."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "40"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ac4075a3d173727a
+      type "audited_statement"
+      text "The job condition may not match your trigger event."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "43"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c1eee42a4ddd5c7b
+      type "audited_statement"
+      text "**Solution:** Verify the job's `if` condition matches your trigger:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "45"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c0edf93e2712ffe6
+      type "audited_statement"
+      text "`github.event_name == 'push'` for automatic releases on merge"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "46"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_bd400e2ffea76b04
+      type "audited_statement"
+      text "`github.event_name == 'workflow_dispatch'` for manual triggers"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "47"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_26545baf562f7d90
+      type "audited_statement"
+      text "[GitHub Actions Runner Issue #491](https://github.com/actions/runner/issues/491)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "50"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c4f92669d0f693ee
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "52"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c8f6a5ed4d5beb9f
+      type "audited_statement"
+      text 'The release workflow says "version already released" but the package is not actually on crates.io.'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "57"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_536fe408138273af
+      type "audited_statement"
+      text "The workflow was checking git tags instead of crates.io. Git tags can exist without the package being published (e.g., from previous GitHub-only releases)."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "60"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_aed3bb90c065b409
+      type "audited_statement"
+      text "This template now checks crates.io directly using the API:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "63"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_526f5c60b5314ffe
+      type "audited_statement"
+      text "Check if your package exists on crates.io:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "72"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d898e4f787db8c41
+      type "audited_statement"
+      text "[browser-commander Issue #29](https://github.com/link-foundation/browser-commander/issues/29)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "78"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_63c8810127ed2079
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "80"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_038430652ac39122
+      type "audited_statement"
+      text "The Pages deploy job reports success, but the live site still serves old content or a 404. E2E tests against the live Pages URL fail even though the deploy step passed."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "85"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_feaf4995b8b3b3a2
+      type "audited_statement"
+      text "The repository Pages source and the workflow deploy method are mismatched. If repository settings use GitHub Actions as the Pages source, pushing files to a `gh-pages` branch only proves that Git accepted the push. It does not prove that GitHub Pages created and served a workflow deployment."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "88"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_84f1065565963ce4
+      type "audited_statement"
+      text "For repositories configured with Pages source `GitHub Actions`, deploy a Pages artifact:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "91"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_6452f8a06f18557e
+      type "audited_statement"
+      text "When follow-up e2e tests verify the deployed site, pass `steps.deployment.outputs.page_url` through a job output instead of hard-coding the Pages URL."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "112"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_39b3ec4aa033bfc3
+      type "audited_statement"
+      text "Check the repository Pages source:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "115"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f91fc9cfbdebb2df
+      type "audited_statement"
+      text "If `build_type` is `workflow`, prefer the Pages artifact deployment path above."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "121"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_76f176cc92f5b508
+      type "audited_statement"
+      text "[GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "124"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_b74133569ef4943f
+      type "audited_statement"
+      text "[Issue 4 case study](../case-studies/issue-4/README.md)"
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "troubleshooting.md"
+        line "125"
+        kind "prose"
+      claim
+        subject "study](../case-studies/issue-4/README.md"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_e3da3b0444a7a63f
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_3d59365192bd0c21
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "127"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_dd1deb40583be1cd
+      type "audited_statement"
+      text 'The "Publish to Crates.io" step fails with an error.'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "132"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_52849e0b72e6cc67
+      type "audited_statement"
+      text "**Cause:** The `CARGO_REGISTRY_TOKEN` environment variable is empty or not set."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "137"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_807bbe4426301b00
+      type "audited_statement"
+      text "**Solution:**"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "139"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_79eca5a2082acc75
+      type "audited_statement"
+      text "1. Ensure you have a secret configured (either `CARGO_REGISTRY_TOKEN` or `CARGO_TOKEN`)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "140"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d851ba03d93017e9
+      type "audited_statement"
+      text "2. Map the secret correctly in your workflow:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "141"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c7a80e13ab26f007
+      type "audited_statement"
+      text "**Cause:** This version was already published to crates.io."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "150"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_af93cb16da193b9e
+      type "audited_statement"
+      text "**Note:** This is handled gracefully by the script and is not a failure."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "152"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c578751d8efec5d6
+      type "audited_statement"
+      text "**Cause:** Invalid or expired token."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "155"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_b01d8802759be674
+      type "audited_statement"
+      text "**Solution:**"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "157"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_3c92dbdf14ce6fb9
+      type "audited_statement"
+      text "1. Generate a new token at https://crates.io/settings/tokens"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "158"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_8f1e0b61d46125ba
+      type "audited_statement"
+      text "2. Update the secret in your repository or organization settings"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "159"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_0bf3890f9d5bba3d
+      type "audited_statement"
+      text "[browser-commander Issue #33](https://github.com/link-foundation/browser-commander/issues/33)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "162"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c24408d06e41ead2
+      type "audited_statement"
+      text "[Cargo Publishing Documentation](https://doc.rust-lang.org/cargo/reference/publishing.html)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "163"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_ca2e0124d52116cb
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "165"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_4de5d850e872c175
+      type "audited_statement"
+      text "The crates.io publish succeeds, but the release workflow fails before or during Docker Hub publishing."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "170"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9dffac3f33abe2f4
+      type "audited_statement"
+      text "Docker Hub publishing is optional. It runs only when all of these are true:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "174"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_6b5258174340ff01
+      type "audited_statement"
+      text "A root `Dockerfile` exists"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "176"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_0cb6bffcc795a8ed
+      type "audited_statement"
+      text "Repository variable `DOCKERHUB_IMAGE` is set to `namespace/repository`"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "177"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f69a33d8c257ac08
+      type "audited_statement"
+      text "`DOCKERHUB_USERNAME` is set as a repository variable or secret"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "178"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_5515a0763c56b3cc
+      type "audited_statement"
+      text "Repository secret `DOCKERHUB_TOKEN` is set"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "179"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_a9fdb76c5d6e60d3
+      type "audited_statement"
+      text "**Cause:** `DOCKERHUB_IMAGE` and `Dockerfile` enabled Docker publishing, but credentials are incomplete."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "184"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f210cd7f8e7fa000
+      type "audited_statement"
+      text "**Solution:** Set `DOCKERHUB_USERNAME` and create a Docker Hub access token stored as `DOCKERHUB_TOKEN`."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "186"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_72ae36395d9ad307
+      type "audited_statement"
+      text "**Cause:** A previous release run published the crate, then failed before Docker Hub or GitHub Release completed."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "189"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_6db8faa296bf7060
+      type "audited_statement"
+      text "**Solution:** Re-run the release workflow after fixing the Docker Hub configuration. The release check treats the version as incomplete and recreates missing artifacts without bumping the Cargo version again."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "191"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_a773e8a1256bb409
+      type "audited_statement"
+      text "Check whether a Docker Hub tag exists:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "194"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_8b69b3c38904720e
+      type "audited_statement"
+      text "[Docker GitHub Actions guide](https://docs.docker.com/build/ci/github-actions/)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "201"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f0e40905c418dc1a
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "203"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_fa35526ed4045b91
+      type "audited_statement"
+      text "If using organization secrets with different names, map them in your workflow:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "217"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_76057c505d36f1b1
+      type "audited_statement"
+      text "Secrets are masked in logs, but you can verify they're set:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "226"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_c69466b42d992d56
+      type "audited_statement"
+      text "[GitHub Actions Secrets Documentation](https://docs.github.com/actions/security-guides/using-secrets-in-github-actions)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "240"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9e42a766e3518499
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "242"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_cadb5b0d5067767b
+      type "audited_statement"
+      text "Scripts fail to find `Cargo.toml` or run in the wrong directory."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "247"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_17193d9951fb400f
+      type "audited_statement"
+      text "This template auto-detects the repository structure:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "250"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_4cd37de2b77d1fe4
+      type "audited_statement"
+      text "**Single-language:** `Cargo.toml` in repository root"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "251"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_3e54ee1f62a70ebb
+      type "audited_statement"
+      text "**Multi-language:** `Cargo.toml` in `rust/` subfolder"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "252"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_cc5f47d3d70ed61b
+      type "audited_statement"
+      text "If auto-detection fails, you can explicitly configure the Rust root:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "254"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_0ddebab76761a318
+      type "audited_statement"
+      text "For multi-language repos, ensure your workflow has the correct `working-directory`:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "264"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_fc601390e8214e96
+      type "audited_statement"
+      text "[browser-commander Issue #31](https://github.com/link-foundation/browser-commander/issues/31)"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "277"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_95005719e1fa2c6f
+      type "audited_statement"
+      text "---"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "279"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_e437fd8f9a42ec73
+      type "audited_statement"
+      text "View the workflow graph in GitHub Actions to see which jobs depend on which."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "284"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_0a051cd66e3c97ee
+      type "audited_statement"
+      text "Add this secret to enable debug logging:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "292"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_46cac1481b029571
+      type "audited_statement"
+      text "Name: `ACTIONS_STEP_DEBUG`"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "293"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_4ae364f8e23d2488
+      type "audited_statement"
+      text "Value: `true`"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "294"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d4c0143687b38c1c
+      type "audited_statement"
+      text "Sometimes crates.io has issues. Check: https://status.crates.io/"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "297"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_6deb4026e2f16ee0
+      type "audited_statement"
+      text "Before pushing, verify your package builds and passes checks:"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "troubleshooting.md"
+        line "300"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+  contradictions
+  findings
+    audit_finding_e123d16de2a916de
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_b74133569ef4943f"
+  associations
+    audit_association_8868d489e603a1f8
+      from "audit_finding_e123d16de2a916de"
+      to "audited_statement_b74133569ef4943f"
+    audit_association_4ba5d841eed47727
+      from "audited_statement_b74133569ef4943f"
+      to "evidence_provenance_e3da3b0444a7a63f"
+  skipped_paths

@@ -1,7 +1,5 @@
 //! Universal problem-solving algorithm.
-//!
-//! Every prompt the assistant ever receives walks the same 11-step loop
-//! described in `VISION.md` and `REQUIREMENTS.md`:
+//! Every prompt walks the same 11-step loop from `VISION.md` and `REQUIREMENTS.md`:
 //!
 //! 1. **Impulse** — append the raw user message to the event log.
 //! 2. **Formalization** — derive an intent (the smallest formal requirement).
@@ -25,28 +23,28 @@ use std::fmt::Write as _;
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
+    SelectedRule, SymbolicAnswer, answer_links_notation, language_aware_answer_for,
+    language_aware_intent_for, normalize_prompt, response_link_for_intent, stable_id,
 };
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::{
+    IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry,
     ordered_handler_names, record_intent_formalization, recover_write_program_rule,
-    rewrite_bare_program_coreference_rule, select_rule_for_intent, IntentFormalization,
-    IntentFormalizationCache, IntentFormalizationCacheEntry,
+    rewrite_bare_program_coreference_rule, select_rule_for_intent,
 };
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::probability::ProbabilityStore;
 use crate::proof_engine::ProofRenderConfig;
 use crate::rule_synthesis::try_construct_unknown_rule;
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
-use crate::solver_dispatch::{try_contextual_override, ContextualOutcome, SPECIALIZED_HANDLERS};
+use crate::solver_dispatch::{ContextualOutcome, SPECIALIZED_HANDLERS, try_contextual_override};
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handlers::{
-    finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
-    try_definition_merge_by_default, try_feature_capability, try_natural_language_tool_request,
-    try_playwright_script, try_program_blueprint, try_project_lookup, CapabilityRuntime,
-    SelfAwarenessRuntime,
+    CapabilityRuntime, SelfAwarenessRuntime, finalize_simple, try_agent_workspace_task,
+    try_behavior_rules_with_runtime, try_definition_merge_by_default, try_feature_capability,
+    try_natural_language_tool_request, try_playwright_script, try_program_blueprint,
+    try_project_lookup,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
@@ -55,10 +53,10 @@ use crate::solver_helpers::{
     requires_external_lookup,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
-use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
+use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
 use crate::translation::{
-    formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
-    FormalizationDecision, FormalizationSelectionConfig,
+    FormalizationDecision, FormalizationSelectionConfig, formalize_prompt_candidates,
+    select_formalization_candidate_with_probability_store,
 };
 
 /// Runtime surface where the solver is embedded.
@@ -630,6 +628,9 @@ impl UniversalSolver {
         log.append("intent", intent.clone());
 
         if let SelectedRule::WriteProgram(spec) = &rule {
+            if log.first_of("rule_synthesis_candidate").is_none() {
+                crate::coding::record_algorithm_construction(&mut log);
+            }
             log.append(
                 "execution_status",
                 spec.language.execution.status.label().to_owned(),
@@ -985,9 +986,8 @@ impl UniversalSolver {
     }
 }
 
-/// Convenience entry point that mirrors [`UniversalSolver::solve`] using the
-/// environment-derived [`SolverConfig`]. The deterministic-projection
-/// guarantee from `NON-GOALS.md` is preserved.
+/// Mirrors [`UniversalSolver::solve`] with the environment-derived [`SolverConfig`]
+/// while preserving the deterministic-projection guarantee from `NON-GOALS.md`.
 #[must_use]
 pub fn solve(prompt: &str) -> SymbolicAnswer {
     UniversalSolver::default().solve(prompt)

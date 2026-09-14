@@ -226,11 +226,22 @@ fn meta_recipe_lint_is_wired_into_ci() {
     let ci = of_kind(&records, "meta_ci");
     assert_eq!(ci.len(), 1, "exactly one CI wiring record expected");
     let entry = ci[0];
-    let workflow = read(entry.require("workflow_file"));
     let needle = entry.require("needle");
+    // Issue #991 split the wiring in two: a gate shard names the command, and
+    // the workflow runs that gate's stage. Both links must hold for the lint to
+    // actually run, so both are asserted -- a shard nothing invokes is as dead
+    // as a command nothing registers.
+    let gate = read(entry.require("gate_file"));
     assert!(
-        workflow.contains(needle),
-        "{} should run the {needle} lint",
+        gate.contains(needle),
+        "{} should register the {needle} lint",
+        entry.require("gate_file"),
+    );
+    let workflow = read(entry.require("workflow_file"));
+    let workflow_needle = entry.require("workflow_needle");
+    assert!(
+        workflow.contains(workflow_needle),
+        "{} should run `{workflow_needle}`, the stage the gate is registered in",
         entry.require("workflow_file"),
     );
     let suite = read(entry.require("suite_file"));

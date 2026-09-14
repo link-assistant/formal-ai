@@ -94,25 +94,24 @@ fn resolve_fibonacci_references(text: &str) -> String {
     let mut out: Vec<String> = Vec::new();
     let mut index = 0;
     while index < tokens.len() {
-        if let Some(n) = parse_ordinal(tokens[index]) {
-            if tokens
+        if let Some(n) = parse_ordinal(tokens[index])
+            && tokens
                 .get(index + 1)
                 .is_some_and(|next| bare_word(next) == "fibonacci")
-            {
-                // Drop a determiner we already emitted ("the 10th" -> "55").
-                if out.last().is_some_and(|last| bare_word(last) == "the") {
-                    out.pop();
-                }
-                out.push(fibonacci_value(n).to_string());
-                index += 2;
-                // Absorb a trailing "number" / "term" / "sequence" noun.
-                if tokens.get(index).is_some_and(|next| {
-                    matches!(bare_word(next).as_str(), "number" | "term" | "sequence")
-                }) {
-                    index += 1;
-                }
-                continue;
+        {
+            // Drop a determiner we already emitted ("the 10th" -> "55").
+            if out.last().is_some_and(|last| bare_word(last) == "the") {
+                out.pop();
             }
+            out.push(fibonacci_value(n).to_string());
+            index += 2;
+            // Absorb a trailing "number" / "term" / "sequence" noun.
+            if tokens.get(index).is_some_and(|next| {
+                matches!(bare_word(next).as_str(), "number" | "term" | "sequence")
+            }) {
+                index += 1;
+            }
+            continue;
         }
         out.push(tokens[index].to_owned());
         index += 1;
@@ -325,10 +324,10 @@ fn normalize_box_total_problem(text: &str) -> Option<WordProblemNormalization> {
     if rules.len() < 2 {
         return None;
     }
-    if let Some(count) = declared_count {
-        if rules.len() < count {
-            return None;
-        }
+    if let Some(count) = declared_count
+        && rules.len() < count
+    {
+        return None;
     }
 
     let result_label = result_label.unwrap_or_else(|| String::from("items"));

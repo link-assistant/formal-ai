@@ -1,0 +1,984 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/.github/workflows/desktop-release.yml	2026-09-05 09:39:56.882043236 +0000
++++ .github/workflows/desktop-release.yml	2026-09-05 09:37:13.887816115 +0000
+@@ -1,189 +1,865 @@
++# Cross-platform desktop release (Linux, Windows, macOS) for formal-ai.
++#
++# Produces the exact assets the /download page (src/web/download) resolves from
++# the GitHub Releases API:
++#   formal-ai-desktop-macos-<arch>-<version>.{dmg,zip}
++#   formal-ai-desktop-windows-installer-<arch>-<version>.exe
++#   formal-ai-desktop-windows-portable-<arch>-<version>.exe
++#   formal-ai-desktop-linux-<arch>-<version>.{AppImage,deb,tar.gz}
++#   latest.yml, latest-mac.yml, latest-linux.yml, and *.blockmap updater metadata
++#   (Electron Builder emits x86_64/amd64 Linux x64 aliases; the build job
++#    normalizes them to x64 before checksums/uploads and rewrites update metadata.)
++# plus a consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt, and SLSA build
++# provenance attestations (verifiable with `gh attestation verify`).
++#
++# Triggers:
++#   * release: published     - fires for releases published manually (UI) or via
++#                              a PAT. NOTE: the automated `[Rust] x.y.z` releases
++#                              created by the CI/CD Pipeline use GITHUB_TOKEN, so
++#                              GitHub suppresses the `release` event for them
++#                              (recursion guard). The workflow_run trigger below
++#                              covers that case automatically.
++#   * workflow_run           - after the "CI/CD Pipeline" completes on main (with
++#                              ANY conclusion except cancelled/skipped -- the
++#                              release is published in an early job, so a later job
++#                              failing must not suppress the desktop build), build
++#                              desktop assets for the resolved release tag
++#                              (idempotent: skips when assets already exist).
++#   * workflow_dispatch      - manual rebuild for a specific (or latest) tag.
+ name: Desktop Release
+ 
+-# zizmor: ignore[dangerous-triggers] - `workflow_run` is only used to react to
+-# the CI/CD Pipeline finishing on `main`; every job runs with `contents: read`,
+-# checks out either the default branch or a published release tag, and never
+-# checks out the triggering run's head commit, so no untrusted code is executed.
+-on: # zizmor: ignore[dangerous-triggers]
+-  pull_request:
+-    types: [opened, synchronize, reopened]
+-  workflow_run:
+-    workflows: [CI/CD Pipeline]
+-    types: [completed]
++on:
+   workflow_dispatch:
+     inputs:
+       tag:
+-        description: Release tag (defaults to the latest published release)
++        description: "Release tag to build (e.g. v0.152.0). Leave blank for the latest release."
+         required: false
+-        type: string
++        default: ""
++  release:
++    types: [published]
++  workflow_run:
++    workflows: ["CI/CD Pipeline"]
++    types: [completed]
++  # Issue #808: packaging and macOS signing used to run only after a release
++  # existed, so a desktop regression was always discovered post-merge -- which is
++  # exactly how the "unsealed contents present in the root directory of an
++  # embedded framework" codesign failure reached main. On pull requests the same
++  # build matrix runs in dry-run mode: everything up to and including the smoke
++  # tests, with every publishing step (attest, release upload, SHA256SUMS)
++  # skipped. Path-filtered so unrelated pull requests do not pay for six runners.
++  pull_request:
++    types: [opened, synchronize, reopened]
++    paths:
++      - 'desktop/**'
++      - 'vscode/**'
++      - '.github/workflows/desktop-release.yml'
++      - 'scripts/desktop-release-resolve.sh'
++      - 'scripts/install-node-dependencies.sh'
++      # The build job runs `cargo build --release --bin formal-ai` and bundles
++      # the result, so a Rust-only change can break desktop packaging while
++      # touching none of the paths above. Without these entries that breakage is
++      # a false negative on the pull request and only surfaces post-merge --
++      # precisely the failure mode issue #808 was filed for.
++      - 'src/**'
++      - 'Cargo.toml'
++      - 'Cargo.lock'
+ 
+ permissions:
+   contents: read
+ 
+-concurrency:
+-  group: desktop-release-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
++env:
++  GIT_CONFIG_COUNT: '1'
++  GIT_CONFIG_KEY_0: init.defaultBranch
++  GIT_CONFIG_VALUE_0: main
++  CARGO_NET_RETRY: '10'
++  CARGO_HTTP_MULTIPLEXING: 'false'
++  RUSTFLAGS: -Dwarnings
+ 
+ jobs:
+   resolve:
+-    name: Resolve release
+-    if: ${{ vars.DESKTOP_RELEASE_ENABLED == 'true' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
++    name: Resolve target release
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 10
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-resolve
++      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
++    permissions:
++      contents: read
++    # For workflow_run, continue after ANY completed main-branch pipeline except
++    # cancelled/skipped runs (issue #479). We intentionally do NOT gate on
++    # conclusion == 'success': the auto-release publishes the GitHub release in an
++    # EARLY pipeline job, so a LATER job failing (e.g. the E2E Pages probe timing
++    # out) still leaves a real, asset-less release that desktop assets must heal.
++    # Gating on full-pipeline green meant one unrelated late failure suppressed
++    # every desktop build -> "Not available in latest release". The actual
++    # decision to build is delegated to scripts/desktop-release-resolve.sh, whose
++    # idempotency guard skips when the resolved release already carries desktop
++    # assets, so running on a non-success conclusion is safe and self-healing.
++    # Pull requests resolve nothing: there is no release to heal and no tag to
++    # check out. The job is skipped and `build` admits the skipped dependency
++    # explicitly, so the packaging matrix still runs against the PR head.
++    if: >-
++      github.event_name != 'pull_request' &&
++      (github.event_name != 'workflow_run' ||
++      (github.event.workflow_run.head_branch == 'main' &&
++       github.event.workflow_run.conclusion != 'cancelled' &&
++       github.event.workflow_run.conclusion != 'skipped'))
+     outputs:
+-      tag: ${{ steps.release.outputs.tag }}
+-      should_build: ${{ steps.release.outputs.should_build }}
++      tag: ${{ steps.pick.outputs.tag }}
++      should_build: ${{ steps.pick.outputs.should_build }}
+     steps:
+-      - uses: actions/checkout@v6
+-        with:
+-          persist-credentials: false
+-      - name: Resolve release tag
+-        id: release
++      # Check out the repo so the resolve logic lives in a unit-tested script
++      # (scripts/desktop-release-resolve.sh) instead of being inlined here. The
++      # script only needs to *exist*; it queries the GitHub API for everything
++      # else, so checking out the default ref is sufficient.
++      - uses: actions/checkout@v7
++
++      - name: Resolve tag and whether desktop assets are needed
++        id: pick
+         env:
+           GH_TOKEN: ${{ github.token }}
+           EVENT: ${{ github.event_name }}
+-          INPUT_TAG: ${{ inputs.tag }}
++          INPUT_TAG: ${{ github.event.inputs.tag }}
++          RELEASE_TAG: ${{ github.event.release.tag_name }}
+           REPO: ${{ github.repository }}
+           WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
++        # Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
++        # commit whose first parent is the completed CI head SHA, so matching the
++        # tag to the head SHA directly always failed and desktop assets were
++        # never built. desktop-release-resolve.sh resolves the latest release
++        # instead (with a defensive exact-SHA tier and an idempotency guard) and
++        # emits verbose ::group:: diagnostics for future debugging.
+         run: bash scripts/desktop-release-resolve.sh
+ 
++  # Issue #1017 (D19): the six packaging legs of run 31993872684 started across
++  # 62 minutes, and each resolved the base branch tip itself -- `linux-x64` and
++  # `macos-arm64` merged 1858b3386 while `windows-arm64` merged d1439e557, so
++  # six installers built from two source trees shipped as one release set with
++  # nothing comparing them. One commit for every merge in this run.
++  base:
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-base
++      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
++    uses: ./.github/workflows/pin-base-commit.yml
++    permissions:
++      contents: read
++
+   build:
+     name: Build ${{ matrix.label }}
+-    needs: resolve
++    needs: [resolve, base]
++    concurrency:
++      group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}
++      queue: max
++    # `resolve` is skipped on pull requests, and a skipped dependency would
++    # normally skip this job too -- hence the explicit `!cancelled()`.
+     if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+     strategy:
+       fail-fast: false
+       matrix:
+         include:
+-          - { label: linux-x64, runner: ubuntu-latest }
+-          - { label: linux-arm64, runner: ubuntu-24.04-arm }
+-          - { label: macos-x64, runner: macos-15-intel }
+-          - { label: macos-arm64, runner: macos-14 }
+-          - { label: windows-x64, runner: windows-latest }
+-          - { label: windows-arm64, runner: windows-11-arm }
+-    runs-on: ${{ matrix.runner }}
+-    timeout-minutes: 30
++          - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64",     binext: "",     capmin: 40 }
++          - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64",   binext: "",     capmin: 40 }
++          - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64",     binext: "",     capmin: 50 }
++          - { os: macos-14,         ebflag: "--mac",   label: "macos-arm64",   binext: "",     capmin: 40 }
++          - { os: windows-latest,   ebflag: "--win",   label: "windows-x64",   binext: ".exe", capmin: 50 }
++          - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", binext: ".exe", capmin: 50 }
++    runs-on: ${{ matrix.os }}
++    # Windows ARM64 normally takes 25-28 minutes, and runs 30573608801
++    # (attempts 1 and 2) were both cancelled at the former 30-minute cap while
++    # electron-builder was completing a valid installer. Keep the job bounded
++    # while allowing for runner and antivirus/file-lock variance.
++    #
++    # Issue #896 added the published web-search/web-capture Rust crates. Their
++    # current releases expose the server/browser dependency graphs
++    # unconditionally (upstream web-search#22 and web-capture#148). On the cold
++    # macos-15-intel runner in run 30788311906, release compilation took 33m21s
++    # and the otherwise-valid job hit the 40-minute cap while creating the DMG.
++    # The Windows targets moved the same way: in run 30832897812, windows-x64
++    # compiled for 17m39s, packaged a valid installer, and was cancelled at the
++    # cap while uploading its checksum fragment, with windows-arm64 finishing at
++    # 36m04s. Give those three targets bounded packaging headroom until the
++    # adapter-only upstream features let us remove the heavyweight graph; the
++    # Linux and macOS ARM64 targets stay well under 40 minutes.
++    #
++    # The cap lives in the matrix (`capmin`) rather than in an expression here
++    # so that the packaging retry guard can be derived from the *same* number:
++    # two independent copies of "50" would drift, and a guard computed from a
++    # stale cap is worse than no guard at all.
++    timeout-minutes: ${{ matrix.capmin }}
+     permissions:
+-      contents: read
++      contents: write
++      id-token: write
++      attestations: write
+     defaults:
+       run:
+         shell: bash
+     steps:
+-      - uses: actions/checkout@v6
++      # Issue #1017: the packaging retry must know how much of the job clock is
++      # left, not how long packaging usually takes. `timeout-minutes` starts
++      # before this step, so the reserve covers both the runner's own set-up and
++      # everything that has to happen *after* packaging (artifact normalization,
++      # the DMG mount/codesign smoke test, checksums and uploads).
++      - name: Record the job deadline
++        env:
++          JOB_TIMEOUT_MINUTES: ${{ matrix.capmin }}
++          POST_PACKAGING_RESERVE_SECONDS: "360"
++        run: |
++          set -euo pipefail
++          deadline=$(( $(date +%s) + JOB_TIMEOUT_MINUTES * 60 - POST_PACKAGING_RESERVE_SECONDS ))
++          echo "FORMAL_AI_JOB_DEADLINE_EPOCH=${deadline}" >> "$GITHUB_ENV"
++
++      - uses: actions/checkout@v7
+         with:
+-          persist-credentials: false
++          # On pull requests there is no resolved tag: build the PR head, which
++          # is the whole point of the dry run.
+           ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
+-      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable branch @ 2026-09-03
++          # Quoted '0'/'1': GitHub's `&&`/`||` treat the number 0 as falsy, so an
++          # unquoted 0 here would silently select the other branch.
++          # 0 is needed by simulate-fresh-merge.sh, which merges origin/<base>.
++          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
++
++      # Issue #812: `release.yml` simulates the fresh merge in `lint` and `test`,
++      # but this workflow -- the only one that packages the desktop app -- did
++      # not, so the packaging dry run validated the PR head against a merge
++      # preview that predates any commit pushed to the base branch since the last
++      # sync. A packaging break introduced by a concurrent main commit stayed
++      # invisible until after the merge, which is how desktop breakages have
++      # reached tags before.
++      - name: Simulate fresh merge with base branch (PR only)
++        if: github.event_name == 'pull_request'
++        env:
++          BASE_REF: ${{ github.base_ref }}
++          # Issue #1017: the commit resolved once by `base`, so all six
++          # packaging legs merge the same one however far apart they start.
++          BASE_COMMIT: ${{ needs.base.outputs.commit }}
++        run: bash scripts/simulate-fresh-merge.sh
++
++      - name: Install Rust toolchain
++        uses: dtolnay/rust-toolchain@stable
++
++      - name: Cache Rust compiler outputs
++        # Cargo can use a response file for web-sys's generated feature-check
++        # arguments on Windows, but sccache respawns rustc with the expanded
++        # command and hits CreateProcess's command-line limit (os error 206).
++        if: runner.os != 'Windows'
++        uses: mozilla-actions/sccache-action@v0.0.11
+         with:
+-          # The `stable` ref is what supplied the action's default toolchain;
+-          # once pinned to a hash the input has to be restated explicitly.
+-          toolchain: stable
+-      - name: Package desktop application
+-        env:
+-          DESKTOP_RELEASE_TAG: ${{ github.event_name == 'pull_request' && 'dry-run' || needs.resolve.outputs.tag }}
+-          # electron-builder 26 requires both values for certificate-free PR builds:
+-          CSC_FOR_PULL_REQUEST: 'true'
+-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+-          MATRIX_LABEL: ${{ matrix.label }}
+-        run: bash scripts/package-desktop.sh "$MATRIX_LABEL" desktop-dist
+-      - name: Smoke test release assets
+-        env:
+-          OUTPUT_DIR: desktop-dist
+-        run: |
+-          set -euo pipefail
+-          first_asset="$(find "$OUTPUT_DIR" -type f -size +0c -print -quit)"
+-          [ -n "$first_asset" ] || { echo "No non-empty desktop assets were produced" >&2; exit 1; }
+-          find "$OUTPUT_DIR" -type f -size +0c -print | sed 's/^/Verified /'
+-          # Electron apps must retain a signature envelope. Use
+-          # electron-builder --mac ... -c.mac.identity=- and set
+-          # CSC_FOR_PULL_REQUEST=true on the ad-hoc path.
+-          while IFS= read -r app; do
+-            [ -f "$app/Contents/_CodeSignature/CodeResources" ] || {
+-              echo "Missing macOS CodeResources signature envelope: $app" >&2; exit 1;
+-            }
+-          done < <(find "$OUTPUT_DIR" -type d -name '*.app' -print)
+-      - name: Create checksum fragment
++          # v0.17.0 expands Rust response files before spawning rustc and
++          # exceeds the Windows command-line limit for web-sys.
++          version: v0.16.0
++
++      - name: Enable Rust compiler cache
++        if: runner.os != 'Windows'
++        run: |
++          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
++          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
++
++      # Keep Cargo's dependency cache out of this matrix. A cold Windows build
++      # completes inside the job budget, while actions/cache registers a
++      # post-job archive of Cargo home: on run 30398883119 all product work and
++      # uploads passed, then compressing 194 MB consumed the remaining 3m40 and
++      # GitHub cancelled the otherwise-successful job. Unix runners retain
++      # expensive compiler outputs through sccache without that post-packaging
++      # failure mode; Windows uses Cargo's direct rustc response-file path.
++      - name: Build formal-ai binary (release)
++        run: cargo build --release --bin formal-ai
++
++      - name: Setup Node
++        uses: actions/setup-node@v7
++        with:
++          node-version: 22
++
++      - name: Install desktop dependencies
++        run: scripts/install-node-dependencies.sh desktop
++
++      # Issue #990: execute the real published command-stream adapter after the
++      # production dependency tree is installed, on every packaged platform.
++      - name: Test command-stream production adapter
++        working-directory: desktop
++        run: node --test scripts/command-runner.test.mjs
++
++      - name: Prepare desktop resources (web + bundled binary + version sync)
++        working-directory: desktop
++        run: node scripts/prepare-resources.mjs
++
++      # Issue #1017: electron-builder fetches its 7-Zip toolset -- and, on
++      # macOS, the dmgbuild bundle -- with a single `got` request whose only
++      # deadline is 600 000 ms. In run 95255998673 that request stalled for the
++      # full ten minutes on macos-15-intel: the retry underneath recovered, the
++      # DMG, ZIP and both blockmaps were written, and the build still failed
++      # because AsyncTaskManager.awaitTasks() rethrew the timeout it had already
++      # recorded. Seeding the checksum-validated archive cache that
++      # `downloadAndExtract` consults before it touches the network removes the
++      # request itself. Every failure here is a warning only, so packaging falls
++      # back to downloading the toolset exactly as it does today.
++      - name: Prefetch electron-builder toolsets
++        working-directory: desktop
++        run: node scripts/prefetch-builder-toolsets.mjs
++
++      - name: Check macOS signing secrets
++        if: matrix.ebflag == '--mac'
++        id: mac_secrets
+         env:
+-          MATRIX_LABEL: ${{ matrix.label }}
++          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
++          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
++          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
++          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
++          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+         run: |
+           set -euo pipefail
+-          cd desktop-dist
+-          if command -v sha256sum >/dev/null; then
+-            find . -type f -print0 | sort -z | xargs -0 sha256sum
++          missing=()
++          for name in MAC_CSC_LINK MAC_CSC_KEY_PASSWORD APPLE_API_KEY APPLE_API_KEY_ID APPLE_API_ISSUER; do
++            if [ -z "${!name}" ]; then
++              missing+=("$name")
++            fi
++          done
++
++          if [ "${#missing[@]}" -gt 0 ]; then
++            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
++            echo "mode=adhoc" >> "$GITHUB_OUTPUT"
++            echo "::notice::macOS signing/notarization secrets are not configured: ${missing[*]}"
++            echo "Building ad-hoc signed macOS artifacts without notarization for direct testing."
+           else
+-            find . -type f -exec shasum -a 256 {} +
+-          fi | sed 's#  \./#  #' > "SHA256SUMS-$MATRIX_LABEL.partial"
+-      - name: Upload packaged assets
++            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
++            echo "mode=signed" >> "$GITHUB_OUTPUT"
++          fi
++
++      # Issue #1055: through the retry wrapper, like the macOS legs. The
++      # toolset download electron-builder makes is the same on every platform,
++      # and `Build windows-x64` failed on `read ECONNRESET` mid-download while
++      # the previous run of that job, on the same branch, had succeeded.
++      - name: Package desktop app (Linux/Windows)
++        if: matrix.ebflag != '--mac'
++        working-directory: desktop
++        env:
++          CSC_IDENTITY_AUTO_DISCOVERY: "false"
++          # Issue #1017's rule applies here too: without the deadline a retry
++          # can outlive the job clock, and GitHub reports that kill as
++          # `cancelled` rather than `failure`.
++          FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
++        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
++
++      - name: Package desktop app (macOS signed)
++        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets == 'true'
++        working-directory: desktop
++        env:
++          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
++          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
++          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
++          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
++          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
++          DEBUG: electron-builder,electron-notarize*
++          # The retry wrapper refuses an attempt the job cannot finish. See the
++          # comment on the ad-hoc step below.
++          FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
++        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
++
++      # Issue #479: electron-builder 26 changed macOS signing control flow. Its
++      # MacPackager.sign() now calls findSigningIdentity(), which returns null --
++      # skipping signing entirely and NEVER invoking the custom `mac.sign` hook --
++      # unless a real identity is found OR `mac.identity` is exactly "-" (ad-hoc).
++      # See packages/app-builder-lib/src/targets/mac/MacTargetHelper.ts: only the
++      # `qualifier === "-"` branch yields an Identity when no certificate exists.
++      # Without `-c.mac.identity=-` the produced .app had no _CodeSignature, so the
++      # pre-upload smoke test failed with "missing its signed CodeResources
++      # envelope" and macOS assets were never published. Passing identity="-" makes
++      # electron-builder reach doSign(), which runs our ad-hoc hook (deep ad-hoc
++      # sign via @electron/osx-sign + an explicit root-bundle re-seal).
++      - name: Package desktop app (macOS ad-hoc)
++        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets != 'true'
++        working-directory: desktop
++        env:
++          CSC_IDENTITY_AUTO_DISCOVERY: "false"
++          MACOS_ADHOC_SIGN: "1"
++          # Issue #808: electron-builder's isSignAllowed() bails out with
++          # "Current build is a part of pull request, code signing will be
++          # skipped" whenever GITHUB_BASE_REF is set (builder-util
++          # `isPullRequest()`), so the pull-request dry run produced an unsigned
++          # .app with no CodeResources and the smoke test failed. The security
++          # warning attached to this flag is about *secret* certificates leaking
++          # to fork builds; this step only runs when no signing secrets exist and
++          # signs ad-hoc with identity `-`, so there is nothing to leak.
++          CSC_FOR_PULL_REQUEST: "true"
++          FORMAL_AI_MACOS_SIGN_DEBUG: "1"
++          DEBUG: electron-builder,electron-osx-sign*
++          # Wall-clock ceiling for packaging including retries, derived from the
++          # job's own clock rather than guessed. `timeout-minutes` reports the
++          # kill it performs as **cancelled**, not failed, which is exactly the
++          # false negative this issue exists to remove, so a retry that cannot
++          # finish inside the cap must not be started.
++          #
++          # The number has to be derived because packaging does not start at a
++          # fixed point: in run 95255998673 it began 28 min into the job (26 of
++          # them in `cargo build`) and finished 43.7 min into a 50-minute cap,
++          # while run 30788311906 compiled for 33m21s before packaging at all.
++          # With this deadline the wrapper sees ~936s left in the first case --
++          # room for a retry after a healthy ~320s attempt, none after the 919s
++          # stalled one -- and ~495s in the second, where there is no room for a
++          # retry and it correctly declines to try.
++          FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
++        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
++
++      - name: Normalize desktop artifact names
++        working-directory: desktop
++        run: node scripts/normalize-artifacts.mjs
++
++      - name: Smoke test macOS release artifacts
++        if: matrix.ebflag == '--mac'
++        working-directory: desktop
++        env:
++          MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}
++        run: |
++          set -euo pipefail
++          shopt -s nullglob
++
++          VERSION="$(node -p "require('./package.json').version")"
++          case "${{ matrix.label }}" in
++            macos-x64) ARCH="x64" ;;
++            macos-arm64) ARCH="arm64" ;;
++            *)
++              echo "::error::Unexpected macOS matrix label: ${{ matrix.label }}"
++              exit 1
++              ;;
++          esac
++
++          required_macos_artifacts=(
++            "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"
++            "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.zip"
++          )
++          for artifact in "${required_macos_artifacts[@]}"; do
++            if [ ! -f "$artifact" ]; then
++              echo "::error file=$artifact::Expected versioned macOS release artifact was not created."
++              ls -la release || true
++              exit 1
++            fi
++          done
++
++          # An array, not a bare quoted word: `for x in "a"` reads as an attempt
++          # to word-split and is flagged by shellcheck (SC2066). Behaviour is
++          # unchanged -- exactly one DMG per matrix arch.
++          dmgs=("release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg")
++          for dmg in "${dmgs[@]}"; do
++            echo "Mounting DMG: $dmg"
++            mount_dir="$(mktemp -d)"
++            installed_app="$RUNNER_TEMP/formal-ai Desktop.app"
++
++            hdiutil attach "$dmg" -mountpoint "$mount_dir" -nobrowse -readonly
++            mounted_app="$mount_dir/formal-ai Desktop.app"
++
++            if [ ! -d "$mounted_app" ]; then
++              echo "::error file=$dmg::Mounted DMG does not contain formal-ai Desktop.app."
++              find "$mount_dir" -maxdepth 2 -print
++              hdiutil detach "$mount_dir"
++              exit 1
++            fi
++
++            rm -rf "$installed_app"
++            ditto "$mounted_app" "$installed_app"
++            hdiutil detach "$mount_dir"
++
++            app_info="$installed_app/Contents/Info.plist"
++            executable="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_info")"
++            bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app_info")"
++
++            if [ "$bundle_id" != "ai.formal.desktop" ]; then
++              echo "::error file=$dmg::Unexpected macOS app bundle identifier: $bundle_id"
++              exit 1
++            fi
++
++            if [ ! -x "$installed_app/Contents/MacOS/$executable" ]; then
++              echo "::error file=$dmg::Mounted app executable is missing or not executable."
++              find "$installed_app/Contents" -maxdepth 3 -print
++              exit 1
++            fi
++
++            if [ ! -f "$installed_app/Contents/_CodeSignature/CodeResources" ]; then
++              echo "::error file=$dmg::Mounted app is missing its signed CodeResources envelope."
++              find "$installed_app/Contents/_CodeSignature" -maxdepth 1 -print 2>/dev/null || true
++              exit 1
++            fi
++
++            codesign --verify --deep --strict --verbose=2 "$installed_app"
++
++            if [ "$MACOS_BUILD_MODE" = "signed" ]; then
++              spctl --assess --type execute --verbose=4 "$installed_app"
++              xcrun stapler validate "$installed_app"
++            else
++              codesign --display --verbose=2 "$installed_app" 2>&1 | tee "$RUNNER_TEMP/formal-ai-macos-codesign.txt"
++              if ! grep -Fq 'Signature=adhoc' "$RUNNER_TEMP/formal-ai-macos-codesign.txt"; then
++                echo "::error file=$dmg::Expected ad-hoc macOS signature for no-Apple-account build."
++                exit 1
++              fi
++            fi
++          done
++
++      # The macOS smoke test above is the only artifact verification this
++      # workflow had, so the four Linux/Windows targets were uploaded to the
++      # release with nothing checking that electron-builder actually produced
++      # them under the expected names. A rename or a partial package silently
++      # shipped. The deep checks are macOS-only by nature (hdiutil, codesign),
++      # but existence and non-emptiness are checkable everywhere.
++      - name: Smoke test Linux/Windows release artifacts
++        if: matrix.ebflag != '--mac'
++        shell: bash
++        working-directory: desktop
++        run: |
++          set -euo pipefail
++
++          VERSION="$(node -p "require('./package.json').version")"
++          case "${{ matrix.label }}" in
++            linux-x64|linux-arm64)
++              ARCH="${{ matrix.label }}"; ARCH="${ARCH#linux-}"
++              required=(
++                "release/formal-ai-desktop-linux-${ARCH}-${VERSION}.AppImage"
++                "release/formal-ai-desktop-linux-${ARCH}-${VERSION}.deb"
++                "release/formal-ai-desktop-linux-${ARCH}-${VERSION}.tar.gz"
++              )
++              ;;
++            windows-x64|windows-arm64)
++              ARCH="${{ matrix.label }}"; ARCH="${ARCH#windows-}"
++              required=(
++                "release/formal-ai-desktop-windows-installer-${ARCH}-${VERSION}.exe"
++                "release/formal-ai-desktop-windows-portable-${ARCH}-${VERSION}.exe"
++              )
++              ;;
++            *)
++              echo "::error::Unexpected matrix label for the Linux/Windows smoke test: ${{ matrix.label }}"
++              exit 1
++              ;;
++          esac
++
++          failed=0
++          for artifact in "${required[@]}"; do
++            if [ ! -f "$artifact" ]; then
++              echo "::error file=$artifact::Expected versioned release artifact was not created."
++              failed=1
++            elif [ ! -s "$artifact" ]; then
++              echo "::error file=$artifact::Release artifact is empty."
++              failed=1
++            else
++              echo "ok $artifact ($(wc -c < "$artifact") bytes)"
++            fi
++          done
++          if [ "$failed" -ne 0 ]; then
++            ls -la release || true
++            exit 1
++          fi
++
++      - name: Collect artifacts and checksums
++        id: collect
++        working-directory: desktop
++        run: |
++          set -euo pipefail
++          files=()
++          for f in release/formal-ai-desktop-*; do
++            case "$f" in
++              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz|*.blockmap) files+=("$f") ;;
++            esac
++          done
++          for f in release/latest.yml release/latest-mac.yml release/latest-linux.yml; do
++            [ -f "$f" ] && files+=("$f")
++          done
++          if [ ${#files[@]} -eq 0 ]; then
++            echo "No desktop artifacts produced for ${{ matrix.label }}" >&2
++            exit 1
++          fi
++          printf 'Artifacts:\n'; printf '  %s\n' "${files[@]}"
++          # Standard `sha256sum`-format lines with bare filenames so the
++          # in-browser verifier on the /download page can match by name.
++          node -e '
++            const fs = require("fs"); const cp = require("crypto"); const path = require("path");
++            const dir = "release";
++            const re = /^(formal-ai-desktop-.*\.(dmg|zip|exe|AppImage|deb|tar\.gz|blockmap)|latest(-mac|-linux)?\.yml)$/;
++            const names = fs.readdirSync(dir).filter((n) => re.test(n)).sort();
++            for (const n of names) {
++              const hash = cp.createHash("sha256").update(fs.readFileSync(path.join(dir, n))).digest("hex");
++              process.stdout.write(hash + "  " + n + "\n");
++            }
++          ' > "release/SHA256SUMS-${{ matrix.label }}.partial"
++          cat "release/SHA256SUMS-${{ matrix.label }}.partial"
++
++      # Attest before publishing, not after: uploading first left the assets
++      # downloadable for the length of the attest step, and permanently so if
++      # attest failed, with `gh attestation verify` unable to vouch for them.
++      - name: Attest build provenance
++        # Dry run: a pull request has nothing to attest and no release to
++        # publish to. Everything above -- packaging, signing, smoke tests -- has
++        # already run, which is what catches desktop regressions before merge.
++        if: github.event_name != 'pull_request'
++        uses: actions/attest@v4
++        with:
++          # The released v4 checksum parser splits with the runner's native EOL,
++          # so it treats our intentionally portable LF manifest as one record on
++          # Windows. Digest the artifacts directly; keep the checksum fragment
++          # solely for the consolidated, user-facing SHA256SUMS.txt.
++          subject-path: |
++            desktop/release/formal-ai-desktop-*
++            desktop/release/latest*.yml
++
++      - name: Upload assets to release
++        if: github.event_name != 'pull_request'
++        working-directory: desktop
++        env:
++          GH_TOKEN: ${{ github.token }}
++          REPO: ${{ github.repository }}
++          TAG: ${{ needs.resolve.outputs.tag }}
++        run: |
++          set -euo pipefail
++          files=()
++          for f in release/formal-ai-desktop-*; do
++            case "$f" in
++              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz|*.blockmap) files+=("$f") ;;
++            esac
++          done
++          for f in release/latest.yml release/latest-mac.yml release/latest-linux.yml; do
++            [ -f "$f" ] && files+=("$f")
++          done
++          gh release upload "$TAG" "${files[@]}" --repo "$REPO" --clobber
++
++      - name: Upload checksum fragment
+         uses: actions/upload-artifact@v7
+         with:
+-          name: desktop-assets-${{ matrix.label }}
+-          path: desktop-dist
++          name: checksums-${{ matrix.label }}
++          path: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
+           retention-days: 7
++
++  vscode:
++    name: Package VS Code extension (.vsix)
++    needs: [resolve, base]
++    concurrency:
++      group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode
++      queue: max
++    # Same skipped-dependency handling as `build`; see the comment there.
++    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
++    runs-on: ubuntu-latest
++    timeout-minutes: 15
++    permissions:
++      contents: write
++      id-token: write
++      attestations: write
++    defaults:
++      run:
++        shell: bash
++    steps:
++      - uses: actions/checkout@v7
++        with:
++          # On pull requests there is no resolved tag: build the PR head, which
++          # is the whole point of the dry run.
++          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
++          # See the note in `build`: quoted so the number 0 is not read as falsy.
++          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
++
++      # Same reason as `build`: package the merge result, not a stale preview.
++      - name: Simulate fresh merge with base branch (PR only)
++        if: github.event_name == 'pull_request'
++        env:
++          BASE_REF: ${{ github.base_ref }}
++          # Issue #1017: same pinned commit the packaging legs merge, so the
++          # .vsix and the installers cannot come from different source trees.
++          BASE_COMMIT: ${{ needs.base.outputs.commit }}
++        run: bash scripts/simulate-fresh-merge.sh
++
++      - name: Setup Node
++        uses: actions/setup-node@v7
++        with:
++          node-version: 22
++
++      # Install the committed extension lock through the warning classifier so
++      # this package job exercises the exact production and build-tool graph.
++      - name: Install extension dependencies
++        run: scripts/install-node-dependencies.sh vscode
++
++      # Issue #1014: the source-only lint suite intentionally needs no install.
++      # Exercise the real esbuild + Playwright graph here, after its locked
++      # dependencies exist and before the same helper creates the VSIX.
++      - name: Test extension production bundle
++        working-directory: vscode
++        run: npm run test:package
++
++      - name: Package the .vsix
++        id: package
++        working-directory: vscode
++        run: |
++          set -euo pipefail
++          # `vscode:prepublish` (prepare-resources.mjs) syncs the extension
++          # version from Cargo.toml and copies src/web + data/seed + desktop/lib
++          # into the package, so the .vsix is fully self-contained and its
++          # filename (formal-ai-vscode-<version>.vsix) matches the release
++          # version the /download and /vscode pages resolve.
++          npm run package
++          # A glob, not `ls | head`: `ls` output is not safe to parse and its
++          # exit status is swallowed here (shellcheck SC2012).
++          shopt -s nullglob
++          vsix_files=(formal-ai-vscode-*.vsix)
++          vsix="${vsix_files[0]:-}"
++          [ -n "$vsix" ] || { echo "::error::vsce package produced no .vsix" >&2; exit 1; }
++          echo "vsix=$vsix" >> "$GITHUB_OUTPUT"
++          echo "Packaged: $vsix"
++
++      - name: Collect .vsix checksum fragment
++        working-directory: vscode
++        run: |
++          set -euo pipefail
++          # Same `sha256sum`-format line (bare filename) as the desktop build job
++          # so the consolidated SHA256SUMS.txt covers the .vsix too, and both the
++          # /download verifier and install.sh can match it by name.
++          node -e '
++            const fs = require("fs"); const cp = require("crypto");
++            const n = fs.readdirSync(".").filter((f) => /^formal-ai-vscode-.*\.vsix$/.test(f)).sort()[0];
++            if (!n) { process.exit(1); }
++            const hash = cp.createHash("sha256").update(fs.readFileSync(n)).digest("hex");
++            process.stdout.write(hash + "  " + n + "\n");
++          ' > SHA256SUMS-vscode.partial
++          cat SHA256SUMS-vscode.partial
++
++      # Attest before publishing; see the same step in the desktop build job.
++      - name: Attest build provenance
++        if: github.event_name != 'pull_request'
++        uses: actions/attest@v4
++        with:
++          subject-path: vscode/formal-ai-vscode-*.vsix
++
++      - name: Upload .vsix to release
++        if: github.event_name != 'pull_request'
++        working-directory: vscode
++        env:
++          GH_TOKEN: ${{ github.token }}
++          REPO: ${{ github.repository }}
++          TAG: ${{ needs.resolve.outputs.tag }}
++        run: gh release upload "$TAG" "${{ steps.package.outputs.vsix }}" --repo "$REPO" --clobber
++
+       - name: Upload checksum fragment
+         uses: actions/upload-artifact@v7
+         with:
+-          name: desktop-checksums-${{ matrix.label }}
+-          path: desktop-dist/SHA256SUMS-${{ matrix.label }}.partial
++          name: checksums-vscode
++          path: vscode/SHA256SUMS-vscode.partial
+           retention-days: 7
+ 
+   finalize:
+-    name: Publish checksums and provenance
+-    needs: [resolve, build]
+-    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' && needs.resolve.outputs.should_build == 'true' }}
++    name: Publish SHA256SUMS.txt + provenance
++    needs: [resolve, build, vscode]
++    concurrency:
++      group: formal-ai-repository-writes
++      queue: max
++    # !cancelled(), not always(): a partial matrix (one arch failing under
++    # fail-fast:false) must still publish checksums for the arches that did
++    # build, but a *cancelled* run must not. The upload below uses
++    # `gh release upload --clobber`, so under always() a run cancelled part-way
++    # -- by the concurrency group superseding it, or by hand -- would overwrite a
++    # complete SHA256SUMS.txt from an earlier successful run with a manifest
++    # covering whichever one or two arches happened to finish (issue #812).
++    # Never on pull requests: there is no release to publish checksums to.
++    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true' }}
+     runs-on: ubuntu-latest
+     timeout-minutes: 10
+     permissions:
+       actions: read
+       contents: write
+-      id-token: write
+-      attestations: write
+     steps:
+-      - uses: actions/download-artifact@v8
++      - name: Download checksum fragments
++        uses: actions/download-artifact@v8
+         env:
++          # v8's bundled unzip dependency still calls Buffer(); suppress only
++          # that reviewed upstream diagnostic, never all Node warnings:
++          # https://github.com/actions/download-artifact/issues/484
+           NODE_OPTIONS: --disable-warning=DEP0005
+         with:
+-          pattern: desktop-assets-*
+-          path: release-assets
+-      - uses: actions/download-artifact@v8
+-        env:
+-          NODE_OPTIONS: --disable-warning=DEP0005
+-        with:
+-          pattern: desktop-checksums-*
+-          path: checksums
++          pattern: checksums-*
++          path: fragments
+           merge-multiple: true
+-      - name: Consolidate release metadata
++
++      - name: Build consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt
++        id: manifest
+         env:
++          GH_TOKEN: ${{ github.token }}
++          REPO: ${{ github.repository }}
+           TAG: ${{ needs.resolve.outputs.tag }}
+-          REPOSITORY: ${{ github.repository }}
+-          SERVER_URL: ${{ github.server_url }}
+-          RUN_ID: ${{ github.run_id }}
++          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+         run: |
+           set -euo pipefail
+-          cat checksums/*.partial | sort -k2 > SHA256SUMS.txt
++          shopt -s nullglob
++          parts=(fragments/*.partial)
++          if [ ${#parts[@]} -eq 0 ]; then
++            echo "No checksum fragments were produced; nothing to finalize." >&2
++            exit 1
++          fi
++          # Deterministic order: concatenate fragments, sort by filename (field 2).
++          cat "${parts[@]}" | sort -k2 > SHA256SUMS.txt
++          echo "=== SHA256SUMS.txt ==="
++          cat SHA256SUMS.txt
++          commit="$(gh release view "$TAG" --repo "$REPO" --json targetCommitish --jq .targetCommitish || echo unknown)"
++
++          # Report the builders that actually produced a fragment. Hardcoding the
++          # full matrix here claimed builds that never happened whenever an arch
++          # failed under fail-fast: false.
++          declare -A builder_of=(
++            [linux-x64]="ubuntu-latest"
++            [linux-arm64]="ubuntu-24.04-arm"
++            [macos-x64]="macos-15-intel"
++            [macos-arm64]="macos-14"
++            [windows-x64]="windows-latest"
++            [windows-arm64]="windows-11-arm"
++            [vscode]="ubuntu-latest"
++          )
++          built=()
++          missing=()
++          for label in linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64 vscode; do
++            if [ -f "fragments/SHA256SUMS-${label}.partial" ]; then
++              built+=("${builder_of[$label]} (${label})")
++            else
++              missing+=("$label")
++            fi
++          done
++
+           {
+-            echo 'Desktop build provenance'
+-            echo '========================'
+-            echo 'Status     : complete'
+-            echo "Repository : $REPOSITORY"
++            echo "formal-ai Desktop build provenance"
++            echo "=================================="
++            echo "Repository : $REPO"
+             echo "Release tag: $TAG"
+-            echo 'Targets    : linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64'
+-            echo "Attestation: verify each asset with gh attestation verify <file> --repo $REPOSITORY"
+-            echo "Run        : $SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID"
++            echo "Commitish  : $commit"
++            echo "Workflow   : Desktop Release"
++            echo "Run        : $RUN_URL"
++            printf 'Builders   : %s\n' "${built[0]}"
++            printf '             %s\n' "${built[@]:1}"
++            if [ ${#missing[@]} -gt 0 ]; then
++              echo "INCOMPLETE : no artifacts from: ${missing[*]}"
++              echo "             This release is missing those targets; the checksums"
++              echo "             below cover only the builders listed above."
++            fi
++            echo "Signing    : macOS artifacts are ad-hoc signed (no Apple Developer ID)."
++            echo "Attestation: SLSA build provenance attached via actions/attest."
++            echo "             Verify with: gh attestation verify <file> --repo $REPO"
++            echo ""
++            # Deliberately not "authoritative": when `missing` is non-empty this
++            # manifest covers only part of the release, and calling it
++            # authoritative is exactly the false positive we are fixing.
++            echo "SHA-256 checksums of the artifacts listed above (SHA256SUMS.txt is the machine-readable copy):"
++            echo ""
++            cat SHA256SUMS.txt
+           } > BUILD-PROVENANCE.txt
+-      - name: Attest build provenance
+-        uses: actions/attest@v4
+-        with:
+-          subject-path: |
+-            release-assets/**/*
+-            SHA256SUMS.txt
+-      - name: Upload release metadata
++          echo "=== BUILD-PROVENANCE.txt ==="
++          cat BUILD-PROVENANCE.txt
++
++          # Still upload what we have (a partial manifest beats none), but never
++          # report success for it: a green run here means "all desktop assets
++          # shipped", and callers rely on that.
++          if [ ${#missing[@]} -gt 0 ]; then
++            echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
++          fi
++
++      - name: Upload SHA256SUMS.txt and BUILD-PROVENANCE.txt to release
+         env:
+           GH_TOKEN: ${{ github.token }}
++          REPO: ${{ github.repository }}
+           TAG: ${{ needs.resolve.outputs.tag }}
+-          REPOSITORY: ${{ github.repository }}
+         run: |
+           set -euo pipefail
+-          mapfile -d '' assets < <(find release-assets -type f ! -name '*.partial' -print0)
+-          [ ${#assets[@]} -gt 0 ] || { echo 'No release assets were downloaded' >&2; exit 1; }
+-          gh release upload "$TAG" "${assets[@]}" SHA256SUMS.txt BUILD-PROVENANCE.txt \
+-            --repo "$REPOSITORY" --clobber
++          gh release upload "$TAG" SHA256SUMS.txt BUILD-PROVENANCE.txt --repo "$REPO" --clobber
++
++      # Runs after the upload so the partial manifest is still published for
++      # debugging, but the run ends red.
++      - name: Fail if any target produced no artifacts
++        if: ${{ steps.manifest.outputs.incomplete != '' }}
++        run: |
++          echo "::error title=Incomplete desktop release::No artifacts from: ${{ steps.manifest.outputs.incomplete }}. SHA256SUMS.txt was published but covers only the targets that built."
++          exit 1

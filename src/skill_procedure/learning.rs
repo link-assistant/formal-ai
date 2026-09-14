@@ -7,9 +7,9 @@ use std::sync::OnceLock;
 
 use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
-use crate::seed::{self, parser::LinoNode, ROLE_SKILL_PROCEDURE_STEP_VERB};
+use crate::seed::{self, ROLE_SKILL_PROCEDURE_STEP_VERB, parser::LinoNode};
 
-use super::{procedure_lexicon, ProcedureCompileError};
+use super::{ProcedureCompileError, procedure_lexicon};
 
 /// Reviewable learning generated from an honest named capability gap.
 #[derive(Debug, Clone, PartialEq, Eq)]

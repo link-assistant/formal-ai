@@ -3,8 +3,8 @@
 
 use std::collections::BTreeMap;
 
-use super::parser::parse_lino;
 use super::OPERATION_VOCABULARY_LINO;
+use super::parser::parse_lino;
 
 /// Localized surface forms for one operation in one supported language.
 #[derive(Debug, Clone, Default)]

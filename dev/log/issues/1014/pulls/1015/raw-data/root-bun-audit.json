@@ -1,0 +1,1 @@
+{"dompurify":[{"id":1138538,"url":"https://github.com/advisories/GHSA-55q2-fjhq-7xh7","title":"DOMPurify: IN_PLACE hook removal leaves a detached subtree executable, causing XSS","severity":"moderate","vulnerable_versions":"<=3.4.12","cwe":["CWE-79"],"cvss":{"score":0,"vectorString":null}}]}

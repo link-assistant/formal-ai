@@ -6,12 +6,12 @@ use std::process::Command;
 
 use clap::{Args as ClapArgs, ValueEnum};
 
+use crate::DEFAULT_MODEL;
 use crate::context_capacity::ContextCapacity;
 use crate::seed::{
-    client_integrations as seed_client_integrations, ClientIntegration, ModeArgPosition,
-    ModelArgPosition,
+    ClientIntegration, ModeArgPosition, ModelArgPosition,
+    client_integrations as seed_client_integrations,
 };
-use crate::DEFAULT_MODEL;
 
 mod caller_args;
 mod command;
@@ -25,14 +25,14 @@ mod tool_args;
 mod url;
 use caller_args::CallerArgs;
 use command::{contains_model_arg, resolve_integration_command};
-use completion::{require_completed, run_to_completion, AuthoringRun, CompletionInvocation};
+use completion::{AuthoringRun, CompletionInvocation, require_completed, run_to_completion};
 use global_config::{
     render_json_settings, render_toml_settings, undo_global_config, write_global_config,
 };
 use server::maybe_start_server;
 use session_files::{
-    newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
-    TempConfigDir,
+    TempConfigDir, newest_changed_session_file, print_session_files, session_file_snapshot,
+    user_home_dir,
 };
 pub use tool_args::delimit_tool_args;
 use url::{base_url_with_port, join_url_path};
@@ -163,6 +163,7 @@ struct RenderContext {
     protocol_base_env: String,
     google_auth_type: String,
     model_catalog_path: String,
+    working_directory: String,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -206,7 +207,9 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let server = if args.start_server || !args.no_start_server {
         let server = maybe_start_server(&context.base_url, args.port)?;
         if server.is_some() {
-            eprintln!("formal-ai: started a temporary server in agent mode (tool and shell execution enabled)");
+            eprintln!(
+                "formal-ai: started a temporary server in agent mode (tool and shell execution enabled)"
+            );
         }
         server
     } else {
@@ -349,6 +352,7 @@ fn render_context(
         protocol_base_env,
         google_auth_type,
         model_catalog_path: String::new(),
+        working_directory: std::env::current_dir()?.to_string_lossy().into_owned(),
     };
     // An already-qualified selector (`provider/model`) is passed through: the
     // seed template only supplies the provider a bare alias is missing.
@@ -405,7 +409,7 @@ fn run_ephemeral(
         }
     }
     let temporary_home = if orchestration_home.is_none() && !invocation.temp_home_env.is_empty() {
-        Some(TempConfigDir::new(&format!("{}-home", integration.id))?)
+        Some(TempConfigDir::new_home(&integration.id)?)
     } else {
         None
     };
@@ -694,6 +698,7 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{protocol_base_env}", &context.protocol_base_env)
         .replace("{google_auth_type}", &context.google_auth_type)
         .replace("{model_catalog_path}", &context.model_catalog_path)
+        .replace("{working_directory}", &context.working_directory)
 }
 
 fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {

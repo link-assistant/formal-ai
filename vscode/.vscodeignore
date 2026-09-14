@@ -1,6 +1,8 @@
 # Files excluded from the packaged .vsix (dev/test artifacts only).
 .vscode/**
 node_modules/**
+!node_modules/playwright/**
+!node_modules/playwright-core/**
 scripts/**
 **/*.test.mjs
 **/*.map

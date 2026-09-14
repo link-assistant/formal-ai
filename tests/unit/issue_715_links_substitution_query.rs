@@ -7,8 +7,8 @@
 //! text sequences and its lowering to [`RewriteProgram`].
 
 use formal_ai::links_substitution_query::{
-    parse_substitution_query, render_substitution_query, substitution_effect,
-    SubstitutionQueryError,
+    SubstitutionQueryError, parse_substitution_query, render_substitution_query,
+    substitution_effect,
 };
 use formal_ai::normal_markov::{RewriteHalt, RewriteProgram, RewriteRule};
 use formal_ai::substitution::CrudEvent;

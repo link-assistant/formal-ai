@@ -232,10 +232,12 @@ fn step_7_smallest_sufficient_answer_is_selected() {
 #[test]
 fn step_8_full_trace_is_stored_and_linked() {
     let response = answer("Hi");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("trace:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("trace:"))
+    );
     assert!(response.links_notation.contains("steps"));
 }
 
@@ -243,20 +245,24 @@ fn step_8_full_trace_is_stored_and_linked() {
 fn step_9_reply_is_returned_with_trace_pointer() {
     let response = answer("Hi");
     assert!(!response.answer.is_empty());
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("trace:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("trace:"))
+    );
 }
 
 #[test]
 fn loop_terminates_on_unsolvable_questions() {
     let response = offline_answer("Prove that P=NP in two sentences");
     assert_eq!(response.intent, "unknown");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("trace:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("trace:"))
+    );
     assert!(response.answer.contains("cannot") || response.answer.contains("unable"));
 }
 

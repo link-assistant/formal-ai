@@ -239,24 +239,23 @@ fn parse_seed() -> ParsedSeed {
             let Some(task) = current_task.as_mut() else {
                 continue;
             };
-            if let Some((name, arguments)) = rest.trim().split_once(' ') {
-                if let (Some(primitive), Some(arguments)) = (
+            if let Some((name, arguments)) = rest.trim().split_once(' ')
+                && let (Some(primitive), Some(arguments)) = (
                     ComputerUsePrimitive::from_tool_name(name),
                     parse_step_arguments(arguments),
-                ) {
-                    let number = task.steps.len() + 1;
-                    task.steps.push(ComputerPlanStep {
-                        id: format!("{}-{number:02}", task.id),
-                        primitive,
-                        arguments,
-                        precondition: render_template(
-                            primitive_template(&parsed.preconditions, primitive),
-                            &[("permission", &primitive.permission_key())],
-                        ),
-                        postcondition: primitive_template(&parsed.postconditions, primitive)
-                            .to_owned(),
-                    });
-                }
+                )
+            {
+                let number = task.steps.len() + 1;
+                task.steps.push(ComputerPlanStep {
+                    id: format!("{}-{number:02}", task.id),
+                    primitive,
+                    arguments,
+                    precondition: render_template(
+                        primitive_template(&parsed.preconditions, primitive),
+                        &[("permission", &primitive.permission_key())],
+                    ),
+                    postcondition: primitive_template(&parsed.postconditions, primitive).to_owned(),
+                });
             }
             continue;
         }
@@ -268,14 +267,13 @@ fn parse_seed() -> ParsedSeed {
             }
             continue;
         }
-        if let Some(rest) = line.strip_prefix("    response ") {
-            if let (Some(capability), Some((locale, response))) =
+        if let Some(rest) = line.strip_prefix("    response ")
+            && let (Some(capability), Some((locale, response))) =
                 (current_gap.as_ref(), parse_localized(rest))
-            {
-                parsed
-                    .gap_responses
-                    .insert((capability.clone(), locale), response);
-            }
+        {
+            parsed
+                .gap_responses
+                .insert((capability.clone(), locale), response);
         }
     }
     if let Some(task) = current_task {

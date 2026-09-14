@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_how_to_guide.js"
+  ceiling 853
+  rationale "Issue #991 browser mirror of `src/how_to_guide.rs`, `src/how_to_guide/extract.rs`, `src/how_to_guide/render.rs`, and `src/service_accessibility.rs`."

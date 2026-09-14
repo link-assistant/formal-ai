@@ -1,0 +1,79 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/check-pipeline-status.sh	2026-09-05 09:39:56.902043019 +0000
++++ scripts/check-pipeline-status.sh	2026-09-05 09:37:22.100726409 +0000
+@@ -1,15 +1,43 @@
+ #!/usr/bin/env bash
++# Turn a silently-"cancelled" pipeline into a red failure (issue #977).
++#
++# WHY THIS EXISTS
++#
++# The most damaging CI/CD defect this repository has had was not a failing
++# check -- it was an invisible one. GitHub reports a job killed by its own
++# `timeout-minutes` as **cancelled**, not **failed**, and a workflow run whose
++# only non-success job is cancelled gets the run conclusion `cancelled` too.
++# On the default branch that is indistinguishable from "a human pressed cancel"
++# or "a newer push superseded this run": no red X, no failure notification, and
++# no entry in the failed-runs view.
++#
++# That is how eighteen consecutive `CI/CD Pipeline` runs on `main` between
++# 2026-08-03 and 2026-08-06 went untriaged while `Auto Release` was timing out
++# mid-Docker-build. Eleven versions (0.326.2 .. 0.333.0) were published to
++# crates.io and tagged in git with no GitHub Release at all, because the
++# `Create GitHub Release` step sits after the Docker push and was never
++# reached. The full reconstruction is in
++# dev/log/issues/977/pulls/978/ANALYSIS.md.
++#
++# `main` is never cancelled by concurrency -- release.yml sets
++# `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}` -- so on `main` a
++# cancelled job can only mean a timeout or a deliberate manual cancel. Both
++# need to be red. On other refs a cancellation genuinely is the normal
++# "superseded by a newer push" case, so there it stays a warning.
++#
++# INPUT
++#   NEEDS_JSON  `toJSON(needs)`: a map of job-id -> {result, outputs}.
++#   IS_MAIN     "true" when this is a push to the default branch.
+ set -euo pipefail
+ 
+ : "${NEEDS_JSON:?NEEDS_JSON is required (pass toJSON(needs))}"
+ IS_MAIN="${IS_MAIN:-false}"
+ 
++# jq is preinstalled on GitHub-hosted runners.
+ select_by_result() {
+   printf '%s' "$NEEDS_JSON" \
+-    | python3 -c 'import json, sys
+-want = sys.argv[1]
+-needs = json.load(sys.stdin)
+-print(", ".join(name for name, job in needs.items() if job.get("result") == want))' "$1"
++    | jq -r --arg want "$1" \
++        'to_entries | map(select(.value.result == $want) | .key) | join(", ")'
+ }
+ 
+ failed="$(select_by_result failure)"
+@@ -19,18 +47,23 @@
+ echo "Cancelled jobs: ${cancelled:-<none>}"
+ 
+ status=0
+-if [[ -n "$failed" ]]; then
++
++if [ -n "$failed" ]; then
+   echo "::error::Pipeline failed. Failing jobs: ${failed}"
+   status=1
+ fi
+ 
+-if [[ -n "$cancelled" ]]; then
+-  if [[ "$IS_MAIN" == "true" ]]; then
+-    echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure."
++if [ -n "$cancelled" ]; then
++  if [ "$IS_MAIN" = "true" ]; then
++    echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'."
+     status=1
+   else
+-    echo "::warning::Cancelled jobs: ${cancelled}. On a non-default ref this is usually a superseded run — open each job and search for 'has exceeded the maximum execution time' to rule out a real timeout. Steps wrapped in scripts/run-with-budget-warning.sh report a real timeout as a failure instead, which is why long steps carry their own budget."
++    echo "::warning::Cancelled jobs: ${cancelled}. On a non-default ref this is usually a superseded run."
+   fi
+ fi
+ 
++if [ "$status" -eq 0 ]; then
++  echo "All required jobs succeeded or were legitimately skipped."
++fi
++
+ exit "$status"

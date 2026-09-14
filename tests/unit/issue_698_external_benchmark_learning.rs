@@ -1,5 +1,5 @@
 use formal_ai::agentic_coding::{
-    external_benchmark_learning, run_agentic_task, EXTERNAL_BENCHMARK_LEARNING_PATH, REPORTS,
+    EXTERNAL_BENCHMARK_LEARNING_PATH, REPORTS, external_benchmark_learning, run_agentic_task,
 };
 use formal_ai::external_benchmarks::{self, CaseOutcome, SuiteRun};
 
@@ -15,16 +15,19 @@ fn run_with_failures() -> SuiteRun {
                 id: "HumanEval/0".to_string(),
                 passed: false,
                 detail: "answer contains no Python code".to_string(),
+                prompt_excerpt: String::new(),
             },
             CaseOutcome {
                 id: "HumanEval/1".to_string(),
                 passed: true,
                 detail: String::new(),
+                prompt_excerpt: String::new(),
             },
             CaseOutcome {
                 id: "HumanEval/2".to_string(),
                 passed: false,
                 detail: "upstream assertion failed".to_string(),
+                prompt_excerpt: String::new(),
             },
         ],
         unavailable: None,
@@ -39,7 +42,9 @@ fn real_failures_become_review_gated_associative_learning_evidence() {
 
     assert!(report.starts_with("external_benchmark_learning_report\n  issue \"698\"\n"));
     assert!(report.contains("decision \"awaiting_human_review\""));
-    assert!(report.contains("promotion_gate \"external_benchmark_ratchet_and_agent_cli_e2e_pass\""));
+    assert!(
+        report.contains("promotion_gate \"external_benchmark_ratchet_and_agent_cli_e2e_pass\"")
+    );
     assert!(report.contains("HumanEval/0"));
     assert!(report.contains("answer contains no Python code"));
     assert!(report.contains("HumanEval/2"));
@@ -65,9 +70,11 @@ fn learning_report_is_derived_from_the_observed_run() {
 #[test]
 fn formal_ai_routes_the_issue_698_learning_task_through_agentic_mode() {
     let task = external_benchmark_learning::task();
-    assert!(REPORTS
-        .iter()
-        .any(|report| report.issue == "698" && report.path == EXTERNAL_BENCHMARK_LEARNING_PATH));
+    assert!(
+        REPORTS
+            .iter()
+            .any(|report| report.issue == "698" && report.path == EXTERNAL_BENCHMARK_LEARNING_PATH)
+    );
     assert_eq!(
         formal_ai::agentic_coding::learning_report::route(&task).map(|report| report.path),
         Some(EXTERNAL_BENCHMARK_LEARNING_PATH)

@@ -121,8 +121,8 @@ pub fn try_behavior_rules_with_runtime(
         ));
     }
 
-    if let Some(query) = detail_query(prompt) {
-        if let Some(rule) = find_behavior_rule(&query) {
+    if let Some(query) = detail_query(prompt)
+        && let Some(rule) = find_behavior_rule(&query) {
             log.append("behavior_rule:read", rule.id.clone());
             let body = render_behavior_rule_detail(&rule, &language);
             return Some(finalize_simple(
@@ -134,7 +134,6 @@ pub fn try_behavior_rules_with_runtime(
                 1.0,
             ));
         }
-    }
 
     if let Some(answer) = try_self_awareness(prompt, normalized, log, runtime) {
         return Some(answer);
@@ -780,11 +779,10 @@ fn collect_runtime_rules(log: &EventLog) -> Vec<CompiledSkillPackage> {
     let mut seen = std::collections::HashSet::new();
     let mut rules = Vec::new();
     for event in log.events().iter().filter(|e| e.kind == "prior_turn:user") {
-        if let Ok(rule) = compile_natural_language_skill(&event.payload) {
-            if seen.insert(rule.id.clone()) {
+        if let Ok(rule) = compile_natural_language_skill(&event.payload)
+            && seen.insert(rule.id.clone()) {
                 rules.push(rule);
             }
-        }
     }
     rules
 }
@@ -890,7 +888,7 @@ fn render_runtime_rule_update(rule: &CompiledSkillPackage, language: &str) -> St
 }
 
 fn detail_query(prompt: &str) -> Option<String> {
-    let lower = prompt.to_lowercase();
+    let lower = prompt.to_lowercase().replace("behaviour", "behavior");
     for prefix in [
         "show behavior rule",
         "read behavior rule",
@@ -903,7 +901,7 @@ fn detail_query(prompt: &str) -> Option<String> {
         "прочитай правило",
     ] {
         if lower.starts_with(prefix) {
-            let original_tail = prompt.get(prefix.len()..).unwrap_or_default();
+            let original_tail = lower.get(prefix.len()..).unwrap_or_default();
             return Some(clean_rule_query(original_tail));
         }
     }

@@ -36,6 +36,14 @@ pub(super) fn plan_web_fetch_step(
     let url = crate::solver_handlers::agentic_fetch_url_for(task)?;
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let progress = Progress::scan(messages);
+    if let Some(failure) = progress.latest_failure()
+        && failure.capability == Capability::Fetch {
+            return Some(AgenticPlan::Final(tool_result::render_failure(
+                "web_fetch",
+                &failure.detail,
+                task,
+            )));
+        }
     if progress.done(Capability::Fetch) {
         return Some(AgenticPlan::Final(tool_result::render(
             "web_fetch",
@@ -50,12 +58,24 @@ pub(super) fn plan_web_fetch_step(
 /// intent (any phrasing, any supported language) *and* the CLI advertised a
 /// search tool, emit a real search `tool_call` for the extracted query. Returns
 /// [`None`] when there is no search intent or no search tool was advertised.
+///
+/// The query is read from one block of the request, for the reason
+/// [`super::stated_request`] states: a note that says where the worker is and
+/// how to report is not the subject of the search. Issue #1066 measured the
+/// cost of reading the whole of it -- a leaf that asked whether "a single node
+/// can be selected by dotted binary path for focused debugging" searched for
+/// "focused debugging this is recursive binary tree node 2 1 2 1 2 at depth 5
+/// solve only this node s task in this fresh temporary repository ...", a query
+/// no search engine answers. The blocks are tried in order, so a request that
+/// states its subject before its framing keeps the subject it stated.
 pub(super) fn plan_web_search_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    let query = crate::solver_handlers::web_search_query_for(task)?;
+    let query = super::stated_request::request_blocks(task)
+        .into_iter()
+        .find_map(crate::solver_handlers::web_search_query_for)?;
     let Some(tool) = tool_for(tool_names, Capability::Search) else {
         let discovery = tool_names
             .iter()
@@ -70,6 +90,14 @@ pub(super) fn plan_web_search_step(
         ));
     };
     let progress = Progress::scan(messages);
+    if let Some(failure) = progress.latest_failure()
+        && failure.capability == Capability::Search {
+            return Some(AgenticPlan::Final(tool_result::render_failure(
+                "web_search",
+                &failure.detail,
+                task,
+            )));
+        }
     if progress.done(Capability::Search) {
         return Some(AgenticPlan::Final(tool_result::render(
             "web_search",

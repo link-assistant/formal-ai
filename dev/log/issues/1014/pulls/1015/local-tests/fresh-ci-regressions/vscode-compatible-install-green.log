@@ -1,0 +1,61 @@
+install-node-dependencies: installing in 'vscode' (npm 11.17.0)
+
+up to date in 2s
+install-node-dependencies: npm install succeeded; classifying 28 stderr line(s)
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE Unsupported engine {
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   package: '@link-assistant/web-capture@1.11.2',
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   required: { node: '>=22.0.0 <23.0.0' },
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE Unsupported engine {
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   package: '@puppeteer/browsers@3.2.0',
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   required: { node: '>=22.12.0' },
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE Unsupported engine {
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   package: 'puppeteer@25.7.0',
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   required: { node: '>=22.12.0' },
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE Unsupported engine {
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   package: 'puppeteer-core@25.7.0',
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   required: { node: '>=22.12.0' },
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+install-node-dependencies: unrecognized diagnostic: npm warn EBADENGINE }
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts 5 packages have install scripts not yet covered by allowScripts:
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts   @playwright/browser-chromium@1.62.1 (install: node install.js)
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts   @vscode/vsce-sign@2.0.9 (postinstall: node ./src/postinstall.js)
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts   esbuild@0.28.2 (postinstall: node install.js)
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts   keytar@7.9.0 (install: node-gyp rebuild)
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts   puppeteer@25.7.0 (postinstall: node install.mjs)
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts
+install-node-dependencies: unrecognized diagnostic: npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+Unexpected npm stderr; update dependencies or explicitly classify the diagnostic:
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@link-assistant/web-capture@1.11.2',
+npm warn EBADENGINE   required: { node: '>=22.0.0 <23.0.0' },
+npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: '@puppeteer/browsers@3.2.0',
+npm warn EBADENGINE   required: { node: '>=22.12.0' },
+npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'puppeteer@25.7.0',
+npm warn EBADENGINE   required: { node: '>=22.12.0' },
+npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+npm warn EBADENGINE }
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'puppeteer-core@25.7.0',
+npm warn EBADENGINE   required: { node: '>=22.12.0' },
+npm warn EBADENGINE   current: { node: 'v20.20.2', npm: '11.17.0' }
+npm warn EBADENGINE }
+npm warn allow-scripts 5 packages have install scripts not yet covered by allowScripts:
+npm warn allow-scripts   @playwright/browser-chromium@1.62.1 (install: node install.js)
+npm warn allow-scripts   @vscode/vsce-sign@2.0.9 (postinstall: node ./src/postinstall.js)
+npm warn allow-scripts   esbuild@0.28.2 (postinstall: node install.js)
+npm warn allow-scripts   keytar@7.9.0 (install: node-gyp rebuild)
+npm warn allow-scripts   puppeteer@25.7.0 (postinstall: node install.mjs)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.

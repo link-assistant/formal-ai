@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://en.wikibooks.org/w/api.php?action=parse&page=Make%20Pancakes&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*
+fetched_at=1786392351
+sha256=3a42b8c653b8c5304040c732d76cafb76218e7b15322b35fcab67f61209093a7

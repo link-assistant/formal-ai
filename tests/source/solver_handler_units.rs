@@ -3,7 +3,7 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::seed::{lexicon, Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION};
+use crate::seed::{Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION, lexicon};
 use crate::solver_handlers::finalize_simple;
 
 /// Detect queries that ask to convert between dimensionally incompatible units.

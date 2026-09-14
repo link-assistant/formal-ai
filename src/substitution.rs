@@ -12,12 +12,12 @@ use std::fmt::Write as _;
 
 use lino_objects_codec::format::parse_indented;
 
-use crate::engine::{stable_id, KNOWLEDGE_SCHEMA_VERSION};
+use crate::engine::{KNOWLEDGE_SCHEMA_VERSION, stable_id};
 use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::push_lino_node;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
-const DEFAULT_MAX_APPLICATIONS: usize = 64;
+pub(crate) const DEFAULT_MAX_APPLICATIONS: usize = 64;
 
 /// CRUD event that can trigger substitution rules.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -85,8 +85,8 @@ impl SubstitutionLink {
 /// variables (`$node`), or prefix variables (`assignee:$person`).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LinkPattern {
-    from: PatternNode,
-    to: PatternNode,
+    pub(crate) from: PatternNode,
+    pub(crate) to: PatternNode,
 }
 
 impl LinkPattern {
@@ -135,7 +135,7 @@ impl fmt::Display for LinkPattern {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-enum PatternNode {
+pub(crate) enum PatternNode {
     Literal(String),
     Variable(String),
     PrefixVariable { prefix: String, variable: String },
@@ -466,10 +466,10 @@ impl SubstitutionGraph {
         };
         for link in &self.links {
             let mut candidate = bindings.clone();
-            if pattern_matches_link(pattern, link, &mut candidate) {
-                if let Some(found) = self.find_bindings_from(remaining, candidate) {
-                    return Some(found);
-                }
+            if pattern_matches_link(pattern, link, &mut candidate)
+                && let Some(found) = self.find_bindings_from(remaining, candidate)
+            {
+                return Some(found);
             }
         }
         None

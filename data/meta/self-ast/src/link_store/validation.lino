@@ -1,0 +1,14 @@
+self_ast_census
+  target src/link_store/validation.rs
+  language rust
+  fidelity signature
+  byte_len 3581
+  line_count 100
+  content_id source_module_ceedbae249ae4fc1
+  symbol_count 5
+  symbols
+    function validate_demo_memory_document 12 29
+    function validate_schema_version_line 31 45
+    function validate_event_line 47 54
+    function validate_field_line 56 71
+    function validate_strict_quoted 73 100

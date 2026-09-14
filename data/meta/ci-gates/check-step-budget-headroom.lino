@@ -1,0 +1,19 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# Only the inline tests run here, for the reason `check-job-headroom.lino`
+# gives -- the audit itself reads the Actions API, which a pull request has no
+# measurements of its own to consult, so it runs weekly from
+# `.github/workflows/job-headroom.yml`. What this gate holds is the part a
+# commit can break -- one test parses the repository's real
+# `.github/workflows/**` and fails if two budgeted steps ever come to share a
+# name, because a measurement names the step and not the job, and an
+# unattributable budget silently drops out of the weekly audit. That is the
+# same disappearing act issue #1081 was opened about.
+ci_gate check_step_budget_headroom
+  stage rust
+  description "Every declared step budget can still be read and attributed to one step."
+  run "rust-script --test scripts/check-step-budget-headroom.rs"

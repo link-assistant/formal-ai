@@ -126,7 +126,7 @@ fn seed_backed_bare_terms_still_use_public_knowledge_cache() {
 }
 
 #[test]
-fn unknown_reasoning_uses_one_diagnostic_question_plus_report_consent() {
+fn unknown_reasoning_researches_facts_and_only_asks_for_report_consent() {
     let response = answer_offline("How should snorflax be calibrated for teal silence");
 
     assert_eq!(response.intent, "unknown");
@@ -134,10 +134,15 @@ fn unknown_reasoning_uses_one_diagnostic_question_plus_report_consent() {
     assert!(response.answer.contains("could not determine"));
     assert_eq!(
         response.answer.matches('?').count(),
-        2,
-        "unknown reasoning should ask one diagnostic question and one issue-report consent question: {}",
+        1,
+        "unknown reasoning should research the factual unknown and only ask the requirement-level issue-report consent question: {}",
         response.answer,
     );
+    assert!(has_evidence(&response, "question_necessity:refused:"));
+    assert!(has_evidence(
+        &response,
+        "question_necessity:research_required:"
+    ));
     assert!(response.answer.contains("`Report issue`"));
 }
 

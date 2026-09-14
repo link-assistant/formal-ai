@@ -22,6 +22,9 @@
 //!   - 1: Manual version changes detected
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```

@@ -84,8 +84,10 @@ fn excluded_only_change_matrix_is_covered_for_pushes_and_pull_requests() {
 
 #[test]
 fn honest_manual_contributions_are_not_rejected_by_the_self_hosting_job() {
-    let workflow = repository_file(".github/workflows/release.yml");
-    let evidence_job = job(&workflow, "evidence-check", "docker-build");
+    // The job moved out of `release.yml` when extracting it brought that file
+    // back under the 1500-line warning band (issues #999, #1012). The invariant
+    // it guards is unchanged, so the test follows the job rather than relaxing.
+    let evidence_job = repository_file(".github/workflows/evidence-check.yml");
 
     assert!(
         evidence_job.contains("self-hosting-metric.rs --since"),
@@ -149,4 +151,38 @@ fn case_study_preserves_the_incident_and_complete_template_audit() {
             );
         }
     }
+}
+
+#[test]
+fn evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper() {
+    // Named by the comments left in `workflow_release.rs` when the job was
+    // extracted: the two invariants `release.yml` used to cover for this job
+    // have to keep being covered somewhere, or extracting the job would have
+    // quietly dropped them.
+    let workflow = repository_file(".github/workflows/evidence-check.yml");
+
+    assert!(
+        workflow.contains("timeout-minutes: 10"),
+        "the job must keep an explicit timeout so a hang fails instead of running to the \
+         runner limit"
+    );
+    assert!(
+        !workflow.contains("run: cargo install rust-script"),
+        "crates.io HTTP failures are transient, so the install must go through the retry wrapper"
+    );
+    assert_eq!(
+        workflow
+            .matches("run: bash scripts/install-rust-script.sh")
+            .count(),
+        1,
+        "the one job here installs rust-script exactly once, through the retry wrapper"
+    );
+    assert!(
+        workflow.contains("pull_request:"),
+        "the checks need a pull request to measure, so this stays pull-request triggered"
+    );
+    assert!(
+        workflow.contains("persist-credentials: false"),
+        "checkout must not leave a usable token in the job's git config"
+    );
 }

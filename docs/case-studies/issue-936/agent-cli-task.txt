@@ -1,0 +1,20 @@
+Create `tests/fixtures/issue_936_counter_loop.lino` and no other file. Put exactly this Links Notation text in it:
+
+```text
+counter_loop rules {
+  rule step_0_to_1 manual {
+    when $machine -> state:0
+    replace $machine -> state:0 with $machine -> state:1
+  }
+  rule step_1_to_2 manual {
+    when $machine -> state:1
+    replace $machine -> state:1 with $machine -> state:2
+  }
+  rule step_2_to_3_and_halt manual {
+    when $machine -> state:2
+    when $machine -> control:run
+    replace $machine -> state:2 with $machine -> state:3
+    replace $machine -> control:run with $machine -> control:halt
+  }
+}
+```

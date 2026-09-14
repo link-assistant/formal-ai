@@ -1,31 +1,37 @@
 use super::{
-    default_native_link_store, memory_event_to_link_record, selected_link_store_backend,
-    validate_memory_links_notation, LinkStore, LinkStoreBackend, LinkStoreError,
+    LinkStore, LinkStoreBackend, LinkStoreError, default_native_link_store,
+    memory_event_to_link_record, selected_link_store_backend, validate_memory_links_notation,
 };
-use crate::memory::{export_links_notation, MemoryEvent, MemoryStore};
+use crate::memory::{MemoryEvent, MemoryStore, export_links_notation};
 
 #[test]
 fn memory_events_reduce_to_type_subtype_value_doublets() {
     let record = memory_event_to_link_record(&MemoryEvent::user("hello"), 0);
     assert_eq!(record.record_type, "MemoryEvent");
-    assert!(record
-        .links
-        .iter()
-        .any(|link| link.from == "Type" && link.to == "MemoryEvent"));
-    assert!(record
-        .links
-        .iter()
-        .any(|link| link.from == "SubType" && link.to == "user"));
-    assert!(record
-        .links
-        .iter()
-        .any(|link| link.from == "field:content" && link.to == "value:hello"));
+    assert!(
+        record
+            .links
+            .iter()
+            .any(|link| link.from == "Type" && link.to == "MemoryEvent")
+    );
+    assert!(
+        record
+            .links
+            .iter()
+            .any(|link| link.from == "SubType" && link.to == "user")
+    );
+    assert!(
+        record
+            .links
+            .iter()
+            .any(|link| link.from == "field:content" && link.to == "value:hello")
+    );
 }
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 #[test]
-fn native_default_build_selects_doublets_rs_backend() {
-    assert_eq!(selected_link_store_backend(), LinkStoreBackend::DoubletsRs);
+fn native_default_build_selects_link_cli_backend() {
+    assert_eq!(selected_link_store_backend(), LinkStoreBackend::LinkCli);
 }
 
 #[cfg(all(not(target_arch = "wasm32"), not(feature = "doublets-native")))]
@@ -88,8 +94,8 @@ fn strict_import_accepts_legacy_memory_documents() {
 
 #[cfg(feature = "doublets-native")]
 #[test]
-fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
-    use crate::memory::{export_full_memory, BundleInfo};
+fn link_cli_default_imports_full_lino_bundle_and_exports_deterministically() {
+    use crate::memory::{BundleInfo, export_full_memory};
 
     let events = vec![
         MemoryEvent {
@@ -125,7 +131,7 @@ fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
     );
 
     let mut store = default_native_link_store().expect("default native store");
-    assert_eq!(store.backend(), LinkStoreBackend::DoubletsRs);
+    assert_eq!(store.backend(), LinkStoreBackend::LinkCli);
 
     let imported = store
         .import_memory_links_notation(&bundle)
@@ -147,7 +153,7 @@ fn doublets_default_imports_full_lino_bundle_and_exports_deterministically() {
 
 #[cfg(feature = "doublets-native")]
 #[test]
-fn doublets_default_rejects_malformed_import_without_mutation() {
+fn link_cli_default_rejects_malformed_import_without_mutation() {
     let mut store = default_native_link_store().expect("default native store");
     store
         .append_memory_event(MemoryEvent::user("kept"))
@@ -166,7 +172,7 @@ fn doublets_default_rejects_malformed_import_without_mutation() {
 
 #[cfg(feature = "doublets-native")]
 #[test]
-fn doublets_native_backend_mirrors_memory_events() {
+fn link_cli_native_backend_mirrors_memory_events() {
     use super::DoubletsLinkStore;
 
     let mut store = DoubletsLinkStore::new().expect("native doublets store");
@@ -174,7 +180,7 @@ fn doublets_native_backend_mirrors_memory_events() {
         .append_memory_event(MemoryEvent::assistant("hi back"))
         .expect("append");
     assert!(id.starts_with("memory_event_"));
-    assert_eq!(store.backend(), LinkStoreBackend::DoubletsRs);
+    assert_eq!(store.backend(), LinkStoreBackend::LinkCli);
     assert_eq!(store.records().len(), 1);
     assert!(
         store.native_link_count() > store.records()[0].links.len(),

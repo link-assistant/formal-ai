@@ -238,6 +238,9 @@ pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
 /// Semantic role: a source artifact kind handled by the coding-task executor
 /// in addition to the general [`ROLE_PROGRAM_KIND`] vocabulary.
 pub const ROLE_CODING_ARTIFACT_KIND: &str = "coding_artifact_kind";
+/// Semantic role: a term that identifies a configured bound in prose or in a
+/// source identifier, such as `limit`, `bound`, `cap`, or `max`.
+pub const ROLE_CODING_BOUND_CUE: &str = "coding_bound_cue";
 /// Semantic role: a requested source item's visibility modifier.
 pub const ROLE_CODING_VISIBILITY: &str = "coding_visibility";
 /// Semantic role: a source-generation request's return operation.
@@ -254,12 +257,101 @@ pub const ROLE_CODING_MODULE_REGISTRATION_ACTION: &str = "coding_module_registra
 pub const ROLE_CODING_NAME_SLOT: &str = "coding_name_slot";
 /// Semantic role: a slot that carries a requested literal value.
 pub const ROLE_CODING_VALUE_SLOT: &str = "coding_value_slot";
+/// Semantic role: a source-artifact noun whose requested result is a boolean
+/// condition rather than the declaration of the data that condition reads.
+pub const ROLE_CODING_CONDITION_SUBJECT_KIND: &str = "coding_condition_subject_kind";
+/// Semantic role: a source-artifact noun that denotes production
+/// implementation rather than a test, generated trace, or prose description.
+pub const ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND: &str =
+    "coding_source_implementation_subject_kind";
+/// Semantic role: a source artifact that lives in a reproducible experiment
+/// or workflow harness rather than production source, tests, or documentation.
+pub const ROLE_CODING_EXPERIMENT_ARTIFACT_KIND: &str = "coding_experiment_artifact_kind";
+/// Semantic role: a source-artifact noun that denotes a test or regression
+/// rather than production implementation.
+pub const ROLE_CODING_TEST_ARTIFACT_KIND: &str = "coding_test_artifact_kind";
+/// Semantic role: a noun that makes an adjacent identifier the key of a
+/// relationship in a source representation.
+pub const ROLE_CODING_RELATIONSHIP_SUBJECT_KIND: &str = "coding_relationship_subject_kind";
+/// Semantic role: an action that asks how a source representation emits or
+/// encodes one of its relationships.
+pub const ROLE_CODING_SERIALIZATION_ACTION: &str = "coding_serialization_action";
 /// Semantic role: a code-kind noun adjacent to the literal subject of a
 /// repository search.
 pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
+/// Semantic role: a noun that says the subject of a coding request is a list
+/// of members rather than a single value.
+///
+/// *Array*, *list*, *set*, *group*, *tuple*, *alternation* and their
+/// multilingual equivalents. The noun says only that a member list is involved;
+/// it deliberately says nothing about which delimiters enclose it or which
+/// separator joins it, because the structural-edit route reads both out of the
+/// target file's own bytes (issue #1069).
+pub const ROLE_CODING_MEMBER_LIST_KIND: &str = "coding_member_list_kind";
+/// Semantic role: a verb asking for members to be added to a member list.
+///
+/// The noun in [`ROLE_CODING_MEMBER_LIST_KIND`] says only that a member list is
+/// involved, which prose mentions for many reasons. Issue #1131: a request to
+/// rewrite a shell script in full was read as an insertion because the prose
+/// contained the bare word `set` -- a surface of the unordered-grouping noun,
+/// here only part of `set -euo pipefail` -- and quoted two values elsewhere in
+/// the sentence. Both quoted values were spliced into the script's nearest
+/// bracket. The noun locates the list; only this verb asks for it to grow.
+pub const ROLE_CODING_MEMBER_ADD_ACTION: &str = "coding_member_add_action";
+/// Semantic role: the word that introduces a git branch name.
+///
+/// "on branch issue-1", "в ветке issue-1". The name that follows it is where a
+/// work item's result is pushed (issue #1133). Carried by `git_branch_cue` in
+/// `data/seed/meanings-coding-tasks.lino`.
+pub const ROLE_GIT_BRANCH_CUE: &str = "git_branch_cue";
+/// Semantic role: a request to commit what is in the working tree.
+///
+/// "commit them", "закоммить изменения". Answered by a stage-commit-push shell
+/// step, never by a web search (issue #1133). Carried by `git_commit_request`.
+pub const ROLE_GIT_COMMIT_REQUEST: &str = "git_commit_request";
+/// Semantic role: a work item's requirement for a continuous-integration
+/// workflow.
+///
+/// "GitHub Actions workflow", "工作流". The execution recipe then carries the
+/// workflow as a supporting file (issue #1133). Carried by
+/// `ci_workflow_request`.
+pub const ROLE_CI_WORKFLOW_REQUEST: &str = "ci_workflow_request";
+/// Semantic role: the position cue of an additive edit that places the new
+/// text after its anchor.
+///
+/// "directly after the line", "после строки" (issue #1115). Carried by
+/// `file_edit_position_after`.
+pub const ROLE_FILE_EDIT_POSITION_AFTER: &str = "file_edit_position_after";
+/// Semantic role: the position cue of an additive edit that places the new
+/// text before its anchor.
+///
+/// "before the line", "перед строкой" (issue #1115). Carried by
+/// `file_edit_position_before`.
+pub const ROLE_FILE_EDIT_POSITION_BEFORE: &str = "file_edit_position_before";
+/// Semantic role: a natural-language source fact whose surface carries the
+/// canonical, narrow repository-search expression as an action.
+///
+/// Unlike [`ROLE_CODING_SEARCH_LITERAL_QUERY`], this describes the property
+/// being inspected rather than the primary subject. When it is present, its
+/// action is the complete grep expression so broad surrounding prose cannot
+/// exhaust a client's result cap before the property is reached.
+pub const ROLE_CODING_SEARCH_FACT_QUERY: &str = "coding_search_fact_query";
+/// Semantic role: a canonical repository-search fact whose authoritative
+/// occurrence is maintained in documentation rather than implementation or
+/// regression source.
+pub const ROLE_CODING_DOCUMENTATION_FACT_QUERY: &str = "coding_documentation_fact_query";
 /// Semantic role: a repository-search phrase whose form carries its canonical
 /// query as an action.
 pub const ROLE_CODING_SEARCH_LITERAL_QUERY: &str = "coding_search_literal_query";
+/// Semantic role: a verb that asks the agent to find something out about the
+/// workspace it was given.
+///
+/// *Inspect*, *verify*, *identify* and their multilingual equivalents. A request
+/// carrying one of these names no tool and no scope: it says what the caller
+/// wants to know, not where to look. An agent that holds a workspace looks there
+/// first, so the code-search route reads this role as its second admission
+/// reason alongside an explicit "search the repository" cue (issue #1066).
+pub const ROLE_WORKSPACE_INSPECTION_ACTION: &str = "workspace_inspection_action";
 /// Semantic role: a word an identifier may not be, because a programming
 /// language reserves it.
 ///

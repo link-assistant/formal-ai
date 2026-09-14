@@ -4,8 +4,8 @@ use crate::engine::normalize_prompt;
 use crate::seed;
 
 use super::{
-    code_spans, extract_trigger_response, looks_like_skill_description, CompiledSkillInput,
-    CompiledSkillStep, SkillCompileError,
+    CompiledSkillInput, CompiledSkillStep, SkillCompileError, code_spans, extract_trigger_response,
+    looks_like_skill_description,
 };
 
 #[derive(Debug, Clone, Default)]
@@ -256,10 +256,10 @@ fn required_code_span(line: &str, label: &str) -> Result<String, SkillCompileErr
 }
 
 fn required_labeled_text(line: &str, label: &str) -> Result<String, SkillCompileError> {
-    if let Some(value) = code_spans(line).into_iter().next() {
-        if !value.trim().is_empty() {
-            return Ok(value);
-        }
+    if let Some(value) = code_spans(line).into_iter().next()
+        && !value.trim().is_empty()
+    {
+        return Ok(value);
     }
     let value = line_after_label(line, label)
         .map(trim_code_or_text)

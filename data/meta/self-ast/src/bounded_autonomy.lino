@@ -1,0 +1,55 @@
+self_ast_census
+  target src/bounded_autonomy.rs
+  language rust
+  fidelity signature
+  byte_len 15969
+  line_count 477
+  content_id source_module_c5711b9f21a6bb03
+  symbol_count 46
+  symbols
+    const DEFAULT_STUCK_RECOVERY_LIMIT 37 37
+    const AUTONOMY_MODE_VARIABLE 40 40
+    const FULL_AUTONOMOUS_VALUE 43 43
+    const FULL_TRUST_VARIABLE 46 46
+    const FULL_TRUST_VALUE 49 49
+    const STUCK_RECOVERY_LIMIT_VARIABLE 52 52
+    trait Clock 56 59
+    function elapsed 58 58
+    struct SystemClock 63 65
+    function started 70 74
+    function default 78 80
+    function elapsed 84 86
+    struct ManualClock 96 98
+    function new 103 105
+    function advance 108 110
+    function elapsed 114 116
+    function elapsed 120 122
+    enum AutonomyMode 127 136
+    function slug 141 146
+    struct AutonomyPolicy 151 158
+    function default 162 168
+    function from_env 179 193
+    function permits_unattended 197 199
+    enum PermissionRequest 204 211
+    function slug 216 222
+    enum LoopStep 227 241
+    function proceeds 246 248
+    struct RecoveryLoop 257 264
+    function new 269 278
+    function policy 282 284
+    function plan 288 290
+    function questions 294 296
+    function record 299 301
+    function deadline 306 310
+    function step 317 330
+    function step_command 336 355
+    function approve 358 361
+    function approvals 365 367
+    function grant 370 372
+    function resolve 379 391
+    struct ResolutionOption 397 404
+    function new 409 419
+    function net_weight 424 429
+    struct WeighedChoice 434 441
+    enum Resolution 445 450
+    function weigh 459 477

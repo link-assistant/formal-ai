@@ -4,7 +4,7 @@
 [![Desktop Release](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml)
 [![Crates.io](https://img.shields.io/crates/v/formal-ai?label=crates.io&style=flat)](https://crates.io/crates/formal-ai)
 [![Docs.rs](https://img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat)](https://docs.rs/formal-ai)
-[![Rust Version](https://img.shields.io/badge/rust-1.96%2B-blue.svg)](https://www.rust-lang.org/)
+[![Rust Version](https://img.shields.io/badge/rust-1.98%2B-blue.svg)](https://www.rust-lang.org/)
 [![Codecov](https://codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg)](https://codecov.io/gh/link-assistant/formal-ai)
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
@@ -25,7 +25,7 @@ The current implementation covers the surface area requested in issue #1:
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+**[VISION.md](VISION.md) is the standing guideline: read it before analysing, planning or concluding anything in this repository. Where any other document contradicts it, that document is wrong and must be fixed.** It is kept up to date from the architect's own notes, which are recorded in chronological order in [docs/architect-notes/](docs/architect-notes/). Project direction is tracked alongside it in [GOALS.md](GOALS.md) and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
 Legal and provenance guidance starts with [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md). Focused guides explain the [Formal AI/language-model boundary](docs/legal/formal-ai-and-language-models.md), [public-domain dedication of AI-assisted output](docs/legal/public-domain-output.md), [candidate datasets](docs/legal/compatible-datasets.md), and [candidate locally transformable or distillable model families](docs/legal/distillable-models.md). Those dated matrices are source-review queues, not approvals; the machine-readable training registry remains authoritative.
 
@@ -132,6 +132,21 @@ curl -s http://127.0.0.1:8080/api/openai/v1/chat/completions \
   -H 'content-type: application/json' \
   -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}'
 ```
+
+The same local router is available from the one CLI binary over WebSocket or
+host-only WebRTC data channels:
+
+```bash
+formal-ai serve --ws
+formal-ai connect --transport websocket --prompt 'Hi'
+
+formal-ai serve --webrtc
+formal-ai connect --transport webrtc --prompt 'Hi'
+```
+
+See [Local WebSocket and WebRTC transports](docs/local-transports.md) for the
+wire envelope, authentication, generic `websocat` example, and WebRTC
+offer/answer contract.
 
 The canonical model id is `formal-ai`. The API also accepts
 `@link-assistant/formal-ai`, `link-assistant/formal-ai`, `formal-ai-latest`,
@@ -725,6 +740,21 @@ image by default and preserves the inner Docker daemon under the named
 `formal-ai-telegram-docker` volume. Set `FORMAL_AI_DOCKER_IMAGE` to run a locally
 built image or an optional Docker Hub mirror with the same compose file.
 
+If a pull fails with `error from registry: unauthorized`, the GHCR package is
+private rather than the image being missing (issue #1001). Check it without
+credentials — `200` means public, `401` private, `403` no such package:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' \
+  "https://ghcr.io/token?service=ghcr.io&scope=repository:link-assistant/formal-ai:pull"
+```
+
+Until the package is public, either `docker login ghcr.io` with a token that has
+`read:packages`, or build from the public crate:
+`cargo install formal-ai --locked`. Each release now runs
+`scripts/verify-ghcr-visibility.sh`, so a private image fails the release
+instead of surfacing downstream.
+
 The same image and compose file also run the **OpenAI-compatible API server** for
 agentic mode and the idle **Agent CLI environment**, under opt-in Compose
 profiles so `docker compose up` keeps starting only the Telegram bot:
@@ -826,6 +856,7 @@ The VS Code extension lives in [`vscode/`](vscode/) and embeds the same web chat
 
 ```bash
 npm run vscode:test     # node:test unit suite + static smoke check (no install needed)
+npm --prefix vscode run test:package  # real dependency graph (after the package dependency install)
 npm run vscode:dev      # launch in a browser host via @vscode/test-web
 npm run vscode:smoke    # static manifest/contract smoke check
 npm run vscode:package  # produce a .vsix (runs prepare-resources first)
@@ -839,12 +870,13 @@ Packaging mirrors the desktop flow: `prepare-resources` copies `src/web/` into `
 
 Every interface produces the same self-contained Links Notation document by default. In the browser, the **Export memory** topbar button writes `formal-ai-memory.lino` as a complete `formal_ai_bundle` — the entire seed (rules, concepts, tools, multilingual responses), UI preferences, environment metadata, and the full append-only event log — so a single click is enough to reconstitute the session. **Import memory** auto-detects bundle vs legacy `demo_memory` files and surfaces migration suggestions when the imported seed version differs from the running app's. The CLI matches:
 
-Native Rust builds now select `doublets-rs` by default through the
-`doublets-native` feature. Links Notation stays the recovery and migration
-projection: existing `demo_memory` logs and full `formal_ai_bundle` exports
-import into the native store, export back to deterministic `.lino`, and can
-still be handled by compiling with `--no-default-features` when a pure
-`MemoryStore` projection is needed.
+Native Rust builds now select the `link-cli` library backend by default through
+the `doublets-native` feature. Server-side mutations use link-cli's file-mapped
+doublets store and recovery-logged transactions; Links Notation stays the
+portable source, recovery, and migration projection. Existing `demo_memory`
+logs and full `formal_ai_bundle` exports synchronize into the native store,
+export back to deterministic `.lino`, and can still be handled by compiling
+with `--no-default-features` when a pure `MemoryStore` projection is needed.
 
 ```bash
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
@@ -989,6 +1021,40 @@ assert_eq!(
 );
 ```
 
+## Self-Development Share
+
+How much of each release the formal-ai model authored is recorded in
+`data/meta/self-hosting-ledger.lino` and reported red-until-true by the
+[Self-development status](.github/workflows/self-development-status.yml)
+workflow on every push to `main`. Since issue
+[#1085](https://github.com/link-assistant/formal-ai/issues/1085) the metric
+(version 3) counts a commit only when its `Formal-AI-Model` trailer names
+formal-ai and the committed evidence names that model too, and it counts only
+behaviour-changing paths: `docs/`, `dev/`, `experiments/` and `changelog.d/`
+are outside both the numerator and the denominator. Earlier versions credited
+trailer-bearing commits produced by hosted models and counted case studies as
+authored work; their rows stay in the ledger as recorded, and the history is
+restated under version 3 beside them. A figure of 0.00% is an honest figure.
+
+## Formal AI as a GitHub Action
+
+Any repository can hand a task to Formal AI and get back a pull request Formal
+AI wrote itself — one commit under `github-actions[bot]`, with the session
+evidence and attribution trailers on it and no human commit on the branch:
+
+```yaml
+      - uses: link-assistant/formal-ai/.github/actions/author-with-formal-ai@main
+        with:
+          require-contract: 'false'
+```
+
+On `issues: opened` that opens a draft attempt at every new issue. The binary
+comes from the published container, so a run costs a pull rather than a build,
+and a draft that fails is the point: it fails on a branch nobody depends on,
+with its session attached, and the defect goes to the meta algorithm rather than
+being hand-corrected. Installation, inputs, the task contract and how to read a
+draft are in [docs/github-action.md](docs/github-action.md).
+
 ## Current Symbolic Behavior
 
 The engine normalizes a prompt, selects a deterministic symbolic rule, and returns the rule output with evidence link identifiers and indented Links Notation. It can also consume an explicit `ProbabilityStore`: append-only Bayesian-style evidence and Markov transition evidence rank symbolic candidate IDs before the temperature / clarify-vs-guess policy runs. This stays non-neural; evidence is Links Notation data with provenance, timestamps, cached-source fingerprints, and deterministic replay.
@@ -1006,7 +1072,7 @@ Seed rules currently cover:
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
-Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
+Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, C, and PHP examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
 
 No GPU, neural network, remote model, or random sampling is used.
 

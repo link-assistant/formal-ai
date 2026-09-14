@@ -18,7 +18,7 @@ mod feature_capability;
 mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
-mod numeric_list;
+pub mod numeric_list;
 mod playwright_script;
 mod procedure_rules;
 mod program_blueprint;
@@ -43,7 +43,7 @@ pub use benchmark_prompts::{
 pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
-pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use feature_capability::{CapabilityRuntime, try_feature_capability};
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
@@ -67,18 +67,18 @@ pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQuer
 use std::fmt::Write as _;
 
 use crate::calculation::{
-    calculation_expression_candidates, evaluate_calculation, interpretation_statements,
-    PromptInterpretation,
+    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
+    interpretation_statements,
 };
 use crate::coding::contains_cjk;
 use crate::concepts::{
-    extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
+    ConceptRecord, extract_concept_query, lookup_concept_query, resolve_context_label,
 };
 use crate::engine::{
-    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation,
-    normalize_prompt, stable_id, ExecutionStatus, SymbolicAnswer,
+    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias,
+    knowledge_links_notation, normalize_prompt, stable_id,
 };
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::language::detect as detect_language;
 use crate::seed::response_for;
 use crate::solver_helpers::{
@@ -90,7 +90,7 @@ use crate::solver_helpers::{
     translate_program,
 };
 use crate::summarization::{
-    generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
+    DialogTurn, SummarizationConfig, SummarizationMode, generate_chat_title, summarize_dialog,
 };
 use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
@@ -816,7 +816,7 @@ pub fn try_write_script(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !is_write_script_request(normalized) {
+    if !is_write_script_request(prompt, normalized) {
         return None;
     }
     let program = hello_world_program_by_alias(normalized)?;

@@ -32,7 +32,7 @@
 //! 4. the whole task: the recipe reported in the issue runs to a verified
 //!    answer through the exact envelopes the harness sent.
 
-use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
 use formal_ai::engine::SymbolicAnswer;
 use formal_ai::protocol::ChatMessage;
 use formal_ai::solver::{SolverConfig, UniversalSolver};

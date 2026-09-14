@@ -9,3 +9,19 @@ self-hosted-runner:
   labels:
     - macos-15-intel
     - windows-11-arm
+
+# Issue #1076: the suppression below used to be a `-ignore` flag passed to a
+# bare actionlint binary in release.yml's `lint` job. It moved here so the
+# linter can run as the Docker image `rhysd/actionlint`, which is the only form
+# that guarantees ShellCheck is present -- actionlint delegates every `run:`
+# block check to ShellCheck and, when that binary is missing from PATH, skips
+# those checks and exits 0 without saying so.
+#
+# It stays scoped to the one message it is about. A blanket ignore would be
+# indistinguishable from not running the linter at all.
+paths:
+  .github/workflows/**/*.{yml,yaml}:
+    ignore:
+      # GitHub supports `concurrency.queue`; actionlint's embedded schema lags.
+      # https://github.com/rhysd/actionlint/issues/657
+      - 'unexpected key "queue" for "concurrency" section'

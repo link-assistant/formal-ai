@@ -38,13 +38,104 @@ produced it — is walked end to end in
 mapped to the surfaces below and to the principles in this file, so the vision
 makes a concrete promise rather than only describing the machine.
 
+## The Goal Is The Meta Algorithm
+
+Stated by the architect, in his words
+([note, 2026-09-11](docs/architect-notes/2026-09-11-the-goal-is-the-meta-algorithm.md)):
+
+> The goal of the project is to produce the meta algorithm - it is not the
+> kernel or non-kernel. The entire src must be dedicated to that meta algorithm.
+> It should be capable of producting algorithms.
+
+There is no division of the source into a privileged part and the rest. All of
+`src/` serves the meta algorithm.
+
+**Code is held in the meta language and emitted into languages.**
+
+> What I asked links network meta language representation of Rust code, that is
+> translatable by our own Formal AI system into any programming language, for
+> example to JavaScript. [...] For auto-learning system it is important to be
+> able to make modification in meta language version of the code and recompile
+> it back to Rust, JavaScript or any other language.
+
+> We must have .lino files containing full representation of rust code, and we
+> must have /src folder with Rust code all 1 to 1 on each pull request merged.
+
+Rust is therefore one emission target of that representation, not the system. A
+count of Rust lines measures an output: a more general meta algorithm may emit
+*more* Rust. **No release condition may be a Rust line count.**
+
+**Self-modification is an action the user approves.**
+
+> which should be translatable to Rust by a function call and be an action that
+> can be approved by user once or approvable automatically - by default not
+> approved for safety without user permission, and only if user approves it
+> second time - we can ask him to aprove it forever.
+
+Three states in order: not approved by default; approved once; and only after a
+second approval may approve-forever be offered.
+
+**Algorithms are arrived at by deduplication.**
+
+> doublet links are capable of representing each and every data structure or
+> sequence (as nested pairs), that means doublet-links structure is effectively
+> natural deduplicator. Each algorithm at the moment of execution or learning is
+> essentially flat sequence. [...] if some operations are repeated they contain
+> loops or recursion, if there are alternative branches based of input it is
+> equalivalent to if statements or match statements. So if we just record
+> sequence of events, actions, transformations, we can infer algorithms from
+> them purely algorithmically.
+
+> Meta algorithm at the end must arrive to situation where it is capable to
+> modify itself when asked or required by task.
+
+**Nothing is a hard task.**
+
+> nothing is hard task, forget any rating/judjement/assesment [...] if that task
+> is big, we can split it in 2 halves and it will be much easier to deal with
+> them. Complex tasks are composed from simple tasks. So everything complex, is
+> essentially recursively simple in our phylosophy.
+
+Split a task in two, split the halves, and continue until each leaf is directly
+solvable. Do not rate a task before splitting it.
+
+**Requirements must not obstruct progression to the vision.**
+
+> Everything that is in the way especially by made up reasons must be
+> eliminated, we must keep my vision, but we should not place unresonalbe
+> requirements for progression to the vision. [...] we should force each pull
+> request to use Formal AI to code part of it (as big as it can be, but as small
+> as it actually can [...]). So if pull request exists for for more than a day we
+> can relax our requirements, and still be able to produce the release.
+
+The practical aim this serves: *"it is critical to be able to produce formal-ai
+releases for testing in Hive Mind on real GitHub issues."*
+
+**Start from a working Hello World.**
+
+> We must provide Formal AI with all capability nessesary to start with a simple
+> hello world application in top 10-20 languages. If we don't do that, the
+> result will be, that we will never be able to actually start iterating, and it
+> will never trully work.
+
+> instead of creating complete repositories for our formal-ai tests, we may use
+> separate branches with unique names
+
+### Where the architect's notes live
+
+This section is kept up to date from
+[`docs/architect-notes/`](docs/architect-notes/), which records his statements in
+chronological order, quoted and referenced. Where a document, gate, requirement
+or plan contradicts the latest note, the document is wrong and must be fixed. Do
+not invent terminology the architect does not use.
+
 ## Core Idea
 
 The system should prefer deep understanding of user needs, intent, context, and available evidence over answer memoization. A prompt should trigger enough data collection and reasoning to justify the response for that prompt. What the system learns along the way should remain available as reviewable knowledge, with source links and execution traces attached.
 
 The default native store is link-native:
 
-- `doublets-rs` is the default native Links Data Store for meanings, history, rules, traces, and executable associations.
+- The `link-cli` library is the default native Links Data Store boundary for meanings, history, rules, traces, and executable associations, using its transactional file-mapped `doublets-rs` backend.
 - `doublets-web` / IndexedDB is the browser-side storage shape.
 - Links Notation is the reviewable text format for seed data, portable packages, traces, and repository data.
 - Doublet links are the primitive storage model for this project.
@@ -135,7 +226,7 @@ The full pipeline is documented in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Growable Memory And Public Knowledge As Cache
 
-Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The default native store is doublets-rs in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; backups are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
+Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The default native store is link-cli's transactional file-mapped doublets store in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; portable source and backup documents are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
 
 Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts.
 
@@ -226,13 +317,30 @@ Every capability the CLI or HTTP server exposes is also reachable from the `form
 
 ## Current Direction
 
+Where the substrate stands today, stated plainly (issue
+[#1085](https://github.com/link-assistant/formal-ai/issues/1085)): the solver
+reasons over Rust structures -- `MemoryStore` is a vector of events, the seed
+is parsed into Rust tables by `src/seed.rs`, and `src/solver.rs`, `src/engine.rs`
+and `src/main.rs` never read the doublets store. The link-cli store is a
+write-behind projection, filled by `memory_sync.rs` after each `.lino` write.
+Behaviour lives in compiled Rust handlers with `.lino` recipes that describe
+them. Closing that gap is the current direction: the entire source is translated to
+links / meta language and back again (issue #558), so the meta-language
+representation is the system and Rust is one of the languages it is emitted
+into -- JavaScript or any other target is the same projection of the same
+links. A modification is made in the meta language and recompiled back out, and
+that recompilation is an action the user approves rather than something that
+happens silently. The Rust line count is therefore a property of one emitted
+target and not a measure of the system: it may grow while the algorithm becomes
+more general.
+
 The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `src/seed.rs` (Rust) and `src/web/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
 
-The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers while preserving the unified doublets-rs/doublets-web store and Links Notation migration surface across interfaces.
+The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers while preserving the unified link-cli/doublets-web store and Links Notation migration surface across interfaces.
 
 The foundation batches E1-E20, the reasoning batch E21-E27, the synthesis batch E28-E32, and the parity batch E33-E34 are merged (PRs #305-#311, #319-#323, #328-#329). Every user message is now formalized into a Links Notation intent before routing, unmatched prompts run a reasoning-under-unknowns loop instead of falling through to "I can't answer that", narrow per-language intents are collapsed into a parametric `write a program` intent, behavior can be expressed as substitution rules (`replace x y`, `when n do m`) over link CRUD, natural language can query memory / call APIs / execute code under the permission model, a bounded isolated agent runs allowlisted commands, and progress is measured against an imported industry benchmark slice (HumanEval, MBPP, GSM8K, MATH, BIG-bench).
 
-The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. The benchmark suite makes this concrete — it grew to a 13-case slice and passes **13/13** with a `minimum_pass_count` ratchet: the solver writes the HumanEval/MBPP Python functions (synthesized from spec + tests, verified in the bounded agent workspace) and computes the GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers, all **without per-case memorization** (each source carries a held-out paraphrased variant).
+The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. The benchmark suite makes this concrete — it grew to a 13-case slice and passes **13/13** with a `minimum_pass_count` ratchet: the solver writes the HumanEval/MBPP Python functions (synthesized from spec + tests, verified in the bounded agent workspace) and computes the GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers, all **without per-case memorization** (each source carries a held-out paraphrased variant). Those thirteen cases are a curated slice. The honest upstream numbers, from the scheduled `external-benchmarks` workflow (`data/benchmarks/external-results.lino`, run of 2026-09-07, first twenty cases of each suite in upstream order): HumanEval 0/20, MBPP 0/20, GSM8K 2/20, MATH 0/20, BIG-bench object counting 0/20, CoEdIT 0/20, SWE-bench Lite 0/1; only the egg rewrite laws (20/20) and the Ascent closure assertions (5/5), which are rewrite-engine checks rather than coding tasks, pass. Issue [#1085](https://github.com/link-assistant/formal-ai/issues/1085) requires the upstream row to stand beside the curated one wherever it is cited.
 
 The **parity** gap surfaced by the issue [#244](https://github.com/link-assistant/formal-ai/issues/244) PR feedback — "all Rust and JavaScript logic are in sync" and "all languages are supported equally" — is now **closed** by the merged parity batch (E33-E34): the text-manipulation handler triggers from a single shared, data-driven multilingual operation vocabulary (`data/seed/operation-vocabulary.lino`) so every operation is recognised equally in `en|ru|hi|zh`, and the JavaScript browser worker derives the same synthesis/numeric/program/text answers as the Rust core, pinned by the shared fixture `data/parity/cross-runtime-synthesis.json`. With E1-E34 all merged, no vision-planning epic remains open for issue #244. See [`ROADMAP.md`](ROADMAP.md) for the gap-by-gap record.
 

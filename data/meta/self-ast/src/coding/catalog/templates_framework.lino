@@ -1,0 +1,10 @@
+self_ast_census
+  target src/coding/catalog/templates_framework.rs
+  language rust
+  fidelity signature
+  byte_len 1478
+  line_count 42
+  content_id source_module_de40f8acb1cecb1b
+  symbol_count 1
+  symbols
+    const TEMPLATES_FRAMEWORK 20 42

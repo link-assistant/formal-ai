@@ -1,0 +1,25 @@
+31937348334	95141244348	notice		Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/31937348334#summary-95141244348
+31937348316	95141244175	notice	sccache stats - question-necessity-ratchet	43% - 442 hits, 576 misses, 0 errors
+31937348328	95141244602	notice	sccache stats - task-ladder	42% - 428 hits, 594 misses, 0 errors
+31937348365	95141244507	notice	sccache stats - write-effect-ladder	50% - 515 hits, 507 misses, 0 errors
+31937348472	95141393494	notice	sccache stats - build-archive	32% - 309 hits, 658 misses, 0 errors
+31937348472	95141393572	notice	sccache stats - test	32% - 311 hits, 655 misses, 0 errors
+31937348472	95141393607	notice	sccache stats - test-agent-cli-e2e	54% - 1081 hits, 909 misses, 0 errors
+31937348472	95141393657	notice	sccache stats - lint	31% - 510 hits, 1117 misses, 0 errors
+31937348472	95141393657	warning		Rust file has 904 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+31937348472	95141393657	notice		Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+31937348472	95141393657	notice		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+31937348472	95141393657	notice		Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+31937348472	95141393663	notice	sccache stats - test	0% - 0 hits, 1 miss, 0 errors
+31937348472	95141393663	warning	Test suite is approaching its timeout	The command is still running after 840s (70% of its 1200s execution budget). Speed up or repartition it before the job reports a timeout as a cancellation.
+31937348472	95141393708	notice	sccache stats - build-box-language-binary	61% - 621 hits, 401 misses, 0 errors
+31937348472	95142504446	failure		The job has exceeded the maximum execution time of 10m0s
+31937348472	95142504446	failure		The operation was canceled.
+31937348472	95142504446	warning	Core test slice is approaching its timeout	The command is still running after 360s (75% of its 480s execution budget). Speed up or repartition it before the job reports a timeout as a cancellation.
+31937348472	95142504496	warning	Core test slice is approaching its timeout	The command is still running after 360s (75% of its 480s execution budget). Speed up or repartition it before the job reports a timeout as a cancellation.
+31937348472	95144536035	failure		Process completed with exit code 1.
+31937348472	95144536035	failure		Pipeline has cancelled jobs on main: macos-core-tests. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'.
+31937348368	95141389244	notice	sccache stats - coverage	40% - 27 hits, 40 misses, 0 errors
+31937348368	95141389244	notice	Codecov upload not configured	The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+31937348368	95141389282	notice		Coverage for `browser` functions rose to 57.18% (baseline 45.54%). Run `--only browser --update-baseline` to lock the gain in.
+31937348368	95141389282	notice		Coverage for `browser` lines rose to 57.86% (baseline 50.48%). Run `--only browser --update-baseline` to lock the gain in.

@@ -1,0 +1,4 @@
+ci_gate check_formal_ai_contribution
+  stage rust
+  description "Each pull request carries Formal AI-authored work, and the requirement relaxes once the pull request has been open for more than a day. Nothing here gates a release."
+  run "rust-script --test scripts/check-formal-ai-contribution.rs"

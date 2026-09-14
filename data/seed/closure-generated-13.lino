@@ -19,6 +19,11 @@ meanings
     lexeme en
       surface
         text "archive round trip"
+  association
+    defined-by word_surface
+    lexeme en
+      surface
+        text "association"
   bootstrap-icons
     defined-by concept
     lexeme en
@@ -29,6 +34,11 @@ meanings
     lexeme en
       surface
         text "canonical"
+  changed
+    defined-by category
+    lexeme en
+      surface
+        text "changed"
   client_contract_parse_transcript_error
     defined-by intent
     lexeme en
@@ -49,26 +59,51 @@ meanings
     lexeme en
       surface
         text "comparison decomposed no evidence"
+  contenido
+    defined-by concept
+    lexeme en
+      surface
+        text "contenido"
   context_machine_learning
     defined-by context
     lexeme en
       surface
         text "context machine learning"
+  continuation_cue
+    defined-by rule
+    lexeme en
+      surface
+        text "continuation cue"
   contributor_fact_count_summary
     defined-by concept
     lexeme en
       surface
         text "contributor fact count summary"
+  costs
+    defined-by concept
+    lexeme en
+      surface
+        text "costs"
   cp
     defined-by concept
     lexeme en
       surface
         text "cp"
+  cuales
+    defined-by concept
+    lexeme en
+      surface
+        text "cuales"
   docker_microservice
     defined-by environment
     lexeme en
       surface
         text "docker microservice"
+  docs_method_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "docs method explanation"
   document
     defined-by word_surface
     lexeme en
@@ -89,6 +124,16 @@ meanings
     lexeme en
       surface
         text "downstream"
+  else
+    defined-by concept
+    lexeme en
+      surface
+        text "else"
+  external_benchmark_egg_too_few_laws
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark egg too few laws"
   external_benchmark_not_swe_case
     defined-by intent
     lexeme en
@@ -99,6 +144,16 @@ meanings
     lexeme en
       surface
         text "external benchmark parquet decode error"
+  external_benchmark_proof_status_detail
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark proof status detail"
+  external_benchmark_upstream_missing_start
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark upstream missing start"
   fact_check_no_statements
     defined-by intent
     lexeme en
@@ -134,6 +189,11 @@ meanings
     lexeme en
       surface
         text "home"
+  how_to_guide_copies_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide copies heading"
   integer
     defined-by word_surface
     lexeme en
@@ -149,6 +209,11 @@ meanings
     lexeme en
       surface
         text "issue report memory note"
+  left
+    defined-by concept
+    lexeme en
+      surface
+        text "left"
   lexeme_import_cache_invalid_json
     defined-by intent
     lexeme en
@@ -169,6 +234,11 @@ meanings
     lexeme en
       surface
         text "list week events by topic"
+  lista
+    defined-by concept
+    lexeme en
+      surface
+        text "lista"
   manuscript
     defined-by word_surface
     lexeme en
@@ -179,6 +249,11 @@ meanings
     lexeme en
       surface
         text "mcp prompt description"
+  minor
+    defined-by concept
+    lexeme en
+      surface
+        text "minor"
   move_note
     defined-by task
     lexeme en
@@ -189,11 +264,21 @@ meanings
     lexeme en
       surface
         text "multi step"
+  mutating_action_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "mutating action completed"
   mv
     defined-by concept
     lexeme en
       surface
         text "mv"
+  over-refusal
+    defined-by concept
+    lexeme en
+      surface
+        text "over refusal"
   path_argument
     defined-by operation
     lexeme en
@@ -284,13 +369,18 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  produce
+    defined-by word_surface
+    lexeme en
+      surface
+        text "produce"
   programming_task_catalog
     defined-by kind
     lexeme en
       surface
         text "programming task catalog"
   ps
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "ps"
@@ -374,6 +464,16 @@ meanings
     lexeme en
       surface
         text "response capabilities more ru"
+  response_coding_member_already_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present ru"
+  response_coding_meta_algorithm_solutions_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading hi"
   response_coding_source_function_division_rust
     defined-by response_template
     lexeme en
@@ -414,6 +514,36 @@ meanings
     lexeme en
       surface
         text "response definition followup clarify ru"
+  response_docs_method_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation hi"
+  response_evidence_exact_composition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition zh"
+  response_external_benchmark_egg_law_prompt_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg law prompt hi"
+  response_external_benchmark_proof_expected_event_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof expected event en"
+  response_external_benchmark_proof_status_detail_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail zh"
+  response_external_benchmark_rust_adapter_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing hi"
   response_external_benchmark_swe_clear_logs_error_en
     defined-by response_template
     lexeme en
@@ -434,6 +564,11 @@ meanings
     lexeme en
       surface
         text "response fact check statement counterexample ru"
+  response_file_read_many_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable hi"
   response_general_plan_command_output_evidence_en
     defined-by response_template
     lexeme en
@@ -454,6 +589,21 @@ meanings
     lexeme en
       surface
         text "response greeting hi"
+  response_how_to_guide_bounds_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds ru"
+  response_how_to_guide_citation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation es"
+  response_how_to_guide_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading en"
   response_inappropriate_content_hi
     defined-by response_template
     lexeme en
@@ -524,6 +674,11 @@ meanings
     lexeme en
       surface
         text "response mcp prompt description ru"
+  response_memory_link_count_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count es"
   response_memory_program_complete_ru
     defined-by response_template
     lexeme en
@@ -544,6 +699,16 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused es"
+  response_mutating_action_blocked_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked hi"
+  response_mutating_action_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed en"
   response_pattern_sequence_constant_zh
     defined-by response_template
     lexeme en
@@ -559,6 +724,16 @@ meanings
     lexeme en
       surface
         text "response pattern sequence empty hi"
+  response_proof_datalog_conclusion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion hi"
+  response_proof_equality_conclusion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion en"
   response_shared_dialog_capture_parse_failed_zh
     defined-by response_template
     lexeme en
@@ -604,11 +779,26 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth bound en"
+  response_task_decomposition_depth_marker_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker es"
+  response_task_decomposition_unsplit_depth_bound_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound zh"
   response_task_first_step_lead_en
     defined-by response_template
     lexeme en
       surface
         text "response task first step lead en"
+  response_task_first_step_lead_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead es"
   response_task_plan_stage_requirements_en
     defined-by response_template
     lexeme en
@@ -739,6 +929,36 @@ meanings
     lexeme en
       surface
         text "retract contributed facts"
+  reveal
+    defined-by concept
+    lexeme en
+      surface
+        text "reveal"
+  reveals
+    defined-by concept
+    lexeme en
+      surface
+        text "reveals"
+  schema
+    defined-by concept
+    lexeme en
+      surface
+        text "schema"
+  selected
+    defined-by concept
+    lexeme en
+      surface
+        text "selected"
+  self_published
+    defined-by concept
+    lexeme en
+      surface
+        text "self published"
+  steps
+    defined-by concept
+    lexeme en
+      surface
+        text "steps"
   summarization_criterion_content_grounded
     defined-by intent
     lexeme en
@@ -769,6 +989,11 @@ meanings
     lexeme en
       surface
         text "task plan stage regression"
+  these
+    defined-by word_surface
+    lexeme en
+      surface
+        text "these"
   thinking_narrative_greeting
     defined-by intent
     lexeme en

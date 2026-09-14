@@ -1,0 +1,16 @@
+commit dda970f0e267af12c9b48db4b71aa065c9daffe9
+Author:     Issue 921 Replay <issue-921@example.invalid>
+AuthorDate: Thu Aug 13 21:00:00 2026 +0000
+Commit:     Issue 921 Replay <issue-921@example.invalid>
+CommitDate: Thu Aug 13 21:00:00 2026 +0000
+
+    test: record Formal AI workspace effect
+
+diff --git a/formal-ai-to-hive-mind.txt b/formal-ai-to-hive-mind.txt
+new file mode 100644
+index 0000000..9eeade1
+--- /dev/null
++++ b/formal-ai-to-hive-mind.txt
+@@ -0,0 +1 @@
++formal ai dispatched a hive-mind-shaped issue
+\ No newline at end of file

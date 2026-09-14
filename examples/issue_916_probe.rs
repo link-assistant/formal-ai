@@ -4,7 +4,7 @@
 //!
 //! Run with `cargo run --example issue_916_probe`.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::ChatMessage;
 use formal_ai::solver::{SolverConfig, UniversalSolver};
 

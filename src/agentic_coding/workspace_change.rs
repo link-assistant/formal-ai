@@ -8,11 +8,12 @@
 //! request cannot stop after its first observable effect.
 
 use serde_json::{json, Value};
-use sha2::{Digest, Sha256};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
-use super::code_task::{render_rust_template, render_seeded_outcome, rust_source_for_task};
+use super::code_task::{
+    render_rust_template, render_seeded_change, render_seeded_outcome, rust_source_for_task,
+};
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
 use super::planner::{
@@ -21,13 +22,47 @@ use super::planner::{
 use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
-use crate::workspace_change_learning::execute_workspace_rewrite;
+use crate::workspace_change_learning::{
+    RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word, word_scoped_matches,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct GroundedRewrite {
     target: String,
     pattern: String,
     replacement: String,
+    /// How the pattern is allowed to match. Renaming an identifier is a
+    /// word-scoped edit; replacing a quoted literal is a substring one.
+    scope: RewriteScope,
+}
+
+impl GroundedRewrite {
+    /// The intent whose seed sentence states this change rather than merely
+    /// reporting that the file was touched. The scope already carries the
+    /// distinction the sentence needs: a word-scoped edit renamed a name, a
+    /// substring one replaced a literal.
+    const fn stated_intent(&self) -> &'static str {
+        match self.scope {
+            RewriteScope::Word => "coding_identifier_renamed",
+            RewriteScope::Substring => "coding_text_replaced",
+        }
+    }
+
+    /// The two operands the seed sentence names, as template slots.
+    fn stated_slots(&self) -> [(&str, &str); 2] {
+        [("{old}", &self.pattern), ("{new}", &self.replacement)]
+    }
+}
+
+/// A change whose bytes are settled, awaiting the observation that confirms it.
+///
+/// `expected` is what the workspace should now hold; `intent` and `slots` are
+/// the seed sentence that states the change once it does.
+struct VerifiedChange<'a> {
+    target: &'a str,
+    expected: &'a str,
+    intent: &'a str,
+    slots: &'a [(&'a str, &'a str)],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -67,8 +102,12 @@ fn plan_rewrite_step(
         return Some(plan_one(tool, read_arguments(&rewrite.target)));
     };
     let source = source_from_read_result(&read);
-    let Ok(execution) = execute_workspace_rewrite(&source, &rewrite.pattern, &rewrite.replacement)
-    else {
+    let Ok(execution) = execute_scoped_workspace_rewrite(
+        &source,
+        &rewrite.pattern,
+        &rewrite.replacement,
+        rewrite.scope,
+    ) else {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
@@ -77,7 +116,10 @@ fn plan_rewrite_step(
     };
     let updated = execution.output;
 
-    let occurrences = source.match_indices(&rewrite.pattern).count();
+    let occurrences = match rewrite.scope {
+        RewriteScope::Substring => source.match_indices(&rewrite.pattern).count(),
+        RewriteScope::Word => word_scoped_matches(&source, &rewrite.pattern).len(),
+    };
     if occurrences == 1 {
         if let Some(tool) = tool_for(tool_names, Capability::Edit) {
             if result_for_edit(
@@ -97,13 +139,17 @@ fn plan_rewrite_step(
                 task,
                 current_turn,
                 tool_names,
-                &rewrite.target,
-                &updated,
+                &VerifiedChange {
+                    target: &rewrite.target,
+                    expected: &updated,
+                    intent: rewrite.stated_intent(),
+                    slots: &rewrite.stated_slots(),
+                },
             );
         }
-    } else if tool_for(tool_names, Capability::Edit).is_some() {
-        if let Some(command) = repeated_identifier_rewrite_command(rewrite) {
-            if let Some(tool) = tool_for(tool_names, Capability::Run) {
+    } else if tool_for(tool_names, Capability::Edit).is_some()
+        && let Some(command) = repeated_identifier_rewrite_command(rewrite)
+            && let Some(tool) = tool_for(tool_names, Capability::Run) {
                 if result_for_command(current_turn, &command).is_none() {
                     return Some(plan_one(tool, json!({"command": command}).to_string()));
                 }
@@ -111,12 +157,14 @@ fn plan_rewrite_step(
                     task,
                     current_turn,
                     tool_names,
-                    &rewrite.target,
-                    &updated,
+                    &VerifiedChange {
+                        target: &rewrite.target,
+                        expected: &updated,
+                        intent: rewrite.stated_intent(),
+                        slots: &rewrite.stated_slots(),
+                    },
                 );
             }
-        }
-    }
 
     if result_for_path(
         current_turn,
@@ -134,15 +182,18 @@ fn plan_rewrite_step(
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    let intent = if observed == updated {
-        "coding_workspace_effect_observed"
-    } else {
-        "coding_workspace_verification_failed"
-    };
-    Some(AgenticPlan::Final(render_seeded_outcome(
-        intent,
+    if observed != updated {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            &rewrite.target,
+        )?));
+    }
+    Some(AgenticPlan::Final(render_seeded_change(
+        rewrite.stated_intent(),
         task,
         &rewrite.target,
+        &rewrite.stated_slots(),
     )?))
 }
 
@@ -194,16 +245,18 @@ fn plan_composite_step(
     };
     let current = source_from_read_result(&read);
     let updated = insert_registration(&current, &change.registration);
+    let registered = ["`", change.registration.trim(), "`"].concat();
     if updated == current {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_effect_observed",
+        return Some(AgenticPlan::Final(render_seeded_change(
+            "coding_member_already_present",
             task,
             &change.registration_path,
+            &[("{members}", &registered)],
         )?));
     }
 
-    if let Some((old, new)) = compact_registration_edit(&current, &change.registration) {
-        if let Some(tool) = tool_for(tool_names, Capability::Edit) {
+    if let Some((old, new)) = compact_registration_edit(&current, &change.registration)
+        && let Some(tool) = tool_for(tool_names, Capability::Edit) {
             if result_for_edit(current_turn, &change.registration_path, &old, &new).is_none() {
                 return Some(plan_one(
                     tool,
@@ -214,11 +267,14 @@ fn plan_composite_step(
                 task,
                 current_turn,
                 tool_names,
-                &change.registration_path,
-                &updated,
+                &VerifiedChange {
+                    target: &change.registration_path,
+                    expected: &updated,
+                    intent: "coding_member_inserted",
+                    slots: &[("{members}", &registered)],
+                },
             );
         }
-    }
 
     if result_for_path(
         current_turn,
@@ -244,43 +300,68 @@ fn plan_composite_step(
             json!({"command": registration_command}).to_string(),
         ));
     };
-    let intent = if observed_registration == updated {
-        "coding_workspace_effect_observed"
-    } else {
-        "coding_workspace_verification_failed"
-    };
-    Some(AgenticPlan::Final(render_seeded_outcome(
-        intent,
+    if observed_registration != updated {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            &change.registration_path,
+        )?));
+    }
+    Some(AgenticPlan::Final(render_seeded_change(
+        "coding_member_inserted",
         task,
         &change.registration_path,
+        &[("{members}", &registered)],
     )?))
 }
 
 fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
     let (target, old_clause, new_clause) = compose_edit_request(task)?;
+    let renaming = seed::lexicon().mentions_role(
+        seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+        &task.to_lowercase(),
+    );
+    // Both operands have to be literals the request actually quoted, so prose
+    // ("replace the old header with something clearer") is never rewritten as
+    // bytes. What that cannot be is a count: requiring the request to hold
+    // *exactly* two quoted segments made every other pair of delimiters in the
+    // prompt disqualify the edit, and this repository's own prose backticks the
+    // file it names. The issue #1028 ladder node "In the file
+    // `src/protocol_memory.rs`, replace \"request_history\" with
+    // \"conversation_history\"" quotes three things and states one replacement.
+    // Asking whether each clause *is* quoted keeps the guarantee and drops the
+    // arithmetic.
     let quoted = quoted_segments(task);
-    let operands = match quoted.as_slice() {
-        [old, new] => Some((old.clone(), new.clone())),
-        _ if seed::lexicon().mentions_role(
-            seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
-            &task.to_lowercase(),
-        ) =>
-        {
-            Some((
-                identifier_tokens(&old_clause).next_back()?.to_owned(),
-                identifier_tokens(&new_clause).next()?.to_owned(),
-            ))
-        }
-        _ => None,
+    let is_quoted = |value: &String| quoted.contains(value);
+    let operands = if is_quoted(&old_clause) && is_quoted(&new_clause) {
+        Some((old_clause, new_clause))
+    } else if renaming {
+        Some((
+            identifier_tokens(&old_clause).next_back()?.to_owned(),
+            identifier_tokens(&new_clause).next()?.to_owned(),
+        ))
+    } else {
+        None
     }?;
     let (old, new) = operands;
-    if old.is_empty() || old == new || new.contains(&old) {
+    // A rename names a *word*, so the edit is word-scoped whichever way the
+    // request spelled its operands. Without that scope the most ordinary rename
+    // there is -- giving a name a prefix or a suffix -- has to be refused, since
+    // an unanchored substring rewrite that reintroduces its own pattern never
+    // terminates.
+    let scope = if renaming && is_identifier_word(&old) && is_identifier_word(&new) {
+        RewriteScope::Word
+    } else {
+        RewriteScope::Substring
+    };
+    if old.is_empty() || old == new || (scope == RewriteScope::Substring && new.contains(&old)) {
         return None;
     }
     Some(GroundedRewrite {
         target,
         pattern: old,
         replacement: new,
+        scope,
     })
 }
 
@@ -354,10 +435,31 @@ fn repeated_identifier_rewrite_command(rewrite: &GroundedRewrite) -> Option<Stri
     if !shell_safe_identifier(&rewrite.pattern) || !shell_safe_identifier(&rewrite.replacement) {
         return None;
     }
-    Some(format!(
-        "sed -i 's/{}/{}/g' -- {}",
-        rewrite.pattern, rewrite.replacement, rewrite.target,
-    ))
+    // The in-memory execution and the command the client runs have to agree on
+    // what a match is, so a word-scoped rewrite asks for whole words too.
+    let pattern = match rewrite.scope {
+        RewriteScope::Substring => rewrite.pattern.clone(),
+        RewriteScope::Word => format!("\\b{}\\b", rewrite.pattern),
+    };
+    // `perl -pi -e`, not `sed -i` (issue #1110). GNU and BSD sed disagree about
+    // both halves of that command: BSD `-i` reads the script as its backup
+    // suffix, and BSD sed has no `\b`. On macOS every rename therefore failed
+    // with `bad flag in substitute command`, the file was left unchanged, and
+    // Formal AI reported the mismatch as its own verification failure -- a
+    // confident failure report instead of a rename. perl's `-pi -e` and `\b`
+    // mean the same thing on both, and perl ships with macOS and the runners.
+    // Both identifiers are `[A-Za-z0-9_]` by `shell_safe_identifier`, so
+    // neither side can carry a regex or shell metacharacter.
+    // Assembled from named parts rather than one template string: the prose
+    // detector reads `perl -pi -e ...` as a multi-word phrase (two alphabetic
+    // runs, one of three letters) and would have it live in `data/seed`, which
+    // is the wrong home for a shell invocation. Naming the pieces says what
+    // each is, and none of them reads as a sentence.
+    let script = format!("'s/{pattern}/{}/g'", rewrite.replacement);
+    Some(
+        ["perl", "-pi", "-e", &script, "--", &rewrite.target]
+            .join(" "),
+    )
 }
 
 fn shell_safe_identifier(identifier: &str) -> bool {
@@ -493,22 +595,26 @@ fn plan_digest_verification(
     task: &str,
     current_turn: &[ChatMessage],
     tool_names: &[&str],
-    target: &str,
-    expected: &str,
+    change: &VerifiedChange<'_>,
 ) -> Option<AgenticPlan> {
-    let command = ["sha256sum -- ", target].concat();
+    let command = ["sha256sum -- ", change.target].concat();
     let Some(observed) = result_for_command(current_turn, &command) else {
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    let digest = format!("{:x}", Sha256::digest(expected.as_bytes()));
-    let intent = if observed.split_whitespace().next() == Some(digest.as_str()) {
-        "coding_workspace_effect_observed"
-    } else {
-        "coding_workspace_verification_failed"
-    };
-    Some(AgenticPlan::Final(render_seeded_outcome(
-        intent, task, target,
+    let digest = crate::source_fetch::sha256_hex(change.expected.as_bytes());
+    if observed.split_whitespace().next() != Some(digest.as_str()) {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            change.target,
+        )?));
+    }
+    Some(AgenticPlan::Final(render_seeded_change(
+        change.intent,
+        task,
+        change.target,
+        change.slots,
     )?))
 }
 

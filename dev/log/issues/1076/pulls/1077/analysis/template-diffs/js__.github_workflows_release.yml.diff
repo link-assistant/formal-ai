@@ -1,0 +1,2221 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/js-template/.github/workflows/release.yml	2026-09-05 09:39:57.764033682 +0000
++++ .github/workflows/release.yml	2026-09-05 09:37:13.888816104 +0000
+@@ -1,14 +1,10 @@
+-name: Checks and release
+-
++name: CI/CD Pipeline
+ on:
+   push:
+     branches:
+       - main
+   pull_request:
+     types: [opened, synchronize, reopened]
+-  # Manual release support - consolidated here to work with npm trusted publishing
+-  # npm only allows ONE workflow file as trusted publisher, so all publishing
+-  # must go through this workflow (release.yml)
+   workflow_dispatch:
+     inputs:
+       release_mode:
+@@ -18,9 +14,9 @@
+         default: 'instant'
+         options:
+           - instant
+-          - changeset-pr
++          - changelog-pr
+       bump_type:
+-        description: 'Manual release type'
++        description: 'Version bump type'
+         required: true
+         type: choice
+         options:
+@@ -28,861 +24,1497 @@
+           - minor
+           - major
+       description:
+-        description: 'Manual release description (optional)'
++        description: 'Release description (optional)'
+         required: false
+         type: string
+-
+-# Least-privilege default for the highest-value token in the repository.
+-# Every job starts read-only; the publishing jobs escalate individually.
+ permissions:
+   contents: read
+-
+-# Provide Git config to actions/checkout itself; checkout runs git init before
+-# any workflow step can configure Git.
+ env:
+   GIT_CONFIG_COUNT: '1'
+   GIT_CONFIG_KEY_0: init.defaultBranch
+   GIT_CONFIG_VALUE_0: main
+-
++  CARGO_NET_RETRY: '10'
++  CARGO_HTTP_MULTIPLEXING: 'false'
++  CARGO_TERM_COLOR: always
++  # Set this repository variable to true only while investigating sccache
++  # backend failures. The shared setup action otherwise leaves logging off.
++  FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
++  RUSTFLAGS: -Dwarnings
++  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
++  CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
++  GHCR_IMAGE: ghcr.io/${{ github.repository }}
++  DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
+ jobs:
+-  # === DETECT CHANGES - determines which jobs should run ===
+   detect-changes:
+     name: Detect Changes
+     runs-on: ubuntu-latest
+-    # Typical run: ~6s. Cap at 5min so a hung detection step
+-    # surfaces quickly instead of stalling the whole pipeline.
+     timeout-minutes: 5
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-detect-changes
++      group: ${{ github.workflow }}-${{ github.ref }}-detect-changes
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name != 'workflow_dispatch'
+     outputs:
+-      js-changed: ${{ steps.changes.outputs.js-changed }}
++      rs-changed: ${{ steps.changes.outputs.rs-changed }}
++      toml-changed: ${{ steps.changes.outputs.toml-changed }}
+       docs-changed: ${{ steps.changes.outputs.docs-changed }}
++      workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+           fetch-depth: 0
+-
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
+       - name: Detect changes
+         id: changes
+-        run: node scripts/detect-code-changes.mjs
+-
+-  # === FAST CHECKS - run before slow tests for fastest feedback ===
+-  # See: hive-mind CI/CD best practices principle #5 (fast-fail job ordering)
+-
+-  # Syntax check all .mjs files with node --check (~7s)
+-  test-compilation:
+-    name: Test Compilation
+-    runs-on: ubuntu-latest
+-    # Typical run: <10s. Tight cap fails fast on syntax-check hangs.
+-    timeout-minutes: 5
+-    concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-test-compilation
+-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+-    needs: [detect-changes]
+-    if: |
+-      needs.detect-changes.outputs.js-changed == 'true'
+-    steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Check .mjs syntax
+-        run: bash scripts/check-mjs-syntax.sh
+-
+-  # Enforce 1500-line limit on .mjs files and release.yml
+-  check-file-line-limits:
+-    name: Check File Line Limits
++        env:
++          GITHUB_EVENT_NAME: ${{ github.event_name }}
++          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
++        run: rust-script scripts/detect-code-changes.rs
++  changelog:
++    name: Changelog Fragment Check
+     runs-on: ubuntu-latest
+-    # Typical run: <10s. This job only walks tracked files and counts lines.
+-    timeout-minutes: 5
++    timeout-minutes: 10
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-check-file-line-limits
++      group: ${{ github.workflow }}-${{ github.ref }}-changelog
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+-    needs: [detect-changes]
+-    if: |
+-      needs.detect-changes.outputs.docs-changed == 'true' ||
+-      needs.detect-changes.outputs.any-code-changed == 'true'
++    needs: [detect-changes, build-artifacts]
++    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+           fetch-depth: 0
+-
+-      - name: Simulate fresh merge with base branch (PR only)
+-        if: github.event_name == 'pull_request'
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Check for changelog fragments
+         env:
+-          BASE_REF: ${{ github.base_ref }}
+-        run: bash scripts/simulate-fresh-merge.sh
+-
+-      # Enforces the 1500-line limit on JavaScript (.js/.mjs/.cjs) and
+-      # Markdown (.md) files plus release.yml. This is the single source
+-      # of truth for the line limit; validate-docs no longer re-checks it.
+-      - name: Check file line limits
+-        run: bash scripts/check-file-line-limits.sh
+-
+-  # === VERSION CHANGE CHECK ===
+-  # Prohibit manual version changes in package.json - versions should only be changed by CI/CD
+-  version-check:
+-    name: Check for Manual Version Changes
++          GITHUB_BASE_REF: ${{ github.base_ref }}
++        run: rust-script scripts/check-changelog-fragment.rs
++  evidence-check:
++    name: Self-Hosting Evidence Check
+     runs-on: ubuntu-latest
+-    # Typical run: ~6s. Read-only package.json diff inspection.
+-    timeout-minutes: 5
++    timeout-minutes: 10
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-version-check
++      group: ${{ github.workflow }}-${{ github.ref }}-evidence-check
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name == 'pull_request'
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+           fetch-depth: 0
+-
+-      - name: Check for version changes in package.json
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Validate Formal-AI trailers on this pull request
+         env:
+-          GITHUB_HEAD_REF: ${{ github.head_ref }}
+           GITHUB_BASE_REF: ${{ github.base_ref }}
+-        run: node scripts/check-version.mjs
+-
+-  # === CHANGESET CHECK - only runs on PRs with code changes ===
+-  # Docs-only PRs (./docs folder, markdown files) don't require changesets
+-  changeset-check:
+-    name: Check for Changesets
++        run: |
++          set -euo pipefail
++          base="origin/${GITHUB_BASE_REF}"
++          merge_base="$(git merge-base "$base" HEAD)"
++          echo "Validating commits in ${merge_base}..HEAD"
++          rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
++  docker-build:
++    name: Docker Image Build & Runtime Check
++    runs-on: ubuntu-latest
++    permissions:
++      contents: read
++      packages: read
++    timeout-minutes: 60
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-docker-build
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    needs: [detect-changes, build-artifacts]
++    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
++    steps:
++      - uses: actions/checkout@v7
++      - name: Free up runner disk space
++        run: bash scripts/free-runner-disk.sh
++      - uses: ./.github/actions/download-formal-ai-binary
++      - name: Set up Docker Buildx
++        uses: ./.github/actions/setup-buildx-resilient
++      - name: Build image
++        uses: docker/build-push-action@v7
++        with:
++          context: .
++          push: false
++          load: true
++          tags: formal-ai:pr-check
++          # Publish jobs keep the default `compile`, so what ships is still
++          # built from source (issue #1051).
++          build-args: BINARY_SOURCE=prebuilt
++          cache-from: type=gha
++          # Issue #1057: prebuilt binary, nothing worth caching; exports were
++          # evicting sccache from the shared 10GB pool.
++          cache-to: type=inline
++      - name: Verify image runtime contract
++        run: |
++          set -euo pipefail
++          docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
++      - name: Log in to GHCR for the released upgrade fixture
++        uses: docker/login-action@v4
++        with:
++          registry: ghcr.io
++          username: ${{ github.actor }}
++          password: ${{ secrets.GITHUB_TOKEN }}
++      - name: Test released-to-candidate memory upgrade
++        run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
++      - if: ${{ !cancelled() }}
++        run: scripts/prune-docker.sh
++  secrets-scan:
++    name: Secrets Scan
+     runs-on: ubuntu-latest
+-    # Typical run: <30s including npm install. 10min covers cold runners.
+     timeout-minutes: 10
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-changeset-check
++      group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
++    if: |
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true' ||
++        needs.detect-changes.outputs.docs-changed == 'true' ||
++        needs.detect-changes.outputs.workflow-changed == 'true'
++      )
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+           fetch-depth: 0
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
++      - name: Setup Node
++        uses: actions/setup-node@v7
+         with:
+-          node-version: '24.x'
+-
+-      - name: Install dependencies
+-        run: npm install
+-
+-      - name: Check for changesets
++          node-version: 22
++      - name: Check for secrets
+         env:
+-          # Pass PR context to the validation script
+-          GITHUB_BASE_REF: ${{ github.base_ref }}
+-          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
++          BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
++        run: bash scripts/check-secrets.sh
++  version-check:
++    name: Version Modification Check
++    runs-on: ubuntu-latest
++    timeout-minutes: 5
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-version-check
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    if: github.event_name == 'pull_request'
++    steps:
++      - uses: actions/checkout@v7
++        with:
++          fetch-depth: 0
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Check for manual version changes
++        env:
++          GITHUB_EVENT_NAME: ${{ github.event_name }}
+           GITHUB_HEAD_REF: ${{ github.head_ref }}
+-          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+-        run: |
+-          # Skip changeset check for automated version PRs
+-          if [[ "$GITHUB_HEAD_REF" == "changeset-release/"* ]]; then
+-            echo "Skipping changeset check for automated release PR"
+-            exit 0
+-          fi
+-
+-          # Run changeset validation script
+-          # This validates that exactly ONE changeset was ADDED by this PR
+-          # Pre-existing changesets from other merged PRs are ignored
+-          node scripts/validate-changeset.mjs
+-
+-  # === LINT AND FORMAT CHECK ===
+-  # Lint runs independently of changeset-check - it's a fast check that should always run
+-  # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
+-  # IMPORTANT: ESLint includes max-lines rule (1500 lines) to ensure files stay maintainable
+-  # See docs/case-studies/issue-23 for why fresh merge simulation is critical
++          GITHUB_BASE_REF: ${{ github.base_ref }}
++        run: rust-script scripts/check-version-modification.rs
++  # Issue #1017 (D19): one commit for every base-branch merge in this run.
++  base:
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-base
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    uses: ./.github/workflows/pin-base-commit.yml
++    permissions:
++      contents: read
+   lint:
+     name: Lint and Format Check
+     runs-on: ubuntu-latest
+-    # Typical run: <1min including install, ESLint, Prettier, jscpd,
+-    # and secretlint. 10min protects against a hung lint plugin.
+-    timeout-minutes: 10
++    timeout-minutes: 15
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-lint
++      group: ${{ github.workflow }}-${{ github.ref }}-lint
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+-    needs: [detect-changes]
++    needs: [detect-changes, base]
+     if: |
+-      !cancelled() &&
+-      (
++      !cancelled() && (
+         github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true' ||
++        needs.detect-changes.outputs.rs-changed == 'true' ||
++        needs.detect-changes.outputs.toml-changed == 'true' ||
+         needs.detect-changes.outputs.docs-changed == 'true' ||
+-        needs.detect-changes.outputs.any-code-changed == 'true'
++        needs.detect-changes.outputs.workflow-changed == 'true'
+       )
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+-          # For PRs, fetch enough history to merge with base branch
+           fetch-depth: 0
+-
+       - name: Simulate fresh merge with base branch (PR only)
+         if: github.event_name == 'pull_request'
+         env:
+           BASE_REF: ${{ github.base_ref }}
++          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
+         run: bash scripts/simulate-fresh-merge.sh
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
+         with:
+-          node-version: '24.x'
+-
+-      - name: Install dependencies
+-        run: npm install
+-
+-      - name: Run ESLint
+-        run: npm run lint
+-
+-      - name: Check formatting
+-        run: npm run format:check
+-
+-      - name: Check code duplication
+-        run: npm run check:duplication
+-
+-      - name: Check for secrets
+-        run: npx --yes -p secretlint -p @secretlint/secretlint-rule-preset-recommend secretlint "**/*"
+-
+-  # Test matrix: 3 runtimes (Node.js, Bun, Deno) x 3 OS (Ubuntu, macOS, Windows)
+-  # IMPORTANT: Tests must validate the ACTUAL merge result, not a stale merge preview.
+-  # See docs/case-studies/issue-23 for why this is critical.
+-  # Fast-fail: slow test matrix only runs after fast checks pass (hive-mind principle #5)
++          components: rustfmt, clippy
++          targets: wasm32-unknown-unknown
++      - uses: ./.github/actions/setup-sccache
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version-file: .bun-version
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - uses: ./.github/actions/cache-cargo-registry
++      - name: Lint GitHub Actions workflows
++        env:
++          ACTIONLINT_VERSION: 1.7.12
++        run: |
++          set -euo pipefail
++          curl -fsSL \
++            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
++            | tar xz -C /tmp actionlint
++          # GitHub supports queue; actionlint schema lag: https://github.com/rhysd/actionlint/issues/657
++          /tmp/actionlint -color \
++            -ignore 'unexpected key "queue" for "concurrency" section'
++      - name: Run registered gates (stage rust)
++        # Issue #991: the gate list lives in data/meta/ci-gates/, one file per
++        # gate, so adding a gate no longer edits this file.
++        env:
++          FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
++          PR_BODY: ${{ github.event.pull_request.body }}
++          GITHUB_BASE_REF: ${{ github.base_ref }}
++        run: rust-script scripts/run-ci-gates.rs --stage rust
++      - name: Build Rust→WASM worker
++        run: sh src/web/wasm-worker/build.sh
++      - name: Run registered gates (stage wasm)
++        run: rust-script scripts/run-ci-gates.rs --stage wasm
++      - name: Install web bundle dependencies
++        run: bun install --frozen-lockfile
++      - name: Build web vendor bundle
++        run: bun run build:web
++      - name: Check web bundles are current
++        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/web-search-component.bundle.js src/web/ocr.bundle.js src/web/app.js
++      - name: Setup Node
++        uses: actions/setup-node@v7
++        with:
++          node-version: 22
++          cache: npm
++          cache-dependency-path: tests/e2e/package-lock.json
++      - name: Install web test dependencies
++        run: npm ci --prefix tests/e2e --no-audit --no-fund
++      - name: Run registered gates (stage web)
++        env:
++          GITHUB_BASE_REF: ${{ github.base_ref }}
++        run: rust-script scripts/run-ci-gates.rs --stage web
+   test:
+-    name: Test (${{ matrix.runtime }} on ${{ matrix.os }})
++    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
+     runs-on: ${{ matrix.os }}
+-    # Typical run: <1min per runtime/OS on warm runners, with Windows
+-    # sometimes slower on cold starts. Each test step owns an explicit
+-    # budget below (see scripts/run-with-budget-warning.sh); this cap is
+-    # only the backstop behind those budgets, sized so the budgets always
+-    # expire first. A job killed by timeout-minutes reports *cancelled*,
+-    # which hides the failure -- see docs/CI-TIMEOUT-BUDGETS.md.
+-    timeout-minutes: 15
++    # Issue #1017: run 31937348472 used 1415s of a 1500s cap with 455s outside
++    # the budgeted step, so the 1200s budget could never expire first. The cap
++    # is the backstop; the budget is the deadline.
++    timeout-minutes: 35
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.runtime }}-${{ matrix.os }}
++      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+-    needs:
+-      [
+-        detect-changes,
+-        changeset-check,
+-        test-compilation,
+-        lint,
+-        check-file-line-limits,
+-      ]
+-    # Use !cancelled() instead of always() so cancellation propagates correctly (hive-mind issue #1278)
+-    # Run for relevant code/package/workflow changes, or for an instant manual
+-    # release. Skipped fast checks count as non-failures only after one of
+-    # those positive gates passes.
++    needs: [detect-changes, base, build-artifacts]
+     if: |
+-      !cancelled() &&
+-      (
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
+         needs.detect-changes.outputs.any-code-changed == 'true' ||
+-        (
+-          github.event_name == 'workflow_dispatch' &&
+-          github.event.inputs.release_mode == 'instant'
+-        )
+-      ) &&
+-      (needs.changeset-check.result == 'success' || needs.changeset-check.result == 'skipped') &&
+-      (needs.test-compilation.result == 'success' || needs.test-compilation.result == 'skipped') &&
+-      (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
+-      (needs.check-file-line-limits.result == 'success' || needs.check-file-line-limits.result == 'skipped')
++        needs.detect-changes.outputs.rs-changed == 'true' ||
++        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.workflow-changed == 'true'
++      )
+     strategy:
+       fail-fast: false
+       matrix:
+-        os: [ubuntu-latest, macos-latest, windows-latest]
+-        runtime: [node, bun, deno]
++        include:
++          - { os: ubuntu-latest, test-suite: full }
++          - { os: macos-15-intel, test-suite: specification }
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+-          # For PRs, fetch enough history to merge with base branch
+           fetch-depth: 0
+-
+       - name: Simulate fresh merge with base branch (PR only)
+         if: github.event_name == 'pull_request'
+         env:
+           BASE_REF: ${{ github.base_ref }}
+-        shell: bash
++          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
+         run: bash scripts/simulate-fresh-merge.sh
+-
+-      - name: Setup Node.js
+-        if: matrix.runtime == 'node'
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: '24.x'
+-
+-      - name: Install dependencies (Node.js)
+-        if: matrix.runtime == 'node'
+-        run: npm install
+-
+-      - name: Run tests (Node.js)
+-        if: matrix.runtime == 'node'
+-        shell: bash
+-        run: bash scripts/run-with-budget-warning.sh 300 "Node.js test suite" npm test
+-
+-      - name: Setup Bun
+-        if: matrix.runtime == 'bun'
+-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
++      - name: Free up runner disk space
++        run: bash scripts/free-runner-disk.sh
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++        with:
++          targets: wasm32-unknown-unknown
++      - uses: ./.github/actions/setup-sccache
++      - name: Restore cargo registry cache
++        uses: actions/cache/restore@v6
++        with:
++          path: |
++            ~/.cargo/registry
++            ~/.cargo/git
++          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
++          restore-keys: |
++            ${{ runner.os }}-cargo-
++      - name: Check LiNo data integrity
++        if: matrix.test-suite == 'full'
++        run: cargo test --test unit data_files -- --nocapture
++      - name: sccache counters after the first compiling step
++        run: sccache --show-stats
++      - name: Check self-AST census freshness
++        if: matrix.test-suite == 'full'
++        run: cargo test --test unit self_ast_census -- --nocapture
++      # Issue #1055: built once above; this only runs them. The binary comes
++      # too, because `CARGO_BIN_EXE_formal-ai` bakes `target/release/formal-ai`
++      # into each executable at compile time -- 109 call sites across 36 test
++      # files spawn it -- so the path has to exist here as well.
++      - name: Download test executables
++        if: matrix.test-suite == 'full'
++        uses: actions/download-artifact@v8
++        env:
++          NODE_OPTIONS: --disable-warning=DEP0005
+         with:
+-          bun-version: latest
+-
+-      - name: Install dependencies (Bun)
+-        if: matrix.runtime == 'bun'
+-        run: bun install
+-
+-      - name: Run tests (Bun)
+-        if: matrix.runtime == 'bun'
+-        shell: bash
+-        # --timeout caps an *individual* test at 30s, matching Node's
+-        # --test-timeout budget while leaving headroom for cold runners.
+-        # It is a per-test bound and does not bound the suite: 25 tests of
+-        # 29s each pass every per-test check. The suite budget below is
+-        # what bounds the whole run.
+-        run: bash scripts/run-with-budget-warning.sh 200 "Bun test suite" bun test --timeout 30000
+-
+-      - name: Setup Deno
+-        if: matrix.runtime == 'deno'
+-        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+-        with:
+-          deno-version: v2.x
+-
+-      - name: Run tests (Deno)
+-        if: matrix.runtime == 'deno'
+-        shell: bash
+-        run: bash scripts/run-with-budget-warning.sh 100 "Deno test suite" deno test --allow-read
+-
+-  # === DOCKER IMAGE BUILD CHECK (pull requests) ===
+-  # Builds the Dockerfile without pushing so a broken image fails the pull
+-  # request instead of surfacing only after publish (issue #106).
+-  # push: false + load: true keeps this working for fork pull requests,
+-  # which have no registry credentials. Skipped when no Dockerfile exists.
+-  docker-build:
+-    name: Docker Image Build Check
+-    runs-on: ubuntu-latest
+-    # Typical run: a few minutes with a warm GHA layer cache. 30min covers
+-    # a cold, uncached build without allowing a 6h hang.
+-    timeout-minutes: 30
++          name: formal-ai-test-executables
++          path: dist/tests
++      - uses: ./.github/actions/download-formal-ai-binary
++        if: matrix.test-suite == 'full'
++      - name: Run tests
++        if: matrix.test-suite == 'full'
++        env:
++          TEST_BUDGET_SECONDS: 1200
++          TEST_WARN_RATIO_PERCENT: 70
++        run: |
++          chmod +x dist/tests/*
++          scripts/run-with-budget-warning.sh \
++            "$TEST_BUDGET_SECONDS" "Test suite" \
++            bash scripts/run-prebuilt-tests.sh
++      # Issue #1053: 1400s covers a cold rebuild after a profile change, and
++      # stays at 66% of the 35m cap, inside the 70% the budget gate allows.
++      - name: Run specification tests
++        if: matrix.test-suite == 'specification'
++        env:
++          TEST_BUDGET_SECONDS: 1400
++          TEST_WARN_RATIO_PERCENT: 70
++        run: |
++          scripts/run-with-budget-warning.sh \
++            "$TEST_BUDGET_SECONDS" "Specification test shard" \
++            cargo test --test unit --all-features --verbose specification::
++      - name: Run doc tests
++        if: matrix.test-suite == 'full'
++        run: cargo test --doc --verbose
++  macos-core-tests:
++    name: macOS Core Tests
++    needs: [detect-changes, base]
++    # Issue #1017: the heaviest lane here (one archive build plus sixteen Intel
++    # macOS slices at 10x the Linux rate) had no concurrency group, so a second
++    # push doubled it. `main` never cancels, keeping issue #977's rule intact.
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-docker-build
++      group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+-    needs: [detect-changes]
+-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
++    if: |
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true' ||
++        needs.detect-changes.outputs.rs-changed == 'true' ||
++        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.workflow-changed == 'true'
++      )
++    uses: ./.github/workflows/macos-core-tests.yml
++    # Issue #1017: archive and slices must merge the same base commit.
++    with:
++      base-commit: ${{ needs.base.outputs.commit }}
+     permissions:
+       contents: read
+-    env:
+-      DOCKER_CONTEXT: ${{ vars.DOCKER_CONTEXT }}
+-      DOCKERFILE: ${{ vars.DOCKERFILE }}
+-    steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Check Docker build configuration
+-        id: docker_config
+-        run: node scripts/check-docker-build.mjs
+-
+-      - name: Set up Docker Buildx (resilient)
+-        if: steps.docker_config.outputs.enabled == 'true'
+-        uses: ./.github/actions/setup-buildx-resilient
+-
+-      - name: Build Docker image (no push)
+-        if: steps.docker_config.outputs.enabled == 'true'
+-        # A `uses:` step cannot be wrapped by run-with-budget-warning.sh, so
+-        # it declares its deadline with a step-level timeout-minutes: an
+-        # exhausted step budget fails the step, while an exhausted job cap
+-        # only cancels the job.
+-        timeout-minutes: 20
+-        uses: docker/build-push-action@v7
+-        with:
+-          context: ${{ steps.docker_config.outputs.context }}
+-          file: ${{ steps.docker_config.outputs.dockerfile }}
+-          push: false
+-          load: true
+-          tags: pr-check:${{ github.sha }}
+-          cache-from: type=gha
+-          cache-to: type=gha,mode=max
+-
+-  # === DOCUMENTATION VALIDATION ===
+-  # Validate documentation files when docs change (hive-mind principle #12)
+-  validate-docs:
+-    name: Validate Documentation
++  build:
++    name: Build Package
+     runs-on: ubuntu-latest
+-    # Typical run: <10s. Pure shell checks over documentation files.
+-    timeout-minutes: 5
++    timeout-minutes: 15
+     concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-validate-docs
++      group: ${{ github.workflow }}-${{ github.ref }}-build
+       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+-    needs: [detect-changes]
+-    if: |
+-      needs.detect-changes.outputs.docs-changed == 'true'
++    needs: [lint, test, macos-core-tests, build-artifacts]
++    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && needs.macos-core-tests.result == 'success' }}
+     steps:
+-      - uses: actions/checkout@v6
+-
+-      # Documentation line limits (1500 lines, matching the architecture
+-      # limit) are enforced by the check-file-line-limits job, which scans
+-      # every .md file. This job only validates required-file presence.
+-      - name: Check required documentation files exist
+-        run: |
+-          REQUIRED_FILES=(
+-            "docs/BEST-PRACTICES.md"
+-            "docs/CONTRIBUTING.md"
+-            "README.md"
+-            "CHANGELOG.md"
+-          )
+-
+-          MISSING=()
+-          for file in "${REQUIRED_FILES[@]}"; do
+-            if [ ! -f "$file" ]; then
+-              echo "ERROR: Required documentation file missing: $file"
+-              MISSING+=("$file")
+-            else
+-              echo "Found: $file"
+-            fi
+-          done
+-
+-          if [ "${#MISSING[@]}" -gt 0 ]; then
+-            echo ""
+-            echo "Missing required documentation files:"
+-            printf '  %s\n' "${MISSING[@]}"
+-            exit 1
+-          else
+-            echo "All required documentation files present."
+-          fi
+-
+-  # Release - only runs on main after tests pass (for push events)
+-  release:
+-    name: Release
+-    needs: [lint, test]
+-    # Typical run is well under 10min. 30min gives npm and GitHub
+-    # release APIs room for retries without allowing a 6h hang.
+-    timeout-minutes: 30
++      - uses: actions/checkout@v7
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - uses: ./.github/actions/setup-sccache
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Cache cargo registry
++        uses: actions/cache@v6
++        with:
++          path: |
++            ~/.cargo/registry
++            ~/.cargo/git
++          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
++          restore-keys: |
++            ${{ runner.os }}-cargo-build-
++      # Issue #1055: the binary exists; packaging needs no rebuild.
++      - uses: ./.github/actions/download-formal-ai-binary
++      - name: Check package
++        run: cargo package --list --allow-dirty
++      - name: Check crate package size
++        run: rust-script scripts/check-crate-package-size.rs
++  auto-release:
++    name: Auto Release
+     concurrency:
+-      group: main-writer-${{ github.repository }}-main
+-      cancel-in-progress: false
+-    # Use !cancelled() instead of always() so cancellation propagates correctly (hive-mind issue #1278)
+-    # This is needed because lint/test jobs have a transitive dependency on changeset-check
++      group: formal-ai-repository-writes
++      queue: max
++    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
+     if: |
+       !cancelled() &&
+-      github.ref == 'refs/heads/main' &&
+       github.event_name == 'push' &&
+-      needs.lint.result == 'success' &&
+-      needs.test.result == 'success'
++      github.ref == 'refs/heads/main' &&
++      needs.build.result == 'success' &&
++      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
++      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
++      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
+     runs-on: ubuntu-latest
+-    # Permissions required for npm OIDC trusted publishing
++    timeout-minutes: 60
++    outputs:
++      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
++      pages_version: ${{ steps.release_pages_ref.outputs.version }}
++    env:
++      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
++      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+     permissions:
+       contents: write
+-      pull-requests: write
+-      id-token: write
+-    outputs:
+-      published: ${{ steps.publish.outputs.published }}
+-      published_version: ${{ steps.publish.outputs.published_version }}
++      packages: write
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+           fetch-depth: 0
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: '24.x'
+-          registry-url: 'https://registry.npmjs.org'
+-
+-      - name: Remove deprecated npm auth config
+-        run: node scripts/sanitize-npm-userconfig.mjs
+-
+-      - name: Install dependencies
+-        run: bash scripts/run-with-budget-warning.sh 240 "Release dependency install" npm install
+-
+-      - name: Update npm for OIDC trusted publishing
+-        run: node scripts/setup-npm.mjs
+-
+-      - name: Check for changesets
+-        id: check_changesets
+-        run: node scripts/check-changesets.mjs
+-
+-      - name: Check if release is needed
+-        id: check_release
+-        env:
+-          HAS_CHANGESETS: ${{ steps.check_changesets.outputs.has_changesets }}
+-        run: node scripts/check-release-needed.mjs
+-
+-      - name: Merge multiple changesets
+-        if: steps.check_changesets.outputs.has_changesets == 'true' && steps.check_changesets.outputs.changeset_count > 1
+-        run: |
+-          echo "Multiple changesets detected, merging..."
+-          node scripts/merge-changesets.mjs
+-
+-      - name: Version packages and commit to main
+-        if: steps.check_changesets.outputs.has_changesets == 'true'
++          token: ${{ secrets.GITHUB_TOKEN }}
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Configure git
++        run: rust-script scripts/git-config.rs
++      - name: Determine bump type from changelog fragments
++        id: bump_type
++        run: rust-script scripts/get-bump-type.rs
++      - name: Check if version already released or no fragments
++        id: check
++        env:
++          HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++        run: rust-script scripts/check-release-needed.rs
++      - name: Apply self-development release gate
++        id: release_gate
++        if: steps.check.outputs.should_release == 'true'
++        env:
++          SKIP_BUMP: ${{ steps.check.outputs.skip_bump }}
++        run: rust-script scripts/check-self-development-release.rs
++      - name: Collect changelog and bump version
+         id: version
+-        env:
+-          # Lets the push helper land the version commit through a pull request
+-          # when a repository ruleset declines the direct push (issue #143).
+-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: node scripts/version-and-commit.mjs --mode changeset
+-
+-      - name: Publish to npm
+-        # Run if version was committed, if a previous attempt already committed (for re-runs),
+-        # or if check-release-needed detected an unpublished version (self-healing, issue #36)
+-        if: >-
+-          steps.version.outputs.version_committed == 'true' ||
+-          steps.version.outputs.already_released == 'true' ||
+-          (steps.check_release.outputs.should_release == 'true' && steps.check_release.outputs.skip_bump == 'true')
+-        id: publish
+-        # Optional NPM_TOKEN bootstrap fallback. OIDC trusted publishing is the
+-        # steady-state mechanism, but it cannot create a brand-new package (the
+-        # first publish returns E404 because a trusted publisher can only be
+-        # configured for a package that already exists). When NPM_TOKEN is set,
+-        # the first publish succeeds; once the package exists and a trusted
+-        # publisher is configured, OIDC takes over and the token can be removed.
+-        # See issue #77.
+-        env:
+-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+-        run: bash scripts/run-with-budget-warning.sh 420 "npm publish" node scripts/publish-to-npm.mjs --should-pull
+-
+-      - name: Smoke-test published npm package
+-        if: steps.publish.outputs.published == 'true'
+-        run: bash scripts/run-with-budget-warning.sh 300 "npm package smoke test" node scripts/smoke-test-package.mjs --package-version "${{ steps.publish.outputs.published_version }}"
+-
++        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
++        run: |
++          rust-script scripts/version-and-commit.rs \
++            --bump-type "${{ steps.bump_type.outputs.bump_type }}"
++      - name: Get current version
++        id: current_version
++        if: steps.release_gate.outputs.should_release == 'true'
++        run: rust-script scripts/get-version.rs
++      - name: Build release
++        if: steps.release_gate.outputs.should_release == 'true'
++        run: cargo build --release
++      - name: Publish to Crates.io
++        if: steps.release_gate.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
++        id: publish-crate
++        env:
++          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
++          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
++        run: rust-script scripts/publish-crate.rs
++      - name: Wait for Crate availability on Crates.io
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
++      - name: Smoke test the published crate
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
++      - name: Free up runner disk space
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        run: bash scripts/free-runner-disk.sh
++      - name: Log in to GitHub Container Registry
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        uses: docker/login-action@v4
++        with:
++          registry: ghcr.io
++          username: ${{ github.actor }}
++          password: ${{ secrets.GITHUB_TOKEN }}
++      - name: Set up Docker Buildx
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        uses: ./.github/actions/setup-buildx-resilient
++      - name: Extract GHCR Docker metadata
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        id: ghcr-meta
++        uses: docker/metadata-action@v6
++        with:
++          images: ${{ env.GHCR_IMAGE }}
++          tags: |
++            type=raw,value=latest
++            type=raw,value=${{ steps.current_version.outputs.version }}
++          labels: |
++            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
++      - name: Publish Docker image to GHCR
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        uses: docker/build-push-action@v7
++        with:
++          context: .
++          push: true
++          tags: ${{ steps.ghcr-meta.outputs.tags }}
++          labels: ${{ steps.ghcr-meta.outputs.labels }}
++          cache-from: type=gha
++          cache-to: type=gha,mode=max
++      - name: Verify the published GHCR image is anonymously pullable
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        run: bash scripts/verify-ghcr-visibility.sh
++      - name: Configure Docker Hub publishing
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
++        id: dockerhub
++        run: bash scripts/configure-dockerhub-publishing.sh
++      - name: Log in to Docker Hub
++        if: steps.dockerhub.outputs.enabled == 'true'
++        uses: docker/login-action@v4
++        with:
++          username: ${{ env.DOCKERHUB_USERNAME }}
++          password: ${{ env.DOCKERHUB_TOKEN }}
++      - name: Extract Docker metadata
++        if: steps.dockerhub.outputs.enabled == 'true'
++        id: docker-meta
++        uses: docker/metadata-action@v6
++        with:
++          images: ${{ env.DOCKERHUB_IMAGE }}
++          tags: |
++            type=raw,value=latest
++            type=raw,value=${{ steps.current_version.outputs.version }}
++          labels: |
++            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
++      - name: Publish Docker image to Docker Hub
++        if: steps.dockerhub.outputs.enabled == 'true'
++        uses: docker/build-push-action@v7
++        with:
++          context: .
++          push: true
++          tags: ${{ steps.docker-meta.outputs.tags }}
++          labels: ${{ steps.docker-meta.outputs.labels }}
++          cache-from: type=gha
++          # Issue #1057: the GHCR leg above already exported these layers.
++          cache-to: type=inline
+       - name: Create GitHub Release
+-        if: steps.publish.outputs.published == 'true'
+-        env:
+-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: node scripts/create-github-release.mjs --release-version "${{ steps.publish.outputs.published_version }}" --repository "${{ github.repository }}"
+-
+-      - name: Format GitHub release notes
+-        if: steps.publish.outputs.published == 'true'
++        if: |
++          steps.release_gate.outputs.should_release == 'true' && (
++            steps.check.outputs.crate_published == 'true' ||
++            steps.publish-crate.outputs.publish_result == 'success'
++          )
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: node scripts/format-github-release.mjs --release-version "${{ steps.publish.outputs.published_version }}" --repository "${{ github.repository }}" --commit-sha "${{ github.sha }}"
+-
+-  # Manual Instant Release - triggered via workflow_dispatch with instant mode
+-  # This job is in release.yml because npm trusted publishing
+-  # only allows one workflow file to be registered as a trusted publisher
+-  instant-release:
++          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
++          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
++          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
++        run: bash scripts/invoke-create-github-release.sh
++      - name: Resolve Pages deploy ref
++        id: release_pages_ref
++        if: always()
++        run: |
++          sha="$(git rev-parse HEAD)"
++          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
++          if [ -z "$version" ]; then
++            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
++            exit 1
++          fi
++          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
++          echo "version=${version}" >> "$GITHUB_OUTPUT"
++          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
++  manual-release:
+     name: Instant Release
+-    # Publishing must wait for both quality gates and require explicit success.
+-    needs: [lint, test]
++    concurrency:
++      group: formal-ai-repository-writes
++      queue: max
++    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
+     if: |
+       !cancelled() &&
+       github.event_name == 'workflow_dispatch' &&
+       github.event.inputs.release_mode == 'instant' &&
+-      needs.lint.result == 'success' &&
+-      needs.test.result == 'success'
++      needs.build.result == 'success' &&
++      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
++      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
++      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
+     runs-on: ubuntu-latest
+-    # Same publish envelope as the automated release path.
+-    timeout-minutes: 30
+-    concurrency:
+-      group: main-writer-${{ github.repository }}-main
+-      cancel-in-progress: false
+-    # Permissions required for npm OIDC trusted publishing
++    timeout-minutes: 60
++    outputs:
++      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
++      pages_version: ${{ steps.release_pages_ref.outputs.version }}
++    env:
++      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
++      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+     permissions:
+       contents: write
+-      pull-requests: write
+-      id-token: write
+-    outputs:
+-      published: ${{ steps.publish.outputs.published }}
+-      published_version: ${{ steps.publish.outputs.published_version }}
++      packages: write
+     steps:
+-      - uses: actions/checkout@v6
++      - uses: actions/checkout@v7
+         with:
+           fetch-depth: 0
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: '24.x'
+-          registry-url: 'https://registry.npmjs.org'
+-
+-      - name: Remove deprecated npm auth config
+-        run: node scripts/sanitize-npm-userconfig.mjs
+-
+-      - name: Install dependencies
+-        run: npm install
+-
+-      - name: Update npm for OIDC trusted publishing
+-        run: node scripts/setup-npm.mjs
+-
+-      - name: Version packages and commit to main
++          token: ${{ secrets.GITHUB_TOKEN }}
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Configure git
++        run: rust-script scripts/git-config.rs
++      - name: Version and commit
+         id: version
+         env:
+           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+-          RELEASE_DESCRIPTION: ${{ github.event.inputs.description }}
+-          # See the release job above (issue #143).
+-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: node scripts/version-and-commit.mjs --mode instant --bump-type "$BUMP_TYPE" --description "$RELEASE_DESCRIPTION"
+-
+-      - name: Publish to npm
+-        # Run if version was committed OR if a previous attempt already committed (for re-runs)
++          DESCRIPTION: ${{ github.event.inputs.description }}
++        run: rust-script scripts/version-and-commit.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
++      - name: Build release
+         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+-        id: publish
+-        # Optional NPM_TOKEN bootstrap fallback; OIDC trusted publishing is used
+-        # when the secret is unset. See the release job above for details (#77).
+-        env:
+-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+-        run: node scripts/publish-to-npm.mjs
+-
+-      - name: Smoke-test published npm package
+-        if: steps.publish.outputs.published == 'true'
+-        run: node scripts/smoke-test-package.mjs --package-version "${{ steps.publish.outputs.published_version }}"
+-
+-      - name: Create GitHub Release
+-        if: steps.publish.outputs.published == 'true'
++        run: cargo build --release
++      - name: Publish to Crates.io
++        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
++        id: publish-crate
+         env:
+-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: node scripts/create-github-release.mjs --release-version "${{ steps.publish.outputs.published_version }}" --repository "${{ github.repository }}"
+-
+-      - name: Format GitHub release notes
+-        if: steps.publish.outputs.published == 'true'
++          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
++          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
++        run: rust-script scripts/publish-crate.rs
++      - name: Wait for Crate availability on Crates.io
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
++      - name: Smoke test the published crate
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        run: scripts/smoke-test-published-crate.sh "${{ steps.version.outputs.new_version }}"
++      - name: Free up runner disk space
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        run: bash scripts/free-runner-disk.sh
++      - name: Log in to GitHub Container Registry
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        uses: docker/login-action@v4
++        with:
++          registry: ghcr.io
++          username: ${{ github.actor }}
++          password: ${{ secrets.GITHUB_TOKEN }}
++      - name: Set up Docker Buildx
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        uses: ./.github/actions/setup-buildx-resilient
++      - name: Extract GHCR Docker metadata
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        id: ghcr-meta
++        uses: docker/metadata-action@v6
++        with:
++          images: ${{ env.GHCR_IMAGE }}
++          tags: |
++            type=raw,value=latest
++            type=raw,value=${{ steps.version.outputs.new_version }}
++          labels: |
++            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
++      - name: Publish Docker image to GHCR
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        uses: docker/build-push-action@v7
++        with:
++          context: .
++          push: true
++          tags: ${{ steps.ghcr-meta.outputs.tags }}
++          labels: ${{ steps.ghcr-meta.outputs.labels }}
++          cache-from: type=gha
++          cache-to: type=gha,mode=max
++      - name: Verify the published GHCR image is anonymously pullable
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        run: bash scripts/verify-ghcr-visibility.sh
++      - name: Configure Docker Hub publishing
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
++        id: dockerhub
++        run: bash scripts/configure-dockerhub-publishing.sh
++      - name: Log in to Docker Hub
++        if: steps.dockerhub.outputs.enabled == 'true'
++        uses: docker/login-action@v4
++        with:
++          username: ${{ env.DOCKERHUB_USERNAME }}
++          password: ${{ env.DOCKERHUB_TOKEN }}
++      - name: Extract Docker metadata
++        if: steps.dockerhub.outputs.enabled == 'true'
++        id: docker-meta
++        uses: docker/metadata-action@v6
++        with:
++          images: ${{ env.DOCKERHUB_IMAGE }}
++          tags: |
++            type=raw,value=latest
++            type=raw,value=${{ steps.version.outputs.new_version }}
++          labels: |
++            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
++      - name: Publish Docker image to Docker Hub
++        if: steps.dockerhub.outputs.enabled == 'true'
++        uses: docker/build-push-action@v7
++        with:
++          context: .
++          push: true
++          tags: ${{ steps.docker-meta.outputs.tags }}
++          labels: ${{ steps.docker-meta.outputs.labels }}
++          cache-from: type=gha
++          # Issue #1057: the GHCR leg above already exported these layers.
++          cache-to: type=inline
++      - name: Create GitHub Release
++        if: |
++          (steps.version.outputs.version_committed == 'true' ||
++            steps.version.outputs.already_released == 'true') &&
++          steps.publish-crate.outputs.publish_result == 'success'
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: node scripts/format-github-release.mjs --release-version "${{ steps.publish.outputs.published_version }}" --repository "${{ github.repository }}" --commit-sha "${{ github.sha }}"
+-
+-  # Optional Docker Hub publishing for packages that also ship Docker images.
+-  # Set vars.DOCKERHUB_IMAGE to enable this path, then configure
+-  # vars.DOCKERHUB_USERNAME and secrets.DOCKERHUB_TOKEN.
+-  docker-publish-config:
+-    name: Configure Docker Hub Publish
+-    needs: [release, instant-release]
++          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
++          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
++          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
++        run: bash scripts/invoke-create-github-release.sh
++      - name: Resolve Pages deploy ref
++        id: release_pages_ref
++        if: always()
++        run: |
++          sha="$(git rev-parse HEAD)"
++          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
++          if [ -z "$version" ]; then
++            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
++            exit 1
++          fi
++          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
++          echo "version=${version}" >> "$GITHUB_OUTPUT"
++          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
++  changelog-pr:
++    name: Create Changelog PR
++    concurrency:
++      group: formal-ai-repository-writes
++      queue: max
++    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr'
++    runs-on: ubuntu-latest
+     timeout-minutes: 10
++    permissions:
++      contents: write
++      pull-requests: write
++    steps:
++      - uses: actions/checkout@v7
++        with:
++          fetch-depth: 0
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Install rust-script
++        run: bash scripts/install-rust-script.sh
++      - name: Create changelog fragment
++        env:
++          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
++          DESCRIPTION: ${{ github.event.inputs.description }}
++        run: rust-script scripts/create-changelog-fragment.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
++      - name: Create Pull Request
++        uses: peter-evans/create-pull-request@v8
++        with:
++          token: ${{ secrets.GITHUB_TOKEN }}
++          commit-message: 'chore: add changelog for manual ${{ github.event.inputs.bump_type }} release'
++          branch: changelog-manual-release-${{ github.run_id }}
++          delete-branch: true
++          title: 'chore: manual ${{ github.event.inputs.bump_type }} release'
++          body: |
++            This PR was created by a manual workflow trigger to prepare a **${{ github.event.inputs.bump_type }}** release.
++            - **Type:** ${{ github.event.inputs.bump_type }}
++            - **Description:** ${{ github.event.inputs.description || 'Manual release' }}
++            - **Triggered by:** @${{ github.actor }}
++            1. Review the changelog fragment in this PR
++            2. Merge this PR to main
++            3. The automated release workflow will publish to crates.io and create a GitHub release
++  test-e2e-local:
++    name: E2E Tests (local web app)
+     concurrency:
+-      group: main-writer-${{ github.repository }}-main
+-      cancel-in-progress: false
++      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    runs-on: ubuntu-latest
++    timeout-minutes: 40
++    needs: [detect-changes]
+     if: |
+-      !cancelled() &&
+-      (
+-        (needs.release.result == 'success' && needs.release.outputs.published == 'true') ||
+-        (needs.instant-release.result == 'success' && needs.instant-release.outputs.published == 'true')
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true'
+       )
++    steps:
++      - uses: actions/checkout@v7
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version-file: .bun-version
++          no-cache: true
++      - name: Setup Node.js
++        uses: actions/setup-node@v7
++        with:
++          node-version: '24.x'
++          cache: npm
++          cache-dependency-path: tests/e2e/package-lock.json
++      - name: Install web bundle dependencies
++        run: bun install --frozen-lockfile
++      - name: Build web vendor bundle
++        run: bun run build:web
++      - name: Install Playwright and dependencies
++        run: |
++          cd tests/e2e
++          npm ci --no-audit --no-fund
++      - name: Cache Playwright browsers
++        id: playwright-cache
++        uses: actions/cache@v6
++        with:
++          path: ~/.cache/ms-playwright
++          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
++          restore-keys: |
++            ${{ runner.os }}-playwright-
++      - name: Install Playwright system dependencies (best effort)
++        timeout-minutes: 6
++        continue-on-error: true
++        run: |
++          cd tests/e2e
++          npx playwright install-deps chromium
++      - name: Install Playwright browsers
++        timeout-minutes: 10
++        run: |
++          cd tests/e2e
++          npx playwright install chromium
++      - name: Sync data/seed into src/web/seed (deployment mirror)
++        run: scripts/sync-seed.sh
++      - name: Run local e2e tests
++        run: |
++          cd tests/e2e
++          npx playwright test --config=playwright.local.config.js
++      - name: Upload Playwright report on failure
++        if: failure()
++        uses: actions/upload-artifact@v7
++        with:
++          name: playwright-report-local
++          path: tests/e2e/playwright-report/
++          retention-days: 7
++      - name: Upload generated /download screenshots
++        uses: actions/upload-artifact@v7
++        with:
++          name: download-page-screenshots
++          path: |
++            docs/screenshots/issue-347/
++            src/web/download/assets/app-preview*.png
++          retention-days: 14
++          if-no-files-found: error
++  test-agent-cli-e2e:
++    name: E2E Tests (agent CLI ↔ formal-ai)
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     runs-on: ubuntu-latest
+-    permissions:
+-      contents: read
+-    outputs:
+-      context: ${{ steps.docker_config.outputs.context }}
+-      dockerfile: ${{ steps.docker_config.outputs.dockerfile }}
+-      enabled: ${{ steps.docker_config.outputs.enabled }}
+-      image: ${{ steps.docker_config.outputs.image }}
+-      version: ${{ steps.release_version.outputs.version }}
++    # Issue #1069: raised from 32 so it outlasts the 900s and 600s deadlines
++    # the computer-use steps below now own; see tests/unit/ci-cd/.
++    timeout-minutes: 45
++    needs: [detect-changes, build-artifacts]
++    if: |
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true' ||
++        needs.detect-changes.outputs.rs-changed == 'true' ||
++        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.workflow-changed == 'true'
++      )
+     env:
+-      DOCKER_CONTEXT: ${{ vars.DOCKER_CONTEXT }}
+-      DOCKERFILE: ${{ vars.DOCKERFILE }}
+-      DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
+-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+-      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+-      RELEASE_VERSION: ${{ needs.release.outputs.published_version || needs.instant-release.outputs.published_version }}
++      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
++    steps:
++      - uses: actions/checkout@v7
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - uses: ./.github/actions/setup-sccache
++      - uses: ./.github/actions/cache-cargo-registry
++        with:
++          prefix: agentcli-e2e-
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version-file: .bun-version
++          no-cache: true
++      - name: Install @link-assistant/agent CLI
++        run: |
++          bun add -g --ignore-scripts @link-assistant/agent
++          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
++      - name: Install external agent CLIs
++        run: |
++          # OpenCode's pinned postinstall selects its platform binary. Trust
++          # only that reviewed package; suppress lifecycle scripts elsewhere.
++          bun add -g --trust opencode-ai@1.18.25
++          # Pinned for the reason experiments/agentic_cli_matrix/clients.lock
++          # gives: a leg must fail because our server changed, not because a CLI
++          # shipped overnight — @openai/codex@0.148.0 drops the ENTER answering
++          # its first-run trust dialog (https://github.com/openai/codex/issues/39487).
++          # Before bumping, run experiments/issue_1021_codex_tui_version.
++          bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
++      - uses: ./.github/actions/download-formal-ai-binary
++      - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
++        timeout-minutes: 5
++        env: { PORT: 8896 }
++        run: experiments/agent_cli_e2e/run_issue_531.sh
++      - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
++        env:
++          PORT: 8768
++          EXPECT_FILE: meanings-tomato-detail.lino
++          EXPECT_TEXT: томаты
++          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
++        env:
++          PORT: 8769
++          TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
++          EXPECT_FILE: meanings-potato-detail.lino
++          EXPECT_TEXT: potatoes
++          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
++        env:
++          PORT: 8770
++          TASK: "Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools."
++          EXPECT_FILE: agentic-recipes.md
++          EXPECT_TEXT: flowchart
++          MIN_POSTS: 3
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: Run agent CLI E2E — self-inspection CST/AST census (no web step)
++        env:
++          PORT: 8771
++          TASK: "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
++          EXPECT_FILE: self-ast.lino
++          EXPECT_TEXT: named_node_count
++          MIN_POSTS: 3
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"
++        env:
++          PORT: 8772
++          TASK: "Here you can learn the trending topics from Google Trends: https://trends.google.com/trending/rss?geo=US"
++          EXPECT_FILE: google-trends-learning.lino
++          EXPECT_TEXT: human_gated
++          MIN_POSTS: 3
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — general unpinned change plan (issue #654)"
++        env:
++          PORT: 8773
++          TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
++          EXPECT_FILE: artifacts/general-agent-plan.txt
++          EXPECT_TEXT: general planner e2e passed
++          MIN_POSTS: 4
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
++        run: PORT=8808 experiments/agent_cli_e2e/run_issue_708.sh
++      - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
++        env:
++          PORT: 8775
++          TASK: "Create a file named hello.txt with the content hello world"
++          EXPECT_FILE: hello.txt
++          EXPECT_TEXT: hello world
++          MIN_POSTS: 4
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
++        env:
++          PORT: 8781
++          TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
++          EXPECT_FILE: issue-730-finding.md
++          EXPECT_TEXT: provenance paths are portable
++          MIN_POSTS: 4
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — capability-first local code search (issue #758)"
++        run: PORT=8782 experiments/agent_cli_e2e/run_issue_758.sh
++      - name: "Run gemini CLI E2E — caller framing does not hijack the request (issue #907)"
++        run: PORT=8907 experiments/agent_cli_e2e/run_issue_907.sh
++      - name: "Run agent CLI E2E — a recorded finding is an answer, not a heading (issue #1066)"
++        timeout-minutes: 6
++        run: NODE_PORT=8944 SPLIT_PORT=8945 experiments/agent_cli_e2e/run_issue_1066.sh
++      - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
++        env:
++          PORT: 8776
++          TASK: "Give me hello world program in Rust"
++          EXPECT_FILE: main.rs
++          EXPECT_TEXT: "Hello, world!"
++          MIN_POSTS: 4
++          EXPECT_SERVER_TEXTS: |-
++            rustc main.rs -o main
++            ./main
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — compile and execute a resumed substitution export (issue #936)"
++        timeout-minutes: 5
++        env: { PORT: 8936 }
++        run: experiments/agent_cli_e2e/run_issue_936.sh
++      - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
++        env:
++          PORT: 8777
++          TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
++          EXPECT_FILE: client-execution-learning-report.lino
++          EXPECT_TEXT: "lesson:typed-execution-artifact"
++          MIN_POSTS: 3
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — declarative new-file phrasing (issue #712)"
++        env:
++          PORT: 8776
++          TASK: "new file: notes.txt, contents: hello"
++          EXPECT_FILE: notes.txt
++          EXPECT_TEXT: hello
++          MIN_POSTS: 4
++        run: experiments/agent_cli_e2e/run_agent_cli.sh
++      - name: "Run agent CLI E2E — report action executes gh (issue #714)"
++        timeout-minutes: 3
++        env:
++          PORT: 8780
++        run: experiments/issue_714_agentic_mode/run_report_e2e.sh
++      - name: "Run agent CLI E2E — research, report, recall, and learn (issue #687)"
++        env:
++          PORT: 8776
++        run: experiments/agent_cli_e2e/run_issue_687.sh
++      # Issue #1069: green runs of this step measured 131s, 136s and 533s --
++      # serial live-model latency -- and run 33880485514 was killed by the
++      # runner at 10 minutes with no scenario named. The wrapper and the script
++      # own the deadline now; the backstop only outlasts it (issue #1017).
++      - name: "Run agent CLI E2E — verified computer-use record/replay (issue #707)"
++        timeout-minutes: 17
++        env:
++          PORT: 8907
++          BIN: ${{ github.workspace }}/target/release/formal-ai
++          EVIDENCE_DIR: /tmp/formal-ai-issue-707-evidence
++          TEST_BUDGET_SECONDS: 900
++        run: |
++          scripts/run-with-budget-warning.sh \
++            "$TEST_BUDGET_SECONDS" "Computer-use record/replay E2E" \
++            experiments/agent_cli_e2e/run_issue_707.sh
++      - name: "Run agent CLI E2E — held-out computer-use generalization (issue #707)"
++        timeout-minutes: 12
++        env:
++          PORT: 8909
++          BIN: ${{ github.workspace }}/target/release/formal-ai
++          EVIDENCE_DIR: /tmp/formal-ai-issue-707-generalization-evidence
++          TEST_BUDGET_SECONDS: 600
++        run: |
++          scripts/run-with-budget-warning.sh \
++            "$TEST_BUDGET_SECONDS" "Held-out computer-use generalization E2E" \
++            experiments/agent_cli_e2e/run_issue_707_generalization.sh
++      - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
++        env:
++          PORT: 8781
++        run: experiments/agent_cli_e2e/run_issue_771.sh
++      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
++        timeout-minutes: 10
++        env:
++          PORT: 8783
++        run: experiments/agent_cli_e2e/run_issue_822.sh
++      - name: "Run four-client E2E — narrated compatibility research (issue #781)"
++        env:
++          PORT: 8783
++        run: experiments/agent_cli_e2e/run_issue_781.sh
++      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
++        timeout-minutes: 15
++        env:
++          PORT: 8784
++          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
++        run: experiments/agent_cli_e2e/run_issue_840.sh
++      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
++        timeout-minutes: 5
++        env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
++        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
++      - name: "Run reference differential gate — grounded action recipe (issue #840)"
++        timeout-minutes: 5
++        env:
++          PORT: 8785
++        run: experiments/issue_840_reference_agents/run_differential_gate.sh
++      - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
++        timeout-minutes: 3
++        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
++        run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
++      - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
++        timeout-minutes: 3
++        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
++        run: experiments/issue_840_task_ladder/run_ladder.sh
++      - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
++        timeout-minutes: 5
++        env:
++          PORT: 8879
++        run: experiments/agent_cli_e2e/run_issue_715_learning.sh
++      - name: "Run agent CLI E2E — self-hosting auto-learning (issue #657)"
++        timeout-minutes: 5
++        env:
++          PORT: 8881
++        run: experiments/agent_cli_e2e/run_issue_657_metric.sh
++      - name: "Run agent CLI E2E — hardcoded-language auto-learning (issue #659)"
++        timeout-minutes: 5
++        env:
++          PORT: 8882
++        run: experiments/agent_cli_e2e/run_issue_659_learning.sh
++      - name: "Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)"
++        timeout-minutes: 5
++        env:
++          PORT: 8883
++        run: experiments/agent_cli_e2e/run_issue_660_learning.sh
++      - name: "Run agent CLI E2E — handler-precedence auto-learning (issue #663)"
++        timeout-minutes: 5
++        env:
++          PORT: 8885
++        run: experiments/agent_cli_e2e/run_issue_663_learning.sh
++      - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
++        timeout-minutes: 5
++        env:
++          PORT: 8886
++        run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
++      - name: "Run agent CLI E2E — repository statement audit (issue #661)"
++        timeout-minutes: 5
++        env:
++          PORT: 8884
++        run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
++      - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
++        timeout-minutes: 5
++        env:
++          PORT: 8895
++        run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
++      - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
++        run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
++      - name: "Run agent CLI E2E — formal projection invariant (issue #917)"
++        run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
++      - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
++        run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
++      - name: Install @link-assistant/hive-mind CLI
++        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.15.1
++      - name: "Run Hive Mind full-circle integration gate (issue #921)"
++        timeout-minutes: 5
++        run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
++      - name: "Run agent CLI E2E — promoted method learning (issue #922)"
++        run: PORT=8922 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence examples/issue-922-method-learning/run.sh
++      - name: "Replay Hive Mind self-coding inner loop (issue #655)"
++        env:
++          PORT: 8774
++        run: |
++          examples/self-coding/run.sh
++          cargo test self_coding_session_replays
++      - name: Upload E2E logs on failure
++        if: failure()
++        uses: actions/upload-artifact@v7
++        with:
++          name: agent-cli-e2e-logs
++          path: |
++            /tmp/formal-ai-serve-*.log
++            /tmp/agent-out-*.log
++            /tmp/formal-ai-issue-*-evidence
++          retention-days: 7
++      - name: Upload TUI transcripts and replay artifacts
++        if: always()
++        uses: actions/upload-artifact@v7
++        with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
++  # Build the host binary once for the seven Box image legs. The audited run
++  # compiled the same Linux binary seven times and reported 1,131 cache write
++  # errors across those legs; the available logs do not include backend error
++  # details, so opt-in diagnostics live in the shared sccache setup action.
++  build-artifacts:
++    name: Build binaries and tests
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    runs-on: ubuntu-latest
++    timeout-minutes: 20
++    needs: [detect-changes]
++    if: |
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true' ||
++        needs.detect-changes.outputs.rs-changed == 'true' ||
++        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.workflow-changed == 'true'
++      )
+     steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Check Docker publish configuration
+-        id: docker_config
+-        run: node scripts/check-docker-publish.mjs
+-
+-      - name: Export release version
+-        id: release_version
+-        env:
+-          VERSION: ${{ env.RELEASE_VERSION }}
+-        run: echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+-
+-      - name: Wait for npm package availability before Docker publish
+-        if: steps.docker_config.outputs.enabled == 'true'
+-        env:
+-          VERSION: ${{ env.RELEASE_VERSION }}
+-        run: node scripts/wait-for-npm.mjs --release-version "${VERSION}"
+-
+-  # Build each architecture on a native runner. Each build is pushed by digest;
+-  # docker-publish combines those immutable digests into the release tags.
+-  docker-publish-build:
+-    name: Build Docker Image (${{ matrix.platform }})
+-    needs: [docker-publish-config]
+-    if: needs.docker-publish-config.outputs.enabled == 'true'
++      - uses: actions/checkout@v7
++      - name: Free up runner disk space
++        run: bash scripts/free-runner-disk.sh
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - uses: ./.github/actions/setup-sccache
++      - uses: ./.github/actions/cache-cargo-registry
++        with:
++          prefix: artifacts-
++      # Issue #1055: one compile per platform; consumers download the results.
++      - name: Build binaries and test executables
++        run: cargo test --release --no-run --bins --tests --all-features
++      - name: Collect the build artifacts
++        run: bash scripts/collect-build-artifacts.sh
++      - name: Upload formal-ai binaries
++        uses: actions/upload-artifact@v7
++        with:
++          name: formal-ai-release-binary
++          path: dist/*
++          retention-days: 1
++      - name: Upload test executables
++        uses: actions/upload-artifact@v7
++        with:
++          name: formal-ai-test-executables
++          path: dist/tests
++          retention-days: 1
++  # Issue #932 (follow-up of PR #119): a generated project for a language is
++  # built and run inside the link-foundation/box image that matches that
++  # language, using the language's own init commands. The matrix keeps each
++  # image on its own runner, so one leg only pulls the toolchain it needs.
++  box-language-projects:
++    name: Box Image Projects (${{ matrix.language }})
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    runs-on: ubuntu-latest
+     timeout-minutes: 30
++    needs: [detect-changes, build-artifacts]
++    if: |
++      !cancelled() && (
++        github.event_name == 'workflow_dispatch' ||
++        needs.detect-changes.outputs.any-code-changed == 'true' ||
++        needs.detect-changes.outputs.rs-changed == 'true' ||
++        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.workflow-changed == 'true'
++      )
+     strategy:
+       fail-fast: false
+       matrix:
+-        include:
+-          - platform: linux/amd64
+-            runner: ubuntu-latest
+-          - platform: linux/arm64
+-            runner: ubuntu-24.04-arm
+-    runs-on: ${{ matrix.runner }}
+-    permissions:
+-      contents: read
++        # Kept in step with `data/meta/box-language-projects.lino` by
++        # `tests/unit/ci-cd/issue_932.rs`.
++        language: [rust, python, javascript, typescript, go, java, ruby]
+     steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Build and push platform image by digest
+-        id: build
+-        # Step-level budget below the job's timeout-minutes backstop; see
+-        # docs/CI-TIMEOUT-BUDGETS.md.
+-        timeout-minutes: 20
+-        uses: ./.github/actions/publish-dockerhub
+-        with:
+-          context: ${{ needs.docker-publish-config.outputs.context }}
+-          file: ${{ needs.docker-publish-config.outputs.dockerfile }}
+-          image: ${{ needs.docker-publish-config.outputs.image }}
+-          platform: ${{ matrix.platform }}
+-          token: ${{ secrets.DOCKERHUB_TOKEN }}
+-          username: ${{ vars.DOCKERHUB_USERNAME }}
+-          version: ${{ needs.docker-publish-config.outputs.version }}
+-
+-      - name: Export image digest
+-        env:
+-          DIGEST: ${{ steps.build.outputs.digest }}
+-        run: |
+-          mkdir -p /tmp/digests
+-          touch "/tmp/digests/${DIGEST#sha256:}"
+-
+-      - name: Upload image digest
++      - uses: actions/checkout@v7
++      # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
++      - name: Free up runner disk space
++        run: bash scripts/free-runner-disk.sh
++      - uses: ./.github/actions/download-formal-ai-binary
++      - name: Generate the ${{ matrix.language }} project from Formal-AI answers
++        run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
++      - name: Build and run it inside its link-foundation/box image
++        run: STRICT=1 SKIP_GENERATE=1 scripts/verify-box-language-projects.sh ${{ matrix.language }}
++      - name: Upload the generated project
++        if: always()
+         uses: actions/upload-artifact@v7
+         with:
+-          name: docker-digest-${{ strategy.job-index }}
+-          path: /tmp/digests/*
+-          if-no-files-found: error
+-          retention-days: 1
+-
+-  docker-publish:
+-    name: Optional Docker Hub Publish
+-    needs: [docker-publish-config, docker-publish-build]
+-    if: needs.docker-publish-build.result == 'success'
+-    timeout-minutes: 30
++          name: box-language-corpus-${{ matrix.language }}
++          path: target/box-language-corpus/${{ matrix.language }}/
++          retention-days: 7
++          # `always()` also covers a leg that failed before generating anything.
++          if-no-files-found: warn
++      - if: ${{ !cancelled() }}
++        run: scripts/prune-docker.sh
++  deploy-pages:
++    name: Deploy Web App to GitHub Pages
+     concurrency:
+-      group: main-writer-${{ github.repository }}-main
+-      cancel-in-progress: false
++      group: formal-ai-repository-writes
++      queue: max
++    needs: [build, auto-release, manual-release]
++    outputs:
++      page_url: ${{ steps.deployment.outputs.page_url }}
++      pages_sha: ${{ steps.pages_ref.outputs.sha }}
++    if: |
++      !cancelled() &&
++      needs.build.result == 'success' && (
++        (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
++        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
++      )
+     runs-on: ubuntu-latest
++    timeout-minutes: 35
+     permissions:
+       contents: read
++      pages: write
++      id-token: write
++    environment:
++      name: github-pages
++      url: ${{ steps.deployment.outputs.page_url }}
+     steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Set up Docker Buildx (resilient)
+-        uses: ./.github/actions/setup-buildx-resilient
+-
+-      - name: Log in to Docker Hub
+-        uses: docker/login-action@v4
+-        with:
+-          username: ${{ vars.DOCKERHUB_USERNAME }}
+-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+-
+-      - name: Download image digests
+-        uses: actions/download-artifact@v8
++      - name: Select Pages deployment ref
++        id: pages_ref
+         env:
+-          NODE_OPTIONS: --disable-warning=DEP0005
++          PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
++        run: |
++          if [ -z "$PAGES_DEPLOY_SHA" ]; then
++            echo "::error::Could not resolve Pages deployment SHA"
++            exit 1
++          fi
++          echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
++          echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
++      - uses: actions/checkout@v7
++        with:
++          ref: ${{ steps.pages_ref.outputs.sha }}
++      - name: Configure GitHub Pages
++        uses: actions/configure-pages@v6
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
+         with:
+-          path: /tmp/digests
+-          pattern: docker-digest-*
+-          merge-multiple: true
+-
+-      - name: Create multi-architecture manifest
+-        working-directory: /tmp/digests
+-        env:
+-          IMAGE: ${{ needs.docker-publish-config.outputs.image }}
+-          VERSION: ${{ needs.docker-publish-config.outputs.version }}
+-        run: |
+-          # One argument per digest. An array keeps the expansion explicit
+-          # instead of relying on word splitting of a command substitution.
+-          mapfile -t digests < <(printf "${IMAGE}@sha256:%s\n" *)
+-          docker buildx imagetools create \
+-            --tag "${IMAGE}:latest" \
+-            --tag "${IMAGE}:${VERSION}" \
+-            "${digests[@]}"
+-
+-  # Manual Changeset PR - creates a pull request with the changeset for review
+-  changeset-pr:
+-    name: Create Changeset PR
+-    # PR creation does not publish, but it must still pass the fast lint gate.
+-    needs: [lint]
++          bun-version-file: .bun-version
++      - name: Install web bundle dependencies
++        run: bun install --frozen-lockfile
++      - name: Build web vendor bundle
++        run: bun run build:web
++      - name: Setup Rust
++        uses: dtolnay/rust-toolchain@stable
++      - name: Free up runner disk space
++        run: bash scripts/free-runner-disk.sh
++      - name: Cache cargo registry
++        uses: actions/cache@v6
++        with:
++          path: |
++            ~/.cargo/registry
++            ~/.cargo/git
++          key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
++          restore-keys: |
++            ${{ runner.os }}-cargo-docs-
++      - name: Generate Rust API docs (cargo doc)
++        env:
++          RUSTDOCFLAGS: -D warnings
++        run: bash scripts/build-rust-api-docs.sh
++      - name: Sync data/seed into src/web/seed (deployment mirror)
++        run: scripts/sync-seed.sh
++      - name: Read formal-ai version from Cargo.toml
++        id: formal_ai_version
++        run: |
++          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
++          if [ -z "$version" ]; then
++            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
++            exit 1
++          fi
++          echo "version=${version}" >> "$GITHUB_OUTPUT"
++          echo "Detected formal-ai version: ${version}"
++      - name: Stamp GitHub Pages artifact
++        run: scripts/stamp-pages-artifact.sh src/web "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
++      - name: Copy Rust API docs into the Pages artifact (/docs/api)
++        run: |
++          mkdir -p src/web/docs/api
++          cp -R target/doc/. src/web/docs/api/
++      - name: Upload GitHub Pages artifact
++        uses: actions/upload-pages-artifact@v5
++        with:
++          path: src/web
++          include-hidden-files: true
++      - name: Deploy Pages artifact
++        id: deployment
++        uses: actions/deploy-pages@v5
++        with:
++          timeout: 600000
++        env:
++          # deploy-pages upstream issue #434 tracks its core punycode deprecation.
++          NODE_OPTIONS: --disable-warning=DEP0040
++  test-e2e-pages:
++    name: E2E Tests (GitHub Pages)
++    concurrency:
++      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    needs: [deploy-pages]
+     if: |
+       !cancelled() &&
+-      github.event_name == 'workflow_dispatch' &&
+-      github.event.inputs.release_mode == 'changeset-pr' &&
+-      needs.lint.result == 'success'
++      needs.deploy-pages.result == 'success'
+     runs-on: ubuntu-latest
+-    # PR creation only: install, create a changeset, format, and open a PR.
+-    timeout-minutes: 10
+-    concurrency:
+-      group: main-writer-${{ github.repository }}-main
+-      cancel-in-progress: false
+-    permissions:
+-      contents: write
+-      pull-requests: write
++    timeout-minutes: 15
+     steps:
+-      - uses: actions/checkout@v6
+-        with:
+-          fetch-depth: 0
+-
++      - uses: actions/checkout@v7
+       - name: Setup Node.js
+-        uses: actions/setup-node@v6
++        uses: actions/setup-node@v7
+         with:
+           node-version: '24.x'
+-
+-      - name: Install dependencies
+-        run: npm install
+-
+-      - name: Create changeset file
+-        env:
+-          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+-          RELEASE_DESCRIPTION: ${{ github.event.inputs.description }}
+-        run: node scripts/create-manual-changeset.mjs --bump-type "$BUMP_TYPE" --description "$RELEASE_DESCRIPTION"
+-
+-      - name: Format changeset with Prettier
+-        run: |
+-          # Run Prettier on the changeset file to ensure it matches project style
+-          npx prettier --write ".changeset/*.md" || true
+-
+-          echo "Formatted changeset files"
+-
+-      - name: Create Pull Request
+-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
++          cache: npm
++          cache-dependency-path: tests/e2e/package-lock.json
++      - name: Install Playwright and dependencies
++        run: |
++          cd tests/e2e
++          npm ci --no-audit --no-fund
++      - name: Cache Playwright browsers
++        id: playwright-cache
++        uses: actions/cache@v6
++        with:
++          path: ~/.cache/ms-playwright
++          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
++          restore-keys: |
++            ${{ runner.os }}-playwright-
++      - name: Install Playwright system dependencies (best effort)
++        timeout-minutes: 6
++        continue-on-error: true
++        run: |
++          cd tests/e2e
++          npx playwright install-deps chromium
++      - name: Install Playwright browsers
++        timeout-minutes: 10
++        run: |
++          cd tests/e2e
++          npx playwright install chromium
++      - name: Wait for GitHub Pages deployment
++        env:
++          PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}
++        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
++      - name: Run GitHub Pages e2e tests
++        run: |
++          cd tests/e2e
++          PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
++      - name: Upload Playwright report on failure
++        if: failure()
++        uses: actions/upload-artifact@v7
+         with:
+-          token: ${{ secrets.GITHUB_TOKEN }}
+-          commit-message: 'chore: add changeset for manual ${{ github.event.inputs.bump_type }} release'
+-          branch: changeset-manual-release-${{ github.run_id }}
+-          delete-branch: true
+-          title: 'chore: manual ${{ github.event.inputs.bump_type }} release'
+-          body: |
+-            ## Manual Release Request
+-
+-            This PR was created by a manual workflow trigger to prepare a **${{ github.event.inputs.bump_type }}** release.
+-
+-            ### Release Details
+-            - **Type:** ${{ github.event.inputs.bump_type }}
+-            - **Description:** ${{ github.event.inputs.description || 'Manual release' }}
+-            - **Triggered by:** @${{ github.actor }}
+-
+-            ### Next Steps
+-            1. Review the changeset in this PR
+-            2. Merge this PR to main
+-            3. The automated release workflow will create a version PR
+-            4. Merge the version PR to publish to npm and create a GitHub release
+-
+-  # GitHub reports jobs killed by timeout-minutes as cancelled rather than
+-  # failed. Observe every job so those cancellations become visible failures
+-  # on main, where concurrency never supersedes an in-progress run.
++          name: playwright-report-pages
++          path: tests/e2e/playwright-report/
++          retention-days: 7
+   pipeline-status:
+     name: Pipeline Status
+     runs-on: ubuntu-latest
+     timeout-minutes: 5
+-    concurrency:
+-      group: check-${{ github.workflow }}-${{ github.ref }}-pipeline-status
+-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: always()
+-    needs:
+-      - detect-changes
+-      - test-compilation
+-      - check-file-line-limits
+-      - version-check
+-      - changeset-check
+-      - lint
+-      - test
+-      - docker-build
+-      - docker-publish-config
+-      - docker-publish-build
+-      - validate-docs
+-      - release
+-      - instant-release
+-      - docker-publish
+-      - changeset-pr
++    needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
++            version-check, base, lint, test, macos-core-tests, build, auto-release, manual-release,
++            changelog-pr, test-e2e-local, test-agent-cli-e2e,
++            build-artifacts, box-language-projects, deploy-pages,
++            test-e2e-pages]
+     steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: '24.x'
+-
++      - uses: actions/checkout@v7
+       - name: Fail the run when a required job was cancelled or failed
+         env:
+           NEEDS_JSON: ${{ toJSON(needs) }}

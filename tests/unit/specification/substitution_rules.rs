@@ -95,13 +95,17 @@ substitution_rules
     assert!(graph.contains_link("turn:1", "answer:Hi, how may I help you?"));
     assert!(!graph.contains_link("turn:1", "response:missing"));
     assert_eq!(report.traces.len(), 1);
-    assert!(report
-        .trace_link_records()
-        .iter()
-        .any(|record| record.record_type == "SubstitutionTraceLink"));
-    assert!(report
-        .links_notation()
-        .contains("rule_id \"rule_created_prompt_answer\""));
+    assert!(
+        report
+            .trace_link_records()
+            .iter()
+            .any(|record| record.record_type == "SubstitutionTraceLink")
+    );
+    assert!(
+        report
+            .links_notation()
+            .contains("rule_id \"rule_created_prompt_answer\"")
+    );
 
     let lifecycle_rules = SubstitutionRuleSet::from_links_notation(
         r#"

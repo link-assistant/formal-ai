@@ -1,0 +1,29 @@
+мне нужен код                                -> write_program_request_unspecified
+дай мне код                                  -> write_program_request_unspecified
+I need code                                  -> write_program_request_unspecified
+give me code                                 -> write_program_request_unspecified
+I want code                                  -> write_program_request_unspecified
+मुझे कोड चाहिए                               -> write_program_request_unspecified
+我需要代码                                        -> write_program_request_unspecified
+给我代码                                         -> write_program_request_unspecified
+write me a program                           -> write_program_request_unspecified
+write me some code                           -> write_program_request_unspecified
+напиши программу                             -> write_program_request_unspecified
+give me the code of this repository          -> web_search
+I need a code review                         -> web_search
+I need information about Rust                -> concept_lookup
+I need to find a python tutorial             -> web_search
+дай мне код этого репозитория                -> web_search
+мне нужен код на пхп                         -> write_script_php
+give me python code                          -> write_script_python
+I need PHP code                              -> write_script_php
+
+=== мне нужен код
+Я не угадываю, что писать. Это похоже на запрос программы, но в нём не названо ни что программа должна делать, ни на каком языке программирования её написать.
+
+Скажите, что должна делать программа и на каком языке, и я её выведу.
+
+=== I need code
+I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.
+
+Say what the program should do and which language it should be written in, and I will derive it.

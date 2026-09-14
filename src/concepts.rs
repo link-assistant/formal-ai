@@ -417,15 +417,13 @@ pub struct ConceptLookup {
 pub fn lookup_concept_query(query: &ConceptQuery) -> Option<ConceptLookup> {
     let direct = rank_for_pair(&query.term, query.context.as_deref());
     // Reversed ordering (context-first languages).
-    if let Some(context) = query.context.as_deref() {
-        if let Some(reversed) = rank_for_pair(context, Some(&query.term)) {
-            if direct
-                .as_ref()
-                .is_none_or(|lookup| !lookup.context_match && reversed.context_match)
-            {
-                return Some(reversed);
-            }
-        }
+    if let Some(context) = query.context.as_deref()
+        && let Some(reversed) = rank_for_pair(context, Some(&query.term))
+        && direct
+            .as_ref()
+            .is_none_or(|lookup| !lookup.context_match && reversed.context_match)
+    {
+        return Some(reversed);
     }
     direct
 }
@@ -449,18 +447,17 @@ fn rank_for_pair(term: &str, context: Option<&str>) -> Option<ConceptLookup> {
         return None;
     }
 
-    if let Some(ctx) = context_normalized.as_deref() {
-        if let Some(record) = term_matches
+    if let Some(ctx) = context_normalized.as_deref()
+        && let Some(record) = term_matches
             .iter()
             .copied()
             .find(|record| record_has_context(record, ctx))
-        {
-            return Some(ConceptLookup {
-                record,
-                context_match: true,
-                context: Some(ctx.to_owned()),
-            });
-        }
+    {
+        return Some(ConceptLookup {
+            record,
+            context_match: true,
+            context: Some(ctx.to_owned()),
+        });
     }
 
     // No context match: prefer a record that declares no contexts (which is

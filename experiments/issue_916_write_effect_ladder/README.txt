@@ -1,6 +1,13 @@
 ISSUE #916 -- WRITE-EFFECT LADDER (epic E69)
 ============================================
 
+The ladder carries two families of rungs. The R916-* rungs are the original
+subject of this directory: whether a request that must change the workspace
+changed it. The 824.L* rungs, added for issue #944 (epic E92), are the mutating
+ladder for the `move X to Y` request issue #824 reported being refused; they
+share every mechanism below and add one of their own, the declared starting
+state described under SANDBOX RESET.
+
 WHAT THIS MEASURES
 ------------------
 Whether a request that must change the workspace actually changed it, and
@@ -43,6 +50,43 @@ that name them -- they are the acceptance criteria of issue #916 mechanized:
 A rung also fails on a refusal, a capability menu, a missing required tool, or a
 forbidden command shape. Narration alone can never pass.
 
+SANDBOX RESET
+-------------
+A read-only rung can start from an empty directory. A mutating rung cannot: what
+`move report.txt to archive/report.txt` should do depends entirely on whether
+`report.txt` is there and whether `archive/report.txt` is taken, and those two
+starting states are the difference between rungs 824.L1 and 824.L2. Issue #944
+asks for this by name -- "sandbox-reset semantics so each rung starts from a
+clean, known filesystem state (needed for deterministic ladder scoring)".
+
+So a rung may declare the state it starts from:
+
+  "seed": {
+    "files": {"report.txt": "quarterly figures\n"},
+    "directories": ["archive"],
+    "absent": ["archive/report.txt"]
+  }
+
+Before the rung runs, its directory is removed and recreated, checked to be
+empty (that is the reset, and an unexpected leftover is a violation rather than
+a premise), the seed is written, and then the seed is *read back off disk* the
+same way the effects are read back afterwards. A rung whose declared start did
+not land fails with a `sandbox` violation instead of scoring a fix that was
+never exercised.
+
+EXPECTED COMMANDS
+-----------------
+An effect proves where the workspace arrived. `command_expect` proves how it got
+there:
+
+  "command_expect": ["mkdir -p -- archive/2026/quarter-four"]
+
+Rung 824.L4 moves a file into a path none of whose directories exist yet. The
+file landing there is the effect; the rung additionally requires that the
+intermediate directories were created as a step of carrying the request out, so
+the rung cannot be satisfied by a single lucky `mv`. `command_forbid` is the
+mirror image and is what rung 824.L2 uses: the move it must not make.
+
 FAULT INJECTION
 ---------------
 Some defects only appear when a tool misbehaves, so a rung may declare faults:
@@ -67,6 +111,14 @@ THE RUNGS
   R916-07  #907  a declarative statement of fact is not a request
   R916-08a #909  --global writes a gemini configuration that starts headlessly
   R916-08b #909  --global writes the complete OpenAI triple for qwen
+  R916-09  #907  an unmarked caller preamble does not outrank the objective
+  R916-10  #907  a policy sentence naming a command does not authorize it
+
+  824.L1   #944  a single move is performed and verified
+  824.L2   #944  a move onto an occupied destination stops before it acts
+  824.L3   #944  a directory move takes its contents and leaves its source behind
+  824.L4   #944  a move into a path that does not exist yet creates it first
+  824.L5   #944  a copy is carried out the same way without naming copy anywhere
 
 The same identifiers name the in-process regression tests in
 tests/unit/issue_916.rs, so a defect, its fix, its unit test and its ladder rung
@@ -74,6 +126,43 @@ all carry one name. R916-08a/b are `kind: "cli"` rungs: they run the wrapper CLI
 with a throwaway HOME and read the configuration files back, then run `--undo`
 and check the workspace was restored. A configuration that cannot be taken back
 is not one a user can safely accept.
+
+THE MUTATING LADDER (issues #824 and #944)
+-----------------------------------------
+Issue #824 reported `Move <dir> to <dir>` being answered with a refusal. The
+routing half of that is fixed elsewhere on this branch -- the request now lowers
+to a concrete `mv SOURCE DESTINATION`. Issue #944 asks for the other half, that
+the action be verified rather than merely issued, and these five rungs are where
+that is measured against a real filesystem.
+
+The recipe a mutating command is carried out as is declared per intent in
+data/seed/shell-intents.lino, not written in Rust:
+
+  effect
+    before "test -e {source}"
+    before "test ! -e {destination}"
+    prepare "mkdir -p -- {destination_parent}"
+    after "test -e {destination}"
+    after "test -e {source}"          # `cp` keeps its source; `mv` does not
+
+Each step is observed before the next is planned, so a step that exits non-zero
+ends the recipe where it stopped and is reported as itself. That is what rung
+824.L2 measures: `mv` would exit 0 over an occupied destination and destroy the
+file that was there, so the honest outcome is the check that stopped it and the
+status it exited with, not a completion.
+
+Rung 824.L5 is held out. Nothing under src/ mentions `cp`; the only difference
+between a copy and a move is which `after` line the seed declares. A fix that
+special-cased `mv` would pass L1-L4 and fail L5.
+
+KNOWN DEVIATION -- the "cleanup" half of rung 824.L3
+    Issue #944 words the third rung as "multi-step move+cleanup". What is
+    verified here is the cleanup the move itself owes: after `mv notes/2026
+    backup/2026`, the postcondition `test ! -e notes/2026` must hold, so a copy
+    masquerading as a move fails the rung. What is NOT done is removing the
+    now-empty `notes/` parent. Deleting a directory the user did not name is a
+    write they did not request, and issue #824 is a report about over-refusal,
+    not a licence to over-reach. Recorded here rather than quietly narrowed.
 
 THE #902-#909 DEFECT CLUSTER
 ----------------------------
@@ -92,6 +181,16 @@ a recorded reason, each fix tied to a named ladder rung. This is that record.
         CLOSED before this branch. The `planned_not_executed` terminal state is
         what R916-04 now builds on: a plan is not an effect, and completion is
         only claimed when the workspace is observed.
+        REOPENED because honest is not the same as done: three production
+        matrices later, every repository run still ended `planned_not_executed`
+        with an empty pull request.  A work item names an issue, and an issue
+        URL names no artifact, so recording the reference was the only end
+        available.  The issue #921 branch reads the work item first — that
+        document is where the artifact is named — and keeps
+        `planned_not_executed` for a genuinely unavailable capability.  The
+        rungs here judge workspace effects from a prompt, so this one is pinned
+        by tests/unit/issue_904.rs instead: its effect depends on a fetched
+        document rather than on the prompt alone.
   #905  "Completed ... and verified it with `cat hello.txt`" after exit 1
         FIXED here.  R916-01, R916-04, R916-05.
   #906  language router takes the word after "in" as the target language
@@ -100,6 +199,16 @@ a recorded reason, each fix tied to a named ladder rung. This is that record.
         rung.
   #907  caller framing hijacks intent routing
         FIXED here.  R916-06, R916-07.
+        REOPENED for the unmarked-prefix variant and fixed again on the issue
+        #921 branch.  R916-09, R916-10.  The fix above keys on the markup a
+        client wraps its framing in; Hive Mind's adapters used none, so workflow
+        policy and objective arrived concatenated in one untagged user message.
+        Production observed Codex run `/bin/bash -lc pwd` and five Codex
+        attempts run bare `sudo`, with no requested file created
+        (hive-mind#2158, evidence in hive-mind#2159).  Two tells replace the
+        markup: the explicit objective delimiter the caller wrote, and the
+        conditional lead that marks a clause as governing commands rather than
+        requesting one.
   #908  step verification ignores the exit code
         CLOSED during this branch's work; the rungs that keep it closed are
         R916-02 (exit 0 with no output is success) and R916-03 (the report names
@@ -113,6 +222,7 @@ RUNNING IT
   experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh
 
   ONLY=R916-02 experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh
+  ONLY=824.L  experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh
   SANDBOX_KEEP=1 ... run_write_effect_ladder.sh   # keep the sandbox to inspect
 
 Judge unit tests (no server, no build required):

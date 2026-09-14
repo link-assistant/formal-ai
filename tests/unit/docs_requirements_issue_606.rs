@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::seed::{client_integrations, ConfigFormat};
+use formal_ai::seed::{ConfigFormat, client_integrations};
 
 #[test]
 fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
@@ -21,26 +21,34 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         .find(|integration| integration.id == "codex")
         .expect("codex integration");
     assert_eq!(codex.global_config.format, ConfigFormat::Toml);
-    assert!(codex
-        .global_config
-        .toml_settings
-        .iter()
-        .any(
-            |(key, value)| key == "model_providers.{provider_id}.wire_api" && value == "responses"
-        ));
+    assert!(
+        codex
+            .global_config
+            .toml_settings
+            .iter()
+            .any(
+                |(key, value)| key == "model_providers.{provider_id}.wire_api"
+                    && value == "responses"
+            )
+    );
     assert_eq!(codex.invocation.temp_home_config_path, ".codex/config.toml");
-    assert!(codex
-        .invocation
-        .temp_home_toml_settings
-        .iter()
-        .any(
-            |(key, value)| key == "model_providers.{provider_id}.wire_api" && value == "responses"
-        ));
-    assert!(codex
-        .invocation
-        .non_interactive_args
-        .iter()
-        .any(|arg| arg == "--skip-git-repo-check"));
+    assert!(
+        codex
+            .invocation
+            .temp_home_toml_settings
+            .iter()
+            .any(
+                |(key, value)| key == "model_providers.{provider_id}.wire_api"
+                    && value == "responses"
+            )
+    );
+    assert!(
+        codex
+            .invocation
+            .non_interactive_args
+            .iter()
+            .any(|arg| arg == "--skip-git-repo-check")
+    );
     assert!(codex.invocation.args.iter().any(|arg| arg == "--sandbox"));
     assert!(codex.invocation.args.iter().any(|arg| arg == "read-only"));
 
@@ -50,12 +58,14 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         .expect("opencode integration");
     assert_eq!(opencode.global_config.format, ConfigFormat::Json);
     assert_eq!(opencode.invocation.config_env, "OPENCODE_CONFIG");
-    assert!(opencode
-        .global_config
-        .json_settings
-        .iter()
-        .any(|(key, value)| key == "provider.{provider_id}.npm"
-            && value == "@ai-sdk/openai-compatible"));
+    assert!(
+        opencode
+            .global_config
+            .json_settings
+            .iter()
+            .any(|(key, value)| key == "provider.{provider_id}.npm"
+                && value == "@ai-sdk/openai-compatible")
+    );
 
     let agent = integrations
         .iter()
@@ -70,12 +80,14 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         agent.global_config.path,
         ".config/link-assistant-agent/opencode.json"
     );
-    assert!(agent
-        .global_config
-        .json_settings
-        .iter()
-        .any(|(key, value)| key == "provider.{provider_id}.npm"
-            && value == "@ai-sdk/openai-compatible"));
+    assert!(
+        agent
+            .global_config
+            .json_settings
+            .iter()
+            .any(|(key, value)| key == "provider.{provider_id}.npm"
+                && value == "@ai-sdk/openai-compatible")
+    );
 
     let gemini = integrations
         .iter()
@@ -88,21 +100,29 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         gemini.invocation.temp_home_config_path,
         ".gemini/settings.json"
     );
-    assert!(gemini
-        .invocation
-        .env
-        .iter()
-        .any(|env| env.key == "GEMINI_DEFAULT_AUTH_TYPE" && env.value == "{google_auth_type}"));
-    assert!(gemini
-        .invocation
-        .env
-        .iter()
-        .any(|env| env.key == "GEMINI_CLI_TRUST_WORKSPACE" && env.value == "true"));
-    assert!(gemini
-        .invocation
-        .temp_home_json_settings
-        .iter()
-        .any(|(key, value)| key == "security.auth.selectedType" && value == "{google_auth_type}"));
+    assert!(
+        gemini
+            .invocation
+            .env
+            .iter()
+            .any(|env| env.key == "GEMINI_DEFAULT_AUTH_TYPE" && env.value == "{google_auth_type}")
+    );
+    assert!(
+        gemini
+            .invocation
+            .env
+            .iter()
+            .any(|env| env.key == "GEMINI_CLI_TRUST_WORKSPACE" && env.value == "true")
+    );
+    assert!(
+        gemini
+            .invocation
+            .temp_home_json_settings
+            .iter()
+            .any(
+                |(key, value)| key == "security.auth.selectedType" && value == "{google_auth_type}"
+            )
+    );
 
     let seed = read(root.join("data/seed/client-integrations.lino"));
     assert_contains_all(

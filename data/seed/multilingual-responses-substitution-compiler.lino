@@ -1,0 +1,21 @@
+multilingual_responses
+  response response_substitution_rule_export_en
+    intent substitution_rule_export
+    language en
+    text "The verified substitution-rule program is ready for {target}. Save each named file exactly as shown. The input format is one `from<TAB>to` link per line; then run the commands below. Primary file: {primary_file}."
+  response response_substitution_rule_export_ru
+    intent substitution_rule_export
+    language ru
+    text "Проверенная программа правил подстановки готова для {target}. Сохраните каждый файл точно под указанным именем. Формат входных данных: одна связь `from<TAB>to` на строку; затем выполните команды ниже. Основной файл: {primary_file}."
+  response response_substitution_rule_export_hi
+    intent substitution_rule_export
+    language hi
+    text "सत्यापित प्रतिस्थापन-नियम प्रोग्राम {target} के लिए तैयार है। हर फ़ाइल को दिखाए गए नाम से सहेजें। इनपुट प्रारूप में हर पंक्ति पर एक `from<TAB>to` लिंक होता है; फिर नीचे दिए आदेश चलाएँ। मुख्य फ़ाइल: {primary_file}।"
+  response response_substitution_rule_export_zh
+    intent substitution_rule_export
+    language zh
+    text "经过验证的替换规则程序已生成，可用于 {target}。请按所示名称保存每个文件。输入格式为每行一个 `from<TAB>to` 链接；然后运行下面的命令。主文件：{primary_file}。"
+  response response_substitution_rule_export_es
+    intent substitution_rule_export
+    language es
+    text "El programa verificado de reglas de sustitución está listo para {target}. Guarda cada archivo con el nombre indicado. El formato de entrada es un enlace `from<TAB>to` por línea; luego ejecuta los comandos siguientes. Archivo principal: {primary_file}."

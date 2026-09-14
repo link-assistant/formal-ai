@@ -2,7 +2,7 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::seed::{self, Slot};
 use crate::solver_handlers::finalize_simple;
 

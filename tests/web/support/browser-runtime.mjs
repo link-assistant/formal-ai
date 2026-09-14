@@ -19,7 +19,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
+export const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const WORKER_DIR = path.join(REPO_ROOT, "src/web/worker");
 
 /** An in-memory `localStorage` good enough for the preference round-trips. */

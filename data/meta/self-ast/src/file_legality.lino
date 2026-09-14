@@ -2,9 +2,9 @@ self_ast_census
   target src/file_legality.rs
   language rust
   fidelity signature
-  byte_len 27568
+  byte_len 27584
   line_count 874
-  content_id source_module_01932ab2a7a92af5
+  content_id source_module_cd8995835116f093
   symbol_count 61
   symbols
     enum LegalCategory 18 22

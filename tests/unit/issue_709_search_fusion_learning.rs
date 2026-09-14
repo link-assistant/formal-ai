@@ -5,14 +5,14 @@ use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::{
-    execute_search_fusion, execute_search_fusion_with_recipe, CachedSourceClient, FetchError,
-    SearchFusionLearningApproval, SearchFusionLearningFrontier, SearchFusionLearningGate,
-    SearchFusionRecipeLedger, SearchSourceClassification, SourceTier, SourceTransport,
-    SEARCH_FUSION_TASK_FAMILY,
+    CachedSourceClient, FetchError, SEARCH_FUSION_TASK_FAMILY, SearchFusionLearningApproval,
+    SearchFusionLearningFrontier, SearchFusionLearningGate, SearchFusionRecipeLedger,
+    SearchSourceClassification, SourceTier, SourceTransport, execute_search_fusion,
+    execute_search_fusion_with_recipe,
 };
 
 use formal_ai::agentic_coding::learning_report::search_fusion_learning;
-use formal_ai::agentic_coding::{run_agentic_task, REPORTS, SEARCH_FUSION_LEARNING_PATH};
+use formal_ai::agentic_coding::{REPORTS, SEARCH_FUSION_LEARNING_PATH, run_agentic_task};
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
 
@@ -64,10 +64,12 @@ fn execution_frontier_infers_only_after_two_independent_successes() {
         .expect("second accepted execution");
     let mut frontier = SearchFusionLearningFrontier::new();
 
-    assert!(frontier
-        .record_execution("training/apple-taxonomy", &first)
-        .expect("record first execution")
-        .is_none());
+    assert!(
+        frontier
+            .record_execution("training/apple-taxonomy", &first)
+            .expect("record first execution")
+            .is_none()
+    );
     let candidate = frontier
         .record_execution("training/parser-speed", &second)
         .expect("record second execution")
@@ -90,10 +92,12 @@ fn one_execution_cannot_be_counted_twice_under_different_task_ids() {
         .expect("accepted execution");
     let mut frontier = SearchFusionLearningFrontier::new();
 
-    assert!(frontier
-        .record_execution("training/one", &execution)
-        .expect("first observation")
-        .is_none());
+    assert!(
+        frontier
+            .record_execution("training/one", &execution)
+            .expect("first observation")
+            .is_none()
+    );
     let duplicate = frontier
         .record_execution("training/two", &execution)
         .expect_err("renaming one execution must not make its evidence independent");
@@ -123,20 +127,24 @@ fn candidate_is_inert_until_both_green_gate_and_named_review() {
     let mut ledger = SearchFusionRecipeLedger::new();
 
     assert!(ledger.plan_for(SEARCH_FUSION_TASK_FAMILY).is_none());
-    assert!(ledger
-        .promote(
-            &candidate,
-            SearchFusionLearningGate::failed("issue_709_held_out", 8, 1),
-            SearchFusionLearningApproval::granted("pull_request_review"),
-        )
-        .is_err());
-    assert!(ledger
-        .promote(
-            &candidate,
-            SearchFusionLearningGate::passed("issue_709_held_out", 9),
-            SearchFusionLearningApproval::declined("pull_request_review"),
-        )
-        .is_err());
+    assert!(
+        ledger
+            .promote(
+                &candidate,
+                SearchFusionLearningGate::failed("issue_709_held_out", 8, 1),
+                SearchFusionLearningApproval::granted("pull_request_review"),
+            )
+            .is_err()
+    );
+    assert!(
+        ledger
+            .promote(
+                &candidate,
+                SearchFusionLearningGate::passed("issue_709_held_out", 9),
+                SearchFusionLearningApproval::declined("pull_request_review"),
+            )
+            .is_err()
+    );
     assert!(ledger.plan_for(SEARCH_FUSION_TASK_FAMILY).is_none());
 
     ledger

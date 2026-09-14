@@ -2,8 +2,8 @@
 //! Externalised from `src/sequences/inference.rs`.
 
 use formal_ai::sequences::{
-    infer_grid_patterns, infer_sequence_patterns, Grid, LinkAddress, SequencePattern,
-    SequenceStore, SymbolTable,
+    Grid, LinkAddress, SequencePattern, SequenceStore, SymbolTable, infer_grid_patterns,
+    infer_sequence_patterns,
 };
 
 fn atoms(store: &mut SequenceStore, symbols: &mut SymbolTable, values: &[u64]) -> Vec<LinkAddress> {

@@ -32,7 +32,7 @@
 
 use serde::Serialize;
 
-use crate::engine::{knowledge_graph, GraphEdge, GraphNode, KnowledgeGraph};
+use crate::engine::{GraphEdge, GraphNode, KnowledgeGraph, knowledge_graph};
 
 /// A parsed LinksQL query.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -441,10 +441,10 @@ fn evaluate(query: &LinksQuery, source_text: &str, graph: &KnowledgeGraph) -> Li
     let want_target = query.returns.iter().any(|var| var == &target.var);
 
     for edge in &graph.edges {
-        if let Some(role) = &edge_pattern.role {
-            if &edge.role != role {
-                continue;
-            }
+        if let Some(role) = &edge_pattern.role
+            && &edge.role != role
+        {
+            continue;
         }
         let from_node = graph.nodes.iter().find(|node| node.id == edge.from);
         let to_node = graph.nodes.iter().find(|node| node.id == edge.to);
@@ -457,15 +457,11 @@ fn evaluate(query: &LinksQuery, source_text: &str, graph: &KnowledgeGraph) -> Li
         }
 
         result.edges.push(edge.clone());
-        if want_source {
-            if let Some(node) = from_node {
-                push_node(&mut result.nodes, node.clone());
-            }
+        if want_source && let Some(node) = from_node {
+            push_node(&mut result.nodes, node.clone());
         }
-        if want_target {
-            if let Some(node) = to_node {
-                push_node(&mut result.nodes, node.clone());
-            }
+        if want_target && let Some(node) = to_node {
+            push_node(&mut result.nodes, node.clone());
         }
     }
     result

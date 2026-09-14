@@ -199,13 +199,17 @@ fn reinforce_transition_path_records_one_observation_per_adjacent_pair() {
 #[test]
 fn reinforce_transition_path_is_a_no_op_below_two_states() {
     let mut store = ProbabilityStore::new();
-    assert!(store
-        .reinforce_transition_path(&["only"], 1.0, "src", "2026-06-13T00:00:00Z")
-        .is_empty());
+    assert!(
+        store
+            .reinforce_transition_path(&["only"], 1.0, "src", "2026-06-13T00:00:00Z")
+            .is_empty()
+    );
     let empty: [&str; 0] = [];
-    assert!(store
-        .reinforce_transition_path(&empty, 1.0, "src", "2026-06-13T00:00:00Z")
-        .is_empty());
+    assert!(
+        store
+            .reinforce_transition_path(&empty, 1.0, "src", "2026-06-13T00:00:00Z")
+            .is_empty()
+    );
     assert_eq!(store.records().len(), 0);
 }
 

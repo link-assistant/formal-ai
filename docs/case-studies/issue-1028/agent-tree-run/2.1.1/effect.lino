@@ -1,0 +1,8 @@
+node_path=2.1.1
+node_depth=3
+node_kind=composite
+left_child=2.1.1.1
+right_child=2.1.1.2
+left_result=Line 5: Every internal node has exactly two children, and every leaf is atomic and independently checkable. The Agent-CLI runner generates the canonical 63-node tree from the 32 atomic leaf formulations at runtime so the tree structure itself is executable and testable.; Line 89:     pub id: String,; together these exact observations compose the result.
+right_result=Observed repository result: Line 415:         format!("{parent}.{number}"); Line 26: const NODE_COUNT: usize = 63;; together these exact observations compose the result.
+result=Line 5: Every internal node has exactly two children, and every leaf is atomic and independently checkable. The Agent-CLI runner generates the canonical 63-node tree from the 32 atomic leaf formulations at runtime so the tree structure itself is executable and testable.; Line 89:     pub id: String,; together these exact observations compose the result.; Observed repository result: Line 415:         format!("{parent}.{number}"); Line 26: const NODE_COUNT: usize = 63;; together these exact observations compose the result.; together these exact observations compose the result.

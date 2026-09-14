@@ -1,0 +1,1 @@
+solve https://github.com/link-assistant/formal-ai/issues/921 --tool agent --model formal-ai --attach-logs --verbose

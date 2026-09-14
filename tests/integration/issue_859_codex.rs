@@ -1,7 +1,7 @@
 //! Regression coverage for issue #859 against Codex's native Responses tools.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const PROMPT: &str = "Give me hello world program in Rust";
 const PATCH_INPUT: &str = "*** Begin Patch\n*** Add File: main.rs\n+fn main() {\n+    println!(\"Hello, world!\");\n+}\n*** End Patch\n";

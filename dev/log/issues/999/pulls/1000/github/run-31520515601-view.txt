@@ -1,0 +1,11 @@
+
+✓ issue-999-31976d2c6ce9 Coverage link-assistant/formal-ai#1000 · 31520515601
+Triggered via pull_request about 12 minutes ago
+
+JOBS
+✓ Detect Changes in 1m12s (ID 93876128453)
+- Code Coverage in 0s (ID 93876478832)
+- Browser Code Coverage in 0s (ID 93876479384)
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31520515601

@@ -11,11 +11,13 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::seed;
 use formal_ai::FormalAiEngine;
+use formal_ai::seed;
 
-const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 38;
-const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 49;
+/// Handler modules only: `mod.rs` and the generated `modules.rs` are excluded
+/// from the count, so the ceiling dropped by one when they stopped counting.
+const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 37;
+const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 50;
 
 #[test]
 fn held_out_number_constraint_paraphrases_are_data_driven() {
@@ -176,10 +178,15 @@ fn handler_migration_ratchet() {
         .expect("solver_handlers directory")
         .filter_map(Result::ok)
         .filter(|entry| {
-            entry
-                .path()
-                .extension()
-                .is_some_and(|extension| extension == "rs")
+            let path = entry.path();
+            // `mod.rs` holds the dispatch logic and `modules.rs` is the generated
+            // `mod` list issue #991 split out of it; neither is a handler, so
+            // neither may move a ratchet that counts specialized handlers.
+            let bookkeeping = matches!(
+                path.file_name().and_then(|name| name.to_str()),
+                Some("mod.rs" | "modules.rs")
+            );
+            path.extension().is_some_and(|extension| extension == "rs") && !bookkeeping
         })
         .count();
     assert!(
@@ -232,8 +239,9 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status migrated").count(),
-        4,
-        "batches 1-3 migrate four methods in total",
+        16,
+        "batches 1-3 migrated four methods; issue #1085 D1.3 migrated eleven handler names into \
+         data/seed/handler-rules.lino, and issue #1095 a twelfth (agentic_continuation)",
     );
     assert_eq!(
         ledger.matches("status \"justified-native\"").count(),
@@ -242,7 +250,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status pending").count(),
-        expected.len() - 6,
+        expected.len() - 18,
         "every other current method must honestly remain pending",
     );
 }

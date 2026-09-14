@@ -187,7 +187,57 @@ class Program {
   end
 end"#,
     },
+    ProgramTemplate {
+        task_slug: "fizzbuzz",
+        language_slug: "scala",
+        code: r#"object Main {
+  def main(args: Array[String]): Unit = {
+    for (number <- 1 to 15) {
+      if (number % 15 == 0) {
+        println("FizzBuzz")
+      } else if (number % 3 == 0) {
+        println("Fizz")
+      } else if (number % 5 == 0) {
+        println("Buzz")
+      } else {
+        println(number)
+      }
+    }
+  }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "fizzbuzz",
+        language_slug: "kotlin",
+        code: r#"fun main() {
+    for (number in 1..15) {
+        when {
+            number % 15 == 0 -> println("FizzBuzz")
+            number % 3 == 0 -> println("Fizz")
+            number % 5 == 0 -> println("Buzz")
+            else -> println(number)
+        }
+    }
+}"#,
+    },
     // Issue #330: factorial of 5 (5! = 120).
+    ProgramTemplate {
+        task_slug: "fizzbuzz",
+        language_slug: "php",
+        code: r#"<?php
+
+foreach (range(1, 15) as $number) {
+    if ($number % 15 === 0) {
+        echo "FizzBuzz", PHP_EOL;
+    } elseif ($number % 3 === 0) {
+        echo "Fizz", PHP_EOL;
+    } elseif ($number % 5 === 0) {
+        echo "Buzz", PHP_EOL;
+    } else {
+        echo $number, PHP_EOL;
+    }
+}"#,
+    },
     ProgramTemplate {
         task_slug: "factorial",
         language_slug: "rust",
@@ -301,7 +351,39 @@ class Program {
         code: r"result = (1..5).reduce(1, :*)
 puts result",
     },
+    ProgramTemplate {
+        task_slug: "factorial",
+        language_slug: "scala",
+        code: r"object Main {
+  def main(args: Array[String]): Unit = {
+    var result: Long = 1
+    for (number <- 1 to 5) {
+      result *= number
+    }
+    println(result)
+  }
+}",
+    },
+    ProgramTemplate {
+        task_slug: "factorial",
+        language_slug: "kotlin",
+        code: r"fun main() {
+    var result = 1L
+    for (number in 1..5) {
+        result *= number
+    }
+    println(result)
+}",
+    },
     // Issue #330: reverse the literal string "hello" -> "olleh".
+    ProgramTemplate {
+        task_slug: "factorial",
+        language_slug: "php",
+        code: r"<?php
+
+$result = array_product(range(1, 5));
+echo $result, PHP_EOL;",
+    },
     ProgramTemplate {
         task_slug: "reverse_string",
         language_slug: "rust",
@@ -405,7 +487,33 @@ class Program {
         code: r#"text = "hello"
 puts text.reverse"#,
     },
+    ProgramTemplate {
+        task_slug: "reverse_string",
+        language_slug: "scala",
+        code: r#"object Main {
+  def main(args: Array[String]): Unit = {
+    val text = "hello"
+    println(text.reverse)
+  }
+}"#,
+    },
+    ProgramTemplate {
+        task_slug: "reverse_string",
+        language_slug: "kotlin",
+        code: r#"fun main() {
+    val text = "hello"
+    println(text.reversed())
+}"#,
+    },
     // Issue #330: sum of the integers 1..=10 (= 55).
+    ProgramTemplate {
+        task_slug: "reverse_string",
+        language_slug: "php",
+        code: r#"<?php
+
+$text = "hello";
+echo strrev($text), PHP_EOL;"#,
+    },
     ProgramTemplate {
         task_slug: "sum_to_ten",
         language_slug: "rust",
@@ -514,10 +622,36 @@ class Program {
         code: r"total = (1..10).sum
 puts total",
     },
+    ProgramTemplate {
+        task_slug: "sum_to_ten",
+        language_slug: "scala",
+        code: r"object Main {
+  def main(args: Array[String]): Unit = {
+    val total = (1 to 10).sum
+    println(total)
+  }
+}",
+    },
+    ProgramTemplate {
+        task_slug: "sum_to_ten",
+        language_slug: "kotlin",
+        code: r"fun main() {
+    val total = (1..10).sum()
+    println(total)
+}",
+    },
     // Issue #334: a recursive `fibonacci` function evaluated at the 10th term.
     // With F(1)=F(2)=1 the recurrence gives F(10)=55. Every template defines the
     // recursive function and prints `fibonacci(10)`. Outputs were compiled and
     // run locally (experiments/issue-334).
+    ProgramTemplate {
+        task_slug: "sum_to_ten",
+        language_slug: "php",
+        code: r"<?php
+
+$total = array_sum(range(1, 10));
+echo $total, PHP_EOL;",
+    },
     ProgramTemplate {
         task_slug: "fibonacci",
         language_slug: "rust",
@@ -663,5 +797,43 @@ class Program {
 end
 
 puts fibonacci(10)",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "scala",
+        code: r"object Main {
+  def fibonacci(n: Int): Long =
+    if (n <= 2) 1 else fibonacci(n - 1) + fibonacci(n - 2)
+
+  def main(args: Array[String]): Unit = {
+    println(fibonacci(10))
+  }
+}",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "kotlin",
+        code: r"fun fibonacci(n: Int): Long =
+    if (n <= 2) 1 else fibonacci(n - 1) + fibonacci(n - 2)
+
+fun main() {
+    println(fibonacci(10))
+}",
+    },
+    ProgramTemplate {
+        task_slug: "fibonacci",
+        language_slug: "php",
+        code: r"<?php
+
+function fibonacci(int $n): int
+{
+    if ($n <= 2) {
+        return 1;
+    }
+
+    return fibonacci($n - 1) + fibonacci($n - 2);
+}
+
+echo fibonacci(10), PHP_EOL;",
     },
 ];

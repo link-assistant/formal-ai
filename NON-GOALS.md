@@ -46,6 +46,14 @@ These boundaries keep the project aligned with the symbolic, link-native directi
 - The desktop app path is not a separate product until the library, API, and local data boundaries are stable.
 - Agent mode is not intended for unsafe use on personal or production systems without isolation.
 
+## Self-Development Non-Goals
+
+- Documentation, logs or ledgers about Formal AI do not count as Formal AI authoring itself; the self-hosting numerator holds behaviour-changing paths only (issue #1085).
+- A commit produced by a hosted model is not self-authored, whatever trailers it carries; attribution follows the model named in the committed evidence.
+- A gate that can be satisfied without changing behaviour is not a gate, and a ceiling that can be raised by the commit that exceeds it is not a ratchet.
+- Vendoring run logs into the source repository is not evidence; a hashed index to an evidence store is.
+- A curated benchmark number is never cited without the upstream number beside it.
+
 ## Documentation Non-Goals
 
 - Case studies should not become marketing pages.

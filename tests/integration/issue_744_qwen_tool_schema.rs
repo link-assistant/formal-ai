@@ -2,7 +2,7 @@
 //! the exact JSON Schema it advertised.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[test]
 fn qwen_web_fetch_receives_every_required_argument_and_no_undeclared_keys() {

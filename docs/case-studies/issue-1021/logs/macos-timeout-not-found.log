@@ -1,0 +1,20 @@
+# Excerpt: run 32282461075, macOS Core Tests, slices 15/16 and 16/16
+# (jobs 96170638546 and 96170638704), the red that scripts/run-with-deadline.sh answers.
+# Colour codes stripped; the runner writes them as literal text in downloaded logs.
+
+Run macOS core slice 15/16	2026-08-19T18:04:30.7060320Z         FAIL [   0.040s] ( 70/175) formal-ai::unit ci_cd::issue_1021::a_mirror_that_keeps_refusing_is_reported_after_the_last_attempt
+Run macOS core slice 15/16	2026-08-19T18:04:30.7081610Z     test ci_cd::issue_1021::a_mirror_that_keeps_refusing_is_reported_after_the_last_attempt ... FAILED
+Run macOS core slice 15/16	2026-08-19T18:04:30.7091460Z         ci_cd::issue_1021::a_mirror_that_keeps_refusing_is_reported_after_the_last_attempt
+Run macOS core slice 15/16	2026-08-19T18:04:30.7094180Z     test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2915 filtered out; finished in 0.02s
+Run macOS core slice 15/16	2026-08-19T18:04:30.7098160Z     thread 'ci_cd::issue_1021::a_mirror_that_keeps_refusing_is_reported_after_the_last_attempt' (26519) panicked at tests/unit/ci-cd/issue_1021.rs:272:5:
+Run macOS core slice 15/16	2026-08-19T18:04:30.7100450Z       left: Some(127)
+Run macOS core slice 15/16	2026-08-19T18:04:30.7100880Z      right: Some(100)
+Run macOS core slice 15/16	2026-08-19T18:04:32.6923900Z         FAIL [   0.040s] ( 70/175) formal-ai::unit ci_cd::issue_1021::a_mirror_that_keeps_refusing_is_reported_after_the_last_attempt
+Run macOS core slice 16/16	2026-08-19T18:11:22.8697280Z         FAIL [   0.083s] ( 71/175) formal-ai::unit ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds
+Run macOS core slice 16/16	2026-08-19T18:11:22.8712590Z     test ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds ... FAILED
+Run macOS core slice 16/16	2026-08-19T18:11:22.8726640Z         ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds
+Run macOS core slice 16/16	2026-08-19T18:11:22.8734210Z     test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2915 filtered out; finished in 0.05s
+Run macOS core slice 16/16	2026-08-19T18:11:22.8746240Z     thread 'ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds' (26946) panicked at tests/unit/ci-cd/issue_1021.rs:249:5:
+Run macOS core slice 16/16	2026-08-19T18:11:22.8751830Z     a transient stall must not fail the step: /Users/runner/work/formal-ai/formal-ai/scripts/apt-install-with-retry.sh: line 91: timeout: command not found
+Run macOS core slice 16/16	2026-08-19T18:11:22.8827400Z     /Users/runner/work/formal-ai/formal-ai/scripts/apt-install-with-retry.sh: line 91: timeout: command not found
+Run macOS core slice 16/16	2026-08-19T18:11:24.4670760Z         FAIL [   0.083s] ( 71/175) formal-ai::unit ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds

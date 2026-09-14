@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 7013
   line_count 150
-  content_id source_module_f3417db441fd9802
+  content_id source_module_808eb77461f75962
   symbol_count 4
   symbols
     function try_incompatible_units 22 45

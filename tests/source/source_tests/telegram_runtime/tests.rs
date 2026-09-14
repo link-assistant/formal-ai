@@ -1,7 +1,7 @@
-use super::{run_telegram_polling_with_transport, TelegramPollingRuntimeError, TelegramTransport};
+use super::{TelegramPollingRuntimeError, TelegramTransport, run_telegram_polling_with_transport};
 use crate::telegram::TelegramPollingConfig;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 struct ScriptedTransport {

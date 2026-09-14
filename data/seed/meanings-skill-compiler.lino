@@ -35,6 +35,8 @@ meanings
     role skill_teaching_response_verb
     lexeme en
       surface
+        text "answer with"
+      surface
         text answer
       surface
         text reply

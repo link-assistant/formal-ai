@@ -6,7 +6,7 @@
 //! over the cleaned text.
 
 use super::{
-    deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig, SummarizationMode,
+    Statement, SummarizationConfig, SummarizationMode, deformalize, formalize, summarize, to_topic,
 };
 
 /// Strip the most common GitHub README noise from a block of Markdown text:

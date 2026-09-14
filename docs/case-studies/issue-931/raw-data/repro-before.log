@@ -1,0 +1,23 @@
+$ target/release/formal-ai --silent serve --ws
+error: unexpected argument '--ws' found
+
+Usage: formal-ai serve [OPTIONS]
+
+For more information, try '--help'.
+exit=2
+$ target/release/formal-ai --silent serve --webrtc
+error: unexpected argument '--webrtc' found
+
+Usage: formal-ai serve [OPTIONS]
+
+For more information, try '--help'.
+exit=2
+$ target/release/formal-ai --silent connect --transport websocket --endpoint 127.0.0.1:8080 --prompt Hi
+error: unrecognized subcommand 'connect'
+
+  tip: a similar subcommand exists: 'context'
+
+Usage: formal-ai [OPTIONS] [COMMAND]
+
+For more information, try '--help'.
+exit=2

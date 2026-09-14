@@ -2,9 +2,9 @@ self_ast_census
   target src/anthropic.rs
   language rust
   fidelity signature
-  byte_len 24287
-  line_count 620
-  content_id source_module_0e648f14bc04ae8d
+  byte_len 24324
+  line_count 623
+  content_id source_module_ca65031cc0095e85
   symbol_count 22
   symbols
     struct AnthropicMessagesRequest 46 72
@@ -22,10 +22,10 @@ self_ast_census
     function anthropic_tool_choice_to_openai 331 341
     function create_anthropic_message_with_solver 351 358
     function create_anthropic_message_with_solver_and_memory 361 370
-    function anthropic_message_from_chat_completion 372 436
-    function anthropic_thinking_block 443 450
-    function tool_call_to_block 454 462
-    function anthropic_message_sse 470 503
-    function push_content_block_events 510 590
-    function push_sse_event 592 599
-    function anthropic_content_to_text 604 620
+    function anthropic_message_from_chat_completion 372 439
+    function anthropic_thinking_block 446 453
+    function tool_call_to_block 457 465
+    function anthropic_message_sse 473 506
+    function push_content_block_events 513 593
+    function push_sse_event 595 602
+    function anthropic_content_to_text 607 623

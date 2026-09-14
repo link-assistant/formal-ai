@@ -11,7 +11,7 @@
 //!   > docs/case-studies/issue-540/dreaming-gap-analysis.lino
 //! ```
 
-use formal_ai::agentic_coding::{dreaming_audit, run_agentic_task, DREAMING_AUDIT_TASK};
+use formal_ai::agentic_coding::{DREAMING_AUDIT_TASK, dreaming_audit, run_agentic_task};
 
 fn main() {
     let mode = std::env::args().nth(1).unwrap_or_default();

@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "algorithm discovery summary"
+  arguments
+    defined-by concept
+    lexeme en
+      surface
+        text "arguments"
   authentic
     defined-by word_surface
     lexeme en
@@ -24,11 +29,31 @@ meanings
     lexeme en
       surface
         text "authenticate"
+  branch
+    defined-by word_surface
+    lexeme en
+      surface
+        text "branch"
   called
     defined-by word_surface
     lexeme en
       surface
         text "called"
+  cap
+    defined-by word_surface
+    lexeme en
+      surface
+        text "cap"
+  cause
+    defined-by concept
+    lexeme en
+      surface
+        text "cause"
+  citation
+    defined-by concept
+    lexeme en
+      surface
+        text "citation"
   client_global_config_auth_refusal
     defined-by intent
     lexeme en
@@ -54,6 +79,11 @@ meanings
     lexeme en
       surface
         text "context learning failed"
+  copy_stdin_to_stdout
+    defined-by task
+    lexeme en
+      surface
+        text "copy stdin to stdout"
   could
     defined-by concept
     lexeme en
@@ -69,6 +99,11 @@ meanings
     lexeme en
       surface
         text "csv"
+  dataframe
+    defined-by concept
+    lexeme en
+      surface
+        text "dataframe"
   destructive
     defined-by concept
     lexeme en
@@ -84,6 +119,11 @@ meanings
     lexeme en
       surface
         text "divide"
+  encoded
+    defined-by word_surface
+    lexeme en
+      surface
+        text "encoded"
   exceeds
     defined-by word_surface
     lexeme en
@@ -134,11 +174,21 @@ meanings
     lexeme en
       surface
         text "issue report omitted records"
+  issues
+    defined-by concept
+    lexeme en
+      surface
+        text "issues"
   join
     defined-by concept
     lexeme en
       surface
         text "join"
+  just
+    defined-by word_surface
+    lexeme en
+      surface
+        text "just"
   knowledge-representation
     defined-by category
     lexeme en
@@ -184,6 +234,11 @@ meanings
     lexeme en
       surface
         text "nondeterministic"
+  note
+    defined-by word_surface
+    lexeme en
+      surface
+        text "note"
   pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh
     defined-by prompt_pattern
     lexeme en
@@ -259,16 +314,21 @@ meanings
     lexeme en
       surface
         text "pattern x kaise kaam karti suffix hi"
+  prior_web_search
+    defined-by concept
+    lexeme en
+      surface
+        text "prior web search"
+  program_blueprint
+    defined-by concept
+    lexeme en
+      surface
+        text "program blueprint"
   project
     defined-by concept
     lexeme en
       surface
         text "project"
-  rendered
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rendered"
   response_agent_suggestion_active_hi
     defined-by response_template
     lexeme en
@@ -334,6 +394,21 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error ru"
+  response_coding_member_inserted_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member inserted ru"
+  response_coding_meta_algorithm_surface_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface en"
+  response_coding_repository_source_observation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation hi"
   response_comparison_decomposed_no_evidence_en
     defined-by response_template
     lexeme en
@@ -359,6 +434,11 @@ meanings
     lexeme en
       surface
         text "response courtesy response zh"
+  response_docs_method_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response docs method explanation zh"
   response_document_originality_check_sample_missing_en
     defined-by response_template
     lexeme en
@@ -369,16 +449,51 @@ meanings
     lexeme en
       surface
         text "response external benchmark baseline read error en"
+  response_external_benchmark_egg_too_few_laws_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws es"
+  response_external_benchmark_frontier_summary_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark frontier summary en"
+  response_external_benchmark_proof_expected_event_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof expected event hi"
+  response_external_benchmark_proof_expected_event_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof expected event ru"
   response_external_benchmark_swe_predictions_write_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe predictions write error en"
+  response_external_benchmark_upstream_missing_end_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing end zh"
+  response_external_benchmark_upstream_missing_start_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start en"
   response_fact_check_no_statements_zh
     defined-by response_template
     lexeme en
       surface
         text "response fact check no statements zh"
+  response_file_read_many_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response file read many unavailable zh"
   response_general_plan_command_capture_action_en
     defined-by response_template
     lexeme en
@@ -394,6 +509,16 @@ meanings
     lexeme en
       surface
         text "response general plan command verification evidence ru"
+  response_how_to_guide_citation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation ru"
+  response_how_to_guide_step_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step es"
   response_http_fetch_curated_project_hi
     defined-by response_template
     lexeme en
@@ -469,11 +594,36 @@ meanings
     lexeme en
       surface
         text "response mcp instructions ru"
+  response_memory_inventory_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory es"
+  response_memory_inventory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory zh"
+  response_memory_link_count_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count hi"
   response_meta_explanation_en
     defined-by response_template
     lexeme en
       surface
         text "response meta explanation en"
+  response_opinion_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response opinion question en"
+  response_opinion_question_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response opinion question es"
   response_pattern_grid_horizontal_ru
     defined-by response_template
     lexeme en
@@ -504,6 +654,16 @@ meanings
     lexeme en
       surface
         text "response pattern sequence empty es"
+  response_proof_equality_conclusion_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion es"
+  response_punctuation_only_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response punctuation only zh"
   response_skill_gap_hi
     defined-by response_template
     lexeme en
@@ -554,6 +714,11 @@ meanings
     lexeme en
       surface
         text "response summarization ratchet violated en"
+  response_task_decomposition_single_need_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need es"
   response_task_plan_stage_implementation_ru
     defined-by response_template
     lexeme en
@@ -724,6 +889,11 @@ meanings
     lexeme en
       surface
         text "script and markers"
+  serialized
+    defined-by word_surface
+    lexeme en
+      surface
+        text "serialized"
   signal-processing
     defined-by category
     lexeme en
@@ -794,6 +964,11 @@ meanings
     lexeme en
       surface
         text "tool concept lookup"
+  untouched
+    defined-by concept
+    lexeme en
+      surface
+        text "untouched"
   world_state_remaining
     defined-by intent
     lexeme en

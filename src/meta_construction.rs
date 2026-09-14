@@ -34,16 +34,20 @@ use crate::method_registry::MethodRegistry;
 
 /// Which direction(s) of recursive reasoning the meta core emits.
 ///
-/// `Down` is the default and reproduces the pre-knob trace exactly, so enabling
-/// the upward pass is always an explicit opt-in.
+/// `Both` is the default. It used to be `Down`, which made the upward
+/// construction pass an opt-in: the fuller reasoning happened only when someone
+/// asked for it. Issue #1073 (requirement 1) rules that out — depth may not be
+/// "conditional on task difficulty or explicit prompting" — so the floor is now
+/// both directions and the narrower modes exist only to *quieten* a trace on
+/// purpose, never as the resting state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum RecursionMode {
-    /// Emit the downward decomposition reasoning only (default, behavior-preserving).
-    #[default]
+    /// Emit the downward decomposition reasoning only.
     Down,
     /// Emit the upward construction reasoning only.
     Up,
-    /// Emit both the downward and the upward reasoning.
+    /// Emit both the downward and the upward reasoning (default: the depth floor).
+    #[default]
     Both,
 }
 

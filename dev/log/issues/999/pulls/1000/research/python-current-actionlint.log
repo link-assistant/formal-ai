@@ -1,0 +1,8 @@
+../formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:467:7: unexpected key "queue" for "concurrency" section. expected one of "cancel-in-progress", "group" [syntax-check]
+    |
+467 |       queue: max
+    |       ^~~~~~
+../formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:574:7: unexpected key "queue" for "concurrency" section. expected one of "cancel-in-progress", "group" [syntax-check]
+    |
+574 |       queue: max
+    |       ^~~~~~

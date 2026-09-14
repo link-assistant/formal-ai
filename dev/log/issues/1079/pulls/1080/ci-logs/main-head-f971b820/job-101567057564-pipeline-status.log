@@ -1,0 +1,329 @@
+﻿2026-09-06T22:07:56.3134787Z Current runner version: '2.337.0'
+2026-09-06T22:07:56.3158519Z ##[group]Runner Image Provisioner
+2026-09-06T22:07:56.3159411Z Hosted Compute Agent
+2026-09-06T22:07:56.3160495Z Version: 20260828.587
+2026-09-06T22:07:56.3161190Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-06T22:07:56.3162042Z Build Date: 2026-08-28T16:44:25Z
+2026-09-06T22:07:56.3162746Z Worker ID: {61554881-8b50-4231-a579-56ae741aa1b8}
+2026-09-06T22:07:56.3163473Z Azure Region: northcentralus
+2026-09-06T22:07:56.3164202Z ##[endgroup]
+2026-09-06T22:07:56.3165705Z ##[group]Operating System
+2026-09-06T22:07:56.3166435Z Ubuntu
+2026-09-06T22:07:56.3167037Z 24.04.4
+2026-09-06T22:07:56.3167577Z LTS
+2026-09-06T22:07:56.3168167Z ##[endgroup]
+2026-09-06T22:07:56.3168745Z ##[group]Runner Image
+2026-09-06T22:07:56.3169395Z Image: ubuntu-24.04
+2026-09-06T22:07:56.3170315Z Version: 20260831.293.1
+2026-09-06T22:07:56.3171706Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-06T22:07:56.3173394Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+2026-09-06T22:07:56.3174481Z ##[endgroup]
+2026-09-06T22:07:56.3175579Z ##[group]GITHUB_TOKEN Permissions
+2026-09-06T22:07:56.3177600Z Contents: read
+2026-09-06T22:07:56.3178288Z Metadata: read
+2026-09-06T22:07:56.3178861Z ##[endgroup]
+2026-09-06T22:07:56.3181390Z Secret source: Actions
+2026-09-06T22:07:56.3182539Z Prepare workflow directory
+2026-09-06T22:07:56.3987281Z Prepare all required actions
+2026-09-06T22:07:56.4057019Z Getting action download info
+2026-09-06T22:07:56.6159342Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-06T22:07:56.8078895Z Complete job name: Pipeline Status
+2026-09-06T22:07:56.8937170Z ##[group]Run actions/checkout@v7
+2026-09-06T22:07:56.8938872Z with:
+2026-09-06T22:07:56.8939410Z   repository: link-assistant/formal-ai
+2026-09-06T22:07:56.8943820Z   token: ***
+2026-09-06T22:07:56.8944282Z   ssh-strict: true
+2026-09-06T22:07:56.8945078Z   ssh-user: git
+2026-09-06T22:07:56.8945896Z   persist-credentials: true
+2026-09-06T22:07:56.8946771Z   clean: true
+2026-09-06T22:07:56.8947444Z   sparse-checkout-cone-mode: true
+2026-09-06T22:07:56.8948022Z   fetch-depth: 1
+2026-09-06T22:07:56.8948496Z   fetch-tags: false
+2026-09-06T22:07:56.8948953Z   show-progress: true
+2026-09-06T22:07:56.8949421Z   lfs: false
+2026-09-06T22:07:56.8950091Z   submodules: false
+2026-09-06T22:07:56.8950567Z   set-safe-directory: true
+2026-09-06T22:07:56.8951090Z   allow-unsafe-pr-checkout: false
+2026-09-06T22:07:56.8952064Z env:
+2026-09-06T22:07:56.8952509Z   GIT_CONFIG_COUNT: 1
+2026-09-06T22:07:56.8953031Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-09-06T22:07:56.8953641Z   GIT_CONFIG_VALUE_0: main
+2026-09-06T22:07:56.8954151Z   CARGO_NET_RETRY: 10
+2026-09-06T22:07:56.8954645Z   CARGO_HTTP_MULTIPLEXING: false
+2026-09-06T22:07:56.8955182Z   CARGO_TERM_COLOR: always
+2026-09-06T22:07:56.8955693Z   FORMAL_AI_CI_VERBOSE: false
+2026-09-06T22:07:56.8956237Z   RUSTFLAGS: -Dwarnings
+2026-09-06T22:07:56.8956912Z   CARGO_REGISTRY_TOKEN: ***
+2026-09-06T22:07:56.8957515Z   CARGO_TOKEN: ***
+2026-09-06T22:07:56.8958028Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-09-06T22:07:56.8958632Z   DOCKERHUB_IMAGE: 
+2026-09-06T22:07:56.8959076Z ##[endgroup]
+2026-09-06T22:07:56.9975561Z Syncing repository: link-assistant/formal-ai
+2026-09-06T22:07:56.9978500Z ##[group]Getting Git version info
+2026-09-06T22:07:56.9980214Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-09-06T22:07:56.9981998Z [command]/usr/bin/git version
+2026-09-06T22:07:57.0083019Z git version 2.55.0
+2026-09-06T22:07:57.0105752Z ##[endgroup]
+2026-09-06T22:07:57.0118932Z Temporarily overriding HOME='/home/runner/work/_temp/75661b49-0655-40a9-bbe1-2d054374f5d4' before making global git config changes
+2026-09-06T22:07:57.0121644Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-06T22:07:57.0123916Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-09-06T22:07:57.0180099Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-09-06T22:07:57.0183505Z ##[group]Determining repository object format
+2026-09-06T22:07:57.0185324Z ##[endgroup]
+2026-09-06T22:07:57.0186655Z ##[group]Initializing the repository
+2026-09-06T22:07:57.0190759Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-09-06T22:07:57.0313917Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-09-06T22:07:57.0324917Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-09-06T22:07:57.0383532Z ##[endgroup]
+2026-09-06T22:07:57.0384849Z ##[group]Disabling automatic garbage collection
+2026-09-06T22:07:57.0386713Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-06T22:07:57.0421177Z ##[endgroup]
+2026-09-06T22:07:57.0422334Z ##[group]Setting up auth
+2026-09-06T22:07:57.0423164Z Removing SSH command configuration
+2026-09-06T22:07:57.0428447Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T22:07:57.0462936Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T22:07:57.0847794Z Removing HTTP extra header
+2026-09-06T22:07:57.0853717Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T22:07:57.0889520Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T22:07:57.1105923Z Removing includeIf entries pointing to credentials config files
+2026-09-06T22:07:57.1110999Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T22:07:57.1152568Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T22:07:57.1376100Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-06T22:07:57.1415903Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:07:57.1448913Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:07:57.1490441Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:07:57.1526025Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:07:57.1618487Z ##[endgroup]
+2026-09-06T22:07:57.1620827Z ##[group]Fetching the repository
+2026-09-06T22:07:57.1623587Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f971b82052e523f6478f6bf1815c89a326153a23:refs/remotes/origin/main
+2026-09-06T22:08:09.6580965Z From https://github.com/link-assistant/formal-ai
+2026-09-06T22:08:09.6581652Z  * [new ref]         f971b82052e523f6478f6bf1815c89a326153a23 -> origin/main
+2026-09-06T22:08:09.6591240Z [command]/usr/bin/git branch --list --remote origin/main
+2026-09-06T22:08:09.6622866Z   origin/main
+2026-09-06T22:08:09.6631035Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-09-06T22:08:09.6658955Z f971b82052e523f6478f6bf1815c89a326153a23
+2026-09-06T22:08:09.6664268Z ##[endgroup]
+2026-09-06T22:08:09.6665619Z ##[group]Determining the checkout info
+2026-09-06T22:08:09.6666891Z ##[endgroup]
+2026-09-06T22:08:09.6671595Z [command]/usr/bin/git sparse-checkout disable
+2026-09-06T22:08:09.6730718Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-06T22:08:09.6763794Z ##[group]Checking out the ref
+2026-09-06T22:08:09.6769020Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-09-06T22:08:10.7822596Z Updating files:  39% (6624/16758)
+2026-09-06T22:08:10.8710691Z Updating files:  40% (6704/16758)
+2026-09-06T22:08:10.9462025Z Updating files:  41% (6871/16758)
+2026-09-06T22:08:11.1276968Z Updating files:  42% (7039/16758)
+2026-09-06T22:08:11.2157239Z Updating files:  43% (7206/16758)
+2026-09-06T22:08:11.4853286Z Updating files:  44% (7374/16758)
+2026-09-06T22:08:11.5036283Z Updating files:  45% (7542/16758)
+2026-09-06T22:08:11.5186573Z Updating files:  46% (7709/16758)
+2026-09-06T22:08:11.5302326Z Updating files:  47% (7877/16758)
+2026-09-06T22:08:11.5903145Z Updating files:  48% (8044/16758)
+2026-09-06T22:08:11.6953595Z Updating files:  49% (8212/16758)
+2026-09-06T22:08:11.7004979Z Updating files:  49% (8278/16758)
+2026-09-06T22:08:11.7228852Z Updating files:  50% (8379/16758)
+2026-09-06T22:08:11.7475900Z Updating files:  51% (8547/16758)
+2026-09-06T22:08:11.7607846Z Updating files:  52% (8715/16758)
+2026-09-06T22:08:11.7729397Z Updating files:  53% (8882/16758)
+2026-09-06T22:08:11.8277823Z Updating files:  54% (9050/16758)
+2026-09-06T22:08:11.9003432Z Updating files:  55% (9217/16758)
+2026-09-06T22:08:11.9275847Z Updating files:  56% (9385/16758)
+2026-09-06T22:08:11.9361900Z Updating files:  57% (9553/16758)
+2026-09-06T22:08:11.9522579Z Updating files:  58% (9720/16758)
+2026-09-06T22:08:11.9768315Z Updating files:  59% (9888/16758)
+2026-09-06T22:08:11.9893889Z Updating files:  60% (10055/16758)
+2026-09-06T22:08:12.0180799Z Updating files:  61% (10223/16758)
+2026-09-06T22:08:12.0927838Z Updating files:  62% (10390/16758)
+2026-09-06T22:08:12.1158205Z Updating files:  63% (10558/16758)
+2026-09-06T22:08:12.1650643Z Updating files:  64% (10726/16758)
+2026-09-06T22:08:12.2249066Z Updating files:  65% (10893/16758)
+2026-09-06T22:08:12.3146313Z Updating files:  66% (11061/16758)
+2026-09-06T22:08:12.3415780Z Updating files:  67% (11228/16758)
+2026-09-06T22:08:12.3604186Z Updating files:  68% (11396/16758)
+2026-09-06T22:08:12.4018600Z Updating files:  69% (11564/16758)
+2026-09-06T22:08:12.4170650Z Updating files:  70% (11731/16758)
+2026-09-06T22:08:12.4326538Z Updating files:  71% (11899/16758)
+2026-09-06T22:08:12.4471339Z Updating files:  72% (12066/16758)
+2026-09-06T22:08:12.4812416Z Updating files:  73% (12234/16758)
+2026-09-06T22:08:12.5050903Z Updating files:  74% (12401/16758)
+2026-09-06T22:08:12.5218140Z Updating files:  75% (12569/16758)
+2026-09-06T22:08:12.5452960Z Updating files:  76% (12737/16758)
+2026-09-06T22:08:12.5539453Z Updating files:  77% (12904/16758)
+2026-09-06T22:08:12.5621407Z Updating files:  78% (13072/16758)
+2026-09-06T22:08:12.5852508Z Updating files:  79% (13239/16758)
+2026-09-06T22:08:12.6126435Z Updating files:  80% (13407/16758)
+2026-09-06T22:08:12.6247223Z Updating files:  81% (13574/16758)
+2026-09-06T22:08:12.6442558Z Updating files:  82% (13742/16758)
+2026-09-06T22:08:12.6736952Z Updating files:  83% (13910/16758)
+2026-09-06T22:08:12.6864753Z Updating files:  84% (14077/16758)
+2026-09-06T22:08:12.6953127Z Updating files:  85% (14245/16758)
+2026-09-06T22:08:12.7278923Z Updating files:  85% (14352/16758)
+2026-09-06T22:08:12.7361468Z Updating files:  86% (14412/16758)
+2026-09-06T22:08:12.7456020Z Updating files:  87% (14580/16758)
+2026-09-06T22:08:12.7579921Z Updating files:  88% (14748/16758)
+2026-09-06T22:08:12.7696925Z Updating files:  89% (14915/16758)
+2026-09-06T22:08:12.7815964Z Updating files:  90% (15083/16758)
+2026-09-06T22:08:12.7951702Z Updating files:  91% (15250/16758)
+2026-09-06T22:08:12.8105542Z Updating files:  92% (15418/16758)
+2026-09-06T22:08:12.8310264Z Updating files:  93% (15585/16758)
+2026-09-06T22:08:12.8556396Z Updating files:  94% (15753/16758)
+2026-09-06T22:08:12.8665254Z Updating files:  95% (15921/16758)
+2026-09-06T22:08:12.8795337Z Updating files:  96% (16088/16758)
+2026-09-06T22:08:12.8919622Z Updating files:  97% (16256/16758)
+2026-09-06T22:08:12.9054914Z Updating files:  98% (16423/16758)
+2026-09-06T22:08:12.9180861Z Updating files:  99% (16591/16758)
+2026-09-06T22:08:12.9181522Z Updating files: 100% (16758/16758)
+2026-09-06T22:08:12.9182183Z Updating files: 100% (16758/16758), done.
+2026-09-06T22:08:12.9357011Z Reset branch 'main'
+2026-09-06T22:08:12.9360408Z branch 'main' set up to track 'origin/main'.
+2026-09-06T22:08:12.9426281Z ##[endgroup]
+2026-09-06T22:08:12.9475397Z [command]/usr/bin/git log -1 --format=%H
+2026-09-06T22:08:12.9506126Z f971b82052e523f6478f6bf1815c89a326153a23
+2026-09-06T22:08:12.9755196Z ##[group]Run bash scripts/check-pipeline-status.sh
+2026-09-06T22:08:12.9755710Z [36;1mbash scripts/check-pipeline-status.sh[0m
+2026-09-06T22:08:12.9795761Z shell: /usr/bin/bash -e {0}
+2026-09-06T22:08:12.9796049Z env:
+2026-09-06T22:08:12.9796261Z   GIT_CONFIG_COUNT: 1
+2026-09-06T22:08:12.9796549Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-09-06T22:08:12.9796841Z   GIT_CONFIG_VALUE_0: main
+2026-09-06T22:08:12.9797089Z   CARGO_NET_RETRY: 10
+2026-09-06T22:08:12.9797334Z   CARGO_HTTP_MULTIPLEXING: false
+2026-09-06T22:08:12.9797593Z   CARGO_TERM_COLOR: always
+2026-09-06T22:08:12.9797837Z   FORMAL_AI_CI_VERBOSE: false
+2026-09-06T22:08:12.9798128Z   RUSTFLAGS: -Dwarnings
+2026-09-06T22:08:12.9798634Z   CARGO_REGISTRY_TOKEN: ***
+2026-09-06T22:08:12.9798947Z   CARGO_TOKEN: ***
+2026-09-06T22:08:12.9799201Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-09-06T22:08:12.9799505Z   DOCKERHUB_IMAGE: 
+2026-09-06T22:08:12.9804201Z   NEEDS_JSON: {
+  "detect-changes": {
+    "result": "success",
+    "outputs": {
+      "any-code-changed": "true",
+      "rs-changed": "true",
+      "toml-changed": "false",
+      "docs-changed": "true",
+      "workflow-changed": "false"
+    }
+  },
+  "changelog": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "evidence-check": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "docker-build": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "secrets-scan": {
+    "result": "success",
+    "outputs": {}
+  },
+  "version-check": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "base": {
+    "result": "skipped",
+    "outputs": {
+      "commit": ""
+    }
+  },
+  "lint": {
+    "result": "success",
+    "outputs": {}
+  },
+  "test": {
+    "result": "success",
+    "outputs": {}
+  },
+  "macos-core-tests": {
+    "result": "success",
+    "outputs": {}
+  },
+  "build": {
+    "result": "success",
+    "outputs": {}
+  },
+  "auto-release": {
+    "result": "failure",
+    "outputs": {
+      "pages_sha": "f971b82052e523f6478f6bf1815c89a326153a23",
+      "pages_version": "0.347.0"
+    }
+  },
+  "manual-release": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "changelog-pr": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "test-e2e-local": {
+    "result": "success",
+    "outputs": {}
+  },
+  "test-agent-cli-e2e": {
+    "result": "success",
+    "outputs": {}
+  },
+  "build-artifacts": {
+    "result": "success",
+    "outputs": {}
+  },
+  "box-language-projects": {
+    "result": "success",
+    "outputs": {}
+  },
+  "deploy-pages": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "test-e2e-pages": {
+    "result": "skipped",
+    "outputs": {}
+  }
+}
+2026-09-06T22:08:12.9808779Z   IS_MAIN: true
+2026-09-06T22:08:12.9808988Z ##[endgroup]
+2026-09-06T22:08:12.9966540Z Failed jobs:    auto-release
+2026-09-06T22:08:12.9967026Z Cancelled jobs: <none>
+2026-09-06T22:08:12.9984809Z ##[error]Pipeline failed. Failing jobs: auto-release
+2026-09-06T22:08:13.0058797Z ##[error]Process completed with exit code 1.
+2026-09-06T22:08:13.0193265Z Post job cleanup.
+2026-09-06T22:08:13.1049442Z [command]/usr/bin/git version
+2026-09-06T22:08:13.1103189Z git version 2.55.0
+2026-09-06T22:08:13.1140675Z Temporarily overriding HOME='/home/runner/work/_temp/a46ce02b-2664-41b8-a42f-47ef93e30b06' before making global git config changes
+2026-09-06T22:08:13.1142069Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-06T22:08:13.1145473Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-09-06T22:08:13.1180637Z Removing SSH command configuration
+2026-09-06T22:08:13.1187080Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T22:08:13.1226564Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T22:08:13.1493112Z Removing HTTP extra header
+2026-09-06T22:08:13.1500998Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T22:08:13.1538242Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T22:08:13.1825476Z Removing includeIf entries pointing to credentials config files
+2026-09-06T22:08:13.1834051Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T22:08:13.1863716Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-09-06T22:08:13.1864798Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-09-06T22:08:13.1865884Z includeif.gitdir:/github/workspace/.git.path
+2026-09-06T22:08:13.1866821Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-06T22:08:13.1875390Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-09-06T22:08:13.1902806Z /home/runner/work/_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:08:13.1913799Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-e279e6c8\-3593\-486c\-87d1\-68cc28f08020\.config
+2026-09-06T22:08:13.1953827Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-09-06T22:08:13.1987822Z /home/runner/work/_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:08:13.2003480Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-e279e6c8\-3593\-486c\-87d1\-68cc28f08020\.config
+2026-09-06T22:08:13.2040710Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-09-06T22:08:13.2066854Z /github/runner_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:08:13.2075847Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-e279e6c8\-3593\-486c\-87d1\-68cc28f08020\.config
+2026-09-06T22:08:13.2112294Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-06T22:08:13.2137973Z /github/runner_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config
+2026-09-06T22:08:13.2146176Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-e279e6c8\-3593\-486c\-87d1\-68cc28f08020\.config
+2026-09-06T22:08:13.2184174Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T22:08:13.2417459Z Removing credentials config '/home/runner/work/_temp/git-credentials-e279e6c8-3593-486c-87d1-68cc28f08020.config'
+2026-09-06T22:08:13.2561278Z Cleaning up orphan processes

@@ -21,8 +21,8 @@ use formal_ai::associative_package::AssociativePackage;
 use formal_ai::associative_package::PackageHandler;
 use formal_ai::substitution::SubstitutionRuleSet;
 use formal_ai::translation::formalization::formalize_prompt;
-use links_notation::parse_lino as parse_canonical_lino;
 use links_notation::LiNo;
+use links_notation::parse_lino as parse_canonical_lino;
 
 /// Values that reach a record through user text or source code. Each is a
 /// plausible payload for issue #715's "change this code fragment" request.

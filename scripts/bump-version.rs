@@ -8,6 +8,9 @@
 //! - Multi-language: Cargo.toml in rust/ subfolder
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! ```

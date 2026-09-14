@@ -73,9 +73,9 @@ pub fn attempt_proof_with_config(
     mentions_determinism: bool,
     config: ProofRenderConfig,
 ) -> ProofOutcome {
-    // 1. Delegated relative-meta-logic / SMT-style decision procedure for
-    //    finite propositional tautologies and quantifier-free linear real
-    //    arithmetic.
+    // 1. Delegated symbolic decision procedures: finite propositional
+    //    tautologies, quantifier-free linear real arithmetic, bounded e-graph
+    //    equality saturation, and bounded function-free Datalog.
     if let Some(outcome) = decision::attempt_decision_procedure(claim, language) {
         return outcome;
     }

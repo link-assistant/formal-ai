@@ -1,0 +1,269 @@
+
+> test:web
+> node --test tests/web/*.test.mjs
+
+TAP version 13
+# Subtest: failure detection fires on solver intents that mean the turn failed
+ok 1 - failure detection fires on solver intents that mean the turn failed
+  ---
+  duration_ms: 4.88786
+  ...
+# Subtest: failure detection never fires on prose alone
+ok 2 - failure detection never fires on prose alone
+  ---
+  duration_ms: 0.736864
+  ...
+# Subtest: failure detection reads structured tool outputs
+ok 3 - failure detection reads structured tool outputs
+  ---
+  duration_ms: 1.397598
+  ...
+# Subtest: an expected stop is not a failure
+ok 4 - an expected stop is not a failure
+  ---
+  duration_ms: 0.695268
+  ...
+# Subtest: failure detection parses JSON-encoded tool outputs
+ok 5 - failure detection parses JSON-encoded tool outputs
+  ---
+  duration_ms: 0.536641
+  ...
+# Subtest: failure detection tolerates missing and malformed answers
+ok 6 - failure detection tolerates missing and malformed answers
+  ---
+  duration_ms: 0.854865
+  ...
+# Subtest: the count placeholder is substituted everywhere it appears
+ok 7 - the count placeholder is substituted everywhere it appears
+  ---
+  duration_ms: 0.434961
+  ...
+# Subtest: word truncation cuts on a boundary and keeps whole characters
+ok 8 - word truncation cuts on a boundary and keeps whole characters
+  ---
+  duration_ms: 1.577583
+  ...
+# Subtest: issue titles combine the first and last subject within the length limit
+ok 9 - issue titles combine the first and last subject within the length limit
+  ---
+  duration_ms: 1.290869
+  ...
+# Subtest: a long single subject is truncated to fit the title limit
+ok 10 - a long single subject is truncated to fit the title limit
+  ---
+  duration_ms: 1.453071
+  ...
+# Subtest: the rendered report contains every declared section in order
+ok 11 - the rendered report contains every declared section in order
+  ---
+  duration_ms: 2.485407
+  ...
+# Subtest: a fence in the dialog is escaped by a longer fence
+ok 12 - a fence in the dialog is escaped by a longer fence
+  ---
+  duration_ms: 1.37226
+  ...
+# Subtest: the reporter tolerates a missing or empty body
+ok 13 - the reporter tolerates a missing or empty body
+  ---
+  duration_ms: 1.948676
+  ...
+# Subtest: record truncation drops whole records and reports how many
+ok 14 - record truncation drops whole records and reports how many
+  ---
+  duration_ms: 9.88289
+  ...
+# Subtest: preferences round-trip through the Links Notation storage format
+ok 15 - preferences round-trip through the Links Notation storage format
+  ---
+  duration_ms: 14.941338
+  ...
+# Subtest: preferences reject documents that are not rooted at demo_preferences
+ok 16 - preferences reject documents that are not rooted at demo_preferences
+  ---
+  duration_ms: 2.943472
+  ...
+# Subtest: preferences survive a storage backend that throws
+ok 17 - preferences survive a storage backend that throws
+  ---
+  duration_ms: 5.110615
+  ...
+# Subtest: i18n resolves every supported language and falls back to the default
+ok 18 - i18n resolves every supported language and falls back to the default
+  ---
+  duration_ms: 12.172962
+  ...
+# Subtest: i18n detects the language from the browser's preference list
+ok 19 - i18n detects the language from the browser's preference list
+  ---
+  duration_ms: 6.520225
+  ...
+# Subtest: syntax highlighting escapes markup and tags known languages
+ok 20 - syntax highlighting escapes markup and tags known languages
+  ---
+  duration_ms: 7.528607
+  ...
+# Subtest: memory events round-trip through the exported Links Notation bundle
+ok 21 - memory events round-trip through the exported Links Notation bundle
+  ---
+  duration_ms: 4.376687
+  ...
+# Subtest: memory events reduce to stable doublet records
+ok 22 - memory events reduce to stable doublet records
+  ---
+  duration_ms: 4.26666
+  ...
+# Subtest: the seed loader parses the shipped seed files
+ok 23 - the seed loader parses the shipped seed files
+  ---
+  duration_ms: 13.874327
+  ...
+# Subtest: the seed loader parses indentation into a nested tree
+ok 24 - the seed loader parses indentation into a nested tree
+  ---
+  duration_ms: 2.434552
+  ...
+# Subtest: site chrome resolves locale and theme preferences
+ok 25 - site chrome resolves locale and theme preferences
+  ---
+  duration_ms: 2.791819
+  ...
+# Subtest: site chrome builds elements through its own `h` helper
+ok 26 - site chrome builds elements through its own `h` helper
+  ---
+  duration_ms: 2.31525
+  ...
+# Subtest: site chrome reads the stamped version and ignores an un-stamped build
+ok 27 - site chrome reads the stamped version and ignores an un-stamped build
+  ---
+  duration_ms: 7.72338
+  ...
+# Subtest: the download page resolves release assets, checksums and verification commands
+ok 28 - the download page resolves release assets, checksums and verification commands
+  ---
+  duration_ms: 8.323319
+  ...
+# Subtest: src/web/cli/cli.js registers its page against the shipped site chrome
+ok 29 - src/web/cli/cli.js registers its page against the shipped site chrome
+  ---
+  duration_ms: 5.809419
+  ...
+# Subtest: src/web/docs/docs.js registers its page against the shipped site chrome
+ok 30 - src/web/docs/docs.js registers its page against the shipped site chrome
+  ---
+  duration_ms: 2.853663
+  ...
+# Subtest: src/web/telegram/telegram.js registers its page against the shipped site chrome
+ok 31 - src/web/telegram/telegram.js registers its page against the shipped site chrome
+  ---
+  duration_ms: 3.217564
+  ...
+# Subtest: src/web/vscode/vscode.js registers its page against the shipped site chrome
+ok 32 - src/web/vscode/vscode.js registers its page against the shipped site chrome
+  ---
+  duration_ms: 3.887042
+  ...
+# Subtest: src/web/landing.js registers its page against the shipped site chrome
+ok 33 - src/web/landing.js registers its page against the shipped site chrome
+  ---
+  duration_ms: 2.68047
+  ...
+# Subtest: page configs skip cleanly when the site chrome is missing
+ok 34 - page configs skip cleanly when the site chrome is missing
+  ---
+  duration_ms: 3.446741
+  ...
+# Subtest: recognized multilingual web-search answers use the native read-only tool
+ok 35 - recognized multilingual web-search answers use the native read-only tool
+  ---
+  duration_ms: 14.365302
+  ...
+# Subtest: recognized fetch answers use rendered web_fetch and preserve a safe fallback
+ok 36 - recognized fetch answers use rendered web_fetch and preserve a safe fallback
+  ---
+  duration_ms: 0.642239
+  ...
+# Subtest: the worker mirror is loaded as a contiguous, numbered set of modules
+ok 37 - the worker mirror is loaded as a contiguous, numbered set of modules
+  ---
+  duration_ms: 322.794643
+  ...
+# Subtest: prompt normalization collapses whitespace and case
+ok 38 - prompt normalization collapses whitespace and case
+  ---
+  duration_ms: 13.574977
+  ...
+# Subtest: language detection recognises each supported script
+ok 39 - language detection recognises each supported script
+  ---
+  duration_ms: 15.36032
+  ...
+# Subtest: arithmetic is answered from the calculation handler
+ok 40 - arithmetic is answered from the calculation handler
+  ---
+  duration_ms: 268.827051
+  ...
+# Subtest: greetings are answered in the language they were written in
+ok 41 - greetings are answered in the language they were written in
+  ---
+  duration_ms: 15.844442
+  ...
+# Subtest: identity questions answer from the seeded agent info
+ok 42 - identity questions answer from the seeded agent info
+  ---
+  duration_ms: 5.448506
+  ...
+# Subtest: an unknown prompt says so instead of inventing an answer
+ok 43 - an unknown prompt says so instead of inventing an answer
+  ---
+  duration_ms: 59.920859
+  ...
+# Subtest: every answer carries a full impulse → formalize → deformalize trace
+ok 44 - every answer carries a full impulse → formalize → deformalize trace
+  ---
+  duration_ms: 53.021537
+  ...
+# Subtest: the formalization records the subject, verb and object it derived
+ok 45 - the formalization records the subject, verb and object it derived
+  ---
+  duration_ms: 13.129717
+  ...
+# Subtest: at temperature 0 the same prompt always projects the same answer
+ok 46 - at temperature 0 the same prompt always projects the same answer
+  ---
+  duration_ms: 56.083088
+  ...
+# Subtest: above temperature 0 a repeated greeting stays a greeting
+ok 47 - above temperature 0 a repeated greeting stays a greeting
+  ---
+  duration_ms: 410.445569
+  ...
+# Subtest: the worker exposes its handlers through a single dispatch step
+ok 48 - the worker exposes its handlers through a single dispatch step
+  ---
+  duration_ms: 11.997654
+  ...
+# Subtest: the seed corpus is hydrated from the shipped .lino files
+ok 49 - the seed corpus is hydrated from the shipped .lino files
+  ---
+  duration_ms: 3.916178
+  ...
+# Subtest: the web-search component falls back when its bundle is unavailable
+ok 50 - the web-search component falls back when its bundle is unavailable
+  ---
+  duration_ms: 37.143921
+  ...
+# Subtest: issue 989 dialog controls and associative-memory inspection preempt generic routes
+ok 51 - issue 989 dialog controls and associative-memory inspection preempt generic routes
+  ---
+  duration_ms: 268.868489
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1961.212453

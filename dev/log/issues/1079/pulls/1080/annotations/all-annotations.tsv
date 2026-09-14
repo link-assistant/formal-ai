@@ -1,0 +1,24 @@
+run	job_id	job_name	level	title	message	path	start_line
+34061510830	101562751632	Question necessity ratchet (issue #920)	notice	sccache stats - question-necessity-ratchet	69% - 743 hits, 338 misses, 0 errors	.github	49
+34061510855	101562751635	Task Ladder (issue #840 dataset)	notice	sccache stats - task-ladder	91% - 932 hits, 94 misses, 0 errors	.github	49
+34061510865	101562956072	Code Coverage	notice	sccache stats - coverage	87% - 58 hits, 9 misses, 0 errors	.github	44
+34061510865	101562956072	Code Coverage	notice	Codecov upload not configured	The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.	.github	20
+34061510865	101562956072	Code Coverage	warning	Instrumented coverage run is approaching its timeout	The command is still running after 1680s (70% of its 2400s execution budget). Speed up or repartition it before the budget terminates the step.	.github	4480
+34061510895	101562751822	Write-Effect Ladder (issue #916 rungs)	notice	sccache stats - write-effect-ladder	82% - 840 hits, 186 misses, 0 errors	.github	49
+34061510964	101562752197	Check Links	notice		Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/34061510964#summary-101562752197	.github	936
+34061511110	101562943747	Lint and Format Check	notice	sccache stats - lint	59% - 1042 hits, 739 misses, 0 errors	.github	52
+34061511110	101562943747	Lint and Format Check	warning		Rust file has 981 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.	src/protocol.rs	0
+34061511110	101562943747	Lint and Format Check	warning		Rust file has 946 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.	src/seed.rs	0
+34061511110	101562943747	Lint and Format Check	notice		Closure-driven cache bucket holds 338 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.	data/cache/wordnet/en	0
+34061511110	101562943747	Lint and Format Check	notice		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.	data/cache/wiktionary/en	0
+34061511110	101562943747	Lint and Format Check	notice		Closure-driven cache bucket holds 410 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.	data/cache/wikidata/entity	0
+34061511110	101562943754	Build binaries and tests	notice	sccache stats - build-artifacts	85% - 875 hits, 153 misses, 0 errors	.github	50
+34061511110	101562943861	macOS Core Tests / Build macOS test archive	notice	sccache stats - build-archive	86% - 931 hits, 152 misses, 0 errors	.github	49
+34061511110	101563697750	E2E Tests (agent CLI ↔ formal-ai)	notice	sccache stats - test-agent-cli-e2e	100% - 1031 hits, 0 misses, 0 errors	.github	47
+34061511110	101563697793	Test (macos-15-intel / specification)	notice	sccache stats - test	93% - 954 hits, 75 misses, 0 errors	.github	49
+34061511110	101563697793	Test (macos-15-intel / specification)	warning	Specification test shard is approaching its timeout	The command is still running after 980s (70% of its 1400s execution budget). Speed up or repartition it before the budget terminates the step.	.github	2928
+34061511110	101563697884	Test (ubuntu-latest / full)	notice	sccache stats - test	99% - 1019 hits, 11 misses, 0 errors	.github	49
+34061511110	101566189042	Build Package	notice	sccache stats - build	47% - 27 hits, 31 misses, 0 errors	.github	44
+34061511110	101566829972	Auto Release	failure		Process completed with exit code 1.	.github	24
+34061511110	101567057564	Pipeline Status	failure		Process completed with exit code 1.	.github	115
+34061511110	101567057564	Pipeline Status	failure		Pipeline failed. Failing jobs: auto-release	.github	114

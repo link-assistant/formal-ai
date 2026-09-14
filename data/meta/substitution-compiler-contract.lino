@@ -1,0 +1,8 @@
+substitution_compiler_contract
+  source substitution_rule_set
+  lower target_neutral_ir
+  canonical_runtime rust
+  webassembly rust_to_wasm
+  javascript interop_only
+  proof_gate verified_finite_program_plan
+  parity interpreter_exact_output

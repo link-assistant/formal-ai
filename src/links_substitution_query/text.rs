@@ -6,7 +6,7 @@
 
 use std::fmt::Write as _;
 
-use super::{err, escape, Parser, SubstitutionQueryError, MUST_QUOTE, TWO_SIDES};
+use super::{MUST_QUOTE, Parser, SubstitutionQueryError, TWO_SIDES, err, escape};
 use crate::normal_markov::{RewriteProgram, RewriteRule};
 use crate::substitution::CrudEvent;
 
@@ -157,11 +157,7 @@ fn pair_operands(
 
 fn rule(pattern: String, replacement: String, terminal: bool) -> RewriteRule {
     let rule = RewriteRule::new(pattern, replacement);
-    if terminal {
-        rule.terminal()
-    } else {
-        rule
-    }
+    if terminal { rule.terminal() } else { rule }
 }
 
 impl Parser<'_> {

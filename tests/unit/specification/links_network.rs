@@ -5,7 +5,7 @@
 //! properties of the network: doublet links, dynamic type system, add-only
 //! history, concept uniqueness, and trace records.
 
-use formal_ai::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SymbolicAnswer, knowledge_links_notation};
 use lino_objects_codec::format::parse_indented;
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -44,10 +44,12 @@ fn every_answer_includes_links_notation_trace() {
 #[test]
 fn every_answer_records_intent_in_evidence_links() {
     let response = answer("Hi");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("intent:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("intent:"))
+    );
 }
 
 #[test]

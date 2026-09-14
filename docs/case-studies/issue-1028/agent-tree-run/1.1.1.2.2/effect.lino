@@ -1,0 +1,4 @@
+node_path=1.1.1.2.2
+node_depth=5
+node_kind=leaf
+result=Line 152:             pairs.push(("child", child.id.clone()));

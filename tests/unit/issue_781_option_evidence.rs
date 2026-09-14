@@ -8,7 +8,7 @@
 use formal_ai::option_evidence::{
     candidate_from_page, price_in, quantity_in, with_offer_from_page,
 };
-use formal_ai::option_network::{milli, units, Comparison, Constraint, OptionNetwork, Tier};
+use formal_ai::option_network::{Comparison, Constraint, OptionNetwork, Tier, milli, units};
 
 /// The unit carries the meaning, so the surrounding language does not matter.
 ///

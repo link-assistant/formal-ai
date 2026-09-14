@@ -10,11 +10,11 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use crate::calculation::evaluate_calculation;
-use crate::engine::{answer_links_notation, stable_id, SymbolicAnswer};
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::engine::{SymbolicAnswer, answer_links_notation, stable_id};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalizationCache;
 use crate::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+    ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore, rank_probability_candidates,
 };
 use crate::solver::{SolverConfig, UniversalSolver};
 use crate::solver_helpers::DecomposedSubImpulse;
@@ -115,10 +115,10 @@ pub fn try_synthesize_from_sub_results(
     if let Some(candidate) = compose_object_count(prompt, log, sub_results) {
         candidates.push(candidate);
     }
-    if candidates.is_empty() {
-        if let Some(candidate) = compose_compound_response(log, sub_results) {
-            candidates.push(candidate);
-        }
+    if candidates.is_empty()
+        && let Some(candidate) = compose_compound_response(log, sub_results)
+    {
+        candidates.push(candidate);
     }
     if candidates.is_empty() {
         return None;
@@ -551,6 +551,7 @@ fn finalize_composed_candidate(
     log: &mut EventLog,
     candidate: &ComposedCandidate,
 ) -> SymbolicAnswer {
+    let answer = crate::question_necessity::enforce_questions(&candidate.answer, log);
     log.append("intent", candidate.intent.clone());
     if log.first_of("validation").is_none() {
         log.append(
@@ -562,12 +563,11 @@ fn finalize_composed_candidate(
     log.append("trace:simplification", "smallest_sufficient".to_owned());
     let trace_id = log.append("trace", candidate.intent.clone());
     let evidence_links = build_evidence_links(prompt, log, &candidate.response_link);
-    let links_notation =
-        answer_links_notation(prompt, &candidate.intent, &candidate.answer, log, &trace_id);
-    let thinking_steps = log.thinking_steps_for_answer(&candidate.answer);
+    let links_notation = answer_links_notation(prompt, &candidate.intent, &answer, log, &trace_id);
+    let thinking_steps = log.thinking_steps_for_answer(&answer);
     SymbolicAnswer {
         intent: candidate.intent.clone(),
-        answer: candidate.answer.clone(),
+        answer,
         execution_recipe: None,
         confidence: candidate.confidence,
         evidence_links,
@@ -797,10 +797,10 @@ fn normalize_count_phrase(value: &str) -> String {
 }
 
 fn singularize_count_token(token: &str) -> String {
-    if token.len() > 4 {
-        if let Some(stem) = token.strip_suffix("ies") {
-            return format!("{stem}y");
-        }
+    if token.len() > 4
+        && let Some(stem) = token.strip_suffix("ies")
+    {
+        return format!("{stem}y");
     }
     if token.len() > 3 && token.ends_with('s') && !token.ends_with("ss") {
         return token[..token.len() - 1].to_owned();

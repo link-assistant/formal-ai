@@ -2,35 +2,29 @@ self_ast_census
   target src/solver.rs
   language rust
   fidelity signature
-  byte_len 42416
-  line_count 969
-  content_id source_module_ce5d781ef1d3841c
-  symbol_count 27
+  byte_len 38302
+  line_count 870
+  content_id source_module_ca2633a67fbc633a
+  symbol_count 21
   symbols
-    enum ExecutionSurface 61 69
-    function slug 73 82
-    function from_env_value 84 94
-    enum BlueprintComposition 119 125
-    function slug 130 135
-    function from_value 141 149
-    struct SolverConfig 160 259
-    function default 262 287
-    function from_env 296 298
-    enum ConversationRole 305 308
-    function slug 313 318
-    struct ConversationTurn 327 330
-    function user 335 340
-    function assistant 344 349
-    struct UniversalSolver 354 356
-    function default 359 363
-    function new 369 371
-    function solve 378 380
-    function solve_with_history 387 389
-    function solve_with_probability_store 392 398
-    function solve_with_history_and_probability_store 401 414
-    function solve_with_history_probability_store_and_intent_cache 416 800
-    function handle_policy 802 930
-    function finalize_policy 932 942
-    function record_external_search 944 954
-    function solve 961 963
-    function solve_with_history 967 969
+    struct SolverConfig 68 168
+    function default 171 196
+    function from_env 205 207
+    enum ConversationRole 214 217
+    function slug 222 227
+    struct ConversationTurn 236 239
+    function user 244 249
+    function assistant 253 258
+    struct UniversalSolver 263 265
+    function default 268 272
+    function new 278 280
+    function solve 287 289
+    function solve_with_history 296 298
+    function solve_with_probability_store 301 307
+    function solve_with_history_and_probability_store 310 323
+    function solve_with_history_probability_store_and_intent_cache 325 701
+    function handle_policy 703 831
+    function finalize_policy 833 843
+    function record_external_search 845 855
+    function solve 862 864
+    function solve_with_history 868 870

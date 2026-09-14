@@ -1,0 +1,8 @@
+link_edit
+  leaf L01
+  path src/web_search_core.rs
+  language rust
+  rule insert_member
+    list "WEB_SEARCH_PROVIDERS"
+    member "wikiquote"
+  expect "wikiquote"

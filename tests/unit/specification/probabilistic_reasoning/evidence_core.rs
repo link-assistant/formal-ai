@@ -85,10 +85,11 @@ fn probabilistic_evidence_is_link_native_append_only_and_replayable() {
     let mut log = EventLog::new();
     let replayed = store.replay_into_event_log(&mut log, false);
     assert_eq!(replayed, 2);
-    assert!(log
-        .events()
-        .iter()
-        .any(|event| event.kind == "probability:evidence"));
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "probability:evidence")
+    );
 
     let mut memory = MemoryStore::new();
     let inserted = store
@@ -288,17 +289,19 @@ fn offline_mode_uses_cached_probability_sources_and_skips_live_only_sources() {
     let mut log = EventLog::new();
     let replayed = store.replay_into_event_log(&mut log, true);
     assert_eq!(replayed, 1);
-    assert!(log
-        .events()
-        .iter()
-        .any(|event| { event.kind == "source:http" && event.payload.contains("cached-evidence") }));
+    assert!(
+        log.events().iter().any(|event| {
+            event.kind == "source:http" && event.payload.contains("cached-evidence")
+        })
+    );
     assert!(log.events().iter().any(|event| {
         event.kind == "policy:offline" && event.payload.contains("live-evidence")
     }));
-    assert!(!log
-        .events()
-        .iter()
-        .any(|event| event.kind == "network_fetch"));
+    assert!(
+        !log.events()
+            .iter()
+            .any(|event| event.kind == "network_fetch")
+    );
 }
 
 // The following tests cover the decision-policy mechanics ported from Anton

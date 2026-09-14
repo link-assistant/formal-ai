@@ -1,7 +1,7 @@
 //! Native-protocol coverage for issue #819 local path discovery.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const PROMPT: &str = "Find hive-mind-control center folder on my desktop";
 

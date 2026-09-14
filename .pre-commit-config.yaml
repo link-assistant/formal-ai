@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -19,16 +19,49 @@ repos:
         types: [rust]
         pass_filenames: false
 
+      # The same split the `run_clippy` CI gate uses, and for the same reason.
+      # `--all-targets` *links* every example, and this crate has 116 of them at
+      # roughly 190MB each -- cargo keeps both a hashed and an unhashed copy, so
+      # a single local run leaves about 27GB in `target/debug/examples`. That is
+      # what filled the disk (issue #1049). `cargo check` type-checks examples
+      # without linking them, which is all a lint pass needs.
       - id: cargo-clippy
         name: cargo clippy
-        entry: cargo clippy --all-targets --all-features -- -D warnings
+        entry: bash -c 'cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features'
         language: system
         types: [rust]
         pass_filenames: false
 
+      # The wrapper, not a bare `cargo test`: it caps parallelism at half the
+      # cores so a commit does not pin the whole machine, and prunes `target/`
+      # afterwards. A bare `cargo test` does neither.
       - id: cargo-test
         name: cargo test
-        entry: cargo test
+        entry: scripts/cargo-test.sh
         language: system
         types: [rust]
+        pass_filenames: false
+
+      # Every commit ends with a swept cache. `cargo-test.sh` already prunes
+      # after a Rust commit, but a commit that touches no `.rs` file never runs
+      # it -- and `target/` still holds whatever the last build left behind.
+      # `always_run` makes the cache shrink on *every* commit, which is the
+      # point: disk is reclaimed as a matter of course rather than when someone
+      # remembers. Keeping the artifacts the last build referenced means the
+      # next build still links instead of starting cold.
+      - id: prune-build-cache
+        name: prune build cache
+        entry: scripts/prune-build-cache.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+
+      # Docker-based checks must not leave stopped containers, dangling images,
+      # or an unbounded build cache on developer machines. This hook is
+      # deliberately best-effort so an unavailable daemon never blocks a commit.
+      - id: prune-docker
+        name: prune Docker leftovers
+        entry: scripts/prune-docker.sh
+        language: system
+        always_run: true
         pass_filenames: false

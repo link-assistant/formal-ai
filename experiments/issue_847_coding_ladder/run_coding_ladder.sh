@@ -227,7 +227,7 @@ for task in tasks:
             os.unlink(artifact)
             try:
                 compiled = subprocess.run(
-                    ["rustc", "--edition=2021", "--crate-type", "lib",
+                    ["rustc", "--edition=2024", "--crate-type", "lib",
                      "--emit", "metadata", path, "-o", artifact],
                     cwd=root, capture_output=True, text=True,
                 )

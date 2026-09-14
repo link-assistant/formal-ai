@@ -611,12 +611,10 @@ impl AssociativeMemory {
                                 .strip_suffix(&target.id)
                                 .is_some_and(|prefix| prefix.ends_with(':')))
                 });
-                if !resolved {
-                    if let Some(expression) = memory.expressions.get_mut(&source.id) {
-                        expression
-                            .validation_issues
-                            .push(format!("unresolved evidence link: {reference}"));
-                    }
+                if !resolved && let Some(expression) = memory.expressions.get_mut(&source.id) {
+                    expression
+                        .validation_issues
+                        .push(format!("unresolved evidence link: {reference}"));
                 }
             }
         }

@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_reconstructed_changelog
+  stage rust
+  description "The changelog rebuilt from git history matches the committed one."
+  run "node experiments/issue_711_rebuild_changelog.mjs --check"

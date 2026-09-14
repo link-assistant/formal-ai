@@ -7,7 +7,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use formal_ai::conversation_context::load_conversation_context_from;
 use formal_ai::dialog_log::DialogExchangeLog;
 use formal_ai::proxy::summarize_proxy_exchange;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const DIALOG_ID: &str = "issue-822-multi-exchange";
 

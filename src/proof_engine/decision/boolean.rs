@@ -321,12 +321,12 @@ fn sat_disproof(
 }
 
 fn rewrite_boolean_if_then(claim: &str) -> String {
-    if let Some(rest) = claim.strip_prefix("if ") {
-        if let Some(index) = rest.find(" then ") {
-            let premise = rest[..index].trim();
-            let conclusion = rest[index + " then ".len()..].trim();
-            return format!("({premise}) implies ({conclusion})");
-        }
+    if let Some(rest) = claim.strip_prefix("if ")
+        && let Some(index) = rest.find(" then ")
+    {
+        let premise = rest[..index].trim();
+        let conclusion = rest[index + " then ".len()..].trim();
+        return format!("({premise}) implies ({conclusion})");
     }
     claim.to_owned()
 }

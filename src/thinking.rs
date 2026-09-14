@@ -26,8 +26,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::engine::stable_id;
 use crate::thinking_prose::{
-    language_label, normalize_language, thinking_prose, LANGUAGE_NAME_INTENT_PREFIX,
-    NARRATIVE_INTENT_PREFIX, PLAIN_INTENT_SUFFIX, STEP_INTENT_PREFIX,
+    LANGUAGE_NAME_INTENT_PREFIX, NARRATIVE_INTENT_PREFIX, PLAIN_INTENT_SUFFIX, STEP_INTENT_PREFIX,
+    language_label, normalize_language, thinking_prose,
 };
 
 /// The language a trace is narrated in when it carries no language step.
@@ -259,12 +259,10 @@ pub fn thinking_narrative_in(language: &str, steps: &[ThinkingStep]) -> Option<S
     if let Some((_, suffix)) = ROUTE_NARRATIVES
         .iter()
         .find(|(route, _)| *route == route_detail)
-    {
-        if let Some(text) =
+        && let Some(text) =
             thinking_prose(&format!("{NARRATIVE_INTENT_PREFIX}{suffix}"), language, &[])
-        {
-            return Some(text);
-        }
+    {
+        return Some(text);
     }
     // Any other resolved route still gets a human headline rather than a bare
     // category label: describe it as the task it was read as.
@@ -322,12 +320,12 @@ fn indefinite_article(phrase: &str) -> &'static str {
 /// Strip an `agent_<n>_` sub-agent prefix from a step kind, mirroring the
 /// browser worker's nested-agent naming (`agent_0_impulse` -> `impulse`).
 fn strip_agent_substep_prefix(step: &str) -> &str {
-    if let Some(rest) = step.strip_prefix("agent_") {
-        if let Some(index) = rest.find('_') {
-            if index > 0 && rest[..index].bytes().all(|b| b.is_ascii_digit()) {
-                return &rest[index + 1..];
-            }
-        }
+    if let Some(rest) = step.strip_prefix("agent_")
+        && let Some(index) = rest.find('_')
+        && index > 0
+        && rest[..index].bytes().all(|b| b.is_ascii_digit())
+    {
+        return &rest[index + 1..];
     }
     step
 }
@@ -461,22 +459,20 @@ pub fn naturalize_thinking_step_in(language: &str, step: &str, detail: &str) -> 
     if let Some((_, placeholder)) = ALWAYS_DETAIL_STEPS
         .iter()
         .find(|(kind, _)| *kind == canonical)
-    {
-        if let Some(text) = thinking_prose(
+        && let Some(text) = thinking_prose(
             &format!("{STEP_INTENT_PREFIX}{canonical}"),
             language,
             &[(placeholder, &trimmed)],
-        ) {
-            return text;
-        }
+        )
+    {
+        return text;
     }
 
-    if PLAIN_STEPS.contains(&canonical) {
-        if let Some(text) =
+    if PLAIN_STEPS.contains(&canonical)
+        && let Some(text) =
             thinking_prose(&format!("{STEP_INTENT_PREFIX}{canonical}"), language, &[])
-        {
-            return text;
-        }
+    {
+        return text;
     }
 
     generic_thinking_sentence(language, canonical, &trimmed, has_detail)

@@ -1,0 +1,21 @@
+2026-09-07T04:32:30.2855326Z [36;1mexperiments/agent_cli_e2e/run_issue_864.sh[0m
+2026-09-07T04:32:30.2891492Z shell: /usr/bin/bash -e {0}
+2026-09-07T04:32:30.2891742Z env:
+2026-09-07T04:32:30.2891942Z   CARGO_HOME: /home/runner/.cargo
+2026-09-07T04:32:30.2892463Z   CARGO_INCREMENTAL: 0
+2026-09-07T04:32:30.2892714Z   CARGO_TERM_COLOR: always
+2026-09-07T04:32:30.2893032Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-09-07T04:32:30.2893380Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-09-07T04:32:30.2893781Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-09-07T04:32:30.2949130Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-09-07T04:32:30.2949404Z   SCCACHE_GHA_ENABLED: true
+2026-09-07T04:32:30.2949653Z   RUSTC_WRAPPER: sccache
+2026-09-07T04:32:30.2949870Z ##[endgroup]
+2026-09-07T04:32:32.2836030Z ##[error]Process completed with exit code 1.
+2026-09-07T04:32:32.2904620Z ##[group]Run actions/upload-artifact@v7
+2026-09-07T04:32:32.2904919Z with:
+2026-09-07T04:32:32.2905122Z   name: issue-864-agent-cli-evidence
+2026-09-07T04:32:32.2905404Z   path: /tmp/formal-ai-issue-864-evidence
+2026-09-07T04:32:32.2905681Z   retention-days: 7
+2026-09-07T04:32:32.2905894Z   if-no-files-found: warn
+2026-09-07T04:32:32.2906122Z   compression-level: 6

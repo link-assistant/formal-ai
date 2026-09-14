@@ -17,7 +17,7 @@
 use formal_ai::associative_persistence::{AssociativeMemory, RetentionWeights};
 use formal_ai::world_model::{Context, Dependency, Statement};
 use formal_ai::{
-    parse_memory_links_notation, plan_memory_dreaming, DreamingConfig, MemoryEvent, MemoryStore,
+    DreamingConfig, MemoryEvent, MemoryStore, parse_memory_links_notation, plan_memory_dreaming,
 };
 
 #[test]
@@ -250,10 +250,12 @@ fn durable_memory_writes_round_trip_and_protect_changed_knowledge() {
     let reloaded = parse_memory_links_notation(&serialized);
     assert_eq!(reloaded[0].write_count, 2);
     let projection = formal_ai::link_store::memory_event_to_link_record(&reloaded[0], 0);
-    assert!(projection
-        .links
-        .iter()
-        .any(|link| link.from == "field:writeCount" && link.to == "value:2"));
+    assert!(
+        projection
+            .links
+            .iter()
+            .any(|link| link.from == "field:writeCount" && link.to == "value:2")
+    );
 
     let plan = plan_memory_dreaming(&reloaded, &DreamingConfig::default());
     assert_eq!(plan.event_usage("fact:door"), Some(2));

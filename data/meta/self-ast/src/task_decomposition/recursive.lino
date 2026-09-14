@@ -1,0 +1,22 @@
+self_ast_census
+  target src/task_decomposition/recursive.rs
+  language rust
+  fidelity signature
+  byte_len 5988
+  line_count 171
+  content_id source_module_9016cb308afeef47
+  symbol_count 13
+  symbols
+    struct RecordedSplit 28 39
+    function is_productive 44 46
+    struct SplittingExecutor 55 63
+    function new 68 70
+    function with_ledger 78 85
+    function splits 89 91
+    function productive_splits 95 100
+    function inner 103 105
+    function into_inner 109 111
+    function attempt 115 117
+    function extend_for 119 121
+    function retry_after_children 123 125
+    function split 127 170

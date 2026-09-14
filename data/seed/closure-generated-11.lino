@@ -14,6 +14,11 @@ meanings
     lexeme en
       surface
         text "release timeline"
+  against
+    defined-by concept
+    lexeme en
+      surface
+        text "against"
   agent_procedure_readback_unavailable
     defined-by intent
     lexeme en
@@ -89,11 +94,21 @@ meanings
     lexeme en
       surface
         text "barack obama"
+  ceiling
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ceiling"
   clones
     defined-by word_surface
     lexeme en
       surface
         text "clones"
+  coding_identifier_renamed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding identifier renamed"
   comment
     defined-by concept
     lexeme en
@@ -104,6 +119,11 @@ meanings
     lexeme en
       surface
         text "concise"
+  contenidos
+    defined-by concept
+    lexeme en
+      surface
+        text "contenidos"
   context_neural_network
     defined-by context
     lexeme en
@@ -144,6 +164,11 @@ meanings
     lexeme en
       surface
         text "directories"
+  effects
+    defined-by concept
+    lexeme en
+      surface
+        text "effects"
   exact_title
     defined-by coverage_group
     lexeme en
@@ -154,6 +179,11 @@ meanings
     lexeme en
       surface
         text "external benchmark swe record error"
+  external_benchmark_upstream_missing_end
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark upstream missing end"
   fastapi
     defined-by word_surface
     lexeme en
@@ -209,6 +239,11 @@ meanings
     lexeme en
       surface
         text "lexeme import duplicate qid"
+  made
+    defined-by concept
+    lexeme en
+      surface
+        text "made"
   map_matches
     defined-by concept
     lexeme en
@@ -224,6 +259,11 @@ meanings
     lexeme en
       surface
         text "memory program permission refused"
+  mirrored
+    defined-by concept
+    lexeme en
+      surface
+        text "mirrored"
   normalize
     defined-by concept
     lexeme en
@@ -324,11 +364,21 @@ meanings
     lexeme en
       surface
         text "plagiarism"
+  postposition
+    defined-by concept
+    lexeme en
+      surface
+        text "postposition"
   process_report
     defined-by task
     lexeme en
       surface
         text "process report"
+  promote_capability
+    defined-by concept
+    lexeme en
+      surface
+        text "promote capability"
   prose
     defined-by concept
     lexeme en
@@ -414,6 +464,26 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting ru"
+  response_coding_identifier_renamed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding identifier renamed zh"
+  response_coding_meta_algorithm_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm heading ru"
+  response_coding_text_replaced_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced en"
+  response_coding_text_replaced_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced es"
   response_coding_workspace_effect_observed_en
     defined-by response_template
     lexeme en
@@ -459,6 +529,21 @@ meanings
     lexeme en
       surface
         text "response draft comparison explanation zh"
+  response_external_benchmark_egg_too_few_laws_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws ru"
+  response_external_benchmark_invalid_rust_string_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark invalid rust string hi"
+  response_external_benchmark_proof_expected_event_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof expected event zh"
   response_external_benchmark_python_import_en
     defined-by response_template
     lexeme en
@@ -514,6 +599,31 @@ meanings
     lexeme en
       surface
         text "response github repository traffic zh"
+  response_how_to_guide_bounds_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds hi"
+  response_how_to_guide_conflicts_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading zh"
+  response_how_to_guide_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading zh"
+  response_how_to_guide_insufficient_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence en"
+  response_how_to_guide_sources_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide sources heading en"
   response_inappropriate_content_en
     defined-by response_template
     lexeme en
@@ -594,6 +704,11 @@ meanings
     lexeme en
       surface
         text "response local search found path en"
+  response_memory_inventory_empty_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory empty ru"
   response_memory_program_compilation_gap_ru
     defined-by response_template
     lexeme en
@@ -604,6 +719,11 @@ meanings
     lexeme en
       surface
         text "response memory program interpreter gap hi"
+  response_memory_root_links_empty_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links empty hi"
   response_pattern_grid_no_symmetry_es
     defined-by response_template
     lexeme en
@@ -639,6 +759,16 @@ meanings
     lexeme en
       surface
         text "response pattern sequence count en"
+  response_policy_bounded_autonomy_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response policy bounded autonomy hi"
+  response_proof_datalog_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample en"
   response_search_fusion_read_more_en
     defined-by response_template
     lexeme en
@@ -694,11 +824,31 @@ meanings
     lexeme en
       surface
         text "response task atomicity no zh"
+  response_task_atomicity_yes_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity yes es"
   response_task_decomposition_depth_bound_zh
     defined-by response_template
     lexeme en
       surface
         text "response task decomposition depth bound zh"
+  response_task_decomposition_single_need_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition single need ru"
+  response_task_decomposition_unsplit_depth_bound_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound ru"
+  response_task_plan_stage_requirements_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements es"
   response_task_plan_stage_verification_en
     defined-by response_template
     lexeme en
@@ -844,6 +994,11 @@ meanings
     lexeme en
       surface
         text "response write program skill gap name task unspecified zh"
+  retunes
+    defined-by concept
+    lexeme en
+      surface
+        text "retunes"
   rule_english
     defined-by rule
     lexeme en
@@ -874,6 +1029,11 @@ meanings
     lexeme en
       surface
         text "summarize conversation"
+  symfony
+    defined-by word_surface
+    lexeme en
+      surface
+        text "symfony"
   test_status
     defined-by intent
     lexeme en
@@ -949,6 +1109,11 @@ meanings
     lexeme en
       surface
         text "unknown reasoning trace"
+  views_uniques_clones_referrers_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "views uniques clones referrers paths"
   visitor
     defined-by word_surface
     lexeme en
@@ -965,7 +1130,7 @@ meanings
       surface
         text "wget"
   whoami
-    defined-by concept
+    defined-by token
     lexeme en
       surface
         text "whoami"

@@ -752,11 +752,7 @@ fn highest_score_index(scores: &[f32]) -> usize {
 }
 
 fn finite_or_zero(value: f32) -> f32 {
-    if value.is_finite() {
-        value
-    } else {
-        0.0
-    }
+    if value.is_finite() { value } else { 0.0 }
 }
 
 fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {

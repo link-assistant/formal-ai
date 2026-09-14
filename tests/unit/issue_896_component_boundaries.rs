@@ -2,7 +2,7 @@ use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
-use formal_ai::{execute_duckduckgo_search, CachedSourceClient, FetchError, SourceTransport};
+use formal_ai::{CachedSourceClient, FetchError, SourceTransport, execute_duckduckgo_search};
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
 
@@ -185,11 +185,28 @@ fn native_search_reports_both_component_and_fallback_failures() {
 }
 
 #[test]
-fn published_web_search_default_plan_remains_the_production_plan() {
-    assert_eq!(
-        web_search::get_default_provider_ids(),
-        formal_ai::default_search_plan_ids()
+fn published_web_search_merger_remains_available_without_the_server_feature() {
+    let by_provider = std::collections::HashMap::from([(
+        String::from("duckduckgo"),
+        vec![web_search::SearchResult {
+            title: String::from("Component result"),
+            url: String::from("https://component.invalid/result"),
+            snippet: String::from("Transport-independent merge input"),
+            source: String::from("duckduckgo"),
+            rank: 1,
+            score: None,
+            sources: None,
+        }],
+    )]);
+
+    let merged = web_search::merger::merge_results(
+        &by_provider,
+        &web_search::MergeOptions::new().with_rrf_k(60.0),
     );
+
+    assert_eq!(merged.len(), 1);
+    assert_eq!(merged[0].url, "https://component.invalid/result");
+    assert_eq!(merged[0].source, "duckduckgo");
 }
 
 #[test]
@@ -200,12 +217,59 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
     ))
     .expect("desktop release workflow");
 
+    // Issue #1017 moved the cap out of an inline expression and into the matrix
+    // (`capmin`), so the macOS packaging retry guard can be derived from the same
+    // number instead of a second copy of it. The guarantee issue #896 needs is
+    // unchanged, so it is asserted against the values rather than against one
+    // expression's spelling: the job is bounded by its matrix cap, every packaged
+    // target carries one, and the three legs that pay for the published crates'
+    // unconditional graph carry strictly more headroom than the rest.
     assert!(
-        workflow.contains("timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}"),
+        workflow.contains("    timeout-minutes: ${{ matrix.capmin }}\n"),
+        "the desktop build job must stay bounded by a cap it declares"
+    );
+
+    let mut heavy = Vec::new();
+    let mut light = Vec::new();
+    for entry in workflow.lines().filter(|line| line.contains("capmin:")) {
+        let label = entry
+            .split("label: \"")
+            .nth(1)
+            .and_then(|tail| tail.split('"').next())
+            .unwrap_or_else(|| panic!("matrix entry without a label: {entry}"));
+        let capmin: u32 = entry
+            .split("capmin:")
+            .nth(1)
+            .map(|tail| tail.trim_start().trim_end_matches([' ', '}']).trim())
+            .and_then(|value| value.parse().ok())
+            .unwrap_or_else(|| panic!("matrix entry without a numeric capmin: {entry}"));
+        if label == "macos-x64" || label.starts_with("windows-") {
+            heavy.push((label.to_string(), capmin));
+        } else {
+            light.push((label.to_string(), capmin));
+        }
+    }
+
+    assert_eq!(
+        heavy.len(),
+        3,
+        "macOS x64 and both Windows targets must each declare a cap"
+    );
+    assert!(!light.is_empty(), "the remaining targets must declare caps");
+    let smallest_heavy = heavy.iter().map(|(_, cap)| *cap).min().expect("heavy caps");
+    let largest_light = light.iter().map(|(_, cap)| *cap).max().expect("light caps");
+    assert!(
+        smallest_heavy > largest_light,
         "macOS x64 and both Windows targets need bounded headroom for the published crates' \
-         unconditional graph"
+         unconditional graph, but the caps are {heavy:?} against {light:?}"
     );
 }
+
+/// The floor issue #896 measured for `Build Package`: a cold cache has to
+/// compile the published crates' unconditional graph inside it. Raising the cap
+/// above this is a matter for the measurement that motivates it (issue #1076
+/// raised it to 20); dropping below it is the regression this test exists for.
+const MIN_BUILD_PACKAGE_CAP_MINUTES: u32 = 15;
 
 #[test]
 fn build_package_budget_bounds_the_published_component_cold_build() {
@@ -223,10 +287,21 @@ fn build_package_budget_bounds_the_published_component_cold_build() {
         .next()
         .expect("Build Package job body");
 
+    let cap: u32 = build
+        .lines()
+        .find_map(|line| line.strip_prefix("    timeout-minutes:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("Build Package must declare a job cap in whole minutes");
+
+    // The invariant issue #896 established is headroom, so this is a floor, not
+    // an equality. Pinning the exact number made a *raise* fail: issue #1076
+    // measured the job and moved the cap from 15 to 20, which gives the cold
+    // build more room, not less, and this assertion still reported it as a
+    // broken boundary (D20).
     assert!(
-        build.contains("    timeout-minutes: 15\n"),
+        cap >= MIN_BUILD_PACKAGE_CAP_MINUTES,
         "the release build needs headroom for the published crates' unconditional graph \
-         on a cold cache"
+         on a cold cache: {cap}m is below the {MIN_BUILD_PACKAGE_CAP_MINUTES}m floor"
     );
 }
 

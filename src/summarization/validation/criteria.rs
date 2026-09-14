@@ -5,9 +5,9 @@
 
 use std::collections::BTreeSet;
 
-use super::super::file::{display_file_format, RepositoryFileFormalization};
+use super::super::file::{RepositoryFileFormalization, display_file_format};
 use super::super::{SummarizationConfig, SummarizationMode};
-use super::{formalize_repository_file, CriterionOutcome};
+use super::{CriterionOutcome, formalize_repository_file};
 
 pub(super) fn check_identity(path: &str, summary: &str) -> CriterionOutcome {
     let passed = summary.contains(path);

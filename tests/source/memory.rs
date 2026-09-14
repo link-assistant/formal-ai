@@ -43,8 +43,8 @@ use std::path::Path;
 pub mod bundle;
 
 pub use bundle::{
-    export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
-    suggest_migrations, BundleInfo, ParsedBundle,
+    BundleInfo, ParsedBundle, export_bundle, export_full_memory, extract_memory_from_bundle,
+    import_full_memory, suggest_migrations,
 };
 
 pub(crate) const ROOT_HEADER: &str = "demo_memory";

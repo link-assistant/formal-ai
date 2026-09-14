@@ -5,10 +5,10 @@
 //! fact-checking operation is useful to every Formal AI surface.
 
 use formal_ai::{
-    assess_arithmetic_claim, ArithmeticClaimOutcome, AuditScope, Context, ContextAccessEventKind,
+    ASSUMED_TRUE_PRIOR, ArithmeticClaimOutcome, AuditScope, Context, ContextAccessEventKind,
     Dependency, FactCheckError, FactChecker, FormalSystem, GeneralMemoryPermission,
     ProbabilityBasis, RefutationOutcome, RefutationStage, RelativeEvidence, SolverConfig,
-    SourceTier, Stance, TruthValue, WorldModel, WorldStatement, ASSUMED_TRUE_PRIOR,
+    SourceTier, Stance, TruthValue, WorldModel, WorldStatement, assess_arithmetic_claim,
 };
 
 fn checker(depth: u8) -> FactChecker {
@@ -127,10 +127,12 @@ fn direct_proof_still_runs_the_negation_refutation_before_support() {
         report.refutation_trace[1].outcome,
         RefutationOutcome::Inconclusive
     );
-    assert!(report
-        .evidence
-        .iter()
-        .any(|item| item.source_label.starts_with("proof:")));
+    assert!(
+        report
+            .evidence
+            .iter()
+            .any(|item| item.source_label.starts_with("proof:"))
+    );
 }
 
 #[test]
@@ -143,14 +145,18 @@ fn recursion_bound_comes_from_solver_config() {
 
     let report = checker(0).verify_statement(&mut context, &root).unwrap();
 
-    assert!(report
-        .refutation_trace
-        .iter()
-        .any(|attempt| attempt.stage == RefutationStage::DepthBound));
-    assert!(report
-        .refutation_trace
-        .iter()
-        .all(|attempt| attempt.statement_id != child));
+    assert!(
+        report
+            .refutation_trace
+            .iter()
+            .any(|attempt| attempt.stage == RefutationStage::DepthBound)
+    );
+    assert!(
+        report
+            .refutation_trace
+            .iter()
+            .all(|attempt| attempt.statement_id != child)
+    );
 }
 
 #[test]
@@ -187,10 +193,12 @@ fn support_fallback_uses_source_tiers_and_marks_prior_only_unknowns() {
             && item.tier == SourceTier::OriginalJournalism
             && !item.ignored
     }));
-    assert!(supported_report
-        .evidence
-        .iter()
-        .any(|item| item.source_label == "repost" && item.ignored));
+    assert!(
+        supported_report
+            .evidence
+            .iter()
+            .any(|item| item.source_label == "repost" && item.ignored)
+    );
     assert_eq!(
         unknown_report.probability,
         TruthValue::new(ASSUMED_TRUE_PRIOR)
@@ -234,11 +242,13 @@ fn recalculation_trace_names_every_dependency_link() {
 
     let audit = checker(2).audit_context(&mut context);
 
-    assert!(audit
-        .recalculation
-        .checked_links
-        .iter()
-        .any(|link| link.statement_id == dependent && link.depends_on == premise));
+    assert!(
+        audit
+            .recalculation
+            .checked_links
+            .iter()
+            .any(|link| link.statement_id == dependent && link.depends_on == premise)
+    );
     assert_eq!(
         context.statement(&premise).unwrap().truth,
         TruthValue::FALSE
@@ -275,18 +285,24 @@ fn general_memory_requires_recorded_permission_and_commit_uses_the_same_gate() {
         .unwrap();
 
     assert_eq!(audit.scope, AuditScope::GeneralMemory);
-    assert!(model
-        .context_access_events()
-        .iter()
-        .any(|event| event.kind == ContextAccessEventKind::PermissionGranted));
-    assert!(model
-        .context_access_events()
-        .iter()
-        .any(|event| event.kind == ContextAccessEventKind::PermissionDenied));
-    assert!(model
-        .context_access_events()
-        .iter()
-        .any(|event| event.kind == ContextAccessEventKind::GeneralContextRead));
+    assert!(
+        model
+            .context_access_events()
+            .iter()
+            .any(|event| event.kind == ContextAccessEventKind::PermissionGranted)
+    );
+    assert!(
+        model
+            .context_access_events()
+            .iter()
+            .any(|event| event.kind == ContextAccessEventKind::PermissionDenied)
+    );
+    assert!(
+        model
+            .context_access_events()
+            .iter()
+            .any(|event| event.kind == ContextAccessEventKind::GeneralContextRead)
+    );
     assert_eq!(model.general().statements().len(), 2);
 }
 
@@ -316,10 +332,12 @@ fn current_dialogue_is_the_default_scope_and_audit_enumerates_every_statement() 
     assert_eq!(audit.statements.len(), 2);
     assert!(audit.statement(&first).is_some());
     assert!(audit.statement(&second).is_some());
-    assert!(audit
-        .statements
-        .iter()
-        .any(|statement| statement.counterexample.is_some()));
+    assert!(
+        audit
+            .statements
+            .iter()
+            .any(|statement| statement.counterexample.is_some())
+    );
 }
 
 #[test]
@@ -339,10 +357,12 @@ fn fabricated_source_links_are_excluded_from_the_probability() {
 
     assert_eq!(report.probability, TruthValue::new(ASSUMED_TRUE_PRIOR));
     assert_eq!(report.probability_basis, ProbabilityBasis::PriorOnly);
-    assert!(report
-        .evidence
-        .iter()
-        .any(|evidence| evidence.rejected_as_fabricated));
+    assert!(
+        report
+            .evidence
+            .iter()
+            .any(|evidence| evidence.rejected_as_fabricated)
+    );
 }
 
 #[test]

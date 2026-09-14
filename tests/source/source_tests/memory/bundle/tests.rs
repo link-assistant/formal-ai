@@ -1,7 +1,7 @@
-use super::super::{export_links_notation, MemoryEvent};
+use super::super::{MemoryEvent, export_links_notation};
 use super::{
-    export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
-    suggest_migrations, BundleInfo,
+    BundleInfo, export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
+    suggest_migrations,
 };
 use std::collections::BTreeMap;
 
@@ -123,9 +123,11 @@ fn suggest_migrations_flags_legacy_only_import() {
     let mut current = BTreeMap::new();
     current.insert(String::from("version"), String::from("0.22.0"));
     let suggestions = suggest_migrations(&imported, &current);
-    assert!(suggestions
-        .iter()
-        .any(|message| message.contains("legacy demo_memory")));
+    assert!(
+        suggestions
+            .iter()
+            .any(|message| message.contains("legacy demo_memory"))
+    );
 }
 
 #[test]

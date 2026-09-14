@@ -52,9 +52,7 @@ fn behavior_rules_list_possessive_list_phrase_covers_supported_languages() {
 
     for language in supported_languages.iter().map(String::as_str) {
         assert!(
-            cases
-                .iter()
-                .any(|case| case.language == language),
+            cases.iter().any(|case| case.language == language),
             "missing behavior_rules_list possessive-list regression case for supported language {language}"
         );
     }
@@ -221,9 +219,7 @@ fn behavior_rules_list_answer_is_localized_for_supported_languages() {
 
     for language in supported_languages.iter().map(String::as_str) {
         assert!(
-            cases
-                .iter()
-                .any(|case| case.language == language),
+            cases.iter().any(|case| case.language == language),
             "missing localized behavior_rules_list regression case for supported language {language}"
         );
     }

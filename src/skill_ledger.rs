@@ -32,13 +32,20 @@ use crate::solution_evidence::SolutionEvidence;
 /// Whether the meta core records the skill-accumulation ledger.
 ///
 /// The ledger is trace-only and proposal-only regardless of the mode; the mode only
-/// gates whether it is emitted at all, so the default leaves behaviour untouched.
+/// gates whether it is emitted at all, so neither setting changes any answer.
+///
+/// `Accumulate` is the default. It used to be `Off`, which made the loop notice
+/// what it had learned only when asked to — depth conditional on prompting, which
+/// issue #1073 (requirement 1) forbids. `Off` remains available to quieten a trace
+/// deliberately. Promotion stays gated either way (C3): a candidate skill is born
+/// proposed and needs tests and a benchmark delta before it may become stable.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SkillMode {
-    /// Default: record nothing, so the trace is exactly the pre-stage trace (R13).
-    #[default]
+    /// Record nothing.
     Off,
-    /// Record the candidate skills and curriculum items as a trace-only ledger.
+    /// Record the candidate skills and curriculum items as a trace-only ledger
+    /// (default).
+    #[default]
     Accumulate,
 }
 

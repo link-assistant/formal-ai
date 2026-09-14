@@ -1,0 +1,48 @@
+$ git stash push -- src/question_necessity.rs data/seed/question-necessity.lino   # unfixed engine
+$ cargo test --test unit issue_933_answer_parity
+
+running 5 tests
+
+thread 'issue_933_answer_parity::issue_933_seed_follow_up_questions_are_requirements_in_every_language' (234699) panicked at tests/unit/issue_933_answer_parity.rs:73:9:
+assertion `left == right` failed: ru: Готов помочь — с чего начнём? asks the user for a requirement, not for a fact
+  left: Factual
+ right: Requirement
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'issue_933_answer_parity::issue_933_a_refused_question_leaves_the_statement_in_front_of_it' (234697) panicked at tests/unit/issue_933_answer_parity.rs:106:9:
+assertion `left == right` failed: zh: refusing the question should keep the statement
+  left: ""
+ right: "很高兴听到。"
+
+thread 'issue_933_answer_parity::issue_933_a_question_quoted_as_an_example_is_not_a_question_the_answer_asks' (234696) panicked at tests/unit/issue_933_answer_parity.rs:127:9:
+assertion `left == right` failed: en: an example question is part of the answer, not a question
+  left: "), arithmetic, and greetings."
+ right: "I can answer concept lookups (what is X?), arithmetic, and greetings."
+test issue_933_answer_parity::issue_933_a_refused_question_leaves_the_statement_in_front_of_it ... FAILED
+test issue_933_answer_parity::issue_933_seed_follow_up_questions_are_requirements_in_every_language ... FAILED
+test issue_933_answer_parity::issue_933_a_question_quoted_as_an_example_is_not_a_question_the_answer_asks ... FAILED
+
+thread 'issue_933_answer_parity::issue_933_conversational_seed_answers_survive_the_question_pass' (234698) panicked at tests/unit/issue_933_answer_parity.rs:51:13:
+assertion `left == right` failed: wellbeing/ru: the question pass rewrote a seed-authored answer
+  left: "У меня всё хорошо, спасибо, что спросили!"
+ right: "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+test issue_933_answer_parity::issue_933_conversational_seed_answers_survive_the_question_pass ... FAILED
+
+thread 'issue_933_answer_parity::issue_933_thanks_and_wellbeing_answer_in_full_in_every_language' (234700) panicked at tests/unit/issue_933_answer_parity.rs:156:9:
+assertion `left == right` failed: prompt "धन\u{94d}यवाद" should answer with the whole seed response
+  left: ""
+ right: "यह स\u{941}नकर अच\u{94d}छा लगा। अब आप क\u{94d}या करना चाह\u{947}\u{902}ग\u{947}?"
+test issue_933_answer_parity::issue_933_thanks_and_wellbeing_answer_in_full_in_every_language ... FAILED
+
+failures:
+
+failures:
+    issue_933_answer_parity::issue_933_a_question_quoted_as_an_example_is_not_a_question_the_answer_asks
+    issue_933_answer_parity::issue_933_a_refused_question_leaves_the_statement_in_front_of_it
+    issue_933_answer_parity::issue_933_conversational_seed_answers_survive_the_question_pass
+    issue_933_answer_parity::issue_933_seed_follow_up_questions_are_requirements_in_every_language
+    issue_933_answer_parity::issue_933_thanks_and_wellbeing_answer_in_full_in_every_language
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 2734 filtered out; finished in 0.96s
+
+error: test failed, to rerun pass `--test unit`

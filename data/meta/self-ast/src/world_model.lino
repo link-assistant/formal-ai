@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 39180
   line_count 1000
-  content_id source_module_a023fbe5405aff2a
+  content_id source_module_6be63818fd7973fa
   symbol_count 66
   symbols
     const MAX_RECALCULATION_PASSES_PER_STATEMENT 65 65

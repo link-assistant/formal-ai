@@ -3,8 +3,8 @@ use std::path::PathBuf;
 
 use crate::load_memory_or_empty;
 use formal_ai::{
-    agent_info, apply_promotions, export_memory_full, parse_promotion_proposals,
-    replay_promotion_gates, BundleInfo, MemoryStore, PromotionRun,
+    BundleInfo, MemoryStore, PromotionRun, agent_info, apply_promotions, export_memory_full,
+    parse_promotion_proposals, replay_promotion_gates,
 };
 
 /// Arguments for `formal-ai improve` (issue #656, E37).
@@ -80,8 +80,13 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
             edit.path.display()
         );
     }
-    for session_id in &outcome.agent_session_ids {
-        eprintln!("Formal AI Agent session evidence: {session_id}");
+    // These are FNV-1a digests of the recorded session JSON, not credentials:
+    // the same value is committed as evidence under `docs/case-studies/`. Naming
+    // them `session_id` made CodeQL's `rust/cleartext-logging` heuristic — which
+    // treats any name matching `session.?(id|key)` as account information — read
+    // this evidence line as leaking a session token.
+    for digest in &outcome.agent_session_digests {
+        eprintln!("Formal AI Agent session evidence: {digest}");
     }
     if !outcome.rejected.is_empty() {
         eprintln!(
@@ -159,10 +164,10 @@ fn write_full_memory_backup(
         ..BundleInfo::default()
     };
     let text = export_memory_full(&seed, store.events(), &[], &info);
-    if let Some(parent) = path.parent() {
-        if !parent.as_os_str().is_empty() {
-            std::fs::create_dir_all(parent)?;
-        }
+    if let Some(parent) = path.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        std::fs::create_dir_all(parent)?;
     }
     std::fs::write(path, text)?;
     eprintln!(

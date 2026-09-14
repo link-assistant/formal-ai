@@ -16,31 +16,10 @@
 //
 // Run with: node experiments/issue-386-worker-skill-trigger-parity.mjs
 
-import { readFileSync } from "node:fs";
-import vm from "node:vm";
+import { createWorkerContext } from "../tests/web/support/browser-runtime.mjs";
 
-const source = readFileSync(
-  new URL("../src/web/formal_ai_worker.js", import.meta.url),
-  "utf8",
-);
-
-const sandbox = {
-  self: { location: { search: "" } },
-  importScripts: () => {
-    throw new Error("no importScripts in node harness");
-  },
-  postMessage: () => {},
-  console,
-  TextEncoder,
-  TextDecoder,
-  WebAssembly,
-  fetch: () => Promise.reject(new Error("offline")),
-  setTimeout,
-  clearTimeout,
-};
-sandbox.globalThis = sandbox;
-vm.createContext(sandbox);
-vm.runInContext(source, sandbox, { filename: "formal_ai_worker.js" });
+const sandbox = createWorkerContext();
+await sandbox.init();
 
 const { looksLikeRuntimeRuleUpdate, runtimeRuleFromText } = sandbox;
 for (const [name, fn] of [
@@ -116,6 +95,7 @@ const notRecognised = [
   // Plain prose with no trigger/response/edit/when-then structure.
   ["en note", "This is only a note."],
   ["en question", "what is the capital of France"],
+  ["en ordinary file edit", "update main.rs and change foo to bar"],
   // A response verb with no trigger lead (and no when-then backticks).
   ["en answer-alone", "Please answer the question"],
   ["en reply-alone", "reply to this email"],

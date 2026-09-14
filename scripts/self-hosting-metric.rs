@@ -1,20 +1,27 @@
 //! Deterministically measure release work backed by committed Formal AI sessions.
 //!
-//! Run with `rust-script scripts/self-hosting-metric.rs --since <tag>`. A commit
-//! is attributed only when it records both of these Git trailers:
+//! Run with `rust-script scripts/self-hosting-metric.rs --since <tag>`.
 //!
-//! - `Formal-AI-Session: <session-id>`
-//! - `Formal-AI-Evidence: <repo-relative-path>`
+//! Attribution requires `Formal-AI-Session`, `Formal-AI-Model` and
+//! `Formal-AI-Evidence`; release-loop proof also requires a canonical GitHub URL
+//! in `Formal-AI-Pull-Request`.
 //!
-//! The evidence must exist in that commit. A file, or a file inside a named
-//! directory bundle, must contain both `formal-ai` and the recorded session id.
-//! Changed lines are additions plus deletions reported by `git show --numstat`;
-//! merge commits, binary files and captured artifacts (see
-//! [`is_non_authored_path`]) do not contribute.
+//! The evidence path must contain `formal-ai`, the recorded session id and the
+//! recorded model, and the model must be formal-ai (issue #1085). Changed lines
+//! are additions plus deletions reported by `git show --numstat`; merge commits,
+//! binary files, captured artifacts and paths that describe the system rather
+//! than change it (`docs/`, `dev/`, `experiments/`, `changelog.d/`) do not
+//! contribute.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 #![allow(dead_code)]
 
 use std::env;
+use std::fmt::Write as _;
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::{Component, Path, PathBuf};
@@ -22,8 +29,32 @@ use std::process::Command;
 
 const SESSION_TRAILER: &str = "Formal-AI-Session";
 const EVIDENCE_TRAILER: &str = "Formal-AI-Evidence";
+const PULL_REQUEST_TRAILER: &str = "Formal-AI-Pull-Request";
 const DEFAULT_LEDGER: &str = "data/meta/self-hosting-ledger.lino";
 const DEFAULT_TRAILING_WINDOW: usize = 3;
+
+#[path = "self-hosting-retraction.rs"]
+mod retraction;
+use retraction::retracted_commits;
+#[path = "self-hosting-attribution.rs"]
+mod attribution;
+#[path = "self-hosting-replay.rs"]
+mod replay;
+#[allow(unused_imports)]
+pub use attribution::{
+    HOSTED_MODEL_MARKERS, MODEL_TRAILER, NON_BEHAVIOUR_PREFIXES, hosted_model_marker,
+    is_non_authored_path,
+};
+use replay::pull_request_authors;
+#[allow(unused_imports)]
+pub use replay::replay_epoch;
+#[path = "self-development-loop.rs"]
+mod self_development_loop;
+#[allow(unused_imports)]
+pub use self_development_loop::{
+    RATCHET_EVIDENCE_FLOOR, SelfDevelopmentReleaseStatus, attributed_commits_in_range,
+    ensure_self_development_release, self_development_release_status, target_from_rows,
+};
 
 /// Measurement-definition epoch of the rows this build writes.
 ///
@@ -34,29 +65,20 @@ const DEFAULT_TRAILING_WINDOW: usize = 3;
 /// published share described log volume rather than authored work — in both
 /// directions. Version 2 excludes captured artifacts.
 ///
+/// Issue #1085: version 3 attributes by the model that produced the change
+/// (`Formal-AI-Model`, which must be formal-ai and must be named in the
+/// committed evidence; a session or model naming a hosted model is not
+/// self-authored) and counts only behaviour-changing paths (`docs/`, `dev/`,
+/// `experiments/` and `changelog.d/` leave both sides). Under version 2, 72 of
+/// the 125 attributed commits on `main` were Claude sessions and the numerator
+/// was dominated by case studies and ledgers. See `self-hosting-attribution.rs`.
+///
 /// Rows measured under different definitions are not comparable, so the ratchet
 /// and the trailing window only ever look at rows of the *same* version. A
 /// definition change therefore starts a new epoch instead of silently averaging
-/// two different quantities.
-const METRIC_VERSION: u64 = 2;
-
-/// File extensions whose content is captured, not authored: CI run logs, agent
-/// transcripts, saved diffs and process output. Committing them is deliberate
-/// (they are the evidence bundles this repository requires), but they are not
-/// release work and must not move the metric.
-const CAPTURED_ARTIFACT_EXTENSIONS: &[&str] =
-    &["log", "jsonl", "diff", "patch", "stderr", "stdout"];
-
-/// Dependency lockfiles: written by a package manager, never hand-authored.
-const LOCKFILE_NAMES: &[&str] = &[
-    "Cargo.lock",
-    "bun.lock",
-    "package-lock.json",
-    "yarn.lock",
-    "pnpm-lock.yaml",
-    "poetry.lock",
-    "uv.lock",
-];
+/// two different quantities; `--replay-epoch` appends the new definition's rows
+/// for every earlier tag so the history is restated, never rewritten.
+const METRIC_VERSION: u64 = 3;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Measurement {
@@ -82,6 +104,33 @@ pub struct ReleaseRow {
     pub percentage_basis_points: u64,
     pub trailing_window: usize,
     pub trailing_percentage_basis_points: u64,
+    /// The non-decreasing floor in force for this release. Historical rows
+    /// predate issue #924 and therefore read as `None`.
+    pub target_percentage_basis_points: Option<u64>,
+    /// A reviewed floor that replaces the ratchet outright, for as long as it
+    /// stays in the ledger.
+    ///
+    /// The ratchet in `self_development_loop::target_from_rows` can only climb,
+    /// so once a cycle measured high the level was unreachable except by
+    /// out-measuring it and no review could bring it back down. Issue #1069 hit
+    /// exactly that wall. This field is the way back down, and it is
+    /// deliberately the *only* way: no flag, environment variable, or workflow
+    /// input moves the target, so lowering it means a reviewed diff to
+    /// `data/meta/self-hosting-ledger.lino` that a reader can see.
+    ///
+    /// It carries forward like the target it replaces, because a level set by
+    /// decision should hold until another decision changes it rather than
+    /// expiring after one release. While it is set the ratchet is not
+    /// protecting the share; `ratchet_regression` still reports a falling
+    /// trailing share independently, so the fall is visible even when it does
+    /// not block.
+    pub target_override_basis_points: Option<u64>,
+    /// Reviewed PRs containing valid session-backed commits in this cycle.
+    pub self_authored_pull_requests: Vec<String>,
+    /// Who opened each of those pull requests (`<url> <login>`), so a row can be
+    /// read for whether the model or a person carried the change to review
+    /// (issue #1085 D3.3). `unrecorded` when the lookup was unavailable.
+    pub self_authored_pull_request_authors: Vec<String>,
 }
 
 pub fn format_percentage(basis_points: u64) -> String {
@@ -132,20 +181,26 @@ pub fn measure_with_policy(
     let mut self_authored_lines = 0_u64;
     let mut self_authored_commits = 0_u64;
 
+    let retracted = retracted_commits(repo, &commits, policy)?;
+
     for commit in &commits {
         let lines = changed_lines_for_commit(repo, commit)?;
         changed_lines = changed_lines
             .checked_add(lines)
             .ok_or_else(|| "changed-line total overflowed u64".to_owned())?;
-        let attributed = match commit_has_formal_ai_evidence(repo, commit) {
-            Ok(attributed) => attributed,
-            Err(error) => match policy {
-                EvidencePolicy::Strict => return Err(error),
-                EvidencePolicy::Lenient => {
-                    eprintln!("warning: not attributing {commit}: {error}");
-                    false
-                }
-            },
+        let attributed = if retracted.iter().any(|sha| sha == commit) {
+            false
+        } else {
+            match commit_has_formal_ai_evidence(repo, commit) {
+                Ok(attributed) => attributed,
+                Err(error) => match policy {
+                    EvidencePolicy::Strict => return Err(error),
+                    EvidencePolicy::Lenient => {
+                        eprintln!("warning: not attributing {commit}: {error}");
+                        false
+                    }
+                },
+            }
         };
         if attributed {
             self_authored_lines = self_authored_lines
@@ -161,26 +216,6 @@ pub fn measure_with_policy(
         self_authored_commits,
         commits: commits.len() as u64,
         percentage_basis_points: percentage_basis_points(self_authored_lines, changed_lines),
-    })
-}
-
-/// Whether a path holds captured output rather than authored work.
-///
-/// Applied symmetrically to the numerator and the denominator, so a commit that
-/// only files evidence contributes nothing either way and the share it reports
-/// is unchanged by how much log volume happened to be attached to it.
-pub fn is_non_authored_path(path: &str) -> bool {
-    // `git show --numstat` C-quotes any path with non-printable or non-ASCII
-    // bytes, so the raw field can arrive wrapped in double quotes.
-    let path = path.trim().trim_matches('"');
-    let name = path.rsplit('/').next().unwrap_or(path);
-    if LOCKFILE_NAMES.contains(&name) {
-        return true;
-    }
-    name.rsplit_once('.').is_some_and(|(_, extension)| {
-        CAPTURED_ARTIFACT_EXTENSIONS
-            .iter()
-            .any(|candidate| extension.eq_ignore_ascii_case(candidate))
     })
 }
 
@@ -216,7 +251,14 @@ fn changed_lines_for_commit(repo: &Path, commit: &str) -> Result<u64, String> {
 fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, String> {
     let sessions = trailer_values(repo, commit, SESSION_TRAILER)?;
     let evidence_paths = trailer_values(repo, commit, EVIDENCE_TRAILER)?;
+    let pull_request = self_development_loop::validated_commit_pull_request(repo, commit)?;
     if sessions.is_empty() && evidence_paths.is_empty() {
+        if pull_request.is_some() {
+            return Err(format!(
+                "commit {commit} records {PULL_REQUEST_TRAILER} without {SESSION_TRAILER} and \
+                 {EVIDENCE_TRAILER}"
+            ));
+        }
         return Ok(false);
     }
     if sessions.is_empty() || evidence_paths.is_empty() {
@@ -240,17 +282,17 @@ fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, Stri
         evidence.extend(identifying_files);
     }
 
-    for session in sessions {
+    for session in &sessions {
         if !evidence
             .iter()
-            .any(|(_, content)| content.contains(&session))
+            .any(|(_, content)| content.contains(session.as_str()))
         {
             return Err(format!(
                 "no committed {EVIDENCE_TRAILER} in {commit} records session {session}"
             ));
         }
     }
-    Ok(true)
+    Ok(attribution::model_attribution(repo, commit, &sessions, &evidence)?.is_some())
 }
 
 /// Resolve a committed evidence file or every file below a committed evidence
@@ -299,11 +341,17 @@ fn evidence_files(repo: &Path, commit: &str, path: &str) -> Result<Vec<(String, 
 /// and `Formal-AI-Evidence` trailers with a blank line, git reported only the
 /// evidence trailer, and the resulting "must record both" error failed the
 /// whole Auto Release job (issue #796).
+///
+/// It does keep one of git's rules: an indented line is not a trailer.
+/// `git interpret-trailers --parse` ignores `    Formal-AI-Retract: <sha>` and
+/// so does this, so a commit message may show the format of a trailer in an
+/// indented example without thereby declaring one (issue #1079).
 fn trailer_values(repo: &Path, commit: &str, key: &str) -> Result<Vec<String>, String> {
     let body = git(repo, &["show", "-s", "--format=%B", commit])?;
     let prefix = format!("{key}:");
     Ok(body
         .lines()
+        .filter(|line| !line.starts_with([' ', '\t']))
         .filter_map(|line| {
             let line = line.trim();
             // Trailer keys are case-insensitive per `git interpret-trailers`.
@@ -358,7 +406,7 @@ fn percentage_basis_points(numerator: u64, denominator: u64) -> u64 {
 ///   `.github/workflows/release.yml`, via `--check-ratchet`). A fall is a hard
 ///   error while the commits that cause it can still be amended.
 /// - `Report` — release recording. The row is appended exactly as measured, the
-///   fall is announced on stderr and as a GitHub `::warning` annotation, and the
+///   fall is announced on stderr and as a GitHub `::notice` annotation, and the
 ///   release ships. The ledger records the regression honestly instead of
 ///   hiding it behind a job that never completes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -403,7 +451,7 @@ pub fn record_release_with_policy(
     // `METRIC_VERSION`. Mixing epochs would average two different quantities.
     let rows = all_rows
         .iter()
-        .filter(|row| row.metric_version == METRIC_VERSION)
+        .filter(|row| row.metric_version == METRIC_VERSION && row.tag != tag)
         .cloned()
         .collect::<Vec<_>>();
     // Lenient on purpose: see `EvidencePolicy`. The pull-request gate is what
@@ -433,13 +481,31 @@ pub fn record_release_with_policy(
         percentage_basis_points: measurement.percentage_basis_points,
         trailing_window,
         trailing_percentage_basis_points: 0,
+        target_percentage_basis_points: Some(self_development_loop::target_from_rows(&rows)),
+        // A level set by decision holds until another decision changes it, so
+        // it travels with the ledger instead of expiring at the next release.
+        target_override_basis_points: rows
+            .last()
+            .and_then(|previous| previous.target_override_basis_points),
+        self_authored_pull_requests: self_development_loop::merged_self_authored_pull_requests(
+            repo,
+            since,
+            until,
+            EvidencePolicy::Lenient,
+        )?,
+        self_authored_pull_request_authors: Vec::new(),
     };
+    row.self_authored_pull_request_authors = pull_request_authors(&row.self_authored_pull_requests);
     window_rows.push(row.clone());
     row.trailing_percentage_basis_points = weighted_percentage(&window_rows);
 
-    // Idempotency is checked against the whole ledger, not just this epoch: a
-    // tag must never be recorded twice, whatever definition produced it.
-    if let Some(existing) = all_rows.iter().find(|existing| existing.tag == tag) {
+    // Idempotency is checked per epoch: a tag is recorded once under each
+    // definition. An earlier epoch's row for the same tag is history that
+    // `--replay-epoch` restates beside it, never a duplicate (issue #1085).
+    if let Some(existing) = all_rows
+        .iter()
+        .find(|existing| existing.tag == tag && existing.metric_version == METRIC_VERSION)
+    {
         if existing == &row {
             return Ok(existing.clone());
         }
@@ -451,8 +517,8 @@ pub fn record_release_with_policy(
         match ratchet {
             RatchetPolicy::Enforce => return Err(regression),
             RatchetPolicy::Report => {
-                eprintln!("warning: {regression}");
-                println!("::warning title=Self-hosting ratchet fell::{regression}");
+                eprintln!("notice: {regression}");
+                println!("::notice title=Self-hosting ratchet fell::{regression}");
             }
         }
     }
@@ -475,16 +541,16 @@ fn ratchet_regression(previous: Option<&ReleaseRow>, row: &ReleaseRow) -> Option
 }
 
 /// The trailing share a release cut at `until` would record.
-///
 /// Same arithmetic `record_release_with_policy` performs, without writing
 /// anything, so a pull request can be told what its merge would do to the
 /// ratchet while its commits can still be amended.
-pub fn project_trailing_basis_points(
+pub fn project_trailing_share(
     repo: &Path,
     ledger: &Path,
     since: &str,
     until: &str,
     trailing_window: usize,
+    excluded_tag: Option<&str>,
 ) -> Result<u64, String> {
     if trailing_window == 0 {
         return Err("trailing window must be greater than zero".to_owned());
@@ -494,6 +560,7 @@ pub fn project_trailing_basis_points(
     let mut window_rows = rows
         .iter()
         .filter(|row| row.metric_version == METRIC_VERSION)
+        .filter(|row| excluded_tag != Some(row.tag.as_str()))
         .rev()
         .take(trailing_window.saturating_sub(1))
         .cloned()
@@ -511,6 +578,10 @@ pub fn project_trailing_basis_points(
         percentage_basis_points: measurement.percentage_basis_points,
         trailing_window,
         trailing_percentage_basis_points: 0,
+        target_percentage_basis_points: None,
+        target_override_basis_points: None,
+        self_authored_pull_requests: Vec::new(),
+        self_authored_pull_request_authors: Vec::new(),
     });
     Ok(weighted_percentage(&window_rows))
 }
@@ -555,8 +626,8 @@ pub fn ratchet_check(
         eprintln!("warning: skipping ratchet check: {since} is not present in this checkout");
         return Ok(None);
     }
-    let baseline = project_trailing_basis_points(repo, ledger, &since, base, trailing_window)?;
-    let candidate = project_trailing_basis_points(repo, ledger, &since, head, trailing_window)?;
+    let baseline = project_trailing_share(repo, ledger, &since, base, trailing_window, None)?;
+    let candidate = project_trailing_share(repo, ledger, &since, head, trailing_window, None)?;
     if candidate >= baseline {
         return Ok(None);
     }
@@ -637,6 +708,26 @@ fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
         trailing_window: usize::try_from(number("trailing_window")?)
             .map_err(|_| "trailing_window does not fit usize".to_owned())?,
         trailing_percentage_basis_points: number("trailing_percentage_basis_points")?,
+        target_percentage_basis_points: optional_number("target_percentage_basis_points")?,
+        target_override_basis_points: optional_number("target_override_basis_points")?,
+        self_authored_pull_requests: fields
+            .iter()
+            .filter_map(|field| {
+                field
+                    .strip_prefix("self_authored_pull_request \"")
+                    .and_then(|value| value.strip_suffix('"'))
+                    .map(str::to_owned)
+            })
+            .collect(),
+        self_authored_pull_request_authors: fields
+            .iter()
+            .filter_map(|field| {
+                field
+                    .strip_prefix("self_authored_pull_request_author \"")
+                    .and_then(|value| value.strip_suffix('"'))
+                    .map(str::to_owned)
+            })
+            .collect(),
     })
 }
 
@@ -675,6 +766,21 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
         record.push_str(value);
         record.push_str("\"\n");
     }
+    if let Some(target) = row.target_percentage_basis_points {
+        let _ = writeln!(record, "    target_percentage_basis_points \"{target}\"");
+    }
+    if let Some(override_target) = row.target_override_basis_points {
+        let _ = writeln!(
+            record,
+            "    target_override_basis_points \"{override_target}\""
+        );
+    }
+    for pull_request in &row.self_authored_pull_requests {
+        let _ = writeln!(record, "    self_authored_pull_request \"{pull_request}\"");
+    }
+    for author in &row.self_authored_pull_request_authors {
+        let _ = writeln!(record, "    self_authored_pull_request_author \"{author}\"");
+    }
     write!(file, "{record}")
         .map_err(|error| format!("could not append {}: {error}", ledger.display()))
 }
@@ -684,7 +790,7 @@ pub fn release_note_for_tag(ledger: &Path, tag: &str) -> Result<String, String> 
         .into_iter()
         .find(|row| row.tag == tag)
         .ok_or_else(|| format!("self-hosting ledger has no release row for {tag}"))?;
-    Ok(format!(
+    let mut note = format!(
         "## Self-hosting\n\nFormal AI authored **{}** of this release ({} of {} changed lines). The \
          {}-release trailing share is **{}**.",
         format_percentage(row.percentage_basis_points),
@@ -692,7 +798,27 @@ pub fn release_note_for_tag(ledger: &Path, tag: &str) -> Result<String, String> 
         row.changed_lines,
         row.trailing_window,
         format_percentage(row.trailing_percentage_basis_points),
-    ))
+    );
+    if let Some(target) = row.target_percentage_basis_points {
+        let _ = write!(
+            note,
+            " The release target in force was **{}**.",
+            format_percentage(target)
+        );
+    }
+    if let Some(override_target) = row.target_override_basis_points {
+        let _ = write!(
+            note,
+            " That target was overridden by the reviewed ledger value **{}**.",
+            format_percentage(override_target)
+        );
+    }
+    if !row.self_authored_pull_requests.is_empty() {
+        note.push_str(" Formal AI-authored pull requests: ");
+        note.push_str(&row.self_authored_pull_requests.join(", "));
+        note.push('.');
+    }
+    Ok(note)
 }
 
 fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
@@ -720,6 +846,8 @@ struct Options {
     record_release: Option<String>,
     /// Base revision to compare against; see [`ratchet_check`].
     check_ratchet: Option<String>,
+    /// Restate every earlier-epoch row under the current definition.
+    replay_epoch: bool,
     trailing_window: usize,
 }
 
@@ -730,6 +858,7 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
     let mut ledger = PathBuf::from(DEFAULT_LEDGER);
     let mut record_release = None;
     let mut check_ratchet = None;
+    let mut replay_epoch = false;
     let mut trailing_window = DEFAULT_TRAILING_WINDOW;
     let mut args = args.into_iter();
     while let Some(arg) = args.next() {
@@ -743,6 +872,7 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
             "--ledger" => ledger = PathBuf::from(value(&mut args)?),
             "--record-release" => record_release = Some(value(&mut args)?),
             "--check-ratchet" => check_ratchet = Some(value(&mut args)?),
+            "--replay-epoch" => replay_epoch = true,
             "--trailing-window" => {
                 trailing_window = value(&mut args)?
                     .parse::<usize>()
@@ -751,15 +881,15 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
             "--help" | "-h" => {
                 return Err(
                     "usage: self-hosting-metric.rs --since <tag> [--until <rev>] \
-                     [--record-release <tag>] [--check-ratchet <base-rev>] [--ledger <path>] \
-                     [--repo <path>]"
+                     [--record-release <tag>] [--check-ratchet <base-rev>] [--replay-epoch] \
+                     [--ledger <path>] [--repo <path>]"
                         .to_owned(),
                 );
             }
             _ => return Err(format!("unknown argument: {arg}")),
         }
     }
-    if since.is_none() && check_ratchet.is_none() {
+    if since.is_none() && check_ratchet.is_none() && !replay_epoch {
         return Err("--since <tag> is required".to_owned());
     }
     let ledger = if ledger.is_absolute() {
@@ -774,12 +904,21 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
         ledger,
         record_release,
         check_ratchet,
+        replay_epoch,
         trailing_window,
     })
 }
 
 fn run() -> Result<(), String> {
     let options = parse_options(env::args().skip(1))?;
+    if options.replay_epoch {
+        let appended = replay_epoch(&options.repo, &options.ledger, options.trailing_window)?;
+        println!(
+            "restated {} release(s) under metric version {METRIC_VERSION}",
+            appended.len()
+        );
+        return Ok(());
+    }
     if let Some(base) = &options.check_ratchet {
         if let Some(regression) = ratchet_check(
             &options.repo,
@@ -797,6 +936,9 @@ fn run() -> Result<(), String> {
         .since
         .ok_or_else(|| "--since <tag> is required".to_owned())?;
     let measurement = if let Some(tag) = options.record_release {
+        // Issue #1085 (D3.5): recording is unconditional. The self-development
+        // floor is reported by `check-self-development-release.rs` from its own
+        // workflow, not enforced here.
         let row = record_release_with_policy(
             &options.repo,
             &options.ledger,

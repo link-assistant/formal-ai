@@ -11,8 +11,8 @@
 //! Run with: `cargo run --example issue_563_folder_summary`
 
 use formal_ai::summarization::{
-    formalize_repository_resource, summarize_repository_resource, RepositoryEntry,
-    SummarizationConfig, SummarizationMode,
+    RepositoryEntry, SummarizationConfig, SummarizationMode, formalize_repository_resource,
+    summarize_repository_resource,
 };
 
 fn main() {

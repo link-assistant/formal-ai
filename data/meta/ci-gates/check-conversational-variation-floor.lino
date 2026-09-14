@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_conversational_variation_floor
+  stage web
+  description "Every conversational test case holds at least five wording variations in every advertised language."
+  run "npm run --prefix tests/e2e check:variation-floor"

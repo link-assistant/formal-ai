@@ -8,7 +8,6 @@ use formal_ai::file_legality::{
     AssessmentStatus, FileLegalityReport, LegalCategory, SafetyDisposition,
 };
 
-static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 #[test]
 fn file_legality_cli_accepts_provider_receipts_and_emits_safe_json() {
@@ -104,11 +103,13 @@ fn whole_file_legality_task_runs_documented_sidecar_end_to_end() {
 }
 
 fn temp_workspace() -> PathBuf {
-    let sequence = TMPDIR_SEQ.fetch_add(1, Ordering::Relaxed);
+    static NEXT_WORKSPACE: AtomicU64 = AtomicU64::new(0);
+
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("clock after epoch")
         .as_nanos();
+    let sequence = NEXT_WORKSPACE.fetch_add(1, Ordering::Relaxed);
     std::env::temp_dir().join(format!(
         "formal-ai-issue-835-cli-{}-{nonce}-{sequence}",
         std::process::id(),

@@ -3,7 +3,7 @@
 
 use formal_ai::agentic_coding::plan_chat_step;
 use formal_ai::gemini::{
-    create_gemini_generate_content_response_with_solver_and_memory, GeminiGenerateContentRequest,
+    GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
 };
 use formal_ai::protocol::ChatMessage;
 use formal_ai::{SolverConfig, UniversalSolver};

@@ -1,0 +1,28 @@
+
+> formal-ai-vscode@0.299.0 package
+> vsce package
+
+Executing prepublish script 'npm run vscode:prepublish'...
+
+> formal-ai-vscode@0.299.0 vscode:prepublish
+> node scripts/prepare-resources.mjs
+
+Synced extension version 0.299.0 -> 0.345.0 (from Cargo.toml)
+Prepared VS Code web resources: /tmp/gh-issue-solver-1786801324779/vscode/dist-web
+Vendored desktop modules: tool-router.cjs, memory-sync.cjs, web-tools.cjs, shared-memory.cjs -> /tmp/gh-issue-solver-1786801324779/vscode/src/lib/vendor
+ INFO  Files included in the VSIX:
+formal-ai-vscode-0.345.0.vsix
+├─ [Content_Types].xml 
+├─ extension.vsixmanifest 
+└─ extension/
+   ├─ LICENSE.txt [1.18 KB]
+   ├─ package.json [4.6 KB]
+   ├─ readme.md 
+   ├─ browser-runtime/ (306 files) [388 MB]
+   ├─ dist-web/ (224 files) [6.73 MB]
+   ├─ media/ (1 file) [0.5 KB]
+   └─ src/ (11 files) [15.41 MB]
+
+=> Run vsce ls --tree to see all included files.
+
+ DONE  Packaged: /tmp/gh-issue-solver-1786801324779/vscode/formal-ai-vscode-0.345.0.vsix (547 files, 178.22 MB)

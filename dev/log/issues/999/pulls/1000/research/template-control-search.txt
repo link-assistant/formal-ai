@@ -1,0 +1,1310 @@
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:37:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:38:    # Typical run: <1min with lychee cache. 10min prevents slow
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:40:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:43:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:60:            --cache
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:61:            --max-cache-age 1d
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:63:            --timeout 30
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:86:          echo "::error::Broken links were detected with no Web Archive fallback available."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml:99:          echo "     c. Add the URL to .lycheeignore if it is a known false positive."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:12:        description: Release tag (defaults to the latest published release)
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:21:  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:27:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:28:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:47:    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:52:          - { label: linux-x64, runner: ubuntu-latest }
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:54:          - { label: macos-x64, runner: macos-15-intel }
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:55:          - { label: macos-arm64, runner: macos-14 }
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:56:          - { label: windows-x64, runner: windows-latest }
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:59:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:77:      - name: Smoke test release assets
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:90:              echo "Missing macOS CodeResources signature envelope: $app" >&2; exit 1;
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:118:    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' && needs.resolve.outputs.should_build == 'true' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:119:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:120:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:125:      attestations: write
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:148:            echo 'Targets    : linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64'
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:149:            echo 'Attestation: verify each asset with gh attestation verify <file> --repo ${{ github.repository }}'
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:152:      - name: Attest build provenance
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml:153:        uses: actions/attest@v4
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:38:  RUSTFLAGS: -Dwarnings
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:54:# Concurrency is intentionally job-scoped. Each read-only job cancels only its
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:56:# cancelled, so a cancelled main job is always exceptional and the terminal
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:59:# concurrency group instead. A write that has started is never cancelled, and
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:65:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:66:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:69:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:97:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:98:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:101:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:124:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:125:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:128:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:152:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:153:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:156:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:168:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:169:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:172:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:185:      - name: Cache cargo registry
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:186:        uses: actions/cache@v5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:208:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:210:    timeout-minutes: 60
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:213:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:241:          cache-from: type=gha
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:242:          cache-to: type=gha,mode=max
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:246:  # dependency graph every run. This also prevents cache keys based on
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:250:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:251:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:254:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:257:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:281:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:282:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:285:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:287:    # Note: !cancelled() is required because detect-changes is skipped on workflow_dispatch,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:291:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:313:      - name: Cache cargo registry
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:314:        uses: actions/cache@v5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:330:      # Warning-band annotations are limited to files this pull request changed,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:331:      # so unchanged files stop repeating the same warning on every run.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:343:              # No usable base (e.g. workflow_dispatch): fall back to annotating every warning.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:352:        # `cargo test --doc`, so they must be caught here, before release,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:355:          RUSTDOCFLAGS: -D warnings
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:363:  # === TEST ===
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:364:  # Test runs independently of changelog check and only for code-affecting changes
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:365:  test:
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:366:    name: Test (${{ matrix.os }})
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:368:    timeout-minutes: 20
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:370:      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:371:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:373:    # Note: !cancelled() is required because detect-changes is skipped on workflow_dispatch,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:377:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:389:        os: [ubuntu-latest, macos-latest, windows-latest]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:396:      - name: Cache cargo registry on Windows
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:398:        uses: actions/cache@v5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:403:          key: ${{ runner.os }}-cargo-test-registry-${{ hashFiles('**/Cargo.lock') }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:405:            ${{ runner.os }}-cargo-test-registry-
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:407:      - name: Cache cargo registry and target on Unix
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:409:        uses: actions/cache@v5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:415:          key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:417:            ${{ runner.os }}-cargo-test-
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:419:      - name: Run tests
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:420:        run: cargo test --all-features --verbose
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:422:      - name: Run doc tests
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:423:        run: cargo test --doc --verbose
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:429:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:430:    timeout-minutes: 15
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:433:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:438:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:453:      - name: Cache cargo registry
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:454:        uses: actions/cache@v5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:477:          fail_ci_if_error: true
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:484:  # Build package - only runs if lint and test pass
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:487:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:488:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:491:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:492:    needs: [lint, test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:493:    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:503:      - name: Cache cargo registry
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:504:        uses: actions/cache@v5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:528:    needs: [lint, test, build]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:531:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:532:    # Note: !cancelled() ensures consistent behavior with other jobs that depend on skipped jobs.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:534:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:538:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:539:    # Covers the crate build, publish, smoke test, and a cold Docker build.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:540:    timeout-minutes: 60
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:608:      - name: Smoke-test published crate
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:614:        run: rust-script scripts/smoke-test-published-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:640:            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:670:            type=raw,value=latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:683:          cache-from: type=gha
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:684:          cache-to: type=gha,mode=max
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:715:    needs: [lint, test, build]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:718:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:719:    # Note: !cancelled() is required to evaluate the condition when dependencies may be skipped.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:720:    # The build job ensures lint and test passed before this job runs.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:722:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:726:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:727:    # Covers the crate build, publish, smoke test, and a cold Docker build.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:728:    timeout-minutes: 60
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:782:      - name: Smoke-test published crate
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:787:        run: rust-script scripts/smoke-test-published-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:812:            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:842:            type=raw,value=latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:855:          cache-from: type=gha
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:856:          cache-to: type=gha,mode=max
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:880:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:881:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:884:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:944:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:946:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:951:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:952:    timeout-minutes: 15
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:971:          RUSTDOCFLAGS: -D warnings
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:1008:  # GitHub reports jobs killed by timeout-minutes as cancelled. Observe every
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:1009:  # job so a timeout on main becomes a visible failure instead of a grey run.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:1021:      - test
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:1029:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml:1030:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml:17:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml:18:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml:21:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml:43:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml:44:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml:47:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:8:  straight from Docker Hub, and a transient registry timeout there fails the
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:10:  Seeding the image locally first means the boot reuses the cached image
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:24:      public pull-through cache of Docker Hub and is served from independent
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:59:          # Attempts/backoff are overridable via env so the unit test can run
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:79:          echo "==> BuildKit image cached locally from canonical registry; boot will not need a registry pull"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:87:        #    pull-through cache of Docker Hub on independent infrastructure, so
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:96:            echo "==> BuildKit image cached locally via mirror and tagged as ${BUILDKIT_IMAGE}; boot will reuse it"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/.github/actions/setup-buildx-resilient/action.yml:105:        echo "==> WARNING: could not pre-pull ${BUILDKIT_IMAGE} from canonical registry or mirror; letting setup-buildx try its own boot pull"
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:3:This document describes CI/CD best practices that significantly improve the quality and reliability of AI-driven development workflows. When properly configured, Hive Mind AI solvers are forced to iterate with CI/CD checks until all tests pass, ensuring code quality meets the highest standards.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:43:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:61:test-suites:
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:107:    echo "ERROR: $file has $line_count lines (limit: 1500)"
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:108:    echo "::error file=$file::File has $line_count lines (limit: 1500)"
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:120:    'max-lines': ['error', { max: 1500 }]
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:151:| C#                    | .NET analyzers (warnings as errors) |
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:157:**Run fast checks before slow checks** to give the fastest possible feedback:
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:161:├── test-compilation            ├── test-suites (unit tests)
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:162:├── lint (format + ESLint)      ├── test-execution (integration)
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:170:test-suites:
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:171:  needs: [test-compilation, lint, check-file-line-limits]
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:174:    !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:176:    needs.test-compilation.result == 'success' &&
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:210:**CI must test what will actually be merged, not a stale PR snapshot.**
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:226:        (echo "::error::Merge conflict! PR must be rebased before merging." && exit 1)
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:265:**Separate cancellable read-only checks from non-cancellable write jobs.** Configure concurrency at the job level when a workflow contains both kinds of work:
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:274:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:279:    if: ${{ !cancelled() && needs.lint.result == 'success' }}
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:284:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:288:- **Read-only jobs:** Cancel superseded checks on both pull requests and `main` to reduce runner load. Give each job a distinct suffix; include relevant matrix values so different matrix entries can still run in parallel.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:289:- **Dependent writers:** Use `needs` and require successful prerequisites. A cancelled prerequisite must make its write job not start.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:290:- **Active writers:** Give every release, deploy, tag, generated-content push, and other write job the same repository-scoped group with `cancel-in-progress: false`. An already started writer finishes while the next writer waits in the queue, including writers from another workflow file.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:291:- **Workflow scope:** Do not put cancellable concurrency at workflow level when the workflow has write jobs. Cancelling the workflow would also interrupt a writer that has already started.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:293:By default, a concurrency group keeps at most one running and one pending job; a newer pending writer replaces the older pending writer. If every queued write must run, add `queue: max` to the writer's concurrency block (up to 100 jobs can wait). `queue: max` cannot be combined with `cancel-in-progress: true`, and execution order follows when jobs start waiting rather than workflow dispatch order, so write jobs should remain idempotent. See [GitHub's concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency) for the current queue limits and semantics.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:295:Use `!cancelled()` instead of `always()` in job conditions so cancellation propagates correctly through the job graph. A bare `always()` can keep downstream work running after cancellation.
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:318:    - run: node tests/docs-validation.mjs
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:328:├── Local tests           ├── version-check       ├── Version bump
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:330:                          ├── test-compilation    └── Publish package
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:333:                          ├── test-suites
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:334:                          ├── test-execution
+/tmp/formal-ai-issue999-templates.FZURWz/hive-mind/docs/CI-CD-BEST-PRACTICES.md:362:3. **Inspects the latest default-branch commit** and collects its CI/CD runs (falling back to the most recent runs on the default branch when the latest commit has none).
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:38:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:39:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:42:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:50:          cache: npm
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:51:          cache-dependency-path: examples/universal-app/package-lock.json
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:71:          if-no-files-found: error
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:86:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:87:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:90:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:105:    timeout-minutes: 20
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:108:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:112:        os: [ubuntu-latest, macos-latest, windows-latest]
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:123:          cache: npm
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:124:          cache-dependency-path: examples/universal-app/package-lock.json
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:141:          echo "::error::Desktop package output was not created at examples/universal-app/out"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:151:          if-no-files-found: error
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:156:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:157:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:160:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:168:          cache: npm
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:169:          cache-dependency-path: examples/universal-app/package-lock.json
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:201:    runs-on: macos-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:202:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:205:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:213:          cache: npm
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:214:          cache-dependency-path: examples/universal-app/package-lock.json
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:230:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:234:    timeout-minutes: 20
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:237:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:286:          if git diff --cached --quiet; then
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/example-app.yml:303:            web/test-results/
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml:26:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml:27:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml:30:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml:56:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml:57:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml:60:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:33:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:34:    # Typical run: <1min with lychee cache. 10min prevents slow
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:36:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:39:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:58:            --cache
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:59:            --max-cache-age 1d
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:61:            --timeout 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:85:          echo "::error::Broken links were detected with no Web Archive fallback available."
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/links.yml:98:          echo "     c. Add the URL to .lycheeignore if it is a known false positive."
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/publish-dockerhub/action.yml:44:          type=raw,value=latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:8:  straight from Docker Hub, and a transient registry timeout there fails the
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:11:  means the boot reuses the cached image instead of hitting the registry, and
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:23:      public pull-through cache of Docker Hub and is served from independent
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:58:          # Attempts/backoff are overridable via env so the unit test can run
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:78:          echo "==> BuildKit image cached locally from canonical registry; boot will not need a registry pull"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:86:        #    cache of Docker Hub on independent infrastructure, so it usually
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:95:            echo "==> BuildKit image cached locally via mirror and tagged as ${BUILDKIT_IMAGE}; boot will reuse it"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/actions/setup-buildx-resilient/action.yml:104:        echo "==> WARNING: could not pre-pull ${BUILDKIT_IMAGE} from canonical registry or mirror; letting setup-buildx try its own boot pull"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:51:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:54:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:57:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:72:  # === FAST CHECKS - run before slow tests for fastest feedback ===
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:76:  test-compilation:
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:77:    name: Test Compilation
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:78:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:80:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:82:      group: check-${{ github.workflow }}-${{ github.ref }}-test-compilation
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:83:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:96:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:98:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:101:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:127:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:129:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:132:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:149:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:151:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:154:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:196:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:199:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:202:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:205:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:243:  # Test matrix: 3 runtimes (Node.js, Bun, Deno) x 3 OS (Ubuntu, macOS, Windows)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:244:  # IMPORTANT: Tests must validate the ACTUAL merge result, not a stale merge preview.
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:246:  # Fast-fail: slow test matrix only runs after fast checks pass (hive-mind principle #5)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:247:  test:
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:248:    name: Test (${{ matrix.runtime }} on ${{ matrix.os }})
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:251:    # sometimes slower on cold starts. 10min fails hung tests well
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:253:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:255:      group: check-${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.runtime }}-${{ matrix.os }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:256:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:261:        test-compilation,
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:265:    # Use !cancelled() instead of always() so cancellation propagates correctly (hive-mind issue #1278)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:270:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:279:      (needs.test-compilation.result == 'success' || needs.test-compilation.result == 'skipped') &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:285:        os: [ubuntu-latest, macos-latest, windows-latest]
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:310:      - name: Run tests (Node.js)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:312:        run: npm test
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:318:          bun-version: latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:324:      - name: Run tests (Bun)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:326:        # --timeout caps an individual test at 30s, matching Node's
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:327:        # --test-timeout budget while leaving headroom for cold runners.
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:328:        run: bun test --timeout 30000
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:336:      - name: Run tests (Deno)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:338:        run: deno test --allow-read
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:347:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:348:    # Typical run: a few minutes with a warm GHA layer cache. 30min covers
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:349:    # a cold, uncached build without allowing a 6h hang.
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:350:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:353:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:381:          cache-from: type=gha
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:382:          cache-to: type=gha,mode=max
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:388:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:390:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:393:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:415:              echo "ERROR: Required documentation file missing: $file"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:431:  # Release - only runs on main after tests pass (for push events)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:434:    needs: [lint, test]
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:437:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:440:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:441:    # Use !cancelled() instead of always() so cancellation propagates correctly (hive-mind issue #1278)
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:442:    # This is needed because lint/test jobs have a transitive dependency on changeset-check
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:444:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:448:      needs.test.result == 'success'
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:449:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:518:      - name: Smoke-test published npm package
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:520:        run: node scripts/smoke-test-package.mjs --package-version "${{ steps.publish.outputs.published_version }}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:540:    needs: [lint, test]
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:542:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:546:      needs.test.result == 'success'
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:547:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:549:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:552:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:598:      - name: Smoke-test published npm package
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:600:        run: node scripts/smoke-test-package.mjs --package-version "${{ steps.publish.outputs.published_version }}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:620:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:623:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:625:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:630:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:668:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:672:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:674:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:677:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:731:  # GitHub reports jobs killed by timeout-minutes as cancelled rather than
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:732:  # failed. Observe every job so those cancellations become visible failures
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:736:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:737:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:740:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:744:      - test-compilation
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:749:      - test
+/tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml:764:      - name: Fail the run when a required job was cancelled or failed
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/version_and_commit.py:30:    """Run a command and handle errors."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/version_and_commit.py:52:            f"Error: Command failed with exit code {result.returncode}",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/version_and_commit.py:74:        raise ValueError("Could not find version in pyproject.toml")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/version_and_commit.py:179:        print(f"Error: {pyproject_path} not found", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/version_and_commit.py:249:        print(f"Error: {e}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_manual_changeset.py:40:    except (subprocess.CalledProcessError, FileNotFoundError):
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_manual_changeset.py:58:    except (subprocess.CalledProcessError, FileNotFoundError):
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_manual_changeset.py:83:            print(f"Warning: scriv create returned non-zero: {result.stderr}")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_manual_changeset.py:121:    except FileNotFoundError:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_manual_changeset.py:122:        print("Error: scriv command not found")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:15:      For local testing, use --dry-run or set TWINE_USERNAME/TWINE_PASSWORD.
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:26:    """Run a command and handle errors."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:37:            f"Error: Command failed with exit code {result.returncode}", file=sys.stderr
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:74:        print("Error: No distribution files found in dist/", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:89:        print("Error: No distribution files found in dist/", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:136:                    f"Error: {tool} is not installed. Install with: pip install {tool}",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/publish_to_pypi.py:152:        print(f"Error: {e}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:42:    """Run a command and handle errors."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:53:            f"Error: Command failed with exit code {result.returncode}",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:64:        print(f"Warning: {changelog_path} not found", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:75:            f"Warning: Version {version} not found in {changelog_path}",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:116:    return encoded[:max_bytes].decode(ENCODING, errors="ignore")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:208:        raise ValueError(msg)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:216:    except FileNotFoundError:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:256:            "Error: GH_TOKEN or GITHUB_TOKEN environment variable required",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:265:            "Error: gh CLI not found. Install from https://cli.github.com/",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/create_github_release.py:298:        print(f"Error: {e}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/release_naming.py:44:    raise FileNotFoundError(msg)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/detect_code_changes.py:60:    except subprocess.CalledProcessError as e:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/detect_code_changes.py:61:        print(f"Error executing command: {command}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/detect_code_changes.py:94:                except subprocess.CalledProcessError:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/detect_code_changes.py:105:            except (OSError, subprocess.SubprocessError) as e:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/detect_code_changes.py:114:    except (OSError, subprocess.SubprocessError):
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/detect_code_changes.py:139:        raise ValueError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/format_release_notes.py:53:    except FileNotFoundError:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/format_release_notes.py:83:        except ValueError:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/format_release_notes.py:153:        print(f"Error updating release: {output}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/format_release_notes.py:168:    except FileNotFoundError:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/format_release_notes.py:221:        print(f"Error fetching release: {body}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:4:Exits with error code 1 if any files exceed the limit.
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:22:    "__pycache__",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:35:    WARNING = "warning"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:41:    """A file-size warning or violation."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:49:    """Collected warnings and violations from a file-size check."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:51:    warnings: list[Finding]
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:112:        return LineStatus.WARNING
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:117:    """Check Python files under a directory for warning and hard limits.
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:123:        Collected warnings and violations
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:126:    warnings = []
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:137:        elif status == LineStatus.WARNING:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:138:            warnings.append(finding)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:140:    return CheckResult(warnings=warnings, violations=violations)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:159:def warning_annotation(finding: Finding) -> str:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:160:    """Build a GitHub Actions warning annotation for a near-limit file."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:168:        f"::warning file={escape_annotation_property(finding.file.as_posix())}::"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:173:def print_warnings(warnings: list[Finding]) -> None:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:174:    """Print non-failing file-size warnings."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:175:    if not warnings:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:178:    for warning in warnings:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:179:        print(warning_annotation(warning))
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:181:            f"WARNING: {warning.file} has {warning.lines} lines "
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:182:            f"(approaching limit of {MAX_LINES}, warning threshold: {WARN_LINES})"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:187:    for warning in warnings:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:188:        print(f"  {warning.file}")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:210:        f"(warning above {WARN_LINES})...\n"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:214:    print_warnings(result.warnings)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_file_size.py:228:        print(f"Error: {e}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:19:REQUEST_TIMEOUT_SECONDS = 10
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:24:    r"\[(?:4\d\d|5\d\d|ERROR|TIMEOUT|UNKNOWN)\]\s+" r"(https?://[^\s)]+)",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:56:        request, timeout=REQUEST_TIMEOUT_SECONDS
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:61:        raise ValueError(msg)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:84:    except (OSError, TimeoutError, ValueError, json.JSONDecodeError) as error:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:85:        print(f"  Failed to check Wayback Machine for {url}: {error}")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:119:    """Emit an actionable GitHub error for an unrecoverable broken link."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:122:        "::error title=Broken link - No Web Archive fallback::"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check_web_archive.py:126:        "if it is a known false positive."
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:19:except ModuleNotFoundError:  # pragma: no cover - workflow runs on Python 3.13.
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:29:class SmokeTestError(RuntimeError):
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:30:    """Raised when the published package smoke test fails."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:35:    """Package metadata needed for the published install smoke test."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:76:        raise subprocess.CalledProcessError(
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:89:        message = "smoke_test_published_package.py requires Python 3.11+"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:90:        raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:136:    raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:150:        raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:202:        raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:210:        "--no-cache-dir",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:226:    raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:277:        print("No console scripts declared; skipping CLI smoke tests")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:287:            message = f"console script {script_name!r} failed smoke test"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:288:            raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:292:            raise SmokeTestError(message)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:298:        description="Install and smoke-test a just-published package version",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:320:        help="Skip [project.scripts] smoke tests",
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:355:    """Run the published package smoke test."""
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:372:            "Smoke testing "
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:398:        print("Published package smoke test passed")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:400:    except (OSError, SmokeTestError, subprocess.CalledProcessError) as error:
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/smoke_test_published_package.py:401:        print(f"Published package smoke test failed: {error}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:2:# Make failures and timeout-shaped cancellations visible in the aggregate run.
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:15:cancelled="$(select_by_result cancelled)"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:18:echo "Cancelled jobs: ${cancelled:-<none>}"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:22:  echo "::error::Pipeline failed. Failing jobs: ${failed}"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:26:if [ -n "$cancelled" ]; then
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:28:    echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled; check job annotations for an exceeded maximum execution time."
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/check-pipeline-status.sh:31:    echo "::warning::Cancelled jobs: ${cancelled}. On a non-default ref this is usually a superseded run."
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:26:        raise ValueError("Could not find version in pyproject.toml")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:34:        raise ValueError(f"Invalid version format: {current}")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:45:        raise ValueError(f"Invalid bump type: {bump_type}")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:57:        raise ValueError(
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:70:        print(f"Warning: {changelog_path} not found, skipping changelog update")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:136:        print(f"Error: {pyproject_path} not found", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/bump_version.py:166:        print(f"Error: {e}", file=sys.stderr)
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:58:            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:70:                        "Warning: Invalid {} value '{}'; using default {}",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:89:        Err(ureq::Error::Status(404, _)) => false,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:91:            eprintln!("Warning: Could not check crates.io: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:105:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:113:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:120:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:159:        "Error: {}@{} was not visible on crates.io after {} attempts",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:165:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:166:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:169:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/wait-for-crate.rs:174:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/collect-changelog.rs:56:    eprintln!("Error: Could not find Cargo.toml in expected locations");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/collect-changelog.rs:216:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/simulate-fresh-merge.sh:2:# Simulate merging the latest PR base so CI validates the result that will land.
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/simulate-fresh-merge.sh:11:echo "Synchronizing PR with latest $BASE_REF"
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/simulate-fresh-merge.sh:27:  echo "::error::Merge conflict detected with latest $BASE_REF" >&2
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:2://! Check Rust files for maximum and warning line-count thresholds
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:3://! Exits with error code 1 if any files exceed the hard limit
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:15:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:41:fn count_lines(path: &Path) -> Result<usize, std::io::Error> {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:54:    warnings: Vec<Finding>,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:61:    Warning,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:69:        LineStatus::Warning
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:87:        warnings: Vec::new(),
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:115:                    LineStatus::Warning => result.warnings.push(finding),
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:119:            Err(error) => {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:120:                eprintln!("Warning: Could not read {}: {error}", path.display());
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:144:fn warning_annotation(finding: &Finding) -> String {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:151:        "::warning file={}::{}",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:159:/// Returns `None` when no list is configured, which means every warning is
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:177:/// Warning-band findings only produce GitHub annotations when the file was
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:179:/// same warning on every run. The hard limit stays repository-wide.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:184:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:185:fn print_warnings(warnings: &[Finding], changed: Option<&BTreeSet<String>>) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:186:    if warnings.is_empty() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:190:    for warning in warnings {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:191:        if should_annotate(warning, changed) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:192:            println!("{}", warning_annotation(warning));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:195:            "WARNING: {} has {} lines (approaching limit of {MAX_LINES}, warning threshold: {WARN_LINES})",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:196:            warning.file, warning.lines
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:204:    for warning in warnings {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:205:        println!("  {}", warning.file);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:210:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:226:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:229:        "\nChecking Rust files for maximum {MAX_LINES} lines (warning above {WARN_LINES})...\n"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:237:    print_warnings(&result.warnings, changed.as_ref());
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:248:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:249:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:273:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:274:    fn classifies_warning_band_without_blocking() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:276:        assert_eq!(classify_line_count(WARN_LINES + 1), LineStatus::Warning);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:277:        assert_eq!(classify_line_count(MAX_LINES), LineStatus::Warning);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:280:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:285:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:286:    fn check_directory_reports_warning_and_violation_separately() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:297:            result.warnings,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:312:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:313:    fn only_changed_files_in_the_warning_band_are_annotated() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:325:            .warnings
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:340:        // Both warning-band files remain in the baseline report.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:341:        assert_eq!(result.warnings.len(), 2);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:344:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:345:    fn missing_changed_file_list_annotates_every_warning() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:355:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:367:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:380:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:381:    fn warning_annotation_uses_github_actions_format() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:388:            warning_annotation(&finding),
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-file-size.rs:389:            "::warning file=src/near_limit.rs::File has 901 lines (approaching limit of 1000). Consider extracting code to keep at or below 900 lines and prevent concurrent PR merge limit violations."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/simulate-fresh-merge.sh:7:# combined tree no longer compiles or passes tests. GitHub only tests the PR head
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/simulate-fresh-merge.sh:41:  echo "::error::Textual merge conflict with origin/${BASE_REF}. Merge the base branch into this pull request and resolve the conflicts."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/simulate-fresh-merge.sh:66:  echo "::group::cargo test --all-features"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/simulate-fresh-merge.sh:67:  cargo test --all-features || status=1
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/simulate-fresh-merge.sh:72:  echo "::error::Checks failed on the simulated merge with origin/${BASE_REF} even though they pass on the pull request head. This is a semantic merge conflict."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/rust-paths.rs:259:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/rust-paths.rs:269:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:77:            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:122:        Err(ureq::Error::Status(404, _)) => false,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:124:            eprintln!("Warning: Could not check crates.io: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:145:            "Warning: Could not parse Docker Hub image '{}'; expected namespace/repository",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:161:        Err(ureq::Error::Status(404, _)) => false,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:163:            eprintln!("Warning: Could not check Docker Hub tag: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:188:        Err(ureq::Error::Status(404, _)) => false,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:190:            eprintln!("Warning: Could not check GitHub release: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:267:        Err(ureq::Error::Status(404, _)) => None,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:269:            eprintln!("Warning: Could not query crates.io for versions: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:279:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:287:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:299:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:325:                    && check_docker_hub_tag(image, "latest")
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:332:                eprintln!("Warning: GITHUB_REPOSITORY not set; assuming GitHub release is missing");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-release-needed.rs:363:                "Docker image: {}, version/latest tags published on Docker Hub: {}",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:47: *   * [ERROR] https://another-broken.com
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:54:  // Match lines with error status codes or ERROR markers followed by URLs
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:57:    /\[(?:4\d\d|5\d\d|ERROR|TIMEOUT|UNKNOWN)\]\s+(https?:\/\/[^\s)]+)/gi;
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:68:  // Lychee sometimes outputs: `[ERROR] url | description`
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:93:  const timeoutId = globalThis.setTimeout(() => controller.abort(), 10000);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:121:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:123:      `  Failed to check Wayback Machine for ${url}: ${error.message}`
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:127:    globalThis.clearTimeout(timeoutId);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:191:    await new Promise((resolve) => globalThis.setTimeout(resolve, 500));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:227:    // Print GitHub Actions annotations as errors (one per link)
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:230:        `::error title=Broken link - No Web Archive fallback::` +
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:236:          `  3. Add the URL to .lycheeignore if it is a known false positive (e.g. localhost, example.com).`
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:260:main().catch((error) => {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-web-archive.mjs:261:  console.error('Unexpected error:', error);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/desktop-release-resolve.sh:12:latest_release() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/desktop-release-resolve.sh:26:      TAG="$(latest_release)"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/desktop-release-resolve.sh:29:        echo "Resolved latest release $TAG (release parent: ${parent:-unknown}; CI head: $HEAD_SHA)."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/desktop-release-resolve.sh:35:[ -n "$TAG" ] || TAG="$(latest_release)"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:5://! with an HTTP 413 error. This guard runs `cargo package` to build the archive
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:7://! release pipeline surfaces a clear, actionable error instead of a late 413.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:26:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:29:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:32:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:35:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:48:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:54:    Warning,
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:62:        SizeStatus::Warning
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:92:                "::warning::cargo package failed on attempt {attempt}/{max_attempts}; retrying"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:101:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:128:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:133:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:141:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:148:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:161:    // Generate the archive. `--no-verify` skips the recompile (the lint/test/build
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:185:            eprintln!("::error::Failed to execute cargo package: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:190:        eprintln!("::error::cargo package failed; cannot determine crate archive size");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:196:            "::error::Could not find generated archive {name}-{version}.crate in target/package"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:204:            eprintln!("::error::Could not read size of {}: {e}", archive.display());
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:224:            println!("::error::{message}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:225:            eprintln!("\nERROR: {message}\n");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:229:        SizeStatus::Warning => {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:236:            println!("::warning::{message}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:237:            println!("\nWARNING: {message}\n");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:249:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:250:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:253:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:258:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:262:        assert_eq!(classify_size(WARN_CRATE_BYTES + 1), SizeStatus::Warning);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:263:        assert_eq!(classify_size(MAX_CRATE_BYTES), SizeStatus::Warning);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:266:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:276:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:281:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:298:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:319:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-crate-size.rs:331:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/bump-version.rs:130:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/bump-version.rs:138:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/bump-version.rs:146:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/bump-version.rs:160:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/get-bump-type.rs:61:    eprintln!("Error: Could not find Cargo.toml in expected locations");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/git-config.rs:52:        eprintln!("Error configuring git name: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/git-config.rs:57:        eprintln!("Error configuring git email: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-changelog-fragment.rs:34:                eprintln!("Error executing {} {:?}", command, args);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-changelog-fragment.rs:85:        Regex::new(&format!(r"^{}tests/", regex::escape(&prefix))).unwrap(),
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-changelog-fragment.rs:151:        eprintln!("::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:2://! Install-from-package smoke test for a published crates.io artifact.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:10://! CLI output is captured before previewing a few lines, so the smoke test never
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:14://!   rust-script scripts/smoke-test-published-crate.rs --release-version <version>
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:23://!   - smoke_test: 'pass', or 'skipped' for template defaults
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:79:                    eprintln!("Warning: Invalid {name} value '{value}'; using default {default}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:96:            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:102:fn should_skip_smoke_test(crate_name: &str) -> bool {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:258:        println!("No binary targets detected; skipping cargo install smoke test");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:341:name = "published-crate-smoke-test"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:373:        println!("No library target detected; skipping dependent-crate smoke test");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:401:fn run_smoke_test(
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:407:        "Smoke-testing published crate {}@{}",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:425:        eprintln!("Warning: Could not remove {}: {e}", work_dir.display());
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:435:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:443:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:454:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:459:    if should_skip_smoke_test(&entrypoints.crate_name) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:461:            "Skipping published-crate smoke test: package name is the template default '{}'",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:464:        set_output("smoke_test", "skipped");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:468:    if let Err(e) = run_smoke_test(&entrypoints, max_attempts, sleep_seconds) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:469:        eprintln!("::error::Published crate smoke test failed: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:470:        set_output("smoke_test", "fail");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:475:        "Published crate smoke test passed for {}@{}",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:478:    set_output("smoke_test", "pass");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:481:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:482:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:495:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:523:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:558:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:566:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:573:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:575:        assert!(should_skip_smoke_test("example-sum-package-name"));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/smoke-test-published-crate.rs:576:        assert!(!should_skip_smoke_test("real-crate"));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:6://! use cache keys based on `hashFiles('**/Cargo.lock')`: when no lockfile is
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:22:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:27:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:120:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:175:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:194:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:209:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:214:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:223:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:231:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:242:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:249:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:269:            println!("::error file={}::{message}", cargo_lock.display());
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:270:            eprintln!("\nERROR: {message}\n");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:279:            println!("::error file={}::{message}", cargo_lock.display());
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:280:            eprintln!("\nERROR: {message}\n");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:286:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:287:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:302:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:317:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:330:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:343:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:351:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:366:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:378:        let error =
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:380:        assert!(error.contains("Cargo metadata did not include package manifest"));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:383:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-cargo-lock.rs:393:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/get-version.rs:39:            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/get-version.rs:49:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/get-version.rs:57:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/get-version.rs:68:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-pipeline-status.sh:16:cancelled="$(select_by_result cancelled)"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-pipeline-status.sh:19:echo "Cancelled jobs: ${cancelled:-<none>}"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-pipeline-status.sh:23:  echo "::error::Pipeline failed. Failing jobs: ${failed}"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-pipeline-status.sh:27:if [[ -n "$cancelled" ]]; then
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-pipeline-status.sh:29:    echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-pipeline-status.sh:32:    echo "::warning::Cancelled jobs: ${cancelled}. On a non-default ref this is usually a superseded run."
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-changelog-fragment.rs:104:            eprintln!("Error creating directory {}: {}", changelog_dir, e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-changelog-fragment.rs:111:        eprintln!("Error writing fragment file: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:89:    /// rather than a hard error.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:131:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:139:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:152:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:172:        println!("::warning::Neither CARGO_REGISTRY_TOKEN nor CARGO_TOKEN is set, attempting publish without explicit token");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:227:                eprintln!("Original cargo publish error:");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:277:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:278:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:281:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:283:        let body = "error: crate version 0.1.0 is already uploaded";
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:288:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:291:error: failed to publish my-crate v0.42.0 to registry at https://crates.io
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:294:  the remote server responded with an error (status 429 Too Many Requests): \
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:301:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:307:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:309:        let body = "error: failed to publish: please provide a non-empty token";
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:314:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:316:        let body = "error: some brand new failure mode nobody has seen before";
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:321:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:329:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/publish-crate.rs:332:        // failure must remain a hard, non-zero error.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:4://! This script detects what types of files have changed in the latest commit
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:59:                eprintln!("Error executing {} {:?}", command, args);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:101:    // is the actual PR head. To get the per-commit diff (what the latest
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:262:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:263:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:283:            .unwrap_or_else(|error| panic!("failed to run git {args:?}: {error}"));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:297:        run_git(&repo, &["config", "user.email", "test@example.com"]);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:298:        run_git(&repo, &["config", "user.name", "Test User"]);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:331:        run_git(&repo, &["config", "user.email", "test@example.com"]);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:332:        run_git(&repo, &["config", "user.name", "Test User"]);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:333:        fs::write(repo.join("README.md"), "# Test\n").unwrap();
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:352:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:363:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:385:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:405:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:432:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/detect-code-changes.rs:433:    fn pull_request_synthetic_merge_uses_latest_pr_head_commit_diff() {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-version-modification.rs:43:fn exec_ignore_error(command: &str, args: &[&str]) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-version-modification.rs:102:    exec_ignore_error("git", &["fetch", "origin", &base_ref, "--depth=1"]);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/check-version-modification.rs:150:        eprintln!("Error: Manual version change detected in Cargo.toml!\n");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:16:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:18:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:20:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:22:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:24:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:26:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:28:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:31:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:34:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:36:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:40:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:48:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:53:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:62:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:108:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:148:#[cfg_attr(not(test), derive(Serialize))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:186:fn is_existing_release_error(combined: &str) -> bool {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:187:    let Some(error) = parse_first_json_object(combined) else {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:190:    let Some(errors) = error.get("errors").and_then(serde_json::Value::as_array) else {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:194:    !errors.is_empty()
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:195:        && errors.iter().all(|error| {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:196:            error.get("resource").and_then(serde_json::Value::as_str) == Some("Release")
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:197:                && error.get("code").and_then(serde_json::Value::as_str) == Some("already_exists")
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:198:                && error.get("field").and_then(serde_json::Value::as_str) == Some("tag_name")
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:259:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:264:            eprintln!("Error: Missing required argument --release-version");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:273:            eprintln!("Error: Missing required argument --repository");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:282:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:290:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:297:            eprintln!("Error: {e}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:384:        if is_existing_release_error(&combined) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:389:                eprintln!("Error creating release: gh api exited unsuccessfully");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:391:                eprintln!("Error creating release:\n{details}");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:398:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:399:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:402:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:418:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:426:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:442:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:450:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:458:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:468:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:490:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:498:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:506:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:509:{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"}]}"#;
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:511:        assert!(is_existing_release_error(output));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:514:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:517:{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}]}"#;
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:519:        assert!(!is_existing_release_error(output));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:522:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:525:{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"},{"resource":"Release","code":"custom","field":"body"}]}"#;
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:527:        assert!(!is_existing_release_error(output));
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/create-github-release.rs:530:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/install-rust-script.sh:4:# - Short-circuits when rust-script is already on PATH (cached/preinstalled).
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:26:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:29:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:35:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:80:            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:177:            "Warning: Could not find [[package]] entry for `{}` in {} (lock file left untouched)",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:197:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:203:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:227:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:239:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:285:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:336:        eprintln!("Error: Could not find an unpublished version after 100 attempts");
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:360:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:442:#[cfg(test)]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:443:mod tests {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:460:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:492:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:506:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:515:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:529:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:587:    /// Regression test for issue #67: the Rust release job failed with
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:593:    /// This test reproduces both orderings against a real temporary repository
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:595:    #[test]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:637:            "unexpected rebase error: {buggy_err}"
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:668:#[cfg(not(test))]
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:689:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:701:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:719:    // Sync with the latest remote state BEFORE touching any files.
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:730:        eprintln!("Warning: Could not fetch origin/{}: {}", current_branch, e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:751:                eprintln!("Error rebasing onto origin/{}: {}", current_branch, e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:762:            eprintln!("Error reading {}: {}", package_manifest.display(), e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:771:                "Error: Could not parse version from {}",
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:783:            eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:814:        eprintln!("Error: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:822:            eprintln!("Error updating Cargo.lock: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:838:        eprintln!("Error staging release files: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:843:            eprintln!("Error staging changelog fragments: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:849:    if exec_check("git", &["diff", "--cached", "--quiet"]) {
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:873:        eprintln!("Error committing: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:893:                        eprintln!("Error during pull --rebase: {}", rebase_err);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:898:                    eprintln!("Error pushing after {} attempts: {}", max_push_attempts, e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:915:        eprintln!("Error creating tag: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/rust/scripts/version-and-commit.rs:921:        eprintln!("Error pushing tags: {}", e);
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/validate_changeset.py:41:    Returns (is_valid, error_message).
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/validate_changeset.py:98:        print("WARNING: No changelog fragment found!")
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/validate_changeset.py:114:        # This is currently a warning, not a failure
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/validate_changeset.py:121:            f"WARNING: Found {fragment_count} fragments. Usually PRs should have only one."
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/validate_changeset.py:131:        is_valid, error = validate_fragment_content(fragment)
+/tmp/formal-ai-issue999-templates.FZURWz/python/scripts/validate_changeset.py:135:            print(f"  [FAIL] {error}")
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:29:// Cache for detected paths (computed once per process)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:30:let cachedJsRoot = null;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:42: * @throws {Error} If no package.json is found in expected locations
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:57:  // Return cached value if already computed
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:58:  if (cachedJsRoot !== null) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:59:    return cachedJsRoot;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:67:    cachedJsRoot = '.';
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:68:    return cachedJsRoot;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:76:    cachedJsRoot = 'js';
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:77:    return cachedJsRoot;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:81:  throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:152: * Reset the cached JavaScript root (useful for testing)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:154:export function resetCache() {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/js-paths.mjs:155:  cachedJsRoot = null;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:50:  const errors = [];
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:57:      errors,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:63:  if (/\s/.test(image)) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:64:    errors.push('DOCKERHUB_IMAGE must not contain whitespace');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:68:    errors.push(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:74:    errors.push('DOCKERHUB_USERNAME is required when DOCKERHUB_IMAGE is set');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:78:    errors.push('DOCKERHUB_TOKEN is required when DOCKERHUB_IMAGE is set');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:82:    errors.push(`Docker context does not exist: ${context}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:86:    errors.push(`Dockerfile does not exist: ${dockerfile}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:92:    enabled: errors.length === 0,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:93:    errors,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:115:export function main({ env = process.env, stderr = console.error } = {}) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:130:  if (config.errors.length > 0) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:131:    for (const error of config.errors) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-publish.mjs:132:      stderr(`::error::${error}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:128:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:129:    throw new Error(`Failed to read ${filePath}: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:139:    throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:231:    console.error('Error: No valid changesets could be parsed');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:281:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:282:  console.error(`::error::${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/merge-changesets.mjs:284:    console.error('Stack trace:', error.stack);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:2: * Helpers for reporting ESLint warnings only on changed lines.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:4: * Errors are always reported, everywhere. Warnings are noise when they come
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:7: * file and drop warnings that fall outside that set.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:62: * Keep every error, and keep warnings only when they touch a changed line of a
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:72:export function filterWarningsToChangedLines(results, changedLines, cwd) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:105:      warningCount: messages.filter((message) => message.severity === 1).length,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint-changed-lines.mjs:106:      fixableWarningCount: messages.filter(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:5:// Detects what types of files changed in the latest commit and outputs
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:13:// This lets PR synchronize runs skip slow checks when the latest PR head
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:44:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:45:    console.error(`Error executing command: git ${args.join(' ')}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:46:    console.error(error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:47:    throw error;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:143:    /\.(mjs|cjs|js)$/.test(file)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/detect-code-changes.mjs:164:    codePattern.test(file)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:33:  const errors = [];
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:38:  // Repositories without a Dockerfile skip the check; this is not an error.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:44:      errors,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:49:    errors.push(`Docker context does not exist: ${context}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:55:    enabled: errors.length === 0,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:56:    errors,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:76:export function main({ env = process.env, stderr = console.error } = {}) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:83:  if (config.errors.length > 0) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:84:    for (const error of config.errors) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-docker-build.mjs:85:      stderr(`::error::${error}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-changesets.mjs:74:    return frontmatter !== null && versionTypeRegex.test(frontmatter);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-changesets.mjs:75:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-changesets.mjs:76:    console.warn(`Warning: Failed to read ${filePath}: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/package-info.mjs:18:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/package-info.mjs:19:    throw new Error(`Could not parse ${packageJsonPath}: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/package-info.mjs:23:    throw new Error(`Package name is missing in ${packageJsonPath}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/package-info.mjs:30:    throw new Error(`Package version is missing in ${packageJsonPath}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:26:    throw new Error(`${optionName} must be a positive integer`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:48:      throw new Error(`Missing value for ${arg}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:98:    globalThis.setTimeout(resolve, seconds * 1000)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:147:  stderr = console.error,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:153:      stderr('Error: Missing required --release-version');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:183:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/wait-for-npm.mjs:184:    stderr(`Error: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/npm-registry.mjs:29:    throw new Error('Package name is required');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/npm-registry.mjs:35:      throw new Error(`Invalid scoped package name: ${packageName}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/npm-registry.mjs:58: * HTTP 404 means the package has not been published yet and is not an error.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/npm-registry.mjs:75:    throw new Error('Package version is required');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/npm-registry.mjs:90:    throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:6: *   should_pull: Optional flag to pull latest changes before publishing (for release job)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:31:  isAlreadyPublishedError,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:52:        describe: 'Pull latest changes before publishing',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:76:// Guards against false positives in CI/CD output parsing.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:79:  'error occurred while publishing',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:80:  'npm error code E',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:81:  'npm error 404',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:82:  'npm error 401',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:83:  'npm error 403',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:130: * @returns {Promise<{result: object|null, error: Error|null}>}
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:144:      return { result, error: null };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:149:    return { result, error: null };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:150:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:151:    // Restore cwd on error before retry
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:155:    return { result: null, error };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:162: * @param {Error|null} commandError - Error thrown by the command
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:163: * @returns {Error|null} - Error if failure detected, null otherwise
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:165:function analyzePublishResult(publishResult, commandError) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:166:  if (commandError) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:167:    return commandError;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:182:    console.error(`Detected publish failure: "${failurePattern}"`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:183:    return new Error(`Publish failed: detected "${failurePattern}" in output`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:188:    console.error(`Changeset exited with code ${publishResult.code}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:189:    return new Error(`Publish failed with exit code ${publishResult.code}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:201: * @returns {Promise<{success: boolean, error: Error|null, output: string}>}
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:204:  const { result, error } = await runChangesetPublish(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:209:  const analysisError = analyzePublishResult(result, error);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:211:    analysisError?.message || '',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:216:  if (analysisError) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:220:    if (!isAlreadyPublishedError(output) && isNonRetryableFailure(output)) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:221:      analysisError.nonRetryable = true;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:223:    return { success: false, error: analysisError, output };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:226:  return { success: true, error: null, output };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:232:      // Pull the latest changes we just pushed
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:272:    const { success, error } = await publishWithRetry({
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:288:    console.error(`\u274C Publish failed: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:289:    // Authentication / registry-configuration errors will not be fixed by
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:291:    if (error?.nonRetryable && !error?.verificationFailed) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:292:      console.error(buildAuthFailureGuidance(packageName));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:295:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:296:    // Restore cwd on error
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-to-npm.mjs:298:    console.error('Error:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:30:    throw new Error(`Invalid semantic version: ${version}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:79:export function selectLatestSupportedNpmRelease(metadata) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:95:    throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:110:    throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:118:async function resolveLatestSupportedNpmRelease(fetchFn) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:120:  return selectLatestSupportedNpmRelease(metadata);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:136:// 3. npx npm@11 install (uses npx cache, bypasses arborist)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:144:  const npmRelease = await resolveLatestSupportedNpmRelease(fetchFn);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:170:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:171:    console.warn(`Warning: ${name} failed: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:177:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:178:    `ERROR: Node.js ${NODE_MIN_VERSION} or later is required for npm OIDC trusted publishing setup.`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:180:  console.error(`Current Node.js version is ${nodeVersion}.`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:185:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:186:    `ERROR: Could not update npm to >= ${NPM_MIN_VERSION} for OIDC trusted publishing.`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:188:  console.error(`Current npm version ${npmVersion} does not support OIDC.`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:189:  console.error('See: https://github.com/actions/runner-images/issues/13883');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:253:    // Load use-m dynamically only for CLI execution, so tests can import the
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:261:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/setup-npm.mjs:262:    console.error('Error updating npm:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:36:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:37:    console.error(`Error executing command: ${command}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:38:    console.error(error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:102:    console.error('::error::Manual version change detected in package.json');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:103:    console.error('');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:104:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:107:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:110:    console.error('');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:111:    console.error('To request a release:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:112:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:115:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:118:    console.error('');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:119:    console.error('Detected change:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-version.mjs:120:    console.error(versionDiff);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/changeset-version.mjs:58:  // This addresses npm ERESOLVE errors documented in issue #111 / PR #112
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/changeset-version.mjs:67:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/changeset-version.mjs:68:  // Restore cwd on error
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/changeset-version.mjs:70:  console.error('Error during version bump:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/changeset-version.mjs:72:    console.error('Stack trace:', error.stack);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:25:  return new Promise((resolve) => globalThis.setTimeout(resolve, ms));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:30: * Such an error is a cue to verify, not to fail.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:45:export function isAlreadyPublishedError(output) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:78:    } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:79:      // A transient registry/network error is indistinguishable from a miss
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:81:      log(`Verification attempt ${attempt} errored: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:99: * @param {Error} [outcome.error]
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:104:function shouldVerify({ success, error, output, log }) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:108:  if (!isAlreadyPublishedError(output || error?.message || '')) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:120: * @returns {{success: boolean, error: Error|null}}
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:124:    return { success: true, error: null };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:126:  const error = new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:129:  error.nonRetryable = true;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:130:  error.verificationFailed = true;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:131:  return { success: false, error };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:145: * @param {Function} options.publish - async () => ({ success, error, output })
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:152: * @returns {Promise<{success: boolean, error: Error|null, publishAttempts: number}>}
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:164:  let lastError = null;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:169:    const { success, error, output } = await publish();
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:171:    if (shouldVerify({ success, error, output, log })) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:181:    lastError = error;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:183:    if (error?.nonRetryable) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:184:      return { success: false, error, publishAttempts };
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:189:        `Publish failed: ${error?.message}, waiting ${retryDelay / 1000}s before retry...`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:197:    error:
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-retry.mjs:198:      lastError || new Error(`Failed to publish after ${maxRetries} attempts`),
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-release-needed.mjs:115:main().catch((error) => {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-release-needed.mjs:116:  console.error('Error:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:84:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:85:    console.log(`Git diff with explicit SHAs failed: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:102:      // Ignore fetch errors, we might already have it
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:109:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:110:    console.log(`Git diff with base ref failed: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:122:    'Warning: Could not determine PR diff, checking all changesets in directory'
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:166: * @returns {{valid: boolean, type?: string, description?: string, error?: string}}
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:179:        error: `Changeset must specify a version type: major, minor, or patch\nExpected format:\n---\n'${packageName}': patch\n---\n\nYour description here`,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:188:        error:
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:197:        error: 'Changeset must include a non-empty description of the changes',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:206:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:209:      error: `Failed to read changeset file: ${error.message}`,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:234:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:235:      "::error::No changeset found in this PR. Please add a changeset by running 'npm run changeset' and commit the result."
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:239:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:240:      `::error::Multiple changesets found in this PR (${changesetCount}). Each PR should add exactly ONE changeset.`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:242:    console.error('::error::Found changeset files added by this PR:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:243:    addedChangesetFiles.forEach((file) => console.error(`  ${file}`));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:244:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:245:      '\n::error::Please combine these into a single changeset or remove the extras.'
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:257:    console.error(`::error::${validation.error}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:258:    console.error(`\nFile content of ${changesetFile}:`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:260:      console.error(readFileSync(changesetFile, 'utf-8'));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:262:      console.error('(could not read file)');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:270:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:271:  console.error('Error during changeset validation:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/validate-changeset.mjs:273:    console.error('Stack trace:', error.stack);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-failure-classifier.mjs:5: * registry-configuration error) produces the same error every time and only
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-failure-classifier.mjs:19:  'npm error 404',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-failure-classifier.mjs:20:  'npm error 401',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-failure-classifier.mjs:21:  'npm error 403',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-failure-classifier.mjs:34: * @param {string} output - Combined stdout and stderr (and/or error message)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/publish-failure-classifier.mjs:57:    'configuration error, not a transient one, so it was not retried.',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/push-main-with-rebase-retry.sh:12:echo "::warning::Initial push failed; rebasing on ${remote}/${branch} before retry."
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:47: *   * [ERROR] https://another-broken.com
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:54:  // Match lines with error status codes or ERROR markers followed by URLs
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:57:    /\[(?:4\d\d|5\d\d|ERROR|TIMEOUT|UNKNOWN)\]\s+(https?:\/\/[^\s)]+)/gi;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:68:  // Lychee sometimes outputs: `[ERROR] url | description`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:93:  const timeoutId = globalThis.setTimeout(() => controller.abort(), 10000);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:121:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:123:      `  Failed to check Wayback Machine for ${url}: ${error.message}`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:127:    globalThis.clearTimeout(timeoutId);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:191:    await new Promise((resolve) => globalThis.setTimeout(resolve, 500));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:227:    // Print GitHub Actions annotations as errors (one per link)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:230:        `::error title=Broken link - No Web Archive fallback::` +
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:236:          `  3. Add the URL to .lycheeignore if it is a known false positive (e.g. localhost, example.com).`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:260:main().catch((error) => {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-web-archive.mjs:261:  console.error('Unexpected error:', error);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:4: * Install-from-package smoke test for published npm artifacts.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:22:const DEFAULT_SERVER_TIMEOUT_SECONDS = 15;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:26:  'Usage: node scripts/smoke-test-package.mjs --package-version <version> [--package-name <name>] [--js-root <path>] [--max-attempts <count>] [--sleep-seconds <count>] [--cli-args <args>] [--skip-cli] [--skip-library] [--server-bin <bin>] [--server-args <args>] [--server-health-url <url>]';
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:31:    throw new Error(`${optionName} must be a positive integer`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:55:        throw new Error(`Missing value for ${arg}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:128:      cliValue('cli-args', ['SMOKE_TEST_CLI_ARGS']),
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:140:      cliValue('server-args', ['SMOKE_TEST_SERVER_ARGS']),
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:143:    serverBin: cliValue('server-bin', ['SMOKE_TEST_SERVER_BIN']),
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:145:      'SMOKE_TEST_SERVER_HEALTH_URL',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:147:    serverTimeoutSeconds: positiveValue(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:148:      'server-timeout-seconds',
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:149:      ['SMOKE_TEST_SERVER_TIMEOUT_SECONDS'],
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:150:      DEFAULT_SERVER_TIMEOUT_SECONDS
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:152:    skipCli: parseBoolean(cliValue('skip-cli', ['SMOKE_TEST_SKIP_CLI'])),
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:154:      cliValue('skip-library', ['SMOKE_TEST_SKIP_LIBRARY'])
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:215:    "  throw new Error('Package import resolved but exposed no exports');",
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:228:    globalThis.setTimeout(resolve, seconds * 1000)
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:258:    } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:260:        throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:261:          `Failed to install ${packageSpec} after ${maxAttempts} attempts: ${error.message}`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:304:      throw new Error(`CLI ${binEntry.name} produced no stdout`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:321:    stdout('No library smoke test configured; skipping');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:340:    stdout('No CLI smoke test configured; skipping');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:356:  timeoutSeconds = DEFAULT_SERVER_TIMEOUT_SECONDS,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:359:  const deadline = Date.now() + timeoutSeconds * 1000;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:360:  let lastError;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:368:      lastError = new Error(`${url} returned status ${response.status}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:369:    } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:370:      lastError = error;
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:376:  throw lastError || new Error(`Timed out waiting for ${url}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:384:  serverTimeoutSeconds = DEFAULT_SERVER_TIMEOUT_SECONDS,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:389:    stdout('No HTTP server smoke test configured; skipping');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:408:      timeoutSeconds: serverTimeoutSeconds,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:412:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:413:    throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:414:      `HTTP server smoke test failed: ${error.message}\nServer stderr:\n${stderr}`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:421:export async function smokeTestPackage({
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:430:  serverTimeoutSeconds = DEFAULT_SERVER_TIMEOUT_SECONDS,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:440:  stdout(`Smoke-testing installable package ${packageSpec}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:447:        { name: 'npm-package-smoke-test', private: true, type: 'module' },
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:490:      serverTimeoutSeconds,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:512:  stderr = console.error,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:518:      stderr('Error: Missing required --package-version');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:527:    await smokeTestPackage({
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:530:      stdout: (message) => stdout(`[smoke-test] ${message}`),
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:533:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/smoke-test-package.mjs:534:    stderr(`[smoke-test] FAILED: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:2:# Turn timeout cancellations into visible failures on the release branch.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:19:cancelled="$(select_by_result cancelled)"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:22:echo "Cancelled jobs: ${cancelled:-<none>}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:27:  echo "::error::Pipeline failed. Failing jobs: ${failed}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:31:if [ -n "$cancelled" ]; then
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:33:    echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure."
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-pipeline-status.sh:36:    echo "::warning::Cancelled jobs: ${cancelled}. On a non-default ref this is usually a superseded run."
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/instant-version-bump.mjs:80:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/instant-version-bump.mjs:153:  // This addresses npm ERESOLVE errors documented in issue #111 / PR #112
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/instant-version-bump.mjs:164:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/instant-version-bump.mjs:165:  // Restore cwd on error
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/instant-version-bump.mjs:167:  console.error('Error during instant version bump:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/instant-version-bump.mjs:169:    console.error('Stack trace:', error.stack);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:6: * All files are linted for errors. Warnings are annotated only on lines that
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:8: * actionable findings. Set LINT_ALL_WARNINGS=1 to report every warning.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:15:  filterWarningsToChangedLines,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:74:    process.env.LINT_ALL_WARNINGS === '1' ? null : collectChangedLines();
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:77:    ? filterWarningsToChangedLines(results, changedLines, process.cwd())
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:87:  const errorCount = reported.reduce(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:88:    (total, result) => total + result.errorCount,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:92:  const hiddenWarnings =
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:93:    results.reduce((total, result) => total + result.warningCount, 0) -
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:94:    reported.reduce((total, result) => total + result.warningCount, 0);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:96:  if (hiddenWarnings > 0) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:98:      `${hiddenWarnings} warning(s) on unchanged lines were not reported. Run LINT_ALL_WARNINGS=1 npm run lint to see them.`
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/lint.mjs:102:  process.exit(errorCount > 0 ? 1 : 0);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-manual-changeset.mjs:59:    console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-manual-changeset.mjs:94:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-manual-changeset.mjs:95:  console.error('Error creating changeset:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-manual-changeset.mjs:97:    console.error('Stack trace:', error.stack);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:4:# Simulates a fresh merge of the current PR branch with the latest base branch.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:19:echo "=== Synchronizing PR with latest $BASE_REF ==="
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:27:# Fetch the latest base branch
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:28:echo "Fetching latest $BASE_REF..."
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:36:echo "Latest base branch ($BASE_REF): $BASE_SHA"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:49:  # Attempt to merge the latest base branch
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/simulate-fresh-merge.sh:56:    echo "::error::Merge conflict detected! PR needs to be rebased/updated before it can be merged."
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:28:WARNINGS=()
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:31:# Counts lines in FILE and records a warning or failure when it crosses
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:32:# the warning threshold or hard limit. HINT is appended to the GitHub
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:41:    echo "ERROR: $file has $line_count lines (limit: ${LIMIT})"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:42:    echo "::error file=$file::File has $line_count lines (limit: ${LIMIT}). ${hint}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:45:    echo "WARNING: $file has $line_count lines (approaching limit of ${LIMIT}, warning threshold: ${WARN_THRESHOLD})"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:46:    echo "::warning file=$file::File has $line_count lines (approaching limit of ${LIMIT}). ${hint}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:47:    WARNINGS+=("$file")
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:70:  echo "WARNING: $RELEASE_YML not found, skipping"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:74:if [ "${#WARNINGS[@]}" -gt 0 ]; then
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-file-line-limits.sh:76:  printf '  %s\n' "${WARNINGS[@]}"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-release-notes.mjs:82:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-release-notes.mjs:190:    } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-release-notes.mjs:192:      console.log('   Error:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-release-notes.mjs:194:        console.error(error);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-release-notes.mjs:227:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-release-notes.mjs:228:  console.error('❌ Error formatting release notes:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:83:    throw new Error(`Missing value for ${optionName}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:222:  if (result.error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:223:    throw new Error(`gh api failed to start: ${result.error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:232:  if (/already_exists/i.test(output)) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:237:  throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:247:  stderr = console.error,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:260:      stderr('Error: Missing required arguments');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:293:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/create-github-release.mjs:294:    stderr(`Error creating release: ${error.message}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:83:  console.error('Error: Positional arguments detected!');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:84:  console.error('Command line arguments:', args);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:85:  console.error('');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:86:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:89:  console.error('Usage:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:90:  console.error('  Changeset mode:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:91:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:94:  console.error('  Instant mode:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:95:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:98:  console.error('');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:99:  console.error('Examples:');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:100:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:103:  console.error('  node scripts/version-and-commit.mjs --mode changeset');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:104:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:112:  console.error(`Invalid mode: "${mode}". Expected "changeset" or "instant".`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:113:  console.error('Command line arguments:', process.argv.slice(2));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:119:  console.error('Error: --bump-type is required for instant mode');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:120:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:272:  } catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:273:    // Restore cwd on error
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/version-and-commit.mjs:275:    console.error('Error:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:88:      throw new Error(`Unknown argument: ${value}`);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:103:    child.once('error', reject);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:108:        reject(new Error(`npm ${args.join(' ')} exited with code ${code}`));
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:130:async function createStaticServer(rootDir) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:169:    server.once('error', reject);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:247:      timeout: 30000,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:248:      verificationTimeout: 5000,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:251:      throw new Error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:256:    await commander.waitForSelector({ selector: '.app-shell', timeout: 10000 });
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:259:      timeout: 10000,
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:304:  const server = await createStaticServer(exampleAppDistDir);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:340:main().catch((error) => {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/update-preview-images.mjs:341:  console.error(error.stack || error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-mjs-syntax.sh:4:# Checks Node.js syntax for all .mjs files in src/, scripts/, and tests/.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-mjs-syntax.sh:9:# Exit code 0 = all files pass syntax check; non-zero = syntax error found.
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-mjs-syntax.sh:16:for dir in src scripts tests; do
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/check-mjs-syntax.sh:21:        timeout 10s node --check "$file"
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-github-release.mjs:72:  console.error('Error: Missing required arguments');
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-github-release.mjs:73:  console.error(
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-github-release.mjs:109:} catch (error) {
+/tmp/formal-ai-issue999-templates.FZURWz/js/scripts/format-github-release.mjs:110:  console.error('Error formatting release:', error.message);
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/docs.yml:38:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/docs.yml:43:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/docs.yml:44:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/docs.yml:67:          if-no-files-found: error
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/docs.yml:87:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/docs.yml:88:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:32:# Concurrency is intentionally job-scoped. Superseded read-only jobs cancel
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:34:# the terminal status gate reliably treat a cancellation there as a timeout or
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:35:# manual cancellation. Write-capable release jobs share one FIFO queue.
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:40:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:41:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:44:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:72:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:92:  # These jobs ensure code quality and tests pass before any release
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:99:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:100:    timeout-minutes: 20
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:103:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:105:    # !cancelled() lets this job evaluate even though detect-changes is skipped
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:106:    # for workflow_dispatch while still propagating workflow cancellation.
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:108:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:142:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:182:  # === TEST ===
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:183:  # Test on latest Python version only
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:184:  test:
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:185:    name: Test (Python 3.13)
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:186:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:187:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:189:      group: ${{ github.workflow }}-${{ github.ref }}-test
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:190:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:194:    # !cancelled() lets this job evaluate even though detect-changes is skipped
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:195:    # for workflow_dispatch while still propagating workflow cancellation.
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:197:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:223:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:240:      - name: Run tests
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:243:          pytest tests/ -v --cov=src --cov-report=xml --cov-report=term
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:256:          fail_ci_if_error: true
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:262:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:263:    timeout-minutes: 20
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:266:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:267:    needs: [detect-changes, lint, test]
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:270:      !cancelled() && (
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:275:        needs.test.result == 'success'
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:299:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:335:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:336:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:339:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:366:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:389:            SOURCE_PATTERN="^(src/|tests/|scripts/)"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:392:            SOURCE_PATTERN="^$PYTHON_ROOT/(src/|tests/|scripts/)"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:405:            echo "::error::No changelog fragment found. Please run 'scriv create' and document your changes."
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:423:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:424:    timeout-minutes: 60
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:427:      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:455:          cache-from: type=gha
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:456:          cache-to: type=gha,mode=max
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:463:    needs: [lint, test, build]
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:466:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:469:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:470:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:498:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:551:      - name: Smoke test published package
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:554:          python scripts/smoke_test_published_package.py \
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:570:    needs: [lint, test, build]
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:573:      cancel-in-progress: false
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:575:    # !cancelled() prevents the skipped detect-changes dependency from propagating
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:576:    # through lint/test/build while still propagating workflow cancellation.
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:579:      !cancelled() &&
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:582:      needs.test.result == 'success' &&
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:584:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:585:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:614:            echo "::error::Could not find pyproject.toml at repo root or python/pyproject.toml"
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:679:      - name: Smoke test published package
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:682:          python scripts/smoke_test_published_package.py \
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:695:  # A job killed by timeout-minutes concludes "cancelled", not "failure".
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:699:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:700:    timeout-minutes: 5
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:702:    needs: [detect-changes, lint, test, build, changelog, docker-build,
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml:707:      - name: Fail the run when a required job was cancelled or failed
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml:16:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml:17:    timeout-minutes: 30
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml:20:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml:45:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml:46:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:30:    runs-on: ubuntu-latest
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:31:    timeout-minutes: 10
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:34:      cancel-in-progress: true
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:47:            --cache
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:48:            --max-cache-age 1d
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:50:            --timeout 30
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:70:          echo "::error::Broken links were detected with no Web Archive fallback available."
+/tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml:79:          echo "  3. Otherwise find an updated URL, remove the link, or add a known false positive to .lycheeignore."

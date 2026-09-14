@@ -1,0 +1,41 @@
+{
+  "make pancakes": {
+   "sufficient": true,
+   "steps": [
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "2 cups (18oz/510g) self-rising or all-purpose flour (See tips below)"},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "2 tablespoons of butter or vegetable oil"},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "1/2 teaspoon of vanilla extract (optional)"},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Crack the eggs into a bowl and beat until creamy. Add in the dry ingredients (excluding the salt and baking soda if using self-rising flour). Do not stir the mixture at this point!"},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Melt the butter in a microwave-safe bowl. Make sure that it's completely melted; about a minute is sufficient."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Add the butter and milk to the mix. Stir gently, leaving some small clumps of dry ingredients in the batter."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Overmixing your batter is going to develop strong gluten strains, which will make your pancakes very chewy."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Heat the frying pan to a medium-low flame."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Sprinkle a few flecks of water onto your pan."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Pour about 3 tablespoons to 1/4 cup batter from the tip of a large spoon or from a pitcher onto the hot griddle or greased frying pan."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Cook for about two minutes or until the pancake is golden."},
+    {"source": "wikihow", "depth": 0, "tier": "independent_corroboration", "text": "Cook the other side until golden and remove."}
+   ]
+  },
+  "reverse a string in python": {
+   "sufficient": true,
+   "steps": [
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "In Python, strings are immutable . Changing a string does not modify the string. It creates a new one."},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "Strings are sliceable. Slicing a string gives you a new string from one point in the string, backwards or forwards, to another point, by given increments."},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "Scenario: Developer wants to transform a string"},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "Transformation is to reverse order of all the characters"},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "example01 produces the desired result, using extended slice notation ."},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "Developer might expect something like string.reverse()"},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "The native idiomatic (aka \" pythonic \") solution may not be readable to newer developers"},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "Developer may be tempted to implement his or her own version of string.reverse() to avoid slice notation."},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "The output of slice notation may be counter-intuitive in some cases: see e.g., example02 print 'coup_ate_grouping'[-4:] ## => 'ping'"},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "print 'coup_ate_grouping'[-4:-1] ## => 'pin'"},
+    {"source": "stackexchange", "depth": 1, "tier": "independent_corroboration", "text": "the different outcomes of indexing on [-1] may throw some developers off"}
+   ]
+  },
+  "build a nonexistent quantum flux capacitor": {
+   "sufficient": false,
+   "steps": [
+
+   ]
+  }
+}

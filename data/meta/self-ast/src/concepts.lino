@@ -2,9 +2,9 @@ self_ast_census
   target src/concepts.rs
   language rust
   fidelity signature
-  byte_len 19122
-  line_count 552
-  content_id source_module_a85eb84f856758e8
+  byte_len 19030
+  line_count 549
+  content_id source_module_3bf1ea587f92ec8b
   symbol_count 38
   symbols
     function concepts 24 27
@@ -39,9 +39,9 @@ self_ast_census
     function split_term_and_context 370 381
     function strip_suffix_pattern 383 390
     struct ConceptLookup 399 403
-    function lookup_concept_query 417 431
-    function rank_for_pair 433 477
-    function record_matches_query_term 479 492
-    function record_matches_term 494 511
-    function record_has_context 513 536
-    function normalize_concept_term 538 552
+    function lookup_concept_query 417 429
+    function rank_for_pair 431 474
+    function record_matches_query_term 476 489
+    function record_matches_term 491 508
+    function record_has_context 510 533
+    function normalize_concept_term 535 549

@@ -1,0 +1,8 @@
+link_edit
+  leaf L18
+  path src/client_integrations.rs
+  language rust
+  rule replace_literal
+    old "http://127.0.0.1:8080"
+    new "http://127.0.0.1:8099"
+  expect "http://127.0.0.1:8099"

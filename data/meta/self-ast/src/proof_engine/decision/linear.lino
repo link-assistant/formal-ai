@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/decision/linear.rs
   language rust
   fidelity signature
-  byte_len 26526
-  line_count 875
-  content_id source_module_ff27915ed529c29a
+  byte_len 26400
+  line_count 876
+  content_id source_module_37a42c9c03a97867
   symbol_count 69
   symbols
     module proofs 3 3
@@ -60,19 +60,19 @@ self_ast_census
     function apply_equality 615 627
     function apply_lower 629 636
     function apply_upper 638 645
-    function validate 647 673
-    function contains 675 695
-    function stronger_lower 698 701
-    function stronger_upper 703 706
-    struct IntervalSystem 709 712
-    function is_satisfiable 715 717
-    function witness_assignment 719 724
-    function witness_value 726 755
-    function interval_summary 757 782
-    function build_interval_system 785 827
-    function format_atoms 829 835
-    function format_assignment 837 843
-    function format_affine 845 854
-    function format_number 856 867
-    function nearly_zero 869 871
-    function nearly_equal 873 875
+    function validate 647 672
+    function contains 674 694
+    function stronger_lower 697 700
+    function stronger_upper 702 705
+    struct IntervalSystem 708 711
+    function is_satisfiable 714 716
+    function witness_assignment 718 723
+    function witness_value 725 756
+    function interval_summary 758 783
+    function build_interval_system 786 828
+    function format_atoms 830 836
+    function format_assignment 838 844
+    function format_affine 846 855
+    function format_number 857 868
+    function nearly_zero 870 872
+    function nearly_equal 874 876

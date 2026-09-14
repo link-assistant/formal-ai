@@ -37,9 +37,13 @@ fn the_ladder_runs_against_the_committed_baseline() {
         contents.contains("python3 -m unittest -v test_ladder.py"),
         "the judge's own regression tests must run before it gates the server"
     );
+    // Issue #1107: the ladder no longer compiles the binary itself. The shared
+    // action provides it from a cache keyed by the sources it is built from,
+    // and installs the toolchain and sccache only when it actually has to
+    // build -- which is what makes a push that changed no source free here.
     assert!(
-        contents.contains("uses: ./.github/actions/setup-sccache"),
-        "the release build should reuse the repository's Rust cache"
+        contents.contains("uses: ./.github/actions/formal-ai-binary"),
+        "the ladder should take the binary from the shared cache, not compile it again"
     );
     assert!(
         contents.contains("LEARNING_OUT: ${{ runner.temp }}/ladder-learning.json"),

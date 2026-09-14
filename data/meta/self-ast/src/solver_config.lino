@@ -1,0 +1,15 @@
+self_ast_census
+  target src/solver_config.rs
+  language rust
+  fidelity signature
+  byte_len 4091
+  line_count 97
+  content_id source_module_7e8e761a99ac510a
+  symbol_count 6
+  symbols
+    enum ExecutionSurface 8 16
+    function slug 20 29
+    function from_env_value 31 41
+    enum BlueprintComposition 66 72
+    function slug 77 82
+    function from_value 88 96

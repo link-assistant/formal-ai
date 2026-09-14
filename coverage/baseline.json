@@ -13,10 +13,10 @@
         "src/web/vendor.bundle.js",
         "src/web/web-search-component.bundle.js"
       ],
-      "lines_percent": 50.48,
-      "functions_percent": 45.54,
+      "lines_percent": 57.94,
+      "functions_percent": 57.23,
       "tolerance_percent": 0.5,
-      "reviewed": "2026-08-05",
+      "reviewed": "2026-09-05",
       "evidence": "`npm run coverage:web` runs tests/web/**/*.test.mjs under `node --test --experimental-test-coverage`. The unbundled page scripts and the 24-module worker mirror are executed through `node:vm` with their real repository paths as the script filename, so V8 attributes coverage to the files the browser downloads. The generated bundles above are build output and are excluded; their sources are measured instead.",
       "inventory": {
         "roots": [

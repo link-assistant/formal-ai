@@ -26,19 +26,25 @@ fn uppercase_transform_routes_through_text_substitution_rules() {
 
     assert_eq!(response.intent, "text_manipulation");
     assert_eq!(response.answer, "ADA LOVELACE");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "intent_formalization:route:text_manipulation"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("text_rule_chain:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "intent_formalization:route:text_manipulation")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("text_rule_chain:"))
+    );
     assert!(response.links_notation.contains("substitution_rules"));
     assert!(response.links_notation.contains("rule_uppercase"));
-    assert!(response
-        .links_notation
-        .contains("substitution_trace_report"));
+    assert!(
+        response
+            .links_notation
+            .contains("substitution_trace_report")
+    );
 }
 
 #[test]
@@ -167,8 +173,7 @@ fn replacement_request_matrix_covers_prompt_order_quotes_punctuation_and_unicode
         },
         Case {
             label: "mixed exact and punctuation multi-word matches",
-            prompt:
-                "Replace \"invoice id\" with \"ticket ID\": \"Invoice-ID invoice_id invoice id\"",
+            prompt: "Replace \"invoice id\" with \"ticket ID\": \"Invoice-ID invoice_id invoice id\"",
             answer: "ticket ID ticket ID ticket ID",
         },
         Case {
@@ -293,14 +298,18 @@ fn composed_lowercase_then_count_unique_words_records_both_rules() {
     assert_eq!(response.answer, "2");
     assert!(response.links_notation.contains("rule_lowercase"));
     assert!(response.links_notation.contains("rule_count_unique_words"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("text_operation:lowercase")));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("text_operation:count_unique_words")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("text_operation:lowercase"))
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("text_operation:count_unique_words"))
+    );
 }
 
 #[test]
@@ -314,9 +323,11 @@ fn reverse_deduplicate_and_sort_text_operations_are_rule_backed() {
     assert_eq!(deduplicated.answer, "b\na");
     assert_eq!(sorted.answer, "a\nb");
     assert!(reversed.links_notation.contains("rule_reverse_words"));
-    assert!(deduplicated
-        .links_notation
-        .contains("rule_deduplicate_lines"));
+    assert!(
+        deduplicated
+            .links_notation
+            .contains("rule_deduplicate_lines")
+    );
     assert!(sorted.links_notation.contains("rule_sort_lines"));
 }
 

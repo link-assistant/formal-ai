@@ -6,7 +6,8 @@
 //! choosing the next step — [`Progress::scan`] answers what happened, and
 //! `planner` decides what happens next.
 
-use super::planner::{classify_tool, Capability};
+use super::capability_router::classify_tool;
+use super::planner::Capability;
 use crate::protocol::ChatMessage;
 
 /// One observed client-owned tool execution in transcript order.
@@ -16,6 +17,21 @@ pub(super) struct ToolAttempt {
     pub(super) succeeded: bool,
     pub(super) detail: String,
     pub(super) arguments: Option<String>,
+    /// The advertised tool name the result came back under, when known.
+    pub(super) tool: Option<String>,
+}
+
+impl ToolAttempt {
+    /// Whether this attempt read a work item through the shell (`gh issue
+    /// view …`), which the planner treats exactly like a fetch of it.
+    pub(super) fn is_work_item_read(&self) -> bool {
+        self.capability == Capability::Run
+            && self
+                .arguments
+                .as_deref()
+                .and_then(command_argument)
+                .is_some_and(|command| is_issue_view_command(&command))
+    }
 }
 
 /// Tool results produced since the current user turn began.
@@ -71,21 +87,25 @@ impl Progress {
             );
             let arguments =
                 result_tool_call(messages, index).map(|call| call.function.arguments.clone());
+            let tool = message
+                .name
+                .clone()
+                .or_else(|| result_tool_call(messages, index).map(|call| call.function.name.clone()));
             attempts.push(ToolAttempt {
                 capability,
                 succeeded: failure.is_none(),
                 detail: failure.clone().unwrap_or_else(|| raw.clone()),
                 arguments,
+                tool,
             });
             if capability == Capability::Fetch {
                 let payload = super::tool_result::normalized_payload(&raw);
                 fetch_result = Some(payload.clone().unwrap_or_default());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
-                if let Some(url) = fetch_url.as_ref() {
-                    if !attempted_fetches.contains(url) {
+                if let Some(url) = fetch_url.as_ref()
+                    && !attempted_fetches.contains(url) {
                         attempted_fetches.push(url.clone());
                     }
-                }
                 if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     if let Some(url) = fetch_url {
                         fetched_pages.push((url, text.clone()));
@@ -101,6 +121,21 @@ impl Progress {
                 }
             }
             if capability == Capability::Run {
+                // A work item read through the client's own `gh` is a fetched
+                // page like any other (issue #1133): the command names the
+                // URL, and its output is the issue's title and body.
+                if let Some(url) = result_tool_call(messages, index).and_then(issue_view_url) {
+                    // The attempt is recorded whatever it returned: a read
+                    // that came back empty has still been tried, and planning
+                    // it again would loop (issue #1133).
+                    attempted_fetches.push(url.clone());
+                    if failure.is_none()
+                        && let Some(text) = super::tool_result::normalized_payload(&raw)
+                            .filter(|text| !text.trim().is_empty())
+                    {
+                        fetched_pages.push((url, text));
+                    }
+                }
                 run_outputs.push(raw);
             }
             completed.push(capability);
@@ -120,6 +155,53 @@ impl Progress {
             fetch_result,
             search_result,
         }
+    }
+
+    /// Whether this turn already tried to fetch `url`.
+    ///
+    /// A fetch the harness echoed back without its `url` -- the argument was
+    /// projected away onto a schema that has no such property -- still counts:
+    /// the planner asked for exactly one page this turn, so a fetch attempt
+    /// that names no URL was the attempt on that page. Reading only the echoed
+    /// URL is what let issue #1133's Kotlin run plan the same call 547 times.
+    pub(super) fn attempted_fetch_of(&self, url: &str) -> bool {
+        self.attempted_fetches.iter().any(|attempted| attempted == url)
+            || self.attempts.iter().any(|attempt| {
+                attempt.capability == Capability::Fetch
+                    && attempt
+                        .arguments
+                        .as_deref()
+                        .is_none_or(|arguments| argument_url(arguments).is_none())
+            })
+    }
+
+    /// The latest failed attempt that came back under `tool`.
+    pub(super) fn latest_failure_of_tool(&self, tool: &str) -> Option<&ToolAttempt> {
+        self.attempts
+            .iter()
+            .rev()
+            .find(|attempt| !attempt.succeeded && attempt.tool.as_deref() == Some(tool))
+    }
+
+    /// How many times `tool` has failed this turn with the same report as its
+    /// latest failure. Two is the signal that repeating it is not a plan.
+    pub(super) fn identical_failures_of(&self, tool: &str) -> usize {
+        let Some(latest) = self
+            .attempts
+            .iter()
+            .rev()
+            .find(|attempt| !attempt.succeeded && attempt.tool.as_deref() == Some(tool))
+        else {
+            return 0;
+        };
+        self.attempts
+            .iter()
+            .filter(|attempt| {
+                !attempt.succeeded
+                    && attempt.tool.as_deref() == Some(tool)
+                    && attempt.detail == latest.detail
+            })
+            .count()
     }
 
     /// Whether a prior tool result already covered `capability`.
@@ -169,6 +251,21 @@ impl Progress {
                     .arguments
                     .as_deref()
                     .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
+    /// Content supplied to the latest successful write of `path`.
+    ///
+    /// A composed request can deliver one observation to more than one file.
+    /// The later delivery must recover the observation from the earlier write,
+    /// not use the earlier writer's human-facing completion status as data.
+    pub(super) fn successful_write_content_for(&self, path: &str) -> Option<String> {
+        self.attempts.iter().rev().find_map(|attempt| {
+            (attempt.capability == Capability::Write && attempt.succeeded)
+                .then_some(attempt.arguments.as_deref())
+                .flatten()
+                .filter(|arguments| argument_targets(arguments, path))
+                .and_then(argument_content)
         })
     }
 
@@ -225,6 +322,14 @@ fn argument_path(arguments: &str) -> Option<String> {
         .map(str::to_owned)
 }
 
+fn argument_content(arguments: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    ["content", "contents", "text", "new_string"]
+        .iter()
+        .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
+        .map(str::to_owned)
+}
+
 fn argument_targets(arguments: &str, path: &str) -> bool {
     argument_path(arguments).is_some_and(|observed| {
         observed == path
@@ -238,11 +343,10 @@ fn argument_targets(arguments: &str, path: &str) -> bool {
 /// a prior assistant `tool_calls` turn.
 pub(super) fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
     let message = &messages[index];
-    if let Some(name) = &message.name {
-        if let Some(capability) = classify_tool(name) {
+    if let Some(name) = &message.name
+        && let Some(capability) = classify_tool(name) {
             return Some(capability);
         }
-    }
     result_tool_call(messages, index).and_then(|call| classify_tool(&call.function.name))
 }
 
@@ -256,10 +360,45 @@ fn result_tool_call(messages: &[ChatMessage], index: usize) -> Option<&crate::pr
 }
 
 fn fetch_call_url(call: &crate::protocol::ToolCall) -> Option<String> {
-    let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).ok()?;
+    argument_url(&call.function.arguments)
+}
+
+fn argument_url(arguments: &str) -> Option<String> {
+    let arguments: serde_json::Value = serde_json::from_str(arguments).ok()?;
     arguments
         .get("url")
         .and_then(serde_json::Value::as_str)
         .filter(|url| !url.trim().is_empty())
         .map(str::to_owned)
+}
+
+fn command_argument(arguments: &str) -> Option<String> {
+    let arguments: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    arguments
+        .get("command")
+        .and_then(serde_json::Value::as_str)
+        .map(str::to_owned)
+}
+
+fn is_issue_view_command(command: &str) -> bool {
+    let mut words = command.split_whitespace();
+    words.next() == Some("gh")
+        && matches!(words.next(), Some("issue" | "pr"))
+        && words.next() == Some("view")
+}
+
+/// The issue or pull-request URL a `gh issue view <url> …` / `gh pr view <url> …`
+/// command reads, when the shell call is one.
+fn issue_view_url(call: &crate::protocol::ToolCall) -> Option<String> {
+    let command = command_argument(&call.function.arguments)?;
+    let mut words = command.split_whitespace();
+    if words.next()? != "gh" {
+        return None;
+    }
+    if !matches!(words.next()?, "issue" | "pr") || words.next()? != "view" {
+        return None;
+    }
+    words
+        .next()
+        .and_then(super::general_planner::repository_work_reference)
 }

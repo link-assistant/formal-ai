@@ -1,4 +1,4 @@
-use super::{compile_natural_language_skill, looks_like_skill_description, SkillCompileError};
+use super::{SkillCompileError, compile_natural_language_skill, looks_like_skill_description};
 
 #[test]
 fn unsupported_shape_is_rejected() {

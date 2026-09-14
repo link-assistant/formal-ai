@@ -1,0 +1,9 @@
+255:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7769887Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+272:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.7874711Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+471:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3345811Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/e7fa984e-a1cc-4467-98cc-d4e409138b51 -f /home/runner/work/_temp/e53ff6bf-2b02-45db-8ed6-107731ba6ef1
+526:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.0064579Z test_a_clean_run_may_not_report_failure (test_ladder.HonestyRuleTests.test_a_clean_run_may_not_report_failure) ... ok
+697:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:33.2977122Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+1338:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:46.3958541Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+1397:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:48.3548755Z PASS  R916-03    #908  the failure report names the exit code, not the harn
+1519:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2155682Z Failed distributed compilations       0
+1566:Write-Effect Ladder (issue	UNKNOWN STEP	2026-08-11T16:32:49.2237138Z Failed distributed compilations       0

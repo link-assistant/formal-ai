@@ -45,6 +45,9 @@
 //!   rust-script --test scripts/check-cache-budget.rs   # inline unit tests
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! walkdir = "2"
 //! ```
@@ -311,11 +314,11 @@ fn library_cap(source: &str) -> Option<usize> {
 fn report(result: &CheckResult, cap_matches: bool) {
     for warning in &result.overflow_warnings {
         println!(
-            "::warning file={}::Closure-driven cache bucket holds {} records (cap {}). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.",
+            "::notice file={}::Closure-driven cache bucket holds {} records (cap {}). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.",
             warning.bucket, warning.records, warning.cap
         );
         println!(
-            "WARNING: {} holds {} records, above the {}-record cap (closure-driven exemption)",
+            "NOTICE: {} holds {} records, above the {}-record cap (closure-driven exemption)",
             warning.bucket, warning.records, warning.cap
         );
     }

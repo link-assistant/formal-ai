@@ -1,0 +1,8 @@
+link_edit
+  leaf L04
+  path src/solver_handlers/pattern_inference.rs
+  language rust
+  rule insert_member
+    list "INTENT_MARKERS"
+    member "alternating"
+  expect "alternating"

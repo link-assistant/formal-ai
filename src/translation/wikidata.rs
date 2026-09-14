@@ -294,14 +294,14 @@ fn escaped_string_advance(input: &str) -> usize {
         if byte == b'"' {
             return consumed;
         }
-        if byte == b'\\' {
-            if let Some(next) = bytes.next() {
-                consumed += 1;
-                if next == b'u' {
-                    for _ in 0..4 {
-                        if bytes.next().is_some() {
-                            consumed += 1;
-                        }
+        if byte == b'\\'
+            && let Some(next) = bytes.next()
+        {
+            consumed += 1;
+            if next == b'u' {
+                for _ in 0..4 {
+                    if bytes.next().is_some() {
+                        consumed += 1;
                     }
                 }
             }

@@ -1,0 +1,32 @@
+== go project generated from the en prompt, image konard/box-go:2.4.0
+== program (main.go):
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, world!")
+}
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the mkdir hello-formal-ai step
+mkdir -p hello-formal-ai
+# Run the cp main.go step
+cp main.go hello-formal-ai/main.go
+# Enter the project directory
+cd hello-formal-ai
+# Run the go mod step
+go mod init hello-formal-ai
+# Build the project
+go build ./...
+# Start the application
+go run main.go
+== running the init script
+   | go: creating new go.mod: module hello-formal-ai
+   | go: to add module requirements and sums:
+   | 	go mod tidy
+   | Hello, world!
+ok: go project built and printed Hello, world! inside konard/box-go:2.4.0
+ok: box language projects verified for: go

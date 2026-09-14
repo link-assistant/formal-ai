@@ -41,8 +41,7 @@ use crate::seed::{
 /// per-process toggling, so we re-check each call here (cheap stdlib lookup).
 fn translation_debug_enabled() -> bool {
     std::env::var("FORMAL_AI_TRANSLATION_DEBUG")
-        .ok()
-        .is_some_and(|value| !value.is_empty() && value != "0")
+        .is_ok_and(|value| !value.is_empty() && value != "0")
 }
 
 /// Emit a structured debug line to stderr when

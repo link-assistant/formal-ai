@@ -1,0 +1,15 @@
+$ experiments/issue_1021_opt_in_race/run.sh 200   # tests/unit/issue_1021_write_path.rs at 4a785244, before the fix
+rounds=200 failed=33 (log: /tmp/issue_1021_opt_in_race.log)
+
+-- one of the 33 failing rounds, verbatim; the CI failure in run 32260417488
+-- job 96093284006 printed the same two lines
+---- issue_1021_write_path::publishing_a_contribution_is_planned_only_under_the_opt_in stdout ----
+
+thread 'issue_1021_write_path::publishing_a_contribution_is_planned_only_under_the_opt_in' (2314071) panicked at tests/unit/issue_1021_write_path.rs:252:5:
+assertion `left == right` failed
+  left: Ok(["git push --set-upstream origin issue-1021-bdff51c09742", "gh pr create --repo link-assistant/formal-ai --title 'Compose the artifacts a contribution carries' --body-file target/pull-request-body.md"])
+ right: Err(OptInAbsent)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+$ experiments/issue_1021_opt_in_race/run.sh 200   # with the read moved under the lock
+rounds=200 failed=0 (log: /tmp/issue_1021_opt_in_race-after.log)

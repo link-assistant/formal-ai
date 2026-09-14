@@ -1,6 +1,6 @@
 use super::{ComparisonOperator, FilterExpression, MemoryQueryOperation, MemoryQueryPlan};
 use crate::links_substitution_query::{
-    link_substitution_effect, LinkPattern, LinkRewriteProgram, LinkRewriteRule, Slot,
+    LinkPattern, LinkRewriteProgram, LinkRewriteRule, Slot, link_substitution_effect,
 };
 use crate::memory_program::MemoryProgramLimits;
 use crate::substitution::CrudEvent;

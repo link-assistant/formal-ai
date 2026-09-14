@@ -9,6 +9,16 @@ meanings
     lexeme en
       surface
         text "above"
+  actually
+    defined-by concept
+    lexeme en
+      surface
+        text "actually"
+  adds
+    defined-by word_surface
+    lexeme en
+      surface
+        text "adds"
   agent_procedure_execution_failed
     defined-by intent
     lexeme en
@@ -30,7 +40,7 @@ meanings
       surface
         text "ai orchestration"
   append
-    defined-by phrase
+    defined-by word_surface
     lexeme en
       surface
         text "append"
@@ -44,6 +54,16 @@ meanings
     lexeme en
       surface
         text "arrange"
+  backticks
+    defined-by value
+    lexeme en
+      surface
+        text "backticks"
+  bound
+    defined-by word_surface
+    lexeme en
+      surface
+        text "bound"
   bundle
     defined-by word_surface
     lexeme en
@@ -54,6 +74,16 @@ meanings
     lexeme en
       surface
         text "client server version missing"
+  closes
+    defined-by concept
+    lexeme en
+      surface
+        text "closes"
+  coding_catalog
+    defined-by concept
+    lexeme en
+      surface
+        text "coding catalog"
   coding_source_module_registration
     defined-by intent
     lexeme en
@@ -64,6 +94,11 @@ meanings
     lexeme en
       surface
         text "comments"
+  composes
+    defined-by concept
+    lexeme en
+      surface
+        text "composes"
   configure_message_animation
     defined-by intent
     lexeme en
@@ -79,6 +114,11 @@ meanings
     lexeme en
       surface
         text "configure response language"
+  connector
+    defined-by concept
+    lexeme en
+      surface
+        text "connector"
   cooldown
     defined-by word_surface
     lexeme en
@@ -114,16 +154,41 @@ meanings
     lexeme en
       surface
         text "echo"
+  either
+    defined-by concept
+    lexeme en
+      surface
+        text "either"
   emits
     defined-by concept
     lexeme en
       surface
         text "emits"
+  enumera
+    defined-by concept
+    lexeme en
+      surface
+        text "enumera"
+  error
+    defined-by concept
+    lexeme en
+      surface
+        text "error"
   even
     defined-by concept
     lexeme en
       surface
         text "even"
+  explicit
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit"
+  external_benchmark_ascent_prompt_prefix
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark ascent prompt prefix"
   external_benchmark_learning_lesson
     defined-by intent
     lexeme en
@@ -159,6 +224,21 @@ meanings
     lexeme en
       surface
         text "gets"
+  how_to_guide_conflict
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide conflict"
+  how_to_guide_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide heading"
+  how_to_guide_source_outcome
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide source outcome"
   inappropriate_content
     defined-by intent
     lexeme en
@@ -189,6 +269,11 @@ meanings
     lexeme en
       surface
         text "joe biden"
+  kt
+    defined-by word_surface
+    lexeme en
+      surface
+        text "kt"
   learn_from_source
     defined-by intent
     lexeme en
@@ -219,6 +304,11 @@ meanings
     lexeme en
       surface
         text "lexeme import qid absent from fetch"
+  link_cli_publish_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "link cli publish failed"
   lino-objects-codec
     defined-by name
     lexeme en
@@ -229,6 +319,16 @@ meanings
     lexeme en
       surface
         text "measured"
+  memory_inventory
+    defined-by intent
+    lexeme en
+      surface
+        text "memory inventory"
+  mirror_runtimes
+    defined-by concept
+    lexeme en
+      surface
+        text "mirror runtimes"
   misinformation
     defined-by word_surface
     lexeme en
@@ -239,6 +339,21 @@ meanings
     lexeme en
       surface
         text "mkdir"
+  muestra
+    defined-by concept
+    lexeme en
+      surface
+        text "muestra"
+  my
+    defined-by word_surface
+    lexeme en
+      surface
+        text "my"
+  namespaces
+    defined-by concept
+    lexeme en
+      surface
+        text "namespaces"
   next
     defined-by concept
     lexeme en
@@ -249,6 +364,11 @@ meanings
     lexeme en
       surface
         text "official docs"
+  opinion_question
+    defined-by intent
+    lexeme en
+      surface
+        text "opinion question"
   pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
     defined-by prompt_pattern
     lexeme en
@@ -334,6 +454,11 @@ meanings
     lexeme en
       surface
         text "pattern wikipedia article question grammar context zh"
+  proves
+    defined-by concept
+    lexeme en
+      surface
+        text "proves"
   react-chat-ui
     defined-by name
     lexeme en
@@ -349,11 +474,36 @@ meanings
     lexeme en
       surface
         text "recall name"
+  remote_service
+    defined-by concept
+    lexeme en
+      surface
+        text "remote service"
+  removed
+    defined-by category
+    lexeme en
+      surface
+        text "removed"
+  rendering
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rendering"
   response_agent_procedure_verification_failed_hi
     defined-by response_template
     lexeme en
       surface
         text "response agent procedure verification failed hi"
+  response_agentic_continuation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation hi"
+  response_agentic_continuation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic continuation ru"
   response_agentic_report_exported_hi
     defined-by response_template
     lexeme en
@@ -399,11 +549,26 @@ meanings
     lexeme en
       surface
         text "response client global config probe started ru"
+  response_coding_identifier_renamed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding identifier renamed es"
+  response_coding_repository_source_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation en"
   response_coding_source_binary_operation_test_rust
     defined-by response_template
     lexeme en
       surface
         text "response coding source binary operation test rust"
+  response_coding_text_replaced_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding text replaced hi"
   response_coding_workspace_verification_failed_ru
     defined-by response_template
     lexeme en
@@ -414,11 +579,31 @@ meanings
     lexeme en
       surface
         text "response compiled procedure en"
+  response_conversation_preference_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response conversation preference ru"
   response_definition_merge_sources_label_en
     defined-by response_template
     lexeme en
       surface
         text "response definition merge sources label en"
+  response_external_benchmark_ascent_missing_rule_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent missing rule ru"
+  response_external_benchmark_ascent_prompt_prefix_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix zh"
+  response_external_benchmark_rust_adapter_missing_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing es"
   response_external_benchmark_swe_unavailable_en
     defined-by response_template
     lexeme en
@@ -459,6 +644,11 @@ meanings
     lexeme en
       surface
         text "response general plan verification mismatch es"
+  response_how_to_guide_conflict_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict en"
   response_inappropriate_content_zh
     defined-by response_template
     lexeme en
@@ -529,6 +719,11 @@ meanings
     lexeme en
       surface
         text "response mcp prompt description en"
+  response_mutating_action_blocked_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action blocked es"
   response_pattern_grid_diagonal_zh
     defined-by response_template
     lexeme en
@@ -549,6 +744,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence palindrome zh"
+  response_punctuation_only_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response punctuation only ru"
   response_requirement_contradiction_hi
     defined-by response_template
     lexeme en
@@ -774,6 +974,16 @@ meanings
     lexeme en
       surface
         text "reverse sort list files arg"
+  say
+    defined-by concept
+    lexeme en
+      surface
+        text "say"
+  see
+    defined-by concept
+    lexeme en
+      surface
+        text "see"
   sentence_case
     defined-by operation
     lexeme en
@@ -854,11 +1064,6 @@ meanings
     lexeme en
       surface
         text "verbatim"
-  visually
-    defined-by word_surface
-    lexeme en
-      surface
-        text "visually"
   write_program_request_unspecified
     defined-by intent
     lexeme en

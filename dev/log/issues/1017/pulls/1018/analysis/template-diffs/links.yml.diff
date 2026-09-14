@@ -1,0 +1,66 @@
+--- dev/log/issues/1017/pulls/1018/references/templates/rust-template/.github/workflows/links.yml	2026-08-16 17:26:05.163126156 +0000
++++ .github/workflows/links.yml	2026-08-16 17:20:04.553987129 +0000
+@@ -10,7 +10,6 @@
+       - '.github/workflows/links.yml'
+       - '.lycheeignore'
+       - 'scripts/check-web-archive.mjs'
+-      - 'scripts/check-web-archive.test.mjs'
+   pull_request:
+     types: [opened, synchronize, reopened]
+     paths:
+@@ -19,7 +18,6 @@
+       - '.github/workflows/links.yml'
+       - '.lycheeignore'
+       - 'scripts/check-web-archive.mjs'
+-      - 'scripts/check-web-archive.test.mjs'
+   workflow_dispatch:
+ 
+ # Least-privilege default; jobs escalate individually when needed.
+@@ -42,14 +40,16 @@
+     timeout-minutes: 10
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-link-checker
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     permissions:
+       contents: read
+     steps:
+       - uses: actions/checkout@v6
+ 
+-      - name: Test Web Archive report parser
+-        run: node --test scripts/check-web-archive.test.mjs
++      - name: Prepare reconstructable release history for link checking
++        run: |
++          sed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \
++            > LYCHEE_CHANGELOG.md
+ 
+       - name: Check links with lychee
+         id: lychee
+@@ -66,7 +66,12 @@
+             --max-cache-age 1d
+             --max-retries 3
+             --timeout 30
++            --host-concurrency 2
++            --host-request-interval 100ms
++            --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)'
++            --exclude-path '^CHANGELOG\.md$'
+             --exclude-path docs/case-studies
++            --exclude-path dev/log
+             './**/*.md'
+             './**/*.html'
+           # Don't fail the workflow immediately - we want to check web archive first
+@@ -92,12 +97,11 @@
+           echo ""
+           echo "What happened:"
+           echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
+-          echo "  A Web Archive snapshot is a suggested replacement; it does not fix the broken source link."
++          echo "  The Web Archive check above provides replacement URLs when snapshots exist."
+           echo ""
+           echo "How to fix:"
+           echo "  1. Review the 'Check links with lychee' step above for a full list of broken links."
+-          echo "  2. Review the Web Archive step when it ran. For links marked with a '::notice::' annotation,"
+-          echo "     a Web Archive version exists."
++          echo "  2. For links marked with a '::notice::' annotation above, a Web Archive version exists."
+           echo "     Replace those broken links with the suggested archive.org URL."
+           echo "  3. For links with no archive version, either:"
+           echo "     a. Find an updated URL that points to the same or equivalent content."

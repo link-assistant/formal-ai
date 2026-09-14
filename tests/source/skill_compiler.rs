@@ -9,7 +9,7 @@
 use std::error::Error;
 use std::fmt;
 
-use crate::engine::{normalize_prompt, stable_id, KNOWLEDGE_SCHEMA_VERSION};
+use crate::engine::{KNOWLEDGE_SCHEMA_VERSION, normalize_prompt, stable_id};
 use crate::link_store::{DoubletLink, LinkRecord};
 use crate::links_format::{format_lino_record, push_lino_node};
 use crate::seed::{self, Slot};
@@ -17,8 +17,8 @@ use crate::seed::{self, Slot};
 mod structured;
 
 use structured::{
-    handler_signature, handler_stub_source, parse_structured_skill, structured_canonical,
-    StructuredSkillSpec,
+    StructuredSkillSpec, handler_signature, handler_stub_source, parse_structured_skill,
+    structured_canonical,
 };
 
 /// A reusable, reviewable package compiled from one natural-language skill.

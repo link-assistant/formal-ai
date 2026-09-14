@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::path::PathBuf;
-use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 
 use clap::{Args as ClapArgs, CommandFactory, Subcommand, ValueEnum};
 use lino_arguments::Parser;
@@ -16,6 +16,7 @@ mod cli_file_legality;
 mod cli_import;
 mod cli_improve;
 mod cli_learn;
+mod cli_local_transport;
 mod cli_memory;
 mod cli_orchestration;
 mod cli_procedure;
@@ -24,34 +25,35 @@ mod cli_shared_dialog;
 mod cli_statement_audit;
 mod cli_summarization;
 
-use cli_algorithm::{run_algorithm, AlgorithmArgs};
-use cli_benchmark::{run_benchmark, BenchmarkAction};
-use cli_clients::{run_clients, ClientsAction, ClientsFormat};
-use cli_computer_use::{run_computer_use, ComputerUseArgs};
-use cli_context::{run_context, ContextArgs};
+use cli_algorithm::{AlgorithmArgs, run_algorithm};
+use cli_benchmark::{BenchmarkAction, run_benchmark};
+use cli_clients::{ClientsAction, ClientsFormat, run_clients};
+use cli_computer_use::{ComputerUseArgs, run_computer_use};
+use cli_context::{ContextArgs, run_context};
 use cli_environments::run_environments;
-use cli_file_legality::{run_file_legality, FileLegalityArgs};
-use cli_import::{run_import, ImportAction};
-use cli_improve::{run_improve, ImproveArgs};
-use cli_learn::{run_learn_action, LearnAction};
+use cli_file_legality::{FileLegalityArgs, run_file_legality};
+use cli_import::{ImportAction, run_import};
+use cli_improve::{ImproveArgs, run_improve};
+use cli_learn::{LearnAction, run_learn_action};
+use cli_local_transport::{ConnectArgs, ServeArgs, run_connect, run_serve};
 use cli_memory::{load_memory_or_empty, run_memory};
-use cli_orchestration::{run_external_action, AgentArgs};
-use cli_procedure::{run_procedure, ProcedureArgs};
-use cli_report::{run_report, ReportArgs};
-use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
-use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
-use cli_summarization::{run_summarization, SummarizationAction};
+use cli_orchestration::{AgentArgs, run_external_action};
+use cli_procedure::{ProcedureArgs, run_procedure};
+use cli_report::{ReportArgs, run_report};
+use cli_shared_dialog::{SharedDialogAction, run_shared_dialog};
+use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
+use cli_summarization::{SummarizationAction, run_summarization};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
-    agent_info, collect_github_logs, create_chat_completion_with_solver,
-    create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
-    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
-    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
-    run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
-    suggest_memory_migrations, thinking_answer_language, thinking_trace_heading,
-    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore,
-    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig,
-    UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
+    ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, GithubLogCollectorConfig,
+    MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer,
+    TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, agent_info, collect_github_logs,
+    create_chat_completion_with_solver, create_response_with_solver, delimit_tool_args,
+    enable_http_agent_mode_for_current_process, export_memory_bundle, import_memory_full,
+    knowledge_links_notation, merged_bundle, naturalize_thinking_step_in, parse_bundle,
+    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
+    run_with_formal_ai, seed_files, suggest_memory_migrations, thinking_answer_language,
+    thinking_trace_heading,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -113,18 +115,10 @@ enum Command {
     Context(ContextArgs),
     /// Build the issue-report document every Formal AI surface files (#839).
     Report(ReportArgs),
-    Serve {
-        #[arg(long, env = "FORMAL_AI_HOST", default_value = "127.0.0.1")]
-        host: String,
-
-        #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
-        port: u16,
-
-        /// Allow OpenAI-compatible agent clients to receive tool calls. Equivalent
-        /// to `FORMAL_AI_AGENT_MODE=1`.
-        #[arg(long, default_value_t = false)]
-        agent_mode: bool,
-    },
+    /// Serve the API; `--agent-mode` is equivalent to `FORMAL_AI_AGENT_MODE=1`.
+    Serve(ServeArgs),
+    /// Use the same binary as a WebSocket or WebRTC OpenAI-compatible client.
+    Connect(ConnectArgs),
     /// Run a logging reverse proxy in front of a Formal AI HTTP server.
     Proxy {
         #[arg(long, env = "FORMAL_AI_PROXY_LISTEN", default_value = "127.0.0.1:8090")]
@@ -215,7 +209,7 @@ enum Command {
     /// acts as an external CLI: it advertises tools, executes emitted calls in an
     /// offline sandbox, feeds results back, and loops until the server returns the
     /// finished Links Notation knowledge base.
-    Agent(AgentArgs),
+    Agent(Box<AgentArgs>),
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
         #[arg(
@@ -634,26 +628,25 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Algorithm(args) => run_algorithm(args)?,
         Command::ComputerUse(args) => run_computer_use(args)?,
         Command::Agent(args) => {
-            if let Some(action) = args.action {
+            let AgentArgs {
+                action,
+                task,
+                transcript,
+                session_json,
+            } = *args;
+            if let Some(action) = action {
                 run_external_action(action)?;
             } else {
-                run_agent(
-                    &args.task,
-                    args.transcript || verbose,
-                    args.session_json.as_deref(),
-                )?;
+                run_agent(&task, transcript || verbose, session_json.as_deref())?;
             }
         }
-        Command::Serve {
-            host,
-            port,
-            agent_mode,
-        } => {
-            if agent_mode {
+        Command::Serve(args) => {
+            if args.agent_mode() {
                 enable_http_agent_mode_for_current_process();
             }
-            run_telegram_webhook_server(&format!("{host}:{port}"))?;
+            run_serve(&args)?;
         }
+        Command::Connect(args) => run_connect(&args)?,
         Command::Proxy {
             listen,
             upstream,

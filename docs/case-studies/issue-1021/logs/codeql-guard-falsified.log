@@ -1,0 +1,65 @@
+# `bash experiments/issue-1021-codeql-name-heuristics/falsify.sh`, run 2026-08-21.
+# The script reverts the renames of finding 36 in place, runs
+# `tests/unit/ci-cd/codeql_sink_heuristics.rs` against the tree that produced the
+# 99 CodeQL alerts, restores the renames and runs the same guard again. Recorded
+# because a guard written after the alerts is worth exactly as much as its
+# falsification: the two failures below name the two mechanisms behind all 99.
+
+== reverting the renames: salt <- seed, session_id <- agent_session_digests ==
+
+== the guard against the pre-fix tree (expected: FAILED) ==
+running 12 tests
+test ci_cd::codeql_sink_heuristics::parser::a_parameter_named_salt_is_found_and_the_seed_that_replaced_it_is_not ... ok
+test ci_cd::codeql_sink_heuristics::parser::a_multi_line_signature_reports_the_line_of_each_parameter ... ok
+test ci_cd::codeql_sink_heuristics::parser::a_salt_in_a_comment_or_a_string_declares_nothing ... ok
+test ci_cd::codeql_sink_heuristics::parser::a_substring_that_is_not_a_word_is_not_account_information ... ok
+test ci_cd::codeql_sink_heuristics::parser::digests_and_hashes_are_not_read_as_account_information ... ok
+test ci_cd::codeql_sink_heuristics::parser::patterns_are_stripped_down_to_the_binding_name ... ok
+test ci_cd::codeql_sink_heuristics::parser::self_and_nested_types_do_not_produce_spurious_names ... ok
+test ci_cd::codeql_sink_heuristics::parser::an_inline_capture_is_read_out_of_the_format_string ... ok
+test ci_cd::codeql_sink_heuristics::the_scan_skips_the_same_directories_the_codeql_config_ignores ... ok
+test ci_cd::codeql_sink_heuristics::parser::placeholders_that_capture_nothing_are_not_mistaken_for_bindings ... ok
+
+thread 'ci_cd::codeql_sink_heuristics::no_function_parameter_is_named_after_a_hard_coded_cryptographic_sink' (2898521) panicked at tests/unit/ci-cd/codeql_sink_heuristics.rs:578:5:
+CodeQL's rust/hard-coded-cryptographic-value makes a sink of every argument reaching a parameter named ["password", "iv", "nonce", "salt"], so each constant that can reach one of these is reported as a hard-coded cryptographic value. Rename the parameter after what it is (`seed` for a deterministic draw, for instance):
+  src/translation/selection.rs:324: parameter `salt`
+  src/translation/selection.rs:352: parameter `salt`
+  tests/source/translation/selection.rs:297: parameter `salt`
+  tests/source/translation/selection.rs:325: parameter `salt`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test ci_cd::codeql_sink_heuristics::no_function_parameter_is_named_after_a_hard_coded_cryptographic_sink ... FAILED
+
+thread 'ci_cd::codeql_sink_heuristics::no_logging_macro_is_handed_a_name_that_reads_as_account_information' (2898522) panicked at tests/unit/ci-cd/codeql_sink_heuristics.rs:608:5:
+CodeQL's rust/cleartext-logging reads a name matching `.*(acc(ou)?nt|puid|user.?(name|id)|session.?(id|key)).*` as account information and reports writing it to a log. Name the value what it is, or do not log it:
+  src/cli_improve.rs:84: `session_id`
+test ci_cd::codeql_sink_heuristics::no_logging_macro_is_handed_a_name_that_reads_as_account_information ... FAILED
+
+failures:
+
+failures:
+    ci_cd::codeql_sink_heuristics::no_function_parameter_is_named_after_a_hard_coded_cryptographic_sink
+    ci_cd::codeql_sink_heuristics::no_logging_macro_is_handed_a_name_that_reads_as_account_information
+
+test result: FAILED. 10 passed; 2 failed; 0 ignored; 0 measured; 2966 filtered out; finished in 12.34s
+
+error: test failed, to rerun pass `--test unit`
+
+== the same guard against the fixed tree (expected: ok) ==
+     Running tests/unit/mod.rs (target/debug/deps/unit-aafedfd7f849750a)
+
+running 12 tests
+test ci_cd::codeql_sink_heuristics::parser::a_salt_in_a_comment_or_a_string_declares_nothing ... ok
+test ci_cd::codeql_sink_heuristics::parser::a_substring_that_is_not_a_word_is_not_account_information ... ok
+test ci_cd::codeql_sink_heuristics::parser::a_parameter_named_salt_is_found_and_the_seed_that_replaced_it_is_not ... ok
+test ci_cd::codeql_sink_heuristics::parser::a_multi_line_signature_reports_the_line_of_each_parameter ... ok
+test ci_cd::codeql_sink_heuristics::parser::digests_and_hashes_are_not_read_as_account_information ... ok
+test ci_cd::codeql_sink_heuristics::parser::patterns_are_stripped_down_to_the_binding_name ... ok
+test ci_cd::codeql_sink_heuristics::parser::an_inline_capture_is_read_out_of_the_format_string ... ok
+test ci_cd::codeql_sink_heuristics::parser::placeholders_that_capture_nothing_are_not_mistaken_for_bindings ... ok
+test ci_cd::codeql_sink_heuristics::the_scan_skips_the_same_directories_the_codeql_config_ignores ... ok
+test ci_cd::codeql_sink_heuristics::parser::self_and_nested_types_do_not_produce_spurious_names ... ok
+test ci_cd::codeql_sink_heuristics::no_function_parameter_is_named_after_a_hard_coded_cryptographic_sink ... ok
+test ci_cd::codeql_sink_heuristics::no_logging_macro_is_handed_a_name_that_reads_as_account_information ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 2966 filtered out; finished in 11.50s
+

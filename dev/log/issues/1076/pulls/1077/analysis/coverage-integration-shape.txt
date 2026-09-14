@@ -1,0 +1,40 @@
+Completion curve of the `integration` binary (elapsed seconds at each decile)
+
+decile        08-30 ok   (29.7s)    09-04 ok  (213.6s)   09-05 CANC(1572.8s)
+ 10% test                   1.8s                  2.3s                  5.1s
+ 20% test                   3.7s                 13.6s                 42.6s
+ 30% test                   6.1s                 24.0s                 71.6s
+ 40% test                   6.4s                 24.9s                 73.1s
+ 50% test                  10.3s                 43.3s                162.2s
+ 60% test                  17.2s                142.6s                816.7s
+ 70% test                  19.4s                174.2s               1151.2s
+ 80% test                  26.4s                196.1s               1438.0s
+ 90% test                  28.5s                208.8s               1503.1s
+100% test                  29.7s                213.6s               1572.8s
+
+Slowest region: seconds consumed per decile
+decile        08-30 ok   (29.7s)    09-04 ok  (213.6s)   09-05 CANC(1572.8s)
+ 10%                       1.8s                  2.3s                  5.1s
+ 20%                       1.9s                 11.3s                 37.5s
+ 30%                       2.3s                 10.5s                 29.0s
+ 40%                       0.4s                  0.9s                  1.5s
+ 50%                       3.8s                 18.4s                 89.1s
+ 60%                       6.9s                 99.3s                654.5s
+ 70%                       2.1s                 31.6s                334.5s
+ 80%                       7.1s                 21.9s                286.8s
+ 90%                       2.1s                 12.8s                 65.0s
+100%                       1.2s                  4.8s                 69.8s
+
+Last 12 tests to finish on 09-05 (CANCELLED):
+     1505.0s  with_formal_ai_grok::with_formal_ai_grok_global_settings_and_undo_use_native_json
+     1505.1s  with_formal_ai_grok::with_formal_ai_grok_reaches_configured_openai_endpoint
+     1505.5s  with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt
+     1505.6s  with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file
+     1505.6s  with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type
+     1505.6s  with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple
+     1505.6s  with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed
+     1505.6s  with_formal_ai_headless_global::verify_is_rejected_without_global
+     1505.6s  with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start
+     1505.7s  with_formal_ai_headless_global::verify_succeeds_when_the_configured_client_starts
+     1517.3s  issue_859_codex::codex_streams_native_custom_patch_events
+     1572.8s  issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration

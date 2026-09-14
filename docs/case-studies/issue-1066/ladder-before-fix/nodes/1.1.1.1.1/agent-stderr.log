@@ -1,0 +1,4 @@
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{"type":"result","timestamp":"2026-08-30T05:19:40.523Z","session_id":"ses_faee4b3c4ffeKfs8De3f0yX9vM","status":"error","output":"Error: Unable to connect. Is the computer able to access the url?"}
+{"type":"result","timestamp":"2026-08-30T05:19:56.563Z","session_id":"ses_faee4b3c4ffeKfs8De3f0yX9vM","status":"error","output":"Error: Was there a typo in the url or port?"}

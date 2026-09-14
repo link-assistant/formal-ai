@@ -2,36 +2,40 @@ self_ast_census
   target src/cli_report.rs
   language rust
   fidelity signature
-  byte_len 15046
-  line_count 420
-  content_id source_module_bc1fdf20ab665a41
-  symbol_count 28
+  byte_len 18267
+  line_count 497
+  content_id source_module_7cac7cb67f7da738
+  symbol_count 32
   symbols
-    const DEFAULT_INLINE_BYTES 31 31
-    const DEFAULT_EXCERPT_BYTES 33 33
-    const MAX_ISSUE_BODY_BYTES 39 39
-    const DEFAULT_SURFACE 41 41
-    const LINO 43 43
-    const TRACE_SEPARATOR 46 46
-    const ERROR_PLACEHOLDER 47 47
-    const URL_PLACEHOLDER 48 48
-    struct ReportArgs 51 54
-    enum ReportAction 57 94
-    enum OversizeContext 98 103
-    enum GistVisibility 110 115
-    function run_report 117 155
-    function bound_report_body 164 175
-    function context_path 179 181
-    function context_filename 183 195
-    function report_body 197 233
-    function version 235 237
-    function ui_language 240 250
-    function export_trace 255 270
-    function report_turns 272 278
-    function report_turn 280 288
-    function message_text 295 316
-    function collect_text 318 336
-    struct AttachmentSettings 338 343
-    function attach_context 351 383
-    function upload_gist 386 414
-    function config 416 420
+    const DEFAULT_INLINE_BYTES 37 37
+    const DEFAULT_EXCERPT_BYTES 39 39
+    const MAX_ISSUE_BODY_BYTES 45 45
+    const DEFAULT_SURFACE 47 47
+    const LINO 49 49
+    const TRACE_SEPARATOR 52 52
+    const ERROR_PLACEHOLDER 53 53
+    const SESSION_PLACEHOLDER 54 54
+    const SOURCE_PLACEHOLDER 55 55
+    const URL_PLACEHOLDER 56 56
+    struct ReportArgs 59 62
+    enum ReportAction 65 105
+    enum OversizeContext 109 114
+    enum GistVisibility 121 126
+    function run_report 128 179
+    function bound_report_body 188 199
+    function context_path 203 205
+    function context_filename 207 209
+    function safe_session_component 211 222
+    function report_body 224 260
+    function separate_context_attachments 262 308
+    function version 310 312
+    function ui_language 315 325
+    function export_trace 330 345
+    function report_turns 347 353
+    function report_turn 355 363
+    function message_text 370 391
+    function collect_text 393 411
+    struct AttachmentSettings 413 418
+    function attach_context 426 458
+    function upload_gist 461 491
+    function config 493 497

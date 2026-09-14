@@ -65,13 +65,13 @@ impl CallerArgs {
                 in_unknown_flag_values = false;
                 break;
             }
-            if let Some((flag, value)) = argument.split_once('=') {
-                if prompt_flags.contains(flag) {
-                    parsed.set_prompt(value);
-                    in_unknown_flag_values = false;
-                    index += 1;
-                    continue;
-                }
+            if let Some((flag, value)) = argument.split_once('=')
+                && prompt_flags.contains(flag)
+            {
+                parsed.set_prompt(value);
+                in_unknown_flag_values = false;
+                index += 1;
+                continue;
             }
             if prompt_flags.contains(argument.as_str()) {
                 in_unknown_flag_values = false;

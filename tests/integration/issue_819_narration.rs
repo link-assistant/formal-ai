@@ -9,7 +9,7 @@
 //! prints when the step executes.
 
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 /// Fragments that reveal the raw `find` command or the old robotic phrasing.
 /// None of these belong in a natural, spoken explanation.

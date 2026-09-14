@@ -1,0 +1,56 @@
+name: Stock Rust Install
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  stock-rust-install:
+    runs-on: ubuntu-latest
+    # Deliberately a mutable tag, and the one place in this pipeline where that
+    # is the point: this job exists to prove `cargo install` succeeds on the
+    # stock published Rust image, exactly as a user would get it. Pinning the
+    # digest would test a frozen snapshot of that image and stop testing the
+    # thing users actually pull. Every other image reference in `.github/` is
+    # digest-pinned (issue #1079, defect D3); this is the documented exception,
+    # and the narrow pedantic zizmor pass in `workflows.yml` fails on any new
+    # unpinned image that does not carry the same explicit marker.
+    container: rust:1.98-slim-bookworm # zizmor: ignore[unpinned-images]
+    timeout-minutes: 40
+    env:
+      CARGO_INSTALL_ROOT: /tmp/formal-ai-install
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Reject a system OpenSSL dependency
+        run: |
+          set -eu
+          cargo tree --locked --prefix none --format '{p}' > /tmp/formal-ai-dependency-tree.txt
+          if grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt; then
+            echo "openssl-sys unexpectedly remains in the default dependency graph" >&2
+            exit 1
+          fi
+      - name: Install on the unmodified stock image
+        run: |
+          echo "$CARGO_INSTALL_ROOT/bin" >> "$GITHUB_PATH"
+          export PATH="$CARGO_INSTALL_ROOT/bin:$PATH"
+          cargo install --path . --locked
+      - name: Verify the installed binary has no OpenSSL runtime link
+        run: |
+          ldd "$(command -v formal-ai)" | tee /tmp/formal-ai-ldd.txt
+          if grep -Eq 'libssl|libcrypto' /tmp/formal-ai-ldd.txt; then
+            echo "formal-ai unexpectedly links a system OpenSSL library" >&2
+            exit 1
+          fi
+          formal-ai --version

@@ -1,0 +1,29 @@
+promotion_run
+  id "promotion_run_3feb3fa224918d56"
+  considered "1"
+  promoted "1"
+  rejected "0"
+  proposal
+    id "promotion_15815d0ff634dfe7"
+    source "algorithm_candidate:algorithm_e17957243eaaf6db"
+    decision "promoted"
+    seed_file "data/seed/learned-methods.lino"
+    summary "Adopt the longest recurring recursive-core method from two support traces and one held-out trace."
+    gate
+      suite "issue_362_multilingual_coding_modification"
+      status "cleared"
+      evidence "benchmark:issue_362_multilingual_coding_modification:cleared:4/4@floor4@rate10000@promotion_gate_output_4afbfc2e985e49cc"
+    gate
+      suite "issue_304_industry_permissive_slice"
+      status "cleared"
+      evidence "benchmark:issue_304_industry_permissive_slice:cleared:13/13@floor13@rate0@promotion_gate_output_c9a8006bd1e429a0"
+    gate
+      suite "formal_ai_unit_specifications"
+      status "cleared"
+      evidence "benchmark:formal_ai_unit_specifications:cleared:12/12@floor1@rate10000@promotion_gate_output_01340bf759326111"
+  branch_plan
+    branch "promotion/promotion_run_3feb3fa224918d56"
+    command "git checkout -b promotion/promotion_run_3feb3fa224918d56"
+    command "git add data/seed/learned-methods.lino"
+    command "git commit -m \"promote 1 self-improvement proposal(s) (run promotion_run_3feb3fa224918d56)\""
+    command "gh pr create --draft --fill  # human review remains the outer gate"

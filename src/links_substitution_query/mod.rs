@@ -62,9 +62,9 @@ mod links;
 mod text;
 
 pub use links::{
+    LinkPattern, LinkRewriteOutcome, LinkRewriteProgram, LinkRewriteRule, LinkRewriteStep, Slot,
     link_substitution_effect, parse_link_substitution_query, render_link,
-    render_link_substitution_query, LinkPattern, LinkRewriteOutcome, LinkRewriteProgram,
-    LinkRewriteRule, LinkRewriteStep, Slot,
+    render_link_substitution_query,
 };
 pub use text::{parse_substitution_query, render_substitution_query, substitution_effect};
 

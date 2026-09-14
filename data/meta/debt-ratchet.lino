@@ -1,0 +1,22 @@
+debt_ratchet
+  issue 1126
+  purpose "Named debt only shrinks. Each ceiling is the measured value at the commit that set it, and a ceiling can only move down, never up. Every measure here names something the architect has actually asked to be removed: prose hardcoded into Rust instead of grounded in the seed (R379), per-case literal string predicates standing in for a rule, and handlers still awaiting migration to data."
+  note "Renamed on 2026-09-12. The division of src into a privileged part and the rest was never requested by the architect and is withdrawn: see VISION.md and docs/architect-notes/. The meta-language representation is the system and Rust is one target it is emitted into, so a count of Rust lines measures an output, not the system, and may grow while the algorithm becomes more general. The measure that counted those lines existed only to serve that division and is deleted with it. The literal-predicate measure was scoped the same way and now covers all of src/, which is both simpler and stricter."
+  checker "rust-script scripts/check-debt-ratchet.rs"
+  release_rule "none. No release depends on any ceiling here. A release is cut on CI correctness alone in .github/workflows/release.yml."
+  ceiling
+    measure handler_files
+    value 42
+    how "*.rs files under src/solver_handlers/ other than mod.rs and modules.rs"
+  ceiling
+    measure handler_migration_pending
+    value 40
+    how "occurrences of the phrase status pending in data/meta/handler-migration-ledger.lino"
+  ceiling
+    measure literal_predicates
+    value 549
+    how "occurrences of a contains( or starts_with( call with a double-quoted first argument in src/**/*.rs"
+  ceiling
+    measure hardcoded_language_rows
+    value 1287
+    how "non-empty, non-comment rows of scripts/hardcoded-language-allowlist.txt"

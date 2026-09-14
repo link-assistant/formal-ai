@@ -32,14 +32,14 @@ pub mod patterns_1d;
 pub mod store;
 pub mod symbols;
 
-pub use compression::{compress, CompressionResult, CompressionStep};
-pub use converter::{balanced_convert, LinkFrequenciesCache, LinkFrequency, SequenceIndex};
+pub use compression::{CompressionResult, CompressionStep, compress};
+pub use converter::{LinkFrequenciesCache, LinkFrequency, SequenceIndex, balanced_convert};
 pub use grid_2d::{Grid, GridSymmetry, GridTransform};
 pub use inference::{
-    infer_grid_patterns, infer_sequence_patterns, GridPatternReport, SequencePatternReport,
+    GridPatternReport, SequencePatternReport, infer_grid_patterns, infer_sequence_patterns,
 };
 pub use patterns_1d::{
-    detect_palindrome, detect_period, detect_repetition, RepetitionPattern, SequencePattern,
+    RepetitionPattern, SequencePattern, detect_palindrome, detect_period, detect_repetition,
 };
-pub use store::{Doublet, LinkAddress, SequenceStore, NULL_LINK};
+pub use store::{Doublet, LinkAddress, NULL_LINK, SequenceStore};
 pub use symbols::SymbolTable;

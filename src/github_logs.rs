@@ -16,8 +16,7 @@ const PR_LIST_FIELDS: &str =
     "number,title,state,createdAt,updatedAt,url,author,headRefName,baseRefName,isDraft";
 const RUN_LIST_FIELDS: &str =
     "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url";
-const RUN_VIEW_FIELDS: &str =
-    "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url,jobs";
+const RUN_VIEW_FIELDS: &str = "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url,jobs";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GithubLogCollectorConfig {

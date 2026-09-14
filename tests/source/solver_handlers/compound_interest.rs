@@ -5,7 +5,7 @@
 //! for 5 years" need domain-specific slot extraction before there is an
 //! arithmetic expression to delegate.
 
-use crate::calculation::{evaluate_calculation, CalculationEvaluation};
+use crate::calculation::{CalculationEvaluation, evaluate_calculation};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;

@@ -44,7 +44,7 @@ step_guard_recursion_and_inconclusive
   order "6"
   id "guard_recursion_and_inconclusive"
   title "Guard recursion and inconclusive replays"
-  detail "A replay already carries a forced language, so the handler returns None when forced_response_language.is_some() — it can never re-enter itself. is_inconclusive drops replays whose intent is unknown/ill_formed/punctuation_only_prompt or starts with clarify, so a follow-up that could not be reconstructed falls through to the normal handlers."
+  detail "A replay already carries a forced language, so the handler returns None when forced_response_language.is_some() — it can never re-enter itself. SymbolicAnswer::is_inconclusive drops replays whose intent is unknown/ill_formed/punctuation_only_prompt or starts with clarify, so a follow-up that could not be reconstructed falls through to the normal handlers. The test lives on the answer type rather than in this handler because the agentic planner asks the same question of the same answers, and two copies of the definition could disagree about what counts as concluded."
   seed_file "src/solver_handlers/response_language_followup.rs"
 step_splice_provenance
   record_type "meta_step"
@@ -122,7 +122,7 @@ fn_is_language_reanswer_followup
 fn_is_inconclusive
   record_type "meta_function"
   function "is_inconclusive"
-  source_file "src/solver_handlers/response_language_followup.rs"
+  source_file "src/engine.rs"
   kind "guard"
 fn_detect_response_language
   record_type "meta_function"
@@ -172,7 +172,7 @@ parity_is_language_reanswer_followup
 parity_is_inconclusive
   record_type "meta_parity"
   rust_function "is_inconclusive"
-  rust_file "src/solver_handlers/response_language_followup.rs"
+  rust_file "src/engine.rs"
   js_function "isInconclusiveReplayIntent"
   js_file "src/web/worker/formal_ai_worker_19.js"
 parity_set_forced_language

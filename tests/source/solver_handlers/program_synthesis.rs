@@ -1,9 +1,8 @@
-use std::fmt::Write as _;
-use std::time::Duration;
+use std::{fmt::Write as _, time::Duration};
 
 use crate::agent::{AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
-use crate::engine::SymbolicAnswer;
-use crate::event_log::EventLog;
+use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
+use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
 use super::finalize_simple;
 
@@ -244,6 +243,7 @@ pub fn try_program_synthesis(
         "execution_environment",
         "isolated bounded agent workspace; env cleared; 5 second command budget".to_owned(),
     );
+    MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
 
     let body = render_python_answer(&candidate);
     Some(finalize_simple(
@@ -552,7 +552,7 @@ fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
 fn render_python_answer(candidate: &PythonCandidate) -> String {
     let code = candidate.function.render();
     format!(
-        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.",
+        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.",
         code,
         candidate.tests.len(),
         candidate.tests.len()

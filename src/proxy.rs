@@ -11,7 +11,7 @@ use serde_json::Value;
 use crate::protocol_policy::tool_definition_names;
 
 mod summary;
-use summary::{summarize_response_value, summarize_sse_response, ResponseSummary};
+use summary::{ResponseSummary, summarize_response_value, summarize_sse_response};
 
 /// Runtime configuration for `formal-ai proxy`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -367,11 +367,7 @@ fn read_response_head(reader: &mut BufReader<TcpStream>) -> io::Result<Option<Ht
 fn read_http_line(reader: &mut BufReader<TcpStream>) -> io::Result<Option<Vec<u8>>> {
     let mut line = Vec::new();
     let bytes = reader.read_until(b'\n', &mut line)?;
-    if bytes == 0 {
-        Ok(None)
-    } else {
-        Ok(Some(line))
-    }
+    if bytes == 0 { Ok(None) } else { Ok(Some(line)) }
 }
 
 fn trim_http_line(line: &[u8]) -> String {

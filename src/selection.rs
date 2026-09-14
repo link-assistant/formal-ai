@@ -25,15 +25,20 @@ use crate::links_format::format_lino_record;
 use crate::meta_frame::WorkUnit;
 use crate::method_registry::MethodRegistry;
 
-/// Whether the meta core records the per-leaf method-selection artifact. The live
-/// solver always dispatches through the registry; this knob only changes trace
-/// verbosity, never routing or any answer (R13).
+/// Whether the meta core records the per-leaf method-selection artifact.
+///
+/// The live solver always dispatches through the registry; this knob only
+/// changes trace verbosity, never routing or any answer (R13).
+///
+/// `Record` is the default. It used to be `Off`, so the selection trace appeared
+/// only when it was asked for — the shape issue #1073 (requirement 1) forbids for
+/// reasoning depth. `Off` remains available to quieten a trace deliberately.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SelectionMode {
-    /// Record nothing, reproducing the pre-artifact trace exactly.
-    #[default]
+    /// Record nothing.
     Off,
-    /// Record the registry-resolved method for every atomic leaf.
+    /// Record the registry-resolved method for every atomic leaf (default).
+    #[default]
     Record,
 }
 

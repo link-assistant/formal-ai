@@ -26,6 +26,7 @@ mod brainstorm;
 mod caller_context;
 mod client_completion;
 mod client_integrations;
+mod contribution_artifacts;
 mod coreference;
 mod draft_strategies;
 mod embedded;
@@ -33,6 +34,7 @@ mod entity_names;
 mod facts;
 mod grounding_overrides;
 mod handler_precedence;
+mod intent_routing;
 mod market_price_references;
 mod meanings;
 mod model_aliases;
@@ -44,84 +46,102 @@ mod proof_programs;
 mod release_timelines;
 mod roles;
 mod shell_intents;
+mod sources;
 mod summary_topics;
 mod terminal_commands;
+mod tool_resource_scopes;
 
 use std::collections::BTreeMap;
 
 use parser::{
-    escape_value, find_closing_quote, parse_codepoint, parse_lino, split_pipe_list, unescape_value,
-    LinoNode,
+    LinoNode, escape_value, find_closing_quote, parse_codepoint, parse_lino, split_pipe_list,
+    unescape_value,
 };
 
-pub use agentic_tool_capabilities::{agentic_tool_capabilities, AgenticToolCapability};
-pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
-pub use caller_context::{caller_context_vocabulary, CallerContextVocabulary, InjectedBlock};
-pub use client_completion::{software_authoring_completion_contract, ClientCompletionContract};
+pub use agentic_tool_capabilities::{AgenticToolCapability, agentic_tool_capabilities};
+pub use brainstorm::{BrainstormCategory, BrainstormSeeds, brainstorm_seeds};
+pub use caller_context::{CallerContextVocabulary, InjectedBlock, caller_context_vocabulary};
+pub use client_completion::{ClientCompletionContract, software_authoring_completion_contract};
 pub use client_integrations::{
-    client_integrations, ClientIntegration, ClientIntegrationCompanionFile,
-    ClientIntegrationGlobalConfig, ClientIntegrationInvocation, ClientVerification, ConfigFormat,
-    ModeArgPosition, ModelArgPosition, TemplateEnv,
+    ClientIntegration, ClientIntegrationCompanionFile, ClientIntegrationGlobalConfig,
+    ClientIntegrationInvocation, ClientVerification, ConfigFormat, ModeArgPosition,
+    ModelArgPosition, TemplateEnv, client_integrations,
 };
-pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
+pub use contribution_artifacts::{
+    ChangelogCategory, ContributionArtifactVocabulary, PullRequestSection, WritePathVocabulary,
+    contribution_artifact_vocabulary,
+};
+pub use coreference::{Antecedent, CoreferenceSeeds, Pronoun, coreference_seeds};
 pub use draft_strategies::{draft_strategies, draft_strategies_from};
 pub use embedded::{
-    seed_files, AGENTIC_TOOL_CAPABILITIES_LINO, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO,
-    CALLER_CONTEXT_LINO, CLIENT_COMPLETION_CONTRACTS_LINO, CLIENT_INTEGRATIONS_LINO,
-    CODING_IDIOMS_LINO, COMPUTER_USE_TASKS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
+    AGENT_INFO_LINO, AGENTIC_TOOL_CAPABILITIES_LINO, BRAINSTORM_SEEDS_LINO, CALLER_CONTEXT_LINO,
+    CLIENT_COMPLETION_CONTRACTS_LINO, CLIENT_INTEGRATIONS_LINO, CODING_IDIOMS_LINO,
+    COMPUTER_USE_TASKS_LINO, CONCEPT_CONTEXTS_LINO, CONCEPTS_LINO, CONTRIBUTION_ARTIFACTS_LINO,
     COREFERENCE_LINO, DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO,
     ENVIRONMENTS_LINO, FACTS_LINO, FORMAL_LANGUAGE_PROJECTIONS_LINO, GREETINGS_LINO,
-    HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
-    LANGUAGES_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO,
-    MEANINGS_CALENDAR_LINO, MEANINGS_CODING_TASKS_LINO, MEANINGS_FACTS_LINO,
-    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_NUMBER_CONSTRAINTS_LINO,
-    MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
-    MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
-    MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
-    MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO, MULTILINGUAL_RESPONSES_LINO,
-    MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO, MULTILINGUAL_RESPONSES_PATTERN_LINO,
-    MULTILINGUAL_RESPONSES_PROCEDURE_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
-    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
-    PROMPT_PATTERNS_LINO, PROOF_PROGRAM_TEMPLATES_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
-    SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
-    TOOLS_LINO,
+    HANDLER_PRECEDENCE_LINO, HANDLER_RULES_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
+    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LANGUAGES_LINO, LEARNED_METHODS_LINO,
+    LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO, MEANING_FILES, MEANINGS_CALENDAR_LINO,
+    MEANINGS_CODING_TASKS_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
+    MEANINGS_NUMBER_CONSTRAINTS_LINO, MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
+    MEANINGS_UNITS_LINO, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
+    MULTILINGUAL_RESPONSES_LINO, MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
+    MULTILINGUAL_RESPONSES_PATTERN_LINO, MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
+    PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
+    PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
+    SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO,
+    TERMINAL_COMMANDS_LINO, TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
 };
-pub use entity_names::{entity_names, EntityName};
-pub use facts::{facts, FactRecord, LocalizedFact};
+pub use entity_names::{EntityName, entity_names};
+pub use facts::{FactRecord, LocalizedFact, facts};
 pub use grounding_overrides::{
-    cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
+    OverrideFact, cache_contains, override_facts, override_reason, parse_record, resolve,
 };
-pub use handler_precedence::{handler_precedence, handler_precedence_from};
-pub use market_price_references::{market_price_assets, MarketPriceAsset, MarketPricePeriod};
+pub use handler_precedence::{
+    HANDLER_PRECEDENCE_PATH, handler_precedence, handler_precedence_from,
+};
+pub use intent_routing::{
+    INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_routing, intent_routing_from,
+};
+pub use market_price_references::{MarketPriceAsset, MarketPricePeriod, market_price_assets};
 pub use meanings::{
-    lexicon, parse_lexicon_text, ArithmeticOperator, Lexeme, Lexicon, Meaning, SemanticFacet, Slot,
-    WordForm,
+    ArithmeticOperator, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm, lexicon,
+    parse_lexicon_text,
 };
 pub use model_aliases::{
-    canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id, ModelAliasRegistry,
+    ModelAliasRegistry, canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id,
 };
 pub use operation_vocabulary::{
-    operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
+    OperationLanguageForms, OperationTrigger, OperationVocabulary, operation_vocabulary,
 };
-pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
+pub use personas::{Persona, PersonaSeeds, PersonaTopic, persona_seeds};
 pub use projects::{
-    projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
+    LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry, projects_registry,
 };
-pub use proof_programs::{proof_program_templates, ProofLanguageTemplates, ProofProgramTemplates};
+pub use proof_programs::{ProofLanguageTemplates, ProofProgramTemplates, proof_program_templates};
 pub use release_timelines::{
-    parse_release_timelines, release_timelines, ReleaseTimeline, ReleaseTimelineEntry,
-    ReleaseTimelinePhrasing, ReleaseTimelines,
+    ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelinePhrasing, ReleaseTimelines,
+    parse_release_timelines, release_timelines,
 };
 // `roles` re-exports its own submodules with globs; mirror that here so the
 // per-role constant list does not have to be restated (and keeps this file
 // under the 1000-line limit as new roles land).
 pub use roles::*;
 pub use shell_intents::{
-    shell_intent_vocabulary, LocalPathSearchKind, LocalPathSearchScope, ShellIntent,
-    ShellIntentArgument, ShellIntentVocabulary,
+    DirectoryListingVocabulary, LocalPathSearchKind, LocalPathSearchScope, ShellIntent,
+    ShellIntentArgument, ShellIntentEffect, ShellIntentVocabulary, shell_intent_vocabulary,
 };
-pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
-pub use terminal_commands::{terminal_command_vocabulary, TerminalCommandVocabulary};
+pub use sources::{
+    EXTERNAL_TRUSTED_GROUP, HowToRole, SourceRecord, external_service_settings_keys,
+    external_trusted_sources, percent_encode, source_record, source_registry,
+};
+pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
+pub use terminal_commands::{TerminalCommandVocabulary, terminal_command_vocabulary};
+pub use tool_resource_scopes::{
+    ToolResourceScopeVocabulary, parse_tool_resource_scopes, tool_resource_scope_vocabulary,
+};
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///
@@ -231,10 +251,10 @@ pub fn parse_bundle(text: &str) -> Vec<(String, String)> {
             }
             if let Some(rest) = trimmed.strip_prefix("file ") {
                 let rest = rest.trim();
-                if let Some(stripped) = rest.strip_prefix('"') {
-                    if let Some(close) = find_closing_quote(stripped) {
-                        current_name = Some(unescape_value(&stripped[..close]));
-                    }
+                if let Some(stripped) = rest.strip_prefix('"')
+                    && let Some(close) = find_closing_quote(stripped)
+                {
+                    current_name = Some(unescape_value(&stripped[..close]));
                 }
             }
             continue;
@@ -363,10 +383,10 @@ pub fn localized_response(intent: &str, language: &str) -> Option<String> {
     if let Some(text) = response_for(intent, language) {
         return Some(text);
     }
-    if crate::language::from_slug(language).is_some() {
-        if let Some(text) = response_for(intent, "unknown") {
-            return Some(text);
-        }
+    if crate::language::from_slug(language).is_some()
+        && let Some(text) = response_for(intent, "unknown")
+    {
+        return Some(text);
     }
     response_for(intent, "en")
 }
@@ -672,81 +692,6 @@ pub fn concept_contexts() -> Vec<ContextRecord> {
         }
     }
     out
-}
-
-/// Intent routing record from `data/seed/intent-routing.lino`.
-///
-/// Match semantics (mirrored in `src/web/formal_ai_worker.js`):
-/// - `keywords`: exact match of the entire normalized prompt
-/// - `phrases`: exact match of the entire normalized prompt (kept as a
-///   separate label so multi-word entries are easy to spot in `.lino`)
-/// - `tokens`: any single whitespace-separated token equals the value
-/// - `combos`: every token in the combo appears as a whitespace-separated
-///   token in the prompt (in any order)
-#[derive(Debug, Clone, Default)]
-pub struct IntentRoute {
-    pub id: String,
-    pub slug: String,
-    pub response_link: String,
-    pub keywords: Vec<String>,
-    pub phrases: Vec<String>,
-    pub tokens: Vec<String>,
-    pub combos: Vec<Vec<String>>,
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct IntentRouting {
-    pub intents: Vec<IntentRoute>,
-    pub article_prefixes: Vec<String>,
-    pub trace_prefixes: Vec<String>,
-}
-
-#[must_use]
-pub fn intent_routing() -> IntentRouting {
-    let tree = parse_lino(INTENT_ROUTING_LINO);
-    let mut routing = IntentRouting::default();
-    if let Some(root) = tree.children.first() {
-        for child in &root.children {
-            match child.name.as_str() {
-                "intent" => {
-                    let mut keywords = Vec::new();
-                    let mut phrases = Vec::new();
-                    let mut tokens = Vec::new();
-                    let mut combos = Vec::new();
-                    for entry in &child.children {
-                        match entry.name.as_str() {
-                            "keyword" => keywords.push(entry.id.clone()),
-                            "phrase" => phrases.push(entry.id.clone()),
-                            "token" => tokens.push(entry.id.clone()),
-                            "combo" => combos.push(
-                                entry
-                                    .id
-                                    .split('+')
-                                    .map(str::trim)
-                                    .filter(|s| !s.is_empty())
-                                    .map(ToOwned::to_owned)
-                                    .collect(),
-                            ),
-                            _ => {}
-                        }
-                    }
-                    routing.intents.push(IntentRoute {
-                        id: child.id.clone(),
-                        slug: child.find_child_value("slug").to_string(),
-                        response_link: child.find_child_value("response_link").to_string(),
-                        keywords,
-                        phrases,
-                        tokens,
-                        combos,
-                    });
-                }
-                "article" => routing.article_prefixes.push(child.id.clone()),
-                "trace_prefix" => routing.trace_prefixes.push(child.id.clone()),
-                _ => {}
-            }
-        }
-    }
-    routing
 }
 
 /// One learnable data source declared by `learning-sources.lino` (issue #499).

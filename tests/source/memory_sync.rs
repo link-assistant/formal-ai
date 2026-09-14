@@ -20,7 +20,7 @@
 
 use std::path::{Path, PathBuf};
 
-use crate::memory::{export_links_notation, parse_links_notation, MemoryEvent};
+use crate::memory::{MemoryEvent, export_links_notation, parse_links_notation};
 
 /// Return every event that appears strictly **after** the event `last_seen`.
 ///

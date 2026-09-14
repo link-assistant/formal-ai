@@ -1,7 +1,7 @@
 //! Probe: which answer language does each candidate prompt resolve to, and how
 //! does the localized trace read? (issue #889)
 
-use formal_ai::{render_thinking_steps, thinking_answer_language, FormalAiEngine};
+use formal_ai::{FormalAiEngine, render_thinking_steps, thinking_answer_language};
 
 fn main() {
     for prompt in [

@@ -233,12 +233,15 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
         ],
     );
 
-    let workflow = read(root.join(".github/workflows/release.yml"));
+    // Since issue #991 took the step list out of the workflow, this check is
+    // `data/meta/ci-gates/check-i18n-catalog-coverage.lino`, so the traceable link
+    // is the CI surface: workflow plus registered gates. The gate's name, not the
+    // prose step title it replaced, is what CI now prints and what R140 cites.
     assert_contains_all(
-        ".github/workflows/release.yml",
-        &workflow,
+        "the CI surface",
+        &crate::ci_gates::ci_surface(),
         &[
-            "Check i18n catalog coverage",
+            "check_i18n_catalog_coverage",
             "npm run --prefix tests/e2e check:i18n",
         ],
     );
@@ -651,7 +654,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
             "| R234 ",
             "| R235 ",
             "| R236 ",
-            "doublets-rs as the native default",
+            "link-cli as the native default",
         ],
     );
 
@@ -660,10 +663,14 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "Cargo.toml",
         &cargo,
         &[
-            "default = [\"doublets-native\", \"meta-language\"]",
-            "dep:doublets",
-            "dep:mem",
+            "default = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]",
+            "link-cli = { version = \"0.2.10\", optional = true }",
+            "doublets-native = [\"dep:link-cli\"]",
         ],
+    );
+    assert!(
+        !cargo.contains("dep:doublets") && !cargo.contains("dep:mem"),
+        "link-cli must own the superseded direct doublets/platform-mem stack"
     );
 
     let link_store = read(root.join("src/link_store.rs"));
@@ -682,9 +689,9 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "tests/source/source_tests/link_store/tests.rs",
         &link_store_tests,
         &[
-            "native_default_build_selects_doublets_rs_backend",
+            "native_default_build_selects_link_cli_backend",
             "native_without_default_features_falls_back_to_lino_projection",
-            "doublets_default_imports_full_lino_bundle_and_exports_deterministically",
+            "link_cli_default_imports_full_lino_bundle_and_exports_deterministically",
         ],
     );
 
@@ -693,7 +700,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "ARCHITECTURE.md",
         &architecture,
         &[
-            "Default native doublets-rs",
+            "Default native link-cli",
             "--no-default-features",
             "formal_ai_bundle",
             "indexeddb-lino-mirror",
@@ -705,7 +712,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "README.md",
         &readme,
         &[
-            "Native Rust builds now select `doublets-rs`",
+            "Native Rust builds now select the `link-cli` library backend",
             "`doublets-native` feature",
             "`--no-default-features`",
         ],
@@ -718,8 +725,8 @@ fn issue_278_default_native_doublets_store_is_traceable() {
     assert!(
         rust_library
             .memory_store
-            .contains("default native doublets-rs link store"),
-        "rust_library environment should describe the native doublets store"
+            .contains("default native link-cli transactional store"),
+        "rust_library environment should describe the native link-cli store"
     );
     assert!(
         rust_library

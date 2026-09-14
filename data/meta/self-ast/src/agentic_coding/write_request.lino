@@ -1,0 +1,120 @@
+self_ast_census
+  target src/agentic_coding/write_request.rs
+  language rust
+  fidelity full_ast
+  byte_len 24240
+  line_count 507
+  content_id source_module_dddc0627903db074
+  symbol_count 29
+  symbols
+    struct Token 14 18
+    function tokens 20 37
+    function bare_surfaces 39 46
+    function clean_path_token 52 58
+    function looks_like_file_path 67 74
+    function clean_cue_token 76 79
+    function first_content_lead_end 83 85
+    function first_prefix_lead_end 86 125
+    function cued_write_target 130 132
+    function cued_write_targets 137 156
+    function quoted_as_value 166 171
+    function stated_write_target 180 182
+    function states_write_action 188 190
+    function delivered_write_target 240 249
+    function is_stated_write_target 265 270
+    function pinned_first_line 278 291
+    function delimited_first_line 298 306
+    function unquoted_machine_first_line 314 328
+    function pinned_first_line_of_request 335 339
+    function honouring_pinned_first_line 364 375
+    function without_pinning_sentences 378 386
+    function first_action_cue 388 392
+    function first_action_cue_end 394 396
+    function first_action_cue_start 406 408
+    function clean_content 415 431
+    function strip_clause_lead 440 451
+    function strip_leading_qualifier 456 467
+    function safe_relative_path 468 475
+    function payload_continues_past_its_first_line 494 507
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 12721
+    named_node_count 2778
+    distinct_node_kinds 73
+    node_kinds
+      arguments 209
+      array_expression 7
+      array_type 6
+      assignment_expression 4
+      binary_expression 52
+      block 56
+      boolean_literal 2
+      break_expression 1
+      call_expression 209
+      char_literal 56
+      closure_expression 40
+      closure_parameters 40
+      crate 1
+      doc_comment 213
+      else_clause 4
+      escape_sequence 4
+      expression_statement 21
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 178
+      field_identifier 182
+      field_initializer 1
+      field_initializer_list 1
+      for_expression 1
+      function_item 28
+      generic_function 1
+      generic_type 27
+      identifier 462
+      if_expression 10
+      index_expression 13
+      inner_doc_comment_marker 9
+      integer_literal 13
+      let_condition 1
+      let_declaration 45
+      lifetime 16
+      lifetime_parameter 4
+      line_comment 217
+      loop_expression 1
+      macro_invocation 8
+      mutable_specifier 4
+      outer_doc_comment_marker 204
+      parameter 36
+      parameters 28
+      parenthesized_expression 5
+      primitive_type 54
+      range_expression 13
+      reference_expression 14
+      reference_type 39
+      return_expression 6
+      scoped_identifier 19
+      scoped_use_list 2
+      self 1
+      shorthand_field_initializer 2
+      source_file 1
+      string_content 9
+      string_literal 8
+      struct_expression 1
+      struct_item 1
+      super 27
+      token_tree 8
+      try_expression 10
+      tuple_expression 2
+      tuple_pattern 6
+      tuple_struct_pattern 3
+      tuple_type 5
+      type_arguments 28
+      type_identifier 43
+      type_parameters 3
+      unary_expression 18
+      use_declaration 3
+      use_list 2
+      visibility_modifier 25
+      while_expression 1

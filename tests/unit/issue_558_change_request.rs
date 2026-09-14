@@ -12,13 +12,13 @@
 //! through the agentic interface as the ninth recipe.
 
 use formal_ai::agentic_coding::{
-    change_request as recipe, is_change_request_task, plan_chat_step, run_agentic_task,
-    AgenticPlan, PlannedToolCall, CHANGE_PATH, CHANGE_TASK, DRIVER_TOOLS,
+    AgenticPlan, CHANGE_PATH, CHANGE_TASK, DRIVER_TOOLS, PlannedToolCall, change_request as recipe,
+    is_change_request_task, plan_chat_step, run_agentic_task,
 };
 use formal_ai::self_improvement::BenchmarkGateReport;
 use formal_ai::{
-    canonical_change_request, owned_manifest, ChangeRejected, ChangeRequest, ChatMessage,
-    HumanApproval, ToolCall,
+    ChangeRejected, ChangeRequest, ChatMessage, HumanApproval, ToolCall, canonical_change_request,
+    owned_manifest,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -92,18 +92,24 @@ fn a_request_derives_a_requirement_a_test_and_a_patch_plan() {
     assert!(!request.proposed_test.contains(' '));
     // The patch plan is an ordered, non-empty set of steps ending in a reviewed merge.
     assert!(request.patch_plan.len() >= 4, "a multi-step patch plan");
-    assert!(request
-        .patch_plan
-        .iter()
-        .any(|step| step.contains(&request.proposed_test)));
-    assert!(request
-        .patch_plan
-        .iter()
-        .any(|step| step.contains("src/agentic_coding/planner.rs")));
-    assert!(request
-        .patch_plan
-        .last()
-        .is_some_and(|step| step.contains("pull request")));
+    assert!(
+        request
+            .patch_plan
+            .iter()
+            .any(|step| step.contains(&request.proposed_test))
+    );
+    assert!(
+        request
+            .patch_plan
+            .iter()
+            .any(|step| step.contains("src/agentic_coding/planner.rs"))
+    );
+    assert!(
+        request
+            .patch_plan
+            .last()
+            .is_some_and(|step| step.contains("pull request"))
+    );
     assert!(request.is_human_gated());
 }
 

@@ -36,7 +36,7 @@ use crate::self_improvement::LearningRun;
 
 mod gates;
 mod materialize;
-pub use gates::{replay_promotion_gates, replay_promotion_gates_with, GateCommandOutput};
+pub use gates::{GateCommandOutput, replay_promotion_gates, replay_promotion_gates_with};
 pub use materialize::apply_promotions;
 
 const CODING_MODIFICATION_SUITE_LINO: &str =
@@ -165,11 +165,7 @@ impl PromotionRatchet {
     /// Stable slug describing the outcome of this gate.
     #[must_use]
     pub const fn status_slug(&self) -> &'static str {
-        if self.clears() {
-            "cleared"
-        } else {
-            "blocked"
-        }
+        if self.clears() { "cleared" } else { "blocked" }
     }
 
     /// A typed evidence link naming which ratchet ran, at what floor, and how it
@@ -469,7 +465,7 @@ pub struct PromotionApplyOutcome {
     pub branch_plan: PromotionBranchPlan,
     /// Content-addressed deterministic Formal AI Agent session records that
     /// authored the exact bytes written for each target file.
-    pub agent_session_ids: Vec<String>,
+    pub agent_session_digests: Vec<String>,
 }
 
 /// Bridge accumulated self-improvement proposals into promotion candidates.

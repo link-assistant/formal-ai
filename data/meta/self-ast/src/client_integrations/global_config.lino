@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 13793
   line_count 397
-  content_id source_module_192c84af9de612e6
+  content_id source_module_dcc69fa16e972664
   symbol_count 21
   symbols
     const MANAGED_BLOCK_START_PREFIX 28 28

@@ -4,6 +4,11 @@ meanings
     lexeme en
       surface
         text "rule"
+  added
+    defined-by category
+    lexeme en
+      surface
+        text "added"
   agent_procedure_write_unavailable
     defined-by intent
     lexeme en
@@ -59,6 +64,11 @@ meanings
     lexeme en
       surface
         text "data structure"
+  delegated
+    defined-by concept
+    lexeme en
+      surface
+        text "delegated"
   detailed
     defined-by concept
     lexeme en
@@ -104,11 +114,26 @@ meanings
     lexeme en
       surface
         text "grep"
+  harness
+    defined-by concept
+    lexeme en
+      surface
+        text "harness"
   how_it_works
     defined-by intent
     lexeme en
       surface
         text "how it works"
+  how_to_guide_sources_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide sources heading"
+  independent_corroboration
+    defined-by concept
+    lexeme en
+      surface
+        text "independent corroboration"
   intent_assistant_free_time
     defined-by intent
     lexeme en
@@ -169,6 +194,11 @@ meanings
     lexeme en
       surface
         text "memory program iteration limit"
+  missing
+    defined-by concept
+    lexeme en
+      surface
+        text "missing"
   name_target_artifact
     defined-by concept
     lexeme en
@@ -259,6 +289,16 @@ meanings
     lexeme en
       surface
         text "pip"
+  proof_datalog_conclusion
+    defined-by intent
+    lexeme en
+      surface
+        text "proof datalog conclusion"
+  punctuation_only_prompt
+    defined-by concept
+    lexeme en
+      surface
+        text "punctuation only prompt"
   pytest
     defined-by concept
     lexeme en
@@ -269,16 +309,31 @@ meanings
     lexeme en
       surface
         text "quality"
+  raw
+    defined-by concept
+    lexeme en
+      surface
+        text "raw"
   remix
     defined-by concept
     lexeme en
       surface
         text "remix"
+  remote
+    defined-by concept
+    lexeme en
+      surface
+        text "remote"
   requirement_contradiction
     defined-by intent
     lexeme en
       surface
         text "requirement contradiction"
+  response_action_correction_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response action correction zh"
   response_agent_procedure_executed_en
     defined-by response_template
     lexeme en
@@ -364,6 +419,36 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting hi"
+  response_coding_member_already_present_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding member already present zh"
+  response_coding_meta_algorithm_solutions_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm solutions heading es"
+  response_coding_meta_algorithm_surface_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding meta algorithm surface ru"
+  response_coding_repository_result_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation en"
+  response_coding_repository_result_observation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository result observation hi"
+  response_coding_repository_source_observation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding repository source observation ru"
   response_coding_source_function_return_rust
     defined-by response_template
     lexeme en
@@ -374,16 +459,41 @@ meanings
     lexeme en
       surface
         text "response completion recovery decompose into leaf ru"
+  response_conversation_preference_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response conversation preference hi"
   response_document_originality_check_sample_present_en
     defined-by response_template
     lexeme en
       surface
         text "response document originality check sample present en"
+  response_evidence_exact_composition_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response evidence exact composition es"
+  response_external_benchmark_proof_query_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query ru"
+  response_external_benchmark_proof_status_detail_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail es"
   response_external_benchmark_swe_inspect_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe inspect error en"
+  response_external_benchmark_upstream_missing_start_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start es"
   response_fact_check_current_dialogue_ru
     defined-by response_template
     lexeme en
@@ -404,6 +514,11 @@ meanings
     lexeme en
       surface
         text "response general plan repository planned hi"
+  response_general_plan_repository_read_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository read evidence hi"
   response_general_plan_unverified_en
     defined-by response_template
     lexeme en
@@ -424,6 +539,41 @@ meanings
     lexeme en
       surface
         text "response greeting ru"
+  response_how_to_guide_conflict_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict ru"
+  response_how_to_guide_conflicts_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading es"
+  response_how_to_guide_conflicts_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading hi"
+  response_how_to_guide_copy_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy en"
+  response_how_to_guide_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading es"
+  response_how_to_guide_insufficient_evidence_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence es"
+  response_how_to_guide_step_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step ru"
   response_lexeme_import_cache_budget_reached_zh
     defined-by response_template
     lexeme en
@@ -494,6 +644,11 @@ meanings
     lexeme en
       surface
         text "response mcp tool description zh"
+  response_memory_link_count_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count ru"
   response_memory_program_iteration_limit_en
     defined-by response_template
     lexeme en
@@ -514,6 +669,11 @@ meanings
     lexeme en
       surface
         text "response memory program match limit zh"
+  response_mutating_action_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mutating action completed zh"
   response_pattern_grid_diagonal_hi
     defined-by response_template
     lexeme en
@@ -559,6 +719,21 @@ meanings
     lexeme en
       surface
         text "response pattern sequence no compression ru"
+  response_proof_datalog_conclusion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion en"
+  response_proof_datalog_counterexample_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample es"
+  response_punctuation_only_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response punctuation only hi"
   response_statement_audit_temperature_range_en
     defined-by response_template
     lexeme en
@@ -629,6 +804,11 @@ meanings
     lexeme en
       surface
         text "response task decomposition depth bound hi"
+  response_task_decomposition_unsplit_depth_bound_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition unsplit depth bound es"
   response_task_first_step_lead_zh
     defined-by response_template
     lexeme en
@@ -814,6 +994,11 @@ meanings
     lexeme en
       surface
         text "search"
+  serialize
+    defined-by word_surface
+    lexeme en
+      surface
+        text "serialize"
   sort_lines
     defined-by operation
     lexeme en
@@ -824,6 +1009,11 @@ meanings
     lexeme en
       surface
         text "spanish"
+  strings
+    defined-by concept
+    lexeme en
+      surface
+        text "strings"
   submission
     defined-by word_surface
     lexeme en
@@ -869,6 +1059,11 @@ meanings
     lexeme en
       surface
         text "task atomicity no"
+  task_decomposition_single_need
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition single need"
   task_plan_stage_implementation
     defined-by intent
     lexeme en
@@ -899,6 +1094,11 @@ meanings
     lexeme en
       surface
         text "tool fs read"
+  trimmed_prompt
+    defined-by value
+    lexeme en
+      surface
+        text "trimmed prompt"
   ts
     defined-by word_surface
     lexeme en
@@ -909,3 +1109,8 @@ meanings
     lexeme en
       surface
         text "web search unavailable"
+  wording
+    defined-by concept
+    lexeme en
+      surface
+        text "wording"

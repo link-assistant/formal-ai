@@ -1,0 +1,23 @@
+
+> formal-ai-e2e@1.0.0 check:variation-floor
+> node scripts/check-conversational-variation-floor.mjs
+
+Conversational wording variations per case (floor: 5 per language)
+  case                  en  ru  hi  zh
+  greeting               9   8   6   7
+  wellbeing              5   6   6   6
+  farewell               8   7   5   5
+  courtesy_response      6   5   5   5
+  identity               6   6   6   6
+  capabilities           6   5   5   5
+  test_status            7   6   5   5
+  assistant_free_time    5   5   5   5
+  assistant_name         5   5   4   5
+  calculation            6   5   5   5
+
+Conversational variation floor check failed.
+- case assistant_name has 4 hi variation(s); the floor is 5
+Add wordings to data/benchmarks/conversational-variations/<language>.lino, then re-run `cargo test --test unit conversational_variation` so the new prompts are verified against the engine.
+
+Conversational variation corpus is inconsistent:
+- data/benchmarks/conversational-variations-suite.lino declares minimum_pass_count 228 but the partitions hold 227 cases

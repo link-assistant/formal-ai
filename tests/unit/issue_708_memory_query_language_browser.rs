@@ -21,6 +21,8 @@ fn browser_worker_executes_the_exact_query_language_parity_contract() {
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr),
     );
-    assert!(String::from_utf8_lossy(&output.stdout)
-        .contains("issue-708 browser query-language parity: ok"));
+    assert!(
+        String::from_utf8_lossy(&output.stdout)
+            .contains("issue-708 browser query-language parity: ok")
+    );
 }

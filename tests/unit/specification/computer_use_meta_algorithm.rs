@@ -256,7 +256,10 @@ fn both_external_client_parity_runs_are_wired_into_release_ci() {
         2,
         "recorded and held-out slices run externally"
     );
-    let workflow = read(".github/workflows/release.yml");
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     for entry in parity {
         for field in ["script", "verifier"] {
             let file = entry.require(field);

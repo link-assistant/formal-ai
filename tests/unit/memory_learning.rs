@@ -4,9 +4,10 @@
 //! task-kind gating.
 
 use formal_ai::{
-    apply_dreaming_plan, create_chat_completion_with_solver_and_memory, plan_memory_dreaming,
-    replay_answer_with_amendments, ChatCompletionRequest, ChatMessage, DreamingActionKind,
-    DreamingConfig, MemoryEvent, MemoryStore, RetainedAmendment, SyncStore, UniversalSolver,
+    ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig, MemoryEvent,
+    MemoryStore, RetainedAmendment, SyncStore, UniversalSolver, apply_dreaming_plan,
+    create_chat_completion_with_solver_and_memory, plan_memory_dreaming,
+    replay_answer_with_amendments,
 };
 #[test]
 fn adding_a_requirement_revokes_coverage_and_preserves_the_stale_specific() {
@@ -241,9 +242,11 @@ fn failed_replay_refines_the_amendment_back_from_the_recorded_marker() {
         .find(|amendment| amendment.topic == "latex")
         .expect("refinement must recreate the lost amendment");
     assert_eq!(amendment.rule, rule);
-    assert!(amendment
-        .covered_event_ids
-        .contains(&String::from("run-historical")));
+    assert!(
+        amendment
+            .covered_event_ids
+            .contains(&String::from("run-historical"))
+    );
     let candidate = plan
         .candidate_tasks
         .iter()
@@ -290,10 +293,11 @@ fn failed_replays_are_preserved_as_refinement_records() {
         },
     ]);
     let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
-    assert!(plan
-        .candidate_tasks
-        .iter()
-        .any(|candidate| candidate.source_event_id == "run-unverified" && !candidate.passed));
+    assert!(
+        plan.candidate_tasks
+            .iter()
+            .any(|candidate| candidate.source_event_id == "run-unverified" && !candidate.passed)
+    );
 
     let outcome = apply_dreaming_plan(&mut store, &plan);
     assert_eq!(outcome.recorded_failures, 1);
@@ -338,10 +342,11 @@ fn dreaming_synthesizes_new_trials_from_numeric_patterns_on_top_topics() {
         MemoryStore::from_events(vec![task("run-1", "add 1 2"), task("run-2", "add 3 4")]);
 
     let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
-    assert!(plan
-        .patterns
-        .iter()
-        .any(|pattern| pattern.topic == "math" && pattern.structure == "add # #"));
+    assert!(
+        plan.patterns
+            .iter()
+            .any(|pattern| pattern.topic == "math" && pattern.structure == "add # #")
+    );
     let trial = plan
         .synthesized_tasks
         .iter()

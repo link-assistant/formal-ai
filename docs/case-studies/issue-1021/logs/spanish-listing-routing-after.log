@@ -1,0 +1,7 @@
+lista los archivos aquí                            -> Some("ls")
+muéstrame los archivos de la carpeta actual        -> Some("ls")
+aquí, enseña los ficheros                          -> Some("ls")
+¿cuáles archivos hay en este directorio?           -> Some("ls")
+enumera el contenido del directorio actual         -> Some("ls")
+List me files here                                 -> Some("ls")
+lista los procesos en ejecución                    -> None

@@ -5,10 +5,10 @@ use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::file_legality::{
-    check_file_legality, check_file_legality_with, check_file_legality_with_providers,
     AssessmentStatus, AuthorizedHashMatch, DetectorObservation, FileLegalityConfig, LegalCategory,
     LegalVerdict, LegalityEvidenceProvider, MediaFamily, MetadataField, ProviderRunStatus,
-    RequiredAction, SafetyDisposition,
+    RequiredAction, SafetyDisposition, check_file_legality, check_file_legality_with,
+    check_file_legality_with_providers,
 };
 
 fn fixture_path(name: &str, bytes: &[u8]) -> PathBuf {

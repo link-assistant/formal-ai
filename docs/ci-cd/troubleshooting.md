@@ -128,6 +128,17 @@ If `build_type` is `workflow`, prefer the Pages artifact deployment path above.
 
 ## Crates.io Publishing Fails
 
+> **The release preflight cannot verify a crates.io token read-only.**
+> `GET /api/v1/me` is `AuthCheck::only_cookie()` in crates.io
+> (`src/controllers/user/me.rs`): it answers HTTP 403 to every API token,
+> valid or not, and endpoint-scoped tokens are rejected on every route that
+> does not require their scope. A probe that reads that 403 as "revoked or
+> expired" is a false positive (run 34149311523 blocked a release with the
+> token that had published v0.347.0 two days earlier; issue #1085).
+> `scripts/preflight-credentials.sh` therefore reports the crates.io token as
+> `unknown` with that reason and never sends it anywhere; `cargo publish`
+> itself is the only step that proves it.
+
 ### Symptom
 The "Publish to Crates.io" step fails with an error.
 

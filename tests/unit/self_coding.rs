@@ -5,6 +5,22 @@ use formal_ai::agentic_coding::run_agentic_task;
 const TASK: &str = "Create file self-coding-result.txt containing self-coding=passed";
 
 #[test]
+fn self_coding_keeps_server_memory_out_of_the_agent_workspace() {
+    let root = env!("CARGO_MANIFEST_DIR");
+    let script = fs::read_to_string(format!("{root}/examples/self-coding/run.sh"))
+        .expect("self-coding replay script");
+
+    assert!(
+        script.contains("FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\""),
+        "server-private .lino and binary .links state must stay below .git so Agent snapshots cannot mistake it for an authored repository effect",
+    );
+    assert!(
+        !script.contains("FORMAL_AI_MEMORY_PATH=\"$work/memory.lino\""),
+        "the Agent worktree must contain only fixture inputs and Agent-authored effects",
+    );
+}
+
+#[test]
 fn self_coding_session_replays() {
     let root = env!("CARGO_MANIFEST_DIR");
     let dir = format!("{root}/docs/case-studies/issue-651/self-coding-run");

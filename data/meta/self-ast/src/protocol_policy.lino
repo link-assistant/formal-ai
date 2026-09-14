@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 10788
   line_count 272
-  content_id source_module_f9a923bc8ebee566
+  content_id source_module_8e42828379fc424c
   symbol_count 17
   symbols
     function tool_call_refusal_answer 6 21

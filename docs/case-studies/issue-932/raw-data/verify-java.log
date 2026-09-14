@@ -1,0 +1,25 @@
+== java project generated from the ru prompt, image konard/box-java:2.4.0
+== program (Main.java):
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, world!");
+    }
+}
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the mkdir hello-formal-ai step
+mkdir -p hello-formal-ai
+# Run the cp main.java step
+cp Main.java hello-formal-ai/Main.java
+# Enter the project directory
+cd hello-formal-ai
+# Run the javac main.java step
+javac Main.java
+# Run the java main step
+java Main
+== running the init script
+   | Hello, world!
+ok: java project built and printed Hello, world! inside konard/box-java:2.4.0
+ok: box language projects verified for: java

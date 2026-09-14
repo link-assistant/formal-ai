@@ -1,0 +1,8 @@
+link_edit
+  leaf L05
+  path src/how_to_guide.rs
+  language rust
+  rule insert_member
+    list "TOPIC_STOPWORDS"
+    member "about"
+  expect "about"

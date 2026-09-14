@@ -2,8 +2,8 @@
 //! traces, gated by the issue #362 coding-modification benchmark.
 
 use formal_ai::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, EventLog, LearnedRuleAdoption,
-    SolverConfig, SubstitutionRuleSet, UniversalSolver, UnknownTrace,
+    BenchmarkGateReport, EventLog, LearnedRuleAdoption, SolverConfig, SubstitutionRuleSet,
+    UniversalSolver, UnknownTrace, learn_rules_from_unknown_traces,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -98,10 +98,12 @@ fn self_improvement_trace_accumulation_covers_supported_languages() {
 
         assert_eq!(trace.prompt, case.prompt);
         assert!(["en", "ru", "hi", "zh"].contains(&case.language));
-        assert!(trace
-            .events
-            .iter()
-            .any(|event| event.kind == "rule_synthesis_candidate"));
+        assert!(
+            trace
+                .events
+                .iter()
+                .any(|event| event.kind == "rule_synthesis_candidate")
+        );
     }
 }
 
@@ -140,7 +142,9 @@ fn accumulated_unknown_answers_without_candidates_are_rejected_not_adopted() {
 
     assert!(run.proposals.is_empty());
     assert_eq!(run.rejections.len(), 1);
-    assert!(run.rejections[0]
-        .reason
-        .contains("no rule_synthesis_candidate"));
+    assert!(
+        run.rejections[0]
+            .reason
+            .contains("no rule_synthesis_candidate")
+    );
 }

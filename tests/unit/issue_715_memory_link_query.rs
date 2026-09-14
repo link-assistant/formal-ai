@@ -9,7 +9,7 @@
 //! tools" — that conversion is only real if a request can actually travel it.
 
 use formal_ai::memory::{MemoryEvent, MemoryStore};
-use formal_ai::{execute_memory_query, MemoryQueryExecution};
+use formal_ai::{MemoryQueryExecution, execute_memory_query};
 
 /// Two events, so a read has something to select *between* rather than merely
 /// something to return.

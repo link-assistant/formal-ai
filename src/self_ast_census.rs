@@ -32,7 +32,7 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
-use crate::agentic_coding::self_ast::{ast_census, AstCensus};
+use crate::agentic_coding::self_ast::{AstCensus, ast_census};
 use crate::engine::stable_id;
 use crate::self_source_links::owned_source_files;
 

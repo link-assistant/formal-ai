@@ -61,10 +61,12 @@ fn selects_python_crypto_portfolio_tracker_blueprint() {
     assert_eq!(blueprint.recipe.slug, "crypto_portfolio_tracker");
     assert_eq!(blueprint.program.language_slug, "python");
     assert!(blueprint.program.code.contains("notify_alerts"));
-    assert!(blueprint
-        .program
-        .code
-        .contains("# Crypto Portfolio Dashboard"));
+    assert!(
+        blueprint
+            .program
+            .code
+            .contains("# Crypto Portfolio Dashboard")
+    );
 }
 
 #[test]

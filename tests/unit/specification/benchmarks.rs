@@ -311,9 +311,11 @@ fn issue_315_unseen_python_function_synthesizes_without_seed_hit() {
     assert!(response.answer.contains("def count_vowels"));
     assert!(response.answer.contains("sum("));
     assert!(response.answer.contains("Execution status: tests passed"));
-    assert!(response
-        .links_notation
-        .contains("synthesis:verification tests_passed"));
+    assert!(
+        response
+            .links_notation
+            .contains("synthesis:verification tests_passed")
+    );
     assert!(
         !response.links_notation.contains("legacy_intent"),
         "unseen synthesis must not be recorded as a seed hit: {}",

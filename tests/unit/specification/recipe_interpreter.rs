@@ -37,19 +37,19 @@ const SELECTION_MODES: &[SelectionMode] = &[SelectionMode::Off, SelectionMode::R
 const SKILL_MODES: &[SkillMode] = &[SkillMode::Off, SkillMode::Accumulate];
 
 #[test]
-fn the_program_parses_twelve_contiguously_ordered_steps() {
+fn the_program_parses_thirteen_contiguously_ordered_steps() {
     let program = RecipeProgram::from_repo();
     assert_eq!(
         program.step_count(),
-        12,
-        "the recipe declares the twelve-step recursive meta core"
+        13,
+        "the recipe declares the thirteen-step recursive meta core"
     );
     let mut orders: Vec<u8> = program.steps.iter().map(|step| step.order).collect();
     orders.sort_unstable();
     assert_eq!(
         orders,
-        (1..=12).collect::<Vec<_>>(),
-        "the parsed program preserves the twelve contiguous step orders"
+        (1..=13).collect::<Vec<_>>(),
+        "the parsed program preserves the thirteen contiguous step orders"
     );
     // Steps must come back sorted by order so execution follows the declared plan.
     let as_parsed: Vec<u8> = program.steps.iter().map(|step| step.order).collect();
@@ -74,16 +74,16 @@ fn the_recorder_sequence_matches_the_live_pipeline_order() {
         "the recorder primitives the recipe drives must match, in order, the \
          stages the live pipeline actually invokes"
     );
-    // The nine trace-recorded stages; the other three steps are external.
+    // The ten trace-recorded stages; the other three steps are external.
     assert_eq!(
         data_order.len(),
-        9,
-        "nine of the twelve steps record trace events"
+        10,
+        "ten of the thirteen steps record trace events"
     );
 }
 
 #[test]
-fn executing_the_recipe_reproduces_the_pipeline_trace_in_default_modes() {
+fn executing_the_recipe_reproduces_the_pipeline_trace_in_the_quiet_modes() {
     let program = RecipeProgram::from_repo();
     for prompt in PROMPTS {
         let formalization = formalize(prompt);
@@ -146,8 +146,9 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
         );
     }
 
-    // In default modes six recorder stages emit events; upward construction,
-    // selection, and the skill ledger are gated off and skipped.
+    // In the quiet modes seven recorder stages emit events; upward construction,
+    // selection, and the skill ledger are gated off and skipped. The reasoning
+    // standard audit takes no mode, so it runs here too (issue #1073).
     assert_eq!(
         trace.executed,
         vec![
@@ -157,18 +158,19 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
             "catalogue_methods",
             "reason_white_box",
             "record_evidence",
+            "audit_reasoning_standard",
         ],
-        "the executed recorder stages, in order, for the default modes"
+        "the executed recorder stages, in order, for the quiet modes"
     );
     for gated in ["construct_upward", "select_methods", "accumulate_skills"] {
         assert!(
             trace.skipped.contains(&gated.to_owned()),
-            "mode-gated stage `{gated}` must be skipped under the default modes"
+            "mode-gated stage `{gated}` must be skipped once its mode is quietened"
         );
     }
     assert_eq!(
         trace.executed.len() + trace.skipped.len(),
-        12,
+        13,
         "every step is accounted for as executed or skipped"
     );
 }
@@ -273,9 +275,9 @@ fn the_program_serializes_as_links_notation() {
     let program = RecipeProgram::from_repo();
     let lino = program.to_links_notation();
     assert!(lino.contains("recipe_program"), "header record present");
-    assert!(lino.contains("step_count \"12\""), "step count serialized");
+    assert!(lino.contains("step_count \"13\""), "step count serialized");
     assert!(
-        lino.contains("recorder_count \"9\""),
+        lino.contains("recorder_count \"10\""),
         "recorder count serialized"
     );
     assert!(

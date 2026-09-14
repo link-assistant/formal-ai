@@ -1,0 +1,332 @@
+{"type":"config","level":"info","timestamp":"2026-09-01T20:48:43.025Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":false,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:16021/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.027Z","service":"default","version":"0.26.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --no-summarize-session --compaction-model same --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --prompt Atomic task L21: Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\n\nThis is recursive binary-tree node 2.1.2.1.1 at depth 5. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: new_leaf_effect. Create `agent-ladder-effects/node-2.1.2.1.1.lino` with these exact field lines: `node_path=2.1.2.1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout. Leave supporting evidence in .agent-ladder/node-2.1.2.1.1-proof.md. The first line must be exactly node_path=2.1.2.1.1 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n","workingDirectory":"/tmp/tmp.jqLhS4aErh","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.030Z","service":"default","directory":"/tmp/tmp.jqLhS4aErh","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.031Z","service":"project","directory":"/tmp/tmp.jqLhS4aErh","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.037Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.046Z","service":"project","status":"completed","duration":9,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.070Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--no-summarize-session","--compaction-model","same","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Atomic task L21: Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\n\nThis is recursive binary-tree node 2.1.2.1.1 at depth 5. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: new_leaf_effect. Create `agent-ladder-effects/node-2.1.2.1.1.lino` with these exact field lines: `node_path=2.1.2.1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout. Leave supporting evidence in .agent-ladder/node-2.1.2.1.1-proof.md. The first line must be exactly node_path=2.1.2.1.1 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n"],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--no-summarize-session","--compaction-model","same","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Atomic task L21: Inspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\n\nThis is recursive binary-tree node 2.1.2.1.1 at depth 5. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: new_leaf_effect. Create `agent-ladder-effects/node-2.1.2.1.1.lino` with these exact field lines: `node_path=2.1.2.1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout. Leave supporting evidence in .agent-ladder/node-2.1.2.1.1-proof.md. The first line must be exactly node_path=2.1.2.1.1 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n"],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.071Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.075Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.084Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.085Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.085Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.200Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":94207,"message":"cache is fresh, triggering background refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.200Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.324Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.429Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.429Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.429Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.429Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.429Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.430Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.430Z","service":"provider","status":"completed","duration":355,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.498Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.498Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.499Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"model_resolved","timestamp":"2026-09-01T20:48:43.529Z","requested":"formalai/formal-ai","selector":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","source":"cli","matchesRequest":true}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.582Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.582Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.587Z","service":"session","id":"ses_fa144c5bcffe7XseqmIAdlQs95","version":"0.26.0","projectID":"1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","directory":"/tmp/tmp.jqLhS4aErh","title":"New session - 2026-09-01T20:48:43.587Z","time":{"created":1788295723587,"updated":1788295723587},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-09-01T20:48:43.599Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-01T20:48:43.599Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.600Z","service":"server","status":"completed","duration":18,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-09-01T20:48:43.601Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.602Z","service":"server","method":"POST","path":"/session/ses_fa144c5bcffe7XseqmIAdlQs95/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.602Z","service":"server","status":"started","method":"POST","path":"/session/ses_fa144c5bcffe7XseqmIAdlQs95/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.621Z","service":"server","status":"completed","duration":19,"method":"POST","path":"/session/ses_fa144c5bcffe7XseqmIAdlQs95/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:48:43.655Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:48:43.667Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-01T20:48:43.671Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.687Z","service":"session.prompt","step":0,"sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.737Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.738Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.739Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.744Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.745Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.745Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.746Z","service":"provider","status":"completed","duration":2,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.750Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:43.751Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:44.697Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:48:44.712Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:44.713Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:44.714Z","service":"ripgrep","cwd":"/tmp/tmp.jqLhS4aErh","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:45.061Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-09-01T20:48:45.078Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:48:45.102Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:45.102Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-01T20:48:45.102Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-09-01T20:48:45.102Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:48:48.887Z","service":"snapshot","message":"initialized"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:16.656Z","service":"snapshot","hash":"5e876527e8147a9865c752fecaddf5500b804ff1\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.659Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-09-01T20:49:16.659Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.666Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.673Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:16.673Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"grep","input":{},"tool_use_id":"prt_05ebbbb7a001DJiWq2mkUhtKzX"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.674Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-09-01T20:49:16.674Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","role":"assistant","content":[{"type":"text","text":"Let me search the code for agent_cli_ladder_depth_selector."}]}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.679Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:16.679Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"grep","input":{"include":"experiments/**/*","pattern":"all[)] ;;$"},"tool_use_id":"prt_05ebbbb7a001DJiWq2mkUhtKzX"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.694Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:16.694Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"grep","input":{"include":"experiments/**/*","pattern":"all[)] ;;$"},"tool_use_id":"prt_05ebbbb7a001DJiWq2mkUhtKzX"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:16.857Z","service":"snapshot","hash":"5e876527e8147a9865c752fecaddf5500b804ff1\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:16.867Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-09-01T20:49:16.867Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","status":"success","duration_ms":33266}
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:16.868Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:17.069Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:17.078Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.078Z","service":"session.prompt","step":1,"sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.091Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","step":2,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.092Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.095Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.095Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":14755,"providerTokens":14755,"estimatedInputTokens":344,"usingEstimate":false,"tokensBreakdown":{"input":14639,"cacheRead":0,"output":116},"overflow":false,"headroom":37053,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:17.096Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.096Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.097Z","service":"ripgrep","cwd":"/tmp/tmp.jqLhS4aErh","limit":200,"message":"tree"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:17.098Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.098Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-01T20:49:17.100Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-09-01T20:49:17.101Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:17.326Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-09-01T20:49:17.348Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.342Z","service":"snapshot","hash":"e85c130415d3dc2e8c31e5e679e094df6ff70961\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.343Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-09-01T20:49:20.344Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.345Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.346Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:20.347Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"write","input":{},"tool_use_id":"prt_05ebbc9d9001QaUERNzaj3raDG"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.347Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-09-01T20:49:20.348Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","role":"assistant","content":[{"type":"text","text":"Let me update .agent-ladder/node-2.1.2.1.1-proof.md for you."}]}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.350Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:20.350Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"write","input":{"content":"node_path=2.1.2.1.1\n\nLine 68: L21\tInspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\texperiments/issue_1028_agent_cli_ladder/run.sh\t0|1|2|3|4|5|all) ;;\n","filePath":"/tmp/tmp.jqLhS4aErh/.agent-ladder/node-2.1.2.1.1-proof.md"},"tool_use_id":"prt_05ebbc9d9001QaUERNzaj3raDG"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.355Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:20.355Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"write","input":{"content":"node_path=2.1.2.1.1\n\nLine 68: L21\tInspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\texperiments/issue_1028_agent_cli_ladder/run.sh\t0|1|2|3|4|5|all) ;;\n","filePath":"/tmp/tmp.jqLhS4aErh/.agent-ladder/node-2.1.2.1.1-proof.md"},"tool_use_id":"prt_05ebbc9d9001QaUERNzaj3raDG"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.589Z","service":"snapshot","hash":"e85c130415d3dc2e8c31e5e679e094df6ff70961\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:20.590Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-09-01T20:49:20.590Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","status":"success","duration_ms":36989}
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:20.590Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:20.876Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:20.880Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.880Z","service":"session.prompt","step":2,"sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.899Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","step":3,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.899Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.900Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.900Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":15343,"providerTokens":15343,"estimatedInputTokens":367,"usingEstimate":false,"tokensBreakdown":{"input":14991,"cacheRead":0,"output":352},"overflow":false,"headroom":36465,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:20.901Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.901Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.901Z","service":"ripgrep","cwd":"/tmp/tmp.jqLhS4aErh","limit":200,"message":"tree"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:20.921Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:20.921Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-01T20:49:20.949Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-09-01T20:49:20.949Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:21.187Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-09-01T20:49:21.192Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.085Z","service":"snapshot","hash":"b5ffef8e69e212d9651f7a23612bd768e486026b\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.086Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-09-01T20:49:25.086Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.087Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.088Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:25.088Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"write","input":{},"tool_use_id":"prt_05ebbdc5f001zn0fN1urcBpX6t"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.091Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-09-01T20:49:25.091Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","role":"assistant","content":[{"type":"text","text":"Let me update agent-ladder-effects/node-2.1.2.1.1.lino for you."}]}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.093Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:25.093Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"write","input":{"content":"node_path=2.1.2.1.1\nnode_depth=5\nnode_kind=leaf\nresult=Line 68: L21\tInspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\texperiments/issue_1028_agent_cli_ladder/run.sh\t0|1|2|3|4|5|all) ;;\n","filePath":"/tmp/tmp.jqLhS4aErh/agent-ladder-effects/node-2.1.2.1.1.lino"},"tool_use_id":"prt_05ebbdc5f001zn0fN1urcBpX6t"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.099Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-09-01T20:49:25.099Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","name":"write","input":{"content":"node_path=2.1.2.1.1\nnode_depth=5\nnode_kind=leaf\nresult=Line 68: L21\tInspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\texperiments/issue_1028_agent_cli_ladder/run.sh\t0|1|2|3|4|5|all) ;;\n","filePath":"/tmp/tmp.jqLhS4aErh/agent-ladder-effects/node-2.1.2.1.1.lino"},"tool_use_id":"prt_05ebbdc5f001zn0fN1urcBpX6t"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.258Z","service":"snapshot","hash":"b5ffef8e69e212d9651f7a23612bd768e486026b\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:25.259Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-09-01T20:49:25.259Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","status":"success","duration_ms":41658}
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:25.260Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:25.452Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:25.455Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.455Z","service":"session.prompt","step":3,"sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.502Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","step":4,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.502Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.503Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.503Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":15421,"providerTokens":15421,"estimatedInputTokens":390,"usingEstimate":false,"tokensBreakdown":{"input":15028,"cacheRead":0,"output":393},"overflow":false,"headroom":36387,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:25.504Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.505Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.505Z","service":"ripgrep","cwd":"/tmp/tmp.jqLhS4aErh","limit":200,"message":"tree"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:25.603Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.603Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-09-01T20:49:25.604Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-09-01T20:49:25.608Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:25.748Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-09-01T20:49:25.752Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.497Z","service":"snapshot","hash":"b5ffef8e69e212d9651f7a23612bd768e486026b\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:29.498Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-09-01T20:49:29.498Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:29.499Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:29.500Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-09-01T20:49:29.500Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","role":"assistant","content":[{"type":"text","text":"node_path=2.1.2.1.1\nnode_depth=5\nnode_kind=leaf\nresult=Line 68: L21\tInspect the Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all.\texperiments/issue_1028_agent_cli_ladder/run.sh\t0|1|2|3|4|5|all) ;;"}]}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.661Z","service":"snapshot","hash":"b5ffef8e69e212d9651f7a23612bd768e486026b\n","cwd":"/tmp/tmp.jqLhS4aErh","git":"/home/box/.local/share/link-assistant-agent/snapshot/1ad13d19ab92e44b3a34e73e6da2a5b9657b0a1b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-09-01T20:49:29.662Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-09-01T20:49:29.662Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95","status":"success","duration_ms":46061}
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:29.663Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:29.845Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-09-01T20:49:29.849Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.849Z","service":"session.prompt","step":4,"sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.867Z","service":"session.prompt","sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.868Z","service":"session.compaction","message":"pruning"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.887Z","service":"session.prompt","sessionID":"ses_fa144c5bcffe7XseqmIAdlQs95","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-09-01T20:49:29.887Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-09-01T20:49:29.887Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-09-01T20:49:29.887Z","session_id":"ses_fa144c5bcffe7XseqmIAdlQs95"}
+{"type":"*","level":"info","timestamp":"2026-09-01T20:49:29.889Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.890Z","service":"default","directory":"/tmp/tmp.jqLhS4aErh","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.890Z","service":"state","key":"/tmp/tmp.jqLhS4aErh","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.891Z","service":"state","key":"/tmp/tmp.jqLhS4aErh","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-09-01T20:49:29.891Z","service":"default","hasError":false,"uptimeSeconds":48,"message":"Agent exiting"}

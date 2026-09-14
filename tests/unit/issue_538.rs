@@ -6,7 +6,7 @@
 //! denotes. Before this issue помидор carried a plural (помидоры) while its
 //! synonym томат did not, and no surface recorded its grammatical number at all.
 
-use formal_ai::seed::{lexicon, Meaning, WordForm};
+use formal_ai::seed::{Meaning, WordForm, lexicon};
 
 /// The tomato surface whose spelling is exactly `text`, in any language.
 fn tomato_form<'a>(meaning: &'a Meaning, text: &str) -> &'a WordForm {

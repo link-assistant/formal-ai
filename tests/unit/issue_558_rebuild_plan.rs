@@ -10,13 +10,13 @@
 //! reachable through the agentic interface as the eleventh recipe.
 
 use formal_ai::agentic_coding::{
-    is_rebuild_task, plan_chat_step, rebuild_plan as recipe, run_agentic_task, AgenticPlan,
-    PlannedToolCall, DRIVER_TOOLS, REBUILD_PATH, REBUILD_TASK,
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, REBUILD_PATH, REBUILD_TASK, is_rebuild_task,
+    plan_chat_step, rebuild_plan as recipe, run_agentic_task,
 };
 use formal_ai::change_request::canonical_change_request;
 use formal_ai::learning_ledger::HumanApproval;
 use formal_ai::self_improvement::BenchmarkGateReport;
-use formal_ai::{canonical_rebuild_plan, owned_manifest, ChatMessage, RebuildPlan, ToolCall};
+use formal_ai::{ChatMessage, RebuildPlan, ToolCall, canonical_rebuild_plan, owned_manifest};
 use lino_objects_codec::format::parse_indented;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {

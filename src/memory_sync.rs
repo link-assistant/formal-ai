@@ -21,8 +21,8 @@
 use std::path::{Path, PathBuf};
 
 use crate::memory::{
-    export_links_notation_with_schema, parse_links_notation, MemoryEvent,
-    TARGET_MEMORY_SCHEMA_VERSION,
+    MemoryEvent, TARGET_MEMORY_SCHEMA_VERSION, export_links_notation_with_schema,
+    parse_links_notation,
 };
 
 /// Return every event that appears strictly **after** the event `last_seen`.
@@ -167,6 +167,12 @@ pub fn chat_recording_enabled() -> bool {
     )
 }
 
+/// Resolve the native link-cli database beside a portable `.lino` memory log.
+#[must_use]
+pub fn server_link_database_path(memory_path: &Path) -> PathBuf {
+    memory_path.with_extension("links")
+}
+
 /// A small file-backed event log used by the HTTP sync endpoints.
 ///
 /// Each request loads the current log, applies its operation, and (for writes)
@@ -239,12 +245,24 @@ impl SyncStore {
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
             }
         };
-        Self {
+        let mut store = Self {
             path: Some(path.to_path_buf()),
             events,
             schema_version,
             compatible,
+        };
+        if store.compatible
+            && let Err(error) = store.synchronize_link_cli_projection()
+        {
+            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                eprintln!(
+                    "[memory] could not synchronize link-cli store for {}: {error}",
+                    path.display()
+                );
+            }
+            store.compatible = false;
         }
+        store
     }
 
     /// The events currently held.
@@ -376,7 +394,7 @@ impl SyncStore {
     }
 
     fn persist(&self) -> std::io::Result<()> {
-        let Some(path) = self.path.as_ref() else {
+        let Some(path) = self.path.as_deref() else {
             return Ok(());
         };
         if !self.compatible {
@@ -385,8 +403,28 @@ impl SyncStore {
                 "refusing to write an incompatible persisted-memory schema",
             ));
         }
-        // Locked atomic write (issue #540 §6): the HTTP handlers and the
-        // background dreaming thread share this log.
-        crate::memory::write_locked_atomic(path, &self.to_links_notation())
+        // The locked atomic `.lino` write remains the portable source and the
+        // cross-surface migration boundary. The native server projection is
+        // then replaced through one link-cli transaction. If a process stops
+        // between these operations, `open_at` deterministically repairs the
+        // binary sidecar from the already-complete `.lino` document.
+        crate::memory::write_locked_atomic(path, &self.to_links_notation())?;
+        self.synchronize_link_cli_projection()
+    }
+
+    /// Bring the native projection in line with the events held here.
+    ///
+    /// The store owns how (issue #1106): it appends when its marker proves the
+    /// prefix and rebuilds otherwise; see `link_store::synchronize_memory_events`.
+    fn synchronize_link_cli_projection(&self) -> std::io::Result<()> {
+        #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+        if let Some(memory_path) = self.path.as_deref() {
+            crate::link_store::synchronize_memory_events(
+                &server_link_database_path(memory_path),
+                &self.events,
+            )
+            .map_err(std::io::Error::other)?;
+        }
+        Ok(())
     }
 }

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_21.js"
+  ceiling 692
+  rationale "Relative-meta-logic mirror of `src/relative_meta_logic.rs` and `src/statement_verification.rs`."

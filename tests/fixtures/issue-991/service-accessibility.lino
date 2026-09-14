@@ -1,0 +1,21 @@
+service_accessibility
+  service "rosetta_code"
+    status reachable
+    detail "captured https://rosettacode.org/w/api.php?action=opensearch&search=reverse%20a%20string%20in%20python&limit=5&format=json&origin=*"
+    checked_at 1786392662
+    ttl_seconds 604800
+  service "stackexchange"
+    status reachable
+    detail "captured https://api.stackexchange.com/2.3/questions/36949665/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody"
+    checked_at 1786392662
+    ttl_seconds 604800
+  service "wikibooks"
+    status reachable
+    detail "captured https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=reverse%20a%20string%20in%20python&srlimit=5&format=json&origin=*"
+    checked_at 1786392662
+    ttl_seconds 604800
+  service "wikihow"
+    status reachable
+    detail "captured https://www.wikihow.com/api.php?action=parse&page=Reverse-A-String-In-Python&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    checked_at 1786392662
+    ttl_seconds 604800

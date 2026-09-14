@@ -13,7 +13,7 @@
 //! layer can never silently drift away from upstream: once the cache (or a
 //! live API refresh) catches up, the override must go.
 
-use super::parser::{parse_lino, LinoNode};
+use super::parser::{LinoNode, parse_lino};
 
 /// One field-level fact carried by an override, e.g. section `labels`, key
 /// `hi`, value `KISS`.

@@ -322,9 +322,11 @@ fn formalize_markdown_yields_statements_for_readme_prose() {
                   Install with npm install hive-mind.\n";
     let stmts = formalize_markdown(md);
     assert!(!stmts.is_empty());
-    assert!(stmts
-        .iter()
-        .any(|s| s.text.to_lowercase().contains("orchestrates")));
+    assert!(
+        stmts
+            .iter()
+            .any(|s| s.text.to_lowercase().contains("orchestrates"))
+    );
     assert!(stmts.iter().any(|s| s.kind == StatementKind::Install));
 }
 
@@ -401,14 +403,18 @@ fn formalize_repository_file_rust_records_meta_language_and_symbols() {
                   }\n";
     let formalized = formalize_repository_file("src/file_summary.rs", source);
     assert_eq!(formalized.format, "rust");
-    assert!(formalized
-        .statements
-        .iter()
-        .any(|statement| statement.text.contains("rust struct FileSummary")));
-    assert!(formalized
-        .statements
-        .iter()
-        .any(|statement| statement.text.contains("rust function summarize_file")));
+    assert!(
+        formalized
+            .statements
+            .iter()
+            .any(|statement| statement.text.contains("rust struct FileSummary"))
+    );
+    assert!(
+        formalized
+            .statements
+            .iter()
+            .any(|statement| statement.text.contains("rust function summarize_file"))
+    );
     let meta = formalized
         .meta_language
         .as_ref()

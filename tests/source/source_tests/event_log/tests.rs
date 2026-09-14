@@ -92,9 +92,11 @@ fn thinking_steps_fold_calculation_trace_into_composite_compute_step() {
         .collect();
     assert_eq!(children.len(), 3, "engine + expression + steps children");
     assert!(children.iter().all(|child| child.level == "detailed"));
-    assert!(steps
-        .iter()
-        .any(|step| step.step == "compute_expression" && step.detail == "((8 / 100) * (50 USD))"));
+    assert!(
+        steps.iter().any(
+            |step| step.step == "compute_expression" && step.detail == "((8 / 100) * (50 USD))"
+        )
+    );
 
     // Internal acceptance bookkeeping is dropped from the curated view.
     assert!(

@@ -2,36 +2,36 @@ self_ast_census
   target src/number_constraints.rs
   language rust
   fidelity signature
-  byte_len 14495
-  line_count 435
-  content_id source_module_ad8548f356d86c50
+  byte_len 14415
+  line_count 427
+  content_id source_module_0c751b3e84106512
   symbol_count 28
   symbols
     struct Bound 21 24
-    function lower_operator 27 33
-    function upper_operator 35 41
-    struct IntervalBounds 45 48
-    function solve_number_constraints 50 109
-    function looks_like_number_riddle 111 122
-    function contains_any 124 126
-    function extract_interval_bounds 128 145
-    function find_role_bound 147 156
-    function find_bound 158 165
-    function find_number_after_phrase 167 178
-    function find_number_before_phrase 180 197
-    function phrase_has_boundary 199 213
-    function is_negated_strict_bound 215 223
-    function parse_leading_integer 225 245
-    function formal_statement 247 255
-    enum IntegerSolutions 257 262
-    function integer_solutions 264 288
-    function render_interval_answer 290 301
-    function render_interval_answer_ru 303 334
-    function render_interval_answer_en 336 369
-    function real_domain_line_ru 371 385
-    function real_domain_line_en 387 401
-    function has_multiple_real_solutions 403 405
-    function has_single_real_solution 407 409
-    function real_example 411 413
-    function format_half 415 424
-    function format_candidates 426 435
+    function lower_operator 27 29
+    function upper_operator 31 33
+    struct IntervalBounds 37 40
+    function solve_number_constraints 42 101
+    function looks_like_number_riddle 103 114
+    function contains_any 116 118
+    function extract_interval_bounds 120 137
+    function find_role_bound 139 148
+    function find_bound 150 157
+    function find_number_after_phrase 159 170
+    function find_number_before_phrase 172 189
+    function phrase_has_boundary 191 205
+    function is_negated_strict_bound 207 215
+    function parse_leading_integer 217 237
+    function formal_statement 239 247
+    enum IntegerSolutions 249 254
+    function integer_solutions 256 280
+    function render_interval_answer 282 293
+    function render_interval_answer_ru 295 326
+    function render_interval_answer_en 328 361
+    function real_domain_line_ru 363 377
+    function real_domain_line_en 379 393
+    function has_multiple_real_solutions 395 397
+    function has_single_real_solution 399 401
+    function real_example 403 405
+    function format_half 407 416
+    function format_candidates 418 427

@@ -41,7 +41,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
         &[
             "Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)",
             "46 recursive handler sources",
-            "19,731 outside-core lines",
+            "19,543 outside-core lines",
             "3,447 remaining metadata-gap records",
         ],
     );
@@ -138,7 +138,11 @@ fn issue_918_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
     );
 
     let stream = read(evidence.join("agent-stream.raw.log"));
-    assert_contains_all("Agent CLI raw stream", &stream, &[session_id, "formal-ai"]);
+    assert!(
+        stream.contains(session_id),
+        "Agent CLI raw stream must preserve its recorded session"
+    );
+    assert_contains_all("Agent CLI raw stream", &stream, &["formal-ai"]);
     for file in [
         "agent-stderr.log",
         "agent-stream.jsonl",
@@ -158,17 +162,24 @@ fn issue_918_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
         &[
             "serve --host 127.0.0.1",
             "--output-format stream-json",
+            "FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\"",
             "minimal-core-invariant.md",
             INVARIANT,
             "cmp -s",
         ],
     );
+    // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+    // workflow. The question is whether CI runs this harness, not which file
+    // spells the step, so read the spliced pipeline surface.
+    let workflow = crate::ci_gates::pipeline_workflows();
     assert_contains_all(
         "issue 918 Agent CLI CI gate",
-        &read(root.join(".github/workflows/release.yml")),
+        &workflow,
         &[
             "minimal-core invariant (issue #918)",
             "experiments/issue_918_agent_cli.sh",
+            "/tmp/formal-ai-issue-918-evidence",
+            "/tmp/formal-ai-issue-*-evidence",
         ],
     );
 }

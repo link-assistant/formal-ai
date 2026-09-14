@@ -2,6 +2,11 @@ import { captureAgentTui } from 'agent-commander';
 import { appendFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import {
+  promptAfterFor,
+  startupInteractionsFor,
+} from './client-contract.mjs';
+
 const required = (name) => {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is required`);
@@ -20,19 +25,8 @@ const tool = required('ISSUE819_TUI_CLIENT');
 const expectedResult = required('ISSUE819_EXPECT_RESULT');
 const prompt = required('ISSUE819_TUI_PROMPT');
 const artifactDirectory = required('ISSUE819_TUI_ARTIFACT_DIR');
-const promptAfter = {
-  opencode: 'Ask anything...',
-  claude: 'Tips for getting started',
-  codex: 'formal-ai default',
-}[tool];
-const startupInteractions =
-  {
-    claude: [
-      { after: 'Enter y/n:', text: 'y', key: 'ENTER' },
-      { after: 'y. Yes, I accept', text: 'y', key: 'ENTER' },
-    ],
-    codex: [{ after: 'Press enter to continue', key: 'ENTER' }],
-  }[tool] ?? [];
+const promptAfter = promptAfterFor(tool);
+const startupInteractions = startupInteractionsFor(tool);
 const capture = await captureAgentTui({
   tool,
   workingDirectory: required('ISSUE819_TUI_CWD'),

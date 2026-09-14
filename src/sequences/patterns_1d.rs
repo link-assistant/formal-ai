@@ -95,7 +95,7 @@ fn has_period(sequence: &[LinkAddress], period: usize) -> bool {
 /// Whether `sequence` reads identically forwards and backwards. Empty and
 /// single-element sequences are trivially palindromic.
 #[must_use]
-pub fn detect_palindrome(sequence: &[LinkAddress]) -> bool {
+pub const fn detect_palindrome(sequence: &[LinkAddress]) -> bool {
     let mut left = 0;
     let mut right = sequence.len();
     while left + 1 < right {

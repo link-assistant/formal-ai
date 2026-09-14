@@ -18,12 +18,21 @@ const HEALTH_TIMEOUT: Duration = Duration::from_secs(5);
 
 pub struct FormalAiServer {
     child: Child,
+    scratch_dir: std::path::PathBuf,
+    memory_path: std::path::PathBuf,
+}
+
+impl FormalAiServer {
+    fn memory_path(&self) -> &std::path::Path {
+        &self.memory_path
+    }
 }
 
 impl Drop for FormalAiServer {
     fn drop(&mut self) {
         let _ = self.child.kill();
         let _ = self.child.wait();
+        let _ = std::fs::remove_dir_all(&self.scratch_dir);
     }
 }
 
@@ -53,16 +62,57 @@ pub fn reserve_loopback_port() -> u16 {
         .port()
 }
 
+/// Spawn the server with extra environment variables set for the child only.
+///
+/// The server reads its runtime configuration from the environment, so a test
+/// that needs a specific configuration — a capture cache pointed at a committed
+/// fixture tree, a service opt-out — has to set it on the child process rather
+/// than on the test process, which is shared by every test in the binary.
+pub fn spawn_formal_ai_server_with_env(port: u16, env: &[(&str, &str)]) -> FormalAiServer {
+    spawn_formal_ai_server_with_args(port, &[], env)
+}
+
 pub fn spawn_formal_ai_server(port: u16) -> FormalAiServer {
-    spawn_formal_ai_server_with_args(port, &[])
+    spawn_formal_ai_server_with_args(port, &[], &[])
 }
 
 pub fn spawn_formal_ai_server_agent_mode(port: u16) -> FormalAiServer {
-    spawn_formal_ai_server_with_args(port, &["--agent-mode"])
+    spawn_formal_ai_server_with_args(port, &["--agent-mode"], &[])
 }
 
-fn spawn_formal_ai_server_with_args(port: u16, extra_args: &[&str]) -> FormalAiServer {
-    let child = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+fn spawn_formal_ai_server_with_args(
+    port: u16,
+    extra_args: &[&str],
+    env: &[(&str, &str)],
+) -> FormalAiServer {
+    // nextest executes these integration cases concurrently. Letting every
+    // child inherit `$HOME/.formal-ai/memory.lino` makes unrelated servers
+    // serialize their response-recording writes on one advisory lock; under
+    // load, a request can spend its whole liveness budget waiting for another
+    // test. Give each helper-owned server private state. Explicit per-test
+    // overrides below still win when a case intentionally exercises a fixture.
+    let scratch_dir = std::env::temp_dir().join(format!(
+        "formal-ai-http-server-{}-{port}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&scratch_dir).expect("create server test scratch directory");
+    let private_memory_path = scratch_dir.join("memory.lino");
+    let memory_path = env
+        .iter()
+        .rev()
+        .find_map(|(name, value)| {
+            (*name == "FORMAL_AI_MEMORY_PATH").then(|| std::path::PathBuf::from(*value))
+        })
+        .unwrap_or_else(|| private_memory_path.clone());
+    let dialog_log_dir = scratch_dir.join("dialog-logs");
+    let mut command = Command::new(env!("CARGO_BIN_EXE_formal-ai"));
+    command
+        .env("FORMAL_AI_MEMORY_PATH", &private_memory_path)
+        .env("FORMAL_AI_DIALOG_LOG_DIR", &dialog_log_dir);
+    for (name, value) in env {
+        command.env(name, value);
+    }
+    let child = command
         .args(["serve", "--host", "127.0.0.1", "--port", &port.to_string()])
         .args(extra_args)
         .env("FORMAL_AI_API_BEARER_TOKEN", "sk-local-agentic-tools")
@@ -72,7 +122,11 @@ fn spawn_formal_ai_server_with_args(port: u16, extra_args: &[&str]) -> FormalAiS
         .stderr(Stdio::null())
         .spawn()
         .expect("spawn formal-ai server");
-    let mut server = FormalAiServer { child };
+    let mut server = FormalAiServer {
+        child,
+        scratch_dir,
+        memory_path,
+    };
     wait_for_health(port, &mut server.child);
     server
 }
@@ -285,4 +339,50 @@ fn parse_http_response(raw: &str) -> HttpResponse {
         headers,
         body: body.to_owned(),
     }
+}
+
+#[test]
+fn spawned_server_records_only_in_private_scratch_memory() {
+    let port = reserve_loopback_port();
+    let server = spawn_formal_ai_server_agent_mode(port);
+    let memory_path = server.memory_path().to_owned();
+    assert_ne!(memory_path, formal_ai::shared_memory_path());
+    assert!(memory_path.starts_with(std::env::temp_dir()));
+    let body = serde_json::json!({
+        "model": "formal-ai",
+        "messages": [{
+            "role": "user",
+            "content": "Formalize the fisherman tale into links notation."
+        }],
+        "tools": [{
+            "type": "function",
+            "function": {
+                "name": "web_search",
+                "parameters": {"type": "object"}
+            }
+        }]
+    })
+    .to_string();
+    let response = http_request_with_timeout(
+        "POST",
+        port,
+        "/v1/chat/completions",
+        Some("sk-local-agentic-tools"),
+        Some(&body),
+        RESPONSE_TIMEOUT,
+    )
+    .expect("helper server should respond with its private memory store");
+
+    assert_eq!(response.status_code, 200, "{}", response.body);
+    let memory = std::fs::read_to_string(&memory_path).expect("read private server memory");
+    assert!(memory.contains("Formalize the fisherman tale"));
+    let scratch_dir = memory_path
+        .parent()
+        .expect("private memory parent")
+        .to_owned();
+    drop(server);
+    assert!(
+        !scratch_dir.exists(),
+        "server scratch directory should be removed"
+    );
 }

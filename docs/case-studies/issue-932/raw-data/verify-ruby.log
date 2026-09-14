@@ -1,0 +1,25 @@
+== ruby project generated from the hi prompt, image konard/box-ruby:2.4.0
+== program (main.rb):
+puts "Hello, world!"
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the mkdir hello-formal-ai step
+mkdir -p hello-formal-ai
+# Run the cp main.rb step
+cp main.rb hello-formal-ai/main.rb
+# Enter the project directory
+cd hello-formal-ai
+# Build the project
+bundle init
+# Run the ruby main.rb step
+ruby -c main.rb
+# Run the ruby main.rb step
+ruby main.rb
+== running the init script
+   | Writing new Gemfile to /tmp/box-language-project/hello-formal-ai/Gemfile
+   | Syntax OK
+   | Hello, world!
+ok: ruby project built and printed Hello, world! inside konard/box-ruby:2.4.0
+ok: box language projects verified for: ruby

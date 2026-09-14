@@ -1,6 +1,6 @@
 //! Environment-aware identity, self-fact, and fact-inventory answers.
 
-use crate::engine::{identity_answer, normalize_prompt, stable_id, SymbolicAnswer, DEFAULT_MODEL};
+use crate::engine::{DEFAULT_MODEL, SymbolicAnswer, identity_answer, normalize_prompt, stable_id};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::links_format::format_lino_value;
@@ -131,11 +131,21 @@ pub(super) const fn surface_runtime(runtime: SelfAwarenessRuntime) -> &'static s
 
 pub(super) const fn surface_memory(runtime: SelfAwarenessRuntime) -> &'static str {
     match runtime.surface {
-        ExecutionSurface::RustLibrary => "in-process conversation events plus seed files in Links Notation",
-        ExecutionSurface::Cli => "chat session events plus seed files; persistence depends on explicit memory/export commands",
-        ExecutionSurface::HttpServer => "request-supplied chat history; the server surface is otherwise stateless",
-        ExecutionSurface::Browser => "browser IndexedDB/local storage plus worker state and imported memory",
-        ExecutionSurface::Telegram => "Telegram chat context plus memory bundle commands provided by the bot surface",
+        ExecutionSurface::RustLibrary => {
+            "in-process conversation events plus seed files in Links Notation"
+        }
+        ExecutionSurface::Cli => {
+            "chat session events plus seed files; persistence depends on explicit memory/export commands"
+        }
+        ExecutionSurface::HttpServer => {
+            "request-supplied chat history; the server surface is otherwise stateless"
+        }
+        ExecutionSurface::Browser => {
+            "browser IndexedDB/local storage plus worker state and imported memory"
+        }
+        ExecutionSurface::Telegram => {
+            "Telegram chat context plus memory bundle commands provided by the bot surface"
+        }
         ExecutionSurface::DockerMicroservice => {
             "container filesystem/session storage configured by the deployment"
         }
@@ -188,11 +198,7 @@ fn assistant_name_status(runtime: SelfAwarenessRuntime) -> String {
 }
 
 const fn mode_status(enabled: bool) -> &'static str {
-    if enabled {
-        "enabled"
-    } else {
-        "disabled"
-    }
+    if enabled { "enabled" } else { "disabled" }
 }
 
 fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {

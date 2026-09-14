@@ -286,8 +286,7 @@ fn benchmark_family_matrix_covers_text_and_code_edit_variations() {
         Case {
             source: "HumanEvalFix",
             family: "bug_fix",
-            prompt:
-                "Replace \"return a - b\" with \"return a + b\": \"def add(a,b): return a - b\"",
+            prompt: "Replace \"return a - b\" with \"return a + b\": \"def add(a,b): return a - b\"",
             answer: "def add(a,b): return a + b",
             rule: "rule_replace_text",
         },
@@ -554,8 +553,7 @@ fn issue_408_text_code_edit_profile_passes_local_ratchet() {
         .map(|source| source.group.as_str())
         .collect::<BTreeSet<_>>();
     assert!(
-        groups.contains("referenced_edit_benchmark")
-            && groups.contains("additional_llm_benchmark"),
+        groups.contains("referenced_edit_benchmark") && groups.contains("additional_llm_benchmark"),
         "profile should include both referenced edit benchmarks and additional LLM benchmarks: {groups:?}"
     );
     let referenced_count = suite

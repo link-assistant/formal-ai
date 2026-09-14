@@ -6,15 +6,15 @@ use std::io::Write as _;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
-use crate::orchestration::workspace::{changes, snapshot, Snapshot, WorkspaceChange};
+use crate::orchestration::workspace::{Snapshot, WorkspaceChange, changes, snapshot};
 use crate::seed::{self, ClientCompletionContract};
 
 use super::caller_args::CallerArgs;
 use super::completion_learning::{RecoveryKey, RecoveryLedger, RecoveryOutcome};
-use super::session_files::{native_session_id, newest_changed_session_file, SessionSnapshot};
-use super::{build_invocation_args, ClientIntegration, InvocationOptions, RenderContext};
+use super::session_files::{SessionSnapshot, native_session_id, newest_changed_session_file};
+use super::{ClientIntegration, InvocationOptions, RenderContext, build_invocation_args};
 
 #[derive(Debug)]
 pub(super) struct CapturedOutcome {

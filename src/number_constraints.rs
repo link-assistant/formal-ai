@@ -7,11 +7,11 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::proof_engine::{
-    attempt_proof_with_config, render_outcome_with_config, ProofRenderConfig,
+    ProofRenderConfig, attempt_proof_with_config, render_outcome_with_config,
 };
 use crate::proof_program::FormalProof;
 use crate::seed;
@@ -25,19 +25,11 @@ struct Bound {
 
 impl Bound {
     const fn lower_operator(self) -> &'static str {
-        if self.inclusive {
-            ">="
-        } else {
-            ">"
-        }
+        if self.inclusive { ">=" } else { ">" }
     }
 
     const fn upper_operator(self) -> &'static str {
-        if self.inclusive {
-            "<="
-        } else {
-            "<"
-        }
+        if self.inclusive { "<=" } else { "<" }
     }
 }
 

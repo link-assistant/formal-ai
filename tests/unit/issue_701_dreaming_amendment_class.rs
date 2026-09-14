@@ -13,9 +13,10 @@
 
 use formal_ai::dreaming_application::STANDING_REQUIREMENT_INTENT;
 use formal_ai::{
-    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    solve_with_amendment_records, solve_with_standing_requirements, ChatCompletionRequest,
-    ChatMessage, MemoryEvent, ResponsesRequest, RetainedAmendment, SolverConfig, UniversalSolver,
+    ChatCompletionRequest, ChatMessage, MemoryEvent, ResponsesRequest, RetainedAmendment,
+    SolverConfig, UniversalSolver, create_chat_completion_with_solver_and_memory,
+    create_response_with_solver_and_memory, solve_with_amendment_records,
+    solve_with_standing_requirements,
 };
 
 /// A learned topic, its standing rule, and the held-out paraphrases — one per

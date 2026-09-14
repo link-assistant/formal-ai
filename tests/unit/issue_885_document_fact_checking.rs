@@ -1,11 +1,11 @@
 //! Document-relative statement-audit coverage for issue #885.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::ChatMessage;
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::relative_meta_logic::{SourceTier, Stance};
 use formal_ai::statement_audit::{
-    audit_corpus, AuditConfig, EvidenceCapture, RepositoryCorpus, RepositoryDocument,
+    AuditConfig, EvidenceCapture, RepositoryCorpus, RepositoryDocument, audit_corpus,
 };
-use formal_ai::ChatMessage;
 
 fn audit(
     markdown: &str,

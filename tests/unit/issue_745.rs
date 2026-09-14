@@ -1,9 +1,9 @@
 //! Issue #745: intent routing is semantic, object-typed, multilingual, and variation-complete.
 //! Registered in the shared unit-test binary so language-coverage CI sees every locale.
 //! Coverage matrix: English, Russian, Hindi, and Chinese.
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::protocol::ChatMessage;
 use formal_ai::FormalAiEngine;
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+use formal_ai::protocol::ChatMessage;
 
 fn call(prompt: &str) -> (String, serde_json::Value) {
     let tools = [
@@ -467,5 +467,27 @@ fn attachment_filenames_are_not_reinterpreted_as_bare_web_hosts() {
             "document_originality_check",
             "{prompt}"
         );
+    }
+}
+
+/// A listing word that occurs *inside* a longer word written in a script with
+/// multi-byte letters — «дай» inside «создай» — used to panic the word-boundary
+/// scan: after rejecting the match it advanced a single **byte**, which landed
+/// in the middle of a Cyrillic letter, and the next slice panicked with
+/// *"is not a char boundary"*. Where these prompts route is a detail here; that
+/// asking in Russian or Hindi does not abort the process is the claim.
+#[test]
+fn a_listing_word_inside_a_longer_non_latin_word_does_not_panic_the_boundary_scan() {
+    for prompt in [
+        // language: ru (Russian) — «создай» carries «дай», a listing verb.
+        "Для существующей задачи GitHub 730 создай файл finding.md с результатом.",
+        "создай файл заметки",
+        // language: hi (Hindi) — the same shape in another multi-byte script.
+        "मौजूदा GitHub issue 730 के लिए परिणाम वाली finding.md फ़ाइल बनाएँ।",
+        // language: zh (Chinese) — an unspaced script takes the other branch.
+        "为现有 GitHub issue 730 创建包含结果的 finding.md 文件。",
+    ] {
+        let messages = vec![ChatMessage::user(prompt)];
+        let _ = plan_chat_step(&messages, &["read_file", "write_file", "exec_command"]);
     }
 }

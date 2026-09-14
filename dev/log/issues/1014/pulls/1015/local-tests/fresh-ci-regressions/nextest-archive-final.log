@@ -1,0 +1,6 @@
+   Compiling archive-path-probe v0.1.0 (/tmp/tmp.lei7SZ67i0/project)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.79s
+   Archiving 3 binaries (including 1 non-test binary) and 1 standard library to /tmp/tmp.lei7SZ67i0/tests.tar.zst
+    Archived 6 files to /tmp/tmp.lei7SZ67i0/tests.tar.zst in 0.35s
+default extraction status: 100
+workspace extraction: passed

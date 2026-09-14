@@ -727,14 +727,18 @@ fn synonyms_across_languages_share_meaning() {
 #[test]
 fn translation_declares_source_and_target_language_tags() {
     let response = answer("Translate 'Hello' from English to Russian");
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "language_from:en"));
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "language_to:ru"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_from:en")
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:ru")
+    );
 }
 
 #[test]

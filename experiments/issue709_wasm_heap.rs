@@ -4,7 +4,7 @@
 //! bytes—not live bytes—determine whether a request fits. Compile from the
 //! repository root with:
 //!
-//! `rustc --edition=2021 experiments/issue709_wasm_heap.rs -o /tmp/issue709-wasm-heap`
+//! `rustc --edition=2024 experiments/issue709_wasm_heap.rs -o /tmp/issue709-wasm-heap`
 
 extern crate alloc;
 

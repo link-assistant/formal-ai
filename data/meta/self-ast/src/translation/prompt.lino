@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 12051
   line_count 280
-  content_id source_module_a3aa2e0a9b83b9f7
+  content_id source_module_5668c478d4952d87
   symbol_count 16
   symbols
     function extract_unquoted_translation_surface 48 56

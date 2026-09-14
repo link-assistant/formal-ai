@@ -1,0 +1,8 @@
+link_edit
+  leaf L09
+  path src/agentic_coding/shell_command_policy.rs
+  language rust
+  rule insert_member
+    list "PROSE_WORDS"
+    member "kindly"
+  expect "kindly"

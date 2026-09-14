@@ -2,9 +2,9 @@ self_ast_census
   target src/web_search_fusion_core.rs
   language rust
   fidelity signature
-  byte_len 28962
-  line_count 881
-  content_id source_module_7d21f259572587b9
+  byte_len 28838
+  line_count 880
+  content_id source_module_5ce1b4911439c53f
   symbol_count 49
   symbols
     const WIKIDATA_MEANINGS 17 17
@@ -34,25 +34,25 @@ self_ast_census
     function formalize_in_language 390 479
     function relation_match 481 511
     function entity_match 513 522
-    function target_form 524 535
-    function denied_predicate 537 560
-    function sentences 562 587
-    function normalized 589 604
-    function words 606 608
-    function punctuated 610 616
-    function capitalize_first 618 624
-    function canonical_tier 626 633
-    function tier_points 635 642
-    function posterior 644 650
-    function rank_nodes 652 661
-    function smallest_sufficient 663 678
-    function statement_key 680 686
-    function render_json 688 801
-    function push_json_array 803 810
-    function push_json_string 812 832
-    const HEX 822 822
-    function url_domain 834 841
-    function push_unique 843 847
-    function unquote 849 854
-    function decode_uri_component 856 872
-    function hex 874 881
+    function target_form 524 533
+    function denied_predicate 535 558
+    function sentences 560 585
+    function normalized 587 602
+    function words 604 606
+    function punctuated 608 614
+    function capitalize_first 616 622
+    function canonical_tier 624 631
+    function tier_points 633 640
+    function posterior 642 648
+    function rank_nodes 650 659
+    function smallest_sufficient 661 676
+    function statement_key 678 684
+    function render_json 686 799
+    function push_json_array 801 808
+    function push_json_string 810 830
+    const HEX 820 820
+    function url_domain 832 839
+    function push_unique 841 845
+    function unquote 847 852
+    function decode_uri_component 854 871
+    function hex 873 880

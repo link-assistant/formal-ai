@@ -159,3 +159,223 @@ multilingual_responses
     intent agent_procedure_execution_failed
     language zh
     text "流程制品 `{path}` 已写入并验证，但端到端一致性执行失败。我不会声称该流程已执行。"
+  response response_how_to_guide_heading_en
+    intent how_to_guide_heading
+    language en
+    text "## How to {task}"
+  response response_how_to_guide_heading_ru
+    intent how_to_guide_heading
+    language ru
+    text "## Как {task}"
+  response response_how_to_guide_heading_hi
+    intent how_to_guide_heading
+    language hi
+    text "## {task} कैसे करें"
+  response response_how_to_guide_heading_zh
+    intent how_to_guide_heading
+    language zh
+    text "## 如何{task}"
+  response response_how_to_guide_heading_es
+    intent how_to_guide_heading
+    language es
+    text "## Cómo {task}"
+  response response_how_to_guide_step_en
+    intent how_to_guide_step
+    language en
+    text "{rank}. {text} — {source} ({license}, sha256 {digest})"
+  response response_how_to_guide_step_ru
+    intent how_to_guide_step
+    language ru
+    text "{rank}. {text} — {source} ({license}, sha256 {digest})"
+  response response_how_to_guide_step_hi
+    intent how_to_guide_step
+    language hi
+    text "{rank}. {text} — {source} ({license}, sha256 {digest})"
+  response response_how_to_guide_step_zh
+    intent how_to_guide_step
+    language zh
+    text "{rank}. {text} — {source}（{license}，sha256 {digest}）"
+  response response_how_to_guide_step_es
+    intent how_to_guide_step
+    language es
+    text "{rank}. {text} — {source} ({license}, sha256 {digest})"
+  response response_how_to_guide_insufficient_evidence_en
+    intent how_to_guide_insufficient_evidence
+    language en
+    text "Insufficient evidence: {steps} step(s) were captured and {required} are required, so no procedure is asserted."
+  response response_how_to_guide_insufficient_evidence_ru
+    intent how_to_guide_insufficient_evidence
+    language ru
+    text "Недостаточно свидетельств: захвачено шагов — {steps}, а требуется {required}, поэтому процедура не утверждается."
+  response response_how_to_guide_insufficient_evidence_hi
+    intent how_to_guide_insufficient_evidence
+    language hi
+    text "अपर्याप्त प्रमाण: {steps} step capture हुए और {required} आवश्यक हैं, इसलिए कोई procedure नहीं बताई जा रही."
+  response response_how_to_guide_insufficient_evidence_zh
+    intent how_to_guide_insufficient_evidence
+    language zh
+    text "证据不足：仅捕获 {steps} 个步骤，而需要 {required} 个，因此不给出流程。"
+  response response_how_to_guide_insufficient_evidence_es
+    intent how_to_guide_insufficient_evidence
+    language es
+    text "Pruebas insuficientes: se capturaron {steps} paso(s) y se requieren {required}, así que no se afirma ningún procedimiento."
+  response response_how_to_guide_sources_heading_en
+    intent how_to_guide_sources_heading
+    language en
+    text "### Sources"
+  response response_how_to_guide_sources_heading_ru
+    intent how_to_guide_sources_heading
+    language ru
+    text "### Источники"
+  response response_how_to_guide_sources_heading_hi
+    intent how_to_guide_sources_heading
+    language hi
+    text "### स्रोत"
+  response response_how_to_guide_sources_heading_zh
+    intent how_to_guide_sources_heading
+    language zh
+    text "### 来源"
+  response response_how_to_guide_sources_heading_es
+    intent how_to_guide_sources_heading
+    language es
+    text "### Fuentes"
+  response response_how_to_guide_source_outcome_en
+    intent how_to_guide_source_outcome
+    language en
+    text "- {source} — {status} ({pages} page(s), {steps} step(s)): {detail}"
+  response response_how_to_guide_source_outcome_ru
+    intent how_to_guide_source_outcome
+    language ru
+    text "- {source} — {status} (страниц: {pages}, шагов: {steps}): {detail}"
+  response response_how_to_guide_source_outcome_hi
+    intent how_to_guide_source_outcome
+    language hi
+    text "- {source} — {status} ({pages} page, {steps} step): {detail}"
+  response response_how_to_guide_source_outcome_zh
+    intent how_to_guide_source_outcome
+    language zh
+    text "- {source} — {status}（{pages} 页，{steps} 步）：{detail}"
+  response response_how_to_guide_source_outcome_es
+    intent how_to_guide_source_outcome
+    language es
+    text "- {source} — {status} ({pages} página(s), {steps} paso(s)): {detail}"
+  response response_how_to_guide_citation_en
+    intent how_to_guide_citation
+    language en
+    text "- {source} → {url} ({license}: {license_url})"
+  response response_how_to_guide_citation_ru
+    intent how_to_guide_citation
+    language ru
+    text "- {source} → {url} ({license}: {license_url})"
+  response response_how_to_guide_citation_hi
+    intent how_to_guide_citation
+    language hi
+    text "- {source} → {url} ({license}: {license_url})"
+  response response_how_to_guide_citation_zh
+    intent how_to_guide_citation
+    language zh
+    text "- {source} → {url}（{license}：{license_url}）"
+  response response_how_to_guide_citation_es
+    intent how_to_guide_citation
+    language es
+    text "- {source} → {url} ({license}: {license_url})"
+  response response_how_to_guide_conflicts_heading_en
+    intent how_to_guide_conflicts_heading
+    language en
+    text "### Conflicts"
+  response response_how_to_guide_conflicts_heading_ru
+    intent how_to_guide_conflicts_heading
+    language ru
+    text "### Противоречия"
+  response response_how_to_guide_conflicts_heading_hi
+    intent how_to_guide_conflicts_heading
+    language hi
+    text "### विरोधाभास"
+  response response_how_to_guide_conflicts_heading_zh
+    intent how_to_guide_conflicts_heading
+    language zh
+    text "### 冲突"
+  response response_how_to_guide_conflicts_heading_es
+    intent how_to_guide_conflicts_heading
+    language es
+    text "### Contradicciones"
+  response response_how_to_guide_conflict_en
+    intent how_to_guide_conflict
+    language en
+    text "- `{action}`: kept {kept}, dropped {dropped} (""{text}"")"
+  response response_how_to_guide_conflict_ru
+    intent how_to_guide_conflict
+    language ru
+    text "- `{action}`: оставлено {kept}, отброшено {dropped} («{text}»)"
+  response response_how_to_guide_conflict_hi
+    intent how_to_guide_conflict
+    language hi
+    text "- `{action}`: रखा गया {kept}, हटाया गया {dropped} («{text}»)"
+  response response_how_to_guide_conflict_zh
+    intent how_to_guide_conflict
+    language zh
+    text "- `{action}`：保留 {kept}，舍弃 {dropped}（“{text}”）"
+  response response_how_to_guide_conflict_es
+    intent how_to_guide_conflict
+    language es
+    text "- `{action}`: se conserva {kept}, se descarta {dropped} («{text}»)"
+  response response_how_to_guide_copies_heading_en
+    intent how_to_guide_copies_heading
+    language en
+    text "### Copied sources ignored"
+  response response_how_to_guide_copies_heading_ru
+    intent how_to_guide_copies_heading
+    language ru
+    text "### Скопированные источники пропущены"
+  response response_how_to_guide_copies_heading_hi
+    intent how_to_guide_copies_heading
+    language hi
+    text "### नकल किए गए स्रोत अनदेखे"
+  response response_how_to_guide_copies_heading_zh
+    intent how_to_guide_copies_heading
+    language zh
+    text "### 已忽略的转载来源"
+  response response_how_to_guide_copies_heading_es
+    intent how_to_guide_copies_heading
+    language es
+    text "### Fuentes copiadas ignoradas"
+  response response_how_to_guide_copy_en
+    intent how_to_guide_copy
+    language en
+    text "- {url}"
+  response response_how_to_guide_copy_ru
+    intent how_to_guide_copy
+    language ru
+    text "- {url}"
+  response response_how_to_guide_copy_hi
+    intent how_to_guide_copy
+    language hi
+    text "- {url}"
+  response response_how_to_guide_copy_zh
+    intent how_to_guide_copy
+    language zh
+    text "- {url}"
+  response response_how_to_guide_copy_es
+    intent how_to_guide_copy
+    language es
+    text "- {url}"
+  response response_how_to_guide_bounds_en
+    intent how_to_guide_bounds
+    language en
+    text "Bounds: {bounds}"
+  response response_how_to_guide_bounds_ru
+    intent how_to_guide_bounds
+    language ru
+    text "Границы: {bounds}"
+  response response_how_to_guide_bounds_hi
+    intent how_to_guide_bounds
+    language hi
+    text "सीमाएँ: {bounds}"
+  response response_how_to_guide_bounds_zh
+    intent how_to_guide_bounds
+    language zh
+    text "边界：{bounds}"
+  response response_how_to_guide_bounds_es
+    intent how_to_guide_bounds
+    language es
+    text "Límites: {bounds}"

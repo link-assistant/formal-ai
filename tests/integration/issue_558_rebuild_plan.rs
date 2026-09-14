@@ -90,7 +90,10 @@ fn agent_mode_routes_rebuild_to_a_write() {
         );
         assert!(content.contains("rebuild_plan"), "{prompt}");
         assert!(content.contains("reattached_artifacts"), "{prompt}");
-        assert!(content.contains("rebuild_and_reattach_pipeline"), "{prompt}");
+        assert!(
+            content.contains("rebuild_and_reattach_pipeline"),
+            "{prompt}"
+        );
         assert!(content.contains("reversible"), "{prompt}");
     }
 }

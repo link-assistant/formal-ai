@@ -64,12 +64,12 @@ pub mod wiktionary;
 pub use cache::CachedHttpClient;
 pub(crate) use formal_statement::formal_language_in_prompt;
 pub use formal_statement::{
-    formal_language_targets, translate_statement, SemanticStatement, StatementTranslation,
-    StatementTranslationError,
+    SemanticStatement, StatementTranslation, StatementTranslationError, formal_language_targets,
+    translate_statement,
 };
 pub use formalization::{
-    formalize_prompt, formalize_prompt_candidates, FormalizationAnchor, FormalizationAnchorKind,
-    FormalizationCandidate, FormalizationRole, FormalizationSlot,
+    FormalizationAnchor, FormalizationAnchorKind, FormalizationCandidate, FormalizationRole,
+    FormalizationSlot, formalize_prompt, formalize_prompt_candidates,
 };
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
@@ -81,11 +81,10 @@ pub(crate) use pipeline::seed_meaning_for_surface;
 pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;
 pub use selection::{
-    formalization_probability_target, select_formalization_candidate,
+    FormalizationDecision, FormalizationSelection, FormalizationSelectionConfig,
+    FormalizationSelectionReason, formalization_probability_target, select_formalization_candidate,
     select_formalization_candidate_with_policy,
     select_formalization_candidate_with_probability_store, softmax_formalization_scores,
-    FormalizationDecision, FormalizationSelection, FormalizationSelectionConfig,
-    FormalizationSelectionReason,
 };
 
 /// Process-wide cached HTTP client used by the default pipeline.

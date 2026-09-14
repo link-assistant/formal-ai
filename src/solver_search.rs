@@ -15,7 +15,7 @@
 //! evaluations; on exhaustion the stage records its `search:` evidence and
 //! declines, leaving the honest unknown-reasoning reply to take over.
 
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::links_format::format_lino_record;
@@ -693,10 +693,10 @@ fn extract_integers_with_positions(span: &str) -> Vec<(i64, usize)> {
             current.clear();
         }
     }
-    if !current.is_empty() {
-        if let Ok(value) = current.parse::<i64>() {
-            numbers.push((value, start));
-        }
+    if !current.is_empty()
+        && let Ok(value) = current.parse::<i64>()
+    {
+        numbers.push((value, start));
     }
     numbers
 }

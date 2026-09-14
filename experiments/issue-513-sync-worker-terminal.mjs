@@ -26,7 +26,11 @@ const root = new URL("..", import.meta.url);
 const seedPath = new URL("data/seed/terminal-commands.lino", root);
 const webSeedDirPath = new URL("src/web/seed/", root);
 const webSeedPath = new URL("src/web/seed/terminal-commands.lino", root);
-const seedLoaderPath = new URL("src/web/seed_loader.js", root);
+// The browser seed inventory. Issue #991 generated it out of `seed_loader.js`,
+// where every branch that added a seed file appended to the same lines, into
+// `data/meta/seed-registry.lino`; `seed-files.js` is the browser projection of
+// that registry and is what the worker now reads the file list from.
+const seedFilesPath = new URL("src/web/seed-files.js", root);
 const workerDirPath = new URL("src/web/worker/", root);
 const workerDir = fileURLToPath(workerDirPath);
 
@@ -81,10 +85,10 @@ if (!fs.existsSync(webSeedPath)) {
   }
 }
 
-const seedLoader = fs.readFileSync(seedLoaderPath, "utf8");
-if (!seedLoader.includes('"seed/terminal-commands.lino"')) {
+const seedFiles = fs.readFileSync(seedFilesPath, "utf8");
+if (!seedFiles.includes('"seed/terminal-commands.lino"')) {
   reportFailure(
-    "src/web/seed_loader.js does not include seed/terminal-commands.lino in DEFAULT_FILES.",
+    "src/web/seed-files.js does not list seed/terminal-commands.lino. It is generated from data/meta/seed-registry.lino by `rust-script scripts/generate-seed-registry.rs --write`; register the file there.",
   );
 }
 

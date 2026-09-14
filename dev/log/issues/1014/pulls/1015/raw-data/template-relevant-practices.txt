@@ -1,0 +1,238 @@
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:12:      - 'scripts/check-web-archive.mjs'
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:13:      - 'scripts/check-web-archive.test.mjs'
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:21:      - 'scripts/check-web-archive.mjs'
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:22:      - 'scripts/check-web-archive.test.mjs'
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:42:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:51:      - name: Test Web Archive report parser
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:52:        run: node --test scripts/check-web-archive.test.mjs
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:68:            --timeout 30
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:72:          # Don't fail the workflow immediately - we want to check web archive first
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:74:          # Output file for broken links report (used by check-web-archive.mjs)
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:81:      - name: Check broken links against Web Archive
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:83:        id: webarchive
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:84:        run: node scripts/check-web-archive.mjs
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:95:          echo "  A Web Archive snapshot is a suggested replacement; it does not fix the broken source link."
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:99:          echo "  2. Review the Web Archive step when it ran. For links marked with a '::notice::' annotation,"
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:100:          echo "     a Web Archive version exists."
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:101:          echo "     Replace those broken links with the suggested archive.org URL."
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:102:          echo "  3. For links with no archive version, either:"
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml:107:          echo "Report location: lychee/out.md (available as a workflow artifact if configured)."
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:28:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:45:    name: Build ${{ matrix.label }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:50:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:58:    runs-on: ${{ matrix.runner }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:59:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:76:        run: bash scripts/package-desktop.sh "${{ matrix.label }}" desktop-dist
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:101:          fi | sed 's#  \./#  #' > "SHA256SUMS-${{ matrix.label }}.partial"
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:103:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:105:          name: desktop-assets-${{ matrix.label }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:109:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:111:          name: desktop-checksums-${{ matrix.label }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:112:          path: desktop-dist/SHA256SUMS-${{ matrix.label }}.partial
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:120:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:127:      - uses: actions/download-artifact@v8
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml:131:      - uses: actions/download-artifact@v8
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:38:  RUSTFLAGS: -Dwarnings
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:66:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:98:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:125:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:149:  # Language-agnostic credential scan; runs via npx so no Node dependency is committed.
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:153:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:169:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:210:    timeout-minutes: 60
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:246:  # dependency graph every run. This also prevents cache keys based on
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:251:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:278:  # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:282:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:330:      # Warning-band annotations are limited to files this pull request changed,
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:331:      # so unchanged files stop repeating the same warning on every run.
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:343:              # No usable base (e.g. workflow_dispatch): fall back to annotating every warning.
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:355:          RUSTDOCFLAGS: -D warnings
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:366:    name: Test (${{ matrix.os }})
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:367:    runs-on: ${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:368:    timeout-minutes: 20
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:370:      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:388:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:430:    timeout-minutes: 15
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:488:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:543:    timeout-minutes: 60
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:698:    timeout-minutes: 60
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:805:    name: Publish Docker / ${{ matrix.platform }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:813:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:819:    runs-on: ${{ matrix.runner }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:820:    timeout-minutes: 60
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:844:          platforms: ${{ matrix.platform }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:857:        uses: actions/upload-artifact@v6
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:871:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:878:        uses: actions/download-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:913:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:963:  # still updates when the release path fails. Use the official Pages artifact
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:984:    timeout-minutes: 15
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:1003:          RUSTDOCFLAGS: -D warnings
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:1029:      - name: Upload GitHub Pages artifact
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:1030:        uses: actions/upload-pages-artifact@v5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:1040:  # GitHub reports jobs killed by timeout-minutes as cancelled. Observe every
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:1041:  # job so a timeout on main becomes a visible failure instead of a grey run.
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:1064:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:1:name: Security
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:16:    name: CodeQL (${{ matrix.language }})
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:18:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:20:      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:24:      security-events: write
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:27:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:34:          languages: ${{ matrix.language }}
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:40:  dependency-review:
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:41:    name: Dependency Review
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:44:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:46:      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml:54:      - uses: actions/dependency-review-action@v5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:39:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:51:          cache-dependency-path: examples/universal-app/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:66:      - name: Upload web build artifact
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:67:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:73:      - name: Upload GitHub Pages artifact
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:75:        uses: actions/upload-pages-artifact@v5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:87:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:98:      - name: Deploy Pages artifact
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:103:    name: Package desktop app (${{ matrix.os }})
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:104:    runs-on: ${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:105:    timeout-minutes: 20
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:107:      group: check-${{ github.workflow }}-${{ github.ref }}-desktop-package-${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:111:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:124:          cache-dependency-path: examples/universal-app/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:147:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:149:          name: universal-example-desktop-${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:157:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:169:          cache-dependency-path: examples/universal-app/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:190:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:202:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:214:          cache-dependency-path: examples/universal-app/package-lock.json
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:234:    timeout-minutes: 20
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:284:          # Stage only generated artifacts so unrelated changes can't leak in.
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:296:      - name: Upload screenshot failure artifacts
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:298:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:36:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:61:            --timeout 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:66:          # Don't fail the workflow immediately - we want to check web archive first
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:68:          # Output file for broken links report (used by check-web-archive.mjs)
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:75:      - name: Check broken links against Web Archive
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:77:        id: webarchive
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:78:        run: node scripts/check-web-archive.mjs
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:89:          echo "  An archive is a suggested replacement; it does not make the live link valid."
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:93:          echo "  2. For links marked with a '::notice::' annotation above, a Web Archive replacement exists."
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:94:          echo "     Replace those broken links with the suggested archive.org URL."
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:95:          echo "  3. For links with no archive version, either:"
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:100:          echo "Report location: lychee/out.md (available as a workflow artifact if configured)."
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:54:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:80:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:98:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:129:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:151:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:191:  # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:199:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:243:  # Test matrix: 3 runtimes (Node.js, Bun, Deno) x 3 OS (Ubuntu, macOS, Windows)
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:246:  # Fast-fail: slow test matrix only runs after fast checks pass (hive-mind principle #5)
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:248:    name: Test (${{ matrix.runtime }} on ${{ matrix.os }})
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:249:    runs-on: ${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:253:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:255:      group: check-${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.runtime }}-${{ matrix.os }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:284:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:301:        if: matrix.runtime == 'node'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:307:        if: matrix.runtime == 'node'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:311:        if: matrix.runtime == 'node'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:315:        if: matrix.runtime == 'bun'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:321:        if: matrix.runtime == 'bun'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:325:        if: matrix.runtime == 'bun'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:326:        # --timeout caps an individual test at 30s, matching Node's
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:327:        # --test-timeout budget while leaving headroom for cold runners.
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:328:        run: bun test --timeout 30000
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:331:        if: matrix.runtime == 'deno'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:337:        if: matrix.runtime == 'deno'
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:350:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:390:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:437:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:442:    # This is needed because lint/test jobs have a transitive dependency on changeset-check
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:549:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:620:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:666:    name: Build Docker Image (${{ matrix.platform }})
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:669:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:672:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:678:    runs-on: ${{ matrix.runner }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:691:          platform: ${{ matrix.platform }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:704:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:715:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:735:        uses: actions/download-artifact@v8
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:764:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:821:  # GitHub reports jobs killed by timeout-minutes as cancelled rather than
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:827:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:1:name: Security
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:25:    name: CodeQL (${{ matrix.language }})
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:27:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:29:      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:34:      security-events: write
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:37:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:45:          languages: ${{ matrix.language }}
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:53:  dependency-review:
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:54:    name: Dependency Review
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:57:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:59:      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:67:      - name: Review dependency changes
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml:68:        uses: actions/dependency-review-action@v5
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/actions/setup-buildx-resilient/action.yml:8:  straight from Docker Hub, and a transient registry timeout there fails the
+dev/log/issues/1012/pulls/1013/references/templates/rust-ai-driven-development-pipeline-template/.github/actions/setup-buildx-resilient/action.yml:105:        echo "==> WARNING: could not pre-pull ${BUILDKIT_IMAGE} from canonical registry or mirror; letting setup-buildx try its own boot pull"
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/actions/setup-buildx-resilient/action.yml:8:  straight from Docker Hub, and a transient registry timeout there fails the
+dev/log/issues/1012/pulls/1013/references/templates/js-ai-driven-development-pipeline-template/.github/actions/setup-buildx-resilient/action.yml:104:        echo "==> WARNING: could not pre-pull ${BUILDKIT_IMAGE} from canonical registry or mirror; letting setup-buildx try its own boot pull"
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:44:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:62:      - name: Upload build artifact
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:63:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:77:      - name: Upload GitHub Pages artifact
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:79:        uses: actions/upload-pages-artifact@v5
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:88:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:93:      - name: Deploy Pages artifact
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:31:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:50:            --timeout 30
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:60:      - name: Check broken links against Web Archive
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:62:        id: webarchive
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:63:        run: python scripts/check_web_archive.py
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:74:          echo "  An available Web Archive snapshot is a suggested replacement; it does not make the live link valid."
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml:78:          echo "  2. Replace links with suggested archive.org URLs when available."
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:34:# the terminal status gate reliably treat a cancellation there as a timeout or
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:41:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:96:  # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:100:    timeout-minutes: 20
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:187:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:263:    timeout-minutes: 20
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:325:      - name: Upload artifacts
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:326:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:336:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:424:    timeout-minutes: 60
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:473:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:543:      - name: Download artifacts
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:545:        uses: actions/download-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:585:    # !cancelled() prevents the skipped detect-changes dependency from propagating
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:595:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:721:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:754:    name: Build Docker Image (${{ matrix.platform }})
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:757:    timeout-minutes: 60
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:760:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:766:    runs-on: ${{ matrix.runner }}
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:786:          platforms: ${{ matrix.platform }}
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:787:          cache-from: type=gha,scope=${{ matrix.platform }}
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:788:          cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:799:        uses: actions/upload-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:811:    timeout-minutes: 15
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:825:        uses: actions/download-artifact@v7
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:851:  # A job killed by timeout-minutes concludes "cancelled", not "failure".
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:856:    timeout-minutes: 5
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:1:name: Security
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:15:    name: CodeQL (${{ matrix.language }})
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:17:    timeout-minutes: 30
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:19:      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:23:      security-events: write
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:26:      matrix:
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:34:          languages: ${{ matrix.language }}
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:42:  dependency-review:
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:43:    name: Dependency Review
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:46:    timeout-minutes: 10
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:53:      - name: Review dependency changes
+dev/log/issues/1012/pulls/1013/references/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml:54:        uses: actions/dependency-review-action@v5

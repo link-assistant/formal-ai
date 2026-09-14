@@ -413,8 +413,8 @@ fn try_project_lookup_internal(
         return None;
     }
     if let Some(repo) = repository_from_prompt(lookup_prompt) {
-        if promote_associative_repositories {
-            if let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name) {
+        if promote_associative_repositories
+            && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name) {
                 return Some(render_project_lookup(
                     prompt,
                     log,
@@ -422,7 +422,6 @@ fn try_project_lookup_internal(
                     response_language,
                 ));
             }
-        }
         return Some(render_generic_repository_lookup(
             prompt,
             log,

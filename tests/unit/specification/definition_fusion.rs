@@ -48,7 +48,10 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
                 ("zh", "递归型数字滤波器"),
             ],
             expected_sources: &[
-                ("en", "https://en.wikipedia.org/wiki/Infinite_impulse_response"),
+                (
+                    "en",
+                    "https://en.wikipedia.org/wiki/Infinite_impulse_response",
+                ),
                 (
                     "ru",
                     "https://ru.wikipedia.org/wiki/Фильтр_с_бесконечной_импульсной_характеристикой",
@@ -246,10 +249,12 @@ fn definition_merge_keeps_shared_anchor_and_declared_sources() {
         "merged definition should disclose the English Wikipedia metadata source: {:?}",
         response.evidence_links
     );
-    assert!(response
-        .evidence_links
-        .iter()
-        .all(|link| !link.starts_with("source:http:")));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .all(|link| !link.starts_with("source:http:"))
+    );
     assert!(
         response
             .evidence_links

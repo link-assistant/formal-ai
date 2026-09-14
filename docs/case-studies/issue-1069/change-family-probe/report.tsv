@@ -1,0 +1,3 @@
+member-insertion	PASS	src/orchestration/workspace.rs
+literal-replacement	PASS	src/orchestration/runner.rs
+identifier-rename	PASS	src/orchestration/attribution.rs

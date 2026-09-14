@@ -6,7 +6,22 @@ import { fileURLToPath } from 'node:url';
 
 import { captureAgentTui } from 'agent-commander';
 
+import {
+  promptAfterFor,
+  startupInteractionsFor,
+} from './client-contract.mjs';
+
 const directory = fileURLToPath(new URL('.', import.meta.url));
+
+test('Claude confirms only the remaining bypass-permissions prompt', () => {
+  expect(startupInteractionsFor('claude')).toEqual([
+    { after: 'Enter y/n:', text: 'y', key: 'ENTER' },
+  ]);
+});
+
+test('Claude waits for the current interactive input prompt', () => {
+  expect(promptAfterFor('claude')).toBe('$');
+});
 
 test('published adapter preserves ordered states and writes replay artifacts', async () => {
   const artifactDirectory = await mkdtemp(join(tmpdir(), 'formal-ai-tui-'));

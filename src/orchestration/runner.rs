@@ -1,22 +1,24 @@
 use super::permission::AgentRunPermission;
-use super::workspace::{changes, snapshot, WorkspaceChange};
-use crate::seed::client_integrations;
+use super::workspace::{WorkspaceChange, changes, snapshot};
 use crate::DEFAULT_MODEL;
+use crate::seed::client_integrations;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sha2::{Digest, Sha256};
+#[cfg(unix)]
+use std::collections::HashMap;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
-use std::io::{self, Read};
+use std::io;
+#[cfg(not(unix))]
+use std::io::Read;
 use std::path::{Path, PathBuf};
+#[cfg(not(unix))]
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
 
-#[cfg(unix)]
-use std::os::unix::process::CommandExt as _;
-
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
+const VERIFICATION_TASK_ENV: &str = "FORMAL_AI_VERIFICATION_TASK";
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -88,6 +90,10 @@ pub struct AgentRunConfig {
     pub allowlisted_commands: BTreeSet<String>,
     pub verification: Vec<VerificationCommand>,
     pub controller_program: PathBuf,
+    /// Exact native client state directory for a Formal AI controller run.
+    /// Dispatch sets this outside the candidate worktree so a client cannot
+    /// observe its own snapshots as authored workspace effects.
+    pub orchestration_home: Option<PathBuf>,
     pub command_override: Option<AgentCommand>,
     pub continuation: Option<AgentContinuation>,
 }
@@ -114,6 +120,7 @@ impl AgentRunConfig {
             allowlisted_commands: BTreeSet::new(),
             verification: Vec::new(),
             controller_program: PathBuf::from("formal-ai"),
+            orchestration_home: None,
             command_override: None,
             continuation: None,
         }
@@ -373,6 +380,71 @@ pub fn run_agent(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError>
     })
 }
 
+/// Verify already-composed workspace effects without invoking another agent.
+///
+/// This is intentionally an orchestration session rather than native agent
+/// evidence: it records the exact acceptance commands and their output, but
+/// leaves `native_session` empty because no external agent authored work in
+/// this step.
+pub(super) fn verify_workspace(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError> {
+    if !config.permission.permits(&config.workspace) {
+        return Err(AgentRunError::PermissionDenied);
+    }
+    validate_verification(config)?;
+    let workspace = config
+        .workspace
+        .canonicalize()
+        .map_err(AgentRunError::Workspace)?;
+    if !workspace.is_dir() {
+        return Err(AgentRunError::Workspace(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "workspace_not_directory",
+        )));
+    }
+
+    let mut events = EventChain::default();
+    events.push("permission_granted", ".");
+    events.push("composition_verification_started", &config.task);
+    let started = Instant::now();
+    let verification = run_verification(config, &workspace, &mut events)?;
+    let wall_time_ms = u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX);
+    let passed = verification.iter().all(|result| result.passed);
+    events.push(
+        if passed {
+            "composition_verification_passed"
+        } else {
+            "composition_verification_failed"
+        },
+        &config.task,
+    );
+
+    Ok(AgentSession {
+        schema: "formal-ai-agent-session-v1".to_string(),
+        cli: "composed-verifier".to_string(),
+        target: config.target,
+        task: config.task.clone(),
+        model: config.model.clone(),
+        base_url: config.base_url.clone(),
+        workspace: ".".to_string(),
+        program: "verification-only".to_string(),
+        args: Vec::new(),
+        status: if passed {
+            AgentStatus::Succeeded
+        } else {
+            AgentStatus::Failed
+        },
+        exit_code: Some(i32::from(!passed)),
+        wall_time_ms,
+        stdout: String::new(),
+        stderr: String::new(),
+        changes: Vec::new(),
+        verification,
+        events: events.events,
+        native_session: None,
+        continuation: None,
+    })
+}
+
 /// Continue the exact external session that produced a disproved claim.
 ///
 /// The caller supplies the correction goal. This function embeds that goal,
@@ -426,7 +498,7 @@ pub fn resume_agent(
 pub fn session_sha256(session: &AgentSession) -> Result<String, serde_json::Error> {
     let mut bytes = serde_json::to_vec_pretty(session)?;
     bytes.push(b'\n');
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(crate::source_fetch::sha256_hex(&bytes))
 }
 
 fn validate_verification(config: &AgentRunConfig) -> Result<(), AgentRunError> {
@@ -459,10 +531,15 @@ fn build_command(
             command.args.extend([
                 "--orchestration-home".to_string(),
                 config
-                    .workspace
-                    .join(".formal-ai-orchestration")
-                    .join("native-sessions")
-                    .join(&integration.id)
+                    .orchestration_home
+                    .clone()
+                    .unwrap_or_else(|| {
+                        config
+                            .workspace
+                            .join(".formal-ai-orchestration")
+                            .join("native-sessions")
+                            .join(&integration.id)
+                    })
                     .to_string_lossy()
                     .into_owned(),
             ]);
@@ -592,6 +669,120 @@ fn execute(
     workspace: &Path,
     timeout: Duration,
 ) -> Result<ProcessOutput, AgentRunError> {
+    #[cfg(unix)]
+    {
+        execute_with_command_stream(command, workspace, timeout)
+    }
+    #[cfg(not(unix))]
+    {
+        execute_with_std_process(command, workspace, timeout)
+    }
+}
+
+#[cfg(unix)]
+fn execute_with_command_stream(
+    command: &AgentCommand,
+    workspace: &Path,
+    timeout: Duration,
+) -> Result<ProcessOutput, AgentRunError> {
+    ensure_program_available(command, workspace)?;
+    let program = command.program.clone();
+    let args = command.args.clone();
+    let workspace = workspace.to_path_buf();
+    let mut env = command.env.clone().into_iter().collect::<HashMap<_, _>>();
+    env.insert("PWD".to_string(), workspace.display().to_string());
+
+    // `run_agent` is synchronous and may itself be called by an async host. A
+    // dedicated runtime thread avoids nesting a Tokio runtime in that caller.
+    thread::spawn(move || {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .map_err(AgentRunError::Process)?;
+        runtime.block_on(collect_command_stream(
+            command_stream::StreamingRunner::from_argv(program, args)
+                .cwd(workspace)
+                .env(env)
+                .kill_signal("SIGKILL"),
+            timeout,
+        ))
+    })
+    .join()
+    .map_err(|_| AgentRunError::Process(io::Error::other("command_stream_worker_panicked")))?
+}
+
+#[cfg(unix)]
+fn ensure_program_available(command: &AgentCommand, workspace: &Path) -> Result<(), AgentRunError> {
+    let search_path = command
+        .env
+        .get("PATH")
+        .map_or_else(|| std::env::var_os("PATH"), |path| Some(path.into()));
+    which::which_in(&command.program, search_path, workspace)
+        .map(|_| ())
+        .map_err(|error| AgentRunError::Process(io::Error::new(io::ErrorKind::NotFound, error)))
+}
+
+#[cfg(unix)]
+async fn collect_command_stream(
+    runner: command_stream::StreamingRunner,
+    timeout: Duration,
+) -> Result<ProcessOutput, AgentRunError> {
+    let mut stream = runner.stream();
+    let deadline = tokio::time::Instant::now() + timeout;
+    let mut stdout = Vec::new();
+    let mut stderr = Vec::new();
+    let mut exit_code = None;
+    let mut timed_out = false;
+
+    loop {
+        match tokio::time::timeout_at(deadline, stream.next()).await {
+            Ok(Some(command_stream::OutputChunk::Stdout(chunk))) => stdout.extend(chunk),
+            Ok(Some(command_stream::OutputChunk::Stderr(chunk))) => stderr.extend(chunk),
+            Ok(Some(command_stream::OutputChunk::Exit(code))) => {
+                exit_code = Some(code);
+                break;
+            }
+            Ok(None) => break,
+            Err(_) => {
+                timed_out = true;
+                stream.kill_with("SIGKILL");
+                while let Some(chunk) = stream.next().await {
+                    match chunk {
+                        command_stream::OutputChunk::Stdout(chunk) => stdout.extend(chunk),
+                        command_stream::OutputChunk::Stderr(chunk) => stderr.extend(chunk),
+                        command_stream::OutputChunk::Exit(code) => {
+                            exit_code = Some(code);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    if exit_code.is_none() && !timed_out {
+        return Err(AgentRunError::Process(io::Error::other(
+            "command_stream_ended_without_exit",
+        )));
+    }
+    Ok(ProcessOutput {
+        exit_code,
+        stdout: String::from_utf8_lossy(&stdout).into_owned(),
+        stderr: String::from_utf8_lossy(&stderr).into_owned(),
+        timed_out,
+    })
+}
+
+// Keep the std-process Windows implementation until command-stream provides
+// job-object process-tree termination there. Unix uses its exact-argv stream
+// API and POSIX process-group termination.
+#[cfg(not(unix))]
+fn execute_with_std_process(
+    command: &AgentCommand,
+    workspace: &Path,
+    timeout: Duration,
+) -> Result<ProcessOutput, AgentRunError> {
     let mut process = Command::new(&command.program);
     process
         .args(&command.args)
@@ -601,8 +792,6 @@ fn execute(
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
-    #[cfg(unix)]
-    process.process_group(0);
     let mut child = process.spawn().map_err(AgentRunError::Process)?;
     let stdout = child
         .stdout
@@ -636,30 +825,19 @@ fn execute(
     })
 }
 
-#[cfg(unix)]
-fn terminate_process_tree(child: &mut std::process::Child) -> Result<(), AgentRunError> {
-    let group = format!("-{}", child.id());
-    let status = Command::new("/bin/kill")
-        .args(["-KILL", "--", &group])
-        .status()
-        .map_err(AgentRunError::Process)?;
-    if !status.success() {
-        child.kill().map_err(AgentRunError::Process)?;
-    }
-    Ok(())
-}
-
 #[cfg(not(unix))]
 fn terminate_process_tree(child: &mut std::process::Child) -> Result<(), AgentRunError> {
     child.kill().map_err(AgentRunError::Process)
 }
 
+#[cfg(not(unix))]
 fn read_all(mut reader: impl Read) -> io::Result<String> {
     let mut bytes = Vec::new();
     reader.read_to_end(&mut bytes)?;
     Ok(String::from_utf8_lossy(&bytes).into_owned())
 }
 
+#[cfg(not(unix))]
 fn join_reader(reader: thread::JoinHandle<io::Result<String>>) -> Result<String, AgentRunError> {
     reader
         .join()
@@ -678,7 +856,7 @@ fn run_verification(
         let command = AgentCommand {
             program: PathBuf::from(&verification.program),
             args: verification.args.clone(),
-            env: BTreeMap::new(),
+            env: BTreeMap::from([(VERIFICATION_TASK_ENV.to_string(), config.task.clone())]),
         };
         let output = execute(&command, workspace, config.timeout)?;
         let passed = !output.timed_out && output.exit_code == Some(0);
@@ -723,7 +901,7 @@ impl EventChain {
             kind: kind.to_string(),
             detail: detail.to_string(),
             previous_sha256,
-            sha256: format!("{:x}", Sha256::digest(payload.as_bytes())),
+            sha256: crate::source_fetch::sha256_hex(payload.as_bytes()),
         });
     }
 }

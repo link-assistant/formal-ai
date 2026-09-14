@@ -23,9 +23,9 @@ following ideas to be explicit:
 - reasoning steps can nest, so tool-generated reasoning (e.g.
   `link-assistant/calculator`) is recorded as a sub-trace of the parent
   reasoning step;
-- everything is appended to a growable memory backed by `doublets-rs` /
-  `doublets-web`, with regular backups to browser storage and disk in `.lino`
-  files;
+- everything is appended to a growable memory backed by the `link-cli` library
+  (file-mapped `doublets-rs`) / `doublets-web`, with regular backups to browser
+  storage and disk in `.lino` files;
 - the local memory is treated as a cache of the public-knowledge database
   (Wikipedia, Wikidata, Wiktionary);
 - the associative store supports stored transformation/substitution rules
@@ -329,9 +329,9 @@ hour. At that bound the reducer retains the current plan in an
 `AwaitingContinuation` decision and resumes only through explicit continuation,
 so the bound is not represented as irreversible failure.
 
-### 4.4 Default native doublets-rs / doublets-web store
+### 4.4 Default native link-cli / doublets-web store
 
-Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
+Native Rust builds select `LinkStoreBackend::LinkCli` by default because
 Cargo's default feature set enables `doublets-native`. The library exposes
 `link_store::DefaultNativeLinkStore` and `default_native_link_store()` so
 embedders can construct the active native backend without checking feature
@@ -339,14 +339,23 @@ flags themselves. Compiling with `--no-default-features` keeps the explicit
 `MemoryStore` / `.lino` projection fallback for small builds and recovery
 tools.
 
-The native backend mirrors each `MemoryEvent` into the `doublets-rs` links network using
-the `Type -> SubType -> Value` reduction in `src/link_store.rs`. Links
-Notation remains the deterministic projection for inspection, backup,
-recovery, and migration: `import_memory_links_notation` accepts both legacy
-`demo_memory` files and full `formal_ai_bundle` exports, while malformed
-documents are rejected before the store is mutated. Exporting the native
-store writes the same stable `.lino` event log that the CLI, HTTP, Telegram,
-and browser surfaces use for portability.
+The native backend embeds the `link-cli` library and mirrors each `MemoryEvent`
+into its file-mapped `doublets-rs` links network using the
+`Type -> SubType -> Value` reduction in `src/link_store.rs`. Every mutation is
+wrapped by `GenericTransactionsDecorator`; its fsynced transition-log sidecar
+commits or rolls back the complete event projection and recovers interrupted
+writes when the database reopens. The HTTP server owns a binary `.links`
+sidecar beside its `.lino` memory file. The portable `.lino` document is
+written atomically first; if a process stops between the two projections, the
+next open deterministically repairs the native sidecar from that complete
+source document.
+
+Links Notation therefore remains the deterministic projection for inspection,
+backup, recovery, and migration: `import_memory_links_notation` accepts both
+legacy `demo_memory` files and full `formal_ai_bundle` exports, while malformed
+documents are rejected before the store is mutated. Exporting the native store
+writes the same stable `.lino` event log that the CLI, HTTP, Telegram, and
+browser surfaces use for portability.
 
 Browser storage remains compatible with `doublets-web`: `src/web/memory.js`
 uses IndexedDB for the event object store, reports `doublets-web` when a
@@ -357,6 +366,7 @@ storage engines are different.
 
 Upstream references:
 
+- [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli)
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs)
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web)
 
@@ -364,8 +374,8 @@ Implemented migration surface:
 
 1. Wrap the current memory projection in a trait so the active backend is
    swappable (`link_store::LinkStore`).
-2. Enable the `doublets-rs` backend by default for native builds through
-   `doublets-native`.
+2. Enable link-cli's transactional file-mapped backend by default for native
+   builds through `doublets-native`.
 3. Preserve `--no-default-features` as the explicit `.lino` projection
    fallback.
 4. Mirror native writes to `.lino` snapshots via
@@ -849,6 +859,24 @@ order from "lowest privilege" to "highest privilege":
    four representations: a data rule, a Rust handler stub, a JS handler
    stub, or an interpreted sequence of solver steps.
 
+Issue #936 adds the executable path for pure substitution rules. The
+Rust-owned compiler first lowers `SubstitutionRuleSet` into one serializable,
+target-neutral `SubstitutionProgramIr`: ordered rules, `when` conditions,
+`replace` actions, literal/whole-node/prefix patterns, and the interpreter's
+bounded application limit. Emitters may only consume that IR. The canonical
+Rust target embeds the generated runtime directly; WebAssembly compiles the
+same generated Rust runtime; the JavaScript target is only an ES-module bridge
+to that generated WASM and contains no rule matching or rewrite logic. Every
+artifact also carries the JSON IR and an auditable compilation trace.
+
+`ProgramPlan::compile` is the proof boundary. It refuses an unchanged plan or
+a plan that reached its termination guard. The solver's seeded
+`export_substitution_rule` route first reuses rule synthesis's semantic fixture,
+then crosses that boundary and returns the named source/support files plus an
+`ExecutionRecipe`. Thus natural-language export cannot bypass the existing
+verified plan, while direct library callers can compile any parsed rule set via
+`compile_substitution_rules` and compare its output with the interpreter.
+
 `src/skill_compiler.rs` implements the deterministic compiler subset. The
 legacy `When ... answer ...` form still lowers into a `CompiledSkillPackage`
 with a trigger rule, a deterministic compiled handler, an E1-style
@@ -1051,6 +1079,28 @@ request and crosses the WASM boundary. Both surfaces expose the stable meaning
 `statement:P31(Q89,Q3314483)`, so the issue #526 round-trip contract now covers
 natural -> FOL -> natural without a direct pair path. Formal output is not
 executed as code, leaving issue #917 independent of E69's execution gate.
+
+Issue #921 closes the external orchestration loop without introducing another
+adapter. In one direction, Hive Mind's public `solve` parser selects its shipped
+Agent executor, which starts the native Agent CLI against the candidate Formal
+AI server. In the other, Formal AI's existing `agent run` adapter starts that
+same external CLI and records its exit, verified workspace delta, native
+session, and hash-chained orchestration events. The release gate saves exact
+fixture commits and replays the canonical session; a child-process failure is a
+failed gate in both directions. CI prepares the public Hive Mind command but
+suppresses the GitHub-writing portion, then calls the same production executor
+directly, keeping the integration real without mutating issue state. A scoped
+permission-response shim lets Hive Mind 2.12.2 reach its no-write preparation
+exit under the workflow's read-only token; it is absent from execution. Lazy
+Hive Mind helper installs use an isolated, writable npm prefix owned by the
+gate, rather than relying on machine-global package permissions. Hive Mind's
+identity preflight is satisfied with repository-local config in the disposable
+prepare clone plus process-local config on the prepare-only command, never with
+runner-global Git config. The disposable clone materializes its candidate HEAD
+as a local branch as well, making Hive Mind's current-branch preflight
+independent of GitHub Actions' detached checkout shape. A matching local
+`origin/main` ref lets Hive Mind create its temporary solution branch without
+fetching or changing the candidate commit.
 
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
@@ -1409,12 +1459,13 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R535, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R558, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
-- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
+- [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli) — default native transactional storage library.
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — physical doublet store embedded by link-cli.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
-- [`link-assistant/relative-meta-logic`](https://github.com/link-assistant/relative-meta-logic) — future formal-reasoning integration.
+- [`link-foundation/relative-meta-logic`](https://github.com/link-foundation/relative-meta-logic) — future formal-reasoning integration.
 - Wikidata (`https://www.wikidata.org/`) — public source of P/Q-ID anchors.
 - Wikipedia (`https://*.wikipedia.org/`) — public source of per-language
   concept articles.
@@ -1439,6 +1490,14 @@ the table in Section 2 and link the new module.
   `src/proof_engine/decision/sat.rs`; wide claims are
   [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
   in `src/proof_engine/decision/boolean.rs` before being handed to it.
+- Issue #923 widens the same decision boundary with bounded equality saturation
+  in `src/proof_engine/decision/equality.rs` and a bounded, function-free
+  Datalog least-fixed-point evaluator in `src/proof_engine/decision/rules.rs`.
+  Equality uses the optional MIT-licensed `egg` dependency behind the default
+  `equality-saturation` feature; an exhausted e-graph search remains
+  inconclusive rather than being reported as a disproof. Rule programs carry
+  explicit `facts`, `rules`, and a ground `query`; resource ceilings turn into
+  an inconclusive result instead of an incomplete-model counterexample.
 
 ### Symbolic world models and contexts (issue #649)
 
@@ -1479,3 +1538,24 @@ the table in Section 2 and link the new module.
   `docs/case-studies/issue-686/persistence-mapping.md`. It generalizes the
   read-count LFU precursor already present in `src/dreaming.rs` (`usage_counts`) and
   bridges to the issue #649 world model via `AssociativeMemory::from_context`.
+
+## Formal AI self-development release loop
+
+Issue #924 composes the existing session-backed self-hosting metric with the
+normal GitHub merge topology. A contribution is still attributed from its
+committed session and evidence trailers; an additional canonical PR trailer is
+eligible for the release floor only when a matching first-parent GitHub merge
+contains that exact non-merge commit on its second-parent branch. This keeps a
+direct or rewritten claim from masquerading as reviewed work.
+
+Before version mutation, the release path requires one qualifying PR and
+projects the existing three-release changed-line share. The next target is
+`max(previous target, previous comparable trailing share)`, so the ledger is a
+monotonic floor as well as a report. Each new row records the target and all
+qualifying PR URLs. A failed floor leaves the release range open for additional
+reviewed work instead of writing an impossible historical row.
+
+This layer observes merged ancestry; it does not add an AI-only authority.
+Review, CI, and the #656 trusted promotion protocol remain outside and above
+the authorship measurement. E69 supplies the write-effect foundation and E74
+supplies the replayable Hive Mind/Agent CLI route used to produce candidates.

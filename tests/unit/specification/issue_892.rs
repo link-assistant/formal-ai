@@ -13,7 +13,7 @@
 //!     announced, and starts counting as released once that day arrives.
 
 use formal_ai::seed::{parse_release_timelines, release_timelines};
-use formal_ai::{release_timeline, UniversalSolver};
+use formal_ai::{UniversalSolver, release_timeline};
 
 /// A two-film timeline: one long released, one announced for 2030.
 const FIXTURE: &str = r#"release_timelines

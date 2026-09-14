@@ -1,0 +1,16 @@
+bucket                                            count   share      GB   share
+buildkit-blob-*      (docker cache-to type=gha)      48    0.9%    4.91   42.9%
+sccache/*            (SCCACHE_GHA_ENABLED)         5439   98.9%    4.43   38.7%
+Linux/macOS-cargo-*  (actions/cache registry)         6    0.1%    0.99    8.6%
+other: v0-rust-cycle-Linux-x64-6ff13d87-6f287e72      1    0.0%    0.79    6.9%
+playwright                                            1    0.0%    0.28    2.5%
+other: bun-tw6RmwqZSA0Bnj0yIUzvSupv0Nk=               1    0.0%    0.04    0.3%
+other: node-cache-Linux-x64-npm-f54d6460f91e068b564f      1    0.0%    0.01    0.0%
+TOTAL                                              5497  100.0%   11.44  100.0%
+
+top refs holding cache entries:
+    3766  refs/heads/main
+    1731  refs/pull/1074/merge
+
+oldest entry created: 2026-08-22T21:56:36.777973000Z sccache/6/c/c/6cc40cae96fbded8870b3606f9c408f83d8b54d6fdfc19
+newest entry created: 2026-09-05T09:54:47.697451000Z buildkit-blob-1-sha256:dc8fb6fca3148b9f448a5354f853f7e236693

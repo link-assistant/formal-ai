@@ -1,0 +1,1 @@
+Edit the tracked file `self-hosting-attribution.rs`: add "Gemfile.lock" to the LOCKFILE_NAMES list. Change only that file and keep it valid Rust.

@@ -1,0 +1,51 @@
+self_ast_census
+  target src/reasoning_standard/mod.rs
+  language rust
+  fidelity signature
+  byte_len 25531
+  line_count 703
+  content_id source_module_9ee239706c5be018
+  symbol_count 42
+  symbols
+    module episode 29 29
+    module instructions 30 30
+    module refutation 31 31
+    module trust 32 32
+    const REASONING_STANDARD 47 47
+    const REFERENCE_EPISODE 50 51
+    struct ReasoningStandardError 55 58
+    function fmt 61 63
+    function error 68 72
+    enum GateTrigger 79 94
+    function slug 99 109
+    function from_slug 111 123
+    function fires 127 139
+    struct Gate 144 155
+    struct ReasoningStandard 159 168
+    function threshold 173 175
+    function is_unconditional 179 181
+    function root_named 184 189
+    function standard 192 252
+    function reference_episode 261 263
+    enum GateStatus 267 274
+    function slug 279 285
+    struct GateOutcome 290 301
+    enum Verdict 305 315
+    function slug 320 326
+    function blockers 330 335
+    struct ReasoningAudit 340 349
+    function all_triggered_gates_satisfied 354 359
+    function outcome 363 365
+    function to_links_notation 369 392
+    function evaluate_gate 395 411
+    function check_evidence_before_claim 413 437
+    function check_documentation_default 439 456
+    function check_instruction_formalization 458 477
+    function check_computed_source_trust 479 504
+    function check_refutation_variety 506 528
+    function check_verify_after_act 530 549
+    function check_honest_failure_report 551 566
+    function settle_verdict 568 612
+    function audit 619 661
+    function open_episode 672 678
+    function record_reasoning_standard 686 703

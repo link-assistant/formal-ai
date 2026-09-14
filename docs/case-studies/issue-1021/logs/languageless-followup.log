@@ -1,0 +1,86 @@
+=== мне нужен код
+-- intent: write_program_request_unspecified
+Я не угадываю, что писать. Это похоже на запрос программы, но в нём не названо ни что программа должна делать, ни на каком языке программирования её написать.
+
+Скажите, что должна делать программа и на каком языке, и я её выведу.
+
+=== посчитай до трёх на Python
+-- intent: write_program
+Вот минимальная программа на языке Python (count to three):
+
+```python
+for number in range(1, 4):
+    print(number)
+```
+
+Статус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».
+Check command: `python3 -m py_compile main.py`
+Run command: `python3 main.py`
+Вывод:
+```text
+1
+2
+3
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+Как это работает:
+Программа выводит числа 1, 2 и 3 — каждое на отдельной строке — и завершается.
+
+Как проверить это самостоятельно:
+1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.
+2. Сохраните приведённый выше код в файл `main.py`.
+3. Проверьте, что код компилируется: `python3 -m py_compile main.py`.
+4. Запустите программу: `python3 main.py`.
+5. Сравните вывод с разделом ожидаемого вывода выше.
+
+=== I need code
+-- intent: write_program
+Here is a minimal Python count to three program:
+
+```python
+for number in range(1, 4):
+    print(number)
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `python3 -m py_compile main.py`
+Run command: `python3 main.py`
+Output:
+```text
+1
+2
+3
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program prints the numbers 1, 2, and 3 — each on its own line — and then exits.
+
+Test the updated program the same way as before: save the code to `main.py` and run `python3 main.py` again.
+
+=== count to three in Python
+-- intent: write_program
+Here is a minimal Python count to three program:
+
+```python
+for number in range(1, 4):
+    print(number)
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `python3 -m py_compile main.py`
+Run command: `python3 main.py`
+Output:
+```text
+1
+2
+3
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program prints the numbers 1, 2, and 3 — each on its own line — and then exits.
+
+Test the updated program the same way as before: save the code to `main.py` and run `python3 main.py` again.
+

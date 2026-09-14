@@ -1,0 +1,4 @@
+== workdir: /tmp/tmp.17cQezQfvW ==
+!! server never came up on port 8912
+== server log ==
+experiments/agent_cli_e2e/run_agent_cli.sh: line 135: target/debug/formal-ai: No such file or directory

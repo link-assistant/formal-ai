@@ -12,7 +12,7 @@
 //! guard.
 
 use formal_ai::meta_self_improvement::{
-    propose_recipe_update, MetaSelfImprovement, SelfImprovementMode,
+    MetaSelfImprovement, SelfImprovementMode, propose_recipe_update,
 };
 
 // ---------------------------------------------------------------------------

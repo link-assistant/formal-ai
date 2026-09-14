@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_23.js"
+  ceiling 18
+  rationale "Issue #709 bridge: Rust/WASM owns formalization, deduplication, ranking, conflicts, and rendering."

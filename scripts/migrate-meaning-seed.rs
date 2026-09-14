@@ -1,3 +1,8 @@
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
+
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};

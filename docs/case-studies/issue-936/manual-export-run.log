@@ -1,0 +1,7 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786841584737)
+    Finished `dev` profile [unoptimized] target(s) in 54.66s
+     Running `target/debug/examples/issue_936_export_and_execute`
+intent: substitution_rule_export
+artifact: program_plan_rules.rs
+request:modifier	reverse_sort
+request:task	list_files_reverse_sort

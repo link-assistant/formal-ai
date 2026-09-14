@@ -1,0 +1,36 @@
+issue_933_decomposition
+  record_type "task_decomposition"
+  issue "933"
+  leaf_count "6"
+  formal_ai_authored_leaf_count "2"
+  formal_ai_authored_percent "33"
+issue_933_leaf_contract_file
+  record_type "smallest_leaf"
+  owner "formal_ai_agent_cli"
+  artifact "data/meta/conversational-variation-floor-contract.lino"
+  status "complete"
+issue_933_leaf_learning_observation
+  record_type "smallest_leaf"
+  owner "formal_ai_agent_cli"
+  artifact "docs/case-studies/issue-933/self-hosting-authorship/variation-floor-learning.lino"
+  status "complete"
+issue_933_leaf_floor_gate
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "tests/e2e/scripts/check-conversational-variation-floor.mjs|tests/web/conversational-variation-floor.test.mjs"
+  status "complete"
+issue_933_leaf_corpus_and_engine
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "data/benchmarks/conversational-variations-suite.lino|tests/unit/conversational_variations.rs"
+  status "complete"
+issue_933_leaf_answer_parity
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/question_necessity.rs|tests/unit/issue_933_answer_parity.rs"
+  status "complete"
+issue_933_leaf_incremental_learning
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/orchestration/incremental.rs|tests/integration/issue_991_incremental_dispatch.rs"
+  status "complete"

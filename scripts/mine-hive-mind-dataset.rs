@@ -9,6 +9,11 @@
 //! The script wraps the `formal-ai github-logs` operator command. It keeps the
 //! dataset-mining boundary outside the seed tool registry while making the
 //! issue #115 Hive Mind capture repeatable.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::env;
 use std::path::PathBuf;

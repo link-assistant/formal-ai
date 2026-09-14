@@ -2,24 +2,24 @@ self_ast_census
   target src/external_benchmarks/manifest.rs
   language rust
   fidelity signature
-  byte_len 12144
-  line_count 284
-  content_id source_module_7800df666e4d5357
+  byte_len 14222
+  line_count 324
+  content_id source_module_813a1f1c84712f69
   symbol_count 16
   symbols
-    enum SuiteSource 11 31
-    enum Availability 35 42
-    enum Grading 46 61
-    function as_str 65 75
-    function needs_python 78 83
-    struct SuiteManifest 88 101
-    function is_runnable 105 107
-    function download_url 110 118
-    function cache_file 121 128
-    const CACHE_DIR 133 133
-    const LEDGER_PATH 136 136
-    const PERMISSIVE_LICENSES 139 139
-    const SWEBENCH_HARNESS_REF 142 142
-    const SUITES 145 161
-    function suite 276 278
-    function suite_ids 282 284
+    enum SuiteSource 11 37
+    enum Availability 41 48
+    enum Grading 52 69
+    function as_str 73 84
+    function needs_python 87 92
+    struct SuiteManifest 97 110
+    function is_runnable 114 116
+    function download_url 119 127
+    function cache_file 130 138
+    const CACHE_DIR 143 143
+    const LEDGER_PATH 146 146
+    const PERMISSIVE_LICENSES 149 149
+    const SWEBENCH_HARNESS_REF 152 152
+    const SUITES 155 171
+    function suite 316 318
+    function suite_ids 322 324

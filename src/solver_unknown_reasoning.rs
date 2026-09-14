@@ -7,12 +7,12 @@
 
 use std::sync::OnceLock;
 
-use crate::concepts::{lookup_concept_query, ConceptQuery};
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::concepts::{ConceptQuery, lookup_concept_query};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::seed::{self, localized_response, ConceptRecord};
-use crate::solver_handlers::{answer_web_search_query, finalize_simple, WebSearchQueryKind};
+use crate::seed::{self, ConceptRecord, localized_response};
+use crate::solver_handlers::{WebSearchQueryKind, answer_web_search_query, finalize_simple};
 use crate::solver_helpers::humanize_url;
 use crate::unknown_opener::language_aware_unknown_answer;
 
@@ -41,17 +41,17 @@ pub fn answer_unknown_prompt(
             |value| format!("link_memory:{value}"),
         ),
     );
-    if let Some(focus) = focus.as_deref() {
-        if let Some(body) = answer_from_link_memory(prompt, focus, log) {
-            return finalize_simple(
-                prompt,
-                log,
-                "memory_fact_lookup",
-                "response:memory_fact_lookup",
-                &body,
-                0.85,
-            );
-        }
+    if let Some(focus) = focus.as_deref()
+        && let Some(body) = answer_from_link_memory(prompt, focus, log)
+    {
+        return finalize_simple(
+            prompt,
+            log,
+            "memory_fact_lookup",
+            "response:memory_fact_lookup",
+            &body,
+            0.85,
+        );
     }
     log.append("reasoning:gather_result", "link_memory:miss".to_owned());
 
@@ -66,10 +66,10 @@ pub fn answer_unknown_prompt(
             |value| format!("public_knowledge_cache:{value}"),
         ),
     );
-    if let Some(focus) = focus.as_deref() {
-        if let Some(answer) = answer_from_public_knowledge_cache(prompt, focus, language, log) {
-            return answer;
-        }
+    if let Some(focus) = focus.as_deref()
+        && let Some(answer) = answer_from_public_knowledge_cache(prompt, focus, language, log)
+    {
+        return answer;
     }
     log.append(
         "reasoning:gather_result",

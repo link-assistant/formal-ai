@@ -1,0 +1,35 @@
+question_necessity_suite_issue_920
+  record_type "question_necessity_suite"
+  source "self_authored_issue_920"
+  metric "questions_per_100_tasks"
+  case_count "5"
+  maximum "60"
+  ratchet_direction "down"
+question_necessity_case_ambiguity_high_rigor
+  record_type "question_necessity_case"
+  prompt "apple is a fruit"
+  questioning_rigor "1.0"
+  guess_probability "0.0"
+  expected_questions "1"
+question_necessity_case_ambiguity_low_rigor
+  record_type "question_necessity_case"
+  prompt "apple is a fruit"
+  questioning_rigor "0.0"
+  guess_probability "1.0"
+  expected_questions "0"
+question_necessity_case_factual_unknown
+  record_type "question_necessity_case"
+  prompt "How should snorflax be calibrated for teal silence"
+  questioning_rigor "0.8"
+  offline "true"
+  expected_questions "1"
+question_necessity_case_proof_requirement
+  record_type "question_necessity_case"
+  prompt "Prove the Riemann hypothesis"
+  guess_probability "0.05"
+  follow_up_probability "0.95"
+  expected_questions "1"
+question_necessity_case_answerable_fact
+  record_type "question_necessity_case"
+  prompt "What is 2 + 2?"
+  expected_questions "0"

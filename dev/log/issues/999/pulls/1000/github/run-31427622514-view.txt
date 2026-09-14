@@ -1,0 +1,90 @@
+
+X main CI/CD Pipeline · 31427622514
+Triggered via push about 22 hours ago
+
+JOBS
+✓ Detect Changes in 1m20s (ID 93582972077)
+- Create Changelog PR in 0s (ID 93582972630)
+- Self-Hosting Evidence Check in 0s (ID 93582972710)
+- Version Modification Check in 0s (ID 93582972954)
+✓ Test (ubuntu-latest) in 23m15s (ID 93585318590)
+✓ E2E Tests (agent CLI ↔ formal-ai) in 22m32s (ID 93585318593)
+✓ Lint and Format Check in 8m42s (ID 93585318607)
+X Test (macos-15-intel) in 21m11s (ID 93585318655)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  - Simulate fresh merge with base branch (PR only)
+  ✓ Free up runner disk space
+  ✓ Setup Rust
+  ✓ Run ./.github/actions/setup-sccache
+  ✓ Restore cargo registry cache
+  ✓ Check LiNo data integrity
+  ✓ Check self-AST census freshness
+  X Run tests
+  - Run doc tests
+  ✓ Post Run ./.github/actions/setup-sccache
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m55s (ID 93585318672)
+✓ Secrets Scan in 29s (ID 93585318682)
+- Docker Image Build & Runtime Check in 0s (ID 93585319962)
+- Changelog Fragment Check in 0s (ID 93585320020)
+- Build Package (ID 93591960279)
+- Instant Release in 0s (ID 93592216401)
+X Pipeline Status in 16s (ID 93592216688)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  X Fail the run when a required job was cancelled or failed
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Auto Release (ID 93592216895)
+- E2E Tests (GitHub Pages) (ID 93592217138)
+- Deploy Web App to GitHub Pages (ID 93592217205)
+
+ANNOTATIONS
+- 0% - 0 hits, 1 miss, 0 errors
+Test (ubuntu-latest): .github#36
+
+- 46% - 1091 hits, 1276 misses, 0 errors
+E2E Tests (agent CLI ↔ formal-ai): .github#51
+
+- 34% - 543 hits, 1045 misses, 0 errors
+Lint and Format Check: .github#53
+
+! You've hit a rate limit, your rate limit will reset in 11 seconds
+Lint and Format Check: .github#3
+
+! You've hit a rate limit, your rate limit will reset in 11 seconds
+Lint and Format Check: .github#3
+
+! You've hit a rate limit, your rate limit will reset in 17 seconds
+Lint and Format Check: .github#3
+
+! Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wordnet/en#0
+
+! Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wiktionary/en#0
+
+! Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wikidata/entity#0
+
+- 1% - 5 hits, 961 misses, 0 errors
+Test (macos-15-intel): .github#49
+
+X Process completed with exit code 101.
+Test (macos-15-intel): .github#1152
+
+X Process completed with exit code 1.
+Pipeline Status: .github#93
+
+X Pipeline failed. Failing jobs: test
+Pipeline Status: .github#92
+
+
+ARTIFACTS
+agent-cli-tui-replays
+download-page-screenshots
+
+To see what failed, try: gh run view 31427622514 --log-failed
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31427622514

@@ -5,7 +5,7 @@
 //! rewrite the matching ones) and the natural-language append path, both driven
 //! entirely by the seed lexicon rather than hardcoded per-language phrases.
 
-use formal_ai::{execute_memory_query, MemoryEvent, MemoryStore};
+use formal_ai::{MemoryEvent, MemoryStore, execute_memory_query};
 
 fn seeded_store(content: &str) -> MemoryStore {
     MemoryStore::from_events(vec![MemoryEvent {

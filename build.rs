@@ -15,6 +15,7 @@
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 fn main() {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"));
@@ -24,6 +25,8 @@ fn main() {
 
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed={}", seed_dir.display());
+
+    install_git_hooks(&manifest_dir);
 
     let mut files = enumerate_lino_files(&seed_dir);
     files.sort_by_key(|a| seed_sort_key(a));
@@ -50,6 +53,40 @@ fn main() {
     fs::write(&out_path, generated).expect("write seed_bundle_files.rs");
 
     emit_owned_source_manifest(&manifest_dir, &out_dir);
+    emit_crate_edition(&manifest_dir);
+}
+
+/// Export the crate's own Rust edition as `FORMAL_AI_CRATE_EDITION`.
+///
+/// [`crate::memory_revision::rustc_verdict`] compiles the next version of this
+/// crate with a bare `rustc`, which has no manifest to read the edition from. A
+/// constant typed into that module would be a second place to remember, and the
+/// day it fell behind the manifest the ledger would start rolling back versions
+/// that `cargo build` accepts. So the value is read from `Cargo.toml` here,
+/// where there is only one of it.
+fn emit_crate_edition(manifest_dir: &Path) {
+    let manifest_path = manifest_dir.join("Cargo.toml");
+    println!("cargo:rerun-if-changed={}", manifest_path.display());
+    let manifest = fs::read_to_string(&manifest_path).expect("read Cargo.toml");
+    let edition = package_edition(&manifest)
+        .unwrap_or_else(|| panic!("[package] edition missing from {}", manifest_path.display()));
+    println!("cargo:rustc-env=FORMAL_AI_CRATE_EDITION={edition}");
+}
+
+/// The `edition` of the manifest's `[package]` table, ignoring every other
+/// table -- a `[dependencies]` entry may carry an `edition` key of its own.
+fn package_edition(manifest: &str) -> Option<String> {
+    let mut in_package = false;
+    for line in manifest.lines() {
+        let line = line.trim();
+        if line.starts_with('[') {
+            in_package = line == "[package]";
+        } else if in_package && let Some(value) = line.strip_prefix("edition") {
+            let value = value.trim_start().strip_prefix('=')?.trim();
+            return Some(value.trim_matches('"').to_owned());
+        }
+    }
+    None
 }
 
 /// Emit `owned_source_files.rs` — the compile-time manifest of every owned Rust
@@ -113,6 +150,55 @@ fn enumerate_rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
     }
 }
 
+/// Point `core.hooksPath` at the tracked `.githooks/` directory.
+///
+/// Issue #1041: `.pre-commit-config.yaml` describes a hook that sweeps the
+/// build cache on every commit, but it runs only for someone who has installed
+/// the `pre-commit` framework *and* run `pre-commit install`. On a fresh clone
+/// neither is true, so the config sat committed and inert while `target/` grew
+/// until the disk filled.
+///
+/// A build script is the one step every contributor takes without being told,
+/// which makes it the reliable place to do this. It is also the only place that
+/// runs before the first commit of a new clone.
+///
+/// Every failure here is ignored. This is a convenience, never a build
+/// requirement: a source tarball with no `.git`, a sandbox with no `git` on
+/// PATH, or a read-only checkout must all still build.
+fn install_git_hooks(manifest_dir: &Path) {
+    // CI checks out fresh for every job and commits nothing, so installing
+    // hooks there is pure overhead on hundreds of jobs.
+    if env::var_os("CI").is_some() {
+        return;
+    }
+
+    let hooks_dir = manifest_dir.join(".githooks");
+    if !hooks_dir.is_dir() || !manifest_dir.join(".git").exists() {
+        return;
+    }
+
+    // Respect a deliberate choice. Someone who already points hooksPath
+    // somewhere -- their own directory, or a tool that manages hooks -- must
+    // not have it silently taken over by a dependency build.
+    let configured = Command::new("git")
+        .args(["-C"])
+        .arg(manifest_dir)
+        .args(["config", "--local", "--get", "core.hooksPath"])
+        .output();
+    if let Ok(output) = &configured
+        && output.status.success()
+        && !String::from_utf8_lossy(&output.stdout).trim().is_empty()
+    {
+        return;
+    }
+
+    let _ = Command::new("git")
+        .args(["-C"])
+        .arg(manifest_dir)
+        .args(["config", "--local", "core.hooksPath", ".githooks"])
+        .status();
+}
+
 fn enumerate_lino_files(seed_dir: &Path) -> Vec<PathBuf> {
     let mut out = Vec::new();
     let Ok(entries) = fs::read_dir(seed_dir) else {
@@ -137,10 +223,10 @@ fn seed_sort_key(path: &Path) -> (String, u32, String) {
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or_default();
-    if let Some((bucket, suffix)) = stem.rsplit_once("-part") {
-        if let Ok(n) = suffix.parse::<u32>() {
-            return (bucket.to_string(), n, stem.to_string());
-        }
+    if let Some((bucket, suffix)) = stem.rsplit_once("-part")
+        && let Ok(n) = suffix.parse::<u32>()
+    {
+        return (bucket.to_string(), n, stem.to_string());
     }
     (stem.to_string(), 0, stem.to_string())
 }

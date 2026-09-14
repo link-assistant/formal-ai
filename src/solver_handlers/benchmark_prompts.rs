@@ -144,11 +144,10 @@ fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
 
     let lower = prompt.to_lowercase();
     for form in &forms {
-        if form.action == "scan" {
-            if let Some((_, topic)) = lower.split_once(form.before_slot()) {
+        if form.action == "scan"
+            && let Some((_, topic)) = lower.split_once(form.before_slot()) {
                 return clean_conversation_topic(topic);
             }
-        }
     }
     None
 }
@@ -408,11 +407,10 @@ fn resolve_coreference_antecedent<'a>(
         turn_index += 1;
         let context_id = format!("conversation:turn:{turn_index}");
         let mut context = Context::new(&context_id);
-        if event.kind == "prior_turn:user" {
-            if let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase()) {
+        if event.kind == "prior_turn:user"
+            && let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase()) {
                 context.assert_link(REFERENCE, &antecedent.display_name);
             }
-        }
         hierarchy
             .nest(context, &parent_id, InheritancePolicy::Full)
             .ok()?;

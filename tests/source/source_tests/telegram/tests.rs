@@ -1,6 +1,6 @@
 use super::{
-    parse_get_updates_response, serialize_string_array, url_encode, TelegramPollingConfig,
-    TelegramPollingError,
+    TelegramPollingConfig, TelegramPollingError, parse_get_updates_response,
+    serialize_string_array, url_encode,
 };
 
 #[test]
@@ -131,7 +131,7 @@ fn progressive_thinking_edits_walk_through_reasoning_and_settle_on_answer() {
     // few debounced `editMessageText` calls and lands the final answer on the
     // last edit. We test the builder directly so the assertions stay focused
     // on the shape of the stream rather than the rest of the polling loop.
-    use super::{build_progressive_thinking_edits, ThinkingStep};
+    use super::{ThinkingStep, build_progressive_thinking_edits};
 
     let steps = vec![
         ThinkingStep::new(0, "impulse", "compute 8 < 10", "high", "evt-1"),
@@ -206,7 +206,7 @@ fn thinking_blockquote_is_expandable_and_html_escaped() {
     // Issue #488: the reasoning renders as Telegram's native expandable
     // blockquote (collapsed by default, expands on tap) and every step sentence
     // is HTML-escaped so it cannot corrupt the HTML parse mode.
-    use super::{telegram_thinking_blockquote, ThinkingStep};
+    use super::{ThinkingStep, telegram_thinking_blockquote};
 
     assert!(
         telegram_thinking_blockquote(&[]).is_none(),
@@ -236,7 +236,7 @@ fn thinking_blockquote_is_written_in_the_answer_language() {
     // of the language it answered in. It now narrates in the language the trace
     // resolved to, for every registered language, while the `step`/`detail`
     // trace keys stay language-neutral.
-    use super::{html_escape, telegram_thinking_blockquote, ThinkingStep};
+    use super::{ThinkingStep, html_escape, telegram_thinking_blockquote};
     use crate::language::registered_languages;
     use crate::thinking_prose::thinking_prose;
 

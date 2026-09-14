@@ -1,0 +1,74 @@
+name: Workflows
+
+# GitHub Actions ignores unknown workflow keys instead of rejecting them, so a
+# typo such as `queue: max` inside a `concurrency:` block silently does nothing
+# (issue #62). actionlint validates the schema and, through shellcheck, every
+# `run:` block as well.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Lint Workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
+      cancel-in-progress: true
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # The Docker image bundles shellcheck and pyflakes, so this lints every
+      # `run:` block too. A native actionlint binary without shellcheck on
+      # PATH silently skips the shell checks and still exits 0 -- worth knowing
+      # before trying to reproduce a finding locally.
+      - name: Lint workflow files
+        uses: docker://rhysd/actionlint:1.7.7
+        with:
+          args: -color
+
+  # actionlint validates workflow schema and shell; it does not detect
+  # credential persistence, template injection or unpinned actions. zizmor
+  # covers exactly those, so both linters run on every change under .github/.
+  # Reproduce locally with:
+  #   pipx run zizmor==1.30.0 --min-confidence medium --persona regular \
+  #     --config .github/zizmor.yml .github/workflows
+  zizmor:
+    name: Audit Workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor
+      cancel-in-progress: true
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # Annotations instead of SARIF: forks of this template do not necessarily
+      # have code scanning enabled, and the job should fail loudly either way.
+      - name: Audit workflow files
+        uses: zizmorcore/zizmor-action@v0.6.2
+        with:
+          advanced-security: false
+          annotations: true
+          config: .github/zizmor.yml
+          min-confidence: medium

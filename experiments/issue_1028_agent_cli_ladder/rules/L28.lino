@@ -1,0 +1,8 @@
+link_edit
+  leaf L28
+  path src/client_integrations.rs
+  language rust
+  rule rename_identifier
+    old "EMPTY_BACKUP_SENTINEL"
+    new "EMPTY_CONFIG_BACKUP_SENTINEL"
+  expect "EMPTY_CONFIG_BACKUP_SENTINEL"

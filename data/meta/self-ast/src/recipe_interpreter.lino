@@ -2,9 +2,9 @@ self_ast_census
   target src/recipe_interpreter.rs
   language rust
   fidelity signature
-  byte_len 17308
-  line_count 440
-  content_id source_module_94db3b3b0da83e24
+  byte_len 17744
+  line_count 449
+  content_id source_module_00d5b186a18047a6
   symbol_count 23
   symbols
     const RECIPE_LINO 43 43
@@ -20,13 +20,13 @@ self_ast_census
     function to_links_notation 209 236
     struct ExecutionTrace 241 248
     struct ExecutionContext 252 263
-    function run_recorder 269 345
-    function require_problem_frame 347 351
-    function require_work_unit_root 353 357
-    function require_need_ledger 359 363
-    function require_method_registry 365 369
-    function require_solution_evidence 371 375
-    function dependency_error 379 381
-    function parse_steps 385 404
-    function step_from_block 408 425
-    function field_value 429 440
+    function run_recorder 269 354
+    function require_problem_frame 356 360
+    function require_work_unit_root 362 366
+    function require_need_ledger 368 372
+    function require_method_registry 374 378
+    function require_solution_evidence 380 384
+    function dependency_error 388 390
+    function parse_steps 394 413
+    function step_from_block 417 434
+    function field_value 438 449

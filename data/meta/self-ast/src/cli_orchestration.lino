@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_orchestration.rs
   language rust
   fidelity signature
-  byte_len 16509
-  line_count 461
-  content_id source_module_d76fbaf891d3e813
+  byte_len 17362
+  line_count 478
+  content_id source_module_191877571fed7e3e
   symbol_count 20
   symbols
     const TASK_PLACEHOLDER 16 16
@@ -14,16 +14,16 @@ self_ast_census
     enum TargetArg 60 63
     function from 66 71
     struct ExternalRunArgs 75 116
-    struct ExternalDispatchArgs 119 166
-    struct ExternalResumeArgs 169 199
-    struct ExternalSynthesisArgs 202 211
-    function run_external_action 213 226
-    function run_one 228 256
-    function run_dispatch 258 313
-    function run_resume 315 355
-    function run_synthesis 357 374
-    function run_learning 376 388
-    function parse_agent_command 390 421
-    function parse_agent_commands 423 437
-    function parse_verification 439 451
-    function ensure_parent 453 461
+    struct ExternalDispatchArgs 119 174
+    struct ExternalResumeArgs 177 207
+    struct ExternalSynthesisArgs 210 219
+    function run_external_action 221 234
+    function run_one 236 264
+    function run_dispatch 266 330
+    function run_resume 332 372
+    function run_synthesis 374 391
+    function run_learning 393 405
+    function parse_agent_command 407 438
+    function parse_agent_commands 440 454
+    function parse_verification 456 468
+    function ensure_parent 470 478

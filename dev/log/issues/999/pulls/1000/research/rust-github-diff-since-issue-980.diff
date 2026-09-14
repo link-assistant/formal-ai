@@ -1,0 +1,539 @@
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml
+--- dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/desktop-release.yml	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/desktop-release.yml	2026-08-11 18:08:38.617297409 +0000
+@@ -0,0 +1,167 @@
++name: Desktop Release
++
++on:
++  pull_request:
++    types: [opened, synchronize, reopened]
++  workflow_run:
++    workflows: [CI/CD Pipeline]
++    types: [completed]
++  workflow_dispatch:
++    inputs:
++      tag:
++        description: Release tag (defaults to the latest published release)
++        required: false
++        type: string
++
++permissions:
++  contents: read
++
++concurrency:
++  group: desktop-release-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
++  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
++
++jobs:
++  resolve:
++    name: Resolve release
++    if: ${{ vars.DESKTOP_RELEASE_ENABLED == 'true' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
++    runs-on: ubuntu-latest
++    timeout-minutes: 5
++    outputs:
++      tag: ${{ steps.release.outputs.tag }}
++      should_build: ${{ steps.release.outputs.should_build }}
++    steps:
++      - uses: actions/checkout@v6
++      - name: Resolve release tag
++        id: release
++        env:
++          GH_TOKEN: ${{ github.token }}
++          EVENT: ${{ github.event_name }}
++          INPUT_TAG: ${{ inputs.tag }}
++          REPO: ${{ github.repository }}
++          WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
++        run: bash scripts/desktop-release-resolve.sh
++
++  build:
++    name: Build ${{ matrix.label }}
++    needs: resolve
++    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
++    strategy:
++      fail-fast: false
++      matrix:
++        include:
++          - { label: linux-x64, runner: ubuntu-latest }
++          - { label: linux-arm64, runner: ubuntu-24.04-arm }
++          - { label: macos-x64, runner: macos-15-intel }
++          - { label: macos-arm64, runner: macos-14 }
++          - { label: windows-x64, runner: windows-latest }
++          - { label: windows-arm64, runner: windows-11-arm }
++    runs-on: ${{ matrix.runner }}
++    timeout-minutes: 30
++    permissions:
++      contents: read
++    defaults:
++      run:
++        shell: bash
++    steps:
++      - uses: actions/checkout@v6
++        with:
++          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
++      - uses: dtolnay/rust-toolchain@stable
++      - name: Package desktop application
++        env:
++          DESKTOP_RELEASE_TAG: ${{ github.event_name == 'pull_request' && 'dry-run' || needs.resolve.outputs.tag }}
++          # electron-builder 26 requires both values for certificate-free PR builds:
++          CSC_FOR_PULL_REQUEST: 'true'
++          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
++        run: bash scripts/package-desktop.sh "${{ matrix.label }}" desktop-dist
++      - name: Smoke test release assets
++        env:
++          OUTPUT_DIR: desktop-dist
++        run: |
++          set -euo pipefail
++          first_asset="$(find "$OUTPUT_DIR" -type f -size +0c -print -quit)"
++          [ -n "$first_asset" ] || { echo "No non-empty desktop assets were produced" >&2; exit 1; }
++          find "$OUTPUT_DIR" -type f -size +0c -print | sed 's/^/Verified /'
++          # Electron apps must retain a signature envelope. Use
++          # electron-builder --mac ... -c.mac.identity=- and set
++          # CSC_FOR_PULL_REQUEST=true on the ad-hoc path.
++          while IFS= read -r app; do
++            [ -f "$app/Contents/_CodeSignature/CodeResources" ] || {
++              echo "Missing macOS CodeResources signature envelope: $app" >&2; exit 1;
++            }
++          done < <(find "$OUTPUT_DIR" -type d -name '*.app' -print)
++      - name: Create checksum fragment
++        run: |
++          set -euo pipefail
++          cd desktop-dist
++          if command -v sha256sum >/dev/null; then
++            find . -type f -print0 | sort -z | xargs -0 sha256sum
++          else
++            find . -type f -exec shasum -a 256 {} +
++          fi | sed 's#  \./#  #' > "SHA256SUMS-${{ matrix.label }}.partial"
++      - name: Upload packaged assets
++        uses: actions/upload-artifact@v7
++        with:
++          name: desktop-assets-${{ matrix.label }}
++          path: desktop-dist
++          retention-days: 7
++      - name: Upload checksum fragment
++        uses: actions/upload-artifact@v7
++        with:
++          name: desktop-checksums-${{ matrix.label }}
++          path: desktop-dist/SHA256SUMS-${{ matrix.label }}.partial
++          retention-days: 7
++
++  finalize:
++    name: Publish checksums and provenance
++    needs: [resolve, build]
++    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' && needs.resolve.outputs.should_build == 'true' }}
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++    permissions:
++      actions: read
++      contents: write
++      id-token: write
++      attestations: write
++    steps:
++      - uses: actions/download-artifact@v8
++        with:
++          pattern: desktop-assets-*
++          path: release-assets
++      - uses: actions/download-artifact@v8
++        with:
++          pattern: desktop-checksums-*
++          path: checksums
++          merge-multiple: true
++      - name: Consolidate release metadata
++        env:
++          TAG: ${{ needs.resolve.outputs.tag }}
++        run: |
++          set -euo pipefail
++          cat checksums/*.partial | sort -k2 > SHA256SUMS.txt
++          {
++            echo 'Desktop build provenance'
++            echo '========================'
++            echo 'Status     : complete'
++            echo 'Repository : ${{ github.repository }}'
++            echo "Release tag: $TAG"
++            echo 'Targets    : linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64'
++            echo 'Attestation: verify each asset with gh attestation verify <file> --repo ${{ github.repository }}'
++            echo 'Run        : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
++          } > BUILD-PROVENANCE.txt
++      - name: Attest build provenance
++        uses: actions/attest@v4
++        with:
++          subject-path: |
++            release-assets/**/*
++            SHA256SUMS.txt
++      - name: Upload release metadata
++        env:
++          GH_TOKEN: ${{ github.token }}
++          TAG: ${{ needs.resolve.outputs.tag }}
++        run: |
++          set -euo pipefail
++          mapfile -d '' assets < <(find release-assets -type f ! -name '*.partial' -print0)
++          [ ${#assets[@]} -gt 0 ] || { echo 'No release assets were downloaded' >&2; exit 1; }
++          gh release upload "$TAG" "${assets[@]}" SHA256SUMS.txt BUILD-PROVENANCE.txt \
++            --repo "${{ github.repository }}" --clobber
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml
+--- dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/links.yml	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/links.yml	2026-08-11 18:08:38.617297409 +0000
+@@ -0,0 +1,102 @@
++name: Broken Link Checker
++
++on:
++  push:
++    branches:
++      - main
++    paths:
++      - '**.md'
++      - '**.html'
++      - '.github/workflows/links.yml'
++      - '.lycheeignore'
++      - 'scripts/check-web-archive.mjs'
++  pull_request:
++    types: [opened, synchronize, reopened]
++    paths:
++      - '**.md'
++      - '**.html'
++      - '.github/workflows/links.yml'
++      - '.lycheeignore'
++      - 'scripts/check-web-archive.mjs'
++  workflow_dispatch:
++
++# Least-privilege default; jobs escalate individually when needed.
++permissions:
++  contents: read
++
++# Provide Git config to actions/checkout itself; checkout runs git init before
++# any workflow step can configure Git.
++env:
++  GIT_CONFIG_COUNT: '1'
++  GIT_CONFIG_KEY_0: init.defaultBranch
++  GIT_CONFIG_VALUE_0: main
++
++jobs:
++  link-checker:
++    name: Check Links
++    runs-on: ubuntu-latest
++    # Typical run: <1min with lychee cache. 10min prevents slow
++    # external hosts or Wayback Machine probes from hanging the workflow.
++    timeout-minutes: 10
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-link-checker
++      cancel-in-progress: true
++    permissions:
++      contents: read
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Check links with lychee
++        id: lychee
++        uses: lycheeverse/lychee-action@v2
++        with:
++          # Check all Markdown and HTML files
++          # Exclude case-studies directory - these are research documents from
++          # external repos with references to files and issues that don't exist
++          # in this repository (similar exclusion pattern as eslint.config.js)
++          args: >-
++            --verbose
++            --no-progress
++            --cache
++            --max-cache-age 1d
++            --max-retries 3
++            --timeout 30
++            --exclude-path docs/case-studies
++            './**/*.md'
++            './**/*.html'
++          # Don't fail the workflow immediately - we want to check web archive first
++          fail: false
++          # Output file for broken links report (used by check-web-archive.mjs)
++          output: lychee/out.md
++          # Write a job summary
++          jobSummary: true
++        env:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++
++      - name: Check broken links against Web Archive
++        if: steps.lychee.outputs.exit_code != 0
++        id: webarchive
++        run: node scripts/check-web-archive.mjs
++        env:
++          LYCHEE_OUTPUT: lychee/out.md
++
++      - name: Fail if broken links found and no web archive fallback
++        if: steps.lychee.outputs.exit_code != 0 && steps.webarchive.outputs.all_archived != 'true'
++        run: |
++          echo "::error::Broken links were detected with no Web Archive fallback available."
++          echo ""
++          echo "What happened:"
++          echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
++          echo "  The Web Archive (Wayback Machine) check found no archived versions for some of them."
++          echo ""
++          echo "How to fix:"
++          echo "  1. Review the 'Check links with lychee' step above for a full list of broken links."
++          echo "  2. For links marked with a '::notice::' annotation above, a Web Archive version exists."
++          echo "     Replace those broken links with the suggested archive.org URL."
++          echo "  3. For links with no archive version, either:"
++          echo "     a. Find an updated URL that points to the same or equivalent content."
++          echo "     b. Remove the link if the content is no longer relevant."
++          echo "     c. Add the URL to .lycheeignore if it is a known false positive."
++          echo ""
++          echo "Report location: lychee/out.md (available as a workflow artifact if configured)."
++          exit 1
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml
+--- dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml	2026-08-11 18:00:33.732573210 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml	2026-08-11 18:08:38.618297398 +0000
+@@ -52,7 +52,9 @@
+   DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
+ 
+ # Concurrency is intentionally job-scoped. Each read-only job cancels only its
+-# superseded counterpart for the same ref, including on main. Jobs that can
++# superseded counterpart for the same non-main ref. Main checks are not
++# cancelled, so a cancelled main job is always exceptional and the terminal
++# status gate can safely report it as a failure. Jobs that can
+ # mutate repositories, registries, releases, or Pages all use one shared
+ # concurrency group instead. A write that has started is never cancelled, and
+ # GitHub retains at most one pending run for the group.
+@@ -64,7 +66,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-detect-changes
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name != 'workflow_dispatch'
+     outputs:
+       rs-changed: ${{ steps.changes.outputs.rs-changed }}
+@@ -96,7 +98,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-changelog
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+@@ -123,7 +125,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-version-check
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name == 'pull_request'
+     steps:
+       - uses: actions/checkout@v6
+@@ -151,7 +153,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     steps:
+       - uses: actions/checkout@v6
+ 
+@@ -167,7 +169,7 @@
+     timeout-minutes: 30
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-fresh-merge
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+@@ -208,7 +210,7 @@
+     timeout-minutes: 60
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+@@ -249,7 +251,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-cargo-lock
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: |
+       !cancelled() && (
+@@ -280,7 +282,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-lint
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes, cargo-lock]
+     # Note: !cancelled() is required because detect-changes is skipped on workflow_dispatch,
+     # and without it, this job would also be skipped even though its condition includes workflow_dispatch.
+@@ -366,7 +368,7 @@
+     timeout-minutes: 20
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes, cargo-lock]
+     # Note: !cancelled() is required because detect-changes is skipped on workflow_dispatch,
+     # and without it, this job would also be skipped even though its condition includes workflow_dispatch.
+@@ -428,7 +430,7 @@
+     timeout-minutes: 15
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-coverage
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes, cargo-lock]
+     env:
+       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+@@ -486,7 +488,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-build
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [lint, test]
+     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
+     steps:
+@@ -534,7 +536,8 @@
+       github.ref == 'refs/heads/main' &&
+       needs.build.result == 'success'
+     runs-on: ubuntu-latest
+-    timeout-minutes: 30
++    # Covers the crate build, publish, smoke test, and a cold Docker build.
++    timeout-minutes: 60
+     env:
+       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+@@ -677,6 +680,8 @@
+           push: true
+           tags: ${{ steps.docker-meta.outputs.tags }}
+           labels: ${{ steps.docker-meta.outputs.labels }}
++          cache-from: type=gha
++          cache-to: type=gha,mode=max
+ 
+       - name: Create GitHub Release
+         if: |
+@@ -719,7 +724,8 @@
+       github.event.inputs.release_mode == 'instant' &&
+       needs.build.result == 'success'
+     runs-on: ubuntu-latest
+-    timeout-minutes: 30
++    # Covers the crate build, publish, smoke test, and a cold Docker build.
++    timeout-minutes: 60
+     env:
+       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+@@ -846,6 +852,8 @@
+           push: true
+           tags: ${{ steps.docker-meta.outputs.tags }}
+           labels: ${{ steps.docker-meta.outputs.labels }}
++          cache-from: type=gha
++          cache-to: type=gha,mode=max
+ 
+       - name: Create GitHub Release
+         if: |
+@@ -974,6 +982,12 @@
+             > target/doc/index.html
+           touch target/doc/.nojekyll
+ 
++      - name: Add desktop download page
++        run: |
++          mkdir -p target/doc/download
++          sed 's#__REPOSITORY__#${{ github.repository }}#g' \
++            docs/download/index.html > target/doc/download/index.html
++
+       - name: Configure GitHub Pages
+         uses: actions/configure-pages@v6
+ 
+@@ -989,3 +1003,36 @@
+       - name: Deploy to GitHub Pages
+         id: deployment
+         uses: actions/deploy-pages@v5
++
++  # === PIPELINE STATUS ===
++  # GitHub reports jobs killed by timeout-minutes as cancelled. Observe every
++  # job so a timeout on main becomes a visible failure instead of a grey run.
++  pipeline-status:
++    name: Pipeline Status
++    needs:
++      - detect-changes
++      - changelog
++      - version-check
++      - secrets-scan
++      - fresh-merge
++      - docker-build
++      - cargo-lock
++      - lint
++      - test
++      - coverage
++      - build
++      - auto-release
++      - manual-release
++      - changelog-pr
++      - deploy-docs
++    if: always()
++    runs-on: ubuntu-latest
++    timeout-minutes: 5
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Check aggregate pipeline status
++        env:
++          NEEDS_JSON: ${{ toJSON(needs) }}
++          IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
++        run: bash scripts/check-pipeline-status.sh
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml
+--- dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/security.yml	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/security.yml	2026-08-11 18:08:38.618297398 +0000
+@@ -0,0 +1,57 @@
++name: Security
++
++on:
++  push:
++    branches: [main]
++  pull_request:
++  schedule:
++    - cron: '0 6 * * 1'
++
++# Keep the workflow read-only unless a job explicitly needs an additional scope.
++permissions:
++  contents: read
++
++jobs:
++  codeql:
++    name: CodeQL (${{ matrix.language }})
++    runs-on: ubuntu-latest
++    timeout-minutes: 30
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
++      cancel-in-progress: true
++    permissions:
++      contents: read
++      security-events: write
++    strategy:
++      fail-fast: false
++      matrix:
++        language: [rust, actions]
++    steps:
++      - uses: actions/checkout@v6
++
++      - uses: github/codeql-action/init@v4
++        with:
++          languages: ${{ matrix.language }}
++
++      - uses: github/codeql-action/autobuild@v4
++
++      - uses: github/codeql-action/analyze@v4
++
++  dependency-review:
++    name: Dependency Review
++    if: github.event_name == 'pull_request'
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review
++      cancel-in-progress: true
++    permissions:
++      contents: read
++      pull-requests: write
++    steps:
++      - uses: actions/checkout@v6
++
++      - uses: actions/dependency-review-action@v5
++        with:
++          fail-on-severity: high
++          comment-summary-in-pr: on-failure

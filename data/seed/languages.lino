@@ -16,12 +16,14 @@ languages
   language hi
     name Hindi
     status full
+    adposition postposition
     detection_mode script
     detection_confidence_permille 1000
     suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")
   language zh
     name Chinese
     status full
+    adposition postposition
     detection_mode script
     detection_confidence_permille 1000
     suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")

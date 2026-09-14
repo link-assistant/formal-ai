@@ -17,7 +17,7 @@ how the web UI reuses the same code in the browser and on the desktop.
 
 > **Scope.** The server is a local REST gateway. Client protocols live under
 > `/api/<protocol>/...`, while formal-ai's own seed data, memory bundles, and
-> traces still prefer [Links Notation](https://github.com/link-foundation/lino).
+> traces still prefer [Links Notation](https://github.com/link-foundation/links-notation).
 > REST is the interop boundary; Links Notation is the internal format.
 
 ---
@@ -191,7 +191,7 @@ curl -s http://127.0.0.1:8080/v1/messages \
 
 #### Links-Notation REST + LinksQL (R6)
 
-These endpoints speak [Links Notation](https://github.com/link-foundation/lino)
+These endpoints speak [Links Notation](https://github.com/link-foundation/links-notation)
 envelopes rather than OpenAI JSON - REST is the transport, Links Notation is the
 payload (R7). The memory-sync flow in [§5c](#5c-local-database-sync-r5c) rides on
 the `/api/formal-ai/v1/memory*` routes, with `/v1/memory*` kept as aliases.
@@ -751,4 +751,4 @@ and behind an explicit grant.
 - [/download landing page](https://link-assistant.github.io/formal-ai/download/) — installers + checksums
 - [Issue #347 case study](../case-studies/issue-347/README.md) — requirements, prior art, decisions
 - [Issue #347 roadmap](../case-studies/issue-347/ROADMAP.md) — implementation roadmap for the local DB sync, request routing + sandbox, Links-Notation REST + LinksQL, and first-party Anthropic adapter
-- [Links Notation](https://github.com/link-foundation/lino) — the internal data format (R7)
+- [Links Notation](https://github.com/link-foundation/links-notation) — the internal data format (R7)

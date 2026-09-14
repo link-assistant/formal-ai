@@ -1,0 +1,22 @@
+experiments/issue-844-self-hosting-evidence/run.sh:43:#   bun install -g @link-assistant/agent   # provides `agent` on PATH
+experiments/agent_cli_e2e/run_issue_819.sh:295:(cd "$TUI_DIR" && bun install --frozen-lockfile && bun test) \
+experiments/agentic_cli_matrix/install_client.sh:36:      npm install --silent --prefix "$prefix" "$spec" \
+experiments/agentic_cli_matrix/install_client.sh:37:        || matrix_fail "npm install --prefix $prefix $spec failed"
+experiments/agentic_cli_matrix/install_client.sh:40:      # bun installs onto $HOME/.bun/bin, which the workflow adds to PATH.
+experiments/agentic_cli_matrix/install_client.sh:41:      bun add -g "$spec" || matrix_fail "bun add -g $spec failed"
+experiments/agentic_cli_matrix/install_client.sh:46:    # A package with a native addon it builds at install time. `bun add -g`
+experiments/agentic_cli_matrix/install_client.sh:59:    npm install -g "$spec" || matrix_fail "npm install -g $spec failed"
+experiments/issue_840_task_ladder/run_ladder.sh:109:  (cd "$TUI_DIR" && bun install --frozen-lockfile) || exit 1
+.github/workflows/agentic-cli-matrix.yml:135:        # node-pty from source during install. `bun add -g` skips lifecycle
+.github/workflows/proactive-failure-report-e2e.yml:31:          bun add -g @link-assistant/agent
+.github/workflows/desktop-release.yml:590:      # packaging dev-tools), so a plain install is used rather than `npm ci`.
+.github/workflows/release.yml:281:        run: bun install --frozen-lockfile
+.github/workflows/release.yml:293:        run: npm ci --prefix tests/e2e
+.github/workflows/release.yml:864:        run: bun install --frozen-lockfile
+.github/workflows/release.yml:870:          npm ci
+.github/workflows/release.yml:952:          bun add -g @link-assistant/agent
+.github/workflows/release.yml:955:        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex @google/gemini-cli
+.github/workflows/release.yml:1337:        run: bun install --frozen-lockfile
+.github/workflows/release.yml:1410:          npm ci
+scripts/install-node-dependencies.sh:36:trace "npm install succeeded; classifying $(wc -l <"$stderr_log" | tr -d ' ') stderr line(s)"
+scripts/install-node-dependencies.sh:47:# than an actionable vulnerability -- see isaacs/node-glob#644.

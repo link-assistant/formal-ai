@@ -1,0 +1,1087 @@
+[2026-08-15T11:07:34Z INFO  rust_script] Arguments: Args { script: Some("scripts/run-ci-gates.rs"), script_args: ["--stage", "web"], expr: false, loop_: false, count: false, base_path: None, pkg_path: None, gen_pkg_only: false, cargo_output: false, clear_cache: false, debug: false, dep: [], extern_: [], force: false, unstable_features: [], build_kind: Normal, toolchain_version: None, wrapper: None }
+[2026-08-15T11:07:34Z INFO  rust_script] input: File("run-ci-gates", "/tmp/gh-issue-solver-1786781432917/scripts/run-ci-gates.rs", "#!/usr/bin/env rust-script\n//! Run the CI gates named by `data/meta/ci-gates/`, one shard per gate.\n//!\n//! Issue #991 review feedback: \"All other similar places which may generate\n//! conflicts should be fixed in similar way.\"\n//!\n//! `.github/workflows/release.yml` is the third most conflicted path in the\n//! repository (35 manual resolutions, see `data/meta/merge-conflict-ledger.lino`)\n//! and the cause is structural: its `lint` job was one long append-only list of\n//! steps, so every branch that added a check appended to the same region.\n//!\n//! The list cannot simply be union merged — a workflow file is YAML with jobs and\n//! conditions in it, and a union of two edits to a job's `if:` can parse and still\n//! be wrong. So the *entries* move out of it: each gate is one file under\n//! `data/meta/ci-gates/`, named after the gate. Two branches that each add a gate\n//! create two different files, which git merges without ever looking at a shared\n//! region. The workflow keeps three steps — one per stage — that hand the list\n//! back to this runner.\n//!\n//! A stage says what the gate needs to already be installed, not what it depends\n//! on: gates inside a stage are independent, so they run in shard order and all\n//! of them run even after one fails. A CI run that reports every broken gate at\n//! once is worth more than one that stops at the first.\n//!\n//! Usage:\n//!     rust-script scripts/run-ci-gates.rs --stage rust   # run one stage\n//!     rust-script scripts/run-ci-gates.rs --list         # print the registry\n//!     rust-script scripts/run-ci-gates.rs --check        # validate, run nothing\n//!\n//! ```cargo\n//! [dependencies]\n//! ```\n\nuse std::collections::BTreeSet;\nuse std::fmt::Write as _;\nuse std::fs;\nuse std::path::{Path, PathBuf};\n#[cfg(not(test))]\nuse std::process::Command;\n\nconst REGISTRY: &str = \"data/meta/ci-gates\";\nconst WORKFLOW: &str = \".github/workflows/release.yml\";\n\n/// The stages a gate can ask for, in the order the workflow provides them.\nconst STAGES: [&str; 3] = [\"rust\", \"wasm\", \"web\"];\n\n/// One registered gate: a shell command plus the stage it needs.\n///\n/// Public because the unit suite compiles this script as a module\n/// (`tests/unit/ci-cd/mod.rs`) and reads the registry through the same parser\n/// CI runs, rather than growing a second one that could disagree with it.\n#[derive(Debug, Default, Clone, PartialEq, Eq)]\npub struct Gate {\n    pub name: String,\n    pub stage: String,\n    pub description: String,\n    pub run: String,\n    pub env: Vec<(String, String)>,\n    /// Shard the gate was read from, for error messages.\n    pub source: String,\n}\n\nfn unquote(value: &str) -> String {\n    let trimmed = value.trim();\n    trimmed\n        .strip_prefix('\"')\n        .and_then(|rest| rest.strip_suffix('\"'))\n        .unwrap_or(trimmed)\n        .to_string()\n}\n\nfn indent_of(line: &str) -> usize {\n    line.len() - line.trim_start().len()\n}\n\n/// Read one shard. A shard holds exactly one gate, which is what makes adding a\n/// gate a whole-file addition instead of an edit to a shared list.\nfn parse_gate(source: &str, shard: &str) -> Result<Gate, String> {\n    let mut gate = Gate {\n        source: shard.to_string(),\n        ..Gate::default()\n    };\n    for line in source.lines() {\n        if line.trim().is_empty() || line.trim_start().starts_with('#') {\n            continue;\n        }\n        let trimmed = line.trim();\n        let (key, value) = match trimmed.split_once(' ') {\n            Some((key, value)) => (key, value.trim()),\n            None => (trimmed, \"\"),\n        };\n        match (indent_of(line), key) {\n            (0, \"ci_gate\") => gate.name = unquote(value),\n            (2, \"stage\") => gate.stage = unquote(value),\n            (2, \"description\") => gate.description = unquote(value),\n            (2, \"run\") => gate.run = unquote(value),\n            (2, \"env\") => {\n                let (name, literal) = value\n                    .split_once(' ')\n                    .ok_or_else(|| format!(\"{shard}: `env` needs a name and a value\"))?;\n                gate.env.push((name.trim().to_string(), unquote(literal)));\n            }\n            _ => {}\n        }\n    }\n    if gate.name.is_empty() {\n        return Err(format!(\"{shard}: no `ci_gate` name\"));\n    }\n    if gate.run.is_empty() {\n        return Err(format!(\"{shard}: gate `{}` runs nothing\", gate.name));\n    }\n    if gate.description.is_empty() {\n        return Err(format!(\n            \"{shard}: gate `{}` has no description; the workflow log is the only place \\\n             a reader learns what a failing gate was protecting\",\n            gate.name\n        ));\n    }\n    if !STAGES.contains(&gate.stage.as_str()) {\n        return Err(format!(\n            \"{shard}: gate `{}` asks for stage `{}`; the workflow provides {}\",\n            gate.name,\n            gate.stage,\n            STAGES.join(\", \")\n        ));\n    }\n    Ok(gate)\n}\n\n/// Every shard in the registry, in file-name order.\npub fn load_registry(root: &Path) -> Result<Vec<Gate>, String> {\n    let dir = root.join(REGISTRY);\n    let mut shards: Vec<PathBuf> = fs::read_dir(&dir)\n        .map_err(|error| format!(\"{}: {error}\", dir.display()))?\n        .filter_map(std::result::Result::ok)\n        .map(|entry| entry.path())\n        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some(\"lino\"))\n        .collect();\n    shards.sort();\n\n    let mut gates = Vec::new();\n    let mut names: BTreeSet<String> = BTreeSet::new();\n    for shard in shards {\n        let label = shard\n            .strip_prefix(root)\n            .unwrap_or(&shard)\n            .to_string_lossy()\n            .to_string();\n        let source = fs::read_to_string(&shard).map_err(|error| format!(\"{label}: {error}\"))?;\n        let gate = parse_gate(&source, &label)?;\n        let expected = format!(\"{REGISTRY}/{}.lino\", gate.name.replace('_', \"-\"));\n        if label != expected {\n            return Err(format!(\n                \"{label}: gate `{}` belongs in `{expected}`. Naming the shard after the gate \\\n                 is what stops two branches from claiming the same file\",\n                gate.name\n            ));\n        }\n        if !names.insert(gate.name.clone()) {\n            return Err(format!(\"{label}: gate `{}` is registered twice\", gate.name));\n        }\n        gates.push(gate);\n    }\n    if gates.is_empty() {\n        return Err(format!(\"{REGISTRY}/ registers no gates\"));\n    }\n    Ok(gates)\n}\n\n/// The body of one job in the workflow, by its two-space-indented name.\n///\n/// Only the `lint` job is a gate list. The release jobs each run one or two\n/// checks whose results feed a job output or a conditional, so they are steps\n/// with logic in them, not entries in a list, and the ledger does not show them\n/// growing.\nfn job_body<'a>(workflow: &'a str, job: &str) -> &'a str {\n    let header = format!(\"\\n  {job}:\\n\");\n    let Some(start) = workflow.find(&header).map(|index| index + header.len()) else {\n        return \"\";\n    };\n    let rest = &workflow[start..];\n    let end = rest\n        .match_indices(\"\\n  \")\n        .find(|(index, _)| {\n            let after = &rest[index + 3..];\n            after\n                .chars()\n                .next()\n                .is_some_and(|character| character.is_ascii_alphabetic())\n                && after\n                    .lines()\n                    .next()\n                    .is_some_and(|line| line.trim_end().ends_with(':'))\n        })\n        .map_or(rest.len(), |(index, _)| index);\n    &rest[..end]\n}\n\n/// Gate commands the lint job still runs inline, bypassing the registry.\n///\n/// This is the check that keeps the append point closed: without it the list\n/// would grow back one convenient step at a time.\nfn inline_gate_steps(workflow: &str) -> Vec<String> {\n    job_body(workflow, \"lint\")\n        .lines()\n        .map(str::trim)\n        .filter(|line| {\n            let Some(command) = line.strip_prefix(\"run: \") else {\n                return false;\n            };\n            command.starts_with(\"rust-script scripts/check-\")\n                || command.starts_with(\"rust-script --test scripts/check-\")\n                || command.starts_with(\"npm run --prefix tests/e2e check:\")\n        })\n        .map(str::to_string)\n        .collect()\n}\n\n/// Stages the workflow actually invokes.\nfn invoked_stages(workflow: &str) -> BTreeSet<String> {\n    let mut stages = BTreeSet::new();\n    for line in workflow.lines() {\n        if let Some(rest) = line.trim().split_once(\"run-ci-gates.rs --stage \") {\n            stages.insert(rest.1.split_whitespace().next().unwrap_or(\"\").to_string());\n        }\n    }\n    stages\n}\n\nfn registry_problems(gates: &[Gate], workflow: &str) -> Vec<String> {\n    let mut problems = Vec::new();\n    for step in inline_gate_steps(workflow) {\n        problems.push(format!(\n            \"{WORKFLOW} runs a gate inline: `{step}`. Add a shard under {REGISTRY}/ instead, \\\n             so the next branch that adds a gate does not touch this file\"\n        ));\n    }\n    let invoked = invoked_stages(workflow);\n    // A set, so a stage with several gates is reported once and the problems\n    // come out in a stable order however the shards happened to be read.\n    let registered: BTreeSet<&str> = gates.iter().map(|gate| gate.stage.as_str()).collect();\n    for stage in &registered {\n        if !invoked.contains(*stage) {\n            problems.push(format!(\n                \"stage `{stage}` has registered gates but {WORKFLOW} never runs it\"\n            ));\n        }\n    }\n    problems\n}\n\n/// One gate rendered as the workflow step it replaced.\nfn gate_step(gate: &Gate) -> String {\n    let mut step = format!(\"      - name: {}\\n\", gate.name);\n    if !gate.env.is_empty() {\n        step.push_str(\"        env:\\n\");\n        for (name, value) in &gate.env {\n            writeln!(step, \"          {name}: {value}\").expect(\"writing to a String never fails\");\n        }\n    }\n    writeln!(step, \"        run: {}\", gate.run).expect(\"writing to a String never fails\");\n    step\n}\n\n/// The whole command surface CI executes, workflow and registry as one text.\n///\n/// Moving the gates out of `release.yml` broke every test that asked \"does CI\n/// run this?\" by searching the workflow for a command. The question stayed\n/// right; only the answer moved. This splices each stage's registered gates\n/// back in at the step that runs them, so those tests keep asking it against\n/// the whole surface -- and because the gates land where CI reaches them,\n/// position in this text still means position in the run, which is what the\n/// ordering assertions depend on.\npub fn workflow_surface(workflow: &str, gates: &[Gate]) -> String {\n    let mut surface = workflow.to_string();\n    for stage in STAGES {\n        let marker = format!(\"run: rust-script scripts/run-ci-gates.rs --stage {stage}\");\n        let Some(index) = surface.find(&marker) else {\n            continue;\n        };\n        let steps: String = gates\n            .iter()\n            .filter(|gate| gate.stage == stage)\n            .map(gate_step)\n            .collect();\n        if steps.is_empty() {\n            continue;\n        }\n        surface.insert_str(index + marker.len(), &format!(\"\\n{}\", steps.trim_end()));\n    }\n    surface\n}\n\n#[cfg(not(test))]\nfn repository_root() -> PathBuf {\n    let output = Command::new(\"git\")\n        .args([\"rev-parse\", \"--show-toplevel\"])\n        .output()\n        .expect(\"git rev-parse\");\n    PathBuf::from(String::from_utf8_lossy(&output.stdout).trim())\n}\n\n#[cfg(not(test))]\nfn run_stage(root: &Path, gates: &[Gate], stage: &str) -> i32 {\n    let selected: Vec<&Gate> = gates.iter().filter(|gate| gate.stage == stage).collect();\n    if selected.is_empty() {\n        println!(\"No gates registered for stage `{stage}`.\");\n        return 0;\n    }\n    println!(\"Running {} gate(s) for stage `{stage}`.\\n\", selected.len());\n\n    let mut failed: Vec<&str> = Vec::new();\n    for gate in selected {\n        println!(\"::group::{} — {}\", gate.name, gate.description);\n        println!(\"$ {}\", gate.run);\n        let mut command = Command::new(\"bash\");\n        command.arg(\"-o\").arg(\"pipefail\").arg(\"-c\").arg(&gate.run);\n        command.current_dir(root);\n        for (name, value) in &gate.env {\n            command.env(name, value);\n        }\n        let status = command.status();\n        println!(\"::endgroup::\");\n        match status {\n            Ok(status) if status.success() => {}\n            Ok(status) => {\n                println!(\n                    \"::error::gate `{}` failed ({status}); see {}\",\n                    gate.name, gate.source\n                );\n                failed.push(&gate.name);\n            }\n            Err(error) => {\n                println!(\"::error::gate `{}` could not start: {error}\", gate.name);\n                failed.push(&gate.name);\n            }\n        }\n    }\n\n    if failed.is_empty() {\n        println!(\"\\nEvery gate in stage `{stage}` passed.\");\n        return 0;\n    }\n    // Every gate runs even after one fails: a run that reports all the broken\n    // gates at once saves the round trips a fail-fast list would cost.\n    println!(\n        \"\\n::error::{} gate(s) failed in stage `{stage}`: {}\",\n        failed.len(),\n        failed.join(\", \")\n    );\n    1\n}\n\n#[cfg(not(test))]\nfn main() {\n    let root = repository_root();\n    let arguments: Vec<String> = std::env::args().skip(1).collect();\n\n    let gates = match load_registry(&root) {\n        Ok(gates) => gates,\n        Err(problem) => {\n            println!(\"::error::{problem}\");\n            std::process::exit(1);\n        }\n    };\n    let workflow = fs::read_to_string(root.join(WORKFLOW)).unwrap_or_default();\n\n    if arguments.iter().any(|argument| argument == \"--list\") {\n        for stage in STAGES {\n            println!(\"stage {stage}:\");\n            for gate in gates.iter().filter(|gate| gate.stage == stage) {\n                println!(\"  {:<40} {}\", gate.name, gate.description);\n            }\n        }\n        return;\n    }\n\n    let problems = registry_problems(&gates, &workflow);\n    for problem in &problems {\n        println!(\"::error::{problem}\");\n    }\n    if !problems.is_empty() {\n        std::process::exit(1);\n    }\n\n    if arguments.iter().any(|argument| argument == \"--check\") {\n        println!(\n            \"{} gate(s) registered across {} stage(s); the workflow runs every stage.\",\n            gates.len(),\n            STAGES.len()\n        );\n        return;\n    }\n\n    let Some(stage) = arguments\n        .iter()\n        .position(|argument| argument == \"--stage\")\n        .and_then(|index| arguments.get(index + 1))\n    else {\n        println!(\n            \"::error::pass --stage <{}>, --list or --check\",\n            STAGES.join(\"|\")\n        );\n        std::process::exit(2);\n    };\n    std::process::exit(run_stage(&root, &gates, stage));\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    const SHARD: &str = \"ci_gate check_formatting\\n  stage rust\\n  \\\n        description \\\"rustfmt owns the layout of every Rust file.\\\"\\n  \\\n        run \\\"cargo fmt --all -- --check\\\"\\n\";\n\n    fn gate() -> Gate {\n        parse_gate(SHARD, \"data/meta/ci-gates/check-formatting.lino\").unwrap()\n    }\n\n    #[test]\n    fn a_shard_parses_into_one_gate() {\n        let gate = gate();\n        assert_eq!(gate.name, \"check_formatting\");\n        assert_eq!(gate.stage, \"rust\");\n        assert_eq!(gate.run, \"cargo fmt --all -- --check\");\n        assert!(gate.env.is_empty());\n    }\n\n    #[test]\n    fn per_gate_environment_is_read() {\n        let source = format!(\"{SHARD}  env RUSTDOCFLAGS \\\"-D warnings\\\"\\n  env DOCS_RS \\\"1\\\"\\n\");\n        let gate = parse_gate(&source, \"data/meta/ci-gates/check-formatting.lino\").unwrap();\n        assert_eq!(\n            gate.env,\n            [\n                (\"RUSTDOCFLAGS\".to_string(), \"-D warnings\".to_string()),\n                (\"DOCS_RS\".to_string(), \"1\".to_string()),\n            ]\n        );\n    }\n\n    #[test]\n    fn a_gate_without_a_description_is_rejected() {\n        let source = \"ci_gate check_formatting\\n  stage rust\\n  run \\\"cargo fmt\\\"\\n\";\n        let error = parse_gate(source, \"shard.lino\").unwrap_err();\n        assert!(error.contains(\"no description\"), \"{error}\");\n    }\n\n    #[test]\n    fn an_unknown_stage_is_rejected() {\n        let source = SHARD.replace(\"stage rust\", \"stage everything\");\n        let error = parse_gate(&source, \"shard.lino\").unwrap_err();\n        assert!(error.contains(\"the workflow provides\"), \"{error}\");\n    }\n\n    /// A workflow whose lint job contains `steps`, plus a later release job.\n    fn workflow(lint_steps: &str, release_steps: &str) -> String {\n        format!(\n            \"jobs:\\n  lint:\\n    steps:\\n{lint_steps}  version-check:\\n    steps:\\n{release_steps}\"\n        )\n    }\n\n    #[test]\n    fn a_gate_the_workflow_still_runs_inline_fails() {\n        // The whole point of the registry: if a branch can append one more\n        // `run:` line to the lint job, the append-only list grows straight back.\n        let source = workflow(\n            \"      - name: Check something\\n        \\\n             run: rust-script scripts/check-something.rs\\n      \\\n             - run: rust-script scripts/run-ci-gates.rs --stage rust\\n\",\n            \"\",\n        );\n        let problems = registry_problems(&[gate()], &source);\n        assert!(\n            problems\n                .iter()\n                .any(|problem| problem.contains(\"runs a gate inline\")),\n            \"{problems:?}\"\n        );\n    }\n\n    #[test]\n    fn a_check_outside_the_lint_job_stays_inline() {\n        // The release jobs run one check each, guarding a job output or a\n        // conditional. They are steps with logic, not a list, so the registry\n        // does not claim them and must not report them.\n        let source = workflow(\n            \"      - run: rust-script scripts/run-ci-gates.rs --stage rust\\n\",\n            \"      - run: rust-script scripts/check-version-modification.rs\\n\",\n        );\n        assert!(registry_problems(&[gate()], &source).is_empty());\n    }\n\n    #[test]\n    fn a_stage_the_workflow_never_runs_fails() {\n        let problems = registry_problems(&[gate()], &workflow(\"      - run: echo hello\\n\", \"\"));\n        assert!(\n            problems\n                .iter()\n                .any(|problem| problem.contains(\"never runs it\")),\n            \"{problems:?}\"\n        );\n    }\n\n    #[test]\n    fn a_registry_the_workflow_fully_runs_has_no_problems() {\n        let source = workflow(\n            \"      - run: rust-script scripts/run-ci-gates.rs --stage rust\\n\",\n            \"\",\n        );\n        assert!(registry_problems(&[gate()], &source).is_empty());\n    }\n\n    #[test]\n    fn the_surface_places_a_gate_where_its_stage_runs() {\n        // The tests that grep for a command also compare positions -- \"the\n        // documentation build runs before packaging\". Splicing a gate in at its\n        // stage step keeps those comparisons meaningful; appending it to the end\n        // of the file would silently invert every one of them.\n        let source = workflow(\n            \"      - run: rust-script scripts/run-ci-gates.rs --stage rust\\n\",\n            \"      - run: cargo package\\n\",\n        );\n        let surface = workflow_surface(&source, &[gate()]);\n\n        assert!(\n            surface.contains(\"run: cargo fmt --all -- --check\"),\n            \"{surface}\"\n        );\n        assert!(\n            surface.find(\"cargo fmt\").unwrap() < surface.find(\"cargo package\").unwrap(),\n            \"{surface}\"\n        );\n    }\n\n    #[test]\n    fn the_surface_carries_each_gates_environment() {\n        let mut with_env = gate();\n        with_env.env = vec![(\"RUSTDOCFLAGS\".to_string(), \"-D warnings\".to_string())];\n        let source = workflow(\n            \"      - run: rust-script scripts/run-ci-gates.rs --stage rust\\n\",\n            \"\",\n        );\n\n        let surface = workflow_surface(&source, &[with_env]);\n\n        assert!(surface.contains(\"RUSTDOCFLAGS: -D warnings\"), \"{surface}\");\n    }\n\n    #[test]\n    fn a_stage_with_no_registered_gates_leaves_the_workflow_alone() {\n        let source = workflow(\n            \"      - run: rust-script scripts/run-ci-gates.rs --stage web\\n\",\n            \"\",\n        );\n\n        assert_eq!(workflow_surface(&source, &[gate()]), source);\n    }\n\n    #[test]\n    fn the_shard_name_must_match_the_gate_name() {\n        let root = std::env::temp_dir().join(\"issue-991-ci-gate-registry\");\n        let dir = root.join(REGISTRY);\n        let _ = fs::remove_dir_all(&root);\n        fs::create_dir_all(&dir).unwrap();\n        fs::write(dir.join(\"formatting.lino\"), SHARD).unwrap();\n        let error = load_registry(&root).unwrap_err();\n        assert!(error.contains(\"belongs in\"), \"{error}\");\n        fs::rename(\n            dir.join(\"formatting.lino\"),\n            dir.join(\"check-formatting.lino\"),\n        )\n        .unwrap();\n        assert_eq!(load_registry(&root).unwrap().len(), 1);\n        let _ = fs::remove_dir_all(&root);\n    }\n}\n", "/tmp/gh-issue-solver-1786781432917/scripts")
+[2026-08-15T11:07:34Z INFO  rust_script] prelude_items: []
+[2026-08-15T11:07:34Z INFO  rust_script] id: "f72f48563a86d12a96ee1782"
+[2026-08-15T11:07:34Z INFO  rust_script] pkg_path: "/home/box/.cache/rust-script/projects/f72f48563a86d12a96ee1782"
+[2026-08-15T11:07:34Z INFO  rust_script] using_cache: true
+[2026-08-15T11:07:34Z INFO  rust_script::manifest] part_mani: {"dependencies": Table({})}
+[2026-08-15T11:07:34Z INFO  rust_script::manifest] source: None
+[2026-08-15T11:07:34Z INFO  rust_script::manifest] manifest: [[bin]]
+    name = "run-ci-gates_f72f48563a86d12a96ee1782"
+    path = "/tmp/gh-issue-solver-1786781432917/scripts/run-ci-gates.rs"
+    
+    [dependencies]
+    
+    [package]
+    authors = ["Anonymous"]
+    edition = "2021"
+    name = "run-ci-gates_f72f48563a86d12a96ee1782"
+    version = "0.1.0"
+    
+    [profile.release]
+    strip = true
+    
+[2026-08-15T11:07:34Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/f72f48563a86d12a96ee1782", script_path: "/tmp/gh-issue-solver-1786781432917/scripts/run-ci-gates.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"run-ci-gates_f72f48563a86d12a96ee1782\"\npath = \"/tmp/gh-issue-solver-1786781432917/scripts/run-ci-gates.rs\"\n\n[dependencies]\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"run-ci-gates_f72f48563a86d12a96ee1782\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "run-ci-gates_f72f48563a86d12a96ee1782", original_script_path: Some("scripts/run-ci-gates.rs") }
+[2026-08-15T11:07:34Z INFO  rust_script] creating pkg dir...
+[2026-08-15T11:07:34Z INFO  rust_script] generating Cargo package...
+[2026-08-15T11:07:34Z DEBUG rust_script] overwrite_file("/home/box/.cache/rust-script/projects/f72f48563a86d12a96ee1782/Cargo.toml", _)
+[2026-08-15T11:07:34Z DEBUG rust_script] Equal content
+[2026-08-15T11:07:34Z INFO  rust_script] disarming pkg dir cleanup...
+[2026-08-15T11:07:34Z DEBUG rust_script] Keeping old binary
+Running 11 gate(s) for stage `web`.
+
+::group::check_conversational_variation_floor — Every conversational test case holds at least five wording variations in every advertised language.
+$ npm run --prefix tests/e2e check:variation-floor
+
+> formal-ai-e2e@1.0.0 check:variation-floor
+> node scripts/check-conversational-variation-floor.mjs
+
+Conversational wording variations per case (floor: 5 per language)
+  case                  en  ru  hi  zh
+  greeting               9   8   6   7
+  wellbeing              5   6   6   6
+  farewell               8   7   5   5
+  courtesy_response      6   5   5   5
+  identity               6   6   6   6
+  capabilities           6   5   5   5
+  test_status            7   6   5   5
+  assistant_free_time    5   5   5   5
+  assistant_name         5   5   5   5
+  calculation            6   5   5   5
+
+Conversational variation floor OK: 10 cases x 4 languages, 228 verified prompts, every group at or above 5.
+::endgroup::
+::group::check_desktop_library — The desktop library tests pass.
+$ bash scripts/run-desktop-lib-tests.sh
+Running 13 test file(s)
+TAP version 13
+# Subtest: agent NDJSON events map onto the existing chat answer contract
+ok 1 - agent NDJSON events map onto the existing chat answer contract
+  ---
+  duration_ms: 5.724158
+  ...
+# Subtest: Agent lifecycle logs stay out of chat while nested text parts render
+ok 2 - Agent lifecycle logs stay out of chat while nested text parts render
+  ---
+  duration_ms: 0.703393
+  ...
+# Subtest: the default desktop agent provider is the hermetic in-process provider
+ok 3 - the default desktop agent provider is the hermetic in-process provider
+  ---
+  duration_ms: 0.521002
+  ...
+# Subtest: in-process provider executes a granted read-only shell command through the local gate
+ok 4 - in-process provider executes a granted read-only shell command through the local gate
+  ---
+  duration_ms: 5.34459
+  ...
+# Subtest: in-process provider drives the existing formal-ai agentic loop for tasks
+ok 5 - in-process provider drives the existing formal-ai agentic loop for tasks
+  ---
+  duration_ms: 2.581355
+  ...
+# Subtest: commander provider streams the org-owned agent backend through the agent-commander JS API
+ok 6 - commander provider streams the org-owned agent backend through the agent-commander JS API
+  ---
+  duration_ms: 2.467254
+  ...
+# Subtest: commander controller options point Codex and Claude at the same local server
+ok 7 - commander controller options point Codex and Claude at the same local server
+  ---
+  duration_ms: 0.79836
+  ...
+# Subtest: commander provider maps non-read-only agent mode to approve-each
+ok 8 - commander provider maps non-read-only agent mode to approve-each
+  ---
+  duration_ms: 0.933692
+  ...
+# Subtest: commander provider maps read-only mode for all backends to read-only
+ok 9 - commander provider maps read-only mode for all backends to read-only
+  ---
+  duration_ms: 0.66499
+  ...
+# Subtest: commander provider maps desktop grants to coarse execution flags
+ok 10 - commander provider maps desktop grants to coarse execution flags
+  ---
+  duration_ms: 0.670592
+  ...
+# Subtest: read-only shell command detection covers the first terminal journey
+ok 11 - read-only shell command detection covers the first terminal journey
+  ---
+  duration_ms: 1.140267
+  ...
+# Subtest: desktop code does not spawn host agent, claude, or codex binaries directly
+ok 12 - desktop code does not spawn host agent, claude, or codex binaries directly
+  ---
+  duration_ms: 20.721295
+  ...
+# Subtest: auto-update controller exposes packaged app version and disables autoDownload
+ok 13 - auto-update controller exposes packaged app version and disables autoDownload
+  ---
+  duration_ms: 5.042267
+  ...
+# Subtest: checkForUpdates records an available update for the renderer notification
+ok 14 - checkForUpdates records an available update for the renderer notification
+  ---
+  duration_ms: 2.333873
+  ...
+# Subtest: installUpdate downloads the available release and calls quitAndInstall
+ok 15 - installUpdate downloads the available release and calls quitAndInstall
+  ---
+  duration_ms: 1.305044
+  ...
+# Subtest: auto-update is disabled for unpackaged development runs
+ok 16 - auto-update is disabled for unpackaged development runs
+  ---
+  duration_ms: 4.35299
+  ...
+# Subtest: pinAppName pins the app name to the stable productName-independent value
+ok 17 - pinAppName pins the app name to the stable productName-independent value
+  ---
+  duration_ms: 3.809927
+  ...
+# Subtest: legacy candidates include the pre-pin default name plus known historical names
+ok 18 - legacy candidates include the pre-pin default name plus known historical names
+  ---
+  duration_ms: 0.926278
+  ...
+# Subtest: fresh install with no legacy profile copies nothing and stamps the version
+ok 19 - fresh install with no legacy profile copies nothing and stamps the version
+  ---
+  duration_ms: 1.891668
+  ...
+# Subtest: upgrading user: legacy conversations are copied into the pinned profile and the legacy copy is preserved
+ok 20 - upgrading user: legacy conversations are copied into the pinned profile and the legacy copy is preserved
+  ---
+  duration_ms: 2.002606
+  ...
+# Subtest: never overwrites a pinned profile that already holds data
+ok 21 - never overwrites a pinned profile that already holds data
+  ---
+  duration_ms: 0.761901
+  ...
+# Subtest: per-subtree guard: only the missing subtrees are copied, present ones are left intact
+ok 22 - per-subtree guard: only the missing subtrees are copied, present ones are left intact
+  ---
+  duration_ms: 1.82298
+  ...
+# Subtest: idempotent: a profile already stamped at the current version is left untouched
+ok 23 - idempotent: a profile already stamped at the current version is left untouched
+  ---
+  duration_ms: 0.606552
+  ...
+# Subtest: v2 copies the authentication state Chromium keeps outside the canonical subtrees
+ok 24 - v2 copies the authentication state Chromium keeps outside the canonical subtrees
+  ---
+  duration_ms: 4.321842
+  ...
+# Subtest: derived caches are deliberately excluded from the copied set
+ok 25 - derived caches are deliberately excluded from the copied set
+  ---
+  duration_ms: 1.171636
+  ...
+# Subtest: v1 → v2 top-up: an already-migrated profile still receives the newly covered subtrees
+ok 26 - v1 → v2 top-up: an already-migrated profile still receives the newly covered subtrees
+  ---
+  duration_ms: 1.550784
+  ...
+# Subtest: subtreesAddedAfter reports only the entries a later version introduced
+ok 27 - subtreesAddedAfter reports only the entries a later version introduced
+  ---
+  duration_ms: 0.800634
+  ...
+# Subtest: replay: force re-runs the copy for a stamped profile and fills only the gaps
+ok 28 - replay: force re-runs the copy for a stamped profile and fills only the gaps
+  ---
+  duration_ms: 0.9701
+  ...
+# Subtest: replay is safe when there is nothing left to copy
+ok 29 - replay is safe when there is nothing left to copy
+  ---
+  duration_ms: 0.464096
+  ...
+# Subtest: migrates from a non-standard pre-pin name captured via app.getName()
+ok 30 - migrates from a non-standard pre-pin name captured via app.getName()
+  ---
+  duration_ms: 0.728989
+  ...
+# Subtest: candidateDockerPaths puts absolute install locations before the bare PATH fallback (unix)
+ok 31 - candidateDockerPaths puts absolute install locations before the bare PATH fallback (unix)
+  ---
+  duration_ms: 2.529298
+  ...
+# Subtest: candidateDockerPaths uses Docker Desktop's Windows install path
+ok 32 - candidateDockerPaths uses Docker Desktop's Windows install path
+  ---
+  duration_ms: 0.329186
+  ...
+# Subtest: FORMAL_AI_DOCKER_BIN override is probed first
+ok 33 - FORMAL_AI_DOCKER_BIN override is probed first
+  ---
+  duration_ms: 0.278689
+  ...
+# Subtest: detects an installed+running Docker even when PATH does not contain docker (GUI launch)
+ok 34 - detects an installed+running Docker even when PATH does not contain docker (GUI launch)
+  ---
+  duration_ms: 6.63644
+  ...
+# Subtest: reports unavailable when the CLI exists but the daemon is down
+ok 35 - reports unavailable when the CLI exists but the daemon is down
+  ---
+  duration_ms: 0.413952
+  ...
+# Subtest: re-probes after the failure TTL so a later-started daemon becomes available
+ok 36 - re-probes after the failure TTL so a later-started daemon becomes available
+  ---
+  duration_ms: 0.703542
+  ...
+# Subtest: caches a positive result within the ok TTL (does not spawn on every call)
+ok 37 - caches a positive result within the ok TTL (does not spawn on every call)
+  ---
+  duration_ms: 0.384476
+  ...
+# Subtest: falls back to the bare PATH lookup when no absolute install location exists
+ok 38 - falls back to the bare PATH lookup when no absolute install location exists
+  ---
+  duration_ms: 0.458616
+  ...
+# Subtest: invalidate() forces a fresh binary resolution and probe
+ok 39 - invalidate() forces a fresh binary resolution and probe
+  ---
+  duration_ms: 1.305054
+  ...
+# Subtest: desktop dreaming is enabled by default and accepts explicit opt-out
+ok 40 - desktop dreaming is enabled by default and accepts explicit opt-out
+  ---
+  duration_ms: 2.294321
+  ...
+# Subtest: memory dream candidates reuse desktop binary resolution and stay plan-only by default
+ok 41 - memory dream candidates reuse desktop binary resolution and stay plan-only by default
+  ---
+  duration_ms: 2.008076
+  ...
+# Subtest: low priority wrapping uses nice on Unix-like platforms
+ok 42 - low priority wrapping uses nice on Unix-like platforms
+  ---
+  duration_ms: 1.70939
+  ...
+# Subtest: runDreamingOnce captures successful plan output
+ok 43 - runDreamingOnce captures successful plan output
+  ---
+  duration_ms: 2.347759
+  ...
+# Subtest: scheduler yields while foreground work is active
+ok 44 - scheduler yields while foreground work is active
+  ---
+  duration_ms: 0.719504
+  ...
+# Subtest: a running dreaming child yields when foreground work arrives
+ok 45 - a running dreaming child yields when foreground work arrives
+  ---
+  duration_ms: 0.761881
+  ...
+# Subtest: a spawned dreaming child is dropped to PRIORITY_LOW (issue \#540 §6)
+ok 46 - a spawned dreaming child is dropped to PRIORITY_LOW (issue \#540 §6)
+  ---
+  duration_ms: 1.033688
+  ...
+# Subtest: storage pressure asks consent, applies it, and surfaces migration
+ok 47 - storage pressure asks consent, applies it, and surfaces migration
+  ---
+  duration_ms: 0.984317
+  ...
+# Subtest: auto-apply keeps an explicitly configured backup path
+ok 48 - auto-apply keeps an explicitly configured backup path
+  ---
+  duration_ms: 1.036874
+  ...
+# Subtest: declined automatic cleanup is persisted without applying removals
+ok 49 - declined automatic cleanup is persisted without applying removals
+  ---
+  duration_ms: 0.817486
+  ...
+# Subtest: scheduler starts with an unrefed low-priority timer
+ok 50 - scheduler starts with an unrefed low-priority timer
+  ---
+  duration_ms: 0.663757
+  ...
+# Subtest: detects only installed passthrough engines and always offers out-of-box
+ok 51 - detects only installed passthrough engines and always offers out-of-box
+  ---
+  duration_ms: 3.470364
+  ...
+# Subtest: agent is the default when installed and out-of-box is the fallback
+ok 52 - agent is the default when installed and out-of-box is the fallback
+  ---
+  duration_ms: 0.460398
+  ...
+# Subtest: an available saved choice wins and an unavailable one is ignored
+ok 53 - an available saved choice wins and an unavailable one is ignored
+  ---
+  duration_ms: 0.409354
+  ...
+# Subtest: persists an explicit override and restores it on the next launch
+ok 54 - persists an explicit override and restores it on the next launch
+  ---
+  duration_ms: 1.111733
+  ...
+# Subtest: desktop shared path honors overrides and platform defaults
+ok 55 - desktop shared path honors overrides and platform defaults
+  ---
+  duration_ms: 3.729026
+  ...
+# Subtest: desktop and VS Code child servers receive the shared host memory file
+ok 56 - desktop and VS Code child servers receive the shared host memory file
+  ---
+  duration_ms: 0.642398
+  ...
+# Subtest: all desktop Docker services share one memory mount and container path
+ok 57 - all desktop Docker services share one memory mount and container path
+  ---
+  duration_ms: 0.669549
+  ...
+# Subtest: passthrough server candidates opt into agent protocol handling
+ok 58 - passthrough server candidates opt into agent protocol handling
+  ---
+  duration_ms: 2.80357
+  ...
+# Subtest: ensure starts the local OpenAI-compatible server and exposes provider apiBase
+ok 59 - ensure starts the local OpenAI-compatible server and exposes provider apiBase
+  ---
+  duration_ms: 2.370663
+  ...
+# Subtest: ensure reuses an already healthy server instead of starting twice
+ok 60 - ensure reuses an already healthy server instead of starting twice
+  ---
+  duration_ms: 0.726214
+  ...
+# Subtest: ensure restarts when the remembered server is no longer healthy
+ok 61 - ensure restarts when the remembered server is no longer healthy
+  ---
+  duration_ms: 0.554986
+  ...
+# Subtest: concurrent ensure calls share one start operation
+ok 62 - concurrent ensure calls share one start operation
+  ---
+  duration_ms: 21.080756
+  ...
+# Subtest: ensure records startup failures without losing the reserved apiBase
+ok 63 - ensure records startup failures without losing the reserved apiBase
+  ---
+  duration_ms: 1.148193
+  ...
+# Subtest: server opt-in accepts truthy values only
+ok 64 - server opt-in accepts truthy values only
+  ---
+  duration_ms: 0.574982
+  ...
+# Subtest: child server environment is loopback-only and scrubs API bearer tokens
+ok 65 - child server environment is loopback-only and scrubs API bearer tokens
+  ---
+  duration_ms: 0.539487
+  ...
+# Subtest: eventIdsFromLino reads ids in order from a demo_memory document
+ok 66 - eventIdsFromLino reads ids in order from a demo_memory document
+  ---
+  duration_ms: 2.932148
+  ...
+# Subtest: memoryUrl joins base and path without doubling slashes
+ok 67 - memoryUrl joins base and path without doubling slashes
+  ---
+  duration_ms: 0.646416
+  ...
+# Subtest: pullSince requests the delta endpoint with the watermark
+ok 68 - pullSince requests the delta endpoint with the watermark
+  ---
+  duration_ms: 1.004854
+  ...
+# Subtest: push posts Links-Notation text to the import endpoint
+ok 69 - push posts Links-Notation text to the import endpoint
+  ---
+  duration_ms: 0.896421
+  ...
+# Subtest: createMemorySync advances the watermark as it pulls deltas
+ok 70 - createMemorySync advances the watermark as it pulls deltas
+  ---
+  duration_ms: 3.070338
+  ...
+# Subtest: pull surfaces a non-OK HTTP response as an error
+ok 71 - pull surfaces a non-OK HTTP response as an error
+  ---
+  duration_ms: 0.824209
+  ...
+# Subtest: browser runtime copies keep symbolic links verbatim
+ok 72 - browser runtime copies keep symbolic links verbatim
+  ---
+  duration_ms: 3.771356
+  ...
+# Subtest: verbatimSymlinks preserves relative framework aliases
+ok 73 - verbatimSymlinks preserves relative framework aliases
+  ---
+  duration_ms: 19.541482
+  ...
+# Subtest: resolveImage falls back to the GHCR default and honors the override
+ok 74 - resolveImage falls back to the GHCR default and honors the override
+  ---
+  duration_ms: 2.605651
+  ...
+# Subtest: resolveServerPort defaults to 8080 and accepts a valid override
+ok 75 - resolveServerPort defaults to 8080 and accepts a valid override
+  ---
+  duration_ms: 0.417197
+  ...
+# Subtest: serviceKeys exposes telegram, server, and agent environment services
+ok 76 - serviceKeys exposes telegram, server, and agent environment services
+  ---
+  duration_ms: 1.359607
+  ...
+# Subtest: telegram run args keep the default command and inject the token
+ok 77 - telegram run args keep the default command and inject the token
+  ---
+  duration_ms: 0.844876
+  ...
+# Subtest: server run args publish a loopback port and override the command to serve
+ok 78 - server run args publish a loopback port and override the command to serve
+  ---
+  duration_ms: 0.703101
+  ...
+# Subtest: agent environment run args keep an idle ready container with its own Docker volume
+ok 79 - agent environment run args keep an idle ready container with its own Docker volume
+  ---
+  duration_ms: 0.605219
+  ...
+# Subtest: describeService advertises a loopback URL for the server only
+ok 80 - describeService advertises a loopback URL for the server only
+  ---
+  duration_ms: 0.392843
+  ...
+# Subtest: statusAll reports running, stopped, and absent containers
+ok 81 - statusAll reports running, stopped, and absent containers
+  ---
+  duration_ms: 1.299595
+  ...
+# Subtest: status reports docker-unavailable without shelling out
+ok 82 - status reports docker-unavailable without shelling out
+  ---
+  duration_ms: 0.538044
+  ...
+# Subtest: start refuses the telegram bot when the token is missing
+ok 83 - start refuses the telegram bot when the token is missing
+  ---
+  duration_ms: 0.890501
+  ...
+# Subtest: start reaps a stale container then runs the telegram bot with the token
+ok 84 - start reaps a stale container then runs the telegram bot with the token
+  ---
+  duration_ms: 0.644994
+  ...
+# Subtest: start is idempotent when the container is already running
+ok 85 - start is idempotent when the container is already running
+  ---
+  duration_ms: 0.551238
+  ...
+# Subtest: start surfaces a docker run failure as an error with the reason
+ok 86 - start surfaces a docker run failure as an error with the reason
+  ---
+  duration_ms: 0.710756
+  ...
+# Subtest: installAgentEnvironment pulls, recreates, and health-checks the agent container
+ok 87 - installAgentEnvironment pulls, recreates, and health-checks the agent container
+  ---
+  duration_ms: 3.293915
+  ...
+# Subtest: installAgentEnvironment accepts an already-built local image when pull fails
+ok 88 - installAgentEnvironment accepts an already-built local image when pull fails
+  ---
+  duration_ms: 0.693904
+  ...
+# Subtest: installAgentEnvironment surfaces a health-check failure
+ok 89 - installAgentEnvironment surfaces a health-check failure
+  ---
+  duration_ms: 0.674288
+  ...
+# Subtest: stop stops and removes the container
+ok 90 - stop stops and removes the container
+  ---
+  duration_ms: 0.56883
+  ...
+# Subtest: stop treats an already-absent container as success
+ok 91 - stop treats an already-absent container as success
+  ---
+  duration_ms: 0.670832
+  ...
+# Subtest: createServiceControl rejects a missing runDocker dependency
+ok 92 - createServiceControl rejects a missing runDocker dependency
+  ---
+  duration_ms: 0.784884
+  ...
+# Subtest: unknown service keys raise a clear error
+ok 93 - unknown service keys raise a clear error
+  ---
+  duration_ms: 0.823306
+  ...
+# Subtest: default-deny: an ungranted write-capable tool is refused and nothing executes
+ok 94 - default-deny: an ungranted write-capable tool is refused and nothing executes
+  ---
+  duration_ms: 3.195331
+  ...
+# Subtest: default-deny: empty grants refuse every supported tool before side effects
+ok 95 - default-deny: empty grants refuse every supported tool before side effects
+  ---
+  duration_ms: 1.767607
+  ...
+# Subtest: specialized common file tools provide read-only inspection and granted edits
+ok 96 - specialized common file tools provide read-only inspection and granted edits
+  ---
+  duration_ms: 64.293737
+  ...
+# Subtest: web search and rendered fetch run with agent permission off
+ok 97 - web search and rendered fetch run with agent permission off
+  ---
+  duration_ms: 0.940053
+  ...
+# Subtest: common frontend aliases route by capability instead of tool name
+ok 98 - common frontend aliases route by capability instead of tool name
+  ---
+  duration_ms: 1.392477
+  ...
+# Subtest: permission-free http_fetch is served by the local process
+ok 99 - permission-free http_fetch is served by the local process
+  ---
+  duration_ms: 2.160611
+  ...
+# Subtest: an `all` grant opts every tool in at once
+ok 100 - an `all` grant opts every tool in at once
+  ---
+  duration_ms: 0.383064
+  ...
+# Subtest: a partial grant map only permits the named tool
+ok 101 - a partial grant map only permits the named tool
+  ---
+  duration_ms: 0.453175
+  ...
+# Subtest: with permission granted, shell runs on the host by default
+ok 102 - with permission granted, shell runs on the host by default
+  ---
+  duration_ms: 0.724582
+  ...
+# Subtest: with permission granted, code_exec runs inside the box-dind container with logs captured
+ok 103 - with permission granted, code_exec runs inside the box-dind container with logs captured
+  ---
+  duration_ms: 0.830859
+  ...
+# Subtest: shell can still opt into Docker isolation
+ok 104 - shell can still opt into Docker isolation
+  ---
+  duration_ms: 0.561688
+  ...
+# Subtest: code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+ok 105 - code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+  ---
+  duration_ms: 0.569072
+  ...
+# Subtest: read_local_file is confined to the allowed root
+ok 106 - read_local_file is confined to the allowed root
+  ---
+  duration_ms: 0.904858
+  ...
+# Subtest: read_local_file rejects a sibling directory that shares the root prefix
+ok 107 - read_local_file rejects a sibling directory that shares the root prefix
+  ---
+  duration_ms: 0.290001
+  ...
+# Subtest: unknown tools are rejected without executing
+ok 108 - unknown tools are rejected without executing
+  ---
+  duration_ms: 0.398814
+  ...
+# Subtest: computer-use calls require explicit verification context before effects
+ok 109 - computer-use calls require explicit verification context before effects
+  ---
+  duration_ms: 1.064025
+  ...
+# Subtest: computer-use postconditions fail when an adapter claims an effect without changing state
+ok 110 - computer-use postconditions fail when an adapter claims an effect without changing state
+  ---
+  duration_ms: 2.69645
+  ...
+# Subtest: computer-use paths are confined to an isolated plan workspace
+ok 111 - computer-use paths are confined to an isolated plan workspace
+  ---
+  duration_ms: 28.266119
+  ...
+# Subtest: computer-use archive entries cannot escape their extraction directory
+ok 112 - computer-use archive entries cannot escape their extraction directory
+  ---
+  duration_ms: 18.713599
+  ...
+# Subtest: computer-use primitives are permissioned, confirmed, isolated, and verified
+ok 113 - computer-use primitives are permissioned, confirmed, isolated, and verified
+  ---
+  duration_ms: 98.741828
+  ...
+# Subtest: VSIX_ASSET_PATTERN matches the packaged extension filename only
+ok 114 - VSIX_ASSET_PATTERN matches the packaged extension filename only
+  ---
+  duration_ms: 6.785898
+  ...
+# Subtest: LATEST_RELEASE_API targets the canonical repo
+ok 115 - LATEST_RELEASE_API targets the canonical repo
+  ---
+  duration_ms: 0.686901
+  ...
+# Subtest: resolveCliCandidates honors the override first, then the known editors
+ok 116 - resolveCliCandidates honors the override first, then the known editors
+  ---
+  duration_ms: 2.314427
+  ...
+# Subtest: selectVsixAsset picks the .vsix and ignores checksum/other assets
+ok 117 - selectVsixAsset picks the .vsix and ignores checksum/other assets
+  ---
+  duration_ms: 0.726685
+  ...
+# Subtest: selectVsixAsset returns null when no extension is published
+ok 118 - selectVsixAsset returns null when no extension is published
+  ---
+  duration_ms: 0.318244
+  ...
+# Subtest: the factory requires its side-effecting dependencies
+ok 119 - the factory requires its side-effecting dependencies
+  ---
+  duration_ms: 0.873961
+  ...
+# Subtest: detectCli returns the first editor that answers --version
+ok 120 - detectCli returns the first editor that answers --version
+  ---
+  duration_ms: 1.331324
+  ...
+# Subtest: detectCli returns null when no VS Code CLI is present
+ok 121 - detectCli returns null when no VS Code CLI is present
+  ---
+  duration_ms: 0.621488
+  ...
+# Subtest: install: detect → resolve → download → install-extension happy path
+ok 122 - install: detect → resolve → download → install-extension happy path
+  ---
+  duration_ms: 1.000557
+  ...
+# Subtest: install: no VS Code CLI yields an actionable no-vscode-cli state
+ok 123 - install: no VS Code CLI yields an actionable no-vscode-cli state
+  ---
+  duration_ms: 0.838795
+  ...
+# Subtest: install: a release without a .vsix yields no-release-asset
+ok 124 - install: a release without a .vsix yields no-release-asset
+  ---
+  duration_ms: 0.483002
+  ...
+# Subtest: install: a failed release lookup is reported, not thrown
+ok 125 - install: a failed release lookup is reported, not thrown
+  ---
+  duration_ms: 0.473473
+  ...
+# Subtest: install: a download error surfaces as download-failed
+ok 126 - install: a download error surfaces as download-failed
+  ---
+  duration_ms: 0.441353
+  ...
+# Subtest: install: a non-zero code --install-extension is reported as install-failed
+ok 127 - install: a non-zero code --install-extension is reported as install-failed
+  ---
+  duration_ms: 0.444289
+  ...
+# Subtest: install: a bundled vsixPath skips the network entirely
+ok 128 - install: a bundled vsixPath skips the network entirely
+  ---
+  duration_ms: 1.911496
+  ...
+1..128
+# tests 128
+# suites 0
+# pass 128
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 698.752889
+::endgroup::
+::group::check_desktop_packaging — Desktop packaging keeps its signing and resource-preparation regressions covered.
+$ node --test desktop/scripts/adhoc-sign-mac.test.cjs desktop/scripts/prepare-resources.test.mjs
+TAP version 13
+# Subtest: bundled browser runtime is excluded from Electron child signing
+ok 1 - bundled browser runtime is excluded from Electron child signing
+  ---
+  duration_ms: 3.306347
+  ...
+# Subtest: browser exclusion composes with electron-builder ignore rules
+ok 2 - browser exclusion composes with electron-builder ignore rules
+  ---
+  duration_ms: 1.231237
+  ...
+# Subtest: an array of ignore rules is discarded by @electron/osx-sign
+ok 3 - an array of ignore rules is discarded by @electron/osx-sign # SKIP @electron/osx-sign is not installed
+  ---
+  duration_ms: 1.094883
+  ...
+# Subtest: electron-builder config excludes the bundled browser runtime from signing
+ok 4 - electron-builder config excludes the bundled browser runtime from signing
+  ---
+  duration_ms: 0.867257
+  ...
+# Subtest: the ignore predicate counts what it considered and what it skipped
+ok 5 - the ignore predicate counts what it considered and what it skipped
+  ---
+  duration_ms: 1.552817
+  ...
+# Subtest: browser runtime copies keep symbolic links verbatim
+ok 6 - browser runtime copies keep symbolic links verbatim
+  ---
+  duration_ms: 3.294155
+  ...
+# Subtest: verbatimSymlinks preserves relative framework aliases
+ok 7 - verbatimSymlinks preserves relative framework aliases
+  ---
+  duration_ms: 14.602501
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 175.412904
+::endgroup::
+::group::check_i18n_catalog_coverage — Every user-facing string has a translation in every registered language.
+$ npm run --prefix tests/e2e check:i18n
+
+> formal-ai-e2e@1.0.0 check:i18n
+> node scripts/check-i18n-catalog.mjs
+
+i18n catalog check passed for 4 locales and 455 keys
+::endgroup::
+::group::check_language_change_parity — A change to one language's seed data is mirrored in every other language.
+$ npm run --prefix tests/e2e check:language-parity
+
+> formal-ai-e2e@1.0.0 check:language-parity
+> node scripts/check-language-change-parity.mjs
+
+Language change parity OK against origin/main for required locales en, ru, hi, zh, es.
+::endgroup::
+::group::check_language_test_coverage — Every registered language is exercised by the end-to-end suite.
+$ npm run --prefix tests/e2e check:language-test-coverage
+
+> formal-ai-e2e@1.0.0 check:language-test-coverage
+> node scripts/check-language-test-coverage.mjs
+
+Language test coverage OK against origin/main: en, ru, hi, zh, es.
+::endgroup::
+::group::check_multilingual_intent_coverage — Every routed intent is covered in every language the app advertises.
+$ npm run --prefix tests/e2e check:intent-coverage
+
+> formal-ai-e2e@1.0.0 check:intent-coverage
+> node scripts/check-multilingual-intent-coverage.mjs
+
+Multilingual intent coverage OK for en, ru, hi, zh (16 localized response intents, 12 localized concept records, 5 concept context records, 32 localized tools, 16 feature capabilities, 14 translation meanings).
+::endgroup::
+::group::check_vscode_extension — The VS Code extension's node tests pass.
+$ npm run vscode:test
+
+> vscode:test
+> npm --prefix vscode run test
+
+
+> formal-ai-vscode@0.299.0 test
+> node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs
+
+TAP version 13
+# Subtest: getStatus returns the host-provided status
+ok 1 - getStatus returns the host-provided status
+  ---
+  duration_ms: 2.473384
+  ...
+# Subtest: setToolGrants delegates to the tool router
+ok 2 - setToolGrants delegates to the tool router
+  ---
+  duration_ms: 1.358964
+  ...
+# Subtest: invokeTool is refused when the server is not enabled (nothing executes)
+ok 3 - invokeTool is refused when the server is not enabled (nothing executes)
+  ---
+  duration_ms: 3.383541
+  ...
+# Subtest: invokeTool routes to the tool router when the server is enabled
+ok 4 - invokeTool routes to the tool router when the server is enabled
+  ---
+  duration_ms: 0.518377
+  ...
+# Subtest: read-only web tools route without enabling the local server
+ok 5 - read-only web tools route without enabling the local server
+  ---
+  duration_ms: 0.37014
+  ...
+# Subtest: invokeTool reports unavailable when no router is configured
+ok 6 - invokeTool reports unavailable when no router is configured
+  ---
+  duration_ms: 0.350544
+  ...
+# Subtest: serverEnabled may be a live predicate
+ok 7 - serverEnabled may be a live predicate
+  ---
+  duration_ms: 0.365061
+  ...
+# Subtest: syncMemory is unavailable without the server
+ok 8 - syncMemory is unavailable without the server
+  ---
+  duration_ms: 0.591002
+  ...
+# Subtest: syncMemory pushes then pulls when the server is ready
+ok 9 - syncMemory pushes then pulls when the server is ready
+  ---
+  duration_ms: 1.279246
+  ...
+# Subtest: openExternal accepts http(s) urls only
+ok 10 - openExternal accepts http(s) urls only
+  ---
+  duration_ms: 0.923362
+  ...
+# Subtest: dispatch routes by method name and rejects unknown methods
+ok 11 - dispatch routes by method name and rejects unknown methods
+  ---
+  duration_ms: 1.985333
+  ...
+# Subtest: makeNonce returns a fresh 32-char hex string
+ok 12 - makeNonce returns a fresh 32-char hex string
+  ---
+  duration_ms: 8.713074
+  ...
+# Subtest: resourceRootCandidates prefers the packaged dist-web over the dev layout
+ok 13 - resourceRootCandidates prefers the packaged dist-web over the dev layout
+  ---
+  duration_ms: 0.995286
+  ...
+# Subtest: resolveResourceRoots picks the packaged layout when dist-web/index.html exists
+ok 14 - resolveResourceRoots picks the packaged layout when dist-web/index.html exists
+  ---
+  duration_ms: 0.563821
+  ...
+# Subtest: resolveResourceRoots falls back to the dev layout when only src/web exists
+ok 15 - resolveResourceRoots falls back to the dev layout when only src/web exists
+  ---
+  duration_ms: 0.735803
+  ...
+# Subtest: resolveResourceRoots defaults to the dev layout when nothing is found
+ok 16 - resolveResourceRoots defaults to the dev layout when nothing is found
+  ---
+  duration_ms: 0.377754
+  ...
+# Subtest: readIndexHtml decodes the bytes as UTF-8
+ok 17 - readIndexHtml decodes the bytes as UTF-8
+  ---
+  duration_ms: 0.564753
+  ...
+# Subtest: renderChatWebview wires options + sandboxed HTML with the shim and rebased base href
+ok 18 - renderChatWebview wires options + sandboxed HTML with the shim and rebased base href
+  ---
+  duration_ms: 1.812291
+  ...
+# Subtest: the provider renders, registers its subscription, and reports the view to the host
+ok 19 - the provider renders, registers its subscription, and reports the view to the host
+  ---
+  duration_ms: 1.224544
+  ...
+# Subtest: the RPC pump dispatches requests through the bridge and answers with the result
+ok 20 - the RPC pump dispatches requests through the bridge and answers with the result
+  ---
+  duration_ms: 3.981147
+  ...
+# Subtest: the RPC pump reports bridge errors back over the channel
+ok 21 - the RPC pump reports bridge errors back over the channel
+  ---
+  duration_ms: 0.641417
+  ...
+# Subtest: the RPC pump ignores messages that are not bridge requests
+ok 22 - the RPC pump ignores messages that are not bridge requests
+  ---
+  duration_ms: 0.982693
+  ...
+# Subtest: readConfig fills defaults from an empty settings object
+ok 23 - readConfig fills defaults from an empty settings object
+  ---
+  duration_ms: 2.54643
+  ...
+# Subtest: readConfig reads a VS Code WorkspaceConfiguration via get()
+ok 24 - readConfig reads a VS Code WorkspaceConfiguration via get()
+  ---
+  duration_ms: 0.393635
+  ...
+# Subtest: readConfig also accepts nested plain objects
+ok 25 - readConfig also accepts nested plain objects
+  ---
+  duration_ms: 2.939584
+  ...
+# Subtest: readConfig clamps an invalid port back to the default
+ok 26 - readConfig clamps an invalid port back to the default
+  ---
+  duration_ms: 0.460659
+  ...
+# Subtest: statusFromConfig defaults to the in-process surface
+ok 27 - statusFromConfig defaults to the in-process surface
+  ---
+  duration_ms: 0.443297
+  ...
+# Subtest: statusFromConfig keeps the web host in-process even when the server is enabled
+ok 28 - statusFromConfig keeps the web host in-process even when the server is enabled
+  ---
+  duration_ms: 0.453505
+  ...
+# Subtest: statusFromConfig marks server mode on a capable host when enabled
+ok 29 - statusFromConfig marks server mode on a capable host when enabled
+  ---
+  duration_ms: 0.42878
+  ...
+# Subtest: statusFromConfig reflects the agent default-on setting
+ok 30 - statusFromConfig reflects the agent default-on setting
+  ---
+  duration_ms: 0.395217
+  ...
+# Subtest: withApiReady derives the chat/graph/trace URLs from apiBase
+ok 31 - withApiReady derives the chat/graph/trace URLs from apiBase
+  ---
+  duration_ms: 0.884229
+  ...
+# Subtest: withApiError falls back to in-process and records the message
+ok 32 - withApiError falls back to in-process and records the message
+  ---
+  duration_ms: 0.684626
+  ...
+# Subtest: serverEnv maps host/port to the formal-ai serve environment
+ok 33 - serverEnv maps host/port to the formal-ai serve environment
+  ---
+  duration_ms: 0.442566
+  ...
+# Subtest: apiCandidates falls back to formal-ai on PATH with no repo and no override
+ok 34 - apiCandidates falls back to formal-ai on PATH with no repo and no override
+  ---
+  duration_ms: 2.448256
+  ...
+# Subtest: apiCandidates adds a cargo-run candidate when a Cargo.toml is present
+ok 35 - apiCandidates adds a cargo-run candidate when a Cargo.toml is present
+  ---
+  duration_ms: 0.533154
+  ...
+# Subtest: apiCandidates puts an explicit binary override first
+ok 36 - apiCandidates puts an explicit binary override first
+  ---
+  duration_ms: 0.414733
+  ...
+# Subtest: apiCandidates also honours FORMAL_AI_DESKTOP_BINARY
+ok 37 - apiCandidates also honours FORMAL_AI_DESKTOP_BINARY
+  ---
+  duration_ms: 0.320138
+  ...
+# Subtest: apiCandidates threads a custom host and port into every candidate
+ok 38 - apiCandidates threads a custom host and port into every candidate
+  ---
+  duration_ms: 0.728739
+  ...
+# Subtest: requestHealth resolves true on a 200 /health and false otherwise
+ok 39 - requestHealth resolves true on a 200 /health and false otherwise
+  ---
+  duration_ms: 49.810149
+  ...
+# Subtest: requestHealth resolves false when the server answers non-200
+ok 40 - requestHealth resolves false when the server answers non-200
+  ---
+  duration_ms: 7.45193
+  ...
+# Subtest: waitForApi throws once the timeout window has elapsed
+ok 41 - waitForApi throws once the timeout window has elapsed
+  ---
+  duration_ms: 1.433855
+  ...
+# Subtest: buildWebviewHtml substitutes both version placeholders
+ok 42 - buildWebviewHtml substitutes both version placeholders
+  ---
+  duration_ms: 5.256856
+  ...
+# Subtest: buildWebviewHtml injects a <base> pointing at the resource root
+ok 43 - buildWebviewHtml injects a <base> pointing at the resource root
+  ---
+  duration_ms: 4.203651
+  ...
+# Subtest: buildWebviewHtml injects a strict CSP carrying the nonce and resource origin
+ok 44 - buildWebviewHtml injects a strict CSP carrying the nonce and resource origin
+  ---
+  duration_ms: 0.765379
+  ...
+# Subtest: buildWebviewHtml stamps the nonce on every script tag
+ok 45 - buildWebviewHtml stamps the nonce on every script tag
+  ---
+  duration_ms: 1.048225
+  ...
+# Subtest: buildWebviewHtml injects the FormalAiDesktop bridge shim at the top of body
+ok 46 - buildWebviewHtml injects the FormalAiDesktop bridge shim at the top of body
+  ---
+  duration_ms: 0.730041
+  ...
+# Subtest: the shim overrides Worker to bridge the same-origin constraint
+ok 47 - the shim overrides Worker to bridge the same-origin constraint
+  ---
+  duration_ms: 0.425713
+  ...
+# Subtest: the shim carries the asset and seed bases plus the initial status
+ok 48 - the shim carries the asset and seed bases plus the initial status
+  ---
+  duration_ms: 0.480055
+  ...
+# Subtest: buildContentSecurityPolicy adds the local apiBase to connect-src in server mode
+ok 49 - buildContentSecurityPolicy adds the local apiBase to connect-src in server mode
+  ---
+  duration_ms: 0.452164
+  ...
+# Subtest: buildWebviewHtml threads apiBase from status into the CSP
+ok 50 - buildWebviewHtml threads apiBase from status into the CSP
+  ---
+  duration_ms: 0.788821
+  ...
+# Subtest: safeJson cannot break out of the script tag
+ok 51 - safeJson cannot break out of the script tag
+  ---
+  duration_ms: 0.596864
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 242.416836
+formal-ai vscode smoke checks passed
+::endgroup::
+::group::check_web_hardcoded_ui — The web app renders no hardcoded user-facing string.
+$ npm run --prefix tests/e2e check:web-hardcoded-ui
+
+> formal-ai-e2e@1.0.0 check:web-hardcoded-ui
+> node scripts/check-web-hardcoded-ui-strings.mjs
+
+check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (src/web/app/main.jsx, allowlist: 1 legacy labels).
+::endgroup::
+::group::check_web_tdz — The web app has no hook ordering bug that would throw a temporal-dead-zone error.
+$ npm run --prefix tests/e2e check:web-tdz
+
+> formal-ai-e2e@1.0.0 check:web-tdz
+> node scripts/check-web-tdz.mjs
+
+check-web-tdz: OK — scanned 253 component(s) in src/web/app.js, no hook dependency references a useCallback/useMemo const declared later.
+::endgroup::
+::group::check_worker_terminal_vocabulary — The browser worker's terminal vocabulary stays in sync with the seed data.
+$ node experiments/issue-513-sync-worker-terminal.mjs --check
+[issue-513] src/web/seed/terminal-commands.lino is not present; scripts/sync-seed.sh creates the generated deployment mirror.
+[issue-513] worker terminal vocabulary is in sync with seed.
+::endgroup::
+
+Every gate in stage `web` passed.

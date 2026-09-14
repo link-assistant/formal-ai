@@ -1,54 +1,18 @@
 // Executable browser-worker parity check for issue #840 local-vs-web routing.
+//
+// The worker is booted through `tests/web/support/browser-runtime.mjs`, which
+// runs `src/web/formal_ai_worker.js` itself: the entry point decides what to
+// import (`seed-files.js`, `seed_loader.js`, `worker-modules.js`, then every
+// module the last one lists). Issue #991 made those lists generated, union
+// merged files precisely so nothing outside them has to name the inventory --
+// a harness that rebuilt the load order by hand went stale the moment a module
+// was added, which is what happened here before this rewrite.
 
-import fs from "node:fs";
-import path from "node:path";
-import vm from "node:vm";
-import { fileURLToPath } from "node:url";
-import { TextDecoder, TextEncoder } from "node:util";
+import { createWorkerContext, evaluate } from "../tests/web/support/browser-runtime.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const webDir = path.join(root, "src", "web");
-let canonicalSeedFetches = 0;
-const sandbox = {
-  console,
-  location: { search: "" },
-  postMessage() {},
-  setTimeout,
-  clearTimeout,
-  TextDecoder,
-  TextEncoder,
-  URL,
-  URLSearchParams,
-  WebAssembly: { instantiate: async () => { throw new Error("no wasm"); } },
-};
-sandbox.self = sandbox;
-sandbox.globalThis = sandbox;
-sandbox.fetch = async (url) => {
-  const relative = String(url).split("?")[0];
-  const isCanonicalSeed = relative.startsWith("seed/");
-  // `src/web/seed/` is an ignored build artifact produced from `data/seed/`.
-  // Read the tracked canonical source directly so this parity check behaves
-  // identically in a clean checkout and in a previously built worktree.
-  const file = isCanonicalSeed
-    ? path.join(root, "data", relative)
-    : path.join(webDir, relative);
-  canonicalSeedFetches += Number(isCanonicalSeed);
-  const text = fs.readFileSync(file, "utf8");
-  return { ok: true, status: 200, async text() { return text; } };
-};
-vm.createContext(sandbox);
-
-function load(relative) {
-  const file = path.join(webDir, relative);
-  vm.runInContext(fs.readFileSync(file, "utf8"), sandbox, { filename: file });
-}
-
-load("seed_loader.js");
-for (let index = 0; index <= 20; index += 1) {
-  load(`worker/formal_ai_worker_${String(index).padStart(2, "0")}.js`);
-}
-await vm.runInContext("loadSeed()", sandbox);
-if (canonicalSeedFetches === 0) {
+const sandbox = createWorkerContext();
+await evaluate(sandbox, "loadSeed()");
+if (evaluate(sandbox, "Object.keys(SEED_RAW).length") === 0) {
   throw new Error("browser parity did not hydrate the canonical seed");
 }
 

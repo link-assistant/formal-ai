@@ -1,0 +1,20 @@
+self_ast_census
+  target src/external_benchmarks/upstream_rust.rs
+  language rust
+  fidelity signature
+  byte_len 8293
+  line_count 259
+  content_id source_module_07c443c3a78f29b7
+  symbol_count 11
+  symbols
+    function adapt_records 7 16
+    function egg_math_records 18 61
+    function instantiate_pattern 63 65
+    function ascent_records 67 121
+    function proof_record 123 133
+    function section 135 149
+    function node_pairs 151 161
+    function node_names 163 175
+    function macro_bodies 177 199
+    function matching_parenthesis 201 229
+    function quoted_strings 231 259

@@ -1,0 +1,15 @@
+self_ast_census
+  target src/trace_record.rs
+  language rust
+  fidelity signature
+  byte_len 2456
+  line_count 68
+  content_id source_module_e792e6f56a0e7842
+  symbol_count 6
+  symbols
+    function payload 20 26
+    function join 30 42
+    function payload_with 47 49
+    function event 53 55
+    function line 59 61
+    function line_with 66 68

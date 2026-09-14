@@ -2,9 +2,9 @@ self_ast_census
   target src/links_query.rs
   language rust
   fidelity signature
-  byte_len 17407
-  line_count 528
-  content_id source_module_434647cf5697218d
+  byte_len 17331
+  line_count 524
+  content_id source_module_59d75e2250f080da
   symbol_count 30
   symbols
     struct LinksQuery 39 45
@@ -31,9 +31,9 @@ self_ast_census
     function is_boundary 358 360
     function parse_filter 362 387
     function find_operator 394 418
-    function evaluate 420 472
-    function push_node 474 478
-    function node_matches 480 485
-    function node_filters_match 487 501
-    function edge_filters_match 503 516
-    function apply_node_filter 518 528
+    function evaluate 420 468
+    function push_node 470 474
+    function node_matches 476 481
+    function node_filters_match 483 497
+    function edge_filters_match 499 512
+    function apply_node_filter 514 524

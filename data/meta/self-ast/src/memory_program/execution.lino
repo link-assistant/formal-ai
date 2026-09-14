@@ -2,9 +2,9 @@ self_ast_census
   target src/memory_program/execution.rs
   language rust
   fidelity signature
-  byte_len 21959
-  line_count 673
-  content_id source_module_dc92b150c60bce1d
+  byte_len 22188
+  line_count 681
+  content_id source_module_9c639a84627f60ac
   symbol_count 30
   symbols
     enum MemoryProgramAuthorization 15 19
@@ -23,17 +23,17 @@ self_ast_census
     function filter_selection 329 346
     function create_events 348 429
     function append_derived_event 431 454
-    function update_events 456 511
-    function append_retractions 513 542
-    function remember_matches 544 548
-    function source_id 550 556
-    function event_text 558 565
-    function event_field 567 574
-    function label_marker 576 578
-    function event_contains_marker 580 591
-    function contains_case_insensitive 593 595
-    function replace_case_insensitive 597 612
-    function replace_ascii_case_insensitive 614 630
-    function duplicate_contents 632 643
-    function is_in_current_utc_week 645 656
-    function parse_iso_date 658 673
+    function update_events 456 519
+    function append_retractions 521 550
+    function remember_matches 552 556
+    function source_id 558 564
+    function event_text 566 573
+    function event_field 575 582
+    function label_marker 584 586
+    function event_contains_marker 588 599
+    function contains_case_insensitive 601 603
+    function replace_case_insensitive 605 620
+    function replace_ascii_case_insensitive 622 638
+    function duplicate_contents 640 651
+    function is_in_current_utc_week 653 664
+    function parse_iso_date 666 681

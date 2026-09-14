@@ -1,0 +1,5 @@
+106:stock-rust-install	UNKNOWN STEP	2026-08-11T16:26:49.9046960Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /__w/formal-ai/formal-ai/d1aaa65e-b42a-484b-a188-b7dfb16ecf96 -f /__w/formal-ai/formal-ai/d1aaa65e-b42a-484b-a188-b7dfb16ecf96.tar.gz
+203:stock-rust-install	UNKNOWN STEP	2026-08-11T16:26:55.1425778Z   Downloaded console_error_panic_hook v0.1.7
+533:stock-rust-install	UNKNOWN STEP	2026-08-11T16:26:58.7429848Z error: package ID specification `openssl-sys` did not match any packages
+898:stock-rust-install	UNKNOWN STEP	2026-08-11T16:29:05.8594935Z    Compiling console_error_panic_hook v0.1.7
+931:stock-rust-install	UNKNOWN STEP	2026-08-11T16:33:28.6933236Z warning: be sure to add `/tmp/formal-ai-install/bin` to your PATH to be able to run the installed binaries

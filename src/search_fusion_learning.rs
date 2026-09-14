@@ -11,9 +11,9 @@ use std::fmt;
 use crate::engine::stable_id;
 use crate::links_format::push_lino_node;
 use crate::search_fusion::{
-    execute_search_fusion, SearchFusionExecution, SearchSourceClassification,
+    SearchFusionExecution, SearchSourceClassification, execute_search_fusion,
 };
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::source_fetch::{CachedSourceClient, SourceTransport};
 
 const LEARNING_CONTRACT: &str = include_str!("../data/meta/search-fusion-learning-contract.lino");

@@ -8,9 +8,10 @@
 
 #[cfg(feature = "meta-language")]
 use meta_language::{
+    CROSS_FORMAT_CONCEPTS, DOCUMENT_FORMATS, LinkNetwork, ParseConfiguration,
     canonical_document_format, document_format_profile, docx_package_is_recognized,
     docx_profile_is_recognized, parse_markup_document, pdf_profile_is_recognized,
-    render_docx_package, LinkNetwork, ParseConfiguration, CROSS_FORMAT_CONCEPTS, DOCUMENT_FORMATS,
+    render_docx_package,
 };
 
 /// The engine recorded in traces for document-format CST/concept conversion.

@@ -1,6 +1,6 @@
 use std::{fs, path::Path};
 
-use formal_ai::{assess_market_price_claims, extract_market_price_claims, FormalAiEngine};
+use formal_ai::{FormalAiEngine, assess_market_price_claims, extract_market_price_claims};
 
 const ISSUE_493_OCR_TEXT: &str = "$ETH
 ETH in 2021: $1,700

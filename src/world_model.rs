@@ -43,7 +43,7 @@ use std::fmt::{self, Write as _};
 use crate::engine::stable_id;
 use crate::formal_system::FormalSystem;
 use crate::relative_meta_logic::{
-    RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
+    ASSUMED_TRUE_PRIOR, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
 };
 use crate::substitution::{SubstitutionGraph, SubstitutionLink};
 use crate::world_model_cycles::collapse_truth_cycle;

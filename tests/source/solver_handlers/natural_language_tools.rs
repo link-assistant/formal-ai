@@ -1,6 +1,6 @@
 //! Natural-language tool/API execution with explicit policy gates.
 
-use crate::associative_package::{default_package_store, PackagePermissionDecision};
+use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::calculation::evaluate_calculation;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;

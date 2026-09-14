@@ -31,6 +31,21 @@ impl TempConfigDir {
         })
     }
 
+    /// Create an ephemeral HOME below the real user home rather than the OS
+    /// temporary directory. Codex refuses to install helper PATH aliases when
+    /// its home is below `/tmp`, which otherwise warns on every successful run.
+    pub(super) fn new_home(tool: &str) -> Result<Self, Box<dyn Error>> {
+        let nanos = SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos();
+        let path = user_home_dir()?
+            .join(".cache/formal-ai/ephemeral")
+            .join(format!("{tool}-home-{}-{nanos}", std::process::id()));
+        fs::create_dir_all(&path)?;
+        Ok(Self {
+            path,
+            remove_on_drop: true,
+        })
+    }
+
     pub(super) fn preserve(mut self) {
         self.remove_on_drop = false;
     }
@@ -138,15 +153,13 @@ pub(super) fn print_session_files(
         } else {
             eprintln!("  {}: {}", integration.id, path.display());
         }
-        if orchestration {
-            if let Some(id) = native_session_id {
-                let evidence = OrchestrationSessionEvidence {
-                    id,
-                    resume_command: resume.unwrap_or_default(),
-                };
-                if let Ok(json) = serde_json::to_string(&evidence) {
-                    eprintln!("formal-ai: orchestration-session-json:{json}");
-                }
+        if orchestration && let Some(id) = native_session_id {
+            let evidence = OrchestrationSessionEvidence {
+                id,
+                resume_command: resume.unwrap_or_default(),
+            };
+            if let Ok(json) = serde_json::to_string(&evidence) {
+                eprintln!("formal-ai: orchestration-session-json:{json}");
             }
         }
     }
@@ -192,10 +205,10 @@ pub(super) fn session_id(path: &Path) -> Option<String> {
         .take(256 * 1024)
         .read_to_string(&mut contents)
         .ok()?;
-    if let Ok(value) = serde_json::from_str::<Value>(&contents) {
-        if let Some(id) = find_session_id(&value) {
-            return Some(id);
-        }
+    if let Ok(value) = serde_json::from_str::<Value>(&contents)
+        && let Some(id) = find_session_id(&value)
+    {
+        return Some(id);
     }
     for line in contents.lines().take(64) {
         let Ok(value) = serde_json::from_str::<Value>(line) else {
@@ -218,10 +231,10 @@ fn find_session_id(value: &Value) -> Option<String> {
                 return Some(id.to_string());
             }
         }
-        if value.get("type").and_then(Value::as_str) == Some("session_meta") {
-            if let Some(id) = value.pointer("/payload/id").and_then(Value::as_str) {
-                return Some(id.to_string());
-            }
+        if value.get("type").and_then(Value::as_str) == Some("session_meta")
+            && let Some(id) = value.pointer("/payload/id").and_then(Value::as_str)
+        {
+            return Some(id.to_string());
         }
         return object.values().find_map(find_session_id);
     }

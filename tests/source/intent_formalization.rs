@@ -10,8 +10,8 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::engine::{
-    normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
-    WRITE_PROGRAM_INTENT,
+    SelectedRule, WRITE_PROGRAM_INTENT, normalize_prompt, program_language_by_alias, program_spec,
+    stable_id,
 };
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
@@ -22,7 +22,7 @@ use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, Formal
 use crate::{concepts, seed};
 
 mod requirements;
-pub use requirements::{ordered_requirement_spans, OrderedRequirementSpan};
+pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {

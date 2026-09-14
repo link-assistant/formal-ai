@@ -1,0 +1,8 @@
+link_edit
+  leaf L15
+  path src/cli_context.rs
+  language rust
+  rule replace_literal
+    old "FORMAL_AI_DIALOG_ID"
+    new "FORMAL_AI_SESSION_ID"
+  expect "FORMAL_AI_SESSION_ID"

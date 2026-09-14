@@ -1,0 +1,88 @@
+tests/issue_973_solve_flags.rs:25:    "dev/log/",
+tests/unit/ci-cd/issue_977.rs:9://! `dev/log/issues/977/pulls/978/ANALYSIS.md`.
+tests/unit/ci-cd/workflow_release.rs:181:    // failing the whole pipeline and (via the desktop-release gate) suppressing
+tests/unit/ci-cd/workflow_release.rs:407:        test_job.contains("TEST_BUDGET_SECONDS: 1200"),
+tests/unit/ci-cd/issue_999.rs:24:    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
+tests/unit/ci-cd/issue_999.rs:79:    assert!(!deploy.contains("timeout: 1200000"));
+tests/unit/ci-cd/issue_999.rs:99:    assert!(links.contains("--exclude-path dev/log"));
+tests/unit/ci-cd/issue_1012.rs:26:    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
+tests/unit/ci-cd/mod.rs:17:mod issue_1012;
+tests/issue_961_macos_portability.rs:23:    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 4
+tests/issue_961_macos_portability.rs:93:    assert!(RELEASE_WORKFLOW.contains("TEST_BUDGET_SECONDS: 1200"));
+tests/issue_961_macos_portability.rs:181:        "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
+tests/issue_961_macos_portability.rs:209:            "20260810_120000_issue_961_macos_ci_parity.md",
+tests/unit/ci-cd/issue_846.rs:53:         &[\"experiments/\", \"dev/log/\", \"docs/case-studies/\"];"
+tests/unit/ci-cd/issue_846.rs:74:        "dev/log/run.rs",
+tests/integration/issue_839_report_script.rs:10://! a session id no harness had ever heard of, the body was a `tail -c 12000` of
+tests/integration/issue_819_report_flow.rs:194:    // #838 was filed by a `tail -c 12000` of a proxy trace instead.
+tests/integration/issue_991_incremental_dispatch.rs:28:const ATOMIC_TASK: &str = "Add dev/log/ to the excluded_folders array.";
+tests/integration/issue_839_report_format.rs:5://! names `tail -c 12000 | sed '1d'` as the reason #838's attached context could
+tests/unit/issue_771.rs:346:        // used to do it with `tail -c 12000 | sed '1d'`, a byte offset that
+tests/source/summarization/file.rs:373:        "package.json" | "tsconfig.json" | "package-lock.json" | "bun.lock" => return "json",
+tests/unit/issue_840.rs:600:        r#""tool_call_timeout": 120000"#,
+tests/unit/issue_840.rs:602:        "--mcp-default-tool-call-timeout 120000",
+tests/unit/docs_requirements_issue_924.rs:39:            "## Incremental self-development execution",
+tests/unit/docs_requirements_issue_924.rs:54:        "self-development roadmap",
+tests/unit/docs_requirements_issue_924.rs:57:            "self-development loop (delivered by #924)",
+tests/unit/docs_requirements_issue_924.rs:89:    let fragment = root.join("changelog.d/20260814_020000_issue_924_self_development_loop.md");
+tests/unit/docs_requirements_issue_924.rs:98:        &["self-development", "pull request", "#924"],
+tests/unit/docs_requirements_issue_924.rs:177:        "self-development-execution-contract.lino",
+tests/unit/docs_requirements_issue_924.rs:178:        "self-development-pull-request-contract.lino",
+tests/unit/docs_requirements_issue_924.rs:187:    let execution = read(root.join("data/meta/self-development-execution-contract.lino"));
+tests/unit/docs_requirements_issue_924.rs:189:        "self-development execution contract",
+tests/unit/docs_requirements_issue_924.rs:199:    let pull_request = read(root.join("data/meta/self-development-pull-request-contract.lino"));
+tests/unit/docs_requirements_issue_924.rs:287:    let gate = read(root.join("scripts/self-development-loop.rs"));
+tests/unit/docs_requirements_issue_924.rs:289:        "self-development release gate",
+tests/unit/docs_requirements_issue_924.rs:302:            "ensure_self_development_release",
+tests/unit/docs_requirements_issue_924.rs:303:            "Self-development release gate passed",
+tests/unit/docs_requirements.rs:911:            | "dev/log"
+tests/unit/issue_847_task_decomposition.rs:21:const ATOMIC_PROMPT: &str = "Answer with one word, yes or no: is the following coding task already atomic, meaning it cannot be usefully split further? 'In the file scripts/detect-code-changes.rs, add dev/log/ to the excluded_folders array.'";
+tests/unit/issue_847_task_decomposition.rs:111:            "Is this task atomic? 'Add dev/log/ to the excluded_folders array.'",
+tests/unit/issue_847_task_decomposition.rs:115:            "Эта задача атомарная? «Добавь dev/log/ в массив excluded_folders.»",
+tests/unit/issue_847_task_decomposition.rs:119:            "क्या यह कार्य अविभाज्य है? 'excluded_folders सूची में dev/log/ जोड़ें।'",
+tests/unit/issue_847_task_decomposition.rs:123:            "这个任务是原子的吗？“在 excluded_folders 数组中添加 dev/log/。”",
+tests/unit/ci-cd/issue_846.rs:53:         &[\"experiments/\", \"dev/log/\", \"docs/case-studies/\"];"
+tests/unit/ci-cd/issue_846.rs:74:        "dev/log/run.rs",
+tests/unit/ci-cd/issue_999.rs:24:    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
+tests/unit/ci-cd/issue_999.rs:79:    assert!(!deploy.contains("timeout: 1200000"));
+tests/unit/ci-cd/issue_999.rs:99:    assert!(links.contains("--exclude-path dev/log"));
+tests/unit/ci-cd/issue_1012.rs:26:    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
+tests/unit/ci-cd/mod.rs:17:mod issue_1012;
+tests/unit/ci-cd/issue_977.rs:9://! `dev/log/issues/977/pulls/978/ANALYSIS.md`.
+tests/unit/ci-cd/workflow_release.rs:181:    // failing the whole pipeline and (via the desktop-release gate) suppressing
+tests/unit/ci-cd/workflow_release.rs:407:        test_job.contains("TEST_BUDGET_SECONDS: 1200"),
+tests/unit/issue_991_incremental_decomposition.rs:21:const ATOMIC_TASK: &str = "Add dev/log/ to the excluded_folders array.";
+tests/unit/docs_requirements_issue_960.rs:68:        !file_size.contains("const EXCLUDE_PATH_FRAGMENTS: &[&str] = &[\"dev/log/\", \"data/cache"),
+tests/unit/issue_848_coding_ladder.rs:235:        \"dev/log/\" to the excluded_folders array.";
+tests/unit/issue_848_coding_ladder.rs:240:        let excluded_folders = [\"changelog.d/\", \"docs/\", \"examples/\", \"dev/log/\"];\n    \
+tests/unit/docs_requirements_issue_917.rs:110:    let fragment = root.join("changelog.d/20260808_120000_issue_917_natural_formal_translation.md");
+tests/unit/issue_702_nested_contexts.rs:352:        "../../dev/log/issues/702/pulls/818/agent-cli/context-hierarchy-learning-report.lino"
+tests/unit/docs_requirements_issue_702.rs:134:        "dev/log/issues/702/pulls/818/analysis.md",
+tests/unit/docs_requirements_issue_702.rs:135:        "dev/log/issues/702/pulls/818/agent-cli/agent-cli.log",
+tests/unit/docs_requirements_issue_702.rs:136:        "dev/log/issues/702/pulls/818/agent-cli/formal-ai.log",
+tests/unit/docs_requirements_issue_702.rs:137:        "dev/log/issues/702/pulls/818/agent-cli/context-hierarchy-learning-report.lino",
+tests/unit/specification/self_hosting_metric.rs:121:    let error = metric_script::ensure_self_development_release(
+tests/unit/specification/self_hosting_metric.rs:128:    let eligibility = metric_script::ensure_self_development_release(
+tests/unit/specification/self_hosting_metric.rs:177:    let error = metric_script::ensure_self_development_release(
+tests/unit/specification/self_hosting_metric.rs:200:    metric_script::ensure_self_development_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
+tests/unit/specification/self_hosting_metric.rs:201:        .expect("the first self-development cycle must pass");
+tests/unit/specification/self_hosting_metric.rs:224:    let error = metric_script::ensure_self_development_release(
+tests/unit/specification/self_hosting_metric.rs:268:    let first = metric_script::ensure_self_development_release(
+tests/unit/specification/self_hosting_metric.rs:279:        metric_script::ensure_self_development_release(
+tests/unit/specification/self_hosting_metric.rs:469:/// -- were the captured CI logs under `dev/log/issues/<n>/pulls/<n>/` that this
+tests/unit/specification/self_hosting_metric.rs:477:        "dev/log/issues/812/pulls/813/ci-logs/run-29751001867.log",
+tests/unit/specification/self_hosting_metric.rs:478:        "dev/log/issues/812/pulls/813/session.jsonl",
+tests/unit/specification/self_hosting_metric.rs:479:        "dev/log/issues/812/pulls/813/change.diff",
+tests/unit/specification/self_hosting_metric.rs:480:        "dev/log/issues/812/pulls/813/build.STDERR",
+tests/unit/specification/self_hosting_metric.rs:483:        "\"dev/log/issues/812/nasty\\346\\227\\245.log\"",
+tests/unit/specification/self_hosting_metric.rs:492:        "dev/log/issues/812/pulls/813/analysis.md",
+tests/unit/specification/self_hosting_metric.rs:503:    fs::create_dir_all(repo.join("dev/log")).expect("log directory must be created");
+tests/unit/specification/self_hosting_metric.rs:505:    fs::write(repo.join("dev/log/run.log"), &bulk).expect("captured log must be written");
+tests/unit/specification/self_hosting_metric.rs:701:        version_script.contains("ensure_self_development_release"),
+tests/unit/specification/task_decomposition.rs:54:        "Is this task atomic? 'Add dev/log/ to the excluded_folders array.'",
+tests/unit/specification/task_decomposition.rs:58:        "Эта задача атомарная? «Добавь dev/log/ в массив excluded_folders.»",
+tests/unit/specification/task_decomposition.rs:62:        "क्या यह कार्य अविभाज्य है? 'excluded_folders सूची में dev/log/ जोड़ें।'",
+tests/unit/specification/task_decomposition.rs:66:        "这个任务是原子的吗？“在 excluded_folders 数组中添加 dev/log/。”",
+tests/unit/specification/task_decomposition.rs:283:        "In the file scripts/detect-code-changes.rs, add dev/log/ to the excluded_folders array.",
+tests/unit/specification/task_decomposition.rs:327:    assert!(split_once_checkable("Add dev/log/ to the excluded_folders array.").is_empty());
+tests/unit/docs_requirements_issue_918.rs:110:    let fragment = root.join("changelog.d/20260810_120000_issue_918_minimal_core_metadata.md");

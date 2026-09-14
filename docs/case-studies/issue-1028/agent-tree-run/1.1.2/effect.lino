@@ -1,0 +1,8 @@
+node_path=1.1.2
+node_depth=3
+node_kind=composite
+left_child=1.1.2.1
+right_child=1.1.2.2
+left_result=Line 169:             children: self.children.iter().map(Self::to_recursive_task).collect(),; Line 284:     decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped()); together these exact observations compose the result.
+right_result=Line 374:         decomposition.leaves().len() >= 3,; Observed repository result: Line 385:             "unresolved_single_need",; together these exact observations compose the result.
+result=Line 169:             children: self.children.iter().map(Self::to_recursive_task).collect(),; Line 284:     decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped()); together these exact observations compose the result.; Line 374:         decomposition.leaves().len() >= 3,; Observed repository result: Line 385:             "unresolved_single_need",; together these exact observations compose the result.; together these exact observations compose the result.

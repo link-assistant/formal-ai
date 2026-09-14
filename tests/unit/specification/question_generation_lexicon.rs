@@ -16,9 +16,9 @@
 //!    behavior the issue specifies.
 
 use formal_ai::{
-    question_lexicon_summary, question_lexicon_summary_for_language, GeneratedQuestionClass,
-    LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig, QuestionGenerator,
-    QuestionGrammarClass,
+    GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig,
+    QuestionGenerator, QuestionGrammarClass, question_lexicon_summary,
+    question_lexicon_summary_for_language,
 };
 
 #[test]
@@ -138,9 +138,10 @@ fn seed_tier_curve_reproduces_halving_behavior() {
         .filter(|question| question.word_count == 2)
         .collect();
     assert!(
-        two_word
+        two_word.iter().all(|question| question
+            .words
             .iter()
-            .all(|question| question.words.iter().all(|word| word == "what" || word == "is")),
+            .all(|word| word == "what" || word == "is")),
         "the top-10% tier should restrict two-word candidates to the two most frequent words: {two_word:?}",
     );
 

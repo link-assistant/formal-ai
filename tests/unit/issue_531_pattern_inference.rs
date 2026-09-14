@@ -5,7 +5,7 @@
 //! concrete sequence or grid routes to `pattern_inference`, while a bare
 //! definitional question falls through to the concept lookup instead.
 
-use formal_ai::{solve, ConversationTurn, UniversalSolver};
+use formal_ai::{ConversationTurn, UniversalSolver, solve};
 
 #[test]
 fn detects_repetition_and_predicts_next() {

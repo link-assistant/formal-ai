@@ -9,6 +9,11 @@
 //! Environment variables:
 //!   - GIT_USER_NAME: Git user name (default: github-actions[bot])
 //!   - GIT_USER_EMAIL: Git user email (default: github-actions[bot]@users.noreply.github.com)
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::env;
 use std::process::{Command, exit};

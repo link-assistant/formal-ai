@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 11390
   line_count 290
-  content_id source_module_1821c8ddece698aa
+  content_id source_module_dcfbd042067f00a0
   symbol_count 21
   symbols
     const ORACLE_MAX_OPERANDS 28 28

@@ -6,11 +6,11 @@
 //! checklist, and the multilingual tests pin it in all four supported
 //! languages so recognition can only come from the seed lexicon (issue #386).
 
-use formal_ai::recursive_execution::{solve_recursively, RecursiveTask, TaskAttempt, TaskExecutor};
+use formal_ai::recursive_execution::{RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively};
 use formal_ai::task_decomposition::{
-    decompose_task, decompose_task_with_ledger, is_checkable, split_once_checkable,
-    task_decomposition_contract, Decomposition, TaskLearningApproval, TaskLearningGate,
-    TaskStrategyLedger, TaskStrategyProposal, CONTRACT_LINO,
+    CONTRACT_LINO, Decomposition, TaskLearningApproval, TaskLearningGate, TaskStrategyLedger,
+    TaskStrategyProposal, decompose_task, decompose_task_with_ledger, is_checkable,
+    split_once_checkable, task_decomposition_contract,
 };
 use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
 
@@ -81,12 +81,36 @@ fn agent_authored_contract_is_exact_and_controls_the_shipped_ledger() {
     let evidence = include_str!(
         "../../../docs/case-studies/issue-847/self-hosting-authorship/task-decomposition-invariant.lino"
     );
-    assert_eq!(CONTRACT_LINO.as_bytes(), evidence.as_bytes());
+    // The evidence file is the record of what the agent authored in #847, so it
+    // is never rewritten to match later work — doing that would falsify the
+    // thing it exists to prove. What must hold is that every clause the agent
+    // wrote is still shipped verbatim; a clause added afterwards (the `binary`
+    // rule from #1028) is additional, and is asserted on its own below.
+    for clause in evidence
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+    {
+        assert!(
+            CONTRACT_LINO
+                .lines()
+                .any(|shipped| shipped.trim() == clause),
+            "the shipped contract dropped a clause the agent authored in #847: {clause}"
+        );
+    }
 
     let contract = task_decomposition_contract().expect("the embedded contract must be complete");
     assert!(!contract.atomic.is_empty());
     assert!(!contract.execution.is_empty());
     assert!(!contract.learning.is_empty());
+    // Issue #1028: decomposition is a *binary* split, and the contract is what
+    // makes that a shipped rule rather than a convention the runner happens to
+    // follow. A parse that lost the field would return `None` above, so this
+    // asserts the clause is actually populated.
+    assert!(
+        !contract.binary.is_empty(),
+        "the binary-split rule must be part of the shipped contract"
+    );
     assert_eq!(
         TaskStrategyLedger::shipped().approved_strategy_ids(),
         ["task_strategy_verified_change"]
@@ -489,20 +513,22 @@ fn failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_acti
     assert!(proposal.links_notation().contains("human_review_required"));
 
     let mut red = TaskStrategyLedger::new();
-    assert!(red
-        .promote(
+    assert!(
+        red.promote(
             &proposal,
             TaskLearningGate::failed("task_decomposition_specification", 12, 1),
             TaskLearningApproval::granted("maintainer"),
         )
-        .is_err());
-    assert!(red
-        .promote(
+        .is_err()
+    );
+    assert!(
+        red.promote(
             &proposal,
             TaskLearningGate::passed("task_decomposition_specification", 13),
             TaskLearningApproval::declined("maintainer"),
         )
-        .is_err());
+        .is_err()
+    );
 
     let mut reviewed = TaskStrategyLedger::new();
     reviewed

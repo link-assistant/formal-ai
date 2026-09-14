@@ -2,6 +2,12 @@
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
+**Read [VISION.md](VISION.md) first**, and the architect's notes it is kept up to date from, in [docs/architect-notes/](docs/architect-notes/). It is the standing guideline, in the architect's
+own words: the goal is the meta algorithm; code is held in the meta language and Rust is one emission
+target of it; self-modification is an action the user approves; algorithms are arrived at by
+deduplication; and no task is rated hard -- split it until each leaf is directly solvable. Where any
+other document, gate or requirement contradicts that page, the other one is wrong and must be fixed.
+
 ## How we develop Formal AI: drive the Agent CLI, never defer
 
 **From issue #538 forward, this is the only way we develop the Formal AI
@@ -115,6 +121,171 @@ the local Formal AI server:
 solve ISSUE_URL --tool agent --model formal-ai --attach-logs --verbose
 ```
 
+### Delegate the next commit to Formal AI: task issue, bot branch, review, merge
+
+The replay above runs the loop by hand on one machine. The loop we actually
+develop by is the same one driven from GitHub Actions, so that no local
+resources are spent and every step leaves reviewable evidence. Each commit we
+would otherwise write by hand becomes a task Formal AI performs for us, and the
+share of hand-written commits falls over time.
+
+The target chain is our own products end to end: **GitHub Actions -> Hive Mind
+-> Agent CLI -> Formal AI**. The action compiles Formal AI from the sources on
+the branch under review and takes everything else from packages or containers,
+so a run always exercises the meta algorithm as it exists on that branch, spends
+no local resources, and can be adjusted by an ordinary reviewed change to the
+branch.
+
+Today `.github/workflows/self-authored-pull-request.yml` runs
+**Actions -> Agent CLI -> Formal AI**: it drives the pinned
+`@link-assistant/agent` against a locally built `formal-ai serve` directly,
+because `solve --model formal-ai` used to commit none of the trailers or the
+evidence bundle the self-hosting metric attributes
+([hive-mind#2229](https://github.com/link-assistant/hive-mind/issues/2229)).
+Hive Mind fixed that in
+[hive-mind#2230](https://github.com/link-assistant/hive-mind/pull/2230),
+released in v2.24.0; this repository still pins 2.15.1 in
+`.github/workflows/agent-cli-e2e.yml`. Moving the authoring step onto
+`solve … --tool agent --model formal-ai --attach-logs --verbose` behind the
+updated pin is the remaining step, and it belongs in this loop like any other:
+raise the pin, run one task through it, and compare the commit it produces with
+what the direct path produces.
+
+The steps, in order:
+
+1. **Write the task as an issue.** Small and self-contained: one behaviour, one
+   file where possible. Label it `formal-ai-solve` and give it the contract
+   `.github/workflows/self-authored-pull-request.yml` reads, which is documented
+   in that workflow's header (`task:`, `seed:`, `produces:`, `into:`,
+   `contains:`, `message:`). Make it a sub-issue of the pull request's issue so
+   the delegation is visible from the work it belongs to.
+2. **Let the action author it.** Labelling the issue starts the run. It opens a
+   draft pull request under `github-actions[bot]` first, so the authored commit
+   can name it in its `Formal-AI-Pull-Request` trailer, and it targets the
+   branch the run checked out — the pull request we are working in, not `main`.
+   Then it drives the pinned Agent CLI against a locally built `formal-ai
+   serve` and pushes one commit carrying the four trailers and its evidence
+   bundle. No human commit goes on that branch; a human commit there is the one
+   thing that invalidates the claim.
+3. **Judge the quality on that branch, not in the abstract.** The bot pull
+   request runs the full CI of the repository. Read the diff and the session
+   evidence: did Formal AI make the change asked for, or answer around it? Did
+   it stop after the first clause of a two-part task? Did it route the request
+   somewhere unrelated? The branch is disposable, so this is a cheap experiment.
+4. **If the quality is poor, fix the meta algorithm, not the commit.** Do not
+   hand-correct the bot's work and merge it. Close the branch, record what the
+   session actually did as evidence, file the defect, and improve and generalise
+   Formal AI so the same class of task succeeds — then run the task again. The
+   defects found this way are the point of the exercise, not a detour:
+   [#1095](https://github.com/link-assistant/formal-ai/issues/1095),
+   [#1096](https://github.com/link-assistant/formal-ai/issues/1096),
+   [#1099](https://github.com/link-assistant/formal-ai/issues/1099) and
+   [#1101](https://github.com/link-assistant/formal-ai/issues/1101) were all
+   found by running tasks this way and reading what came back.
+5. **When satisfied, merge the bot pull request into the working pull request.**
+   Its commits arrive with their trailers intact, so the self-hosting metric
+   attributes them, and the work reaches `main` through the ordinary review of
+   the pull request they merged into.
+
+A draft is finished in one of exactly two ways: **merged**, or **closed with the
+defect it exposed filed** against the meta algorithm. Leaving it open is
+neither, and it is the failure mode this loop falls into by default — seven bot
+pull requests were opened on 2026-09-08 and none was merged. The
+`Self-authored backlog` workflow reports every open one daily with its age, its
+check state and how far its base has moved, and fails once one has been open
+more than three days. Merging the green ones is what turns the loop into
+commits Formal AI wrote; reading the red ones is what improves it.
+
+Two rules keep the loop honest. Process record is not authored behaviour: the
+changelog fragment a source change needs is written by the bootstrap commit that
+opens the bot pull request, because `changelog.d/` is one of the trees the
+metric excludes from both sides of the share. And the base a run authors against
+must be current — a bot branch cut before a fix on the working branch fails for
+that fix's absence, so rerun the task rather than pushing the fix onto the bot
+branch.
+
+[#1103](https://github.com/link-assistant/formal-ai/pull/1103) is the worked
+example: two commits, both by `github-actions[bot]`, one of them Formal AI's own
+change to the self-hosting metric with its session evidence beside it.
+
+#### The action is installable in other repositories
+
+The loop is worth as much to our other repositories as to this one, and it is
+worth most where the volume of new issues is highest. The target is that any
+repository can install one action and have Formal AI open a draft attempt at
+every new issue — Hive Mind first, whose issues are the ones we read most often.
+A draft that is wrong is not waste: it fails in public, on a branch nobody
+depends on, and the failure is the input the next improvement is made from. Fail
+fast to learn fast.
+
+The loop therefore lives in `.github/actions/author-with-formal-ai`, a composite
+action, and this repository's `self-authored-pull-request.yml` is its first
+consumer rather than a separate implementation. Three inputs are what make it
+installable elsewhere:
+
+- **`formal-ai-source`** — `container` by default, pulling the binary out of
+  `ghcr.io/link-assistant/formal-ai`, so a consuming repository spends no
+  compile. This repository passes `source`, because a change to the meta
+  algorithm has to be measured by the branch making it, not by the last release.
+- **`require-contract`** — `true` demands the `task:`/`seed:`/`produces:`/
+  `into:`/`message:` lines. `false` derives the task from the issue title and
+  body, which is what a repository attempting *every new issue* wants: a draft
+  that fails is the evidence it asked for, not an error.
+- **`formal-ai-ref`** — where the shared scripts come from. They are fetched
+  from this repository rather than vendored into the action, so there is one
+  copy of each to fix; the repository that owns them runs its own branch's
+  copies, so a change to them is testable in the pull request making it.
+
+Every script the action runs is staged into `RUNNER_TEMP` before anything
+switches branches. That is not tidiness: run 34224940281 failed on a bug its own
+head had already fixed, because after `git checkout` of the bot branch the
+script it ran came off that branch. The CI contract tests read
+`.github/actions/**` as well as `.github/workflows/**` for the same reason — the
+shell CI executes is the same shell whichever directory it sits in.
+
+[hive-mind#2233](https://github.com/link-assistant/hive-mind/issues/2233) asks
+for the first outside installation, on `issues: opened`, so every new issue
+there gets a draft attempt. The drafts it opens are read the same way as here:
+judge the quality on the branch, and when it is poor, improve the meta
+algorithm.
+
+#### A branch pays for what it changed
+
+The loop is only as fast as the CI bill it pays. One push to a feature branch
+cost about 310 job-minutes across 16 workflows, and a day of iterating on one
+branch cost roughly 4,600 — a budget every self-authored draft competes for.
+Two rules keep that down, and both are measured in
+[#1107](https://github.com/link-assistant/formal-ai/issues/1107):
+
+- **Build the binary once per source change, not once per workflow.** Seven
+  workflows compiled the same `formal-ai` release binary on every push, two to
+  five minutes each. `.github/actions/formal-ai-binary` keys a cache by the
+  content of `src`, `Cargo.toml`, `Cargo.lock` and `build.rs`, so a push that
+  changed none of them reuses the build and installs no toolchain at all. Use
+  it from any workflow that only needs to *run* the binary.
+- **Gate the heavy jobs on the files they execute.** `detect-changes` publishes
+  `pipeline-changed` beside `workflow-changed`: the former is true only for the
+  pipeline's own definition, a composite action it calls, or a script those run.
+  The macOS archive, the Docker check, the six box images and the 25-minute
+  agent end-to-end run are gated on it, so editing an unrelated workflow no
+  longer buys them.
+
+- **Do not run a check twice on identical inputs.** `detect-changes` compares
+  the whole pull-request range, so a branch that once touched `src/` used to
+  re-run every Rust check on every later docs-only push. Eight heavy checks
+  now consult `.github/actions/green-ledger`: the content of the check's
+  inputs is hashed (the same key `formal-ai-binary` uses), and a marker saved
+  under that hash by a previous *successful* job means the job announces
+  "already green" in its log and step summary and finishes without running
+  its body. The marker rides on `actions/cache`, whose post step runs only on
+  success, so a failing job can never record itself green; `main` never skips.
+  To force a check, edit its workflow file (always part of its inputs) or run
+  it by `workflow_dispatch`. `tests/unit/ci-cd/issue_1107_green_ledger.rs`
+  pins the contract.
+
+Neither rule may become a silent skip. A job that does not run on a branch is
+reported as not-run, never as passed, and `main` still runs everything.
+
 ### Always run automated `solve` sessions with `--attach-logs --verbose`
 
 Every automated session started against this repository — by hand or by a
@@ -151,20 +322,63 @@ either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
 ### Recording self-authorship
 
 The release metric counts a commit as Formal AI-authored only when its commit
-message records both trailers below:
+message records the first two trailers below. A contribution intended to
+satisfy the per-release self-development floor must record all three:
 
 ```text
 Formal-AI-Session: <session-id>
 Formal-AI-Evidence: <repo-relative committed evidence path>
+Formal-AI-Pull-Request: https://github.com/<owner>/<repo>/pull/<number>
 ```
 
 The evidence path must exist in that commit. It may name one evidence file or a
 directory bundle; one file at or below the path must contain both `formal-ai`
 and the exact session id. Add one pair per session when multiple sessions
 authored a commit. Do not add these trailers to a human-authored or manually
-corrected commit; an honest 0% release is valid. The metric counts additions
-plus deletions from non-merge commits and ignores binary files. Reproduce it
-with `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+corrected commit. The pull-request reference counts toward the release floor
+only when Git history proves that the same commit object reached the matching
+GitHub merge commit; a direct commit carrying a claimed PR URL does not count.
+A pull request counts for the work Formal AI did in it, not for what else rode
+along with it: at least one commit it introduced must carry valid session
+evidence, and every attributed commit it introduced must name that same pull
+request. A trailer pointing at a different pull request is not evidence about
+this one, and it disqualifies the pull request that introduced it. Self-authored
+work therefore needs no pull request of its own -- it may ride along inside
+ordinary review beside human commits, which stay unattributed and stay in the
+denominator of the metric.
+
+A trailer that turns out to be wrong cannot be corrected in place: this
+repository's ruleset forbids non-fast-forward pushes on every branch with no
+bypass actors, so a pushed commit message is permanent. A later commit in the
+same measured range withdraws the claim instead:
+
+```text
+Formal-AI-Retract: <full 40-character sha of the commit being withdrawn>
+```
+
+The retracted commit stops being attributed, in the pull-request metric and in
+the release floor alike. The trailer only ever moves a commit *out* of the
+numerator, so it cannot inflate the measured share; use it to disown a
+mis-trailered commit, never to claim one. It must name a full sha that is
+inside the range being measured, and it may not name the commit carrying it.
+
+Every release cycle must contain at least one such merged contribution. It goes
+through the ordinary pull-request review, CI, and promotion policy without an
+AI-specific bypass. The next release's target carries forward from the previous
+row and rises with the measured trailing share, so it must not decrease on its
+own. It moves down only when a reviewed commit writes a
+`target_override_basis_points` onto the newest comparable row of
+`data/meta/self-hosting-ledger.lino`, which replaces the ratchet and carries
+forward until another commit changes or removes it. That is the only lever:
+there is no flag, environment variable, or workflow input that moves the target,
+so every change to the level is visible in a diff and named in the release
+notes. If the floor or target is missing, merge more
+reviewed Formal AI-authored work before retrying the release. The metric counts additions plus deletions from non-merge
+commits and ignores binary files. Reproduce it with
+`rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+
+Before checking the pull-request ratchet locally, fetch annotated release tags
+with `git fetch origin --tags`; without the latest tag, the check reports a skip.
 
 ## Contribution rights and external material
 
@@ -380,6 +594,89 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
 ```
 
 ## Testing Guidelines
+
+- Run the suite through `scripts/cargo-test.sh` rather than `cargo test`
+  directly. It takes the same arguments and adds two things a workstation
+  needs:
+
+  ```bash
+  scripts/cargo-test.sh                          # whole suite
+  scripts/cargo-test.sh --test unit issue_907    # one module
+  ```
+
+  **macOS runs platform tests, not the whole suite.** No code in `src/` branches
+  on macOS versus Linux — all eight conditionals are `cfg(unix)`, true on both —
+  so pure Rust logic cannot behave differently there. Every macOS-only failure
+  this repository has recorded came from the environment instead: GNU coreutils
+  absent (`timeout`), bash 3.2 without `mapfile`, subprocess and path handling.
+
+  Running everything twice cost real time: 2895 tests moved a 916 MB archive to
+  each of eight runners, 7 GB per run, and two of those downloads failed
+  outright. The macOS lane now runs the 139 tests whose behaviour can differ —
+  about ten seconds on one runner.
+
+  **When something does behave differently on macOS, add its module to
+  `data/meta/macos-platform-tests.lino`** with a line saying what differs. Do
+  not widen the filter back to everything; the file is the list of what macOS is
+  actually for, and `issue_1017::the_macos_lane_selects_a_non_empty_set_of_tests`
+  fails if it empties out.
+
+  **Start the longest work first.** Whenever work is split across parallel
+  workers -- test partitions, matrix legs, anything fanned out -- the long tasks
+  must be scheduled first and the short ones packed in behind them. A long task
+  started last runs alone on a machine everything else has already finished
+  waiting for, and that tail is pure serial time on the critical path.
+
+  This is longest-processing-time-first, and it is not a preference: measured on
+  run 32591020809 (2895 tests, 4704s of work over eight partitions), splitting
+  by test index gave a **870s** worst partition against a **588s** ideal, while
+  LPT hit 588s exactly. 282s of the critical path, spent idling.
+
+  `scripts/plan-test-partition.rs` implements it for the macOS test slices from
+  the durations recorded in `data/meta/test-durations.lino`, and the
+  `check_test_partition_balance` CI gate fails when the plan drifts out of
+  balance -- so a regression back to index order cannot land quietly. Apply the
+  same rule to any new fan-out: sort by cost, descending, before assigning.
+
+  **Use the whole machine on CI.** An ephemeral runner is billed for the minutes
+  it is alive, so leaving cores idle only makes the wait longer. Do not add
+  `max-parallel`, and do not cap test threads on CI; the local half-CPU cap
+  below exists for a shared laptop, not for a runner.
+
+  **Half the CPUs locally, all of them on CI.** A bare `cargo test` starts one
+  compile job *and* one test thread per core, which pins the whole machine for
+  the length of the run. The wrapper caps both at half the cores unless `CI` is
+  set, so an ephemeral runner still uses everything it is paying for. Override
+  with `CARGO_TEST_JOBS=<n>`.
+
+  **The cache keeps one build, not every build.** Cargo never removes anything,
+  so `target/` accumulates artifacts from every branch and dependency version
+  and reaches several gigabytes within days. The wrapper prunes to the artifacts
+  the latest build produced, and CI does the same after its test step so the
+  saved actions cache carries one build rather than a growing pile. Run
+  `scripts/prune-build-cache.sh` on its own to reclaim space at any time, or set
+  `CARGO_TEST_NO_PRUNE=1` to keep everything for a debugging session.
+
+  **Every commit sweeps.** The `prune-build-cache` pre-commit hook runs on every
+  commit, not only Rust ones -- a docs-only commit leaves the previous build's
+  artifacts on disk just the same. Disk is reclaimed as a matter of course
+  rather than when someone remembers.
+
+  ```bash
+  cargo install cargo-sweep   # strongly recommended
+  ```
+
+  With cargo-sweep installed the pruner asks cargo *which artifacts the current
+  build actually references* and removes the rest, so a dependency the next
+  build still needs survives even if it was compiled weeks ago. Without it the
+  pruner falls back to comparing modification times, which cannot tell a stale
+  artifact from a current one that simply did not need rebuilding -- it deletes
+  live dependencies and the next build recompiles them. Both keep the cache
+  small; only cargo-sweep keeps it *useful*.
+
+  `CARGO_TARGET_MAX_SIZE_MB` caps the tree after the sweep, defaulting to 4096
+  (4GB) locally and to no ceiling on CI, where the runner is billed for the
+  rebuild rather than the disk.
 
 - Write tests for all new features
 - Maintain or improve test coverage — this is enforced, not requested. CI
@@ -631,6 +928,60 @@ hardcoded prompt→answer tables.
     `scripts/tests-as-docs-allowlist.txt`, new ones fail the build, and a row
     that has been made explicit must be pruned (`--write` regenerates the list).
 
+## Merge conflicts are a layout bug (issue #991)
+
+`python3 scripts/analyze-merge-conflicts.py` replays every merge in this
+repository's history with `git merge-tree` and counts what git could not merge on
+its own. Of 1914 conflict-resolution events across 884 merges, only 37.4% were
+two people changing the same behaviour. The rest conflicted because of *where the
+content sat*: an appended list entry, a regenerated artifact, a numbered file
+name. Those are bugs in the layout, and the layout is what we fix.
+
+The measurement is in
+[`docs/case-studies/issue-991/merge-conflict-analysis.md`](docs/case-studies/issue-991/merge-conflict-analysis.md),
+the mechanisms are declared in
+[`data/meta/merge-conflict-policy.lino`](data/meta/merge-conflict-policy.lino),
+and `rust-script scripts/check-merge-conflict-policy.rs` fails the build when a
+path that has actually been conflicting is neither mechanized nor deferred with
+a written reason. **You never need to run `git config` for any of this**: every
+mechanism uses git's built-in `merge=union` driver or a committed generator, so a
+fresh clone is already conflict-proof.
+
+**What to do when you add something.**
+
+| You are adding | Do this | Do *not* |
+| --- | --- | --- |
+| a Rust module or test module | append the `mod` line anywhere in the list file; `rust-script scripts/normalize-ordered-lists.rs --write` sorts it | edit the list by hand to keep it sorted — the union driver will reorder it anyway |
+| a CI check | write one file in `data/meta/ci-gates/`, named after the check | add a `- name:`/`- run:` step to `.github/workflows/release.yml` |
+| a `data/seed/*.lino` file | add one `seed <name>` entry to `data/meta/seed-registry.lino` and run `rust-script scripts/generate-seed-registry.rs --write` | edit `src/seed/embedded.rs`, `src/seed/embedded_registry.rs`, `src/web/seed-files.js`, or the loader's file list |
+| a requirement | write `docs/requirements/issue-NNNN-*.md` and run `rust-script scripts/assemble-requirements.rs --write` | append a section to `REQUIREMENTS.md` |
+| a worker module | name the file after its subject (`formal_ai_worker_<subject>.js`) | claim the next free number |
+| generated data | commit it and register its regenerate + verify commands in the policy | leave it un-verified: a union merge of an artifact lands silently |
+
+**The two rules behind the table.**
+
+1. **A list belongs in a file of its own.** A list that shares a file with logic
+   cannot be union merged, because a union of two logic edits can compile and
+   still be wrong. Move the list to a sibling file that contains nothing else —
+   `modules.rs`, `worker-modules.js`, `seed-registry.lino` — and union merge only
+   that file. Adding an item then stops being an edit anyone else can collide
+   with.
+2. **Every union-merged file has a verifier.** A union never blocks a merge, so
+   without a checker a stale or duplicated union lands silently. Each
+   union-merged path registers a `verify` command that fails while the unioned
+   result is not canonical, or declares `union_is_terminal true` because every
+   possible union of it is already correct content (only `.gitkeep` qualifies).
+
+**Regenerating everything after a merge.** `bash
+scripts/regenerate-derived-artifacts.sh` runs every registered generator in one
+pass; run it after resolving a merge and commit whatever it changes.
+
+If you hit a conflict that none of this covers, that is data. Add the path to the
+policy — as a mechanism if it has a shape, or as a `deferred` entry with an
+honest reason if the collision is genuinely semantic. A deferral with a stated
+reason is a decision; an uncovered path is an omission, and CI treats them
+differently.
+
 ## Pull Request Process
 
 1. Ensure all tests pass locally
@@ -736,7 +1087,7 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 ├── README.md             # Project README
 ├── REQUIREMENTS.md       # Issue-by-issue requirement matrix
 ├── ROADMAP.md            # Requirement-level implementation status
-└── VISION.md             # Values and long-term direction
+└── VISION.md             # Standing guideline and long-term direction; read first
 ```
 
 ## Release Process

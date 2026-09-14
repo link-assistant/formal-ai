@@ -1,0 +1,1 @@
+/tmp/tmp.sjWIMGSmQD/shellcheck-v0.11.0/shellcheck

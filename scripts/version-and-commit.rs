@@ -15,6 +15,9 @@
 //! Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>]
 //!
 //! ```cargo
+//! [package]
+//! edition = "2024"
+//!
 //! [dependencies]
 //! regex = "1"
 //! chrono = "0.4"
@@ -519,6 +522,13 @@ fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<Pa
     )?;
     let tag = format!("{tag_prefix}{new_version}");
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    // Issue #1085 (D3.5): the release no longer requires a reviewed Formal AI
+    // contribution in its range. `ensure_self_development_release` still exists
+    // and still fails a cycle without one -- it runs from
+    // `.github/workflows/self-development-status.yml`, where a red result is a
+    // standing report rather than a blocked release. Issue #924's floor had
+    // become satisfiable by a documentation commit carrying trailers, and it
+    // held a downstream-critical fix back for 268 commits (issue #1064).
     // `Report`, not `Enforce`: by the time a release runs, every commit in the
     // range is immutable history on `main`, so a hard failure here can only
     // deadlock the release (issue #812). The ratchet is enforced at the

@@ -10,16 +10,16 @@ use std::fs;
 use std::path::Path;
 
 use serde_json::Value;
-use toml_edit::{value as toml_value, DocumentMut, Item, Table};
+use toml_edit::{DocumentMut, Item, Table, value as toml_value};
 
 use crate::seed::{ClientIntegration, ConfigFormat};
 
 use super::command::ensure_trailing_newline;
 use super::global_verify::{probe_headless_start, verify_written_config};
 use super::{
-    backup_path, codex_model_catalog, global_config_path, render_context, render_template,
-    write_file, RenderContext, WithFormalAiArgs, EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER,
-    RENDERED_PLACEHOLDER,
+    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, RENDERED_PLACEHOLDER, RenderContext,
+    WithFormalAiArgs, backup_path, codex_model_catalog, global_config_path, render_context,
+    render_template, write_file,
 };
 
 /// Opening marker of the block a shell profile lets formal-ai own, per tool.

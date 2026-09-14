@@ -1,8 +1,8 @@
 //! Regression coverage for issue #714's agentic-mode surface.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::memory_sync::SyncStore;
-use formal_ai::protocol::{chat_tool_executions, ChatMessage, ToolCall};
+use formal_ai::protocol::{ChatMessage, ToolCall, chat_tool_executions};
 
 fn confirmed_github(mut messages: Vec<ChatMessage>) -> Vec<ChatMessage> {
     messages.push(ChatMessage::user("GitHub issue"));

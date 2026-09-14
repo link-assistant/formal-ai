@@ -1,0 +1,8 @@
+link_edit
+  leaf L24
+  path src/issue_report.rs
+  language rust
+  rule rename_identifier
+    old "TITLE_JOIN"
+    new "TITLE_SEGMENT_JOIN"
+  expect "TITLE_SEGMENT_JOIN"

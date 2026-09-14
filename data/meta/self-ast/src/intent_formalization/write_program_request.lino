@@ -2,13 +2,16 @@ self_ast_census
   target src/intent_formalization/write_program_request.rs
   language rust
   fidelity signature
-  byte_len 5396
-  line_count 109
-  content_id source_module_03c5df9d9e219425
-  symbol_count 5
+  byte_len 9838
+  line_count 207
+  content_id source_module_d40c0bf5ee7571b3
+  symbol_count 8
   symbols
     function requested_write_program_parameters 28 53
     function asks_for_program 63 67
-    function write_program_parameters 70 94
-    function known_write_program_language 96 98
-    function requested_program_language 107 109
+    function write_program_parameters 70 108
+    function known_write_program_language 110 112
+    function requested_program_language 121 123
+    function names_code_and_nothing_else 143 168
+    function nothing_is_left 172 181
+    function is_accounted_for 189 207

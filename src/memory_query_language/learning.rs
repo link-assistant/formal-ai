@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use super::{compile_exact_memory_query, CompiledMemoryQuery, MemoryQueryError, QueryDialect};
+use super::{CompiledMemoryQuery, MemoryQueryError, QueryDialect, compile_exact_memory_query};
 use crate::links_format::push_lino_node;
 use crate::memory_program::MemoryProgramLimits;
 

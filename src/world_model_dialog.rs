@@ -49,7 +49,7 @@ use crate::world_model::{
     Action, Context, ContextDiff, Dependency, Prediction, RecalculationReport, Statement,
     WorldModel,
 };
-use crate::world_model_atoms::{classify, premise_split, state_atom, UtteranceKind};
+use crate::world_model_atoms::{UtteranceKind, classify, premise_split, state_atom};
 use crate::world_model_context::{
     ContextHierarchy, ContextHierarchyError, ExternalLookup, InheritancePolicy, ReferenceResolution,
 };

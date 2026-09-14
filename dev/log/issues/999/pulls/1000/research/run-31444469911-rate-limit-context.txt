@@ -1,0 +1,220 @@
+2870-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9026901Z commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+2871-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9027468Z commit-date: 2026-07-14
+2872-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9027821Z host: x86_64-unknown-linux-gnu
+2873-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9028193Z release: 1.97.1
+2874-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9028495Z LLVM version: 22.1.6
+2875-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9050678Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=30]
+2876-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9119041Z Prepare all required actions
+2877-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9119710Z Getting action download info
+2878:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:16.9734315Z Download action repository 'mozilla-actions/sccache-action@v0.0.10' (SHA:9e7fa8a12102821edf02ca5dbea1acd0f89a2696)
+2879:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1000004Z ##[group]Run ./.github/actions/setup-sccache
+2880-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1000314Z env:
+2881-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1000511Z   GIT_CONFIG_COUNT: 1
+2882-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1000767Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2883-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1001048Z   GIT_CONFIG_VALUE_0: main
+2884-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1001283Z   CARGO_NET_RETRY: 10
+2885-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1001513Z   CARGO_HTTP_MULTIPLEXING: false
+2886-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1001769Z   CARGO_TERM_COLOR: always
+2887-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1002003Z   RUSTFLAGS: -Dwarnings
+2888-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1002400Z   CARGO_REGISTRY_TOKEN: ***
+2889-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1002956Z   CARGO_TOKEN: ***
+2890-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1003290Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2891-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1003596Z   DOCKERHUB_IMAGE: 
+2892-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1003862Z   CARGO_HOME: /home/runner/.cargo
+2893-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1004130Z   CARGO_INCREMENTAL: 0
+2894-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1004356Z ##[endgroup]
+2895:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1007988Z ##[start-action display=Install sccache;id=__self.__mozilla-actions_sccache-action]
+2896:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1044369Z ##[group]Run mozilla-actions/sccache-action@v0.0.10
+2897-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1044708Z with:
+2898-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1044908Z   version: v0.16.0
+2899-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1047431Z   token: ***
+2900-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1047661Z   disable_annotations: false
+2901-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1047905Z env:
+2902-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1048099Z   GIT_CONFIG_COUNT: 1
+2903-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1048339Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2904-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1048618Z   GIT_CONFIG_VALUE_0: main
+--
+2908-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1049585Z   RUSTFLAGS: -Dwarnings
+2909-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1049906Z   CARGO_REGISTRY_TOKEN: ***
+2910-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1050204Z   CARGO_TOKEN: ***
+2911-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1050453Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2912-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1050752Z   DOCKERHUB_IMAGE: 
+2913-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1050983Z   CARGO_HOME: /home/runner/.cargo
+2914-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1051241Z   CARGO_INCREMENTAL: 0
+2915-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1051464Z ##[endgroup]
+2916:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1929811Z try to setup sccache version: v0.16.0
+2917:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.1942239Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+2918-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.4015778Z Correct checksum: aec995a83ad3dff3d14b6314e08858b7b73d35ca85a5bcf3d3a9ec07dee35588
+2919-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.4136326Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/8d627b33-5304-4d02-9ef6-3499e8f89a1a -f /home/runner/work/_temp/86fa2903-d497-4ac8-b538-b41549e76b4d
+2920:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.5992650Z sccache extracted to: /home/runner/work/_temp/8d627b33-5304-4d02-9ef6-3499e8f89a1a
+2921:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6130326Z sccache cached to: /opt/hostedtoolcache/sccache/0.16.0/x64
+2922:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6246028Z ##[end-action id=__self.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=523]
+2923:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6248653Z ##[start-action display=Enable sccache for Rust;id=__self.__run]
+2924-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6266554Z ##[group]Run echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+2925-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6267107Z ^[[36;1mecho "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"^[[0m
+2926-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6267571Z ^[[36;1mecho "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"^[[0m
+2927-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6318288Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2928-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6318659Z env:
+2929-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6318867Z   GIT_CONFIG_COUNT: 1
+2930-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6319126Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2931-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6319416Z   GIT_CONFIG_VALUE_0: main
+--
+2934-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6320390Z   CARGO_TERM_COLOR: always
+2935-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6320626Z   RUSTFLAGS: -Dwarnings
+2936-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6321033Z   CARGO_REGISTRY_TOKEN: ***
+2937-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6321331Z   CARGO_TOKEN: ***
+2938-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6321577Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2939-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6321878Z   DOCKERHUB_IMAGE: 
+2940-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6322108Z   CARGO_HOME: /home/runner/.cargo
+2941-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6322367Z   CARGO_INCREMENTAL: 0
+2942:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6322920Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2943-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6323295Z   ACTIONS_CACHE_SERVICE_V2: on
+2944-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6323725Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2945-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6370418Z   ACTIONS_RUNTIME_TOKEN: ***
+2946-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6370700Z   SCCACHE_GHA_ENABLED: true
+2947:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6370955Z   RUSTC_WRAPPER: sccache
+2948-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6371203Z ##[endgroup]
+2949-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6456453Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=20]
+2950-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6508854Z ##[group]Run oven-sh/setup-bun@v2
+2951-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6509139Z with:
+2952-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6509357Z   bun-version-file: .bun-version
+2953-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6509623Z   no-cache: false
+2954-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6512114Z   token: ***
+2955-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6512316Z env:
+--
+2961-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6514004Z   CARGO_TERM_COLOR: always
+2962-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6514244Z   RUSTFLAGS: -Dwarnings
+2963-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6514589Z   CARGO_REGISTRY_TOKEN: ***
+2964-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6514902Z   CARGO_TOKEN: ***
+2965-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6515151Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2966-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6515454Z   DOCKERHUB_IMAGE: 
+2967-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6515691Z   CARGO_HOME: /home/runner/.cargo
+2968-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6515992Z   CARGO_INCREMENTAL: 0
+2969:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6516301Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2970-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6516659Z   ACTIONS_CACHE_SERVICE_V2: on
+2971-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6517064Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2972-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6564263Z   ACTIONS_RUNTIME_TOKEN: ***
+2973-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6564539Z   SCCACHE_GHA_ENABLED: true
+2974:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6564793Z   RUSTC_WRAPPER: sccache
+2975-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.6565286Z ##[endgroup]
+2976-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.8284352Z Obtained version 1.3.14 from .bun-version
+2977-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:17.9069845Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-linux-x64.zip
+2978-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.1014051Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/1f863570-0af9-4f1e-ba35-ba4568b838a8.zip
+2979-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8543177Z [command]/home/runner/.bun/bin/bun --revision
+2980-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8590495Z 1.3.14+0d9b296af
+2981-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8755507Z ##[group]Run bash scripts/install-rust-script.sh
+2982-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8755923Z ^[[36;1mbash scripts/install-rust-script.sh^[[0m
+--
+2990-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8806467Z   CARGO_TERM_COLOR: always
+2991-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8806703Z   RUSTFLAGS: -Dwarnings
+2992-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8807083Z   CARGO_REGISTRY_TOKEN: ***
+2993-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8807373Z   CARGO_TOKEN: ***
+2994-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8807618Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2995-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8807914Z   DOCKERHUB_IMAGE: 
+2996-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8808144Z   CARGO_HOME: /home/runner/.cargo
+2997-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8808402Z   CARGO_INCREMENTAL: 0
+2998:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8808750Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2999-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8809102Z   ACTIONS_CACHE_SERVICE_V2: on
+3000-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8809506Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+3001-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8856360Z   ACTIONS_RUNTIME_TOKEN: ***
+3002-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8856652Z   SCCACHE_GHA_ENABLED: true
+3003:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8856910Z   RUSTC_WRAPPER: sccache
+3004-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8857148Z ##[endgroup]
+3005-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:18.8968102Z Installing rust-script (attempt 1/3)
+3006-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:26.1255473Z ^[[1m^[[92m    Updating^[[0m crates.io index
+3007-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:26.2640808Z ^[[1m^[[92m Downloading^[[0m crates ...
+3008-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:26.4194707Z ^[[1m^[[92m  Downloaded^[[0m rust-script v0.36.0
+3009-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:26.6347089Z ^[[1m^[[92m  Installing^[[0m rust-script v0.36.0
+3010-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:26.6574883Z ^[[1m^[[92m    Updating^[[0m crates.io index
+3011-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:17:27.5533652Z ^[[1m^[[92m    Updating^[[0m crates.io index
+--
+3146-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1580548Z   CARGO_TERM_COLOR: always
+3147-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1580787Z   RUSTFLAGS: -Dwarnings
+3148-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1581197Z   CARGO_REGISTRY_TOKEN: ***
+3149-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1581493Z   CARGO_TOKEN: ***
+3150-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1581744Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+3151-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1582059Z   DOCKERHUB_IMAGE: 
+3152-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1582291Z   CARGO_HOME: /home/runner/.cargo
+3153-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1582554Z   CARGO_INCREMENTAL: 0
+3154:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1583247Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+3155-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1583600Z   ACTIONS_CACHE_SERVICE_V2: on
+3156-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1584006Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+3157-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1631193Z   ACTIONS_RUNTIME_TOKEN: ***
+3158-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1631483Z   SCCACHE_GHA_ENABLED: true
+3159:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1631736Z   RUSTC_WRAPPER: sccache
+3160-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.1631967Z ##[endgroup]
+3161-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3786978Z Cache not found for input keys: Linux-cargo-1611955c083f37eccdddcca11c3ebf9667700deda1de3e3e57129a0af4df4ab5, Linux-cargo-
+3162-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3908940Z ##[group]Run set -euo pipefail
+3163-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3909503Z ^[[36;1mset -euo pipefail^[[0m
+3164-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3909931Z ^[[36;1mcurl -fsSL \^[[0m
+3165-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3910937Z ^[[36;1m  "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \^[[0m
+3166-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3911774Z ^[[36;1m  | tar xz -C /tmp actionlint^[[0m
+3167-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3912094Z ^[[36;1m/tmp/actionlint -color^[[0m
+--
+3175-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3965471Z   CARGO_TERM_COLOR: always
+3176-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3965702Z   RUSTFLAGS: -Dwarnings
+3177-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3966083Z   CARGO_REGISTRY_TOKEN: ***
+3178-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3966462Z   CARGO_TOKEN: ***
+3179-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3966712Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+3180-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3967012Z   DOCKERHUB_IMAGE: 
+3181-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3967237Z   CARGO_HOME: /home/runner/.cargo
+3182-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3967498Z   CARGO_INCREMENTAL: 0
+3183:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3967797Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+3184-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3968151Z   ACTIONS_CACHE_SERVICE_V2: on
+3185-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.3968564Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+3186-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.4015390Z   ACTIONS_RUNTIME_TOKEN: ***
+3187-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.4015675Z   SCCACHE_GHA_ENABLED: true
+3188:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.4015929Z   RUSTC_WRAPPER: sccache
+3189-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.4016170Z   ACTIONLINT_VERSION: 1.7.7
+3190-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:12.4016404Z ##[endgroup]
+3191-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6615933Z ##[group]Run bash scripts/lint-shell-scripts.sh
+3192-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6616527Z ^[[36;1mbash scripts/lint-shell-scripts.sh^[[0m
+3193-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6677519Z shell: /usr/bin/bash -e {0}
+3194-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6677875Z env:
+3195-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6678083Z   GIT_CONFIG_COUNT: 1
+3196-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6678355Z   GIT_CONFIG_KEY_0: init.defaultBranch
+--
+3200-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6679368Z   CARGO_TERM_COLOR: always
+3201-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6679598Z   RUSTFLAGS: -Dwarnings
+3202-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6679985Z   CARGO_REGISTRY_TOKEN: ***
+3203-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6680271Z   CARGO_TOKEN: ***
+3204-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6680518Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+3205-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6680832Z   DOCKERHUB_IMAGE: 
+3206-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6681065Z   CARGO_HOME: /home/runner/.cargo
+3207-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6681324Z   CARGO_INCREMENTAL: 0
+3208:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6681678Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+3209-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6682033Z   ACTIONS_CACHE_SERVICE_V2: on
+3210-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6682442Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+3211-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6729557Z   ACTIONS_RUNTIME_TOKEN: ***
+3212-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6729838Z   SCCACHE_GHA_ENABLED: true
+3213:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6730110Z   RUSTC_WRAPPER: sccache
+3214-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6730347Z ##[endgroup]
+3215-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:13.6870943Z Linting 24 shell script(s)
+3216-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4032299Z ##[group]Run cargo fmt --all -- --check
+3217-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4033087Z ^[[36;1mcargo fmt --all -- --check^[[0m
+3218-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4084763Z shell: /usr/bin/bash -e {0}
+3219-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4085057Z env:
+3220-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4085267Z   GIT_CONFIG_COUNT: 1
+3221-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4105058Z   GIT_CONFIG_KEY_0: init.defaultBranch
+--
+3225-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4106561Z   CARGO_TERM_COLOR: always
+3226-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4106927Z   RUSTFLAGS: -Dwarnings
+3227-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4107461Z   CARGO_REGISTRY_TOKEN: ***
+3228-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4107903Z   CARGO_TOKEN: ***
+3229-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4108168Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+3230-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4108467Z   DOCKERHUB_IMAGE: 
+3231-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4108699Z   CARGO_HOME: /home/runner/.cargo
+3232-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4108965Z   CARGO_INCREMENTAL: 0
+3233:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4109304Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+3234-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4109660Z   ACTIONS_CACHE_SERVICE_V2: on
+3235-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4110089Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+3236-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4158403Z   ACTIONS_RUNTIME_TOKEN: ***
+3237-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4158687Z   SCCACHE_GHA_ENABLED: true
+3238:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4158946Z   RUSTC_WRAPPER: sccache
+3239-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:14.4159182Z ##[endgroup]
+3240-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:17.6708427Z ##[group]Run cargo metadata --locked --format-version 1 > /dev/null
+3241-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:17.6708964Z ^[[36;1mcargo metadata --locked --format-version 1 > /dev/null^[[0m
+3242-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:17.6756718Z shell: /usr/bin/bash -e {0}
+3243-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:17.6756979Z env:
+3244-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:17.6757179Z   GIT_CONFIG_COUNT: 1
+3245-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:18:17.6757425Z   GIT_CONFIG_KEY_0: init.defaultBranch

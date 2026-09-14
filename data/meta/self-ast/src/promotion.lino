@@ -2,9 +2,9 @@ self_ast_census
   target src/promotion.rs
   language rust
   fidelity signature
-  byte_len 32137
-  line_count 884
-  content_id source_module_89d0fa8d8536d479
+  byte_len 32101
+  line_count 880
+  content_id source_module_3b97ba279eb7d7e0
   symbol_count 55
   symbols
     module gates 37 37
@@ -19,46 +19,46 @@ self_ast_census
     function unit_specs 124 134
     function from_manifest 136 149
     function clears 153 163
-    function status_slug 167 173
-    function evidence_link 179 190
-    struct SeedEdit 195 201
-    function new 206 211
-    enum PromotionOutcome 216 221
-    function slug 226 231
-    struct PromotionProposal 236 247
-    function new 252 270
-    function passes_all_gates 276 278
-    function failing_gates 282 284
-    function outcome 288 294
-    struct PromotionRecord 299 304
-    struct PromotionBranchPlan 312 318
-    struct PromotionRun 322 327
-    function evaluate 332 349
-    function promoted 353 358
-    function rejected 362 367
-    function branch_plan 371 393
-    function links_notation 397 424
-    function memory_events 431 446
-    struct AppliedSeedEdit 451 458
-    struct PromotionApplyOutcome 462 473
-    function promotions_from_learning_run 482 494
-    function demonstration_promotion_run 502 504
-    function demonstration_promotion_proposals 508 549
-    function learned_program_rule_lino 554 563
-    function proposal_event 565 577
-    function evidence_event 579 600
-    function decision_event 602 621
-    function applied_event 623 638
-    function rejection_event 643 667
-    function render_promotion_proposals 675 692
-    function parse_promotion_proposals 705 767
-    struct DraftProposal 770 776
-    function finish 779 794
-    struct DraftGate 798 800
-    function finish 803 813
-    function manifest_field 818 829
-    function split_field 831 834
-    function unquote 836 861
-    function quote 863 870
-    function push_field 872 877
-    function write_count 879 884
+    function status_slug 167 169
+    function evidence_link 175 186
+    struct SeedEdit 191 197
+    function new 202 207
+    enum PromotionOutcome 212 217
+    function slug 222 227
+    struct PromotionProposal 232 243
+    function new 248 266
+    function passes_all_gates 272 274
+    function failing_gates 278 280
+    function outcome 284 290
+    struct PromotionRecord 295 300
+    struct PromotionBranchPlan 308 314
+    struct PromotionRun 318 323
+    function evaluate 328 345
+    function promoted 349 354
+    function rejected 358 363
+    function branch_plan 367 389
+    function links_notation 393 420
+    function memory_events 427 442
+    struct AppliedSeedEdit 447 454
+    struct PromotionApplyOutcome 458 469
+    function promotions_from_learning_run 478 490
+    function demonstration_promotion_run 498 500
+    function demonstration_promotion_proposals 504 545
+    function learned_program_rule_lino 550 559
+    function proposal_event 561 573
+    function evidence_event 575 596
+    function decision_event 598 617
+    function applied_event 619 634
+    function rejection_event 639 663
+    function render_promotion_proposals 671 688
+    function parse_promotion_proposals 701 763
+    struct DraftProposal 766 772
+    function finish 775 790
+    struct DraftGate 794 796
+    function finish 799 809
+    function manifest_field 814 825
+    function split_field 827 830
+    function unquote 832 857
+    function quote 859 866
+    function push_field 868 873
+    function write_count 875 880

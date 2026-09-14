@@ -33,6 +33,7 @@
       { id: "vscode", href: "vscode/", icon: "🧩", titleKey: "navVscodeTitle", descKey: "navVscodeDesc", actionKey: "navVscodeAction" },
       { id: "cli", href: "cli/", icon: "⌨️", titleKey: "navCliTitle", descKey: "navCliDesc", actionKey: "navCliAction" },
       { id: "telegram", href: "telegram/", icon: "💬", titleKey: "navTelegramTitle", descKey: "navTelegramDesc", actionKey: "navTelegramAction" },
+      { id: "action", href: "https://github.com/link-assistant/formal-ai/blob/main/docs/github-action.md", icon: "🤖", external: true, titleKey: "navActionTitle", descKey: "navActionDesc", actionKey: "navActionAction" },
     ],
     copy: {
       en: {
@@ -58,6 +59,9 @@
         navTelegramTitle: "Telegram bot",
         navTelegramDesc: "Run the symbolic agent as a Telegram bot from the CLI.",
         navTelegramAction: "Set up the bot",
+        navActionTitle: "GitHub Action",
+        navActionDesc: "Let Formal AI open a pull request for an issue in your repository.",
+        navActionAction: "Install the action",
       },
       ru: {
         heading: "formal-ai",
@@ -82,6 +86,9 @@
         navTelegramTitle: "Telegram-бот",
         navTelegramDesc: "Запустите символьный агент как Telegram-бота через CLI.",
         navTelegramAction: "Настроить бота",
+        navActionTitle: "GitHub Action",
+        navActionDesc: "Позвольте Formal AI открыть пул-реквест по задаче в вашем репозитории.",
+        navActionAction: "Установить действие",
       },
       zh: {
         heading: "formal-ai",
@@ -106,6 +113,9 @@
         navTelegramTitle: "Telegram 机器人",
         navTelegramDesc: "通过 CLI 将符号化代理作为 Telegram 机器人运行。",
         navTelegramAction: "设置机器人",
+        navActionTitle: "GitHub Action",
+        navActionDesc: "让 Formal AI 为你仓库中的问题提交一个拉取请求。",
+        navActionAction: "安装该操作",
       },
       hi: {
         heading: "formal-ai",
@@ -130,6 +140,9 @@
         navTelegramTitle: "Telegram बॉट",
         navTelegramDesc: "CLI से सिंबॉलिक एजेंट को Telegram बॉट के रूप में चलाएँ।",
         navTelegramAction: "बॉट सेट करें",
+        navActionTitle: "GitHub Action",
+        navActionDesc: "Formal AI को अपने रिपॉज़िटरी के issue के लिए pull request खोलने दें।",
+        navActionAction: "एक्शन इंस्टॉल करें",
       },
     },
   });

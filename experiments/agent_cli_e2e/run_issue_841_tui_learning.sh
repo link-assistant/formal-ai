@@ -56,7 +56,7 @@ config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-sdk/ope
 
 (cd "$work" && FORMAL_AI_API_KEY=local LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
   "$AGENT" --model formalai/formal-ai --permission-mode auto \
-  --output-format stream-json --compact-json --disable-stdin --prompt "$TASK" \
+  --output-format stream-json --compact-json --disable-stdin --no-summarize-session --compaction-models "(same)" --prompt "$TASK" \
   > "$OUT/agent-stream.raw.log" 2> "$OUT/agent-stderr.log")
 "$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
 grep '^{' "$OUT/agent-stream.raw.log" > "$OUT/agent-stream.jsonl"

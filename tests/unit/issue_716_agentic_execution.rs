@@ -1,9 +1,9 @@
-use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
 use formal_ai::protocol::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
+    ChatCompletionRequest, ChatMessage, ToolCall, create_chat_completion_with_solver,
 };
 use formal_ai::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 struct LocalizedAgentCase {
     language: &'static str,

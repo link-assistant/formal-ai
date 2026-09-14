@@ -185,7 +185,10 @@ fn meta_tools_match_driver_planner_and_packages() {
     );
 
     let driver = read("src/agentic_coding/driver.rs");
-    let planner = read("src/agentic_coding/planner.rs");
+    // Tool-name -> capability classification is the capability router's job;
+    // `planner::classify_tool` delegates to it. Read the module that does the
+    // classifying so the gate follows the code instead of a file name.
+    let router = read("src/agentic_coding/capability_router.rs");
     let packages = read("src/associative_package.rs");
     for tool in tools {
         let name = tool.require("tool");
@@ -198,8 +201,8 @@ fn meta_tools_match_driver_planner_and_packages() {
             "driver.rs DRIVER_TOOLS should advertise {name}"
         );
         assert!(
-            planner.contains(&format!("Capability::{capability}")),
-            "planner.rs should classify into Capability::{capability}"
+            router.contains(&format!("Capability::{capability}")),
+            "capability_router.rs should classify into Capability::{capability}"
         );
         assert!(
             packages.contains(&format!("\"{permission}\"")),
@@ -215,21 +218,22 @@ fn meta_tools_match_driver_planner_and_packages() {
 #[test]
 fn meta_stages_match_the_planner_state_machine() {
     let records = records();
-    let planner = read("src/agentic_coding/planner.rs");
+    let recipe = read("src/agentic_coding/formalization_recipe.rs");
 
-    // The documented state machine appears verbatim in the planner.
+    // The documented state machine appears verbatim in the recipe module.
     assert!(
-        planner.contains(
+        recipe.contains(
             "web_search → web_fetch → write_file(formalize) → run_command(verify) → final"
         ),
-        "planner.rs should document the search → fetch → write → run → final state machine"
+        "formalization_recipe.rs should document the search → fetch → write → run → final state \
+         machine"
     );
 
     for stage in of_kind(&records, "meta_stage") {
         let order = stage.require("order");
         assert!(
-            planner.contains(&format!("Step {order}:")),
-            "planner.rs should mark `Step {order}:` for the {} stage",
+            recipe.contains(&format!("Step {order}:")),
+            "formalization_recipe.rs should mark `Step {order}:` for the {} stage",
             stage.require("stage")
         );
     }

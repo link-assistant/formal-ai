@@ -1,0 +1,39 @@
+language en
+lemma identify
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "recognize as being; establish the identity of someone or something"
+    examples ("She identified the man on the ‘wanted’ poster")
+    id oewn-00620568-v
+    partOfSpeech v
+    synonyms (place)
+  entry
+    definition "give the name or identifying characteristics of; refer to by name or some other identifying characteristic property"
+    examples ("Many senators were named in connection with the scandal" "The almanac identifies the auspicious months")
+    id oewn-01028104-v
+    partOfSpeech v
+    synonyms (name)
+  entry
+    definition "consider (oneself) as similar to somebody else"
+    examples ("He identified with the refugees")
+    id oewn-00693710-v
+    partOfSpeech v
+  entry
+    definition "conceive of as united or associated"
+    examples ("Sex activity is closely identified with the hypothalamus")
+    id oewn-00716436-v
+    partOfSpeech v
+  entry
+    definition "identify as in botany or biology, for example"
+    id oewn-00654017-v
+    partOfSpeech v
+    synonyms (discover key "key out" distinguish describe name)
+  entry
+    definition "consider to be equal or the same"
+    examples ("He identified his brother as one of the fugitives")
+    id oewn-00620141-v
+    partOfSpeech v
+source "oewn:2024"

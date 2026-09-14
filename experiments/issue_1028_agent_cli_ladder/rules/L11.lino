@@ -1,0 +1,8 @@
+link_edit
+  leaf L11
+  path src/program_skill_gap.rs
+  language rust
+  rule insert_member
+    list "SYNTHESIS_ROUTES"
+    member "structured_edit"
+  expect "structured_edit"

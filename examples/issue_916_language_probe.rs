@@ -6,7 +6,7 @@
 //! `cargo run --example issue_916_language_probe` after symlinking.
 
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::language;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::seed;

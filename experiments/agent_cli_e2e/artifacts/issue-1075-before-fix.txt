@@ -1,0 +1,21 @@
+== sidecar (server cwd, in a container): /tmp/tmp.WKehv4ZbJz -> /sidecar ==
+== server up on 8984, inside formal-ai-issue-1075-8984 ==
+
+== agent: workspace (client cwd, on the host): /tmp/tmp.VEab1Xm2u5 ==
+== agent attempt 1/1 ==
+== agent exit: 0 ==
+== attempt 1 did not produce main.rs; retrying ==
+FAIL[agent]: main.rs missing from /tmp/tmp.VEab1Xm2u5
+
+== claude: workspace (client cwd, on the host): /tmp/tmp.28nznrKbJX ==
+== claude attempt 1/1 ==
+== claude exit: 0 ==
+== attempt 1 did not produce main.rs; retrying ==
+FAIL[claude]: main.rs missing from /tmp/tmp.28nznrKbJX
+
+PASS: the server's directory gained no authored file
+FAIL: the server offered clients paths inside its own directory:
+"/sidecar/main.rs"
+"/sidecar/main.rs\"
+"Error: ENOENT: no such file or directory, open '/sidecar/main.rs'"
+== chat rounds: 4 ==

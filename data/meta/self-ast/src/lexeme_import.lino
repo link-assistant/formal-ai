@@ -2,9 +2,9 @@ self_ast_census
   target src/lexeme_import.rs
   language rust
   fidelity signature
-  byte_len 34806
+  byte_len 34770
   line_count 985
-  content_id source_module_03ae22d5093d8a37
+  content_id source_module_1495746f451d381d
   symbol_count 49
   symbols
     function import_languages 42 55

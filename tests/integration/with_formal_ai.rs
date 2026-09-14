@@ -336,16 +336,16 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
             "agent",
             vec![
                 "--no-summarize-session",
-                "--compaction-model",
-                "same",
+                "--compaction-models",
+                "(same)",
                 "--model",
                 "formalai/formal-ai",
                 "--interactive",
             ],
             vec![
                 "--no-summarize-session",
-                "--compaction-model",
-                "same",
+                "--compaction-models",
+                "(same)",
                 "--model",
                 "formalai/formal-ai",
                 "-p",
@@ -574,9 +574,26 @@ fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
             "claude" => {
                 assert!(captured.contains("ANTHROPIC_AUTH_TOKEN=formal-ai"));
                 assert!(captured.contains("ANTHROPIC_API_KEY="));
-                assert!(captured.contains("ANTHROPIC_BASE_URL=http://127.0.0.1:8080/api/anthropic"));
+                assert!(
+                    captured.contains("ANTHROPIC_BASE_URL=http://127.0.0.1:8080/api/anthropic")
+                );
                 assert!(captured.contains("---CLAUDE_CONFIG---"));
                 assert!(captured.contains(r#""hasCompletedOnboarding": true"#));
+                let config_capture = captured
+                    .split_once("---CLAUDE_CONFIG---\n")
+                    .expect("captured Claude config marker")
+                    .1
+                    .split_once("\n---HOME_GEMINI_SETTINGS---")
+                    .expect("captured config terminator")
+                    .0;
+                let config: serde_json::Value =
+                    serde_json::from_str(config_capture).expect("parse captured Claude config");
+                let working_directory = std::env::current_dir().expect("working directory");
+                assert_eq!(
+                    config["projects"][working_directory.to_string_lossy().as_ref()]["hasTrustDialogAccepted"],
+                    true,
+                    "an ephemeral interactive run must not stop at Claude's folder-trust dialog"
+                );
                 assert!(captured.contains("arg[0]=--model"));
                 assert!(captured.contains("arg[1]=formal-ai"));
             }
@@ -868,26 +885,29 @@ fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
     assert!(codex_catalog.contains("\"context_used_tokens\":"));
     assert!(codex_catalog.contains("\"disk_free_bytes\":"));
     assert!(!codex_catalog.contains("\"context_window\": 60000"));
-    assert!(home
-        .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
-        .exists());
+    assert!(
+        home.join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
+            .exists()
+    );
 
     let opencode_config =
         std::fs::read_to_string(home.join(".config/opencode/opencode.json")).expect("opencode");
     assert!(opencode_config.contains("\"formalai\""));
     assert!(opencode_config.contains("\"model\": \"formalai/formal-ai\""));
-    assert!(home
-        .join(".config/opencode/opencode.json.formal-ai.bak")
-        .exists());
+    assert!(
+        home.join(".config/opencode/opencode.json.formal-ai.bak")
+            .exists()
+    );
 
     let agent_config =
         std::fs::read_to_string(home.join(".config/link-assistant-agent/opencode.json"))
             .expect("agent");
     assert!(agent_config.contains("\"formalai\""));
     assert!(agent_config.contains("\"model\": \"formalai/formal-ai\""));
-    assert!(home
-        .join(".config/link-assistant-agent/opencode.json.formal-ai.bak")
-        .exists());
+    assert!(
+        home.join(".config/link-assistant-agent/opencode.json.formal-ai.bak")
+            .exists()
+    );
 
     let profile = std::fs::read_to_string(home.join(".profile")).expect("profile");
     assert_eq!(profile.matches("formal-ai gemini").count(), 2);
@@ -932,13 +952,17 @@ fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
             .expect("restored codex catalog"),
         "user-managed catalog\n"
     );
-    assert!(!home
-        .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
-        .exists());
+    assert!(
+        !home
+            .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
+            .exists()
+    );
     assert!(!home.join(".config/opencode/opencode.json").exists());
-    assert!(!home
-        .join(".config/link-assistant-agent/opencode.json")
-        .exists());
+    assert!(
+        !home
+            .join(".config/link-assistant-agent/opencode.json")
+            .exists()
+    );
     assert!(!home.join(".profile").exists());
 
     let _ = std::fs::remove_dir_all(&dir);

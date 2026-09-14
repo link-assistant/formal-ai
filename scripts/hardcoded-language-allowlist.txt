@@ -41,6 +41,8 @@ src/agentic_coding/driver.rs	command timed out: {}
 src/agentic_coding/driver.rs	error: unsupported tool {other}
 src/agentic_coding/driver.rs	run_command produced no result for {command:?}
 src/agentic_coding/driver.rs	wrote {} byte(s) to {path}
+src/agentic_coding/evidence_record.rs	Recorded the findings in `{}`.
+src/agentic_coding/evidence_record.rs	The findings could not be recorded in `{}`: the write step failed.
 src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
 src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
@@ -52,6 +54,9 @@ src/agentic_coding/file_read.rs	No files were listed in `{directory}`.
 src/agentic_coding/file_read.rs	Read {} file(s):
 src/agentic_coding/file_read.rs	Value of `{key}` in `{path}`: {value}
 src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort
+src/agentic_coding/formalization_recipe.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
+src/agentic_coding/formalization_recipe.rs	cat {KB_PATH}
+src/agentic_coding/formalization_recipe.rs	the source text ({})
 src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
 src/agentic_coding/general_planner.rs	cat {target}
 src/agentic_coding/general_planner.rs	workspace file {target}
@@ -77,10 +82,11 @@ src/agentic_coding/ledger.rs	Recorded the approved learning ledger: {count} less
 src/agentic_coding/meaning_detail.rs	Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}
 src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
 src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
-src/agentic_coding/planner.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
+src/agentic_coding/note_composition.rs	- nothing: no tool result was recorded before this note.\n
+src/agentic_coding/note_composition.rs	\nNo requested part above is backed by an observation from this session.\n
+src/agentic_coding/note_composition.rs	\nObserved in this session:\n
+src/agentic_coding/note_composition.rs	{}\n\nRequested parts:\n
 src/agentic_coding/planner.rs	I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
-src/agentic_coding/planner.rs	cat {KB_PATH}
-src/agentic_coding/planner.rs	the source text ({})
 src/agentic_coding/question_catalog.rs	  intent \"generate_all_possible_questions\"\n
 src/agentic_coding/question_catalog.rs	  record_type \"question_catalog\"\n
 src/agentic_coding/question_catalog.rs	Generate all possible questions from smallest to largest, drawing words from the frequency-tiered vocabulary, classify each candidate as grammatical or not and, among the grammatical ones, logically meaningful or not, then answer the meaningful ones and record the whole question catalog in Links Notation.
@@ -97,6 +103,7 @@ src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 src/agentic_coding/source_links.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+src/agentic_coding/write_request.rs	{line}\n\n{body}\n
 src/associative_package.rs	Package handler: {}
 src/associative_package.rs	Package permission: {}
 src/associative_package.rs	Package trigger: {}
@@ -177,12 +184,16 @@ src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙
 src/coding/blueprint.rs	执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：`{run_command}`。
 src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。我已将您的请求分解为以下子任务：
 src/coding/catalog/languages.rs	1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+src/coding/catalog/languages.rs	Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.
 src/coding/catalog/languages.rs	The C# seed is returned with this warning until a dotnet-backed execution profile is available.
 src/coding/catalog/languages.rs	The C++ seed is returned with this warning until a g++-backed execution profile is available.
 src/coding/catalog/languages.rs	The Java seed is returned with this warning until a javac-backed execution profile is available.
+src/coding/catalog/languages.rs	The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.
 src/coding/catalog/languages.rs	The Ruby seed is returned with this warning until a ruby-backed execution profile is available.
+src/coding/catalog/languages.rs	The Scala seed is returned with this warning until a scalac-backed execution profile is available.
 src/coding/catalog/languages.rs	The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.
 src/coding/catalog/tasks.rs	Hello, world!
+src/coding/catalog/types.rs	printf '{}' | {run_command}
 src/coding/catalog/types.rs	write_program(language={}, task={})
 src/coding/guidance.rs	Check that it compiles: `{check_command}`.
 src/coding/guidance.rs	Compare the output with the expected output shown above.
@@ -252,10 +263,10 @@ src/dreaming.rs	duplicate recomputable event; retained {} with usage {}
 src/dreaming/learning.rs	learned standing requirement ({topic}):
 src/dreaming_application.rs	Learned standing requirement ({}): {}
 src/dreaming_application.rs	Standing requirement ({}): {}
-src/engine.rs	Check command: `{check_command}`\nRun command: `{}`
+src/engine.rs	Check command: `{check_command}`\nRun command: `{run_command}`
 src/engine.rs	Execution status: {status_phrase} in {}.
 src/engine.rs	Here is a minimal {language_name} {task_label} program:
-src/engine.rs	Run command: `{}`
+src/engine.rs	Run command: `{run_command}`
 src/engine.rs	Write-program template catalog is unavailable.
 src/engine.rs	rule_assistant_free_time answer={}
 src/engine.rs	rule_assistant_name answer={}
@@ -363,13 +374,13 @@ src/learning_cycle.rs	    defined-by inquiry\n
 src/learning_cycle.rs	  blocked_class\n
 src/learning_cycle.rs	Adopt {} learned request-opener surface(s) for the '{variation}' frontier class ({}), derived from {MINIMUM_SUPPORT} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s).
 src/learning_ledger.rs	Approved lesson `{}` (rule `{}`) for failure `{}` → `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
-src/link_store.rs	expected event record, got {content}
-src/link_store.rs	expected field value, got {content}
-src/link_store.rs	expected quoted value, got {rest}
 src/link_store.rs	expected {ROOT_HEADER} or {BUNDLE_HEADER}, got {other}
-src/link_store.rs	invalid field name {key}
-src/link_store.rs	unexpected indentation or record line: {content}
-src/link_store.rs	unexpected trailing content after quoted value: {}
+src/link_store/validation.rs	expected event record, got {content}
+src/link_store/validation.rs	expected field value, got {content}
+src/link_store/validation.rs	expected quoted value, got {rest}
+src/link_store/validation.rs	invalid field name {key}
+src/link_store/validation.rs	unexpected indentation or record line: {content}
+src/link_store/validation.rs	unexpected trailing content after quoted value: {}
 src/links_query.rs	  edge\n    from \"
 src/links_query.rs	\"\n    links_notation \"
 src/links_query.rs	filter needs `=` or CONTAINS: {clause}
@@ -683,7 +694,11 @@ src/repair_strategy.rs	Why did the reverse-sort answer change between releases?
 src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
 src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
 src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
+src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
+src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
+src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {stem}_wasm.rs -o {stem}.wasm
+src/rule_synthesis.rs	rustc --edition=2024 {primary} -o substitution_program
 src/rule_synthesis.rs	write_program task={} language={}
 src/seed.rs	formal_ai_seed_bundle\n
 src/seed/meanings/parse.rs	{surface} denotes {parent_meaning}
@@ -745,10 +760,6 @@ src/solver_diagnostics.rs	{answer}\n\n[diagnostic]\n{}
 src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
 src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
 src/solver_formalization.rs	top=formalization:{top_index} runner_up=formalization:{runner_up_index} margin={margin:.6} epsilon={epsilon:.6}
-src/solver_handler_docs.rs	pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
-src/solver_handler_docs.rs	pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.\n\nВ рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.\n\nИсточник: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (официальная документация pandas).
-src/solver_handler_docs.rs	pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.\n\nइस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
-src/solver_handler_docs.rs	pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
 src/solver_handler_how.rs	For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\x20
 src/solver_handler_how.rs	I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try \"how does X work?\" where X is a concept I know (e.g. \"how does Wikipedia work?\"). The evidence and trace events are appended to the log; see the trace link for the full chain.
 src/solver_handler_how.rs	Mechanism discovery plan for `{subject}`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {provider_summary}. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details.
@@ -967,18 +978,13 @@ src/solver_handlers/feature_capability.rs	विकिपीडिया क्�
 src/solver_handlers/feature_capability.rs	हाँ। इस configuration में `{label}` available है। Example message: `{example}`.
 src/solver_handlers/feature_capability.rs	हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं \"हाँ\" कहने के बजाय स्थिति बताऊँगा।
 src/solver_handlers/feature_capability.rs	可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {WEB_SEARCH_RRF_K}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。
-src/solver_handlers/github_repository_traffic.rs	Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}.
 src/solver_handlers/installation_conversion.rs	1. Detect the source surface and requested target surface(s).\n
 src/solver_handlers/installation_conversion.rs	2. Extract command-like install/deploy steps in original order.\n
 src/solver_handlers/installation_conversion.rs	3. Render every target from the same install-step IR.\n
 src/solver_handlers/installation_conversion.rs	4. Preserve commands verbatim so the conversion can round-trip.\n
 src/solver_handlers/installation_conversion.rs	Converted installation instructions for {}.
-src/solver_handlers/installation_conversion.rs	Meta algorithm for constructing conversion algorithms:\n
 src/solver_handlers/installation_conversion.rs	README.md installation guide:\n\n
 src/solver_handlers/installation_conversion.rs	Run the {} {} step
-src/solver_handlers/installation_conversion.rs	\nExisting coding solutions producible by the same meta algorithm:\n
-src/solver_handlers/installation_conversion.rs	{} output={} verifier={}
-src/solver_handlers/installation_conversion.rs	{}. {} -> {}; verification fixture: {}.
 src/solver_handlers/meta_explanation.rs	I am not an LLM runtime and I do not perform neural inference. Current environment: {} (`{}`). Runtime: {}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory ({}) first; web search is used only when this environment allows it: {}. The whole internet is not preloaded into local rules.
 src/solver_handlers/meta_explanation.rs	I answered that way because the prompt matched a deterministic Links Notation rule. The evidence links and trace events are appended to the log; see the trace link for the full chain.
 src/solver_handlers/meta_explanation.rs	I work by matching your prompt against deterministic Links Notation rules stored in memory. Each rule maps a recognized pattern to a fixed response. When no rule matches, I report intent: unknown. There is no neural inference — every answer is fully traceable to a symbolic rule.
@@ -1052,7 +1058,7 @@ src/solver_handlers/playwright_script.rs	\nУточните URL, действи�
 src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-пример по документации Playwright.\n\n
 src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
 src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
-src/solver_handlers/program_synthesis.rs	Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.
+src/solver_handlers/program_synthesis.rs	Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.
 src/solver_handlers/program_synthesis.rs	\n\nif __name__ == \"__main__\":\n
 src/solver_handlers/program_synthesis.rs	command={} exit={:?} timed_out={} stdout_bytes={} stderr_bytes={}
 src/solver_handlers/program_synthesis.rs	language=python function={function_name}
@@ -1183,11 +1189,6 @@ src/solver_handlers/software_project_followup.rs	software_project_followup\n
 src/solver_handlers/text_manipulation.rs	bytes={} chars={}
 src/solver_handlers/text_manipulation.rs	stage:{index} -> {}
 src/solver_handlers/text_manipulation.rs	stage:{} -> operation:{}
-src/solver_handlers/user_intent.rs	I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — every answer I give is derived from an explicit Links Notation rule. If you are looking for factual information on this topic, try asking \"what is <topic>\" and I will look it up in my knowledge base.
-src/solver_handlers/user_intent.rs	I can only respond with a chat reply. Running shell commands on your behalf is not allowed without explicit agent mode opt-in, and even then only inside an isolated sandbox.
-src/solver_handlers/user_intent.rs	I received only punctuation (`{trimmed}`). What would you like me to do next?
-src/solver_handlers/user_intent.rs	I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (\"what is X?\"), arithmetic, and Hello World programs.
-src/solver_handlers/user_intent.rs	Missing localized response seed: {intent}/{language}
 src/solver_handlers/user_intent.rs	\n\nSupported pipeline: impulse → formalize (Wikidata-backed) → context → proof plan → verification in relative-meta-logic → deformalize → finalize.
 src/solver_handlers/user_intent.rs	\n\nПоддерживаемый конвейер: impulse → formalize (Викиданные) → context → план доказательства → проверка в relative-meta-logic → deformalize → finalize.
 src/solver_handlers/web_requests.rs	I suggest opening this in a new tab: [{url}]({url}).\n\nIn the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead.
@@ -1209,8 +1210,6 @@ src/solver_handlers/web_requests.rs	यह {label} पर रिपॉजिट�
 src/solver_handlers/web_requests.rs	在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 [{repo_slug}]({project_url}) — {description}\n\n浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。
 src/solver_handlers/web_requests.rs	这是 {label} 上的仓库查询：[{slug}]({url})。\n\n通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted organizations 且 promotion 已开启，它会优先显示。
 src/solver_handlers/web_requests.rs	这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。
-src/solver_handlers_policy.rs	«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет».
-src/solver_handlers_policy.rs	Нет. У меня нет физического тела.
 src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
 src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
 src/solver_helpers/code.rs	from {lang}
@@ -1240,6 +1239,10 @@ src/statement_verification.rs	{} is contradicted: {} reports {} {} daily candles
 src/statement_verification.rs	{} is within the recorded {} {} daily candle range for {} (${:.2} to ${:.2}).
 src/substitution.rs	expected `from -> to`, got `{text}`
 src/substitution.rs	invalid variable in `{raw}`
+src/substitution_compiler/mod.rs	substitution_compilation {identity}\n  target {}\n  source_rule_set {}\n  ir_rule_count {}\n  stage lower_to_target_neutral_ir\n  stage emit_from_rust_owned_compiler\n  execution {execution}\n  verification executable_parity_required\n  doctrine javascript_interface_only
+src/substitution_compiler/rust_runtime.rs	    Rule { conditions: &[\n
+src/substitution_compiler/rust_runtime.rs	Pattern {{ from: {}, to: {} }}
+src/substitution_compiler/webassembly.rs	// Generated JavaScript interop; substitution semantics remain in Rust/WASM.\n// Compile {wasm_source} to a WebAssembly module before loading this file.\n{WASM_INTEROP}
 src/summarization/file.rs	Defines {symbol}.
 src/summarization/file.rs	It has embedded grammar blocks: {}.
 src/summarization/file.rs	Key content: {content_summary}
@@ -1285,6 +1288,6 @@ src/translation/pipeline.rs	start surface={surface:?} {source_lang}->{target_lan
 src/translation/pipeline.rs	wikidata:sparql:{}->{} ({} lemmas)
 src/translation/selection.rs	Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\"?
 src/translation/selection.rs	Which interpretation did you mean: {} or {}?
-src/translation/selection.rs	{impulse}\n{salt}
+src/translation/selection.rs	{impulse}\n{seed}
 src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}
 src/unknown_opener.rs	{opener} {body}

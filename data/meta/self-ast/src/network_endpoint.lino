@@ -2,9 +2,9 @@ self_ast_census
   target src/network_endpoint.rs
   language rust
   fidelity signature
-  byte_len 3129
+  byte_len 3105
   line_count 78
-  content_id source_module_de934b153e58a89a
+  content_id source_module_9ea78251abbbab44
   symbol_count 3
   symbols
     function handle_network_request 16 45

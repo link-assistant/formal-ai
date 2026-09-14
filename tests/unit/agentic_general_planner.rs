@@ -1,5 +1,5 @@
-use formal_ai::agentic_coding::general_planner::{compose_general_change_plan, PLAN_PATH};
-use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
+use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_change_plan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const EN_TASK: &str = "Create file notes/general-demo.txt containing planner fallback works";
@@ -20,10 +20,11 @@ through the Formal AI Agent CLI.";
 fn agentic_general_planner_composes_capability_steps_and_verification() {
     let plan = compose_general_change_plan(EN_TASK).expect("general plan");
     assert!(plan.steps.len() >= 3);
-    assert!(plan
-        .steps
-        .iter()
-        .all(|step| !step.expected_evidence.is_empty()));
+    assert!(
+        plan.steps
+            .iter()
+            .all(|step| !step.expected_evidence.is_empty())
+    );
     assert_eq!(plan.verification_command, "cat notes/general-demo.txt");
 }
 
@@ -69,31 +70,65 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     let AgenticPlan::ToolCalls(calls) =
         plan_chat_step(&messages, &tools).expect("compound work item must have an agentic plan")
     else {
-        panic!("the first work-item step must persist its plan")
+        panic!("the first work-item step must read the work item")
     };
 
     assert_eq!(calls.len(), 1);
-    assert_eq!(calls[0].tool, "write_file");
-    assert!(calls[0].arguments.contains(PLAN_PATH));
+    // A work item names an issue, and an issue URL names no artifact, so the
+    // run reads the work item before deciding what it can execute (issue #904,
+    // follow-up). The plan record is still written; it is no longer the first
+    // and only thing the run does.
+    assert_eq!(calls[0].tool, "web_fetch");
+
+    // A client with a shell but no fetch tool reads the work item through
+    // `gh issue view` before anything is recorded (issue #1133); the record
+    // follows once that read has been tried.
+    let write_only = plan_chat_step(&messages, &["write_file", "run_command"]);
+    let Some(AgenticPlan::ToolCalls(write_only)) = write_only else {
+        panic!("a write-only client still reads the work item")
+    };
+    assert_eq!(write_only[0].tool, "run_command");
     assert!(
-        calls[0].arguments.contains("repository_work_item"),
+        write_only[0].arguments.contains("gh issue view"),
+        "{write_only:?}"
+    );
+    // With the read tried and empty, the record is written as before.
+    let mut after_read = messages;
+    after_read.push(ChatMessage::assistant_tool_calls(vec![
+        formal_ai::ToolCall::function(
+            "c0".to_owned(),
+            "run_command".to_owned(),
+            write_only[0].arguments.clone(),
+        ),
+    ]));
+    after_read.push(ChatMessage::tool_result("c0".to_owned(), "run_command", ""));
+    let Some(AgenticPlan::ToolCalls(recorded)) =
+        plan_chat_step(&after_read, &["write_file", "run_command"])
+    else {
+        panic!("a write-only client still records the reference")
+    };
+    assert_eq!(recorded[0].tool, "write_file");
+    assert!(recorded[0].arguments.contains(PLAN_PATH));
+    assert!(
+        recorded[0].arguments.contains("repository_work_item"),
         "the plan must preserve the work-item execution boundary"
     );
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
-    // One step, not two: the run records the work item and stops. Issue #904
-    // removed the `cat .formal-ai/general-change-plan.lino` step, which verified
-    // nothing but the write the same run had just performed.
+    // Two steps, not three: the run reads the work item and records it. Issue
+    // #904 removed the `cat .formal-ai/general-change-plan.lino` step, which
+    // verified nothing but the write the same run had just performed, and that
+    // step has not come back.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["write_file"]
+        ["web_fetch", "write_file"]
     );
-    assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
+    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
     assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }
@@ -177,9 +212,11 @@ fn general_task_runs_end_to_end() {
         .collect();
     assert_eq!(tools, ["write_file", "write_file", "run_command"]);
     assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
-    assert!(outcome.steps[1]
-        .arguments
-        .contains("notes/general-demo.txt"));
+    assert!(
+        outcome.steps[1]
+            .arguments
+            .contains("notes/general-demo.txt")
+    );
     assert!(outcome.steps[2].result.contains("planner fallback works"));
 }
 
@@ -387,4 +424,49 @@ fn agentic_general_planner_rejects_punctuation_only_payload() {
             "a payload with no word characters must not compose a write: {request}",
         );
     }
+}
+
+/// A multi-line payload is written whole, whichever line the marker ends on.
+///
+/// The content lead alone on its line already introduced the whole block below
+/// it. The same request with the payload starting on the marker's own line means
+/// exactly the same thing, but the sentence bound cut it at the first line: a
+/// 1478-byte document was written as its 58-byte title, and `alpha\nbeta\ngamma`
+/// was written as `alpha`. Nothing in the request said the rest would be
+/// dropped, and the write reported success, so the self-authoring loop produced
+/// one-line stubs of the documents it was handed and looked broken for a reason
+/// that was never in its own logs.
+///
+/// Both spellings are pinned to the identical result, so neither can drift back
+/// into truncating the other. The one-line payload keeps the sentence bound --
+/// "write the following: hello to `x.txt`" must still stop at the clause.
+#[test]
+fn a_multi_line_payload_survives_a_marker_that_shares_its_line() {
+    let body = "alpha\nbeta\ngamma";
+    let inline = compose_general_change_plan(&format!(
+        "Create a file out.md with exactly this content: {body}"
+    ))
+    .expect("an inline multi-line payload must compose a plan");
+    let own_line = compose_general_change_plan(&format!(
+        "Create a file out.md with exactly this content:\n{body}"
+    ))
+    .expect("a marker-led block must compose a plan");
+
+    assert_eq!(
+        inline.content, body,
+        "the payload must survive whole when the marker shares its first line"
+    );
+    assert_eq!(
+        inline.content, own_line.content,
+        "the two spellings of one request must deliver the same bytes"
+    );
+
+    // A payload that never leaves its line is unaffected: there is no
+    // continuation to widen to, so it still stops where it always did.
+    let bounded = compose_general_change_plan(EN_TASK)
+        .expect("a single-line payload must still compose a plan");
+    assert_eq!(
+        bounded.content, "planner fallback works",
+        "a payload that stays on one line is bounded exactly as before"
+    );
 }

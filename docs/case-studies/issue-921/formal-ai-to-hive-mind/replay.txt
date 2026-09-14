@@ -1,0 +1,4 @@
+schema=formal-ai-agent-session-v1
+status=succeeded
+event_chain=verified
+workspace_effect=formal-ai-to-hive-mind.txt

@@ -7,12 +7,15 @@
 // assertions describe the answers the deployed site actually produces.
 
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { test } from "node:test";
 
 import {
   createWorkerContext,
   loadWorkerMirror,
   plain,
+  REPO_ROOT,
   workerMirrorFiles,
 } from "./support/browser-runtime.mjs";
 
@@ -23,16 +26,101 @@ function solve(prompt, options = {}) {
   return worker.solve(prompt, options.history ?? [], options.preferences ?? {}, options.userContext ?? {}, options.memory ?? [], options.options ?? {});
 }
 
-test("the worker mirror is loaded as a contiguous, numbered set of modules", () => {
+function assertSharedConstructionEvidence(answer, surface) {
+  assert.ok(
+    answer.evidence.includes(
+      "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    ),
+    `${surface} executes the shared meta-algorithm`,
+  );
+  assert.ok(
+    answer.evidence.includes(`algorithm_construction:active_surface:${surface}`),
+    `${surface} is the active construction surface`,
+  );
+  assert.equal(
+    answer.evidence.filter((entry) => entry.startsWith("algorithm_construction:stage:")).length,
+    7,
+    `${surface} executes the common seven-stage trace exactly once`,
+  );
+}
+
+test("the committed module list is exactly the worker mirror directory", () => {
   const files = workerMirrorFiles();
   assert.ok(files.length > 0, "the mirror has modules");
-  files.forEach((file, index) => {
-    assert.equal(
-      file,
-      `src/web/worker/formal_ai_worker_${String(index).padStart(2, "0")}.js`,
-      "the mirror is a gapless sequence, so concatenation order is unambiguous",
-    );
+
+  // The browser cannot read a directory: `formal_ai_worker.js` imports
+  // `worker-modules.js` and loads whatever that list names. The Node harness
+  // reads the directory instead, so comparing the two is what proves the
+  // deployed site loads every module that exists. Issue #991 made that list a
+  // union-merged file, and a union is a superset: it can hold a module twice,
+  // or hold one a branch deleted, until
+  // `rust-script scripts/normalize-ordered-lists.rs --write` regenerates it.
+  // This assertion is the failure that says so.
+  const listed = readFileSync(path.join(REPO_ROOT, "src/web/worker-modules.js"), "utf8")
+    .split("\n")
+    .map((line) => line.match(/^\s*"(worker\/[^"]+)",$/))
+    .filter(Boolean)
+    .map((match) => `src/web/${match[1]}`);
+
+  assert.deepEqual(
+    listed,
+    files,
+    "src/web/worker-modules.js is stale: run `rust-script scripts/normalize-ordered-lists.rs --write`",
+  );
+});
+
+test("worker modules are named after their subject, and the numbered prefix stays frozen", () => {
+  // Issue #991: `formal_ai_worker_25.js` is the file two branches both create
+  // when they each add a module, and git reports that as an add/add conflict no
+  // ordering can prevent. `data/meta/merge-conflict-policy.lino` freezes the
+  // numbers that predate the policy and requires every later module to be named
+  // after what it contains, so two branches produce two different names.
+  const FROZEN_PREFIX_MAX = 24;
+  const numbered = workerMirrorFiles()
+    .map((file) => file.match(/formal_ai_worker_(\d+)\.js$/))
+    .filter(Boolean)
+    .map((match) => Number(match[1]));
+
+  assert.deepEqual(
+    numbered,
+    Array.from({ length: FROZEN_PREFIX_MAX + 1 }, (_, index) => index),
+    `the frozen numbered modules are 00..${FROZEN_PREFIX_MAX}; name a new module after its subject instead`,
+  );
+});
+
+test("every coding handler executes the shared meta-algorithm", async () => {
+  const installation = await solve(
+    "Convert this README installation guide into a sh script: run `npm install`.",
+  );
+  assert.equal(installation.intent, "installation_conversion");
+  assertSharedConstructionEvidence(installation, "installation_conversion");
+
+  const synthesis = await solve(
+    "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
+  );
+  assert.equal(synthesis.intent, "write_program");
+  assertSharedConstructionEvidence(synthesis, "program_synthesis");
+
+  const catalog = await solve("Write hello world in Rust");
+  assert.equal(catalog.intent, "write_program");
+  assertSharedConstructionEvidence(catalog, "coding_catalog");
+
+  const numeric = await solve(
+    "I have numbers 5, 3, 8, 1, 9 — sort them in JavaScript, give me the code and the result",
+  );
+  assert.equal(numeric.intent, "write_program");
+  assertSharedConstructionEvidence(numeric, "numeric_list");
+
+  const firstPrompt = "Write me a Rust program that lists files in the current directory";
+  const first = await solve(firstPrompt);
+  const rule = await solve("Sort the results in reverse order", {
+    history: [
+      { role: "user", content: firstPrompt },
+      { role: "assistant", content: first.content },
+    ],
   });
+  assert.equal(rule.intent, "write_program");
+  assertSharedConstructionEvidence(rule, "rule_synthesis");
 });
 
 test("prompt normalization collapses whitespace and case", () => {
@@ -184,4 +272,49 @@ test("the web-search component falls back when its bundle is unavailable", () =>
     importScripts: undefined,
   });
   assert.ok(context.FormalAIWebSearchComponent, "a component is always present");
+});
+
+test("issue 989 dialog controls and associative-memory inspection preempt generic routes", async () => {
+  const preference = await solve("`quick` is subjective opinion, please don't use these anymore.");
+  assert.equal(preference.intent, "conversation_preference");
+  assert.match(preference.content, /avoid `quick`/);
+
+  for (const teaching of ["When I say # answer with 42.", "When I say # answer 42."]) {
+    const replay = await solve("#", {
+      history: [
+        { role: "user", content: teaching },
+        { role: "assistant", content: "Behavior rule recorded for this dialog." },
+      ],
+    });
+    assert.equal(replay.intent, "behavior_rule_custom", teaching);
+    assert.equal(replay.content, "42", teaching);
+  }
+
+  const memoryEvents = [{
+    id: "event-1",
+    kind: "message",
+    role: "user",
+    content: "hello",
+    conversationId: "dialog-1",
+  }];
+  const options = { options: { memoryEvents } };
+  const count = await solve("How many links are in your memory?", options);
+  assert.equal(count.intent, "memory_link_count");
+  assert.match(count.content, /records: 1; projected links: 17/);
+
+  const inventory = await solve("What is available in your local memory?", options);
+  assert.equal(inventory.intent, "memory_inventory");
+  assert.match(inventory.content, /kinds: message: 1/);
+  assert.match(inventory.content, /conversations: dialog-1: 1/);
+
+  const roots = await solve("Give me root links you have in your memory", options);
+  assert.equal(roots.intent, "memory_root_links");
+  assert.match(roots.content, /memory_event_[0-9a-f]{8}/);
+  assert.match(roots.content, /event-1/);
+
+  const correction = await solve("No that is not about document generation, it is about associative memory data retrieval.", {
+    ...options,
+    history: [{ role: "user", content: "Give me root links you have in your memory" }],
+  });
+  assert.equal(correction.intent, "memory_root_links");
 });

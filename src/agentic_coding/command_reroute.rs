@@ -13,6 +13,7 @@ use crate::engine::{ExecutionRecipe, SymbolicAnswer};
 use crate::protocol::ChatMessage;
 
 use super::capability_router::is_workspace_creation_tool;
+use super::git_commit::{self, CommitTarget};
 use super::planner::{
     tool_capability, tool_for, write_arguments, AgenticPlan, Capability, PlannedToolCall,
 };
@@ -36,25 +37,62 @@ pub fn plan_symbolic_command_reroute(
             .find(|name| is_workspace_creation_tool(name))
     })?;
     let run_tool = tool_for(tool_names, Capability::Run)?;
-    let progress = RecipeProgress::after_latest_user(messages, write_tool);
+    // A request that names the pull request or issue the work is for is asking
+    // for the result to land there, so the recipe ends by committing and
+    // pushing it (issue #1133).
+    let commit = crate::protocol::latest_user_request(messages)
+        .as_deref()
+        .and_then(git_commit::target_of);
+    let commit_step = |target: &CommitTarget| {
+        git_commit::commit_command(
+            &git_commit::recipe_subject(recipe),
+            Some(&git_commit::resolves_body(&target.reference)),
+            target.push_ref(),
+        )
+    };
+    // Only the recipe's own commands count as recipe steps. A shell result
+    // from before the recipe -- the `gh issue view` that read the work item --
+    // is neither a step done nor a step failed (issue #1133).
+    let expected_commands: Vec<String> = recipe
+        .commands
+        .iter()
+        .cloned()
+        .chain(commit.as_ref().map(commit_step))
+        .collect();
+    let progress = RecipeProgress::after_latest_user(messages, write_tool, &expected_commands);
 
+    let next_file = || {
+        if progress.files_written == 0 {
+            Some((&recipe.path, &recipe.source))
+        } else {
+            recipe
+                .supporting_files
+                .get(progress.files_written - 1)
+                .map(|file| (&file.path, &file.source))
+        }
+    };
     if let Some(failure) = &progress.failure {
+        let commit_command = commit.as_ref().map(commit_step);
         let step = failure
             .from_run
-            .then(|| recipe.commands.get(progress.commands_done))
+            .then(|| {
+                recipe
+                    .commands
+                    .get(progress.commands_done)
+                    .map(String::as_str)
+                    .or(commit_command.as_deref())
+            })
             .flatten()
-            .map_or(write_tool, String::as_str);
+            .unwrap_or(write_tool);
+        let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
         return Some(AgenticPlan::Final(failure.report(
             messages,
-            &recipe.path,
+            failed_path,
             step,
         )));
     }
-    if !progress.write_done {
-        return Some(one_call(
-            write_tool,
-            write_arguments(&recipe.path, &recipe.source),
-        ));
+    if let Some((path, source)) = next_file() {
+        return Some(one_call(write_tool, write_arguments(path, source)));
     }
     if let Some(command) = recipe.commands.get(progress.commands_done) {
         return Some(one_call(
@@ -62,9 +100,17 @@ pub fn plan_symbolic_command_reroute(
             json!({ "command": command }).to_string(),
         ));
     }
+    if let Some(target) = &commit
+        && progress.commands_done == recipe.commands.len()
+    {
+        return Some(one_call(
+            run_tool,
+            json!({ "command": commit_step(target) }).to_string(),
+        ));
+    }
 
     Some(AgenticPlan::Final(
-        recipe.final_answer(&progress.command_outputs),
+        recipe.final_answer(&progress.command_outputs, commit.as_ref()),
     ))
 }
 
@@ -76,11 +122,27 @@ fn one_call(tool: &str, arguments: String) -> AgenticPlan {
 }
 
 impl ExecutionRecipe {
-    fn final_answer(&self, outputs: &[String]) -> String {
+    fn final_answer(&self, outputs: &[String], committed: Option<&CommitTarget>) -> String {
+        // With a commit step the last output is the push's; the verification
+        // output the claim rests on is the one before it.
+        let (verification_outputs, commit_output) = match committed {
+            Some(_) if outputs.len() > self.commands.len() => {
+                (&outputs[..self.commands.len()], outputs.last())
+            }
+            _ => (outputs, None),
+        };
+        let outputs = verification_outputs;
         let mut answer = format!(
             "Created and verified `{}` through the agentic CLI harness.\n\n```{}\n{}\n```\n\nCommands executed by the harness:\n",
             self.path, self.language, self.source
         );
+        for file in &self.supporting_files {
+            let _ = write!(
+                answer,
+                "\n`{}`\n\n```text\n{}\n```\n",
+                file.path, file.source
+            );
+        }
         for command in &self.commands {
             let _ = writeln!(answer, "- `{command}`");
         }
@@ -90,13 +152,22 @@ impl ExecutionRecipe {
             .find(|output| !output.trim().is_empty())
             .map_or("(command completed without output)", |output| output.trim());
         let _ = write!(answer, "\nActual tool output:\n\n```text\n{actual}\n```");
+        if let (Some(target), Some(output)) = (committed, commit_output) {
+            let _ = write!(
+                answer,
+                "\n\nCommitted and pushed to `{}` for {}:\n\n```text\n{}\n```",
+                target.push_ref(),
+                target.reference,
+                output.trim()
+            );
+        }
         answer
     }
 }
 
 #[derive(Default)]
 struct RecipeProgress {
-    write_done: bool,
+    files_written: usize,
     commands_done: usize,
     command_outputs: Vec<String>,
     failure: Option<StepFailure>,
@@ -124,7 +195,9 @@ impl StepFailure {
         const CODE_PLACEHOLDER: &str = "{code}";
         const REPORT_PLACEHOLDER: &str = "{report}";
 
-        let language = crate::language::detect(&latest_user_text(messages)).slug();
+        let language =
+            crate::language::detect(&crate::protocol::latest_user_request(messages).unwrap_or_default())
+                .slug();
         let intent = if self.exit_code.is_some() {
             "agentic_step_failed_with_exit_code"
         } else {
@@ -143,17 +216,12 @@ impl StepFailure {
     }
 }
 
-fn latest_user_text(messages: &[ChatMessage]) -> String {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role == "user")
-        .map(|message| message.content.plain_text())
-        .unwrap_or_default()
-}
-
 impl RecipeProgress {
-    fn after_latest_user(messages: &[ChatMessage], write_tool: &str) -> Self {
+    fn after_latest_user(
+        messages: &[ChatMessage],
+        write_tool: &str,
+        expected_commands: &[String],
+    ) -> Self {
         let start = messages
             .iter()
             .rposition(|message| message.role == "user")
@@ -168,6 +236,12 @@ impl RecipeProgress {
                 .as_deref()
                 .or_else(|| tool_from_call_id(messages, message.tool_call_id.as_deref()));
             let capability = result_tool.and_then(tool_capability);
+            if capability == Some(Capability::Run)
+                && let Some(command) = run_command_of(messages, message.tool_call_id.as_deref())
+                && !expected_commands.contains(&command)
+            {
+                continue;
+            }
             let output = message.content.plain_text();
             if let Some(failure) =
                 StepFailure::from_result(output.clone(), capability == Some(Capability::Run))
@@ -177,7 +251,7 @@ impl RecipeProgress {
             }
             match capability {
                 _ if result_tool.is_some_and(|name| name.eq_ignore_ascii_case(write_tool)) => {
-                    progress.write_done = true;
+                    progress.files_written += 1;
                 }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
@@ -247,6 +321,20 @@ impl StepFailure {
                 from_run,
             });
         }
+        // The Agent CLI's shell tool hands the model only the process text and
+        // keeps the status in metadata it never sends, so `/bin/sh: 1: scala:
+        // not found` arrived with no code at all and was counted as a success
+        // -- "Created and verified", with the failure quoted underneath (issue
+        // #1133). The seed's failure lexicon already judges such text for the
+        // narration path; a verification command's text is judged the same way.
+        if super::tool_result::failure_message(&reported, false, from_run).is_some() {
+            return Some(Self {
+                exit_code: super::tool_result::reported_exit_code(&reported)
+                    .and_then(|code| i32::try_from(code).ok()),
+                reported,
+                from_run,
+            });
+        }
         reports_failure_in_prose(&reported).then_some(Self {
             reported,
             exit_code: None,
@@ -278,6 +366,20 @@ fn reports_failure_in_prose(output: &str) -> bool {
                 .is_some_and(|(_, rest)| !ABSENT_FIELD_VALUES.contains(&rest.trim()))
         })
     })
+}
+
+/// The `command` argument of the shell call a result answers.
+fn run_command_of(messages: &[ChatMessage], call_id: Option<&str>) -> Option<String> {
+    let call_id = call_id?;
+    let call = messages
+        .iter()
+        .flat_map(|message| &message.tool_calls)
+        .find(|call| call.id == call_id)?;
+    let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).ok()?;
+    arguments
+        .get("command")
+        .and_then(serde_json::Value::as_str)
+        .map(str::to_owned)
 }
 
 fn tool_from_call_id<'a>(messages: &'a [ChatMessage], call_id: Option<&str>) -> Option<&'a str> {

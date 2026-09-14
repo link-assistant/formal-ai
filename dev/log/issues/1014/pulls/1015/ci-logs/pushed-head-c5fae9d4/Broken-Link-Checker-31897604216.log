@@ -1,0 +1,447 @@
+Check Links	Set up job	﻿2026-08-15T17:11:35.2723855Z Current runner version: '2.336.0'
+Check Links	Set up job	2026-08-15T17:11:35.2742240Z ##[group]Runner Image Provisioner
+Check Links	Set up job	2026-08-15T17:11:35.2742998Z Hosted Compute Agent
+Check Links	Set up job	2026-08-15T17:11:35.2743455Z Version: 20260729.566
+Check Links	Set up job	2026-08-15T17:11:35.2744019Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+Check Links	Set up job	2026-08-15T17:11:35.2744607Z Build Date: 2026-07-29T19:17:02Z
+Check Links	Set up job	2026-08-15T17:11:35.2745154Z Worker ID: {82f1726e-22da-4a1b-841f-f3e804ffcf4b}
+Check Links	Set up job	2026-08-15T17:11:35.2745754Z Azure Region: centralus
+Check Links	Set up job	2026-08-15T17:11:35.2746221Z ##[endgroup]
+Check Links	Set up job	2026-08-15T17:11:35.2747286Z ##[group]Operating System
+Check Links	Set up job	2026-08-15T17:11:35.2747954Z Ubuntu
+Check Links	Set up job	2026-08-15T17:11:35.2748357Z 24.04.4
+Check Links	Set up job	2026-08-15T17:11:35.2748818Z LTS
+Check Links	Set up job	2026-08-15T17:11:35.2749234Z ##[endgroup]
+Check Links	Set up job	2026-08-15T17:11:35.2749686Z ##[group]Runner Image
+Check Links	Set up job	2026-08-15T17:11:35.2750166Z Image: ubuntu-24.04
+Check Links	Set up job	2026-08-15T17:11:35.2750623Z Version: 20260810.271.1
+Check Links	Set up job	2026-08-15T17:11:35.2751476Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+Check Links	Set up job	2026-08-15T17:11:35.2752858Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+Check Links	Set up job	2026-08-15T17:11:35.2753622Z ##[endgroup]
+Check Links	Set up job	2026-08-15T17:11:35.2754505Z ##[group]GITHUB_TOKEN Permissions
+Check Links	Set up job	2026-08-15T17:11:35.2756350Z Contents: read
+Check Links	Set up job	2026-08-15T17:11:35.2756828Z Metadata: read
+Check Links	Set up job	2026-08-15T17:11:35.2757292Z ##[endgroup]
+Check Links	Set up job	2026-08-15T17:11:35.2759060Z Secret source: Actions
+Check Links	Set up job	2026-08-15T17:11:35.2759872Z Prepare workflow directory
+Check Links	Set up job	2026-08-15T17:11:35.3061538Z Prepare all required actions
+Check Links	Set up job	2026-08-15T17:11:35.3100892Z Getting action download info
+Check Links	Set up job	2026-08-15T17:11:35.5811911Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+Check Links	Set up job	2026-08-15T17:11:35.7662588Z Download action repository 'lycheeverse/lychee-action@v2' (SHA:e7477775783ea5526144ba13e8db5eec57747ce8)
+Check Links	Set up job	2026-08-15T17:11:36.0494413Z Complete job name: Check Links
+Check Links	Run actions/checkout@v6	﻿2026-08-15T17:11:36.1043618Z ##[group]Run actions/checkout@v6
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1044322Z with:
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1044749Z   repository: link-assistant/formal-ai
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1048527Z   token: ***
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1048960Z   ssh-strict: true
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1049392Z   ssh-user: git
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1049846Z   persist-credentials: true
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1050303Z   clean: true
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1050736Z   sparse-checkout-cone-mode: true
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1051222Z   fetch-depth: 1
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1051625Z   fetch-tags: false
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1052094Z   show-progress: true
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1052515Z   lfs: false
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1052931Z   submodules: false
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1053365Z   set-safe-directory: true
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1053837Z   allow-unsafe-pr-checkout: false
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1054487Z env:
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1054893Z   GIT_CONFIG_COUNT: 1
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1055373Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1055885Z   GIT_CONFIG_VALUE_0: main
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1056373Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1899489Z Syncing repository: link-assistant/formal-ai
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1901785Z ##[group]Getting Git version info
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1902819Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1904156Z [command]/usr/bin/git version
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1908113Z git version 2.54.0
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1924522Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1935461Z Temporarily overriding HOME='/home/runner/work/_temp/97afe92d-52c3-44ea-ba91-020a1c3cdbe0' before making global git config changes
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1937228Z Adding repository directory to the temporary git global config as a safe directory
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1939939Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1966551Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1969372Z ##[group]Determining repository object format
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1970909Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1971970Z ##[group]Initializing the repository
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.1974112Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2035923Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2042526Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2065070Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2066197Z ##[group]Disabling automatic garbage collection
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2067630Z [command]/usr/bin/git config --local gc.auto 0
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2088648Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2089808Z ##[group]Setting up auth
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2090588Z Removing SSH command configuration
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2093282Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2118222Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2499049Z Removing HTTP extra header
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2499883Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2528833Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2686373Z Removing includeIf entries pointing to credentials config files
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2692457Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2717698Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2877977Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2909793Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2936003Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2966312Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.2991552Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.3012281Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.3012993Z ##[group]Fetching the repository
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:36.3021323Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8cf677b661c3cd9c9a674edbb365e8d86ddd1b90:refs/remotes/pull/1015/merge
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4675680Z From https://github.com/link-assistant/formal-ai
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4678256Z  * [new ref]         8cf677b661c3cd9c9a674edbb365e8d86ddd1b90 -> pull/1015/merge
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4694654Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4696351Z ##[group]Determining the checkout info
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4698354Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4699761Z [command]/usr/bin/git sparse-checkout disable
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4729558Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4753388Z ##[group]Checking out the ref
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:51.4755658Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1015/merge
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.5373878Z Updating files:  38% (5421/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.7432652Z Updating files:  39% (5509/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.7916906Z Updating files:  40% (5650/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.8027105Z Updating files:  41% (5792/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.8134890Z Updating files:  42% (5933/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.8195379Z Updating files:  43% (6074/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.8659473Z Updating files:  44% (6215/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.9735382Z Updating files:  45% (6357/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:52.9845064Z Updating files:  46% (6498/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.0002056Z Updating files:  47% (6639/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.0590055Z Updating files:  48% (6780/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.0929282Z Updating files:  49% (6922/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.1393815Z Updating files:  50% (7063/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.1453459Z Updating files:  51% (7204/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.1532400Z Updating files:  52% (7345/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.1698345Z Updating files:  53% (7487/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.1833915Z Updating files:  54% (7628/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.1903095Z Updating files:  55% (7769/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.2164445Z Updating files:  56% (7910/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.2605455Z Updating files:  57% (8052/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.2843472Z Updating files:  58% (8193/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.3020141Z Updating files:  59% (8334/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.3476604Z Updating files:  60% (8475/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.3818232Z Updating files:  61% (8617/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.4421097Z Updating files:  62% (8758/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.4977741Z Updating files:  63% (8899/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5053994Z Updating files:  63% (8932/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5204413Z Updating files:  64% (9040/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5493672Z Updating files:  65% (9182/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5711703Z Updating files:  66% (9323/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5823258Z Updating files:  67% (9464/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5907777Z Updating files:  68% (9605/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.5999812Z Updating files:  69% (9747/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6258315Z Updating files:  70% (9888/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6433088Z Updating files:  71% (10029/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6552344Z Updating files:  72% (10170/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6642850Z Updating files:  73% (10312/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6819883Z Updating files:  74% (10453/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6879336Z Updating files:  75% (10594/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6923366Z Updating files:  76% (10735/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.6979278Z Updating files:  77% (10877/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.7331448Z Updating files:  78% (11018/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.7395310Z Updating files:  79% (11159/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.7478763Z Updating files:  80% (11300/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.7548690Z Updating files:  81% (11442/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.7796651Z Updating files:  82% (11583/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.7868834Z Updating files:  83% (11724/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8252928Z Updating files:  84% (11865/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8332465Z Updating files:  85% (12007/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8380618Z Updating files:  86% (12148/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8446856Z Updating files:  87% (12289/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8510886Z Updating files:  88% (12430/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8581798Z Updating files:  89% (12572/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8660852Z Updating files:  90% (12713/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8762072Z Updating files:  91% (12854/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.8869137Z Updating files:  92% (12995/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.9146820Z Updating files:  93% (13137/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.9208371Z Updating files:  94% (13278/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.9266907Z Updating files:  95% (13419/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.9347147Z Updating files:  96% (13560/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.9411867Z Updating files:  97% (13702/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:53.9484402Z Updating files:  98% (13843/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1154964Z Updating files:  99% (13984/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1155806Z Updating files: 100% (14125/14125)
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1156115Z Updating files: 100% (14125/14125), done.
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1409289Z Note: switching to 'refs/remotes/pull/1015/merge'.
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1409736Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1410481Z You are in 'detached HEAD' state. You can look around, make experimental
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1411062Z changes and commit them, and you can discard any commits you make in this
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1412014Z state without impacting any branches by switching back to a branch.
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1412321Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1412535Z If you want to create a new branch to retain commits you create, you may
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1413013Z do so (now or later) by using -c with the switch command. Example:
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1413457Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1413660Z   git switch -c <new-branch-name>
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1413831Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1413973Z Or undo this operation with:
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1414112Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1414305Z   git switch -
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1414566Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1414790Z Turn off this advice by setting config variable advice.detachedHead to false
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1415042Z 
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1448137Z HEAD is now at 8cf677b Merge c5fae9d4e62ed69c6b9714e27991e1bec7775ffa into 98cb3c803a72161a880968647330358c65d9b83f
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1451377Z ##[endgroup]
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1482933Z [command]/usr/bin/git log -1 --format=%H
+Check Links	Run actions/checkout@v6	2026-08-15T17:11:54.1503059Z 8cf677b661c3cd9c9a674edbb365e8d86ddd1b90
+Check Links	Prepare reconstructable release history for link checking	﻿2026-08-15T17:11:54.1671588Z ##[group]Run sed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1672148Z ^[[36;1msed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md \^[[0m
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1672585Z ^[[36;1m  > LYCHEE_CHANGELOG.md^[[0m
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1697266Z shell: /usr/bin/bash -e {0}
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1697959Z env:
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1698189Z   GIT_CONFIG_COUNT: 1
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1698454Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1698768Z   GIT_CONFIG_VALUE_0: main
+Check Links	Prepare reconstructable release history for link checking	2026-08-15T17:11:54.1699014Z ##[endgroup]
+Check Links	Check links with lychee	﻿2026-08-15T17:11:54.1900144Z ##[group]Run lycheeverse/lychee-action@v2
+Check Links	Check links with lychee	2026-08-15T17:11:54.1900473Z with:
+Check Links	Check links with lychee	2026-08-15T17:11:54.1901551Z   args: --verbose --no-progress --cache --max-cache-age 1d --max-retries 3 --timeout 30 --host-concurrency 2 --host-request-interval 100ms --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)' --exclude-path '^CHANGELOG\.md$' --exclude-path docs/case-studies --exclude-path dev/log './**/*.md' './**/*.html'
+Check Links	Check links with lychee	2026-08-15T17:11:54.1902642Z   fail: false
+Check Links	Check links with lychee	2026-08-15T17:11:54.1902934Z   output: lychee/out.md
+Check Links	Check links with lychee	2026-08-15T17:11:54.1903193Z   jobSummary: true
+Check Links	Check links with lychee	2026-08-15T17:11:54.1903433Z   debug: false
+Check Links	Check links with lychee	2026-08-15T17:11:54.1903682Z   failIfEmpty: true
+Check Links	Check links with lychee	2026-08-15T17:11:54.1903927Z   format: markdown
+Check Links	Check links with lychee	2026-08-15T17:11:54.1904205Z   lycheeVersion: v0.24.2
+Check Links	Check links with lychee	2026-08-15T17:11:54.1904457Z   checkbox: true
+Check Links	Check links with lychee	2026-08-15T17:11:54.1906303Z   token: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.1906567Z   workingDirectory: .
+Check Links	Check links with lychee	2026-08-15T17:11:54.1906817Z env:
+Check Links	Check links with lychee	2026-08-15T17:11:54.1907075Z   GIT_CONFIG_COUNT: 1
+Check Links	Check links with lychee	2026-08-15T17:11:54.1907594Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Check links with lychee	2026-08-15T17:11:54.1908034Z   GIT_CONFIG_VALUE_0: main
+Check Links	Check links with lychee	2026-08-15T17:11:54.1909869Z   GITHUB_TOKEN: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.1910113Z ##[endgroup]
+Check Links	Check links with lychee	2026-08-15T17:11:54.1962125Z ##[start-action display=Set up environment;id=lychee.__run]
+Check Links	Check links with lychee	2026-08-15T17:11:54.1988905Z ##[group]Run # Install into $RUNNER_TEMP (not $HOME) so the install path is stable
+Check Links	Check links with lychee	2026-08-15T17:11:54.1989473Z ^[[36;1m# Install into $RUNNER_TEMP (not $HOME) so the install path is stable^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.1989925Z ^[[36;1m# across composite steps. On some runners $HOME is overridden per step^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.1990431Z ^[[36;1m# (e.g. actions/checkout temporarily sets it), which made the PATH^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.1990846Z ^[[36;1m# entry from one step and the install in another step diverge.^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.1991235Z ^[[36;1mecho "$RUNNER_TEMP/lychee/bin" >> "$GITHUB_PATH"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.1991592Z ^[[36;1mmkdir -p "$RUNNER_TEMP/lychee/bin"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2011047Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	Check links with lychee	2026-08-15T17:11:54.2011398Z env:
+Check Links	Check links with lychee	2026-08-15T17:11:54.2011640Z   GIT_CONFIG_COUNT: 1
+Check Links	Check links with lychee	2026-08-15T17:11:54.2011920Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Check links with lychee	2026-08-15T17:11:54.2012213Z   GIT_CONFIG_VALUE_0: main
+Check Links	Check links with lychee	2026-08-15T17:11:54.2014154Z   GITHUB_TOKEN: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.2014550Z ##[endgroup]
+Check Links	Check links with lychee	2026-08-15T17:11:54.2393861Z ##[end-action id=lychee.__run;outcome=success;conclusion=success;duration_ms=43]
+Check Links	Check links with lychee	2026-08-15T17:11:54.2397623Z ##[start-action display=Download and extract lychee in temp directory;id=lychee.lychee-setup]
+Check Links	Check links with lychee	2026-08-15T17:11:54.2415858Z ##[group]Run # Create a temporary directory for downloads and extraction
+Check Links	Check links with lychee	2026-08-15T17:11:54.2416358Z ^[[36;1m# Create a temporary directory for downloads and extraction^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2417107Z ^[[36;1mTEMP_DIR="${RUNNER_TEMP}/lychee-download"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2417787Z ^[[36;1mrm -rf "${TEMP_DIR}" && mkdir -p "${TEMP_DIR}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2418175Z ^[[36;1mcd "${TEMP_DIR}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2418493Z ^[[36;1m^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2418738Z ^[[36;1mARCH=$(uname -m)^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2419052Z ^[[36;1m# Determine filename and download URL based on version^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2419447Z ^[[36;1mif [[ "${LYCHEE_VERSION}" =~ ^v0\.0|^v0\.1[0-5]\. ]]; then^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2419914Z ^[[36;1m  FILENAME="lychee-${LYCHEE_VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2420497Z ^[[36;1m  DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2420951Z ^[[36;1melse^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2421279Z ^[[36;1m  FILENAME="lychee-${ARCH}-unknown-linux-gnu.tar.gz"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2421660Z ^[[36;1m  if [[ "${LYCHEE_VERSION}" == 'nightly' ]]; then^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2422149Z ^[[36;1m    DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/nightly/${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2422621Z ^[[36;1m  elif [[ "${LYCHEE_VERSION}" == 'latest' ]]; then^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2423214Z ^[[36;1m    DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/latest/download/${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2423623Z ^[[36;1m  else^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2424104Z ^[[36;1m    DOWNLOAD_URL="https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2424576Z ^[[36;1m  fi^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2424814Z ^[[36;1mfi^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2425051Z ^[[36;1m^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2425307Z ^[[36;1mecho "Downloading from: ${DOWNLOAD_URL}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2425630Z ^[[36;1mcurl -sfLO "${DOWNLOAD_URL}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2425926Z ^[[36;1m^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2426154Z ^[[36;1mecho "Extracting ${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2426473Z ^[[36;1mtar -xvzf "${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2426756Z ^[[36;1mrm -rv "${FILENAME}"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2427011Z ^[[36;1m^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2427330Z ^[[36;1m# Detect if lychee binary is in a subfolder within the tar.gz^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2427918Z ^[[36;1mif ! [[ -f "${TEMP_DIR}/lychee" ]]; then^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2428337Z ^[[36;1m  TEMP_DIR="$(echo "${TEMP_DIR}"/lychee-*)"  # need `echo` to evaluate glob^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2428701Z ^[[36;1mfi^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2428942Z ^[[36;1mif ! [[ -f "${TEMP_DIR}/lychee" ]]; then^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2429409Z ^[[36;1m  echo "Cannot find lychee binary in $TEMP_DIR. Did the archive structure change?" >&2^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2429818Z ^[[36;1m  exit 1^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2430059Z ^[[36;1mfi^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2430299Z ^[[36;1m^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2430584Z ^[[36;1m# Output temp directory for use in later steps^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2430969Z ^[[36;1mecho "temp_dir=${TEMP_DIR}" >> $GITHUB_OUTPUT^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.2449915Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	Check links with lychee	2026-08-15T17:11:54.2450284Z env:
+Check Links	Check links with lychee	2026-08-15T17:11:54.2450534Z   GIT_CONFIG_COUNT: 1
+Check Links	Check links with lychee	2026-08-15T17:11:54.2450847Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Check links with lychee	2026-08-15T17:11:54.2451149Z   GIT_CONFIG_VALUE_0: main
+Check Links	Check links with lychee	2026-08-15T17:11:54.2453091Z   GITHUB_TOKEN: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.2453380Z   LYCHEE_VERSION: v0.24.2
+Check Links	Check links with lychee	2026-08-15T17:11:54.2453713Z ##[endgroup]
+Check Links	Check links with lychee	2026-08-15T17:11:54.3453840Z Downloading from: https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz
+Check Links	Check links with lychee	2026-08-15T17:11:54.7412364Z Extracting lychee-x86_64-unknown-linux-gnu.tar.gz
+Check Links	Check links with lychee	2026-08-15T17:11:54.7433715Z lychee-x86_64-unknown-linux-gnu/
+Check Links	Check links with lychee	2026-08-15T17:11:54.7434378Z lychee-x86_64-unknown-linux-gnu/README.md
+Check Links	Check links with lychee	2026-08-15T17:11:54.7435156Z lychee-x86_64-unknown-linux-gnu/docs/
+Check Links	Check links with lychee	2026-08-15T17:11:54.7436011Z lychee-x86_64-unknown-linux-gnu/docs/lychee.1
+Check Links	Check links with lychee	2026-08-15T17:11:54.7446916Z lychee-x86_64-unknown-linux-gnu/docs/TROUBLESHOOTING.md
+Check Links	Check links with lychee	2026-08-15T17:11:54.7447985Z lychee-x86_64-unknown-linux-gnu/docs/PRE_COMMIT.md
+Check Links	Check links with lychee	2026-08-15T17:11:54.7448713Z lychee-x86_64-unknown-linux-gnu/complete/
+Check Links	Check links with lychee	2026-08-15T17:11:54.7449428Z lychee-x86_64-unknown-linux-gnu/complete/_lychee.ps1
+Check Links	Check links with lychee	2026-08-15T17:11:54.7450153Z lychee-x86_64-unknown-linux-gnu/complete/lychee.elv
+Check Links	Check links with lychee	2026-08-15T17:11:54.7450821Z lychee-x86_64-unknown-linux-gnu/complete/lychee.fish
+Check Links	Check links with lychee	2026-08-15T17:11:54.7451563Z lychee-x86_64-unknown-linux-gnu/complete/lychee.bash
+Check Links	Check links with lychee	2026-08-15T17:11:54.7452216Z lychee-x86_64-unknown-linux-gnu/complete/_lychee
+Check Links	Check links with lychee	2026-08-15T17:11:54.7453018Z lychee-x86_64-unknown-linux-gnu/lychee
+Check Links	Check links with lychee	2026-08-15T17:11:54.8760937Z removed 'lychee-x86_64-unknown-linux-gnu.tar.gz'
+Check Links	Check links with lychee	2026-08-15T17:11:54.8793762Z ##[end-action id=lychee.lychee-setup;outcome=success;conclusion=success;duration_ms=639]
+Check Links	Check links with lychee	2026-08-15T17:11:54.8800175Z ##[start-action display=Install lychee;id=lychee.__run_2]
+Check Links	Check links with lychee	2026-08-15T17:11:54.8840799Z ##[group]Run # Install lychee from the temporary directory
+Check Links	Check links with lychee	2026-08-15T17:11:54.8841221Z ^[[36;1m# Install lychee from the temporary directory^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.8841801Z ^[[36;1minstall -t "$RUNNER_TEMP/lychee/bin" -D "/home/runner/work/_temp/lychee-download/lychee-x86_64-unknown-linux-gnu/lychee"^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.8863872Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	Check links with lychee	2026-08-15T17:11:54.8864377Z env:
+Check Links	Check links with lychee	2026-08-15T17:11:54.8864656Z   GIT_CONFIG_COUNT: 1
+Check Links	Check links with lychee	2026-08-15T17:11:54.8864941Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Check links with lychee	2026-08-15T17:11:54.8865541Z   GIT_CONFIG_VALUE_0: main
+Check Links	Check links with lychee	2026-08-15T17:11:54.8867627Z   GITHUB_TOKEN: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.8867875Z ##[endgroup]
+Check Links	Check links with lychee	2026-08-15T17:11:54.8979113Z ##[end-action id=lychee.__run_2;outcome=success;conclusion=success;duration_ms=17]
+Check Links	Check links with lychee	2026-08-15T17:11:54.8985376Z ##[start-action display=Run Lychee;id=lychee.run-lychee]
+Check Links	Check links with lychee	2026-08-15T17:11:54.9007540Z ##[group]Run /home/runner/work/_actions/lycheeverse/lychee-action/v2/entrypoint.sh
+Check Links	Check links with lychee	2026-08-15T17:11:54.9008077Z ^[[36;1m/home/runner/work/_actions/lycheeverse/lychee-action/v2/entrypoint.sh^[[0m
+Check Links	Check links with lychee	2026-08-15T17:11:54.9025350Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Check Links	Check links with lychee	2026-08-15T17:11:54.9025744Z env:
+Check Links	Check links with lychee	2026-08-15T17:11:54.9025986Z   GIT_CONFIG_COUNT: 1
+Check Links	Check links with lychee	2026-08-15T17:11:54.9026284Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Check Links	Check links with lychee	2026-08-15T17:11:54.9026591Z   GIT_CONFIG_VALUE_0: main
+Check Links	Check links with lychee	2026-08-15T17:11:54.9028613Z   GITHUB_TOKEN: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.9030505Z   INPUT_TOKEN: ***
+Check Links	Check links with lychee	2026-08-15T17:11:54.9031556Z   INPUT_ARGS: --verbose --no-progress --cache --max-cache-age 1d --max-retries 3 --timeout 30 --host-concurrency 2 --host-request-interval 100ms --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)' --exclude-path '^CHANGELOG\.md$' --exclude-path docs/case-studies --exclude-path dev/log './**/*.md' './**/*.html'
+Check Links	Check links with lychee	2026-08-15T17:11:54.9032633Z   INPUT_DEBUG: false
+Check Links	Check links with lychee	2026-08-15T17:11:54.9032898Z   INPUT_FAIL: false
+Check Links	Check links with lychee	2026-08-15T17:11:54.9033172Z   INPUT_FAILIFEMPTY: true
+Check Links	Check links with lychee	2026-08-15T17:11:54.9033458Z   INPUT_FORMAT: markdown
+Check Links	Check links with lychee	2026-08-15T17:11:54.9033724Z   INPUT_JOBSUMMARY: true
+Check Links	Check links with lychee	2026-08-15T17:11:54.9033966Z   INPUT_CHECKBOX: true
+Check Links	Check links with lychee	2026-08-15T17:11:54.9034250Z   INPUT_OUTPUT: lychee/out.md
+Check Links	Check links with lychee	2026-08-15T17:11:54.9034705Z   SUMMARY_URL: https://github.com/link-assistant/formal-ai/actions/runs/31897604216#summary-95043234919
+Check Links	Check links with lychee	2026-08-15T17:11:54.9035137Z ##[endgroup]
+Check Links	Check links with lychee	2026-08-15T17:11:56.2610055Z [IGNORED] data:, (at 20:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2610962Z [EXCLUDED] file:///home/runner/work/formal-ai/formal-ai/src/web/app/styles.css?v=__FORMAL_AI_ASSET_VERSION__ (at 21:34) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:11:56.2611788Z [IGNORED] data:, (at 17:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2612651Z [IGNORED] data:, (at 22:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2613243Z [IGNORED] data:, (at 24:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2613882Z [IGNORED] data:, (at 22:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2614581Z [IGNORED] data:, (at 17:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2627001Z [IGNORED] data:, (at 23:28) | Unsupported: URL is missing a hostname
+Check Links	Check links with lychee	2026-08-15T17:11:56.2695573Z [EXCLUDED] https://openai.com/policies/services-agreement/ (at 365:11) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:12:17.5779326Z [EXCLUDED] https://example.com/placeholder (at 4107:8) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:12:17.5780165Z [EXCLUDED] https://example.com/placeholder (at 4107:46) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:12:55.9269711Z [EXCLUDED] https://app.docker.com/settings/personal-access-tokens (at 212:84) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:13:07.3191479Z [EXCLUDED] https://openai.com/index/introducing-simpleqa/ (at 241:28) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:13:10.0156943Z [EXCLUDED] https://artofproblemsolving.com/wiki/index.php/AIME_Problems_and_Solutions (at 250:30) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:13:16.9963500Z [EXCLUDED] https://openai.com/policies/services-agreement/ (at 41:3) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:13:16.9964510Z [EXCLUDED] https://openai.com/policies/eu-terms-of-use/ (at 43:3) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:13:16.9965327Z [EXCLUDED] https://openai.com/index/introducing-gpt-oss/ (at 45:3) | This is due to your 'exclude' values
+Check Links	Check links with lychee	2026-08-15T17:13:53.7346958Z # Summary
+Check Links	Check links with lychee	2026-08-15T17:13:53.7347305Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7347637Z | Status         | Count |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7348036Z |----------------|-------|
+Check Links	Check links with lychee	2026-08-15T17:13:53.7348727Z | 🔍 Total       | 1256  |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7349716Z | 🔗 Unique      | 685   |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7350151Z | ✅ Successful  | 1239  |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7350635Z | ⏳ Timeouts    | 0     |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7351012Z | 🔀 Redirected  | 19    |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7351431Z | 👻 Excluded    | 10    |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7351815Z | ❓ Unknown     | 0     |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7352189Z | 🚫 Errors      | 0     |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7352612Z | ⛔ Unsupported | 7     |
+Check Links	Check links with lychee	2026-08-15T17:13:53.7352796Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7352963Z ## Redirects per input
+Check Links	Check links with lychee	2026-08-15T17:13:53.7353120Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7353313Z ### Redirects in CONTRIBUTING.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7353608Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7354111Z * https://scriv.readthedocs.io/ --[302]--> https://scriv.readthedocs.io/en/latest/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7354588Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7354784Z ### Redirects in data/benchmarks/LICENSES.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7355084Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7355442Z * https://research.facebook.com/downloads/babi/ --[302]--> https://ai.meta.com/resources/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7355924Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7356089Z ### Redirects in docs/benchmarks.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7356364Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7356797Z * https://ai.google.com/research/NaturalQuestions --[301]--> https://ai.google.com/research/NaturalQuestions/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7357935Z * https://allenai.org/data/arc --[302]--> https://huggingface.co/datasets/allenai/ai2_arc
+Check Links	Check links with lychee	2026-08-15T17:13:53.7358684Z * https://allennlp.org/drop --[301]--> https://allenai.org/data/drop --[302]--> https://github.com/allenai/allennlp-reading-comprehension/blob/master/allennlp_rc/eval/drop_eval.py
+Check Links	Check links with lychee	2026-08-15T17:13:53.7359524Z * https://github.com/lm-sys/arena-hard-auto --[301]--> https://github.com/lmarena/arena-hard-auto
+Check Links	Check links with lychee	2026-08-15T17:13:53.7359873Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7360032Z ### Redirects in docs/ci-cd/troubleshooting.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7360244Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7360801Z * https://docs.github.com/actions/security-guides/using-secrets-in-github-actions --[302]--> https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets
+Check Links	Check links with lychee	2026-08-15T17:13:53.7361878Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7362100Z ### Redirects in docs/configuration/orchestration.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7362432Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7362791Z * https://docs.anthropic.com/en/docs/claude-code/cli-usage --[301]--> https://code.claude.com/docs/en/cli-usage
+Check Links	Check links with lychee	2026-08-15T17:13:53.7363440Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7363604Z ### Redirects in docs/desktop/server-api.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7363884Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7364423Z * https://developers.openai.com/codex/config-reference --[308]--> https://learn.chatgpt.com/docs/config-file/config-reference
+Check Links	Check links with lychee	2026-08-15T17:13:53.7365071Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7365247Z ### Redirects in docs/upload-memory.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7365541Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7365776Z * https://gist.github.com/ --[302]--> https://gist.github.com/starred
+Check Links	Check links with lychee	2026-08-15T17:13:53.7366384Z * https://link-assistant.github.io/formal-ai --[301]--> https://link-assistant.github.io/formal-ai/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7366737Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7367074Z ### Redirects in LEGAL-COMPLIANCE.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7367501Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7367979Z * https://docs.mistral.ai/models/model-cards/mistral-7b-0-1 --[308]--> https://docs.mistral.ai/models/mistral-7b-0-1
+Check Links	Check links with lychee	2026-08-15T17:13:53.7368595Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7368776Z ### Redirects in LYCHEE_CHANGELOG.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7369074Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7370712Z * https://calendar.google.com/calendar/render?action=TEMPLATE%E2%80%A6 --[302]--> https://accounts.google.com/ServiceLogin?service=cl&passive=1209600&osid=1&continue=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&followup=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&emr=1 --[302]--> https://accounts.google.com/v3/signin/identifier?continue=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&emr=1&followup=https://calendar.google.com/calendar/render?action%3DTEMPLATE%25E2%2580%25A6&osid=1&passive=1209600&service=cl&flowName=WebLiteSignIn&flowEntry=ServiceLogin&dsh=S-1828600107:1786813936590214
+Check Links	Check links with lychee	2026-08-15T17:13:53.7372530Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7372716Z ### Redirects in README.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7372897Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7373088Z * http://unlicense.org/ --[301]--> https://unlicense.org/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7373639Z * https://codecov.io/gh/link-assistant/formal-ai --[301]--> https://app.codecov.io/gh/link-assistant/formal-ai
+Check Links	Check links with lychee	2026-08-15T17:13:53.7374234Z * https://docs.rs/formal-ai --[302]--> https://docs.rs/formal-ai/latest/formal_ai/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7374772Z * https://www.rust-lang.org/ --[301]--> https://rust-lang.org/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7375092Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7375432Z ### Redirects in src/web/download/assets/screenshots/README.md
+Check Links	Check links with lychee	2026-08-15T17:13:53.7375687Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7375921Z * https://konard.github.io/vk-bot-desktop --[301]--> https://konard.github.io/vk-bot-desktop/
+Check Links	Check links with lychee	2026-08-15T17:13:53.7376251Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7376254Z 
+Check Links	Check links with lychee	2026-08-15T17:13:53.7392363Z ##[notice]Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/31897604216#summary-95043234919
+Check Links	Check links with lychee	2026-08-15T17:13:53.7420771Z ##[end-action id=lychee.run-lychee;outcome=success;conclusion=success;duration_ms=118843]
+Check Links	Post Run actions/checkout@v6	﻿2026-08-15T17:13:53.7599214Z Post job cleanup.
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8348109Z [command]/usr/bin/git version
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8374713Z git version 2.54.0
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8418680Z Temporarily overriding HOME='/home/runner/work/_temp/353b42a5-c619-4151-a056-e37d7377c6a8' before making global git config changes
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8419588Z Adding repository directory to the temporary git global config as a safe directory
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8420622Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8441622Z Removing SSH command configuration
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8448275Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8475613Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8658476Z Removing HTTP extra header
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8680425Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8724686Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8911424Z Removing includeIf entries pointing to credentials config files
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8917776Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8936675Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8938105Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8939494Z includeif.gitdir:/github/workspace/.git.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8940404Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8946679Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8966372Z /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.8976320Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9006726Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9024404Z /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9033277Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9060912Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9081375Z /github/runner_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9089351Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9116278Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9133747Z /github/runner_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9141552Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9170724Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Check Links	Post Run actions/checkout@v6	2026-08-15T17:13:53.9347251Z Removing credentials config '/home/runner/work/_temp/git-credentials-f8a850b7-8ab1-422f-907c-e622ca5d9945.config'
+Check Links	Complete job	﻿2026-08-15T17:13:53.9458099Z Cleaning up orphan processes

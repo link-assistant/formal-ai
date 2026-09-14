@@ -1,0 +1,73 @@
+
+X main CI/CD Pipeline · 31467733666
+Triggered via push about 11 hours ago
+
+JOBS
+✓ Detect Changes in 1m19s (ID 93704064805)
+- Version Modification Check in 0s (ID 93704065346)
+- Create Changelog PR (ID 93704076352)
+- Self-Hosting Evidence Check (ID 93704077059)
+✓ Secrets Scan in 37s (ID 93704344647)
+✓ Test (ubuntu-latest) in 20m32s (ID 93704344658)
+✓ Lint and Format Check in 7m4s (ID 93704344661)
+X Test (macos-15-intel) in 35m23s (ID 93704344670)
+✓ E2E Tests (local web app) in 8m49s (ID 93704344691)
+✓ E2E Tests (agent CLI ↔ formal-ai) in 20m46s (ID 93704344724)
+- Docker Image Build & Runtime Check in 0s (ID 93704345202)
+- Changelog Fragment Check in 0s (ID 93704345212)
+- Build Package in 0s (ID 93711740687)
+- Instant Release in 0s (ID 93711741320)
+- Auto Release in 0s (ID 93711741781)
+X Pipeline Status in 17s (ID 93711742200)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  X Fail the run when a required job was cancelled or failed
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Deploy Web App to GitHub Pages in 0s (ID 93711742207)
+- E2E Tests (GitHub Pages) in 0s (ID 93711742316)
+
+ANNOTATIONS
+- 0% - 0 hits, 1 miss, 0 errors
+Test (ubuntu-latest): .github#36
+
+- 19% - 244 hits, 1044 misses, 0 errors
+Lint and Format Check: .github#51
+
+! Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wordnet/en#0
+
+! Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wiktionary/en#0
+
+! Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wikidata/entity#0
+
+! Rust file has 979 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/agentic_coding/general_planner.rs#0
+
+X The job has exceeded the maximum execution time of 35m0s
+Test (macos-15-intel): .github#1
+
+- 0% - 0 hits, 0 misses, 0 errors
+Test (macos-15-intel): .github#34
+
+X The operation was canceled.
+Test (macos-15-intel): .github#3982
+
+- 37% - 623 hits, 1056 misses, 0 errors
+E2E Tests (agent CLI ↔ formal-ai): .github#49
+
+X Process completed with exit code 1.
+Pipeline Status: .github#93
+
+X Pipeline has cancelled jobs on main: test. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'.
+Pipeline Status: .github#92
+
+
+ARTIFACTS
+agent-cli-tui-replays
+download-page-screenshots
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31467733666

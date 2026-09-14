@@ -1,0 +1,62 @@
+{
+  "lemma": "confirm",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00667804-v",
+      "partOfSpeech": "v",
+      "definition": "establish or strengthen as with new evidence or facts",
+      "examples": [
+        "his story confirmed my doubts",
+        "The evidence supports the defendant"
+      ],
+      "synonyms": [
+        "corroborate",
+        "sustain",
+        "substantiate",
+        "support",
+        "affirm"
+      ]
+    },
+    {
+      "id": "oewn-01014100-v",
+      "partOfSpeech": "v",
+      "definition": "strengthen or make more firm",
+      "examples": [
+        "The witnesses confirmed the victim's account"
+      ],
+      "synonyms": [
+        "reassert"
+      ]
+    },
+    {
+      "id": "oewn-00222266-v",
+      "partOfSpeech": "v",
+      "definition": "make more firm",
+      "examples": [
+        "Confirm thy soul in self-control!"
+      ]
+    },
+    {
+      "id": "oewn-02481941-v",
+      "partOfSpeech": "v",
+      "definition": "support a person for a position",
+      "examples": [
+        "The Senate confirmed the President's candidate for Secretary of Defense"
+      ]
+    },
+    {
+      "id": "oewn-02480026-v",
+      "partOfSpeech": "v",
+      "definition": "administer the rite of confirmation to",
+      "examples": [
+        "the children were confirmed in their mother's faith"
+      ]
+    }
+  ]
+}

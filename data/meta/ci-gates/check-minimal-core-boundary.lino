@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_minimal_core_boundary
+  stage rust
+  description "The minimal core keeps its boundary and every seed record carries its metadata (issue #918)."
+  run "rust-script --test scripts/check-minimal-core-boundary.rs && rust-script scripts/check-minimal-core-boundary.rs && rust-script --test scripts/audit-seed-metadata.rs && rust-script scripts/audit-seed-metadata.rs"

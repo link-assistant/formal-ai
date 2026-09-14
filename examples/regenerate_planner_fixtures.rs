@@ -1,6 +1,6 @@
 //! Regenerate every committed artifact derived from the agentic planner source.
 
-use formal_ai::agentic_coding::{run_agentic_task, self_ast, self_heal, AST_TASK};
+use formal_ai::agentic_coding::{AST_TASK, run_agentic_task, self_ast, self_heal};
 
 fn main() {
     std::fs::write("data/meta/self-ast.lino", self_ast::render_document())

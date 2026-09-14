@@ -8,7 +8,7 @@ use super::{CompiledMemoryProgram, MemoryProgramPermission, MemoryProgramStep};
 use crate::engine::stable_id;
 use crate::link_store::memory_event_to_link_record;
 use crate::links_format::push_lino_node;
-use crate::memory::{isoformat_now, MemoryEvent, MemoryStore};
+use crate::memory::{MemoryEvent, MemoryStore, isoformat_now};
 
 /// The standard three-state permission gate for memory-program effects.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -463,46 +463,54 @@ fn update_events(
         let Some(event) = store.events_mut().get_mut(index) else {
             continue;
         };
-        let mut event_changed = false;
-        if let (Some(old), Some(new), Some(content)) = (
+        // Each of the four edits reports for itself whether it actually
+        // changed anything; the write count moves only if at least one did.
+        let replaced = if let (Some(old), Some(new), Some(content)) = (
             arguments.get("old"),
             arguments.get("new"),
             event.content.as_mut(),
-        ) {
-            if let Some(replaced) = replace_case_insensitive(content, old, new) {
-                *content = replaced;
-                event_changed = true;
-            }
-        }
-        if let Some(value) = arguments.get("value") {
-            if event.kind.as_deref() != Some(value) {
-                event.kind = Some(value.clone());
-                event_changed = true;
-            }
-        }
-        if let Some(value) = arguments.get("append") {
+        ) && let Some(replaced) = replace_case_insensitive(content, old, new)
+        {
+            *content = replaced;
+            true
+        } else {
+            false
+        };
+        let retagged = if let Some(value) = arguments.get("value")
+            && event.kind.as_deref() != Some(value)
+        {
+            event.kind = Some(value.clone());
+            true
+        } else {
+            false
+        };
+        let appended = if let Some(value) = arguments.get("append") {
             let content = event.content.get_or_insert_with(String::new);
-            if !content.split_whitespace().any(|part| part == value) {
+            if content.split_whitespace().any(|part| part == value) {
+                false
+            } else {
                 if !content.is_empty() {
                     content.push(' ');
                 }
                 content.push_str(value);
-                event_changed = true;
+                true
             }
-        }
-        if arguments
+        } else {
+            false
+        };
+        let normalized = if arguments
             .get("normalize")
             .is_some_and(|value| value == "whitespace")
+            && let Some(content) = event.content.as_mut()
         {
-            if let Some(content) = event.content.as_mut() {
-                let normalized = content.split_whitespace().collect::<Vec<_>>().join(" ");
-                if *content != normalized {
-                    *content = normalized;
-                    event_changed = true;
-                }
-            }
-        }
-        if event_changed {
+            let squeezed = content.split_whitespace().collect::<Vec<_>>().join(" ");
+            let changed = *content != squeezed;
+            *content = squeezed;
+            changed
+        } else {
+            false
+        };
+        if replaced || retagged || appended || normalized {
             event.write_count = event.write_count.max(1).saturating_add(1);
             changed += 1;
         }

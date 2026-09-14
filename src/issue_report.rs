@@ -246,8 +246,10 @@ impl ReportBody {
                 lines.push(attachment.note.clone());
                 lines.push(String::new());
             }
-            push_code_block(&mut lines, &attachment.language, &attachment.content);
-            lines.push(String::new());
+            if !attachment.content.is_empty() {
+                push_code_block(&mut lines, &attachment.language, &attachment.content);
+                lines.push(String::new());
+            }
         }
 
         lines.join("\n")
@@ -310,6 +312,25 @@ fn push_code_block(lines: &mut Vec<String>, language: &str, content: &str) {
     lines.push(format!("{fence}{language}"));
     lines.push(content.to_owned());
     lines.push(fence);
+}
+
+/// The fence info string marking a block as Links Notation.
+pub(crate) const LINO_FENCE_LANGUAGE: &str = "lino";
+
+/// Wrap machine text (Links Notation, code, logs) in a fence the content
+/// cannot terminate early. Final messages travel into GitHub comments, where
+/// unfenced tab/space-indented text collapses into flowing prose (#996).
+#[must_use]
+pub(crate) fn fenced_block(language: &str, content: &str) -> String {
+    let content = content.trim_end();
+    let fence = pick_fence(&std::iter::once(content));
+    let mut block = fence.clone();
+    block.push_str(language);
+    block.push('\n');
+    block.push_str(content);
+    block.push('\n');
+    block.push_str(&fence);
+    block
 }
 
 /// Choose a fence long enough that no sample can terminate the block early.

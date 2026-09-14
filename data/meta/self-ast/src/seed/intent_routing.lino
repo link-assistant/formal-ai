@@ -1,0 +1,16 @@
+self_ast_census
+  target src/seed/intent_routing.rs
+  language rust
+  fidelity signature
+  byte_len 6377
+  line_count 157
+  content_id source_module_2362bd09c26714c7
+  symbol_count 7
+  symbols
+    struct IntentRoute 20 28
+    struct IntentRouting 31 35
+    function intent_routing 46 49
+    static CELL 47 47
+    function load_intent_routing 51 104
+    const INTENT_ROUTING_PATH 107 107
+    function intent_routing_from 112 157

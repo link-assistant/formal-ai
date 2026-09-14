@@ -29,16 +29,20 @@ fn cli_serve_exposes_namespaced_protocols_over_loopback_http() {
 
     let openai_models = http_get_json(port, "/api/openai/v1/models", token);
     assert_eq!(openai_models["object"], "list");
-    assert!(openai_models["data"]
-        .as_array()
-        .expect("OpenAI model data should be an array")
-        .iter()
-        .any(|model| model["id"] == "formal-ai" && model["slug"] == "formal-ai"));
-    assert!(openai_models["models"]
-        .as_array()
-        .expect("Codex-compatible models should be an array")
-        .iter()
-        .any(|model| model["id"] == "formal-ai" && model["slug"] == "formal-ai"));
+    assert!(
+        openai_models["data"]
+            .as_array()
+            .expect("OpenAI model data should be an array")
+            .iter()
+            .any(|model| model["id"] == "formal-ai" && model["slug"] == "formal-ai")
+    );
+    assert!(
+        openai_models["models"]
+            .as_array()
+            .expect("Codex-compatible models should be an array")
+            .iter()
+            .any(|model| model["id"] == "formal-ai" && model["slug"] == "formal-ai")
+    );
 
     let responses_body = serde_json::json!({
         "model": "formal-ai",
@@ -89,11 +93,13 @@ fn cli_serve_exposes_namespaced_protocols_over_loopback_http() {
     assert_eq!(anthropic["content"][0]["text"], "Hi, how may I help you?");
 
     let gemini_models = http_get_json(port, "/api/gemini/v1beta/models", token);
-    assert!(gemini_models["models"]
-        .as_array()
-        .expect("Gemini models should be an array")
-        .iter()
-        .any(|model| model["name"] == "models/formal-ai"));
+    assert!(
+        gemini_models["models"]
+            .as_array()
+            .expect("Gemini models should be an array")
+            .iter()
+            .any(|model| model["name"] == "models/formal-ai")
+    );
 
     let gemini = http_post_json(
         port,
@@ -141,12 +147,14 @@ fn cli_serve_exposes_namespaced_protocols_over_loopback_http() {
         "/api/vertex/v1/projects/local/locations/us-central1/publishers/google/models",
         token,
     );
-    assert!(vertex_models["publisherModels"]
-        .as_array()
-        .expect("Vertex publisherModels should be an array")
-        .iter()
-        .any(|model| model["name"]
-            == "projects/local/locations/us-central1/publishers/google/models/formal-ai"));
+    assert!(
+        vertex_models["publisherModels"]
+            .as_array()
+            .expect("Vertex publisherModels should be an array")
+            .iter()
+            .any(|model| model["name"]
+                == "projects/local/locations/us-central1/publishers/google/models/formal-ai")
+    );
 
     let vertex = http_post_json(
         port,

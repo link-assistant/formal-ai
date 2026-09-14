@@ -1,0 +1,20 @@
+## Issue #708 Bounded Natural-Language Memory Programs
+
+Issue [#708](https://github.com/link-assistant/formal-ai/issues/708) (E66)
+requires associative-memory requests to compile into one inspectable,
+permissioned Links Notation program rather than disappear into handler control
+flow. PR [#883](https://github.com/link-assistant/formal-ai/pull/883) adds a
+closed seeded algebra, explicit caller-derived bounds, editable review shapes,
+and matching native/browser interpreters.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R708-1 | Natural-language memory requests must compile into an executable program using only the closed primitive set `match`, `create`, `update`, `delete_with_retraction`, `map_matches`, `filter`, `sequential_compose`, and bounded fixpoint iteration. | `src/memory_program.rs` compiles only complete families from `data/seed/memory-programs.lino`; `src/memory_program/execution.rs` interprets the closed enum. Covered by `fifteen_seeded_query_families_compile_with_a_program_trace` and the parser unit suite. |
+| R708-2 | Equivalent English, Russian, Hindi, and Chinese requests must produce the same program; the current language protocol additionally requires Spanish. | Language is excluded from canonical identity while bindings, limits, permissions, and steps remain included. Covered by `equivalent_multilingual_requests_compile_to_the_same_program_links`, the browser multilingual case, and language-parity checks. |
+| R708-3 | Compilation and execution must remain inspectable: show program, stable id, permissions, limits, matched ids, outcome, halt reason, and an honest `program_gap`. | The shared query surface embeds the serialized program and execution trace; unmatched memory cues report `program_gap` without partial compilation. Covered by `query_surface_traces_the_compiled_program_and_names_program_gaps`. |
+| R708-4 | Bounds must come from task decomposition depth, stop before unsafe partial effects, and distinguish fixpoint from a bound stop. | `MemoryProgramLimits::from_decomposition_depth` derives iteration and match caps, serializes them into program identity, and the interpreter reports `match_limit` or `iteration_limit`. Covered by `bounds_stop_honestly_before_partial_writes`. |
+| R708-5 | Destructive effects require explicit confirmation and preserve append-only history. | Permission is seed-owned and revalidated after edits; `delete_with_retraction` is refused without `DestructiveConfirmed` and appends a retraction rather than erasing its target. Covered by `destructive_program_requires_confirmation_and_appends_a_retraction`. |
+| R708-6 | Reviewers must be able to parse, edit, and re-execute the visible `replace x y` and `when n do m` forms without a hidden permission escalation. | The parser makes the visible forms authoritative, rebuilds affected steps, reapplies seed permissions, and recomputes canonical identity. Covered by `compiled_program_round_trips_replace_and_when_do_shapes`. |
+| R708-7 | At least 15 families must include selective contributed-fact rename, weekly topic summary, and missing-Russian-label todos. | The seed contains exactly 15 reviewed families across reads, writes, mapping, filtering, retraction, and fixpoint normalization. Covered by the 15-family compiler regression and the native execution suite. |
+| R708-8 | Mapping must affect execution, and the same compile/execute/persist/refuse/gap semantics must work in native and browser memory. | Both interpreters carry `map_matches` state into aggregation and source-preserving collection copies; browser events are atomically persisted to IndexedDB. Covered by `mapped_copy_retains_source_content_and_collection` and `tests/e2e/tests/issue-708.spec.js`. |
+| R708-9 | The solution must document the link-cli operation census, natural-language triple-store querying, bounded Datalog relationship, and self-application evidence. | `docs/case-studies/issue-708/README.md` records the source-pinned census and conservative boundedness decision; `issue_708_self_hosting` byte-checks three Agent-CLI-authored leaves, satisfying the repository's 20% self-hosting gate. |

@@ -1,0 +1,8 @@
+link_edit
+  leaf L22
+  path src/skill_procedure.rs
+  language rust
+  rule replace_literal
+    old "https://example.com/article"
+    new "https://example.com/document"
+  expect "https://example.com/document"

@@ -1,0 +1,17 @@
+$ bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/web-search-component-entry.js --outfile ./src/web/web-search-component.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify
+Bundled 22 modules in 107ms
+
+  vendor.bundle.js  0.28 MB  (entry point)
+
+Bundled 16 modules in 42ms
+
+  web-search-component.bundle.js  21.26 KB  (entry point)
+
+Bundled 23 modules in 26ms
+
+  ocr.bundle.js  18.57 KB  (entry point)
+
+Bundled 384 modules in 186ms
+
+  app.js  0.65 MB  (entry point)
+

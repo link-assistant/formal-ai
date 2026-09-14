@@ -9,11 +9,11 @@
 //! Rust any more. The pools live in `data/seed/unknown-openers.lino` and the
 //! texts in the multilingual response seeds, so a new language is a data edit.
 
+use crate::Language;
 use crate::engine::{unknown_answer, unknown_language_fallback_answer};
 use crate::web_engine_core::{
     select_unknown_opener, unknown_opener_sentence_separators, unknown_openers_for,
 };
-use crate::Language;
 
 /// Replace the leading opener of the cached seed answer with a deterministic
 /// variation. The seed answer is split on the first sentence terminator so

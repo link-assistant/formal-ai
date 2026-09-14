@@ -37,8 +37,8 @@ fn with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt() {
             "agent",
             vec![
                 "--no-summarize-session",
-                "--compaction-model",
-                "same",
+                "--compaction-models",
+                "(same)",
                 "--model",
                 "formalai/formal-ai",
                 "--verbose",
@@ -335,8 +335,8 @@ fn with_formal_ai_keeps_an_already_qualified_model_selector() {
         captured_args_without_model_catalog(&captured),
         [
             "--no-summarize-session",
-            "--compaction-model",
-            "same",
+            "--compaction-models",
+            "(same)",
             "--model",
             "formalai/formal-ai",
             "-p",

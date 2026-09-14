@@ -44,14 +44,14 @@ pub mod bundle;
 pub mod upgrade;
 
 pub use bundle::{
-    export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
-    seed_cache_events, suggest_migrations, BundleInfo, ParsedBundle,
+    BundleInfo, ParsedBundle, export_bundle, export_full_memory, extract_memory_from_bundle,
+    import_full_memory, seed_cache_events, suggest_migrations,
 };
 pub use upgrade::{
-    migrate_memory, migrate_memory_with_pre_commit, preflight_memory_upgrade,
-    MemoryMigrationReceipt, MemoryMigrationState, MemoryUpgradeError, MemoryUpgradeStatus,
     MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
-    TARGET_MEMORY_SCHEMA_VERSION,
+    MemoryMigrationReceipt, MemoryMigrationState, MemoryUpgradeError, MemoryUpgradeStatus,
+    TARGET_MEMORY_SCHEMA_VERSION, migrate_memory, migrate_memory_with_pre_commit,
+    preflight_memory_upgrade,
 };
 
 pub(crate) const ROOT_HEADER: &str = "demo_memory";
@@ -365,10 +365,10 @@ impl MemoryStore {
 /// Returns an [`io::Error`] when the lock file, temp file, or rename fails.
 pub fn write_locked_atomic(path: &Path, contents: &str) -> io::Result<()> {
     use fs2::FileExt as _;
-    if let Some(parent) = path.parent() {
-        if !parent.as_os_str().is_empty() {
-            fs::create_dir_all(parent)?;
-        }
+    if let Some(parent) = path.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        fs::create_dir_all(parent)?;
     }
     let file_name = path
         .file_name()

@@ -1,0 +1,41 @@
+view
+  id M-75ddc224068f
+  lemma want
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state of extreme poverty"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the state of needing something that is absent or unavailable"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "anything that is necessary but lacking"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a specific feeling of desire"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "feel or have a desire for; want strongly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have need of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "hunt or look for; want for a particular reason"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "wish or demand the presence of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be without, lack; be deficient in"
+    provenance (wordnet)

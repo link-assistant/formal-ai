@@ -69,8 +69,11 @@ function detailQuery(prompt) {
   const lower = String(prompt || "").toLowerCase();
   const prefixes = [
     "show behavior rule",
+    "show behaviour rule",
     "read behavior rule",
+    "read behaviour rule",
     "describe behavior rule",
+    "describe behaviour rule",
     "show rule",
     "read rule",
     "details for rule",
@@ -117,21 +120,20 @@ function codeSpans(text) {
 //     standalone behaviour-rule edit directive (the explicit teaching form); and
 //   * a when-then frame whose circumfix surface brackets the trigger and answer —
 //     the literal before the … (U+2026) is the head, the literal after it is the
-//     link; both must appear, head before link, with at least one backtick on
-//     each side so the runtime extractor can pull the trigger and answer
-//     deterministically.
+//     link; both must appear in order, with a backtick on each side.
 const ROLE_SKILL_TEACHING_TRIGGER_LEAD = "skill_teaching_trigger_lead";
 const ROLE_SKILL_TEACHING_RESPONSE_VERB = "skill_teaching_response_verb";
 const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE = "behavior_rule_edit_directive";
 const ROLE_SKILL_WHEN_THEN_PAIR = "skill_when_then_pair";
 
+const directRoleSurfacePresent = (role, lower) => roleWordForms(role).some((form) => form.text && lower.includes(form.text));
 function looksLikeRuntimeRuleUpdate(text) {
   const raw = String(text || "");
   const lower = raw.toLowerCase();
   if (
-    (lexiconMentionsRoleSubstring(ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower) &&
-      lexiconMentionsRoleSubstring(ROLE_SKILL_TEACHING_RESPONSE_VERB, lower)) ||
-    lexiconMentionsRoleSubstring(ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
+    (directRoleSurfacePresent(ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower) &&
+      directRoleSurfacePresent(ROLE_SKILL_TEACHING_RESPONSE_VERB, lower)) ||
+    directRoleSurfacePresent(ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
   ) {
     return true;
   }
@@ -155,9 +157,33 @@ function looksLikeRuntimeRuleUpdate(text) {
 function runtimeRuleFromText(text) {
   if (!looksLikeRuntimeRuleUpdate(text)) return null;
   const spans = codeSpans(text);
-  if (spans.length < 2) return null;
-  const trigger = spans[0].trim();
-  const answer = spans[1].trim();
+  let trigger = spans.length >= 2 ? spans[0].trim() : "";
+  let answer = spans.length >= 2 ? spans[1].trim() : "";
+  if (spans.length < 2) {
+    const raw = String(text || "");
+    const lower = raw.toLowerCase();
+    for (const lead of roleWordForms(ROLE_SKILL_TEACHING_TRIGGER_LEAD)) {
+      const leadText = String(lead.text || "");
+      const leadPos = lower.indexOf(leadText);
+      if (leadPos === -1) continue;
+      const triggerStart = leadPos + leadText.length;
+      const responseVerbs = roleWordForms(ROLE_SKILL_TEACHING_RESPONSE_VERB)
+        .sort((left, right) => String(right.text || "").length - String(left.text || "").length);
+      for (const responseVerb of responseVerbs) {
+        const verb = String(responseVerb.text || "");
+        const relativeVerbPos = lower.slice(triggerStart).indexOf(verb);
+        if (relativeVerbPos === -1) continue;
+        const verbPos = triggerStart + relativeVerbPos;
+        trigger = raw.slice(triggerStart, verbPos).trim().replace(/^[`"':,\s]+|[`"':,\s]+$/gu, "");
+        answer = raw
+          .slice(verbPos + verb.length)
+          .trim()
+          .replace(/^[`"':,\s]+|[`"':,.!?\s]+$/gu, "");
+        if (trigger && answer) break;
+      }
+      if (trigger && answer) break;
+    }
+  }
   if (!trigger || !answer) return null;
   return {
     id: stableBehaviorRuleId("behavior_rule_runtime", `${trigger}\n${answer}`),
@@ -198,6 +224,29 @@ function collectRuntimeRules(history) {
 
 function tryBehaviorRules(prompt, normalized, history, preferences) {
   const language = behaviorRuleResponseLanguage(normalized, detectLanguage(prompt));
+  const preferenceMatch = String(prompt || "").match(/`([^`]+)`/u);
+  if (
+    preferenceMatch &&
+    directRoleSurfacePresent(ROLE_CONVERSATION_PREFERENCE_AVOID, normalized)
+  ) {
+    return {
+      intent: "conversation_preference",
+      content: answerFor("conversation_preference", language)
+        .replace("{term}", preferenceMatch[1].trim()),
+      confidence: 1.0,
+      evidence: ["conversation_preference:avoid_term"],
+    };
+  }
+  if (
+    directRoleSurfacePresent(ROLE_UNAUTHORIZED_MUTATION_CORRECTION, normalized)
+  ) {
+    return {
+      intent: "action_correction",
+      content: answerFor("action_correction", language),
+      confidence: 1.0,
+      evidence: ["action_correction:unauthorized_mutation"],
+    };
+  }
   const updateRule = runtimeRuleFromText(prompt);
   if (updateRule) {
     return {

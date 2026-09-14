@@ -9,8 +9,8 @@
 //! Run with: `cargo run --example question_generation_languages`
 
 use formal_ai::{
-    question_lexicon_summary_for_language, GeneratedQuestionClass, QuestionAcceptance,
-    QuestionGenerationConfig, QuestionGenerator,
+    GeneratedQuestionClass, QuestionAcceptance, QuestionGenerationConfig, QuestionGenerator,
+    question_lexicon_summary_for_language,
 };
 
 fn main() {

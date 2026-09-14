@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Q13634357": {
+      "type": "item",
+      "id": "Q13634357",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Laravel"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Laravel"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "Laravel"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "open source web application framework, written in PHP"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фреймворк с открытым исходным кодом, написанный на PHP"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "开源PHP Web应用框架"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

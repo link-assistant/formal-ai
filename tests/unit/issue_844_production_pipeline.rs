@@ -8,14 +8,14 @@
 //! from the captures it actually read.
 
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::{
-    execute_captured_gathering, execute_multi_source_summary, sha256_hex, CachedSourceClient,
-    CapturedSourceMetadata, EventLog, FactChecker, FetchError, FormalSystem, GatheringPlan,
-    NamingConvention, SolverConfig, SourceTier, SourceTransport, SummarizationConfig,
-    SummarizationMode,
+    CachedSourceClient, CapturedSourceMetadata, EventLog, FactChecker, FetchError, FormalSystem,
+    GatheringPlan, NamingConvention, SolverConfig, SourceTier, SourceTransport,
+    SummarizationConfig, SummarizationMode, execute_captured_gathering,
+    execute_multi_source_summary, sha256_hex,
 };
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
@@ -188,9 +188,11 @@ fn the_whole_pipeline_merges_into_a_named_context_fact_checks_and_learns() {
         &identifier,
         NamingConvention::SnakeCase
     ));
-    assert!(identifier
-        .chars()
-        .all(|character| !character.is_whitespace()));
+    assert!(
+        identifier
+            .chars()
+            .all(|character| !character.is_whitespace())
+    );
 
     let learning = execution.learning_proposal();
     assert!(learning.contains("multi_source_statement_merge"));

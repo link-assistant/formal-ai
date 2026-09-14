@@ -17,17 +17,28 @@
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/tool-router.test.mjs scripts/web-tools.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/engine-manager.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs scripts/issue-756.test.mjs scripts/adhoc-sign-mac.test.cjs scripts/prepare-resources.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/tool-router.test.mjs scripts/web-tools.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/command-runner.test.mjs scripts/engine-manager.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs scripts/issue-756.test.mjs scripts/adhoc-sign-mac.test.cjs scripts/prepare-resources.test.mjs scripts/prefetch-builder-toolsets.test.mjs && node scripts/smoke.mjs"
   },
   "dependencies": {
-    "@link-assistant/web-capture": "^1.10.10",
-    "@link-assistant/web-search": "^0.10.3",
+    "@link-assistant/web-capture": "^1.11.2",
+    "@link-assistant/web-search": "^0.11.0",
     "agent-commander": "^0.10.1",
-    "electron-updater": "^6.8.9"
+    "command-stream": "0.19.0",
+    "electron-updater": "^6.8.9",
+    "playwright": "^1.62.1"
   },
   "devDependencies": {
-    "electron": "^43.2.0",
+    "electron": "^44.1.0",
     "electron-builder": "^26.15.7"
+  },
+  "overrides": {
+    "@link-assistant/web-capture": {
+      "@kreuzberg/html-to-markdown-node": "3.5.5",
+      "browser-commander": "0.16.1",
+      "puppeteer": "^25.9.0",
+      "puppeteer-core": "^25.9.0",
+      "qs": "^6.16.0"
+    }
   },
   "build": {
     "appId": "ai.formal.desktop",
@@ -103,5 +114,10 @@
     "portable": {
       "artifactName": "formal-ai-desktop-windows-portable-${arch}-${version}.${ext}"
     }
+  },
+  "allowScripts": {
+    "electron-winstaller": true,
+    "node-pty": true,
+    "puppeteer": true
   }
 }

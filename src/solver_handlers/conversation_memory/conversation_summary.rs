@@ -79,15 +79,14 @@ pub(super) fn try_summarize_conversation(
             _ => None,
         })
         .collect();
-    if turns.is_empty() {
-        if let Some(content) = prompt
+    if turns.is_empty()
+        && let Some(content) = prompt
             .split_once(':')
             .map(|(_, content)| content.trim())
             .filter(|content| !content.is_empty())
         {
             turns.push(DialogTurn::user(content));
         }
-    }
     let user_turn_count = turns.iter().filter(|turn| turn.role == "user").count();
     if user_turn_count == 0 {
         return None;

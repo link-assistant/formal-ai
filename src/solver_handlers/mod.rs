@@ -1,44 +1,6 @@
 //! Specialized free-function handlers extracted from `solver.rs`: each receives
 //! the prompt, normalized prompt, and event log, then returns `Some` on a match.
-mod agent_workspace;
-mod behavior_rule_followups;
-mod behavior_rule_matching;
-mod behavior_rules;
-mod benchmark_prompts;
-mod calculator_rate;
-mod calendar;
-mod calendar_ics;
-mod compound_interest;
-mod conversation_memory;
-mod curated_project_fetch;
-mod document_originality;
-mod document_request;
-mod fact_checking;
-mod feature_capability;
-mod github_repository_traffic;
-mod installation_conversion;
-mod meta_explanation;
-mod natural_language_tools;
-mod numeric_list;
-mod pattern_inference;
-mod playwright_script;
-mod procedure_rules;
-mod program_blueprint;
-mod program_synthesis;
-mod research_table;
-mod response_language_followup;
-mod self_awareness;
-mod shell_command_transform;
-mod software_project;
-mod software_project_code;
-mod software_project_followup;
-mod task_decomposition;
-mod text_edit_ops;
-mod text_manipulation;
-mod user_intent;
-mod web_requests;
-mod web_search_intent;
-mod world_state;
+include!("modules.rs");
 
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
@@ -50,15 +12,14 @@ pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
-    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
-    try_conversation_memory, MemoryQueryExecution,
+    MemoryQueryExecution, answer_memory_recall, execute_memory_query,
+    execute_memory_query_with_options, try_conversation_memory,
 };
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
-pub use feature_capability::{try_feature_capability, CapabilityRuntime};
-pub use github_repository_traffic::try_github_repository_traffic;
-pub use installation_conversion::try_installation_conversion;
+pub use feature_capability::{CapabilityRuntime, try_feature_capability};
+pub use installation_conversion::{is_install_conversion_request, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
@@ -68,7 +29,7 @@ pub use pattern_inference::{
 };
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
-pub use program_synthesis::try_program_synthesis;
+pub use program_synthesis::{looks_like_python_function_request, try_program_synthesis};
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
@@ -80,10 +41,7 @@ pub use software_project_followup::try_software_project_followup;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
 pub use text_manipulation::{names_a_quoted_replacement, text_outside_quoted_segments};
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
-pub use user_intent::{
-    try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
-    try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
-};
+pub use user_intent::{try_proof_request, try_proof_request_with_config};
 pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
     try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
@@ -92,21 +50,21 @@ pub use web_requests::{
 pub use world_state::try_world_state;
 pub use {
     web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
-    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
+    web_search_intent::WebSearchQueryKind, web_search_intent::web_search_query_for,
 };
 
 use crate::calculation::{
-    calculation_expression_candidates, evaluate_calculation, interpretation_statements,
-    PromptInterpretation,
+    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
+    interpretation_statements,
 };
 use crate::concepts::{
-    extract_concept_query, lookup_concept_query, resolve_context_label, ConceptRecord,
+    ConceptRecord, extract_concept_query, lookup_concept_query, resolve_context_label,
 };
 use crate::engine::{
-    answer_links_notation, hello_world_program_by_alias, knowledge_links_notation, stable_id,
-    ExecutionStatus, SymbolicAnswer,
+    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias,
+    knowledge_links_notation, stable_id,
 };
-use crate::event_log::{build_evidence_links, EventLog};
+use crate::event_log::{EventLog, build_evidence_links};
 use crate::language::detect as detect_language;
 use crate::seed::{localized_response, response_for};
 use crate::solver_helpers::{
@@ -263,10 +221,10 @@ pub fn try_concept_lookup_with_response_language(
     forced_response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
     let mut query = extract_concept_query(prompt)?;
-    if query.response_language.is_none() {
-        if let Some(forced) = forced_response_language {
-            query.response_language = Some(forced.to_owned());
-        }
+    if query.response_language.is_none()
+        && let Some(forced) = forced_response_language
+    {
+        query.response_language = Some(forced.to_owned());
     }
     log.append("concept_lookup:request", query.term.clone());
     if let Some(context) = query.context.as_deref() {
@@ -620,26 +578,26 @@ pub fn try_translation(
         }
     }
 
-    if let Some(code) = &backticked {
-        if let Some((source_lang, target_lang)) = detected_program {
-            let translated = translate_program(code, source_lang, target_lang);
-            let body = format!(
-                "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"
-            );
-            log.append("language_from", source_lang.to_owned());
-            log.append("language_to", target_lang.to_owned());
-            let meaning_id = stable_id("meaning", &normalize_code_meaning(code));
-            log.append("meaning", meaning_id);
-            let intent = format!("translate_{source_lang}_to_{target_lang}");
-            return Some(finalize_simple(
-                prompt,
-                log,
-                &intent,
-                "response:translate_code",
-                &body,
-                1.0,
-            ));
-        }
+    if let Some(code) = &backticked
+        && let Some((source_lang, target_lang)) = detected_program
+    {
+        let translated = translate_program(code, source_lang, target_lang);
+        let body = format!(
+            "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"
+        );
+        log.append("language_from", source_lang.to_owned());
+        log.append("language_to", target_lang.to_owned());
+        let meaning_id = stable_id("meaning", &normalize_code_meaning(code));
+        log.append("meaning", meaning_id);
+        let intent = format!("translate_{source_lang}_to_{target_lang}");
+        return Some(finalize_simple(
+            prompt,
+            log,
+            &intent,
+            "response:translate_code",
+            &body,
+            1.0,
+        ));
     }
 
     // Prefer an explicitly quoted fragment (`Translate "apple" to Russian`).
@@ -666,14 +624,13 @@ pub fn try_translation(
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
         let target_surface = translation.primary_surface().map(str::to_owned);
         let gap = target_surface.is_none();
-        let mut meaning_id = translation.meaning.slug();
-        if define_in_links && !translation.meaning.is_wikidata_backed() {
-            if let Some(seed_meaning) =
-                crate::translation::seed_meaning_for_surface(&surface, source_slug)
-            {
-                meaning_id = seed_meaning.slug();
-            }
-        }
+        // A seed meaning stands in only where Wikidata has nothing to say and
+        // the caller asked for links; otherwise the pipeline's own id is the id.
+        let seed_meaning = (define_in_links && !translation.meaning.is_wikidata_backed())
+            .then(|| crate::translation::seed_meaning_for_surface(&surface, source_slug))
+            .flatten();
+        let meaning_id =
+            seed_meaning.map_or_else(|| translation.meaning.slug(), |meaning| meaning.slug());
         (target_surface, meaning_id, gap)
     } else {
         // Fallback: hash the surface fragment so the trace still has a
@@ -736,7 +693,7 @@ pub fn try_write_script(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !is_write_script_request(normalized) {
+    if !is_write_script_request(prompt, normalized) {
         return None;
     }
     let program = hello_world_program_by_alias(normalized)?;
@@ -954,6 +911,7 @@ pub fn finalize_simple(
     body: &str,
     confidence: f32,
 ) -> SymbolicAnswer {
+    let body = crate::question_necessity::enforce_questions(body, log);
     log.append("intent", intent.to_owned());
     if log.first_of("candidate").is_none() {
         log.append("candidate", intent.to_owned());
@@ -970,15 +928,14 @@ pub fn finalize_simple(
     }
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
-    let links_notation = answer_links_notation(prompt, intent, body, log, &trace_id);
-    let thinking_steps = log.thinking_steps_for_answer(body);
+    let links_notation = answer_links_notation(prompt, intent, &body, log, &trace_id);
     SymbolicAnswer {
         intent: intent.to_owned(),
-        answer: body.to_owned(),
+        thinking_steps: log.thinking_steps_for_answer(&body),
+        answer: body,
         execution_recipe: None,
         confidence,
         evidence_links,
-        thinking_steps,
         links_notation,
     }
 }

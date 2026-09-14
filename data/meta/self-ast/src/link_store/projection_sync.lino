@@ -1,0 +1,11 @@
+self_ast_census
+  target src/link_store/projection_sync.rs
+  language rust
+  fidelity signature
+  byte_len 2455
+  line_count 58
+  content_id source_module_7658cd6056caed30
+  symbol_count 2
+  symbols
+    function projection_marker_path 20 24
+    function synchronize_memory_events 36 58

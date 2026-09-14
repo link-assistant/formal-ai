@@ -1,0 +1,8 @@
+link_edit
+  leaf L31
+  path src/learning_adoption_ledger.rs
+  language rust
+  rule rename_identifier
+    old "UNKNOWN_INTENT"
+    new "UNKNOWN_INTENT_NAME"
+  expect "UNKNOWN_INTENT_NAME"

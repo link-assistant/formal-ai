@@ -20,8 +20,8 @@
 
 use std::fmt::Write as _;
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
-use formal_ai::issue_report::{truncate_records, ReportAttachment, ReportBody, ReportLabels};
+use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
+use formal_ai::issue_report::{ReportAttachment, ReportBody, ReportLabels, truncate_records};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 5] = ["websearch", "webfetch", "read", "write", "bash"];
@@ -90,11 +90,11 @@ fn report_command(messages: &[ChatMessage]) -> String {
     messages.push(ChatMessage::user("GitHub issue"));
     messages.push(ChatMessage::user("Both logs"));
     let calls = tool_calls(&messages);
-    let command = arguments(&calls[0])["command"]
+
+    arguments(&calls[0])["command"]
         .as_str()
         .expect("command string")
-        .to_owned();
-    command
+        .to_owned()
 }
 
 // Requirement 1: the research answer is a query-relevant extract, not a page dump.

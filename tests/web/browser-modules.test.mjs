@@ -209,7 +209,12 @@ test("memory events reduce to stable doublet records", () => {
 });
 
 test("the seed loader parses the shipped seed files", () => {
-  const context = load("src/web/seed_loader.js");
+  // Pages and the worker load `seed-files.js` before `seed_loader.js`: the
+  // inventory is generated from `data/meta/seed-registry.lino` so that adding a
+  // seed file never edits a list two branches share (issue #991).
+  const context = createBrowserContext();
+  loadBrowserScript(context, "src/web/seed-files.js");
+  loadBrowserScript(context, "src/web/seed_loader.js");
   const seed = context.FormalAiSeed;
 
   assert.ok(
@@ -224,6 +229,15 @@ test("the seed loader parses the shipped seed files", () => {
 
   const info = seed.extractAgentInfo([tree]);
   assert.ok(info && typeof info === "object", "agent info is extracted from the parsed tree");
+});
+
+test("the seed loader has no inventory of its own", () => {
+  // The failure mode worth pinning: a host that forgets `seed-files.js` gets an
+  // empty list and a loader that says so, rather than a second copy of the
+  // inventory quietly drifting from `data/meta/seed-registry.lino`.
+  const seed = load("src/web/seed_loader.js").FormalAiSeed;
+
+  assert.deepEqual(plain(seed.DEFAULT_FILES), []);
 });
 
 test("the seed loader parses indentation into a nested tree", () => {

@@ -2,9 +2,9 @@ self_ast_census
   target src/telegram.rs
   language rust
   fidelity signature
-  byte_len 30259
+  byte_len 30131
   line_count 847
-  content_id source_module_44036fea4a81cda9
+  content_id source_module_28559e6ba96f2e75
   symbol_count 59
   symbols
     const TEXT_ONLY_MESSAGE 10 10

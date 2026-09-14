@@ -19,12 +19,16 @@ const CONTEXT_SESSION_FLAG: &str = " --session ";
 const SOURCE_FLAG: &str = " --source ";
 const OUTPUT_FLAG: &str = " --output ";
 const CONTEXT_OUTPUT_FLAG: &str = " --context-output ";
+const SEPARATE_CONTEXT_LINKS_FLAG: &str = " --separate-context-links";
 const SURFACE_FLAG: &str = " --surface ";
 const TITLE_FLAG: &str = " --title ";
 const BODY_FILE_FLAG: &str = " --body-file ";
 /// Programs the generated script checks for before it does anything.
 const FORMAL_AI_PROGRAM: &str = "formal-ai";
 const GH_PROGRAM: &str = "gh";
+const PRINTF_PROGRAM: &str = "printf";
+/// One `%s` line, so the script's last output is the exported artifact's path.
+const PRINTF_LINE_FORMAT: &str = " '%s\\n' ";
 /// Surface recorded in the report body's User Context section.
 const AGENTIC_SURFACE: &str = "agentic-cli";
 const BODY_FILE: &str = "body.md";
@@ -189,8 +193,10 @@ fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {
     seed::response_values_for(intent, language)
         .or_else(|| seed::response_values_for(intent, "en"))
         .unwrap_or_default()
-        .chunks_exact(2)
-        .map(|pair| (pair[0].clone(), pair[1].clone()))
+        .as_chunks::<2>()
+        .0
+        .iter()
+        .map(|[label, value]| (label.clone(), value.clone()))
         .collect()
 }
 
@@ -249,8 +255,11 @@ fn parse_contents(text: &str) -> Option<ReportContents> {
 }
 
 fn matches_option(text: &str, intent: &str, option_index: usize, machine_value: &str) -> bool {
+    // Normalization turns `_` into a space, so the machine value must be
+    // normalized too: a raw `contains("formal_ai")` can never match and the
+    // learning target silently vanished from harness answers (#996).
     let normalized = normalize_prompt(text);
-    normalized.contains(machine_value)
+    normalized.contains(&normalize_prompt(machine_value))
         || ["en", "ru", "hi", "zh"].into_iter().any(|language| {
             localized_options(intent, language)
                 .get(option_index)
@@ -333,12 +342,22 @@ fn commands_for_targets(
     report_index: usize,
     dialog_id: &str,
 ) -> Vec<String> {
-    let mut ordered = targets.to_vec();
-    ordered.sort_by_key(|target| usize::from(*target == ReportTarget::GithubIssue));
-    ordered
+    execution_order(targets)
         .iter()
         .map(|target| command_for(*target, contents, messages, report_index, dialog_id))
         .collect()
+}
+
+/// The order the targets' commands run in: the GitHub issue last, so a filed
+/// issue can quote exports that already succeeded.
+///
+/// `report_finished` pairs each command's output with the target that produced
+/// it, so both must read this one function -- pairing against the caller's
+/// order would name the wrong destination in a failure (issue #1105, RC7).
+fn execution_order(targets: &[ReportTarget]) -> Vec<ReportTarget> {
+    let mut ordered = targets.to_vec();
+    ordered.sort_by_key(|target| usize::from(*target == ReportTarget::GithubIssue));
+    ordered
 }
 
 fn command_for(
@@ -364,16 +383,26 @@ fn command_for(
     }
 }
 
+/// Export a session log into a surviving directory outside the CWD (#945).
+///
+/// A bare relative `--output` made runs from a repository checkout drop
+/// session dumps at the repo root. The export directory keeps the artifact
+/// usable, and the final `printf` tells the caller where it went.
 fn export_command(dialog_id: &str, contents: ReportContents, output: &str) -> String {
+    let mut script = ReportScript::new();
+    let output_path = script.export(output);
     let mut command = CONTEXT_EXPORT_COMMAND.to_owned();
     command.push_str(CONTEXT_SESSION_FLAG);
     command.push_str(&shell_quote(dialog_id));
     command.push_str(SOURCE_FLAG);
     command.push_str(source_name(contents));
     command.push_str(OUTPUT_FLAG);
-    command.push_str(&shell_quote(output));
-    let mut script = ReportScript::new();
+    command.push_str(&output_path);
     script.step(FORMAL_AI_PROGRAM, command);
+    let mut echo = PRINTF_PROGRAM.to_owned();
+    echo.push_str(PRINTF_LINE_FORMAT);
+    echo.push_str(&output_path);
+    script.step(PRINTF_PROGRAM, echo);
     script.render()
 }
 
@@ -412,6 +441,9 @@ fn github_command(
     body.push_str(&body_file);
     body.push_str(CONTEXT_OUTPUT_FLAG);
     body.push_str(&context_file);
+    if contents == ReportContents::Both {
+        body.push_str(SEPARATE_CONTEXT_LINKS_FLAG);
+    }
     script.step(FORMAL_AI_PROGRAM, body);
 
     let mut create = ISSUE_CREATE_COMMAND.to_owned();
@@ -423,6 +455,16 @@ fn github_command(
     script.step(GH_PROGRAM, create);
 
     script.render()
+}
+
+/// The destination a failed command was reporting to, named in the answer.
+const fn target_label(target: ReportTarget) -> &'static str {
+    match target {
+        ReportTarget::HarnessLog => "harness log export",
+        ReportTarget::ServerLog => "server log export",
+        ReportTarget::GithubIssue => "GitHub issue",
+        ReportTarget::FormalAi => "Formal AI learning",
+    }
 }
 
 const fn source_name(contents: ReportContents) -> &'static str {
@@ -474,6 +516,34 @@ fn title_turns(messages: &[ChatMessage], report_index: usize) -> Vec<ReportTurn>
 
 /// Narrate what the destinations reported, over every command that ran.
 fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &str) -> String {
+    // Issue #1105 (RC7): the reported session answered "Reported to GitHub" with
+    // the server export having failed, because the only evidence this function
+    // read was the issue URL. Every target ran its own command and every one of
+    // those outputs is here, so a failure in any of them is checkable -- and a
+    // report that names one destination while another silently failed is the
+    // false success the issue was filed for.
+    //
+    // `step_outcome` is the same classifier the verification path already uses,
+    // so "failed" means here what it means everywhere else: a non-zero status,
+    // an explicit error field, or output that reads as one.
+    let ordered = execution_order(targets);
+    let failures = ordered
+        .iter()
+        .zip(run_outputs)
+        .filter(|(_, output)| {
+            super::tool_result::step_outcome(output) == super::tool_result::StepOutcome::Failed
+        })
+        .map(|(target, output)| (*target, output.trim()))
+        .collect::<Vec<_>>();
+    if !failures.is_empty() {
+        let detail = failures
+            .iter()
+            .map(|(target, output)| format!("{}: {output}", target_label(*target)))
+            .collect::<Vec<_>>()
+            .join("\n");
+        let failed = config("issue_report_failed");
+        return format!("{failed}\n\n```text\n{detail}\n```");
+    }
     let trimmed = run_outputs
         .iter()
         .map(|output| output.trim())

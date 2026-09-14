@@ -106,8 +106,7 @@ fn issue_360_diagnostic_mode_marks_program_traces_for_supported_languages() {
     for case in [
         Case {
             language: "en",
-            prompt:
-                "Write me a Rust program that lists files with a path argument sorted in reverse order",
+            prompt: "Write me a Rust program that lists files with a path argument sorted in reverse order",
         },
         Case {
             language: "ru",

@@ -194,7 +194,15 @@ function programLanguageFromPrompt(normalized) {
   // Each language's alias surfaces live in its `program_language_<slug>` meaning,
   // not inline on WRITE_PROGRAM_LANGUAGES — read them by slug (issue #386). Names
   // are single tokens, matched on whitespace boundaries exactly as in Rust.
-  for (const slug of Object.keys(WRITE_PROGRAM_LANGUAGES)) {
+  //
+  // Framework targets are consulted first, mirroring `program_language_by_alias`:
+  // a request that names both a framework and the language it is written in —
+  // `напиши мне код на PHP Laravel`, issue #723 — names the framework, and
+  // answering in the base language throws away the part of the request that was
+  // hardest to satisfy.
+  const slugs = Object.keys(WRITE_PROGRAM_LANGUAGES);
+  const isFramework = (slug) => Boolean(WRITE_PROGRAM_LANGUAGES[slug].frameworkOf);
+  for (const slug of slugs.filter(isFramework).concat(slugs.filter((s) => !isFramework(s)))) {
     const surfaces = wordsForMeaning(`program_language_${slug}`);
     if (surfaces.some((alias) => containsProgramToken(delimited, alias))) return slug;
   }
@@ -365,6 +373,12 @@ const ROLE_PROGRAM_SYNTHESIS_TASK = "program_synthesis_task";
 // data/seed/meanings-intent.lino (loaded into MEANINGS_LINO); the
 // recognizers below ask the lexicon by meaning instead of hardcoding phrases.
 const ROLE_CLARIFICATION_REQUEST = "clarification_request";
+const ROLE_CONVERSATION_PREFERENCE_AVOID = "conversation_preference_avoid";
+const ROLE_UNAUTHORIZED_MUTATION_CORRECTION = "unauthorized_mutation_correction";
+const ROLE_MEMORY_LINK_COUNT_QUERY = "memory_link_count_query";
+const ROLE_MEMORY_INVENTORY_QUERY = "memory_inventory_query";
+const ROLE_MEMORY_ROOT_LINKS_QUERY = "memory_root_links_query";
+const ROLE_MEMORY_RETRIEVAL_CORRECTION = "memory_retrieval_correction";
 const ROLE_CAPABILITY_QUERY = "capability_query";
 const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";

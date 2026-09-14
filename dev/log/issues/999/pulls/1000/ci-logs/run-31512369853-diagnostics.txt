@@ -1,0 +1,157 @@
+70:Detect Changes	UNKNOWN STEP	2026-08-11T16:26:14.8249149Z hint: to use in all of your new repositories, which will suppress this warning,
+1074:Detect Changes	UNKNOWN STEP	2026-08-11T16:26:35.3134651Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+1087:Detect Changes	UNKNOWN STEP	2026-08-11T16:26:35.3260935Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+1741:Code Coverage	UNKNOWN STEP	2026-08-11T16:27:46.1508797Z hint: to use in all of your new repositories, which will suppress this warning,
+1928:Code Coverage	UNKNOWN STEP	2026-08-11T16:27:57.8452154Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+1941:Code Coverage	UNKNOWN STEP	2026-08-11T16:27:57.8574995Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2108:Code Coverage	UNKNOWN STEP	2026-08-11T16:28:04.8410951Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/4cef3169-029d-42db-9a98-14f872b35c3e -f /home/runner/work/_temp/8f8c1107-e761-47dd-8b36-bf6b0d6e1195
+2181:Code Coverage	UNKNOWN STEP	2026-08-11T16:28:06.7016827Z ^[[36;1m  printf '::error::install-action: %s\n' "$*"^[[0m
+2238:Code Coverage	UNKNOWN STEP	2026-08-11T16:28:06.9228047Z ##[end-action id=__taiki-e_install-action.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+2612:Code Coverage	UNKNOWN STEP	2026-08-11T16:28:21.5652917Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+3049:Code Coverage	UNKNOWN STEP	2026-08-11T16:30:36.2505062Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+3083:Code Coverage	UNKNOWN STEP	2026-08-11T16:31:36.0809296Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3089:Code Coverage	UNKNOWN STEP	2026-08-11T16:31:36.0830120Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3095:Code Coverage	UNKNOWN STEP	2026-08-11T16:31:36.0849158Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3160:Code Coverage	UNKNOWN STEP	2026-08-11T16:32:10.5236069Z test issue_664_network_alias::canonical_network_endpoint_is_not_marked_deprecated ... ok
+3161:Code Coverage	UNKNOWN STEP	2026-08-11T16:32:10.9944588Z test issue_664_network_alias::graph_alias_advertises_deprecation_over_the_wire ... ok
+3220:Code Coverage	UNKNOWN STEP	2026-08-11T16:32:43.3493975Z test issue_703_orchestration_followup::failed_external_process_is_visible_in_the_session ... ok
+3222:Code Coverage	UNKNOWN STEP	2026-08-11T16:32:43.3718628Z test issue_703_orchestration_followup::dispatch_joins_every_worker_before_returning_an_error ... ok
+3231:Code Coverage	UNKNOWN STEP	2026-08-11T16:32:43.6426829Z test issue_703_orchestration_followup::decomposition_never_composes_changes_from_a_failed_agent ... ok
+3287:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:11.0764078Z test issue_755_file_read_write::a_failed_plan_write_never_blocks_the_users_write ... ok
+3351:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:27.1087051Z test issue_819_report_flow::a_report_without_an_issue_url_is_narrated_as_a_failure ... ok
+3435:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.1160269Z test result: ok. 333 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 134.03s
+3442:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.2003282Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+3455:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.3221065Z test planner_scopes_progress_to_the_latest_user_turn_and_stops_after_failed_verification ... ok
+3459:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.3533102Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+3472:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.5381792Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+3486:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.6816593Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+3495:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.7619518Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+3502:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.7697602Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3509:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:50.7741588Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3516:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:57.5003974Z test failed_web_search_phrasings_route_by_research_intent ... ok
+3519:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:59.1056753Z test failed_web_fetch_phrasings_route_by_url_intent ... ok
+3520:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:59.9922811Z test failed_edit_phrasings_route_by_replacement_shape ... ok
+3522:Code Coverage	UNKNOWN STEP	2026-08-11T16:33:59.9924300Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.21s
+3539:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:01.1277838Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.13s
+3546:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:01.3499751Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+3557:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:02.3748377Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+3565:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:08.3583996Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.98s
+3573:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:08.3655179Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3581:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.0866170Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.72s
+3591:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.4061130Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+3603:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.4118635Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3612:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.5341227Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+3621:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.7730685Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+3629:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.7868541Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+3639:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.7903228Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3656:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:09.7946210Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+3667:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.3419058Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.54s
+3674:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.4687555Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+3692:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.4944548Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+3699:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.4970283Z test the_case_study_records_the_unrecoverable_failure_and_the_fix ... ok
+3702:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.6112219Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+3732:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.6895537Z test calculation::tests::link_calculator_path_is_skipped_for_bare_dot_expressions ... ok
+3745:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:19.7283484Z test coding::blueprint::tests::error_handling_axis_composes_independently ... ok
+3818:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:20.0436020Z test links_query::tests::missing_return_is_an_error ... ok
+3819:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:20.0437147Z test links_query::tests::missing_match_is_an_error ... ok
+4083:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:20.6854764Z test translation::cache::tests::cache_miss_offline_returns_transport_error ... ok
+4108:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:20.6888069Z test translation::http::tests::http_error_display_truncates_long_body ... ok
+4112:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:20.6892507Z test translation::http::tests::split_body_and_status_returns_error_for_missing_sentinel ... ok
+4195:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:21.6379430Z test result: ok. 487 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.02s
+4299:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2459703Z test ci_cd::check_associative_terminology::tests::deprecated_graph_alias_is_allowed ... ok
+4318:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2663642Z test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+4321:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2733508Z test ci_cd::check_file_size::tests::warning_annotations_are_limited_to_growing_files ... ok
+4322:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2763366Z test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+4327:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2836206Z test ci_cd::create_github_release::tests::generic_validation_failure_is_not_duplicate_release ... ok
+4329:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2838810Z test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+4337:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.2960266Z test ci_cd::create_github_release::tests::validation_failure_that_mentions_release_notes_is_not_duplicate_release ... ok
+4355:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.7483390Z test ci_cd::issue_717::artifact_download_and_expected_adhoc_signing_are_warning_free ... ok
+4359:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.7573267Z test ci_cd::issue_717::file_size_warning_scope_uses_the_event_diff_base ... ok
+4360:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.7583602Z test ci_cd::issue_717::generated_api_documentation_fails_on_every_rustdoc_warning ... ok
+4395:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.8613405Z test ci_cd::issue_977::gate_script_treats_cancellation_on_main_as_a_failure ... ok
+4396:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.8643334Z test ci_cd::issue_977::no_workflow_pins_an_action_on_the_deprecated_node_20_runtime ... ok
+4407:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.9523184Z test ci_cd::macos_package_retry::retries_known_hdiutil_attach_device_failure ... ok
+4411:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.9824195Z test ci_cd::macos_package_retry::unrelated_packaging_failure_is_not_retried ... ok
+4416:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:42.9901144Z test ci_cd::macos_package_retry::persistent_hdiutil_failure_stops_after_three_attempts ... ok
+4426:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:43.0173572Z test ci_cd::workflow_coverage::coverage_jobs_never_depend_on_a_skipped_upstream_check ... ok
+4430:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:43.0252235Z test ci_cd::workflow_release::change_gated_jobs_never_depend_on_a_skipped_changelog ... ok
+4572:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:46.8445974Z test docs_requirements_issue_864::r864_01_every_detected_failure_surface_proactively_asks_for_consent ... ok
+4574:Code Coverage	UNKNOWN STEP	2026-08-11T16:34:46.8487510Z test docs_requirements_issue_864::r864_03_invitation_language_and_failure_state_survive_every_ui_path ... ok
+4729:Code Coverage	UNKNOWN STEP	2026-08-11T16:37:42.3533404Z test issue_531_algorithm_discovery::failed_longer_episode_does_not_hide_a_validated_subroutine ... ok
+4732:Code Coverage	UNKNOWN STEP	2026-08-11T16:37:43.0503826Z test issue_531_algorithm_discovery::held_out_constant_drift_is_preserved_as_a_failed_candidate ... ok
+4796:Code Coverage	UNKNOWN STEP	2026-08-11T16:38:56.6704018Z test issue_558_change_request::a_change_cannot_target_a_module_that_is_not_owned - should panic ... ok
+4799:Code Coverage	UNKNOWN STEP	2026-08-11T16:38:56.7523518Z test issue_558_change_request::an_empty_request_cannot_be_constructed - should panic ... ok
+4814:Code Coverage	UNKNOWN STEP	2026-08-11T16:39:31.3924083Z test issue_558_learning_ledger::promotion_is_idempotent_per_failure ... ok
+4815:Code Coverage	UNKNOWN STEP	2026-08-11T16:39:35.0674234Z test issue_558_learning_ledger::recalls_an_approved_lesson_on_a_repeated_failure ... ok
+4833:Code Coverage	UNKNOWN STEP	2026-08-11T16:39:36.6223808Z test issue_558_repair_strategy::the_classifier_maps_every_failure_class_onto_the_right_target ... ok
+4834:Code Coverage	UNKNOWN STEP	2026-08-11T16:39:36.6527818Z test issue_558_self_explanation::a_fabricated_source_citation_cannot_be_constructed - should panic ... ok
+4879:Code Coverage	UNKNOWN STEP	2026-08-11T16:40:01.8978022Z test issue_656_promotion::failed_or_malformed_gate_execution_fails_closed ... ok
+4926:Code Coverage	UNKNOWN STEP	2026-08-11T16:40:04.0504311Z test issue_661::requirement_contradiction_warning_has_seed_backed_hindi_and_chinese_variants ... ok
+5049:Code Coverage	UNKNOWN STEP	2026-08-11T16:40:52.4541102Z test issue_701_learning_adoption::every_failure_to_adopt_is_preserved_as_a_durable_record ... ok
+5082:Code Coverage	UNKNOWN STEP	2026-08-11T16:40:54.7263807Z test issue_704::a_failing_slot_exhausts_its_bounded_retry_budget_and_records_the_failure ... ok
+5197:Code Coverage	UNKNOWN STEP	2026-08-11T16:41:09.6147523Z test issue_715_links_substitution_query::error_type_is_a_std_error ... ok
+5226:Code Coverage	UNKNOWN STEP	2026-08-11T16:41:11.4025174Z test issue_716_agentic_execution::failed_compile_is_reported_and_the_run_command_is_not_attempted ... ok
+5261:Code Coverage	UNKNOWN STEP	2026-08-11T16:41:58.5830787Z test issue_750::status_codes_distinguish_success_from_failure ... ok
+5282:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:07.4794259Z test issue_781::a_failed_source_reports_its_diagnostic_without_retrying ... ok
+5290:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:10.6376373Z test issue_781::research_reports_the_failure_when_every_fetch_attempt_fails ... ok
+5341:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:32.6273784Z test issue_823_recursive_learning::failed_parent_shrinks_to_leaves_extends_the_missing_method_and_climbs_back_up ... ok
+5355:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:35.3083961Z test issue_832::failed_github_report_is_not_acknowledged_as_filed ... ok
+5359:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:36.9634173Z test issue_840::comparison_retries_the_missing_side_after_a_failed_search_result ... ok
+5367:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:38.8563749Z test issue_840::failed_local_lookup_is_reported_instead_of_treated_as_empty ... ok
+5395:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:42.6377554Z test issue_844_production_pipeline::a_capture_failure_is_diagnostic_and_never_becomes_evidence ... ok
+5465:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:54.8424100Z test issue_864::expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure ... ok
+5485:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:56.7343619Z test issue_873::per_command_mode_requires_permission_and_every_error_has_a_recovery ... ok
+5511:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:58.8473660Z test issue_896_component_boundaries::native_search_reports_component_failure_before_bounded_fallback ... ok
+5523:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:59.4543642Z test issue_905::anthropic_and_responses_adapters_preserve_error_metadata ... ok
+5524:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:59.6908048Z test issue_905::a_second_failed_write_for_the_same_path_stops_retrying ... ok
+5527:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:59.8573934Z test issue_905::failed_auxiliary_plan_write_without_read_still_attempts_the_target ... ok
+5530:Code Coverage	UNKNOWN STEP	2026-08-11T16:42:59.9483643Z test issue_905::failed_write_is_followed_by_read_then_one_write_retry ... ok
+5531:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:00.0280737Z test issue_905::explicit_error_verification_cannot_produce_a_success_claim ... ok
+5534:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:00.1394587Z test issue_905::tool_error_metadata_survives_openai_compatible_deserialization ... ok
+5537:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:00.2785365Z test issue_905::requested_failure_vocabulary_is_valid_successful_evidence ... ok
+5547:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:01.4294010Z test issue_905::verification_failure_responses_cover_every_supported_language ... ok
+5551:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:03.3963875Z test issue_908::empty_output_is_never_a_failure ... ok
+5553:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:03.5084076Z test issue_908::exit_code_zero_is_success_even_when_the_envelope_says_error_none ... ok
+5554:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:03.6821901Z test issue_908::failure_report_names_the_exit_code_not_the_harness ... ok
+5555:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:03.8541815Z test issue_908::nonzero_exit_code_is_a_failure_even_with_output ... ok
+5558:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:04.2493991Z test issue_908::every_registered_language_reports_the_failed_step ... ok
+5559:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:04.2495001Z test issue_916::r916_01_nonzero_exit_code_in_a_harness_envelope_is_a_failure ... ok
+5561:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:04.5134095Z test issue_916::r916_01_a_failing_verification_command_is_reported_as_a_failure ... ok
+5562:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:04.7549692Z test issue_916::r916_02_a_silently_succeeding_command_is_not_reported_as_a_failure ... ok
+5564:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:04.7603522Z test issue_916::r916_02_the_failure_lexicon_never_fires_on_a_clean_exit ... ok
+5568:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:05.4808704Z test issue_916::r916_03_failure_reports_name_the_exit_code ... ok
+5583:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:06.5408400Z test issue_919::failed_execution_is_not_kept_and_schedules_the_next_research_round ... ok
+5590:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:10.1734299Z test issue_916::r916_01_a_missing_file_is_a_failure_in_every_registered_language ... ok
+5604:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:12.7596784Z test issue_989::failed_web_transport_is_reported_as_failure_not_empty_success ... ok
+5612:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:14.7733452Z test issue_989::successful_web_page_with_record_404_is_not_a_transport_failure ... ok
+5632:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:19.6754116Z test memory_learning::failed_replay_refines_the_amendment_back_from_the_recorded_marker ... ok
+5634:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:19.9994409Z test memory_learning::failed_replays_are_preserved_as_refinement_records ... ok
+5635:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:20.2164133Z test memory_learning::failed_verification_falls_back_to_normal_eviction_ordering_under_pressure ... ok
+5822:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:39.0454506Z test specification::arbitrary_skill_compilation::agentic_planner_reports_a_failed_conformance_execution_honestly ... ok
+5872:Code Coverage	UNKNOWN STEP	2026-08-11T16:43:57.8186120Z test specification::calculator_delegation::calculator_error_keeps_fuzzy_interpretation ... ok
+6099:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:18.6613744Z test specification::external_benchmarks::a_runtime_payload_failure_is_reported_as_benchmark_unavailable ... ok
+6348:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:29.5284636Z test specification::network_visualization::graph_alias_is_flagged_deprecated_while_network_is_not ... ok
+6358:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:29.6413669Z test specification::network_visualization::network_endpoint_is_the_canonical_route_and_not_deprecated ... ok
+6586:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:49.8333913Z test specification::recipe_interpreter::a_recipe_that_runs_a_stage_before_its_dependency_is_an_error ... ok
+6587:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:49.8503585Z test specification::recipe_interpreter::an_unknown_recorder_binding_is_an_error ... ok
+6591:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:50.1464482Z test specification::recipe_interpreter::external_stages_are_skipped_and_recorder_stages_run ... ok
+6724:Code Coverage	UNKNOWN STEP	2026-08-11T16:44:59.4846511Z test specification::task_decomposition::failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_activates_it ... ok
+6854:Code Coverage	UNKNOWN STEP	2026-08-11T16:45:28.2704410Z test web_requests::research_result_followup_reports_prior_search_failure_instead_of_defining_result ... ok
+6870:Code Coverage	UNKNOWN STEP	2026-08-11T16:47:48.3461982Z test result: ok. 2658 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 806.70s
+7051:Code Coverage	UNKNOWN STEP	2026-08-11T16:48:52.7571897Z   if-no-files-found: error
+7088:Code Coverage	UNKNOWN STEP	2026-08-11T16:48:54.4759072Z   if-no-files-found: warn
+7193:Code Coverage	UNKNOWN STEP	2026-08-11T16:49:02.2404551Z Failed distributed compilations       0
+7233:Code Coverage	UNKNOWN STEP	2026-08-11T16:49:02.2507961Z Failed distributed compilations       0
+7351:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:27:38.9901570Z hint: to use in all of your new repositories, which will suppress this warning,
+7555:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:27:52.8581215Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+7568:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:27:52.8706700Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+7853:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:30.0230134Z ✔ failure detection fires on solver intents that mean the turn failed (2.049339ms)
+7854:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:30.0253908Z ✔ failure detection never fires on prose alone (0.32184ms)
+7855:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:30.0255257Z ✔ failure detection reads structured tool outputs (0.560013ms)
+7856:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:30.0256254Z ✔ an expected stop is not a failure (0.274933ms)
+7857:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:30.0257267Z ✔ failure detection parses JSON-encoded tool outputs (0.283277ms)
+7858:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:30.0258862Z ✔ failure detection tolerates missing and malformed answers (0.335055ms)
+7908:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:31.5803122Z ℹ cancelled 0
+7909:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:31.5803522Z ℹ skipped 0
+7920:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:31.5833252Z ℹ    detected-failure.js              | 100.00 |    95.00 |  100.00 | 
+8027:Browser Code Coverage	UNKNOWN STEP	2026-08-11T16:28:38.4047369Z   if-no-files-found: warn

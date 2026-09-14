@@ -8,7 +8,7 @@
 
 use std::collections::HashMap;
 
-use super::store::{Doublet, LinkAddress, SequenceStore, NULL_LINK};
+use super::store::{Doublet, LinkAddress, NULL_LINK, SequenceStore};
 
 /// Fold a flat element sequence into a balanced binary doublet tree, mirroring
 /// `BalancedVariantConverter<TLinkAddress>.Convert`.

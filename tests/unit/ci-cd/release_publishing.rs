@@ -214,6 +214,9 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
 
     for asset in [
         "styles.css?v=__FORMAL_AI_ASSET_VERSION__",
+        // The generated seed inventory ships and cache-busts like any other
+        // asset; without it seed_loader.js would fetch nothing (issue #991).
+        "seed-files.js?v=__FORMAL_AI_ASSET_VERSION__",
         "seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__",
         "preferences.js?v=__FORMAL_AI_ASSET_VERSION__",
         "i18n.js?v=__FORMAL_AI_ASSET_VERSION__",
@@ -244,6 +247,7 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     }
     assert!(app_js.contains("withAssetVersion(\"formal_ai_worker.js\")"));
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
+    assert!(worker_js.contains("importScripts(withAssetVersion(\"seed-files.js\"))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(modulePath))"));
     assert!(worker_js.contains("fetch(withAssetVersion(\"formal_ai_worker.wasm\"))"));
@@ -315,7 +319,7 @@ fn readme_keeps_traditional_ci_and_artifact_badges() {
         "actions/workflows/desktop-release.yml/badge.svg?branch=main",
         "img.shields.io/crates/v/formal-ai?label=crates.io&style=flat",
         "img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat",
-        "img.shields.io/badge/rust-1.96%2B-blue.svg",
+        "img.shields.io/badge/rust-1.98%2B-blue.svg",
         "codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg",
         "img.shields.io/badge/license-Unlicense-blue.svg",
     ] {
@@ -366,7 +370,10 @@ fn lint_job_guards_the_wasm_worker_migration() {
     // must run in the lint job: the worker JS line-budget ratchet, a rebuild of
     // the shipped `.wasm` from source (which caught a latent no_std break), and
     // its size budget.
-    let workflow = release_workflow();
+    // Two of the three guards are registered gates since issue #991;
+    // `ci_surface()` splices them in where their stage runs, so the ordering
+    // assertions below still describe the order CI executes them.
+    let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
     assert!(
@@ -398,17 +405,25 @@ fn lint_job_guards_the_wasm_worker_migration() {
 }
 
 #[test]
-fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror(
-) {
+fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror()
+ {
     let workflow = release_workflow();
 
     assert!(
         workflow.contains("GHCR_IMAGE: ghcr.io/${{ github.repository }}"),
         "workflow should expose the default GHCR image name for prepared Docker releases"
     );
+    // Issue #1131: this used to require the bare `${{ vars.DOCKERHUB_IMAGE }}`,
+    // which pinned the defect -- the variable was never set, so Docker Hub was
+    // disabled on every release while the release reported success. The image
+    // and the username now default, and the token is what opts in.
     assert!(
-        workflow.contains("DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}"),
-        "workflow should expose an opt-in Docker Hub image variable"
+        workflow.contains("DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}"),
+        "workflow should default the Docker Hub image and let a fork override it"
+    );
+    assert!(
+        !workflow.contains("${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}"),
+        "every Docker Hub username site should carry the default too"
     );
     assert_eq!(
         workflow.matches("docker/login-action@v4").count(),
@@ -564,9 +579,23 @@ fn desktop_release_lets_electron_builder_read_package_json_build_key() {
     ))
     .unwrap();
 
+    // Issue #1055 routed every packaging leg through the retry wrapper, so the
+    // invocation moved there. What matters is unchanged: electron-builder is
+    // called without `--config`, so it reads the `build` key from package.json.
+    let wrapper = fs::read_to_string(format!(
+        "{}/desktop/scripts/package-macos-with-retry.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
     assert!(
-        workflow.contains("npx --no-install electron-builder ${{ matrix.ebflag }} --publish never"),
-        "desktop release workflow should invoke electron-builder without passing package.json as a config file"
+        workflow.contains(
+            "bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never"
+        ),
+        "desktop release workflow should package through the retry wrapper"
+    );
+    assert!(
+        wrapper.contains("npx --no-install electron-builder \"$@\""),
+        "the wrapper should invoke electron-builder without passing package.json as a config file"
     );
     assert!(
         !workflow.contains("--config package.json"),

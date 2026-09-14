@@ -17,8 +17,8 @@
 //! user's prevailing language and falls back to the outer (English) values
 //! when no override exists.
 
-use super::parser::{parse_lino, split_pipe_list, LinoNode};
 use super::FACTS_LINO;
+use super::parser::{LinoNode, parse_lino, split_pipe_list};
 
 /// A language-specific variant of a fact lookup (summary + source).
 ///

@@ -9,7 +9,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use crate::engine::stable_id;
 use crate::links_format::format_lino_record;
 use crate::meta_frame::AtomicityReason;
-use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::parser::{LinoNode, parse_lino};
 
 use super::{Decomposition, SubTask};
 

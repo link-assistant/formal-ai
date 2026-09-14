@@ -1,0 +1,241 @@
+{"type":"config","level":"info","timestamp":"2026-08-30T06:16:13.199Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":true,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8902/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.206Z","service":"default","version":"0.26.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --prompt Atomic task L32: Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.\n\nThis is recursive binary-tree node 2.2.2.2.2 at depth 5. Solve only this node's task in this fresh temporary repository. Its completion criterion is: observable evidence exists. Leave observable evidence in .agent-ladder/node-2.2.2.2.2-proof.md. The first line must be exactly node_path=2.2.2.2.2. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n","workingDirectory":"/tmp/tmp.bkE3nbx9c5","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.211Z","service":"default","directory":"/tmp/tmp.bkE3nbx9c5","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.211Z","service":"project","directory":"/tmp/tmp.bkE3nbx9c5","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.218Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.244Z","service":"project","status":"completed","duration":26,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.261Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Atomic task L32: Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.\n\nThis is recursive binary-tree node 2.2.2.2.2 at depth 5. Solve only this node's task in this fresh temporary repository. Its completion criterion is: observable evidence exists. Leave observable evidence in .agent-ladder/node-2.2.2.2.2-proof.md. The first line must be exactly node_path=2.2.2.2.2. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n"],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Atomic task L32: Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id.\n\nThis is recursive binary-tree node 2.2.2.2.2 at depth 5. Solve only this node's task in this fresh temporary repository. Its completion criterion is: observable evidence exists. Leave observable evidence in .agent-ladder/node-2.2.2.2.2-proof.md. The first line must be exactly node_path=2.2.2.2.2. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n"],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.261Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.267Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.287Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.294Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.294Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.405Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":125949,"message":"cache is fresh, triggering background refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.405Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.671Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.829Z","service":"claude-oauth","subscriptionType":"max","scopes":["user:file_upload","user:inference","user:mcp_servers","user:profile","user:sessions:claude_code"],"message":"loaded oauth credentials"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.830Z","service":"provider","source":"credentials file (max)","message":"using claude oauth credentials"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.830Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.830Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.830Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.830Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.837Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.837Z","service":"provider","providerID":"claude-oauth","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.837Z","service":"provider","status":"completed","duration":570,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.839Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.839Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.847Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"model_resolved","timestamp":"2026-08-30T06:16:13.847Z","requested":"formalai/formal-ai","selector":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","source":"cli","matchesRequest":true}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.912Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.912Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.922Z","service":"session","id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","version":"0.26.0","projectID":"05ad5a02669b5d4c7b0d548d756d22aaa7bffb73","directory":"/tmp/tmp.bkE3nbx9c5","title":"New session - 2026-08-30T06:16:13.922Z","time":{"created":1788070573922,"updated":1788070573922},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-08-30T06:16:13.930Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-30T06:16:13.930Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.937Z","service":"server","status":"completed","duration":25,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-08-30T06:16:13.958Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.960Z","service":"server","method":"POST","path":"/session/ses_faeb0489dffeZMg8Wd6tz9hAyE/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:13.960Z","service":"server","status":"started","method":"POST","path":"/session/ses_faeb0489dffeZMg8Wd6tz9hAyE/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.039Z","service":"server","status":"completed","duration":79,"method":"POST","path":"/session/ses_faeb0489dffeZMg8Wd6tz9hAyE/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:16:14.056Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:16:14.068Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-30T06:16:14.072Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.091Z","service":"session.prompt","step":0,"sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.121Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.124Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.125Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.126Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.127Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.127Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.127Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.131Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.131Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.132Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.132Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.132Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.132Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.132Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:14.132Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:16.806Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:16:16.825Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:16.827Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:16.829Z","service":"ripgrep","cwd":"/tmp/tmp.bkE3nbx9c5","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:17.925Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-08-30T06:16:17.967Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:16:18.059Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:18.059Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-30T06:16:18.083Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-08-30T06:16:18.084Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:18.495Z","service":"retry-fetch","attempt":1,"backoffDelayMs":2000,"delayMs":30000,"minIntervalMs":30000,"maxBackoffDelayMs":1200000,"message":"no retry-after header, using exponential backoff"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:18.495Z","service":"retry-fetch","sessionID":"opencode","attempt":1,"delayMs":30220,"delayMinutes":"0.50","delayHours":"0.01","elapsedMs":411,"remainingTimeoutMs":604799589,"remainingTimeoutHours":"168.00","isolatedSignal":true,"message":"rate limited, will retry"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:22.354Z","service":"snapshot","message":"initialized"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:48.947Z","service":"retry-fetch","attempt":2,"backoffDelayMs":4000,"delayMs":30000,"minIntervalMs":30000,"maxBackoffDelayMs":1200000,"message":"no retry-after header, using exponential backoff"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:16:48.947Z","service":"retry-fetch","sessionID":"opencode","attempt":2,"delayMs":31938,"delayMinutes":"0.53","delayHours":"0.01","elapsedMs":30864,"remainingTimeoutMs":604769136,"remainingTimeoutHours":"167.99","isolatedSignal":true,"message":"rate limited, will retry"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:17:21.258Z","service":"retry-fetch","attempt":3,"backoffDelayMs":8000,"delayMs":30000,"minIntervalMs":30000,"maxBackoffDelayMs":1200000,"message":"no retry-after header, using exponential backoff"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:17:21.260Z","service":"retry-fetch","sessionID":"opencode","attempt":3,"delayMs":31112,"delayMinutes":"0.52","delayHours":"0.01","elapsedMs":63165,"remainingTimeoutMs":604736835,"remainingTimeoutHours":"167.98","isolatedSignal":true,"message":"rate limited, will retry"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:17:52.646Z","service":"retry-fetch","attempt":4,"backoffDelayMs":16000,"delayMs":30000,"minIntervalMs":30000,"maxBackoffDelayMs":1200000,"message":"no retry-after header, using exponential backoff"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:17:52.646Z","service":"retry-fetch","sessionID":"opencode","attempt":4,"delayMs":31757,"delayMinutes":"0.53","delayHours":"0.01","elapsedMs":94563,"remainingTimeoutMs":604705437,"remainingTimeoutHours":"167.97","isolatedSignal":true,"message":"rate limited, will retry"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:03.112Z","service":"snapshot","hash":"4b0ad26d651a14cb18828237dfad0d0a5bb5f381\n","cwd":"/tmp/tmp.bkE3nbx9c5","git":"/home/box/.local/share/link-assistant-agent/snapshot/05ad5a02669b5d4c7b0d548d756d22aaa7bffb73","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:03.131Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-08-30T06:18:03.134Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:03.181Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:03.210Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-08-30T06:18:03.210Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","name":"write","input":{},"tool_use_id":"prt_05151622e001VFG6uBzGSoXijc"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:03.211Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-08-30T06:18:03.211Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","role":"assistant","content":[{"type":"text","text":"Let me update .agent-ladder/node-2.2.2.2.2-proof.md for you."}]}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:03.226Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-08-30T06:18:03.226Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","name":"write","input":{"content":"node_path=2.2.2.2.2\n\nAtomic task L32: Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id\n\nRequested parts:\n- the selected tree level\n- node outcomes\n- test results\n- session id\n\nObserved in this session:\n- nothing: no tool result was recorded before this note.\n\nNo requested part above is backed by an observation from this session.\n","filePath":"/tmp/tmp.bkE3nbx9c5/.agent-ladder/node-2.2.2.2.2-proof.md"},"tool_use_id":"prt_05151622e001VFG6uBzGSoXijc"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:03.299Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-08-30T06:18:03.299Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","name":"write","input":{"content":"node_path=2.2.2.2.2\n\nAtomic task L32: Produce a final evidence note containing the selected tree level, node outcomes, test results, and session id\n\nRequested parts:\n- the selected tree level\n- node outcomes\n- test results\n- session id\n\nObserved in this session:\n- nothing: no tool result was recorded before this note.\n\nNo requested part above is backed by an observation from this session.\n","filePath":"/tmp/tmp.bkE3nbx9c5/.agent-ladder/node-2.2.2.2.2-proof.md"},"tool_use_id":"prt_05151622e001VFG6uBzGSoXijc"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:03.992Z","service":"snapshot","hash":"4b0ad26d651a14cb18828237dfad0d0a5bb5f381\n","cwd":"/tmp/tmp.bkE3nbx9c5","git":"/home/box/.local/share/link-assistant-agent/snapshot/05ad5a02669b5d4c7b0d548d756d22aaa7bffb73","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:04.002Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-08-30T06:18:04.002Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","status":"success","duration_ms":110045}
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:04.009Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:05.019Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:05.066Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.066Z","service":"session.prompt","step":1,"sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.134Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","step":2,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.137Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.139Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.139Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":14842,"providerTokens":14842,"estimatedInputTokens":149,"usingEstimate":false,"tokensBreakdown":{"input":14286,"cacheRead":0,"output":556},"overflow":false,"headroom":36966,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:05.143Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.145Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.146Z","service":"ripgrep","cwd":"/tmp/tmp.bkE3nbx9c5","limit":200,"message":"tree"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:05.185Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.189Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-30T06:18:05.265Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-08-30T06:18:05.317Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.435Z","service":"retry-fetch","attempt":1,"backoffDelayMs":2000,"delayMs":30000,"minIntervalMs":30000,"maxBackoffDelayMs":1200000,"message":"no retry-after header, using exponential backoff"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:05.435Z","service":"retry-fetch","sessionID":"opencode","attempt":1,"delayMs":32820,"delayMinutes":"0.55","delayHours":"0.01","elapsedMs":227,"remainingTimeoutMs":604799773,"remainingTimeoutHours":"168.00","isolatedSignal":true,"message":"rate limited, will retry"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:06.435Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-08-30T06:18:06.455Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:08.449Z","service":"snapshot","hash":"18cdbadc2c58280cbe0b42f130dab84307ae1e71\n","cwd":"/tmp/tmp.bkE3nbx9c5","git":"/home/box/.local/share/link-assistant-agent/snapshot/05ad5a02669b5d4c7b0d548d756d22aaa7bffb73","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:08.450Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-08-30T06:18:08.450Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","model":"formalai/formal-ai"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:08.451Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:08.456Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-08-30T06:18:08.456Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","role":"assistant","content":[{"type":"text","text":"Recorded the findings in `.agent-ladder/node-2.2.2.2.2-proof.md`."}]}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.007Z","service":"snapshot","hash":"18cdbadc2c58280cbe0b42f130dab84307ae1e71\n","cwd":"/tmp/tmp.bkE3nbx9c5","git":"/home/box/.local/share/link-assistant-agent/snapshot/05ad5a02669b5d4c7b0d548d756d22aaa7bffb73","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-30T06:18:09.007Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-08-30T06:18:09.008Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE","status":"success","duration_ms":115051}
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:09.008Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:09.612Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-30T06:18:09.618Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.618Z","service":"session.prompt","step":2,"sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.625Z","service":"session.prompt","sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.626Z","service":"session.compaction","message":"pruning"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.669Z","service":"session.prompt","sessionID":"ses_faeb0489dffeZMg8Wd6tz9hAyE","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-08-30T06:18:09.669Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-08-30T06:18:09.669Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-08-30T06:18:09.669Z","session_id":"ses_faeb0489dffeZMg8Wd6tz9hAyE"}
+{"type":"*","level":"info","timestamp":"2026-08-30T06:18:09.675Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.679Z","service":"default","directory":"/tmp/tmp.bkE3nbx9c5","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.679Z","service":"state","key":"/tmp/tmp.bkE3nbx9c5","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.680Z","service":"state","key":"/tmp/tmp.bkE3nbx9c5","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-08-30T06:18:09.680Z","service":"default","hasError":false,"uptimeSeconds":121,"message":"Agent exiting"}
+

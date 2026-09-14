@@ -45,8 +45,11 @@ fn rust_script_install_steps_use_retry_wrapper() {
         workflow
             .matches("run: bash scripts/install-rust-script.sh")
             .count(),
-        // +1 for the evidence-check job added for issue #808.
-        9,
+        // The evidence-check job (issue #808) moved to its own workflow when
+        // extracting it brought `release.yml` back under the 1500-line warning
+        // band (issues #999, #1012); its install step is counted by
+        // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
+        8,
         "each rust-script install step should use the retry wrapper"
     );
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
@@ -76,18 +79,18 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
 /// PR #965 review: "All CI/CD warnings, and errors must be also fixed.
 /// Including all false positives and false negatives."
 ///
-/// `actions/deploy-pages` defaults to a 600 000 ms wait. On `main` run
+/// `actions/deploy-pages` accepts at most a 600 000 ms wait. On `main` run
 /// 31090830031 the artifact uploaded successfully (15.7 MB, id 8966823763) and
 /// the action then reported `Current status: deployment_queued` for that entire
 /// default before `Timeout reached, aborting!` — a red pipeline caused by
 /// GitHub's Pages deployment queue rather than by anything in the commit. The
 /// next push deployed green with no code change, which is the signature of a
-/// false positive. Pin an explicit, longer wait so a backlog is outlasted, and
-/// keep the job's own budget above it so the raise is not silently undone by a
-/// `timeout-minutes` kill.
+/// false positive. Pin the documented maximum rather than supplying the
+/// unsupported 1 200 000 ms value that the action silently clamps, and keep
+/// the job's own budget above it.
 #[test]
-fn pages_deploy_outwaits_a_backlogged_pages_deployment_queue() {
-    const DEPLOY_ACTION_DEFAULT_MS: u64 = 600_000;
+fn pages_deploy_uses_the_actions_maximum_supported_wait() {
+    const DEPLOY_ACTION_MAXIMUM_MS: u64 = 600_000;
 
     let workflow = release_workflow();
     let deploy_demo = job_block(&workflow, "deploy-pages");
@@ -101,9 +104,8 @@ fn pages_deploy_outwaits_a_backlogged_pages_deployment_queue() {
         .expect("the deploy-pages step should pin an explicit `timeout:` in milliseconds");
 
     assert!(
-        timeout_ms > DEPLOY_ACTION_DEFAULT_MS,
-        "deploy-pages should wait longer than the action's {DEPLOY_ACTION_DEFAULT_MS} ms default, \
-         got {timeout_ms} ms"
+        timeout_ms == DEPLOY_ACTION_MAXIMUM_MS,
+        "deploy-pages accepts at most {DEPLOY_ACTION_MAXIMUM_MS} ms, got {timeout_ms} ms"
     );
 
     let job_budget_ms = job_block(&workflow, "deploy-pages")
@@ -290,8 +292,15 @@ fn test_job_skips_non_code_changes() {
         "test job should be decoupled from the changelog check and gate on the \
          change detector instead (issue #442)"
     );
+    // Issue #1017 added `base`, which resolves the base-branch commit once so
+    // every gate merges the same one. Assert the dependency rather than the
+    // exact list, so adding a dependency cannot break a contract that is about
+    // `detect-changes`.
     assert!(
-        test.contains("needs: [detect-changes]"),
+        test.contains("needs: [detect-changes")
+            && test.lines().any(|line| {
+                line.trim().starts_with("needs:") && line.contains("detect-changes")
+            }),
         "test job should depend on detect-changes so it can gate on its outputs"
     );
     assert!(
@@ -306,9 +315,14 @@ fn test_job_skips_non_code_changes() {
         test.contains("needs.detect-changes.outputs.toml-changed == 'true'"),
         "test job should run when Cargo manifests changed"
     );
+    // Issue #1107: `workflow-changed` is true for any file under
+    // `.github/workflows/`, so gating the compiled test matrix on it made an
+    // edit to a scheduled benchmark pay for the whole suite. What the matrix
+    // cares about is the pipeline it runs inside -- its own definition, a
+    // composite action it calls, or a script those run.
     assert!(
-        test.contains("needs.detect-changes.outputs.workflow-changed == 'true'"),
-        "test job should run when the CI workflow itself changed"
+        test.contains("needs.detect-changes.outputs.pipeline-changed == 'true'"),
+        "test job should run when the pipeline it runs inside changed"
     );
     assert!(
         !test.contains("github.event_name == 'push'")
@@ -400,19 +414,82 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
 
+    // Issue #1017: the cap has to clear the budget by more than the job's
+    // unbudgeted setup -- checkout, disk cleanup, the data-file and self-AST
+    // census gates and the doc tests measured 455s on run 31937348472 -- or the
+    // job clock still wins and the overrun is reported as `cancelled`.
+    //
+    // Issue #1081 replaced the two exact numbers this used to pin with floors,
+    // and both moved the same day. Pinning an exact budget is what makes a
+    // budget unable to grow when the work under it grows, which is how the
+    // macOS specification shard reached 100.1% of its budget twice with no
+    // warning; the arithmetic that decides what the numbers should be now
+    // lives in `tests/unit/ci-cd/issue_1081.rs`, which recomputes the whole
+    // job from the workflow instead of memorising one figure from it. What
+    // this test still defends is the shape: a plain-number cap, a budget on
+    // the suite, and the wrapper that makes the overrun red rather than grey.
+    let cap_minutes: u64 = test_job
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the test job declares a plain-number timeout-minutes");
     assert!(
-        test_job.contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"),
-        "Linux must retain the measured 25min budget while the macOS parity leg gets 35min"
+        cap_minutes >= 35,
+        "the test job's cap is {cap_minutes}m; the measured 25min suite plus          its setup needs at least 35m of backstop behind it"
+    );
+    let suite_budget: u64 = workflow_step_block(test_job, "Run tests")
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("TEST_BUDGET_SECONDS:"))
+        .and_then(|value| value.trim().parse().ok())
+        .expect("the full-suite step declares a plain-number execution budget");
+    assert!(
+        suite_budget >= 1_200,
+        "the full suite's execution budget is {suite_budget}s, below the 1200s          that issue #1017 measured it needs"
     );
     assert!(
-        test_job
-            .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"),
-        "each warning threshold must be derived from its platform's declared budget"
+        suite_budget <= cap_minutes * 60,
+        "the full suite's {suite_budget}s budget cannot expire before the          {cap_minutes}m cap that is supposed to be its backstop"
     );
     assert!(
-        test_job.contains("::warning title=Test suite is approaching its timeout"),
+        test_job.contains("scripts/run-with-budget-warning.sh"),
         "creeping back toward the cap must be visible in the run summary rather \
          than resurfacing as a mystery cancellation (issue #812)"
+    );
+}
+
+/// Run 31428625331 passed all 2,629 tests on macOS, then exceeded the job
+/// budget during cleanup. The focused data-integrity gates had already run the
+/// same tests before the full suite, consuming more than 90 seconds twice.
+#[test]
+fn full_suite_does_not_repeat_focused_data_integrity_checks() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+    let full_suite = workflow_step_block(test_job, "Run tests");
+    let macos = fs::read_to_string(format!(
+        "{}/.github/workflows/macos-core-tests.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("macOS core workflow");
+    let core_suite = workflow_step_block(&macos, "Run macOS platform tests");
+
+    assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
+    assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
+    // Issue #1055 moved the skip flags into the runner script the lane invokes.
+    let runner = fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/scripts/run-prebuilt-tests.sh"
+    ))
+    .expect("read the runner");
+    assert!(full_suite.contains("run-prebuilt-tests.sh"));
+    assert!(
+        runner.contains("--skip data_files::") && runner.contains("--skip self_ast_census"),
+        "the full suite must skip integrity groups already exercised by their focused gates"
+    );
+    assert!(
+        core_suite.contains("test(data_files::)")
+            && core_suite.contains("test(self_ast_census)")
+            && core_suite.contains("test(specification::)"),
+        "the macOS core shard must skip focused gates and the separately executed specification shard"
     );
 }
 
@@ -425,7 +502,9 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
     let cleanup_name = "- name: Free up runner disk space";
-    let cache_name = "- name: Restore cargo registry cache";
+    // Issue #1076 moved this to the shared action, so the ordering anchors on
+    // its path. Same invariant: reclaim the disk before unpacking onto it.
+    let cache_name = "- uses: ./.github/actions/cache-cargo-registry";
 
     assert!(
         test_job.contains(cleanup_name),
@@ -449,7 +528,11 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
 /// is set to `warn` -- so clippy printed findings and exited 0.
 #[test]
 fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
-    let workflow = release_workflow();
+    // Clippy and the shell lint are registered gates since issue #991.
+    // actionlint left this job in issue #1076: as a bare binary it skips every
+    // `run:` check and exits 0 when ShellCheck is absent, so it runs as the
+    // Docker image in `workflows.yml` now. `issue_999` owns the assertion.
+    let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
     assert!(
@@ -461,8 +544,10 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
         "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
-        lint.contains("actionlint"),
-        "workflow definitions must be linted (issue #812)"
+        !lint.contains("actionlint"),
+        "workflow linting belongs to .github/workflows/workflows.yml since issue \
+         #1076; a second copy here would drift from the Docker-image form that \
+         guarantees ShellCheck is present"
     );
     assert!(
         lint.contains("scripts/lint-shell-scripts.sh"),
@@ -490,7 +575,10 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
 /// but execute its search and fetch through the repository-owned MCP fixture.
 #[test]
 fn meaning_detail_e2e_uses_the_local_research_fixture() {
-    let workflow = release_workflow();
+    // Issue #1081 moved these steps into `.github/workflows/agent-cli-e2e.yml`.
+    // The spliced surface keeps them inside the job that calls them, so this
+    // still reads what CI runs for `test-agent-cli-e2e`.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
@@ -522,12 +610,96 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
     }
 }
 
+/// A research harness that declares no MCP tool-call timeout makes the Agent
+/// CLI compute its per-tool deadline as `NaN`, so a call the mock answers in
+/// milliseconds aborts with `timed out after NaN seconds`. Run 32107664418
+/// failed exactly that way: `run_issue_781.sh` ended after one fetch and
+/// tripped its own `[ "$fetches" -ge 3 ]` assertion.
+///
+/// Pinned for `run_issue_781.sh` only, which is where the fault was observed.
+/// `run_issue_687.sh` and `run_issue_771.sh` look similarly exposed but have
+/// never produced a `NaN` deadline, and adding the same keys to them broke
+/// them -- so they are left as they are rather than "fixed" against a fault
+/// they do not have.
+///
+/// `mcp_defaults` is added for the Agent CLI only. `OpenCode` reads the same
+/// file and validates it against its own schema, which rejects that key
+/// outright ("Configuration is invalid ... Unrecognized key: `mcp_defaults`"),
+/// so writing it unconditionally trades one red client for another.
+#[test]
+fn the_research_harness_declares_an_mcp_tool_call_timeout() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_issue_781.sh"
+    ))
+    .expect("research E2E harness should be readable");
+
+    assert!(
+        harness.contains(r#""tool_call_timeout": 120000"#),
+        "run_issue_781.sh must give its MCP server an explicit tool-call \
+         timeout, or the Agent CLI computes it as NaN and aborts the call"
+    );
+    assert!(
+        harness.contains("max_tool_call_timeout: 600000"),
+        "run_issue_781.sh must declare mcp_defaults.max_tool_call_timeout"
+    );
+    assert!(
+        harness.contains(r#"if [ "$for_client" = agent ]"#),
+        "mcp_defaults must be written only for the Agent CLI: OpenCode reads \
+         the same file and its schema rejects that key"
+    );
+}
+
+/// Issue #534 forbids caching `target/` in CI, and the reason is disk rather
+/// than taste: a hosted ubuntu runner ships ~14 GB free, seven jobs already run
+/// `scripts/free-runner-disk.sh` to survive, and a job that exhausts `/` takes
+/// the runner down with no failed step and no log to download. A cached target
+/// tree measured 930 MB per job on top of that.
+///
+/// The guard read three hand-listed files, so `agentic-cli-matrix.yml` and
+/// `external-benchmarks.yml` cached it unnoticed. It now reads every workflow;
+/// this test pins that it does, because a policy enforced over part of the tree
+/// reports compliance it has not checked.
+#[test]
+fn the_disk_policy_reads_every_workflow_not_a_hand_listed_few() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let guard = fs::read_to_string(format!("{manifest_dir}/scripts/check-disk-usage-policy.rs"))
+        .expect("disk usage policy guard should be readable");
+
+    assert!(
+        guard.contains(r#"fs::read_dir(".github/workflows")"#),
+        "the disk policy must sweep the workflow directory, or a workflow it \
+         does not list can cache the target tree unnoticed"
+    );
+
+    let dir = format!("{manifest_dir}/.github/workflows");
+    let mut checked = 0;
+    for entry in fs::read_dir(&dir).expect("workflow directory should be readable") {
+        let path = entry.expect("directory entry").path();
+        if path.extension().is_none_or(|ext| ext != "yml") {
+            continue;
+        }
+        let workflow = fs::read_to_string(&path).expect("workflow should be readable");
+        assert!(
+            !workflow.lines().any(|line| line.trim() == "target"),
+            "{} caches the target tree, which issue #534 forbids",
+            path.display()
+        );
+        checked += 1;
+    }
+    assert!(checked > 0, "the sweep must actually find workflows");
+}
+
 /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
 /// between tool turns. If that unrelated provider is unavailable, the client
 /// exits before returning the tool result to Formal AI.
 #[test]
 fn agent_cli_e2e_disables_hosted_session_summarization() {
-    let workflow = release_workflow();
+    // Issue #1081: the job now delegates to a reusable workflow, and the
+    // `env:` that disables hosted summarization moved with the steps it
+    // protects. Read the spliced surface so the guard is checked where CI
+    // applies it.
+    let workflow = crate::ci_gates::pipeline_workflows();
     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
@@ -536,7 +708,7 @@ fn agent_cli_e2e_disables_hosted_session_summarization() {
     .expect("Agent CLI E2E harness");
 
     assert!(harness.contains(
-        "--no-summarize-session \\\n    --compaction-model same \\\n    --model \"formal-ai/formal-ai\""
+        "--no-summarize-session \\\n    --compaction-models \"(same)\" \\\n    --model \"formal-ai/formal-ai\""
     ));
     assert!(agent_e2e.contains("LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: \"false\""));
 
@@ -569,9 +741,12 @@ fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
     .unwrap();
 
     assert_eq!(
-        harness.matches("\n    --no-summarize-session \\\n").count(),
-        1,
-        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
+        harness
+            .matches("\n        --no-summarize-session \\\n")
+            .count()
+            + harness.matches("\n    --no-summarize-session \\\n").count(),
+        2,
+        "both the initial and resumed Agent CLI turns must disable summarization"
     );
 }
 
@@ -581,43 +756,93 @@ fn release_workflow_jobs_have_explicit_timeouts() {
     let expected_timeouts = [
         ("detect-changes", 5),
         ("changelog", 10),
-        // Issue #808: pull-request gates for the trailer invariant, the Docker
-        // image and committed credentials.
-        ("evidence-check", 10),
+        // Issue #808's evidence-check job now lives in
+        // `.github/workflows/evidence-check.yml`; its timeout is asserted by
+        // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),
+        // Issue #1081 (D15): probes every publishing credential with a write
+        // before the pipeline spends 90 minutes building what it cannot
+        // publish. Five probes over HTTP against five registries; the cap is a
+        // backstop for a hung TLS handshake, not a work budget.
+        ("release-preflight", 5),
+        // Issue #1017: resolves the base-branch commit once so `lint`, `test`
+        // and the macOS lane all merge the same one instead of each resolving
+        // the tip at its own start time. A reusable workflow, so it owns its
+        // own cap -- and so `release.yml` does not pay lines for it against the
+        // 1500-line band this same file pins below.
+        ("base", 0),
         // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
-        ("lint", 15),
+        // Issue #1076 (D5): raised from 15. Over 400 `main` runs the worst
+        // case was 12.7 min, 84.4% of that cap and trending up (6.0 -> 12.7
+        // across the window) -- the deadline, not the backstop, and a cap kills
+        // as `cancelled`. No single step dominates here, so the cap is the only
+        // mechanism available; 25 puts the same worst case at 50.7%.
+        ("lint", 25),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
-        // Issue #961 keeps this Linux baseline and selects a 35-minute macOS
-        // budget through the matrix expression checked below.
-        ("test", 25),
+        // Issue #1012 partitions the macOS core suite so every slice retains
+        // this baseline rather than extending a monolithic timeout.
+        // Issue #1017 raised this from 25: 455s of the job runs outside the
+        // budgeted step, so a 20-minute budget under a 25-minute cap could
+        // never expire first.
+        // Issue #1081 raised this from 35. The job is a matrix, and its two
+        // legs are budgeted separately: the `full` leg now declares 2640s
+        // across four steps and the `specification` leg 2460s across two, after
+        // the compile that was 86% of `Run specification tests` was split into
+        // a step of its own. One cap covers both legs, so it has to hold the
+        // larger sum at or under the 70% share
+        // `issue_1081::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
+        // enforces: 2640/3900 is 67.7%.
+        ("test", 65),
+        // Issue #1014 compiles one nextest archive and fans it out to five
+        // macOS runners. The reusable workflow owns both internal timeouts.
+        ("macos-core-tests", 0),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.
-        ("build", 15),
-        ("auto-release", 60),
-        ("manual-release", 60),
+        // Issue #1076 (D5): raised from 15. The run that missed its cargo
+        // cache took 11.6 min, 77.0% of the cap; 20 puts it at 57.8%.
+        ("build", 20),
+        // Issue #1076 (D5): raised from 60. Worst case 50.6 min over 400
+        // `main` runs, 84.4% of that cap -- and the 45-minute GHCR budget that
+        // owns the real deadline could never have fired inside it, since the
+        // rest of the job costs ~18 min. A budget the cap pre-empts is not a
+        // budget: the run still ends `cancelled`.
+        ("auto-release", 90),
+        // Same image, same steps, same budgets, same backstop (issue #1076).
+        ("manual-release", 90),
         ("changelog-pr", 10),
         ("test-e2e-local", 40),
         // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.
         // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
         // asserts the CLI writes the enriched meaning file. The extra headroom
         // over test-e2e-local absorbs a cold cargo build of the release binary.
-        // Raised from 20 (PR #965 review): green runs measured 16m16s and
-        // 17m30s on `main`, so 20 left ~2 minutes of headroom and run
-        // 31097339962 tipped over into a *cancelled* job that looked like a
-        // regression but was only variance.
-        ("test-agent-cli-e2e", 32),
+        // Raised from 20 (PR #965 review): 16m16s and 17m30s green left ~2
+        // minutes of headroom, and run 31097339962 tipped over into a
+        // *cancelled* job that looked like a regression but was only variance.
+        // Raised from 32 (issue #1069): 19m54s green, of which the two
+        // computer-use steps cost 5m32s, is 39m24s at their 900s+600s budgets.
+        // Issue #1081 moved those 324 steps, and the 45-minute cap with them,
+        // into `.github/workflows/agent-cli-e2e.yml`; what is left here is the
+        // call. See that file's header for why.
+        ("test-agent-cli-e2e", 0),
+        // Issue #1012: the shared release binary is built once before the seven
+        // Box image legs, avoiding seven identical cache restores and builds.
+        ("build-artifacts", 20),
+        // Issue #932: per-language matrix leg that pulls one link-foundation/box
+        // image, generates the project from solver answers and runs the
+        // language's traditional init commands inside it. The budget covers a
+        // cold release build plus the image pull.
+        ("box-language-projects", 30),
         // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
         // Raised from 20 (PR #965 review): the budget also has to cover the
         // GitHub Pages deployment queue, which is not part of the build and can
         // stall for many minutes — see
-        // `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
+        // `pages_deploy_uses_the_actions_maximum_supported_wait`.
         ("deploy-pages", 35),
         ("test-e2e-pages", 15),
         // Issue #977: the terminal gate that turns a silently-`cancelled` run
@@ -634,151 +859,34 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
-        let expected = if job_name == "test" {
-            "    timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}\n".to_string()
-        } else {
-            format!("    timeout-minutes: {timeout_minutes}\n")
-        };
+        if timeout_minutes == 0 {
+            // A reusable call declares no cap of its own; the called workflow's
+            // jobs own them. Read whichever workflow this job actually calls,
+            // so a second delegating job cannot be checked against the first
+            // one's file (issue #1017 added `base`).
+            let called = job
+                .lines()
+                .find_map(|line| line.trim().strip_prefix("uses: ./"))
+                .unwrap_or_else(|| {
+                    panic!("{job_name} is listed as delegating but calls no reusable workflow")
+                })
+                .trim();
+            let reusable = fs::read_to_string(format!("{}/{called}", env!("CARGO_MANIFEST_DIR")))
+                .unwrap_or_else(|error| panic!("read {called}: {error}"));
+            for inner_job in workflow_job_names(&reusable) {
+                assert!(
+                    job_block(&reusable, inner_job).contains("    timeout-minutes:"),
+                    "{inner_job} should declare an explicit timeout"
+                );
+            }
+            continue;
+        }
+        let expected = format!("    timeout-minutes: {timeout_minutes}\n");
         assert!(
             job.contains(&expected),
             "{job_name} should declare {expected:?}"
         );
     }
-}
-
-/// Issue #479 restructured the site into a landing chooser at `/`, the app at
-/// `/app/`, the docs hub at `/docs/`, and the download page at `/download/`.
-/// These are the static invariants that keep the relocated app working and the
-/// chooser wired up — things the e2e suite cannot easily assert (the app's
-/// `<base href>`, the desktop wrapper target).
-#[test]
-fn issue_479_site_is_restructured_into_landing_app_docs_download() {
-    let manifest_dir = env!("CARGO_MANIFEST_DIR");
-    let read = |rel: &str| {
-        fs::read_to_string(format!("{manifest_dir}/{rel}"))
-            .unwrap_or_else(|_| panic!("{rel} should exist after the issue #479 restructure"))
-    };
-
-    // The interactive app moved off the site root to /app/. Its document MUST
-    // carry <base href="../"> so every relative asset/worker/seed URL still
-    // resolves to the shared site root (under Pages' /formal-ai/ prefix and the
-    // desktop static server alike).
-    let app_index = read("src/web/app/index.html");
-    assert!(
-        app_index.contains("<base href=\"../\" />") || app_index.contains("<base href=\"../\">"),
-        "src/web/app/index.html must declare <base href=\"../\"> so its relative assets resolve to the site root"
-    );
-    assert!(
-        app_index.contains("app.js?v=__FORMAL_AI_ASSET_VERSION__"),
-        "the relocated app should still load the cache-busted app bundle"
-    );
-
-    // The site root is now the landing-page chooser, wired to the shared
-    // preference store + chrome and offering the three in-site routes. Every
-    // script is cache-busted with ?v=__FORMAL_AI_ASSET_VERSION__ so the stamped
-    // index embeds the deploy SHA (issue #479: without this the Pages freshness
-    // probe never saw the SHA in the landing page and timed out the pipeline).
-    let landing = read("src/web/index.html");
-    for script in ["preferences.js", "site-chrome.js", "landing.js"] {
-        assert!(
-            landing.contains(&format!("src=\"{script}?v=__FORMAL_AI_ASSET_VERSION__\"")),
-            "the landing page should load {script} cache-busted with the deploy asset version"
-        );
-    }
-    assert!(
-        landing.contains("landing.css?v=__FORMAL_AI_ASSET_VERSION__"),
-        "the landing page stylesheet should be cache-busted with the deploy asset version"
-    );
-    for route in ["app/", "docs/", "download/"] {
-        assert!(
-            landing.contains(&format!("href=\"{route}\"")),
-            "the landing page <noscript> fallback should link to {route}"
-        );
-    }
-
-    // The documentation hub is a sibling page rendered by docs.js.
-    let docs_index = read("src/web/docs/index.html");
-    assert!(
-        docs_index.contains("docs.js"),
-        "the docs hub should render via docs.js"
-    );
-
-    // The desktop wrapper opens the app at its new /app/ location.
-    let desktop_main = read("desktop/main.cjs");
-    assert!(
-        desktop_main.contains("/app/index.html?desktop=1"),
-        "the desktop wrapper should load the app from /app/"
-    );
-}
-
-/// Issue #479 (maintainer follow-up): "make sure the source code on the landing
-/// is a big button". The shared chooser (site-chrome.js, used by / and /docs/)
-/// must render the repository link as a prominent hero call-to-action mirroring
-/// the /download page's `.primary-download` button — NOT as the small footer
-/// text link it used to be. We assert against the rendering source so the
-/// guarantee holds even when the e2e suite is not run.
-#[test]
-fn issue_479_landing_surfaces_source_code_as_a_big_button() {
-    let manifest_dir = env!("CARGO_MANIFEST_DIR");
-    let chrome = fs::read_to_string(format!("{manifest_dir}/src/web/site-chrome.js"))
-        .expect("src/web/site-chrome.js should exist");
-
-    // The big button: an anchor with the dedicated class + test id, opening the
-    // repository in a new tab with a safe rel.
-    assert!(
-        chrome.contains("class: \"source-cta\""),
-        "site-chrome.js should render the source link as a .source-cta big button"
-    );
-    assert!(
-        chrome.contains("\"data-testid\": \"source-cta\""),
-        "the source-cta button needs a stable data-testid for e2e/regression coverage"
-    );
-    assert!(
-        chrome.contains("href: config.repoUrl"),
-        "the source-cta button should point at the configured repository URL"
-    );
-    // The .primary-download-style structure: an action eyebrow above a strong
-    // label, both localized.
-    for needle in [
-        "class: \"source-cta-eyebrow\"",
-        "class: \"source-cta-label\"",
-        "text: text(locale, \"sourceEyebrow\")",
-        "text: text(locale, \"footerSource\")",
-    ] {
-        assert!(
-            chrome.contains(needle),
-            "site-chrome.js source-cta should contain `{needle}`"
-        );
-    }
-
-    // The button replaces — not supplements — the old small footer link. The
-    // footer no longer renders a `support-links` source link.
-    assert!(
-        !chrome.contains("class: \"support-links\""),
-        "the small footer support-links source link should be gone now the big button exists"
-    );
-
-    // The new action eyebrow is translated for every supported locale.
-    for eyebrow in ["Open source", "Открытый код", "开源", "ओपन सोर्स"]
-    {
-        assert!(
-            chrome.contains(eyebrow),
-            "site-chrome.js LABELS should define the sourceEyebrow translation `{eyebrow}`"
-        );
-    }
-
-    // The big-button styles exist in the landing stylesheet (loaded by / and
-    // /docs/), emulating the /download page's .primary-download.
-    let landing_css = fs::read_to_string(format!("{manifest_dir}/src/web/landing.css"))
-        .expect("src/web/landing.css should exist");
-    assert!(
-        landing_css.contains(".source-cta {"),
-        "landing.css should style the .source-cta big button"
-    );
-    assert!(
-        landing_css.contains(".source-cta:hover"),
-        "landing.css should give the .source-cta button a hover state like .primary-download"
-    );
 }
 
 /// Issue #479: the docs hub links to a Rust API reference at `/docs/api/`. The
@@ -792,8 +900,8 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
     let deploy = job_block(&workflow, "deploy-pages");
 
     assert!(
-        deploy.contains("cargo doc --no-deps --lib"),
-        "deploy-pages should build the Rust API docs with cargo doc"
+        deploy.contains("bash scripts/build-rust-api-docs.sh"),
+        "deploy-pages should invoke the API-docs builder"
     );
     assert!(
         deploy.contains("cp -R target/doc/. src/web/docs/api/"),
@@ -818,6 +926,10 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
         env!("CARGO_MANIFEST_DIR")
     ))
     .expect("build-rust-api-docs.sh");
+    assert!(
+        docs_script.contains("cargo doc --no-deps --lib"),
+        "the API-docs builder should run cargo doc"
+    );
     assert!(
         docs_script.contains("url=formal_ai/index.html"),
         "a redirect should point /docs/api/ at the crate root"

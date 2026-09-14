@@ -1,0 +1,107 @@
+{
+  "lemma": "need",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14472592-n",
+      "partOfSpeech": "n",
+      "definition": "a condition requiring relief",
+      "examples": [
+        "she satisfied his need for affection",
+        "God has no need of men to accomplish His work",
+        "there is a demand for jobs"
+      ],
+      "synonyms": [
+        "demand"
+      ]
+    },
+    {
+      "id": "oewn-09390888-n",
+      "partOfSpeech": "n",
+      "definition": "anything that is necessary but lacking",
+      "examples": [
+        "he had sufficient means to meet his simple needs",
+        "I tried to supply his wants"
+      ],
+      "synonyms": [
+        "want"
+      ]
+    },
+    {
+      "id": "oewn-00023953-n",
+      "partOfSpeech": "n",
+      "definition": "the psychological feature that arouses an organism to action toward a desired goal; the reason for the action; that which gives purpose and direction to behavior",
+      "examples": [
+        "we did not understand his motivation",
+        "he acted with the best of motives"
+      ],
+      "synonyms": [
+        "motivation",
+        "motive"
+      ]
+    },
+    {
+      "id": "oewn-14517300-n",
+      "partOfSpeech": "n",
+      "definition": "a state of extreme poverty or destitution",
+      "examples": [
+        "their indigence appalled him",
+        "a general state of need exists among the homeless"
+      ],
+      "synonyms": [
+        "indigence",
+        "penury",
+        "pauperism",
+        "pauperization"
+      ]
+    },
+    {
+      "id": "oewn-02634015-v",
+      "partOfSpeech": "v",
+      "definition": "require as useful, just, or proper",
+      "examples": [
+        "It takes nerve to do what she did",
+        "success usually requires hard work",
+        "This job asks a lot of patience and skill",
+        "This position demands a lot of personal sacrifice",
+        "This dinner calls for a spectacular dessert",
+        "This intervention does not postulate a patient's consent"
+      ],
+      "synonyms": [
+        "necessitate",
+        "ask",
+        "postulate",
+        "require",
+        "take",
+        "involve",
+        "call for",
+        "demand"
+      ]
+    },
+    {
+      "id": "oewn-01191258-v",
+      "partOfSpeech": "v",
+      "definition": "have need of",
+      "examples": [
+        "This piano wants the attention of a competent tuner"
+      ],
+      "synonyms": [
+        "want",
+        "require"
+      ]
+    },
+    {
+      "id": "oewn-01191646-v",
+      "partOfSpeech": "v",
+      "definition": "have or feel a need for",
+      "examples": [
+        "always needing friends and money"
+      ]
+    }
+  ]
+}

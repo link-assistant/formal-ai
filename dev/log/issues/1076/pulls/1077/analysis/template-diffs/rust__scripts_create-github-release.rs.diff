@@ -1,0 +1,867 @@
+--- dev/log/issues/1076/pulls/1077/references/templates/rust-template/scripts/create-github-release.rs	2026-09-05 09:39:56.903043008 +0000
++++ scripts/create-github-release.rs	2026-09-05 09:37:22.105726355 +0000
+@@ -1,20 +1,23 @@
+ #!/usr/bin/env rust-script
+ //! Create GitHub Release from CHANGELOG.md
+ //!
+-//! Automatically includes crates.io and docs.rs badges in release notes
+-//! when the crate name can be detected from Cargo.toml.
++//! Automatically includes stable crates.io and docs.rs artifact badges in
++//! release notes when the crate name can be detected from Cargo.toml.
+ //!
+-//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]
++//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--self-hosting-ledger <path>] [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
+ //!
+ //! ```cargo
++//! [package]
++//! edition = "2024"
++//!
+ //! [dependencies]
+ //! regex = "1"
+ //! serde = { version = "1", features = ["derive"] }
+ //! serde_json = "1"
+ //! ```
+ 
+-#[cfg(not(test))]
+ use regex::Regex;
++use serde::Deserialize;
+ #[cfg(not(test))]
+ use serde::Serialize;
+ #[cfg(not(test))]
+@@ -23,43 +26,53 @@
+ use std::fs;
+ #[cfg(not(test))]
+ use std::io::Write;
+-#[cfg(not(test))]
+ use std::path::Path;
+ #[cfg(not(test))]
+-use std::process::{exit, Command, Stdio};
++use std::process::{Command, Stdio, exit};
+ 
+-#[cfg(not(test))]
+-#[path = "release-naming.rs"]
+-mod release_naming;
+-#[cfg(test)]
+-use super::release_naming;
+-#[cfg(not(test))]
+-#[path = "rust-paths.rs"]
+-mod rust_paths;
++#[path = "self-hosting-metric.rs"]
++pub mod self_hosting_metric;
+ 
+ #[cfg(not(test))]
+-const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]";
++const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--self-hosting-ledger <path>] [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]";
+ 
+-const GITHUB_RELEASE_BODY_MAX_CHARS: usize = 125_000;
++const SELF_HOSTING_HEADING: &str = "## Self-hosting";
+ 
+-use release_naming::{
+-    build_crates_io_badge, build_docs_rs_badge, build_release_name, build_release_tag,
+-};
+ #[cfg(not(test))]
+-use release_naming::{
+-    is_multi_language_rust_root, normalize_release_version, tag_prefix_for_rust_root,
+-};
++fn get_rust_root() -> String {
++    if let Some(root) = get_arg("rust-root") {
++        return root;
++    }
++
++    if Path::new("./Cargo.toml").exists() {
++        return ".".to_string();
++    }
++
++    if Path::new("./rust/Cargo.toml").exists() {
++        return "rust".to_string();
++    }
++
++    ".".to_string()
++}
+ 
+ #[cfg(not(test))]
+-fn get_changelog_path(rust_root: &str) -> String {
++fn get_cargo_toml_path(rust_root: &str) -> String {
+     if rust_root == "." {
+-        "./CHANGELOG.md".to_string()
++        "./Cargo.toml".to_string()
+     } else {
+-        format!("{rust_root}/CHANGELOG.md")
++        format!("{rust_root}/Cargo.toml")
+     }
+ }
+ 
+ #[cfg(not(test))]
++fn get_crate_name_from_toml(cargo_toml_path: &str) -> Option<String> {
++    let content = fs::read_to_string(cargo_toml_path).ok()?;
++    let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).ok()?;
++    re.captures(&content)
++        .map(|captures| captures.get(1).unwrap().as_str().to_string())
++}
++
++#[cfg(not(test))]
+ fn get_arg(name: &str) -> Option<String> {
+     let args: Vec<String> = env::args().collect();
+     let flag = format!("--{name}");
+@@ -72,6 +85,58 @@
+     env::var(&env_name).ok().filter(|value| !value.is_empty())
+ }
+ 
++fn normalize_release_version(release_version: &str) -> String {
++    let trimmed = release_version.trim();
++    let semver_re =
++        Regex::new(r"(?i)(?:^|[-_])v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)$")
++            .expect("release version regex should compile");
++
++    semver_re.captures(trimmed).map_or_else(
++        || {
++            trimmed
++                .strip_prefix('v')
++                .or_else(|| trimmed.strip_prefix('V'))
++                .unwrap_or(trimmed)
++                .to_string()
++        },
++        |captures| {
++            captures
++                .get(1)
++                .expect("release version regex should capture the semver")
++                .as_str()
++                .to_string()
++        },
++    )
++}
++
++fn build_release_tag(tag_prefix: &str, release_version: &str) -> String {
++    let normalized_semver = normalize_release_version(release_version);
++    format!("{tag_prefix}{normalized_semver}")
++}
++
++fn build_release_name(
++    language: &str,
++    release_version: &str,
++    release_label: Option<&str>,
++) -> String {
++    let trimmed_language = language.trim();
++    let language = if trimmed_language.is_empty() {
++        "Rust"
++    } else {
++        trimmed_language
++    };
++    let normalized_semver = normalize_release_version(release_version);
++    let name = format!("[{language}] {normalized_semver}");
++
++    match release_label
++        .map(str::trim)
++        .filter(|label| !label.is_empty())
++    {
++        Some(label) => format!("{name} ({label})"),
++        None => name,
++    }
++}
++
+ fn badge_escape(value: &str) -> String {
+     value
+         .replace('-', "--")
+@@ -105,8 +170,201 @@
+     )
+ }
+ 
++fn ghcr_image_tag_from_url(url: &str, version: &str) -> String {
++    let trimmed_url = url.trim_end_matches('/');
++    if let Some(image) = trimmed_url.strip_prefix("https://ghcr.io/") {
++        return format!("{image}:{version}");
++    }
++
++    if let Some(path) = trimmed_url.strip_prefix("https://github.com/") {
++        let parts = path.split('/').collect::<Vec<_>>();
++        if let Some(idx) = parts
++            .windows(2)
++            .position(|window| window == ["pkgs", "container"])
++            && let (Some(owner), Some(package)) = (parts.first(), parts.get(idx + 2))
++        {
++            return format!("ghcr.io/{owner}/{package}:{version}");
++        }
++    }
++
++    format!("{trimmed_url}:{version}")
++}
++
++fn ghcr_badge(url: &str, version: &str) -> String {
++    let trimmed_url = url.trim_end_matches('/');
++    let image_tag = ghcr_image_tag_from_url(trimmed_url, version);
++    let tag_url = if trimmed_url.contains("/pkgs/container/") {
++        format!("{}?tag={}", trimmed_url, docker_hub_tag_query(version))
++    } else {
++        trimmed_url.to_string()
++    };
++
++    format!(
++        "[![GHCR](https://img.shields.io/badge/ghcr-{}-24292F?logo=github)]({})",
++        badge_escape(&image_tag),
++        tag_url
++    )
++}
++
++fn crate_release_badges(crate_name: &str, version: &str) -> String {
++    let escaped_version = badge_escape(version);
++    format!(
++        "[![Crates.io](https://img.shields.io/badge/crates.io-{escaped_version}-orange?logo=rust)](https://crates.io/crates/{crate_name}/{version}) [![Docs.rs](https://img.shields.io/badge/docs.rs-{escaped_version}-blue)](https://docs.rs/{crate_name}/{version})"
++    )
++}
++
++const GITHUB_RELEASE_BODY_MAX_BYTES: usize = 120_000;
++
++fn truncate_at_char_boundary(value: &str, max_bytes: usize) -> &str {
++    if value.len() <= max_bytes {
++        return value;
++    }
++
++    let mut end = 0;
++    for (idx, ch) in value.char_indices() {
++        let next = idx + ch.len_utf8();
++        if next > max_bytes {
++            break;
++        }
++        end = next;
++    }
++    &value[..end]
++}
++
++fn limit_release_body_to(body: String, full_changelog_url: &str, max_bytes: usize) -> String {
++    if body.len() <= max_bytes {
++        return body;
++    }
++
++    let notice = format!(
++        "\n\n---\n\nRelease notes were shortened to fit GitHub Releases API validation. See the full changelog: {full_changelog_url}\n"
++    );
++    if notice.len() >= max_bytes {
++        return truncate_at_char_boundary(&notice, max_bytes).to_string();
++    }
++
++    let max_body_bytes = max_bytes - notice.len();
++    let shortened = truncate_at_char_boundary(&body, max_body_bytes).trim_end();
++    format!("{shortened}{notice}")
++}
++
++fn limit_release_body(body: String, full_changelog_url: &str) -> String {
++    limit_release_body_to(body, full_changelog_url, GITHUB_RELEASE_BODY_MAX_BYTES)
++}
++
++fn limit_release_body_with_suffix(
++    body: String,
++    suffix: &str,
++    full_changelog_url: &str,
++) -> Result<String, String> {
++    let separator = "\n\n";
++    let reserved_bytes = separator
++        .len()
++        .checked_add(suffix.len())
++        .ok_or_else(|| "release body suffix size overflowed usize".to_owned())?;
++    let available_bytes = GITHUB_RELEASE_BODY_MAX_BYTES
++        .checked_sub(reserved_bytes)
++        .ok_or_else(|| "release body suffix exceeds the GitHub API size limit".to_owned())?;
++    let body = limit_release_body_to(body, full_changelog_url, available_bytes);
++    Ok(format!("{body}{separator}{suffix}"))
++}
++
++#[derive(Debug, Deserialize)]
++struct GitHubApiError {
++    errors: Option<Vec<GitHubValidationError>>,
++}
++
++#[derive(Debug, Deserialize)]
++struct GitHubValidationError {
++    resource: Option<String>,
++    code: Option<String>,
++    field: Option<String>,
++}
++
++fn first_json_object(input: &str) -> Option<&str> {
++    let start = input.find('{')?;
++    let mut depth = 0usize;
++    let mut in_string = false;
++    let mut escaped = false;
++
++    for (idx, ch) in input[start..].char_indices() {
++        if in_string {
++            if escaped {
++                escaped = false;
++            } else if ch == '\\' {
++                escaped = true;
++            } else if ch == '"' {
++                in_string = false;
++            }
++            continue;
++        }
++
++        match ch {
++            '"' => in_string = true,
++            '{' => depth += 1,
++            '}' => {
++                depth = depth.saturating_sub(1);
++                if depth == 0 {
++                    return Some(&input[start..start + idx + ch.len_utf8()]);
++                }
++            }
++            _ => {}
++        }
++    }
++
++    None
++}
++
++fn validation_error_is_duplicate_release(error: &GitHubApiError) -> bool {
++    error.errors.as_ref().is_some_and(|errors| {
++        errors.iter().any(|entry| {
++            entry
++                .resource
++                .as_deref()
++                .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
++                && entry
++                    .code
++                    .as_deref()
++                    .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
++                && entry
++                    .field
++                    .as_deref()
++                    .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
++        })
++    })
++}
++
++fn line_reports_duplicate_release(line: &str) -> bool {
++    let lowered = line.trim().to_ascii_lowercase();
++    lowered == "already_exists"
++        || lowered.contains("release already exists")
++        || lowered.contains("github release already exists")
++        || lowered.contains("release with this tag already exists")
++        || lowered.contains("release with the same tag_name already exists")
++}
++
++fn is_duplicate_release_error(output: &str) -> bool {
++    if output.lines().any(line_reports_duplicate_release) {
++        return true;
++    }
++
++    let lowered = output.to_ascii_lowercase();
++
++    if let Some(json) = first_json_object(output)
++        && let Ok(error) = serde_json::from_str::<GitHubApiError>(json)
++    {
++        return validation_error_is_duplicate_release(&error);
++    }
++
++    lowered.contains("\"resource\":\"release\"")
++        && lowered.contains("\"code\":\"already_exists\"")
++        && lowered.contains("\"field\":\"tag_name\"")
++}
++
+ #[cfg(not(test))]
+-fn get_changelog_for_version(changelog_path: &str, version: &str) -> String {
++fn get_changelog_for_version(version: &str) -> String {
++    let changelog_path = "CHANGELOG.md";
++
+     if !Path::new(changelog_path).exists() {
+         return format!("Release v{version}");
+     }
+@@ -156,104 +414,23 @@
+ fn build_release_payload(
+     tag_prefix: &str,
+     release_version: &str,
+-    crate_name: &str,
+     language: &str,
+-    multi_language: bool,
+     release_label: Option<&str>,
+     body: String,
+ ) -> ReleasePayload {
+     ReleasePayload {
+         tag_name: build_release_tag(tag_prefix, release_version),
+-        name: build_release_name(
+-            crate_name,
+-            language,
+-            release_version,
+-            multi_language,
+-            release_label,
+-        ),
++        name: build_release_name(language, release_version, release_label),
+         body,
+     }
+ }
+ 
+-fn build_crate_artifact_badges(crate_name: &str, release_version: &str) -> String {
+-    format!(
+-        "{} {}",
+-        build_crates_io_badge(crate_name, release_version),
+-        build_docs_rs_badge(crate_name, release_version)
+-    )
+-}
+-
+-fn is_existing_release_error(combined: &str) -> bool {
+-    let Some(error) = parse_first_json_object(combined) else {
+-        return false;
+-    };
+-    let Some(errors) = error.get("errors").and_then(serde_json::Value::as_array) else {
+-        return false;
+-    };
+-
+-    !errors.is_empty()
+-        && errors.iter().all(|error| {
+-            error.get("resource").and_then(serde_json::Value::as_str) == Some("Release")
+-                && error.get("code").and_then(serde_json::Value::as_str) == Some("already_exists")
+-                && error.get("field").and_then(serde_json::Value::as_str) == Some("tag_name")
+-        })
+-}
+-
+-fn parse_first_json_object(output: &str) -> Option<serde_json::Value> {
+-    output.match_indices('{').find_map(|(start, _)| {
+-        let mut values =
+-            serde_json::Deserializer::from_str(&output[start..]).into_iter::<serde_json::Value>();
+-        let value = values.next()?.ok()?;
+-
+-        matches!(value, serde_json::Value::Object(_)).then_some(value)
+-    })
+-}
+-
+-fn normalize_changelog_blob_path(changelog_path: &str) -> String {
+-    changelog_path
+-        .replace('\\', "/")
+-        .trim_start_matches("./")
+-        .trim_start_matches('/')
+-        .to_string()
+-}
+-
+-fn full_changelog_url(repository: &str, tag: &str, changelog_path: &str) -> String {
+-    format!(
+-        "https://github.com/{repository}/blob/{tag}/{}",
+-        normalize_changelog_blob_path(changelog_path)
+-    )
+-}
+-
+-fn cap_release_notes(
+-    release_notes: String,
+-    repository: &str,
+-    tag: &str,
+-    changelog_path: &str,
+-) -> String {
+-    if release_notes.chars().count() <= GITHUB_RELEASE_BODY_MAX_CHARS {
+-        return release_notes;
++fn self_hosting_note(ledger: &Path, tag: &str) -> Result<String, String> {
++    let note = self_hosting_metric::release_note_for_tag(ledger, tag)?;
++    if !note.starts_with(SELF_HOSTING_HEADING) {
++        return Err("self-hosting release note has an unexpected heading".to_owned());
+     }
+-
+-    let footer = format!(
+-        "\n\nRelease notes truncated. See the [full changelog]({}).",
+-        full_changelog_url(repository, tag, changelog_path)
+-    );
+-    let marker = "\n\n...";
+-    let reserved_chars = footer.chars().count() + marker.chars().count();
+-
+-    if reserved_chars >= GITHUB_RELEASE_BODY_MAX_CHARS {
+-        return release_notes
+-            .chars()
+-            .take(GITHUB_RELEASE_BODY_MAX_CHARS)
+-            .collect();
+-    }
+-
+-    let keep_chars = GITHUB_RELEASE_BODY_MAX_CHARS - reserved_chars;
+-    let mut truncated = release_notes.chars().take(keep_chars).collect::<String>();
+-    let trimmed_len = truncated.trim_end().len();
+-    truncated.truncate(trimmed_len);
+-
+-    format!("{truncated}{marker}{footer}")
++    Ok(note)
+ }
+ 
+ #[cfg(not(test))]
+@@ -276,51 +453,35 @@
+         }
+     };
+ 
+-    let rust_root = match rust_paths::get_rust_root(None, true) {
+-        Ok(root) => root,
+-        Err(e) => {
+-            eprintln!("Error: {e}");
+-            exit(1);
+-        }
+-    };
+-    let cargo_toml = rust_paths::get_cargo_toml_path(&rust_root);
+-    let package_manifest = match rust_paths::get_package_manifest_path(&cargo_toml) {
+-        Ok(path) => path,
+-        Err(e) => {
+-            eprintln!("Error: {e}");
+-            exit(1);
+-        }
+-    };
+-    let package_info = match rust_paths::read_package_info(&package_manifest) {
+-        Ok(info) => info,
+-        Err(e) => {
+-            eprintln!("Error: {e}");
+-            exit(1);
+-        }
+-    };
+-    let tag_prefix =
+-        get_arg("tag-prefix").unwrap_or_else(|| tag_prefix_for_rust_root(&rust_root).to_string());
++    let tag_prefix = get_arg("tag-prefix").unwrap_or_else(|| "v".to_string());
+     let language = get_arg("language").unwrap_or_else(|| "Rust".to_string());
+     let release_label = get_arg("release-label");
+     let crates_io_url = get_arg("crates-io-url");
++    let ghcr_url = get_arg("ghcr-url");
+     let docker_hub_url = get_arg("docker-hub-url");
++    let self_hosting_ledger = get_arg("self-hosting-ledger");
+     let normalized_version = normalize_release_version(&version);
+-    let multi_language = is_multi_language_rust_root(&rust_root);
+ 
+-    if package_info.name == "example-sum-package-name" {
+-        println!(
+-            "Skipping GitHub release: package name is the template default 'example-sum-package-name'"
+-        );
+-        println!("Rename the package in Cargo.toml before creating releases");
+-        return;
++    let rust_root = get_rust_root();
++    let cargo_toml = get_cargo_toml_path(&rust_root);
++
++    if let Some(ref crate_name) = get_crate_name_from_toml(&cargo_toml) {
++        if crate_name == "example-sum-package-name" {
++            println!(
++                "Skipping GitHub release: package name is the template default 'example-sum-package-name'"
++            );
++            println!("Rename the package in Cargo.toml before creating releases");
++            return;
++        }
+     }
+ 
+-    let changelog_path = get_changelog_path(&rust_root);
+-    let mut release_notes = get_changelog_for_version(&changelog_path, &normalized_version);
++    let mut release_notes = get_changelog_for_version(&normalized_version);
+     let mut badges = Vec::new();
+-    if !package_info.name.trim().is_empty() {
+-        let crate_name = &package_info.name;
+-        badges.push(build_crate_artifact_badges(crate_name, &normalized_version));
++    if let Some(crate_name) = get_crate_name_from_toml(&cargo_toml) {
++        badges.push(crate_release_badges(&crate_name, &normalized_version));
++    }
++    if let Some(url) = ghcr_url {
++        badges.push(ghcr_badge(&url, &normalized_version));
+     }
+     if let Some(url) = docker_hub_url {
+         badges.push(docker_hub_badge(&url, &normalized_version));
+@@ -333,15 +494,40 @@
+         release_notes = format!("{url}\n\n{release_notes}");
+     }
+ 
+-    let release_tag = build_release_tag(&tag_prefix, &normalized_version);
+-    release_notes = cap_release_notes(release_notes, &repository, &release_tag, &changelog_path);
++    let tag = build_release_tag(&tag_prefix, &normalized_version);
++    let self_hosting_note = self_hosting_ledger.map(|ledger| {
++        self_hosting_note(Path::new(&ledger), &tag).unwrap_or_else(|error| {
++            eprintln!("Error adding self-hosting metric to release notes: {error}");
++            exit(1);
++        })
++    });
++    let full_changelog_url = format!("https://github.com/{repository}/blob/{tag}/CHANGELOG.md");
++    let release_notes_bytes = release_notes.len()
++        + self_hosting_note
++            .as_ref()
++            .map_or(0, |note| "\n\n".len() + note.len());
++    release_notes = if let Some(note) = self_hosting_note {
++        limit_release_body_with_suffix(release_notes, &note, &full_changelog_url).unwrap_or_else(
++            |error| {
++                eprintln!("Error adding self-hosting metric to release notes: {error}");
++                exit(1);
++            },
++        )
++    } else {
++        limit_release_body(release_notes, &full_changelog_url)
++    };
++    if release_notes.len() != release_notes_bytes {
++        println!(
++            "Shortened GitHub release notes from {} to {} bytes",
++            release_notes_bytes,
++            release_notes.len()
++        );
++    }
+ 
+     let payload = build_release_payload(
+         &tag_prefix,
+         &normalized_version,
+-        &package_info.name,
+         &language,
+-        multi_language,
+         release_label.as_deref(),
+         release_notes,
+     );
+@@ -381,15 +567,10 @@
+         let stderr = String::from_utf8_lossy(&output.stderr);
+         let stdout = String::from_utf8_lossy(&output.stdout);
+         let combined = format!("{stderr}{stdout}");
+-        if is_existing_release_error(&combined) {
++        if is_duplicate_release_error(&combined) {
+             println!("Release {tag} already exists, skipping");
+         } else {
+-            let details = combined.trim();
+-            if details.is_empty() {
+-                eprintln!("Error creating release: gh api exited unsuccessfully");
+-            } else {
+-                eprintln!("Error creating release:\n{details}");
+-            }
++            eprintln!("Error creating release: {combined}");
+             exit(1);
+         }
+     }
+@@ -400,87 +581,50 @@
+     use super::*;
+ 
+     #[test]
+-    fn release_title_uses_layout_and_bare_semver() {
++    fn release_title_uses_language_and_bare_semver() {
+         assert_eq!(
+-            build_release_name("web-search", "Rust", "rust_v0.2.1", true, None),
++            build_release_name("Rust", "rust-v0.2.1", None),
+             "[Rust] 0.2.1"
+         );
+         assert_eq!(
+-            build_release_name("web-search-js", "JavaScript", "js_v1.2.3", true, None),
++            build_release_name("JavaScript", "js_v1.2.3", None),
+             "[JavaScript] 1.2.3"
+         );
+-        assert_eq!(
+-            build_release_name("web-search", "Rust", "rust_v0.2.1", false, None),
+-            "web-search 0.2.1"
+-        );
+     }
+ 
+     #[test]
+     fn release_title_defaults_empty_language_to_rust() {
+-        assert_eq!(
+-            build_release_name("web-search", " ", "0.2.1", true, None),
+-            "[Rust] 0.2.1"
+-        );
++        assert_eq!(build_release_name(" ", "0.2.1", None), "[Rust] 0.2.1");
+     }
+ 
+     #[test]
+     fn release_label_remains_optional_suffix() {
+         assert_eq!(
+-            build_release_name("web-search", "Rust", "0.2.1", true, Some("stable")),
++            build_release_name("Rust", "0.2.1", Some("stable")),
+             "[Rust] 0.2.1 (stable)"
+         );
+         assert_eq!(
+-            build_release_name("web-search", "Rust", "0.2.1", true, Some(" ")),
++            build_release_name("Rust", "0.2.1", Some(" ")),
+             "[Rust] 0.2.1"
+         );
+-        assert_eq!(
+-            build_release_name("web-search", "Rust", "0.2.1", false, Some("stable")),
+-            "web-search 0.2.1 (stable)"
+-        );
+     }
+ 
+     #[test]
+     fn release_tag_uses_prefix_with_normalized_semver() {
+         assert_eq!(build_release_tag("rust-v", "0.2.1"), "rust-v0.2.1");
+         assert_eq!(build_release_tag("rust_v", "rust-v0.2.1"), "rust_v0.2.1");
+-        assert_eq!(build_release_tag("rust_v", "rust_v0.2.1"), "rust_v0.2.1");
+         assert_eq!(build_release_tag("v", "v0.2.1"), "v0.2.1");
+     }
+ 
+     #[test]
+-    fn crates_io_badge_links_to_bare_version_page() {
+-        let badge = build_crates_io_badge("web-search", "rust_v0.2.1");
+-
+-        assert!(badge.contains("https://crates.io/crates/web-search/0.2.1"));
+-        assert!(!badge.contains("rust_v0.2.1"));
+-    }
+-
+-    #[test]
+-    fn release_note_artifact_badges_use_static_docs_rs_version_badge() {
+-        let badges = build_crate_artifact_badges("web-search", "rust_v0.2.1");
+-
+-        assert!(badges.contains("https://img.shields.io/badge/docs.rs-0.2.1-blue"));
+-        assert!(badges.contains("https://docs.rs/web-search/0.2.1"));
+-        assert!(!badges.contains("https://docs.rs/web-search/badge.svg"));
+-        assert!(!badges.contains("rust_v0.2.1"));
+-    }
+-
+-    #[test]
+     fn release_payload_keeps_tag_prefix_out_of_release_name() {
+-        let payload = build_release_payload(
+-            "rust_v",
+-            "0.2.1",
+-            "web-search",
+-            "Rust",
+-            true,
+-            None,
+-            "release notes".to_string(),
+-        );
++        let payload =
++            build_release_payload("rust-v", "0.2.1", "Rust", None, "release notes".to_string());
+ 
+         assert_eq!(
+             payload,
+             ReleasePayload {
+-                tag_name: "rust_v0.2.1".to_string(),
++                tag_name: "rust-v0.2.1".to_string(),
+                 name: "[Rust] 0.2.1".to_string(),
+                 body: "release notes".to_string(),
+             }
+@@ -488,6 +632,27 @@
+     }
+ 
+     #[test]
++    fn release_body_includes_the_recorded_self_hosting_metric() {
++        let script = Path::new(file!());
++        let ledger = script
++            .parent()
++            .and_then(Path::parent)
++            .expect("release script must live below the repository root")
++            .join("data/meta/self-hosting-ledger.lino");
++        let note =
++            self_hosting_note(&ledger, "v0.296.0").expect("baseline self-hosting row must render");
++        let body = limit_release_body_with_suffix(
++            "release notes".to_owned(),
++            &note,
++            "https://github.com/link-assistant/formal-ai/blob/v0.296.0/CHANGELOG.md",
++        )
++        .expect("release body must retain the self-hosting note");
++
++        assert!(body.starts_with("release notes\n\n## Self-hosting"));
++        assert!(body.contains("Formal AI authored **0.00%**"));
++    }
++
++    #[test]
+     fn docker_hub_badge_links_to_exact_tag() {
+         let badge = docker_hub_badge("https://hub.docker.com/r/example/project", "1.2.3");
+ 
+@@ -504,36 +669,110 @@
+     }
+ 
+     #[test]
+-    fn duplicate_release_validation_is_idempotent() {
+-        let output = r#"gh: Validation Failed (HTTP 422)
+-{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"}]}"#;
++    fn ghcr_badge_links_to_exact_package_tag() {
++        let badge = ghcr_badge(
++            "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai",
++            "1.2.3",
++        );
++
++        assert!(badge.contains("ghcr-ghcr.io%2Flink--assistant%2Fformal--ai%3A1.2.3"));
++        assert!(badge.contains(
++            "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai?tag=1.2.3"
++        ));
++    }
+ 
+-        assert!(is_existing_release_error(output));
++    #[test]
++    fn crate_release_badges_use_static_artifact_links_not_live_status() {
++        let badges = crate_release_badges("formal-ai", "1.2.3");
++
++        assert!(
++            !badges.contains("img.shields.io/crates/v/"),
++            "release notes should not use the live crates.io status badge endpoint because it can render invalid before the registry/index is fully consistent: {badges}"
++        );
++        assert!(
++            !badges.contains("/badge.svg"),
++            "release notes should not use the live docs.rs build status badge because a failed or pending docs build leaks into historical release notes: {badges}"
++        );
++        assert!(
++            badges.contains("https://crates.io/crates/formal-ai/1.2.3"),
++            "release notes should still link to the exact crates.io artifact version: {badges}"
++        );
++        assert!(
++            badges.contains("https://docs.rs/formal-ai/1.2.3"),
++            "release notes should still link to the exact docs.rs artifact version: {badges}"
++        );
+     }
+ 
+     #[test]
+-    fn generic_validation_failure_is_not_existing_release() {
+-        let output = r#"gh: Validation Failed (HTTP 422)
+-{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}]}"#;
++    fn release_body_under_limit_is_unchanged() {
++        let body = "short release notes".to_string();
++
++        assert_eq!(
++            limit_release_body(
++                body.clone(),
++                "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"
++            ),
++            body
++        );
++    }
++
++    #[test]
++    fn oversized_release_body_is_shortened_with_full_changelog_link() {
++        let mut body = "Release heading\n\n".to_string();
++        body.push_str(&"a".repeat(GITHUB_RELEASE_BODY_MAX_BYTES + 50_000));
++
++        let shortened = limit_release_body(
++            body,
++            "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md",
++        );
++
++        assert!(
++            shortened.len() <= GITHUB_RELEASE_BODY_MAX_BYTES,
++            "release body should fit under the configured API guard"
++        );
++        assert!(shortened.starts_with("Release heading"));
++        assert!(shortened.contains("Release notes were shortened"));
++        assert!(shortened.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
++    }
++
++    #[test]
++    fn oversized_release_body_preserves_the_self_hosting_suffix() {
++        let body = "a".repeat(GITHUB_RELEASE_BODY_MAX_BYTES + 50_000);
++        let note = "## Self-hosting\n\nFormal AI authored **75.00%** of this release.";
++
++        let shortened = limit_release_body_with_suffix(
++            body,
++            note,
++            "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md",
++        )
++        .expect("the protected metric suffix must fit");
++
++        assert!(shortened.len() <= GITHUB_RELEASE_BODY_MAX_BYTES);
++        assert!(shortened.contains("Release notes were shortened"));
++        assert!(shortened.ends_with(note));
++    }
++
++    #[test]
++    fn duplicate_release_validation_is_idempotent() {
++        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"}],"documentation_url":"https://docs.github.com/rest/releases/releases#create-a-release","status":"422"}
++gh: Validation Failed (HTTP 422)"#;
+ 
+-        assert!(!is_existing_release_error(output));
++        assert!(is_duplicate_release_error(output));
+     }
+ 
+     #[test]
+-    fn mixed_validation_failure_is_not_existing_release() {
+-        let output = r#"gh: Validation Failed (HTTP 422)
+-{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"},{"resource":"Release","code":"custom","field":"body"}]}"#;
++    fn generic_validation_failure_is_not_duplicate_release() {
++        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}],"documentation_url":"https://docs.github.com/rest/releases/releases#create-a-release","status":"422"}
++gh: Validation Failed (HTTP 422)"#;
+ 
+-        assert!(!is_existing_release_error(output));
++        assert!(!is_duplicate_release_error(output));
+     }
+ 
+     #[test]
+-    fn oversized_release_notes_are_capped_with_full_changelog_link() {
+-        let release_notes = "a".repeat(GITHUB_RELEASE_BODY_MAX_CHARS + 100);
+-        let capped = cap_release_notes(release_notes, "owner/repo", "v1.2.3", "./CHANGELOG.md");
++    fn validation_failure_that_mentions_release_notes_is_not_duplicate_release() {
++        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}]}
++release notes already exists in generated changelog text"#;
+ 
+-        assert!(capped.chars().count() <= GITHUB_RELEASE_BODY_MAX_CHARS);
+-        assert!(capped.contains("Release notes truncated"));
+-        assert!(capped.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
++        assert!(!is_duplicate_release_error(output));
+     }
+ }

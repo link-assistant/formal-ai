@@ -2,24 +2,24 @@ self_ast_census
   target src/orchestration/dispatch.rs
   language rust
   fidelity signature
-  byte_len 14322
-  line_count 416
-  content_id source_module_ba56ed42d2ed0935
+  byte_len 16611
+  line_count 454
+  content_id source_module_a5109a58857a8087
   symbol_count 16
   symbols
-    enum DispatchMode 20 23
-    struct DispatchConfig 26 43
-    function new 47 68
-    enum DispatchError 72 82
-    function fmt 85 97
-    struct ComparisonEntry 103 110
-    struct ComparisonLedger 113 118
-    function select_winner 122 135
-    struct DispatchReport 139 146
-    function dispatch_agents 148 272
-    function prospective_canonical 274 310
-    function prepare_output_dir 312 329
-    function candidate_run_config 331 352
-    function compose 354 373
-    function compose_decomposed 375 403
-    function safe_name 405 416
+    enum DispatchMode 22 30
+    struct DispatchConfig 33 53
+    function new 57 79
+    enum DispatchError 83 94
+    function fmt 97 110
+    struct ComparisonEntry 116 123
+    struct ComparisonLedger 126 131
+    function select_winner 135 148
+    struct DispatchReport 152 164
+    function dispatch_agents 166 305
+    function prospective_canonical 307 343
+    function prepare_output_dir 345 362
+    function candidate_run_config 364 387
+    function compose 389 411
+    function compose_decomposed 413 441
+    function safe_name 443 454

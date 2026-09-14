@@ -22,8 +22,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::external_benchmarks::{
-    self, ledger::Ledger, ledger::ResultEntry, manifest, ratchet, Availability, Grading,
-    SuiteManifest, SuiteSource, DEFAULT_SLICE, LEDGER_PATH, PERMISSIVE_LICENSES,
+    self, Availability, DEFAULT_SLICE, Grading, LEDGER_PATH, PERMISSIVE_LICENSES, SuiteManifest,
+    SuiteSource, ledger::Ledger, ledger::ResultEntry, manifest, ratchet,
 };
 
 fn repo_root() -> PathBuf {
@@ -424,9 +424,10 @@ fn an_unrunnable_suite_is_recorded_as_benchmark_unavailable() {
         .expect("an unavailable suite is reported, not an error");
     assert_eq!(run.total, 0);
     assert_eq!(run.passed, 0);
-    assert!(run
-        .summary()
-        .starts_with("suite=editeval benchmark_unavailable:"));
+    assert!(
+        run.summary()
+            .starts_with("suite=editeval benchmark_unavailable:")
+    );
 
     // And the ledger carries the explicit row.
     let ledger = committed_ledger();
@@ -476,13 +477,15 @@ fn a_runtime_payload_failure_is_reported_as_benchmark_unavailable() {
     assert_eq!(run.total, 0);
     assert_eq!(run.passed, 0);
     assert_eq!(run.failed, 0);
-    assert!(run
-        .unavailable
-        .as_deref()
-        .is_some_and(|reason| reason.contains("has no fetchable payload")));
-    assert!(run
-        .summary()
-        .starts_with("suite=runtime_payload_failure benchmark_unavailable:"));
+    assert!(
+        run.unavailable
+            .as_deref()
+            .is_some_and(|reason| reason.contains("has no fetchable payload"))
+    );
+    assert!(
+        run.summary()
+            .starts_with("suite=runtime_payload_failure benchmark_unavailable:")
+    );
 }
 
 /// SWE-bench is passed only when the official harness applies the candidate
@@ -670,24 +673,28 @@ fn humaneval_slice_of_twenty_real_upstream_cases_runs_end_to_end() {
 #[test]
 fn upstream_records_are_parsed_into_gradable_cases() {
     let humaneval: &SuiteManifest = manifest::suite("humaneval").expect("humaneval manifest");
-    let records = vec![serde_json::json!({
-        "task_id": "HumanEval/0",
-        "prompt": "def add(a, b):\n    \"\"\"Add two numbers.\"\"\"\n",
-        "entry_point": "add",
-        "test": "def check(candidate):\n    assert candidate(2, 2) == 4\n",
-    })
-    .to_string()];
+    let records = vec![
+        serde_json::json!({
+            "task_id": "HumanEval/0",
+            "prompt": "def add(a, b):\n    \"\"\"Add two numbers.\"\"\"\n",
+            "entry_point": "add",
+            "test": "def check(candidate):\n    assert candidate(2, 2) == 4\n",
+        })
+        .to_string(),
+    ];
     let cases = external_benchmarks::cases::parse_cases(humaneval, &records, 1).expect("cases");
     assert_eq!(cases.len(), 1);
     assert_eq!(cases[0].id, "HumanEval/0");
     assert!(cases[0].prompt.contains("def add(a, b):"));
 
     let gsm8k = manifest::suite("gsm8k").expect("gsm8k manifest");
-    let records = vec![serde_json::json!({
-        "question": "Ann has 3 apples and buys 4 more. How many does she have?",
-        "answer": "3 + 4 = 7\n#### 7",
-    })
-    .to_string()];
+    let records = vec![
+        serde_json::json!({
+            "question": "Ann has 3 apples and buys 4 more. How many does she have?",
+            "answer": "3 + 4 = 7\n#### 7",
+        })
+        .to_string(),
+    ];
     let cases = external_benchmarks::cases::parse_cases(gsm8k, &records, 1).expect("cases");
     let workspace = repo_root().join("target/formal-ai-benchmarks/run/test");
     assert!(
@@ -712,13 +719,15 @@ fn upstream_records_are_parsed_into_gradable_cases() {
     );
 
     let swebench = manifest::suite("swebench_lite").expect("SWE-bench manifest");
-    let records = vec![serde_json::json!({
-        "instance_id": "astropy__astropy-12907",
-        "problem_statement": "Fix the upstream regression.",
-        "repo": "astropy/astropy",
-        "patch": "diff --git a/gold.py b/gold.py\n+gold-only solution",
-    })
-    .to_string()];
+    let records = vec![
+        serde_json::json!({
+            "instance_id": "astropy__astropy-12907",
+            "problem_statement": "Fix the upstream regression.",
+            "repo": "astropy/astropy",
+            "patch": "diff --git a/gold.py b/gold.py\n+gold-only solution",
+        })
+        .to_string(),
+    ];
     let cases = external_benchmarks::cases::parse_cases(swebench, &records, 1).expect("cases");
     let outcomes = external_benchmarks::grade::grade_swebench(
         &cases,

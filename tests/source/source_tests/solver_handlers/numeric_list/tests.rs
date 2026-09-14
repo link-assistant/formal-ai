@@ -59,9 +59,11 @@ fn quoted_string_lists_are_transformed() {
 
     assert_eq!(sorted.value_type, "string");
     assert_eq!(sorted.result, vec!["apple", "banana", "pear"]);
-    assert!(sorted
-        .code
-        .contains(r#"const numbers = ["pear", "apple", "banana"];"#));
+    assert!(
+        sorted
+            .code
+            .contains(r#"const numbers = ["pear", "apple", "banana"];"#)
+    );
     assert!(sorted.code.contains("[...numbers].sort()"));
     assert!(sorted.syntax_tree.contains("value_type string"));
     assert!(sorted.cst_tree.contains("cst_tree"));
@@ -77,16 +79,30 @@ fn quoted_string_lists_render_valid_cst_for_every_language() {
     );
 
     for language in crate::coding::PROGRAM_LANGUAGES {
+        // Composing a list program out of catalogued idioms is a question about
+        // the language, not about the implementation target, so a framework
+        // composes as the language it is written in — exactly what the handler
+        // does with the target it resolved (issue #723).
+        let language = language.base_language();
         let program = codegen::build(language, &items, operation, false);
         let code = program
             .render()
             .unwrap_or_else(|| panic!("{} must compose from coding idioms", language.slug));
-        let cst = crate::coding::validated_program_cst(language.slug, &code).unwrap_or_else(|| {
-            panic!(
-                "{} string-list source must parse as a valid CST:\n{}",
-                language.slug, code
-            )
-        });
+        // Composition is required of every catalog language; CST validation is
+        // only possible for the ones meta-language ships a grammar for. Scala
+        // and Kotlin joined the catalog for the hive-mind#2158 matrix (issue
+        // #921) and have no shipped grammar, so `validated_program_cst` returns
+        // `None` for them by design rather than by failure — the uncovered set
+        // is pinned in `coding::cst::tests`.
+        let Some(cst) = crate::coding::validated_program_cst(language.slug, &code) else {
+            assert!(
+                crate::coding::cst::grammar_metadata(language.slug).is_none(),
+                "{} declares a CST grammar, so its string-list source must parse:\n{}",
+                language.slug,
+                code
+            );
+            continue;
+        };
         assert!(!cst.has_error, "{cst:#?}");
     }
 }

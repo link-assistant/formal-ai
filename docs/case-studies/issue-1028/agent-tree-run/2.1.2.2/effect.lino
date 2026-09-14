@@ -1,0 +1,8 @@
+node_path=2.1.2.2
+node_depth=4
+node_kind=composite
+left_child=2.1.2.2.1
+right_child=2.1.2.2.2
+left_result=Line 70: L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+right_result=Line 71: L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+result=Line 70: L23	Verify the ladder can execute the 32 smallest leaves before moving to larger composite nodes.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]; Line 71: L24	Verify the ladder order for all mode is 32, 16, 8, 4, 2, then the root.	experiments/issue_1028_agent_cli_ladder/run.sh	levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]; together these exact observations compose the result.

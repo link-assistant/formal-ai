@@ -4,7 +4,7 @@
 //! calculator-shaped expressions to `link-calculator` first, and preserves the
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
-use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::arithmetic::{ArithmeticError, evaluate_fallback_formatted};
 use crate::calculation_time::elapsed_time_expression;
 use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
@@ -426,10 +426,10 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
     if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
         return Ok(evaluation);
     }
-    if expression.contains('=') {
-        if let Ok(evaluation) = evaluate_linear_equation(expression) {
-            return Ok(evaluation);
-        }
+    if expression.contains('=')
+        && let Ok(evaluation) = evaluate_linear_equation(expression)
+    {
+        return Ok(evaluation);
     }
     let formatted = evaluate_fallback_formatted(expression)?;
     Ok(CalculationEvaluation {
@@ -634,15 +634,14 @@ fn strip_calculation_wrappers_with_prefixes(
                 break;
             }
         }
-        if !changed {
-            if let Some((stripped, interpretation)) =
+        if !changed
+            && let Some((stripped, interpretation)) =
                 strip_fuzzy_prefix_case_insensitive(&working, &prefixes)
-            {
-                working = stripped.to_owned();
-                explicit = true;
-                interpretations.push(interpretation);
-                changed = true;
-            }
+        {
+            working = stripped.to_owned();
+            explicit = true;
+            interpretations.push(interpretation);
+            changed = true;
         }
         if !changed {
             break;
@@ -675,6 +674,50 @@ fn has_prefix_boundary(value: &str, start: usize) -> bool {
                 .is_some_and(|character| !character.is_alphanumeric()))
 }
 
+/// Where the sentence that starts at `from` ends, as an index into `prompt`.
+///
+/// A sentence ends at whichever comes first, its terminator or a blank line,
+/// and the terminator is kept because [`trim_prompt_punctuation`] strips it
+/// next. A period only ends a sentence when whitespace or the end of the text
+/// follows it, so the point in "12.5" is a decimal point and not a full stop --
+/// the same period rule the rest of the codebase reads sentences by.
+///
+/// Reading the blank line first, without also looking for a terminator before
+/// it, is the same defect one paragraph further on: a cue in a paragraph that
+/// is followed by another paragraph claims every sentence up to the break, so
+/// framing written as two blocks instead of one is read as one expression
+/// again.
+fn sentence_end_from(prompt: &str, from: usize) -> usize {
+    const TERMINATORS: &[char] = &['?', '!', '。', '！', '？', '।', '॥'];
+    let tail = &prompt[from..];
+    let blank_line = tail.find("\n\n").map(|offset| from + offset);
+    let mut characters = tail.char_indices().peekable();
+    while let Some((offset, character)) = characters.next() {
+        let ends_here = TERMINATORS.contains(&character)
+            || (character == '.'
+                && characters
+                    .peek()
+                    .is_none_or(|(_, next)| next.is_whitespace()));
+        if ends_here {
+            let terminator_end = from + offset + character.len_utf8();
+            return blank_line.map_or(terminator_end, |blank| blank.min(terminator_end));
+        }
+    }
+    blank_line.unwrap_or(prompt.len())
+}
+
+/// The slices of `prompt` that a calculation cue introduces, each running from
+/// its cue to the end of the sentence the cue is in.
+///
+/// The slice used to run to the end of the prompt, which made every cue verb
+/// the owner of everything written after it. "Solve" is also ordinary English
+/// ("Solve only what this worker owns in the scratch checkout."), so a prompt
+/// that asked one thing and then addressed its solver had the whole address
+/// read as one expression; it carried digits and an `=` from an unrelated
+/// instruction, so it looked evaluable, failed to evaluate, and the arithmetic
+/// reading answered in place of the reading the prompt actually asked for
+/// (issue #1066). A request is stated in a sentence, so that is what its cue
+/// claims.
 fn embedded_calculation_request_slices<'a>(
     prompt: &'a str,
     cue_prefixes: &[String],
@@ -698,7 +741,7 @@ fn embedded_calculation_request_slices<'a>(
     matches.dedup_by_key(|(start, _)| *start);
     matches
         .into_iter()
-        .filter_map(|(start, _)| prompt.get(start..))
+        .filter_map(|(start, _)| prompt.get(start..sentence_end_from(prompt, start)))
         .collect()
 }
 
@@ -887,17 +930,17 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
     // Fibonacci number and multiply it by 8% of 500. Show me the code ...") into
     // a calculator expression and offer it as an additional candidate.
-    if let Some(normalized) = normalize_word_problem_detailed(&stripped) {
-        if has_calculation_signal(&normalized.expression, explicit) {
-            push_calculation_candidate(
-                &mut candidates,
-                normalized.expression,
-                explicit,
-                interpretations,
-                normalized.reasoning_steps,
-                normalized.result_label,
-            );
-        }
+    if let Some(normalized) = normalize_word_problem_detailed(&stripped)
+        && has_calculation_signal(&normalized.expression, explicit)
+    {
+        push_calculation_candidate(
+            &mut candidates,
+            normalized.expression,
+            explicit,
+            interpretations,
+            normalized.reasoning_steps,
+            normalized.result_label,
+        );
     }
     if trimmed
         != candidates

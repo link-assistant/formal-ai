@@ -9,6 +9,7 @@ const WITH_FORMAL_AI_TEST: &str = include_str!("integration/with_formal_ai.rs");
 const SYNC_SEED: &str = include_str!("../scripts/sync-seed.sh");
 const RUNNER_DISK_CLEANUP: &str = include_str!("../scripts/free-runner-disk.sh");
 const RELEASE_WORKFLOW: &str = include_str!("../.github/workflows/release.yml");
+const MACOS_CORE_WORKFLOW: &str = include_str!("../.github/workflows/macos-core-tests.yml");
 const REQUIREMENTS: &str = include_str!("../REQUIREMENTS.md");
 const ISSUE_CASE_STUDY: &str = include_str!("../docs/case-studies/issue-961/README.md");
 const PR_CASE_STUDY: &str = include_str!("../docs/case-studies/pull-request-987/README.md");
@@ -17,6 +18,37 @@ fn seed_array_guard_precedes_expansion() -> bool {
     let guard = SYNC_SEED.find("if [[ ${#dests[@]} -gt 0 ]]");
     let expansion = SYNC_SEED.find("for dst in \"${dests[@]}\"");
     matches!((guard, expansion), (Some(guard), Some(expansion)) if guard < expansion)
+}
+
+/// The denominator the slice step actually passes to `cargo nextest
+/// --partition`. Issue #961 froze it at twelve; issue #1017 raised it to
+/// sixteen because the round-robin partitioner balances by test index and never
+/// by duration. Reading it from the step instead of repeating a literal keeps
+/// #961's contract -- every supported shard runs -- true at any slice count,
+/// and still catches the failure it was written for: a matrix that disagrees
+/// with the denominator silently drops those tests while CI stays green.
+/// Issue #1059 removed the slice denominator: macOS runs the modules named in
+/// `data/meta/macos-platform-tests.lino` on one runner rather than a shard of
+/// the whole suite. The failure this guarded -- a selection that silently drops
+/// tests while CI stays green -- now takes the shape of an empty module list.
+fn macos_platform_modules() -> usize {
+    std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/data/meta/macos-platform-tests.lino"
+    ))
+    .expect("read the macOS platform test list")
+    .lines()
+    .filter(|line| line.trim().starts_with("module "))
+    .count()
+}
+
+fn supported_macos_test_shards_are_complete() -> bool {
+    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
+        && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
+        && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 1
+        && macos_platform_modules() >= 5
+        && MACOS_CORE_WORKFLOW.contains("platform.filter")
+        && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
 
 fn macos_portability_failures() -> Vec<&'static str> {
@@ -40,8 +72,8 @@ fn macos_portability_failures() -> Vec<&'static str> {
     if !seed_array_guard_precedes_expansion() {
         failures.push("the empty destination array must be guarded before expansion");
     }
-    if !RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]") {
-        failures.push("the full test matrix must include a supported macOS runner");
+    if !supported_macos_test_shards_are_complete() {
+        failures.push("the test matrix must include every supported macOS core slice");
     }
 
     failures
@@ -82,11 +114,41 @@ fn seed_sync_guards_an_empty_destination_array() {
 
 #[test]
 fn full_test_matrix_runs_on_a_supported_macos_image() {
-    assert!(RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]"));
-    assert!(RELEASE_WORKFLOW
-        .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
-    assert!(RELEASE_WORKFLOW
-        .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"));
+    assert!(supported_macos_test_shards_are_complete());
+    // Issue #961 needed 25 minutes for the archive build and froze that literal;
+    // issue #1017 raised it to 30 so the 1200s step budget expires before the
+    // job cap rather than after it. The floor is the contract -- the archive
+    // build must still be allowed at least the 25 minutes it was measured to
+    // need -- so assert the floor instead of an exact value that a later
+    // headroom increase would break again.
+    let longest_cap = MACOS_CORE_WORKFLOW
+        .split("timeout-minutes: ")
+        .skip(1)
+        .filter_map(|rest| rest.split('\n').next()?.trim().parse::<u64>().ok())
+        .max()
+        .expect("the macOS core workflow must declare job timeouts");
+    assert!(
+        longest_cap >= 25,
+        "the archive build needs at least 25 minutes (issue #961); found {longest_cap}"
+    );
+    // Issue #1055: a floor, for the reason the comment above gives -- pinning
+    // the exact number is what broke this when the budget grew from 1200s to
+    // 1400s to absorb a cold rebuild after a profile change.
+    let archive_budget = MACOS_CORE_WORKFLOW
+        .split("TEST_BUDGET_SECONDS: ")
+        .skip(1)
+        .filter_map(|rest| rest.split('\n').next()?.trim().parse::<u64>().ok())
+        .max()
+        .expect("the macOS core workflow must budget its archive build");
+    assert!(
+        archive_budget >= 1200,
+        "the archive build needs at least 1200s (issue #961); found {archive_budget}"
+    );
+    assert!(MACOS_CORE_WORKFLOW.contains("taiki-e/install-action@nextest"));
+    assert_eq!(
+        MACOS_CORE_WORKFLOW.matches("cargo nextest archive").count(),
+        1
+    );
 }
 
 #[test]
@@ -123,7 +185,9 @@ fn runner_disk_cleanup_accepts_a_bsd_shaped_df() {
     ] {
         let path = bin_dir.join(name);
         std::fs::write(&path, body).expect("fake command");
-        let mut permissions = std::fs::metadata(&path).expect("fake command metadata").permissions();
+        let mut permissions = std::fs::metadata(&path)
+            .expect("fake command metadata")
+            .permissions();
         permissions.set_mode(0o755);
         std::fs::set_permissions(&path, permissions).expect("fake command permissions");
     }
@@ -175,14 +239,17 @@ fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
     const GENERATED_CHANGELOG: &str = include_str!(
         "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
     );
-    const RELEASE_CHANGELOG: &str = include_str!("../CHANGELOG.md");
+    // Towncrier removes the canonical fragment after publishing it. Keep the
+    // authorship check valid on release commits by verifying the generated
+    // fragment against its durable canonical destination instead.
+    const CANONICAL_CHANGELOG: &str = include_str!("../CHANGELOG.md");
     const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
         "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
     );
     const CANONICAL_DECOMPOSITION: &[u8] =
         include_bytes!("../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
 
-    assert!(RELEASE_CHANGELOG.contains(GENERATED_CHANGELOG));
+    assert!(CANONICAL_CHANGELOG.contains(GENERATED_CHANGELOG.trim()));
     assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
     assert_eq!(
         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,

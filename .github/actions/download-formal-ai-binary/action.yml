@@ -1,0 +1,22 @@
+name: Download the formal-ai release binary
+description: >-
+  Fetch the one release binary this pipeline builds, instead of compiling it
+  again. Issue #1051 measured four separate compiles of the same binary in one
+  pull request -- the Docker check alone spent 33 minutes on 510 crates with no
+  sccache, because the runner's cache cannot reach inside BuildKit.
+runs:
+  using: composite
+  steps:
+    - uses: actions/download-artifact@v8
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: formal-ai-release-binary
+        path: target/release
+    - shell: bash
+      # Every binary the build produced, not just `formal-ai`:
+      # `src/bin/with-formal-ai.rs` is auto-discovered by cargo and spawned by
+      # `tests/integration/with_formal_ai.rs` through its own `CARGO_BIN_EXE_`.
+      run: |
+        find target/release -maxdepth 1 -type f ! -name "*.d" \
+          -exec chmod +x {} ";"

@@ -19,7 +19,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-cd "$ROOT"
+cd "$ROOT" || exit 1
 
 RUN="experiments/agent_cli_e2e/run_agent_cli.sh"
 COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"

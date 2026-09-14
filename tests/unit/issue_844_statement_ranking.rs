@@ -1,7 +1,7 @@
 //! Authority-aware ranking regressions for issue #844.
 
 use formal_ai::relative_meta_logic::SourceTier;
-use formal_ai::summarization::{deduplicate, rank, SourcedStatement};
+use formal_ai::summarization::{SourcedStatement, deduplicate, rank};
 
 /// The same fact, said by `count` distinct independent sources.
 fn many_sources(count: usize, text: &str) -> Vec<SourcedStatement> {

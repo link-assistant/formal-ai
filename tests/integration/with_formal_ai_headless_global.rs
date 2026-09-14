@@ -58,7 +58,9 @@ fn global_gemini_writes_the_settings_file_that_selects_an_auth_type() {
     // *selected* only when a settings file says so.
     let profile = std::fs::read_to_string(home.join(".profile")).expect("profile");
     assert!(profile.contains("export GEMINI_API_KEY="));
-    assert!(profile.contains("export GOOGLE_GEMINI_BASE_URL=\"http://127.0.0.1:18080/api/gemini\""));
+    assert!(
+        profile.contains("export GOOGLE_GEMINI_BASE_URL=\"http://127.0.0.1:18080/api/gemini\"")
+    );
 
     let settings =
         std::fs::read_to_string(home.join(".gemini/settings.json")).expect("gemini settings");

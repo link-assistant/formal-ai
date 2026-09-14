@@ -1,0 +1,45 @@
+corpus: javascript -> /tmp/gh-issue-solver-1786703126334/target/box-language-corpus/javascript
+== javascript project generated from the hi prompt, image konard/box-js:2.4.0
+== program (main.js):
+console.log("Hello, world!");
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the mkdir hello-formal-ai step
+mkdir -p hello-formal-ai
+# Run the cp main.js step
+cp main.js hello-formal-ai/main.js
+# Enter the project directory
+cd hello-formal-ai
+# Run the npm init step
+npm init -y
+# Install dependencies
+npm install --no-audit --no-fund
+# Run the node main.js step
+node --check main.js
+# Run the node main.js step
+node main.js
+== running the init script
+   | Wrote to /tmp/box-language-project/hello-formal-ai/package.json:
+   | 
+   | {
+   |   "name": "hello-formal-ai",
+   |   "version": "1.0.0",
+   |   "description": "",
+   |   "main": "main.js",
+   |   "scripts": {
+   |     "test": "echo \"Error: no test specified\" && exit 1"
+   |   },
+   |   "keywords": [],
+   |   "author": "",
+   |   "license": "ISC",
+   |   "type": "commonjs"
+   | }
+   | 
+   | 
+   | 
+   | up to date in 973ms
+   | Hello, world!
+ok: javascript project built and printed Hello, world! inside konard/box-js:2.4.0
+ok: box language projects verified for: javascript

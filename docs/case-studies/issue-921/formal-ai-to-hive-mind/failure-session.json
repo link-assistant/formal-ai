@@ -1,0 +1,58 @@
+{
+  "schema": "formal-ai-agent-session-v1",
+  "cli": "agent",
+  "target": "vendor",
+  "task": "Injected hive-mind-shaped failure",
+  "model": "formal-ai",
+  "base_url": "http://127.0.0.1:8080",
+  "workspace": ".",
+  "program": "sh",
+  "args": [
+    "-c",
+    "exit 23 # Injected hive-mind-shaped failure"
+  ],
+  "status": "failed",
+  "exit_code": 23,
+  "wall_time_ms": 7,
+  "stdout": "",
+  "stderr": "",
+  "changes": [],
+  "verification": [],
+  "events": [
+    {
+      "sequence": 0,
+      "kind": "permission_granted",
+      "detail": ".",
+      "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "594cfd75a17289096b5ce1617774bc5f7d756e69826aa032dc51c109f180db59"
+    },
+    {
+      "sequence": 1,
+      "kind": "custom_adapter_granted",
+      "detail": "sh",
+      "previous_sha256": "594cfd75a17289096b5ce1617774bc5f7d756e69826aa032dc51c109f180db59",
+      "sha256": "dfe73e9332899f4c82bc6ca7d073e9156f4c91df6cac409803be9f9f3f672e28"
+    },
+    {
+      "sequence": 2,
+      "kind": "adapter_selected",
+      "detail": "agent",
+      "previous_sha256": "dfe73e9332899f4c82bc6ca7d073e9156f4c91df6cac409803be9f9f3f672e28",
+      "sha256": "d42b39919ffd81c7a8c19ee3bb18dd26ad45392a9b56bc8685c97be279b57dab"
+    },
+    {
+      "sequence": 3,
+      "kind": "process_started",
+      "detail": "sh",
+      "previous_sha256": "d42b39919ffd81c7a8c19ee3bb18dd26ad45392a9b56bc8685c97be279b57dab",
+      "sha256": "821fff6a519e6bd575eaa99df94d623eff8cbb2ce197ea7eb3a3d48ac2b7ae68"
+    },
+    {
+      "sequence": 4,
+      "kind": "process_failed",
+      "detail": "agent",
+      "previous_sha256": "821fff6a519e6bd575eaa99df94d623eff8cbb2ce197ea7eb3a3d48ac2b7ae68",
+      "sha256": "1488c40e8807e293fdf59f14817c970b460ee958e1c3cbed55e63e79369200cd"
+    }
+  ]
+}

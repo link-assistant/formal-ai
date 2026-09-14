@@ -308,11 +308,10 @@ fn parse_currency_amount(prompt: &str) -> Option<f64> {
         seed::lexicon().words_for_role_in_languages(seed::ROLE_CURRENCY_USD_REFERENCE, &["en"])
     {
         let marker = format!(" {word}");
-        if let Some(index) = lower.find(&marker) {
-            if let Some(amount) = parse_number_left(&lower, index) {
+        if let Some(index) = lower.find(&marker)
+            && let Some(amount) = parse_number_left(&lower, index) {
                 return Some(amount);
             }
-        }
     }
     None
 }

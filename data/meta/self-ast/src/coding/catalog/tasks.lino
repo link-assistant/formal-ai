@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/catalog/tasks.rs
   language rust
   fidelity signature
-  byte_len 4094
-  line_count 93
-  content_id source_module_b2816ff1b10e9514
+  byte_len 5077
+  line_count 118
+  content_id source_module_94f179b4ad8b9ab5
   symbol_count 1
   symbols
-    const PROGRAM_TASKS 10 15
+    const PROGRAM_TASKS 10 16

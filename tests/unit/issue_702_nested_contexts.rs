@@ -5,9 +5,10 @@
 //! contract: arbitrary depth, explicit inheritance, nearest-first lookup, and
 //! an explicit boundary before any external search.
 
+use formal_ai::LinkPattern;
 use formal_ai::agentic_coding::learning_report::context_hierarchy_learning;
 use formal_ai::agentic_coding::{
-    run_agentic_task, CONTEXT_HIERARCHY_LEARNING_PATH, CONTEXT_HIERARCHY_LEARNING_TASK,
+    CONTEXT_HIERARCHY_LEARNING_PATH, CONTEXT_HIERARCHY_LEARNING_TASK, run_agentic_task,
 };
 use formal_ai::solver::{ConversationRole, ConversationTurn, UniversalSolver};
 use formal_ai::world_model::Context;
@@ -16,7 +17,6 @@ use formal_ai::world_model_context::{
     ContextHierarchy, ExternalLookup, InheritancePolicy, ReferenceResolutionKind,
 };
 use formal_ai::world_model_dialog::DialogueWorldModel;
-use formal_ai::LinkPattern;
 use lino_objects_codec::format::parse_indented;
 
 const REAL_AGENT_CLI_TASK: &str = "Use Formal AI auto-learning to inspect the persisted issue 702 nested-context failures as an associative links network, rank the hierarchy observations and amendments, keep promotion human-review gated, and write context-hierarchy-learning-report.lino.";

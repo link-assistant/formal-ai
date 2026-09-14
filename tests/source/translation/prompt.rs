@@ -20,8 +20,8 @@ use std::sync::OnceLock;
 
 use crate::coding::{contains_cjk, contains_devanagari};
 use crate::seed::{
-    self, Slot, WordForm, ROLE_TRANSLATION_INTO_MARKER, ROLE_TRANSLATION_OBJECT_MARKER,
-    ROLE_TRANSLATION_TARGET_DIRECTION, ROLE_TRANSLATION_UNQUOTED_FRAME,
+    self, ROLE_TRANSLATION_INTO_MARKER, ROLE_TRANSLATION_OBJECT_MARKER,
+    ROLE_TRANSLATION_TARGET_DIRECTION, ROLE_TRANSLATION_UNQUOTED_FRAME, Slot, WordForm,
 };
 
 /// Extract the surface phrase from an unquoted translation prompt.

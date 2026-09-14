@@ -246,9 +246,10 @@ fn assert_all_cases_are_policy_compliant(suite: &Suite) {
             case.download_mode,
             "datasets-server rows endpoint, length=1"
         );
-        assert!(case
-            .provenance_url
-            .starts_with("https://datasets-server.huggingface.co/rows?"));
+        assert!(
+            case.provenance_url
+                .starts_with("https://datasets-server.huggingface.co/rows?")
+        );
         assert!(case.provenance_url.contains("length=1"));
         assert!(!case.provenance_url.contains(".parquet"));
         assert!(!case.provenance_url.contains("/resolve/"));

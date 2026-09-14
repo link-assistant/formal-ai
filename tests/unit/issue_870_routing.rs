@@ -1,6 +1,6 @@
 //! Cross-surface and self-authorship coverage for issue #870.
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, FormalAiEngine};
 
 fn planned_command(prompt: &str) -> String {

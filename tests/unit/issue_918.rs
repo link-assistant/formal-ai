@@ -4,27 +4,27 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-fn rust_sources_below(directory: &Path) -> BTreeSet<String> {
-    fn visit(root: &Path, directory: &Path, sources: &mut BTreeSet<String>) {
-        for entry in fs::read_dir(directory).expect("handler directory") {
-            let path = entry.expect("handler entry").path();
-            if path.is_dir() {
-                visit(root, &path, sources);
-            } else if path.extension().is_some_and(|extension| extension == "rs") {
-                sources.insert(
-                    path.strip_prefix(root)
-                        .expect("handler source below repository root")
-                        .to_string_lossy()
-                        .replace('\\', "/"),
-                );
-            }
-        }
-    }
+/// The CI gate itself, compiled into the suite.
+///
+/// The census below and `rust-script scripts/check-minimal-core-boundary.rs`
+/// must agree on which files are handler debt. Walking the directory twice made
+/// that a coincidence; reading it through the gate's own `source_files` makes it
+/// a fact -- issue #991 added an exclusion for generated `mod` lists, and one
+/// edit taught both.
+#[path = "../../scripts/check-minimal-core-boundary.rs"]
+mod check_minimal_core_boundary;
 
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let mut sources = BTreeSet::new();
-    visit(root, directory, &mut sources);
-    sources
+/// Every handler source the boundary gate counts, with its line count, relative
+/// to the repository root.
+fn handler_source_lines() -> BTreeMap<String, usize> {
+    check_minimal_core_boundary::source_files(Path::new(env!("CARGO_MANIFEST_DIR")))
+        .expect("the boundary gate should enumerate the handler sources")
+}
+
+/// Every handler source the boundary gate counts, relative to the repository
+/// root.
+fn handler_sources() -> BTreeSet<String> {
+    handler_source_lines().into_keys().collect()
 }
 
 #[derive(Default)]
@@ -198,7 +198,7 @@ fn committed_gaps(root: &Path) -> BTreeMap<(String, String), String> {
 #[test]
 fn minimal_core_ledger_covers_every_recursive_handler_source() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let actual = rust_sources_below(&root.join("src/solver_handlers"));
+    let actual = handler_sources();
     let ledger = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
         .expect("issue #918 must provide the source-file core-boundary ledger");
     let entries = ledger_entries(&ledger);
@@ -209,13 +209,15 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
         .collect::<BTreeSet<_>>();
 
     assert_eq!(active, actual);
-    assert_eq!(actual.len(), 46);
+    // 46 until issue #1085 moved `github_repository_traffic.rs` into
+    // `data/seed/handler-rules.lino`; the ledger and the tree dropped together.
+    assert_eq!(actual.len(), 45);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        46
+        45
     );
     assert_eq!(
         entries
@@ -243,7 +245,18 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     for disposition in entries.iter().map(|entry| entry.disposition.as_str()) {
         assert!(matches!(disposition, "migrate" | "promote" | "delete"));
     }
-    assert!(ledger.contains("outside_core_lines_max 19720"));
+    // The ledger's ceiling is the measurement itself: the gate fails when it sits
+    // above *or* below the real count, so migration debt can only ratchet down.
+    // Restating the number here would freeze a value that every handler edit moves
+    // into a second shared file -- the conflict shape issue #991 removes -- so the
+    // expected total is summed from the same sources the gate measures.
+    let lines = handler_source_lines();
+    let outside_core_lines: usize = entries
+        .iter()
+        .filter(|entry| entry.disposition == "migrate")
+        .map(|entry| lines[&entry.path])
+        .sum();
+    assert!(ledger.contains(&format!("outside_core_lines_max {outside_core_lines}")));
 }
 
 #[test]
@@ -321,7 +334,170 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
             }
         }
     }
-    assert_eq!(coding_records, 37, "coding-path regression floor");
+    // Scala and Kotlin joined the coding catalog for the hive-mind#2158
+    // language matrix (issue #921), and PHP followed them under issue #1021, so
+    // the complete-source floor rises with each: 27 catalog records + 15 task
+    // records. The fifteenth task is `program_task_copy_stdin_to_stdout`, the
+    // task issue #863 reported (see `tests/unit/issue_1021_behaviour_range.rs`);
+    // the twenty-seventh catalog record is `program_language_laravel`, the
+    // framework issue #723 asked for, which is a catalog row of its own rather
+    // than an alias surface of PHP. Either way a new target is a new
+    // complete-source record, never a new gap. Three later additions are not
+    // language targets at all: `workspace_inspection_examine`,
+    // `workspace_inspection_verify` and `workspace_inspection_identify` are the
+    // vocabulary that lets a request to *look at* the repository route to a
+    // workspace search instead of an open-web one (issue #1066). They land in
+    // the same complete source as the coding tasks and carry the same five
+    // fields, so they raise the floor rather than the gap count -- which is the
+    // point of the floor: new agent capability arrives as described data.
+    // Issue #1069 first added 29 complete workspace-search records, moving the
+    // floor from 45 to 74. Its verified ladder then supplied 18 leaf-first
+    // decomposition and proof facts, moving the floor from 74 to 92. Its
+    // change-shaped delegation work added the three member-list kinds --
+    // `coding_member_list_sequence`, `coding_member_list_set` and
+    // `coding_member_list_group` -- that let a request name the collection it
+    // edits in words the file never has to repeat, moving the floor from 92 to
+    // 95. Issue #1131 added `coding_member_add`, the verb that says a member
+    // list should grow, moving the floor from 95 to 96: the nouns alone had
+    // been routing whole-file rewrites into member insertion. Issue #1133
+    // added five more records from the three Hive Mind runs that produced no
+    // solution -- `git_branch_cue` and `git_commit_request` (where a work
+    // item's result lands, and the request to land it), `ci_workflow_request`
+    // (the workflow an issue asks for beside the program) and the two
+    // `file_edit_position_*` cues of an additive edit -- moving the floor
+    // from 96 to 101: each was a hardcoded English sentence or a missing route
+    // before it was data. None is allowed to become a metadata gap.
+    assert_eq!(coding_records, 101, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
-    assert_eq!(expected_gaps.len(), 3_447);
+    // The floor moves with the closure, not with the handlers: every gap added
+    // under issue #1021 is a `closure-generated-*.lino` record for a token the
+    // new prose pulled into the total closure -- 74 for the contribution
+    // artifacts, then 16 more when the listing detector was given its Spanish
+    // vocabulary (`lista`, `ficheros`, `archivos`, `aqui`, ...), then 8 more
+    // for the closed-class words the language-less coding request subtracts
+    // (`me`, `my`, `our`, `we`, `some`, `these`, `just`) plus the Spanish
+    // `guion`, and one more for `copy_stdin_to_stdout` once the portable seed
+    // bundle started naming the task issue #863 reported. A new language's
+    // words arriving as generated closure records rather than as hand-written
+    // gaps is the shape this floor exists to show; `request_function_word`
+    // joins the count as a hand-written record because every meaning in
+    // `data/seed/meanings.lino` -- all 22 of them, not just the new one --
+    // carries its lexemes without the five-field metadata that file has never
+    // supplied. The last twelve arrived the same way: the verified-mutating-
+    // action responses issues #824 and #944 added pull their two intent tokens
+    // and their ten response ids into the closure, and every one of the twelve
+    // is a `closure-generated-*.lino` record -- no hand-written gap, no
+    // handler without metadata. The one after them is hand-written and says so
+    // honestly: `file_leading_line_constraint` in
+    // `data/seed/meanings-file-write.lino` is the vocabulary for "the first
+    // line must be ..." that lets an evidence-record request pin its opening
+    // line (issue #1066), and that file, like `data/seed/meanings.lino`, has
+    // never carried the five fields for any of its records. A gap recorded in
+    // reviewed data is the outcome this audit is for; the floor above is what
+    // forbids the same omission on the coding path.
+    //
+    // The seven after it are closure records again, and they arrived for the
+    // same reason the twelve before them did. `data/seed/meanings-note-
+    // composition.lino` carries both of its meanings with all five fields --
+    // it is a hand-written file and it is complete -- but the closure expands
+    // each of its English surfaces into a generated record, and `produce`,
+    // `compose`, `draft`, `assemble`, `prepare`, `note` and `memo` had no
+    // generated record before. `report`, `summary` and `brief` already did.
+    // Vocabulary for a new capability entering the closure is exactly the
+    // shape this number tracks: described data grows the count, an
+    // undescribed handler would not be allowed to.
+    //
+    // The eleven after those are the same two shapes again, and they arrived
+    // together under issue #1066. Ten are closure records for the honest
+    // replies a decomposition gives when it cannot enumerate anything: the two
+    // intent tokens `task_decomposition_single_need` and
+    // `task_decomposition_unsplit_depth_bound`, and their eight response ids,
+    // one per language the seed then answered in. The eleventh is hand-written
+    // and says so:
+    // `file_write_deferred_content` in `data/seed/meanings-file-write.lino` is
+    // the vocabulary for a payload that *names* the work product ("... the
+    // findings", "... 结论") rather than stating it, which is what stops a
+    // request to record findings from writing the words "the findings" into
+    // the caller's file. That file carries `role` and has never carried the
+    // other four for any record, so the new one is a gap on exactly the terms
+    // its neighbours already are.
+    // The thirteen after those are one response id per decomposition intent,
+    // and they arrived when Spanish stopped being answered in English (issue
+    // #1066). `es` is a registered language, `data/seed/multilingual-responses-
+    // decomposition.lino` carried no record in it, and `localized_response`
+    // falls back to English rather than failing -- so a Spanish speaker asking
+    // why nothing could be enumerated was told something true in words they had
+    // not asked in. Filling the hole is described data entering the closure,
+    // which is the growth this number exists to track. Leaving the fallback in
+    // place would have held the count still and kept the answer wrong, which is
+    // the direction this floor is here to make visible.
+    // Issue #1069 first contributes 33 more reviewed closure gaps: the two new
+    // repository-observation intents and ten localized response ids, plus the
+    // source-search vocabulary generated from the 29 complete coding records
+    // above. The exact-composition, failed multi-read and link-publish response
+    // seeds then add 18 generated records while displacing the three obsolete
+    // render-surface tokens, for a net 15 more gaps. They are closure data, not
+    // missing metadata on the coding path. Six more arrive with the member-list
+    // kinds: `set`, `collection`, `group`, `lists`, `sequence` and
+    // `alternation` are the English surfaces that let a request name the
+    // collection it edits, and the closure expands each into a generated
+    // record. Vocabulary for a new capability entering the closure is the same
+    // shape as every addition above it.
+    // The last 24 are the sentences a change route says its change in, and they
+    // are four intents plus one response id per registered language for each:
+    // `coding_member_inserted`, `coding_member_already_present`,
+    // `coding_text_replaced` and `coding_identifier_renamed`. A route that
+    // reported only `{path}` told a caller which file it had touched and never
+    // what it had done to it, which is not a record of a change -- the issue
+    // #1028 ladder asks each leaf's proof for "at least four words that state
+    // the change you made", and a status line has none of them. Naming the
+    // members that went into a list, or the name that became which other name,
+    // is text a person reads, so it is seed text in all five languages
+    // `data/seed/languages.lino` registers, exactly as the other fifteen
+    // intents in `data/seed/multilingual-responses-agentic-tools.lino` are.
+    // Answering in English only would have held this number 20 lower and left
+    // four of the five languages hearing about their own edit in a language
+    // they had not asked in.
+    // The four after them are the primacy kinds issue #1073 added: `citation`,
+    // `first_hand_record`, `self_published` and `editorial_synthesis` are the
+    // vocabulary a source uses to say how close it stands to what it reports,
+    // and every source in `data/seed/sources-registry.lino` now names one of
+    // them in its `primacy` chain instead of asserting a tier. The closure
+    // expands each into a generated record, so computing trust rather than
+    // assuming it arrives here as described data, on the same terms as every
+    // vocabulary addition above.
+    // The last forty-two arrive the same way, from issue #1075's
+    // `data/seed/tool-resource-scopes.lino`: the words that let a tool say
+    // *where* its effect lands rather than only what it does --
+    // `remote_service`, `process_input`, `connector`, `namespaced`,
+    // `substring`, `router`, `advertised`, `grounded`, `untouched` and the
+    // prose around them. Every one is a `closure-generated-*.lino` record for a
+    // token the new seed prose pulled into the total closure, not a
+    // hand-written gap, which is the shape this floor exists to show.
+    //
+    // The last fifty-four arrive that way too, from issue #1085: the tokens
+    // `data/seed/handler-rules.lino` and
+    // `data/seed/multilingual-responses-policy.lino` introduced when eleven
+    // handlers stopped being Rust -- the rule vocabulary (`agent_info`,
+    // `backticks`, `cleaned`, `raw`, `literal`, `prompt`, `forms`), the
+    // handler names themselves, and the response ids of their four-language
+    // wording. Behaviour moving from Rust into seed data arrives as generated
+    // closure records, which is what this floor is for. Four more followed when
+    // those responses were given their Spanish text, which every supported
+    // locale owes the others. Ten more arrived the same way with issues #1095
+    // and #1099: two seed roles (`agentic_continuation_cue`,
+    // `enumeration_cue`), the `agentic_continuation` handler and its
+    // `continuation_cue` rule, that handler's five-language wording, and the
+    // seeded notice `context_session_guessed_notice` from #1105 RC6. Every one
+    // is behaviour that used to be Rust -- a hardcoded English phrase, an
+    // exact-string comparison in the planner -- arriving as described data,
+    // which is what this floor exists to record. Issue #1131 brought five more
+    // through the total closure (`adds`, `appends`, `include`, `insert`,
+    // `inserts`): the surfaces of `coding_member_add`, the verb that has to be
+    // present before a member list may be grown.
+    // Issue #1133 moved the total from 4,059 to 4,062: five coding-path
+    // records arrived (see the coding floor above) while the Spanish and
+    // "resolve" lexemes given to `implement` closed two gaps that had been
+    // waiting on exactly that wording.
+    assert_eq!(expected_gaps.len(), 4_062);
 }

@@ -2,9 +2,9 @@ self_ast_census
   target src/summarization/validation/baseline.rs
   language rust
   fidelity signature
-  byte_len 6907
-  line_count 162
-  content_id source_module_dea5e2c279f8017f
+  byte_len 6863
+  line_count 160
+  content_id source_module_2ff85040151cca22
   symbol_count 13
   symbols
     const NOTHING_APPLICABLE 12 12
@@ -14,9 +14,9 @@ self_ast_census
     const BASELINE_RECORD 18 18
     const BASELINE_PATH 21 21
     const RATCHET_RUNNER 25 25
-    const RATCHET_POLICY 28 30
-    const HONESTY_POLICY 34 36
-    struct QualityBaseline 41 53
-    function parse 61 97
-    function ratchet_violations 114 147
-    function split_field 149 162
+    const RATCHET_POLICY 28 29
+    const HONESTY_POLICY 33 34
+    struct QualityBaseline 39 51
+    function parse 59 95
+    function ratchet_violations 112 145
+    function split_field 147 160

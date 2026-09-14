@@ -141,6 +141,7 @@ fn rust_root_prefers_explicit_parameter() {
 
 #[test]
 fn rust_root_cli_parser_returns_none_without_configuration() {
-    std::env::remove_var("RUST_ROOT");
-    assert_eq!(parse_rust_root_from_args(), None);
+    temp_env::with_var_unset("RUST_ROOT", || {
+        assert_eq!(parse_rust_root_from_args(), None);
+    });
 }

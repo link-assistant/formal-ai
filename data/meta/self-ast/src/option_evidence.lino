@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 8661
   line_count 215
-  content_id source_module_1f2d1da71ed9537a
+  content_id source_module_b06fb0d6c272fc6c
   symbol_count 7
   symbols
     const FRACTION_DIGITS 35 35

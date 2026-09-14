@@ -1,0 +1,9 @@
+self_development_execution_contract
+  record_type "self_development_execution_contract"
+  issue "924"
+  task_execution "formal_ai_via_agent_cli"
+  strategy "attempt_whole_then_split_only_after_failure"
+  recursion "split_until_solvable_or_bounded_irreducible"
+  effect_application "verified_passing_session_only"
+  learning "same_sessions_to_proposal_only_learning"
+  promotion "human_review_required"

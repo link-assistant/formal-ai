@@ -1,0 +1,14 @@
+# Standalone reproducer for the quadratic `point_at_byte` scan in
+# `meta-language`'s tree-sitter adapter (formal-ai issue #1017). Deliberately a
+# separate crate with a single dependency, so an upstream maintainer can run it
+# without any of formal-ai's build graph.
+[package]
+name = "meta-language-quadratic-parse"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+meta-language = "0.58.1"
+
+[workspace]

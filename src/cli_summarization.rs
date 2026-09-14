@@ -17,10 +17,10 @@ use clap::Subcommand;
 
 use formal_ai::statement_audit::RepositoryCorpus;
 use formal_ai::{
-    quality_sentence, ratchet_violations, validate_repository_summarization, CorpusFile,
-    QualityBaseline, SamplingProtocol, SummarizationConfig, ValidationReport, BASELINE_PATH,
-    CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS, DEFAULT_SAMPLING_SEED,
-    QUALITY_RATCHET_PERCENT,
+    BASELINE_PATH, CRITERIA, CorpusFile, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
+    DEFAULT_SAMPLING_SEED, QUALITY_RATCHET_PERCENT, QualityBaseline, SamplingProtocol,
+    SummarizationConfig, ValidationReport, quality_sentence, ratchet_violations,
+    validate_repository_summarization,
 };
 
 /// Seed intents for every sentence this command prints. The keys are

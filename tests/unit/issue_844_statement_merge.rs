@@ -7,9 +7,9 @@
 use formal_ai::language::Language;
 use formal_ai::relative_meta_logic::{RelativeEvidence, SourceTier, Stance, TruthValue};
 use formal_ai::summarization::{
-    deduplicate, gather, is_valid_identifier, merge_into_context, rank, to_identifier,
-    to_statements_in, FetchedSource, GatheringPlan, IdentifierBudget, NamingConvention,
-    SourceCache, SourceProvider, SourcedStatement, SummarizationConfig, SummarizationMode,
+    FetchedSource, GatheringPlan, IdentifierBudget, NamingConvention, SourceCache, SourceProvider,
+    SourcedStatement, SummarizationConfig, SummarizationMode, deduplicate, gather,
+    is_valid_identifier, merge_into_context, rank, to_identifier, to_statements_in,
 };
 use formal_ai::world_model::{Context, Dependency, Statement as WorldStatement};
 
@@ -280,14 +280,18 @@ fn contradictions_become_contradicts_edges_and_are_reported_as_disagreement() {
         .statement(&asserted_id)
         .expect("asserted side");
     let denied = merged.context.statement(&denied_id).expect("denied side");
-    assert!(asserted
-        .dependencies
-        .iter()
-        .any(|edge| edge.stance == Stance::Contradicts && edge.on == denied_id));
-    assert!(denied
-        .dependencies
-        .iter()
-        .any(|edge| edge.stance == Stance::Contradicts && edge.on == asserted_id));
+    assert!(
+        asserted
+            .dependencies
+            .iter()
+            .any(|edge| edge.stance == Stance::Contradicts && edge.on == denied_id)
+    );
+    assert!(
+        denied
+            .dependencies
+            .iter()
+            .any(|edge| edge.stance == Stance::Contradicts && edge.on == asserted_id)
+    );
 
     // And the disagreement is reported rather than resolved by dropping a side.
     let disagreements = merged.disagreements();

@@ -2,9 +2,9 @@ self_ast_census
   target src/client_integrations.rs
   language rust
   fidelity signature
-  byte_len 27443
-  line_count 758
-  content_id source_module_4e7f1f281989b21d
+  byte_len 27641
+  line_count 763
+  content_id source_module_575d501ea6ab4cfc
   symbol_count 33
   symbols
     module caller_args 16 16
@@ -24,19 +24,19 @@ self_ast_census
     enum ClientProtocol 46 51
     function as_str 54 61
     struct WithFormalAiArgs 67 149
-    struct RenderContext 152 166
-    struct InvocationOptions 170 178
-    function run_with_formal_ai 180 241
-    function read_piped_prompt 244 252
-    function select_integrations 254 266
-    function find_integration 268 288
-    function render_context 290 362
-    function run_ephemeral 364 522
-    function temp_scoped_path 524 538
-    function build_invocation_args 546 649
-    function overlay_args 653 675
-    function render_template 677 697
-    function codex_model_catalog 699 733
-    function global_config_path 735 744
-    function backup_path 746 750
-    function write_file 752 758
+    struct RenderContext 152 167
+    struct InvocationOptions 171 179
+    function run_with_formal_ai 181 244
+    function read_piped_prompt 247 255
+    function select_integrations 257 269
+    function find_integration 271 291
+    function render_context 293 366
+    function run_ephemeral 368 526
+    function temp_scoped_path 528 542
+    function build_invocation_args 550 653
+    function overlay_args 657 679
+    function render_template 681 702
+    function codex_model_catalog 704 738
+    function global_config_path 740 749
+    function backup_path 751 755
+    function write_file 757 763

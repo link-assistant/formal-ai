@@ -39,9 +39,11 @@ fn cancel_reverse_sort_downgrades_sorted_path_argument_variant() {
     assert!(plan.was_modified());
     assert_eq!(plan.report.applied_count(), 1);
     assert!(plan.graph.contains_link(TASK_NODE, "list_files_arg"));
-    assert!(!plan
-        .graph
-        .contains_link(TASK_NODE, "list_files_arg_reverse_sort"));
+    assert!(
+        !plan
+            .graph
+            .contains_link(TASK_NODE, "list_files_arg_reverse_sort")
+    );
 }
 
 #[test]
@@ -132,9 +134,10 @@ fn reverse_sort_upgrades_list_files() {
     assert_eq!(plan.resolved_task, "list_files_reverse_sort");
     assert!(plan.was_modified());
     assert_eq!(plan.report.applied_count(), 1);
-    assert!(plan
-        .graph
-        .contains_link(TASK_NODE, "list_files_reverse_sort"));
+    assert!(
+        plan.graph
+            .contains_link(TASK_NODE, "list_files_reverse_sort")
+    );
     assert!(!plan.graph.contains_link(TASK_NODE, "list_files"));
 }
 
@@ -144,9 +147,10 @@ fn path_argument_and_reverse_sort_compose() {
     assert_eq!(plan.resolved_task, "list_files_arg_reverse_sort");
     assert!(plan.was_modified());
     assert_eq!(plan.report.applied_count(), 2);
-    assert!(plan
-        .graph
-        .contains_link(TASK_NODE, "list_files_arg_reverse_sort"));
+    assert!(
+        plan.graph
+            .contains_link(TASK_NODE, "list_files_arg_reverse_sort")
+    );
     assert!(!plan.graph.contains_link(TASK_NODE, "list_files"));
 }
 

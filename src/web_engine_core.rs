@@ -23,7 +23,7 @@ use core::convert::TryFrom;
 
 pub use super::arithmetic::evaluate_fallback_formatted;
 #[allow(unused_imports)]
-pub use super::language::{detect as detect_language, Language};
+pub use super::language::{Language, detect as detect_language};
 
 /// Normalize an arbitrary prompt to a lowercase, single-space-delimited stream.
 ///

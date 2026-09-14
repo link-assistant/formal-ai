@@ -14,10 +14,10 @@ use crate::formal_system::FormalSystem;
 use crate::links_format::format_lino_record;
 use crate::relative_meta_logic::{SourceTier, TruthValue};
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceTransport};
-use crate::source_research::{execute_source_research, SourceResearchExecution};
-use crate::summarization::{merge_into_formal_context, SourcedStatement, StatementSignature};
+use crate::source_research::{SourceResearchExecution, execute_source_research};
+use crate::summarization::{SourcedStatement, StatementSignature, merge_into_formal_context};
 use crate::translation::{
-    formalize_prompt, FormalizationAnchorKind, FormalizationCandidate, FormalizationRole,
+    FormalizationAnchorKind, FormalizationCandidate, FormalizationRole, formalize_prompt,
 };
 
 const MAX_PRESENTED_MEANINGS: usize = 3;
@@ -643,10 +643,11 @@ fn split_title_excerpt(title: &str, excerpt: &str) -> (String, String) {
     if title != excerpt && !title.trim().is_empty() {
         return (title.trim().to_owned(), excerpt.trim().to_owned());
     }
-    if let Some((prefix, remainder)) = excerpt.split_once(" - ") {
-        if !prefix.trim().is_empty() && !remainder.trim().is_empty() {
-            return (prefix.trim().to_owned(), remainder.trim().to_owned());
-        }
+    if let Some((prefix, remainder)) = excerpt.split_once(" - ")
+        && !prefix.trim().is_empty()
+        && !remainder.trim().is_empty()
+    {
+        return (prefix.trim().to_owned(), remainder.trim().to_owned());
     }
     let fallback = title.trim();
     (fallback.to_owned(), excerpt.trim().to_owned())

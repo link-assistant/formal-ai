@@ -809,70 +809,69 @@ const INSTALL_FORMAT_MARKDOWN = "markdown";
 const INSTALL_FORMAT_SHELL = "shell_script";
 const INSTALL_FORMAT_POWERSHELL = "powershell_script";
 
-const INSTALL_ALGORITHM_CONSTRUCTION_STAGES = [
-  {
-    id: "collect_corpus",
-    output: "representative problem-class examples",
-    verifier: "case-study corpus preserved",
-  },
-  {
-    id: "derive_surfaces",
-    output: "source and target surface ontology",
-    verifier: "source/target format detection",
-  },
-  {
-    id: "extract_ir",
-    output: "shared intermediate representation",
-    verifier: "ordered command preservation fixture",
-  },
-  {
-    id: "synthesize_operations",
-    output: "recognizers, extractors, renderers, and validators",
-    verifier: "round-trip surface invariants",
-  },
-  {
-    id: "project_targets",
-    output: "target-specific Markdown, shell, and PowerShell renderers",
-    verifier: "per-target rendering fixture",
-  },
-  {
-    id: "mirror_runtimes",
-    output: "Rust and browser-worker projections of the same algorithm",
-    verifier: "cross-runtime parity checks",
-  },
-  {
-    id: "promote_capability",
-    output: "reusable coding-task construction pattern",
-    verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
-  },
-];
+// Shared coding-task construction builder. Mirrors src/meta_algorithm_builder.rs
+// and parses the same data/seed/coding-idioms.lino definition.
+function metaAlgorithmChildValue(node, name) {
+  const child = node.children.find((candidate) => candidate.name === name);
+  return child ? child.value : "";
+}
 
-const INSTALL_CODING_SURFACE_PROJECTIONS = [
-  {
-    slug: "coding_catalog",
-    projection: "task spec -> parameterized template -> CST/compile check",
-  },
-  {
-    slug: "program_synthesis",
-    projection: "semantic function tree -> source program -> sandbox tests",
-  },
-  {
-    slug: "program_blueprint",
-    projection: "capability set -> blueprint recipe -> honest code projection",
-  },
-  {
-    slug: "numeric_list",
-    projection: "operation/data/language IR -> generated code plus evaluated result",
-  },
-  {
-    slug: "rule_synthesis",
-    projection: "operation/target binding -> candidate rule -> verification fixture",
-  },
-  {
-    slug: "installation_conversion",
-    projection: "installation surfaces -> install-step IR -> target renderers",
-  },
-];
+function metaAlgorithmDefinition() {
+  const catalog = parseLinoTree(CODING_IDIOMS_LINO).children.find((node) => node.name === "coding_idioms");
+  const root = catalog && catalog.children.find((node) => node.name === "coding_meta_algorithm");
+  if (!root) throw new Error("coding_meta_algorithm seed missing");
+  const entries = (name) => root.children.filter((node) => node.name === name);
+  return {
+    id: root.value,
+    activeMarker: metaAlgorithmChildValue(root, "active_marker"),
+    stageEvidence: metaAlgorithmChildValue(root, "stage_evidence"),
+    surfaceEvidence: metaAlgorithmChildValue(root, "surface_evidence"),
+    stages: entries("stage").map((node) => ({
+      id: node.value,
+      output: metaAlgorithmChildValue(node, "output"),
+      verifier: metaAlgorithmChildValue(node, "verifier"),
+    })),
+    surfaces: entries("surface").map((node) => ({
+      slug: node.value,
+      projection: metaAlgorithmChildValue(node, "projection"),
+    })),
+  };
+}
+
+function renderMetaAlgorithmTemplate(template, fields) {
+  return Object.entries(fields).reduce(
+    (text, [name, value]) => text.split(`{${name}}`).join(String(value)), template,
+  );
+}
+
+function metaAlgorithmConstructionEvidence(activeSurface) {
+  const definition = metaAlgorithmDefinition();
+  const stage = (item) => renderMetaAlgorithmTemplate(definition.stageEvidence, item);
+  const surface = (item) => renderMetaAlgorithmTemplate(definition.surfaceEvidence, {
+    surface: item.slug, projection: item.projection,
+  });
+  return [
+    `algorithm_construction:meta_algorithm:${definition.id}`,
+    `algorithm_construction:active_surface:${activeSurface}`,
+    ...definition.stages.map((item) => `algorithm_construction:stage:${stage({ stage: item.id, output: item.output, verifier: item.verifier })}`),
+    ...definition.surfaces.map((item) => `algorithm_construction:coding_surface:${surface(item)}`),
+  ];
+}
+
+function appendMetaAlgorithmConstructionLino(lines, activeSurface) {
+  const definition = metaAlgorithmDefinition();
+  lines.push(`  meta_algorithm ${linoString(definition.id)}`);
+  lines.push(`  active_coding_surface ${linoString(activeSurface)}`);
+  for (const item of definition.stages) {
+    lines.push(`  construction_stage ${linoString(item.id)}`);
+    lines.push(`  stage_output ${linoString(item.output)}`);
+    lines.push(`  stage_verifier ${linoString(item.verifier)}`);
+  }
+  for (const item of definition.surfaces) {
+    lines.push(`  coding_surface ${linoString(item.slug)}`);
+    lines.push(`  surface_projection ${linoString(item.projection)}`);
+  }
+}
 
 function installationContainsAny(value, needles) {
   return needles.some((needle) => String(value || "").includes(needle));
