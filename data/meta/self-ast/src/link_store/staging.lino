@@ -1,0 +1,15 @@
+self_ast_census
+  target src/link_store/staging.rs
+  language rust
+  fidelity signature
+  byte_len 4095
+  line_count 88
+  content_id source_module_48719fced52f42a8
+  symbol_count 6
+  symbols
+    function stage_without_per_entry_sync 34 36
+    function replacement_path 39 51
+    static NEXT_REPLACEMENT 40 40
+    function replace_file 54 76
+    function cleanup_link_cli_files 79 83
+    function link_cli_debug_enabled 86 88

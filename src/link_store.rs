@@ -73,6 +73,8 @@ mod node_addresses;
 mod orphans;
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 mod projection_sync;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+mod staging;
 mod validation;
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
@@ -80,6 +82,11 @@ pub use projection_sync::synchronize_memory_events;
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 use node_addresses::{node_address_path, read_node_addresses};
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+use staging::{
+    cleanup_link_cli_files, link_cli_debug_enabled, replace_file, replacement_path,
+    stage_without_per_entry_sync,
+};
 use validation::validate_demo_memory_document;
 
 /// Store abstraction used by memory and event-log projections.
@@ -623,6 +630,13 @@ impl LinkCliLinkStore {
                 return Err(error);
             }
         };
+        // The replacement is scratch until the rename below publishes it, so
+        // its transitions do not need to be individually durable; one flush
+        // before publishing gives the served path the same guarantee for a
+        // fraction of the cost.
+        if let Some(transactions) = replacement.transactions.as_mut() {
+            stage_without_per_entry_sync(transactions);
+        }
         if let Err(error) = replacement.begin_transaction() {
             drop(replacement);
             cleanup_link_cli_files(&replacement_database);
@@ -637,6 +651,11 @@ impl LinkCliLinkStore {
             }
         }
         if let Err(error) = replacement.commit_transaction() {
+            drop(replacement);
+            cleanup_link_cli_files(&replacement_database);
+            return Err(error);
+        }
+        if let Err(error) = replacement.flush_staged_log() {
             drop(replacement);
             cleanup_link_cli_files(&replacement_database);
             return Err(error);
@@ -673,6 +692,27 @@ impl LinkCliLinkStore {
         // Record the addresses this rebuild handed out, so the next write can
         // append onto it instead of rebuilding again (issue #1106).
         self.write_node_addresses()
+    }
+
+    /// `fsync` the staged transitions log once, before the replacement is
+    /// published.
+    ///
+    /// Pairs with [`stage_without_per_entry_sync`]: the staged log skipped
+    /// per-append syncing, so this is where its entries reach stable storage.
+    /// Calling it on a log that already syncs every append is harmless.
+    ///
+    /// # Errors
+    ///
+    /// Returns the backend error when the log cannot be flushed.
+    fn flush_staged_log(&mut self) -> Result<(), LinkStoreError> {
+        use link_cli::TransitionLogStore as _;
+        let Some(transactions) = self.transactions.as_mut() else {
+            return Ok(());
+        };
+        transactions
+            .log_store_mut()
+            .flush_log()
+            .map_err(LinkStoreError::from)
     }
 
     fn append_memory_event_in_open_transaction(
@@ -848,58 +888,6 @@ fn open_link_cli_transactions(
         link_cli_debug_enabled(),
     )
     .map_err(LinkStoreError::from)
-}
-
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn replacement_path(database: &Path, label: &str) -> PathBuf {
-    static NEXT_REPLACEMENT: AtomicU64 = AtomicU64::new(0);
-    let sequence = NEXT_REPLACEMENT.fetch_add(1, Ordering::Relaxed);
-    let filename = database
-        .file_name()
-        .and_then(|name| name.to_str())
-        .unwrap_or("memory.links");
-    database.with_file_name(format!(
-        ".{filename}.{label}.{}.{}.tmp",
-        std::process::id(),
-        sequence
-    ))
-}
-
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn replace_file(staged: &Path, destination: &Path) -> std::io::Result<()> {
-    match std::fs::rename(staged, destination) {
-        Ok(()) => Ok(()),
-        Err(_rename_error) if destination.exists() => {
-            // `rename` replaces atomically on Unix. Windows requires moving
-            // the destination aside first, so retain a recoverable backup if
-            // publishing the staged file fails.
-            let backup = replacement_path(destination, "backup");
-            std::fs::rename(destination, &backup)?;
-            match std::fs::rename(staged, destination) {
-                Ok(()) => {
-                    let _ = std::fs::remove_file(backup);
-                    Ok(())
-                }
-                Err(error) => {
-                    let _ = std::fs::rename(&backup, destination);
-                    Err(error)
-                }
-            }
-        }
-        Err(error) => Err(error),
-    }
-}
-
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn cleanup_link_cli_files(database: &Path) {
-    let _ = std::fs::remove_file(server_link_transition_log_path(database));
-    let _ = std::fs::remove_file(link_cli::lock_file_path(database));
-    let _ = std::fs::remove_file(database);
-}
-
-#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
-fn link_cli_debug_enabled() -> bool {
-    std::env::var("FORMAL_AI_LINK_CLI_DEBUG").as_deref() == Ok("1")
 }
 
 fn ensure_event_id(event: &mut MemoryEvent, sequence: usize) {
