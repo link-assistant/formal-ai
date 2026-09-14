@@ -134,6 +134,11 @@ meanings
     lexeme en
       surface
         text "intent software project implementation"
+  intersection
+    defined-by concept
+    lexeme en
+      surface
+        text "intersection"
   issue_report_context_note
     defined-by field
     lexeme en
@@ -179,6 +184,11 @@ meanings
     lexeme en
       surface
         text "local search contents listing"
+  longitud
+    defined-by concept
+    lexeme en
+      surface
+        text "longitud"
   mcp_instructions
     defined-by intent
     lexeme en
@@ -379,6 +389,21 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm stage en"
+  response_coding_rosetta_answer_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta answer hi"
+  response_coding_rosetta_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta failed es"
+  response_coding_synthesis_research_trail_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis research trail ru"
   response_completion_recovery_name_target_artifact_en
     defined-by response_template
     lexeme en
@@ -914,6 +939,11 @@ meanings
     lexeme en
       surface
         text "says"
+  solo
+    defined-by concept
+    lexeme en
+      surface
+        text "solo"
   structure
     defined-by concept
     lexeme en

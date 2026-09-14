@@ -39,9 +39,16 @@ test.describe('Issue #327 cross-runtime synthesis parity', () => {
       const evidence = message.locator('.evidence-list');
 
       await expect(message).toContainText(`intent:${item.expectedIntent}`);
-      for (const expected of item.expectedAnswerFragments) {
+      const expectedAnswerFragments =
+        item.browserExpectedAnswerFragments || item.expectedAnswerFragments;
+      const expectedEvidencePrefixes =
+        item.browserExpectedEvidencePrefixes || item.expectedEvidencePrefixes;
+      for (const expected of expectedAnswerFragments) {
         if (expected.startsWith('```')) continue;
-        await expect(body).toContainText(expected);
+        // Playwright observes rendered text, so inline Markdown delimiters are
+        // not present even though the parity fixture deliberately documents
+        // the source Markdown returned by the worker.
+        await expect(body).toContainText(expected.replaceAll('`', ''));
       }
       for (const forbidden of item.forbiddenAnswerFragments) {
         await expect(body).not.toContainText(forbidden);
@@ -49,7 +56,7 @@ test.describe('Issue #327 cross-runtime synthesis parity', () => {
           await expect(evidence).not.toContainText(forbidden);
         }
       }
-      for (const prefix of item.expectedEvidencePrefixes) {
+      for (const prefix of expectedEvidencePrefixes) {
         await expect(evidence, `${item.id} evidence should include ${prefix}`).toContainText(
           prefix,
         );

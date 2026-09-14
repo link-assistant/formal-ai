@@ -323,6 +323,12 @@ struct MatchedRoute {
 }
 
 fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
+    if crate::coding::task_spec::recognise(raw).is_some() {
+        return Some(MatchedRoute {
+            slug: String::from("program_synthesis"),
+            response_link: String::from("response:write_program:synthesis"),
+        });
+    }
     if requested_write_program_parameters(raw, normalized).is_some() {
         return Some(MatchedRoute {
             slug: String::from(WRITE_PROGRAM_INTENT),
@@ -658,17 +664,11 @@ fn looks_like_records_information_search(normalized: &str) -> bool {
 }
 
 fn looks_like_program_synthesis(normalized: &str) -> bool {
-    // Routing mirror of `crate::solver_handlers::program_synthesis`'s gate, over
-    // the canonicalized view: a function *subject*, a *domain* signal (Python or
-    // a data kind) or the similar-elements task signal, and a request *action*
-    // verb. Every surface word comes from the meaning lexicon, not from literals.
+    // Fallback routing gate for synthesis requests without a parseable signature.
+    // Task identity and semantics are never selected from a benchmark catalogue.
     let lexicon = crate::seed::lexicon();
-    let similar_elements = lexicon
-        .meaning("signal_similar_elements")
-        .is_some_and(|signal| signal.evidenced_in(normalized));
     lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized)
-        && (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
-            || similar_elements)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
         && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
 }
 
@@ -715,6 +715,7 @@ fn infer_kind(
             "translation"
             | "algorithm"
             | "write_program"
+            | "program_synthesis"
             | "text_manipulation"
             | "software_project_plan"
             | "software_project_implementation",

@@ -94,6 +94,11 @@ meanings
     lexeme en
       surface
         text "barack obama"
+  cada
+    defined-by concept
+    lexeme en
+      surface
+        text "cada"
   ceiling
     defined-by word_surface
     lexeme en
@@ -109,6 +114,11 @@ meanings
     lexeme en
       surface
         text "coding identifier renamed"
+  coding_synthesis_sources_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "coding synthesis sources heading"
   comment
     defined-by concept
     lexeme en
@@ -159,6 +169,11 @@ meanings
     lexeme en
       surface
         text "desktop to cli"
+  different
+    defined-by concept
+    lexeme en
+      surface
+        text "different"
   directories
     defined-by word_surface
     lexeme en
@@ -194,6 +209,11 @@ meanings
     lexeme en
       surface
         text "filled"
+  function_parts
+    defined-by concept
+    lexeme en
+      surface
+        text "function parts"
   hardcoded
     defined-by concept
     lexeme en
@@ -474,6 +494,41 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm heading ru"
+  response_coding_rosetta_capture_cached_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture cached hi"
+  response_coding_rosetta_capture_fetched_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture fetched hi"
+  response_coding_rosetta_capture_fetched_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture fetched zh"
+  response_coding_rosetta_rust_only_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta rust only zh"
+  response_coding_rosetta_workspace_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable hi"
+  response_coding_synthesis_research_trail_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis research trail en"
+  response_coding_synthesis_research_trail_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis research trail hi"
   response_coding_text_replaced_en
     defined-by response_template
     lexeme en
@@ -1144,3 +1199,8 @@ meanings
     lexeme en
       surface
         text "wikifunctions"
+  within
+    defined-by concept
+    lexeme en
+      surface
+        text "within"

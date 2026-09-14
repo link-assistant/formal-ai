@@ -24,11 +24,11 @@ const HUMANEVAL_0_TEST: &str = "METADATA = {\n    'author': 'jt',\n    'dataset'
 
 /// The answer the synthesis handler renders for HumanEval/0 under the upstream
 /// prompt shape: the prompt's import travels ahead of the derived function.
-const HUMANEVAL_0_ANSWER: &str = "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\nfrom typing import List\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    for left_index, left in enumerate(numbers):\n        for right in numbers[left_index + 1:]:\n            if abs(left - right) < threshold:\n                return True\n    return False\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 4/4 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.";
+const HUMANEVAL_0_ANSWER: &str = "Here is a derived Python function reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\nfrom typing import List\nimport itertools\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    return any(abs(left - right) < threshold for left, right in itertools.combinations(numbers, 2))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#any (PSF-2.0)\n- https://docs.python.org/3.12/library/itertools.html#itertools.combinations (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#abs (PSF-2.0)";
 
-/// The answer for MBPP/2: the task's declared parameter names, never the
+/// The answer for MBPP/2: generic parameters inferred from arity, never the
 /// argument tuples from the assertion.
-const MBPP_2_ANSWER: &str = "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\ndef similar_elements(test_tup1, test_tup2):\n    return tuple(sorted(set(test_tup1) & set(test_tup2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 3/3 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.";
+const MBPP_2_ANSWER: &str = "Here is a derived Python function reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef similar_elements(arg1, arg2):\n    return tuple(sorted(set(arg1) & set(arg2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 3/3 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/stdtypes.html#tuple (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#sorted (PSF-2.0)\n- https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset (PSF-2.0)";
 
 fn workspace(name: &str) -> PathBuf {
     let nonce = std::time::SystemTime::now()
@@ -108,7 +108,7 @@ fn the_upstream_mbpp_prompt_shape_in_english_does_not_mistake_an_assertion_for_a
     assert!(
         response
             .answer
-            .contains("def similar_elements(test_tup1, test_tup2):"),
+            .contains("def similar_elements(arg1, arg2):"),
         "a call inside an assertion is not a signature: {}",
         response.answer
     );
@@ -164,7 +164,41 @@ fn assert_mbpp_derivation_in(language: &str) {
     }
     let case = mbpp_case_in(language);
     let response = benchmark_solver().solve(&case.prompt);
-    assert_eq!(response.answer, MBPP_2_ANSWER, "language {language}");
+    let localized_opening = match language {
+        "ru" => "Ниже приведена выведенная функция Python",
+        "hi" => "यह खोजे गए भागों से पुनर्निर्मित",
+        "zh" => "这是由发现的部件重建",
+        "es" => "Esta es una función de Python derivada",
+        _ => "Here is a derived Python function",
+    };
+    assert!(
+        response.answer.starts_with(localized_opening),
+        "language {language}: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains(
+            "```python\ndef similar_elements(arg1, arg2):\n    return tuple(sorted(set(arg1) & set(arg2)))\n```"
+        ),
+        "language {language}: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("\n-  (source-declared)"),
+        "language {language}: provenance URLs must not be empty: {}",
+        response.answer
+    );
+    for source in [
+        "https://docs.python.org/3.12/library/stdtypes.html#tuple",
+        "https://docs.python.org/3.12/library/functions.html#sorted",
+        "https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset",
+    ] {
+        assert!(
+            response.answer.contains(source),
+            "language {language}: missing source {source}: {}",
+            response.answer
+        );
+    }
     let dir = workspace(&format!("mbpp-{language}"));
     let outcome = grade::grade_case(&case, Grading::PythonAsserts, &response.answer, &dir);
     std::fs::remove_dir_all(&dir).ok();

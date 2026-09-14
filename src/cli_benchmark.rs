@@ -34,6 +34,10 @@ pub enum BenchmarkAction {
         #[arg(long, default_value_t = false)]
         append: bool,
 
+        /// Permit live discovery sources while solving benchmark cases.
+        #[arg(long, default_value_t = false)]
+        online: bool,
+
         /// Ledger path, relative to the repository root.
         #[arg(long, default_value = LEDGER_PATH)]
         ledger: PathBuf,
@@ -80,6 +84,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
             suite,
             slice,
             append,
+            online,
             ledger,
             date,
             repository_root,
@@ -90,12 +95,16 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
             let date = date.unwrap_or_else(external_benchmarks::today_utc);
             run_suites(
                 &suite,
-                slice,
-                append,
-                &root.join(&ledger),
-                &date,
-                &root,
-                (learning_report.as_deref(), frontier_record.as_deref()),
+                RunSuiteOptions {
+                    slice,
+                    append,
+                    ledger_path: &root.join(&ledger),
+                    date: &date,
+                    repository_root: &root,
+                    online,
+                    learning_report: learning_report.as_deref(),
+                    frontier_record: frontier_record.as_deref(),
+                },
             )
         }
         BenchmarkAction::Ratchet {
@@ -133,18 +142,29 @@ fn list_suites() {
     }
 }
 
-fn run_suites(
-    selector: &str,
+#[derive(Clone, Copy)]
+struct RunSuiteOptions<'a> {
     slice: usize,
     append: bool,
-    ledger_path: &Path,
-    date: &str,
-    repository_root: &Path,
-    // The review-gated documents a run may write beside the ledger: the
-    // learning report and the frontier record.
-    review_outputs: (Option<&Path>, Option<&Path>),
-) -> Result<(), Box<dyn Error>> {
-    let (learning_report, frontier_record) = review_outputs;
+    ledger_path: &'a Path,
+    date: &'a str,
+    repository_root: &'a Path,
+    online: bool,
+    learning_report: Option<&'a Path>,
+    frontier_record: Option<&'a Path>,
+}
+
+fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dyn Error>> {
+    let RunSuiteOptions {
+        slice,
+        append,
+        ledger_path,
+        date,
+        repository_root,
+        online,
+        learning_report,
+        frontier_record,
+    } = options;
     let selected: Vec<&manifest::SuiteManifest> = if selector == "all" {
         manifest::SUITES.iter().collect()
     } else {
@@ -158,7 +178,8 @@ fn run_suites(
 
     let mut runs = Vec::new();
     for suite in selected {
-        let run = external_benchmarks::run_suite(suite, slice, repository_root)?;
+        let run =
+            external_benchmarks::run_suite_with_online(suite, slice, repository_root, online)?;
         println!("{}", run.report());
         runs.push(run);
     }

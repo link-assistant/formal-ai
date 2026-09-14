@@ -133,6 +133,7 @@ jobs:
             ./target/release/formal-ai benchmark run \
               --suite "$1" \
               --slice "$2" \
+              --online \
               --append \
               --learning-report "target/formal-ai-benchmarks/learning/$1.lino" \
               --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino

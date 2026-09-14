@@ -291,6 +291,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "thinking_narrative_fact_lookup"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f9b575b305d7b61b
+    source "data/seed/closure-generated-06.lino"
+    record "coding_rosetta_passed"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_7676d6fbe50438bb
     source "data/seed/closure-generated-06.lino"
     record "destructive"
@@ -494,6 +498,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_1f3b55fba43d2d9b
     source "data/seed/closure-generated-10.lino"
     record "accuracy"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b898c88911bea07b
+    source "data/seed/closure-generated-10.lino"
+    record "intersection"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c4fb46cd958962eb
     source "data/seed/closure-generated-10.lino"
@@ -847,6 +855,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "normalize_labels_fixpoint"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_64a2dab11430d93b
+    source "data/seed/closure-generated-16.lino"
+    record "overlapping"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4568c59223f31c3b
     source "data/seed/closure-generated-16.lino"
     record "pattern_behavior_rules_list_show_list_your_rules_en"
@@ -902,6 +914,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_21d04293d64d036b
     source "data/seed/meanings-calculator.lino"
     record "cosine"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_aa6c7029889b545b
+    source "data/seed/meanings-coding-structure.lino"
+    record "range"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_0faad29e99ead37b
+    source "data/seed/meanings-coding-structure.lino"
+    record "reduce_min"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_b258e3de9b7ba8cb
     source "data/seed/meanings-computer-use.lino"

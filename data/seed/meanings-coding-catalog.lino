@@ -820,6 +820,8 @@ meanings
         text "стандартный ввод в стандартный вывод"
       surface
         text "из stdin в stdout"
+      surface
+        text "копирования stdin в stdout"
     lexeme hi
       surface
         text "मानक इनपुट को मानक आउटपुट में कॉपी करें"
@@ -829,6 +831,8 @@ meanings
         text "stdin को stdout में कॉपी करें"
       surface
         text "stdin से stdout"
+      surface
+        text "stdin को stdout में कॉपी"
     lexeme zh
       surface
         text 将标准输入复制到标准输出
@@ -838,6 +842,8 @@ meanings
         text 标准输入复制到标准输出
       surface
         text 标准输入到标准输出
+      surface
+        text "stdin 复制到 stdout"
     lexeme es
       surface
         text "copiar la entrada estándar a la salida estándar"

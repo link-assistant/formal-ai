@@ -1,0 +1,13 @@
+coding_discovery_runtime
+  template python_import
+    text "import {module}"
+  template python_return
+    text "return {expression}"
+  template python_materialize_list
+    text "list({items})"
+  template python_materialize_tuple
+    text "tuple({items})"
+  template python_test_entrypoint
+    text "\nif __name__ == '__main__':\n"
+  template python_doc_probe
+    text "print(({expression}).__doc__ or '')"

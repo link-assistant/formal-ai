@@ -1,0 +1,193 @@
+use std::collections::BTreeMap;
+use std::fs;
+use std::path::Path;
+
+use formal_ai::coding_function_catalog::python_docs::{StdlibIndex, StdlibPart};
+use formal_ai::coding_task_spec::recognise;
+use formal_ai::composition::compose;
+use formal_ai::concept_discovery::{DiscoveryCatalog, discover};
+
+const CORPUS: &str = "data/benchmarks/coding-discovery-paraphrases.lino";
+
+#[derive(Debug)]
+struct Paraphrase {
+    family: String,
+    language: String,
+    prompt: String,
+}
+
+#[test]
+fn five_language_paraphrases_share_specs_concepts_and_verified_compositions() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let cases = paraphrases(&fs::read_to_string(root.join(CORPUS)).expect("paraphrase corpus"));
+    assert_eq!(cases.len(), 25);
+    let catalog = catalog();
+    let mut identities: BTreeMap<String, (String, String)> = BTreeMap::new();
+
+    for case in cases {
+        let prompt = format!("{}\n{}", case.prompt, assertions(&case.family));
+        let spec = recognise(&prompt).unwrap_or_else(|| panic!("{} did not parse", case.language));
+        let concepts = discover(&spec, &catalog);
+        let outcome = compose(&spec, &concepts);
+        let selected = outcome.selected.unwrap_or_else(|| {
+            panic!(
+                "{} {} did not verify: {}",
+                case.family, case.language, outcome.research_trail
+            )
+        });
+        if case.family == "count_to_100" {
+            assert!(selected.source.contains("range(1, 100 + 1)"));
+            assert_eq!(selected.assertion_count, 1);
+        }
+        let identity = (spec.signature_identity(), concepts.identity());
+        if let Some(english) = identities.get(&case.family) {
+            assert_eq!(&identity, english, "{} {}", case.family, case.language);
+        } else {
+            assert_eq!(case.language, "en", "English must lead each family");
+            identities.insert(case.family, identity);
+        }
+    }
+    assert_eq!(identities.len(), 5);
+}
+
+#[test]
+fn count_to_one_hundred_requests_derive_the_full_inclusive_output() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let cases = paraphrases(&fs::read_to_string(root.join(CORPUS)).expect("paraphrase corpus"));
+    for case in cases
+        .into_iter()
+        .filter(|case| case.family == "count_to_100")
+    {
+        let spec = recognise(&case.prompt).unwrap_or_else(|| panic!("{}", case.language));
+        assert_eq!(spec.name, "main");
+        let concepts = discover(&spec, &DiscoveryCatalog::default());
+        let selected = compose(&spec, &concepts)
+            .selected
+            .unwrap_or_else(|| panic!("{} did not derive count-to-N", case.language));
+        assert!(selected.source.contains("range(1, 100 + 1)"));
+    }
+}
+
+#[test]
+fn held_out_sentences_are_not_seed_lexemes() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let cases = paraphrases(&fs::read_to_string(root.join(CORPUS)).expect("paraphrase corpus"));
+    let seed = fs::read_dir(root.join("data/seed"))
+        .expect("seed directory")
+        .filter_map(Result::ok)
+        .filter_map(|entry| fs::read_to_string(entry.path()).ok())
+        .map(|text| normalize(&text))
+        .collect::<Vec<_>>()
+        .join("\n");
+    for case in cases {
+        assert!(
+            !seed.contains(&normalize(&case.prompt)),
+            "held-out sentence entered seed: {}",
+            case.prompt
+        );
+    }
+}
+
+fn assertions(family: &str) -> &'static str {
+    match family {
+        "gcd" => {
+            "assert greatest_common_divisor(25, 15) == 5\nassert greatest_common_divisor(3, 5) == 1"
+        }
+        "sum_product" => {
+            "assert summarize_numbers([]) == (0, 1)\nassert summarize_numbers([1, 2, 3]) == (6, 6)"
+        }
+        "near_pair" => {
+            "assert near_pair([1.0, 2.0, 3.0], 0.5) == False\nassert near_pair([1.0, 2.8, 3.0], 0.3) == True"
+        }
+        "count_distinct" => "assert unique_count([1, 1, 2, 3]) == 3\nassert unique_count([]) == 0",
+        "count_to_100" => "assert count_until() == list(range(1, 101))",
+        other => panic!("unknown family {other}"),
+    }
+}
+
+fn catalog() -> DiscoveryCatalog {
+    let parts = vec![
+        part(
+            "math.gcd",
+            "math",
+            "Return the greatest common divisor of the specified integer arguments.",
+            "https://docs.python.org/3.12/library/math.html#math.gcd",
+        ),
+        part(
+            "sum",
+            "builtins",
+            "Return the sum of an iterable of numbers.",
+            "https://docs.python.org/3.12/library/functions.html#sum",
+        ),
+        part(
+            "math.prod",
+            "math",
+            "Calculate the product of all the elements in the input iterable.",
+            "https://docs.python.org/3.12/library/math.html#math.prod",
+        ),
+    ];
+    DiscoveryCatalog::new(StdlibIndex::from_parts(parts), Vec::new(), Vec::new())
+}
+
+fn part(symbol: &str, module: &str, description: &str, source_url: &str) -> StdlibPart {
+    StdlibPart {
+        symbol: symbol.to_owned(),
+        module: module.to_owned(),
+        signature: format!("{symbol}(...)"),
+        description: description.to_owned(),
+        source_url: source_url.to_owned(),
+        license: "PSF-2.0".to_owned(),
+        sha256: "c".repeat(64),
+        fetched_at: "2026-09-15T00:00:00Z".to_owned(),
+    }
+}
+
+fn paraphrases(text: &str) -> Vec<Paraphrase> {
+    let mut out = Vec::new();
+    let mut current: Option<Paraphrase> = None;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if line.starts_with("  paraphrase ") {
+            if let Some(record) = current.take() {
+                out.push(record);
+            }
+            current = Some(Paraphrase {
+                family: String::new(),
+                language: String::new(),
+                prompt: String::new(),
+            });
+        } else if let Some(record) = &mut current {
+            if let Some(value) = trimmed.strip_prefix("family ") {
+                record.family = unquote(value);
+            } else if let Some(value) = trimmed.strip_prefix("language ") {
+                record.language = unquote(value);
+            } else if let Some(value) = trimmed.strip_prefix("prompt ") {
+                record.prompt = unquote(value);
+            }
+        }
+    }
+    if let Some(record) = current {
+        out.push(record);
+    }
+    out
+}
+
+fn unquote(value: &str) -> String {
+    value.trim().trim_matches('"').replace("\"\"", "\"")
+}
+
+fn normalize(text: &str) -> String {
+    text.to_lowercase()
+        .chars()
+        .map(|character| {
+            if character.is_alphanumeric() {
+                character
+            } else {
+                ' '
+            }
+        })
+        .collect::<String>()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}

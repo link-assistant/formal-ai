@@ -54,11 +54,21 @@ meanings
     lexeme en
       surface
         text "coding source binary operation test"
+  coding_synthesis_research_trail
+    defined-by intent
+    lexeme en
+      surface
+        text "coding synthesis research trail"
   collection
     defined-by word_surface
     lexeme en
       surface
         text "collection"
+  complete
+    defined-by concept
+    lexeme en
+      surface
+        text "complete"
   concept_lookup_in_context_no_alias
     defined-by intent
     lexeme en
@@ -79,6 +89,11 @@ meanings
     lexeme en
       surface
         text "count words"
+  cualquiera
+    defined-by concept
+    lexeme en
+      surface
+        text "cualquiera"
   draft
     defined-by word_surface
     lexeme en
@@ -429,6 +444,21 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm surface es"
+  response_coding_rosetta_capture_fetched_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture fetched en"
+  response_coding_rosetta_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta failed ru"
+  response_coding_synthesis_research_trail_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis research trail es"
   response_coding_workspace_written_unverified_ru
     defined-by response_template
     lexeme en
@@ -944,6 +974,11 @@ meanings
     lexeme en
       surface
         text "response write program request unspecified ru"
+  response_write_program_skill_gap_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name es"
   response_write_program_skill_gap_ru
     defined-by response_template
     lexeme en
@@ -990,7 +1025,7 @@ meanings
       surface
         text "software design"
   some
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "some"
@@ -1079,6 +1114,11 @@ meanings
     lexeme en
       surface
         text "tool result failed"
+  tupla
+    defined-by concept
+    lexeme en
+      surface
+        text "tupla"
   visited
     defined-by word_surface
     lexeme en

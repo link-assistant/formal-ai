@@ -364,6 +364,11 @@ meanings
     lexeme en
       surface
         text "proof datalog counterexample"
+  python_doc_probe
+    defined-by concept
+    lexeme en
+      surface
+        text "python doc probe"
   re-run
     defined-by concept
     lexeme en
@@ -504,6 +509,31 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm stage hi"
+  response_coding_rosetta_capture_fetched_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture fetched es"
+  response_coding_rosetta_capture_fetched_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture fetched ru"
+  response_coding_rosetta_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta failed en"
+  response_coding_synthesis_research_trail_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis research trail zh"
+  response_coding_synthesis_verified_answer_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis verified answer es"
   response_coding_text_replaced_ru
     defined-by response_template
     lexeme en
@@ -1014,6 +1044,11 @@ meanings
     lexeme en
       surface
         text "sudo"
+  suma
+    defined-by concept
+    lexeme en
+      surface
+        text "suma"
   summarization_cli_criteria_minimum
     defined-by intent
     lexeme en

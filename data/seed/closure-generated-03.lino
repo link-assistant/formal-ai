@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "context harness unavailable"
+  contiene
+    defined-by concept
+    lexeme en
+      surface
+        text "contiene"
   courtesy_response
     defined-by intent
     lexeme en
@@ -249,6 +254,11 @@ meanings
     lexeme en
       surface
         text "local search found path"
+  mayor
+    defined-by concept
+    lexeme en
+      surface
+        text "mayor"
   memory_root_links
     defined-by intent
     lexeme en
@@ -434,11 +444,21 @@ meanings
     lexeme en
       surface
         text "response coding repository source observation zh"
+  response_coding_rosetta_workspace_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable zh"
   response_coding_source_string_constant_rust
     defined-by response_template
     lexeme en
       surface
         text "response coding source string constant rust"
+  response_coding_synthesis_verified_answer_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis verified answer ru"
   response_coding_workspace_verification_failed_hi
     defined-by response_template
     lexeme en

@@ -1,0 +1,21 @@
+self_ast_census
+  target src/coding/function_catalog/rosetta_code.rs
+  language rust
+  fidelity signature
+  byte_len 5589
+  line_count 166
+  content_id source_module_d7f09994eb953344
+  symbol_count 12
+  symbols
+    const API 6 6
+    const PAGE_BASE 7 7
+    struct RosettaExample 10 19
+    function fetch_example 21 58
+    function page_title_from_url 61 78
+    function page_title_for_task 81 87
+    function canonical_page_title 89 91
+    function language_heading 93 110
+    function code_in_language_section 112 124
+    function extract_tag_body 126 138
+    function percent_decode 140 157
+    function hex 159 166

@@ -129,6 +129,11 @@ meanings
     lexeme en
       surface
         text "google trends"
+  greatest
+    defined-by concept
+    lexeme en
+      surface
+        text "greatest"
   intent_routing
     defined-by name
     lexeme en
@@ -439,6 +444,16 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm stage ru"
+  response_coding_rosetta_not_requested_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta not requested hi"
+  response_coding_synthesis_verified_answer_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis verified answer hi"
   response_coding_text_replaced_zh
     defined-by response_template
     lexeme en
@@ -959,11 +974,6 @@ meanings
     lexeme en
       surface
         text "sed"
-  sequence
-    defined-by term
-    lexeme en
-      surface
-        text "sequence"
   solution
     defined-by word_surface
     lexeme en
@@ -1069,6 +1079,11 @@ meanings
     lexeme en
       surface
         text "tool roleplay"
+  transform
+    defined-by concept
+    lexeme en
+      surface
+        text "transform"
   two_paths
     defined-by concept
     lexeme en

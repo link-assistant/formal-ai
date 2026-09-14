@@ -96,6 +96,16 @@ pub fn run_suite(
     slice: usize,
     repository_root: &Path,
 ) -> Result<SuiteRun, String> {
+    run_suite_with_online(manifest, slice, repository_root, live_fetch_enabled())
+}
+
+/// Run an upstream suite with an explicit discovery-network policy.
+pub fn run_suite_with_online(
+    manifest: &SuiteManifest,
+    slice: usize,
+    repository_root: &Path,
+    online: bool,
+) -> Result<SuiteRun, String> {
     let solver_version = env!("CARGO_PKG_VERSION").to_string();
     if let Availability::Unavailable { reason } = &manifest.availability {
         return Ok(unavailable_run(manifest, slice, &solver_version, reason));
@@ -139,7 +149,7 @@ pub fn run_suite(
     }
 
     let workspace = cache_root.join("run").join(manifest.id);
-    let solver = benchmark_solver();
+    let solver = benchmark_solver_with(online);
     let responses = cases
         .iter()
         .map(|case| solver.solve(&case.prompt))
@@ -214,11 +224,26 @@ fn unavailable_run(
 /// The deterministic offline solver every benchmark case is driven through.
 #[must_use]
 pub fn benchmark_solver() -> UniversalSolver {
+    benchmark_solver_with(false)
+}
+
+/// Deterministic benchmark solver with an explicit discovery-network policy.
+#[must_use]
+pub fn benchmark_solver_with(online: bool) -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
-        offline: true,
+        offline: !online,
         execution_surface: ExecutionSurface::RustLibrary,
         temperature: 0.0,
         ..SolverConfig::default()
+    })
+}
+
+fn live_fetch_enabled() -> bool {
+    std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
+        matches!(
+            value.trim().to_ascii_lowercase().as_str(),
+            "1" | "true" | "yes" | "on"
+        )
     })
 }
 

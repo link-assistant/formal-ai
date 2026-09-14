@@ -10,10 +10,9 @@
 //!   so the verification failed on every upstream case, including the seeded
 //!   ones, while the curated wording (`list[float]`) passed. The imports are
 //!   part of the specification and travel with the candidate.
-//! * `MBPP` prompts carry no signature, only tests, and
-//!   `similar_elements((3, 4, 5, 6), (5, 7, 4, 10))` inside an `assert` is a
-//!   call. Copying it produced `def similar_elements((3, 4, 5, 6), ...)`, which
-//!   does not parse. Only a parameter list is a signature.
+//! * Some prompts carry no signature, only tests. A concrete invocation inside
+//!   an `assert` is a call, not a parameter list. Only a declaration is a
+//!   signature; otherwise parameter arity is inferred without copying values.
 
 /// The import statements a prompt declares, in order, without duplicates.
 #[must_use]

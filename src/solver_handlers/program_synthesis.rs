@@ -1,531 +1,146 @@
-use std::{fmt::Write as _, time::Duration};
+//! Research-backed Python synthesis for structurally recognized coding tasks.
 
-use crate::agent::{AgentRun, AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
+use std::fmt::Write as _;
+
+use crate::coding::composition;
+use crate::coding::concept_discovery::discover;
+use crate::coding::synthesis_runtime::{
+    discovery_catalog, live_fetch_enabled, procedure_ledger, render_answer, research_trail_line,
+    response_language,
+};
+use crate::coding::task_spec::recognise;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
 use super::finalize_simple;
-
-struct PythonCandidate {
-    id: &'static str,
-    function: PythonFunctionTree,
-    tests: Vec<&'static str>,
-    fragments: Vec<&'static str>,
-}
-
-struct PythonFunctionTree {
-    signature: String,
-    body: Vec<PythonStatement>,
-}
-
-enum PythonStatement {
-    Assign {
-        semantic_node: &'static str,
-        target: &'static str,
-        expression: &'static str,
-    },
-    Return {
-        semantic_node: &'static str,
-        expression: &'static str,
-    },
-    IfReturn {
-        semantic_node: &'static str,
-        condition: &'static str,
-        value: &'static str,
-    },
-    For {
-        semantic_node: &'static str,
-        target: &'static str,
-        iterator: &'static str,
-        body: Vec<Self>,
-    },
-}
-
-impl PythonFunctionTree {
-    const fn new(signature: String, body: Vec<PythonStatement>) -> Self {
-        Self { signature, body }
-    }
-
-    fn render(&self) -> String {
-        let mut code = format!("def {}:\n", self.signature);
-        Self::render_statements(&mut code, &self.body, 1);
-        code
-    }
-
-    fn links_notation(&self) -> String {
-        let mut out = String::from("python_function_syntax_tree\n");
-        let _ = writeln!(
-            out,
-            "  semantic_node function_definition signature={:?}",
-            self.signature
-        );
-        for statement in &self.body {
-            statement.links_line(&mut out, 1);
-        }
-        out.trim_end().to_owned()
-    }
-
-    fn render_statements(code: &mut String, statements: &[PythonStatement], indent_level: usize) {
-        for statement in statements {
-            statement.render(code, indent_level);
-        }
-    }
-}
-
-impl PythonStatement {
-    const fn assign(
-        semantic_node: &'static str,
-        target: &'static str,
-        expression: &'static str,
-    ) -> Self {
-        Self::Assign {
-            semantic_node,
-            target,
-            expression,
-        }
-    }
-
-    const fn return_expr(semantic_node: &'static str, expression: &'static str) -> Self {
-        Self::Return {
-            semantic_node,
-            expression,
-        }
-    }
-
-    const fn if_return(
-        semantic_node: &'static str,
-        condition: &'static str,
-        value: &'static str,
-    ) -> Self {
-        Self::IfReturn {
-            semantic_node,
-            condition,
-            value,
-        }
-    }
-
-    const fn for_loop(
-        semantic_node: &'static str,
-        target: &'static str,
-        iterator: &'static str,
-        body: Vec<Self>,
-    ) -> Self {
-        Self::For {
-            semantic_node,
-            target,
-            iterator,
-            body,
-        }
-    }
-
-    fn render(&self, code: &mut String, indent_level: usize) {
-        let indent = "    ".repeat(indent_level);
-        match self {
-            Self::Assign {
-                target, expression, ..
-            } => {
-                let _ = writeln!(code, "{indent}{target} = {expression}");
-            }
-            Self::Return { expression, .. } => {
-                let _ = writeln!(code, "{indent}return {expression}");
-            }
-            Self::IfReturn {
-                condition, value, ..
-            } => {
-                let _ = writeln!(code, "{indent}if {condition}:");
-                let _ = writeln!(code, "{indent}    return {value}");
-            }
-            Self::For {
-                target,
-                iterator,
-                body,
-                ..
-            } => {
-                let _ = writeln!(code, "{indent}for {target} in {iterator}:");
-                PythonFunctionTree::render_statements(code, body, indent_level + 1);
-            }
-        }
-    }
-
-    fn links_line(&self, out: &mut String, depth: usize) {
-        let indent = "  ".repeat(depth + 1);
-        match self {
-            Self::Assign {
-                semantic_node,
-                target,
-                expression,
-            } => {
-                let _ = writeln!(
-                    out,
-                    "{indent}semantic_node {semantic_node} target={target:?} expression={expression:?}"
-                );
-            }
-            Self::Return {
-                semantic_node,
-                expression,
-            } => {
-                let _ = writeln!(
-                    out,
-                    "{indent}semantic_node {semantic_node} expression={expression:?}"
-                );
-            }
-            Self::IfReturn {
-                semantic_node,
-                condition,
-                value,
-            } => {
-                let _ = writeln!(
-                    out,
-                    "{indent}semantic_node {semantic_node} condition={condition:?} value={value:?}"
-                );
-            }
-            Self::For {
-                semantic_node,
-                target,
-                iterator,
-                body,
-            } => {
-                let _ = writeln!(
-                    out,
-                    "{indent}semantic_node {semantic_node} target={target:?} iterator={iterator:?}"
-                );
-                for statement in body {
-                    statement.links_line(out, depth + 1);
-                }
-            }
-        }
-    }
-}
 
 pub fn try_program_synthesis(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let canonical = crate::seed::operation_vocabulary().canonicalized_prompt(normalized);
-    if !looks_like_python_function_request(prompt, &canonical) {
-        return None;
-    }
+    try_program_synthesis_with_online(prompt, normalized, log, live_fetch_enabled())
+}
 
-    let function_name = extract_function_name(prompt, &canonical)?;
-    let candidate = synthesize_python_candidate(prompt, &canonical, &function_name)?;
-    let source_cst = crate::coding::validated_program_cst("python", &candidate.function.render())?;
-    log.append(
-        "synthesis:spec",
-        format!("language=python function={function_name}"),
-    );
-    log.append("synthesis:syntax_tree", candidate.function.links_notation());
-    log.append("synthesis:cst_engine", source_cst.engine().to_owned());
-    log.append("synthesis:cst_tree", source_cst.links_notation());
-    for fragment in &candidate.fragments {
-        log.append("composition:code_fragment", (*fragment).to_owned());
+pub fn try_program_synthesis_with_online(
+    prompt: &str,
+    _normalized: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
+    let spec = recognise(prompt)?;
+    MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
+    log.append("synthesis:spec", spec.to_links_notation());
+    let procedure_ledger = procedure_ledger();
+    let recalled = procedure_ledger
+        .as_ref()
+        .and_then(|ledger| match ledger.recall(&spec) {
+            Ok(hit) => hit,
+            Err(error) => {
+                log.append("synthesis:procedure_ledger_error", error.to_string());
+                None
+            }
+        });
+    if let Some(procedure) = &recalled {
+        log.append("cache_hit", procedure.id.clone());
+        log.append(
+            "synthesis:procedure_replay",
+            format!("{} composition={}", procedure.id, procedure.composition),
+        );
     }
-    log.append("synthesis:candidate", candidate.id.to_owned());
-
-    let run = verify_python_candidate(prompt, &candidate)?;
-    append_agent_run(log, &run);
-    let passed = run.status == AgentRunStatus::Completed
-        && run
-            .command_results
-            .iter()
-            .any(|result| result.status_code == Some(0) && !result.timed_out);
-    if !passed {
+    let catalog = discovery_catalog(&spec, log, online);
+    let concepts = discover(&spec, &catalog);
+    log.append("synthesis:concept_map", concepts.to_links_notation());
+    let outcome = composition::compose(&spec, &concepts);
+    for attempt in &outcome.attempts {
+        log.append(
+            "synthesis:draft_comparison",
+            format!(
+                "draft={};status={};detail={}",
+                attempt.id,
+                if attempt.passed { "passed" } else { "failed" },
+                attempt.detail
+            ),
+        );
+    }
+    let Some(selected) = outcome.selected else {
         log.append("synthesis:verification", "tests_failed".to_owned());
-        return None;
-    }
+        log.append("synthesis:research_trail", outcome.research_trail.clone());
+        log.append(
+            "skill_gap",
+            crate::program_skill_gap::gap_name(Some(&spec.name), Some(&spec.language)),
+        );
+        let response_language = response_language(&spec);
+        let mut body = crate::program_skill_gap::render(
+            Some(&spec.name),
+            Some(&spec.language),
+            response_language,
+        );
+        let _ = write!(
+            body,
+            "\n\n{}",
+            research_trail_line(response_language, &outcome.research_trail)
+        );
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "write_program_skill_gap",
+            "response:write_program:skill_gap",
+            &body,
+            1.0,
+        ));
+    };
 
+    log.append("synthesis:composition", selected.composition.clone());
+    if let Some(procedure) = recalled
+        && procedure.composition != selected.composition
+    {
+        log.append(
+            "synthesis:procedure_rediscovered",
+            format!(
+                "id={};previous={};current={}",
+                procedure.id, procedure.composition, selected.composition
+            ),
+        );
+    }
+    log.append(
+        "synthesis:cst_tree",
+        crate::coding::validated_program_cst("python", &selected.source)?.links_notation(),
+    );
     log.append(
         "synthesis:verification",
-        format!("tests_passed assertion_count={}", candidate.tests.len()),
+        format!("tests_passed assertion_count={}", selected.assertion_count),
     );
     log.append("execution_status", "tests passed".to_owned());
-    log.append(
-        "execution_environment",
-        "isolated bounded agent workspace; env cleared; 5 second command budget".to_owned(),
-    );
-    MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
-
-    let body = render_python_answer(prompt, &candidate);
+    for source in &selected.source_urls {
+        log.append("synthesis:source", source.clone());
+    }
+    if let Some(ledger) = &procedure_ledger {
+        match ledger.remember(&spec, &concepts, &selected) {
+            Ok(procedure) => {
+                log.append("synthesis:procedure_recorded", procedure.id);
+            }
+            Err(error) => {
+                log.append("synthesis:procedure_ledger_error", error.to_string());
+            }
+        }
+    }
+    let body = render_answer(&selected, response_language(&spec));
     Some(finalize_simple(
         prompt,
         log,
         "write_program",
-        &format!("response:write_program:synthesized:python:{}", candidate.id),
+        "response:write_program:synthesized:python",
         &body,
         1.0,
     ))
 }
 
-/// Does `normalized` read like a request to synthesise a Python function?
+/// Does the prompt carry a structural coding-task specification?
 ///
-/// The three conjuncts are language-independent semantic roles, not hardcoded
-/// words: a *subject* (the function being asked for), a *domain* signal (Python
-/// or a data kind it works over), and an *action* verb (implement/write/return).
-/// `def ` is Python syntax the user may paste directly, so a literal signature
-/// satisfies both the subject and action sides regardless of prose language.
-pub fn looks_like_python_function_request(prompt: &str, normalized: &str) -> bool {
-    let lexicon = crate::seed::lexicon();
-    let has_def = prompt.to_ascii_lowercase().contains("def ");
-    (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || has_def)
-        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
-        && (lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
-            || has_def)
-}
-
-/// Is `task` evidenced by its signals — is every `program_synthesis_signal`
-/// meaning it is `defined_by` present in `normalized`? A task with no signal
-/// definitions is never matched this way (it can still match by declared name).
-/// This replaces the per-task hardcoded phrase checks: the signal words live in
-/// `data/seed/meanings-program-synthesis.lino`, translatable to any language.
-fn synthesis_task_evidenced(
-    lexicon: &crate::seed::Lexicon,
-    task: &crate::seed::Meaning,
-    normalized: &str,
-) -> bool {
-    let mut required = 0usize;
-    for target in &task.defined_by {
-        let Some(signal) = lexicon.meaning(target) else {
-            continue;
-        };
-        if !signal.has_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SIGNAL) {
-            continue;
-        }
-        required += 1;
-        if !signal.evidenced_in(normalized) {
-            return false;
-        }
-    }
-    required > 0
-}
-
-/// The canonical function name of the first synthesis task (declaration order)
-/// whose signals are all evidenced in `normalized`. The slug *is* the Python
-/// function name, so the caller can use it directly.
-fn match_synthesis_task(lexicon: &crate::seed::Lexicon, normalized: &str) -> Option<String> {
-    lexicon
-        .meanings_with_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_TASK)
-        .find(|task| synthesis_task_evidenced(lexicon, task, normalized))
-        .map(|task| task.slug.clone())
-}
-
-fn extract_function_name(prompt: &str, normalized: &str) -> Option<String> {
-    if let Some(name) = crate::coding::python_signature::declared_function_name(prompt) {
-        return Some(name);
-    }
-    if let Some(slug) = match_synthesis_task(crate::seed::lexicon(), normalized) {
-        return Some(slug);
-    }
-    for marker in ["function ", "def "] {
-        if let Some(name) = identifier_after_ascii_marker(prompt, marker) {
-            return Some(name);
-        }
-    }
-    None
-}
-
-fn synthesize_python_candidate(
-    prompt: &str,
-    normalized: &str,
-    function_name: &str,
-) -> Option<PythonCandidate> {
-    // Select the synthesis task by declared name or by evidenced signals, then
-    // dispatch on its slug. The slug is the canonical Python function name and
-    // the recognition lives entirely in the meaning lexicon — no prose here.
-    let lexicon = crate::seed::lexicon();
-    let task = lexicon
-        .meanings_with_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_TASK)
-        .find(|task| {
-            function_name == task.slug || synthesis_task_evidenced(lexicon, task, normalized)
-        })?;
-
-    if task.slug == "has_close_elements" {
-        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
-            .unwrap_or_else(|| {
-                String::from("has_close_elements(numbers: list[float], threshold: float) -> bool")
-            });
-        return Some(PythonCandidate {
-            id: "pairwise_threshold_distance",
-            function: PythonFunctionTree::new(
-                signature,
-                vec![
-                    PythonStatement::for_loop(
-                        "pairwise_outer_loop",
-                        "left_index, left",
-                        "enumerate(numbers)",
-                        vec![PythonStatement::for_loop(
-                            "pairwise_inner_loop",
-                            "right",
-                            "numbers[left_index + 1:]",
-                            vec![PythonStatement::if_return(
-                                "threshold_match_return",
-                                "abs(left - right) < threshold",
-                                "True",
-                            )],
-                        )],
-                    ),
-                    PythonStatement::return_expr("no_pair_matches_return", "False"),
-                ],
-            ),
-            tests: vec![
-                "assert has_close_elements([1.0, 2.0, 3.0], 0.5) is False",
-                "assert has_close_elements([1.0, 2.0, 3.0], 1.1) is True",
-                "assert has_close_elements([1.0, 2.8, 3.0], 0.3) is True",
-                "assert has_close_elements([], 0.1) is False",
-            ],
-            fragments: vec![
-                "python:def_function",
-                "loop:pairwise_distinct_values",
-                "predicate:absolute_difference_less_than_threshold",
-                "branch:return_false_when_no_pair_matches",
-            ],
-        });
-    }
-
-    if task.slug == "similar_elements" {
-        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
-            .unwrap_or_else(|| String::from("similar_elements(test_tup1, test_tup2)"));
-        return Some(PythonCandidate {
-            id: "tuple_intersection_set",
-            function: PythonFunctionTree::new(
-                signature,
-                vec![PythonStatement::return_expr(
-                    "deterministic_tuple_intersection_return",
-                    "tuple(sorted(set(test_tup1) & set(test_tup2)))",
-                )],
-            ),
-            tests: vec![
-                "assert similar_elements((3, 4, 5, 6), (5, 7, 4, 10)) == (4, 5)",
-                "assert similar_elements((1, 2), (3, 4)) == ()",
-                "assert similar_elements(('a', 'b'), ('b', 'c')) == ('b',)",
-            ],
-            fragments: vec![
-                "python:def_function",
-                "collection:set_intersection",
-                "collection:deterministic_tuple_order",
-            ],
-        });
-    }
-
-    if task.slug == "count_vowels" {
-        let signature = crate::coding::python_signature::declared_signature(prompt, function_name)
-            .unwrap_or_else(|| String::from("count_vowels(text: str) -> int"));
-        return Some(PythonCandidate {
-            id: "count_matching_characters",
-            function: PythonFunctionTree::new(
-                signature,
-                vec![
-                    PythonStatement::assign(
-                        "vowel_membership_set_assignment",
-                        "vowels",
-                        "set(\"aeiouAEIOU\")",
-                    ),
-                    PythonStatement::return_expr(
-                        "matching_character_count_return",
-                        "sum(1 for character in text if character in vowels)",
-                    ),
-                ],
-            ),
-            tests: vec![
-                "assert count_vowels('hello') == 2",
-                "assert count_vowels('sky') == 0",
-                "assert count_vowels('Formal AI') == 4",
-            ],
-            fragments: vec![
-                "python:def_function",
-                "collection:membership_set",
-                "aggregation:sum_generator",
-            ],
-        });
-    }
-
-    None
-}
-
-fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<AgentRun> {
-    let config = AgentWorkspaceConfig {
-        time_budget: Duration::from_secs(5),
-        ..AgentWorkspaceConfig::default()
-    };
-    let mut workspace = AgentWorkspace::for_prompt(
-        &format!("program_synthesis:{prompt}:{}", candidate.id),
-        &config,
-    )
-    .ok()?;
-    workspace.create_file("solution.py", &verification_script(prompt, candidate));
-    workspace.run_command("python3 solution.py");
-    Some(workspace.finish())
-}
-
-/// The candidate's source with the prompt's imports ahead of it (issue #1085).
-fn candidate_source(prompt: &str, candidate: &PythonCandidate) -> String {
-    let mut source = crate::coding::python_signature::import_preamble(prompt);
-    if !source.is_empty() {
-        source.push_str("\n\n");
-    }
-    source.push_str(&candidate.function.render());
-    source
-}
-
-fn verification_script(prompt: &str, candidate: &PythonCandidate) -> String {
-    let mut script = candidate_source(prompt, candidate);
-    script.push_str("\n\nif __name__ == \"__main__\":\n");
-    for test in &candidate.tests {
-        script.push_str("    ");
-        script.push_str(test);
-        script.push('\n');
-    }
-    let _ = writeln!(
-        script,
-        "    print(\"tests_passed:{}\")",
-        candidate.tests.len()
-    );
-    script
-}
-
-fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
-    log.append("synthesis:workspace", run.workspace.display().to_string());
-    for action in &run.actions {
-        log.append(action.event_kind(), action.evidence_payload());
-    }
-    for result in &run.command_results {
-        log.append(
-            "synthesis:candidate_execution",
-            format!(
-                "command={} exit={:?} timed_out={} stdout_bytes={} stderr_bytes={}",
-                result.command,
-                result.status_code,
-                result.timed_out,
-                result.stdout.len(),
-                result.stderr.len()
-            ),
-        );
-    }
-}
-
-fn render_python_answer(prompt: &str, candidate: &PythonCandidate) -> String {
-    let code = candidate_source(prompt, candidate);
-    format!(
-        "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.",
-        code,
-        candidate.tests.len(),
-        candidate.tests.len()
-    )
-}
-
-fn identifier_after_ascii_marker(prompt: &str, marker: &str) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    let start = lower.find(marker)? + marker.len();
-    let mut name = String::new();
-    let mut started = false;
-    for character in prompt[start..].chars() {
-        if character.is_ascii_alphanumeric() || character == '_' {
-            name.push(character);
-            started = true;
-        } else if started {
-            break;
-        } else if !character.is_ascii_whitespace() {
-            return None;
-        }
-    }
-    (!name.is_empty()).then_some(name)
+/// Kept as the shared gate used by the minimal-script handler. The semantic
+/// recognizer owns all prose vocabulary; this function adds no task names.
+#[must_use]
+pub fn looks_like_python_function_request(prompt: &str, _normalized: &str) -> bool {
+    recognise(prompt).is_some()
 }

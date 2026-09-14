@@ -31,6 +31,7 @@ handler_precedence
   shell_command_transform # issue 552 a shell-command rewrite beats generic script writing and terminal-command refusal
   number_constraint_reasoning
   pattern_inference # issue 531 explicit sequences and grids beat arithmetic and generic concept lookup
+  program_synthesis # issue 710 structural coding-task recognition beats arithmetic and concepts inside examples/docstrings
   arithmetic
   javascript_execution
   definition_merge
@@ -42,7 +43,6 @@ handler_precedence
   execution_failure # runs before write_script so an explicit failure prompt surfaces a trace instead of a passing snippet
   installation_conversion # issue 423 an install or deploy guide conversion beats a generic write_script request
   write_script
-  program_synthesis
   document_generation_plan # issue 425 a document request beats the software_project build
   software_project
   algorithm

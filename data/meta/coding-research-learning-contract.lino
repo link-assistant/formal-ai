@@ -3,6 +3,9 @@ coding_research_learning_contract
   gap_source program_skill_gap
   research_boundary source_research
   source_format formal_ai_coding_procedure_v1
+  source_format python_documentation_html
+  source_format wikifunctions_z8_z14_z20_json
+  source_format rosetta_mediawiki_wikitext
   formalization links_notation
   procedure_origin research
   candidate_effect inert_until_verified

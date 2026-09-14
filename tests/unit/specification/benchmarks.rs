@@ -245,7 +245,7 @@ fn issue_315_programming_benchmark_cases_synthesize_and_verify() {
             &[
                 "```python",
                 "def has_close_elements",
-                "return False",
+                "itertools.combinations",
                 "Execution status: tests passed",
             ][..],
         ),
@@ -277,10 +277,10 @@ fn issue_315_programming_benchmark_cases_synthesize_and_verify() {
             );
         }
         for expected in [
-            "synthesis:candidate",
-            "synthesis:candidate_execution",
+            "synthesis:draft_comparison",
+            "synthesis:composition",
+            "synthesis:cst_tree",
             "synthesis:verification tests_passed",
-            "action_log:run_command",
         ] {
             assert!(
                 response.links_notation.contains(expected),
@@ -392,49 +392,49 @@ fn issue_326_program_synthesis_accepts_native_operation_verbs() {
             language: "en",
             prompt: "Implement Python function count_vowels(text: str) -> int. Return the number of vowels in the text.",
             expected_function: "def count_vowels",
-            expected_fragment: "aggregation:sum_generator",
+            expected_fragment: "reduce_count(vowel_character_class)",
         },
         Case {
             language: "ru",
             prompt: "Реализуй Python функцию count_vowels(text: str) -> int. Верни количество гласных в тексте.",
             expected_function: "def count_vowels",
-            expected_fragment: "aggregation:sum_generator",
+            expected_fragment: "reduce_count(vowel_character_class)",
         },
         Case {
             language: "hi",
             prompt: "Python फ़ंक्शन count_vowels(text: str) -> int लागू करें। पाठ में स्वरों की संख्या लौटाएँ।",
             expected_function: "def count_vowels",
-            expected_fragment: "aggregation:sum_generator",
+            expected_fragment: "reduce_count(vowel_character_class)",
         },
         Case {
             language: "zh",
             prompt: "实现 Python 函数 count_vowels(text: str) -> int。返回文本中的元音数量。",
             expected_function: "def count_vowels",
-            expected_fragment: "aggregation:sum_generator",
+            expected_fragment: "reduce_count(vowel_character_class)",
         },
         Case {
             language: "en",
             prompt: "Write Python function similar_elements(test_tup1, test_tup2). Return similar elements from both tuples.",
             expected_function: "def similar_elements",
-            expected_fragment: "collection:set_intersection",
+            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
         },
         Case {
             language: "ru",
             prompt: "Напиши Python функцию similar_elements(test_tup1, test_tup2). Верни общие элементы из обоих кортежей.",
             expected_function: "def similar_elements",
-            expected_fragment: "collection:set_intersection",
+            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
         },
         Case {
             language: "hi",
             prompt: "Python फ़ंक्शन similar_elements(test_tup1, test_tup2) लिखें। दोनों टपल से समान तत्व लौटाएँ।",
             expected_function: "def similar_elements",
-            expected_fragment: "collection:set_intersection",
+            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
         },
         Case {
             language: "zh",
             prompt: "编写 Python 函数 similar_elements(test_tup1, test_tup2)。返回两个元组中的相同元素。",
             expected_function: "def similar_elements",
-            expected_fragment: "collection:set_intersection",
+            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
         },
     ];
 

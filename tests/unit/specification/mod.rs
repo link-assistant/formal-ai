@@ -44,6 +44,7 @@ mod code_generation;
 mod code_generation_blueprint;
 mod code_generation_coreference;
 mod code_generation_program_modifiers;
+mod coding_discovery_meta_algorithm;
 mod coding_modification_benchmarks;
 mod computer_use_meta_algorithm;
 mod conversation_history;

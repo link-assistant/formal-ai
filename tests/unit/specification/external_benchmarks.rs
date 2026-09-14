@@ -212,6 +212,18 @@ fn scheduled_workflow_publishes_to_the_committed_ledger() {
         "the slice size must be configurable"
     );
     assert!(
+        workflow.contains("--online"),
+        "scheduled and dispatched suite runs must opt into live discovery"
+    );
+    assert!(
+        !workflow
+            .split("# === EXTERNAL BENCHMARKS")
+            .next()
+            .unwrap_or_default()
+            .contains("--online"),
+        "the pull-request ratchet must remain offline and must not run a suite"
+    );
+    assert!(
         workflow.contains("--append") && workflow.contains(LEDGER_PATH),
         "the scheduled run must append to {LEDGER_PATH}"
     );
@@ -681,7 +693,7 @@ fn issue_698_external_benchmark_harness_is_wired_end_to_end() {
     // And the CLI entry points the docs advertise exist.
     for command in [
         "benchmark list",
-        "benchmark run --suite humaneval --slice 20",
+        "benchmark run --suite humaneval --slice 20 --online",
         "benchmark ratchet",
     ] {
         assert!(docs.contains(command), "docs must document `{command}`");

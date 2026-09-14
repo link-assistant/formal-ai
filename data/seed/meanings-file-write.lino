@@ -282,6 +282,8 @@ meanings
       surface
         text "containing …"
       surface
+        text "with …"
+      surface
         text "with content …"
       surface
         text "with text …"

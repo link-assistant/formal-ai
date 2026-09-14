@@ -1,0 +1,535 @@
+meanings
+  quantifier
+    defined-by concept
+  mapping
+    defined-by concept
+  filter
+    defined-by concept
+  reduction
+    defined-by concept
+  pairwise
+    defined-by concept
+  predicate
+    defined-by concept
+  tuple
+    defined-by concept
+  sequence
+    defined-by concept
+  set
+    defined-by concept
+  normalization
+    defined-by concept
+  ordering
+    defined-by concept
+  counting
+    defined-by concept
+  splitting
+    defined-by concept
+  joining
+    defined-by concept
+  range
+    defined-by concept
+  character_class
+    defined-by concept
+  quantifier_any
+    defined-by quantifier
+    role coding_structure
+    idiom "any({predicate} for {item} in {items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#any"
+    lexeme en
+      surface any
+      surface some
+      surface "at least one"
+    lexeme ru
+      surface любой
+      surface "хотя бы один"
+    lexeme hi
+      surface कोई
+      surface "कम से कम एक"
+    lexeme zh
+      surface 任意
+      surface 至少一个
+    lexeme es
+      surface cualquiera
+      surface "al menos uno"
+  quantifier_all
+    defined-by quantifier
+    role coding_structure
+    idiom "all({predicate} for {item} in {items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#all"
+    lexeme en
+      surface all
+      surface every
+      surface each
+    lexeme ru
+      surface все
+      surface всех
+      surface каждый
+    lexeme hi
+      surface सभी
+      surface हर
+    lexeme zh
+      surface 所有
+      surface 每个
+    lexeme es
+      surface todos
+      surface cada
+  map_each
+    defined-by mapping
+    role coding_structure
+    idiom "[{expression} for {item} in {items}]"
+    grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
+    lexeme en
+      surface "for each"
+      surface "for every"
+      surface transform
+    lexeme ru
+      surface "для каждого"
+      surface преобразовать
+    lexeme hi
+      surface "प्रत्येक के लिए"
+      surface बदलें
+    lexeme zh
+      surface 对每个
+      surface 转换
+    lexeme es
+      surface "para cada"
+      surface transformar
+  filter_only
+    defined-by filter
+    role coding_structure
+    idiom "[{item} for {item} in {items} if {predicate}]"
+    grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
+    lexeme en
+      surface filter
+      surface "only those"
+      surface which
+    lexeme ru
+      surface фильтровать
+      surface только
+      surface которые
+    lexeme hi
+      surface छाँटें
+      surface केवल
+    lexeme zh
+      surface 过滤
+      surface 仅
+      surface 其中
+    lexeme es
+      surface filtrar
+      surface solo
+  reduce_sum
+    defined-by reduction
+    role coding_structure
+    idiom "sum({items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#sum"
+    lexeme en
+      surface sum
+      surface total
+    lexeme ru
+      surface сумма
+      surface сумму
+      surface суммы
+    lexeme hi
+      surface योग
+    lexeme zh
+      surface 总和
+      surface 求和
+    lexeme es
+      surface suma
+  reduce_product
+    defined-by reduction
+    role coding_structure
+    idiom "math.prod({items})"
+    grounding "https://docs.python.org/3.12/library/math.html#math.prod"
+    lexeme en
+      surface product
+    lexeme ru
+      surface произведение
+      surface произведения
+    lexeme hi
+      surface गुणनफल
+    lexeme zh
+      surface 乘积
+    lexeme es
+      surface producto
+  reduce_max
+    defined-by reduction
+    role coding_structure
+    idiom "max({items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#max"
+    lexeme en
+      surface largest
+      surface maximum
+      surface greatest
+    lexeme ru
+      surface наибольший
+      surface максимум
+    lexeme hi
+      surface अधिकतम
+      surface महत्तम
+    lexeme zh
+      surface 最大
+    lexeme es
+      surface mayor
+      surface máximo
+  reduce_min
+    defined-by reduction
+    role coding_structure
+    idiom "min({items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#min"
+    lexeme en
+      surface smallest
+      surface minimum
+    lexeme ru
+      surface наименьший
+      surface минимум
+    lexeme hi
+      surface न्यूनतम
+    lexeme zh
+      surface 最小
+    lexeme es
+      surface menor
+      surface mínimo
+  reduce_count
+    defined-by reduction
+    role coding_structure
+    idiom "sum(1 for {item} in {items} if {predicate})"
+    grounding "https://docs.python.org/3.12/library/functions.html#sum"
+    lexeme en
+      surface count
+      surface "how many"
+      surface "number of"
+    lexeme ru
+      surface количество
+      surface подсчитать
+    lexeme hi
+      surface संख्या
+      surface गिनें
+    lexeme zh
+      surface 数量
+      surface 计数
+    lexeme es
+      surface cantidad
+      surface contar
+  reduce_len
+    defined-by reduction
+    role coding_structure
+    idiom "len({items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#len"
+    lexeme en
+      surface length
+      surface size
+    lexeme ru
+      surface длина
+      surface размер
+    lexeme hi
+      surface लंबाई
+      surface आकार
+    lexeme zh
+      surface 长度
+      surface 大小
+    lexeme es
+      surface longitud
+      surface tamaño
+  pairwise_distinct
+    defined-by pairwise
+    role coding_structure
+    idiom "itertools.combinations({items}, 2)"
+    grounding "https://docs.python.org/3.12/library/itertools.html#itertools.combinations"
+    lexeme en
+      surface "any two"
+      surface "each pair"
+      surface "every pair"
+      surface "distinct pair"
+      surface "two numbers"
+    lexeme ru
+      surface "любые два"
+      surface "каждая пара"
+      surface "два числа"
+      surface "двух чисел"
+    lexeme hi
+      surface "कोई दो"
+      surface "हर जोड़ी"
+      surface "एक जोड़ी"
+      surface "दो संख्याएँ"
+    lexeme zh
+      surface 任意两个
+      surface 每对
+      surface 两个数
+      surface 两数
+    lexeme es
+      surface "cualesquiera dos"
+      surface "cada par"
+      surface "dos números"
+  predicate_abs_diff_lt
+    defined-by predicate
+    role coding_structure
+    idiom "abs({left} - {right}) < {threshold}"
+    grounding "https://docs.python.org/3.12/library/functions.html#abs"
+    lexeme en
+      surface "closer to each other than"
+      surface "differ by less than"
+      surface "difference is less than"
+      surface "difference that is less than"
+      surface within
+    lexeme ru
+      surface "ближе друг к другу чем"
+      surface "различаются меньше чем"
+      surface "различается меньше чем"
+    lexeme hi
+      surface "से कम अंतर"
+      surface करीब
+    lexeme zh
+      surface 差小于
+      surface 更接近
+    lexeme es
+      surface "más cerca entre sí que"
+      surface "difieren menos que"
+  tuple_of
+    defined-by tuple
+    role coding_structure
+    idiom "({left}, {right})"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
+    lexeme en
+      surface "tuple consisting of"
+      surface "tuple of"
+    lexeme ru
+      surface "кортеж состоящий из"
+      surface кортеж
+    lexeme hi
+      surface "से बना टपल"
+      surface टपल
+    lexeme zh
+      surface 组成的元组
+      surface 元组
+    lexeme es
+      surface "tupla compuesta por"
+      surface tupla
+  running_prefix
+    defined-by sequence
+    role coding_structure
+    idiom "itertools.accumulate({items}, {operation})"
+    grounding "https://docs.python.org/3.12/library/itertools.html#itertools.accumulate"
+    lexeme en
+      surface cumulative
+      surface rolling
+      surface "so far"
+    lexeme ru
+      surface накопительный
+      surface "до сих пор"
+    lexeme hi
+      surface संचयी
+      surface "अब तक"
+    lexeme zh
+      surface 累积
+      surface 到目前为止
+    lexeme es
+      surface acumulativo
+      surface "hasta ahora"
+  distinct_elements
+    defined-by set
+    role coding_structure
+    idiom "set({items})"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#set"
+    lexeme en
+      surface distinct
+      surface unique
+      surface different
+    lexeme ru
+      surface уникальные
+      surface различные
+    lexeme hi
+      surface विशिष्ट
+      surface अलग
+    lexeme zh
+      surface 不同
+      surface 唯一
+    lexeme es
+      surface distintos
+      surface únicos
+  case_insensitive
+    defined-by normalization
+    role coding_structure
+    idiom "{text}.lower()"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.lower"
+    lexeme en
+      surface "ignoring case"
+      surface "regardless of case"
+      surface case-insensitive
+    lexeme ru
+      surface "без учета регистра"
+    lexeme hi
+      surface "अक्षर केस की परवाह किए बिना"
+    lexeme zh
+      surface 忽略大小写
+    lexeme es
+      surface "sin distinguir mayúsculas"
+  sort_ascending
+    defined-by ordering
+    role coding_structure
+    idiom "sorted({items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
+    lexeme en
+      surface ascending
+      surface sorted
+      surface "smallest to largest"
+    lexeme ru
+      surface возрастанию
+      surface отсортированный
+    lexeme hi
+      surface आरोही
+      surface क्रमबद्ध
+    lexeme zh
+      surface 升序
+      surface 排序
+    lexeme es
+      surface ascendente
+      surface ordenado
+  sort_descending
+    defined-by ordering
+    role coding_structure
+    idiom "sorted({items}, reverse=True)"
+    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
+    lexeme en
+      surface descending
+      surface reverse-sorted
+      surface "largest to smallest"
+    lexeme ru
+      surface убыванию
+    lexeme hi
+      surface अवरोही
+    lexeme zh
+      surface 降序
+    lexeme es
+      surface descendente
+  count_overlapping
+    defined-by counting
+    role coding_structure
+    idiom "sum(1 for i in range(len({text})) if {text}.startswith({substring}, i))"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.startswith"
+    lexeme en
+      surface "count overlapping"
+      surface overlapping
+    lexeme ru
+      surface "перекрывающиеся вхождения"
+    lexeme hi
+      surface "ओवरलैप घटनाएँ"
+    lexeme zh
+      surface 重叠出现
+    lexeme es
+      surface "apariciones superpuestas"
+  split_on_space
+    defined-by splitting
+    role coding_structure
+    idiom "{text}.split()"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.split"
+    lexeme en
+      surface space-delimited
+      surface "separated by spaces"
+    lexeme ru
+      surface "разделенные пробелами"
+    lexeme hi
+      surface "रिक्त स्थान से अलग"
+    lexeme zh
+      surface 空格分隔
+    lexeme es
+      surface "separado por espacios"
+  join_with_space
+    defined-by joining
+    role coding_structure
+    idiom "' '.join({items})"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.join"
+    lexeme en
+      surface "joined with spaces"
+      surface "space-delimited result"
+    lexeme ru
+      surface "соединенные пробелами"
+    lexeme hi
+      surface "रिक्त स्थान से जोड़ें"
+    lexeme zh
+      surface 用空格连接
+    lexeme es
+      surface "unido con espacios"
+  range_inclusive
+    defined-by range
+    role coding_structure
+    idiom "range(1, {bound} + 1)"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
+    lexeme en
+      surface "count to"
+      surface "up to"
+      surface inclusive
+    lexeme ru
+      surface "посчитай до"
+      surface включительно
+    lexeme hi
+      surface "तक गिनो"
+      surface सहित
+    lexeme zh
+      surface 数到
+      surface 包含
+    lexeme es
+      surface "cuenta hasta"
+      surface inclusive
+  membership
+    defined-by predicate
+    role coding_structure
+    idiom "{item} in {collection}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#membership-test-operations"
+    lexeme en
+      surface contains
+    lexeme ru
+      surface содержит
+    lexeme hi
+      surface शामिल
+    lexeme zh
+      surface 包含
+    lexeme es
+      surface contiene
+  set_intersection
+    defined-by set
+    role coding_structure
+    idiom "set({left}) & set({right})"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset"
+    lexeme en
+      surface shared
+      surface common
+      surface intersection
+      surface "occur in both"
+      surface "similar elements"
+    lexeme ru
+      surface общие
+      surface пересечение
+      surface "похожие элементы"
+    lexeme hi
+      surface समान
+      surface प्रतिच्छेदन
+      surface "समान तत्व"
+    lexeme zh
+      surface 相同
+      surface 交集
+      surface 相同元素
+    lexeme es
+      surface comunes
+      surface intersección
+      surface "elementos similares"
+  vowel_character_class
+    defined-by character_class
+    role coding_structure
+    idiom "'aeiouAEIOU'"
+    grounding "https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf"
+    lexeme en
+      surface vowels
+      surface vowel
+    lexeme ru
+      surface гласных
+      surface гласные
+    lexeme hi
+      surface स्वरों
+      surface स्वर
+    lexeme zh
+      surface 元音
+    lexeme es
+      surface vocales
+      surface vocal

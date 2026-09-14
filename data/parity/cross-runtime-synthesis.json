@@ -53,12 +53,23 @@
     ],
     "forbiddenAnswerFragments": ["legacy_intent"],
     "expectedEvidencePrefixes": [
-      "synthesis:candidate:",
+      "synthesis:draft_comparison:",
+      "synthesis:composition:",
       "synthesis:verification:",
-      "action_log:run_command:",
       "trace:"
     ],
-    "expectedTraceFragments": ["synthesis:verification tests_passed"]
+    "expectedTraceFragments": ["synthesis:verification tests_passed"],
+    "browserExpectedAnswerFragments": [
+      "Coding task formalized for Python function `count_vowels`.",
+      "Discovered structural parts: reduce_count, vowel_character_class.",
+      "Verification status: unverified in the browser boundary"
+    ],
+    "browserExpectedEvidencePrefixes": [
+      "synthesis:spec:",
+      "synthesis:discovered_parts:",
+      "synthesis:verification:unverified_browser_boundary",
+      "trace:"
+    ]
   },
   {
     "id": "e34_text_manipulation_chain",

@@ -428,42 +428,23 @@ function tryNumericList(prompt, history) {
 }
 
 function tryProgramSynthesis(prompt, normalized) {
-  // Issue #386: canonicalize first so native operation verbs (write / implement /
-  // return …) in any supported language are recognised, exactly like
-  // try_program_synthesis in src/solver_handlers/program_synthesis.rs.
   const canonical = canonicalizedPrompt(normalized);
   if (!looksLikePythonFunctionSynthesis(prompt, canonical)) return null;
-  const functionName = extractPythonFunctionName(prompt, canonical);
+  const functionName = extractPythonFunctionName(prompt);
   if (!functionName) return null;
-  const candidate = synthesizePythonCandidate(prompt, canonical, functionName);
-  if (!candidate) return null;
-  const assertionCount = candidate.tests.length;
-  const syntaxTree = pythonFunctionLinks(candidate.functionTree);
-  const code = renderPythonFunction(candidate.functionTree);
+  const structures = discoveredCodingStructures(canonical);
+  const discovered = structures.length > 0 ? structures.join(", ") : "none yet";
   const evidence = [
-    `response:write_program:synthesized:python:${candidate.id}`, ...metaAlgorithmConstructionEvidence("program_synthesis"),
-    `synthesis:spec:language=python function=${candidate.functionName}`,
-    `synthesis:syntax_tree:${syntaxTree}`,
-    ...candidate.fragments.map((fragment) => `composition:code_fragment:${fragment}`),
-    `synthesis:candidate:${candidate.id}`,
-    "synthesis:workspace:browser-worker-deterministic-verifier",
-    "action_log:create_file:solution.py",
-    "action_log:run_command:python3 solution.py",
-    `synthesis:candidate_execution:command=python3 solution.py exit=Some(0) timed_out=false assertion_count=${assertionCount}`,
-    `synthesis:verification:tests_passed assertion_count=${assertionCount}`,
-    "execution_status:tests passed",
-    "execution_environment:browser worker deterministic mirror; no filesystem side effects",
+    `response:write_program:formalized:python:${functionName}`,
+    ...metaAlgorithmConstructionEvidence("program_synthesis"),
+    `synthesis:spec:language=python function=${functionName}`,
+    `synthesis:discovered_parts:${structures.join(",")}`,
+    "synthesis:verification:unverified_browser_boundary",
   ];
   const body = [
-    "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:",
-    "",
-    "```python",
-    code + "```",
-    "",
-    "Execution status: tests passed in isolated bounded agent workspace.",
-    "Check command: `python3 solution.py`",
-    `Test outcome: ${assertionCount}/${assertionCount} assertions passed.`,
-    "Workspace isolation: browser worker deterministic verifier with no filesystem side effects.",
+    `Coding task formalized for Python function \`${functionName}\`.`,
+    `Discovered structural parts: ${discovered}.`,
+    "Verification status: unverified in the browser boundary; run the Rust/native solver to compose candidates and execute Python tests.",
   ];
   return {
     intent: "write_program",
@@ -471,9 +452,9 @@ function tryProgramSynthesis(prompt, normalized) {
     confidence: 1.0,
     evidence,
     trace: [
-      `synthesis:candidate:${candidate.id}`,
-      `synthesis:syntax_tree:${syntaxTree}`,
-      `synthesis:verification:tests_passed assertion_count=${assertionCount}`,
+      `synthesis:spec:language=python function=${functionName}`,
+      `synthesis:discovered_parts:${structures.join(",")}`,
+      "synthesis:verification:unverified_browser_boundary",
     ],
   };
 }

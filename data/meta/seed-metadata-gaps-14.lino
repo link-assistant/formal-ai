@@ -475,6 +475,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "response_coding_meta_algorithm_surface_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5abc81bb6953119e
+    source "data/seed/closure-generated-09.lino"
+    record "response_coding_synthesis_sources_heading_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9a4d7b6d9f7bc88e
     source "data/seed/closure-generated-09.lino"
     record "response_conversation_preference_es"
@@ -570,6 +574,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_39c35475ec48f22e
     source "data/seed/closure-generated-10.lino"
     record "says"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5949967f6cd05eae
+    source "data/seed/closure-generated-11.lino"
+    record "cada"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_937fcffe0787a31e
+    source "data/seed/closure-generated-11.lino"
+    record "coding_synthesis_sources_heading"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_179e66b736e2a71e
     source "data/seed/closure-generated-11.lino"
@@ -899,6 +911,14 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_day_after_tomorrow"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_328f3b83c49a1dee
+    source "data/seed/meanings-coding-structure.lino"
+    record "join_with_space"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_c23b21c884b80e7e
+    source "data/seed/meanings-coding-structure.lino"
+    record "pairwise"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_824ca73c2d7fc30e
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_resource_form"
@@ -938,10 +958,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_1a2ef905fdb9b81e
     source "data/seed/meanings-number-constraints.lino"
     record "number_constraint_hidden"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_227e92e1f6a765ce
-    source "data/seed/meanings-program-synthesis.lino"
-    record "similar_elements"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_f65ffd8a394a07be
     source "data/seed/meanings-program-synthesis.lino"

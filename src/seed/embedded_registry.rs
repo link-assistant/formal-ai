@@ -59,6 +59,10 @@ pub const MEANINGS_CALCULATOR_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../data/seed/meanings-coding-catalog.lino");
+pub const MEANINGS_CODING_REQUEST_LINO: &str =
+    include_str!("../../data/seed/meanings-coding-request.lino");
+pub const MEANINGS_CODING_STRUCTURE_LINO: &str =
+    include_str!("../../data/seed/meanings-coding-structure.lino");
 pub const MEANINGS_CODING_TASKS_LINO: &str =
     include_str!("../../data/seed/meanings-coding-tasks.lino");
 pub const MEANINGS_COMPUTER_USE_LINO: &str =
@@ -243,6 +247,8 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
         ("data/seed/meanings-coding-catalog.lino", MEANINGS_CODING_CATALOG_LINO),
+        ("data/seed/meanings-coding-request.lino", MEANINGS_CODING_REQUEST_LINO),
+        ("data/seed/meanings-coding-structure.lino", MEANINGS_CODING_STRUCTURE_LINO),
         ("data/seed/meanings-coding-tasks.lino", MEANINGS_CODING_TASKS_LINO),
         ("data/seed/meanings-computer-use.lino", MEANINGS_COMPUTER_USE_LINO),
         ("data/seed/meanings-conversation.lino", MEANINGS_CONVERSATION_LINO),
@@ -408,6 +414,8 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_CALCULATOR_LINO,
     MEANINGS_CALENDAR_LINO,
     MEANINGS_CODING_CATALOG_LINO,
+    MEANINGS_CODING_REQUEST_LINO,
+    MEANINGS_CODING_STRUCTURE_LINO,
     MEANINGS_CODING_TASKS_LINO,
     MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_CONVERSATION_LINO,

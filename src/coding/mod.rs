@@ -22,9 +22,17 @@ pub mod blueprint;
 mod blueprint_data;
 mod blueprint_programs;
 pub mod catalog;
+pub mod composition;
+pub mod concept_discovery;
 pub mod cst;
+pub mod discovered_procedures;
+pub mod function_catalog;
 pub mod guidance;
+pub mod python_render;
 pub mod python_signature;
+pub mod rosetta_request;
+pub mod synthesis_runtime;
+pub mod task_spec;
 
 pub use catalog::*;
 pub use cst::validated_program_cst;

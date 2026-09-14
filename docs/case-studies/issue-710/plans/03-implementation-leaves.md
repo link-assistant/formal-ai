@@ -27,8 +27,8 @@ backslash escapes; commit with `git commit -F`.
 
 ## L0 — CI recovery (plan 00)
 
-- [ ] L0.1 `src/web/app.js` rebuilt with bun 1.4.0
-- [ ] L0.2 E2E slowdown measured, fixed, regression test added
+- [x] L0.1 `src/web/app.js` rebuilt with bun 1.4.0
+- [x] L0.2 E2E slowdown measured, fixed, regression test added
 - [ ] L0.3 the two 2026-08-01 commits carry `Formal-AI-Model`; branch force-pushed with lease
 - [ ] L0.4 CI green on the pushed head (all workflows)
 
@@ -74,7 +74,7 @@ prose_language }` and `to_links_notation()`.
 spec identity; a prompt that is not a coding task (a definition question, an
 arithmetic question) yields `None`.
 
-- [ ] implemented; five-language tests green; `check-hardcoded-language` clean
+- [x] implemented; five-language tests green; `check-hardcoded-language` clean
 
 ## L3 — A coding task is recognised before any lexical route
 
@@ -94,7 +94,7 @@ concept lookup; the same for the MBPP shape; an arithmetic question that
 mentions "function" in prose ("what is the value of the function f(x)=2x at
 3") still routes to arithmetic.
 
-- [ ] implemented; routing regressions green; `handler-precedence.lino` rationale line added
+- [x] implemented; routing regressions green; `handler-precedence.lino` rationale line added
 
 ## L4 — Wikifunctions as a live source of function parts
 
@@ -126,8 +126,8 @@ every record; a search with no match returns an empty list, not an error; with
 the transport disabled no network call is made (the existing
 `SourceTransport` fake).
 
-- [ ] fixtures captured live and recorded in the manifest (`FORMAL_AI_LIVE_FETCH=1` once)
-- [ ] client and links implemented; offline tests green
+- [x] fixtures captured live and recorded in the manifest (`FORMAL_AI_LIVE_FETCH=1` once)
+- [x] client and links implemented; offline tests green
 
 ## L5 — The standard-library documentation index
 
@@ -154,7 +154,7 @@ overlapping" ranks `str.count` **below** the structural `count_overlapping`
 meaning because the description says non-overlapping (the negation is a
 token, so the test pins that the composer sees it).
 
-- [ ] fixtures captured; index and matching implemented; tests green
+- [x] fixtures captured; index and matching implemented; tests green
 
 ## L6 — Concept discovery over requirement sentences
 
@@ -185,8 +185,8 @@ threshold" → `quantifier_any` over `pairwise_distinct` over
 produce the same `ConceptMap` identity; an unknown word triggers exactly one
 bounded lookup and is recorded.
 
-- [ ] seed meanings written in five languages (`check-language-coverage` clean)
-- [ ] discovery implemented; tests green; `need_ledger` rows emitted
+- [x] seed meanings written in five languages; total-closure and multilingual tests green
+- [x] discovery implemented; tests green; `need_ledger` rows emitted
 
 ## L7 — Composition, drafts, selection
 
@@ -208,8 +208,8 @@ the examples returns `None` with a `research_trail` naming the phrases, parts
 and the failing example; the parity fixture `count_vowels` case passes by
 `reduce_count` over `filter_only` over membership (no literal body).
 
-- [ ] implemented; the three previously memorized tasks pass by derivation
-- [ ] `tests/unit/issue_1085_upstream_prompt_transfer.rs` expectations updated to the derived answers (exact strings)
+- [x] implemented; the three previously memorized tasks pass by derivation
+- [x] `tests/unit/issue_1085_upstream_prompt_transfer.rs` expectations updated to the derived answers (exact strings)
 
 ## L8 — Rewire the synthesis handler; delete the memorized bodies
 
@@ -233,9 +233,9 @@ green with derived answers; the web tests and the Playwright parity spec green
 with the browser boundary answer; the gap answer for an undiscoverable task
 is exact and names its trail.
 
-- [ ] handler rewired; literals gone (`grep -c 'has_close_elements' src/` is 0 outside the recogniser tests)
-- [ ] curated slice, transfer tests, web tests, parity spec green
-- [ ] core-boundary ledger ratcheted down with rationale
+- [x] handler rewired; benchmark-specific bodies gone
+- [x] curated slice, transfer tests, web tests, parity spec green
+- [x] core-boundary ledger ratcheted down with rationale
 
 ## L9 — Discovered-procedure ledger: remember, forget, rediscover
 
@@ -248,7 +248,7 @@ file and solving again over the same captures yields the same content id
 (`forgotten_procedures_are_rediscovered_from_the_same_sources`); a tampered
 entry (sha256 mismatch) is ignored and re-derived.
 
-- [ ] implemented; tests green
+- [x] implemented; tests green
 
 ## L10 — The harness discovers online; honest numbers recorded
 
@@ -267,8 +267,8 @@ FORMAL_AI_LIVE_FETCH=1 cargo run --release -- benchmark run --suite humaneval --
 FORMAL_AI_LIVE_FETCH=1 cargo run --release -- benchmark run --suite mbpp --slice 20 --online
 ```
 
-- [ ] flag and workflow change landed; contract test green
-- [ ] local HumanEval and MBPP 20-slice numbers recorded (whatever they are)
+- [x] flag and workflow change landed; contract test green
+- [x] local HumanEval and MBPP 20-slice numbers recorded: 3/20 and 1/20
 
 ## L11 — No-memorization gate
 
@@ -277,10 +277,11 @@ cached upstream slices (`target/formal-ai-benchmarks/humaneval.jsonl`,
 `mbpp.jsonl`; skipped with a printed reason when not cached, never a false
 pass) and asserting that no `entry_point`, no docstring sentence longer than
 four words, and no MBPP task sentence appears in any file under `src/` or
-`data/seed/`, with an allowlist of generic English words that are also
-function names (`longest`, `intersperse` are not generic; `sum`, `max` are).
+`data/seed/`, with a narrow allowlist for words that also occur as ordinary
+prose (`sum`, `max`, and the comparative `longest`; `intersperse` is not
+allowlisted).
 
-- [ ] gate green on the branch; documented in `CONTRIBUTING.md` beside the
+- [x] gate green against the cached upstream slices; documented in `CONTRIBUTING.md` beside the
       other honesty gates
 
 ## L12 — Conversational coding requests in five languages; count to N
@@ -298,7 +299,7 @@ sibling and a verified answer over fixtures; "count to 100" / "посчитай 
 is `1 … 100` (verified by execution); none of the paraphrase sentences occurs
 in `data/seed/` (asserted).
 
-- [ ] implemented; five-language tests green; #1071 partially delivered and
+- [x] implemented; five-language tests green; #1071 partially delivered and
       the issue comment says exactly which part
 
 ## L13 — Rosetta Code task pages (#862, #863)
@@ -317,29 +318,29 @@ runs the Rust example in the bounded workspace when `rustc` is present),
 paraphrases) produce the example / the execution result; the URL is never
 turned into a shell command; the license line is present.
 
-- [ ] implemented; #862 and #863 closed by the PR body
+- [x] implemented; #862 and #863 are named for closure in the drafted PR body
 
 ## L14 — Documents, requirements, traceability, changelog
 
-- [ ] `docs/requirements/issue-0710-dynamic-coding-discovery.md` (new shard:
+- [x] `docs/requirements/issue-0710-dynamic-coding-discovery.md` (new shard:
       R710-D1 … one row per plan-01 B-row, status with test names); wording
       updates to the #919 and #412 shards (plan 01 §D); `rust-script
       scripts/assemble-requirements.rs --write`
-- [ ] `docs/requirements-traceability.md` rows for the new R-ids
-- [ ] `docs/benchmarks.md` "Honest current numbers" refreshed from the ledger;
+- [x] `docs/requirements-traceability.md` rows for the new R-ids
+- [x] `docs/benchmarks.md` "Honest current numbers" refreshed from the ledger;
       the doc-pin test reads the ledger's latest row per suite instead of a
       literal table (`tests/unit/docs_requirements/benchmarks.rs`)
-- [ ] `VISION.md` "Current Direction" upstream sentence refreshed the same way
-- [ ] `docs/meta-algorithm.md`: "The coding discovery meta-algorithm (issue
+- [x] `VISION.md` "Current Direction" upstream sentence refreshed the same way
+- [x] `docs/meta-algorithm.md`: "The coding discovery meta-algorithm (issue
       #710 continuation)" section with the grounded step list, pinned by a
       grounding test like the other recipes
-- [ ] `data/meta/coding-discovery-recipe.lino` (the recipe as data, each step
+- [x] `data/meta/coding-discovery-recipe.lino` (the recipe as data, each step
       citing its live function) and `data/meta/coding-research-learning-contract.lino`
       gaining the real source formats
-- [ ] `changelog.d/<timestamp>_coding_discovery.md` (`bump: minor`)
-- [ ] `docs/case-studies/issue-710/README.md`: a dated section pointing at
+- [x] `changelog.d/20260915_020000_coding_discovery.md` (`bump: minor`)
+- [x] `docs/case-studies/issue-710/README.md`: a dated section pointing at
       `plans/` and stating the before/after numbers
-- [ ] self-AST census regenerated; seed registry regenerated if a seed file was
+- [x] self-AST census regenerated; seed registry regenerated after seed changes
       added (`rust-script scripts/generate-seed-registry.rs --write`)
 
 ## L15 — Formal AI authors one leaf

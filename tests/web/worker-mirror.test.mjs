@@ -100,6 +100,11 @@ test("every coding handler executes the shared meta-algorithm", async () => {
   );
   assert.equal(synthesis.intent, "write_program");
   assertSharedConstructionEvidence(synthesis, "program_synthesis");
+  assert.match(synthesis.content, /Coding task formalized.*count_vowels/);
+  assert.match(synthesis.content, /Discovered structural parts:.*reduce_count/);
+  assert.match(synthesis.content, /unverified in the browser boundary/);
+  assert.ok(!synthesis.content.includes("```python"));
+  assert.ok(!synthesis.evidence.some((entry) => entry.startsWith("action_log:run_command")));
 
   const catalog = await solve("Write hello world in Rust");
   assert.equal(catalog.intent, "write_program");

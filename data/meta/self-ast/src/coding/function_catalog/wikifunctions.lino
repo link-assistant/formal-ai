@@ -1,0 +1,36 @@
+self_ast_census
+  target src/coding/function_catalog/wikifunctions.rs
+  language rust
+  fidelity signature
+  byte_len 13354
+  line_count 387
+  content_id source_module_84bc4d2e2eea019d
+  symbol_count 27
+  symbols
+    const API 14 14
+    const DEFINITION_LICENSE 15 15
+    const IMPLEMENTATION_LICENSE 16 16
+    struct FunctionMatch 19 28
+    struct FunctionPart 31 42
+    function to_links_notation 46 72
+    struct Implementation 76 86
+    function to_links_notation 90 108
+    struct FunctionTest 112 120
+    function search_functions 122 153
+    function fetch_function 155 184
+    function fetch_implementations 186 223
+    function fetch_testers 225 264
+    function fetch_url 266 271
+    function outer_objects 273 275
+    function fetched_object 277 279
+    function decoded_object 281 288
+    function parse_json 290 292
+    function malformed 294 296
+    function string 298 300
+    function array_references 302 314
+    function reference_list 316 327
+    function multilingual_strings 329 348
+    function literal 350 365
+    function append_provenance 367 372
+    function encode_component 374 387
+    const HEX 375 375

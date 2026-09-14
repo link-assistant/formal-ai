@@ -11,7 +11,7 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
-Thirteen recipes are grounded today. The **recursive core** (issue #559) is the
+Fourteen recipes are grounded today. The **recursive core** (issue #559) is the
 general algorithm every prompt walks; the other twelve encode a topic handler, a
 self-directed loop, a reasoning obligation, or a codebase-hygiene procedure on
 top of it:
@@ -31,6 +31,7 @@ top of it:
 | [`grounded-action-recipe.lino`](../data/meta/grounded-action-recipe.lino) | #840 | Grounding requested actions in observed effects (grounded by `tests/unit/specification/grounded_action_meta_algorithm.rs`) |
 | [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `tests/unit/issue_704.rs`) |
 | [`reasoning-standard-recipe.lino`](../data/meta/reasoning-standard-recipe.lino) | #1073 | The unconditional reasoning-depth audit — seven gates over every request (grounded by `tests/unit/specification/reasoning_standard_meta_algorithm.rs`) |
+| [`coding-discovery-recipe.lino`](../data/meta/coding-discovery-recipe.lino) | #710 continuation | Dynamic coding discovery from licensed parts through bounded verification (grounded by `tests/unit/specification/coding_discovery_meta_algorithm.rs`) |
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the
@@ -869,3 +870,37 @@ Because recognition is by meaning and the operator toolbox is seed data, the who
 reach-a-target class widens without touching Rust: add the trigger surfaces and the
 operator meanings to the seed, and the same recogniser, deterministic search,
 fitness scoring, and proposal-only auto-learning apply unchanged.
+
+## The coding-discovery meta-algorithm (issue #710 continuation)
+
+Coding synthesis now applies the same grounded-recipe discipline to tasks that
+have no prewritten answer. Its machine-readable recipe is
+[`data/meta/coding-discovery-recipe.lino`](../data/meta/coding-discovery-recipe.lino),
+and the executable grounding test checks each named function and source against
+the live implementation.
+
+1. **Recognise** — `task_spec::recognise` converts HumanEval, MBPP, and
+   conversational prompt shapes into one language-neutral `CodingTaskSpec`
+   before lexical handlers can misroute them.
+2. **Discover** — `concept_discovery::discover` maps each requirement to seeded
+   structural meanings and licensed parts from Python documentation,
+   Wikifunctions, or a previously verified procedure.
+3. **Compose** — `composition::compose` constructs candidate Python programs
+   from those parts without consulting a benchmark case id or entry-point table.
+4. **Verify** — `AgentWorkspace::run_command` executes generated assertions in
+   the bounded workspace; no candidate is reported as passing without a zero
+   exit status.
+5. **Remember** — `DiscoveredProcedureLedger::remember` records the verified
+   composition with content identity and source provenance. Deleting the cache
+   is safe because the same captures deterministically rediscover it.
+
+Rosetta Code is deliberately a neighboring example path rather than a silent
+code source: attributed examples may be shown, and requested Rust examples may
+be executed in the same bounded workspace, but GFDL code is never inserted into
+a generated solution. Live source access is explicit (`benchmark run --online`)
+and offline replay remains deterministic.
+
+```sh
+cargo test --test unit specification::coding_discovery_meta_algorithm
+cargo test --test unit coding_discovery
+```

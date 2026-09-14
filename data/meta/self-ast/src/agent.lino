@@ -2,9 +2,9 @@ self_ast_census
   target src/agent.rs
   language rust
   fidelity signature
-  byte_len 26191
-  line_count 746
-  content_id source_module_beb4cffa72ca90cd
+  byte_len 26471
+  line_count 753
+  content_id source_module_fde143fa4265e4ae
   symbol_count 53
   symbols
     static WORKSPACE_SEQ 25 25
@@ -37,26 +37,26 @@ self_ast_census
     function write_file 291 298
     function record_fs_action 300 323
     function workspace_path 325 336
-    function run_command_inner 338 391
-    function run_builtin_command 393 413
-    function read_command_files 415 424
-    function list_command_directory 426 443
-    function parse_agent_plan 447 456
-    function run_agent_plan 458 478
-    function collect_create_actions 480 511
-    function collect_modify_actions 513 547
-    function collect_delete_actions 549 577
-    function collect_command_actions 579 610
-    function backticked_after 612 617
-    function delete_path_len 619 627
-    function split_command 629 636
-    function resolve_allowed_program 638 653
-    function resolve_allowed_program_from_path 655 658
-    function resolve_program_from_path_names 660 673
-    function path_search_names 675 681
-    function is_blocked_execution_alias 683 689
-    function effective_command_time_budget 691 697
-    function command_environment 713 713
-    function trace_command 725 734
-    function command_timed_out 736 738
-    function looks_like_workspace_path 740 746
+    function run_command_inner 338 395
+    function run_builtin_command 397 417
+    function read_command_files 419 428
+    function list_command_directory 430 447
+    function parse_agent_plan 451 460
+    function run_agent_plan 462 482
+    function collect_create_actions 484 515
+    function collect_modify_actions 517 551
+    function collect_delete_actions 553 581
+    function collect_command_actions 583 614
+    function backticked_after 616 621
+    function delete_path_len 623 631
+    function split_command 633 640
+    function resolve_allowed_program 642 658
+    function resolve_allowed_program_from_path 660 663
+    function resolve_program_from_path_names 665 678
+    function path_search_names 680 688
+    function is_blocked_execution_alias 690 696
+    function effective_command_time_budget 698 704
+    function command_environment 720 720
+    function trace_command 732 741
+    function command_timed_out 743 745
+    function looks_like_workspace_path 747 753

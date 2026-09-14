@@ -67,6 +67,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "capabilities_more_after_search"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_4bc9800029f73c6d
+    source "data/seed/closure-generated-02.lino"
+    record "coding_rosetta_capture_fetched"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a2524558fc87807d
     source "data/seed/closure-generated-02.lino"
     record "issue_report_timestamp_label"
@@ -295,6 +299,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "snake_case"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_06d59a69bb31f83d
+    source "data/seed/closure-generated-06.lino"
+    record "acumulativo"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_32a7010cdaed2d9d
     source "data/seed/closure-generated-06.lino"
     record "branch"
@@ -338,6 +346,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_4ac23d10c91a064d
     source "data/seed/closure-generated-07.lino"
     record "response_clarification_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e7fc1218b3103fcd
+    source "data/seed/closure-generated-07.lino"
+    record "response_coding_rosetta_failed_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_da3532fb47fe7a6d
     source "data/seed/closure-generated-07.lino"
@@ -418,6 +430,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_ffecf832eeb1346d
     source "data/seed/closure-generated-08.lino"
     record "response_agentic_report_target_options_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e8c923a42438b41d
+    source "data/seed/closure-generated-08.lino"
+    record "response_coding_rosetta_capture_cached_zh"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_450d43baf8a5255d
     source "data/seed/closure-generated-08.lino"
@@ -755,6 +771,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "external_benchmark_stagnant_suite"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9d722f42a7be337d
+    source "data/seed/closure-generated-14.lino"
+    record "greatest"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_915b91832cbdb95d
     source "data/seed/closure-generated-14.lino"
     record "response_lexeme_import_invalid_qid_en"
@@ -863,6 +883,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "required"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_91c912390bfa113d
+    source "data/seed/closure-generated-16.lino"
+    record "response_coding_rosetta_answer_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e3b61c0f3c6dbd0d
     source "data/seed/closure-generated-16.lino"
     record "response_external_benchmark_ratchet_reference_suffix_en"
@@ -895,6 +919,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "statement_audit_strength_range"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_44a976c0e2a47bcd
+    source "data/seed/closure-generated-16.lino"
+    record "todos"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_28dd1f4e2bf1b8dd
     source "data/seed/learned-request-openers.lino"
     record "tell_me_about_request_opener"
@@ -906,6 +934,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_c7da0c2061d0a08d
     source "data/seed/meanings-calculator.lino"
     record "euro"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_dbb68cdb1b6c9d8d
+    source "data/seed/meanings-coding-structure.lino"
+    record "count_overlapping"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_f1a9942fc2d3f0cd
+    source "data/seed/meanings-coding-structure.lino"
+    record "sort_descending"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_fd867f04f15b4b9d
     source "data/seed/meanings-computer-use.lino"
@@ -938,10 +974,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_ef681dc23aabba3d
     source "data/seed/meanings-links-root.lino"
     record "reference:"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_90f35797c5f83efd
-    source "data/seed/meanings-program-synthesis.lino"
-    record "signal_difference"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_0adf88586f48cffd
     source "data/seed/meanings-program-synthesis.lino"

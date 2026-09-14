@@ -34,6 +34,8 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-calculator.lino",
   "seed/meanings-calendar.lino",
   "seed/meanings-coding-catalog.lino",
+  "seed/meanings-coding-request.lino",
+  "seed/meanings-coding-structure.lino",
   "seed/meanings-coding-tasks.lino",
   "seed/meanings-conversation.lino",
   "seed/meanings-decomposition.lino",

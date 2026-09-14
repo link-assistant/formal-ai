@@ -237,6 +237,31 @@ fn general_task_preserves_exact_multiline_lino_payload() {
 }
 
 #[test]
+fn bare_with_preserves_an_exact_backticked_multiline_payload() {
+    let payload = "coding_discovery_recipe\n  coding_discovery_step_verify";
+    let task = format!("Create file data/meta/coding-discovery-recipe.lino with `{payload}`");
+
+    let plan = compose_general_change_plan(&task).expect("literal file plan");
+    assert_eq!(plan.target, "data/meta/coding-discovery-recipe.lino");
+    assert_eq!(plan.content, payload);
+
+    let messages = vec![ChatMessage::user(&task)];
+    let tools = ["write", "grep", "read", "bash"];
+    let AgenticPlan::ToolCalls(calls) =
+        plan_chat_step(&messages, &tools).expect("literal file plan must own the request")
+    else {
+        panic!("the literal file plan must persist its plan before execution")
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "write");
+    assert!(
+        calls[0].arguments.contains(PLAN_PATH),
+        "the evidence-record route must not search for the payload before it is created: {}",
+        calls[0].arguments,
+    );
+}
+
+#[test]
 fn literal_file_marker_owns_payload_that_contains_an_edit_phrase() {
     let payload = "prefix rename X to Y suffix";
     let task =

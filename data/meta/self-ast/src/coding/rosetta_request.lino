@@ -1,0 +1,16 @@
+self_ast_census
+  target src/coding/rosetta_request.rs
+  language rust
+  fidelity signature
+  byte_len 5851
+  line_count 170
+  content_id source_module_fff4f791a5922738
+  symbol_count 7
+  symbols
+    enum RequestKind 14 17
+    function try_rosetta_code_request 19 30
+    function try_rosetta_code_request_with_client 32 81
+    function request_kind 83 91
+    function execute_example 93 138
+    function render_example 140 164
+    function response 166 170

@@ -146,3 +146,43 @@ Their captured sessions and byte-compared artifacts live in
 [`agent-cli-evidence/verdict-contract/`](agent-cli-evidence/verdict-contract/).
 That is two of five named smallest leaves (**40%**), while the other three are
 honestly recorded as manually authored.
+
+## 2026-09-15 dynamic coding-discovery continuation
+
+The continuation plans under [`plans/`](plans/) re-audited the coding and
+benchmark requirements before changing the solver. The before-state synthesis
+handler recognized Python tasks but selected among three task-specific bodies;
+an unseen structural task could fall through into arithmetic or concept lookup.
+The latest committed upstream ledger consequently remained HumanEval **0/20**
+and MBPP **0/20** on its 2026-09-07 rows.
+
+The replacement path recognizes a task structure, maps its requirement words to
+seeded meanings and licensed external parts, constructs multiple drafts, runs
+the supplied examples/assertions in the bounded workspace, and remembers only a
+verified, content-addressed procedure. The task-specific bodies were deleted.
+Captured Python 3.12 documentation and Wikifunctions responses make CI replay
+offline and deterministic; scheduled runs opt into live discovery. Rosetta Code
+is kept at the attribution boundary: its GFDL Rust example can be returned or
+explicitly executed, but is never silently copied into a generated answer.
+
+Measured results after the change are:
+
+| Surface | Before | After |
+| --- | ---: | ---: |
+| Local online HumanEval upstream slice | 0/20 committed baseline | **3/20** |
+| Local online MBPP upstream slice | 0/20 committed baseline | **1/20** |
+| Curated industry slice | 13/13 | **13/13** |
+| Held-out multilingual coding-discovery prompts | absent | **25/25** |
+
+The local upstream measurements are intentionally not written into the
+scheduled-results ledger by this pull request. `docs/benchmarks.md` and
+`VISION.md` continue to publish the latest committed rows and label the newer
+local run separately.
+
+Formal AI itself authored
+[`coding-discovery-recipe.lino`](../../../data/meta/coding-discovery-recipe.lino)
+through the real Agent CLI in session
+`ses_f5ec49c02ffe6yDSkWK0x1t0p1`. That run first exposed a genuine planner
+failure on the valid `with` payload form; the planner and authoring-harness
+startup race were regression-tested and fixed, and the same task then completed
+as a literal write followed by bounded verification.

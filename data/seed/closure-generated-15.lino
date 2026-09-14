@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "coding catalog"
+  coding_rosetta_capture_cached
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta capture cached"
   coding_source_module_registration
     defined-by intent
     lexeme en
@@ -144,6 +149,11 @@ meanings
     lexeme en
       surface
         text "detected failure report invitation"
+  distintos
+    defined-by concept
+    lexeme en
+      surface
+        text "distintos"
   du
     defined-by token
     lexeme en
@@ -559,6 +569,21 @@ meanings
     lexeme en
       surface
         text "response coding repository source observation en"
+  response_coding_rosetta_not_requested_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta not requested en"
+  response_coding_rosetta_passed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta passed hi"
+  response_coding_rosetta_workspace_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable en"
   response_coding_source_binary_operation_test_rust
     defined-by response_template
     lexeme en
@@ -969,6 +994,11 @@ meanings
     lexeme en
       surface
         text "response write program request unspecified name hi"
+  response_write_program_skill_gap_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap es"
   reverse_sort_list_files_arg
     defined-by rule
     lexeme en

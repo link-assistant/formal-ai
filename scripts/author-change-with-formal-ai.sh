@@ -128,9 +128,21 @@ FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_MEMORY_PATH="$state/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$out/formal-ai.log" 2>&1 &
 server_pid=$!
-curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
-  "http://127.0.0.1:$PORT/health" >/dev/null \
-  || die "formal-ai serve never came up on port $PORT"
+# `curl --retry-connrefused` still returned after its first refusal with the
+# macOS curl 8.7.1 used by the local authoring path. Keep the readiness deadline
+# in the harness so the just-spawned server gets a deterministic chance to bind
+# on every supported platform, while still failing early if it exits.
+server_ready=0
+for attempt in $(seq 1 30); do
+  if curl -fsS "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
+    server_ready=1
+    break
+  fi
+  kill -0 "$server_pid" 2>/dev/null \
+    || die "formal-ai serve exited during startup (attempt $attempt)"
+  sleep 1
+done
+[[ "$server_ready" -eq 1 ]] || die "formal-ai serve never came up on port $PORT"
 
 agent_config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-sdk/openai-compatible","options":{"baseURL":"http://127.0.0.1:%s/api/openai/v1","apiKey":"local"},"models":{"formal-ai":{"name":"Formal AI"}}}},"model":"formalai/formal-ai"}' "$PORT")"
 # `--summarize-session` and `--generate-title` default to true, and both make a

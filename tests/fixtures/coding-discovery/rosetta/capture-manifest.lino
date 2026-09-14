@@ -1,0 +1,7 @@
+capture_manifest
+  capture Copy_stdin_to_stdout
+    source_url "https://rosettacode.org/w/api.php?action=parse&page=Copy_stdin_to_stdout&section=63&prop=wikitext%7Cdisplaytitle&format=json&origin=*"
+    fetched_at "2026-09-14T18:16:49Z"
+    sha256 cc6a157ca2188be0089b3cd901c26e41e6ff63913e47c12f1fbb9ff3f8691398
+    bytes 324
+    license GFDL-1.2

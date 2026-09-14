@@ -572,6 +572,15 @@ impl UniversalSolver {
             return answer;
         }
 
+        if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
+            prompt,
+            &intent_formalization.normalized_text,
+            &mut log,
+            self.config.offline,
+        ) {
+            return answer;
+        }
+
         if matches!(rule, SelectedRule::Unknown) {
             if crate::program_coreference::looks_like_ambiguous_program_modification(
                 &normalize_prompt(prompt),

@@ -189,6 +189,11 @@ meanings
     lexeme en
       surface
         text "opt in"
+  ordenado
+    defined-by concept
+    lexeme en
+      surface
+        text "ordenado"
   originality
     defined-by word_surface
     lexeme en
@@ -299,6 +304,16 @@ meanings
     lexeme en
       surface
         text "puts"
+  python_return
+    defined-by concept
+    lexeme en
+      surface
+        text "python return"
+  python_test_entrypoint
+    defined-by concept
+    lexeme en
+      surface
+        text "python test entrypoint"
   ratchet
     defined-by concept
     lexeme en
@@ -404,6 +419,31 @@ meanings
     lexeme en
       surface
         text "response coding member inserted es"
+  response_coding_rosetta_capture_cached_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture cached en"
+  response_coding_rosetta_capture_cached_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture cached es"
+  response_coding_rosetta_capture_cached_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture cached zh"
+  response_coding_rosetta_passed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta passed zh"
+  response_coding_synthesis_sources_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis sources heading es"
   response_coding_workspace_effect_observed_hi
     defined-by response_template
     lexeme en
@@ -844,6 +884,11 @@ meanings
     lexeme en
       surface
         text "response write program request unspecified name ru"
+  reverse-sorted
+    defined-by concept
+    lexeme en
+      surface
+        text "reverse sorted"
   rule_russian
     defined-by rule
     lexeme en

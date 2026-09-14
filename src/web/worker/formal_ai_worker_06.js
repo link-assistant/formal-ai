@@ -212,103 +212,6 @@ const SYNTHESIS_OBJECT_CATEGORIES = new Map([
   ["clothing", new Set(["shirt", "coat", "hat", "shoe", "dress"])],
 ]);
 
-const PYTHON_SYNTHESIS_CANDIDATES = {
-  has_close_elements: {
-    id: "pairwise_threshold_distance",
-    defaultSignature:
-      "has_close_elements(numbers: list[float], threshold: float) -> bool",
-    body: [
-      {
-        kind: "for_loop",
-        semanticNode: "pairwise_outer_loop",
-        target: "left_index, left",
-        iterator: "enumerate(numbers)",
-        body: [
-          {
-            kind: "for_loop",
-            semanticNode: "pairwise_inner_loop",
-            target: "right",
-            iterator: "numbers[left_index + 1:]",
-            body: [
-              {
-                kind: "if_return",
-                semanticNode: "threshold_match_return",
-                condition: "abs(left - right) < threshold",
-                value: "True",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        kind: "return",
-        semanticNode: "no_pair_matches_return",
-        expression: "False",
-      },
-    ],
-    tests: [
-      "assert has_close_elements([1.0, 2.0, 3.0], 0.5) is False",
-      "assert has_close_elements([1.0, 2.0, 3.0], 1.1) is True",
-      "assert has_close_elements([1.0, 2.8, 3.0], 0.3) is True",
-      "assert has_close_elements([], 0.1) is False",
-    ],
-    fragments: [
-      "python:def_function",
-      "loop:pairwise_distinct_values",
-      "predicate:absolute_difference_less_than_threshold",
-      "branch:return_false_when_no_pair_matches",
-    ],
-  },
-  similar_elements: {
-    id: "tuple_intersection_set",
-    defaultSignature: "similar_elements(test_tup1, test_tup2)",
-    body: [
-      {
-        kind: "return",
-        semanticNode: "deterministic_tuple_intersection_return",
-        expression: "tuple(sorted(set(test_tup1) & set(test_tup2)))",
-      },
-    ],
-    tests: [
-      "assert similar_elements((3, 4, 5, 6), (5, 7, 4, 10)) == (4, 5)",
-      "assert similar_elements((1, 2), (3, 4)) == ()",
-      "assert similar_elements(('a', 'b'), ('b', 'c')) == ('b',)",
-    ],
-    fragments: [
-      "python:def_function",
-      "collection:set_intersection",
-      "collection:deterministic_tuple_order",
-    ],
-  },
-  count_vowels: {
-    id: "count_matching_characters",
-    defaultSignature: "count_vowels(text: str) -> int",
-    body: [
-      {
-        kind: "assign",
-        semanticNode: "vowel_membership_set_assignment",
-        target: "vowels",
-        expression: 'set("aeiouAEIOU")',
-      },
-      {
-        kind: "return",
-        semanticNode: "matching_character_count_return",
-        expression: "sum(1 for character in text if character in vowels)",
-      },
-    ],
-    tests: [
-      "assert count_vowels('hello') == 2",
-      "assert count_vowels('sky') == 0",
-      "assert count_vowels('Formal AI') == 4",
-    ],
-    fragments: [
-      "python:def_function",
-      "collection:membership_set",
-      "aggregation:sum_generator",
-    ],
-  },
-};
-
 function synthesisStableId(prefix, value) {
   const wasmId = wasmStableId(prefix, value);
   if (wasmId) return wasmId;
@@ -618,32 +521,6 @@ function looksLikePythonFunctionSynthesis(prompt, normalized) {
   );
 }
 
-// Is `task` evidenced by its signals — is every `program_synthesis_signal`
-// meaning it is `defined_by` present in `normalized`? A task with no signal
-// definitions is never matched this way (it can still match by declared name).
-// Mirrors synthesis_task_evidenced in src/solver_handlers/program_synthesis.rs.
-function synthesisTaskEvidenced(task, normalized) {
-  let required = 0;
-  for (const target of task.definedBy) {
-    const signal = findMeaning(target);
-    if (!signal || !signal.roles.includes(ROLE_PROGRAM_SYNTHESIS_SIGNAL)) continue;
-    required += 1;
-    if (!meaningEvidencedIn(signal, normalized)) return false;
-  }
-  return required > 0;
-}
-
-// The canonical function name of the first synthesis task (declaration order)
-// whose signals are all evidenced in `normalized`, or "". The slug is the
-// Python function name. Mirrors match_synthesis_task in
-// src/solver_handlers/program_synthesis.rs.
-function matchSynthesisTask(normalized) {
-  const task = meaningsWithRole(ROLE_PROGRAM_SYNTHESIS_TASK).find((candidate) =>
-    synthesisTaskEvidenced(candidate, normalized),
-  );
-  return task ? task.slug : "";
-}
-
 function identifierAfterAsciiMarker(prompt, marker) {
   const text = String(prompt || "");
   const lower = text.toLowerCase();
@@ -664,186 +541,22 @@ function identifierAfterAsciiMarker(prompt, marker) {
   return name;
 }
 
-// The Python function name a prompt asks for: the matched task's slug (which
-// *is* its function name), else the identifier in a literal `function `/`def `
-// signature. Mirrors extract_function_name in
-// src/solver_handlers/program_synthesis.rs (the declared-signature scan there is
-// covered here by the marker fallbacks the worker has always used).
-function extractPythonFunctionName(prompt, normalized) {
-  const task = matchSynthesisTask(normalized);
-  if (task) return task;
-  return (
-    identifierAfterAsciiMarker(prompt, "function ") ||
-    identifierAfterAsciiMarker(prompt, "def ")
-  );
-}
-
-function matchingCloseParen(text, openIndex) {
-  let depth = 0;
-  for (let index = openIndex; index < text.length; index += 1) {
-    const character = text[index];
-    if (character === "(") {
-      depth += 1;
-    } else if (character === ")") {
-      depth -= 1;
-      if (depth === 0) return index + 1;
-      if (depth < 0) return -1;
-    }
-  }
-  return -1;
-}
-
-// A character that may appear inside a Python return annotation (`-> list[int]`).
-// A whitelist, mirroring is_return_annotation_char in
-// src/solver_handlers/program_synthesis.rs: this is what lets the annotation
-// scan stop at the first non-Latin character — Hindi/Chinese prose, the
-// Devanagari danda `।`, or the ideographic full stop `。` — instead of relying
-// on an ASCII-only `[.;\n]` terminator that those scripts never contain.
-function isReturnAnnotationChar(character) {
-  return /[A-Za-z0-9]/.test(character) || "_[](),'\"|".includes(character);
-}
-
-// The first non-whitespace character at or after `start`, or "".
-// Mirrors next_non_whitespace in src/solver_handlers/program_synthesis.rs.
-function nextNonWhitespace(text, start) {
-  for (let index = start; index < text.length; ) {
-    const character = String.fromCodePoint(text.codePointAt(index));
-    if (!/\s/.test(character)) return character;
-    index += character.length;
-  }
-  return "";
-}
-
-// The end index (exclusive) of a `->` return annotation that begins at
-// `arrowStart`, or -1 if none. Walks annotation characters, allowing internal
-// spaces (`-> dict[str, int]`) only while more annotation characters follow.
-// Mirrors return_annotation_end in src/solver_handlers/program_synthesis.rs.
-function returnAnnotationEnd(text, arrowStart) {
-  let cursor = arrowStart + "->".length;
-  let seenAnnotation = false;
-  let lastAnnotationEnd = -1;
-  while (cursor < text.length) {
-    const character = String.fromCodePoint(text.codePointAt(cursor));
-    const next = cursor + character.length;
-    if (/\s/.test(character)) {
-      if (seenAnnotation && isReturnAnnotationChar(nextNonWhitespace(text, next))) {
-        cursor = next;
-        continue;
-      }
-      if (seenAnnotation) break;
-      cursor = next;
-      continue;
-    }
-    if (!isReturnAnnotationChar(character)) break;
-    seenAnnotation = true;
-    lastAnnotationEnd = next;
-    cursor = next;
-  }
-  return lastAnnotationEnd;
-}
-
-function declaredPythonSignature(prompt, functionName) {
+// Resolve a callable identity from Python syntax, an inline function signature,
+// or a benchmark assertion. No task catalogue participates.
+function extractPythonFunctionName(prompt) {
   const text = String(prompt || "");
-  const marker = `${functionName}(`;
-  const start = text.toLowerCase().indexOf(marker.toLowerCase());
-  if (start < 0) return "";
-  let end = matchingCloseParen(text, start + functionName.length);
-  if (end < 0) return "";
-  const tail = text.slice(end);
-  const trimmed = tail.trimStart();
-  if (trimmed.startsWith("->")) {
-    const returnStart = end + (tail.length - trimmed.length);
-    const annotationEnd = returnAnnotationEnd(text, returnStart);
-    if (annotationEnd >= 0) end = annotationEnd;
-  }
-  return text.slice(start, end).trim().replace(/\.+$/, "");
-}
-
-function renderPythonStatement(statement, indentLevel) {
-  const indent = "    ".repeat(indentLevel);
-  if (statement.kind === "assign") {
-    return `${indent}${statement.target} = ${statement.expression}\n`;
-  }
-  if (statement.kind === "return") {
-    return `${indent}return ${statement.expression}\n`;
-  }
-  if (statement.kind === "if_return") {
-    return `${indent}if ${statement.condition}:\n${indent}    return ${statement.value}\n`;
-  }
-  if (statement.kind === "for_loop") {
-    return (
-      `${indent}for ${statement.target} in ${statement.iterator}:\n` +
-      statement.body
-        .map((child) => renderPythonStatement(child, indentLevel + 1))
-        .join("")
-    );
-  }
-  return "";
-}
-
-function renderPythonFunction(functionTree) {
-  let code = `def ${functionTree.signature}:\n`;
-  for (const statement of functionTree.body) {
-    code += renderPythonStatement(statement, 1);
-  }
-  return code;
-}
-
-function pythonStatementLinks(lines, statement, depth) {
-  const indent = "  ".repeat(depth + 1);
-  if (statement.kind === "assign") {
-    lines.push(
-      `${indent}semantic_node ${statement.semanticNode} target=${JSON.stringify(statement.target)} expression=${JSON.stringify(statement.expression)}`,
-    );
-  } else if (statement.kind === "return") {
-    lines.push(
-      `${indent}semantic_node ${statement.semanticNode} expression=${JSON.stringify(statement.expression)}`,
-    );
-  } else if (statement.kind === "if_return") {
-    lines.push(
-      `${indent}semantic_node ${statement.semanticNode} condition=${JSON.stringify(statement.condition)} value=${JSON.stringify(statement.value)}`,
-    );
-  } else if (statement.kind === "for_loop") {
-    lines.push(
-      `${indent}semantic_node ${statement.semanticNode} target=${JSON.stringify(statement.target)} iterator=${JSON.stringify(statement.iterator)}`,
-    );
-    for (const child of statement.body) {
-      pythonStatementLinks(lines, child, depth + 1);
-    }
-  }
-}
-
-function pythonFunctionLinks(functionTree) {
-  const lines = [
-    "python_function_syntax_tree",
-    `  semantic_node function_definition signature=${JSON.stringify(functionTree.signature)}`,
-  ];
-  for (const statement of functionTree.body) {
-    pythonStatementLinks(lines, statement, 1);
-  }
-  return lines.join("\n");
-}
-
-// Build the Python candidate for whichever synthesis task the prompt names or
-// evidences. The task slug keys both the meaning lexicon and the verbatim
-// PYTHON_SYNTHESIS_CANDIDATES blueprint (function tree, tests, fragments).
-// Mirrors synthesize_python_candidate in
-// src/solver_handlers/program_synthesis.rs.
-function synthesizePythonCandidate(prompt, normalized, functionName) {
-  const task = meaningsWithRole(ROLE_PROGRAM_SYNTHESIS_TASK).find(
-    (candidate) =>
-      functionName === candidate.slug || synthesisTaskEvidenced(candidate, normalized),
+  const assertion = text.match(/\bassert\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(/);
+  return (
+    identifierAfterAsciiMarker(text, "def ") ||
+    (assertion ? assertion[1] : "") ||
+    identifierAfterAsciiMarker(text, "function ")
   );
-  if (!task) return null;
-  const definition = PYTHON_SYNTHESIS_CANDIDATES[task.slug];
-  if (!definition) return null;
-  const signature =
-    declaredPythonSignature(prompt, functionName) || definition.defaultSignature;
-  const functionTree = { signature, body: definition.body };
-  return Object.assign({}, definition, {
-    functionName: task.slug,
-    functionTree,
-  });
+}
+
+function discoveredCodingStructures(normalized) {
+  return meaningsWithRole("coding_structure")
+    .filter((meaning) => meaningEvidencedIn(meaning, normalized))
+    .map((meaning) => meaning.slug);
 }
 
 // Issue #395: does the prompt evidence the operation with this canonical slug,

@@ -75,7 +75,7 @@ wrote it.
 | 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | sections 1-2 done, section 3 next |
 | 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | drafted |
 | 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | drafted |
-| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | drafted |
+| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L14 implemented; attribution and final gates in progress |
 
 ## Order of work
 
@@ -145,3 +145,29 @@ wrote it.
   no output of its own; rerunning it passed, so it was infrastructure and not a
   defect of this branch.
 
+- 2026-09-15: implementation leaves L1-L14 are drafted and their focused gates
+  are green. The synthesis handler no longer contains the three benchmark-task
+  bodies; task recognition, licensed Python/Wikifunctions discovery, structural
+  composition, bounded verification, and a tamper-detecting discovered-procedure
+  ledger now form the production path. Rosetta Code stays behind an attributed
+  example/execution boundary. The curated slice remains 13/13, the five-language
+  held-out discovery suite is 25/25, and honest local online first-20 runs
+  measured HumanEval 3/20 and MBPP 1/20. Those local measurements were not
+  appended as scheduled ledger history.
+
+  Formal AI was then asked through the real external Agent CLI to author
+  `data/meta/coding-discovery-recipe.lino`. The first valid `with`-payload run
+  searched for the requested bytes instead of writing them. A failing planner
+  regression reproduced that routing defect; adding the seed-defined `with …`
+  content lead fixed it. A second failure exposed macOS curl returning on the
+  first refused health connection, so the authoring harness gained an explicit
+  bind loop and early process-death check. The repeated run wrote and verified
+  the exact recipe in session `ses_f5ec49c02ffe6yDSkWK0x1t0p1`.
+
+  The language/core gates found a final architectural gap before review: new
+  composition bodies and answer prose were still Rust literals, and the Rosetta
+  request sat in the minimal handler directory. The bodies now interpret seeded
+  structural idioms/runtime templates, all answer text is localized seed data,
+  Rosetta moved outside the specialized-handler core, hardcoded-language debt
+  fell from 1,278 to 1,274 entries, and the reviewed outside-core ceiling fell
+  from 18,854 to 18,469 lines.

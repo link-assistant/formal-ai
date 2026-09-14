@@ -107,6 +107,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "response_action_correction_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1d1102ccd47dcf58
+    source "data/seed/closure-generated-02.lino"
+    record "response_coding_rosetta_answer_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f9b43de6709d2d08
     source "data/seed/closure-generated-02.lino"
     record "response_external_benchmark_parquet_utf8_error_en"
@@ -343,6 +347,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "thinking_narrative_translation"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_27e2faf7c774cb78
+    source "data/seed/closure-generated-07.lino"
+    record "coding_synthesis_research_trail"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a2cc633d72ccbf68
     source "data/seed/closure-generated-07.lino"
     record "copy_matches_to_collection"
@@ -354,6 +362,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_f161e1b823a84938
     source "data/seed/closure-generated-07.lino"
     record "precisely"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b131b4d3616f2a58
+    source "data/seed/closure-generated-07.lino"
+    record "response_coding_rosetta_capture_fetched_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e0abc8bd2e743508
     source "data/seed/closure-generated-07.lino"
@@ -382,6 +394,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_98e6373e0be7f468
     source "data/seed/closure-generated-08.lino"
     record "pattern_greeting_keyword_privet"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e86d1ba423ea47d8
+    source "data/seed/closure-generated-08.lino"
+    record "response_coding_rosetta_capture_cached_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_56947ff36be129f8
     source "data/seed/closure-generated-08.lino"
@@ -482,6 +498,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_1c486b4fb67453b8
     source "data/seed/closure-generated-10.lino"
     record "response_agentic_continuation_es"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b632aa29ce01ff08
+    source "data/seed/closure-generated-10.lino"
+    record "response_coding_synthesis_research_trail_ru"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4a84e479ded74c58
     source "data/seed/closure-generated-10.lino"
@@ -811,6 +831,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "invert"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_916d0a390baba4f8
+    source "data/seed/closure-generated-16.lino"
+    record "response_coding_rosetta_answer_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_88f8e7e10f6228c8
     source "data/seed/closure-generated-16.lino"
     record "response_github_repository_traffic_hi"
@@ -870,6 +894,34 @@ seed_metadata_gaps
   gap seed_metadata_gap_a3a5a56659c0c9c8
     source "data/seed/meanings-calculator.lino"
     record "exchange_rate"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1d86b3f1deeb5968
+    source "data/seed/meanings-coding-structure.lino"
+    record "filter"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1277eb3ba116f258
+    source "data/seed/meanings-coding-structure.lino"
+    record "map_each"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_54b1bedf646dc1d8
+    source "data/seed/meanings-coding-structure.lino"
+    record "reduce_count"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_174bf99e9df2e1e8
+    source "data/seed/meanings-coding-structure.lino"
+    record "reduce_len"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_962f821fefa99248
+    source "data/seed/meanings-coding-structure.lino"
+    record "tuple"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_031ea86a851bc5f8
+    source "data/seed/meanings-coding-structure.lino"
+    record "tuple_of"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4e4d09b48e555918
+    source "data/seed/meanings-coding-structure.lino"
+    record "vowel_character_class"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d83eeadde9d7fea8
     source "data/seed/meanings-conversation.lino"

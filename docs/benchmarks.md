@@ -25,6 +25,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
+| Dynamic coding discovery paraphrases | #710 | [`coding-discovery-paraphrases.lino`](../data/benchmarks/coding-discovery-paraphrases.lino) | `coding_discovery::multilingual` | 25 |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
@@ -275,9 +276,8 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-The core corpus rows below were most recently refreshed on `2026-08-10`; issue
-#923 adds symbolic-reasoning rows recorded on `2026-08-14` with solver version
-`0.342.0`. All use the offline deterministic solver (`temperature = 0.0`):
+The latest committed rows are dated `2026-09-07`, use solver version `0.347.0`,
+and keep the deterministic solver at `temperature = 0.0`:
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
@@ -285,12 +285,18 @@ The core corpus rows below were most recently refreshed on `2026-08-10`; issue
 | MBPP | Apache-2.0 | upstream `test_list` asserts executed | 0 | 20 |
 | GSM8K | MIT | final number vs. `####` gold | 2 | 20 |
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
-| BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
+| BIG-bench object counting | Apache-2.0 | final number vs. target | 0 | 20 |
 | CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
-| egg math rewrite laws | MIT | structured `proof_outcome proven` | 20 | 20 |
-| Ascent transitive graph closure | MIT | structured `proof_outcome proven` | 5 | 5 |
+| egg rewrite laws | MIT | structured `proof_outcome proven` | 20 | 20 |
+| Ascent closure assertions | MIT | structured `proof_outcome proven` | 5 | 5 |
 | SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
+
+A separate local online-discovery measurement on `2026-09-15` scored
+HumanEval **3/20** and MBPP **1/20**. Those measurements demonstrate the new
+path but are not appended to the committed scheduled ledger by this pull
+request; the table above therefore remains derived from the latest committed
+rows rather than presenting a local run as scheduled history.
 
 `20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
 symbolic kernel against mechanically adapted declarations and assertions from
@@ -337,12 +343,13 @@ automatically changes solver behavior or raises a floor.
 # List every upstream suite with license, provenance, and grading mode.
 cargo run --bin formal-ai -- benchmark list
 
-# Run 20 real upstream HumanEval cases end to end (network + python3 required).
-cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20
+# Run 20 real upstream HumanEval cases with live coding discovery
+# (network + python3 required). Offline remains the default when omitted.
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online
 
 # Refresh every suite locally. SWE-bench additionally needs the pinned official
 # Python harness and Docker; scheduled CI bounds it separately to one case.
-cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --append
+cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --online --append
 
 # Verify the monotonic ratchet without running any suite.
 cargo run --bin formal-ai -- benchmark ratchet
