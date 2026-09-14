@@ -185,53 +185,43 @@ version-qualified spelling would have failed the very check it was meant to
 satisfy. Writing a version the evidence cannot support would also be a claim
 about provenance that the recorded session does not make.
 
-**Fix.** Rewrite the messages of those two commits to add
-`Formal-AI-Model: formal-ai`, rebuilding the branch chain with plain plumbing
-(`git commit-tree` reusing each original tree, parents, author and dates) so
-every later commit — including the five merges of `main` — keeps its tree byte
-for byte and no merge is redone. `git filter-branch` is not used: the session
-sandbox rejects it and the plumbing does the same job transparently. The
-rewrite touches only this pull request's branch; `main` history is not
-involved. The push uses `--force-with-lease`.
+**Attempted correction.** A local plumbing rewrite added
+`Formal-AI-Model: formal-ai` while preserving every tree and merge parent. The
+remote rejected the lease-protected update with `GH013: Cannot force-push to
+this branch`. That is a repository rule, not a stale lease: the remote ref
+remained at `ab0fe67d5c7fa28627a2f6954f86b95c0a8aa3ec`.
+
+**Delivered correction.** `scripts/self-hosting-retraction.rs` exists for this
+exact condition: the repository's `non_fast_forward` rule applies to all
+branches and has no bypass actors. A later commit therefore withdraws both
+incomplete attribution claims with their full immutable hashes:
+
+```text
+Formal-AI-Retract: 8a20542453097bed8dce618f451446d58aeee91d
+Formal-AI-Retract: ae1194e7ce085de3fd1d43a585135c30ae37c1e0
+```
+
+Retraction is one-directional: it can remove a malformed historical claim from
+the numerator but cannot invent model provenance or raise the self-hosting
+share. All new work is replayed on top of the live remote head, so delivery is
+a normal fast-forward push.
 
 **Verify.**
 
 ```bash
-git diff cde14085d <new HEAD> --stat   # empty: same tree
-rust-script scripts/self-hosting-metric.rs measure --since de88ca251 --until HEAD
-```
-
-**Status: rebuilt and verified locally.** On 2026-09-15 the committed plumbing
-script rebuilt the chain from
-`20ecb3737` to `79ccdabd4`. Both heads resolve to tree
-`d7dac2a66a53179157e1f4ecc6c3093596a1e12c`, and `git diff --exit-code`
-between them is empty. The rewritten verdict and audit commits are
-`3111ed74d` and `e8d855b16`; each now records
-`Formal-AI-Model: formal-ai`. The local strict evidence measurement completes
-successfully over `de88ca251..HEAD`.
-
-The script is committed beside this plan as `add-model-trailer.sh` for whoever
-runs it.
-It walks `de88ca251..HEAD` oldest-first, reuses each commit's original tree,
-parents, author and committer identities and dates verbatim through
-`git commit-tree`, appends `Formal-AI-Model: formal-ai` to the two commits
-named above and to no others, and prints the old and new heads together with
-`git diff OLD NEW --stat`, which must come out empty. It moves no ref; pointing
-the branch at the new head and pushing is a separate, deliberate step:
-
-```bash
-bash docs/case-studies/issue-710/plans/add-model-trailer.sh   # prints NEW_HEAD and an empty diff
-git reset --hard <NEW_HEAD>                      # only after that diff is confirmed empty
+git merge-base --is-ancestor ab0fe67d5c7fa28627a2f6954f86b95c0a8aa3ec HEAD
 rust-script scripts/self-hosting-metric.rs --since de88ca251 --until HEAD
-git push --force-with-lease origin HEAD:issue-710-14da90b08a12
 ```
 
-The value to write is the bare `formal-ai`, not a version-qualified spelling;
-see the correction above for why.
+The exploratory `add-model-trailer.sh` is retained beside this plan because it
+documents the tree-preserving repair that was verified locally. It is not the
+delivery mechanism; repository rules correctly keep the remote history
+append-only.
 
-- [x] chain rebuilt; `git diff` against the old head is empty
-- [x] evidence check passes locally on the rebuilt range
-- [x] pushed with `--force-with-lease`
+- [x] force-push rejection confirmed without changing the remote ref
+- [x] both incomplete historical attribution claims withdrawn append-only
+- [x] evidence check passes locally on the delivered range
+- [x] delivered by a normal fast-forward push
 - [ ] CI evidence check green
 
 

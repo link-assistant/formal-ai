@@ -29,7 +29,8 @@ backslash escapes; commit with `git commit -F`.
 
 - [x] L0.1 `src/web/app.js` rebuilt with bun 1.4.0
 - [x] L0.2 E2E slowdown measured, fixed, regression test added
-- [x] L0.3 the two 2026-08-01 commits carry `Formal-AI-Model`; branch force-pushed with lease
+- [x] L0.3 the two immutable 2026-08-01 attribution claims are withdrawn with
+      `Formal-AI-Retract`; branch delivered by normal fast-forward push
 - [ ] L0.4 CI green on the pushed head (all workflows)
 
 ## L1 — The ratchet reads history correctly
