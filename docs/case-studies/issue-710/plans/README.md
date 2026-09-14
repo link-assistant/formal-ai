@@ -128,3 +128,20 @@ wrote it.
   identically on `main` at `de88ca251`, so it is pre-existing and is not
   this branch's to fix here.
 
+- 2026-09-14, after pushing `3a1762651`: CI confirms both fixes. The lint job
+  passes, and the held-out computer-use generalization step took **78 s of its
+  600 s budget** (job 104035509913), against more than 540 s before the fix and
+  85 s for `main`'s own fastest run. Every E2E client job passes.
+
+  Two checks still fail, both on the same cause: `Self-Hosting Evidence Check`
+  and `Evidence Check Status` reject `8a2054245` for having no
+  `Formal-AI-Model`. That is plan 00 section 3, which is blocked: adding a
+  trailer to an existing commit requires rewriting every descendant and
+  force-pushing, and this session's sandbox refuses to run the rewrite. The
+  script that does it is committed as `plans/add-model-trailer.sh` and the
+  section records the exact steps.
+
+  `Code Coverage` failed once on an HTTP 504 fetching the sccache action, with
+  no output of its own; rerunning it passed, so it was infrastructure and not a
+  defect of this branch.
+
