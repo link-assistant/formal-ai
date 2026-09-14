@@ -3,8 +3,8 @@
 //! Claude Code advertises its built-in `WebSearch` beside the
 //! `mcp__issue781__websearch` the four-client harness wires up, but grants
 //! permission only for the MCP one. Ranking the client's own alias first ended
-//! every run at "Claude requested permissions to use WebSearch, but you haven't
-//! granted it yet", and the run recorded no search at all.
+//! every run at "Claude requested permissions to use `WebSearch`, but you
+//! have not granted it yet", and the run recorded no search at all.
 //!
 //! Authored by Formal AI through `scripts/author-change-with-formal-ai.sh`.
 
