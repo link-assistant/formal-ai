@@ -715,3 +715,52 @@ fn a_source_already_read_is_not_read_again() {
         "the already-read page must not be fetched a second time"
     );
 }
+
+/// Claude Code advertises its own `WebSearch` beside the MCP research tool the
+/// harness wired up, but grants permission only for the MCP one. Planning its
+/// built-in alias ended every four-client run at "Claude requested permissions
+/// to use `WebSearch`, but you have not granted it yet", so the run recorded no
+/// search at all. A namespaced research tool is present only because the client
+/// was configured to expose it, so it is the alias that gets planned.
+#[test]
+fn a_wired_up_mcp_search_outranks_the_clients_own_search_alias() {
+    let tools = [
+        "Bash",
+        "Edit",
+        "Read",
+        "WebSearch",
+        "mcp__issue781__websearch",
+        "Write",
+    ];
+    let messages = vec![ChatMessage::user(
+        "Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in",
+    )];
+    match plan_chat_step(&messages, &tools).expect("a research request has a plan") {
+        AgenticPlan::ToolCalls(calls) => {
+            assert_eq!(calls[0].tool, "mcp__issue781__websearch", "{calls:?}");
+        }
+        AgenticPlan::Final(answer) => panic!("expected a search, got {answer:?}"),
+    }
+}
+
+/// The same ordering must not let browser automation win a fetch: it carries no
+/// research capability at all, so the client's own alias stays the choice when
+/// no MCP *research* tool is advertised (issue #1133).
+#[test]
+fn browser_automation_does_not_outrank_the_clients_fetch_alias() {
+    let tools = [
+        "Bash",
+        "Write",
+        "WebFetch",
+        "mcp__playwright__browser_click",
+    ];
+    let messages = vec![ChatMessage::user(
+        "Resolve the GitHub issue at https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1 in this repository.",
+    )];
+    match plan_chat_step(&messages, &tools).expect("a work item has a plan") {
+        AgenticPlan::ToolCalls(calls) => {
+            assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+        }
+        AgenticPlan::Final(answer) => panic!("expected the work item to be read, got {answer:?}"),
+    }
+}
