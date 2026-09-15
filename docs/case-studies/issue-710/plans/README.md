@@ -76,14 +76,15 @@ wrote it.
 | 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | implemented and re-verified |
 | 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | implemented |
 | 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L15 complete; local gates green; CI confirmation pending |
+| 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | active at e065dc324 |
 
 ## Order of work
 
 1. Plan 00 — the branch must be green before anything is added to it.
 2. Plan 01 — the audit is the input to plan 03's scope; finish it before coding.
 3. Plan 03 leaves in the listed order; plan 02 is the design they implement.
-4. Final preparation: requirement rows, traceability rows, changelog, PR body,
-   one CI wait.
+4. Plan 04 — repair every end-to-end contradiction, refresh the audit, prove
+   the release path, and observe every workflow on the final head.
 
 ## Log
 
