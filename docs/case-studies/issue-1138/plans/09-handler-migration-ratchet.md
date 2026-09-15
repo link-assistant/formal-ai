@@ -554,7 +554,8 @@ Retires: `web_requests.rs` (992), `web_search_intent.rs` (872),
 brainstorming halves (of 543), and `mod.rs`'s `try_concept_lookup` (:207-390),
 `try_network_query` (:417-474), `try_source_refresh` (:786-823),
 `try_learn_from_source` (:824-876), `try_source_conflict` (:878-905).
-**Depends on plan 01** (B1, live concept lookup through the sources registry):
+**Depends on plan 01** (`01-live-concept-lookup.md`, B1, live concept lookup
+through the sources registry):
 M2 *is* the universal-loop consumer plan 01 builds, so this batch lands after
 plan 01's `UnknownConceptLookup` implementation and replaces
 `src/solver.rs:874-884`'s `policy:no_fetch_capability` stub with a real
@@ -572,7 +573,8 @@ rendered per target surface. Absorbs `procedural_how_to`,
 `software_project.rs` (909), `software_project_code.rs` (224),
 `document_request.rs` (645), `shell_command_transform.rs` (269), and `mod.rs`'s
 `try_write_script` (:691-728) and `try_algorithm` (:729-754).
-**Depends on plan 04** (B4, formalization that emits needs and stores procedures):
+**Depends on plan 04** (`04-formalization-depth.md`, B4, formalization that
+emits needs and stores concepts and procedures):
 the step list a procedure executes is the concept-and-procedure record plan 04
 produces, so M3 consumes plan 04's output rather than a hand-written IR.
 `src/skill_procedure.rs` and `src/solver_handlers/procedure_rules.rs` (112) are
@@ -1022,7 +1024,7 @@ Ordered; each is independently verifiable and commit-sized.
       "full order-parity is impossible" claim; add
       `data/meta/ci-gates/check-worker-handler-registry.lino`.
 
-**Batch 1 — M2 `source_lookup` (14 handlers).** *Blocked on plan 01.*
+**Batch 1 — M2 `source_lookup` (14 handlers).** *Blocked on plan 01 (`01-live-concept-lookup.md`).*
 
 - [ ] 16. Ship the M2 held-out paraphrase suite (5 languages × 12) and watch it
       fail honestly.
@@ -1044,7 +1046,7 @@ Ordered; each is independently verifiable and commit-sized.
       `research_table.rs:414,430,446` and the English column consts at `:26-33`
       (#948 item 2).
 
-**Batch 2 — M3 `procedure_interpreter` (8 handlers).** *Blocked on plan 04.*
+**Batch 2 — M3 `procedure_interpreter` (8 handlers).** *Blocked on plan 04 (`04-formalization-depth.md`).*
 
 - [ ] 22. Ship the M3 paraphrase suite.
 - [ ] 23. Implement `procedure_interpreter` over plan 04's stored procedures,
