@@ -119,9 +119,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
 }
 
 fn resolve_root(explicit: Option<PathBuf>) -> PathBuf {
-    explicit.unwrap_or_else(|| {
-        std::env::current_dir().unwrap_or_else(|_| external_benchmarks::repository_root())
-    })
+    crate::cli_paths::resolve_root(explicit, external_benchmarks::repository_root())
 }
 
 fn list_suites() {

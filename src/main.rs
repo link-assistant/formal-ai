@@ -19,6 +19,7 @@ mod cli_learn;
 mod cli_local_transport;
 mod cli_memory;
 mod cli_orchestration;
+mod cli_paths;
 mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
