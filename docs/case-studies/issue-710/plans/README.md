@@ -220,7 +220,7 @@ wrote it.
 
   The all-features unit target accounted for 3,501 tests, all 45 registered
   Rust/WASM/Web gates passed, Chromium passed 473 tests with its one documented
-  container-only skip, and the 317-file secret scan was clean. Pinned Bun 1.4.0
+  container-only skip, and the 333-file secret scan was clean. Pinned Bun 1.4.0
   reproduced the generated bundles byte-for-byte. The 5,783-file crate archive
   is 6.54 MiB, installs offline under its lockfile, and its installed binary
   discovers, verifies, and offline-replays a Wikifunctions factorial recurrence.
@@ -242,3 +242,29 @@ wrote it.
   the complete all-features source target passes 494/494. Host free space was
   rechecked at 32 GiB before compiling; no additional Docker images were pulled
   and both unrelated running containers were preserved.
+
+- 2026-09-15, second final-head CI repair planned: Desktop Release ARM64 job
+  `104361643705` reached two successive transient failures in different stages
+  of the hosted runner's disk-image service. The existing wrapper retried
+  `hdiutil create ... Device not configured`, but attempt two surfaced the same
+  class through `dmgbuild.core.DMGError: Unable to shrink:` after a failed quiet
+  resize, so the still-available third attempt was not used. Upstream dmgbuild
+  binds that message to `hdiutil resize`, and GitHub runner-images #12323
+  records the resize form as nondeterministic. Plan 04 L27 freezes the narrow
+  stage-complete classifier and positive/negative behavioral proof before the
+  wrapper is changed. Host space is 28 GiB; Docker state remains untouched.
+  The first live branch-Formal-AI review then exposed a separate general parser
+  defect: it tried to read the inline dotted error class
+  `dmgbuild.core.DMGError` as a file. Plan 04 now also requires sentence-scoped
+  structured-document source binding and a successful rebuilt Agent replay.
+  That repair now passes all 14 issue-715 tests. External Agent session
+  `ses_f5b0f612bffef6WvfgY2oOrIph` used the rebuilt branch binary to derive,
+  write, read, and byte-verify the five-field retry review. The macOS wrapper's
+  18 behavioral tests also pass, including the observed create → empty shrink
+  → success progression and its non-empty-diagnostic negative control. The
+  all-features source target passes 494/494; after repairing the one Clippy
+  documentation-formatting issue found by the first broad run and regenerating
+  the self-AST census, a fresh run passed all 32 registered Rust gates.
+  ShellCheck, Actionlint, formatting, and diff hygiene are also clean. The
+  shared Cargo target stayed bounded at 9.8 GiB and host free space remained 25
+  GiB; no Docker state or local release package was created.

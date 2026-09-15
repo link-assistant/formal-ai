@@ -17,6 +17,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
+use super::shell_command_policy::sentences;
 use super::write_request::{clean_path_token, looks_like_file_path, safe_relative_path, tokens};
 use crate::links_format::push_lino_node;
 use crate::protocol::ChatMessage;
@@ -110,14 +111,20 @@ fn recognise(task: &str) -> Option<Specification> {
             }
             paths
         });
-    let [input, output, ..] = paths.as_slice() else {
-        return None;
-    };
-    if input == output
-        || !std::path::Path::new(output)
-            .extension()
-            .is_some_and(|extension| extension.eq_ignore_ascii_case("lino"))
-    {
+    // File shape alone does not bind either side of this transaction. Technical
+    // prose routinely carries dotted identifiers (`module.Error`, package
+    // names, symbols), and a later "read it back" cue used to turn the first
+    // such token into the source file. The output must be a stated write target;
+    // the input must occur in the sentence that states the inspection.
+    let output = paths
+        .iter()
+        .find(|path| {
+            is_lino_path(path) && super::write_request::is_stated_write_target(task, path)
+        })
+        .cloned()
+        .or_else(|| composed_output_path(task))?;
+    let input = inspected_source_path(task, &output)?;
+    if input == output {
         return None;
     }
 
@@ -133,11 +140,62 @@ fn recognise(task: &str) -> Option<Specification> {
         format!("{root}{declaration}")
     })?;
     (!fields.is_empty()).then(|| Specification {
-        input: input.clone(),
-        output: output.clone(),
+        input,
+        output,
         root: root.clone(),
         fields: fields.to_vec(),
         schema_clause,
+    })
+}
+
+fn is_lino_path(path: &str) -> bool {
+    std::path::Path::new(path)
+        .extension()
+        .is_some_and(|extension| extension.eq_ignore_ascii_case("lino"))
+}
+
+/// The `LiNo` path named in the sentence that asks for document composition.
+///
+/// `author` is intentionally a document-composition cue rather than a generic
+/// file-write cue. Keeping this second binding lets "Author OUTPUT" work while
+/// still refusing file-shaped identifiers from unrelated diagnostic prose.
+fn composed_output_path(task: &str) -> Option<String> {
+    let lexicon = crate::seed::lexicon();
+    sentences(task).into_iter().find_map(|sentence| {
+        let normalized = crate::engine::normalize_prompt(sentence.text);
+        if !lexicon.mentions_role(crate::seed::ROLE_DOCUMENT_COMPOSITION_ACTION, &normalized) {
+            return None;
+        }
+        tokens(sentence.text)
+            .into_iter()
+            .map(|token| clean_path_token(token.text))
+            .find(|path| is_lino_path(path) && safe_relative_path(path))
+            .map(str::to_owned)
+    })
+}
+
+/// The safe file-shaped token named by an inspection sentence.
+///
+/// This relation, rather than message-wide token order, is the evidence that a
+/// dotted token is the source record. A sentence may also ask to write and then
+/// read back the output; excluding its stated write target keeps that verifier
+/// from turning the destination into its own input.
+fn inspected_source_path(task: &str, output: &str) -> Option<String> {
+    let lexicon = crate::seed::lexicon();
+    sentences(task).into_iter().find_map(|sentence| {
+        let normalized = crate::engine::normalize_prompt(sentence.text);
+        if !lexicon.mentions_role(crate::seed::ROLE_WORKSPACE_INSPECTION_ACTION, &normalized) {
+            return None;
+        }
+        tokens(sentence.text)
+            .into_iter()
+            .map(|token| clean_path_token(token.text))
+            .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+            .find(|path| {
+                *path != output
+                    && !super::write_request::is_stated_write_target(sentence.text, path)
+            })
+            .map(str::to_owned)
     })
 }
 

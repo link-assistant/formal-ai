@@ -69,6 +69,36 @@ case "$FORMAL_AI_TEST_MODE" in
       exit 38
     fi
     ;;
+  staged-hdiutil-transients-then-success)
+    # Reproduce Desktop Release job 104361643705: creation fails first; the
+    # second attempt reaches dmgbuild's quiet shrink and receives no diagnostic;
+    # the existing third attempt must remain available. A partial top-level DMG
+    # must be removed before *each* retry.
+    if [ -e release/formal-ai-desktop-macos-arm64-0.0.0.dmg ]; then
+      echo 'incomplete DMG was not cleaned before retry' >&2
+      exit 99
+    fi
+    if [ "$attempt" -eq 1 ]; then
+      printf 'partial create\n' > release/formal-ai-desktop-macos-arm64-0.0.0.dmg
+      echo 'hdiutil: create failed - Device not configured' >&2
+      exit 37
+    fi
+    if [ "$attempt" -eq 2 ]; then
+      printf 'partial shrink\n' > release/formal-ai-desktop-macos-arm64-0.0.0.dmg
+      echo 'dmgbuild.core.DMGError: Unable to shrink:' >&2
+      exit 39
+    fi
+    ;;
+  transient-resize-then-success)
+    if [ "$attempt" -eq 1 ]; then
+      echo 'hdiutil: resize: failed. Device not configured (6)' >&2
+      exit 40
+    fi
+    ;;
+  nonempty-shrink-diagnostic)
+    echo 'dmgbuild.core.DMGError: Unable to shrink: image layout is invalid' >&2
+    exit 41
+    ;;
   builder-timeout-then-success)
     # The exact lines observed in run 95255998673: electron-builder finished
     # every artifact and then rethrew the request timeout its own retry had
@@ -164,6 +194,51 @@ fn retries_known_hdiutil_attach_device_failure() {
         String::from_utf8_lossy(&output.stderr)
     );
     assert_eq!(count, "2", "the successful retry should be attempt two");
+}
+
+#[test]
+fn preserves_third_attempt_across_create_and_empty_shrink_failures() {
+    let root = sandbox("staged-service-failures");
+    let output = run_wrapper(&root, "staged-hdiutil-transients-then-success");
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert!(
+        output.status.success(),
+        "successive disk-image service stages should recover; stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(count, "3", "the successful retry should be attempt three");
+}
+
+#[test]
+fn retries_explicit_hdiutil_resize_device_failure() {
+    let root = sandbox("resize-retry");
+    let output = run_wrapper(&root, "transient-resize-then-success");
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert!(
+        output.status.success(),
+        "the explicit hosted-runner resize failure should recover; stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(count, "2", "the successful retry should be attempt two");
+}
+
+#[test]
+fn nonempty_shrink_diagnostic_is_not_automatically_transient() {
+    let root = sandbox("nonempty-shrink");
+    let output = run_wrapper(&root, "nonempty-shrink-diagnostic");
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert_eq!(
+        output.status.code(),
+        Some(41),
+        "electron-builder's own status must survive an unclassified shrink failure"
+    );
+    assert_eq!(count, "1", "a non-empty shrink reason must not be retried");
 }
 
 #[test]

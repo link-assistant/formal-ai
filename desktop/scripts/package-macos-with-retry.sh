@@ -2,7 +2,8 @@
 # Retry only the transient host failures observed on GitHub-hosted macOS
 # runners:
 #
-#   1. hdiutil create/attach failing against the runner's disk-image service.
+#   1. hdiutil create/attach/resize failing against the runner's disk-image
+#      service.
 #      See https://github.com/actions/runner-images/issues/7522.
 #   2. electron-builder's toolset download stalling for the whole of its
 #      600 000 ms `got` request timeout. Issue #1017: the build produced a
@@ -38,6 +39,13 @@ package_deadline_epoch="${FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH:-}"
 readonly transient_signatures=(
   # The runner's disk-image service, documented in actions/runner-images#7522.
   'hdiutil: (create|attach) failed - (Device not configured|Resource busy|No child processes)'
+  # The same service can fail at dmgbuild's later shrink stage. Its explicit
+  # form is documented in actions/runner-images#12323. With `-quiet`, dmgbuild
+  # can instead receive no diagnostic and expose only this anchored empty-output
+  # fallback. Do not match a non-empty shrink reason: it may describe a real
+  # image or capacity defect that a retry must not hide.
+  'hdiutil: resize: failed\. (Device not configured|Resource busy|No child processes)( \([0-9]+\))?[[:space:]]*$'
+  'dmgbuild\.core\.DMGError: Unable to shrink:[[:space:]]*$'
   # got's request timeout inside electron-builder's toolset download (#1017).
   "Timeout awaiting 'request' for [0-9]+ms"
   # Issue #1055: the same download, dropped mid-stream instead of stalling.

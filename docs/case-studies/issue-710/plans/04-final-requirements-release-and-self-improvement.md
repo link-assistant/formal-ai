@@ -426,7 +426,7 @@ Local proof on the final implementation commit `8e770ded7`:
 - every registered gate passed: Rust 32/32, WASM 1/1, and Web 12/12; the full
   Chromium suite passed 473 tests with one documented container-only skip;
 - a pinned Bun 1.4.0 rebuild reproduced the same four bundle SHA-256 values on
-  a second run, and the 317-file pull-request diff passed the pinned secret
+  a second run, and the 333-file pull-request diff passed the pinned secret
   scanner with `No secrets found`;
 - three changelog fragments compute a minor bump from 0.350.0 to 0.351.0. The
   exact package contains 5,783 files and is 6.54 MiB against crates.io's
@@ -472,3 +472,89 @@ repair makes the test require only reusable semantic operations, preserves the
 raw caller-supplied function identifier, and asserts that the retired task
 slugs cannot re-enter seed data. The exact all-features `source` target now
 passes all 494 tests after recompiling the project artifact.
+
+## L27 — Preserve the last macOS DMG retry for a later hdiutil stage
+
+Final-head Desktop Release job `104361643705` exposed a second clean-runner
+failure progression on macOS ARM64:
+
+1. attempt one reached DMG creation, where `hdiutil` returned `create failed -
+   Device not configured`; the existing narrow signature recognized that
+   transient and started attempt two;
+2. attempt two successfully rebuilt and signed the app and produced the ZIP,
+   but the same disk-image service then failed during the later shrink stage;
+   `dmgbuild` reported only `dmgbuild.core.DMGError: Unable to shrink:` with an
+   empty diagnostic;
+3. because the wrapper recognized create and attach failures but not resize,
+   it exited after attempt two even though its bounded third attempt and 1,572
+   second deadline-derived budget were still available.
+
+This is not an application, signing, or archive defect. Upstream `dmgbuild`
+raises that exact message only after its `hdiutil resize -quiet -sectors min`
+subprocess returns nonzero. GitHub runner-images issue #12323 records the same
+`hdiutil resize: failed. Device not configured` failure as nondeterministic on
+macOS hosted runners and shows the identical workflow succeeding on rerun.
+The general repair is therefore stage-complete classification of the runner's
+disk-image service, not a target-specific bypass or a wider job timeout.
+
+Planned implementation and proof, frozen before editing the wrapper:
+
+- [x] recognize explicit create, attach, and resize variants of the three
+      already accepted disk-image service errors;
+- [x] recognize only `dmgbuild`'s *empty-output* `Unable to shrink:` fallback,
+      because the failing subprocess discarded the useful service diagnostic;
+      a non-empty shrink reason remains a real failure and must not retry;
+- [x] reproduce the observed progression in a behavioral test: create failure,
+      empty shrink failure, then success on the existing third attempt, with
+      incomplete top-level DMGs removed before both retries;
+- [x] add the negative non-empty-shrink test and keep the final builder status;
+- [x] run the focused retry target, CI/CD source tests, format/diff checks, the
+      registered Rust gate, and Actionlint before a normal fast-forward push;
+- [ ] observe every workflow again on the resulting exact head.
+
+The requested live Formal AI review failed three times in external Agent
+session `ses_f5b1b2c02ffevk17mDiLUjwH9T`. The task supplied the upstream error
+class inline, but the structured-document recognizer treated the dotted
+identifier `dmgbuild.core.DMGError` as an input filename and issued
+`read("dmgbuild.core.DMGError")`. That is a general source-binding defect:
+file shape alone cannot turn an incidental dotted technical identifier into
+the record a request said to inspect. Before retrying the review, add a
+domain-neutral regression and make structured-document inputs come from the
+same sentence as an inspection action, excluding any stated write target.
+Then rerun through the rebuilt branch binary with an explicit inspected source
+record and require write/read-back verification.
+
+Completed locally: the structured-document input now binds only to a safe
+file-shaped token in an inspection sentence, while the output binds to either a
+stated write target or a LiNo path in the document-composition sentence. The
+new dotted-identifier regression first failed by planning
+`read("org.example.TransientFailure")`; after the repair all 14 issue-715 tests
+pass, including both older structured-document transactions. The macOS wrapper
+target passes all 18 tests: the staged create/shrink fixture succeeds on attempt
+three, the explicit resize form succeeds on attempt two, and a non-empty shrink
+diagnostic exits with the original status after one attempt.
+
+External Agent 0.26.0 then drove the rebuilt branch binary successfully in
+session `ses_f5b0f612bffef6WvfgY2oOrIph`. Formal AI read an explicit five-field
+LiNo failure record, wrote a derived `macos_retry_review`, read it back, and
+reported byte-for-byte verification. The temporary source and result hashes
+were respectively `150c8ed925a781d6f57981f7c44942afe11e46a5e25a1743c03e574ca7e27779`
+and `ca9e7bade55c29de165a61d4eb20e77ff130378c693d60fadd86a300aaac54b9`;
+the temporary raw Agent/system trace is not a release artifact and is not
+published.
+
+Free-space guard before this leaf: 28 GiB host space available, shared Cargo
+target 7.8 GiB, PR worktree 1.7 GiB. Docker has two active unrelated containers,
+29.02 GiB of images, and 11.73 GiB of non-reclaimable build cache. No image pull,
+Docker prune, volume removal, or duplicate release build is part of this leaf.
+
+Final local proof before delivery: the full all-features source target passes
+494/494; the macOS wrapper target passes 18/18; the strengthened dotted-token
+regression requires the exact inspected source rather than merely rejecting the
+wrong token; ShellCheck, Actionlint, formatting, and diff hygiene pass. The
+first registered-gate run found one Clippy documentation-formatting error in the
+new source-binding comment. After correcting it and regenerating the self-AST
+census, the exact Clippy command passed and a fresh uninterrupted run passed all
+32 registered Rust gates. Free space remained 25 GiB afterward, with a single
+9.8 GiB shared Cargo target and the 1.7 GiB PR worktree; Docker remained
+untouched and no local release packaging was run.

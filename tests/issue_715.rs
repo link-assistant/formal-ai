@@ -504,6 +504,25 @@ fn inspected_links_record_is_derived_written_and_read_back_before_completion() {
 }
 
 #[test]
+fn incidental_dotted_error_class_is_not_an_inspected_source_file() {
+    // A live Agent CLI review named an upstream error class inline and asked
+    // for the output to be read back. File shape alone made the structured
+    // document route bind `org.example.TransientFailure` as its input and try
+    // to open it. An inspected source must be named beside the inspection
+    // action; a dotted technical identifier in a different sentence is data,
+    // not a workspace path.
+    let task = "Inspect incident-source.lino. \
+        A library reported exactly org.example.TransientFailure: with no diagnostic. \
+        Author incident-review.lino as valid Links Notation with root incident_review and \
+        fields classification, positive_signature, and negative_boundary. \
+        Write only incident-review.lino, then read it back.";
+
+    let call = one_call(&[ChatMessage::user(task)], &["read", "write"]);
+    assert_eq!(call.tool, "read");
+    assert_eq!(args(&call)["filePath"], "incident-source.lino");
+}
+
+#[test]
 fn inspected_record_collections_preserve_cardinality_scope_and_repeated_fields() {
     let task = "Inspect recurrence-source.lino. Author recurrence-cache-index.lino as valid Links Notation. \
         Derive one recurrence_cache_index entry for every recurrence; preserve label, identifier, \
