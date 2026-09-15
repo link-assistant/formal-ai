@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_benchmark.rs
   language rust
   fidelity signature
-  byte_len 11112
-  line_count 327
-  content_id source_module_2be046e531b6f187
+  byte_len 11195
+  line_count 329
+  content_id source_module_d3d1951251ff2269
   symbol_count 8
   symbols
     enum BenchmarkAction 20 75
@@ -13,5 +13,5 @@ self_ast_census
     function list_suites 127 143
     struct RunSuiteOptions 146 155
     function run_suites 157 221
-    function append_runs 223 263
-    function check_ratchet 265 327
+    function append_runs 223 265
+    function check_ratchet 267 329

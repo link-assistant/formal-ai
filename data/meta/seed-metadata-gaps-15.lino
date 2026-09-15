@@ -255,6 +255,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "pattern_concept_context_delimiter_within_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_54dde6747c07e15f
+    source "data/seed/closure-generated-05.lino"
+    record "perimeter"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_32bfd4decb0b68ff
     source "data/seed/closure-generated-05.lino"
     record "pwd"
@@ -478,6 +482,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_a714dcb1ba84001f
     source "data/seed/closure-generated-09.lino"
     record "adapter"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_e5be15bde8fb477f
+    source "data/seed/closure-generated-09.lino"
+    record "average"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_eb0e18490a9390ef
     source "data/seed/closure-generated-09.lino"
@@ -958,6 +966,18 @@ seed_metadata_gaps
   gap seed_metadata_gap_96d06882be9b336f
     source "data/seed/meanings-calendar.lino"
     record "calendar_schedule_action"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_cd8163faf41839cf
+    source "data/seed/meanings-coding-structure.lino"
+    record "frequency_rank"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1673f5197909a90f
+    source "data/seed/meanings-coding-structure.lino"
+    record "grid_minimum_cost_path"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_41778712c163baff
+    source "data/seed/meanings-coding-structure.lino"
+    record "palindrome_extension"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_bf038e06929646ff
     source "data/seed/meanings-coding-structure.lino"

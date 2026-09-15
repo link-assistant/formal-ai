@@ -1,7 +1,7 @@
 //! Derive a structured document from an inspected workspace record.
 //!
 //! A request such as “inspect INPUT; author OUTPUT as Links Notation with
-//! ROOT and nested FIELD_A, FIELD_B” is neither a plain read nor a literal
+//! `ROOT` and nested `FIELD_A`, `FIELD_B`” is neither a plain read nor a literal
 //! write.  The bytes of OUTPUT do not exist in the prompt: they have to be
 //! derived from INPUT.  This bounded state machine keeps the two obligations
 //! together and makes the derivation inspectable:
@@ -113,7 +113,11 @@ fn recognise(task: &str) -> Option<Specification> {
     let [input, output, ..] = paths.as_slice() else {
         return None;
     };
-    if input == output || !output.ends_with(".lino") {
+    if input == output
+        || !std::path::Path::new(output)
+            .extension()
+            .is_some_and(|extension| extension.eq_ignore_ascii_case("lino"))
+    {
         return None;
     }
 

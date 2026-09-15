@@ -28,8 +28,8 @@ pub enum Operation {
 pub enum Expression {
     Parameter(String),
     Literal(i64),
-    Recur(Box<Expression>),
-    Apply(Operation, Vec<Expression>),
+    Recur(Box<Self>),
+    Apply(Operation, Vec<Self>),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

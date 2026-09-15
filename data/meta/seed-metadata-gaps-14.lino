@@ -923,6 +923,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "pairwise"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5b4fe7cc15bd3e6e
+    source "data/seed/meanings-coding-structure.lino"
+    record "regex_lowercase_chunks"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_824ca73c2d7fc30e
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_resource_form"

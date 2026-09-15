@@ -5,8 +5,8 @@ use std::fmt::Write as _;
 use crate::coding::composition;
 use crate::coding::concept_discovery::discover;
 use crate::coding::synthesis_runtime::{
-    discovery_catalog, live_fetch_enabled, procedure_ledger, render_answer, research_trail_line,
-    response_language,
+    discovery_catalog, extend_with_sequence_programs, live_fetch_enabled, procedure_ledger,
+    render_answer, research_trail_line, response_language,
 };
 use crate::coding::task_spec::recognise;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
@@ -51,10 +51,17 @@ pub fn try_program_synthesis_with_online(
             format!("{} composition={}", procedure.id, procedure.composition),
         );
     }
-    let catalog = discovery_catalog(&spec, log, online);
-    let concepts = discover(&spec, &catalog);
+    let mut catalog = discovery_catalog(&spec, log, online);
+    let mut concepts = discover(&spec, &catalog);
+    let mut outcome = composition::compose(&spec, &concepts);
+    if outcome.selected.is_none() {
+        catalog = extend_with_sequence_programs(catalog, &spec, log, online);
+        if !catalog.source_candidates.is_empty() {
+            concepts = discover(&spec, &catalog);
+            outcome = composition::compose(&spec, &concepts);
+        }
+    }
     log.append("synthesis:concept_map", concepts.to_links_notation());
-    let outcome = composition::compose(&spec, &concepts);
     for attempt in &outcome.attempts {
         log.append(
             "synthesis:draft_comparison",
@@ -158,7 +165,7 @@ pub fn try_program_synthesis_with_online(
     });
     answer.execution_recipe = Some(Box::new(ExecutionRecipe {
         language: spec.language.clone(),
-        source: selected.source.clone(),
+        source: selected.source,
         path,
         supporting_files: Vec::new(),
         commands,

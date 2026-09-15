@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/function_catalog/wikifunctions.rs
   language rust
   fidelity signature
-  byte_len 18118
+  byte_len 18111
   line_count 527
-  content_id source_module_bed993cf4c38e814
+  content_id source_module_fe9cf523eb402ca0
   symbol_count 35
   symbols
     const API 14 14

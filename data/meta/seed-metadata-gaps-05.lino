@@ -423,6 +423,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "narrated"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_57b8558dda538405
+    source "data/seed/closure-generated-09.lino"
+    record "optimization"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e72cafd85bcb8325
     source "data/seed/closure-generated-09.lino"
     record "process"
@@ -838,6 +842,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_e806f61cf32a59f5
     source "data/seed/meanings-calendar.lino"
     record "calendar_timezone_alias"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4a0b58194ebe32a5
+    source "data/seed/meanings-coding-structure.lino"
+    record "explicit_value_mapping"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_bab7630ebf99d845
     source "data/seed/meanings-coding-structure.lino"

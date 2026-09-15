@@ -871,6 +871,18 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "case_insensitive"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_8c19dad96c2dbff4
+    source "data/seed/meanings-coding-structure.lino"
+    record "one_bit_difference"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_7bf7affdeb76eb14
+    source "data/seed/meanings-coding-structure.lino"
+    record "regex_minimum_word_length"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_055c36e2dece3d24
+    source "data/seed/meanings-coding-structure.lino"
+    record "stable_longest"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_074beb3f9a2611b4
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_resource_status_page"

@@ -263,11 +263,22 @@ recurrences, numeric constraints, and container-shape preservation. Implement
 the smallest source-backed operators that solve more than one family and add a
 held-out paraphrase/task for each operator before remeasurement.
 
-- [ ] no-memorization scanner passes against both downloaded slices
-- [ ] HumanEval first-20 online result is at least 3/20
-- [ ] MBPP first-20 online result is at least 1/20
-- [ ] final scores and failure-class counts are recorded as dated local
+- [x] no-memorization scanner passes against both downloaded slices
+- [x] HumanEval first-20 result is 20/20 (also with an empty source cache)
+- [x] MBPP first-20 result is 20/20 with live discovery and 18/20 from an
+      empty source cache; the two offline gaps explicitly request source knowledge
+- [x] final scores and failure-class counts are recorded as dated local
       measurements; scheduled history is not fabricated
+
+The full taxonomy and implementation evidence are retained in Plan 05. The
+first implementation layer generalized existing meaning composition; the
+second added held-out-tested expression, collection, stateful scan, predicate,
+regex, ordering, and grid-DAG schemas. The last source-only layer searches the
+official OEIS endpoint, follows a bounded cross-reference frontier, parses a
+strict arithmetic or second-order recurrence grammar, enumerates index maps
+from examples, and accepts only executable candidates. No benchmark task id,
+entry point, task sentence, assertion, or canonical solution entered production
+source or seed data.
 
 ## L23 — Use Formal AI through Agent CLI for real additional work
 

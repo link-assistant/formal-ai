@@ -379,6 +379,11 @@ meanings
     lexeme en
       surface
         text "opinion question"
+  overlap
+    defined-by word_surface
+    lexeme en
+      surface
+        text "overlap"
   pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
     defined-by prompt_pattern
     lexeme en

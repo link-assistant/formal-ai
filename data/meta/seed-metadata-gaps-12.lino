@@ -439,6 +439,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "tool_result_failed"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ceb8d29b864956ec
+    source "data/seed/closure-generated-07.lino"
+    record "volume"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_946f810e619a1d1c
     source "data/seed/closure-generated-08.lino"
     record "baseline"
@@ -982,6 +986,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_9621e3d40c0525ec
     source "data/seed/meanings-calendar.lino"
     record "calendar_interrogative"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_6f0b9c8d97302b1c
+    source "data/seed/meanings-coding-structure.lino"
+    record "geometric_measure"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_426bc59eb652631c
     source "data/seed/meanings-coding-structure.lino"

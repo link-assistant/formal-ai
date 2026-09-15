@@ -179,6 +179,11 @@ meanings
     lexeme en
       surface
         text "lands"
+  legend
+    defined-by word_surface
+    lexeme en
+      surface
+        text "legend"
   lexeme_import_fetch_invalid_json
     defined-by intent
     lexeme en
@@ -1114,6 +1119,11 @@ meanings
     lexeme en
       surface
         text "visited"
+  volume
+    defined-by word_surface
+    lexeme en
+      surface
+        text "volume"
   web-search
     defined-by word_surface
     lexeme en

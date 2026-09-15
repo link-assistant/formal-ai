@@ -927,6 +927,18 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-request.lino"
     record "execute"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1dfa904d49606ec9
+    source "data/seed/meanings-coding-structure.lino"
+    record "balanced_delimiter_groups"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4115852f14b26209
+    source "data/seed/meanings-coding-structure.lino"
+    record "exclude_membership"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1373c791a369f5c9
+    source "data/seed/meanings-coding-structure.lino"
+    record "power_square_each"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_1a0a6602d81bfbe9
     source "data/seed/meanings-coding-structure.lino"
     record "recurrence_multiply"
@@ -935,6 +947,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "recurrence_operator"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a2cb24fd2e53a379
+    source "data/seed/meanings-coding-structure.lino"
+    record "stringify_each"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_6b0fdee89ca69c49
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_move_file"

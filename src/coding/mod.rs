@@ -32,6 +32,7 @@ pub mod python_render;
 pub mod python_signature;
 pub mod recurrence;
 pub mod rosetta_request;
+mod structural_composition;
 pub mod synthesis_runtime;
 pub mod task_spec;
 

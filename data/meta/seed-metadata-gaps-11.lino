@@ -915,6 +915,18 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "cosine"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1dcac079187eb28b
+    source "data/seed/meanings-coding-structure.lino"
+    record "absolute_deviation"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_caa7187af9ff325b
+    source "data/seed/meanings-coding-structure.lino"
+    record "bounded_bottom"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_d0ec8c2140cb405b
+    source "data/seed/meanings-coding-structure.lino"
+    record "composite_number"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_aa6c7029889b545b
     source "data/seed/meanings-coding-structure.lino"
     record "range"

@@ -208,3 +208,31 @@ fn an_unnamed_conversational_function_defers_identity_to_source_discovery() {
     assert_eq!(spec.name, "discovered_function");
     assert!(spec.parameters.is_empty());
 }
+
+#[test]
+fn a_completed_helper_does_not_hide_the_later_target_and_blank_doctest_means_none() {
+    let prompt = r#"def already_available(value: str) -> bool:
+    """This completed helper has its own unrelated documentation."""
+    return value == value[::-1]
+
+def extend_sequence(values: list[str]) -> str | None:
+    """Use the completed helper while deriving the target.
+    A quoted token such as '.|' remains inside one requirement sentence.
+    >>> extend_sequence([])
+
+    >>> extend_sequence(['maple'])
+    'maple'
+    """
+"#;
+    let spec = recognise(prompt).expect("the last definition is the incomplete target");
+    assert_eq!(spec.name, "extend_sequence");
+    assert_eq!(
+        spec.examples,
+        vec![example(&["[]"], "None"), example(&["['maple']"], "'maple'")]
+    );
+    assert!(
+        spec.requirement_sentences
+            .iter()
+            .any(|sentence| sentence.contains("'.|'"))
+    );
+}

@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/recurrence.rs
   language rust
   fidelity signature
-  byte_len 15761
+  byte_len 15749
   line_count 443
-  content_id source_module_ea05f4e819e7f842
+  content_id source_module_898af6b93ff12502
   symbol_count 18
   symbols
     enum Operation 17 25

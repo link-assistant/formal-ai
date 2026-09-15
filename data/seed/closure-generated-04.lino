@@ -34,6 +34,11 @@ meanings
     lexeme en
       surface
         text "agentic step failed"
+  area
+    defined-by word_surface
+    lexeme en
+      surface
+        text "area"
   article
     defined-by word_surface
     lexeme en

@@ -32,14 +32,14 @@ pub struct CompositionOutcome {
     pub research_trail: String,
 }
 
-struct Draft {
-    id: String,
-    source: String,
-    callable_name: String,
-    source_urls: Vec<String>,
-    source_licenses: Vec<String>,
-    composition: String,
-    action_cost: usize,
+pub(super) struct Draft {
+    pub(super) id: String,
+    pub(super) source: String,
+    pub(super) callable_name: String,
+    pub(super) source_urls: Vec<String>,
+    pub(super) source_licenses: Vec<String>,
+    pub(super) composition: String,
+    pub(super) action_cost: usize,
 }
 
 #[must_use]
@@ -66,6 +66,9 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
         Vec::new()
     };
     drafts.extend(structural_drafts(spec, concepts));
+    drafts.extend(super::structural_composition::additional_drafts(
+        spec, concepts,
+    ));
     let mut attempts = Vec::new();
     let mut passing = Vec::new();
     for draft in drafts {
@@ -171,6 +174,15 @@ fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<D
             source_licenses: vec![candidate.license.clone()],
             composition: format!("source_recurrence({})", candidate.id),
             action_cost: 3,
+        }),
+        "source_program" => Some(Draft {
+            id: format!("source:{}", candidate.id),
+            source: candidate.code.clone()?,
+            callable_name: candidate.callable_name.clone()?,
+            source_urls: vec![candidate.source_url.clone()],
+            source_licenses: vec![candidate.license.clone()],
+            composition: candidate.label.clone(),
+            action_cost: 4,
         }),
         _ => None,
     }
@@ -312,12 +324,70 @@ fn structural_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Draft>
         ));
     }
     if has("distinct_elements") && (has("reduce_count") || has("reduce_len")) && names.len() == 1 {
-        let distinct = idiom("distinct_elements", &[("items", names[0])]);
+        let items = if has("case_insensitive") {
+            idiom("case_insensitive", &[("text", names[0])])
+        } else {
+            names[0].to_owned()
+        };
+        let distinct = idiom("distinct_elements", &[("items", &items)]);
         let expression = idiom("reduce_len", &[("items", &distinct)]);
         let body = template("python_return", &[("expression", &expression)]);
         drafts.push(structural_draft(
             spec,
-            "reduce_len(distinct_elements)",
+            if has("case_insensitive") {
+                "reduce_len(distinct_elements(case_insensitive))"
+            } else {
+                "reduce_len(distinct_elements)"
+            },
+            &body,
+            Vec::<String>::new(),
+            concepts,
+        ));
+    }
+    if has("filter_only") && has("membership") && names.len() >= 2 {
+        let predicate = idiom("membership", &[("item", names[1]), ("collection", "item")]);
+        let expression = idiom(
+            "filter_only",
+            &[
+                ("item", "item"),
+                ("items", names[0]),
+                ("predicate", &predicate),
+            ],
+        );
+        let body = template("python_return", &[("expression", &expression)]);
+        drafts.push(structural_draft(
+            spec,
+            "filter_only(membership)",
+            &body,
+            Vec::<String>::new(),
+            concepts,
+        ));
+    }
+    if has("running_prefix") && has("reduce_max") && names.len() == 1 {
+        let expression = idiom(
+            "running_prefix",
+            &[("items", names[0]), ("operation", "max")],
+        );
+        let materialized = template("python_materialize_list", &[("items", &expression)]);
+        let body = template("python_return", &[("expression", &materialized)]);
+        let import = template("python_import", &[("module", "itertools")]);
+        drafts.push(structural_draft(
+            spec,
+            "running_prefix(reduce_max)",
+            &body,
+            [import],
+            concepts,
+        ));
+    }
+    if has("count_overlapping") && names.len() >= 2 {
+        let expression = idiom(
+            "count_overlapping",
+            &[("text", names[0]), ("substring", names[1])],
+        );
+        let body = template("python_return", &[("expression", &expression)]);
+        drafts.push(structural_draft(
+            spec,
+            "count_overlapping",
             &body,
             Vec::<String>::new(),
             concepts,
@@ -639,7 +709,7 @@ fn template(id: &str, values: &[(&str, &str)]) -> String {
     runtime_template(id, values).unwrap_or_else(|| panic!("missing runtime template {id}"))
 }
 
-fn idiom(id: &str, values: &[(&str, &str)]) -> String {
+pub(super) fn idiom(id: &str, values: &[(&str, &str)]) -> String {
     let mut rendered = structural_meanings()
         .into_iter()
         .find(|meaning| meaning.id == id)

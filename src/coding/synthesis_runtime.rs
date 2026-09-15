@@ -7,6 +7,7 @@ use std::sync::OnceLock;
 use crate::coding::composition;
 use crate::coding::concept_discovery::{CatalogFunction, DiscoveryCatalog};
 use crate::coding::discovered_procedures::DiscoveredProcedureLedger;
+use crate::coding::function_catalog::oeis::discover_programs;
 use crate::coding::function_catalog::python_docs::{StdlibIndex, fetch_index};
 use crate::coding::function_catalog::wikifunctions::{
     FunctionMatch, fetch_abstract_implementation, fetch_function, fetch_function_descriptors,
@@ -151,6 +152,50 @@ pub fn discovery_catalog(
         });
     }
     DiscoveryCatalog::new(stdlib, matches, functions)
+}
+
+pub fn extend_with_sequence_programs(
+    catalog: DiscoveryCatalog,
+    spec: &CodingTaskSpec,
+    log: &mut EventLog,
+    live: bool,
+) -> DiscoveryCatalog {
+    let cache_dir = std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
+        .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
+        .unwrap_or_else(|_| String::from("data"));
+    let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(live);
+    let sequence_discovery = discover_programs(&client, spec);
+    for diagnostic in sequence_discovery.diagnostics {
+        log.append("synthesis:source_miss", diagnostic);
+    }
+    let source_candidates = sequence_discovery
+        .programs
+        .into_iter()
+        .map(|program| {
+            log.append(
+                "source:http",
+                format!(
+                    "url={};fetched_at={};sha256={};catalog_match={}",
+                    program.source_url, program.fetched_at, program.sha256, program.id
+                ),
+            );
+            crate::coding::concept_discovery::CandidatePart {
+                id: program.id,
+                kind: "source_program".to_owned(),
+                label: program.composition,
+                language: Some("python".to_owned()),
+                code: Some(program.source),
+                callable_name: Some(program.callable_name),
+                source_tests: Vec::new(),
+                license: program.license,
+                source_url: program.source_url,
+                sha256: program.sha256,
+                fetched_at: program.fetched_at,
+                score: 1.0,
+            }
+        })
+        .collect();
+    catalog.with_source_candidates(source_candidates)
 }
 
 fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {

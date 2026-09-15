@@ -151,6 +151,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "agentic_report_target_question"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_52e267ef06fe9c2a
+    source "data/seed/closure-generated-04.lino"
+    record "area"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_92101d288cfa4e2a
     source "data/seed/closure-generated-04.lino"
     record "forms"
@@ -911,6 +915,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "splitting"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_385a32f26b6e74aa
+    source "data/seed/meanings-coding-structure.lino"
+    record "zero_based_range"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_cb787b09bfc3910a
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_count_lines"

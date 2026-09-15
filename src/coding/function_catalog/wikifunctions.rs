@@ -84,7 +84,7 @@ pub enum ZExpression {
     Literal(String),
     Call {
         function_zid: String,
-        arguments: BTreeMap<String, ZExpression>,
+        arguments: BTreeMap<String, Self>,
     },
 }
 

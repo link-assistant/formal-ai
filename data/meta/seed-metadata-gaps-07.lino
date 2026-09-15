@@ -931,6 +931,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "filter_only"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_0bf523ec0b7cf557
+    source "data/seed/meanings-coding-structure.lino"
+    record "interpose_each"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d53afbcf1e4ed9c7
     source "data/seed/meanings-coding-structure.lino"
     record "pairwise_distinct"

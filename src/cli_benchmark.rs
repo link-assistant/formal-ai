@@ -185,7 +185,7 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
     }
 
     if append {
-        append_runs(&runs, ledger_path, date, slice)?;
+        append_runs(&runs, ledger_path, date, slice, online)?;
         println!("ledger updated: {}", ledger_path.display());
     }
     if let Some(relative_path) = learning_report {
@@ -225,6 +225,7 @@ fn append_runs(
     ledger_path: &Path,
     date: &str,
     slice: usize,
+    online: bool,
 ) -> Result<(), Box<dyn Error>> {
     let text = fs::read_to_string(ledger_path)
         .map_err(|error| format!("failed to read {}: {error}", ledger_path.display()))?;
@@ -245,8 +246,9 @@ fn append_runs(
         ledger.upsert_result(
             &run.to_result_entry(date),
             &format!(
-                "formal-ai benchmark run --suite {} --slice {slice}",
-                run.suite
+                "formal-ai benchmark run --suite {} --slice {slice}{}",
+                run.suite,
+                if online { " --online" } else { "" }
             ),
             "honest upstream score: every case is graded by the upstream criterion",
         );

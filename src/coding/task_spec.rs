@@ -247,12 +247,12 @@ fn outside_markdown_fences(prompt: &str) -> String {
     let mut outside = true;
     prompt
         .lines()
-        .filter_map(|line| {
+        .filter(|line| {
             if line.trim_start().starts_with("```") {
                 outside = !outside;
-                return None;
+                return false;
             }
-            outside.then_some(line)
+            outside
         })
         .collect::<Vec<_>>()
         .join("\n")
@@ -301,7 +301,7 @@ fn extract_expected_stdout(prompt: &str) -> Option<String> {
 }
 
 fn python_definition_signature(prompt: &str) -> Option<&str> {
-    prompt.lines().find_map(|line| {
+    prompt.lines().rev().find_map(|line| {
         line.trim()
             .strip_prefix("def ")
             .map(|signature| signature.trim_end_matches(':').trim())
@@ -382,7 +382,7 @@ fn is_identifier(candidate: &str) -> bool {
 }
 
 fn docstring_contract(prompt: &str, function_name: &str) -> (Vec<String>, Vec<Example>) {
-    let Some(content) = docstring_content(prompt) else {
+    let Some(content) = docstring_content(prompt, function_name) else {
         return (Vec::new(), Vec::new());
     };
     let lines = content.lines().map(str::trim).collect::<Vec<_>>();
@@ -395,18 +395,18 @@ fn docstring_contract(prompt: &str, function_name: &str) -> (Vec<String>, Vec<Ex
             if let Some((name, arguments)) = parse_call(call.trim())
                 && name == function_name
             {
-                let expected = lines
-                    .iter()
-                    .skip(index + 1)
-                    .find(|candidate| !candidate.is_empty() && !candidate.starts_with(">>>"));
-                if let Some(expected) = expected {
-                    examples.push(Example {
-                        arguments,
-                        expected: (*expected).to_owned(),
-                    });
-                    index += 2;
-                    continue;
-                }
+                let next = lines.get(index + 1).copied().unwrap_or_default();
+                let expected = if next.is_empty() || next.starts_with(">>>") {
+                    "None"
+                } else {
+                    next
+                };
+                examples.push(Example {
+                    arguments,
+                    expected: expected.to_owned(),
+                });
+                index += usize::from(!next.is_empty()) + 1;
+                continue;
             }
         } else if !line.is_empty() {
             prose.push(line);
@@ -416,17 +416,20 @@ fn docstring_contract(prompt: &str, function_name: &str) -> (Vec<String>, Vec<Ex
     (split_sentences(&prose.join(" ")), examples)
 }
 
-fn docstring_content(prompt: &str) -> Option<&str> {
-    let double = prompt.find("\"\"\"").map(|start| (start, "\"\"\""));
-    let single = prompt.find("'''").map(|start| (start, "'''"));
+fn docstring_content<'a>(prompt: &'a str, function_name: &str) -> Option<&'a str> {
+    let marker = format!("def {function_name}(");
+    let function_start = prompt.rfind(&marker)?;
+    let function = &prompt[function_start..];
+    let double = function.find("\"\"\"").map(|start| (start, "\"\"\""));
+    let single = function.find("'''").map(|start| (start, "'''"));
     let (start, delimiter) = match (double, single) {
         (Some(left), Some(right)) => left.min(right),
         (Some(found), None) | (None, Some(found)) => found,
         (None, None) => return None,
     };
     let content_start = start + delimiter.len();
-    let content_end = prompt[content_start..].find(delimiter)? + content_start;
-    Some(&prompt[content_start..content_end])
+    let content_end = function[content_start..].find(delimiter)? + content_start;
+    Some(&function[content_start..content_end])
 }
 
 fn assertion_contract(prompt: &str) -> Option<(String, Vec<Example>)> {
@@ -492,8 +495,17 @@ fn split_sentences(text: &str) -> Vec<String> {
     let compact = text.split_whitespace().collect::<Vec<_>>().join(" ");
     let mut sentences = Vec::new();
     let mut start = 0;
+    let mut quote = None;
     for (index, character) in compact.char_indices() {
-        if matches!(character, '.' | '?' | '!' | '。' | '？' | '！') {
+        if quote.is_some_and(|delimiter| delimiter == character) {
+            quote = None;
+            continue;
+        }
+        if quote.is_none() && matches!(character, '\'' | '"') {
+            quote = Some(character);
+            continue;
+        }
+        if quote.is_none() && matches!(character, '.' | '?' | '!' | '。' | '？' | '！') {
             let end = index + character.len_utf8();
             let sentence = compact[start..end].trim();
             if !sentence.is_empty() {

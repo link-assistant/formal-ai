@@ -2,44 +2,44 @@ self_ast_census
   target src/agentic_coding/structured_document.rs
   language rust
   fidelity full_ast
-  byte_len 13264
-  line_count 361
-  content_id source_module_29eed8d336c045b6
+  byte_len 13387
+  line_count 365
+  content_id source_module_f8c00d6124bf62db
   symbol_count 14
   symbols
     struct Specification 26 32
     function plan_step 35 90
-    function recognise 92 138
-    function machine_identifiers 142 155
-    function render 157 186
-    function collection_scopes 193 231
-    function requested_fields 238 257
-    function tree_contains_identifier_token 259 273
-    function best_source_values 275 296
-    struct SourceCandidate 298 302
-    function collect_candidates 304 335
-    function collect_leaf_values 337 344
-    function identifier_tokens 346 352
-    function read_arguments 354 361
+    function recognise 92 142
+    function machine_identifiers 146 159
+    function render 161 190
+    function collection_scopes 197 235
+    function requested_fields 242 261
+    function tree_contains_identifier_token 263 277
+    function best_source_values 279 300
+    struct SourceCandidate 302 306
+    function collect_candidates 308 339
+    function collect_leaf_values 341 348
+    function identifier_tokens 350 356
+    function read_arguments 358 365
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10003
-    named_node_count 2087
+    total_link_count 10085
+    named_node_count 2108
     distinct_node_kinds 68
     node_kinds
-      arguments 196
+      arguments 199
       array_type 2
       attribute 1
       attribute_item 1
       binary_expression 29
       block 44
-      call_expression 196
+      call_expression 199
       char_literal 9
-      closure_expression 30
-      closure_parameters 30
+      closure_expression 31
+      closure_parameters 31
       compound_assignment_expr 1
       crate 12
       doc_comment 27
@@ -47,15 +47,15 @@ self_ast_census
       expression_statement 50
       field_declaration 8
       field_declaration_list 2
-      field_expression 179
-      field_identifier 193
+      field_expression 181
+      field_identifier 195
       field_initializer 6
       field_initializer_list 2
       for_expression 7
       function_item 12
       generic_function 4
       generic_type 17
-      identifier 478
+      identifier 484
       if_expression 14
       inner_doc_comment_marker 14
       integer_literal 13
@@ -76,7 +76,7 @@ self_ast_census
       reference_type 26
       remaining_field_pattern 1
       return_expression 12
-      scoped_identifier 52
+      scoped_identifier 55
       scoped_use_list 3
       shorthand_field_initializer 2
       slice_pattern 1

@@ -264,6 +264,11 @@ meanings
     lexeme en
       surface
         text "map matches"
+  mean
+    defined-by word_surface
+    lexeme en
+      surface
+        text "mean"
   memory_program_compilation_gap
     defined-by intent
     lexeme en

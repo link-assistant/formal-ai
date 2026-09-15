@@ -2,18 +2,19 @@ self_ast_census
   target src/coding/synthesis_runtime.rs
   language rust
   fidelity signature
-  byte_len 10013
-  line_count 278
-  content_id source_module_dd5f1ef5f312f417
-  symbol_count 10
+  byte_len 11761
+  line_count 323
+  content_id source_module_eacbb6d31cbc0d57
+  symbol_count 11
   symbols
-    function discovery_catalog 21 154
-    static OFFLINE_STDLIB 33 33
-    function research_phrases 156 196
-    function token_overlap 198 206
-    function live_fetch_enabled 208 215
-    function procedure_ledger 217 222
-    function response_language 224 226
-    function localized_template 228 232
-    function research_trail_line 234 245
-    function render_answer 247 278
+    function discovery_catalog 22 155
+    static OFFLINE_STDLIB 34 34
+    function extend_with_sequence_programs 157 199
+    function research_phrases 201 241
+    function token_overlap 243 251
+    function live_fetch_enabled 253 260
+    function procedure_ledger 262 267
+    function response_language 269 271
+    function localized_template 273 277
+    function research_trail_line 279 290
+    function render_answer 292 323

@@ -1,0 +1,25 @@
+self_ast_census
+  target src/coding/structural_composition.rs
+  language rust
+  fidelity signature
+  byte_len 21521
+  line_count 625
+  content_id source_module_eb0103aa6f11d67f
+  symbol_count 16
+  symbols
+    function additional_drafts 12 346
+    function example_guided_arithmetic 348 387
+    function grid_minimum_cost_path_drafts 393 414
+    function draft 416 420
+    function source_urls 437 446
+    function return_value 448 450
+    function first_positive_integer 452 457
+    function inferred_output_cardinality 459 466
+    function top_level_collection_len 468 496
+    function inferred_match_labels 498 518
+    function examples_are_scalar_numeric 520 527
+    function numeric_literal 529 531
+    function explicit_numeric_mapping 533 556
+    function explicit_order 558 582
+    function quoted_spans 584 606
+    function number_in_text 608 625

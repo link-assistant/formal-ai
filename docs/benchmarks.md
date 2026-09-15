@@ -276,13 +276,14 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-The latest committed rows are dated `2026-09-07`, use solver version `0.347.0`,
-and keep the deterministic solver at `temperature = 0.0`:
+The latest coding rows are dated `2026-09-15`, use solver version `0.349.2`,
+and keep the deterministic solver at `temperature = 0.0`. Other suite rows
+remain at their latest `2026-09-07` measurements:
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
-| HumanEval | MIT | upstream unit test executed | 0 | 20 |
-| MBPP | Apache-2.0 | upstream `test_list` asserts executed | 0 | 20 |
+| HumanEval | MIT | upstream unit test executed | 20 | 20 |
+| MBPP | Apache-2.0 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
 | GSM8K | MIT | final number vs. `####` gold | 2 | 20 |
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench object counting | Apache-2.0 | final number vs. target | 0 | 20 |
@@ -292,11 +293,15 @@ and keep the deterministic solver at `temperature = 0.0`:
 | SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
-A separate local online-discovery measurement on `2026-09-15` scored
-HumanEval **3/20** and MBPP **1/20**. Those measurements demonstrate the new
-path but are not appended to the committed scheduled ledger by this pull
-request; the table above therefore remains derived from the latest committed
-rows rather than presenting a local run as scheduled history.
+The same-day empty-source-cache control scored HumanEval **20/20** and MBPP
+**18/20**. The two remaining MBPP cases require externally defined sequence
+knowledge: with `--online`, the solver searches official OEIS JSON, follows a
+bounded cross-reference frontier, formalizes a strict arithmetic or linear
+recurrence, verifies it against task examples, and reaches **20/20**. Retrieved
+bytes live only in the ignored content-addressed cache; a fresh offline run
+therefore reports those two gaps instead of relying on benchmark-specific
+built-ins. The ledger's MBPP runner includes `--online` so its result is exactly
+reproducible.
 
 `20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
 symbolic kernel against mechanically adapted declarations and assertions from

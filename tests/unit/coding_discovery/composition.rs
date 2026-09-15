@@ -268,3 +268,112 @@ fn source_recurrence_candidates_are_verified_with_discovered_examples() {
     assert_eq!(selected.id, "recurrence:source-abstract-17");
     assert_eq!(selected.assertion_count, 3);
 }
+
+#[test]
+fn existing_collection_meanings_compose_into_held_out_programs() {
+    let filtered = compose(
+        &spec(
+            "retain_matching_values",
+            vec![parameter("values", None), parameter("fragment", None)],
+            vec![
+                example(&["['cabin', 'mint', 'cab']", "'cab'"], "['cabin', 'cab']"),
+                example(&["[]", "'x'"], "[]"),
+            ],
+        ),
+        &map(&["filter_only", "membership"], Vec::new()),
+    )
+    .selected
+    .expect("filter and membership should compose");
+    assert!(
+        filtered
+            .source
+            .contains("[item for item in values if fragment in item]")
+    );
+
+    let rolling = compose(
+        &spec(
+            "prefix_high_water_marks",
+            vec![parameter("samples", None)],
+            vec![
+                example(&["[]"], "[]"),
+                example(&["[5, 2, 7, 1]"], "[5, 5, 7, 7]"),
+            ],
+        ),
+        &map(&["running_prefix", "reduce_max"], Vec::new()),
+    )
+    .selected
+    .expect("running maximum should compose");
+    assert!(
+        rolling
+            .source
+            .contains("itertools.accumulate(samples, max)")
+    );
+
+    let normalized = compose(
+        &spec(
+            "normalized_symbol_cardinality",
+            vec![parameter("symbols", None)],
+            vec![example(&["'AaBbA'"], "2"), example(&["''"], "0")],
+        ),
+        &map(
+            &["distinct_elements", "reduce_count", "case_insensitive"],
+            Vec::new(),
+        ),
+    )
+    .selected
+    .expect("normalization should compose before distinct counting");
+    assert!(normalized.source.contains("len(set(symbols.lower()))"));
+
+    let windows = compose(
+        &spec(
+            "count_shifted_matches",
+            vec![parameter("haystack", None), parameter("needle", None)],
+            vec![
+                example(&["'zzzzz'", "'zz'"], "4"),
+                example(&["'abc'", "'x'"], "0"),
+            ],
+        ),
+        &map(&["count_overlapping"], Vec::new()),
+    )
+    .selected
+    .expect("overlapping windows should compose");
+    assert!(windows.source.contains("haystack.startswith(needle, i)"));
+}
+
+#[test]
+fn held_out_grid_examples_select_the_supported_predecessor_relation() {
+    let outcome = compose(
+        &spec(
+            "least_weight_to_coordinate",
+            vec![
+                parameter("weights", Some("list[list[int]]")),
+                parameter("last_row", Some("int")),
+                parameter("last_column", Some("int")),
+            ],
+            vec![
+                example(
+                    &[
+                        "[[1, 100, 100, 100], [100, 2, 100, 100], [100, 100, 3, 4]]",
+                        "2",
+                        "3",
+                    ],
+                    "10",
+                ),
+                example(&["[[4, 8], [7, 1]]", "1", "1"], "5"),
+            ],
+        ),
+        &map(&["grid_minimum_cost_path"], Vec::new()),
+    );
+    let selected = outcome.selected.unwrap_or_else(|| {
+        panic!(
+            "examples should select diagonal as an allowed predecessor: {:#?}",
+            outcome.attempts
+        )
+    });
+    assert!(selected.composition.contains("orthogonal_or_diagonal"));
+    assert!(selected.source.contains("last_row + 1"));
+    assert_eq!(
+        selected.source_urls,
+        ["https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf"]
+    );
+}

@@ -30,6 +30,7 @@ pub struct DiscoveryCatalog {
     pub stdlib: StdlibIndex,
     pub function_matches: Vec<FunctionMatch>,
     pub functions: Vec<CatalogFunction>,
+    pub source_candidates: Vec<CandidatePart>,
 }
 
 impl DiscoveryCatalog {
@@ -43,7 +44,14 @@ impl DiscoveryCatalog {
             stdlib,
             function_matches,
             functions,
+            source_candidates: Vec::new(),
         }
+    }
+
+    #[must_use]
+    pub fn with_source_candidates(mut self, source_candidates: Vec<CandidatePart>) -> Self {
+        self.source_candidates = source_candidates;
+        self
     }
 }
 
@@ -253,7 +261,14 @@ pub fn structural_meanings() -> Vec<StructuralMeaning> {
 fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
     let mut matched = crate::seed::lexicon()
         .meanings_with_role(crate::seed::ROLE_CODING_STRUCTURE)
-        .filter(|meaning| meaning.evidenced_in(normalized))
+        .filter(|meaning| {
+            meaning.evidenced_in(normalized)
+                || meaning.words().any(|surface| {
+                    let surface = crate::engine::normalize_prompt(surface);
+                    normalized_surface_present(normalized, &surface)
+                        || fuzzy_single_token_present(normalized, &surface)
+                })
+        })
         .map(|meaning| meaning.slug.as_str())
         .collect::<BTreeSet<_>>();
     // "Distinct pair" describes how pairs are enumerated, not a request to
@@ -279,6 +294,54 @@ fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
         .collect()
 }
 
+fn normalized_surface_present(normalized: &str, surface: &str) -> bool {
+    !surface.is_empty() && format!(" {normalized} ").contains(&format!(" {surface} "))
+}
+
+fn fuzzy_single_token_present(normalized: &str, surface: &str) -> bool {
+    surface.len() >= 8
+        && surface.bytes().all(|byte| byte.is_ascii_alphabetic())
+        && normalized
+            .split_whitespace()
+            .filter(|token| token.bytes().all(|byte| byte.is_ascii_alphabetic()))
+            .any(|token| edit_distance_at_most_one(token, surface))
+}
+
+fn edit_distance_at_most_one(left: &str, right: &str) -> bool {
+    if left == right {
+        return true;
+    }
+    let left = left.as_bytes();
+    let right = right.as_bytes();
+    if left.len().abs_diff(right.len()) > 1 {
+        return false;
+    }
+    let (shorter, longer) = if left.len() <= right.len() {
+        (left, right)
+    } else {
+        (right, left)
+    };
+    let mut short_index = 0;
+    let mut long_index = 0;
+    let mut edits = 0;
+    while short_index < shorter.len() && long_index < longer.len() {
+        if shorter[short_index] == longer[long_index] {
+            short_index += 1;
+            long_index += 1;
+            continue;
+        }
+        edits += 1;
+        if edits > 1 {
+            return false;
+        }
+        if shorter.len() == longer.len() {
+            short_index += 1;
+        }
+        long_index += 1;
+    }
+    edits + usize::from(long_index < longer.len()) <= 1
+}
+
 fn discovery_query(spec: &CodingTaskSpec, structures: &[StructuralMeaning]) -> String {
     let mut terms = vec![spec.name.replace('_', " ")];
     let lexicon = crate::seed::lexicon();
@@ -297,6 +360,7 @@ fn candidates_for(
     catalog: &DiscoveryCatalog,
 ) -> Vec<CandidatePart> {
     let mut out = Vec::new();
+    out.extend(catalog.source_candidates.iter().cloned());
     for part in catalog.stdlib.parts_for_phrase(query) {
         let score = part.match_score(query);
         if score >= 3.0 {
@@ -398,7 +462,8 @@ fn candidate_kind_rank(kind: &str) -> usize {
     match kind {
         "stdlib" => 0,
         "wikifunctions_definition" => 1,
-        _ => 2,
+        "source_program" => 2,
+        _ => 3,
     }
 }
 
