@@ -445,8 +445,8 @@ Local proof on the final implementation commit `8e770ded7`:
 
 ## L26 — One final delivery and complete CI observation
 
-- [ ] all changes committed in coherent, append-only commits
-- [ ] self-hosting metric passes and attributes only Formal-AI-authored lines
+- [x] all changes committed in coherent, append-only commits
+- [x] self-hosting metric passes and attributes only Formal-AI-authored lines
 - [ ] PR body reports refreshed scores, requirements verdicts, evidence,
       release proof, and exact limitations
 - [ ] one normal fast-forward push after local validation
@@ -456,3 +456,8 @@ Local proof on the final implementation commit `8e770ded7`:
 Do not stop at “pending” for the final head. A failed job is new evidence and
 re-enters the appropriate leaf. A cancelled superseded run is not evidence
 about the final head.
+
+The strict local metric passed after the append-only retraction: 0.15%, with 58
+of 38,373 behavior-changing lines attributed across three fully evidenced
+Formal AI commits. Documentation, captured evidence, and the retracted claim
+contribute nothing to the numerator.
