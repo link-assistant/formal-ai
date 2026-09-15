@@ -1,0 +1,104 @@
+knowledge_base
+  id "doc:input"
+  source "doc:input"
+  primitive_scheme "concept entity predicate assertion procedure context temporal modal annotation"
+  generator "formal-ai/agentic-coding/formalize@links-v1"
+  concepts "0"
+  entities "0"
+  predicates "0"
+  assertions "5"
+  procedures "0"
+  contexts "0"
+  temporals "0"
+  modals "0"
+  annotations "5"
+
+annotation
+  id "ann:0"
+  doc "doc:input"
+  span "0:69"
+  text "User conversations and observed tool results are original experience."
+  language "en"
+
+annotation
+  id "ann:1"
+  doc "doc:input"
+  span "69:163"
+  text "Cached public-source payloads may be evicted only when a retained recipe can rediscover them."
+  language "en"
+
+annotation
+  id "ann:2"
+  doc "doc:input"
+  span "163:234"
+  text "Eviction must preserve the recipe, provenance and original experience."
+  language "en"
+
+annotation
+  id "ann:3"
+  doc "doc:input"
+  span "234:289"
+  text "Storage accounting must include the retained metadata."
+  language "en"
+
+annotation
+  id "ann:4"
+  doc "doc:input"
+  span "289:374"
+  text "A changed page is a new observation, not a byte-identical reconstruction of history."
+  language "en"
+
+assertion
+  id "a:0"
+  subject "—"
+  subject_kind "literal"
+  predicate "pred:states"
+  object "User conversations and observed tool results are original experience."
+  object_kind "literal"
+  natural_language "User conversations and observed tool results are original experience."
+  annotation "ann:0"
+  provenance "doc:input@0:69"
+
+assertion
+  id "a:1"
+  subject "—"
+  subject_kind "literal"
+  predicate "pred:states"
+  object "Cached public-source payloads may be evicted only when a retained recipe can rediscover them."
+  object_kind "literal"
+  natural_language "Cached public-source payloads may be evicted only when a retained recipe can rediscover them."
+  annotation "ann:1"
+  provenance "doc:input@69:163"
+
+assertion
+  id "a:2"
+  subject "—"
+  subject_kind "literal"
+  predicate "pred:states"
+  object "Eviction must preserve the recipe, provenance and original experience."
+  object_kind "literal"
+  natural_language "Eviction must preserve the recipe, provenance and original experience."
+  annotation "ann:2"
+  provenance "doc:input@163:234"
+
+assertion
+  id "a:3"
+  subject "—"
+  subject_kind "literal"
+  predicate "pred:states"
+  object "Storage accounting must include the retained metadata."
+  object_kind "literal"
+  natural_language "Storage accounting must include the retained metadata."
+  annotation "ann:3"
+  provenance "doc:input@234:289"
+
+assertion
+  id "a:4"
+  subject "—"
+  subject_kind "literal"
+  predicate "pred:states"
+  object "A changed page is a new observation, not a byte-identical reconstruction of history."
+  object_kind "literal"
+  natural_language "A changed page is a new observation, not a byte-identical reconstruction of history."
+  annotation "ann:4"
+  provenance "doc:input@289:374"
