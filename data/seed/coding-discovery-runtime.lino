@@ -1,0 +1,55 @@
+coding_discovery_runtime
+  template python_import
+    text "import {module}"
+  template python_return
+    text "return {expression}"
+  template python_materialize_list
+    text "list({items})"
+  template python_materialize_tuple
+    text "tuple({items})"
+  template python_test_entrypoint
+    text "\nif __name__ == '__main__':\n"
+  template python_for_each
+    text "for {item} in {items}:\n    {body}"
+  template python_doc_probe
+    text "print(({expression}).__doc__ or '')"
+  template balanced_delimiter_groups
+    text "groups = []\ncurrent = []\ndepth = 0\nfor symbol in {items}:\n    if symbol.isspace():\n        continue\n    current.append(symbol)\n    depth += 1 if symbol == '(' else -1\n    if depth == 0:\n        groups.append(''.join(current))\n        current = []\nreturn groups"
+  template group_max_nesting
+    text "depths = []\nfor group in {items}.split():\n    depth = 0\n    maximum = 0\n    for symbol in group:\n        depth += 1 if symbol == '(' else -1\n        maximum = max(maximum, depth)\n    depths.append(maximum)\nreturn depths"
+  template aligned_binary_xor
+    text "''.join('0' if left == right else '1' for left, right in zip({left}, {right}))"
+  template explicit_value_mapping
+    text "mapping = {mapping}\nreturn [mapping[item] for item in {items}.split()]"
+  template explicit_ordering
+    text "order = {order}\nreturn ' '.join(sorted({items}.split(), key=order.__getitem__))"
+  template regex_minimum_word_length
+    text "re.findall(r'\\b\\w{{minimum},}\\b', {text})"
+  template regex_lowercase_chunks
+    text "re.findall(r'[a-z][^a-z]*', {text})"
+  template regex_lowercase_underscore
+    text "return {matched} if re.fullmatch(r'[a-z]+_[a-z]+', {text}) else {unmatched}"
+  template composite_number
+    text "{value} > 1 and any({value} % divisor == 0 for divisor in range(2, math.isqrt({value}) + 1))"
+  template one_bit_difference
+    text "difference = {left} ^ {right}\nreturn bool(difference and not (difference & (difference - 1)))"
+  template remove_boundary_occurrences
+    text "first = {text}.find({marker})\nif first != -1:\n    {text} = {text}[:first] + {text}[first + 1:]\nlast = {text}.rfind({marker})\nif last != -1:\n    {text} = {text}[:last] + {text}[last + 1:]\nreturn {text}"
+  template rotation_period
+    text "for offset in range(1, len({text}) + 1):\n    if {text}[offset:] + {text}[:offset] == {text}:\n        return offset\nreturn 0"
+  template grid_minimum_cost_path
+    text "rows = {row} + 1\ncolumns = {column} + 1\ncosts = [[float('inf')] * columns for _ in range(rows)]\ncosts[0][0] = {grid}[0][0]\nfor row_index in range(rows):\n    for column_index in range(columns):\n        if row_index == 0 and column_index == 0:\n            continue\n        predecessors = [costs[row_index + row_offset][column_index + column_offset] for row_offset, column_offset in ({offsets}) if row_index + row_offset >= 0 and column_index + column_offset >= 0]\n        costs[row_index][column_index] = min(predecessors) + {grid}[row_index][column_index]\nreturn costs[{row}][{column}]"
+  template mapping_entry
+    text "{key}: {value}"
+  template ordering_entry
+    text "{literal}: {index}"
+  template example_arithmetic_divide
+    text "({product}) / {divisor}"
+  template oeis_dimension_query
+    text "{left} x {right} {object} tilings"
+  template oeis_formula_membership
+    text "for source_index in range({start}, 100000):\n    candidate = {expression}\n    if candidate >= {parameter}:\n        return candidate == {parameter}\nreturn False"
+  template oeis_recurrence_term
+    text "({coefficient} * values[-{index}])"
+  template oeis_linear_recurrence
+    text "if {parameter} < 0 or {parameter} % {divisor} != 0:\n    return 0\nsource_index = {parameter} // {divisor} + ({offset})\nif source_index < 0:\n    return 0\nvalues = {initial}\nwhile len(values) <= source_index:\n    values.append({transition})\nreturn values[source_index]"

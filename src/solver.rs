@@ -101,18 +101,13 @@ pub struct SolverConfig {
     /// The registry is the sole dispatch authority (R344), so there is no
     /// legacy baseline to compare against. Trace-only in either mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
-    /// Whether the meta core records the skill-accumulation ledger (issue #559,
-    /// R342): `Accumulate` (default since issue #1073) distills each satisfied
-    /// need into a proposed reusable skill and each blocked need into a
-    /// curriculum item; `Off` records nothing. Proposal-only — no skill is auto-promoted without review — and
-    /// trace-only either way (R13/C3).
+    /// Whether the meta core records the skill-accumulation ledger (R342).
+    /// `Accumulate` proposes reusable skills and curriculum items; `Off` records
+    /// nothing. Proposals require review, and either mode is trace-only (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
-    /// Whether the dialogue's symbolic world model is maintained and traced
-    /// (issue #702): `Off` (default) leaves the solver exactly as it was — no
-    /// current/target contexts are built and the state-query handler declines;
-    /// `Track` rebuilds the model from the conversation, records it as a trace
-    /// artifact, and answers "what is left to reach my goal?" from the
-    /// current->target difference. Trace-only in either mode (R13).
+    /// Whether the dialogue's symbolic world model is maintained (issue #702).
+    /// `Track` rebuilds and records current/target contexts; `Off` leaves them
+    /// absent. Either mode is trace-only (R13).
     pub world_model_mode: crate::world_model_dialog::WorldModelMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
@@ -141,15 +136,9 @@ pub struct SolverConfig {
     /// policy existed, so every existing surface is unaffected unless it opts in.
     pub probability_policy: ProbabilityDecisionPolicy,
     /// Response language forced onto every localizable handler for one replay
-    /// (issue #556). `None` is the normal case: each handler renders in the
-    /// language detected from the prompt. When a response-language follow-up
-    /// ("I do not understand English, write in Russian") replays the previous
-    /// request through the whole solver, it sets this to the requested ISO
-    /// 639-1 code so *every* answer family that can localize — concept lookup,
-    /// repository/project lookup, … — re-renders in that language rather than
-    /// only a single hardcoded handler. It also serves as the recursion guard:
-    /// a solve whose config already carries a forced language never fires the
-    /// follow-up again.
+    /// (issue #556). `None` uses prompt detection; a language-switch follow-up
+    /// sets an ISO 639-1 code before replaying the whole solver. The setting also
+    /// prevents recursive language-switch replays.
     pub forced_response_language: Option<&'static str>,
     /// Compute budget for the step-7 random/evolutionary search stage (issue
     /// #662), counted in candidate evaluations. When reuse and rule reasoning
@@ -415,12 +404,9 @@ impl UniversalSolver {
             return answer;
         }
 
-        // Issue #559: record the general recursive meta core — problem frame
-        // (R330), recursive work-unit decomposition (R332), need-satisfaction
-        // ledger (R333), method registry (R331), and the end-to-end solution
-        // evidence (R334) — as one cohesive pass. Method selection below is
-        // registry-backed, so the trace and the executable dispatch share the
-        // same method vocabulary.
+        // Issue #559: record the problem frame, recursive work units, needs,
+        // methods, and solution evidence (R330–R334). The trace and executable
+        // dispatch share the same registry-backed method vocabulary.
         crate::meta_core::record_meta_core(
             &mut log,
             &intent_formalization,
@@ -431,6 +417,11 @@ impl UniversalSolver {
         );
 
         log.append("search:local", prompt.to_owned());
+
+        // Bind process operands together before decomposing the clauses.
+        if let Some(answer) = crate::coding::program_contract::answer(prompt, &mut log) {
+            return answer;
+        }
 
         let sub_impulses =
             record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
@@ -572,7 +563,45 @@ impl UniversalSolver {
             return answer;
         }
 
+        if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
+            prompt,
+            &intent_formalization.normalized_text,
+            &mut log,
+            self.config.offline,
+        ) {
+            return answer;
+        }
+
         if matches!(rule, SelectedRule::Unknown) {
+            if crate::program_coreference::looks_like_ambiguous_program_modification(
+                &normalize_prompt(prompt),
+            ) {
+                // Label the question with the seed's requirement-section
+                // marker. A target-less modification cannot proceed until the
+                // user names the target, so this is a blocking requirement;
+                // unlabelled it falls to the `factual` default and issue
+                // #920's necessity gate drops it, leaving an empty answer.
+                let body = seed::localized_response(
+                    "ambiguous_modification_clarification",
+                    language.slug(),
+                )
+                .map(|question| {
+                    crate::question_necessity::requirement_section_marker(language.slug())
+                        .map_or_else(
+                            || question.clone(),
+                            |marker| [marker, format!("- {question}")].join("\n"),
+                        )
+                })
+                .unwrap_or_default();
+                return finalize_simple(
+                    prompt,
+                    &mut log,
+                    "ambiguous_modification_clarification",
+                    "response:ambiguous_modification_clarification",
+                    &body,
+                    0.9,
+                );
+            }
             let intent = language_aware_intent_for(&rule, language);
             record_candidates(&mut log, prompt, &intent);
             if let Some(choice) = record_validation(&mut log, prompt) {

@@ -1,7 +1,7 @@
 //! Issue #559 (R342): skill accumulation — candidate skills and a curriculum.
 //!
-//! The meta core already proves, per request, which detected needs it resolved and
-//! which it could not (the solution evidence, [`crate::solution_evidence`]). A
+//! The meta core records, per request, which detected needs have selected methods
+//! and which lack them (the solution evidence, [`crate::solution_evidence`]). A
 //! system that "improves itself" must turn that outcome into *learning* the next
 //! request can reuse — the deterministic analog of an agent that keeps a skill
 //! library and a curriculum of what it still cannot do (R21). This module records
@@ -10,18 +10,18 @@
 //! * every need that was **satisfied** by a catalogued method becomes a
 //!   [`CandidateSkill`] — a reusable, named capability the solver demonstrably has,
 //!   captured with the span that demonstrated it; and
-//! * every need that was **blocked** (no method resolved it, or its chain never
-//!   connected) becomes a [`CurriculumItem`] — a recorded gap to close, never a
+//! * every need still **planned**, **blocked**, or otherwise unvalidated becomes
+//!   a [`CurriculumItem`] — a recorded gap to close, never a
 //!   silently dropped failure.
 //!
 //! Accumulation is **proposal-only and gated**, exactly like the meta
 //! self-improvement loop (R340). A candidate skill is born [`SkillStatus::Proposed`]
 //! and cannot become [`SkillStatus::Stable`] until its [`PromotionGate`] is
 //! satisfied — that is, until tests *and* a benchmark delta vouch for it. At trace
-//! time neither exists, so nothing is ever auto-promoted: there is no unreviewed
-//! self-modification (C3). The default [`SkillMode::Off`] records nothing, so the
-//! trace and the answer are exactly what shipped before this stage existed (R13);
-//! [`SkillMode::Accumulate`] emits the ledger as a trace-only `skill_ledger` event.
+//! time no runtime result is validated, so planned routes do not even become
+//! demonstrated candidates. There is no unreviewed self-modification (C3).
+//! The default [`SkillMode::Accumulate`] emits the ledger as a trace-only
+//! `skill_ledger` event; [`SkillMode::Off`] deliberately suppresses that record.
 
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
@@ -371,7 +371,7 @@ fn curriculum_reason(has_method: bool, connected: bool) -> String {
 /// Accumulate and emit the skill-accumulation ledger as a trace-only event, gated
 /// by `mode`.
 ///
-/// Returns `None` when `mode` is [`SkillMode::Off`] (the default), so the trace is
+/// Returns `None` when `mode` is [`SkillMode::Off`], so the trace is
 /// exactly what shipped before this stage existed (R13). When emitted it appends one
 /// `skill_ledger` event (the serialized ledger) and a compact
 /// `skill_ledger:promotable` count, which is always `0` — the auditable proof that

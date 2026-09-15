@@ -11,6 +11,12 @@ pub const ROLE_PROGRAM_ARTIFACT: &str = "program_artifact";
 /// Semantic role: an operation a follow-up turn can request against the active
 /// program (sort, reverse, cancel, change, …) — additive or subtractive.
 pub const ROLE_PROGRAM_MODIFICATION: &str = "program_modification";
+/// Semantic role: a pronoun whose modification target must come from dialog
+/// history (it, that, это, इसे, 它, …).
+///
+/// A target-less modification uses this role to ask one focused clarification
+/// instead of returning `unknown`.
+pub const ROLE_PROGRAM_MODIFICATION_REFERENCE: &str = "program_modification_reference";
 /// Semantic role: a kind of program artifact a user can ask to be authored
 /// (a program, a script, code, a function). The noun side of "write a `<kind>`".
 pub const ROLE_PROGRAM_KIND: &str = "program_kind";
@@ -217,18 +223,20 @@ pub const ROLE_PROGRAM_SYNTHESIS_DOMAIN: &str = "program_synthesis_domain";
 /// Semantic role: the request/specification verb of a program-synthesis
 /// request (implement, write, return). The verb side of "implement a function".
 pub const ROLE_PROGRAM_SYNTHESIS_ACTION: &str = "program_synthesis_action";
-/// Semantic role: a surface signal that distinguishes one synthesis task.
-///
-/// The "distinct numbers"/"differ"/"threshold"/"similar elements"/"count
-/// vowels" phrases. A task is `defined_by` the signals that evidence it.
-pub const ROLE_PROGRAM_SYNTHESIS_SIGNAL: &str = "program_synthesis_signal";
-/// Semantic role: a concrete synthesis task.
-///
-/// Its slug is the canonical Python function name (`has_close_elements`,
-/// `similar_elements`, `count_vowels`). Walked in declaration order; a task is
-/// selected when its name is declared or when every `program_synthesis_signal`
-/// it is `defined_by` is evidenced in the prompt.
-pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
+/// Semantic role: a verb that asks for a coding artifact to be produced.
+pub const ROLE_CODING_REQUEST_VERB: &str = "coding_request_verb";
+/// Semantic role: the artifact noun governed by a coding-request verb.
+pub const ROLE_CODING_REQUEST_OBJECT: &str = "coding_request_object";
+/// Semantic role: a request to retrieve a sourced coding example.
+pub const ROLE_EXAMPLE_REQUEST: &str = "example_request";
+/// Semantic role: a request to execute a coding example named by URL.
+pub const ROLE_EXECUTE_URL_REQUEST: &str = "execute_url_request";
+/// Semantic role: a language-neutral program-composition operation whose
+/// surface cues and official grounding live in seed data.
+pub const ROLE_CODING_STRUCTURE: &str = "coding_structure";
+/// Semantic role: a source-catalog function label whose word form carries the
+/// language-neutral operation used to formalize recurrence expressions.
+pub const ROLE_CODING_RECURRENCE_OPERATOR: &str = "coding_recurrence_operator";
 /// Semantic role: a source artifact kind handled by the coding-task executor
 /// in addition to the general [`ROLE_PROGRAM_KIND`] vocabulary.
 pub const ROLE_CODING_ARTIFACT_KIND: &str = "coding_artifact_kind";

@@ -320,13 +320,13 @@ fn every_need_is_accounted_for_with_a_non_pending_status() {
 }
 
 #[test]
-fn routed_need_is_satisfied_and_unroutable_need_is_blocked() {
+fn routed_need_is_only_planned_and_unroutable_need_is_blocked() {
     let (_frame, ledger) = ledger_for("translate apple to Russian");
     assert_eq!(ledger.rows.len(), 1);
     assert_eq!(
-        ledger.rows[0].status,
-        NeedStatus::Satisfied,
-        "a need that maps to a known method must be satisfiable"
+        ledger.rows[0].status.slug(),
+        "planned",
+        "selecting a known method does not execute or validate its result"
     );
     assert_eq!(
         ledger.rows[0].leaf_reason,

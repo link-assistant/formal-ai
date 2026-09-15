@@ -44,6 +44,11 @@ meanings
     lexeme en
       surface
         text "authors"
+  average
+    defined-by word_surface
+    lexeme en
+      surface
+        text "average"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -84,13 +89,23 @@ meanings
     lexeme en
       surface
         text "coding meta algorithm stage"
+  coding_rosetta_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta failed"
   command-stream
     defined-by name
     lexeme en
       surface
         text "command stream"
+  common
+    defined-by word_surface
+    lexeme en
+      surface
+        text "common"
   contain
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "contain"
@@ -489,6 +504,31 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm surface hi"
+  response_coding_rosetta_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta failed hi"
+  response_coding_rosetta_passed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta passed ru"
+  response_coding_rosetta_rust_only_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta rust only hi"
+  response_coding_synthesis_sources_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis sources heading en"
+  response_coding_synthesis_sources_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis sources heading zh"
   response_coding_workspace_written_unverified_zh
     defined-by response_template
     lexeme en
@@ -1029,6 +1069,11 @@ meanings
     lexeme en
       surface
         text "restore"
+  rolling
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rolling"
   rs
     defined-by word_surface
     lexeme en

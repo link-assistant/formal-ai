@@ -162,6 +162,13 @@ merge_conflict_policy
     regenerate "rust-script scripts/assemble-requirements.rs --write"
     verify "rust-script scripts/assemble-requirements.rs"
     observed_conflicts 64
+  artifact trusted_source_recurrence_cache
+    cause derived_artifact
+    merge union
+    path "src/web/source-cache/wikifunctions-recurrences.lino"
+    regenerate "cargo run --example generate_recurrence_source_cache -- --write"
+    verify "cargo run --example generate_recurrence_source_cache"
+    note "This is procedure memory derived from committed Wikifunctions and Wikidata captures, not seed knowledge. Removing it and running the generator reconstructs the same formal recurrence, aliases, provenance, and source tests."
   artifact worker_modules
     cause sequential_file_name
     path "src/web/worker/formal_ai_worker_*.js"

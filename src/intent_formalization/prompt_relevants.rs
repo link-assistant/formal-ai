@@ -36,6 +36,14 @@ pub(super) fn append_prompt_relevants(prompt: &str, normalized: &str, relevants:
             cue_lexicon::matches("execution_failure_prompt", &lower_prompt)
                 || cue_lexicon::matches("execution_failure_normalized", normalized),
         ),
+        // Issue #710: benchmark and conversational coding tasks are recognized
+        // structurally before arithmetic or concept cues inside examples and
+        // docstrings can claim them.
+        (
+            "handler:program_synthesis",
+            crate::coding::task_spec::recognise(prompt).is_some()
+                || looks_like_program_synthesis(&operation_view),
+        ),
         ("handler:arithmetic", looks_arithmetic(prompt, normalized)),
         (
             "handler:web_search",
@@ -91,10 +99,6 @@ pub(super) fn append_prompt_relevants(prompt: &str, normalized: &str, relevants:
         (
             "handler:write_program",
             requested_write_program_parameters(prompt, normalized).is_some(),
-        ),
-        (
-            "handler:program_synthesis",
-            looks_like_program_synthesis(&operation_view),
         ),
         (
             "handler:text_manipulation",

@@ -368,6 +368,68 @@ fn gathered_instructions_are_compiled_into_checkable_steps() {
     );
 }
 
+/// Independent required observations are conjunctive, not alternatives. One
+/// successful check cannot silently discharge another source's requirement.
+#[test]
+fn instruction_completion_requires_every_attached_check() {
+    let set = formalize(
+        "prepare_runtime",
+        &[
+            SourceExcerpt::new(
+                "compiler-manual",
+                vec![SourceStep::new("prepare", "compiler_available")],
+            ),
+            SourceExcerpt::new(
+                "runtime-manual",
+                vec![SourceStep::new("prepare", "runtime_available")],
+            ),
+        ],
+        2,
+    );
+    assert_eq!(set.steps.len(), 1);
+    for observed in [
+        vec![],
+        vec!["compiler_available".to_owned()],
+        vec!["runtime_available".to_owned()],
+        vec![
+            "compiler_available".to_owned(),
+            "compiler_available".to_owned(),
+        ],
+        vec!["unrelated_success".to_owned()],
+    ] {
+        assert_eq!(
+            set.unmet_steps(&observed).len(),
+            1,
+            "missing a required check: {observed:?}"
+        );
+    }
+    for observed in [
+        vec![
+            "compiler_available".to_owned(),
+            "runtime_available".to_owned(),
+        ],
+        vec![
+            "runtime_available".to_owned(),
+            "compiler_available".to_owned(),
+        ],
+    ] {
+        assert!(set.unmet_steps(&observed).is_empty());
+    }
+    let uncheckable = formalize(
+        "unknown",
+        &[SourceExcerpt::new(
+            "source",
+            vec![SourceStep::new("prepare", "")],
+        )],
+        1,
+    );
+    assert_eq!(
+        uncheckable.unmet_steps(&[]).len(),
+        1,
+        "no checks is not vacuous success"
+    );
+}
+
 /// R1073-3: consulting primary documentation is a default step.
 ///
 /// An episode that only ever read second-hand write-ups fails the gate even

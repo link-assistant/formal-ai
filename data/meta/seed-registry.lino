@@ -132,6 +132,14 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-coding-request
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-coding-structure
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-coding-tasks
     bundle true
     lexicon meaning
@@ -172,6 +180,10 @@ seed_registry
     lexicon meaning
     web true
   seed meanings-finance
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-formalization-report
     bundle true
     lexicon meaning
     web true
@@ -341,6 +353,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-issue-710
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-language-protocol
     bundle true
     lexicon response
@@ -441,6 +457,9 @@ seed_registry
   unregistered closure-generated-*
     owner "python3 scripts/close-total.py"
     reason "Derived from the other seed files by the total-closure pass, so embedding a snapshot of them would embed the same statements twice."
+  unregistered coding-discovery-runtime
+    owner "src/coding/python_render.rs"
+    reason "Coding discovery embeds these executable structural templates only in the Python renderer that interprets them."
   unregistered google-trends-*
     owner "src/google_trends_catalog.rs"
     reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."

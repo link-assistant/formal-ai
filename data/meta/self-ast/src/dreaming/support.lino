@@ -2,17 +2,17 @@ self_ast_census
   target src/dreaming/support.rs
   language rust
   fidelity signature
-  byte_len 2165
-  line_count 69
-  content_id source_module_97a5224caa148647
+  byte_len 2328
+  line_count 74
+  content_id source_module_6b01f9af9b1c4c0f
   symbol_count 9
   symbols
-    function estimate_event_bytes 6 24
-    function selected_bytes 26 28
-    function required_reclaim_bytes 30 40
-    function percent_ceil 42 47
-    function contains_any 49 53
-    function lower_opt 55 57
-    function normalized 59 61
-    function option_bytes 63 65
-    function string_bytes 67 69
+    function estimate_event_bytes 6 29
+    function selected_bytes 31 33
+    function required_reclaim_bytes 35 45
+    function percent_ceil 47 52
+    function contains_any 54 58
+    function lower_opt 60 62
+    function normalized 64 66
+    function option_bytes 68 70
+    function string_bytes 72 74

@@ -2,10 +2,10 @@ self_ast_census
   target src/question_necessity.rs
   language rust
   fidelity signature
-  byte_len 24162
-  line_count 749
-  content_id source_module_9cc2a2b5443ca16e
-  symbol_count 45
+  byte_len 24964
+  line_count 767
+  content_id source_module_d2fc527197d09b24
+  symbol_count 46
   symbols
     const POLICY_SEED 14 14
     enum QuestionClass 17 20
@@ -22,33 +22,34 @@ self_ast_census
     struct Candidate 101 107
     function policy_summary 110 112
     function classify_question 115 117
-    function authorize_question 120 135
-    function enforce_questions 140 213
-    function policy 215 218
-    static POLICY 216 216
-    function parse_policy 220 256
-    function record_of_type 258 262
-    function child_values 264 271
-    function numeric_field 273 278
-    function parse_class 280 286
-    function classify 288 312
-    function record_search_trace 314 368
-    function trace_payload 370 376
-    function normalized_question_text 378 384
-    function question_candidates 386 427
-    function punctuation_candidates 429 454
-    function punctuation_candidates_in_line 456 519
-    function closing_quote 521 539
-    function is_equation_placeholder 541 553
-    function is_equation_operator 555 557
-    function sentence_start 559 577
-    function is_sentence_terminator 581 586
-    function opens_next_sentence 593 595
-    function is_ideographic 597 605
-    function looks_like_url 607 612
-    function is_replayed_question 614 634
-    function requirement_section_ranges 636 667
-    function is_follow_up_item 669 675
-    function strip_follow_up_prefix 677 683
-    function remove_ranges 685 717
-    function remove_empty_question_sections 719 749
+    function requirement_section_marker 128 135
+    function authorize_question 138 153
+    function enforce_questions 158 231
+    function policy 233 236
+    static POLICY 234 234
+    function parse_policy 238 274
+    function record_of_type 276 280
+    function child_values 282 289
+    function numeric_field 291 296
+    function parse_class 298 304
+    function classify 306 330
+    function record_search_trace 332 386
+    function trace_payload 388 394
+    function normalized_question_text 396 402
+    function question_candidates 404 445
+    function punctuation_candidates 447 472
+    function punctuation_candidates_in_line 474 537
+    function closing_quote 539 557
+    function is_equation_placeholder 559 571
+    function is_equation_operator 573 575
+    function sentence_start 577 595
+    function is_sentence_terminator 599 604
+    function opens_next_sentence 611 613
+    function is_ideographic 615 623
+    function looks_like_url 625 630
+    function is_replayed_question 632 652
+    function requirement_section_ranges 654 685
+    function is_follow_up_item 687 693
+    function strip_follow_up_prefix 695 701
+    function remove_ranges 703 735
+    function remove_empty_question_sections 737 767

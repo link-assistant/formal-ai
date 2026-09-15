@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "case"
+  case-insensitive
+    defined-by word_surface
+    lexeme en
+      surface
+        text "case insensitive"
   changelog
     defined-by concept
     lexeme en
@@ -69,6 +74,11 @@ meanings
     lexeme en
       surface
         text "code request"
+  coding_rosetta_workspace_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta workspace unavailable"
   coding_source_function_division
     defined-by intent
     lexeme en
@@ -414,6 +424,11 @@ meanings
     lexeme en
       surface
         text "pattern x shi ruhej gongzuo de suffix zh"
+  perimeter
+    defined-by word_surface
+    lexeme en
+      surface
+        text "perimeter"
   physical_action_question
     defined-by intent
     lexeme en
@@ -514,6 +529,16 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm solutions heading zh"
+  response_coding_rosetta_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta failed zh"
+  response_coding_rosetta_not_requested_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta not requested es"
   response_coding_workspace_written_unverified_hi
     defined-by response_template
     lexeme en

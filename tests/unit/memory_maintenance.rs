@@ -1,12 +1,11 @@
 use formal_ai::{
     AutoFreeSpaceChoice, ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig,
-    DreamingDurability, MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment,
-    SolverConfig, StorageSnapshot, UniversalSolver, apply_auto_free_space_with_snapshot,
-    apply_dreaming_plan, auto_free_space_choice, auto_free_space_enabled,
-    auto_free_space_preference_path, create_chat_completion_with_solver_and_memory,
-    create_response_with_solver_and_memory, execute_memory_query, measure_storage,
-    persist_auto_free_space_choice, plan_memory_dreaming, replay_answer_with_amendments,
-    run_core_dreaming_once, seed_cache_events,
+    MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment, SolverConfig, StorageSnapshot,
+    UniversalSolver, apply_auto_free_space_with_snapshot, apply_dreaming_plan,
+    auto_free_space_choice, auto_free_space_enabled, auto_free_space_preference_path,
+    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
+    execute_memory_query, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
+    replay_answer_with_amendments, run_core_dreaming_once,
 };
 
 #[test]
@@ -64,9 +63,10 @@ fn library_memory_reset_clears_all_events() {
 
 #[test]
 fn dreaming_restructures_recomputable_duplicates_by_recalculated_use_frequency() {
+    let payload = "same cache payload".repeat(20); // A positive saving after provenance retention.
     let events = vec![
-        recomputable_event("cache-low-use", "same cache payload"),
-        recomputable_event("cache-high-use", "same cache payload"),
+        recomputable_event("cache-low-use", &payload),
+        recomputable_event("cache-high-use", &payload),
         MemoryEvent {
             id: String::from("analysis-1"),
             kind: Some(String::from("analysis")),
@@ -183,9 +183,10 @@ fn dreaming_reports_bigger_storage_when_recomputable_data_cannot_satisfy_target(
 
 #[test]
 fn applying_dreaming_plan_removes_only_selected_recomputable_events() {
+    let payload = "same cache payload".repeat(20); // A positive saving after provenance retention.
     let mut store = MemoryStore::from_events(vec![
-        recomputable_event("cache-low-use", "same cache payload"),
-        recomputable_event("cache-high-use", "same cache payload"),
+        recomputable_event("cache-low-use", &payload),
+        recomputable_event("cache-high-use", &payload),
         MemoryEvent {
             id: String::from("raw-user-message"),
             kind: Some(String::from("message")),
@@ -628,13 +629,17 @@ fn usage_recalculation_covers_cached_and_seed_links() {
         MemoryEvent {
             id: String::from("seed-unused"),
             kind: Some(String::from("seed_cache")),
-            content: Some(String::from("reconstructable seeded catalog entry")),
+            content: Some("reconstructable seeded catalog entry".repeat(20)),
+            role: Some(String::from("cache")),
+            evidence: vec![String::from("rediscover:https://doc.rust-lang.org/std/")],
             ..MemoryEvent::default()
         },
         MemoryEvent {
             id: String::from("seed-used"),
             kind: Some(String::from("seed_cache")),
-            content: Some(String::from("another seeded catalog entry")),
+            content: Some("another seeded catalog entry".repeat(20)),
+            role: Some(String::from("cache")),
+            evidence: vec![String::from("rediscover:https://doc.rust-lang.org/std/")],
             ..MemoryEvent::default()
         },
         MemoryEvent {
@@ -854,38 +859,6 @@ fn auto_free_space_for_write_stops_at_target_with_nonzero_incoming_bytes() {
 }
 
 #[test]
-fn seed_cache_events_are_stable_and_classified_recomputable() {
-    // Issue #540 §4: imports materialize seed files as `seed_cache` events —
-    // recomputable data with ids stable over the file name so re-import never
-    // duplicates.
-    let seed_files = vec![(
-        String::from("data/seed/roles.lino"),
-        String::from("roles\n  example\n"),
-    )];
-    let first = seed_cache_events(&seed_files);
-    let second = seed_cache_events(&seed_files);
-    assert_eq!(first.len(), 1);
-    assert_eq!(
-        first[0].id, second[0].id,
-        "ids must be stable per file name"
-    );
-    assert_eq!(first[0].kind.as_deref(), Some("seed_cache"));
-    assert_eq!(first[0].tool.as_deref(), Some("data/seed/roles.lino"));
-    assert_eq!(first[0].content.as_deref(), Some("roles\n  example\n"));
-
-    let plan = plan_memory_dreaming(&first, &DreamingConfig::default());
-    let observation = plan
-        .observations
-        .iter()
-        .find(|observation| observation.event_id == first[0].id)
-        .expect("seed cache observed");
-    assert_eq!(
-        observation.durability,
-        DreamingDurability::RecomputableCache
-    );
-}
-
-#[test]
 fn recall_counts_access_and_dreaming_treats_read_data_as_used() {
     // Issue #494 via #540 §4: usage is counted when data is *read back*, not
     // only when other events cite it — a recall bumps `access_count`, the
@@ -979,7 +952,8 @@ fn verified_task_run_event(id: &str, topic: &str, input: &str, requirement: &str
     MemoryEvent {
         id: String::from(id),
         kind: Some(String::from("test_run")),
-        role: Some(String::from("assistant")),
+        // This fixture is a derived replay cache, not an original assistant turn.
+        role: Some(String::from("derived")),
         content: Some(String::from(input)),
         inputs: Some(String::from(input)),
         outputs: Some(output),
@@ -988,8 +962,10 @@ fn verified_task_run_event(id: &str, topic: &str, input: &str, requirement: &str
     }
 }
 
-fn recomputable_event(id: &str, payload: &str) -> MemoryEvent {
+pub fn recomputable_event(id: &str, payload: &str) -> MemoryEvent {
     MemoryEvent {
+        role: Some(String::from("cache")),
+        evidence: vec![String::from("rediscover:https://doc.rust-lang.org/std/")],
         id: String::from(id),
         kind: Some(String::from("source:http")),
         content: Some(String::from(payload)),

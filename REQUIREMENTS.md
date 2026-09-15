@@ -734,7 +734,7 @@ catalogue. These standards govern that work.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R289 | Public knowledge bases that expose no machine API (Rosetta Code, Wikifunctions, the Hello World Collection, Stack Overflow) must still be usable as external sources: a reviewed snippet (with its deterministic output and source attribution) is cached as a popular example and merged into the solver's answers like any other API. The coding catalogue must generalise to languages it does not template. | Implemented by `src/knowledge.rs` (`KnowledgeSource`, `OracleSnippet`, `CodingOracle`) and the `write_program` fallback in `src/solver_handler_oracle.rs`, which answers Kotlin/Swift/PHP/Bash/Lua/Haskell hello-world (Hello World Collection) and a Kotlin factorial (Rosetta Code) from the cached corpus. Covered by `tests/integration/issue_412_oracle_languages.rs` and the `source_tests/solver_handler_oracle` / `source_tests/knowledge` suites. |
+| R289 | Public knowledge bases that expose no machine API (Rosetta Code, Wikifunctions, the Hello World Collection, Stack Overflow) must still be usable as external sources: a reviewed snippet (with its deterministic output and source attribution) is cached as a popular example and merged into the solver's answers like any other API. The coding catalogue must generalise to languages it does not template. | Implemented first by the bounded cached oracle in `src/knowledge.rs` and `src/solver_handler_oracle.rs`. The 2026-09-15 #710 continuation adds live, cache-backed Wikifunctions and Rosetta Code MediaWiki consumers under `src/coding/function_catalog/`, with license, source hash, offline replay, and bounded execution tests in `coding_discovery::{wikifunctions,rosetta}`. |
 | R290 | No cache may mirror a whole source: the local copy is capped at 1% of the source, or 512 items when 1% is smaller, per source / API / merged topic. CI must keep the committed cache under the cap. | Implemented by `cache_capacity` / `within_cache_capacity` / `KNOWLEDGE_CACHE_FLOOR` in `src/knowledge.rs` (1% rounded up, floored at 512, clamped to source size) and the ratchet test `committed_snapshots_stay_within_the_cache_cap`, which fails if any per-source snapshot count exceeds the cap. |
 | R291 | Every reasoning surface must agree: a fix in the Rust solver must be mirrored in the WASM browser worker so the native binary, the desktop/VS Code shells, and the web demo return byte-identical answers. | Implemented by mirroring the oracle data + lookup + renderer in `src/web/formal_ai_worker.js` (`CODING_ORACLE_SNAPSHOTS`, `codingOracleLookup`, `codingOracleAnswer`); `experiments/issue-412-js-oracle.mjs` drives the worker's `tryWriteProgram` and the rendered answer is verified byte-identical to the Rust `solve()` output. |
 | R292 | These broad requirements must ship in this PR, not be deferred: the oracle, the bounded-cache policy, and the cross-runtime mirror are all delivered here, with the popular-case cache committed as the offline accelerator a gated live refresh would repopulate. | Implemented in this PR; the live-refresh path follows the existing `FORMAL_AI_LIVE_API` discipline and the committed snapshots are the popular-case cache it repopulates. |
@@ -842,6 +842,19 @@ case study under `docs/case-studies/issue-482`.
 | R442 | Preserve issue data, online research, and solution planning under the required case-study directory. | Implemented by `docs/case-studies/issue-482/README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/`. |
 | R443 | Be explicit that this PR adds a training-data ingestion ratchet, not arbitrary legal-domain answering. | Implemented by the issue #482 README and solution plan; future legal QA/classification solving is listed as expansion work. |
 | R444 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `tests/unit/docs_requirements_issue_482.rs`, wired through `tests/unit/mod.rs`. |
+
+## Issue #491 Least Action Continuation
+
+The issue updated on 2026-09-15 extends the earlier R491-1 audit with explicit
+resource and outcome-quality dimensions. Optimize only among solutions that
+still satisfy the task; incomplete work is not a cheaper solution.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R491-C1 | Recursively decompose into two children where useful, preserve already-atomic tasks, and measure elementary work rather than padding the structure. | Partial: task-decomposition and failure-driven recursive-execution tests cover binary structure and atomic leaves. Complete decomposition of arbitrary natural-language obligations remains open. |
+| R491-C2 | Shorter reasoning or code must retain the full required behavior and input range. | Partial: verified-candidate selection, conjunctive instruction checks and bound recipe evidence reject several incomplete outcomes. Finite benchmark cases do not prove arbitrary input-range equivalence or whole-task completion. |
+| R491-C3 | Evaluate elapsed time, computational work and memory alongside path/code size; choose lower-cost solutions only after correctness. | Partial: existing candidate selection uses size/step costs. A shared measured-resource optimizer across all reasoning and execution paths remains open. |
+| R491-C4 | Include user satisfaction and requirement completeness when comparing candidate solutions and learning general procedures. | Open as a universal capability: read-only refactor and missing-runtime probes show that completing a supported intermediate step can leave the requested outcome unimplemented. Plan 07 retains these counterexamples. |
 
 ## Issue #492 Release Badge Stability
 
@@ -1074,7 +1087,7 @@ desktop plan scheduler, and the case-study trace under
 | R421 | Issue #540 documentation must use the repository's memory-links terminology consistently. | Enforced by the issue traceability suite across requirements, architecture, recipe, and case-study documents. |
 | R422 | Execute the dreaming gap audit through Formal AI's Agent CLI and preserve a reproducible session mapping every failure to the generalization added. | Implemented by `src/agentic_coding/dreaming_audit.rs`, `docs/case-studies/issue-540/{dreaming-gap-analysis.lino,agent-cli-session-dreaming-audit.json}`, and byte-for-byte replay tests in `tests/unit/issue_540_agent_cli.rs`. |
 | R423 | Live chat exchanges must be recorded into the configured memory log so background dreaming learns from organic conversations, and the full loop — record, dream, apply, changed future answer — must be verified through the production application path. | Implemented by `SyncStore::record_chat_exchange` wired into the chat routes; verified end-to-end by `organically_recorded_chat_dreams_amendments_that_replay_through_production` in `tests/unit/memory_learning.rs`. |
-| R424 | Changing a topic's rule must revoke replay-verified coverage until the amended rule reproduces the specifics again, and unverifiable records must fall back to normal usage/priority eviction ordering rather than covered-specific forgetting. | Verified by `adding_a_requirement_revokes_coverage_and_preserves_the_stale_specific` and `failed_verification_falls_back_to_normal_eviction_ordering_under_pressure`. |
+| R424 | Changing a topic's rule must revoke replay-verified coverage until the amended rule reproduces the specifics again. Original observations and derived records without a current reconstruction proof remain retained under pressure. | Verified by `adding_a_requirement_revokes_coverage_and_preserves_the_stale_specific`, `failed_replay_preserves_original_experience_under_pressure`, and the provenance/restart cases in `memory_retention_origin`. |
 | R425 | The auto-learning loop must consume failed replays: refinement folds recorded compliance markers back into amendments, and failures that remain are preserved as durable `dreaming_candidate_failure` records instead of being dropped. | Implemented by `refine_amendments_from_failures` (marker lines only) and failure materialization in `apply_dreaming_plan`; verified by `failed_replay_refines_the_amendment_back_from_the_recorded_marker` and `failed_replays_are_preserved_as_refinement_records`. |
 | R426 | Dreaming must synthesize genuinely new trials from mined numeric patterns on the most-used topics and retain them, and task detection must work through the multilingual lexicon rather than English-only kinds. | Verified by `dreaming_synthesizes_new_trials_from_numeric_patterns_on_top_topics` and `multilingual_task_kinds_are_replayed_as_candidates` against `data/meta/dreaming-lexicon.lino`. |
 | R427 | The core dreaming runtime must be directly regression-tested: foreground activity gates idleness, a mid-flight foreground request cancels the run without touching the log, `FORMAL_AI_DREAMING` opt-out honors only explicit off values, serve() starts the worker, and shared-log writes stay locked and atomic. | Verified by `tests/unit/dreaming_runtime.rs` (including `write_locked_atomic_creates_parents_replaces_content_and_leaves_no_temp_files`) and the desktop `PRIORITY_LOW` assertion in `desktop/scripts/dreaming.test.mjs`. |
@@ -1118,6 +1131,15 @@ realized through existing rows (R72/R74/R97/R103/R157/R158/R67/R264/R311/R314/R1
 Those rows completed the registry-backed route-authority slice, not the removal
 of intent-specific handler implementations. Issue #699 tracks that remaining
 migration honestly in `data/meta/handler-migration-ledger.lino`.
+
+The PR #888 continuation audit (2026-09-16) further scopes R333/R334/R342:
+the shared ledger runs before dispatch, so a selected method is **planned**, not
+**satisfied**. A connected planning chain accounts for a detected need but does
+not prove its execution. Planned needs remain curriculum items, not demonstrated
+skills. Regression tests cover both native and recipe-driven traces and retain
+the separate contract for explicitly satisfied evidence. Runtime per-need
+verification feedback is still open; the implemented artifact rows below are
+not a claim that every detected obligation executes successfully.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
@@ -1494,6 +1516,98 @@ relative source tiers, and normalized presentation into one ranked answer. See
 | R709-4 | Normalize URL, title, quote, and read-more fields across web, CLI/HTTP, and Telegram. | `NormalizedSearchSource`, the shared Rust Markdown renderer, Telegram HTML conversion, and the browser worker source cards are covered by unit and Playwright fixtures. |
 | R709-5 | Replay deterministically in CI while live search remains explicitly gated. | A three-source exact-capture fixture compares the live and offline render, trace, and proposal byte-for-byte; browser providers are intercepted. |
 
+## Issue #710 Dropped-Requirements Re-verification
+
+Issue [#710](https://github.com/link-assistant/formal-ai/issues/710) audits 32
+requirements that earlier issue closures did not prove. The detailed evidence
+matrix was re-verified on 2026-09-15 against the head of PR #888 in
+`docs/case-studies/issue-710/README.md`; this table is the compact current
+requirement-status authority. A historical `still-broken` verdict becomes
+`works-now` only when the focused implementation and its production-path
+regressions are present; closing an issue alone is not evidence.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R710-01 | Conversation-history recall. | `works-now` — pinned history-search and previous-question specifications. |
+| R710-02 | Russian identity and capabilities. | `works-now` — pinned localized identity/capability specifications. |
+| R710-03 | Multi-statement and many-question composition. | `works-now` — issue-710 native and browser regressions. |
+| R710-04 | Context-qualified questions such as IIR in ML. | `works-now` — four-language contextual concept regressions. |
+| R710-05 | Typo tolerance, clarification, and full-path fuzzy matching. | `works-now` — worker and native fuzzy regressions. |
+| R710-06 | Antiregime and false-totality definition class. | `works-now` — seeded multilingual concept regressions. |
+| R710-07 | Folder-listing prompt variants. | `superseded` — #745, #758, and PR #850 generalized capability routing. |
+| R710-08 | Target-less modifications ask exactly one question. | `works-now` — issue-710 four-language specification. |
+| R710-09 | Multiple deterministic free-time replies. | `works-now` — issue-710 stable-variant specification. |
+| R710-10 | Assistant name set/read and attribution. | `works-now` — issue-710 four-language naming plus issue-157 attribution coverage. |
+| R710-11 | Issue #292 rules, answer language, parity, and Markdown. | `works-now` — native/browser localization and generated parity checks. |
+| R710-12 | Thinking localization on CLI/API/Telegram. | `works-now` — issue-889 cross-surface regressions for every registered language. |
+| R710-13 | Collapsed thinking animation and top placement. | `works-now` — issue-488 browser and issue-676 narrative-order regressions. |
+| R710-14 | Translate formal proofs to programming languages. | `works-now` — issue-890 compile-and-execute regressions for every registered target. |
+| R710-15 | At least 50 verified equation types. | `works-now` — issue-891 catalog and non-decreasing ratchet cover 72 types. |
+| R710-16 | Compose calculations with other instructions. | `works-now` — calculator continuation and issue-710 composition regressions. |
+| R710-17 | Word problems beyond train meeting. | `works-now` — Fibonacci and box-relation regressions. |
+| R710-18 | Current source-backed film release ordering. | `works-now` — issue-892 timestamped Wikidata timeline regressions. |
+| R710-19 | Closest contextual pronoun resolution. | `works-now` — issue-465 follow-up specification. |
+| R710-20 | How-to multi-source synthesis and seven-day availability cache. | `works-now` — issue #991's shared bounded guide synthesizer runs in Rust/server and the browser worker, while `service_accessibility` persists success and failure for seven days; native, real-HTTP, browser, offline-capture, and opt-out regressions pin the production paths. |
+| R710-21 | Iterative two-file summary validation and 80% quality bar. | `works-now` — issue-893 iteration, threshold, and ratchet regressions. |
+| R710-22 | Interior/plain-capitalized entity reasoning class. | `works-now` — issue-571 class regression and worker entity coverage. |
+| R710-23 | Calendar interchange and Apple/Google/Microsoft flows. | `works-now` — RFC 5545 plus Google insertion regression. |
+| R710-24 | Optional gated OCR and attachment transcription. | `works-now` — issue-493 real-worker OCR regressions. |
+| R710-25 | E2E against deployed GitHub Pages. | `works-now` — deployment-output and matching-deployment workflow regressions. |
+| R710-26 | Four-template CI comparison and upstream filings. | `works-now` — issue-894 four-template comparison and filing-ledger regressions. |
+| R710-27 | Published coverage with a non-decreasing ratchet. | `works-now` — issue-895 80% published-coverage floor and ratchet regressions. |
+| R710-28 | Gemini headless tools. | `works-now` — #671 / PR #814 real-client matrix evidence. |
+| R710-29 | macOS signed/notarized auto-update production path. | `works-now` — desktop workflow and issue-548 regressions. |
+| R710-30 | link-foundation/start and command-stream adoption. | `works-now` — `start-command` owns Docker lifecycle, the Electron adapter and POSIX Rust orchestrator use published `command-stream`, and every unsupported boundary is explicitly mapped to an upstream component issue; command-runner and orchestration process regressions pin streaming, exact argv, exit status, cancellation, and host/Docker selection. |
+| R710-31 | web-search/web-capture as production components. | `works-now` — issue-896 production-component and feature-wiring regressions. |
+| R710-32 | Iframe pre-check and external-link actions. | `works-now` — browser navigation/embedding regressions. |
+
+## Issue #710 Dynamic Coding Discovery Continuation
+
+The 2026-09-14 continuation audited every coding and benchmark requirement,
+removed benchmark-specific synthesis bodies, and connected structural task
+recognition to licensed external parts, composition, bounded verification, and
+rediscoverable procedure memory. The implementation plan and before-state
+evidence live in `docs/case-studies/issue-710/plans/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R710-D1 | Coding synthesis must derive answers from task structure and sourced operations, never from upstream case names or copied task sentences. | Implemented by `task_spec`, `concept_discovery`, and `composition`; `coding_discovery::no_memorization` scans the downloaded HumanEval/MBPP slice against `src/` and `data/seed/`. |
+| R710-D2 | The first 20 HumanEval cases must be run honestly through the discovery path and report their upstream grading result. | Implemented by `benchmark run --suite humaneval --slice 20`; the dated 2026-09-15 committed measurement and an empty-source-cache control both pass 20/20 upstream tests. |
+| R710-D3 | The first 20 MBPP cases must be run honestly through the same discovery path and upstream assertions. | Implemented by `benchmark run --suite mbpp --slice 20 --online`; the dated 2026-09-15 committed measurement passes 20/20 upstream assertions. A cold offline control honestly passes 18/20 and names the two externally defined sequence gaps. |
+| R710-D4 | Structural coding prompts must enter program synthesis before arithmetic or concept lookup. | Implemented by `coding::task_spec::recognise` in intent formalization and handler precedence; pinned by `coding_discovery::routing`. |
+| R710-D5 | Upstream benchmark runs must have an explicit online-discovery mode while PR ratchet checks remain offline. | Implemented by `benchmark run --online`, `run_suite_with_online`, and the scheduled workflow contract; pinned by `specification::external_benchmarks`. |
+| R710-D6 | Wikifunctions, Python standard-library documentation, and Rosetta Code must be consumable as licensed, content-addressed function/example sources. | Implemented under `src/coding/function_catalog/` with captured fixtures and `coding_discovery::{wikifunctions,python_docs,rosetta}`. |
+| R710-D7 | The coding research contract must name the real external source formats accepted by discovery, while the older procedure-rewrite loop remains explicit. | Implemented in `data/meta/coding-research-learning-contract.lino`; source-specific offline replay is pinned by the coding-discovery source tests. |
+| R710-D8 | Requirement sentences must become a language-neutral concept map of structural meanings, candidate parts, evidence, and blocked needs. | Implemented by `concept_discovery::discover`; pinned by `coding_discovery::concepts`. |
+| R710-D9 | Candidate parts must be composed into multiple drafts and selected only after CST validation and bounded executable tests. | Implemented by `composition::compose`, `python_render`, and `AgentWorkspace`; pinned by `coding_discovery::composition`. |
+| R710-D10 | A verified coding procedure must be content-addressed, provenance-bearing, tamper-detecting, forgettable, and rediscoverable. | Implemented by `DiscoveredProcedureLedger`; pinned by `coding_discovery::ledger`. |
+| R710-D11 | Conversational discovery must preserve the same task and concept identities across English, Russian, Hindi, Chinese, and Spanish. | Implemented with seed roles and structural meanings; pinned by the 25 held-out cases in `coding_discovery::multilingual`. |
+| R710-D12 | “Count to N inclusive” must derive a complete parameterized range rather than resolve a fixed catalog task. | Implemented by the `range_inclusive` composition with a literal or parameter bound; pinned for N=100 in five languages. This is the coding-discovery portion of #1071, not the whole issue. |
+| R710-D13 | Rosetta Code example requests must return attributed, non-generated code; execute-URL requests must run Rust only in the bounded workspace and must never become shell copy commands. | Implemented by `rosetta_code::fetch_example` and `try_rosetta_code_request`; pinned by the exact #862/#863 prompts and four-language paraphrases. |
+| R710-D14 | A dated upstream result may regress only against the floor in force at that date; pull requests still may not lower any recorded result or floor. | Implemented by `external_benchmarks::ratchet`; pinned by the historical-floor regression tests. |
+| R710-D15 | Published current benchmark numbers must be derived from the latest committed ledger rows, with newer local measurements clearly separated. | Implemented in `docs/benchmarks.md` and `VISION.md`; pinned by `docs_requirements::benchmarks::latest_external_rows_are_published_from_the_ledger`. |
+| R710-D16 | This batch must carry a Formal-AI-authored leaf with model, session, evidence, and pull-request attribution. | Delivered by the self-hosting authoring run recorded in the commit trailers; automated by `specification::self_hosting_metric`. Manual confirmation is not yet recorded. |
+
+## Issue #710 Repository Completion and Durable Retention Continuation
+
+The 2026-09-15 maintainer continuation requires complete issue-driven repository
+tasks, recursive trusted-source discovery and safe forgetting. Earlier green
+benchmark slices do not establish these broader capabilities. Plan 06 in
+`docs/case-studies/issue-710/plans/` is the active resumable audit.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R710-R1 | Bind implementation language, source destination and output operands independently; preserve ordered output clauses. | Literal stdout composition in Rust, Kotlin, Scala and Python; `process_composition` and `issue_1133_hive_mind_three_runs` test renamed paths and filename-shaped output. Arbitrary program behavior remains open. |
+| R710-R2 | Include requested CI, runtime setup, comments, run instructions and executable output assertions. | Source-backed primitive records and shared recipe workflow generation; verifier mutation tests reject wrong case, extra LF and nonzero exit. Live Python project passes. Kotlin local execution still stops at a missing compiler. |
+| R710-R3 | Discover missing runtime prerequisites recursively and recover from observed failures. | Partial: recipe replay resumes after a bound successful retry and retains the original failure. Automatic prerequisite discovery/setup remains open; generating a workflow does not prove local compiler recovery. |
+| R710-R4 | A successful tool result must be bound to the requested path, bytes and ordered command before it counts as execution evidence. | `recipe_evidence` and `issue_908` retain actual assistant calls and reject orphan, duplicate, unrelated and out-of-order results, including during recovery. Unrelated setup cannot clear a failed step. |
+| R710-R5 | Commit only the recipe's artifacts, excluding compiler outputs and unrelated staged files. | Explicit-path staging and `git commit --only`; `issue_1133_hive_mind_three_runs` preserves branch/commit evidence assertions. Explicit requests to commit pending repository changes keep their separate semantics. |
+| R710-R6 | Preserve original dialogue and observations, unknown legacy records, and imported custom knowledge unless the user authorizes deletion/modification. | Provenance-first classification, apply-time revalidation and duplicate-ID safety; `memory_retention_origin`, `memory_learning`, existing deletion/reset and export/import tests. |
+| R710-R7 | Forget only reconstructable cache data; keep the rediscovery recipe and provenance, accounting for retained metadata. | Reconstruction records survive restart and further pressure in `memory_retention_origin`; a public URL authorizes reacquisition, not replacement of historical evidence with today's content. End-to-end automatic source-cache reconstruction remains open. |
+| R710-R8 | Formal AI must perform meaningful work through Agent CLI, and failures must become general regression cases. | Live Python project and grounded source-identifier rename succeed. The open-ended refactor only read its input; executable authoring-helper regressions now reject unchanged seed/destination bytes before publishing. Kotlin recovery, semantic formalization and open-ended regression authorship remain open. |
+| R710-R9 | Retain every requirement as a verifiable obligation; unknown clauses cannot be silently discarded. | Partial: shared decomposition preserves operands, addresses, list clauses and byte provenance (`requirement_span_integrity`); inline formalization preserves source identity (`issue_956`). The need ledger distinguishes selected methods from satisfied results, preventing pre-execution success and skill claims. Preserving unknown text does not interpret or execute it; complete obligation-ledger execution and runtime verification feedback remain open. |
+| R710-R10 | Report proven wrapper/client defects upstream without publishing private traces. | Hive Mind #2259 contains the reviewed MCP transport reproduction; no current Agent CLI defect has been established from the compiler failures. |
+
 ## Issue #834 Legal & Compliance Self-Audit
 
 Issue [#834](https://github.com/link-assistant/formal-ai/issues/834) asks for a
@@ -1828,8 +1942,8 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-5 | The system learns the universal problem-solving algorithm, making it possible to truly solve translation between natural and formal languages. | Tracked: E70 owns general natural-formal translation; E75 owns method learning over the recipe interpreter and method registry. |
 | R914-6 | Keep a minimum core of algorithms plus a data seed whose metadata is rich enough to problem-solve the way people do. | Partial with enforcement from #918: the accepted four-part boundary, recursive handler ledger, metadata schema, complete coding-path floor, per-record gap data, and shrink-only CI ratchets are documented in `docs/case-studies/issue-918/`; 43 specialized handlers remain migration debt. |
 | R914-7 | No neural networks in reasoning; formal reasoning covers all existing test cases and much more. | Standing invariant (NON-GOALS.md) restated as a binding design rule for every epic; coverage growth with external benchmark scoring is E76. |
-| R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Tracked: E72 owns the research-to-verified-procedure loop over the provenance-tracked source cache, building on #873 and #896. |
-| R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Tracked: E69 ratchets the #848 coding ladder (baseline 2 of 13 rungs, zero write effects) over the #902-#909 harness fixes; E77 routes real repository work through Formal AI per release. |
+| R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Implemented as a growing general mechanism: E72/#919 supplies research-to-verified-procedure learning over the provenance-tracked source cache; PR #888 adds bounded Python documentation, Wikifunctions, Rosetta Code, and official OEIS adapters, strict source formalization, structural composition, executable selection, forgettable procedure memory, and cold-cache rediscovery tests. Unknown source knowledge still fails honestly rather than becoming a built-in answer. |
+| R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Implemented with measured boundaries: E69/#916 closes the write-effect dependency, the issue-1021 action ladder passes 16/16, and E77/#924 requires real Agent-CLI-authored repository work per release cycle. PR #888 adds multiple session-backed Formal-AI-authored leaves and raises the first-20 HumanEval/MBPP upstream rows to 20/20 through generalized discovery. |
 | R914-10 | Work with unknowns, asking the user as few questions as possible and only requirement-level ones. | Tracked: E73 adds the question-necessity protocol over the existing clarify-vs-guess, unknown-reasoning, and #527 question-catalog mechanisms. |
 | R914-11 | Integrate well with link-assistant/hive-mind through agentic harness CLIs and TUIs. | Tracked: E74 owns the replayable end-to-end gate in both directions, including the hive-mind#2059 invocation shape. |
 | R914-12 | The result is issues created in this repository representing the full plan. | Implemented: opened-issue URLs recorded in `docs/case-studies/issue-914/proposed-issues.md`. |
@@ -1880,8 +1994,8 @@ design, alternatives, standards research, and verification live in
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |
 | R919-1 | A real coding synthesis miss must enter the loop as its recorded stable skill-gap identity. | `tests/unit/issue_919.rs` starts with the real unsupported Ruby `count_to_three` request, asserts `write_program_skill_gap`, and carries the matching `program_skill_gap` identity into `CodingResearchGap`. |
-| R919-2 | Research must be query-planned, provenance-bearing, cacheable, and formalized into the meta-language before compilation. | `coding_research_learning::research_coding_skill_gap` derives the query, uses `execute_source_research`, requires the licensed v1 procedure source shape, and emits content-addressed Links Notation. |
-| R919-3 | A researched procedure must be marked and pass the same bounded execution verification as a hand-seeded procedure before it is kept. | `origin research` candidates use #897's `execute_workspace_rewrite`; exact expected output and named review are gates, and only `execution_verified` procedures enter the ledger. |
+| R919-2 | Research must be query-planned, provenance-bearing, cacheable, and formalized into the meta-language before compilation. | The original `coding_research_learning::research_coding_skill_gap` loop accepts the repository's licensed `formal_ai_coding_procedure_v1` rewrite format. Since the 2026-09-15 #710 continuation, sibling discovery adapters also formalize Python documentation HTML, Wikifunctions Z8/Z14/Z20 JSON, and Rosetta MediaWiki wikitext into content-addressed parts. |
+| R919-3 | A researched procedure must be marked and pass the same bounded execution verification as a hand-seeded procedure before it is kept. | `origin research` rewrite candidates still use #897's `execute_workspace_rewrite`; dynamically composed Python and Rosetta Rust candidates use `AgentWorkspace`. Only verified results enter their respective procedure ledgers. |
 | R919-4 | Full provenance and deterministic offline replay must survive CI. | The ledger retains query, URL, declared SPDX license, fetch time, source hash, formalization, executor, output hash, step count, and reviewer. The regression proves a default-offline client makes no transport calls and reproduces the proposal, id, ledger, and output from cache. |
 | R919-5 | Failed rounds must remain non-executable and update the gap to drive the next research round. | A mismatched execution rejects the candidate, leaves the ledger empty, appends query/reason to the gap, and schedules `alternative evidence round 2`. |
 | R919-6 | The loop must follow a data-authored contract and build on the completed E69 dependency. | `data/meta/coding-research-learning-contract.lino` pins the source, provenance, execution, live/offline, review, and recovery boundaries; E69 issue #916 / PR #966 is merged. |
@@ -2324,7 +2438,7 @@ model.
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |
 | R1073-1 | Deep reasoning everywhere: the reference depth is the floor, applies to trivial requests, and is never conditional on task difficulty or on prompting. | Three defaults moved from the quiet setting to the full one: `RecursionMode::Down` -> `Both`, `SelectionMode::Off` -> `Record`, `SkillMode::Off` -> `Accumulate`, each reachable before only through `SolverConfig` or a `FORMAL_AI_*` variable. The reasoning-standard audit itself takes no mode at all: `record_meta_core` calls it unconditionally, and `the_meta_core_runs_the_audit_with_no_mode_in_front_of_it` fails if a condition is ever put in front of it. `open_episode` opens an episode from the formalization alone, so the greeting `hi` gets the same seven-gate ledger the reference dialog gets: `instruction_formalization` reports `Violated` with `courtesy:no_instructions_gathered` and `instruction_sources:0:required:2`, the other six report `NotTriggered` naming the trigger that was false, and the verdict is `not_confirmed_not_refuted` with its blockers named. The obligations are enumerated identically either way (`depth_floor_enumerates_every_gate_even_for_a_trivial_episode`, `the_depth_floor_holds_for_the_smallest_request_the_pipeline_can_formalize`, measured in `docs/case-studies/issue-1073/logs/reasoning-standard-audit.log`). |
-| R1073-2 | Instructions for the task class are gathered and *formalized* into machine-checkable instruction sets, not paraphrased. | `src/reasoning_standard/instructions.rs` compiles gathered steps into an ordered set in which every step carries a check; a step with an empty check is unverifiable and fails the `instruction_formalization` gate. The set must draw on at least `minimum_instruction_sources` (2) distinct sources before a step counts as corroborated, since a single source cannot corroborate itself (`gathered_instructions_are_compiled_into_checkable_steps`). |
+| R1073-2 | Instructions for the task class are gathered and *formalized* into machine-checkable instruction sets, not paraphrased. Every attached required check must be observed before a step is complete. | `src/reasoning_standard/instructions.rs` compiles gathered steps into an ordered set; empty checks fail the gate, and `instruction_completion_requires_every_attached_check` rejects partial and duplicated observations. The set must draw on at least `minimum_instruction_sources` (2) distinct sources before a step counts as corroborated, since a single source cannot corroborate itself (`gathered_instructions_are_compiled_into_checkable_steps`). |
 | R1073-3 | Official documentation and trustworthy sources are consulted as a default step of reasoning, not as an escalation. | The `documentation_default` gate fires whenever any source was consulted and requires at least `minimum_documentation_sources` (1) of them to be primary for its subject -- the subject speaking about itself, or a first-hand record of it (`primary_documentation_is_required_by_default`). |
 | R1073-4 | Source trust is computed from proximity to primary sources, never assumed; conflicts resolve toward the more primary source. | `PrimacyChain::derive_trust` derives the tier from the chain's structure alone: an empty chain is `Unoriginal` for `NoPrimacyChain`, a hop that cannot name its upstream is `Unoriginal` for `UnfoundedStep`, distance zero is first-party or first-hand journalism, and a named upstream chain is independent corroboration. `resolve_conflict` prefers the shorter distance and answers `Unresolved` at equal distance rather than picking a side. The live registry is held to the same rule: every source in `data/seed/sources-registry.lino` declares a `primacy` chain citing the site's own policy, `SourceRecord::tier` is the derived value, `tier_from_seed` and its silent `_ => independent_corroboration` arm are deleted, and the hand-written tier survives only as `asserted_tier`, checked against the derivation (`source_trust_is_derived_from_the_primacy_chain`). |
 | R1073-5 | Refutation first, with deliberate variety; only refuted refutations or a positively proven alternative permit leaning toward a conclusion, otherwise "not confirmed and not refuted" with the blockers named. | The `refutation_variety` gate requires `minimum_refutation_attempts` (3) attempts with *distinct mechanisms* spanning `minimum_refutation_axis_kinds` (2) of the three kinds -- a different mechanism, a different source, a different denied assumption -- so three restatements of one doubt count as one. `Verdict::NotConfirmedNotRefuted` carries `blockers()`: the gates that failed and the checks that could not be run. It is the honest default, not a fallback (`conclusions_need_varied_refutations_before_they_may_be_leaned_toward`). |
@@ -2357,6 +2471,19 @@ sub-issues of #1085.
 | R1085-15 | Move `dev/log` and raw case-study logs to an evidence store with a hashed Links Notation index; cap non-source additions per pull request; land #1072. | Sub-issue of #1085 (D7). |
 | R1085-16 | Render status tables from ledgers, convert byte-equality pins to containment, require a justification for every CI gate, record a wall-clock ceiling. | Sub-issue of #1085 (D8). |
 | R1085-17 | Finish or retire the traceability manual-confirmation column. | Sub-issue of #1085 (D9). |
+
+## Issue #1137 Pre-Merge Four-Client Routing Replay
+
+Issue [#1137](https://github.com/link-assistant/formal-ai/issues/1137) records
+that Agent, OpenCode, Claude, and Codex expose different tool vocabularies, so a
+single-client or held-out-only pull-request gate cannot prove a routing change
+before it reaches `main`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1137-1 | A pull request that changes agentic routing must run the full real-client replay before merge. | Implemented: `scripts/detect-code-changes.rs` derives `agentic-routing-changed` from the complete PR diff whenever a tracked path under `src/agentic_coding/` changes; `.github/workflows/release.yml` passes `full-replay: true` to the reusable Agent CLI workflow for that PR. The path classifier and caller expression are pinned by `detect_code_changes::tests::agentic_source_changes_request_the_four_client_replay` and `ci_cd::issue_1137_agentic_routing_replay`. |
+| R1137-2 | The pre-merge replay must retain Agent, OpenCode, Claude, and Codex and prove search, fetch, and cited synthesis. | Implemented: the full-replay-only `run_issue_781.sh` step retains the four-client default and its per-client search/fetch/final assertions; `the_full_replay_still_exercises_each_supported_client` pins the caller, harness, and client inventory. |
+| R1137-3 | Pull requests outside the routing boundary should retain the cheaper held-out gate. | Implemented: the new detector output is false outside `src/agentic_coding/`; the existing `main`, schedule, and manual full-replay conditions remain unchanged. The classifier regression exercises unrelated coding and documentation paths. |
 
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 

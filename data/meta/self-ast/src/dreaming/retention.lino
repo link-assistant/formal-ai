@@ -1,0 +1,12 @@
+self_ast_census
+  target src/dreaming/retention.rs
+  language rust
+  fidelity signature
+  byte_len 4186
+  line_count 103
+  content_id source_module_74887b995d9ca81d
+  symbol_count 3
+  symbols
+    function reconstruction_record 10 26
+    function reclaimable_bytes 28 37
+    function classify_event 39 103

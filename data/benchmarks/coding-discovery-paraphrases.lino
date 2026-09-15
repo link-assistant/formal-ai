@@ -1,0 +1,101 @@
+coding_discovery_paraphrases
+  paraphrase gcd_en
+    family gcd
+    language en
+    prompt "Write Python function greatest_common_divisor(a, b). Return the greatest common divisor of the two integers."
+  paraphrase gcd_ru
+    family gcd
+    language ru
+    prompt "Напиши функцию Python greatest_common_divisor(a, b). Верни наибольший общий делитель двух целых чисел."
+  paraphrase gcd_hi
+    family gcd
+    language hi
+    prompt "Python फ़ंक्शन greatest_common_divisor(a, b) लिखें। दो पूर्णांकों का महत्तम समापवर्तक लौटाएँ।"
+  paraphrase gcd_zh
+    family gcd
+    language zh
+    prompt "编写 Python 函数 greatest_common_divisor(a, b)，返回两个整数的最大公约数。"
+  paraphrase gcd_es
+    family gcd
+    language es
+    prompt "Escribe la función Python greatest_common_divisor(a, b) y devuelve el máximo común divisor de dos enteros."
+  paraphrase sum_product_en
+    family sum_product
+    language en
+    prompt "Define Python function summarize_numbers(numbers). Return a tuple of the sum and product of every integer."
+  paraphrase sum_product_ru
+    family sum_product
+    language ru
+    prompt "Определи функцию Python summarize_numbers(numbers). Верни кортеж из суммы и произведения всех целых чисел."
+  paraphrase sum_product_hi
+    family sum_product
+    language hi
+    prompt "Python फ़ंक्शन summarize_numbers(numbers) परिभाषित करो। सभी पूर्णांकों के योग और गुणनफल से बना टपल लौटाएँ।"
+  paraphrase sum_product_zh
+    family sum_product
+    language zh
+    prompt "定义 Python 函数 summarize_numbers(numbers)，返回由所有整数的总和与乘积组成的元组。"
+  paraphrase sum_product_es
+    family sum_product
+    language es
+    prompt "Define la función Python summarize_numbers(numbers). Devuelve una tupla compuesta por la suma y el producto de todos los enteros."
+  paraphrase near_pair_en
+    family near_pair
+    language en
+    prompt "Implement Python function near_pair(numbers, threshold). Return whether at least one distinct pair has a difference that is less than the threshold."
+  paraphrase near_pair_ru
+    family near_pair
+    language ru
+    prompt "Реализуй функцию Python near_pair(numbers, threshold). Верни истину, если хотя бы один набор из двух чисел различается меньше чем порог."
+  paraphrase near_pair_hi
+    family near_pair
+    language hi
+    prompt "Python फ़ंक्शन near_pair(numbers, threshold) लागू करें। कम से कम एक जोड़ी की दो संख्याएँ सीमा से कम अंतर पर हों तो सत्य लौटाएँ।"
+  paraphrase near_pair_zh
+    family near_pair
+    language zh
+    prompt "实现 Python 函数 near_pair(numbers, threshold)，当至少一个两数的差小于阈值时返回真。"
+  paraphrase near_pair_es
+    family near_pair
+    language es
+    prompt "Implementa la función Python near_pair(numbers, threshold). Devuelve verdadero si al menos uno de cada par de dos números difieren menos que el umbral."
+  paraphrase count_distinct_en
+    family count_distinct
+    language en
+    prompt "Create Python function unique_count(items). Return the number of distinct items."
+  paraphrase count_distinct_ru
+    family count_distinct
+    language ru
+    prompt "Создай функцию Python unique_count(items). Верни количество уникальных элементов."
+  paraphrase count_distinct_hi
+    family count_distinct
+    language hi
+    prompt "Python फ़ंक्शन unique_count(items) बनाओ। विशिष्ट तत्वों की संख्या लौटाएँ।"
+  paraphrase count_distinct_zh
+    family count_distinct
+    language zh
+    prompt "创建 Python 函数 unique_count(items)，返回不同元素的数量。"
+  paraphrase count_distinct_es
+    family count_distinct
+    language es
+    prompt "Crea la función Python unique_count(items). Devuelve la cantidad de elementos únicos."
+  paraphrase count_to_100_en
+    family count_to_100
+    language en
+    prompt "Write a Python program to count to 100 inclusive."
+  paraphrase count_to_100_ru
+    family count_to_100
+    language ru
+    prompt "Напиши программу Python: посчитай до 100 включительно."
+  paraphrase count_to_100_hi
+    family count_to_100
+    language hi
+    prompt "Python प्रोग्राम लिखो जो 100 तक गिनो सहित।"
+  paraphrase count_to_100_zh
+    family count_to_100
+    language zh
+    prompt "写一个 Python 程序，数到 100 并包含终点。"
+  paraphrase count_to_100_es
+    family count_to_100
+    language es
+    prompt "Escribe un programa Python que cuenta hasta 100 inclusive."

@@ -2,9 +2,9 @@ self_ast_census
   target src/engine.rs
   language rust
   fidelity signature
-  byte_len 38498
-  line_count 968
-  content_id source_module_b6d8f3c00b1f701f
+  byte_len 38202
+  line_count 963
+  content_id source_module_fd9af738bc9d5974
   symbol_count 45
   symbols
     const DEFAULT_MODEL 43 43
@@ -38,17 +38,17 @@ self_ast_census
     function response_link 608 625
     function answer 627 645
     function language_aware_intent_for 648 650
-    function language_aware_answer_for 652 720
-    function response_link_for_intent 722 724
-    function hello_world_program_by_alias 727 730
-    function normalize_prompt 732 750
-    function is_script_combining_mark 752 765
-    function answer_links_notation 767 813
-    function format_write_program_rule_record 815 839
-    function program_template_sources 841 849
-    function write_program_answer 851 883
-    function write_program_intro 885 896
-    function execution_report 898 930
-    function execution_status_phrase 932 942
-    function execution_output_label 944 955
-    function execution_command_lines 963 968
+    function language_aware_answer_for 652 715
+    function response_link_for_intent 717 719
+    function hello_world_program_by_alias 722 725
+    function normalize_prompt 727 745
+    function is_script_combining_mark 747 760
+    function answer_links_notation 762 808
+    function format_write_program_rule_record 810 834
+    function program_template_sources 836 844
+    function write_program_answer 846 878
+    function write_program_intro 880 891
+    function execution_report 893 925
+    function execution_status_phrase 927 937
+    function execution_output_label 939 950
+    function execution_command_lines 958 963

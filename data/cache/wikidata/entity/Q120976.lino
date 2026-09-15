@@ -1,0 +1,21 @@
+Q120976
+  aliases
+    en ("factorial function" "!" "n!" "Factorial function" Factorials "Factorial number" "! (math)")
+    es ("N!" "función factorial" "número factorial" "crecimiento factorial" factoriales)
+    hi ("फक्टोरियल")
+    ru ("N!")
+    zh ("N!" "阶乘")
+  descriptions
+    en "product of all integers between 1 and the integral input of the function"
+    es "concepto matemático de combinatoria"
+    hi "एक से एक पूर्णांक के लिए सभी पूर्णांकों का उत्पाद"
+    ru "функция, определённая на множестве неотрицательных целых чисел"
+  id Q120976
+  labels
+    en factorial
+    es factorial
+    hi "क्रमगुणित"
+    ru "факториал"
+    zh "階乘"
+  type item
+success 1

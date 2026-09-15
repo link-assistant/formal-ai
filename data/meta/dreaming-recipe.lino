@@ -103,12 +103,12 @@ fn_plan_memory_dreaming
 fn_apply_dreaming_plan
   record_type "meta_function"
   function "apply_dreaming_plan"
-  source_file "src/dreaming.rs"
+  source_file "src/dreaming/apply.rs"
   kind "explicit_apply"
 fn_classify_event
   record_type "meta_function"
   function "classify_event"
-  source_file "src/dreaming.rs"
+  source_file "src/dreaming/retention.rs"
   kind "durability_classifier"
 fn_usage_counts
   record_type "meta_function"

@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_summarization.rs
   language rust
   fidelity signature
-  byte_len 11240
+  byte_len 11211
   line_count 320
-  content_id source_module_b7b42076d8595c90
+  content_id source_module_0a2eee9ef5afe125
   symbol_count 24
   symbols
     const RATCHET_HOLDS 29 29

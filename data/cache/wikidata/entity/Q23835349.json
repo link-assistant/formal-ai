@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "Q23835349": {
+      "type": "item",
+      "id": "Q23835349",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Fibonacci sequence"
+        },
+        "es": {
+          "language": "es",
+          "value": "sucesión de Fibonacci"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "последовательность Фибоначчи"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "斐波那契数列"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फिबोनाची अनुक्रम"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "entire infinite integer series where the next number is the sum of the two preceding it (0,1,1,2,3,5,8,13,21,...)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "бесконечная последовательность натуральных чисел, удовлетворяющая рекуррентному соотношению"
+        },
+        "es": {
+          "language": "es",
+          "value": "sucesión de números descrita por Fibonacci"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "整个无限整数系列，其中下一个数是前两个数的和（1,1,2,3,5,8,13,21，...）"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संपूर्ण अनंत पूर्णांक श्रृंखला जहां अगली संख्या उसके पहले की दो संख्याओं का योग है (0,1,1,2,3,5,8,13,21,...)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Un(1,−1)"
+          },
+          {
+            "language": "en",
+            "value": "Fibonacci series"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "secuencia Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "secuencia numérica de Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "progresión de Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "serie de Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "secuencia numerica de Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "progresion de Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "secuencia de Fibonacci"
+          },
+          {
+            "language": "es",
+            "value": "sucesion de Fibonacci"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ряд Фибоначчи"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "菲波纳契数列"
+          },
+          {
+            "language": "zh",
+            "value": "Fibonacci数列"
+          },
+          {
+            "language": "zh",
+            "value": "費波那契數列"
+          },
+          {
+            "language": "zh",
+            "value": "費氏數列"
+          },
+          {
+            "language": "zh",
+            "value": "費式數列"
+          },
+          {
+            "language": "zh",
+            "value": "費波納西數列"
+          },
+          {
+            "language": "zh",
+            "value": "斐波纳契数列"
+          },
+          {
+            "language": "zh",
+            "value": "費伯納西數列"
+          },
+          {
+            "language": "zh",
+            "value": "费氏数列"
+          },
+          {
+            "language": "zh",
+            "value": "黃金分割數列"
+          },
+          {
+            "language": "zh",
+            "value": "斐波那契螺线"
+          },
+          {
+            "language": "zh",
+            "value": "假黄金螺线"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

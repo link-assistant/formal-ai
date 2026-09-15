@@ -1,0 +1,125 @@
+{
+  "entities": {
+    "Q120976": {
+      "type": "item",
+      "id": "Q120976",
+      "labels": {
+        "es": {
+          "language": "es",
+          "value": "factorial"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "факториал"
+        },
+        "en": {
+          "language": "en",
+          "value": "factorial"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क्रमगुणित"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "階乘"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "product of all integers between 1 and the integral input of the function"
+        },
+        "es": {
+          "language": "es",
+          "value": "concepto matemático de combinatoria"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक से एक पूर्णांक के लिए सभी पूर्णांकों का उत्पाद"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "функция, определённая на множестве неотрицательных целых чисел"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "N!"
+          },
+          {
+            "language": "zh",
+            "value": "阶乘"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "N!"
+          },
+          {
+            "language": "es",
+            "value": "función factorial"
+          },
+          {
+            "language": "es",
+            "value": "número factorial"
+          },
+          {
+            "language": "es",
+            "value": "crecimiento factorial"
+          },
+          {
+            "language": "es",
+            "value": "factoriales"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "N!"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फक्टोरियल"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "factorial function"
+          },
+          {
+            "language": "en",
+            "value": "!"
+          },
+          {
+            "language": "en",
+            "value": "n!"
+          },
+          {
+            "language": "en",
+            "value": "Factorial function"
+          },
+          {
+            "language": "en",
+            "value": "Factorials"
+          },
+          {
+            "language": "en",
+            "value": "Factorial number"
+          },
+          {
+            "language": "en",
+            "value": "! (math)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

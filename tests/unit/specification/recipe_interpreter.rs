@@ -207,6 +207,42 @@ fn enabling_modes_executes_the_gated_stages() {
 }
 
 #[test]
+fn native_and_data_driven_planning_do_not_fabricate_execution_evidence() {
+    let formalization = formalize("translate apple to Russian");
+    let program = RecipeProgram::from_repo();
+    let trace = program
+        .execute(
+            &formalization,
+            4,
+            RecursionMode::Both,
+            SelectionMode::Record,
+            SkillMode::Accumulate,
+        )
+        .unwrap();
+    assert!(program.reproduces_pipeline(
+        &formalization,
+        4,
+        RecursionMode::Both,
+        SelectionMode::Record,
+        SkillMode::Accumulate,
+    ));
+    let need_ledger = &trace.log.first_of("need_ledger").unwrap().payload;
+    assert!(need_ledger.contains("planned \"1\""), "{need_ledger}");
+    assert!(need_ledger.contains("satisfied \"0\""), "{need_ledger}");
+    let evidence = &trace.log.first_of("solution_evidence").unwrap().payload;
+    assert!(evidence.contains("fully_resolved \"false\""), "{evidence}");
+    let skills = &trace.log.first_of("skill_ledger").unwrap().payload;
+    assert!(
+        !skills.contains("record_type \"candidate_skill\""),
+        "{skills}"
+    );
+    assert!(
+        skills.contains("record_type \"curriculum_item\""),
+        "{skills}"
+    );
+}
+
+#[test]
 fn a_recipe_that_runs_a_stage_before_its_dependency_is_an_error() {
     // need_ledger depends on the problem frame; placing it first must be rejected.
     let misordered = "\

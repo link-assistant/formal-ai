@@ -3,8 +3,8 @@
 //! These tests pin the join: for every detected need the evidence traces the
 //! chain `frame need → work-unit leaf → ledger status → catalogued method`, so
 //! "address every detected need" is one auditable record rather than four
-//! separate projections. We assert a routed prompt produces a fully-resolved
-//! chain, an unroutable prompt is accounted-for but not fully-resolved (it is
+//! separate projections. A routed prompt produces a connected planning chain,
+//! not a validated result. An unroutable prompt is not fully resolved (it is
 //! recorded, never dropped), and the evidence serializes to grounded Links
 //! Notation. The projection is static and behavior-preserving.
 
@@ -36,7 +36,7 @@ fn evidence_has_one_trail_per_need() {
 }
 
 #[test]
-fn routed_prompt_is_fully_resolved_through_a_connected_chain() {
+fn routed_prompt_is_accounted_for_but_not_satisfied_before_execution() {
     let evidence = evidence_for("translate apple to Russian");
     assert_eq!(evidence.trails.len(), 1);
     let trail = &evidence.trails[0];
@@ -44,18 +44,45 @@ fn routed_prompt_is_fully_resolved_through_a_connected_chain() {
         trail.connected,
         "a routed need must connect frame → leaf → status: {trail:?}"
     );
-    assert_eq!(trail.status, NeedStatus::Satisfied);
+    assert_eq!(trail.status.slug(), "planned");
     assert!(
         trail.work_unit_id.is_some(),
         "the chain must link back to the resolving work-unit leaf"
     );
     assert!(
         trail.route.is_some(),
-        "a satisfied need must carry the route it dispatches to"
+        "a planned need must retain its selected route"
     );
     assert!(
-        evidence.accounted_for() && evidence.fully_resolved(),
-        "a single routed need must be both accounted-for and fully resolved: {evidence:?}"
+        evidence.accounted_for() && !evidence.fully_resolved(),
+        "a selected method is not evidence of a validated result: {evidence:?}"
+    );
+    assert!(
+        evidence
+            .to_links_notation()
+            .contains("fully_resolved \"false\"")
+    );
+}
+
+#[test]
+fn resolution_requires_every_trail_to_have_explicit_satisfied_evidence() {
+    let mut evidence =
+        evidence_for("translate apple to Russian and write a hello world program in Python");
+    assert!(evidence.trails.len() >= 2);
+    // This is a downstream projection fixture, not proof of live execution.
+    evidence.trails[0].status = NeedStatus::Satisfied;
+    assert!(
+        !evidence.fully_resolved(),
+        "one result cannot discharge the other needs"
+    );
+    for trail in &mut evidence.trails {
+        trail.status = NeedStatus::Satisfied;
+    }
+    assert!(evidence.fully_resolved());
+    evidence.trails[0].connected = false;
+    assert!(
+        !evidence.fully_resolved(),
+        "disconnected evidence cannot complete a need"
     );
 }
 

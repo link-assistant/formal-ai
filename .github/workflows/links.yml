@@ -122,6 +122,11 @@ jobs:
           # retry that does happen is the `Re-check` step below, outside lychee.
           # `--max-retries` stays because it still covers the classes lychee
           # does retry.
+          #
+          # Coding-discovery's Python documentation is a byte-for-byte third-
+          # party capture used for offline replay. Its outbound links belong to
+          # that upstream snapshot rather than this repository's maintained
+          # pages, so live-link checks exclude only that fixture subtree.
           args: >-
             --verbose
             --no-progress
@@ -140,6 +145,7 @@ jobs:
             --exclude-path docs/case-studies
             --exclude-path dev/log
             --exclude-path experiments/issue-1021-link-checker-false-positive
+            --exclude-path tests/fixtures/coding-discovery
             './**/*.md'
             './**/*.html'
           # Don't fail the workflow immediately - we want to check web archive first

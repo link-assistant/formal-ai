@@ -85,7 +85,7 @@ fn page() -> String {
     )
 }
 
-fn show(p: &Option<AgenticPlan>) -> String {
+fn show(p: Option<&AgenticPlan>) -> String {
     match p {
         Some(AgenticPlan::ToolCalls(c)) => c
             .iter()
@@ -93,7 +93,7 @@ fn show(p: &Option<AgenticPlan>) -> String {
                 format!(
                     "{}({})",
                     x.tool,
-                    &x.arguments.chars().take(160).collect::<String>()
+                    x.arguments.chars().take(160).collect::<String>()
                 )
             })
             .collect::<Vec<_>>()
@@ -117,7 +117,7 @@ fn drive(
     let mut n = 0;
     loop {
         let planned = plan_chat_step(msgs, tools);
-        println!("  step {n}: {}", show(&planned));
+        println!("  step {n}: {}", show(planned.as_ref()));
         let Some(AgenticPlan::ToolCalls(calls)) = planned else {
             break;
         };
@@ -127,8 +127,10 @@ fn drive(
         let (echo_args, result) = results
             .iter()
             .find(|(t, _)| *t == call.tool.as_str())
-            .map(|(_, r)| (call.arguments.clone(), r.to_string()))
-            .unwrap_or_else(|| (call.arguments.clone(), "ok".into()));
+            .map_or_else(
+                || (call.arguments.clone(), "ok".into()),
+                |(_, r)| (call.arguments.clone(), r.to_string()),
+            );
         let echo_args = if call.tool == "mcp__playwright__browser_click" {
             "{\"target\":\"\"}".to_string()
         } else {
@@ -151,7 +153,7 @@ fn drive(
 fn main() {
     let page = page();
     // 1. Kotlin / Claude Code tool set
-    let mut m = vec![ChatMessage::user(&prompt())];
+    let mut m = vec![ChatMessage::user(prompt())];
     drive(
         "CLAUDE (Kotlin run) tool set",
         CLAUDE,
@@ -167,7 +169,7 @@ fn main() {
         8,
     );
     // 1b. the old loop, if a harness still echoes the click: must stop, not repeat
-    let mut m = vec![ChatMessage::user(&prompt())];
+    let mut m = vec![ChatMessage::user(prompt())];
     drive(
         "CLAUDE with only playwright (no WebFetch)",
         &[
@@ -181,7 +183,7 @@ fn main() {
         6,
     );
     // 2. Scala / Agent CLI tool set
-    let mut m = vec![ChatMessage::user(&prompt())];
+    let mut m = vec![ChatMessage::user(prompt())];
     drive(
         "AGENT (Scala run) tool set",
         AGENT,
@@ -205,17 +207,17 @@ fn main() {
         8,
     );
     // 2c. the Agent CLI summarize call
-    let mut s = vec![ChatMessage::user(&format!(
+    let mut s = vec![ChatMessage::user(format!(
         "\n              The following is the text to summarize:\n              <text>\n              {}              </text>\n            ",
         prompt()
     ))];
     println!(
         "\n=== AGENT summarize call, no tools: {}",
-        show(&plan_chat_step(&s, &[]))
+        show(plan_chat_step(&s, &[]).as_ref())
     );
     println!(
         "=== AGENT summarize call, agent tools: {}",
-        show(&plan_chat_step(&s, AGENT))
+        show(plan_chat_step(&s, AGENT).as_ref())
     );
     drive(
         "AGENT summarize call driven",
@@ -229,7 +231,7 @@ fn main() {
     );
     // 3. Rust / Codex tool set with the ChatGPT GitHub connector
     let mut m = vec![ChatMessage::user(
-        &prompt()
+        prompt()
             .replace("00e1-73b9-955e-f357a1600d5b", "c107-78c7-8ff6-9f127a3c593c")
             .replace("Scala", "Rust"),
     )];
@@ -249,7 +251,7 @@ fn main() {
     );
     // 3b. the connector envelope itself now reads as the issue
     let mut m = vec![ChatMessage::user(
-        &prompt()
+        prompt()
             .replace("00e1-73b9-955e-f357a1600d5b", "c107-78c7-8ff6-9f127a3c593c")
             .replace("Scala", "Rust"),
     )];

@@ -100,6 +100,11 @@ test("every coding handler executes the shared meta-algorithm", async () => {
   );
   assert.equal(synthesis.intent, "write_program");
   assertSharedConstructionEvidence(synthesis, "program_synthesis");
+  assert.match(synthesis.content, /Coding task formalized.*count_vowels/);
+  assert.match(synthesis.content, /Discovered structural parts:.*reduce_count/);
+  assert.match(synthesis.content, /unverified in the browser boundary/);
+  assert.ok(!synthesis.content.includes("```python"));
+  assert.ok(!synthesis.evidence.some((entry) => entry.startsWith("action_log:run_command")));
 
   const catalog = await solve("Write hello world in Rust");
   assert.equal(catalog.intent, "write_program");
@@ -121,6 +126,31 @@ test("every coding handler executes the shared meta-algorithm", async () => {
   });
   assert.equal(rule.intent, "write_program");
   assertSharedConstructionEvidence(rule, "rule_synthesis");
+});
+
+test("source-derived recurrences render and evaluate without a task template", async () => {
+  await worker.init();
+  const fibonacci = await solve(
+    "Write a Python function that calculates the Fibonacci sequence recursively.",
+  );
+  assert.equal(fibonacci.intent, "write_program");
+  assert.match(fibonacci.content, /def fibonacci\(n\)/);
+  assert.match(fibonacci.content, /fibonacci\(n - 1\)/);
+  assert.match(fibonacci.content, /fibonacci\(n - 2\)/);
+  assert.match(fibonacci.content, /fibonacci\(10\): 55/);
+  assert.ok(
+    fibonacci.evidence.includes("synthesis:source_tests:passed=4"),
+    "the browser replays source tests before presenting the recurrence",
+  );
+
+  const factorial = await solve(
+    "Write a Python function that calculates factorial recursively.",
+  );
+  assert.equal(factorial.intent, "write_program");
+  assert.match(factorial.content, /def factorial\(n\)/);
+  assert.match(factorial.content, /n \* factorial\(n - 1\)/);
+  assert.match(factorial.content, /factorial\(10\): 3628800/);
+  assert.ok(factorial.content.includes("Q120976.json"));
 });
 
 test("prompt normalization collapses whitespace and case", () => {

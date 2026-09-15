@@ -1,0 +1,10 @@
+self_ast_census
+  target src/cli_paths.rs
+  language rust
+  fidelity signature
+  byte_len 996
+  line_count 23
+  content_id source_module_2469ced97263e7d5
+  symbol_count 1
+  symbols
+    function resolve_root 14 23

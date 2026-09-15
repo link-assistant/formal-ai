@@ -210,6 +210,9 @@ fn session(input: &Value) -> Value {
 /// committed with this change.
 #[test]
 fn closed_circle_session_replays() {
+    if super::offline_replay::in_child("issue_1021_closed_circle::closed_circle_session_replays") {
+        return;
+    }
     let input = input();
     let fresh = serde_json::to_string_pretty(&session(&input)).expect("session JSON");
     let path = format!("{}/session.json", run_dir());

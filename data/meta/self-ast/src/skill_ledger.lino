@@ -2,9 +2,9 @@ self_ast_census
   target src/skill_ledger.rs
   language rust
   fidelity signature
-  byte_len 15506
+  byte_len 15452
   line_count 394
-  content_id source_module_491ec5f2c7a7861e
+  content_id source_module_eae5081288e0c79b
   symbol_count 24
   symbols
     enum SkillMode 43 50

@@ -1,3 +1,4 @@
+mod authoring_effects;
 mod changelog_parsing;
 #[path = "../../../scripts/check-associative-terminology.rs"]
 mod check_associative_terminology;
@@ -41,6 +42,7 @@ mod issue_1081;
 mod issue_1107_green_ledger;
 mod issue_1111_non_linux_switch;
 mod issue_1113_pull_request_status;
+mod issue_1137_agentic_routing_replay;
 mod issue_717;
 mod issue_730;
 mod issue_739;

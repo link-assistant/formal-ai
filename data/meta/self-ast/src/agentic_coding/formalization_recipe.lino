@@ -2,83 +2,73 @@ self_ast_census
   target src/agentic_coding/formalization_recipe.rs
   language rust
   fidelity full_ast
-  byte_len 6538
-  line_count 155
-  content_id source_module_419cabde2771736d
-  symbol_count 10
+  byte_len 6480
+  line_count 140
+  content_id source_module_0851e7021de79e86
+  symbol_count 7
   symbols
-    const SEARCH_QUERY 21 21
-    const CANONICAL_SOURCE_URL 24 25
-    const KB_PATH 28 28
-    const CANONICAL_TALE_KEYWORDS 31 31
-    function is_formalization_task 34 37
-    const INLINE_SOURCE_DELIMITERS 40 40
-    function inline_formalization_source 50 66
-    function is_canonical_tale_reference 69 74
-    function plan_formalization_step 78 134
-    function final_answer 138 155
+    const SEARCH_QUERY 22 22
+    const CANONICAL_SOURCE_URL 25 26
+    const KB_PATH 29 29
+    function is_formalization_task 32 35
+    function inline_formalization_source 44 56
+    function plan_formalization_step 60 116
+    function final_answer 121 140
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3530
-    named_node_count 675
-    distinct_node_kinds 56
+    total_link_count 3534
+    named_node_count 715
+    distinct_node_kinds 49
     node_kinds
-      arguments 45
-      array_expression 2
-      array_type 4
-      binary_expression 3
-      block 16
-      call_expression 45
-      char_literal 8
-      closure_expression 1
-      closure_parameters 1
-      const_item 5
-      continue_expression 3
-      crate 6
-      doc_comment 23
+      arguments 63
+      array_type 2
+      attribute 1
+      attribute_item 1
+      binary_expression 2
+      block 11
+      call_expression 63
+      closure_expression 3
+      closure_parameters 3
+      const_item 3
+      crate 9
+      doc_comment 20
       else_clause 1
-      escape_sequence 5
-      expression_statement 16
-      field_expression 29
-      field_identifier 29
-      for_expression 1
-      function_item 5
+      expression_statement 10
+      field_expression 48
+      field_identifier 48
+      function_item 4
       generic_type 1
-      identifier 178
-      if_expression 7
-      index_expression 2
+      identifier 173
+      if_expression 6
       inner_doc_comment_marker 6
-      integer_literal 2
       let_chain 4
       let_condition 4
-      let_declaration 15
+      let_declaration 13
       line_comment 36
-      macro_invocation 4
-      outer_doc_comment_marker 17
+      macro_invocation 3
+      outer_doc_comment_marker 14
       parameter 7
-      parameters 5
-      primitive_type 13
-      range_expression 2
-      reference_expression 5
-      reference_type 12
-      return_expression 5
-      scoped_identifier 21
+      parameters 4
+      parenthesized_expression 1
+      primitive_type 9
+      reference_expression 11
+      reference_type 11
+      return_expression 4
+      scoped_identifier 34
       scoped_use_list 2
       source_file 1
-      string_content 16
-      string_literal 14
-      super 4
-      token_tree 10
-      tuple_expression 4
-      tuple_pattern 1
-      tuple_struct_pattern 6
-      tuple_type 1
+      string_content 18
+      string_literal 19
+      super 5
+      token_tree 7
+      try_expression 1
+      tuple_struct_pattern 4
       type_arguments 1
       type_identifier 6
-      unary_expression 4
-      use_declaration 4
+      unary_expression 6
+      use_declaration 5
       use_list 2
       visibility_modifier 5

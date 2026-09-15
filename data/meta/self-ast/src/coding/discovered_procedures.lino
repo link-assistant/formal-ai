@@ -1,0 +1,29 @@
+self_ast_census
+  target src/coding/discovered_procedures.rs
+  language rust
+  fidelity signature
+  byte_len 10360
+  line_count 308
+  content_id source_module_2d4b039ff5ae6e68
+  symbol_count 20
+  symbols
+    const LEDGER_FILE 15 15
+    struct ProcedurePart 18 25
+    struct DiscoveredProcedure 28 40
+    function from_verified 43 80
+    function identity_payload 82 104
+    function expected_integrity 106 116
+    function valid 118 129
+    struct DiscoveredProcedureLedger 133 135
+    function new 139 143
+    function path 146 148
+    function recall 150 157
+    function remember 159 175
+    function read_valid 177 194
+    function spec_identity 198 213
+    function unix_now 215 220
+    function parse_procedure 222 241
+    function parse_part 243 252
+    function required 254 260
+    function values 262 268
+    function render_ledger 270 308

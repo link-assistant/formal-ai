@@ -833,6 +833,15 @@ hardcoded prompt→answer tables.
    before implementing the fix; a bug fix without a reproducing regression test
    is treated as incomplete.
 
+   **Benchmark anti-memorization.** A coding-benchmark improvement must come
+   from a reusable task shape, operation meaning, sourced part, or verified
+   composition—not from an upstream case id, entry-point name, or copied task
+   sentence. When the upstream HumanEval/MBPP payloads are cached, run
+   `cargo test --test unit coding_discovery::no_memorization -- --nocapture`;
+   the gate scans `src/` and `data/seed/` against the downloaded slice. A
+   skipped cache is reported explicitly and is not evidence that the gate
+   passed. Generic language/library words need a narrow, reviewed allowlist.
+
 7. **When data is insufficient, add tracing.** If there is not enough signal to
    find a root cause, add debug output / a verbose mode (default **off**) and
    keep it in the code so the next iteration has the data.

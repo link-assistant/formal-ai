@@ -1,0 +1,1 @@
+Inspect final-benchmark-measurements.lino and author benchmark-release-index.lino as Links Notation with root benchmark_release_index and, for every measurement, fields suite_id, passed_count, total_count, execution_mode, source_requirement, verification_state. Then read benchmark-release-index.lino back to verify it.

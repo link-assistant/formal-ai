@@ -1,0 +1,6 @@
+?? .formal-ai/
+?? dialog-logs/
+?? expected-audit-contract.lino
+?? issue-710-audit-contract.lino
+?? memory.lino
+?? memory.lino.lock

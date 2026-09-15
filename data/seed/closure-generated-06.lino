@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "client global config auth refusal"
+  coding_rosetta_passed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta passed"
   collapse
     defined-by concept
     lexeme en
@@ -314,6 +319,11 @@ meanings
     lexeme en
       surface
         text "pattern x kaise kaam karti suffix hi"
+  prints
+    defined-by word_surface
+    lexeme en
+      surface
+        text "prints"
   prior_web_search
     defined-by concept
     lexeme en
@@ -329,6 +339,11 @@ meanings
     lexeme en
       surface
         text "project"
+  python_materialize_list
+    defined-by concept
+    lexeme en
+      surface
+        text "python materialize list"
   response_agent_suggestion_active_hi
     defined-by response_template
     lexeme en
@@ -409,6 +424,21 @@ meanings
     lexeme en
       surface
         text "response coding repository source observation hi"
+  response_coding_rosetta_answer_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta answer ru"
+  response_coding_rosetta_passed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta passed en"
+  response_coding_rosetta_rust_only_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta rust only es"
   response_comparison_decomposed_no_evidence_en
     defined-by response_template
     lexeme en
@@ -904,6 +934,11 @@ meanings
     lexeme en
       surface
         text "software docs"
+  space-delimited
+    defined-by word_surface
+    lexeme en
+      surface
+        text "space delimited"
   statement_audit_unknown_tier
     defined-by intent
     lexeme en
@@ -914,6 +949,11 @@ meanings
     lexeme en
       surface
         text "structured document"
+  subtract_one
+    defined-by concept
+    lexeme en
+      surface
+        text "subtract one"
   summarization_criterion_meta_language_evidence
     defined-by intent
     lexeme en

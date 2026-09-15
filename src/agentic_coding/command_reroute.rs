@@ -43,13 +43,7 @@ pub fn plan_symbolic_command_reroute(
     let commit = crate::protocol::latest_user_request(messages)
         .as_deref()
         .and_then(git_commit::target_of);
-    let commit_step = |target: &CommitTarget| {
-        git_commit::commit_command(
-            &git_commit::recipe_subject(recipe),
-            Some(&git_commit::resolves_body(&target.reference)),
-            target.push_ref(),
-        )
-    };
+    let commit_step = |target: &CommitTarget| git_commit::recipe_commit_command(recipe, target);
     // Only the recipe's own commands count as recipe steps. A shell result
     // from before the recipe -- the `gh issue view` that read the work item --
     // is neither a step done nor a step failed (issue #1133).
@@ -59,7 +53,7 @@ pub fn plan_symbolic_command_reroute(
         .cloned()
         .chain(commit.as_ref().map(commit_step))
         .collect();
-    let progress = RecipeProgress::after_latest_user(messages, write_tool, &expected_commands);
+    let progress = RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
 
     let next_file = || {
         if progress.files_written == 0 {
@@ -220,6 +214,7 @@ impl RecipeProgress {
     fn after_latest_user(
         messages: &[ChatMessage],
         write_tool: &str,
+        recipe: &ExecutionRecipe,
         expected_commands: &[String],
     ) -> Self {
         let start = messages
@@ -227,30 +222,52 @@ impl RecipeProgress {
             .rposition(|message| message.role == "user")
             .map_or(0, |index| index + 1);
         let mut progress = Self::default();
-        for message in &messages[start..] {
+        let files: Vec<(&str, &str)> = std::iter::once((recipe.path.as_str(), recipe.source.as_str()))
+            .chain(recipe.supporting_files.iter().map(|file| (file.path.as_str(), file.source.as_str())))
+            .collect();
+        let mut observed_ids = std::collections::BTreeSet::new();
+        for (index, message) in messages.iter().enumerate().skip(start) {
             if message.role != "tool" {
                 continue;
             }
-            let result_tool = message
-                .name
-                .as_deref()
-                .or_else(|| tool_from_call_id(messages, message.tool_call_id.as_deref()));
-            let capability = result_tool.and_then(tool_capability);
-            if capability == Some(Capability::Run)
-                && let Some(command) = run_command_of(messages, message.tool_call_id.as_deref())
-                && !expected_commands.contains(&command)
-            {
+            let Some(call_id) = message.tool_call_id.as_deref() else { continue; };
+            let Some(call) = messages[start..index].iter().rev()
+                .flat_map(|prior| &prior.tool_calls).find(|call| call.id == call_id)
+                .filter(|_| observed_ids.insert(call_id)) else { continue; };
+            let result_tool = call.function.name.as_str();
+            if message.name.as_deref().is_some_and(|name| !name.eq_ignore_ascii_case(result_tool)) {
+                continue;
+            }
+            let capability = tool_capability(result_tool);
+            let matches_write = result_tool.eq_ignore_ascii_case(write_tool)
+                && files.get(progress.files_written).is_some_and(|(path, source)| {
+                    super::progress::write_matches(&call.function.arguments, path, source)
+                });
+            let matches_run = capability == Some(Capability::Run)
+                && progress.files_written == files.len()
+                && run_command_of(&messages[start..index], Some(call_id))
+                    .is_some_and(|command| expected_commands.get(progress.commands_done) == Some(&command));
+            if !matches_write && !matches_run {
                 continue;
             }
             let output = message.content.plain_text();
+            if message.is_error {
+                progress.failure = Some(StepFailure { reported: output, exit_code: None, from_run: matches_run });
+                continue;
+            }
             if let Some(failure) =
                 StepFailure::from_result(output.clone(), capability == Some(Capability::Run))
             {
                 progress.failure = Some(failure);
-                break;
+                continue;
             }
+            // Only this still-pending action can match above. A later bound
+            // successful retry clears its failure; unrelated setup or a future
+            // verification result cannot. The failed observation stays in the
+            // transcript, so interrupted recovery replays without hidden state.
+            progress.failure = None;
             match capability {
-                _ if result_tool.is_some_and(|name| name.eq_ignore_ascii_case(write_tool)) => {
+                _ if matches_write => {
                     progress.files_written += 1;
                 }
                 Some(Capability::Run) => {
@@ -378,15 +395,7 @@ fn run_command_of(messages: &[ChatMessage], call_id: Option<&str>) -> Option<Str
     let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).ok()?;
     arguments
         .get("command")
+        .or_else(|| arguments.get("cmd"))
         .and_then(serde_json::Value::as_str)
         .map(str::to_owned)
-}
-
-fn tool_from_call_id<'a>(messages: &'a [ChatMessage], call_id: Option<&str>) -> Option<&'a str> {
-    let call_id = call_id?;
-    messages
-        .iter()
-        .flat_map(|message| &message.tool_calls)
-        .find(|call| call.id == call_id)
-        .map(|call| call.function.name.as_str())
 }

@@ -349,7 +349,11 @@ impl AgentWorkspace {
             return Ok(result);
         }
         let command_budget = effective_command_time_budget(program, self.time_budget);
-        let program_path = resolve_allowed_program(program)?;
+        let program_path = if matches!(program.as_str(), "./main" | "main.exe") {
+            self.workspace_path(program.trim_start_matches("./"))?
+        } else {
+            resolve_allowed_program(program)?
+        };
         let mut command = Command::new(&program_path);
         command
             .args(args)
@@ -642,6 +646,7 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
         "printf" => &["/usr/bin/printf", "/bin/printf"],
         "env" => &["/usr/bin/env", "/bin/env"],
         "python3" => &["/usr/bin/python3", "/bin/python3", "/usr/local/bin/python3"],
+        "rustc" => &[],
         other => return Err(AgentError::UnsupportedCommand(other.to_owned())),
     };
     candidates
@@ -676,6 +681,8 @@ fn path_search_names(program: &str) -> Option<&'static [&'static str]> {
     match program {
         "python3" if cfg!(windows) => Some(&["python3.exe", "python.exe", "py.exe"]),
         "python3" => Some(&["python3"]),
+        "rustc" if cfg!(windows) => Some(&["rustc.exe"]),
+        "rustc" => Some(&["rustc"]),
         _ => None,
     }
 }

@@ -36,6 +36,8 @@ run_step "ordered lists (src/lib.rs, tests/*/mod.rs, worker module list)" \
   rust-script scripts/normalize-ordered-lists.rs --write
 run_step "seed inventory (src/seed/embedded_registry.rs, src/web/seed-files.js)" \
   rust-script scripts/generate-seed-registry.rs --write
+run_step "trusted-source recurrence cache (src/web/source-cache/wikifunctions-recurrences.lino)" \
+  cargo run --quiet --example generate_recurrence_source_cache -- --write
 run_step "requirements document (REQUIREMENTS.md)" \
   rust-script scripts/assemble-requirements.rs --write
 run_step "total closure (data/seed/closure-generated-*.lino)" \
@@ -44,6 +46,10 @@ run_step "seed metadata gaps (data/meta/seed-metadata-gaps-*.lino)" \
   rust-script scripts/audit-seed-metadata.rs --write
 run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt)" \
   rust-script scripts/check-hardcoded-language.rs --write
+# Format every generated Rust source before deriving byte-sensitive AST and
+# planner fixtures from it. Running rustfmt after those projections can make a
+# successful regeneration leave its own outputs stale.
+run_step "formatting" cargo fmt
 run_step "self-AST census (data/meta/self-ast/)" \
   cargo run --quiet --example regenerate_self_ast_census
 # The reviewed proposal document is derived from the live learner: its candidate
@@ -61,7 +67,6 @@ run_step "reviewed method proposals (examples/issue-922-method-learning/open-pro
 # several minutes into the suite.
 run_step "planner fixtures (data/meta/self-ast.lino, data/meta/self-healing-case.lino, docs/case-studies/issue-538/agent-cli-session-self-ast.json)" \
   cargo run --quiet --example regenerate_planner_fixtures
-run_step "formatting" cargo fmt
 
 echo ""
 if [ "$CHECK_ONLY" -eq 1 ]; then

@@ -233,6 +233,23 @@ impl Progress {
             .map(|attempt| attempt.detail.as_str())
     }
 
+    /// Successful read payload for one concrete workspace path.
+    ///
+    /// Multi-step transformations read both their source and their written
+    /// destination. Keying by call arguments keeps a later read-back from
+    /// being mistaken for the source observation (or vice versa).
+    pub(super) fn successful_read_output_for(&self, path: &str) -> Option<&str> {
+        self.attempts.iter().rev().find_map(|attempt| {
+            (attempt.capability == Capability::Read
+                && attempt.succeeded
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path)))
+            .then_some(attempt.detail.as_str())
+        })
+    }
+
     pub(super) fn attempted_write_for(&self, path: &str) -> bool {
         self.attempts.iter().any(|attempt| {
             attempt.capability == Capability::Write
@@ -328,6 +345,14 @@ fn argument_content(arguments: &str) -> Option<String> {
         .iter()
         .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
         .map(str::to_owned)
+}
+
+/// Verify the bytes and destination of a write, including a freeform patch
+/// lowered by the protocol adapter. Tool success alone cannot bind operands.
+pub(super) fn write_matches(arguments: &str, path: &str, content: &str) -> bool {
+    (argument_targets(arguments, path) && argument_content(arguments).as_deref() == Some(content))
+        || crate::protocol_responses::apply_patch_input(&super::planner::write_arguments(path, content))
+            .is_some_and(|patch| arguments.trim() == patch.trim())
 }
 
 fn argument_targets(arguments: &str, path: &str) -> bool {

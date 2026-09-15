@@ -79,6 +79,11 @@ meanings
     lexeme en
       surface
         text "coding text replaced"
+  conditional
+    defined-by concept
+    lexeme en
+      surface
+        text "conditional"
   context_harness_unavailable
     defined-by field
     lexeme en
@@ -114,6 +119,11 @@ meanings
     lexeme en
       surface
         text "every"
+  example_arithmetic_divide
+    defined-by concept
+    lexeme en
+      surface
+        text "example arithmetic divide"
   expression-language
     defined-by category
     lexeme en
@@ -249,6 +259,11 @@ meanings
     lexeme en
       surface
         text "local search found path"
+  mapping_entry
+    defined-by concept
+    lexeme en
+      surface
+        text "mapping entry"
   memory_root_links
     defined-by intent
     lexeme en
@@ -434,11 +449,21 @@ meanings
     lexeme en
       surface
         text "response coding repository source observation zh"
+  response_coding_rosetta_workspace_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable zh"
   response_coding_source_string_constant_rust
     defined-by response_template
     lexeme en
       surface
         text "response coding source string constant rust"
+  response_coding_synthesis_verified_answer_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis verified answer ru"
   response_coding_workspace_verification_failed_hi
     defined-by response_template
     lexeme en

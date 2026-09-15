@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "coding repository result observation"
+  coding_rosetta_capture_fetched
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta capture fetched"
   collect_corpus
     defined-by concept
     lexeme en
@@ -355,7 +360,7 @@ meanings
       surface
         text "primary"
   print
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "print"
@@ -439,6 +444,26 @@ meanings
     lexeme en
       surface
         text "response coding repository result observation zh"
+  response_coding_rosetta_answer_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta answer es"
+  response_coding_rosetta_capture_cached_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta capture cached ru"
+  response_coding_rosetta_rust_only_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta rust only ru"
+  response_coding_synthesis_sources_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis sources heading ru"
   response_coding_workspace_effect_observed_ru
     defined-by response_template
     lexeme en

@@ -2,53 +2,53 @@ self_ast_census
   target src/solver_handlers/conversation_memory/mod.rs
   language rust
   fidelity signature
-  byte_len 27725
-  line_count 824
-  content_id source_module_8fce27ec8b333eca
+  byte_len 26859
+  line_count 813
+  content_id source_module_3646a846638d6309
   symbol_count 45
   symbols
     module conversation_summary 3 3
     module link_query 4 4
     module memory_write 5 5
     module program_query 6 6
-    enum RecallScope 27 30
-    function as_str 33 38
-    struct RecallQuery 42 45
-    struct RecallMatch 48 52
-    struct MemoryRecallMatch 55 62
-    enum MemoryRecallDetail 65 68
-    struct MemoryQueryExecution 72 75
-    function try_conversation_memory 77 101
-    function answer_memory_recall 104 119
-    function recalled_event_indices 122 140
-    function try_recall_name 142 161
-    function try_assistant_name 172 214
-    function render_assistant_name_ack 217 224
-    function render_assistant_name_recall 227 234
-    function try_recall_last_question 236 261
-    function previous_user_request_turn 263 276
-    function is_recall_meta_prompt 278 285
-    function render_previous_user_message 287 294
-    function try_recall_previous_message 304 332
-    function localized_role 335 346
-    function render_previous_message 348 356
-    function render_no_previous_message 358 365
-    function try_conversation_recall 367 396
-    function try_memory_recall 398 438
-    function recognize_recall_query 440 454
-    function recall_term_for_role 456 462
-    function term_from_form 464 474
-    function clean_recall_term 476 490
-    function recall_matches 492 514
-    function memory_recall_matches 516 566
-    function event_in_recall_scope 568 576
-    function memory_event_field_values 578 604
-    function push_memory_field 606 614
-    function memory_field_match 616 630
-    function memory_link_match 632 641
-    function memory_match 643 670
-    function log_fragment 673 678
-    function render_line 680 693
-    function memory_conversation_count 696 704
-    function render_recall_report 706 753
-    function render_memory_recall_report 755 824
+    enum RecallScope 28 31
+    function as_str 34 39
+    struct RecallQuery 43 46
+    struct RecallMatch 49 53
+    struct MemoryRecallMatch 56 63
+    enum MemoryRecallDetail 66 69
+    struct MemoryQueryExecution 73 76
+    function try_conversation_memory 78 102
+    function answer_memory_recall 105 120
+    function recalled_event_indices 123 141
+    function try_recall_name 143 162
+    function try_assistant_name 173 209
+    function render_assistant_name_ack 212 216
+    function render_assistant_name_recall 219 223
+    function try_recall_last_question 225 250
+    function previous_user_request_turn 252 265
+    function is_recall_meta_prompt 267 274
+    function render_previous_user_message 276 283
+    function try_recall_previous_message 293 321
+    function localized_role 324 335
+    function render_previous_message 337 345
+    function render_no_previous_message 347 354
+    function try_conversation_recall 356 385
+    function try_memory_recall 387 427
+    function recognize_recall_query 429 443
+    function recall_term_for_role 445 451
+    function term_from_form 453 463
+    function clean_recall_term 465 479
+    function recall_matches 481 503
+    function memory_recall_matches 505 555
+    function event_in_recall_scope 557 565
+    function memory_event_field_values 567 593
+    function push_memory_field 595 603
+    function memory_field_match 605 619
+    function memory_link_match 621 630
+    function memory_match 632 659
+    function log_fragment 662 667
+    function render_line 669 682
+    function memory_conversation_count 685 693
+    function render_recall_report 695 742
+    function render_memory_recall_report 744 813

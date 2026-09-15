@@ -59,6 +59,10 @@ pub const MEANINGS_CALCULATOR_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../data/seed/meanings-coding-catalog.lino");
+pub const MEANINGS_CODING_REQUEST_LINO: &str =
+    include_str!("../../data/seed/meanings-coding-request.lino");
+pub const MEANINGS_CODING_STRUCTURE_LINO: &str =
+    include_str!("../../data/seed/meanings-coding-structure.lino");
 pub const MEANINGS_CODING_TASKS_LINO: &str =
     include_str!("../../data/seed/meanings-coding-tasks.lino");
 pub const MEANINGS_COMPUTER_USE_LINO: &str =
@@ -76,6 +80,8 @@ pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../data/seed/meanings-finance.lino");
+pub const MEANINGS_FORMALIZATION_REPORT_LINO: &str =
+    include_str!("../../data/seed/meanings-formalization-report.lino");
 pub const MEANINGS_HOW_LINO: &str = include_str!("../../data/seed/meanings-how.lino");
 pub const MEANINGS_INTENT_LINO: &str = include_str!("../../data/seed/meanings-intent.lino");
 pub const MEANINGS_LEXICAL_META_LINO: &str =
@@ -149,6 +155,8 @@ pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-entities.lino");
+pub const MULTILINGUAL_RESPONSES_ISSUE_710_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-issue-710.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-language-protocol.lino");
 pub const MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO: &str =
@@ -241,6 +249,8 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
         ("data/seed/meanings-coding-catalog.lino", MEANINGS_CODING_CATALOG_LINO),
+        ("data/seed/meanings-coding-request.lino", MEANINGS_CODING_REQUEST_LINO),
+        ("data/seed/meanings-coding-structure.lino", MEANINGS_CODING_STRUCTURE_LINO),
         ("data/seed/meanings-coding-tasks.lino", MEANINGS_CODING_TASKS_LINO),
         ("data/seed/meanings-computer-use.lino", MEANINGS_COMPUTER_USE_LINO),
         ("data/seed/meanings-conversation.lino", MEANINGS_CONVERSATION_LINO),
@@ -252,6 +262,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
         ("data/seed/meanings-file-write.lino", MEANINGS_FILE_WRITE_LINO),
         ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
+        ("data/seed/meanings-formalization-report.lino", MEANINGS_FORMALIZATION_REPORT_LINO),
         ("data/seed/meanings-how.lino", MEANINGS_HOW_LINO),
         ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
         ("data/seed/meanings-lexical-meta.lino", MEANINGS_LEXICAL_META_LINO),
@@ -307,6 +318,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
         ),
         ("data/seed/multilingual-responses-entities.lino", MULTILINGUAL_RESPONSES_ENTITIES_LINO),
+        ("data/seed/multilingual-responses-issue-710.lino", MULTILINGUAL_RESPONSES_ISSUE_710_LINO),
         (
             "data/seed/multilingual-responses-language-protocol.lino",
             MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
@@ -375,6 +387,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+    MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
@@ -404,6 +417,8 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_CALCULATOR_LINO,
     MEANINGS_CALENDAR_LINO,
     MEANINGS_CODING_CATALOG_LINO,
+    MEANINGS_CODING_REQUEST_LINO,
+    MEANINGS_CODING_STRUCTURE_LINO,
     MEANINGS_CODING_TASKS_LINO,
     MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_CONVERSATION_LINO,
@@ -415,6 +430,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FINANCE_LINO,
+    MEANINGS_FORMALIZATION_REPORT_LINO,
     MEANINGS_HOW_LINO,
     MEANINGS_INTENT_LINO,
     MEANINGS_LEXICAL_META_LINO,

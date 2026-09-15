@@ -36,6 +36,7 @@
 //!   - docs-changed: 'true' if any .md files changed
 //!   - workflow-changed: 'true' if any .github/workflows/ files changed
 //!   - any-code-changed: 'true' if any non-ignored code files changed
+//!   - agentic-routing-changed: 'true' if agentic routing source changed
 //!
 //! ```cargo
 //! [package]
@@ -196,6 +197,7 @@ struct ChangeFlags {
     docs_changed: bool,
     workflow_changed: bool,
     pipeline_changed: bool,
+    agentic_routing_changed: bool,
     any_code_changed: bool,
 }
 
@@ -238,6 +240,13 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
                 || file.starts_with(".github/actions/")
                 || file.starts_with("scripts/")
         }),
+        // The clients expose different tool vocabularies. A change anywhere in
+        // this bounded routing subsystem therefore needs the real four-client
+        // replay before merge, even though other feature branches retain the
+        // cheaper held-out-only Agent CLI gate (issue #1137).
+        agentic_routing_changed: relevant_files
+            .iter()
+            .any(|file| file.starts_with("src/agentic_coding/")),
         any_code_changed: relevant_files
             .iter()
             .filter(|file| !is_excluded_from_code_changes(file))
@@ -285,6 +294,14 @@ fn main() {
     set_output(
         "pipeline-changed",
         if flags.pipeline_changed {
+            "true"
+        } else {
+            "false"
+        },
+    );
+    set_output(
+        "agentic-routing-changed",
+        if flags.agentic_routing_changed {
             "true"
         } else {
             "false"
@@ -439,6 +456,27 @@ mod tests {
             assert!(
                 classify_changes(&[path.to_string()]).pipeline_changed,
                 "{path} changes what a pipeline job runs"
+            );
+        }
+    }
+
+    #[test]
+    fn agentic_source_changes_request_the_four_client_replay() {
+        for path in [
+            "src/agentic_coding/capability_router.rs",
+            "src/agentic_coding/planner.rs",
+            "src/agentic_coding/new_router.rs",
+        ] {
+            assert!(
+                classify_changes(&[path.to_string()]).agentic_routing_changed,
+                "{path} can change client-specific routing"
+            );
+        }
+
+        for path in ["src/coding/composition.rs", "docs/agentic_coding/README.md"] {
+            assert!(
+                !classify_changes(&[path.to_string()]).agentic_routing_changed,
+                "{path} is outside the agentic routing source boundary"
             );
         }
     }

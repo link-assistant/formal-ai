@@ -128,9 +128,21 @@ FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_MEMORY_PATH="$state/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$out/formal-ai.log" 2>&1 &
 server_pid=$!
-curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
-  "http://127.0.0.1:$PORT/health" >/dev/null \
-  || die "formal-ai serve never came up on port $PORT"
+# `curl --retry-connrefused` still returned after its first refusal with the
+# macOS curl 8.7.1 used by the local authoring path. Keep the readiness deadline
+# in the harness so the just-spawned server gets a deterministic chance to bind
+# on every supported platform, while still failing early if it exits.
+server_ready=0
+for attempt in $(seq 1 30); do
+  if curl -fsS "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
+    server_ready=1
+    break
+  fi
+  kill -0 "$server_pid" 2>/dev/null \
+    || die "formal-ai serve exited during startup (attempt $attempt)"
+  sleep 1
+done
+[[ "$server_ready" -eq 1 ]] || die "formal-ai serve never came up on port $PORT"
 
 agent_config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-sdk/openai-compatible","options":{"baseURL":"http://127.0.0.1:%s/api/openai/v1","apiKey":"local"},"models":{"formal-ai":{"name":"Formal AI"}}}},"model":"formalai/formal-ai"}' "$PORT")"
 # `--summarize-session` and `--generate-title` default to true, and both make a
@@ -184,6 +196,33 @@ for expected in ${contains[@]+"${contains[@]}"}; do
   [[ "$found" -eq 1 ]] || die "no artifact contains: $expected"
 done
 
+# Seed files are context, not authored effects. New logs cannot turn an
+# unchanged seed or already-landed output into another contribution either.
+# Check the whole artifact set before copying anything, including --no-commit.
+differs_from() {
+  [[ -e "$2" ]] || return 0
+  if cmp -s "$1" "$2"; then
+    return 1
+  else
+    comparison_status=$?
+    [[ "$comparison_status" -eq 1 ]] || die "cannot compare artifact: $2"
+    return 0
+  fi
+}
+
+authored_change=0
+for index in "${!produces[@]}"; do
+  produced="$work/${produces[index]}"
+  if [[ -n "$seed" ]] && ! differs_from "$produced" "$seed_path/${produces[index]}"; then
+    continue
+  fi
+  if differs_from "$produced" "$ROOT/${into[index]}"; then
+    authored_change=1
+  fi
+done
+[[ "$authored_change" -eq 1 ]] \
+  || die "no produced artifact differs from both its seed and destination; no change was authored"
+
 destinations=()
 for index in "${!produces[@]}"; do
   destination="${into[index]}"
@@ -194,7 +233,7 @@ done
 echo "Formal AI wrote ${destinations[*]} in session $session_id; evidence in $evidence"
 
 if [[ "$commit" -eq 0 ]]; then
-  echo "--no-commit: leaving ${destinations[*]} and $evidence staged for review"
+  echo "--no-commit: leaving ${destinations[*]} and $evidence unstaged for review"
   exit 0
 fi
 

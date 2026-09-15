@@ -80,6 +80,57 @@ fn responses_routes_program_creation_to_the_advertised_cli_write_tool() {
 }
 
 #[test]
+fn responses_routes_a_discovered_function_artifact_to_the_write_tool() {
+    enable_http_agent_mode_for_current_process();
+    let body = json!({
+        "model": "formal-ai",
+        "input": "Write a Python function `count_vowels(text)` that returns the number of vowels.",
+        "tools": [
+            {"type": "function", "name": "write_file", "parameters": {"type": "object"}},
+            {"type": "function", "name": "run_command", "parameters": {"type": "object"}}
+        ]
+    });
+    let response = handle_api_request("POST", "/v1/responses", &body.to_string());
+    assert_eq!(response.status_code, 200);
+    let response: Value = serde_json::from_str(&response.body).unwrap();
+    let call = response["output"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["type"] == "function_call")
+        .expect("a verified discovered function should become a function call");
+    assert_eq!(call["name"], "write_file");
+    assert!(
+        call["arguments"]
+            .as_str()
+            .is_some_and(|arguments| arguments.contains("count_vowels"))
+    );
+}
+
+#[test]
+fn responses_does_not_write_an_explanation_about_programs() {
+    enable_http_agent_mode_for_current_process();
+    let body = json!({
+        "model": "formal-ai",
+        "input": "Explain what a Python program is.",
+        "tools": [
+            {"type": "function", "name": "write_file", "parameters": {"type": "object"}},
+            {"type": "function", "name": "run_command", "parameters": {"type": "object"}}
+        ]
+    });
+    let response = handle_api_request("POST", "/v1/responses", &body.to_string());
+    assert_eq!(response.status_code, 200);
+    let response: Value = serde_json::from_str(&response.body).unwrap();
+    assert!(
+        response["output"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|item| item["type"] != "function_call")
+    );
+}
+
+#[test]
 fn gemini_routes_program_creation_to_the_advertised_cli_write_tool() {
     enable_http_agent_mode_for_current_process();
     let body = json!({

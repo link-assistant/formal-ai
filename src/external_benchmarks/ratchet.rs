@@ -10,7 +10,8 @@ use std::collections::BTreeMap;
 use super::ledger::{Ledger, ResultEntry};
 use super::vocabulary;
 
-/// Check a ledger on its own: internally consistent rows that clear their floor.
+/// Check a ledger on its own: internally consistent rows that clear the floor
+/// that existed when each row was recorded.
 #[must_use]
 pub fn violations(ledger: &Ledger) -> Vec<String> {
     let suites = ledger.suites();
@@ -18,7 +19,7 @@ pub fn violations(ledger: &Ledger) -> Vec<String> {
     let mut violations = Vec::new();
 
     for result in &results {
-        let Some(suite) = suites.get(&result.suite) else {
+        let Some(_suite) = suites.get(&result.suite) else {
             violations.push(format!(
                 "result row for `{}` has no external_benchmark_suite record",
                 result.suite
@@ -37,12 +38,6 @@ pub fn violations(ledger: &Ledger) -> Vec<String> {
                 result.suite, result.date, result.total, result.slice
             ));
         }
-        if result.slice == suite.ratchet_slice && result.passed < suite.minimum_pass_count {
-            violations.push(format!(
-                "{} {}: passed={} is below the recorded minimum_pass_count={}",
-                result.suite, result.date, result.passed, suite.minimum_pass_count
-            ));
-        }
     }
 
     for (suite_id, suite) in &suites {
@@ -57,7 +52,7 @@ pub fn violations(ledger: &Ledger) -> Vec<String> {
         }
     }
 
-    violations.extend(non_monotonic_history(&results));
+    violations.extend(historical_floor_violations(&results));
     violations
 }
 
@@ -125,8 +120,10 @@ fn best_pass_count(results: &[ResultEntry], suite: &str, slice: usize) -> Option
         .max()
 }
 
-/// At a fixed slice size the recorded history may never fall over time.
-fn non_monotonic_history(results: &[ResultEntry]) -> Vec<String> {
+/// At a fixed slice size each row must clear the best score already recorded.
+/// This reconstructs the floor that existed on that date instead of applying
+/// the suite's current floor retroactively to older rows.
+fn historical_floor_violations(results: &[ResultEntry]) -> Vec<String> {
     let mut grouped: BTreeMap<(String, usize), Vec<&ResultEntry>> = BTreeMap::new();
     for result in results {
         grouped
@@ -136,15 +133,17 @@ fn non_monotonic_history(results: &[ResultEntry]) -> Vec<String> {
     }
 
     let mut violations = Vec::new();
-    for ((suite, slice), mut rows) in grouped {
+    for ((suite, _slice), mut rows) in grouped {
         rows.sort_by(|left, right| left.date.cmp(&right.date));
-        for pair in rows.windows(2) {
-            if pair[1].passed < pair[0].passed {
+        let mut floor = 0;
+        for row in rows {
+            if row.passed < floor {
                 violations.push(format!(
-                    "{suite}: pass count at slice {slice} fell from {} ({}) to {} ({})",
-                    pair[0].passed, pair[0].date, pair[1].passed, pair[1].date
+                    "{} {}: passed={} is below the recorded minimum_pass_count={}",
+                    suite, row.date, row.passed, floor
                 ));
             }
+            floor = floor.max(row.passed);
         }
     }
     violations

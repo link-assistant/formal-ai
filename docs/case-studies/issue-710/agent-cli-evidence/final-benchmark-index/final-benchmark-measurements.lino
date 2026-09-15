@@ -1,0 +1,22 @@
+benchmark_release_evidence
+  measurement humaneval_cold
+    suite_id "humaneval"
+    passed_count "20"
+    total_count "20"
+    execution_mode "offline_empty_source_cache"
+    source_requirement "none"
+    verification_state "upstream_tests_passed"
+  measurement mbpp_live
+    suite_id "mbpp"
+    passed_count "20"
+    total_count "20"
+    execution_mode "online_official_source_discovery"
+    source_requirement "official_oeis_for_two_cases"
+    verification_state "upstream_assertions_passed"
+  measurement mbpp_cold
+    suite_id "mbpp"
+    passed_count "18"
+    total_count "20"
+    execution_mode "offline_empty_source_cache"
+    source_requirement "two_external_sequence_definitions_unavailable"
+    verification_state "eighteen_upstream_assertion_sets_passed"

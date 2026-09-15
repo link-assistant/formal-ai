@@ -3,8 +3,71 @@
 //! tests reuse the parent module's `read`/`assert_contains_all` helpers via
 //! `super::` (child modules may access an ancestor's private items).
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
+
+use formal_ai::external_benchmarks::{Ledger, ResultEntry};
+
+#[test]
+fn latest_external_rows_are_published_from_the_ledger() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let ledger = Ledger::parse(&super::read(
+        root.join("data/benchmarks/external-results.lino"),
+    ))
+    .expect("external benchmark ledger");
+    let latest = ledger.results().into_iter().fold(
+        BTreeMap::<String, ResultEntry>::new(),
+        |mut rows, row| {
+            let replace = rows.get(&row.suite).is_none_or(|current| {
+                (row.date.as_str(), row.slice) > (current.date.as_str(), current.slice)
+            });
+            if replace {
+                rows.insert(row.suite.clone(), row);
+            }
+            rows
+        },
+    );
+    let catalog = super::read(root.join("docs/benchmarks.md"));
+    let vision = super::read(root.join("VISION.md"));
+    let labels = [
+        ("humaneval", "HumanEval"),
+        ("mbpp", "MBPP"),
+        ("gsm8k", "GSM8K"),
+        ("math", "MATH"),
+        ("object_counting", "BIG-bench object counting"),
+        ("coedit", "CoEdIT"),
+        ("egg_math", "egg rewrite laws"),
+        ("ascent_transitive_closure", "Ascent closure assertions"),
+        ("swebench_lite", "SWE-bench Lite"),
+    ];
+
+    for (suite, label) in labels {
+        let row = latest
+            .get(suite)
+            .unwrap_or_else(|| panic!("latest {suite} row"));
+        let table_row = catalog
+            .lines()
+            .find(|line| line.starts_with(&format!("| {label}")) && line.matches('|').count() >= 6)
+            .unwrap_or_else(|| panic!("docs/benchmarks.md row for {label}"));
+        assert!(
+            table_row.ends_with(&format!("| {} | {} |", row.passed, row.total)),
+            "published table row must match the latest committed {suite} result: {table_row}"
+        );
+        assert!(
+            vision.contains(&format!("{label} {}/{}", row.passed, row.total)),
+            "VISION.md must publish the latest committed {suite} result"
+        );
+    }
+
+    let latest_date = latest
+        .values()
+        .map(|row| row.date.as_str())
+        .max()
+        .expect("at least one result row");
+    assert!(catalog.contains(&format!("latest committed rows are dated `{latest_date}`")));
+    assert!(vision.contains(&format!("run of {latest_date}")));
+}
 
 #[test]
 fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {

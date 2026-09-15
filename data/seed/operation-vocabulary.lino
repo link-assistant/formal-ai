@@ -765,32 +765,6 @@ operation_vocabulary
       phrase स्वरों
     language zh
       phrase 元音
-  operation count_vowels
-    language en
-      phrase "count vowels"
-      phrase "number of vowels"
-      phrase count_vowels
-    language ru
-      phrase "посчитай гласные"
-      phrase "количество гласных"
-    language hi
-      phrase "स्वर गिनें"
-      phrase "स्वरों की संख्या"
-    language zh
-      phrase 统计元音
-      phrase 元音数量
-  operation similar_elements
-    language en
-      phrase "similar elements"
-      phrase similar_elements
-    language ru
-      phrase "общие элементы"
-      phrase "похожие элементы"
-    language hi
-      phrase "समान तत्व"
-    language zh
-      phrase 相同元素
-      phrase 相似元素
   operation distinct_numbers
     language en
       phrase "distinct numbers"
@@ -896,6 +870,7 @@ operation_vocabulary
     language en
       phrase maximum
       phrase largest
+      phrase greatest
       phrase biggest
       phrase highest
     language ru
@@ -904,6 +879,7 @@ operation_vocabulary
       phrase наибольш
     language hi
       phrase अधिकतम
+      phrase महत्तम
       phrase "सबसे बड़ी"
       phrase "सबसे बड़ा"
     language zh

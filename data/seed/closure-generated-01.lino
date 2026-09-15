@@ -74,6 +74,11 @@ meanings
     lexeme en
       surface
         text "client integration invalid typed json setting"
+  coding_rosetta_not_requested
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta not requested"
   coding_source_function_return
     defined-by intent
     lexeme en
@@ -474,11 +479,26 @@ meanings
     lexeme en
       surface
         text "response coding meta algorithm surface zh"
+  response_coding_rosetta_not_requested_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta not requested zh"
+  response_coding_rosetta_passed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta passed es"
   response_coding_source_equality_test_rust
     defined-by response_template
     lexeme en
       surface
         text "response coding source equality test rust"
+  response_coding_synthesis_verified_answer_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis verified answer en"
   response_completion_recovery_restate_postcondition_hi
     defined-by response_template
     lexeme en
@@ -1004,11 +1024,6 @@ meanings
     lexeme en
       surface
         text "send"
-  set
-    defined-by word_surface
-    lexeme en
-      surface
-        text "set"
   submit_form
     defined-by task
     lexeme en

@@ -70,11 +70,10 @@ fn adding_a_requirement_revokes_coverage_and_preserves_the_stale_specific() {
 }
 
 #[test]
-fn failed_verification_falls_back_to_normal_eviction_ordering_under_pressure() {
-    // Issue #540 §2: a specific that fails replay verification loses only its
-    // forget-first status — under pressure its actual fate is *normal*
-    // eviction, ranked after covered specifics and after cheaper-to-restore
-    // recomputable caches.
+fn failed_replay_preserves_original_experience_under_pressure() {
+    // Failed replay never grants permission to erase an original observation.
+    // Verified derived caches may be forgotten, while original experience is
+    // retained even when storage pressure cannot otherwise be met.
     let statement = "Always include a LaTeX verification step in proof solutions.";
     let events = vec![
         requirement_event("req-1", "latex", statement),
@@ -115,23 +114,20 @@ fn failed_verification_falls_back_to_normal_eviction_ordering_under_pressure() {
             .position(|action| action.event_id == id)
             .unwrap_or_else(|| panic!("{id} must be selected under this pressure"))
     };
-    let unverified = &plan.actions[position("run-unverified")];
-    assert_eq!(
-        unverified.kind,
-        DreamingActionKind::EvictLowUseRecomputable,
-        "the failed-verification specific falls back to normal eviction"
+    assert!(
+        !plan
+            .actions
+            .iter()
+            .any(|action| action.event_id == "run-unverified"),
+        "an original assistant observation is retained even when replay fails"
     );
     assert_eq!(
         plan.actions[position("run-covered")].kind,
         DreamingActionKind::ForgetCoveredSpecific
     );
     assert!(
-        position("run-covered") < position("run-unverified"),
-        "covered specifics are reclaimed before unverified ones"
-    );
-    assert!(
-        position("public-cache") < position("run-unverified"),
-        "refetchable caches are reclaimed before unverified derived runs"
+        position("run-covered") < position("public-cache"),
+        "verified derived replay caches are reclaimed before other public caches"
     );
     assert!(!plan.actions.iter().any(|action| action.event_id == "req-1"));
 }
@@ -462,7 +458,8 @@ fn verified_task_run_event(id: &str, topic: &str, input: &str, requirement: &str
     MemoryEvent {
         id: String::from(id),
         kind: Some(String::from("test_run")),
-        role: Some(String::from("assistant")),
+        // Derived replay cache; original assistant observations remain durable.
+        role: Some(String::from("derived")),
         content: Some(String::from(input)),
         inputs: Some(String::from(input)),
         outputs: Some(output),
@@ -473,6 +470,8 @@ fn verified_task_run_event(id: &str, topic: &str, input: &str, requirement: &str
 
 fn recomputable_event(id: &str, payload: &str) -> MemoryEvent {
     MemoryEvent {
+        role: Some(String::from("cache")),
+        evidence: vec![String::from("rediscover:https://doc.rust-lang.org/std/")],
         id: String::from(id),
         kind: Some(String::from("source:http")),
         content: Some(String::from(payload)),

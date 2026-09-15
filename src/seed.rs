@@ -282,6 +282,7 @@ pub struct ResponseRecord {
     pub intent: String,
     pub language: String,
     pub text: String,
+    pub variants: Vec<String>,
 }
 
 /// Parse `multilingual-responses.lino` into structured records.
@@ -295,6 +296,12 @@ pub fn multilingual_responses() -> Vec<ResponseRecord> {
                 let intent = entry.find_child_value("intent").to_string();
                 let language = entry.find_child_value("language").to_string();
                 let text = entry.find_child_value("text").to_string();
+                let variants = entry
+                    .children
+                    .iter()
+                    .filter(|child| child.name == "variant")
+                    .map(|child| child.id.clone())
+                    .collect();
                 if intent.is_empty() || language.is_empty() {
                     continue;
                 }
@@ -303,6 +310,7 @@ pub fn multilingual_responses() -> Vec<ResponseRecord> {
                     intent,
                     language,
                     text,
+                    variants,
                 });
             }
         }
@@ -320,6 +328,33 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Look up a localized response and select one of its declared variants with
+/// a prompt-stable hash.
+///
+/// Replaying the same prompt is deterministic while semantically equivalent
+/// phrasings are not collapsed to one canned answer.
+#[must_use]
+pub fn response_variant_for(intent: &str, language: &str, prompt: &str) -> Option<String> {
+    multilingual_responses()
+        .into_iter()
+        .find(|record| record.intent == intent && record.language == language)
+        .map(|record| {
+            if record.variants.is_empty() {
+                return record.text;
+            }
+            let hash = prompt
+                .trim()
+                .as_bytes()
+                .iter()
+                .fold(0xcbf2_9ce4_8422_2325_u64, |hash, byte| {
+                    (hash ^ u64::from(*byte)).wrapping_mul(0x0000_0100_0000_01b3)
+                });
+            let variant_count = u64::try_from(record.variants.len()).unwrap_or(u64::MAX);
+            let index = usize::try_from(hash % variant_count).unwrap_or_default();
+            record.variants[index].clone()
+        })
 }
 
 /// Look up one response and substitute its named template fields.

@@ -25,15 +25,18 @@ use crate::algorithm_discovery::{
     AlgorithmCandidate, discover_algorithms, traces_from_memory_events,
 };
 use crate::associative_persistence::AssociativeMemory;
-use crate::memory::{MemoryEvent, MemoryStore};
+use crate::memory::MemoryEvent;
 use support::{
-    contains_any, estimate_event_bytes, lower_opt, normalized, percent_ceil,
-    required_reclaim_bytes, selected_bytes,
+    estimate_event_bytes, normalized, percent_ceil, required_reclaim_bytes, selected_bytes,
 };
 
+mod apply;
 pub mod cues;
+pub use apply::apply_dreaming_plan;
 pub mod draft_failures;
 mod learning;
+mod retention;
+use retention::classify_event;
 pub mod lexicon;
 mod support;
 
@@ -371,14 +374,23 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         .iter()
         .flat_map(|amendment| amendment.covered_event_ids.iter().map(String::as_str))
         .collect();
-    for observation in &mut observations {
+    for (index, observation) in observations.iter_mut().enumerate() {
         observation.covered_by_amendment =
             covered_event_ids.contains(observation.event_id.as_str());
+        // Successful replay makes a derived cache reproducible, never the
+        // original historical observation from which it was learned.
+        if observation.covered_by_amendment
+            && events[index].role.as_deref() == Some("derived")
+            && observation.durability == DreamingDurability::IrreplaceableRaw
+        {
+            observation.durability = DreamingDurability::RecomputableIntermediate;
+            reclaimable_candidates.push(index);
+        }
     }
 
     let total_reclaimable_bytes = reclaimable_candidates
         .iter()
-        .map(|index| observations[*index].estimated_bytes)
+        .map(|index| retention::reclaimable_bytes(&events[*index], observations[*index].durability))
         .sum();
     let mut actions = Vec::new();
     let mut selected_event_ids = BTreeSet::new();
@@ -424,7 +436,11 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
                     .then_with(|| right.cmp(left))
             })
             .unwrap_or(group[0]);
-        for event_index in group.iter().copied().filter(|index| *index != keep) {
+        for event_index in group.iter().copied().filter(|index| {
+            *index != keep
+                && retention::reclaimable_bytes(&events[*index], observations[*index].durability)
+                    > 0
+        }) {
             push_action_once(
                 &mut actions,
                 &mut selected_event_ids,
@@ -432,7 +448,10 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
                     kind: DreamingActionKind::RemoveDuplicateRecomputable,
                     event_id: events[event_index].id.clone(),
                     conversation_id: events[event_index].conversation_id.clone(),
-                    estimated_bytes: observations[event_index].estimated_bytes,
+                    estimated_bytes: retention::reclaimable_bytes(
+                        &events[event_index],
+                        observations[event_index].durability,
+                    ),
                     usage_count: observations[event_index].usage_count,
                     reason: format!(
                         "duplicate recomputable event; retained {} with usage {}",
@@ -448,6 +467,9 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         let mut pressure_candidates = reclaimable_candidates
             .into_iter()
             .filter(|index| !selected_event_ids.contains(events[*index].id.as_str()))
+            .filter(|index| {
+                retention::reclaimable_bytes(&events[*index], observations[*index].durability) > 0
+            })
             .collect::<Vec<_>>();
         pressure_candidates.sort_by(|left, right| {
             // Specifics a retained amendment can reproduce are forgotten first.
@@ -499,7 +521,10 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
                     kind,
                     event_id: events[event_index].id.clone(),
                     conversation_id: events[event_index].conversation_id.clone(),
-                    estimated_bytes: observations[event_index].estimated_bytes,
+                    estimated_bytes: retention::reclaimable_bytes(
+                        &events[event_index],
+                        observations[event_index].durability,
+                    ),
                     usage_count: observations[event_index].usage_count,
                     reason,
                 },
@@ -530,104 +555,6 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         algorithm_candidates,
         synthesized_tasks,
         draft_failures,
-    }
-}
-
-#[must_use]
-pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> DreamingOutcome {
-    let selected_ids = plan
-        .actions
-        .iter()
-        .map(|action| action.event_id.as_str())
-        .collect::<BTreeSet<_>>();
-
-    // Bake each learned generalization into memory as a retained learning record
-    // *before* forgetting the specifics it covers. Applying an unchanged plan
-    // twice must not duplicate amendments, so we skip ids already present.
-    let existing_ids: BTreeSet<String> = store
-        .events()
-        .iter()
-        .map(|event| event.id.clone())
-        .collect();
-    let new_amendments: Vec<MemoryEvent> = plan
-        .amendments
-        .iter()
-        .filter(|amendment| !existing_ids.contains(&amendment.id))
-        .map(amendment_event)
-        .collect();
-    let learned_amendments = new_amendments.len();
-    let new_patterns = plan
-        .patterns
-        .iter()
-        .map(pattern_event)
-        .filter(|event| !existing_ids.contains(&event.id))
-        .collect::<Vec<_>>();
-    let learned_patterns = new_patterns.len();
-    let new_algorithm_candidates = plan
-        .algorithm_candidates
-        .iter()
-        .map(algorithm_candidate_event)
-        .filter(|event| !existing_ids.contains(&event.id))
-        .collect::<Vec<_>>();
-    let learned_algorithm_candidates = new_algorithm_candidates.len();
-    // Failed simulations are learning material, not noise: preserve each one as
-    // a retained record so later dreaming rounds (and refinement) can consume it.
-    let new_failures = plan
-        .candidate_tasks
-        .iter()
-        .filter(|candidate| !candidate.passed)
-        .map(candidate_failure_event)
-        .filter(|event| !existing_ids.contains(&event.id))
-        .collect::<Vec<_>>();
-    let recorded_failures = new_failures.len();
-    let new_trials = plan
-        .synthesized_tasks
-        .iter()
-        .map(synthesized_trial_event)
-        .filter(|event| !existing_ids.contains(&event.id))
-        .collect::<Vec<_>>();
-    let recorded_trials = new_trials.len();
-
-    if selected_ids.is_empty()
-        && new_amendments.is_empty()
-        && new_patterns.is_empty()
-        && new_algorithm_candidates.is_empty()
-        && new_failures.is_empty()
-        && new_trials.is_empty()
-    {
-        return DreamingOutcome {
-            removed_events: 0,
-            estimated_reclaimed_bytes: 0,
-            learned_amendments: 0,
-            learned_patterns: 0,
-            recorded_failures: 0,
-            recorded_trials: 0,
-            learned_algorithm_candidates: 0,
-        };
-    }
-
-    let initial_len = store.len();
-    let mut retained = store
-        .events()
-        .iter()
-        .filter(|event| !selected_ids.contains(event.id.as_str()))
-        .cloned()
-        .collect::<Vec<_>>();
-    let removed_events = initial_len - retained.len();
-    retained.extend(new_amendments);
-    retained.extend(new_patterns);
-    retained.extend(new_algorithm_candidates);
-    retained.extend(new_failures);
-    retained.extend(new_trials);
-    *store = MemoryStore::from_events(retained);
-    DreamingOutcome {
-        removed_events,
-        estimated_reclaimed_bytes: selected_bytes(&plan.actions),
-        learned_amendments,
-        learned_patterns,
-        recorded_failures,
-        recorded_trials,
-        learned_algorithm_candidates,
     }
 }
 
@@ -923,43 +850,6 @@ fn deleted_event_indices(
         })
         .map(|(index, _)| index)
         .collect()
-}
-
-fn classify_event(
-    event: &MemoryEvent,
-    deleted_conversations: &BTreeSet<String>,
-) -> DreamingDurability {
-    if event
-        .conversation_id
-        .as_deref()
-        .is_some_and(|id| deleted_conversations.contains(id))
-    {
-        return DreamingDurability::DeletedConversation;
-    }
-
-    // Durability cues are grounded as data (multilingual) in
-    // data/meta/dreaming-lexicon.lino instead of hardcoded English keywords.
-    let cues = lexicon::lexicon();
-    let kind = lower_opt(event.kind.as_deref());
-    let tool = lower_opt(event.tool.as_deref());
-    let content = lower_opt(event.content.as_deref());
-    let evidence = event.evidence.join("\n").to_lowercase();
-    if contains_any(&kind, &cues.learning_kind_cues)
-        || contains_any(&content, &cues.learning_content_cues)
-        || evidence.contains("learning")
-    {
-        return DreamingDurability::RetainedLearning;
-    }
-
-    if contains_any(&kind, &cues.cache_kind_cues) || contains_any(&tool, &cues.cache_tool_cues) {
-        return DreamingDurability::RecomputableCache;
-    }
-
-    if contains_any(&kind, &cues.intermediate_kind_cues) {
-        return DreamingDurability::RecomputableIntermediate;
-    }
-
-    DreamingDurability::IrreplaceableRaw
 }
 
 fn duplicate_key(event: &MemoryEvent, durability: DreamingDurability) -> Option<String> {

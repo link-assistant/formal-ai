@@ -54,7 +54,6 @@ src/agentic_coding/file_read.rs	No files were listed in `{directory}`.
 src/agentic_coding/file_read.rs	Read {} file(s):
 src/agentic_coding/file_read.rs	Value of `{key}` in `{path}`: {value}
 src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort
-src/agentic_coding/formalization_recipe.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
 src/agentic_coding/formalization_recipe.rs	cat {KB_PATH}
 src/agentic_coding/formalization_recipe.rs	the source text ({})
 src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
@@ -103,6 +102,10 @@ src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 src/agentic_coding/source_links.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+src/agentic_coding/structured_document.rs	Derived `{}` from `{}` and verified the written Links Notation byte-for-byte.
+src/agentic_coding/structured_document.rs	The client reported writing `{}`, but returned no inspectable content.
+src/agentic_coding/structured_document.rs	The read-back of `{}` did not match the derived Links Notation.
+src/agentic_coding/structured_document.rs	The structured document could not be written to `{}`.
 src/agentic_coding/write_request.rs	{line}\n\n{body}\n
 src/associative_package.rs	Package handler: {}
 src/associative_package.rs	Package permission: {}
@@ -132,7 +135,7 @@ src/change_request.rs	Record the derived requirement for review: {requirement}
 src/change_request.rs	The system must {}.
 src/cli_benchmark.rs	failed to read {}: {error}
 src/cli_benchmark.rs	failed to write {}: {error}
-src/cli_benchmark.rs	formal-ai benchmark run --suite {} --slice {slice}
+src/cli_benchmark.rs	formal-ai benchmark run --suite {} --slice {slice}{}
 src/cli_benchmark.rs	ledger ratchet violated:\n{}
 src/cli_benchmark.rs	unavailable: {reason}
 src/cli_benchmark.rs	unknown suite `{selector}`; known suites: {}
@@ -239,6 +242,15 @@ src/coding/guidance.rs	टूलचेन इंस्टॉल करें: {s
 src/coding/guidance.rs	प्रोग्राम चलाएँ: `{run_command}`।
 src/coding/guidance.rs	像之前一样测试更新后的程序：将代码保存到文件 `{save_as}`，然后再次运行 `{run_command}`。
 src/coding/guidance.rs	将上面的代码保存到文件 `{save_as}`。
+src/coding/recurrence.rs	def {function_name}({}):\n
+src/coding/recurrence.rs	invalid {operation:?} boundary operands
+src/coding/recurrence.rs	missing descriptor for source function {function_zid}
+src/coding/recurrence.rs	no seeded operation matches fetched label for {}
+src/coding/recurrence.rs	source call is missing argument {key}
+src/coding/recurrence.rs	unknown source reference {key}
+src/coding/recurrence.rs	unsupported non-integer literal {value}
+src/coding/recurrence.rs	{} if {} else {}
+src/coding/task_spec.rs	def {function_name}(
 src/concepts.rs	{normalized} {context}
 src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}
 src/dreaming.rs	  candidate_task topic={} source={} passed={}
@@ -330,7 +342,6 @@ src/external_benchmarks/ratchet.rs	result row for `{}` has no external_benchmark
 src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count fell from {} to {}
 src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}
 src/external_benchmarks/ratchet.rs	{suite_id}: the external_benchmark_suite record was removed
-src/external_benchmarks/ratchet.rs	{suite}: pass count at slice {slice} fell from {} ({}) to {} ({})
 src/external_benchmarks/ratchet.rs	{} {}: passed={} + failed={} does not equal total={}
 src/external_benchmarks/ratchet.rs	{} {}: passed={} is below the recorded minimum_pass_count={}
 src/external_benchmarks/ratchet.rs	{} {}: recorded pass count fell from {} to {}
@@ -913,8 +924,6 @@ src/solver_handlers/conversation_memory/memory_write.rs	स्मृति म�
 src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" in the conversation history.\n
-src/solver_handlers/conversation_memory/mod.rs	My name is {name} — that's what you named me.
-src/solver_handlers/conversation_memory/mod.rs	Nice to meet you! I'll go by {name} from now on.
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in memory.
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in the conversation history.
 src/solver_handlers/conversation_memory/mod.rs	The previous message ({role_label}) was: \"{content}\"
@@ -930,26 +939,20 @@ src/solver_handlers/conversation_memory/mod.rs	{name}{stamp}: {value}
 src/solver_handlers/conversation_memory/mod.rs	{title} ({conversation_id})
 src/solver_handlers/conversation_memory/mod.rs	В прошлом сообщении ({role_label}) было написано: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	Вы спрашивали: \"{content}\"
-src/solver_handlers/conversation_memory/mod.rs	Меня зовут {name} — так вы меня назвали.
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в истории разговора: {}\n
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n
-src/solver_handlers/conversation_memory/mod.rs	Отлично, теперь меня зовут {name}. Приятно познакомиться!
 src/solver_handlers/conversation_memory/mod.rs	Прошлого сообщения пока нет.
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в истории разговора не найдено.
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в памяти не найдено.
 src/solver_handlers/conversation_memory/mod.rs	अभी तक कोई पिछला संदेश नहीं है.
 src/solver_handlers/conversation_memory/mod.rs	आपने पूछा था: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	पिछले संदेश ({role_label}) में लिखा था: \"{content}\"
-src/solver_handlers/conversation_memory/mod.rs	बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!
 src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" के उल्लेख मिले: {}\n
 src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" नहीं मिला.
-src/solver_handlers/conversation_memory/mod.rs	मेरा नाम {name} है — यह नाम आपने मुझे दिया था.
 src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" के उल्लेख मिले: {} (बातचीत: {}).\n
 src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" नहीं मिला.
 src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
 src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
-src/solver_handlers/conversation_memory/mod.rs	好的，从现在起就叫我 {name} 吧。很高兴认识你！
-src/solver_handlers/conversation_memory/mod.rs	我叫 {name}，这是你给我起的名字。
 src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
 src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality
 src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
@@ -1066,10 +1069,6 @@ src/solver_handlers/playwright_script.rs	\nУточните URL, действи�
 src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-пример по документации Playwright.\n\n
 src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
 src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
-src/solver_handlers/program_synthesis.rs	Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.
-src/solver_handlers/program_synthesis.rs	\n\nif __name__ == \"__main__\":\n
-src/solver_handlers/program_synthesis.rs	command={} exit={:?} timed_out={} stdout_bytes={} stderr_bytes={}
-src/solver_handlers/program_synthesis.rs	language=python function={function_name}
 src/solver_handlers/program_synthesis.rs	tests_passed assertion_count={}
 src/solver_handlers/research_table.rs	Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.
 src/solver_handlers/research_table.rs	Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.

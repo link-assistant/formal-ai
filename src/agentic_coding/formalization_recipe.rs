@@ -9,8 +9,9 @@ use serde_json::json;
 
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
-    FISHERMAN_DOC_ID,
+    FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
 };
+use super::lexicon::Lexicon;
 use super::planner::{
     fetch_arguments, plan_one, tool_for, trace_route, write_arguments, AgenticPlan, Capability,
     Progress,
@@ -27,18 +28,11 @@ pub const CANONICAL_SOURCE_URL: &str =
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
 
-/// Keywords that name the canonical tale itself, quoted or not.
-const CANONICAL_TALE_KEYWORDS: [&str; 3] = ["рыбак", "fisherman", "сказк"];
-
 /// Whether `prompt` asks to formalize a text into a knowledge base.
 pub(super) fn is_formalization_task(prompt: &str) -> bool {
     let normalized = crate::engine::normalize_prompt(prompt);
     crate::seed::lexicon().mentions_role(crate::seed::ROLE_AGENT_ACTION_FORMALIZE_VERB, &normalized)
 }
-
-/// Quote pairs a formalization task may wrap its inline source text in.
-const INLINE_SOURCE_DELIMITERS: [(char, char); 4] =
-    [('«', '»'), ('“', '”'), ('「', '」'), ('《', '》')];
 
 /// The source text a formalization task carries inline, when it quotes one.
 ///
@@ -48,29 +42,17 @@ const INLINE_SOURCE_DELIMITERS: [(char, char); 4] =
 /// canonical tale — the canonical task's own phrasing — still selects the full
 /// tale rather than its five-word name.
 fn inline_formalization_source(task: &str) -> Option<String> {
-    for (open, close) in INLINE_SOURCE_DELIMITERS {
-        let Some(start) = task.find(open) else {
-            continue;
-        };
-        let rest = &task[start + open.len_utf8()..];
-        let Some(end) = rest.find(close) else {
-            continue;
-        };
-        let source = rest[..end].trim();
-        if source.is_empty() || is_canonical_tale_reference(source) {
-            continue;
-        }
-        return Some(source.to_owned());
-    }
-    None
-}
-
-/// Whether the quoted text merely names the canonical tale.
-fn is_canonical_tale_reference(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    CANONICAL_TALE_KEYWORDS
-        .iter()
-        .any(|keyword| lower.contains(keyword))
+    let segment = crate::normal_markov::quoted_segment_spans(task)
+        .into_iter()
+        .find(|segment| !segment.text.trim().is_empty())?;
+    let source = segment.text.trim();
+    // Identity is not topic overlap. Only this legacy recipe's supported work
+    // may select its cached resource; other catalogue entries stay literal.
+    // Once the first source is bound, a later quoted label cannot replace it.
+    let is_supported_reference = Lexicon::standard()
+        .work_for_title(source)
+        .is_some_and(|work| work.doc_id == FISHERMAN_DOC_ID);
+    (!is_supported_reference).then(|| source.to_owned())
 }
 
 /// Plan the next formalization step from the conversation and advertised tools.
@@ -130,26 +112,29 @@ pub(super) fn plan_formalization_step(
         }
 
     // Step 5: nothing left to do — answer with the knowledge base inline.
-    AgenticPlan::Final(final_answer(&formalized))
+    AgenticPlan::Final(final_answer(&formalized, crate::language::detect(task).slug()))
 }
 
 /// The self-contained final answer: a natural-language summary, the coverage
 /// line, and the Links Notation knowledge base inline.
-fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
+#[allow(clippy::literal_string_with_formatting_args, reason = "bind slots in a localized seed response")]
+fn final_answer(formalized: &FormalizedKnowledgeBase, language: &str) -> String {
     let summary = &formalized.summary;
     let subject = if summary.doc_id == FISHERMAN_DOC_ID {
         "«Сказка о рыбаке и рыбке»".to_owned()
     } else {
         format!("the source text ({})", summary.doc_id)
     };
-    format!(
-        "Formalized {subject} into a Links Notation knowledge base: {records} records realising \
-         all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}",
-        records = summary.total_records(),
-        coverage = coverage_line(summary),
-        kb = crate::issue_report::fenced_block(
+    crate::seed::localized_response("agentic_formalization_report", language)
+        .unwrap_or_default()
+        .replace("{subject}", &subject)
+        .replace("{records}", &summary.total_records().to_string())
+        .replace("{covered_count}", &summary.covered.len().to_string())
+        .replace("{primitive_count}", &PRIMITIVE_KINDS.len().to_string())
+        .replace("{coverage}", &coverage_line(summary))
+        .replace("{path}", KB_PATH)
+        .replace("{kb}", &crate::issue_report::fenced_block(
             crate::issue_report::LINO_FENCE_LANGUAGE,
             &formalized.links_notation,
-        ),
-    )
+        ))
 }

@@ -18,7 +18,13 @@ pub mod client_contract_learning;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
+pub use coding::composition;
+pub use coding::concept_discovery;
+pub use coding::discovered_procedures;
+pub use coding::function_catalog as coding_function_catalog;
 pub use coding::python_signature;
+pub use coding::recurrence as coding_recurrence;
+pub use coding::task_spec as coding_task_spec;
 pub mod coding_research_learning;
 pub mod computer_use;
 pub(crate) mod concepts;
@@ -209,6 +215,7 @@ pub use client_contract_learning::{
 pub use client_integrations::{
     ClientProtocol, WithFormalAiArgs, delimit_tool_args, run_with_formal_ai,
 };
+pub use coding::rosetta_request::try_rosetta_code_request_with_client;
 pub use document_formats::{
     DOCUMENT_FORMAT_ENGINE, DocumentConversion, DocumentFormatCapabilities,
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,

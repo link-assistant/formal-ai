@@ -2,10 +2,10 @@ self_ast_census
   target src/meta_core.rs
   language rust
   fidelity signature
-  byte_len 7824
-  line_count 147
-  content_id source_module_30da2be93bf6829e
+  byte_len 7880
+  line_count 148
+  content_id source_module_597b3f0cb12ba028
   symbol_count 2
   symbols
-    function record_meta_core 78 116
-    function apply_env_modes 127 147
+    function record_meta_core 79 117
+    function apply_env_modes 128 148

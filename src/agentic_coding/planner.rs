@@ -47,6 +47,7 @@ use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
 use super::structured_edit;
+use super::structured_document;
 use super::task_obligations;
 use super::task_structure;
 use super::tool_result;
@@ -260,6 +261,22 @@ fn plan_chat_step_routes(
     {
         return Some(plan);
     }
+    // Bind a program's semantic operands before treating its source path as a
+    // destination for a report about the rest of the request.
+    if let Some(mut answer) = crate::coding::program_contract::answer(
+        &task, &mut crate::event_log::EventLog::default(),
+    ) {
+        if let Some(recipe) = answer.execution_recipe.as_mut()
+            && super::ci_workflow::requested_in(&task)
+        {
+            super::ci_workflow::attach(recipe);
+        }
+        if let Some(plan) = super::command_reroute::plan_symbolic_command_reroute(
+            messages, tool_names, &answer,
+        ) {
+            return Some(plan);
+        }
+    }
     // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
     // of every route that reads a request's lone file-shaped token, because that
     // token is the *destination* here and opening it for reading ends the run with
@@ -326,6 +343,24 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = structured_edit::plan_structured_edit_step(task, messages, tool_names) {
         return Some(plan);
     }
+    // A source-backed structured document is a read/derive/write transaction.
+    // It must win before the ordinary file reader, which would otherwise read
+    // the input correctly and then mistake that intermediate observation for
+    // the answer to the whole authored-artifact request.
+    if let Some(plan) = structured_document::plan_step(task, messages, tool_names) {
+        return Some(plan);
+    }
+    // A repository audit names the artifact its CLI command will produce; that
+    // filename is a destination, not literal content for the generic writer.
+    // Keep the replayable recipe ahead of literal fallback so an observed CLI
+    // result completes the audit instead of starting a redundant write plan.
+    if statement_audit::is_statement_audit_task(task) {
+        return Some(plan_shell_step(
+            messages,
+            tool_names,
+            statement_audit::command_for(task),
+        ));
+    }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
     // filenames/payloads may legitimately contain "issue", "report", or "learning".
     // Unambiguous is the operative word: a request that also pins the target
@@ -362,16 +397,6 @@ pub(super) fn plan_settled_routes(
     // the requested artifact scope distinguishes their recipes.
     if let Some(report) = learning_report::route(task) {
         return Some(report.plan_step(messages, tool_names));
-    }
-    // Repository statement audits run through the same public CLI a human can
-    // replay. Route before generic file/code changes because the task names its
-    // output artifact but does not ask the planner to fabricate that content.
-    if statement_audit::is_statement_audit_task(task) {
-        return Some(plan_shell_step(
-            messages,
-            tool_names,
-            statement_audit::command_for(task),
-        ));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
     // follows the explicit learning recipes so their requested artifacts cannot

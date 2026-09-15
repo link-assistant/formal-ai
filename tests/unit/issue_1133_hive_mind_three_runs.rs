@@ -65,6 +65,230 @@ const PR: &str =
     "https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2";
 const BRANCH: &str = "issue-1-1f3e3886bcb8";
 
+#[cfg(unix)]
+#[test]
+fn generated_output_verifier_rejects_wrong_bytes_and_nonzero_processes() {
+    use std::{fs, process::Command};
+    let output = "Orbit $HOME {} 'quoted' 中文";
+    let request = format!("Create a program in Python that prints exactly `{output}`.");
+    let answer = formal_ai::UniversalSolver::default().solve(&request);
+    let recipe = answer.execution_recipe.expect("composed process contract");
+    let root =
+        std::env::temp_dir().join(format!("formal-ai-output-contract-{}", std::process::id()));
+    fs::create_dir_all(&root).unwrap();
+    fs::write(root.join(&recipe.path), &recipe.source).unwrap();
+    for file in &recipe.supporting_files {
+        let path = root.join(&file.path);
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(path, &file.source).unwrap();
+    }
+    let verify = || {
+        Command::new("sh")
+            .arg("-c")
+            .arg(recipe.commands.last().unwrap())
+            .current_dir(&root)
+            .output()
+            .unwrap()
+    };
+    let passed = verify();
+    assert!(
+        passed.status.success(),
+        "{}",
+        String::from_utf8_lossy(&passed.stderr)
+    );
+    assert_eq!(
+        String::from_utf8(passed.stdout).unwrap(),
+        format!("{output}\n")
+    );
+    fs::write(
+        root.join(&recipe.path),
+        recipe.source.replace("Orbit", "orbit"),
+    )
+    .unwrap();
+    assert!(
+        !verify().status.success(),
+        "output case is part of the contract"
+    );
+    fs::write(
+        root.join(&recipe.path),
+        format!("{}\nprint()\n", recipe.source),
+    )
+    .unwrap();
+    assert!(!verify().status.success(), "additional newline must fail");
+    fs::write(
+        root.join(&recipe.path),
+        format!("{}\nraise SystemExit(7)\n", recipe.source),
+    )
+    .unwrap();
+    assert!(
+        !verify().status.success(),
+        "correct stdout cannot hide exit failure"
+    );
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification() {
+    for (language, setup) in [
+        ("Kotlin", "kotlin"),
+        ("Scala", "coursier"),
+        ("Rust", "rustup"),
+        ("Python", "setup-python"),
+    ] {
+        let mut messages = vec![ChatMessage::user(prompt())];
+        let objective = page(language);
+        let (planned, _) = drive(
+            &AGENT_TOOLS,
+            &mut messages,
+            |tool, _| {
+                if tool == "webfetch" {
+                    objective.clone()
+                } else {
+                    String::new()
+                }
+            },
+            24,
+        );
+        let workflow = planned
+            .iter()
+            .find(|call| path_of(call) == ".github/workflows/run.yml")
+            .unwrap_or_else(|| panic!("missing workflow for {language}"));
+        assert!(
+            workflow.arguments.to_lowercase().contains(setup),
+            "{language}: {workflow:?}"
+        );
+        let verifier = planned
+            .iter()
+            .find(|call| path_of(call) == "tests/verify-output.sh")
+            .unwrap_or_else(|| panic!("missing output assertion for {language}"));
+        assert!(verifier.arguments.contains("Hello, World!"), "{verifier:?}");
+        assert!(
+            workflow.arguments.contains("tests/verify-output.sh"),
+            "{workflow:?}"
+        );
+        let commit = planned
+            .iter()
+            .map(command_of)
+            .find(|command| command.contains("git commit"))
+            .expect("commit after verification");
+        assert!(
+            !commit.contains("git add -A"),
+            "compiler outputs and unrelated files must not be staged: {commit}"
+        );
+    }
+}
+
+#[test]
+fn repository_requirements_bind_language_and_output_independently_of_page_chrome() {
+    for (language, path) in [
+        ("Kotlin", "Main.kt"),
+        ("Scala", "Main.scala"),
+        ("Rust", "main.rs"),
+        ("Python", "main.py"),
+    ] {
+        let objective = format!(
+            "Repository navigation: Java JavaScript\n\n## Task\nImplement a program in {language}.\n\n## Requirements\n- Print exactly: `Aster 73!`\n- Add comments and run instructions.\n- Create a GitHub Actions workflow that tests the output.\n"
+        );
+        let mut messages = vec![ChatMessage::user(prompt())];
+        let (planned, _) = drive(
+            &AGENT_TOOLS,
+            &mut messages,
+            |tool, _| {
+                if tool == "webfetch" {
+                    objective.clone()
+                } else {
+                    String::new()
+                }
+            },
+            20,
+        );
+        let artifact = planned
+            .iter()
+            .find_map(|call| {
+                let value: serde_json::Value = serde_json::from_str(&call.arguments).ok()?;
+                (call.tool == "write" && !value["path"].as_str()?.starts_with('.')).then_some(value)
+            })
+            .unwrap_or_else(|| panic!("no program for {language}: {planned:?}"));
+        assert_eq!(artifact["path"], path, "{language}: {artifact}");
+        assert!(
+            artifact["content"].as_str().unwrap().contains("Aster 73!"),
+            "{artifact}"
+        );
+    }
+}
+
+#[test]
+fn program_output_constraints_do_not_consume_filenames_or_change_case() {
+    for (language, path, source_url) in [
+        (
+            "Rust",
+            "main.rs",
+            "https://doc.rust-lang.org/std/macro.println.html",
+        ),
+        (
+            "Scala",
+            "Main.scala",
+            "https://docs.scala-lang.org/tour/basics.html",
+        ),
+        (
+            "Kotlin",
+            "Main.kt",
+            "https://kotlinlang.org/docs/command-line.html",
+        ),
+    ] {
+        for output in ["Hello, World!", "release.notes", "Orbit 29"] {
+            let objective = format!(
+                "Implement a Hello World program in {language}.\nCreate `{path}`.\nThe program should print exactly: `{output}`.\nUse `.github/workflows/check.yml` for CI."
+            );
+            let answer = formal_ai::UniversalSolver::default().solve(&objective);
+            let recipe = answer
+                .execution_recipe
+                .unwrap_or_else(|| panic!("{language}: {}", answer.answer));
+            assert_eq!(recipe.path, path);
+            assert_eq!(
+                answer.answer,
+                format!(
+                    "```{}\n{}```\n\nSource: {source_url}\nExecution status: not run; the client must execute and verify the program.",
+                    language.to_lowercase(),
+                    recipe.source
+                )
+            );
+            assert!(
+                recipe.source.contains(output),
+                "{output}: {}",
+                recipe.source
+            );
+            assert!(
+                !recipe.source.contains(".github/workflows"),
+                "{}",
+                recipe.source
+            );
+        }
+    }
+}
+
+#[test]
+fn whole_program_request_cannot_turn_its_source_path_into_a_report_destination() {
+    let messages = vec![ChatMessage::user(
+        "Implement a Hello World program in Kotlin. Create Main.kt. The program must print exactly `Hello, World!`. Add clear comments and build/run instructions. Create a GitHub Actions workflow under .github/workflows/ that sets up the compiler, runs the program on push and pull requests, and asserts the exact output.",
+    )];
+    let step = calls(plan_chat_step(&messages, &AGENT_TOOLS));
+    let source: serde_json::Value = serde_json::from_str(&step[0].arguments).unwrap();
+    assert_eq!(step[0].tool, "write", "{step:?}");
+    assert_eq!(source["path"], "Main.kt");
+    assert!(
+        source["content"].as_str().unwrap().contains("fun main("),
+        "{source}"
+    );
+    assert!(
+        source["content"]
+            .as_str()
+            .unwrap()
+            .contains("Hello, World!"),
+        "{source}"
+    );
+}
+
 /// Hive Mind's formal-ai prompt, verbatim.
 fn prompt() -> String {
     format!(
@@ -270,10 +494,10 @@ fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
     let commit = planned
         .iter()
         .map(command_of)
-        .find(|command| command.starts_with("git add -A && git commit"))
+        .find(|command| command.starts_with("git add --") && command.contains("git commit --only"))
         .expect("the recipe ends with a commit step");
     assert!(
-        commit.contains(&format!("git push -q origin {BRANCH}")),
+        commit.contains(&format!("git push -q origin '{BRANCH}'")),
         "{commit}"
     );
     assert!(
@@ -533,10 +757,12 @@ fn the_named_branch_is_pushed_to_in_every_language() {
         let commit = planned
             .iter()
             .map(command_of)
-            .find(|command| command.starts_with("git add -A && git commit"))
+            .find(|command| {
+                command.starts_with("git add --") && command.contains("git commit --only")
+            })
             .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
         assert!(
-            commit.contains(&format!("git push -q origin {BRANCH}")),
+            commit.contains(&format!("git push -q origin '{BRANCH}'")),
             "{language}: {commit}"
         );
     }

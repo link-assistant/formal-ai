@@ -437,7 +437,7 @@ fn responses_returns_final_message_once_recipe_is_exhausted() {
         body.contains("knowledge_base"),
         "final answer should be the knowledge base"
     );
-    assert!(body.contains("nine protocol primitives"));
+    assert!(body.contains("9 of 9 protocol primitives"), "{body}");
 }
 
 #[test]

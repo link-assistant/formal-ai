@@ -25,9 +25,10 @@ on:
     inputs:
       full-replay:
         description: >-
-          Replay every recorded scenario. `main`, scheduled runs and manual
-          dispatches pass true; a feature branch passes false and runs the
-          held-out generalization gates instead (issue #1107, item 4). Those
+          Replay every recorded scenario. `main`, scheduled runs, manual
+          dispatches, and pull requests that change agentic routing pass true;
+          other feature branches run the held-out generalization gates instead
+          (issues #1107 and #1137). Those
           gates are the ones that fail when the planner has been overfitted to
           the recorded scenarios, which is the regression a branch can
           introduce; the remaining steps re-verify scenarios already pinned on
@@ -114,6 +115,28 @@ jobs:
         timeout-minutes: 5
         env: { PORT: 8896 }
         run: experiments/agent_cli_e2e/run_issue_531.sh
+      - name: Run Agent CLI E2E — ordinary output project with CI and verification
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 5
+        env:
+          PORT: 8920
+          ATTEMPTS: 1
+          MIN_POSTS: 6
+          TASK: >-
+            Implement a program in Python. It must print exactly `Saffron 61!`.
+            Include a comment explaining its behavior and build/run instructions
+            at the top of the source. Add a GitHub Actions workflow that sets up
+            the runtime, runs on main pushes and pull requests, runs the program
+            and asserts the exact output. Use only the standard library.
+          EXPECT_FILE: main.py
+          EXPECT_FILES: |
+            tests/verify-output.sh
+            .github/workflows/run.yml
+          EXPECT_TEXT: Saffron 61!
+          EXPECT_AGENT_TEXTS: |
+            Created and verified
+            Saffron 61!
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:

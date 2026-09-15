@@ -1,0 +1,10 @@
+self_ast_census
+  target src/dreaming/apply.rs
+  language rust
+  fidelity signature
+  byte_len 5810
+  line_count 151
+  content_id source_module_ef3ea9a40379e5fe
+  symbol_count 1
+  symbols
+    function apply_dreaming_plan 13 151

@@ -1,0 +1,39 @@
+self_ast_census
+  target src/coding/function_catalog/oeis.rs
+  language rust
+  fidelity signature
+  byte_len 15672
+  line_count 507
+  content_id source_module_b2654e7036ea855b
+  symbol_count 30
+  symbols
+    const API 16 16
+    const LICENSE 17 17
+    const MAX_REFERENCES 18 18
+    struct SequenceProgram 21 31
+    struct SequenceDiscovery 34 37
+    struct Record 40 52
+    struct LinearRecurrence 55 58
+    function discover_programs 62 84
+    function discover_query 86 131
+    function parse_records 133 145
+    function referenced_ids 147 159
+    function oeis_ids_in 161 178
+    function programs_for_record 180 217
+    function sequence_program 219 238
+    function research_queries 240 257
+    function tiling_query 259 284
+    function singularize_english_noun 291 308
+    function dimension_token 310 313
+    function boolean_examples 315 321
+    function integer_examples 323 331
+    function arithmetic_formula 333 355
+    function formula_membership_body 357 368
+    function replace_variable 370 381
+    function linear_recurrence 383 400
+    function parse_coefficient 402 409
+    function matching_index_maps 411 446
+    function recurrence_body 448 481
+    function template 483 485
+    function record_label 487 493
+    function encode_component 495 507

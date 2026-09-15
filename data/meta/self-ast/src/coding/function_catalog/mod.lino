@@ -1,0 +1,13 @@
+self_ast_census
+  target src/coding/function_catalog/mod.rs
+  language rust
+  fidelity signature
+  byte_len 142
+  line_count 6
+  content_id source_module_88042655da99c2b5
+  symbol_count 4
+  symbols
+    module oeis 3 3
+    module python_docs 4 4
+    module rosetta_code 5 5
+    module wikifunctions 6 6

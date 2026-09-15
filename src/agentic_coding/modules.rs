@@ -67,6 +67,7 @@ mod shell_file_fallback;
 pub mod source_links;
 mod stated_request;
 pub mod statement_audit;
+mod structured_document;
 mod structured_edit;
 pub mod task_obligations;
 mod task_structure;

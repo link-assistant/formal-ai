@@ -2,9 +2,9 @@ self_ast_census
   target src/reasoning_standard/instructions.rs
   language rust
   fidelity signature
-  byte_len 7916
-  line_count 236
-  content_id source_module_30e28a9cd2d33cdb
+  byte_len 7984
+  line_count 237
+  content_id source_module_743487c157cac474
   symbol_count 14
   symbols
     struct SourceStep 21 27
@@ -18,6 +18,6 @@ self_ast_census
     struct InstructionSet 109 116
     function source_count 121 123
     function unverifiable_steps 127 132
-    function unmet_steps 140 150
-    function formalize 160 228
-    struct MergedStep 230 236
+    function unmet_steps 140 151
+    function formalize 161 229
+    struct MergedStep 231 237

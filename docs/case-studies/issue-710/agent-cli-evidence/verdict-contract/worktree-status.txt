@@ -1,0 +1,5 @@
+?? .formal-ai/
+?? dialog-logs/
+?? memory.lino
+?? memory.lino.lock
+?? verdict-definition.md

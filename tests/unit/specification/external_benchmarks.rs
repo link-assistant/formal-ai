@@ -212,6 +212,18 @@ fn scheduled_workflow_publishes_to_the_committed_ledger() {
         "the slice size must be configurable"
     );
     assert!(
+        workflow.contains("--online"),
+        "scheduled and dispatched suite runs must opt into live discovery"
+    );
+    assert!(
+        !workflow
+            .split("# === EXTERNAL BENCHMARKS")
+            .next()
+            .unwrap_or_default()
+            .contains("--online"),
+        "the pull-request ratchet must remain offline and must not run a suite"
+    );
+    assert!(
         workflow.contains("--append") && workflow.contains(LEDGER_PATH),
         "the scheduled run must append to {LEDGER_PATH}"
     );
@@ -347,6 +359,78 @@ fn recorded_upstream_pass_count_may_never_regress() {
         raised.suites()["gsm8k"].minimum_pass_count,
         7,
         "a stronger run must raise the floor"
+    );
+}
+
+/// A floor raised by a later run must not retroactively invalidate the
+/// historical rows that established the earlier floor.
+#[test]
+fn ratchet_applies_the_floor_that_existed_when_each_result_was_recorded() {
+    let historical_progress = Ledger::parse(
+        r#"external_benchmark_suite_humaneval
+  record_type "external_benchmark_suite"
+  id "humaneval"
+  license "MIT"
+  ratchet_slice "20"
+  minimum_pass_count "1"
+external_benchmark_result_humaneval_2026_07_20_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-07-20"
+  slice "20"
+  passed "0"
+  failed "20"
+  total "20"
+  solver_version "0.300.0"
+external_benchmark_result_humaneval_2026_09_07_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-09-07"
+  slice "20"
+  passed "0"
+  failed "20"
+  total "20"
+  solver_version "0.344.0"
+external_benchmark_result_humaneval_2026_09_14_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-09-14"
+  slice "20"
+  passed "1"
+  failed "19"
+  total "20"
+  solver_version "0.350.0"
+"#,
+    )
+    .expect("the historical ledger should parse");
+
+    assert_eq!(
+        ratchet::violations(&historical_progress),
+        Vec::<String>::new(),
+        "the run that raises a floor must not make older honest rows regress"
+    );
+
+    let later_regression = Ledger::parse(&format!(
+        "{}{}",
+        historical_progress.render(),
+        r#"external_benchmark_result_humaneval_2026_09_21_20
+  record_type "external_benchmark_result"
+  suite "humaneval"
+  date "2026-09-21"
+  slice "20"
+  passed "0"
+  failed "20"
+  total "20"
+  solver_version "0.351.0"
+"#
+    ))
+    .expect("the regressed ledger should parse");
+
+    assert!(
+        ratchet::violations(&later_regression)
+            .iter()
+            .any(|entry| { entry.contains("humaneval") && entry.contains("minimum_pass_count=1") }),
+        "a run recorded after the floor rose must still be rejected"
     );
 }
 
@@ -609,7 +693,7 @@ fn issue_698_external_benchmark_harness_is_wired_end_to_end() {
     // And the CLI entry points the docs advertise exist.
     for command in [
         "benchmark list",
-        "benchmark run --suite humaneval --slice 20",
+        "benchmark run --suite humaneval --slice 20 --online",
         "benchmark ratchet",
     ] {
         assert!(docs.contains(command), "docs must document `{command}`");

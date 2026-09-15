@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "coding catalog"
+  coding_rosetta_capture_cached
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta capture cached"
   coding_source_module_registration
     defined-by intent
     lexeme en
@@ -239,6 +244,11 @@ meanings
     lexeme en
       surface
         text "how to guide source outcome"
+  if
+    defined-by word_surface
+    lexeme en
+      surface
+        text "if"
   inappropriate_content
     defined-by intent
     lexeme en
@@ -359,6 +369,11 @@ meanings
     lexeme en
       surface
         text "next"
+  oeis_linear_recurrence
+    defined-by concept
+    lexeme en
+      surface
+        text "oeis linear recurrence"
   official-docs
     defined-by source_kind
     lexeme en
@@ -369,6 +384,11 @@ meanings
     lexeme en
       surface
         text "opinion question"
+  overlap
+    defined-by word_surface
+    lexeme en
+      surface
+        text "overlap"
   pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
     defined-by prompt_pattern
     lexeme en
@@ -559,6 +579,21 @@ meanings
     lexeme en
       surface
         text "response coding repository source observation en"
+  response_coding_rosetta_not_requested_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta not requested en"
+  response_coding_rosetta_passed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta passed hi"
+  response_coding_rosetta_workspace_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable en"
   response_coding_source_binary_operation_test_rust
     defined-by response_template
     lexeme en
@@ -969,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "response write program request unspecified name hi"
+  response_write_program_skill_gap_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap es"
   reverse_sort_list_files_arg
     defined-by rule
     lexeme en

@@ -108,6 +108,19 @@ fn the_authorship_route_keeps_the_agent_cli_out_of_its_own_logs() {
     assert!(script.contains("FORMAL_AI_DREAMING=0"));
 }
 
+#[test]
+fn the_authorship_route_waits_explicitly_for_the_server_to_bind() {
+    let script = repository_file("scripts/author-change-with-formal-ai.sh");
+    assert!(
+        script.contains("for attempt in $(seq 1 30)"),
+        "curl's retry behavior differs between platforms; startup needs an explicit loop"
+    );
+    assert!(
+        script.contains("kill -0 \"$server_pid\""),
+        "a server that exits while starting must fail immediately instead of burning the deadline"
+    );
+}
+
 /// Producing a change must not imply producing a pull request (issue #1069).
 #[test]
 fn the_authorship_route_neither_opens_a_pull_request_nor_pushes() {

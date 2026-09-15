@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "client contract parse observation error"
+  coding_rosetta_rust_only
+    defined-by intent
+    lexeme en
+      surface
+        text "coding rosetta rust only"
   coding_source_equality_test
     defined-by intent
     lexeme en
@@ -309,6 +314,11 @@ meanings
     lexeme en
       surface
         text "normalize labels fixpoint"
+  overlapping
+    defined-by word_surface
+    lexeme en
+      surface
+        text "overlapping"
   parser
     defined-by concept
     lexeme en
@@ -394,6 +404,16 @@ meanings
     lexeme en
       surface
         text "policy bounded autonomy"
+  python_for_each
+    defined-by concept
+    lexeme en
+      surface
+        text "python for each"
+  python_import
+    defined-by concept
+    lexeme en
+      surface
+        text "python import"
   renderer
     defined-by word_surface
     lexeme en
@@ -449,6 +469,31 @@ meanings
     lexeme en
       surface
         text "response coding repository result observation es"
+  response_coding_rosetta_answer_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta answer en"
+  response_coding_rosetta_answer_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta answer zh"
+  response_coding_rosetta_not_requested_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta not requested ru"
+  response_coding_rosetta_workspace_unavailable_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable es"
+  response_coding_synthesis_verified_answer_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding synthesis verified answer zh"
   response_comparison_decomposed_evidence_en
     defined-by response_template
     lexeme en
@@ -959,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "response write program skill gap en"
+  shared
+    defined-by word_surface
+    lexeme en
+      surface
+        text "shared"
   shared_dialog_capture_unsupported
     defined-by intent
     lexeme en

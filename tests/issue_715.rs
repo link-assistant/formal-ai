@@ -405,3 +405,189 @@ fn mutation_trace_publishes_the_substitution_query_and_effects() {
     );
     assert!(final_answer.contains("effect update"), "{final_answer}");
 }
+
+#[test]
+fn inspected_links_record_is_derived_written_and_read_back_before_completion() {
+    let task = "Inspect failures.lino. Author recurrence-proposal.lino as valid Links Notation. \
+        Include top-level recurrence_schema and nested boundary_condition, transition, \
+        termination_measure, validation, and provenance fields.";
+    let source = r#"recurrence_failure_taxonomy
+  validation_gap
+    symptom "browser cannot execute Python"
+    shared_capability "prove structural descent and evaluate finite source testers"
+  required_record
+    boundary_condition "predicate, threshold, boundary expression"
+    recursive_transition "self-call offsets and combining operation"
+    termination "every recursive argument decreases toward the boundary"
+    provenance "source URL, license, content hash, fetched time"
+"#;
+    let mut messages = vec![ChatMessage::user(task)];
+
+    let read_source = one_call(&messages, &["read", "write"]);
+    assert_eq!(read_source.tool, "read");
+    assert_eq!(args(&read_source)["filePath"], "failures.lino");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-source",
+        "read",
+        read_source.arguments,
+    )]));
+    let decorated_source = format!(
+        "<file>\n{}\n\n(End of file - total {} lines)\n</file>",
+        source
+            .lines()
+            .enumerate()
+            .map(|(index, line)| format!("{}| {line}", index + 1))
+            .collect::<Vec<_>>()
+            .join("\n"),
+        source.lines().count()
+    );
+    messages.push(ChatMessage::tool_result(
+        "read-source",
+        "read",
+        decorated_source,
+    ));
+
+    let write = one_call(&messages, &["read", "write"]);
+    assert_eq!(write.tool, "write");
+    let written = args(&write);
+    assert_eq!(written["filePath"], "recurrence-proposal.lino");
+    let content = written["content"].as_str().unwrap().to_owned();
+    assert!(content.starts_with("recurrence_schema\n"), "{content}");
+    assert!(content.contains("source_observation"), "{content}");
+    assert!(content.contains("derived_formalization"), "{content}");
+    assert!(
+        content.contains("boundary_condition \"predicate, threshold, boundary expression\""),
+        "{content}"
+    );
+    assert!(
+        content.contains("transition \"self-call offsets and combining operation\""),
+        "{content}"
+    );
+    assert!(
+        content.contains(
+            "termination_measure \"every recursive argument decreases toward the boundary\""
+        ),
+        "{content}"
+    );
+    assert!(content.contains("validation \"browser cannot execute Python; prove structural descent and evaluate finite source testers\""), "{content}");
+    assert!(
+        content.contains("provenance \"source URL, license, content hash, fetched time\""),
+        "{content}"
+    );
+
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "write-derived",
+        "write",
+        write.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "write-derived",
+        "write",
+        "Wrote recurrence-proposal.lino",
+    ));
+
+    let read_back = one_call(&messages, &["read", "write"]);
+    assert_eq!(read_back.tool, "read");
+    assert_eq!(args(&read_back)["filePath"], "recurrence-proposal.lino");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-derived",
+        "read",
+        read_back.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("read-derived", "read", content));
+
+    let final_answer = match plan_chat_step(&messages, &["read", "write"]) {
+        Some(AgenticPlan::Final(answer)) => answer,
+        other => panic!("expected verified final answer, got {other:?}"),
+    };
+    assert!(final_answer.contains("verified"), "{final_answer}");
+}
+
+#[test]
+fn incidental_dotted_error_class_is_not_an_inspected_source_file() {
+    // A live Agent CLI review named an upstream error class inline and asked
+    // for the output to be read back. File shape alone made the structured
+    // document route bind `org.example.TransientFailure` as its input and try
+    // to open it. An inspected source must be named beside the inspection
+    // action; a dotted technical identifier in a different sentence is data,
+    // not a workspace path.
+    let task = "Inspect incident-source.lino. \
+        A library reported exactly org.example.TransientFailure: with no diagnostic. \
+        Author incident-review.lino as valid Links Notation with root incident_review and \
+        fields classification, positive_signature, and negative_boundary. \
+        Write only incident-review.lino, then read it back.";
+
+    let call = one_call(&[ChatMessage::user(task)], &["read", "write"]);
+    assert_eq!(call.tool, "read");
+    assert_eq!(args(&call)["filePath"], "incident-source.lino");
+}
+
+#[test]
+fn inspected_record_collections_preserve_cardinality_scope_and_repeated_fields() {
+    let task = "Inspect recurrence-source.lino. Author recurrence-cache-index.lino as valid Links Notation. \
+        Derive one recurrence_cache_index entry for every recurrence; preserve label, identifier, \
+        abstract_implementation, source_url, license, termination_measure, predecessor_offset, \
+        and nonexistent_source fields when present.";
+    let source = r#"recurrence_source_cache
+  recurrence "Z1"
+    label "alpha"
+    identifier "alpha"
+    termination_measure "n"
+    predecessor_offset "1"
+    predecessor_offset "2"
+    abstract_implementation "I1"
+    source_url "https://example.test/I1"
+    license "CC0-1.0"
+  recurrence "Z2"
+    label "beta"
+    identifier "beta"
+    termination_measure "m"
+    predecessor_offset "1"
+    abstract_implementation "I2"
+    source_url "https://example.test/I2"
+    license "CC0-1.0"
+"#;
+    let mut messages = vec![ChatMessage::user(task)];
+
+    let read_source = one_call(&messages, &["read", "write"]);
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-collection",
+        "read",
+        read_source.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("read-collection", "read", source));
+
+    let write = one_call(&messages, &["read", "write"]);
+    assert_eq!(write.tool, "write");
+    let content = args(&write)["content"].as_str().unwrap().to_owned();
+    assert_eq!(
+        content.matches("  derived_formalization ").count(),
+        2,
+        "{content}"
+    );
+    assert!(
+        content.contains("derived_formalization \"Z1\""),
+        "{content}"
+    );
+    assert!(
+        content.contains("derived_formalization \"Z2\""),
+        "{content}"
+    );
+    assert!(content.contains("label \"alpha\""), "{content}");
+    assert!(content.contains("label \"beta\""), "{content}");
+    assert!(
+        content.contains("source_url \"https://example.test/I1\""),
+        "{content}"
+    );
+    assert!(
+        content.contains("source_url \"https://example.test/I2\""),
+        "{content}"
+    );
+    assert_eq!(
+        content.matches("predecessor_offset").count(),
+        3,
+        "{content}"
+    );
+    assert!(!content.contains("nonexistent_source"), "{content}");
+    assert!(!content.contains("not established"), "{content}");
+}

@@ -131,7 +131,7 @@ impl InstructionSet {
             .collect()
     }
 
-    /// Steps whose checks were never discharged by an observation.
+    /// Steps with no check, or at least one required check still unobserved.
     ///
     /// This is what makes the set executable rather than decorative: given the
     /// checks the episode actually observed, the set names the instructions that
@@ -141,10 +141,11 @@ impl InstructionSet {
         self.steps
             .iter()
             .filter(|step| {
-                !step
-                    .checks
-                    .iter()
-                    .any(|check| discharged.iter().any(|done| done == check))
+                step.checks.is_empty()
+                    || !step
+                        .checks
+                        .iter()
+                        .all(|check| discharged.iter().any(|done| done == check))
             })
             .collect()
     }

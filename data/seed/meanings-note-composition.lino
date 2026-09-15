@@ -17,6 +17,8 @@ meanings
         text assemble
       surface
         text prepare
+      surface
+        text author
     lexeme ru
       surface
         text подготовь

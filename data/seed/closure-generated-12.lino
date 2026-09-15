@@ -39,6 +39,11 @@ meanings
     lexeme en
       surface
         text "antiregime"
+  ascending
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ascending"
   attachment
     defined-by word_surface
     lexeme en
@@ -59,6 +64,16 @@ meanings
     lexeme en
       surface
         text "client contract missing evidence error"
+  coding_synthesis_verified_answer
+    defined-by intent
+    lexeme en
+      surface
+        text "coding synthesis verified answer"
+  cumulative
+    defined-by word_surface
+    lexeme en
+      surface
+        text "cumulative"
   data-structure
     defined-by category
     lexeme en
@@ -89,6 +104,11 @@ meanings
     lexeme en
       surface
         text "document originality check sample present"
+  equality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "equality"
   essay
     defined-by word_surface
     lexeme en
@@ -304,6 +324,11 @@ meanings
     lexeme en
       surface
         text "pytest"
+  python_materialize_tuple
+    defined-by concept
+    lexeme en
+      surface
+        text "python materialize tuple"
   quality
     defined-by concept
     lexeme en
@@ -449,6 +474,16 @@ meanings
     lexeme en
       surface
         text "response coding repository source observation ru"
+  response_coding_rosetta_rust_only_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta rust only en"
+  response_coding_rosetta_workspace_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding rosetta workspace unavailable ru"
   response_coding_source_function_return_rust
     defined-by response_template
     lexeme en

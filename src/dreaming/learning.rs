@@ -53,7 +53,9 @@ pub(super) fn learn_from_memory(
         *interactions.entry(topic.clone()).or_default() += 1;
         if is_task_event(event) {
             *task_counts.entry(topic.clone()).or_default() += 1;
-            if observations[index].durability.is_reclaimable() && !event.id.is_empty() {
+            // Learning may reuse original observations without making them
+            // disposable. Retention is decided separately by the planner.
+            if !event.id.is_empty() {
                 specific_indices
                     .entry(topic.clone())
                     .or_default()

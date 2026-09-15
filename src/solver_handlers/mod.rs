@@ -1,7 +1,5 @@
-//! Specialized free-function handlers extracted from `solver.rs`: each receives
-//! the prompt, normalized prompt, and event log, then returns `Some` on a match.
+//! Specialized free-function handlers extracted from `solver.rs`.
 include!("modules.rs");
-
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
@@ -29,7 +27,9 @@ pub use pattern_inference::{
 };
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
-pub use program_synthesis::{looks_like_python_function_request, try_program_synthesis};
+pub use program_synthesis::{
+    looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
+};
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;

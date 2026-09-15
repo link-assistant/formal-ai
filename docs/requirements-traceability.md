@@ -698,6 +698,25 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R709-3 | 1641 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
 | R709-4 | 1642 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
 | R709-5 | 1643 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R710-D1 | 1551 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/no_memorization.rs | not yet confirmed |
+| R710-D2 | 1552 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs; local upstream run recorded in docs/case-studies/issue-710/README.md | not yet confirmed |
+| R710-D3 | 1553 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs; local upstream run recorded in docs/case-studies/issue-710/README.md | not yet confirmed |
+| R710-D4 | 1554 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/routing.rs | not yet confirmed |
+| R710-D5 | 1555 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R710-D6 | 1556 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/python_docs.rs; tests/unit/coding_discovery/wikifunctions.rs; tests/unit/coding_discovery/rosetta.rs | not yet confirmed |
+| R710-D7 | 1557 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/python_docs.rs; tests/unit/coding_discovery/wikifunctions.rs; tests/unit/coding_discovery/rosetta.rs | not yet confirmed |
+| R710-D8 | 1558 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/concepts.rs | not yet confirmed |
+| R710-D9 | 1559 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/composition.rs | not yet confirmed |
+| R710-D10 | 1560 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/ledger.rs | not yet confirmed |
+| R710-D11 | 1561 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/multilingual.rs | not yet confirmed |
+| R710-D12 | 1562 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/multilingual.rs | not yet confirmed |
+| R710-D13 | 1563 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/rosetta.rs | not yet confirmed |
+| R710-D14 | 1564 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R710-D15 | 1565 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/docs_requirements/benchmarks.rs::latest_external_rows_are_published_from_the_ledger | not yet confirmed |
+| R710-D16 | 1566 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/self_hosting_metric.rs | not yet confirmed |
+| R1137-1 | current | delivered 2026-09-15; PR #888 (issue #1137) | tests/unit/ci-cd/issue_1137_agentic_routing_replay.rs::agentic_routing_changes_enable_full_four_client_replay_on_pull_requests; scripts/detect-code-changes.rs::tests::agentic_source_changes_request_the_four_client_replay | not yet confirmed — CI on the final PR head is the unattended proof |
+| R1137-2 | current | delivered 2026-09-15; PR #888 (issue #1137) | tests/unit/ci-cd/issue_1137_agentic_routing_replay.rs::the_full_replay_still_exercises_each_supported_client; experiments/agent_cli_e2e/run_issue_781.sh | not yet confirmed — CI on the final PR head is the unattended proof |
+| R1137-3 | current | delivered 2026-09-15; PR #888 (issue #1137) | scripts/detect-code-changes.rs::tests::agentic_source_changes_request_the_four_client_replay | not yet confirmed |
 | R835-1 | 1657 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
 | R835-2 | 1658 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
 | R835-3 | 1659 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |

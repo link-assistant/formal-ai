@@ -2,10 +2,10 @@ self_ast_census
   target src/link_store.rs
   language rust
   fidelity signature
-  byte_len 37812
-  line_count 989
-  content_id source_module_ee272147de40a6c2
-  symbol_count 79
+  byte_len 37458
+  line_count 977
+  content_id source_module_78324fc0a2a4bd13
+  symbol_count 76
   symbols
     struct DoubletLink 26 30
     struct LinkRecord 34 40
@@ -15,74 +15,71 @@ self_ast_census
     module node_addresses 71 71
     module orphans 73 73
     module projection_sync 75 75
-    module validation 76 76
-    trait LinkStore 86 101
-    function backend 88 88
-    function append_memory_event 91 91
-    function import_memory_links_notation 94 94
-    function export_memory_links_notation 97 97
-    function records 100 100
-    function selected_link_store_backend 105 113
-    type DefaultNativeLinkStore 116 116
-    type DefaultNativeLinkStore 119 119
-    function default_native_link_store 125 135
-    function validate_memory_links_notation 139 159
-    function memory_events_to_link_records 163 169
-    function memory_event_to_link_record 173 243
-    function backend 246 248
-    function append_memory_event 250 255
-    function import_memory_links_notation 257 265
-    function export_memory_links_notation 267 269
-    function records 271 273
-    function try_import_links_notation 278 280
-    function try_replace_from_links_notation 283 292
-    function link_records 296 298
-    type NativeLinkCliStorage 302 302
-    type NativeLinkCliTransactions 305 309
-    struct LinkStoreSnapshot 313 317
-    struct LinkCliLinkStore 328 337
-    type DoubletsLinkStore 341 341
-    function new 346 356
-    static NEXT_TEMPORARY_STORE 347 347
-    function open_at 359 381
-    function from_links_notation 384 388
-    function rebuild_with_doublets 399 414
-    function events 418 420
-    function len 424 426
-    function is_empty 430 432
-    function native_link_count 436 439
-    function begin_transaction 443 454
-    function commit_transaction 457 465
-    function rollback_transaction 468 478
-    function append_memory_events_transactionally 494 534
-    function restore_projected_prefix 549 579
-    function write_node_addresses 582 597
-    function replace_memory_events_transactionally 606 676
-    function append_memory_event_in_open_transaction 678 688
-    function insert_record 690 696
-    function append_native_doublet 698 705
-    function node_id 707 717
-    function transactions 719 723
-    function transactions_mut 725 729
-    function snapshot 731 737
-    function restore_snapshot 739 743
-    function backend 748 750
-    function append_memory_event 752 771
-    function import_memory_links_notation 773 786
-    function export_memory_links_notation 788 790
-    function records 792 794
-    function drop 799 811
-    function server_link_transition_log_path 816 826
-    function from 830 832
-    function open_link_cli_transactions 836 851
-    function replacement_path 854 866
-    static NEXT_REPLACEMENT 855 855
-    function replace_file 869 891
-    function cleanup_link_cli_files 894 898
-    function link_cli_debug_enabled 901 903
-    function ensure_event_id 905 911
-    function event_source_id 913 919
-    function canonical_memory_event 921 957
-    function push_canonical 959 965
-    function push_optional_field 967 981
-    function push_doublet 983 989
+    module staging 77 77
+    module validation 78 78
+    trait LinkStore 93 108
+    function backend 95 95
+    function append_memory_event 98 98
+    function import_memory_links_notation 101 101
+    function export_memory_links_notation 104 104
+    function records 107 107
+    function selected_link_store_backend 112 120
+    type DefaultNativeLinkStore 123 123
+    type DefaultNativeLinkStore 126 126
+    function default_native_link_store 132 142
+    function validate_memory_links_notation 146 166
+    function memory_events_to_link_records 170 176
+    function memory_event_to_link_record 180 250
+    function backend 253 255
+    function append_memory_event 257 262
+    function import_memory_links_notation 264 272
+    function export_memory_links_notation 274 276
+    function records 278 280
+    function try_import_links_notation 285 287
+    function try_replace_from_links_notation 290 299
+    function link_records 303 305
+    type NativeLinkCliStorage 309 309
+    type NativeLinkCliTransactions 312 316
+    struct LinkStoreSnapshot 320 324
+    struct LinkCliLinkStore 335 344
+    type DoubletsLinkStore 348 348
+    function new 353 363
+    static NEXT_TEMPORARY_STORE 354 354
+    function open_at 366 388
+    function from_links_notation 391 395
+    function rebuild_with_doublets 406 421
+    function events 425 427
+    function len 431 433
+    function is_empty 437 439
+    function native_link_count 443 446
+    function begin_transaction 450 461
+    function commit_transaction 464 472
+    function rollback_transaction 475 485
+    function append_memory_events_transactionally 501 541
+    function restore_projected_prefix 556 586
+    function write_node_addresses 589 604
+    function replace_memory_events_transactionally 613 695
+    function flush_staged_log 707 716
+    function append_memory_event_in_open_transaction 718 728
+    function insert_record 730 736
+    function append_native_doublet 738 745
+    function node_id 747 757
+    function transactions 759 763
+    function transactions_mut 765 769
+    function snapshot 771 777
+    function restore_snapshot 779 783
+    function backend 788 790
+    function append_memory_event 792 811
+    function import_memory_links_notation 813 826
+    function export_memory_links_notation 828 830
+    function records 832 834
+    function drop 839 851
+    function server_link_transition_log_path 856 866
+    function from 870 872
+    function open_link_cli_transactions 876 891
+    function ensure_event_id 893 899
+    function event_source_id 901 907
+    function canonical_memory_event 909 945
+    function push_canonical 947 953
+    function push_optional_field 955 969
+    function push_doublet 971 977

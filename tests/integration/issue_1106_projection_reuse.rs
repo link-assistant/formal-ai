@@ -138,3 +138,94 @@ fn a_prefix_containing_escaped_characters_is_restored_exactly() {
         "the unescaped event must survive alongside it: {persisted}"
     );
 }
+
+/// A rebuild must cost what an append costs, not a multiple of it that grows
+/// with the history (issue #710, PR #888).
+///
+/// `a_second_completion_does_not_rebuild_the_whole_projection` deliberately
+/// declines to assert the *first* completion's duration, because rebuilding was
+/// accepted as slow by design. Measuring it showed that the held-out
+/// computer-use suite pays that rebuild twice per run -- the record and replay
+/// phases each start a fresh server against the memory the previous phase left
+/// behind -- and the cost grew superlinearly: 21 events rebuilt in 3.5 s, 56 in
+/// 13.6 s, 112 in 15.8 s, against 30 ms to append. That is what pushed the
+/// step past its 600 s budget in run 34815480961 while the same code finished in
+/// 85 s on `main`, whose run happened to accumulate less memory.
+///
+/// The cause was durability applied to the wrong file: the replacement built by
+/// `replace_memory_events_transactionally` is scratch until a `rename` publishes
+/// it, yet its transitions log `fsync`ed every appended doublet. Staging it
+/// without per-entry sync and flushing once before publishing leaves what
+/// reaches the served path exactly as durable and makes a rebuild flat.
+///
+/// The bound is a ratio against this machine's own append time rather than a
+/// wall-clock number, so it means the same thing on a fast laptop and a loaded
+/// CI runner.
+#[test]
+fn rebuilding_a_projection_costs_what_appending_to_it_costs() {
+    // Both paths do the same work per request once the fsync storm is gone. The
+    // factor is generous because the two runs are separate processes on a
+    // machine that may be running the rest of the suite alongside them; before
+    // the fix the measured ratio was far past it and grew with the store.
+    const MAXIMUM_RATIO: u32 = 8;
+
+    let append_elapsed = time_first_completion_against_seeded_store("append", SEEDED_EVENTS, true);
+    let rebuild_elapsed =
+        time_first_completion_against_seeded_store("rebuild", SEEDED_EVENTS, false);
+
+    let budget = append_elapsed
+        .checked_mul(MAXIMUM_RATIO)
+        .expect("the append budget must not overflow")
+        .max(Duration::from_secs(2));
+    assert!(
+        rebuild_elapsed < budget,
+        "rebuilding a {SEEDED_EVENTS}-event projection took {rebuild_elapsed:?}, more than \
+         {MAXIMUM_RATIO}x the {append_elapsed:?} the same store costs to append to; a rebuild \
+         must not pay one fsync per doublet"
+    );
+}
+
+/// Seed a store of `events` events, then time one completion against it.
+///
+/// When `already_projected` is set the projection is built first by an
+/// untimed completion, so the timed one appends. Otherwise the timed
+/// completion is the one that rebuilds.
+fn time_first_completion_against_seeded_store(
+    label: &str,
+    events: usize,
+    already_projected: bool,
+) -> Duration {
+    let port = reserve_loopback_port();
+    let store = std::env::temp_dir().join(format!(
+        "formal-ai-issue-710-{label}-{}-{port}.lino",
+        std::process::id()
+    ));
+    let mut document = String::from("demo_memory\n");
+    for index in 0..events {
+        use std::fmt::Write as _;
+        let _ = write!(
+            document,
+            "  event \"chat_user_{index:08x}\"\n    kind \"message\"\n    role \"user\"\n    \
+             content \"recorded exchange {index} about solving something\"\n    \
+             writeCount \"1\"\n"
+        );
+    }
+    std::fs::write(&store, &document).expect("seed the memory store");
+    let store_path = store.to_string_lossy().into_owned();
+
+    let _server =
+        spawn_formal_ai_server_with_env(port, &[("FORMAL_AI_MEMORY_PATH", store_path.as_str())]);
+
+    if already_projected {
+        assert_eq!(
+            complete(port, "warm the projection")["object"],
+            "chat.completion"
+        );
+    }
+
+    let started = Instant::now();
+    let completion = complete(port, "measured");
+    let elapsed = started.elapsed();
+    assert_eq!(completion["object"], "chat.completion");
+    elapsed
+}

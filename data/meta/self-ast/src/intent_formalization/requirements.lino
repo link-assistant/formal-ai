@@ -2,15 +2,18 @@ self_ast_census
   target src/intent_formalization/requirements.rs
   language rust
   fidelity signature
-  byte_len 3861
-  line_count 105
-  content_id source_module_40a972ba05dc31a1
-  symbol_count 7
+  byte_len 6880
+  line_count 184
+  content_id source_module_b4b0f101a373f6b0
+  symbol_count 10
   symbols
     struct OrderedRequirementSpan 8 11
-    function ordered_requirement_spans 16 65
+    function ordered_requirement_spans 16 87
     const PUNCTUATION 20 22
-    function surrounded_by_numeric_characters 67 71
-    function lower_with_offsets 73 83
-    function standalone_surface 85 95
-    function push_requirement_span 97 105
+    function requirement_operand_spans 91 114
+    function requirement_list_spans 118 128
+    function list_marker_end 130 144
+    function surrounded_by_numeric_characters 146 150
+    function lower_with_offsets 152 162
+    function standalone_surface 164 174
+    function push_requirement_span 176 184

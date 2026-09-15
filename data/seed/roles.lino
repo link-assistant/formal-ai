@@ -25,6 +25,10 @@ roles
     kind predicate
   assistant_mechanism_inquiry
     kind meaning
+  assistant_name_assignment
+    kind meaning
+  assistant_name_recall
+    kind meaning
   assistant_self_reference
     kind meaning
   behavior_rule_edit_directive
@@ -105,7 +109,13 @@ roles
     kind predicate
   coding_relationship_subject_kind
     kind predicate
+  coding_request_object
+    kind predicate
+  coding_request_verb
+    kind predicate
   coding_return_action
+    kind predicate
+  coding_recurrence_operator
     kind predicate
   coding_search_fact_query
     kind predicate
@@ -116,6 +126,8 @@ roles
   coding_serialization_action
     kind meaning
   coding_source_implementation_subject_kind
+    kind predicate
+  coding_structure
     kind predicate
   coding_test_artifact_kind
     kind predicate
@@ -225,7 +237,11 @@ roles
     kind meaning
   enumeration_request_opener
     kind meaning
+  example_request
+    kind predicate
   exchange_rate_reference
+    kind predicate
+  execute_url_request
     kind predicate
   explanation_request_lead
     kind predicate
@@ -351,6 +367,8 @@ roles
     kind meaning
   local_shell_request_cue
     kind predicate
+  localized_response_template
+    kind meaning
   math_function_name
     kind predicate
   measurement_concept
@@ -451,6 +469,8 @@ roles
     kind predicate
   program_modification
     kind predicate
+  program_modification_reference
+    kind meaning
   program_request
     kind predicate
   program_synthesis
@@ -459,11 +479,7 @@ roles
     kind predicate
   program_synthesis_domain
     kind predicate
-  program_synthesis_signal
-    kind predicate
   program_synthesis_subject
-    kind predicate
-  program_synthesis_task
     kind predicate
   program_task
     kind meaning
