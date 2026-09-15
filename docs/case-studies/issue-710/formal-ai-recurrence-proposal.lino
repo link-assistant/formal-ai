@@ -1,0 +1,11 @@
+recurrence_schema
+  source_observation
+    path "failures.lino"
+    sha256 "4f9885c433e3c805178e4347cb1e80a3dd4ac4166a63f48d4140818d65c84469"
+    root "recurrence_failure_taxonomy"
+  derived_formalization
+    boundary_condition "predicate, threshold, boundary expression"
+    termination_measure "every recursive argument decreases toward the boundary"
+    transition "self-call offsets and combining operation"
+    validation "browser cannot execute Python; prove structural descent and evaluate finite source testers before rendering an unverified browser artifact"
+    provenance "source URL, license, content hash, fetched time, and referenced operator identities"
