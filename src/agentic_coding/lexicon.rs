@@ -1,9 +1,10 @@
 //! The closed-class lexicon for grounded extraction, parsed from Links Notation.
 //!
-//! Open-domain information extraction needs neural inference, which is a
-//! documented NON-GOAL for this crate. So the formalizer recognises only a
-//! closed lexicon stored as data ([`LEXICON_LINO`]) — never guessing relations it
-//! cannot ground. This module owns that lexicon: a minimal Links Notation record
+//! The current extractor recognizes a closed lexicon stored as data
+//! ([`LEXICON_LINO`]) and preserves unrecognized text without inventing relations.
+//! Recursive source discovery and semantic extraction beyond this catalogue
+//! remain implementation work, not a requirement for neural inference.
+//! This module owns the lexicon: a minimal Links Notation record
 //! parser, the work / lexeme / concept / procedure / context model it parses
 //! into, and the deterministic subject–predicate–object extractor. The output
 //! term types ([`Term`], [`TermKind`], [`PredicateUse`]) live here too because
@@ -321,6 +322,21 @@ impl Lexicon {
             }
         }
         Self { works }
+    }
+
+    /// Resolve a document title by identity, not by its topic or lexeme overlap.
+    /// Case and whitespace may vary; additional words or punctuation may not.
+    pub fn work_for_title(&self, title: &str) -> Option<&Work> {
+        let words: Vec<String> = title.split_whitespace().map(str::to_lowercase).collect();
+        if words.is_empty() {
+            return None;
+        }
+        self.works.iter().find(|work| {
+            work.title
+                .split_whitespace()
+                .map(str::to_lowercase)
+                .eq(words.iter().cloned())
+        })
     }
 
     pub fn best_work_for(&self, text: &str) -> Option<&Work> {

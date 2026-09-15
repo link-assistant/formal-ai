@@ -209,7 +209,7 @@ pub fn unwrap_transport_quotes(text: &str) -> &str {
 }
 
 fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
-    const PAIRS: [(&str, &str); 9] = [
+    const PAIRS: [(&str, &str); 10] = [
         ("```", "```"),
         ("'", "'"),
         ("\"", "\""),
@@ -219,6 +219,7 @@ fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'s
         ("‘", "’"),
         ("「", "」"),
         ("『", "』"),
+        ("《", "》"),
     ];
     PAIRS
         .iter()

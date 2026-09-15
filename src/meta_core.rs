@@ -31,9 +31,10 @@
 //!    the trace is present without being asked for); a leaf with no serving
 //!    method is recorded `unresolved` rather than dropped;
 //! 8. the skill-accumulation ledger (R342) — distilled from the solution evidence,
-//!    every satisfied need becomes a proposed reusable skill and every blocked need
-//!    a curriculum item, so the loop accumulates what it can do and a list of what
-//!    it cannot yet do. Governed by [`SkillMode`](crate::skill_ledger::SkillMode)
+//!    satisfied evidence can become a proposed reusable skill; planned or blocked
+//!    needs remain curriculum items. This pre-dispatch pass has no validated
+//!    result and therefore does not demonstrate skills merely by selecting them.
+//!    Governed by [`SkillMode`](crate::skill_ledger::SkillMode)
 //!    (default `Accumulate`, so the ledger fills on every request); it is
 //!    proposal-only — no skill is ever auto-promoted to stable without tests and
 //!    a benchmark delta (C3).

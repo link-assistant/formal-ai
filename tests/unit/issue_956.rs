@@ -85,3 +85,86 @@ fn quoted_canonical_title_still_selects_the_full_tale() {
     assert!(answer.contains("«Сказка о рыбаке и рыбке»"), "{answer}");
     assert!(answer.contains("tale:fisherman-and-fish"), "{answer}");
 }
+
+fn inline_knowledge_base(prompt: &str) -> String {
+    let messages = vec![ChatMessage::user(prompt)];
+    let tools = ["web_search", "web_fetch", "write", "bash"];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("expected an artifact for the supplied source: {prompt}");
+    };
+    assert_eq!(
+        calls[0].tool, "write",
+        "supplied source must not trigger unrelated research: {:?}",
+        calls[0]
+    );
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    arguments["content"]
+        .as_str()
+        .expect("written knowledge-base bytes")
+        .to_owned()
+}
+
+#[test]
+fn ordinary_and_multilingual_quotes_bind_the_same_inline_source() {
+    let source = "Observed input is not a guessed replacement.";
+    for (open, close) in [
+        ("\"", "\""),
+        ("'", "'"),
+        ("`", "`"),
+        ("«", "»"),
+        ("“", "”"),
+        ("‘", "’"),
+        ("「", "」"),
+        ("『", "』"),
+        ("《", "》"),
+    ] {
+        let task = format!("Formalize {open}{source}{close} into a Links Notation knowledge base.");
+        let knowledge = inline_knowledge_base(&task);
+        assert!(knowledge.contains(source), "{task}\n{knowledge}");
+        assert!(
+            !knowledge.contains("tale:fisherman-and-fish"),
+            "{knowledge}"
+        );
+    }
+}
+
+#[test]
+fn a_domain_word_does_not_replace_an_original_source_with_a_known_work() {
+    for source in [
+        "A fisherman records the source of each observation.",
+        "Рыбак хранит исходные наблюдения отдельно от кэша.",
+        "Сказка может быть примером исходного документа, а не результатом задачи.",
+    ] {
+        let knowledge = inline_knowledge_base(&format!(
+            "Formalize «{source}» into a Links Notation knowledge base."
+        ));
+        assert!(knowledge.contains(source), "{knowledge}");
+        assert!(
+            !knowledge.contains("tale:fisherman-and-fish"),
+            "{knowledge}"
+        );
+    }
+}
+
+#[test]
+fn inline_source_order_is_not_the_order_of_delimiters_in_a_parser_table() {
+    let knowledge = inline_knowledge_base(
+        "Formalize “First source clause.” into a knowledge base with label «Secondary label».",
+    );
+    assert!(knowledge.contains("First source clause."), "{knowledge}");
+    assert!(!knowledge.contains("Secondary label"), "{knowledge}");
+}
+
+#[test]
+fn known_title_identity_survives_case_and_spacing_without_domain_word_guessing() {
+    for prompt in [
+        "Formalize «СКАЗКА  О РЫБАКЕ И РЫБКЕ» into a Links Notation knowledge base.",
+        "Formalize “Сказка о рыбаке и рыбке” into a knowledge base with label «Reference».",
+    ] {
+        let messages = vec![ChatMessage::user(prompt)];
+        let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &[]) else {
+            panic!("expected the explicitly referenced known work");
+        };
+        assert!(answer.contains("tale:fisherman-and-fish"), "{answer}");
+    }
+}

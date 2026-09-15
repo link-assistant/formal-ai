@@ -75,10 +75,13 @@ Use `[ ]` until evidence exists; record failing command/output before fixing.
 Every leaf records files, validation, residual gaps, and next step here.
 
 - [x] P0: inspect branch, disk, and latest test PR summaries; record this plan.
-- [ ] P1: read all three source issues/comments, patches and failure logs;
+- [x] P1: read all three source issues/comments, patches and failure logs;
   classify Formal AI vs client vs orchestration faults with primary evidence.
   Refresh the all-issue requirements audit since its prior cutoff and reconcile
   each new coding/memory requirement with an executable acceptance criterion.
+  Evidence: checkpoints below, R710-R1–R10, the September 15/16 requirement
+  deltas, and the #491 continuation shard. This completes reconciliation, not
+  the implementation of every accepted requirement.
 - [ ] P2: add failing generalized language/output-binding and issue-envelope
   tests. Include unseen filenames, output that resembles a filename, multiple
   languages and Unicode paraphrases; retain existing working behavior.
@@ -96,9 +99,12 @@ Every leaf records files, validation, residual gaps, and next step here.
   project tasks from fresh state. Persist session IDs, model/build identity,
   observed tool results, independently verified artifacts, and failures. Fix
   generalized blockers and rerun; do not count narrated success as authorship.
-- [ ] P7: report proven current Hive Mind/Agent CLI defects in their own
+- [x] P7: report proven current Hive Mind/Agent CLI defects in their own
   repositories, after duplicate/template checks. Link reports here. Do not
   publish full private traces; publish minimal reviewed reproduction evidence.
+  Hive Mind #2259 is filed and remains open without comments on September 16.
+  No distinct current Agent CLI defect is proven by the compiler/authoring
+  failures; those are retained as Formal AI gaps, not duplicate wrapper reports.
 - [ ] P8: run focused regressions, existing coding and memory suites, held-out
   discovery/forget/rebuild checks, self-AST/seed/requirements generation, all
   required local gates, and release preflight. Verify benchmark semantics remain

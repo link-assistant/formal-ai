@@ -2,45 +2,45 @@ self_ast_census
   target src/meta_frame.rs
   language rust
   fidelity signature
-  byte_len 28708
-  line_count 760
-  content_id source_module_72c647027c6caf5e
+  byte_len 29014
+  line_count 765
+  content_id source_module_abe6bf2ba2dba61e
   symbol_count 37
   symbols
     function formalize_span 36 39
-    enum NeedStatus 48 59
-    function slug 64 72
-    struct Need 82 93
-    function to_links_notation 97 109
-    struct ProblemFrame 120 133
-    function from_formalization 146 182
-    function need_count 186 188
-    function to_links_notation 195 216
-    function need_id_for 220 222
-    enum AtomicityReason 229 241
-    function slug 246 253
-    struct WorkUnit 266 283
-    function from_formalization 289 297
-    function build 301 351
-    function leaf 353 371
-    function unit_count 375 377
-    function leaf_count 381 387
-    function collect_leaves 391 399
-    function to_links_notation 403 427
-    function emit_events 432 444
-    function decompose_once 453 459
-    function segment_needs 471 482
-    function split_sentences 487 514
-    function split_clauses 519 530
-    function push_trimmed 532 537
-    function record_problem_frame 545 559
-    function record_work_units 569 580
-    struct LedgerRow 585 600
-    function to_links_notation 604 625
-    struct NeedLedger 641 646
-    function resolve 651 680
-    function count_with 684 686
-    function every_need_accounted_for 691 697
-    function to_links_notation 701 722
-    function best_leaf_for 729 738
-    function record_need_ledger 742 760
+    enum NeedStatus 48 61
+    function slug 66 75
+    struct Need 85 96
+    function to_links_notation 100 112
+    struct ProblemFrame 123 136
+    function from_formalization 149 185
+    function need_count 189 191
+    function to_links_notation 198 219
+    function need_id_for 223 225
+    enum AtomicityReason 232 244
+    function slug 249 256
+    struct WorkUnit 269 286
+    function from_formalization 292 300
+    function build 304 354
+    function leaf 356 374
+    function unit_count 378 380
+    function leaf_count 384 390
+    function collect_leaves 394 402
+    function to_links_notation 406 430
+    function emit_events 435 447
+    function decompose_once 456 462
+    function segment_needs 474 485
+    function split_sentences 490 517
+    function split_clauses 522 533
+    function push_trimmed 535 540
+    function record_problem_frame 548 562
+    function record_work_units 572 583
+    struct LedgerRow 588 603
+    function to_links_notation 607 628
+    struct NeedLedger 644 649
+    function resolve 654 683
+    function count_with 687 689
+    function every_need_accounted_for 695 701
+    function to_links_notation 705 727
+    function best_leaf_for 734 743
+    function record_need_ledger 747 765

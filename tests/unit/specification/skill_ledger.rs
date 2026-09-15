@@ -3,14 +3,14 @@
 //! The meta core turns each request's solution evidence into learning the next
 //! request can reuse: a satisfied need becomes a proposed, reusable skill and a
 //! blocked need becomes a curriculum item recording the gap. These tests pin the
-//! contract that makes that safe: accumulation is gated off by default (R13); a
+//! contract that makes that safe: recording is on by default (R1073), but a
 //! satisfied need yields a proposed skill while a blocked need yields a curriculum
 //! item; and — the safety invariant — a proposed skill can never be promoted to
 //! stable without both tests and a benchmark delta, so nothing is ever
 //! auto-promoted without review (C3).
 
 use formal_ai::intent_formalization::formalize_intent;
-use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
+use formal_ai::meta_frame::{NeedLedger, NeedStatus, ProblemFrame, WorkUnit};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::skill_ledger::{PromotionGate, SkillLedger, SkillMode, SkillStatus};
 use formal_ai::solution_evidence::SolutionEvidence;
@@ -59,7 +59,10 @@ fn modes_round_trip_through_their_slugs() {
 
 #[test]
 fn a_satisfied_need_becomes_a_proposed_candidate_skill() {
-    let evidence = evidence_for("translate apple to Russian");
+    let mut evidence = evidence_for("translate apple to Russian");
+    // Supply an explicit downstream evidence fixture. Merely selecting the
+    // prompt's method must not stand in for an executed, validated result.
+    evidence.trails[0].status = NeedStatus::Satisfied;
     assert!(
         evidence.fully_resolved(),
         "the fixture prompt must be satisfied for this test to be meaningful"
@@ -75,6 +78,21 @@ fn a_satisfied_need_becomes_a_proposed_candidate_skill() {
         !skill.promotable(),
         "a once-demonstrated skill is not yet reusable"
     );
+}
+
+#[test]
+fn selecting_a_method_does_not_demonstrate_a_skill() {
+    let evidence = evidence_for("translate apple to Russian");
+    assert!(evidence.trails[0].connected);
+    assert!(evidence.trails[0].method.is_some());
+    let ledger = SkillLedger::from_evidence(&evidence);
+    assert!(
+        ledger.skills.is_empty(),
+        "no result was executed or checked"
+    );
+    assert_eq!(ledger.curriculum_count(), evidence.trails.len());
+    assert_eq!(ledger.curriculum[0].status.slug(), "planned");
+    assert!(!ledger.curriculum[0].reason.is_empty());
 }
 
 #[test]

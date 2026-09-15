@@ -41,13 +41,15 @@ fn formalize_span(span: &str, language: &str) -> IntentFormalization {
 /// Lifecycle status of a single detected [`Need`].
 ///
 /// Phase 1A records every need as [`NeedStatus::Pending`]: the frame is a
-/// trace-only projection that does not yet resolve needs. Phase 2 introduces the
-/// need-satisfaction ledger (root requirement R333) that flips each status to
-/// `Satisfied`, `Deferred`, `Blocked`, or `Rejected` from the answer projection.
+/// trace-only projection that does not yet resolve needs. The planning ledger
+/// (root requirement R333) records method selection as `Planned`, not as a
+/// validated result. Satisfaction requires subsequent execution evidence.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NeedStatus {
     /// Detected but not yet resolved (the only status produced in Phase 1A).
     Pending,
+    /// A method was selected; execution and result validation are outstanding.
+    Planned,
     /// A work unit produced a validated result for this need.
     Satisfied,
     /// Intentionally postponed (e.g. out of scope this turn).
@@ -64,6 +66,7 @@ impl NeedStatus {
     pub const fn slug(self) -> &'static str {
         match self {
             Self::Pending => "pending",
+            Self::Planned => "planned",
             Self::Satisfied => "satisfied",
             Self::Deferred => "deferred",
             Self::Blocked => "blocked",
@@ -631,12 +634,12 @@ impl LedgerRow {
 /// prose: every need in the frame appears exactly once with an explicit status,
 /// so a blocked or deferred need is recorded, never silently dropped. Phase 2
 /// derives the status from the recursive work-unit tree — a need whose leaf maps
-/// to a direct method is [`NeedStatus::Satisfied`] (a known method resolves it);
+/// to a direct method is [`NeedStatus::Planned`], with no execution proof yet;
 /// a need with no recognized method (a single-need or depth-bound leaf) is
 /// [`NeedStatus::Blocked`] and reported as such. This is a behavior-preserving
 /// projection: it changes neither routing nor the answer. Runtime validation
-/// feedback can refine these predictions if a future validator proves a leaf
-/// failed after method selection.
+/// must provide per-need evidence before a result can become `Satisfied`.
+/// The planning projection alone cannot demonstrate a reusable skill.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NeedLedger {
     /// The frame this ledger resolves.
@@ -658,7 +661,7 @@ impl NeedLedger {
                 let leaf = best_leaf_for(&leaves, &need.source_span);
                 let status = leaf.map_or(NeedStatus::Blocked, |leaf| {
                     if leaf.route.is_some() {
-                        NeedStatus::Satisfied
+                        NeedStatus::Planned
                     } else {
                         NeedStatus::Blocked
                     }
@@ -686,7 +689,8 @@ impl NeedLedger {
     }
 
     /// Whether every detected need has an explicit, non-pending status — the
-    /// structural form of "address every detected need" (R8).
+    /// structural accounting part of "address every detected need" (R8).
+    /// Planned rows count as recorded, not as completed or validated.
     #[must_use]
     pub fn every_need_accounted_for(&self) -> bool {
         !self.rows.is_empty()
@@ -704,6 +708,7 @@ impl NeedLedger {
             ("record_type", "need_ledger".to_owned()),
             ("frame_id", self.frame_id.clone()),
             ("row_count", self.rows.len().to_string()),
+            ("planned", self.count_with(NeedStatus::Planned).to_string()),
             (
                 "satisfied",
                 self.count_with(NeedStatus::Satisfied).to_string(),

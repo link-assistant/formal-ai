@@ -299,3 +299,123 @@ extraction *requires* neural inference. Correct them to describe the actual
 implementation limit, not an asserted impossibility that contradicts the vision.
 Unknown-requirement execution, pre-dispatch satisfaction claims, missing-runtime
 discovery/setup and the open-ended source-refactoring failure remain open.
+
+The focused source-integrity run reproduces three behavioral failures (five
+passes): ordinary ASCII quotes trigger the unrelated tale search, a sentence
+containing `fisherman` triggers that same search, and a later guillemet label
+replaces an earlier curly-quoted source. Implement the shared span reader and
+exact normalized catalogue-title lookup. Retain the existing Chinese `《》`
+grammar in that shared reader. A recognized title must stop source selection;
+a later quoted output label must not replace the referenced document.
+
+The added known-title-plus-label control fails too (four failures, four
+passes). The implementation now binds the first nonempty quoted span in source
+order, resolves only an exact normalized catalogue title, and keeps topic words
+as original input. Focused green verification is running.
+
+### Next evidence leaf: selection is not satisfaction
+
+Before changing the ledger, inspection confirms both production meta-core
+paths record `NeedLedger::resolve` before method dispatch. A route currently
+sets `Satisfied`, makes `SolutionEvidence::fully_resolved()` true and creates a
+candidate skill despite no executed method or checked result. The promotion
+gate prevents stable skills, but not this false demonstration claim.
+
+Add failing regressions using the existing public frame/tree/ledger/evidence
+pipeline and the live meta-core recorder: selecting a method must retain the
+need, route and connected planning chain without reporting satisfaction or a
+demonstrated skill. Preserve blocked unknown needs. Keep explicit satisfied
+evidence as a separate downstream projection fixture, not a routed prompt that
+pretends execution happened. This updates the tests' old selection-equals-success
+assumption; it does not weaken the requirement for validated results.
+
+Use a distinct `Planned` lifecycle state in the existing shared enum and Links
+Notation ledger. Structural accounting may include planned needs, but complete
+resolution and skill demonstration require `Satisfied`. Both native and recipe
+meta-core paths must agree. This leaf corrects evidence reporting only: connecting
+the runtime's per-obligation checks back into that ledger, complete obligation
+execution and automatic prerequisite discovery remain open. Do not fabricate a
+validation event or mark all child requirements satisfied by the root's answer.
+
+Behavioral red evidence: five of the 41 ledger/evidence/skill/interpreter cases
+fail, while 36 pass. The live pre-dispatch trace reports `satisfied "1"`;
+selection creates a candidate skill, and a partially supplied explicit-result
+fixture incorrectly reports every need resolved because the other rows already
+claim satisfaction. Change the shared planning status to `Planned`, serialize
+its count, and retain `Satisfied` as the downstream validated-result contract.
+
+All 41 focused ledger/evidence/skill/interpreter tests pass after the correction;
+the source-selection/decomposition/formalization run passed all 50 cases. The
+Links Notation recipe now states the same pre-dispatch limit as its code.
+No promotion rule or success assertion was waived. Hardcoded-language debt is
+unchanged at 1,286, and the minimal-core boundary passes at 45 handler sources /
+18,466 outside-core lines. Full post-change tests and lint remain pending.
+
+Next live probe, after rebuilding: ask Formal AI through Agent CLI to formalize
+an original observation-and-cache contract containing the word `fisherman`, in
+ordinary ASCII quotes. Run in a fresh isolated workspace on port 8925 and keep
+raw evidence private. Independently inspect the produced Links Notation for the
+actual source, no tale substitution, and honest primitive coverage. This checks
+the repaired production boundary, not successful deep semantic extraction.
+
+The live source-identity probe passes in `ses_f598e46aaffe38H1DJrykzOPCF`
+(Agent CLI 0.26.0, `formalai/formal-ai`, local 0.350.0 binary including both
+new leaves). Three model rounds wrote the source-derived knowledge base, ran
+`cat knowledge-base.lino`, and reported `2 of 9 protocol primitives`.
+Independent artifact inspection finds both original sentences, two annotations,
+two literal assertions, no tale identity, and zero concepts or procedures.
+SHA-256: `54f3170933197764428213b2f5c306f66a25c1edf2411a4e0bd53305c83583ac`.
+Private evidence/artifact root: `/private/tmp/formal-ai-888-source-identity.CvmOBl`.
+The helper and Agent CLI exited zero; raw traces remain private.
+
+A further provenance limitation is visible in that artifact: sentence text is
+trimmed but its character span includes the preceding separator whitespace
+(`42:125` instead of the exact text start at 43). Retained source is recoverable,
+but exact annotation-text/span equality needs a separate test-first correction.
+Do not silently rewrite this run's historical artifact or claim exact span
+fidelity from its source-selection success. Unknown unquoted sources still
+reach the legacy fallback; general source-role resolution/discovery is open.
+
+Post-change all-feature unit suite: **3,542 passed, zero failures, four existing
+ignores**, 193.41 seconds, including the process-tree assertion with `ps`
+permission. All 12 web gates pass, including zero reported dependency
+vulnerabilities. The existing compiled WASM worker passes its size gate at
+291,074 bytes; this is not a claim that a new worker build was run. Workflow
+syntax, seed sync and the 29-file secret scan pass. Main checkout is unchanged;
+free space remains 26 GiB. Integration/source and Rust gates are running.
+
+Release report-mode preflight has zero verified credentials and two local
+configuration gaps: no crates.io token and no GHCR image variable. No registry
+publication was attempted. Protected main-branch release credentials must be
+checked by the release-mode CI job; local report-mode exit zero is not proof
+that publication is authorized or guaranteed.
+
+### Verified checkpoint prepared for the batch's one push
+
+- All **32 Rust gates** pass, including targeted all-feature Clippy, example
+  type-checks, both documentation profiles and the script suites. No gate,
+  timeout, coverage threshold or debt ceiling was weakened.
+- Integration: **378 passed, zero failures, one existing ignore** (110.49 s).
+- Source tests: **494 passed, zero failures** (1.96 s).
+- Locked offline package creation succeeds without publishing or a duplicate
+  release build: **5,997 files**, **7,072,145 bytes compressed**, below 10 MiB.
+  This is package construction, not a fresh installed-release-binary proof.
+- Eight self-AST documents regenerated (541 total); the reviewed method-proposal
+  generator remains byte-identical; requirements aggregate has 110 shards.
+- Remaining disk space: **25 GiB**. Shared target only; no cache, Docker, volume
+  or user-data pruning. Commits must still set both no-prune environment flags.
+
+The preceding unpushed commits are `7572cf5ab`, `543671431`, `f652eec2f`,
+`a2e3d8f29`, `693f12d91` and `c25330430`. Commit this tested source/evidence
+increment, scan the entire batch, refresh the exact remote/base heads, then
+push once to `issue-710-14da90b08a12`. Recheck GitHub on the resulting SHA;
+the 68-success / 9-skip result currently belongs to baseline `2f7a381a2`, not
+to this new batch. Update the PR description without carrying its earlier
+whole-vision completion claim forward. Do not merge.
+
+Resume unresolved work from the requirement table and this plan: general
+source-role resolution (including unquoted input), exact annotation spans,
+recursive semantic extraction, complete unknown-obligation execution, runtime
+validation feedback, and trusted missing-runtime discovery/setup. Passing these
+finite regressions and reporting partial results honestly do not close those
+implementation requirements.

@@ -13,6 +13,8 @@
 //! This projection reads the artifacts the loop already produced and emits the
 //! `solution_evidence` audit event. Runtime method selection happens through the
 //! same registry resolver, while this module stays focused on the evidence join.
+//! A connected planning chain is not a validated result: planned needs stay
+//! unresolved until execution evidence satisfies their actual obligations.
 
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;

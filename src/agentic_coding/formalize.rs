@@ -5,13 +5,15 @@
 //! code base"* — Links Notation — rather than the typed-struct
 //! entities/ontologies a previous draft hand-coded. This module is that
 //! formalizer. It takes a source document (the text an agentic step fetched) and
-//! emits a knowledge base in which **all nine protocol primitives are links**:
+//! emits a knowledge base whose supported protocol primitives are links:
 //! concept, entity, predicate, assertion, procedure, context, temporal, modal,
 //! annotation. No record is a bespoke Rust struct in the output — every record is
 //! `id\n  key "value"` Links Notation produced by `format_lino_record`.
 //!
-//! Extraction is deliberately shallow and honest (open-domain information
-//! extraction needs neural inference, which is a documented NON-GOAL):
+//! Current extraction is shallow: preserving a source sentence does not mean
+//! its concepts or procedures have been understood. Open-domain recursive
+//! discovery and grounded semantic extraction remain implementation work.
+//! Only primitives supported by the actual extraction are reported as covered:
 //!
 //! * **Annotations** are produced for *every* sentence of *any* input, with real
 //!   character offsets — fully general, never guessed.

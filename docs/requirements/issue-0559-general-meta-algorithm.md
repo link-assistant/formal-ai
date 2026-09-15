@@ -15,6 +15,15 @@ Those rows completed the registry-backed route-authority slice, not the removal
 of intent-specific handler implementations. Issue #699 tracks that remaining
 migration honestly in `data/meta/handler-migration-ledger.lino`.
 
+The PR #888 continuation audit (2026-09-16) further scopes R333/R334/R342:
+the shared ledger runs before dispatch, so a selected method is **planned**, not
+**satisfied**. A connected planning chain accounts for a detected need but does
+not prove its execution. Planned needs remain curriculum items, not demonstrated
+skills. Regression tests cover both native and recipe-driven traces and retain
+the separate contract for explicitly satisfied evidence. Runtime per-need
+verification feedback is still open; the implemented artifact rows below are
+not a claim that every detected obligation executes successfully.
+
 | ID | Requirement | Status |
 | --- | --- | --- |
 | R330 | Every prompt must produce an explicit, link-serializable problem frame — the meaning record made first-class — emitted as a solver loop event and enumerating every detected need. | Implemented by `src/meta_frame.rs` (`ProblemFrame`, `Need`, `record_problem_frame`), wired into `src/solver.rs::solve_with_history_probability_store_and_intent_cache` as the trace-only `problem_frame` event, serialized via `src/links_format.rs::format_lino_record`, and verified by `tests/unit/specification/meta_frame.rs` and `tests/unit/docs_requirements_issue_559.rs::issue_559_problem_frame_is_traceable`. |

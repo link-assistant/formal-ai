@@ -1132,6 +1132,15 @@ Those rows completed the registry-backed route-authority slice, not the removal
 of intent-specific handler implementations. Issue #699 tracks that remaining
 migration honestly in `data/meta/handler-migration-ledger.lino`.
 
+The PR #888 continuation audit (2026-09-16) further scopes R333/R334/R342:
+the shared ledger runs before dispatch, so a selected method is **planned**, not
+**satisfied**. A connected planning chain accounts for a detected need but does
+not prove its execution. Planned needs remain curriculum items, not demonstrated
+skills. Regression tests cover both native and recipe-driven traces and retain
+the separate contract for explicitly satisfied evidence. Runtime per-need
+verification feedback is still open; the implemented artifact rows below are
+not a claim that every detected obligation executes successfully.
+
 | ID | Requirement | Status |
 | --- | --- | --- |
 | R330 | Every prompt must produce an explicit, link-serializable problem frame — the meaning record made first-class — emitted as a solver loop event and enumerating every detected need. | Implemented by `src/meta_frame.rs` (`ProblemFrame`, `Need`, `record_problem_frame`), wired into `src/solver.rs::solve_with_history_probability_store_and_intent_cache` as the trace-only `problem_frame` event, serialized via `src/links_format.rs::format_lino_record`, and verified by `tests/unit/specification/meta_frame.rs` and `tests/unit/docs_requirements_issue_559.rs::issue_559_problem_frame_is_traceable`. |
@@ -1596,7 +1605,7 @@ benchmark slices do not establish these broader capabilities. Plan 06 in
 | R710-R6 | Preserve original dialogue and observations, unknown legacy records, and imported custom knowledge unless the user authorizes deletion/modification. | Provenance-first classification, apply-time revalidation and duplicate-ID safety; `memory_retention_origin`, `memory_learning`, existing deletion/reset and export/import tests. |
 | R710-R7 | Forget only reconstructable cache data; keep the rediscovery recipe and provenance, accounting for retained metadata. | Reconstruction records survive restart and further pressure in `memory_retention_origin`; a public URL authorizes reacquisition, not replacement of historical evidence with today's content. End-to-end automatic source-cache reconstruction remains open. |
 | R710-R8 | Formal AI must perform meaningful work through Agent CLI, and failures must become general regression cases. | Live Python project and grounded source-identifier rename succeed. The open-ended refactor only read its input; executable authoring-helper regressions now reject unchanged seed/destination bytes before publishing. Kotlin recovery, semantic formalization and open-ended regression authorship remain open. |
-| R710-R9 | Retain every requirement as a verifiable obligation; unknown clauses cannot be silently discarded. | Partial: shared structural decomposition preserves quoted operands, source addresses, list clauses and byte provenance (`requirement_span_integrity`). Preserving unknown text does not interpret or execute it; complete obligation-ledger execution remains open. |
+| R710-R9 | Retain every requirement as a verifiable obligation; unknown clauses cannot be silently discarded. | Partial: shared decomposition preserves operands, addresses, list clauses and byte provenance (`requirement_span_integrity`); inline formalization preserves source identity (`issue_956`). The need ledger distinguishes selected methods from satisfied results, preventing pre-execution success and skill claims. Preserving unknown text does not interpret or execute it; complete obligation-ledger execution and runtime verification feedback remain open. |
 | R710-R10 | Report proven wrapper/client defects upstream without publishing private traces. | Hive Mind #2259 contains the reviewed MCP transport reproduction; no current Agent CLI defect has been established from the compiler failures. |
 
 ## Issue #834 Legal & Compliance Self-Audit
