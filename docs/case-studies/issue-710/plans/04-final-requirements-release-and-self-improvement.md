@@ -86,18 +86,26 @@ Files: this plan and plans/README.md first; only then tests and production.
 
 - [x] current remote head, clean worktree, and all CI conclusions captured
 - [x] exact failure messages captured in this plan
-- [ ] reproduce the two LiNo integrity failures locally
-- [ ] reproduce the Responses tool-call failure locally
-- [ ] generate the Python box answer with a fresh isolated cache and retain it
-- [ ] run the three issue-334 tests against a fresh local web build and inspect
+- [x] reproduce the two LiNo integrity failures locally
+- [x] reproduce the Responses tool-call failure locally
+- [x] generate the Python box answer with a fresh isolated cache and retain it
+- [x] run the three issue-334 tests against a fresh local web build and inspect
       the rendered answers, not only the missing locator
+
+The local reproductions matched CI. The seed rejected `surface any` and found
+sixteen definitions whose complete body was only `defined-by concept`. The
+Responses request returned no `function_call` item. A clean Python box corpus
+answered with `write program skill gap` and no fenced artifact. In the browser,
+the structural recognizer parsed the relative pronoun in “function that
+calculates” as the callable name `that`, then reported no discovered parts.
 
 ## L18 — Repair the semantic seed as knowledge, not decoration
 
 Use existing repository ID/fact conventions. Each abstract structural genus
 must have a distinct, grounded definition body or be merged with the meaning it
-actually denotes. Each surface must be represented by an L-id or a stable
-seed-surface ID and resolved by the same production parser.
+actually denotes. Each authored literal surface must use the current nested
+`surface` / `text` fact shape (an imported lexical entity may instead use its
+L-id) and resolve through the same production parser.
 
 Tests:
 
