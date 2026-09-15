@@ -103,8 +103,8 @@ fn aliases(root: &Path, qid: &str) -> (Vec<(String, String)>, String) {
             }
         }
     }
-    let digest = sha256_hex(&bytes);
-    (values.into_iter().collect(), digest)
+    let source_digest = sha256_hex(&bytes);
+    (values.into_iter().collect(), source_digest)
 }
 
 fn captured_at(root: &Path) -> String {
