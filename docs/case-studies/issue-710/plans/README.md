@@ -44,6 +44,11 @@ The Meta Algorithm").
 
 ## How to resume
 
+Current work is [Plan 06: repository task generalization and durable memory](06-repository-task-generalization.md).
+The baseline CI is green, but the three real repository tasks contradict a
+claim of complete vision coverage. Resume Plan 06's unchecked leaves, with
+tests before implementation and regular Formal AI / Agent CLI experiments.
+
 ```bash
 # The PR branch is checked out in a worktree of the main clone.
 cd /tmp/wt888                      # branch merge-888-into-main → origin/issue-710-14da90b08a12
@@ -77,6 +82,8 @@ wrote it.
 | 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | implemented |
 | 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L15 complete; local gates green; CI confirmation pending |
 | 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | local implementation and release proof complete; final-head CI observation pending |
+| 05 | [Benchmark capability generalization](05-benchmark-capability-generalization.md) | reusable composition across the first-20 Python benchmark slices | implemented; finite slice evidence only |
+| 06 | [Repository task generalization and durable memory](06-repository-task-generalization.md) | actual issue requirements, complete projects, recursive prerequisite discovery, preserved personal memory, and stronger Formal AI self-use | active; plan first, tests second, implementation third |
 
 ## Order of work
 
