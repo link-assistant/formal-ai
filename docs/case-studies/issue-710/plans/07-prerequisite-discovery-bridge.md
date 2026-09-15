@@ -255,3 +255,47 @@ file remains within its configured size limit. Hardcoded prose stays at 1,286
 allowlisted literals; core-boundary checks pass without increasing a ceiling.
 The three external PR heads/checks are unchanged on the latest refresh. The
 main checkout still contains only its pre-existing untracked continuation text.
+
+### Durable checkpoint after verification
+
+- Root-agent increment: `a2e3d8f29` (24 files), with cache and Docker pruning
+  explicitly disabled during commit.
+- Separately attributed Formal AI rename: `693f12d91` (the two source
+  references plus reviewed evidence). Its committed evidence passes the
+  attribution checker; the isolated commit has four changed source lines
+  (additions plus deletions), not a claim about the PR's overall authorship share.
+- Integration: **378 passed, zero failed, one existing ignore** (110.15 s).
+- Source-level tests: **494 passed, zero failed** (2.03 s).
+- Cache generation after the actual rename remains byte-identical.
+- All **32 Rust gates** and **12 web gates** pass. These are the existing gates;
+  no lint, coverage, timeout or debt allowance was weakened.
+- Free space: 27 GiB. Main checkout unchanged; no raw trace published; no push.
+
+The updated #491 requirements are reconciled in the 2026-09-16 delta and a
+dedicated requirements shard. Correctness and complete obligations come before
+resource minimization; a shorter read-only run is not a successful refactor.
+
+### Next source-integrity leaf, before implementation
+
+Inspection of `formalization_recipe` exposed another obstacle before recursive
+knowledge acquisition: its inline-source reader recognizes only four quote
+forms and treats any occurrence of `рыбак`, `fisherman` or `сказк` as a reference
+to the cached fairy tale. A new source sentence containing one of those words
+can therefore be replaced with unrelated cached text. Plain quoted source is
+also not recognized by that reader. This is source-identity loss, independent
+of the deeper absence of concepts/procedures in the memory-contract probe.
+
+Add red tests for ordinary quotes, source sentences containing a known work's
+domain words, multiple quote forms and source-order selection. Reuse the shared
+quoted-span reader; exact known document identity may be resolved from the
+existing Links Notation work catalogue, not from broad domain-word tests.
+Keep the explicit canonical-title behavior and existing multilingual source
+tests. Preserve unknown source clauses without claiming they are understood.
+Do not strengthen this into arbitrary remote-document discovery or semantic
+formalization without separate acceptance tests and implementation evidence.
+
+The two formalizer/lexicon module comments also incorrectly state that open-domain
+extraction *requires* neural inference. Correct them to describe the actual
+implementation limit, not an asserted impossibility that contradicts the vision.
+Unknown-requirement execution, pre-dispatch satisfaction claims, missing-runtime
+discovery/setup and the open-ended source-refactoring failure remain open.
