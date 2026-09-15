@@ -1,3 +1,4 @@
+mod authoring_effects;
 mod changelog_parsing;
 #[path = "../../../scripts/check-associative-terminology.rs"]
 mod check_associative_terminology;

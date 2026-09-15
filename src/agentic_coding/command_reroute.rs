@@ -253,14 +253,19 @@ impl RecipeProgress {
             let output = message.content.plain_text();
             if message.is_error {
                 progress.failure = Some(StepFailure { reported: output, exit_code: None, from_run: matches_run });
-                break;
+                continue;
             }
             if let Some(failure) =
                 StepFailure::from_result(output.clone(), capability == Some(Capability::Run))
             {
                 progress.failure = Some(failure);
-                break;
+                continue;
             }
+            // Only this still-pending action can match above. A later bound
+            // successful retry clears its failure; unrelated setup or a future
+            // verification result cannot. The failed observation stays in the
+            // transcript, so interrupted recovery replays without hidden state.
+            progress.failure = None;
             match capability {
                 _ if matches_write => {
                     progress.files_written += 1;

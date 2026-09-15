@@ -1,6 +1,9 @@
 # Repository task generalization and durable memory
 
 Status: active; analysis and acceptance criteria recorded before test/code edits.
+Latest implementation/evidence checkpoint: [Plan 07](07-prerequisite-discovery-bridge.md),
+including source-span integrity, bound recovery replay, genuine authorship checks,
+and the distinction between a failed open-ended refactor and a verified rename.
 Baseline: `2f7a381a28bdaad01016f1a265201a696c9dd869`, 2026-09-15.
 All implementation belongs to PR #888, remote `issue-710-14da90b08a12`.
 

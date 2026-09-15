@@ -29,6 +29,7 @@ mod requirements;
 mod write_program_request;
 use prompt_relevants::append_prompt_relevants;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
+pub(crate) use requirements::{requirement_list_spans, requirement_operand_spans};
 use write_program_request::{requested_write_program_parameters, write_program_parameters};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

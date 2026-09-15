@@ -2,9 +2,9 @@ self_ast_census
   target src/meta_frame.rs
   language rust
   fidelity signature
-  byte_len 28384
-  line_count 749
-  content_id source_module_e06de17c98940c4b
+  byte_len 28708
+  line_count 760
+  content_id source_module_72c647027c6caf5e
   symbol_count 37
   symbols
     function formalize_span 36 39
@@ -30,17 +30,17 @@ self_ast_census
     function emit_events 432 444
     function decompose_once 453 459
     function segment_needs 471 482
-    function split_sentences 487 503
-    function split_clauses 508 519
-    function push_trimmed 521 526
-    function record_problem_frame 534 548
-    function record_work_units 558 569
-    struct LedgerRow 574 589
-    function to_links_notation 593 614
-    struct NeedLedger 630 635
-    function resolve 640 669
-    function count_with 673 675
-    function every_need_accounted_for 680 686
-    function to_links_notation 690 711
-    function best_leaf_for 718 727
-    function record_need_ledger 731 749
+    function split_sentences 487 514
+    function split_clauses 519 530
+    function push_trimmed 532 537
+    function record_problem_frame 545 559
+    function record_work_units 569 580
+    struct LedgerRow 585 600
+    function to_links_notation 604 625
+    struct NeedLedger 641 646
+    function resolve 651 680
+    function count_with 684 686
+    function every_need_accounted_for 691 697
+    function to_links_notation 701 722
+    function best_leaf_for 729 738
+    function record_need_ledger 742 760

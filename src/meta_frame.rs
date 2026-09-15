@@ -485,14 +485,25 @@ fn segment_needs(text: &str) -> Vec<String> {
 /// `?` is still visible to the question classifier.
 #[must_use]
 fn split_sentences(text: &str) -> Vec<String> {
-    let chars: Vec<char> = text.chars().collect();
+    let operands = crate::intent_formalization::requirement_operand_spans(text);
+    let list_markers = crate::intent_formalization::requirement_list_spans(text);
     let mut sentences = Vec::new();
     let mut current = String::new();
-    for (index, &ch) in chars.iter().enumerate() {
+    for (index, ch) in text.char_indices() {
         current.push(ch);
+        if operands
+            .iter()
+            .chain(&list_markers)
+            .any(|span| span.contains(&index))
+        {
+            continue;
+        }
         let strong_terminator = matches!(ch, '?' | '!' | '。' | '！' | '？');
-        let period_boundary =
-            ch == '.' && chars.get(index + 1).is_none_or(|next| next.is_whitespace());
+        let period_boundary = ch == '.'
+            && text[index + 1..]
+                .chars()
+                .next()
+                .is_none_or(char::is_whitespace);
         if strong_terminator || period_boundary {
             push_trimmed(&mut sentences, &current);
             current.clear();

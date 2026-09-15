@@ -254,6 +254,7 @@ mod proof_request_config;
 mod proxy;
 mod recipe_evidence;
 mod reference_closure;
+mod requirement_span_integrity;
 mod self_coding;
 mod semantic_facets;
 mod semantic_grounding;

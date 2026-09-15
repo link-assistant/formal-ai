@@ -87,7 +87,7 @@ wrote it.
 | 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | local implementation and release proof complete; final-head CI observation pending |
 | 05 | [Benchmark capability generalization](05-benchmark-capability-generalization.md) | reusable composition across the first-20 Python benchmark slices | implemented; finite slice evidence only |
 | 06 | [Repository task generalization and durable memory](06-repository-task-generalization.md) | actual issue requirements, complete projects, recursive prerequisite discovery, preserved personal memory, and stronger Formal AI self-use | active; plan first, tests second, implementation third |
-| 07 | [Prerequisite discovery bridge](07-prerequisite-discovery-bridge.md) | failure-driven setup discovery, dependency checks and honest completion shared across toolchains | design recorded; subplan of 06 |
+| 07 | [Prerequisite discovery bridge](07-prerequisite-discovery-bridge.md) | failure-driven setup discovery, dependency checks and honest completion shared across toolchains | active subplan of 06; operand preservation, retry evidence and authorship floor verified; automatic setup discovery open |
 
 ## Order of work
 

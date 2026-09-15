@@ -1,8 +1,8 @@
 //! Rebuild the browser's derived recurrence cache from trusted replay fixtures.
 //!
 //! Usage:
-//!   cargo run --example generate_recurrence_source_cache
-//!   cargo run --example generate_recurrence_source_cache -- --write
+//! `cargo run --example generate_recurrence_source_cache`
+//! `cargo run --example generate_recurrence_source_cache -- --write`
 
 use std::collections::BTreeSet;
 use std::fs;
@@ -12,9 +12,8 @@ use formal_ai::coding_function_catalog::wikifunctions::{
     fetch_abstract_implementation, fetch_function, fetch_function_descriptors, fetch_testers,
 };
 use formal_ai::coding_recurrence::{Expression, Operation, Recurrence, formalize};
-use formal_ai::{CachedSourceClient, FetchError, SourceTransport};
+use formal_ai::{CachedSourceClient, FetchError, SourceTransport, sha256_hex};
 use serde_json::Value;
-use sha2::{Digest, Sha256};
 
 const TARGET: &str = "src/web/source-cache/wikifunctions-recurrences.lino";
 const WIKIDATA_FIBONACCI: &str = "https://www.wikidata.org/wiki/Special:EntityData/Q23835349.json";
@@ -104,10 +103,7 @@ fn aliases(root: &Path, qid: &str) -> (Vec<(String, String)>, String) {
             }
         }
     }
-    let digest = Sha256::digest(bytes)
-        .iter()
-        .map(|byte| format!("{byte:02x}"))
-        .collect::<String>();
+    let digest = sha256_hex(&bytes);
     (values.into_iter().collect(), digest)
 }
 

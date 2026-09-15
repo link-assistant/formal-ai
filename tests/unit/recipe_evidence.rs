@@ -75,3 +75,119 @@ fn orphaned_success_result_is_not_evidence_of_a_requested_action() {
     messages.push(ChatMessage::tool_result("unknown", "write", "success"));
     assert_eq!(call(&messages), expected);
 }
+
+fn failed_answer(messages: &[ChatMessage]) -> String {
+    let answer = UniversalSolver::default().solve("Write a hello world program in Python.");
+    match plan_symbolic_command_reroute(messages, &["write", "bash"], &answer).unwrap() {
+        AgenticPlan::Final(answer) => {
+            assert!(!answer.contains("Created and verified"), "{answer}");
+            answer
+        }
+        other @ AgenticPlan::ToolCalls(_) => panic!("a failure is still unresolved: {other:?}"),
+    }
+}
+
+#[test]
+fn a_bound_successful_retry_resumes_the_recipe_after_a_command_failure() {
+    let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+    let write = call(&messages);
+    record(&mut messages, &write, "success");
+    let compile = call(&messages);
+    record(
+        &mut messages,
+        &compile,
+        "Exit Code: 127\ncompiler not found",
+    );
+    assert!(failed_answer(&messages).contains("127"));
+    record(&mut messages, &compile, "Exit Code: 0");
+    let verify = call(&messages);
+    assert_ne!(
+        verify, compile,
+        "the successful retry should advance exactly one step"
+    );
+    assert!(
+        messages
+            .iter()
+            .any(|message| message.content.plain_text().contains("compiler not found")),
+        "recovery must not erase the original failed observation"
+    );
+    assert_eq!(
+        call(&messages.clone()),
+        verify,
+        "replay does not depend on hidden process state"
+    );
+}
+
+#[test]
+fn a_bound_successful_retry_resumes_after_a_failed_file_write() {
+    let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+    let write = call(&messages);
+    record(&mut messages, &write, "Error: permission denied");
+    failed_answer(&messages);
+    record(&mut messages, &write, "success");
+    assert_eq!(call(&messages).tool, "bash");
+}
+
+#[test]
+fn unrelated_setup_or_future_verification_cannot_clear_a_failed_step() {
+    let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+    let write = call(&messages);
+    record(&mut messages, &write, "success");
+    let compile = call(&messages);
+    let mut successful = messages.clone();
+    record(&mut successful, &compile, "Exit Code: 0");
+    let verify = call(&successful);
+    record(
+        &mut messages,
+        &compile,
+        "Exit Code: 127\ncompiler not found",
+    );
+    for unrelated in [
+        PlannedToolCall {
+            tool: "bash".to_owned(),
+            arguments: json!({"command": "printf setup-completed"}).to_string(),
+        },
+        verify.clone(),
+    ] {
+        record(&mut messages, &unrelated, "Exit Code: 0");
+        assert!(failed_answer(&messages).contains("127"));
+    }
+    messages.push(ChatMessage::tool_result(
+        "orphan-retry",
+        "bash",
+        "Exit Code: 0",
+    ));
+    assert!(failed_answer(&messages).contains("127"));
+    record(&mut messages, &compile, "Exit Code: 0");
+    assert_eq!(
+        call(&messages),
+        verify,
+        "out-of-order verification must be repeated after recovery"
+    );
+}
+
+#[test]
+fn replaying_a_success_for_the_old_failed_call_cannot_forge_a_retry() {
+    let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+    let write = call(&messages);
+    record(&mut messages, &write, "success");
+    let compile = call(&messages);
+    let id = format!("step-{}", messages.len());
+    record(
+        &mut messages,
+        &compile,
+        "Exit Code: 127\ncompiler not found",
+    );
+    messages.push(ChatMessage::tool_result(id, "bash", "Exit Code: 0"));
+    assert!(failed_answer(&messages).contains("127"));
+    record(
+        &mut messages,
+        &compile,
+        "Exit Code: 2\nordinary compilation error",
+    );
+    let latest = failed_answer(&messages);
+    assert!(
+        latest.contains("ordinary compilation error"),
+        "latest failed retry must remain visible: {latest}"
+    );
+}

@@ -196,6 +196,33 @@ for expected in ${contains[@]+"${contains[@]}"}; do
   [[ "$found" -eq 1 ]] || die "no artifact contains: $expected"
 done
 
+# Seed files are context, not authored effects. New logs cannot turn an
+# unchanged seed or already-landed output into another contribution either.
+# Check the whole artifact set before copying anything, including --no-commit.
+differs_from() {
+  [[ -e "$2" ]] || return 0
+  if cmp -s "$1" "$2"; then
+    return 1
+  else
+    comparison_status=$?
+    [[ "$comparison_status" -eq 1 ]] || die "cannot compare artifact: $2"
+    return 0
+  fi
+}
+
+authored_change=0
+for index in "${!produces[@]}"; do
+  produced="$work/${produces[index]}"
+  if [[ -n "$seed" ]] && ! differs_from "$produced" "$seed_path/${produces[index]}"; then
+    continue
+  fi
+  if differs_from "$produced" "$ROOT/${into[index]}"; then
+    authored_change=1
+  fi
+done
+[[ "$authored_change" -eq 1 ]] \
+  || die "no produced artifact differs from both its seed and destination; no change was authored"
+
 destinations=()
 for index in "${!produces[@]}"; do
   destination="${into[index]}"
@@ -206,7 +233,7 @@ done
 echo "Formal AI wrote ${destinations[*]} in session $session_id; evidence in $evidence"
 
 if [[ "$commit" -eq 0 ]]; then
-  echo "--no-commit: leaving ${destinations[*]} and $evidence staged for review"
+  echo "--no-commit: leaving ${destinations[*]} and $evidence unstaged for review"
   exit 0
 fi
 
