@@ -419,3 +419,28 @@ recursive semantic extraction, complete unknown-obligation execution, runtime
 validation feedback, and trusted missing-runtime discovery/setup. Passing these
 finite regressions and reporting partial results honestly do not close those
 implementation requirements.
+
+### Post-push attribution audit: forward correction authorized
+
+The requested single push completed at `e797f08328a04736cb475d6cb0d92deb29c17fb7`;
+GitHub confirms that SHA and starts new CI. The strict whole-PR self-hosting
+measurement then fails on evidence-only commit
+`543671431aeeb5c27cb1bb3a7695088b71bb7eb1`: its trailer declares
+`formal-ai/0.350.0`, but its committed evidence never names that exact model
+identifier. This check should have completed before the push. The 32 local
+Rust gates exercise the metric's tests, not this actual PR history, so their
+green result did not validate the history. Do not claim a new overall percentage.
+
+The safe correction is the existing append-only `Formal-AI-Retract` mechanism,
+with that full SHA, in a documentation-only follow-up commit. Keep the original
+artifact and history intact; withdraw the unsupported attribution rather than
+invent evidence or inflate the numerator. This commit had no behavioral source
+lines to credit. Re-run the strict metric over `origin/main..HEAD` after the
+retraction, then rescan before publishing. No source gate should be relaxed.
+
+A second push exceeds the earlier one-push preference. The user explicitly
+authorized forward commits and pushes to clear every check. Current base remains
+`de88ca2512e35b9b08c34cdf26460185ded04898`; the main checkout's untracked
+continuation text remains untouched. All implementation tests recorded above
+remain green. Commit the retraction, run the strict whole-range metric and secret
+scan, then push the forward correction. Do not rewrite history or add credit.
