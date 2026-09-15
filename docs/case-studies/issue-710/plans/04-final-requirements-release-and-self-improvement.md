@@ -333,6 +333,16 @@ action gate receives payload-specific approval for the full system-prompt and
 dialog content; this does not weaken the committed artifact or regression
 evidence.
 
+A third bounded subtask rechecked the repaired authoring path against the final
+benchmark evidence. In session `ses_f5c728a87ffeo1D0HZe7VLM0dW`, Formal AI
+inspected three source measurements, derived one scoped record per measurement,
+wrote `data/meta/benchmark-release-capability-index.lino`, and read it back
+byte-for-byte through the real Agent CLI. Commit aa27f7284 carries the model,
+session, evidence, and PR trailers. The independent
+`benchmark_release_capability` regressions bind the output to the SHA-256 of
+its input and to the latest append-only HumanEval/MBPP ledger rows; this makes
+the authored leaf checked evidence rather than an unverified status claim.
+
 ## L24 — Refresh and re-verify requirements
 
 The previous audit covers #1–#1137 and 296 coding/benchmark records from the

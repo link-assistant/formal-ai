@@ -3,6 +3,7 @@ mod agentic_general_planner;
 mod agentic_surfaces;
 mod architect_notes;
 mod assistant_name;
+mod benchmark_release_capability;
 mod budget_search;
 mod bulk_lexeme_import;
 mod ci_gates;
