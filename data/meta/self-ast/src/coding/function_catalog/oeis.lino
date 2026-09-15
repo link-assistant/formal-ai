@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/function_catalog/oeis.rs
   language rust
   fidelity signature
-  byte_len 14905
-  line_count 487
-  content_id source_module_239a261c5dd0a7c4
-  symbol_count 29
+  byte_len 15672
+  line_count 507
+  content_id source_module_b2654e7036ea855b
+  symbol_count 30
   symbols
     const API 16 16
     const LICENSE 17 17
@@ -22,17 +22,18 @@ self_ast_census
     function programs_for_record 180 217
     function sequence_program 219 238
     function research_queries 240 257
-    function tiling_query 259 288
-    function dimension_token 290 293
-    function boolean_examples 295 301
-    function integer_examples 303 311
-    function arithmetic_formula 313 335
-    function formula_membership_body 337 348
-    function replace_variable 350 361
-    function linear_recurrence 363 380
-    function parse_coefficient 382 389
-    function matching_index_maps 391 426
-    function recurrence_body 428 461
-    function template 463 465
-    function record_label 467 473
-    function encode_component 475 487
+    function tiling_query 259 284
+    function singularize_english_noun 291 308
+    function dimension_token 310 313
+    function boolean_examples 315 321
+    function integer_examples 323 331
+    function arithmetic_formula 333 355
+    function formula_membership_body 357 368
+    function replace_variable 370 381
+    function linear_recurrence 383 400
+    function parse_coefficient 402 409
+    function matching_index_maps 411 446
+    function recurrence_body 448 481
+    function template 483 485
+    function record_label 487 493
+    function encode_component 495 507

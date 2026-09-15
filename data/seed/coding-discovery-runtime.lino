@@ -46,7 +46,7 @@ coding_discovery_runtime
   template example_arithmetic_divide
     text "({product}) / {divisor}"
   template oeis_dimension_query
-    text "{left} x {right} {objects}"
+    text "{left} x {right} {object} tilings"
   template oeis_formula_membership
     text "for source_index in range({start}, 100000):\n    candidate = {expression}\n    if candidate >= {parameter}:\n        return candidate == {parameter}\nreturn False"
   template oeis_recurrence_term

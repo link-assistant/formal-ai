@@ -17,12 +17,18 @@ impl SourceTransport for FixtureTransport {
             r#"[{"number":2064,"data":"3,9,25,65,161,385","name":"Cullen numbers: n*2^n + 1."}]"#
         } else if url.contains("A002064") {
             r#"{"number":2064,"data":"3,9,25,65,161,385","name":"Cullen numbers: n*2^n + 1."}"#
-        } else if url.contains("search?q=5%20x%20n%20tromino%20coverings") {
+        } else if url.contains("search?q=5%20x%20n%20tromino%20tilings") {
             r#"[{"number":999999,"data":"1","name":"Array of tromino tilings.","xref":["A123456 is a fixed-width row."]}]"#
+        } else if url.contains("search?q=3%20x%20n%20domino%20tilings") {
+            r#"[{"number":999998,"data":"1","name":"Array of domino tilings.","xref":["A654321 is a fixed-width row."]}]"#
         } else if url.contains("A999999") {
             r#"{"number":999999,"data":"1","name":"Array of tromino tilings.","xref":["A123456 is a fixed-width row."]}"#
+        } else if url.contains("A999998") {
+            r#"{"number":999998,"data":"1","name":"Array of domino tilings.","xref":["A654321 is a fixed-width row."]}"#
         } else if url.contains("A123456") {
             r#"{"number":123456,"data":"1,1,2,5,13,34,89,233","name":"a(n) = 3*a(n-1) - a(n-2), with a(0) = 1, a(1) = 1."}"#
+        } else if url.contains("A654321") {
+            r#"{"number":654321,"data":"1,1,3,11,41,153,571,2131","name":"a(n) = 4*a(n-1) - a(n-2), with a(0) = 1, a(1) = 1."}"#
         } else {
             return Err(FetchError::Transport(format!(
                 "unexpected fixture URL: {url}"
@@ -122,4 +128,31 @@ fn referenced_recurrence_is_formalized_and_replays_after_forgetting_transport() 
     assert_eq!(replay, first);
     assert_eq!(requests.load(Ordering::SeqCst), live_requests);
     std::fs::remove_dir_all(cache).expect("remove recurrence cache");
+}
+
+#[test]
+fn plural_tile_noun_and_prose_bridge_produce_a_source_index_query() {
+    let cache = temp_cache("plural-object");
+    let _ = std::fs::remove_dir_all(&cache);
+    let client = CachedSourceClient::new(&cache, FixtureTransport::default())
+        .with_online(true)
+        .with_clock(|| 1_789_344_000);
+    let discovery = discover_programs(
+        &client,
+        &spec(
+            "count_ways",
+            "n",
+            "Find the number of ways to fill it with 2 x 1 dominoes for the given 3 x n board.",
+            &[("2", "3"), ("8", "153"), ("12", "2131")],
+        ),
+    );
+    assert!(discovery.diagnostics.is_empty(), "{discovery:?}");
+    let recurrence = discovery
+        .programs
+        .iter()
+        .find(|program| program.composition.contains("floor(n/2)+1"))
+        .expect("the generalized dimension query should find the fixed-width row");
+    assert!(recurrence.source.contains("values.append((4 * values[-1])"));
+    assert!(recurrence.source.contains("n // 2 + (1)"));
+    std::fs::remove_dir_all(cache).expect("remove plural-object cache");
 }

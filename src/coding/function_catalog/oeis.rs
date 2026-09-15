@@ -268,23 +268,43 @@ fn tiling_query(text: &str) -> Option<String> {
         .collect::<Vec<_>>();
     let (first_index, _) = dimension_windows.first()?;
     let (last_index, dimensions) = dimension_windows.last()?;
-    let objects = tokens[first_index + 3..*last_index]
+    let object = tokens[first_index + 3..*last_index]
         .iter()
         .copied()
-        .take_while(|token| token.chars().count() > 2)
-        .collect::<Vec<_>>()
-        .join(" ");
-    if objects.is_empty() {
-        return None;
-    }
+        .find(|token| token.chars().count() > 2)
+        .map(singularize_english_noun)?;
     Some(template(
         "oeis_dimension_query",
         &[
             ("left", dimensions[0]),
             ("right", dimensions[2]),
-            ("objects", &objects),
+            ("object", &object),
         ],
     ))
+}
+
+/// Reduce the tile noun to the form sequence indexes conventionally use.
+///
+/// The dimension grammar already establishes that this token names the repeated
+/// object; the morphology is deliberately domain-neutral (`berries`, `boxes`,
+/// `dominoes`, `tiles`) rather than a list of benchmark objects.
+fn singularize_english_noun(word: &str) -> String {
+    if word.len() > 4
+        && let Some(stem) = word.strip_suffix("ies")
+    {
+        return format!("{stem}y");
+    }
+    if word.len() > 4
+        && ["ches", "shes", "xes", "zes", "ses", "oes"]
+            .iter()
+            .any(|suffix| word.ends_with(suffix))
+    {
+        return word[..word.len() - 2].to_owned();
+    }
+    if word.len() > 3 && word.ends_with('s') && !word.ends_with("ss") {
+        return word[..word.len() - 1].to_owned();
+    }
+    word.to_owned()
 }
 
 fn dimension_token(token: &str) -> bool {

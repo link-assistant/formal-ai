@@ -11,6 +11,7 @@ bump: minor
 - Rosetta Code example requests now return attributed GFDL examples, and explicit Rust execution requests run only in the bounded agent workspace.
 
 ### Fixed
+- OEIS discovery now isolates the requested content-object noun between the tile and board dimensions, normalizes ordinary English plurals, and builds a canonical tiling query. Explanatory bridge prose can therefore no longer turn a source-backed recurrence request into an unrelated search phrase.
 - Structural coding meanings now use canonical nested surface facts and carry distinct official documentation groundings, preserving semantic-seed integrity without prompt-specific definitions.
 - Conversational coding recognition now considers only the outer instruction after benchmark signatures and assertions are parsed, so programming words inside a fenced document cannot steal an unrelated document-conversion request.
 - Pull requests that change the agentic routing subsystem now run the complete Agent, OpenCode, Claude, and Codex research replay before merge, closing the post-merge-only coverage gap from issue #1137 while unrelated branches retain the cheaper held-out gate.
