@@ -1498,10 +1498,11 @@ relative source tiers, and normalized presentation into one ranked answer. See
 
 Issue [#710](https://github.com/link-assistant/formal-ai/issues/710) audits 32
 requirements that earlier issue closures did not prove. The detailed evidence
-matrix was re-verified on 2026-08-10 against v0.337.0 in
+matrix was re-verified on 2026-09-15 against the head of PR #888 in
 `docs/case-studies/issue-710/README.md`; this table is the compact current
-requirement-status authority. `still-broken` means the linked open focused
-owner remains required and must not be read as implemented.
+requirement-status authority. A historical `still-broken` verdict becomes
+`works-now` only when the focused implementation and its production-path
+regressions are present; closing an issue alone is not evidence.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
@@ -1524,7 +1525,7 @@ owner remains required and must not be read as implemented.
 | R710-17 | Word problems beyond train meeting. | `works-now` — Fibonacci and box-relation regressions. |
 | R710-18 | Current source-backed film release ordering. | `works-now` — issue-892 timestamped Wikidata timeline regressions. |
 | R710-19 | Closest contextual pronoun resolution. | `works-now` — issue-465 follow-up specification. |
-| R710-20 | How-to multi-source synthesis and seven-day availability cache. | `still-broken` — [#991](https://github.com/link-assistant/formal-ai/issues/991); #709 delivered statement fusion, not the procedural contract. |
+| R710-20 | How-to multi-source synthesis and seven-day availability cache. | `works-now` — issue #991's shared bounded guide synthesizer runs in Rust/server and the browser worker, while `service_accessibility` persists success and failure for seven days; native, real-HTTP, browser, offline-capture, and opt-out regressions pin the production paths. |
 | R710-21 | Iterative two-file summary validation and 80% quality bar. | `works-now` — issue-893 iteration, threshold, and ratchet regressions. |
 | R710-22 | Interior/plain-capitalized entity reasoning class. | `works-now` — issue-571 class regression and worker entity coverage. |
 | R710-23 | Calendar interchange and Apple/Google/Microsoft flows. | `works-now` — RFC 5545 plus Google insertion regression. |
@@ -1534,7 +1535,7 @@ owner remains required and must not be read as implemented.
 | R710-27 | Published coverage with a non-decreasing ratchet. | `works-now` — issue-895 80% published-coverage floor and ratchet regressions. |
 | R710-28 | Gemini headless tools. | `works-now` — #671 / PR #814 real-client matrix evidence. |
 | R710-29 | macOS signed/notarized auto-update production path. | `works-now` — desktop workflow and issue-548 regressions. |
-| R710-30 | link-foundation/start and command-stream adoption. | `still-broken` — [#990](https://github.com/link-assistant/formal-ai/issues/990); start-command shipped, but production command runners still bypass command-stream. |
+| R710-30 | link-foundation/start and command-stream adoption. | `works-now` — `start-command` owns Docker lifecycle, the Electron adapter and POSIX Rust orchestrator use published `command-stream`, and every unsupported boundary is explicitly mapped to an upstream component issue; command-runner and orchestration process regressions pin streaming, exact argv, exit status, cancellation, and host/Docker selection. |
 | R710-31 | web-search/web-capture as production components. | `works-now` — issue-896 production-component and feature-wiring regressions. |
 | R710-32 | Iframe pre-check and external-link actions. | `works-now` — browser navigation/embedding regressions. |
 
@@ -1549,8 +1550,8 @@ evidence live in `docs/case-studies/issue-710/plans/`.
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |
 | R710-D1 | Coding synthesis must derive answers from task structure and sourced operations, never from upstream case names or copied task sentences. | Implemented by `task_spec`, `concept_discovery`, and `composition`; `coding_discovery::no_memorization` scans the downloaded HumanEval/MBPP slice against `src/` and `data/seed/`. |
-| R710-D2 | The first 20 HumanEval cases must be run honestly through the discovery path and report their upstream grading result. | Implemented by `benchmark run --suite humaneval --slice 20 --online`; local 2026-09-15 measurement is 3/20, up from the committed 0/20 row. |
-| R710-D3 | The first 20 MBPP cases must be run honestly through the same discovery path and upstream assertions. | Implemented by `benchmark run --suite mbpp --slice 20 --online`; local 2026-09-15 measurement is 1/20, up from the committed 0/20 row. |
+| R710-D2 | The first 20 HumanEval cases must be run honestly through the discovery path and report their upstream grading result. | Implemented by `benchmark run --suite humaneval --slice 20`; the dated 2026-09-15 committed measurement and an empty-source-cache control both pass 20/20 upstream tests. |
+| R710-D3 | The first 20 MBPP cases must be run honestly through the same discovery path and upstream assertions. | Implemented by `benchmark run --suite mbpp --slice 20 --online`; the dated 2026-09-15 committed measurement passes 20/20 upstream assertions. A cold offline control honestly passes 18/20 and names the two externally defined sequence gaps. |
 | R710-D4 | Structural coding prompts must enter program synthesis before arithmetic or concept lookup. | Implemented by `coding::task_spec::recognise` in intent formalization and handler precedence; pinned by `coding_discovery::routing`. |
 | R710-D5 | Upstream benchmark runs must have an explicit online-discovery mode while PR ratchet checks remain offline. | Implemented by `benchmark run --online`, `run_suite_with_online`, and the scheduled workflow contract; pinned by `specification::external_benchmarks`. |
 | R710-D6 | Wikifunctions, Python standard-library documentation, and Rosetta Code must be consumable as licensed, content-addressed function/example sources. | Implemented under `src/coding/function_catalog/` with captured fixtures and `coding_discovery::{wikifunctions,python_docs,rosetta}`. |
@@ -1899,8 +1900,8 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-5 | The system learns the universal problem-solving algorithm, making it possible to truly solve translation between natural and formal languages. | Tracked: E70 owns general natural-formal translation; E75 owns method learning over the recipe interpreter and method registry. |
 | R914-6 | Keep a minimum core of algorithms plus a data seed whose metadata is rich enough to problem-solve the way people do. | Partial with enforcement from #918: the accepted four-part boundary, recursive handler ledger, metadata schema, complete coding-path floor, per-record gap data, and shrink-only CI ratchets are documented in `docs/case-studies/issue-918/`; 43 specialized handlers remain migration debt. |
 | R914-7 | No neural networks in reasoning; formal reasoning covers all existing test cases and much more. | Standing invariant (NON-GOALS.md) restated as a binding design rule for every epic; coverage growth with external benchmark scoring is E76. |
-| R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Tracked: E72 owns the research-to-verified-procedure loop over the provenance-tracked source cache, building on #873 and #896. |
-| R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Tracked: E69 ratchets the #848 coding ladder (baseline 2 of 13 rungs, zero write effects) over the #902-#909 harness fixes; E77 routes real repository work through Formal AI per release. |
+| R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Implemented as a growing general mechanism: E72/#919 supplies research-to-verified-procedure learning over the provenance-tracked source cache; PR #888 adds bounded Python documentation, Wikifunctions, Rosetta Code, and official OEIS adapters, strict source formalization, structural composition, executable selection, forgettable procedure memory, and cold-cache rediscovery tests. Unknown source knowledge still fails honestly rather than becoming a built-in answer. |
+| R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Implemented with measured boundaries: E69/#916 closes the write-effect dependency, the issue-1021 action ladder passes 16/16, and E77/#924 requires real Agent-CLI-authored repository work per release cycle. PR #888 adds multiple session-backed Formal-AI-authored leaves and raises the first-20 HumanEval/MBPP upstream rows to 20/20 through generalized discovery. |
 | R914-10 | Work with unknowns, asking the user as few questions as possible and only requirement-level ones. | Tracked: E73 adds the question-necessity protocol over the existing clarify-vs-guess, unknown-reasoning, and #527 question-catalog mechanisms. |
 | R914-11 | Integrate well with link-assistant/hive-mind through agentic harness CLIs and TUIs. | Tracked: E74 owns the replayable end-to-end gate in both directions, including the hive-mind#2059 invocation shape. |
 | R914-12 | The result is issues created in this repository representing the full plan. | Implemented: opened-issue URLs recorded in `docs/case-studies/issue-914/proposed-issues.md`. |
@@ -2428,6 +2429,19 @@ sub-issues of #1085.
 | R1085-15 | Move `dev/log` and raw case-study logs to an evidence store with a hashed Links Notation index; cap non-source additions per pull request; land #1072. | Sub-issue of #1085 (D7). |
 | R1085-16 | Render status tables from ledgers, convert byte-equality pins to containment, require a justification for every CI gate, record a wall-clock ceiling. | Sub-issue of #1085 (D8). |
 | R1085-17 | Finish or retire the traceability manual-confirmation column. | Sub-issue of #1085 (D9). |
+
+## Issue #1137 Pre-Merge Four-Client Routing Replay
+
+Issue [#1137](https://github.com/link-assistant/formal-ai/issues/1137) records
+that Agent, OpenCode, Claude, and Codex expose different tool vocabularies, so a
+single-client or held-out-only pull-request gate cannot prove a routing change
+before it reaches `main`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1137-1 | A pull request that changes agentic routing must run the full real-client replay before merge. | Implemented: `scripts/detect-code-changes.rs` derives `agentic-routing-changed` from the complete PR diff whenever a tracked path under `src/agentic_coding/` changes; `.github/workflows/release.yml` passes `full-replay: true` to the reusable Agent CLI workflow for that PR. The path classifier and caller expression are pinned by `detect_code_changes::tests::agentic_source_changes_request_the_four_client_replay` and `ci_cd::issue_1137_agentic_routing_replay`. |
+| R1137-2 | The pre-merge replay must retain Agent, OpenCode, Claude, and Codex and prove search, fetch, and cited synthesis. | Implemented: the full-replay-only `run_issue_781.sh` step retains the four-client default and its per-client search/fetch/final assertions; `the_full_replay_still_exercises_each_supported_client` pins the caller, harness, and client inventory. |
+| R1137-3 | Pull requests outside the routing boundary should retain the cheaper held-out gate. | Implemented: the new detector output is false outside `src/agentic_coding/`; the existing `main`, schedule, and manual full-replay conditions remain unchanged. The classifier regression exercises unrelated coding and documentation paths. |
 
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 

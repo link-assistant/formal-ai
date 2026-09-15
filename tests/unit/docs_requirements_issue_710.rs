@@ -28,7 +28,7 @@ const VERDICTS: [&str; 4] = [
 #[test]
 fn every_issue_710_checklist_row_has_one_allowed_verdict_and_evidence() {
     let audit = CASE_STUDY
-        .split("## 2026-08-10 follow-up re-verification")
+        .split("## 2026-09-15 follow-up re-verification")
         .nth(1)
         .expect("case study should contain the dated re-verification")
         .split("Totals:")
@@ -71,7 +71,7 @@ fn every_issue_710_checklist_row_has_one_allowed_verdict_and_evidence() {
 #[test]
 fn no_conversational_gap_is_left_without_a_green_specification() {
     let current_audit = CASE_STUDY
-        .split("## 2026-08-10 follow-up re-verification")
+        .split("## 2026-09-15 follow-up re-verification")
         .nth(1)
         .expect("case study should contain the follow-up re-verification");
     let chat_rows = current_audit
@@ -87,23 +87,31 @@ fn no_conversational_gap_is_left_without_a_green_specification() {
 }
 
 #[test]
-fn requirements_and_roadmap_report_the_same_partial_reality() {
+fn requirements_and_roadmap_report_the_same_current_reality() {
     let rows = REQUIREMENTS
         .lines()
-        .filter(|line| line.starts_with("| R710-"))
+        .filter(|line| {
+            line.split('|')
+                .nth(1)
+                .map(str::trim)
+                .and_then(|id| id.strip_prefix("R710-"))
+                .is_some_and(|suffix| {
+                    suffix.len() == 2 && suffix.chars().all(|ch| ch.is_ascii_digit())
+                })
+        })
         .collect::<Vec<_>>();
     assert_eq!(rows.len(), 32);
     assert_eq!(
         rows.iter()
             .filter(|row| row.contains("`works-now`"))
             .count(),
-        29
+        31
     );
     assert_eq!(
         rows.iter()
             .filter(|row| row.contains("`still-broken`"))
             .count(),
-        2
+        0
     );
     assert_eq!(
         rows.iter()
@@ -111,20 +119,25 @@ fn requirements_and_roadmap_report_the_same_partial_reality() {
             .count(),
         1
     );
-    assert!(ROADMAP.contains("29 works now, 1 superseded, 2 still broken"));
+    assert!(ROADMAP.contains("31 work now and 1 is superseded"));
     assert!(
         !ROADMAP.contains("Silently-dropped chat/UX/process requirements re-verified | Not done")
     );
 }
 
 #[test]
-fn current_open_gaps_have_focused_open_owners() {
+fn formerly_open_gaps_have_current_production_evidence() {
     assert!(CASE_STUDY.contains("[#990](https://github.com/link-assistant/formal-ai/issues/990)"));
     assert!(CASE_STUDY.contains("[#991](https://github.com/link-assistant/formal-ai/issues/991)"));
-    assert!(REQUIREMENTS.contains("R710-20 | How-to multi-source synthesis and seven-day availability cache. | `still-broken` — [#991]"));
     assert!(REQUIREMENTS.contains(
-        "R710-30 | link-foundation/start and command-stream adoption. | `still-broken` — [#990]"
+        "R710-20 | How-to multi-source synthesis and seven-day availability cache. | `works-now`"
     ));
+    assert!(
+        REQUIREMENTS
+            .contains("R710-30 | link-foundation/start and command-stream adoption. | `works-now`")
+    );
+    assert!(CASE_STUDY.contains("issue_991_how_to_http.rs"));
+    assert!(CASE_STUDY.contains("command-runner.test.mjs"));
 }
 
 #[test]

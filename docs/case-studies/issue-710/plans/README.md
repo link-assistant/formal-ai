@@ -153,8 +153,10 @@ wrote it.
   ledger now form the production path. Rosetta Code stays behind an attributed
   example/execution boundary. The curated slice remains 13/13, the five-language
   held-out discovery suite is 25/25, and honest local online first-20 runs
-  measured HumanEval 3/20 and MBPP 1/20. Those local measurements were not
-  appended as scheduled ledger history.
+  initially measured HumanEval 3/20 and MBPP 1/20. The later generalized
+  structural and source-backed layers reached 20/20 and 20/20; those dated
+  measurements and floors are now append-only ledger history, while a cold
+  control remains explicit at HumanEval 20/20 and MBPP 18/20.
 
   Formal AI was then asked through the real external Agent CLI to author
   `data/meta/coding-discovery-recipe.lino`. The first valid `with`-payload run

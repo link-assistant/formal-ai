@@ -45,9 +45,9 @@ smaller silently-dropped items; the twelve sibling issues own the large
 capability gaps. `ROADMAP.md` gained a requirement-level status table
 (done / partial / not done) in the same pass.
 
-## 2026-08-10 follow-up re-verification
+## 2026-09-15 follow-up re-verification
 
-The checklist below was re-run against current `main` v0.337.0 after every
+The checklist below was re-run against the head of PR #888 after every
 focused follow-up from the 2026-08-01 pass had merged. No verdict is inferred
 from an issue or pull request being closed: each changed row points at a current
 production-path regression, and the folder-routing complaint from the issue
@@ -79,7 +79,7 @@ an open focused owner. No row in this audit currently has enough evidence for a
 | 17 | Knowledge | Word problems beyond train meeting | `works-now` | [`calculator_delegation.rs`](../../../tests/unit/specification/calculator_delegation.rs), `fibonacci_word_problem_reduces_to_calculator_expression` and `box_relation_word_problem_resolves_total_with_reasoning`. |
 | 18 | Knowledge | Current films in release order, not a stale seed | `works-now` | [`issue_892.rs`](../../../tests/unit/specification/issue_892.rs) transcribes a timestamped checked-in Wikidata capture and exercises current, stale, future, and undated releases through the production answer path in every registered language. |
 | 19 | Knowledge | Closest contextual pronoun resolution | `works-now` | [`issue_465.rs`](../../../tests/unit/specification/issue_465.rs), `pronoun_followup_resolves_prior_rust_topic_for_creator_question`, with multilingual fact availability. |
-| 20 | Knowledge | How-to multi-source synthesis and seven-day availability cache | `still-broken` | [#709](https://github.com/link-assistant/formal-ai/issues/709) delivered statement-level source fusion, but the issue-444 case study still identifies reasoned procedural synthesis, recursive capture, per-service accessibility state, and real-service QA replay as unfinished. Focused owner [#991](https://github.com/link-assistant/formal-ai/issues/991) now carries that exact residual contract. |
+| 20 | Knowledge | How-to multi-source synthesis and seven-day availability cache | `works-now` | [#991](https://github.com/link-assistant/formal-ai/issues/991) delivered the shared bounded guide synthesizer in [`how_to_guide.rs`](../../../src/how_to_guide.rs) and the browser worker, recursive licensed capture, conflict/insufficient-evidence policy, and seven-day success/failure memory in [`service_accessibility.rs`](../../../src/service_accessibility.rs). Native, real-server, browser, offline-capture, and service-opt-out coverage is pinned by [`issue_991_how_to_synthesis.rs`](../../../tests/unit/issue_991_how_to_synthesis.rs), [`issue_991_how_to_http.rs`](../../../tests/integration/issue_991_how_to_http.rs), and [`issue-991-how-to-synthesis.test.mjs`](../../../tests/web/issue-991-how-to-synthesis.test.mjs). |
 | 21 | Knowledge | Iterative two-file summary validation and 80% quality bar | `works-now` | [`issue_893_summarization_validation.rs`](../../../tests/unit/specification/issue_893_summarization_validation.rs) samples two real repository files per seeded iteration until stable/bounded, runs embedded grammars through the production summarizer, and enforces the published 80% ratchet. |
 | 22 | Knowledge | Interior/plain-capitalized entity reasoning class | `works-now` | [`issue_571.rs`](../../../tests/unit/issue_571.rs), `external_entity_questions_route_to_web_search_by_reasoning_not_vocabulary`; lower-case Tesla routing remains pinned in [`multilingual.spec.js`](../../../tests/e2e/tests/multilingual.spec.js). |
 | 23 | Platform | Calendar interchange and Apple/Google/Microsoft flows | `works-now` | [`calendar_ics.rs`](../../../src/solver_handlers/calendar_ics.rs) emits RFC 5545 accepted by Apple Calendar, Outlook, and Google Calendar plus a Google insertion URL; [`issue-404.spec.js`](../../../tests/e2e/tests/issue-404.spec.js) exercises the production worker. |
@@ -89,15 +89,14 @@ an open focused owner. No row in this audit currently has enough evidence for a
 | 27 | Platform | Published coverage with a non-decreasing ratchet | `works-now` | [`coverage.yml`](../../../.github/workflows/coverage.yml) publishes separate Rust and browser reports and gates both against [`baseline.json`](../../../coverage/baseline.json); [`workflow_coverage.rs`](../../../tests/unit/ci-cd/workflow_coverage.rs) pins the non-decreasing, separately measured ratchet and upload contract. |
 | 28 | Platform | Gemini headless tools | `works-now` | Superseding all-client work [#671](https://github.com/link-assistant/formal-ai/issues/671) / [PR #814](https://github.com/link-assistant/formal-ai/pull/814) records Gemini headless `read_file` requests and tool calls in [`recorded/gemini/read-file.jsonl`](../../../experiments/agentic_cli_matrix/recorded/gemini/read-file.jsonl). |
 | 29 | Platform | macOS signed/notarized auto-update production path | `works-now` | [`issue-548.spec.js`](../../../tests/e2e/tests/issue-548.spec.js) pins version/event/localization behavior; [`desktop-release.yml`](../../../.github/workflows/desktop-release.yml) owns signing, notarization, update metadata, and explicit ad-hoc fallback diagnostics. |
-| 30 | Platform | link-foundation/start and command-stream adoption | `still-broken` | `start-command` is now installed and used by the Docker-in-Docker production contract, pinned by [`docker_runtime.rs`](../../../tests/unit/docker_runtime.rs). Desktop, VS Code, and Rust orchestration still use custom process runners with no production `command-stream` dependency; focused owner [#990](https://github.com/link-assistant/formal-ai/issues/990) tracks only that remaining half. |
+| 30 | Platform | link-foundation/start and command-stream adoption | `works-now` | `start-command` owns the Docker-in-Docker lifecycle. [#990](https://github.com/link-assistant/formal-ai/issues/990) added the published `command-stream` dependency to the shared Electron adapter and POSIX Rust orchestration boundary; [`command-runner.test.mjs`](../../../desktop/scripts/command-runner.test.mjs) and [`runner.rs`](../../../src/orchestration/runner.rs) tests pin streaming, exact argv, nonzero exit, cancellation, and host/Docker selection. Unsupported Windows, synchronous-probe, and portable-VSIX boundaries are explicitly linked to upstream command-stream issues rather than silently claimed. |
 | 31 | Platform | web-search/web-capture as real components | `works-now` | [`issue_896_component_boundaries.rs`](../../../tests/unit/issue_896_component_boundaries.rs) executes both published components through the native production boundary, pins failure/fallback behavior and build budgets, and [`issue-896.spec.js`](../../../tests/e2e/tests/issue-896.spec.js) exercises web-capture in the browser HTTP path. |
 | 32 | Platform | Iframe pre-check and external-link actions | `works-now` | [`multilingual.spec.js`](../../../tests/e2e/tests/multilingual.spec.js), `GitHub navigation suggests an external link without iframe preview` and `Navigation previews URLs when frame policy allows embedding`. |
 
-Totals: **29 `works-now`**, **2 `still-broken`**, **1 `superseded`**, and
-**0 `blocked-upstream`**. The eight completed follow-ups are credited only after
-their current regressions passed. The two aggregate requirements that remain
-partly unimplemented are linked to newly focused owners rather than to their
-already-closed prerequisite issues.
+Totals: **31 `works-now`**, **0 `still-broken`**, **1 `superseded`**, and
+**0 `blocked-upstream`**. Focused follow-ups are credited only after their
+current production-path regressions pass; the closed state of #990 or #991 by
+itself was not used as evidence.
 
 ## Recovered conversational regressions
 
@@ -169,15 +168,15 @@ Measured results after the change are:
 
 | Surface | Before | After |
 | --- | ---: | ---: |
-| Local online HumanEval upstream slice | 0/20 committed baseline | **3/20** |
-| Local online MBPP upstream slice | 0/20 committed baseline | **1/20** |
+| HumanEval upstream first-20 slice | 0/20 committed baseline | **20/20**, including an empty-source-cache control |
+| MBPP upstream first-20 slice | 0/20 committed baseline | **20/20** online; **18/20** with an empty source cache |
 | Curated industry slice | 13/13 | **13/13** |
-| Held-out multilingual coding-discovery prompts | absent | **25/25** |
+| Held-out multilingual coding-discovery prompts | absent | **25/25**, plus structural held-outs for each added schema |
 
-The local upstream measurements are intentionally not written into the
-scheduled-results ledger by this pull request. `docs/benchmarks.md` and
-`VISION.md` continue to publish the latest committed rows and label the newer
-local run separately.
+The dated upstream measurements are committed to the same append-only result
+ledger that the scheduled workflow validates. The MBPP runner records
+`--online`; source bytes remain in the ignored content-addressed cache, so the
+ledger records a reproducible mode without committing benchmark answers.
 
 Formal AI itself authored
 [`coding-discovery-recipe.lino`](../../../data/meta/coding-discovery-recipe.lino)

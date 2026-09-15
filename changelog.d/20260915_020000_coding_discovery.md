@@ -13,6 +13,7 @@ bump: minor
 ### Fixed
 - Structural coding meanings now use canonical nested surface facts and carry distinct official documentation groundings, preserving semantic-seed integrity without prompt-specific definitions.
 - Conversational coding recognition now considers only the outer instruction after benchmark signatures and assertions are parsed, so programming words inside a fenced document cannot steal an unrelated document-conversion request.
+- Pull requests that change the agentic routing subsystem now run the complete Agent, OpenCode, Claude, and Codex research replay before merge, closing the post-merge-only coverage gap from issue #1137 while unrelated branches retain the cheaper held-out gate.
 - Python task recognition now selects the requested target definition after completed helpers, treats blank doctest output as `None`, and preserves periods inside quoted literals while splitting requirements.
 - Coding-structure lookup now normalizes punctuation and tolerates one edit in long single-token concepts, so hyphenation and ordinary misspellings do not create artificial capability gaps.
 - Agentic authoring now keeps read-and-author obligations together: it can derive caller-declared Links Notation fields from an inspected source record, write the result, and verify a decorated client read-back instead of ending after the input read.

@@ -714,6 +714,9 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R710-D14 | 1564 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs | not yet confirmed |
 | R710-D15 | 1565 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/docs_requirements/benchmarks.rs::latest_external_rows_are_published_from_the_ledger | not yet confirmed |
 | R710-D16 | 1566 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/self_hosting_metric.rs | not yet confirmed |
+| R1137-1 | current | delivered 2026-09-15; PR #888 (issue #1137) | tests/unit/ci-cd/issue_1137_agentic_routing_replay.rs::agentic_routing_changes_enable_full_four_client_replay_on_pull_requests; scripts/detect-code-changes.rs::tests::agentic_source_changes_request_the_four_client_replay | not yet confirmed — CI on the final PR head is the unattended proof |
+| R1137-2 | current | delivered 2026-09-15; PR #888 (issue #1137) | tests/unit/ci-cd/issue_1137_agentic_routing_replay.rs::the_full_replay_still_exercises_each_supported_client; experiments/agent_cli_e2e/run_issue_781.sh | not yet confirmed — CI on the final PR head is the unattended proof |
+| R1137-3 | current | delivered 2026-09-15; PR #888 (issue #1137) | scripts/detect-code-changes.rs::tests::agentic_source_changes_request_the_four_client_replay | not yet confirmed |
 | R835-1 | 1657 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
 | R835-2 | 1658 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
 | R835-3 | 1659 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |

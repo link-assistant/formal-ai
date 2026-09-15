@@ -21,8 +21,9 @@ PR #888 is ready only when all of these statements are simultaneously true:
    bodies.
 4. A cold system can forget procedure memory and rediscover the same verified
    construction from trusted cached or live sources.
-5. HumanEval and MBPP are measured again through the real online discovery
-   path. The current honest local floors, 3/20 and 1/20, may not regress.
+5. HumanEval and MBPP are measured again through the real discovery path. The
+   current honest committed floors, 20/20 and 20/20, may not regress; cold
+   offline controls remain separately visible.
    Failures are classified by missing general capability and at least the
    highest-leverage shared classes are implemented and remeasured.
 6. The branch version of Formal AI performs additional real work through the
@@ -349,6 +350,17 @@ Every done row must name a production path and an automated test. Partial rows
 must name the missing behavior and owner. Manual confirmation stays explicitly
 not recorded unless a human actually provides it. Regenerate assembled
 requirements and run the requirements/document/traceability gates.
+
+Completed 2026-09-15: the delta query found no identifier beyond the already
+audited #1137 boundary. R710-20 and R710-30 moved from `still-broken` to
+`works-now` only after their #991 and #990 production regressions were checked,
+making the current tally 31/0/1/0. The coding rows and vision now publish the
+committed 20/20 HumanEval and MBPP results with the 20/20 and 18/20 cold-cache
+controls kept distinct. The still-open #1137 CI gap is implemented in this PR:
+the complete PR diff derives an agentic-routing signal that enables the full
+four-client replay before merge. The source delta and reconciliation rule are
+retained in `../raw-data/requirements-delta-2026-09-15.md`; requirements
+assembly, focused documentation tests, and Actionlint pass.
 
 ## L25 — Prove merge-to-release readiness
 

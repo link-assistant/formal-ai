@@ -276,9 +276,10 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-The latest coding rows are dated `2026-09-15`, use solver version `0.349.2`,
-and keep the deterministic solver at `temperature = 0.0`. Other suite rows
-remain at their latest `2026-09-07` measurements:
+The latest committed rows are dated `2026-09-15` for the coding suites, use
+solver version `0.349.2`, and keep the deterministic solver at
+`temperature = 0.0`. Other suite rows remain at their latest `2026-09-07`
+measurements:
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |

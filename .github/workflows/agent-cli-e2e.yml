@@ -25,9 +25,10 @@ on:
     inputs:
       full-replay:
         description: >-
-          Replay every recorded scenario. `main`, scheduled runs and manual
-          dispatches pass true; a feature branch passes false and runs the
-          held-out generalization gates instead (issue #1107, item 4). Those
+          Replay every recorded scenario. `main`, scheduled runs, manual
+          dispatches, and pull requests that change agentic routing pass true;
+          other feature branches run the held-out generalization gates instead
+          (issues #1107 and #1137). Those
           gates are the ones that fail when the planner has been overfitted to
           the recorded scenarios, which is the regression a branch can
           introduce; the remaining steps re-verify scenarios already pinned on
