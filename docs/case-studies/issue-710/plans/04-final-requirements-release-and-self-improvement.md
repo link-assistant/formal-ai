@@ -230,8 +230,8 @@ box-language run in L21, not to recurrence semantics.
 - [ ] all box-language project generation and container verification jobs pass
 - [x] all issue-334 tests pass locally, including agent decomposition and every
       supported language
-- [ ] npm web tests and the entire local Playwright suite pass
-- [ ] Agent CLI E2E passes with the branch binary
+- [x] npm web tests and the entire local Playwright suite pass
+- [x] Agent CLI E2E passes with the branch binary
 
 The isolated Python box corpus passed in all four prompt languages. Every
 generated `main.py` was byte-identical with SHA-256
@@ -239,8 +239,19 @@ generated `main.py` was byte-identical with SHA-256
 contained the independently derived `print("Hello, world!")` program. The
 regenerated recurrence worker then passed all four real Chromium issue-334
 tests in 21.9 seconds: standalone generation, numeric follow-up, agent
-decomposition, and the en/ru/hi/zh loop. The remaining checkboxes deliberately
-stay open until their complete real-surface runs finish.
+decomposition, and the en/ru/hi/zh loop. The complete local Chromium run then
+passed 473 tests with one documented container-only skip. The final branch
+release binary drove external `@link-assistant/agent` 0.26.0 in session
+`ses_f5b4e31b4ffeouSw6tqeStcGIE`; it planned, wrote, read, and byte-verified an
+exact file in a fresh isolated workspace on its first attempt.
+
+All seven language corpora generate successfully. Local container execution
+remains open for remote proof: Docker Desktop exhausted its internal disk while
+pulling the first 9.83-GiB box image. After recovery its store already held
+29.02 GiB of images and 11.73 GiB of build cache, while the host had 27 GiB
+free. Pulling six more large images on this shared machine would repeat the
+failure and risk unrelated running containers. CI gives each language its own
+clean runner, so this checkbox deliberately waits for that final-head matrix.
 
 Generated bundles are rebuilt only with the pinned Bun version and verified
 byte-for-byte after Playwright.
@@ -266,8 +277,9 @@ held-out paraphrase/task for each operator before remeasurement.
 
 - [x] no-memorization scanner passes against both downloaded slices
 - [x] HumanEval first-20 result is 20/20 (also with an empty source cache)
-- [x] MBPP first-20 result is 20/20 with live discovery and 18/20 from an
-      empty source cache; the two offline gaps explicitly request source knowledge
+- [x] MBPP first-20 result is 20/20 from an empty cache with live discovery and
+      20/20 when replayed offline from only that newly populated cache; the
+      earlier 18/20 no-source control remains explicit history
 - [x] final scores and failure-class counts are recorded as dated local
       measurements; scheduled history is not fabricated
 
@@ -280,6 +292,16 @@ strict arithmetic or second-order recurrence grammar, enumerates index maps
 from examples, and accepts only executable candidates. No benchmark task id,
 entry point, task sentence, assertion, or canonical solution entered production
 source or seed data.
+
+The final empty-cache run exposed one remaining generalized query defect: a
+tiling request's explanatory bridge prose was retained after the repeated
+object and produced a meaningless OEIS phrase. The repaired grammar takes the
+content-object noun between the tile and board dimension windows, applies
+ordinary English singular morphology, and asks for canonical `{m} x {n}
+{object} tilings`. A held-out fixture proves the source recurrence route rather
+than a benchmark answer. With a completely new 5.1-MiB source cache, MBPP then
+passed 20/20 online in 3 minutes 13 seconds and 20/20 offline in 12 seconds;
+HumanEval remained 20/20.
 
 ## L23 — Use Formal AI through Agent CLI for real additional work
 
@@ -331,7 +353,11 @@ byte-for-byte. The eight-file local evidence bundle passed secretlint 13.0.5
 with the pinned recommended preset. Upload is withheld until the external
 action gate receives payload-specific approval for the full system-prompt and
 dialog content; this does not weaken the committed artifact or regression
-evidence.
+evidence. Because that commit recorded only the local bundle hash and not a
+committed evidence path, strict self-hosting measurement correctly refuses to
+credit it. The final documentation commit therefore carries
+`Formal-AI-Retract: b052ff2ee15e8d0d6944f7747fd4e31c018c0bf1`: the artifact and
+history stay intact, but the unsupported attribution cannot inflate the metric.
 
 A third bounded subtask rechecked the repaired authoring path against the final
 benchmark evidence. In session `ses_f5c728a87ffeo1D0HZe7VLM0dW`, Formal AI
@@ -391,6 +417,31 @@ release, and Pages deployment. External credentials, registries, GitHub, and
 network availability cannot be guaranteed by code; the honest guarantee is
 that no known repository condition prevents release and every dry-run path is
 green.
+
+Local proof on the final implementation commit `8e770ded7`:
+
+- the all-features unit target accounts for all 3,501 tests: 3,497 passed and
+  four intentional ignores; the one sandbox-denied process-tree test passed
+  when rerun with host `ps` visibility;
+- every registered gate passed: Rust 32/32, WASM 1/1, and Web 12/12; the full
+  Chromium suite passed 473 tests with one documented container-only skip;
+- a pinned Bun 1.4.0 rebuild reproduced the same four bundle SHA-256 values on
+  a second run, and the 317-file pull-request diff passed the pinned secret
+  scanner with `No secrets found`;
+- three changelog fragments compute a minor bump from 0.350.0 to 0.351.0. The
+  exact package contains 5,783 files and is 6.54 MiB against crates.io's
+  10-MiB ceiling; it installs from its archive with `--locked --offline`, and
+  both installed executables launch;
+- the installed package discovered the factorial recurrence from Wikifunctions
+  on a fresh cache, passed 4/4 source tests, then reproduced the same Python
+  artifact offline from that cache;
+- report-mode credential preflight honestly found no PR-visible crates.io token
+  or GHCR image variable. Those secrets are available only to the protected
+  main-branch release environment, where release-mode preflight is mandatory;
+- an exact tree merge with `origin/main` at `de88ca251` passed before this final
+  implementation commit. A final fetch confirmed that base is unchanged and
+  that the remote PR head is exactly 16 commits behind the local head; GitHub
+  mergeability will be rechecked immediately after the one push.
 
 ## L26 — One final delivery and complete CI observation
 

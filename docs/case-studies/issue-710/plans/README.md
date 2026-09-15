@@ -76,7 +76,7 @@ wrote it.
 | 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | implemented and re-verified |
 | 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | implemented |
 | 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L15 complete; local gates green; CI confirmation pending |
-| 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | active at e065dc324 |
+| 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | local implementation and release proof complete at 8e770ded7; final-head CI observation pending |
 
 ## Order of work
 
@@ -209,3 +209,26 @@ wrote it.
   workflow regression now excludes only `tests/fixtures/coding-discovery` from
   live-link health checks, preserving the licensed snapshots unchanged while
   keeping maintained Markdown and HTML under the existing gate.
+
+- 2026-09-15, final local proof: a held-out MBPP tiling failure exposed that a
+  structurally useful OEIS query still retained bridge prose between two
+  dimensions. The generalized query grammar now extracts and singularizes the
+  repeated object noun and asks for canonical tilings; no benchmark identifier,
+  expected value, or solution entered production data. A completely empty
+  source cache then passed MBPP 20/20 online and replayed 20/20 offline;
+  HumanEval remained 20/20.
+
+  The all-features unit target accounted for 3,501 tests, all 45 registered
+  Rust/WASM/Web gates passed, Chromium passed 473 tests with its one documented
+  container-only skip, and the 317-file secret scan was clean. Pinned Bun 1.4.0
+  reproduced the generated bundles byte-for-byte. The 5,783-file crate archive
+  is 6.54 MiB, installs offline under its lockfile, and its installed binary
+  discovers, verifies, and offline-replays a Wikifunctions factorial recurrence.
+  External Agent 0.26.0 also completed an exact write/read task against the
+  final branch binary in session `ses_f5b4e31b4ffeouSw6tqeStcGIE`.
+
+  All seven box corpora generate, but this shared Docker Desktop exhausted its
+  internal disk on the first large image pull. After recovery the store held
+  29.02 GiB of images and 11.73 GiB of build cache with 27 GiB host space free;
+  pulling six further box images would be unsafe. The isolated remote language
+  matrix therefore owns the remaining container proof on the one pushed head.
