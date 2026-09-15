@@ -262,6 +262,19 @@ leaf in its own commit with model, session, evidence, and PR trailers. Scan any
 raw trace before upload; remember that an unlisted gist is readable by anyone
 with its URL and therefore may contain no credential or private content.
 
+The first subtask is complete and preserved as a three-run learning record.
+Session `ses_f5d403d7effeUKzDDzRkbukTEg` read the supplied taxonomy but ended
+without writing its distinct output obligation. After adding the generalized
+read/derive/write transaction, session `ses_f5d359949ffer2uHBDol2bJpFh`
+exposed a second general bug: Agent's decorated read envelope was parsed as
+Links data. The regression now uses that real envelope. Session
+`ses_f5d33586affebUtJm4fYjyNxy1` then derived all requested schema fields,
+wrote the artifact, read it back, and verified it byte-for-byte. Formal AI's
+leaf and successful trace are isolated in commit 6ce9fbac2; both failed traces
+are retained with the repair. The repository's pinned secret scanner reports
+`No secrets found` across all three evidence directories. The second bounded
+authorship subtask remains open.
+
 ## L24 — Refresh and re-verify requirements
 
 The previous audit covers #1–#1137 and 296 coding/benchmark records from the

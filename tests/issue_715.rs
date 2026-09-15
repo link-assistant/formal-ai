@@ -405,3 +405,100 @@ fn mutation_trace_publishes_the_substitution_query_and_effects() {
     );
     assert!(final_answer.contains("effect update"), "{final_answer}");
 }
+
+#[test]
+fn inspected_links_record_is_derived_written_and_read_back_before_completion() {
+    let task = "Inspect failures.lino. Author recurrence-proposal.lino as valid Links Notation. \
+        Include top-level recurrence_schema and nested boundary_condition, transition, \
+        termination_measure, validation, and provenance fields.";
+    let source = r#"recurrence_failure_taxonomy
+  validation_gap
+    symptom "browser cannot execute Python"
+    shared_capability "prove structural descent and evaluate finite source testers"
+  required_record
+    boundary_condition "predicate, threshold, boundary expression"
+    recursive_transition "self-call offsets and combining operation"
+    termination "every recursive argument decreases toward the boundary"
+    provenance "source URL, license, content hash, fetched time"
+"#;
+    let mut messages = vec![ChatMessage::user(task)];
+
+    let read_source = one_call(&messages, &["read", "write"]);
+    assert_eq!(read_source.tool, "read");
+    assert_eq!(args(&read_source)["filePath"], "failures.lino");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-source",
+        "read",
+        read_source.arguments,
+    )]));
+    let decorated_source = format!(
+        "<file>\n{}\n\n(End of file - total {} lines)\n</file>",
+        source
+            .lines()
+            .enumerate()
+            .map(|(index, line)| format!("{}| {line}", index + 1))
+            .collect::<Vec<_>>()
+            .join("\n"),
+        source.lines().count()
+    );
+    messages.push(ChatMessage::tool_result(
+        "read-source",
+        "read",
+        decorated_source,
+    ));
+
+    let write = one_call(&messages, &["read", "write"]);
+    assert_eq!(write.tool, "write");
+    let written = args(&write);
+    assert_eq!(written["filePath"], "recurrence-proposal.lino");
+    let content = written["content"].as_str().unwrap().to_owned();
+    assert!(content.starts_with("recurrence_schema\n"), "{content}");
+    assert!(content.contains("source_observation"), "{content}");
+    assert!(content.contains("derived_formalization"), "{content}");
+    assert!(
+        content.contains("boundary_condition \"predicate, threshold, boundary expression\""),
+        "{content}"
+    );
+    assert!(
+        content.contains("transition \"self-call offsets and combining operation\""),
+        "{content}"
+    );
+    assert!(
+        content.contains(
+            "termination_measure \"every recursive argument decreases toward the boundary\""
+        ),
+        "{content}"
+    );
+    assert!(content.contains("validation \"browser cannot execute Python; prove structural descent and evaluate finite source testers\""), "{content}");
+    assert!(
+        content.contains("provenance \"source URL, license, content hash, fetched time\""),
+        "{content}"
+    );
+
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "write-derived",
+        "write",
+        write.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "write-derived",
+        "write",
+        "Wrote recurrence-proposal.lino",
+    ));
+
+    let read_back = one_call(&messages, &["read", "write"]);
+    assert_eq!(read_back.tool, "read");
+    assert_eq!(args(&read_back)["filePath"], "recurrence-proposal.lino");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-derived",
+        "read",
+        read_back.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("read-derived", "read", content));
+
+    let final_answer = match plan_chat_step(&messages, &["read", "write"]) {
+        Some(AgenticPlan::Final(answer)) => answer,
+        other => panic!("expected verified final answer, got {other:?}"),
+    };
+    assert!(final_answer.contains("verified"), "{final_answer}");
+}

@@ -47,6 +47,7 @@ use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
 use super::structured_edit;
+use super::structured_document;
 use super::task_obligations;
 use super::task_structure;
 use super::tool_result;
@@ -324,6 +325,13 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(plan) = structured_edit::plan_structured_edit_step(task, messages, tool_names) {
+        return Some(plan);
+    }
+    // A source-backed structured document is a read/derive/write transaction.
+    // It must win before the ordinary file reader, which would otherwise read
+    // the input correctly and then mistake that intermediate observation for
+    // the answer to the whole authored-artifact request.
+    if let Some(plan) = structured_document::plan_step(task, messages, tool_names) {
         return Some(plan);
     }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary

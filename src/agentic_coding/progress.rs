@@ -233,6 +233,23 @@ impl Progress {
             .map(|attempt| attempt.detail.as_str())
     }
 
+    /// Successful read payload for one concrete workspace path.
+    ///
+    /// Multi-step transformations read both their source and their written
+    /// destination. Keying by call arguments keeps a later read-back from
+    /// being mistaken for the source observation (or vice versa).
+    pub(super) fn successful_read_output_for(&self, path: &str) -> Option<&str> {
+        self.attempts.iter().rev().find_map(|attempt| {
+            (attempt.capability == Capability::Read
+                && attempt.succeeded
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path)))
+            .then_some(attempt.detail.as_str())
+        })
+    }
+
     pub(super) fn attempted_write_for(&self, path: &str) -> bool {
         self.attempts.iter().any(|attempt| {
             attempt.capability == Capability::Write

@@ -68,6 +68,7 @@ pub mod source_links;
 mod stated_request;
 pub mod statement_audit;
 mod structured_edit;
+mod structured_document;
 pub mod task_obligations;
 mod task_structure;
 pub mod tool_result;
