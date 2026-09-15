@@ -80,6 +80,8 @@ pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../data/seed/meanings-finance.lino");
+pub const MEANINGS_FORMALIZATION_REPORT_LINO: &str =
+    include_str!("../../data/seed/meanings-formalization-report.lino");
 pub const MEANINGS_HOW_LINO: &str = include_str!("../../data/seed/meanings-how.lino");
 pub const MEANINGS_INTENT_LINO: &str = include_str!("../../data/seed/meanings-intent.lino");
 pub const MEANINGS_LEXICAL_META_LINO: &str =
@@ -260,6 +262,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
         ("data/seed/meanings-file-write.lino", MEANINGS_FILE_WRITE_LINO),
         ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
+        ("data/seed/meanings-formalization-report.lino", MEANINGS_FORMALIZATION_REPORT_LINO),
         ("data/seed/meanings-how.lino", MEANINGS_HOW_LINO),
         ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
         ("data/seed/meanings-lexical-meta.lino", MEANINGS_LEXICAL_META_LINO),
@@ -427,6 +430,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FINANCE_LINO,
+    MEANINGS_FORMALIZATION_REPORT_LINO,
     MEANINGS_HOW_LINO,
     MEANINGS_INTENT_LINO,
     MEANINGS_LEXICAL_META_LINO,

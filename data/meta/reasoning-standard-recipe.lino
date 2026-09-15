@@ -30,7 +30,7 @@ step_formalize_gathered_instructions
   order "4"
   id "formalize_gathered_instructions"
   title "Compile gathered instructions into checkable steps"
-  detail "formalize merges the steps several sources give for one task class into a single ordered instruction set, keyed by the action, unioning the checks and recording which sources gave each step. A step two sources give is corroborated; a step with no check is unverifiable and fails the gate, because prose that cannot be checked is not a formalized instruction."
+  detail "formalize merges the steps several sources give for one task class into a single ordered instruction set, keyed by the action, unioning the checks and recording which sources gave each step. A step two sources give is corroborated; a step with no check is unverifiable and fails the gate. Every attached required check must be discharged by an observation before the instruction counts as complete; repeated evidence for one check cannot replace another missing check."
   seed_file "src/reasoning_standard/instructions.rs"
 step_attempt_varied_refutations
   record_type "meta_step"

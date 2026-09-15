@@ -36,7 +36,7 @@ pub fn custom_response_tool_input(tools: &[Value], tool_name: &str, arguments: S
     apply_patch_input(&arguments).unwrap_or(arguments)
 }
 
-fn apply_patch_input(arguments: &str) -> Option<String> {
+pub fn apply_patch_input(arguments: &str) -> Option<String> {
     let arguments = serde_json::from_str::<Value>(arguments).ok()?;
     let path = ["path", "filePath", "file_path"]
         .iter()

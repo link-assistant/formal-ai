@@ -9,7 +9,7 @@ use serde_json::json;
 
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
-    FISHERMAN_DOC_ID,
+    FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
 };
 use super::planner::{
     fetch_arguments, plan_one, tool_for, trace_route, write_arguments, AgenticPlan, Capability,
@@ -130,26 +130,29 @@ pub(super) fn plan_formalization_step(
         }
 
     // Step 5: nothing left to do — answer with the knowledge base inline.
-    AgenticPlan::Final(final_answer(&formalized))
+    AgenticPlan::Final(final_answer(&formalized, crate::language::detect(task).slug()))
 }
 
 /// The self-contained final answer: a natural-language summary, the coverage
 /// line, and the Links Notation knowledge base inline.
-fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
+#[allow(clippy::literal_string_with_formatting_args, reason = "bind slots in a localized seed response")]
+fn final_answer(formalized: &FormalizedKnowledgeBase, language: &str) -> String {
     let summary = &formalized.summary;
     let subject = if summary.doc_id == FISHERMAN_DOC_ID {
         "«Сказка о рыбаке и рыбке»".to_owned()
     } else {
         format!("the source text ({})", summary.doc_id)
     };
-    format!(
-        "Formalized {subject} into a Links Notation knowledge base: {records} records realising \
-         all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}",
-        records = summary.total_records(),
-        coverage = coverage_line(summary),
-        kb = crate::issue_report::fenced_block(
+    crate::seed::localized_response("agentic_formalization_report", language)
+        .unwrap_or_default()
+        .replace("{subject}", &subject)
+        .replace("{records}", &summary.total_records().to_string())
+        .replace("{covered_count}", &summary.covered.len().to_string())
+        .replace("{primitive_count}", &PRIMITIVE_KINDS.len().to_string())
+        .replace("{coverage}", &coverage_line(summary))
+        .replace("{path}", KB_PATH)
+        .replace("{kb}", &crate::issue_report::fenced_block(
             crate::issue_report::LINO_FENCE_LANGUAGE,
             &formalized.links_notation,
-        ),
-    )
+        ))
 }

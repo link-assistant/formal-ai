@@ -18,5 +18,5 @@ debt_ratchet
     how "occurrences of a contains( or starts_with( call with a double-quoted first argument in src/**/*.rs"
   ceiling
     measure hardcoded_language_rows
-    value 1287
+    value 1286
     how "non-empty, non-comment rows of scripts/hardcoded-language-allowlist.txt"

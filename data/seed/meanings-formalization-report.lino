@@ -1,0 +1,54 @@
+meanings
+  agentic_formalization_report
+    defined-by output
+    role output_display_request
+    precondition "A source document has an observed FormalizationSummary."
+    effect "Report the observed covered count, total primitive count and knowledge base; do not infer coverage from the scheme declaration."
+    unit "count"
+    example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_report_en
+    defined-by agentic_formalization_report
+    language en
+    role output_display_request
+    precondition "A source document has an observed FormalizationSummary."
+    effect "Report the observed covered count, total primitive count and knowledge base; do not infer coverage from the scheme declaration."
+    unit "count"
+    example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_report_ru
+    defined-by agentic_formalization_report
+    language ru
+    role output_display_request
+    precondition "A source document has an observed FormalizationSummary."
+    effect "Report the observed covered count, total primitive count and knowledge base; do not infer coverage from the scheme declaration."
+    unit "count"
+    example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_report_hi
+    defined-by agentic_formalization_report
+    language hi
+    role output_display_request
+    precondition "A source document has an observed FormalizationSummary."
+    effect "Report the observed covered count, total primitive count and knowledge base; do not infer coverage from the scheme declaration."
+    unit "count"
+    example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_report_zh
+    defined-by agentic_formalization_report
+    language zh
+    role output_display_request
+    precondition "A source document has an observed FormalizationSummary."
+    effect "Report the observed covered count, total primitive count and knowledge base; do not infer coverage from the scheme declaration."
+    unit "count"
+    example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_report_es
+    defined-by agentic_formalization_report
+    language es
+    role output_display_request
+    precondition "A source document has an observed FormalizationSummary."
+    effect "Report the observed covered count, total primitive count and knowledge base; do not infer coverage from the scheme declaration."
+    unit "count"
+    example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"

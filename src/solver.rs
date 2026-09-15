@@ -404,12 +404,9 @@ impl UniversalSolver {
             return answer;
         }
 
-        // Issue #559: record the general recursive meta core — problem frame
-        // (R330), recursive work-unit decomposition (R332), need-satisfaction
-        // ledger (R333), method registry (R331), and the end-to-end solution
-        // evidence (R334) — as one cohesive pass. Method selection below is
-        // registry-backed, so the trace and the executable dispatch share the
-        // same method vocabulary.
+        // Issue #559: record the problem frame, recursive work units, needs,
+        // methods, and solution evidence (R330–R334). The trace and executable
+        // dispatch share the same registry-backed method vocabulary.
         crate::meta_core::record_meta_core(
             &mut log,
             &intent_formalization,
@@ -420,6 +417,11 @@ impl UniversalSolver {
         );
 
         log.append("search:local", prompt.to_owned());
+
+        // Bind process operands together before decomposing the clauses.
+        if let Some(answer) = crate::coding::program_contract::answer(prompt, &mut log) {
+            return answer;
+        }
 
         let sub_impulses =
             record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);

@@ -145,7 +145,137 @@ behavior beyond a literal; complete source-cache provenance/legacy retention;
 cross-client and full-suite regression review; a rebuilt external Agent run.
 Do not mark P2–P6 complete solely because the first focused suite passes.
 
+### Next safety leaf: reconstruction evidence (tests before implementation)
+
+Legacy records have no reliable origin merely because `kind` says `summary` or
+`source:http`. New acceptance tests retain unknown/cache-shaped records and
+modified imported seeds. A disposable public-source copy must explicitly have
+cache origin and a `rediscover:https://...` evidence edge; the observed tool
+event stays durable. Embedded seed eviction requires exact identity with this
+binary's seed. Derived task caches require successful current replay, not only
+the word `derived`. Apply must recheck eligibility and account only bytes
+actually removed. No original experience is sacrificed to satisfy a disk target.
+
+Execution-evidence leaf: add wrong-path/wrong-content write, out-of-order run,
+duplicate-result and orphaned-result tests before modifying recipe progress.
+The #908 fixture previously omitted assistant tool calls; retain the actual
+protocol calls while keeping its silent-success/nonzero-failure assertions.
+The product must bind file bytes and command order, not count tool messages.
+
+### Broad regression checkpoint
+
+First full unit run: 3,503 passed, 11 failed, 4 ignored. All new coding,
+evidence-binding and memory behavior tests passed. Failures name stale generated
+self-AST/planner fixtures, moved-function/test traceability, a solver warning-band
+limit, the redundant handler insertion's debt count (removed), sandbox-denied
+`ps`, and one temporary Git-fixture initialization collision. These are tracked
+work, not a green result. Regenerate projections and rerun with necessary process
+inspection permission; do not weaken the gates. Public-source compiler versions
+and action commits were checked against their upstream repositories; Scala
+2.13.18 has an upstream release, rather than being an inferred version.
+
+Live rebuilt-binary evidence: Python session `ses_f5a2aada0ffe8fjZ6GomOOk1u5`
+completed six external Agent CLI rounds, wrote source, verifier and workflow,
+and produced exactly `Aster 73!` plus LF. Independent rerun of its verifier
+passed. Reviewed artifacts are in `/private/tmp/formal-ai-888-python-8917`;
+raw logs remain private. Kotlin session `ses_f5a282912ffeOLFh21bbx9Dqsl`
+now writes correct Kotlin and both supporting files, but ends honestly at
+`kotlinc: command not found` after five rounds. This is still incomplete, and
+not a successful Kotlin end-to-end result. Compiler recovery is the next
+capability leaf, not an upstream client blame.
+
+The Scala CI job log confirms `scalac: command not found`, exit 127; no issue
+newer than #1137 appeared in the refreshed issue list. The second full test
+run passed 3,509, failed five, ignored four: three short-deadline tests under
+load, plus two historical snapshots whose expected catalog intent changes to
+an attributed source-example intent when network/cache discovery succeeds.
+Resolve test determinism or strengthen semantic assertions; do not disable
+discovery or falsely claim the suite passed.
+
+Next test-first leaf records explicit renamed source destinations and multiple
+ordered stdout clauses. Reuse the existing cued write-target parser and compose
+literal output operands; do not treat a default path or first quoted value as
+the entire requirement. These tests are added before their implementation.
+
+Disk checkpoint: 29 GiB free, shared target 9.7 GiB. One gate launch omitted
+the shared-target variable and started a duplicate documentation build; it was
+interrupted and rerun with the full environment. Worktree target is 939 MiB
+and predates this run, so it was not blindly deleted. No user data was removed.
+
+The historical catalog snapshots are being made explicitly offline in isolated
+child processes with fresh source-cache directories. Their original exact
+assertions remain unchanged. Live/fixture-backed source-example discovery keeps
+its separate tests, and production routing is not restricted to make an old
+snapshot pass. Child-only environment overrides avoid parallel-test races.
+
 ## Formal AI experiment discipline
+
+### Remaining reconstruction edge, before the next test change
+
+The third full unit run passed 3,514, failed two, ignored four. The historical
+offline replays and deadline tests passed. Move the typed destination helper
+beside the existing write-request parser to keep the planner under its original
+900-line warning limit. Diagnose the isolated fetched Rust execution failure
+from command evidence, without replacing its execution assertion with a skip.
+
+The public-cache test currently preserves a historical observation but loses
+the URL held only in the evicted cache record. Strengthen it before changing
+eviction: retain a compact reconstruction record with the original cache ID,
+source URL/recipe, and provenance; never carry its disposable payload. Preserve
+that record through export/import and later pressure, and account for retained
+metadata when estimating reclaimed bytes. A URL supports reacquisition, not an
+assertion that today's page reproduces a historical observation byte-for-byte.
+Embedded-seed reconstruction remains tied to exact current seed identity.
+
+The strengthened reconstruction test failed before implementation and now
+passes along with all 104 memory-filtered tests. The apply operation moved to
+`src/dreaming/apply.rs` to preserve module-size limits. A further test first
+checks that retaining metadata cannot turn a tiny-cache eviction into storage
+growth; only positive net savings may be selected for pressure relief.
+
+Agent session `ses_f5a131ed8ffe4pk0sDxINN0ZSn` completed a three-round
+requirement-formalization run. Its reviewed knowledge base is under
+`agent-cli-evidence/memory-contract/`; all five statements survive, but concept
+and procedure counts are zero. The generic `pred:states` fallback is source
+preservation, not resolved semantics. Its final report incorrectly says all
+nine primitives are realized. Add a failing report-coverage regression before
+fixing that claim, and rerun through the external Agent after rebuilding.
+
+Persist the successful ordinary Python project shape as an always-run Agent
+CLI CI replay with a fresh held-out literal. Keep its six-round, source,
+workflow, verifier, and actual-output assertions. This adds continuous coverage
+without claiming Kotlin/Scala prerequisite recovery is solved.
+
+### 2026-09-16 all-feature checkpoint
+
+All-feature unit run: 3,507 passed, 11 failed, 4 ignored. The isolated Rust
+execution and the three deadline regressions passed without concurrent builds.
+Four failures still expected the old spelled-out coverage claim; their exact
+complete-case assertion is now `9 of 9`, while the new incomplete-case test
+requires `2 of 9`. Four seed failures identified response definitions needing
+distinct language facets and references to real meaning/role definitions.
+Three memory fixtures used payloads smaller than their retained reconstruction
+metadata. Increase those ordering/deduplication fixture payloads, retaining every
+original assertion; the separate tiny-cache test requires no eviction when the
+net saving is non-positive. None of these failures is being skipped.
+
+Current disk availability is 28 GiB. No data/cache pruning has been performed.
+The shared target and pinned Bun are still used; the rebuilt browser bundles
+are byte-identical, with only the generated seed-file inventory changed.
+
+The corrected all-feature unit run is green: **3,518 passed, 0 failed, 4
+intentionally ignored**, 197.50 seconds, two test threads. Instruction checks
+are conjunctive, tiny caches are retained when metadata would erase the saving,
+and complete/partial formalization reports show measured primitive counts.
+Actionlint, total seed closure, seed metadata, file limits, behavioral test
+documentation and debt checks pass. The prose-debt ceiling is reduced from
+1,287 to 1,286, with no other ceiling raised. Full Rust-stage gates, remaining
+test targets and the rebuilt external Agent replay are still pending.
+
+GitHub refresh on 2026-09-16: PR #888 remains open at the unchanged green
+`2f7a381a2` baseline. The three test PR heads and their failed/missing checks
+are unchanged. No non-PR issue newer than #1137 appeared in the latest page;
+Hive Mind #2259 is open with no comments. This local batch has not been pushed.
 
 Use `/Users/konard/.bun/bin/agent` and this branch's rebuilt binary through its
 OpenAI-compatible endpoint. Isolate workspace and memory under `/private/tmp`.
@@ -155,6 +285,86 @@ and repeat after repair. A narrower supported subtask is useful evidence but
 does not replace the original task's still-open acceptance criterion.
 
 ## Disk, restart, and commands
+
+### 2026-09-16 rebuilt external Agent checkpoint
+
+Session `ses_f59f13589fferBVYTqnpiCxeG2` completed the always-run CI task
+through actual Agent CLI in six rounds. Its Python source, exact-output shell
+verifier and GitHub Actions workflow are in the private evidence directory
+`/private/tmp/formal-ai-888-python-8920`. Independently running the verifier
+printed `Saffron 61!` and exited zero; actionlint accepted the workflow.
+The rebuilt memory-contract replay on port 8921 also passed: three rounds,
+retained source assertions, and the honest `2 of 9 protocol primitives`
+report. This does not claim semantic procedures have been discovered.
+
+Browser seed copies were synchronized with the existing generator, including
+the new report definitions. Free disk space is 27 GiB; no cleanup performed.
+All 32 registered Rust-stage gates are running with the shared target.
+
+Next memory-accounting leaf (test first): the apply result currently subtracts
+reconstruction records but not newly retained amendments, patterns, candidates,
+failures or trials. Add a pressure test that learns from original requirements
+and also evicts a public cache. Compare pre/post event-byte estimates and assert
+that the reported saving is the actual nonnegative net decrease, while all
+original records remain. Then calculate outcome bytes over the final retained
+store, not a hand-maintained subset of generated record kinds. Agent CLI on
+port 8922 has also been given an ordinary regression-authoring request for this
+requirement; its success must be judged from executable code, not file presence.
+
+The test failed before implementation: reported 853 bytes versus the actual
+520-byte net decrease. Compute the apply outcome from pre/post store estimates
+so future retained record types are included automatically. External Agent
+session `ses_f59efab43ffe4dx4GACXmYBj7C` did not author the requested test:
+it read the nonexistent target and ended with a file-not-found report.
+Agent exited zero but the harness correctly failed. Raw logs remain private
+under `/tmp/*8922.log`. This is a Formal AI creation/semantic-synthesis gap,
+not evidence of an Agent CLI defect. Reproduce with workspace-backed context
+before designing a shared creation/research route; do not add a canned test.
+
+Validation checkpoint: all 32 Rust-stage and all 12 web-stage gates passed;
+the five JavaScript lockfile audits reported zero vulnerabilities. Standalone
+browser tests: 83 passed, none failed. Memory-filtered tests after the net-byte
+fix: 106 passed, none failed. Strengthen the new accounting test with both a
+net-growing learning pass (reported saving zero) and a positive-saving pass.
+Self-AST and planner projections were regenerated without deleting documents.
+
+Remaining-target run exposed two integration failures (375 passed, 2 failed,
+1 ignored). The common fake-client fixture clears some provider environment
+variables but leaves the developer's `ANTHROPIC_AUTH_TOKEN`; the wrapper
+correctly honors that configured value instead of the fixture's expected
+default. Do not print the value or publish the temporary capture. Make fixture
+isolation derive credential/command/config environment keys from the same
+integration catalog, preserving production credential precedence. Add a test
+with synthetic inherited credentials and command overrides before the helper.
+The standalone-wrapper invocation test also contacts hardcoded port 18080,
+despite needing only to verify client arguments. Its health response caused
+JSON `trailing characters`. Disable server startup in that invocation-only
+fixture, like the shared wrapper helper; retain independent lifecycle/version
+tests. Do not stop whichever local service owns that port.
+
+The added fixture-isolation test failed on the old list at
+`FORMAL_AI_OPENCODE_DESKTOP_BIN`, proving the problem extends beyond one
+provider. The helper now derives API-key, command and invocation/config keys
+from the integration seed. Only fake-client tests use it; production handling
+is unchanged. A header-only check confirmed localhost:18080 returns a chunked
+404, not the health response this invocation-only fixture assumed.
+
+Final unit rerun after the net-accounting change: **3,519 passed, 0 failed,
+4 intentionally ignored**, 216.81 seconds. The small-cache learning case now
+proves a net-growing pass reports zero reclaimed bytes; the large case proves
+positive net savings. Source-contract target: **494 passed, 0 failed**. The
+fixture-isolated full integration rerun is pending. Secretlint scanned all 83
+then-changed files successfully; recheck the newly added fixture helper before
+committing it. Local disk is now 26 GiB free, shared target 9.8 GiB at the last
+size check. No caches, containers or user files have been pruned.
+
+Integration rerun after fixture isolation: **378 passed, 0 failed, 1 ignored**,
+115.61 seconds; this includes the new synthetic-environment regression. Final
+Clippy, formatting, diff-whitespace, actionlint and changed-file secret scans
+pass. Evidence artifact is checkpointed separately in commit `543671431` with
+its actual Formal AI session/model attribution; it contains no raw private log.
+The source/test implementation checkpoint follows. No push has been performed;
+Plan 07's structural requirement-preservation leaf is the next implementation.
 
 Worktree `/private/tmp/wt888`; main clone's untracked continuation transcript is
 user data. Initial free space 32 GiB. Reuse the shared 9.7 GiB target; avoid new

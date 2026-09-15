@@ -20,6 +20,8 @@ use std::fmt::Write as _;
 /// Workspace-relative event-log artifact written before a general plan executes.
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
+
+pub(crate) use super::write_request::typed_write_target;
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GeneralPlanMode {

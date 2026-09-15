@@ -261,6 +261,22 @@ fn plan_chat_step_routes(
     {
         return Some(plan);
     }
+    // Bind a program's semantic operands before treating its source path as a
+    // destination for a report about the rest of the request.
+    if let Some(mut answer) = crate::coding::program_contract::answer(
+        &task, &mut crate::event_log::EventLog::default(),
+    ) {
+        if let Some(recipe) = answer.execution_recipe.as_mut()
+            && super::ci_workflow::requested_in(&task)
+        {
+            super::ci_workflow::attach(recipe);
+        }
+        if let Some(plan) = super::command_reroute::plan_symbolic_command_reroute(
+            messages, tool_names, &answer,
+        ) {
+            return Some(plan);
+        }
+    }
     // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
     // of every route that reads a request's lone file-shaped token, because that
     // token is the *destination* here and opening it for reading ends the run with

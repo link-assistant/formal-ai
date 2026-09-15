@@ -180,6 +180,20 @@ fn quoted_as_value(word: &str) -> bool {
 pub(super) fn stated_write_target(request: &str) -> Option<String> {
     cued_write_target(&tokens(request)).map(|(_, target)| target)
 }
+/// Bind a source destination using the ordinary cue/path safety rules, with
+/// the language's artifact type as a further constraint. Output operands and
+/// workflow paths do not become source destinations by appearing first.
+pub fn typed_write_target(request: &str, extension: &str) -> Option<String> {
+    cued_write_targets(&tokens(request))
+        .into_iter()
+        .map(|(_, path)| path)
+        .find(|path| {
+            std::path::Path::new(path)
+                .extension()
+                .and_then(|value| value.to_str())
+                == Some(extension)
+        })
+}
 /// Whether the request applies a seed-defined write action to anything.
 ///
 /// Used with [`stated_write_target`] to tell "record it in FILE" (a write whose

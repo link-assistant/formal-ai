@@ -2,44 +2,45 @@ self_ast_census
   target src/agentic_coding/ci_workflow.rs
   language rust
   fidelity full_ast
-  byte_len 1939
-  line_count 49
-  content_id source_module_caa461d3a8996b68
+  byte_len 2067
+  line_count 52
+  content_id source_module_429767c492dda4ed
   symbol_count 4
   symbols
     function workflow_path 15 17
     function requested_in 20 25
     function attach 29 36
-    function render 40 49
+    function render 40 52
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 1185
-    named_node_count 241
-    distinct_node_kinds 44
+    total_link_count 1307
+    named_node_count 269
+    distinct_node_kinds 46
     node_kinds
-      arguments 12
+      arguments 14
       array_expression 3
       attribute 3
       attribute_item 3
       binary_expression 1
-      block 6
-      call_expression 12
+      block 7
+      call_expression 14
       closure_expression 1
       closure_parameters 1
-      crate 3
+      crate 4
       doc_comment 12
-      expression_statement 5
-      field_expression 10
-      field_identifier 10
+      expression_statement 7
+      field_expression 12
+      field_identifier 12
       field_initializer_list 1
       for_expression 1
       function_item 4
-      identifier 52
-      if_expression 1
+      identifier 60
+      if_expression 2
       inner_doc_comment_marker 8
+      let_condition 1
       let_declaration 3
       line_comment 12
       mutable_specifier 2
@@ -47,10 +48,10 @@ self_ast_census
       parameter 3
       parameters 4
       primitive_type 2
-      reference_expression 7
+      reference_expression 9
       reference_type 3
       return_expression 1
-      scoped_identifier 12
+      scoped_identifier 15
       scoped_use_list 1
       shorthand_field_initializer 2
       source_file 1
@@ -60,6 +61,7 @@ self_ast_census
       super 7
       token_tree 3
       tuple_expression 2
+      tuple_struct_pattern 1
       type_identifier 5
       use_declaration 2
       use_list 1

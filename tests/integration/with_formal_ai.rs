@@ -7,6 +7,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
+mod fixture_env;
 mod model_metadata;
 
 pub fn tmpdir() -> PathBuf {
@@ -163,6 +164,7 @@ pub fn run_with_capture_stdin(
     stdin: Option<&str>,
 ) -> std::process::Output {
     let mut command = Command::new(env!("CARGO_BIN_EXE_formal-ai"));
+    fixture_env::clear_client_environment(&mut command);
     command.arg(args[0]);
     if args.first() == Some(&"with") && !args.contains(&"--global") && !args.contains(&"--undo") {
         command.arg("--no-start-server");
@@ -172,18 +174,6 @@ pub fn run_with_capture_stdin(
         .env("HOME", home)
         .env("PATH", path_with_fake_clis(bin_dir))
         .env("FORMAL_AI_CAPTURE", capture)
-        .env_remove("FORMAL_AI_API_KEY")
-        .env_remove("LINK_ASSISTANT_AGENT_CONFIG_CONTENT")
-        .env_remove("OPENCODE_CONFIG")
-        .env_remove("OPENCODE_CONFIG_DIR")
-        .env_remove("OPENCODE_ENABLE_EXA")
-        .env_remove("GEMINI_API_KEY")
-        .env_remove("GEMINI_DEFAULT_AUTH_TYPE")
-        .env_remove("GEMINI_CLI_TRUST_WORKSPACE")
-        .env_remove("GEMINI_CLI_HOME")
-        .env_remove("GOOGLE_GEMINI_BASE_URL")
-        .env_remove("GOOGLE_VERTEX_BASE_URL")
-        .env_remove("GROK_API_KEY")
         .stdin(match stdin {
             Some(_) => Stdio::piped(),
             None => Stdio::null(),
@@ -978,8 +968,17 @@ fn standalone_with_formal_ai_binary_uses_same_wrapper() {
     write_fake_cli(&bin_dir, "gemini");
     let capture = dir.join("capture.txt");
 
-    let output = Command::new(env!("CARGO_BIN_EXE_with-formal-ai"))
-        .args(["--base-url", "http://127.0.0.1:18080", "gemini", "-p", "hi"])
+    let mut command = Command::new(env!("CARGO_BIN_EXE_with-formal-ai"));
+    fixture_env::clear_client_environment(&mut command);
+    let output = command
+        .args([
+            "--no-start-server",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "gemini",
+            "-p",
+            "hi",
+        ])
         .env("HOME", &home)
         .env("PATH", path_with_fake_clis(&bin_dir))
         .env("FORMAL_AI_CAPTURE", &capture)

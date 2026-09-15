@@ -105,10 +105,20 @@ fn could_name_a_language(token: &str) -> bool {
 /// scan read a bare *unknown* name after the modifier marker.
 #[must_use]
 pub fn requested(normalized: &str) -> Option<String> {
+    let tokens: Vec<&str> = normalized.split_whitespace().collect();
+    if let Some(span) = modifier_span(&tokens)
+        && is_known(&span.name)
+    {
+        if let Some(target) = crate::coding::program_language_by_alias(normalized)
+            && target.framework_of == Some(span.name.as_str())
+        {
+            return Some(target.slug.to_owned());
+        }
+        return Some(span.name);
+    }
     if let Some(language) = crate::coding::program_language_by_alias(normalized) {
         return Some(String::from(language.slug));
     }
-    let tokens: Vec<&str> = normalized.split_whitespace().collect();
     modifier_span(&tokens).map(|span| span.name)
 }
 

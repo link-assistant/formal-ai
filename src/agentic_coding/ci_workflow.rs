@@ -39,6 +39,9 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe) {
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn render(recipe: &ExecutionRecipe) -> String {
     let mut out = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
+    if let Some(setup) = crate::coding::program_contract::runtime_steps(&recipe.language) {
+        out.push_str(&setup);
+    }
     for command in &recipe.commands {
         out.push_str(&super::work_item_steps::fill(
             "workflow_command_step",

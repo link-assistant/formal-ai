@@ -299,3 +299,23 @@ multilingual_responses
     intent coding_repository_result_observation
     language es
     text "Resultado observado en el repositorio: {result}"
+  response response_agentic_formalization_report_en
+    intent agentic_formalization_report
+    language en
+    text "Formalized {subject} into a Links Notation knowledge base: {records} records realising {covered_count} of {primitive_count} protocol primitives ({coverage}).\n\nKnowledge base ({path}):\n\n{kb}"
+  response response_agentic_formalization_report_ru
+    intent agentic_formalization_report
+    language ru
+    text "Источник {subject} формализован в базу знаний Links Notation: {records} записей, реализовано {covered_count} из {primitive_count} примитивов протокола ({coverage}).\n\nБаза знаний ({path}):\n\n{kb}"
+  response response_agentic_formalization_report_hi
+    intent agentic_formalization_report
+    language hi
+    text "{subject} को Links Notation ज्ञान आधार में औपचारिक किया: {records} रिकॉर्ड, {primitive_count} में से {covered_count} प्रोटोकॉल मूल तत्व मौजूद हैं ({coverage})।\n\nज्ञान आधार ({path}):\n\n{kb}"
+  response response_agentic_formalization_report_zh
+    intent agentic_formalization_report
+    language zh
+    text "已将 {subject} 形式化为 Links Notation 知识库：{records} 条记录，实现了 {primitive_count} 种协议原语中的 {covered_count} 种（{coverage}）。\n\n知识库（{path}）：\n\n{kb}"
+  response response_agentic_formalization_report_es
+    intent agentic_formalization_report
+    language es
+    text "Se formalizó {subject} en una base de conocimiento Links Notation: {records} registros que representan {covered_count} de {primitive_count} primitivas del protocolo ({coverage}).\n\nBase de conocimiento ({path}):\n\n{kb}"

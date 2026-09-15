@@ -21,6 +21,11 @@ pub(super) fn estimate_event_bytes(event: &MemoryEvent) -> u64 {
             .iter()
             .map(|entry| string_bytes(entry))
             .sum::<u64>()
+        + event
+            .unknown_fields
+            .iter()
+            .map(|(key, value)| string_bytes(key) + string_bytes(value))
+            .sum::<u64>()
 }
 
 pub(super) fn selected_bytes(actions: &[DreamingAction]) -> u64 {

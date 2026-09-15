@@ -106,6 +106,20 @@ fn shell_quote(text: &str) -> String {
     format!("'{}'", text.replace('\'', "'\\''"))
 }
 
+/// Commit only the recipe's declared source artifacts; compiler outputs and
+/// unrelated staged edits are not part of the requested change.
+#[allow(clippy::literal_string_with_formatting_args, reason = "bind quoted operands in the shared commit template")]
+pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTarget) -> String {
+    let files = std::iter::once(recipe.path.as_str())
+        .chain(recipe.supporting_files.iter().map(|file| file.path.as_str()))
+        .map(shell_quote).collect::<Vec<_>>().join(" ");
+    super::work_item_steps::fill("recipe_commit_command", &[
+        ("{files}", &files), ("{subject}", &shell_quote(&recipe_subject(recipe))),
+        ("{body}", &shell_quote(&resolves_body(&target.reference))),
+        ("{branch}", &shell_quote(target.push_ref())),
+    ])
+}
+
 /// The commit subject for a recipe's artifact.
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn recipe_subject(recipe: &ExecutionRecipe) -> String {

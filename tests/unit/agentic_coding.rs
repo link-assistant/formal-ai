@@ -473,7 +473,7 @@ fn planner_walks_the_full_search_fetch_write_run_recipe() {
     // Step 5: the recipe is exhausted — the final answer carries the KB inline.
     match plan_chat_step(&messages, &tools) {
         Some(AgenticPlan::Final(answer)) => {
-            assert!(answer.contains("nine protocol primitives"));
+            assert!(answer.contains("9 of 9 protocol primitives"), "{answer}");
             assert!(answer.contains("knowledge_base"));
             assert!(answer.contains(KB_PATH));
         }
@@ -642,7 +642,7 @@ fn server_returns_final_knowledge_base_once_the_recipe_is_exhausted() {
     assert!(choice.message.tool_calls.is_empty());
     let body = choice.message.content.plain_text();
     assert!(body.contains("knowledge_base"));
-    assert!(body.contains("nine protocol primitives"));
+    assert!(body.contains("9 of 9 protocol primitives"), "{body}");
 }
 
 // --- Offline web corpus (what web_search/web_fetch resolve against) ---------
@@ -706,7 +706,11 @@ fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
     assert_eq!(executed, DRIVER_TOOLS.to_vec());
 
     // The final answer is the formalizer's report plus the knowledge base inline.
-    assert!(outcome.final_answer.contains("nine protocol primitives"));
+    assert!(
+        outcome.final_answer.contains("9 of 9 protocol primitives"),
+        "{}",
+        outcome.final_answer
+    );
     assert!(outcome.final_answer.contains("knowledge_base"));
     assert!(outcome.final_answer.contains(KB_PATH));
     // One server round-trip per tool call plus the final answer turn.

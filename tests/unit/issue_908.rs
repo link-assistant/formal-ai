@@ -82,6 +82,11 @@ fn advance(
         })
         .unwrap_or_default();
     let id = format!("call_{}", messages.len());
+    // Real protocol transcripts retain the assistant call that produced the
+    // result, allowing the verifier to bind evidence to an exact action.
+    messages.push(ChatMessage::assistant_tool_calls(vec![
+        formal_ai::ToolCall::function(id.clone(), call.tool.clone(), call.arguments.clone()),
+    ]));
     messages.push(ChatMessage::tool_result(&id, &call.tool, result(&command)));
 }
 

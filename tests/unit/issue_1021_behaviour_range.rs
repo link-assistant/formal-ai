@@ -249,6 +249,11 @@ fn a_named_exercise_is_not_a_file_operation() {
 /// (`experiments/issue-1021-copy-stdin`).
 #[test]
 fn a_named_exercise_is_answered_as_a_program() {
+    if super::offline_replay::in_child(
+        "issue_1021_behaviour_range::a_named_exercise_is_answered_as_a_program",
+    ) {
+        return;
+    }
     for (natural_language, prompt, program_language) in [
         // Reported (#863), now with the language it names.
         (

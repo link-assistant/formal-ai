@@ -28,6 +28,7 @@ pub mod cst;
 pub mod discovered_procedures;
 pub mod function_catalog;
 pub mod guidance;
+pub mod program_contract;
 pub mod python_render;
 pub mod python_signature;
 pub mod recurrence;

@@ -138,13 +138,13 @@ pub struct ParsedBundle {
     pub agent_info: BTreeMap<String, String>,
 }
 
-/// Materialize imported seed files as recomputable `seed_cache` events.
+/// Materialize imported seed files, retaining custom or older content.
 ///
 /// This is the production producer for the `seed_cache` kind (issue #494 via
 /// issue #540 §4): a full-memory import copies the bundle's seed files into
 /// the event log, so seed data participates in usage counting and — being
-/// classified as a recomputable cache by the dreaming lexicon — is among the
-/// first data reclaimed under storage pressure. Ids are stable over the file
+/// eligible for reclamation only when this binary can reconstruct the exact
+/// content from its embedded seed. Ids are stable over the file
 /// name, so re-importing the same bundle never duplicates the cache.
 #[must_use]
 pub fn seed_cache_events(seed_files: &[(String, String)]) -> Vec<MemoryEvent> {
@@ -153,6 +153,8 @@ pub fn seed_cache_events(seed_files: &[(String, String)]) -> Vec<MemoryEvent> {
         .map(|(name, contents)| MemoryEvent {
             id: crate::engine::stable_id("seed_cache", name),
             kind: Some(String::from("seed_cache")),
+            role: Some(String::from("cache")),
+            evidence: vec![String::from("reconstruct:embedded-seed")],
             intent: Some(String::from("seed")),
             tool: Some(name.clone()),
             content: Some(contents.clone()),

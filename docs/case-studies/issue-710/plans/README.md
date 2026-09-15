@@ -52,8 +52,11 @@ tests before implementation and regular Formal AI / Agent CLI experiments.
 ```bash
 # The PR branch is checked out in a worktree of the main clone.
 cd /tmp/wt888                      # branch merge-888-into-main → origin/issue-710-14da90b08a12
-git status --short                 # must be clean before starting a leaf
+git status --short                 # inspect and preserve unfinished/unrelated work
+df -h /private/tmp                # check space before building
 export RUSTUP_TOOLCHAIN=1.98.1     # the crate needs 1.98; the local default is older
+export LINDERA_DICTIONARIES_PATH=/tmp/formal-ai-lindera-cache
+export CARGO_TARGET_DIR=/Users/konard/Code/Archive/link-assistant/formal-ai/target
 
 # Cheap gates first (no crate build), then the rust stage.
 rust-script scripts/check-hardcoded-language.rs
@@ -66,7 +69,7 @@ cargo run --example regenerate_self_ast_census    # after any src/ change
 rust-script scripts/assemble-requirements.rs --write   # after any docs/requirements/ change
 
 # Commit with a message file, never -m (backticks in -m are executed by the shell).
-git commit -F /tmp/msg.txt
+CARGO_TEST_NO_PRUNE=1 DOCKER_NO_PRUNE=1 git commit -F /tmp/msg.txt
 ```
 
 Where a step left state on disk that the next step needs, the plan names the
@@ -84,6 +87,7 @@ wrote it.
 | 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | local implementation and release proof complete; final-head CI observation pending |
 | 05 | [Benchmark capability generalization](05-benchmark-capability-generalization.md) | reusable composition across the first-20 Python benchmark slices | implemented; finite slice evidence only |
 | 06 | [Repository task generalization and durable memory](06-repository-task-generalization.md) | actual issue requirements, complete projects, recursive prerequisite discovery, preserved personal memory, and stronger Formal AI self-use | active; plan first, tests second, implementation third |
+| 07 | [Prerequisite discovery bridge](07-prerequisite-discovery-bridge.md) | failure-driven setup discovery, dependency checks and honest completion shared across toolchains | design recorded; subplan of 06 |
 
 ## Order of work
 

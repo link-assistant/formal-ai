@@ -347,6 +347,14 @@ fn argument_content(arguments: &str) -> Option<String> {
         .map(str::to_owned)
 }
 
+/// Verify the bytes and destination of a write, including a freeform patch
+/// lowered by the protocol adapter. Tool success alone cannot bind operands.
+pub(super) fn write_matches(arguments: &str, path: &str, content: &str) -> bool {
+    (argument_targets(arguments, path) && argument_content(arguments).as_deref() == Some(content))
+        || crate::protocol_responses::apply_patch_input(&super::planner::write_arguments(path, content))
+            .is_some_and(|patch| arguments.trim() == patch.trim())
+}
+
 fn argument_targets(arguments: &str, path: &str) -> bool {
     argument_path(arguments).is_some_and(|observed| {
         observed == path

@@ -2,119 +2,116 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 14617
-  line_count 392
-  content_id source_module_7a18ff104ecda692
-  symbol_count 18
+  byte_len 15445
+  line_count 396
+  content_id source_module_345894d193cc940d
+  symbol_count 17
   symbols
-    function plan_symbolic_command_reroute 27 115
-    function one_call 117 122
-    function final_answer 125 165
-    struct RecipeProgress 169 174
-    struct StepFailure 179 183
-    function report 192 216
-    const STEP_PLACEHOLDER 193 193
-    const PATH_PLACEHOLDER 194 194
-    const CODE_PLACEHOLDER 195 195
-    const REPORT_PLACEHOLDER 196 196
-    function after_latest_user 220 268
-    const EXIT_CODE_LABELS 272 272
-    const ABSENT_FIELD_VALUES 280 280
-    function reported_exit_code 295 305
-    function from_result 316 343
-    function reports_failure_in_prose 347 369
-    function run_command_of 372 383
-    function tool_from_call_id 385 392
+    function plan_symbolic_command_reroute 27 109
+    function one_call 111 116
+    function final_answer 119 159
+    struct RecipeProgress 163 168
+    struct StepFailure 173 177
+    function report 186 210
+    const STEP_PLACEHOLDER 187 187
+    const PATH_PLACEHOLDER 188 188
+    const CODE_PLACEHOLDER 189 189
+    const REPORT_PLACEHOLDER 190 190
+    function after_latest_user 214 280
+    const EXIT_CODE_LABELS 284 284
+    const ABSENT_FIELD_VALUES 292 292
+    function reported_exit_code 307 317
+    function from_result 328 355
+    function reports_failure_in_prose 359 381
+    function run_command_of 384 396
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9659
-    named_node_count 1956
-    distinct_node_kinds 85
+    total_link_count 10448
+    named_node_count 2128
+    distinct_node_kinds 83
     node_kinds
-      arguments 158
+      arguments 177
       array_expression 4
-      array_type 10
-      assignment_expression 1
+      array_type 9
+      assignment_expression 2
       attribute 2
       attribute_item 2
-      binary_expression 14
-      block 39
+      binary_expression 20
+      block 42
       boolean_literal 2
-      break_expression 1
-      call_expression 158
+      break_expression 2
+      call_expression 177
       char_literal 1
-      closure_expression 30
-      closure_parameters 30
+      closure_expression 33
+      closure_parameters 33
       compound_assignment_expr 2
       const_item 6
-      continue_expression 2
+      continue_expression 5
       crate 6
       declaration_list 4
       doc_comment 37
       else_clause 2
       escape_sequence 24
-      expression_statement 30
+      expression_statement 37
       field_declaration 7
       field_declaration_list 2
-      field_expression 161
-      field_identifier 171
-      field_initializer 3
-      field_initializer_list 3
+      field_expression 187
+      field_identifier 200
+      field_initializer 6
+      field_initializer_list 4
       for_expression 3
-      function_item 10
+      function_item 9
       generic_function 1
-      generic_type 12
-      identifier 412
-      if_expression 13
+      generic_type 11
+      identifier 449
+      if_expression 15
       impl_item 4
-      index_expression 2
+      index_expression 3
       inner_doc_comment_marker 7
       integer_literal 9
-      let_chain 2
-      let_condition 8
-      let_declaration 34
-      lifetime 3
-      lifetime_parameter 1
+      let_chain 1
+      let_condition 7
+      let_declaration 39
       line_comment 56
       macro_invocation 8
       match_arm 5
       match_block 2
       match_expression 2
       match_pattern 5
-      mutable_specifier 2
+      mutable_specifier 3
       outer_doc_comment_marker 30
-      parameter 24
-      parameters 10
+      parameter 23
+      parameters 9
       parenthesized_expression 2
       primitive_type 25
-      range_expression 2
-      reference_expression 27
+      range_expression 3
+      reference_expression 25
       reference_type 27
       return_expression 7
-      scoped_identifier 46
+      scoped_identifier 51
       scoped_type_identifier 2
       scoped_use_list 3
       self 13
       self_parameter 2
       shorthand_field_initializer 6
       source_file 1
-      string_content 47
-      string_literal 35
-      struct_expression 3
+      string_content 48
+      string_literal 36
+      struct_expression 4
       struct_item 2
-      super 7
+      super 8
       token_tree 16
-      try_expression 8
-      tuple_expression 5
-      tuple_pattern 5
-      tuple_struct_pattern 11
-      type_arguments 13
+      try_expression 7
+      tuple_expression 7
+      tuple_pattern 7
+      tuple_struct_pattern 12
+      tuple_type 1
+      type_arguments 12
       type_identifier 46
-      type_parameters 1
-      unary_expression 5
+      unary_expression 7
       use_as_clause 1
       use_declaration 7
       use_list 3

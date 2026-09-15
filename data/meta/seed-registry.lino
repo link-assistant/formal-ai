@@ -183,6 +183,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-formalization-report
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-how
     bundle true
     lexicon meaning

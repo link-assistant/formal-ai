@@ -46,6 +46,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-file-edit.lino",
   "seed/meanings-file-write.lino",
   "seed/meanings-finance.lino",
+  "seed/meanings-formalization-report.lino",
   "seed/meanings-how.lino",
   "seed/meanings-intent.lino",
   "seed/meanings-lexical-meta.lino",
