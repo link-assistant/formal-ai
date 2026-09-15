@@ -197,3 +197,14 @@ fn non_coding_questions_do_not_produce_a_task_spec() {
         None
     );
 }
+
+#[test]
+fn an_unnamed_conversational_function_defers_identity_to_source_discovery() {
+    let spec = recognise(
+        "Write a Python function that calculates a recursively defined numeric sequence.",
+    )
+    .expect("unnamed source-discovery function");
+    assert_eq!(spec.artifact_shape, ArtifactShape::Function);
+    assert_eq!(spec.name, "discovered_function");
+    assert!(spec.parameters.is_empty());
+}

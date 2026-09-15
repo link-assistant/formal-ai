@@ -2,26 +2,30 @@ self_ast_census
   target src/coding/task_spec.rs
   language rust
   fidelity signature
-  byte_len 13994
-  line_count 396
-  content_id source_module_d14566af68d1f415
-  symbol_count 18
+  byte_len 18219
+  line_count 510
+  content_id source_module_e55a67fdc1f65931
+  symbol_count 22
   symbols
-    struct Parameter 15 18
-    struct Example 22 25
-    struct CodingTaskSpec 29 38
-    function signature_identity 43 55
-    function to_links_notation 59 88
-    function recognise 93 187
-    function python_definition_signature 189 195
-    function backtick_signature 197 208
-    function inline_function_signature 210 224
-    function parse_signature 226 243
-    function parse_parameter 245 260
-    function is_identifier 262 268
-    function docstring_contract 270 303
-    function docstring_content 305 316
-    function assertion_contract 318 341
-    function split_top_level_equality 343 359
-    function parse_call 361 375
-    function split_sentences 377 396
+    enum ArtifactShape 16 21
+    function slug 24 29
+    struct Parameter 34 37
+    struct Example 41 44
+    struct CodingTaskSpec 48 62
+    function signature_identity 67 79
+    function to_links_notation 83 121
+    function recognise 126 244
+    function outside_markdown_fences 246 259
+    function extract_expected_stdout 264 301
+    function python_definition_signature 303 309
+    function backtick_signature 311 322
+    function inline_function_signature 324 338
+    function parse_signature 340 357
+    function parse_parameter 359 374
+    function is_identifier 376 382
+    function docstring_contract 384 417
+    function docstring_content 419 430
+    function assertion_contract 432 455
+    function split_top_level_equality 457 473
+    function parse_call 475 489
+    function split_sentences 491 510

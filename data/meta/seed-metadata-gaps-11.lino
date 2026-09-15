@@ -919,6 +919,14 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "range"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_95ae26b6a129435b
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_equal"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_c727c6587d6f75bb
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_less_equal"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_0faad29e99ead37b
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_min"

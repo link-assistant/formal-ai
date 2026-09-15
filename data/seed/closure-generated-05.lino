@@ -60,7 +60,7 @@ meanings
       surface
         text "case"
   case-insensitive
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "case insensitive"

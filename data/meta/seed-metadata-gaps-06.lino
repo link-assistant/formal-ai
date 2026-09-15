@@ -315,10 +315,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "claim"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_702aad99aa314906
-    source "data/seed/closure-generated-07.lino"
-    record "cualquiera"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_47a7a91892774a66
     source "data/seed/closure-generated-07.lino"
     record "how_to_guide_conflicts_heading"
@@ -787,10 +783,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "response_thinking_step_lookup_fact_hi"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_c9f68605ee23c0e6
-    source "data/seed/closure-generated-16.lino"
-    record "ascendente"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9a96bd4e43012186
     source "data/seed/closure-generated-16.lino"
     record "list_facts_about"
@@ -870,6 +862,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_7a73ef9639fdb1f6
     source "data/seed/meanings-coding-structure.lino"
     record "range_inclusive"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_8d8677c27fd05676
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_subtract_one"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_ea036c6441e76c36
     source "data/seed/meanings-coding-structure.lino"

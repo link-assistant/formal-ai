@@ -30,6 +30,7 @@ pub mod function_catalog;
 pub mod guidance;
 pub mod python_render;
 pub mod python_signature;
+pub mod recurrence;
 pub mod rosetta_request;
 pub mod synthesis_runtime;
 pub mod task_spec;

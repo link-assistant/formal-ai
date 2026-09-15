@@ -299,10 +299,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "snake_case"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_06d59a69bb31f83d
-    source "data/seed/closure-generated-06.lino"
-    record "acumulativo"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_32a7010cdaed2d9d
     source "data/seed/closure-generated-06.lino"
     record "branch"
@@ -918,10 +914,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_7bc1d8cfb14381ad
     source "data/seed/closure-generated-16.lino"
     record "statement_audit_strength_range"
-    missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_44a976c0e2a47bcd
-    source "data/seed/closure-generated-16.lino"
-    record "todos"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_28dd1f4e2bf1b8dd
     source "data/seed/learned-request-openers.lino"

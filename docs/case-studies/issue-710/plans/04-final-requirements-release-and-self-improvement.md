@@ -198,14 +198,36 @@ candidates compose seeded print/range/loop structures, execute in the bounded
 workspace, and must match exact stdout. Held-out punctuation and cardinal-word
 tests pass in English, Russian, Hindi, and Chinese. A fresh real Python box run
 also exposed and fixed an outer-instruction-versus-fenced-payload precedence
-bug. Recurrence discovery and the second target language remain open below.
+bug.
+
+The recurrence slice is also complete locally. Wikifunctions abstract
+implementations are parsed as a generic typed expression tree; opaque function
+identifiers acquire their operations from fetched source labels plus the
+seeded, officially grounded operator vocabulary. The formalizer proves a
+boundary, structural descent of every recursive argument, and a positive
+predecessor measure before it renders any language artifact. Source-provided
+testers are bounded and replayed in the isolated verifier. Fibonacci and
+factorial are two captured source records, not production templates, and a
+held-out renamed accumulated-total recurrence passes through the same composer.
+
+The web worker consumes a generated, non-seed source cache containing the
+formalized expression trees and multilingual Wikidata aliases. It replays the
+same source tests before returning an artifact. Moving this subject into its
+own worker module preserved the frozen numbered-module budget. A reversible
+forget/rebuild run removed the cache, reconstructed it solely from captured
+trusted-source bytes, and reproduced SHA-256
+`56ba159146d2ce57eb841babdd5b24a32693fe7899ebb8af988a252f5a1ad945`.
+The native cold live path independently discovered `Z13864`, generated
+`fibonacci`, and passed 4/4 source checks with the correct typed `CC0-1.0`
+attribution. The remaining second-language acceptance belongs to the complete
+box-language run in L21, not to recurrence semantics.
 
 ## L21 — Make the real surfaces prove L19 and L20
 
 - [x] Python box generation passes in en, ru, hi, and zh with byte-identical
       program artifacts
 - [ ] all box-language project generation and container verification jobs pass
-- [ ] all issue-334 tests pass locally, including agent decomposition and every
+- [x] all issue-334 tests pass locally, including agent decomposition and every
       supported language
 - [ ] npm web tests and the entire local Playwright suite pass
 - [ ] Agent CLI E2E passes with the branch binary
@@ -214,8 +236,10 @@ The isolated Python box corpus passed in all four prompt languages. Every
 generated `main.py` was byte-identical with SHA-256
 `51d2693342000ac090e8817796032592050e0f0b88d4d3a7ab1112058a169673` and
 contained the independently derived `print("Hello, world!")` program. The
-remaining checkboxes deliberately stay open until their complete real-surface
-runs finish.
+regenerated recurrence worker then passed all four real Chromium issue-334
+tests in 21.9 seconds: standalone generation, numeric follow-up, agent
+decomposition, and the en/ru/hi/zh loop. The remaining checkboxes deliberately
+stay open until their complete real-surface runs finish.
 
 Generated bundles are rebuilt only with the pinned Bun version and verified
 byte-for-byte after Playwright.
@@ -272,8 +296,30 @@ Links data. The regression now uses that real envelope. Session
 wrote the artifact, read it back, and verified it byte-for-byte. Formal AI's
 leaf and successful trace are isolated in commit 6ce9fbac2; both failed traces
 are retained with the repair. The repository's pinned secret scanner reports
-`No secrets found` across all three evidence directories. The second bounded
-authorship subtask remains open.
+`No secrets found` across all three evidence directories.
+
+The second subtask is complete after another failure-driven repair. Session
+`ses_f5cf356bcffexyTLSfHRgHdx2D` read the generated recurrence source cache but
+collapsed two records into one global best-value document, flattened a whole
+record, and weakly misbound `source_function` to a concept URL. The generalized
+structured-document renderer now discovers repeated record scopes from the
+requested index/universal quantifier, emits one derivation per source record,
+preserves repeated exact fields, and accepts fuzzy structural field matches
+only when one complete identifier contains the other. A follow-up exposed that
+plain field lists after a semicolon were dropped; schema declarations now span
+commas, colons, and semicolons to the end of their declarative sentence.
+
+All 13 issue-715 tests pass. In final session
+`ses_f5ce7057affeERhgJaPuWOtVfJ`, the real Agent CLI used the rebuilt branch
+binary to author
+`docs/case-studies/issue-710/formal-ai-recurrence-cache-index.lino`, retained
+both `Z13835` and `Z13667`, both Fibonacci predecessor offsets, exact source
+URLs, identifiers, labels, licenses, and read the 1,142-byte artifact back
+byte-for-byte. The eight-file local evidence bundle passed secretlint 13.0.5
+with the pinned recommended preset. Upload is withheld until the external
+action gate receives payload-specific approval for the full system-prompt and
+dialog content; this does not weaken the committed artifact or regression
+evidence.
 
 ## L24 — Refresh and re-verify requirements
 

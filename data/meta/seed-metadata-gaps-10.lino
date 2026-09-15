@@ -119,10 +119,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "literals"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_28f1a0c822607e6a
-    source "data/seed/closure-generated-03.lino"
-    record "mayor"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_3a1e2c74a4a5e57a
     source "data/seed/closure-generated-03.lino"
     record "response_how_to_guide_copy_es"
@@ -270,6 +266,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_245c8d2b2954bb8a
     source "data/seed/closure-generated-06.lino"
     record "response_thinking_step_formalize_resolved_plain_en"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a9a115d9473238ea
+    source "data/seed/closure-generated-06.lino"
+    record "subtract_one"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_da2492ace3d9c89a
     source "data/seed/closure-generated-06.lino"
@@ -558,10 +558,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_79e768659deb982a
     source "data/seed/closure-generated-11.lino"
     record "thinking_language_name_ru"
-    missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_b56fe2a198d2355a
-    source "data/seed/closure-generated-12.lino"
-    record "cantidad"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fdd44438337fdc7a
     source "data/seed/closure-generated-12.lino"

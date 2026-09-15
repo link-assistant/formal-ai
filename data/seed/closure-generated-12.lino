@@ -40,7 +40,7 @@ meanings
       surface
         text "antiregime"
   ascending
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "ascending"
@@ -59,11 +59,6 @@ meanings
     lexeme en
       surface
         text "camel"
-  cantidad
-    defined-by concept
-    lexeme en
-      surface
-        text "cantidad"
   client_contract_missing_evidence_error
     defined-by intent
     lexeme en
@@ -75,7 +70,7 @@ meanings
       surface
         text "coding synthesis verified answer"
   cumulative
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "cumulative"
@@ -109,6 +104,11 @@ meanings
     lexeme en
       surface
         text "document originality check sample present"
+  equality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "equality"
   essay
     defined-by word_surface
     lexeme en
@@ -1139,11 +1139,6 @@ meanings
     lexeme en
       surface
         text "ts"
-  vocal
-    defined-by concept
-    lexeme en
-      surface
-        text "vocal"
   web_search_unavailable
     defined-by intent
     lexeme en

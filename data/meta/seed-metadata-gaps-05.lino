@@ -839,6 +839,14 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_timezone_alias"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_bab7630ebf99d845
+    source "data/seed/meanings-coding-structure.lino"
+    record "print_stdout"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_a0cd6460303c6815
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_subtract"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_0f8fc89e99d3fac5
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_max"

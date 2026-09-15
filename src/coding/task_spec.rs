@@ -203,6 +203,16 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         .is_some_and(|meaning| meaning.evidenced_in(&normalized))
     {
         (ArtifactShape::Program, "main".to_owned(), Vec::new(), None)
+    } else if lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, &normalized) {
+        // The source catalog owns the callable identity and arity when prose
+        // names a concept rather than spelling a signature. This provisional
+        // name is never rendered by a source-derived candidate.
+        (
+            ArtifactShape::Function,
+            "discovered_function".to_owned(),
+            Vec::new(),
+            None,
+        )
     } else {
         return None;
     };

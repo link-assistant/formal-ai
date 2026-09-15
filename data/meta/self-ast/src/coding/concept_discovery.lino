@@ -2,39 +2,39 @@ self_ast_census
   target src/coding/concept_discovery.rs
   language rust
   fidelity signature
-  byte_len 12946
-  line_count 399
-  content_id source_module_1874fd866d4de438
+  byte_len 14737
+  line_count 439
+  content_id source_module_018212ffc8040439
   symbol_count 31
   symbols
-    const STRUCTURES 10 10
-    struct StructuralMeaning 13 17
-    struct CatalogFunction 20 23
-    struct DiscoveryCatalog 26 30
-    function new 34 44
-    struct DiscoveryBounds 48 51
-    function default 54 59
-    struct ConceptEvidence 63 68
-    trait UnknownConceptLookup 70 72
-    function lookup 71 71
-    struct NoLookup 74 74
-    function lookup 77 79
-    struct CandidatePart 83 94
-    struct ConceptNeed 97 102
-    struct ConceptMap 105 108
-    function structure_ids 112 118
-    function candidate_ids 121 127
-    function identity 130 140
-    function to_links_notation 143 172
-    function discover 176 178
-    function discover_with_lookup 181 225
-    function structural_meanings 228 245
-    function structures_for 247 274
-    function discovery_query 276 286
-    function candidates_for 288 353
-    function overlap_score 355 357
-    function candidate_kind_rank 359 365
-    function stdlib_candidate 367 380
-    function token_overlap 382 386
-    function tokens 388 394
-    function unique 396 399
+    const STRUCTURES 11 11
+    struct StructuralMeaning 14 18
+    struct CatalogFunction 21 26
+    struct DiscoveryCatalog 29 33
+    function new 37 47
+    struct DiscoveryBounds 51 54
+    function default 57 62
+    struct ConceptEvidence 66 71
+    trait UnknownConceptLookup 73 75
+    function lookup 74 74
+    struct NoLookup 77 77
+    function lookup 80 82
+    struct CandidatePart 86 99
+    struct ConceptNeed 102 107
+    struct ConceptMap 110 113
+    function structure_ids 117 123
+    function candidate_ids 126 132
+    function identity 135 145
+    function to_links_notation 148 177
+    function discover 181 183
+    function discover_with_lookup 186 231
+    function structural_meanings 234 251
+    function structures_for 253 280
+    function discovery_query 282 292
+    function candidates_for 294 391
+    function overlap_score 393 395
+    function candidate_kind_rank 397 403
+    function stdlib_candidate 405 420
+    function token_overlap 422 426
+    function tokens 428 434
+    function unique 436 439

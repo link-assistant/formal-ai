@@ -234,6 +234,9 @@ pub const ROLE_EXECUTE_URL_REQUEST: &str = "execute_url_request";
 /// Semantic role: a language-neutral program-composition operation whose
 /// surface cues and official grounding live in seed data.
 pub const ROLE_CODING_STRUCTURE: &str = "coding_structure";
+/// Semantic role: a source-catalog function label whose word form carries the
+/// language-neutral operation used to formalize recurrence expressions.
+pub const ROLE_CODING_RECURRENCE_OPERATOR: &str = "coding_recurrence_operator";
 /// Semantic role: a source artifact kind handled by the coding-task executor
 /// in addition to the general [`ROLE_PROGRAM_KIND`] vocabulary.
 pub const ROLE_CODING_ARTIFACT_KIND: &str = "coding_artifact_kind";

@@ -95,7 +95,7 @@ meanings
       surface
         text "command stream"
   common
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "common"
@@ -1065,7 +1065,7 @@ meanings
       surface
         text "restore"
   rolling
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "rolling"

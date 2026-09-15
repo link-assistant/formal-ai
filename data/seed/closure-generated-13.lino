@@ -15,7 +15,7 @@ meanings
       surface
         text "alan turing"
   all
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "all"
@@ -69,11 +69,6 @@ meanings
     lexeme en
       surface
         text "comparison decomposed no evidence"
-  contar
-    defined-by concept
-    lexeme en
-      surface
-        text "contar"
   contenido
     defined-by concept
     lexeme en
@@ -109,11 +104,11 @@ meanings
     lexeme en
       surface
         text "cuales"
-  descendente
-    defined-by concept
+  decrement
+    defined-by word_surface
     lexeme en
       surface
-        text "descendente"
+        text "decrement"
   docker_microservice
     defined-by environment
     lexeme en
@@ -215,7 +210,7 @@ meanings
       surface
         text "how to guide copies heading"
   inclusive
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "inclusive"
@@ -239,6 +234,11 @@ meanings
     lexeme en
       surface
         text "left"
+  less_equal
+    defined-by concept
+    lexeme en
+      surface
+        text "less equal"
   lexeme_import_cache_invalid_json
     defined-by intent
     lexeme en

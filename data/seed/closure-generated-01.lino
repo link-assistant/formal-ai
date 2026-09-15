@@ -399,11 +399,6 @@ meanings
     lexeme en
       surface
         text "pixel"
-  producto
-    defined-by concept
-    lexeme en
-      surface
-        text "producto"
   program_plan_rules
     defined-by concept
     lexeme en

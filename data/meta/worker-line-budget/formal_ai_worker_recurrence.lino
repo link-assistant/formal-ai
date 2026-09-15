@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_recurrence.js"
+  ceiling 259
+  rationale "Issue #334/710: browser projection of the source-derived recurrence AST, source-test replay, rendering, and bounded evaluation; isolated from the frozen numbered modules."

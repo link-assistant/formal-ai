@@ -703,10 +703,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "context_machine_learning"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_ee2f3bc7fb936267
-    source "data/seed/closure-generated-13.lino"
-    record "descendente"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1c41f5bb4df0b2e7
     source "data/seed/closure-generated-13.lino"
     record "fact_check_no_statements"

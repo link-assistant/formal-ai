@@ -1,0 +1,100 @@
+self_ast_census
+  target src/agentic_coding/structured_document.rs
+  language rust
+  fidelity full_ast
+  byte_len 13264
+  line_count 361
+  content_id source_module_29eed8d336c045b6
+  symbol_count 14
+  symbols
+    struct Specification 26 32
+    function plan_step 35 90
+    function recognise 92 138
+    function machine_identifiers 142 155
+    function render 157 186
+    function collection_scopes 193 231
+    function requested_fields 238 257
+    function tree_contains_identifier_token 259 273
+    function best_source_values 275 296
+    struct SourceCandidate 298 302
+    function collect_candidates 304 335
+    function collect_leaf_values 337 344
+    function identifier_tokens 346 352
+    function read_arguments 354 361
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 10003
+    named_node_count 2087
+    distinct_node_kinds 68
+    node_kinds
+      arguments 196
+      array_type 2
+      attribute 1
+      attribute_item 1
+      binary_expression 29
+      block 44
+      call_expression 196
+      char_literal 9
+      closure_expression 30
+      closure_parameters 30
+      compound_assignment_expr 1
+      crate 12
+      doc_comment 27
+      else_clause 1
+      expression_statement 50
+      field_declaration 8
+      field_declaration_list 2
+      field_expression 179
+      field_identifier 193
+      field_initializer 6
+      field_initializer_list 2
+      for_expression 7
+      function_item 12
+      generic_function 4
+      generic_type 17
+      identifier 478
+      if_expression 14
+      inner_doc_comment_marker 14
+      integer_literal 13
+      let_condition 1
+      let_declaration 41
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 36
+      macro_invocation 10
+      mut_pattern 1
+      mutable_specifier 20
+      outer_doc_comment_marker 13
+      parameter 25
+      parameters 12
+      parenthesized_expression 4
+      primitive_type 17
+      reference_expression 42
+      reference_type 26
+      remaining_field_pattern 1
+      return_expression 12
+      scoped_identifier 52
+      scoped_use_list 3
+      shorthand_field_initializer 2
+      slice_pattern 1
+      source_file 1
+      string_content 17
+      string_literal 18
+      struct_expression 2
+      struct_item 2
+      super 6
+      token_tree 12
+      try_expression 5
+      tuple_expression 1
+      tuple_pattern 6
+      tuple_struct_pattern 5
+      type_arguments 21
+      type_identifier 54
+      type_parameters 1
+      unary_expression 24
+      use_declaration 7
+      use_list 3
+      visibility_modifier 1

@@ -39,11 +39,6 @@ meanings
     lexeme en
       surface
         text "artifacts"
-  ascendente
-    defined-by concept
-    lexeme en
-      surface
-        text "ascendente"
   belongs
     defined-by concept
     lexeme en
@@ -314,18 +309,13 @@ meanings
     lexeme en
       surface
         text "memo"
-  menor
-    defined-by concept
-    lexeme en
-      surface
-        text "menor"
   normalize_labels_fixpoint
     defined-by concept
     lexeme en
       surface
         text "normalize labels fixpoint"
   overlapping
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "overlapping"
@@ -414,6 +404,11 @@ meanings
     lexeme en
       surface
         text "policy bounded autonomy"
+  python_for_each
+    defined-by concept
+    lexeme en
+      surface
+        text "python for each"
   python_import
     defined-by concept
     lexeme en
@@ -1010,7 +1005,7 @@ meanings
       surface
         text "response write program skill gap en"
   shared
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "shared"
@@ -1094,11 +1089,6 @@ meanings
     lexeme en
       surface
         text "thinking step invoke tool"
-  todos
-    defined-by concept
-    lexeme en
-      surface
-        text "todos"
   tool_http_fetch
     defined-by tool
     lexeme en
@@ -1114,11 +1104,6 @@ meanings
     lexeme en
       surface
         text "tool url navigate"
-  transformar
-    defined-by concept
-    lexeme en
-      surface
-        text "transformar"
   travel_guide
     defined-by category
     lexeme en
@@ -1139,11 +1124,6 @@ meanings
     lexeme en
       surface
         text "visitors"
-  vocales
-    defined-by concept
-    lexeme en
-      surface
-        text "vocales"
   wikihow
     defined-by source
     lexeme en

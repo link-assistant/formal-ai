@@ -455,10 +455,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "archive"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_5eb1784fe3ff0714
-    source "data/seed/closure-generated-10.lino"
-    record "longitud"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_11568b856d18f824
     source "data/seed/closure-generated-10.lino"
     record "original_journalism"
@@ -590,6 +586,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_0967c06b12092b04
     source "data/seed/closure-generated-12.lino"
     record "dirven"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_cb3174aa4da696a4
+    source "data/seed/closure-generated-12.lino"
+    record "equality"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_4f66d042c37e6464
     source "data/seed/closure-generated-12.lino"

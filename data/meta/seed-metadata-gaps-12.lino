@@ -867,10 +867,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "agentic_action_run_program"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_addb7eb02d1b526c
-    source "data/seed/closure-generated-15.lino"
-    record "distintos"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c37e0db8ea078d0c
     source "data/seed/closure-generated-15.lino"
     record "echo"

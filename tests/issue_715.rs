@@ -502,3 +502,73 @@ fn inspected_links_record_is_derived_written_and_read_back_before_completion() {
     };
     assert!(final_answer.contains("verified"), "{final_answer}");
 }
+
+#[test]
+fn inspected_record_collections_preserve_cardinality_scope_and_repeated_fields() {
+    let task = "Inspect recurrence-source.lino. Author recurrence-cache-index.lino as valid Links Notation. \
+        Derive one recurrence_cache_index entry for every recurrence; preserve label, identifier, \
+        abstract_implementation, source_url, license, termination_measure, predecessor_offset, \
+        and nonexistent_source fields when present.";
+    let source = r#"recurrence_source_cache
+  recurrence "Z1"
+    label "alpha"
+    identifier "alpha"
+    termination_measure "n"
+    predecessor_offset "1"
+    predecessor_offset "2"
+    abstract_implementation "I1"
+    source_url "https://example.test/I1"
+    license "CC0-1.0"
+  recurrence "Z2"
+    label "beta"
+    identifier "beta"
+    termination_measure "m"
+    predecessor_offset "1"
+    abstract_implementation "I2"
+    source_url "https://example.test/I2"
+    license "CC0-1.0"
+"#;
+    let mut messages = vec![ChatMessage::user(task)];
+
+    let read_source = one_call(&messages, &["read", "write"]);
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-collection",
+        "read",
+        read_source.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("read-collection", "read", source));
+
+    let write = one_call(&messages, &["read", "write"]);
+    assert_eq!(write.tool, "write");
+    let content = args(&write)["content"].as_str().unwrap().to_owned();
+    assert_eq!(
+        content.matches("  derived_formalization ").count(),
+        2,
+        "{content}"
+    );
+    assert!(
+        content.contains("derived_formalization \"Z1\""),
+        "{content}"
+    );
+    assert!(
+        content.contains("derived_formalization \"Z2\""),
+        "{content}"
+    );
+    assert!(content.contains("label \"alpha\""), "{content}");
+    assert!(content.contains("label \"beta\""), "{content}");
+    assert!(
+        content.contains("source_url \"https://example.test/I1\""),
+        "{content}"
+    );
+    assert!(
+        content.contains("source_url \"https://example.test/I2\""),
+        "{content}"
+    );
+    assert_eq!(
+        content.matches("predecessor_offset").count(),
+        3,
+        "{content}"
+    );
+    assert!(!content.contains("nonexistent_source"), "{content}");
+    assert!(!content.contains("not established"), "{content}");
+}

@@ -2,35 +2,43 @@ self_ast_census
   target src/coding/function_catalog/wikifunctions.rs
   language rust
   fidelity signature
-  byte_len 13354
-  line_count 387
-  content_id source_module_84bc4d2e2eea019d
-  symbol_count 27
+  byte_len 18118
+  line_count 527
+  content_id source_module_bed993cf4c38e814
+  symbol_count 35
   symbols
     const API 14 14
     const DEFINITION_LICENSE 15 15
     const IMPLEMENTATION_LICENSE 16 16
     struct FunctionMatch 19 28
-    struct FunctionPart 31 42
-    function to_links_notation 46 72
-    struct Implementation 76 86
-    function to_links_notation 90 108
-    struct FunctionTest 112 120
-    function search_functions 122 153
-    function fetch_function 155 184
-    function fetch_implementations 186 223
-    function fetch_testers 225 264
-    function fetch_url 266 271
-    function outer_objects 273 275
-    function fetched_object 277 279
-    function decoded_object 281 288
-    function parse_json 290 292
-    function malformed 294 296
-    function string 298 300
-    function array_references 302 314
-    function reference_list 316 327
-    function multilingual_strings 329 348
-    function literal 350 365
-    function append_provenance 367 372
-    function encode_component 374 387
-    const HEX 375 375
+    struct FunctionPart 31 43
+    function to_links_notation 47 76
+    enum ZExpression 82 89
+    function function_zids 93 99
+    function collect_function_zids 101 112
+    struct AbstractImplementation 116 124
+    struct Implementation 127 137
+    function to_links_notation 141 159
+    struct FunctionTest 163 171
+    function search_functions 173 204
+    function fetch_function 206 213
+    function fetch_function_descriptors 216 229
+    function function_part_from_object 231 261
+    function fetch_abstract_implementation 264 288
+    function parse_expression 290 324
+    function fetch_implementations 326 363
+    function fetch_testers 365 404
+    function fetch_url 406 411
+    function outer_objects 413 415
+    function fetched_object 417 419
+    function decoded_object 421 428
+    function parse_json 430 432
+    function malformed 434 436
+    function string 438 440
+    function array_references 442 454
+    function reference_list 456 467
+    function multilingual_strings 469 488
+    function literal 490 505
+    function append_provenance 507 512
+    function encode_component 514 527
+    const HEX 515 515

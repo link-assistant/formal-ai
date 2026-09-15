@@ -31,6 +31,7 @@ pub struct FunctionMatch {
 pub struct FunctionPart {
     pub zid: String,
     pub labels: BTreeMap<String, String>,
+    pub argument_keys: Vec<String>,
     pub argument_types: Vec<String>,
     pub return_type: String,
     pub implementation_zids: Vec<String>,
@@ -54,6 +55,9 @@ impl FunctionPart {
         for argument_type in &self.argument_types {
             push_lino_node(&mut out, 2, "argument_type", Some(argument_type));
         }
+        for argument_key in &self.argument_keys {
+            push_lino_node(&mut out, 2, "argument_key", Some(argument_key));
+        }
         push_lino_node(&mut out, 2, "return_type", Some(&self.return_type));
         for implementation in &self.implementation_zids {
             push_lino_node(&mut out, 2, "implementation", Some(implementation));
@@ -70,6 +74,53 @@ impl FunctionPart {
         );
         out.trim_end().to_owned()
     }
+}
+
+/// A language-neutral Wikifunctions expression. Source keys and Z-IDs remain
+/// opaque until a later semantic pass resolves fetched function descriptors.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ZExpression {
+    Reference(String),
+    Literal(String),
+    Call {
+        function_zid: String,
+        arguments: BTreeMap<String, ZExpression>,
+    },
+}
+
+impl ZExpression {
+    #[must_use]
+    pub fn function_zids(&self) -> Vec<String> {
+        let mut found = Vec::new();
+        self.collect_function_zids(&mut found);
+        found.sort();
+        found.dedup();
+        found
+    }
+
+    fn collect_function_zids(&self, found: &mut Vec<String>) {
+        if let Self::Call {
+            function_zid,
+            arguments,
+        } = self
+        {
+            found.push(function_zid.clone());
+            for argument in arguments.values() {
+                argument.collect_function_zids(found);
+            }
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AbstractImplementation {
+    pub zid: String,
+    pub function_zid: String,
+    pub expression: ZExpression,
+    pub license: String,
+    pub source_url: String,
+    pub sha256: String,
+    pub fetched_at: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -158,20 +209,46 @@ pub fn fetch_function<T: SourceTransport>(
 ) -> Result<FunctionPart, FetchError> {
     let capture = client.fetch(&fetch_url(&[zid]))?;
     let object = fetched_object(&capture, zid)?;
+    function_part_from_object(zid, &object, &capture)
+}
+
+/// Fetch several descriptors in one provenance-preserving source capture.
+pub fn fetch_function_descriptors<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    zids: &[String],
+) -> Result<Vec<FunctionPart>, FetchError> {
+    let requested = zids.iter().map(String::as_str).collect::<Vec<_>>();
+    let capture = client.fetch(&fetch_url(&requested))?;
+    let outer = outer_objects(&capture)?;
+    zids.iter()
+        .map(|zid| {
+            let object = decoded_object(&outer, zid)?;
+            function_part_from_object(zid, &object, &capture)
+        })
+        .collect()
+}
+
+fn function_part_from_object(
+    zid: &str,
+    object: &Value,
+    capture: &SourceCapture,
+) -> Result<FunctionPart, FetchError> {
     let function = object
         .pointer("/Z2K2")
         .ok_or_else(|| malformed(zid, "missing Z2K2 function body"))?;
-    let argument_types = function
+    let arguments = function
         .get("Z8K1")
         .and_then(Value::as_array)
-        .map(|items| reference_list(items, Some("Z17K1")))
-        .unwrap_or_default();
+        .map_or(&[][..], Vec::as_slice);
+    let argument_types = reference_list(arguments, Some("Z17K1"));
+    let argument_keys = reference_list(arguments, Some("Z17K2"));
     let return_type = string(function, "Z8K2")
         .ok_or_else(|| malformed(zid, "missing Z8K2 return type"))?
         .to_owned();
     Ok(FunctionPart {
         zid: zid.to_owned(),
-        labels: multilingual_strings(&object, "Z2K3", "en"),
+        labels: multilingual_strings(object, "Z2K3", "en"),
+        argument_keys,
         argument_types,
         return_type,
         implementation_zids: array_references(function.get("Z8K4"), "Z14"),
@@ -181,6 +258,69 @@ pub fn fetch_function<T: SourceTransport>(
         sha256: capture.sha256().to_owned(),
         fetched_at: capture.fetched_at().to_owned(),
     })
+}
+
+/// Fetch and parse an abstract implementation into a generic expression tree.
+pub fn fetch_abstract_implementation<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    zid: &str,
+) -> Result<AbstractImplementation, FetchError> {
+    let capture = client.fetch(&fetch_url(&[zid]))?;
+    let object = fetched_object(&capture, zid)?;
+    let body = object
+        .pointer("/Z2K2")
+        .ok_or_else(|| malformed(zid, "missing Z2K2 implementation body"))?;
+    let function_zid = string(body, "Z14K1")
+        .ok_or_else(|| malformed(zid, "missing Z14K1 implemented function"))?;
+    let expression = body
+        .get("Z14K2")
+        .ok_or_else(|| malformed(zid, "missing Z14K2 abstract expression"))
+        .and_then(|value| parse_expression(value, zid))?;
+    Ok(AbstractImplementation {
+        zid: zid.to_owned(),
+        function_zid: function_zid.to_owned(),
+        expression,
+        license: DEFINITION_LICENSE.to_owned(),
+        source_url: capture.source_url().to_owned(),
+        sha256: capture.sha256().to_owned(),
+        fetched_at: capture.fetched_at().to_owned(),
+    })
+}
+
+fn parse_expression(value: &Value, context: &str) -> Result<ZExpression, FetchError> {
+    if let Some(value) = value.as_str() {
+        return Ok(ZExpression::Literal(value.to_owned()));
+    }
+    let object = value
+        .as_object()
+        .ok_or_else(|| malformed(context, "expression is not an object"))?;
+    match object.get("Z1K1").and_then(Value::as_str) {
+        Some("Z18") => object
+            .get("Z18K1")
+            .and_then(Value::as_str)
+            .map(|key| ZExpression::Reference(key.to_owned()))
+            .ok_or_else(|| malformed(context, "reference lacks Z18K1")),
+        Some("Z7") => {
+            let function_zid = object
+                .get("Z7K1")
+                .and_then(Value::as_str)
+                .ok_or_else(|| malformed(context, "call lacks Z7K1"))?;
+            let mut arguments = BTreeMap::new();
+            for (key, value) in object {
+                if key == "Z1K1" || key == "Z7K1" {
+                    continue;
+                }
+                arguments.insert(key.clone(), parse_expression(value, context)?);
+            }
+            Ok(ZExpression::Call {
+                function_zid: function_zid.to_owned(),
+                arguments,
+            })
+        }
+        _ => literal(value)
+            .map(ZExpression::Literal)
+            .ok_or_else(|| malformed(context, "unsupported expression kind")),
+    }
 }
 
 pub fn fetch_implementations<T: SourceTransport>(

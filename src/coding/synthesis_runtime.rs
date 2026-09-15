@@ -9,9 +9,11 @@ use crate::coding::concept_discovery::{CatalogFunction, DiscoveryCatalog};
 use crate::coding::discovered_procedures::DiscoveredProcedureLedger;
 use crate::coding::function_catalog::python_docs::{StdlibIndex, fetch_index};
 use crate::coding::function_catalog::wikifunctions::{
-    fetch_function, fetch_implementations, search_functions,
+    FunctionMatch, fetch_abstract_implementation, fetch_function, fetch_function_descriptors,
+    fetch_implementations, fetch_testers, search_functions,
 };
-use crate::coding::task_spec::CodingTaskSpec;
+use crate::coding::recurrence::formalize;
+use crate::coding::task_spec::{CodingTaskSpec, Example};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
@@ -34,16 +36,21 @@ pub fn discovery_catalog(
             .clone()
     };
 
-    let mut phrases = spec.requirement_sentences.clone();
-    phrases.push(spec.name.replace('_', " "));
-    let mut matches = Vec::new();
-    let mut seen_matches = BTreeSet::new();
+    let phrases = research_phrases(spec);
+    let mut matches: Vec<FunctionMatch> = Vec::new();
     for phrase in phrases {
         for language in [spec.prose_language.as_str(), "en"] {
             match search_functions(&client, &phrase, language) {
                 Ok(found) => {
                     for matched in found {
-                        if seen_matches.insert(matched.page_title.clone()) {
+                        if let Some(existing) = matches
+                            .iter_mut()
+                            .find(|existing| existing.page_title == matched.page_title)
+                        {
+                            if matched.match_rate > existing.match_rate {
+                                *existing = matched;
+                            }
+                        } else {
                             log.append(
                                 "source:http",
                                 format!(
@@ -68,6 +75,18 @@ pub fn discovery_catalog(
         }
     }
 
+    let requirement_text = spec.requirement_sentences.join(" ");
+    matches.sort_by(|left, right| {
+        right
+            .match_rate
+            .total_cmp(&left.match_rate)
+            .then_with(|| {
+                token_overlap(&requirement_text, &right.label)
+                    .cmp(&token_overlap(&requirement_text, &left.label))
+            })
+            .then_with(|| left.page_title.cmp(&right.page_title))
+    });
+
     let mut functions = Vec::new();
     for matched in matches
         .iter()
@@ -79,12 +98,111 @@ pub fn discovery_catalog(
         };
         let implementations =
             fetch_implementations(&client, &definition.implementation_zids).unwrap_or_default();
+        let mut recurrence = None;
+        let mut source_tests = Vec::new();
+        for implementation_zid in definition.implementation_zids.iter().take(8) {
+            let Ok(abstract_implementation) =
+                fetch_abstract_implementation(&client, implementation_zid)
+            else {
+                continue;
+            };
+            let operator_zids = abstract_implementation
+                .expression
+                .function_zids()
+                .into_iter()
+                .filter(|zid| zid != &definition.zid)
+                .collect::<Vec<_>>();
+            let Ok(descriptors) = fetch_function_descriptors(&client, &operator_zids) else {
+                continue;
+            };
+            let Ok(formalized) = formalize(&definition, &abstract_implementation, &descriptors)
+            else {
+                continue;
+            };
+            let tester_zids = definition
+                .tester_zids
+                .iter()
+                .take(8)
+                .cloned()
+                .collect::<Vec<_>>();
+            source_tests = fetch_testers(&client, &tester_zids)
+                .unwrap_or_default()
+                .into_iter()
+                .filter(|test| test.function_zid == definition.zid && test.arguments.len() == 1)
+                .filter(|test| {
+                    test.arguments[0]
+                        .parse::<u64>()
+                        .is_ok_and(|argument| argument <= 20)
+                })
+                .take(4)
+                .map(|test| Example {
+                    arguments: test.arguments,
+                    expected: test.expected,
+                })
+                .collect();
+            recurrence = Some(formalized);
+            break;
+        }
         functions.push(CatalogFunction {
             definition,
             implementations,
+            recurrence,
+            source_tests,
         });
     }
     DiscoveryCatalog::new(stdlib, matches, functions)
+}
+
+fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
+    let lexicon = crate::seed::lexicon();
+    let grammatical_roles = [
+        crate::seed::ROLE_CODING_REQUEST_VERB,
+        crate::seed::ROLE_CODING_REQUEST_OBJECT,
+        crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT,
+        crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION,
+        crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN,
+    ];
+    let mut phrases = Vec::new();
+    for sentence in &spec.requirement_sentences {
+        phrases.push(sentence.clone());
+        let normalized = crate::engine::normalize_prompt(sentence);
+        let content = normalized
+            .split_whitespace()
+            .filter(|token| {
+                !grammatical_roles
+                    .iter()
+                    .any(|role| lexicon.mentions_role(role, token))
+            })
+            .collect::<Vec<_>>();
+        if !content.is_empty() {
+            phrases.push(content.join(" "));
+        }
+        phrases.extend(
+            content
+                .into_iter()
+                .filter(|token| token.chars().count() >= 4)
+                .map(str::to_owned),
+        );
+    }
+    if spec.name != "discovered_function" {
+        phrases.push(spec.name.replace('_', " "));
+    }
+    let mut seen = BTreeSet::new();
+    phrases
+        .into_iter()
+        .filter(|phrase| seen.insert(phrase.clone()))
+        .take(8)
+        .collect()
+}
+
+fn token_overlap(left: &str, right: &str) -> usize {
+    let tokens = |value: &str| {
+        crate::engine::normalize_prompt(value)
+            .split_whitespace()
+            .map(str::to_owned)
+            .collect::<BTreeSet<_>>()
+    };
+    tokens(left).intersection(&tokens(right)).count()
 }
 
 pub fn live_fetch_enabled() -> bool {
@@ -148,12 +266,11 @@ pub fn render_answer(selected: &composition::VerifiedDraft, language: Language) 
             "\n{}",
             localized_template("coding_synthesis_sources_heading", language)
         );
-        for url in &selected.source_urls {
-            let license = match url.split('/').nth(2) {
-                Some("wikifunctions.org" | "www.wikifunctions.org") => "Apache-2.0",
-                Some("docs.python.org") => "PSF-2.0",
-                _ => "source-declared",
-            };
+        for (index, url) in selected.source_urls.iter().enumerate() {
+            let license = selected
+                .source_licenses
+                .get(index)
+                .map_or("source-declared", String::as_str);
             let _ = write!(body, "\n- {url} ({license})");
         }
     }

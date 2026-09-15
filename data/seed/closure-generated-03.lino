@@ -79,16 +79,16 @@ meanings
     lexeme en
       surface
         text "coding text replaced"
+  conditional
+    defined-by concept
+    lexeme en
+      surface
+        text "conditional"
   context_harness_unavailable
     defined-by field
     lexeme en
       surface
         text "context harness unavailable"
-  contiene
-    defined-by concept
-    lexeme en
-      surface
-        text "contiene"
   courtesy_response
     defined-by intent
     lexeme en
@@ -254,11 +254,6 @@ meanings
     lexeme en
       surface
         text "local search found path"
-  mayor
-    defined-by concept
-    lexeme en
-      surface
-        text "mayor"
   memory_root_links
     defined-by intent
     lexeme en

@@ -2,11 +2,11 @@ self_ast_census
   target src/solver_handlers/program_synthesis.rs
   language rust
   fidelity signature
-  byte_len 5011
-  line_count 146
-  content_id source_module_4fca19bb0824abc9
+  byte_len 6151
+  line_count 176
+  content_id source_module_97c71bc01d1223ca
   symbol_count 3
   symbols
-    function try_program_synthesis 17 23
-    function try_program_synthesis_with_online 25 137
-    function looks_like_python_function_request 144 146
+    function try_program_synthesis 20 26
+    function try_program_synthesis_with_online 28 167
+    function looks_like_python_function_request 174 176

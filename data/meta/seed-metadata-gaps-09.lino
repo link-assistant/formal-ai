@@ -79,10 +79,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "coding_repository_result_observation"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_e39ad5b841f77e09
-    source "data/seed/closure-generated-02.lino"
-    record "filtrar"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a8496910c8c9f249
     source "data/seed/closure-generated-02.lino"
     record "folder"
@@ -211,10 +207,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "response_write_program_language_unspecified_zh"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_33fc5a5a2b79cc59
-    source "data/seed/closure-generated-04.lino"
-    record "suma"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0a566c506140e889
     source "data/seed/closure-generated-05.lino"
     record "adding"
@@ -267,9 +259,9 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "response_thinking_narrative_gratitude_en"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_f149c202c00763c9
+  gap seed_metadata_gap_0c4e30c46e8cc2b9
     source "data/seed/closure-generated-06.lino"
-    record "comunes"
+    record "prints"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_dc650bd6812eede9
     source "data/seed/closure-generated-06.lino"
@@ -911,10 +903,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "response_who_is_unknown_entity_suggestion_ru"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_e15dfe5ac7e03029
-    source "data/seed/closure-generated-16.lino"
-    record "vocales"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a4edfeb74e132619
     source "data/seed/meanings-behavior-rules.lino"
     record "behavior_rule"
@@ -938,6 +926,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_c73f7541e21e16a9
     source "data/seed/meanings-coding-request.lino"
     record "execute"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1a0a6602d81bfbe9
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_multiply"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_84e4d05c659c61a9
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_operator"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6b0fdee89ca69c49
     source "data/seed/meanings-computer-use.lino"

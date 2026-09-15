@@ -903,6 +903,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "map_each"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_29b2d7db878c34f8
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_add"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_54b1bedf646dc1d8
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_count"

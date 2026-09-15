@@ -4,7 +4,8 @@ use std::collections::BTreeSet;
 
 use crate::coding::function_catalog::python_docs::{StdlibIndex, StdlibPart};
 use crate::coding::function_catalog::wikifunctions::{FunctionMatch, FunctionPart, Implementation};
-use crate::coding::task_spec::CodingTaskSpec;
+use crate::coding::recurrence::Recurrence;
+use crate::coding::task_spec::{CodingTaskSpec, Example};
 use crate::links_format::push_lino_node;
 
 const STRUCTURES: &str = include_str!("../../data/seed/meanings-coding-structure.lino");
@@ -20,6 +21,8 @@ pub struct StructuralMeaning {
 pub struct CatalogFunction {
     pub definition: FunctionPart,
     pub implementations: Vec<Implementation>,
+    pub recurrence: Option<Recurrence>,
+    pub source_tests: Vec<Example>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]
@@ -86,6 +89,8 @@ pub struct CandidatePart {
     pub label: String,
     pub language: Option<String>,
     pub code: Option<String>,
+    pub callable_name: Option<String>,
+    pub source_tests: Vec<Example>,
     pub license: String,
     pub source_url: String,
     pub sha256: String,
@@ -196,7 +201,8 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
             let normalized = crate::engine::normalize_prompt(&phrase);
             let structures = structures_for(&normalized);
             let query = discovery_query(spec, &structures);
-            let candidates = candidates_for(&query, catalog);
+            let recurrence_query = format!("{phrase} {}", spec.name.replace('_', " "));
+            let candidates = candidates_for(&query, &recurrence_query, catalog);
             if structures.is_empty()
                 && candidates.is_empty()
                 && evidence.len() < bounds.max_pages
@@ -285,7 +291,11 @@ fn discovery_query(spec: &CodingTaskSpec, structures: &[StructuralMeaning]) -> S
     terms.join(" ")
 }
 
-fn candidates_for(query: &str, catalog: &DiscoveryCatalog) -> Vec<CandidatePart> {
+fn candidates_for(
+    query: &str,
+    recurrence_query: &str,
+    catalog: &DiscoveryCatalog,
+) -> Vec<CandidatePart> {
     let mut out = Vec::new();
     for part in catalog.stdlib.parts_for_phrase(query) {
         let score = part.match_score(query);
@@ -302,6 +312,8 @@ fn candidates_for(query: &str, catalog: &DiscoveryCatalog) -> Vec<CandidatePart>
                 label: matched.label.clone(),
                 language: None,
                 code: None,
+                callable_name: None,
+                source_tests: Vec::new(),
                 license: "CC0-1.0".to_owned(),
                 source_url: matched.source_url.clone(),
                 sha256: matched.sha256.clone(),
@@ -322,24 +334,50 @@ fn candidates_for(query: &str, catalog: &DiscoveryCatalog) -> Vec<CandidatePart>
             .map(|label| overlap_score(query, label))
             .max_by(f64::total_cmp)
             .unwrap_or(0.0);
-        if score < 1.0 {
-            continue;
+        if score >= 1.0 {
+            for implementation in &function.implementations {
+                if implementation.language != "python" {
+                    continue;
+                }
+                out.push(CandidatePart {
+                    id: implementation.zid.clone(),
+                    kind: "wikifunctions_implementation".to_owned(),
+                    label: labels.first().cloned().unwrap_or_default(),
+                    language: Some(implementation.language.clone()),
+                    code: Some(implementation.code.clone()),
+                    callable_name: None,
+                    source_tests: Vec::new(),
+                    license: implementation.license.clone(),
+                    source_url: implementation.source_url.clone(),
+                    sha256: implementation.sha256.clone(),
+                    fetched_at: implementation.fetched_at.clone(),
+                    score,
+                });
+            }
         }
-        for implementation in &function.implementations {
-            if implementation.language != "python" {
+        if let Some(recurrence) = &function.recurrence {
+            let recurrence_score = labels
+                .iter()
+                .map(|label| overlap_score(recurrence_query, label))
+                .max_by(f64::total_cmp)
+                .unwrap_or(0.0);
+            if recurrence_score < 1.0 {
                 continue;
             }
+            let callable_name = recurrence.suggested_identifier();
             out.push(CandidatePart {
-                id: implementation.zid.clone(),
-                kind: "wikifunctions_implementation".to_owned(),
-                label: labels.first().cloned().unwrap_or_default(),
-                language: Some(implementation.language.clone()),
-                code: Some(implementation.code.clone()),
-                license: implementation.license.clone(),
-                source_url: implementation.source_url.clone(),
-                sha256: implementation.sha256.clone(),
-                fetched_at: implementation.fetched_at.clone(),
-                score,
+                id: recurrence.source_implementation_zid.clone(),
+                kind: "wikifunctions_recurrence".to_owned(),
+                label: recurrence.source_label.clone(),
+                language: Some("python".to_owned()),
+                code: Some(recurrence.render_python(&callable_name)),
+                callable_name: Some(callable_name),
+                source_tests: function.source_tests.clone(),
+                license: recurrence.license.clone(),
+                source_url: recurrence.source_url.clone(),
+                sha256: recurrence.source_sha256.clone(),
+                fetched_at: recurrence.fetched_at.clone(),
+                score: recurrence_score,
             });
         }
     }
@@ -371,6 +409,8 @@ fn stdlib_candidate(part: &StdlibPart, score: f64) -> CandidatePart {
         label: part.description.clone(),
         language: Some("python".to_owned()),
         code: None,
+        callable_name: None,
+        source_tests: Vec::new(),
         license: part.license.clone(),
         source_url: part.source_url.clone(),
         sha256: part.sha256.clone(),

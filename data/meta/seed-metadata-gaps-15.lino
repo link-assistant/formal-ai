@@ -959,6 +959,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_schedule_action"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_bf038e06929646ff
+    source "data/seed/meanings-coding-structure.lino"
+    record "recurrence_conditional"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d70a931c205956ff
     source "data/seed/meanings-coding-structure.lino"
     record "sequence"

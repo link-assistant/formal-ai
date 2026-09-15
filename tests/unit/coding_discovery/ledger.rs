@@ -32,6 +32,8 @@ fn solution() -> (
         label: "greatest common divisor".to_owned(),
         language: Some("python".to_owned()),
         code: None,
+        callable_name: None,
+        source_tests: Vec::new(),
         license: "PSF-2.0".to_owned(),
         source_url: "https://docs.python.org/3.12/library/math.html#math.gcd".to_owned(),
         sha256: "a".repeat(64),
@@ -53,6 +55,7 @@ fn solution() -> (
             .to_owned(),
         assertion_count: 2,
         source_urls: vec!["https://docs.python.org/3.12/library/math.html#math.gcd".to_owned()],
+        source_licenses: vec!["PSF-2.0".to_owned()],
         composition: "direct_stdlib math.gcd".to_owned(),
     };
     (spec, concepts, draft)

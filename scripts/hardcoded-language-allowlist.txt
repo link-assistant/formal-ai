@@ -103,6 +103,10 @@ src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 src/agentic_coding/source_links.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+src/agentic_coding/structured_document.rs	Derived `{}` from `{}` and verified the written Links Notation byte-for-byte.
+src/agentic_coding/structured_document.rs	The client reported writing `{}`, but returned no inspectable content.
+src/agentic_coding/structured_document.rs	The read-back of `{}` did not match the derived Links Notation.
+src/agentic_coding/structured_document.rs	The structured document could not be written to `{}`.
 src/agentic_coding/write_request.rs	{line}\n\n{body}\n
 src/associative_package.rs	Package handler: {}
 src/associative_package.rs	Package permission: {}
@@ -239,6 +243,14 @@ src/coding/guidance.rs	टूलचेन इंस्टॉल करें: {s
 src/coding/guidance.rs	प्रोग्राम चलाएँ: `{run_command}`।
 src/coding/guidance.rs	像之前一样测试更新后的程序：将代码保存到文件 `{save_as}`，然后再次运行 `{run_command}`。
 src/coding/guidance.rs	将上面的代码保存到文件 `{save_as}`。
+src/coding/recurrence.rs	def {function_name}({}):\n
+src/coding/recurrence.rs	invalid {operation:?} boundary operands
+src/coding/recurrence.rs	missing descriptor for source function {function_zid}
+src/coding/recurrence.rs	no seeded operation matches fetched label for {}
+src/coding/recurrence.rs	source call is missing argument {key}
+src/coding/recurrence.rs	unknown source reference {key}
+src/coding/recurrence.rs	unsupported non-integer literal {value}
+src/coding/recurrence.rs	{} if {} else {}
 src/concepts.rs	{normalized} {context}
 src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}
 src/dreaming.rs	  candidate_task topic={} source={} passed={}

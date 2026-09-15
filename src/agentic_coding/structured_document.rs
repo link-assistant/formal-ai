@@ -13,7 +13,7 @@
 //! records the exact input digest separately from the derived formalization.
 //! No domain name or field is built into the planner.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
@@ -119,11 +119,15 @@ fn recognise(task: &str) -> Option<Specification> {
 
     let identifiers = machine_identifiers(task);
     let (root, fields) = identifiers.split_first()?;
-    let schema_clause = super::shell_command_policy::sentences(task)
-        .into_iter()
-        .find(|sentence| sentence.text.contains(root))?
-        .text
-        .to_owned();
+    // A schema list may cross commas, colons, or semicolons. Keep the complete
+    // declarative sentence from the caller-supplied root onward. Compound
+    // identifiers are collected message-wide above, while plain field names
+    // stay confined to this declaration so later provenance prose cannot add
+    // an accidental generic `source` field.
+    let schema_clause = task.split_once(root).map(|(_, after_root)| {
+        let declaration = after_root.split_once('.').map_or(after_root, |(head, _)| head);
+        format!("{root}{declaration}")
+    })?;
     (!fields.is_empty()).then(|| Specification {
         input: input.clone(),
         output: output.clone(),
@@ -163,13 +167,67 @@ fn render(specification: &Specification, source: &str) -> String {
         Some(&crate::source_fetch::sha256_hex(source.as_bytes())),
     );
     push_lino_node(&mut out, 4, "root", tree.children.first().map(|node| node.name.as_str()));
-    push_lino_node(&mut out, 2, "derived_formalization", None);
-    for field in requested_fields(specification, &tree) {
-        let value = best_source_value(&tree, &field)
-            .unwrap_or_else(|| "not established by the inspected source".to_owned());
-        push_lino_node(&mut out, 4, &field, Some(&value));
+    let fields = requested_fields(specification, &tree);
+    let scopes = collection_scopes(specification, &tree);
+    for scope in scopes {
+        push_lino_node(
+            &mut out,
+            2,
+            "derived_formalization",
+            (!scope.id.is_empty()).then_some(scope.id.as_str()),
+        );
+        for field in &fields {
+            for value in best_source_values(scope, field) {
+                push_lino_node(&mut out, 4, field, Some(&value));
+            }
+        }
     }
     out.trim_end().to_owned()
+}
+
+/// Return one source scope per record when the requested schema is an index or
+/// carries the seed-defined universal quantifier ("each", "every", and their
+/// registered translations). The record kind is discovered from repeated
+/// direct children of the inspected root, preferring a kind named by the
+/// caller. Otherwise the entire parsed tree is one derivation scope.
+fn collection_scopes<'a>(
+    specification: &Specification,
+    tree: &'a LinoNode,
+) -> Vec<&'a LinoNode> {
+    let normalized = crate::engine::normalize_prompt(&specification.schema_clause);
+    let asks_for_index = specification
+        .root
+        .split('_')
+        .any(|token| token == "index");
+    let asks_for_every = crate::seed::lexicon()
+        .meaning("quantifier_all")
+        .is_some_and(|meaning| meaning.evidenced_in(&normalized));
+    if !asks_for_index && !asks_for_every {
+        return vec![tree];
+    }
+
+    let Some(container) = tree.children.first() else {
+        return vec![tree];
+    };
+    let mut counts = BTreeMap::<&str, usize>::new();
+    for child in &container.children {
+        *counts.entry(child.name.as_str()).or_default() += 1;
+    }
+    let task_tokens = normalized.split_whitespace().collect::<BTreeSet<_>>();
+    let mut repeated = counts
+        .into_iter()
+        .filter(|(_, count)| *count > 1)
+        .map(|(name, _)| name)
+        .collect::<Vec<_>>();
+    repeated.sort_by_key(|name| (!task_tokens.contains(name), *name));
+    let Some(record_name) = repeated.first() else {
+        return vec![tree];
+    };
+    container
+        .children
+        .iter()
+        .filter(|child| child.name == *record_name)
+        .collect()
 }
 
 /// Recover plain schema identifiers (for example `validation`) by relating
@@ -200,44 +258,76 @@ fn requested_fields(specification: &Specification, tree: &LinoNode) -> Vec<Strin
 
 fn tree_contains_identifier_token(node: &LinoNode, token: &str) -> bool {
     node.children.iter().any(|child| {
-        child.name.split('_').any(|part| part == token)
+        child.name == token
+            || child
+                .name
+                .strip_suffix(token)
+                .is_some_and(|prefix| prefix.ends_with('_'))
+            || (!child.children.is_empty()
+                && child
+                    .name
+                    .strip_prefix(token)
+                    .is_some_and(|suffix| suffix.starts_with('_')))
             || tree_contains_identifier_token(child, token)
     })
 }
 
-fn best_source_value(tree: &LinoNode, field: &str) -> Option<String> {
+fn best_source_values(tree: &LinoNode, field: &str) -> Vec<String> {
     let wanted = identifier_tokens(field);
     let mut candidates = Vec::new();
     collect_candidates(tree, field, &wanted, &mut candidates);
+    let exact = candidates
+        .iter()
+        .filter(|candidate| candidate.exact)
+        .map(|candidate| candidate.value.clone())
+        .collect::<BTreeSet<_>>();
+    if !exact.is_empty() {
+        return exact.into_iter().collect();
+    }
     candidates
         .into_iter()
         .max_by(|left, right| {
-            left.0
-                .cmp(&right.0)
-                .then_with(|| right.1.len().cmp(&left.1.len()))
+            left.score
+                .cmp(&right.score)
+                .then_with(|| right.value.len().cmp(&left.value.len()))
         })
-        .filter(|(score, _)| *score > 0)
-        .map(|(_, value)| value)
+        .map(|candidate| vec![candidate.value])
+        .unwrap_or_default()
+}
+
+struct SourceCandidate {
+    score: usize,
+    exact: bool,
+    value: String,
 }
 
 fn collect_candidates(
     node: &LinoNode,
     field: &str,
     wanted: &BTreeSet<String>,
-    out: &mut Vec<(usize, String)>,
+    out: &mut Vec<SourceCandidate>,
 ) {
     for child in &node.children {
         let found = identifier_tokens(&child.name);
         let overlap = wanted.intersection(&found).count();
-        if overlap > 0 {
+        let exact = child.name == field;
+        // A partial match is trustworthy only when one structural identifier
+        // contains the other. This retains `transition` ->
+        // `recursive_transition`, but rejects ambiguous one-token collisions
+        // such as `source_function` -> `concept_source_url`.
+        let structurally_related = overlap == wanted.len().min(found.len());
+        if exact || (overlap > 0 && structurally_related) {
             let mut leaves = Vec::new();
             collect_leaf_values(child, &mut leaves);
             if !child.id.is_empty() {
                 leaves.insert(0, child.id.clone());
             }
             if !leaves.is_empty() {
-                let exact = usize::from(child.name == field);
-                out.push((overlap + exact * 100, leaves.join("; ")));
+                out.push(SourceCandidate {
+                    score: overlap + usize::from(exact) * 100,
+                    exact,
+                    value: leaves.join("; "),
+                });
             }
         }
         collect_candidates(child, field, wanted, out);

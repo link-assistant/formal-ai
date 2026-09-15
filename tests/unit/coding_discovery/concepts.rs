@@ -45,6 +45,7 @@ fn discovery_catalog() -> DiscoveryCatalog {
     let definition = FunctionPart {
         zid: "Z13612".to_owned(),
         labels,
+        argument_keys: vec!["Z13612K1".to_owned(), "Z13612K2".to_owned()],
         argument_types: vec!["Z13518".to_owned(), "Z13518".to_owned()],
         return_type: "Z13518".to_owned(),
         implementation_zids: vec!["Z14857".to_owned(), "Z13642".to_owned()],
@@ -87,6 +88,8 @@ fn discovery_catalog() -> DiscoveryCatalog {
                 implementation("Z14857", "import math\nreturn math.gcd(a, b)"),
                 implementation("Z13642", "while b:\n    a, b = b, a % b\nreturn a"),
             ],
+            recurrence: None,
+            source_tests: Vec::new(),
         }],
     )
 }

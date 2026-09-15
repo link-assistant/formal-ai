@@ -787,6 +787,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_12e65f90ef7b6222
+    source "data/seed/closure-generated-16.lino"
+    record "python_for_each"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_94dd5319944bbd12
     source "data/seed/closure-generated-16.lino"
     record "python_import"

@@ -838,3 +838,62 @@ meanings
         text vocales
       surface
         text vocal
+  recurrence_operator
+    defined-by concept
+    grounding "https://docs.python.org/3.12/reference/expressions.html"
+  recurrence_conditional
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#conditional-expressions"
+    lexeme en
+      surface
+        text if
+        action conditional
+  recurrence_less_equal
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
+    lexeme en
+      surface
+        text "less than or equal"
+        action less_equal
+  recurrence_equal
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
+    lexeme en
+      surface
+        text equality
+        action equal
+  recurrence_add
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    lexeme en
+      surface
+        text add
+        action add
+  recurrence_multiply
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    lexeme en
+      surface
+        text multiply
+        action multiply
+  recurrence_subtract
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    lexeme en
+      surface
+        text subtract
+        action subtract
+  recurrence_subtract_one
+    defined-by recurrence_operator
+    role coding_recurrence_operator
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    lexeme en
+      surface
+        text decrement
+        action subtract_one

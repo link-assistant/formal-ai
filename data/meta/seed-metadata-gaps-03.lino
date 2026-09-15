@@ -207,6 +207,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "search_fusion_read_more"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_07381dac5ad29e33
+    source "data/seed/closure-generated-04.lino"
+    record "subtract"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_15681af4cd0a8ff3
     source "data/seed/closure-generated-04.lino"
     record "thinking_language_name_zh"
@@ -798,10 +802,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_e7d3e69bcd17ada3
     source "data/seed/closure-generated-16.lino"
     record "thinking_narrative_meta_explanation"
-    missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_03441b8dc035fd23
-    source "data/seed/closure-generated-16.lino"
-    record "transformar"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6edb6812fa7b7b13
     source "data/seed/meanings-agent-actions.lino"

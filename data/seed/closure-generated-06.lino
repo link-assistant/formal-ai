@@ -4,11 +4,6 @@ meanings
     lexeme en
       surface
         text "field"
-  acumulativo
-    defined-by concept
-    lexeme en
-      surface
-        text "acumulativo"
   agent_procedure_executed
     defined-by intent
     lexeme en
@@ -79,11 +74,6 @@ meanings
     lexeme en
       surface
         text "command line"
-  comunes
-    defined-by concept
-    lexeme en
-      surface
-        text "comunes"
   context_dialog_log_unavailable
     defined-by field
     lexeme en
@@ -329,6 +319,11 @@ meanings
     lexeme en
       surface
         text "pattern x kaise kaam karti suffix hi"
+  prints
+    defined-by word_surface
+    lexeme en
+      surface
+        text "prints"
   prior_web_search
     defined-by concept
     lexeme en
@@ -940,7 +935,7 @@ meanings
       surface
         text "software docs"
   space-delimited
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "space delimited"
@@ -954,6 +949,11 @@ meanings
     lexeme en
       surface
         text "structured document"
+  subtract_one
+    defined-by concept
+    lexeme en
+      surface
+        text "subtract one"
   summarization_criterion_meta_language_evidence
     defined-by intent
     lexeme en

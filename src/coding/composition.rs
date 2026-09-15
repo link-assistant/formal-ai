@@ -21,6 +21,7 @@ pub struct VerifiedDraft {
     pub source: String,
     pub assertion_count: usize,
     pub source_urls: Vec<String>,
+    pub source_licenses: Vec<String>,
     pub composition: String,
 }
 
@@ -34,7 +35,9 @@ pub struct CompositionOutcome {
 struct Draft {
     id: String,
     source: String,
+    callable_name: String,
     source_urls: Vec<String>,
+    source_licenses: Vec<String>,
     composition: String,
     action_cost: usize,
 }
@@ -48,7 +51,12 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
         };
     }
     let examples = if spec.examples.is_empty() {
-        derived_examples(spec, concepts)
+        let derived = derived_examples(spec, concepts);
+        if derived.is_empty() {
+            source_examples(concepts)
+        } else {
+            derived
+        }
     } else {
         spec.examples.clone()
     };
@@ -94,6 +102,7 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
             examples.len()
         },
         source_urls: draft.source_urls,
+        source_licenses: draft.source_licenses,
         composition: draft.composition,
     });
     let research_trail = if selected.is_some() {
@@ -135,7 +144,9 @@ fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<D
             Some(Draft {
                 id: format!("stdlib:{}", candidate.id),
                 source: render_function(spec, &body, imports),
+                callable_name: spec.name.clone(),
                 source_urls: vec![candidate.source_url.clone()],
+                source_licenses: vec![candidate.license.clone()],
                 composition: format!("direct_stdlib({})", candidate.id),
                 action_cost: 1,
             })
@@ -145,13 +156,40 @@ fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<D
             Some(Draft {
                 id: format!("part:{}", candidate.id),
                 source: render_function(spec, &body, Vec::new()),
+                callable_name: spec.name.clone(),
                 source_urls: vec![candidate.source_url.clone()],
+                source_licenses: vec![candidate.license.clone()],
                 composition: format!("direct_wrap({})", candidate.id),
                 action_cost: 2,
             })
         }
+        "wikifunctions_recurrence" => Some(Draft {
+            id: format!("recurrence:{}", candidate.id),
+            source: candidate.code.clone()?,
+            callable_name: candidate.callable_name.clone()?,
+            source_urls: vec![candidate.source_url.clone()],
+            source_licenses: vec![candidate.license.clone()],
+            composition: format!("source_recurrence({})", candidate.id),
+            action_cost: 3,
+        }),
         _ => None,
     }
+}
+
+fn source_examples(concepts: &ConceptMap) -> Vec<Example> {
+    let mut examples = concepts
+        .needs
+        .iter()
+        .flat_map(|need| need.candidates.iter())
+        .flat_map(|candidate| candidate.source_tests.iter().cloned())
+        .collect::<Vec<_>>();
+    examples.sort_by(|left, right| {
+        left.arguments
+            .cmp(&right.arguments)
+            .then_with(|| left.expected.cmp(&right.expected))
+    });
+    examples.dedup();
+    examples
 }
 
 fn structural_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Draft> {
@@ -312,7 +350,12 @@ fn structural_program_draft(composition: &str, source: String) -> Draft {
     Draft {
         id: format!("structure:{composition}"),
         source,
+        callable_name: String::new(),
         source_urls: structural_source_urls(composition),
+        source_licenses: structural_source_urls(composition)
+            .iter()
+            .map(|_| "PSF-2.0".to_owned())
+            .collect(),
         composition: composition.to_owned(),
         action_cost: composition.matches(['(', ',']).count() + 2,
     }
@@ -326,10 +369,13 @@ fn structural_draft(
     _concepts: &ConceptMap,
 ) -> Draft {
     let source_urls = structural_source_urls(composition);
+    let source_licenses = source_urls.iter().map(|_| "PSF-2.0".to_owned()).collect();
     Draft {
         id: format!("structure:{composition}"),
         source: render_function(spec, body, imports),
+        callable_name: spec.name.clone(),
         source_urls,
+        source_licenses,
         composition: composition.to_owned(),
         action_cost: composition.matches(['(', ',']).count() + 2,
     }
@@ -397,7 +443,7 @@ fn verify(
             let _ = writeln!(
                 script,
                 "    assert {}({}) == {}",
-                spec.name,
+                draft.callable_name,
                 example.arguments.join(", "),
                 example.expected
             );

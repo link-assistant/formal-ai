@@ -103,6 +103,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "summarization_report_file"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_a1cd4733df282eae
+    source "data/seed/closure-generated-03.lino"
+    record "conditional"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_dc8e30566ab93c6e
     source "data/seed/closure-generated-03.lino"
     record "fibonacci"
@@ -575,10 +579,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "says"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_5949967f6cd05eae
-    source "data/seed/closure-generated-11.lino"
-    record "cada"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_937fcffe0787a31e
     source "data/seed/closure-generated-11.lino"
     record "coding_synthesis_sources_heading"
@@ -822,6 +822,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_0460b5b8e4b1aaee
     source "data/seed/closure-generated-15.lino"
     record "external_benchmark_learning_lesson"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_2d907d10f4875d9e
+    source "data/seed/closure-generated-15.lino"
+    record "if"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fd6539e73250fd1e
     source "data/seed/closure-generated-15.lino"

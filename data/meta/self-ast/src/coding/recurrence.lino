@@ -1,0 +1,27 @@
+self_ast_census
+  target src/coding/recurrence.rs
+  language rust
+  fidelity signature
+  byte_len 15761
+  line_count 443
+  content_id source_module_ea05f4e819e7f842
+  symbol_count 18
+  symbols
+    enum Operation 17 25
+    enum Expression 28 33
+    struct Recurrence 36 48
+    function suggested_identifier 53 55
+    function render_python 58 63
+    function to_links_notation 66 106
+    function identifier_from_source_label 110 127
+    function formalize 131 191
+    function resolve_expression 193 254
+    function operation_for_descriptor 256 291
+    function validate_boundary 293 306
+    function contains_recur 308 314
+    function collect_offsets 316 334
+    function predecessor_offset 336 353
+    function render_expression 355 386
+    function binary 388 394
+    function serialize_expression 396 421
+    function python_assertions 424 443

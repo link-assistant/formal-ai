@@ -1181,7 +1181,7 @@ async function loadSeed() {
     try {
       const seed = await self.FormalAiSeed.loadAll();
       SEED_RAW = (seed && seed.raw) || {};
-      hydrateLinoSeedText(SEED_RAW);
+      await hydrateLinoSeedAndSourceCaches(SEED_RAW);
       if (seed && seed.responses) {
         const merged = {};
         const intents = new Set(

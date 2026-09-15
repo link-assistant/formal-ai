@@ -55,6 +55,8 @@ fn candidate(id: &str, kind: &str, code: Option<&str>) -> CandidatePart {
         label: id.to_owned(),
         language: Some("python".to_owned()),
         code: code.map(str::to_owned),
+        callable_name: None,
+        source_tests: Vec::new(),
         license: if kind == "stdlib" {
             "PSF-2.0"
         } else {
@@ -237,4 +239,32 @@ fn runnable_programs_are_composed_from_output_and_range_observations() {
     .expect("a seeded cardinal and inclusive range should derive stdout");
     assert!(range.source.contains("for number in range(1, 5 + 1):"));
     assert!(range.source.contains("print(number)"));
+}
+
+#[test]
+fn source_recurrence_candidates_are_verified_with_discovered_examples() {
+    let mut source_candidate = candidate(
+        "source-abstract-17",
+        "wikifunctions_recurrence",
+        Some("def accumulated_total(n):\n    return 0 if n == 0 else n + accumulated_total(n - 1)"),
+    );
+    source_candidate.source_tests = vec![
+        example(&["0"], "0"),
+        example(&["4"], "10"),
+        example(&["7"], "28"),
+    ];
+    source_candidate.callable_name = Some("accumulated_total".to_owned());
+    let outcome = compose(
+        &spec(
+            "accumulated_total",
+            vec![parameter("n", Some("int"))],
+            Vec::new(),
+        ),
+        &map(&[], vec![source_candidate]),
+    );
+    let selected = outcome
+        .selected
+        .expect("source recurrence should pass its discovered tests");
+    assert_eq!(selected.id, "recurrence:source-abstract-17");
+    assert_eq!(selected.assertion_count, 3);
 }

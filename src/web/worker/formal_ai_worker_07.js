@@ -430,6 +430,8 @@ function tryNumericList(prompt, history) {
 function tryProgramSynthesis(prompt, normalized) {
   const canonical = canonicalizedPrompt(normalized);
   if (!looksLikePythonFunctionSynthesis(prompt, canonical)) return null;
+  const recurrence = trySourceRecurrenceSynthesis(prompt);
+  if (recurrence) return recurrence;
   const functionName = extractPythonFunctionName(prompt);
   if (!functionName) return null;
   const structures = discoveredCodingStructures(canonical);

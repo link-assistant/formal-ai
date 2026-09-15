@@ -130,7 +130,7 @@ meanings
       surface
         text "google trends"
   greatest
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "greatest"
@@ -1080,7 +1080,7 @@ meanings
       surface
         text "tool roleplay"
   transform
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "transform"

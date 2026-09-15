@@ -32,4 +32,5 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_23.js",
   "worker/formal_ai_worker_24.js",
   "worker/formal_ai_worker_how_to_guide.js",
+  "worker/formal_ai_worker_recurrence.js",
 ]);

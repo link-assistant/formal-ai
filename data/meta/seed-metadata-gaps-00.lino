@@ -35,10 +35,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "pattern_concept_prefix_shenmejiao"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_c944887959878630
-    source "data/seed/closure-generated-01.lino"
-    record "producto"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_11b2e9ef23160090
     source "data/seed/closure-generated-01.lino"
     record "registered"
@@ -455,10 +451,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "supported_languages"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_7808b9d6b4dfec50
-    source "data/seed/closure-generated-07.lino"
-    record "tupla"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_db5dc149cde7a540
     source "data/seed/closure-generated-08.lino"
     record "cannot"
@@ -771,13 +763,13 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "bootstrap-icons"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_6daaf3b6b1ca7d20
-    source "data/seed/closure-generated-13.lino"
-    record "contar"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f0c93c63a5800050
     source "data/seed/closure-generated-13.lino"
     record "cp"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_325de2e927a25de0
+    source "data/seed/closure-generated-13.lino"
+    record "decrement"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_65635fba002b7280
     source "data/seed/closure-generated-13.lino"

@@ -23,6 +23,7 @@ pub use coding::concept_discovery;
 pub use coding::discovered_procedures;
 pub use coding::function_catalog as coding_function_catalog;
 pub use coding::python_signature;
+pub use coding::recurrence as coding_recurrence;
 pub use coding::task_spec as coding_task_spec;
 pub mod coding_research_learning;
 pub mod computer_use;
