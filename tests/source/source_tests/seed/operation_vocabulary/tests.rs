@@ -7,7 +7,7 @@ fn supported_languages() -> BTreeSet<String> {
 }
 
 #[test]
-fn operation_vocabulary_loads_every_canonical_operation() {
+fn operation_vocabulary_loads_every_general_operation() {
     let vocabulary = operation_vocabulary();
     let canonicals: BTreeSet<String> = vocabulary
         .operations
@@ -55,8 +55,6 @@ fn operation_vocabulary_loads_every_canonical_operation() {
         "tuple",
         "numbers",
         "vowels",
-        "count_vowels",
-        "similar_elements",
         "distinct_numbers",
         "differ",
         "threshold",
@@ -71,6 +69,13 @@ fn operation_vocabulary_loads_every_canonical_operation() {
         assert!(
             canonicals.contains(expected),
             "missing operation {expected}"
+        );
+    }
+
+    for retired_task_slug in ["count_vowels", "similar_elements"] {
+        assert!(
+            !canonicals.contains(retired_task_slug),
+            "benchmark task slug {retired_task_slug} must be derived from structure, not stored as an operation"
         );
     }
 }
@@ -97,15 +102,10 @@ fn operation_vocabulary_canonicalizes_native_verbs() {
 
     let synthesis =
         vocabulary.canonicalized_prompt("реализуй python функцию count_vowels верни гласных");
-    for expected in [
-        "implement",
-        "function",
-        "count_vowels",
-        "count vowels",
-        "return",
-    ] {
+    for expected in ["implement", "function", "count_vowels", "return", "vowels"] {
         assert!(synthesis.contains(expected), "{synthesis}");
     }
+    assert!(!synthesis.contains("count vowels"), "{synthesis}");
 }
 
 #[test]
@@ -115,16 +115,10 @@ fn operation_vocabulary_canonicalizes_hindi_program_prompt() {
         "python फ़ंक्शन count_vowels(text: str) -> int लागू करें। पाठ में स्वरों की संख्या लौटाएँ।",
     );
 
-    for expected in [
-        "function",
-        "implement",
-        "return",
-        "vowels",
-        "count_vowels",
-        "count vowels",
-    ] {
+    for expected in ["function", "implement", "return", "vowels", "count_vowels"] {
         assert!(synthesis.contains(expected), "{synthesis}");
     }
+    assert!(!synthesis.contains("count vowels"), "{synthesis}");
 }
 
 #[test]

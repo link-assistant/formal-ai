@@ -232,3 +232,13 @@ wrote it.
   29.02 GiB of images and 11.73 GiB of build cache with 27 GiB host space free;
   pulling six further box images would be unsafe. The isolated remote language
   matrix therefore owns the remaining container proof on the one pushed head.
+
+- 2026-09-15, first final-head CI repair: GitHub's clean coverage runner caught
+  three stale assertions in the checked-in source-placement tests. The coding
+  discovery commit had correctly removed two benchmark task slugs from the
+  operation seed, while the old test still required those slugs and their
+  task-specific phrase expansion. The corrected regression now requires only
+  reusable semantic operations and rejects reintroducing the retired slugs;
+  the complete all-features source target passes 494/494. Host free space was
+  rechecked at 32 GiB before compiling; no additional Docker images were pulled
+  and both unrelated running containers were preserved.

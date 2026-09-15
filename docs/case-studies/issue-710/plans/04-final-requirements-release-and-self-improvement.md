@@ -443,13 +443,13 @@ Local proof on the final implementation commit `8e770ded7`:
   that the remote PR head is exactly 16 commits behind the local head; GitHub
   mergeability will be rechecked immediately after the one push.
 
-## L26 — One final delivery and complete CI observation
+## L26 — Final delivery and complete CI observation
 
 - [x] all changes committed in coherent, append-only commits
 - [x] self-hosting metric passes and attributes only Formal-AI-authored lines
-- [ ] PR body reports refreshed scores, requirements verdicts, evidence,
+- [x] PR body reports refreshed scores, requirements verdicts, evidence,
       release proof, and exact limitations
-- [ ] one normal fast-forward push after local validation
+- [ ] normal fast-forward delivery after every CI-derived repair
 - [ ] every required and informational PR workflow finishes without failure
 - [ ] remote head equals local HEAD; PR is mergeable; worktree is clean
 
@@ -461,3 +461,14 @@ The strict local metric passed after the append-only retraction: 0.15%, with 58
 of 38,373 behavior-changing lines attributed across three fully evidenced
 Formal AI commits. Documentation, captured evidence, and the retracted claim
 contribute nothing to the numerator.
+
+The first final-head run exposed a clean-runner-only contradiction in the Rust
+coverage job. Commit `fe6c54fad` deliberately removed the benchmark task slugs
+`count_vowels` and `similar_elements` from the production operation vocabulary,
+but the older source-placement test still required both and still expected the
+underscore in `count_vowels` to be expanded into a task-specific phrase. The
+shared local Cargo target had previously hidden that stale expectation. The
+repair makes the test require only reusable semantic operations, preserves the
+raw caller-supplied function identifier, and asserts that the retired task
+slugs cannot re-enter seed data. The exact all-features `source` target now
+passes all 494 tests after recompiling the project artifact.
