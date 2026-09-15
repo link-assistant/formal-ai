@@ -299,11 +299,6 @@ meanings
     lexeme en
       surface
         text "npx"
-  optimization
-    defined-by concept
-    lexeme en
-      surface
-        text "optimization"
   outdent_lines
     defined-by operation
     lexeme en

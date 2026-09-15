@@ -289,6 +289,11 @@ meanings
     lexeme en
       surface
         text "normalize"
+  oeis_recurrence_term
+    defined-by concept
+    lexeme en
+      surface
+        text "oeis recurrence term"
   one-paragraph
     defined-by concept
     lexeme en

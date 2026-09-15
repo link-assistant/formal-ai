@@ -248,7 +248,7 @@ fn outside_markdown_fences(prompt: &str) -> String {
     prompt
         .lines()
         .filter(|line| {
-            if line.trim_start().starts_with("```") {
+            if line.trim_start().strip_prefix("```").is_some() {
                 outside = !outside;
                 return false;
             }
@@ -396,7 +396,7 @@ fn docstring_contract(prompt: &str, function_name: &str) -> (Vec<String>, Vec<Ex
                 && name == function_name
             {
                 let next = lines.get(index + 1).copied().unwrap_or_default();
-                let expected = if next.is_empty() || next.starts_with(">>>") {
+                let expected = if next.is_empty() || next.strip_prefix(">>>").is_some() {
                     "None"
                 } else {
                     next

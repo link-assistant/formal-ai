@@ -18,15 +18,14 @@ assert similar_elements((3, 4, 5, 6), (5, 7, 4, 10)) == (4, 5)
 assert similar_elements((1, 2), (3, 4)) == ()";
 
 #[test]
-fn structural_coding_shapes_formalize_to_program_synthesis() {
-    for prompt in [HUMANEVAL_SUM_PRODUCT, MBPP_SHAPE] {
+fn structural_coding_shapes_reach_synthesis_without_preempting_catalog_matches() {
+    for (prompt, expected_route) in [
+        (HUMANEVAL_SUM_PRODUCT, "program_synthesis"),
+        (MBPP_SHAPE, "write_program"),
+    ] {
         let intent = formalize_intent(prompt, "en", None);
         assert_eq!(intent.kind, IntentKind::Task, "{intent:?}");
-        assert_eq!(
-            intent.route.as_deref(),
-            Some("program_synthesis"),
-            "{intent:?}"
-        );
+        assert_eq!(intent.route.as_deref(), Some(expected_route), "{intent:?}");
         assert!(
             intent.has_relevant_handler("program_synthesis"),
             "{intent:?}"

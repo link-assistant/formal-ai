@@ -19,7 +19,9 @@ bump: minor
 - Coding-structure lookup now normalizes punctuation and tolerates one edit in long single-token concepts, so hyphenation and ordinary misspellings do not create artificial capability gaps.
 - Agentic authoring now keeps read-and-author obligations together: it can derive caller-declared Links Notation fields from an inspected source record, write the result, and verify a decorated client read-back instead of ending after the input read.
 - Agentic structured-document authoring now preserves repeated source-record cardinality, scopes values to each record, retains repeated exact fields, rejects ambiguous partial field-name matches, and accepts schema lists spanning semicolons.
+- Agentic evidence authoring now distinguishes a requested schema or opening line from a literal payload, derives the remaining file content from observed tool results, and keeps repository statement audits ahead of generic file writing.
 - The general agentic planner now treats bare `with` as a literal file-content lead, allowing the real Formal AI Agent CLI self-authoring flow to preserve exact backticked multiline payloads.
 - The self-authoring harness now waits explicitly for its local Formal AI server to bind instead of relying on platform-dependent curl retry behavior.
 - The Rust lockfile now uses `rustls` 0.23.45, resolving RUSTSEC-2026-0285, and the dependency-audit proof parser uses extended `sed` expressions that work on both GNU/Linux and macOS.
 - Live-link checking now excludes the byte-for-byte Python documentation captures used for coding-discovery replay, so expired links inside upstream fixtures do not fail repository documentation checks.
+- Derived-artifact regeneration now formats generated Rust before producing byte-sensitive self-AST and planner fixtures, so a successful regeneration cannot make its own outputs stale.

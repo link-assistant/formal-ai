@@ -334,6 +334,17 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = structured_document::plan_step(task, messages, tool_names) {
         return Some(plan);
     }
+    // A repository audit names the artifact its CLI command will produce; that
+    // filename is a destination, not literal content for the generic writer.
+    // Keep the replayable recipe ahead of literal fallback so an observed CLI
+    // result completes the audit instead of starting a redundant write plan.
+    if statement_audit::is_statement_audit_task(task) {
+        return Some(plan_shell_step(
+            messages,
+            tool_names,
+            statement_audit::command_for(task),
+        ));
+    }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
     // filenames/payloads may legitimately contain "issue", "report", or "learning".
     // Unambiguous is the operative word: a request that also pins the target
@@ -370,16 +381,6 @@ pub(super) fn plan_settled_routes(
     // the requested artifact scope distinguishes their recipes.
     if let Some(report) = learning_report::route(task) {
         return Some(report.plan_step(messages, tool_names));
-    }
-    // Repository statement audits run through the same public CLI a human can
-    // replay. Route before generic file/code changes because the task names its
-    // output artifact but does not ask the planner to fabricate that content.
-    if statement_audit::is_statement_audit_task(task) {
-        return Some(plan_shell_step(
-            messages,
-            tool_names,
-            statement_audit::command_for(task),
-        ));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
     // follows the explicit learning recipes so their requested artifacts cannot

@@ -17,7 +17,7 @@ impl SourceTransport for FixtureTransport {
             r#"[{"number":2064,"data":"3,9,25,65,161,385","name":"Cullen numbers: n*2^n + 1."}]"#
         } else if url.contains("A002064") {
             r#"{"number":2064,"data":"3,9,25,65,161,385","name":"Cullen numbers: n*2^n + 1."}"#
-        } else if url.contains("search?q=5%20x%20n%20tromino%20tilings") {
+        } else if url.contains("search?q=5%20x%20n%20tromino%20coverings") {
             r#"[{"number":999999,"data":"1","name":"Array of tromino tilings.","xref":["A123456 is a fixed-width row."]}]"#
         } else if url.contains("A999999") {
             r#"{"number":999999,"data":"1","name":"Array of tromino tilings.","xref":["A123456 is a fixed-width row."]}"#

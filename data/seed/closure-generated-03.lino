@@ -119,6 +119,11 @@ meanings
     lexeme en
       surface
         text "every"
+  example_arithmetic_divide
+    defined-by concept
+    lexeme en
+      surface
+        text "example arithmetic divide"
   expression-language
     defined-by category
     lexeme en
@@ -254,6 +259,11 @@ meanings
     lexeme en
       surface
         text "local search found path"
+  mapping_entry
+    defined-by concept
+    lexeme en
+      surface
+        text "mapping entry"
   memory_root_links
     defined-by intent
     lexeme en

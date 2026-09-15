@@ -1,0 +1,21 @@
+Q23835349
+  aliases
+    en ("Un(1,−1)" "Fibonacci series")
+    es ("secuencia Fibonacci" "secuencia numérica de Fibonacci" "progresión de Fibonacci" "serie de Fibonacci" "secuencia numerica de Fibonacci" "progresion de Fibonacci" "secuencia de Fibonacci" "sucesion de Fibonacci")
+    ru ("ряд Фибоначчи")
+    zh ("菲波纳契数列" "Fibonacci数列" "費波那契數列" "費氏數列" "費式數列" "費波納西數列" "斐波纳契数列" "費伯納西數列" "费氏数列" "黃金分割數列" "斐波那契螺线" "假黄金螺线")
+  descriptions
+    en "entire infinite integer series where the next number is the sum of the two preceding it (0,1,1,2,3,5,8,13,21,...)"
+    es "sucesión de números descrita por Fibonacci"
+    hi "संपूर्ण अनंत पूर्णांक श्रृंखला जहां अगली संख्या उसके पहले की दो संख्याओं का योग है (0,1,1,2,3,5,8,13,21,...)"
+    ru "бесконечная последовательность натуральных чисел, удовлетворяющая рекуррентному соотношению"
+    zh "整个无限整数系列，其中下一个数是前两个数的和（1,1,2,3,5,8,13,21，...）"
+  id Q23835349
+  labels
+    en "Fibonacci sequence"
+    es "sucesión de Fibonacci"
+    hi "फिबोनाची अनुक्रम"
+    ru "последовательность Фибоначчи"
+    zh "斐波那契数列"
+  type item
+success 1

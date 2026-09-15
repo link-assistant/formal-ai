@@ -423,10 +423,6 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "narrated"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_57b8558dda538405
-    source "data/seed/closure-generated-09.lino"
-    record "optimization"
-    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e72cafd85bcb8325
     source "data/seed/closure-generated-09.lino"
     record "process"

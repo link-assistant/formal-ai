@@ -551,6 +551,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "invariant"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_51e4eb695f383cbb
+    source "data/seed/closure-generated-11.lino"
+    record "oeis_recurrence_term"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a075675ef796bd2b
     source "data/seed/closure-generated-11.lino"
     record "pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru"
@@ -927,6 +931,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "composite_number"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_5c09f49ce9d4293b
+    source "data/seed/meanings-coding-structure.lino"
+    record "optimization"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_aa6c7029889b545b
     source "data/seed/meanings-coding-structure.lino"
     record "range"

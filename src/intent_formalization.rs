@@ -323,16 +323,16 @@ struct MatchedRoute {
 }
 
 fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
-    if crate::coding::task_spec::recognise(raw).is_some() {
-        return Some(MatchedRoute {
-            slug: String::from("program_synthesis"),
-            response_link: String::from("response:write_program:synthesis"),
-        });
-    }
     if requested_write_program_parameters(raw, normalized).is_some() {
         return Some(MatchedRoute {
             slug: String::from(WRITE_PROGRAM_INTENT),
             response_link: String::from("response:write_program"),
+        });
+    }
+    if crate::coding::task_spec::recognise(raw).is_some() {
+        return Some(MatchedRoute {
+            slug: String::from("program_synthesis"),
+            response_link: String::from("response:write_program:synthesis"),
         });
     }
     seed::intent_routing()

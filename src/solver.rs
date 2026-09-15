@@ -101,18 +101,13 @@ pub struct SolverConfig {
     /// The registry is the sole dispatch authority (R344), so there is no
     /// legacy baseline to compare against. Trace-only in either mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
-    /// Whether the meta core records the skill-accumulation ledger (issue #559,
-    /// R342): `Accumulate` (default since issue #1073) distills each satisfied
-    /// need into a proposed reusable skill and each blocked need into a
-    /// curriculum item; `Off` records nothing. Proposal-only — no skill is auto-promoted without review — and
-    /// trace-only either way (R13/C3).
+    /// Whether the meta core records the skill-accumulation ledger (R342).
+    /// `Accumulate` proposes reusable skills and curriculum items; `Off` records
+    /// nothing. Proposals require review, and either mode is trace-only (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
-    /// Whether the dialogue's symbolic world model is maintained and traced
-    /// (issue #702): `Off` (default) leaves the solver exactly as it was — no
-    /// current/target contexts are built and the state-query handler declines;
-    /// `Track` rebuilds the model from the conversation, records it as a trace
-    /// artifact, and answers "what is left to reach my goal?" from the
-    /// current->target difference. Trace-only in either mode (R13).
+    /// Whether the dialogue's symbolic world model is maintained (issue #702).
+    /// `Track` rebuilds and records current/target contexts; `Off` leaves them
+    /// absent. Either mode is trace-only (R13).
     pub world_model_mode: crate::world_model_dialog::WorldModelMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
@@ -141,15 +136,9 @@ pub struct SolverConfig {
     /// policy existed, so every existing surface is unaffected unless it opts in.
     pub probability_policy: ProbabilityDecisionPolicy,
     /// Response language forced onto every localizable handler for one replay
-    /// (issue #556). `None` is the normal case: each handler renders in the
-    /// language detected from the prompt. When a response-language follow-up
-    /// ("I do not understand English, write in Russian") replays the previous
-    /// request through the whole solver, it sets this to the requested ISO
-    /// 639-1 code so *every* answer family that can localize — concept lookup,
-    /// repository/project lookup, … — re-renders in that language rather than
-    /// only a single hardcoded handler. It also serves as the recursion guard:
-    /// a solve whose config already carries a forced language never fires the
-    /// follow-up again.
+    /// (issue #556). `None` uses prompt detection; a language-switch follow-up
+    /// sets an ISO 639-1 code before replaying the whole solver. The setting also
+    /// prevents recursive language-switch replays.
     pub forced_response_language: Option<&'static str>,
     /// Compute budget for the step-7 random/evolutionary search stage (issue
     /// #662), counted in candidate evaluations. When reuse and rule reasoning

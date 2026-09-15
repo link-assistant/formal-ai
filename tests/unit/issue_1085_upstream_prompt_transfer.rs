@@ -23,12 +23,12 @@ const HUMANEVAL_0_PROMPT: &str = "from typing import List\n\n\ndef has_close_ele
 const HUMANEVAL_0_TEST: &str = "METADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False\n    assert candidate([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False\n\n";
 
 /// The answer the synthesis handler renders for HumanEval/0 under the upstream
-/// prompt shape: the prompt's import travels ahead of the derived function.
-const HUMANEVAL_0_ANSWER: &str = "Here is a derived Python function reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\nfrom typing import List\nimport itertools\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    return any(abs(left - right) < threshold for left, right in itertools.combinations(numbers, 2))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#any (PSF-2.0)\n- https://docs.python.org/3.12/library/itertools.html#itertools.combinations (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#abs (PSF-2.0)";
+/// prompt shape: the prompt's import travels ahead of the derived artifact.
+const HUMANEVAL_0_ANSWER: &str = "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\nfrom typing import List\nimport itertools\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    return any(abs(left - right) < threshold for left, right in itertools.combinations(numbers, 2))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#any (PSF-2.0)\n- https://docs.python.org/3.12/library/itertools.html#itertools.combinations (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#abs (PSF-2.0)";
 
 /// The answer for MBPP/2: generic parameters inferred from arity, never the
 /// argument tuples from the assertion.
-const MBPP_2_ANSWER: &str = "Here is a derived Python function reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef similar_elements(arg1, arg2):\n    return tuple(sorted(set(arg1) & set(arg2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 3/3 assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/stdtypes.html#tuple (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#sorted (PSF-2.0)\n- https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset (PSF-2.0)";
+const MBPP_2_ANSWER: &str = "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef similar_elements(arg1, arg2):\n    return tuple(sorted(set(arg1) & set(arg2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 3/3 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/stdtypes.html#tuple (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#sorted (PSF-2.0)\n- https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset (PSF-2.0)";
 
 fn workspace(name: &str) -> PathBuf {
     let nonce = std::time::SystemTime::now()
@@ -165,11 +165,11 @@ fn assert_mbpp_derivation_in(language: &str) {
     let case = mbpp_case_in(language);
     let response = benchmark_solver().solve(&case.prompt);
     let localized_opening = match language {
-        "ru" => "Ниже приведена выведенная функция Python",
+        "ru" => "Ниже приведён выведенный артефакт Python",
         "hi" => "यह खोजे गए भागों से पुनर्निर्मित",
         "zh" => "这是由发现的部件重建",
-        "es" => "Esta es una función de Python derivada",
-        _ => "Here is a derived Python function",
+        "es" => "Este es un artefacto de Python derivado",
+        _ => "Here is a derived Python artifact",
     };
     assert!(
         response.answer.starts_with(localized_opening),

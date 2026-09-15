@@ -7,6 +7,7 @@ mod benchmark_release_capability;
 mod budget_search;
 mod bulk_lexeme_import;
 mod ci_gates;
+mod cli_paths;
 mod coding_discovery;
 mod conversational_variations;
 mod courtesy_response;

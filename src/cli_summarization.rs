@@ -169,7 +169,7 @@ pub fn run_summarization(action: SummarizationAction) -> Result<(), Box<dyn Erro
 }
 
 fn resolve_root(explicit: Option<PathBuf>) -> PathBuf {
-    crate::cli_paths::resolve_root(explicit, PathBuf::from("."))
+    crate::cli_paths::resolve_root(explicit, &PathBuf::from("."))
 }
 
 fn list_criteria() {

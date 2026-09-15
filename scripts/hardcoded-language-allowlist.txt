@@ -199,10 +199,6 @@ src/coding/catalog/languages.rs	The TypeScript seed is returned with this warnin
 src/coding/catalog/tasks.rs	Hello, world!
 src/coding/catalog/types.rs	printf '{}' | {run_command}
 src/coding/catalog/types.rs	write_program(language={}, task={})
-src/coding/function_catalog/oeis.rs	({coefficient} * values[-{}])
-src/coding/function_catalog/oeis.rs	for source_index in range({start}, 100000):\n    candidate = {expression}\n    if candidate >= {parameter}:\n        return candidate == {parameter}\nreturn False
-src/coding/function_catalog/oeis.rs	if {parameter} < 0 or {parameter} % {divisor} != 0:\n    return 0\nsource_index = {parameter} // {divisor} + ({offset})\nif source_index < 0:\n    return 0\nvalues = {initial:?}\nwhile len(values) <= source_index:\n    values.append({transition})\nreturn values[source_index]
-src/coding/function_catalog/oeis.rs	{} x {} {object} tilings
 src/coding/guidance.rs	Check that it compiles: `{check_command}`.
 src/coding/guidance.rs	Compare the output with the expected output shown above.
 src/coding/guidance.rs	Install {setup_hint}.
@@ -255,23 +251,6 @@ src/coding/recurrence.rs	source call is missing argument {key}
 src/coding/recurrence.rs	unknown source reference {key}
 src/coding/recurrence.rs	unsupported non-integer literal {value}
 src/coding/recurrence.rs	{} if {} else {}
-src/coding/structural_composition.rs	''.join('0' if left == right else '1' for left, right in zip({}, {}))
-src/coding/structural_composition.rs	({product}) / {divisor}
-src/coding/structural_composition.rs	depths = []\nfor group in {}.split():\n    depth = 0\n    maximum = 0\n    for symbol in group:\n        depth += 1 if symbol == '(' else -1\n        maximum = max(maximum, depth)\n    depths.append(maximum)\nreturn depths
-src/coding/structural_composition.rs	difference = {} ^ {}\nreturn bool(difference and not (difference & (difference - 1)))
-src/coding/structural_composition.rs	first = {0}.find({1})\nif first != -1:\n    {0} = {0}[:first] + {0}[first + 1:]\nlast = {0}.rfind({1})\nif last != -1:\n    {0} = {0}[:last] + {0}[last + 1:]\nreturn {0}
-src/coding/structural_composition.rs	for offset in range(1, len({0}) + 1):\n    if {0}[offset:] + {0}[:offset] == {0}:\n        return offset\nreturn 0
-src/coding/structural_composition.rs	groups = []\ncurrent = []\ndepth = 0\nfor symbol in {}:\n    if symbol.isspace():\n        continue\n    current.append(symbol)\n    depth += 1 if symbol == '(' else -1\n    if depth == 0:\n        groups.append(''.join(current))\n        current = []\nreturn groups
-src/coding/structural_composition.rs	mapping = {mapping}\nreturn [mapping[item] for item in {}.split()]
-src/coding/structural_composition.rs	order = {order}\nreturn ' '.join(sorted({}.split(), key=order.__getitem__))
-src/coding/structural_composition.rs	re.findall(r'[a-z][^a-z]*', {})
-src/coding/structural_composition.rs	re.findall(r'\\b\\w{{{minimum},}}\\b', {})
-src/coding/structural_composition.rs	return {expression}
-src/coding/structural_composition.rs	return {matched} if re.fullmatch(r'[a-z]+_[a-z]+', {}) else {unmatched}
-src/coding/structural_composition.rs	rows = {row} + 1\ncolumns = {column} + 1\ncosts = [[float('inf')] * columns for _ in range(rows)]\ncosts[0][0] = {grid}[0][0]\nfor row_index in range(rows):\n    for column_index in range(columns):\n        if row_index == 0 and column_index == 0:\n            continue\n        predecessors = [costs[row_index + row_offset][column_index + column_offset] for row_offset, column_offset in ({offsets}) if row_index + row_offset >= 0 and column_index + column_offset >= 0]\n        costs[row_index][column_index] = min(predecessors) + {grid}[row_index][column_index]\nreturn costs[{row}][{column}]
-src/coding/structural_composition.rs	{key}: {value}
-src/coding/structural_composition.rs	{literal}: {index}
-src/coding/structural_composition.rs	{} > 1 and any({} % divisor == 0 for divisor in range(2, math.isqrt({}) + 1))
 src/coding/task_spec.rs	def {function_name}(
 src/concepts.rs	{normalized} {context}
 src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}

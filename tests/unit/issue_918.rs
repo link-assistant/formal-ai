@@ -499,5 +499,8 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // records arrived (see the coding floor above) while the Spanish and
     // "resolve" lexemes given to `implement` closed two gaps that had been
     // waiting on exactly that wording.
-    assert_eq!(expected_gaps.len(), 4_062);
+    // Issue #710 moved the total from 4,062 to 4,250: the generalized coding
+    // structures, discoverable runtime templates, and source-backed recurrence
+    // vocabulary entered the total closure instead of remaining Rust literals.
+    assert_eq!(expected_gaps.len(), 4_250);
 }

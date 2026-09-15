@@ -9,7 +9,7 @@ use std::collections::BTreeSet;
 
 use serde::Deserialize;
 
-use crate::coding::python_render::render_function;
+use crate::coding::python_render::{render_function, runtime_template};
 use crate::coding::task_spec::CodingTaskSpec;
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 
@@ -259,17 +259,31 @@ fn research_queries(spec: &CodingTaskSpec) -> Vec<String> {
 fn tiling_query(text: &str) -> Option<String> {
     let normalized = crate::engine::normalize_prompt(text);
     let tokens = normalized.split_whitespace().collect::<Vec<_>>();
-    let object = tokens
+    let dimension_windows = tokens
+        .windows(3)
+        .enumerate()
+        .filter(|(_, window)| {
+            window[1] == "x" && dimension_token(window[0]) && dimension_token(window[2])
+        })
+        .collect::<Vec<_>>();
+    let (first_index, _) = dimension_windows.first()?;
+    let (last_index, dimensions) = dimension_windows.last()?;
+    let objects = tokens[first_index + 3..*last_index]
         .iter()
-        .find(|token| token.starts_with("domino") || token.starts_with("tromino"))?
-        .trim_end_matches("es")
-        .trim_end_matches('s');
-    let (_, dimensions) = tokens.windows(3).enumerate().rfind(|(_, window)| {
-        window[1] == "x" && dimension_token(window[0]) && dimension_token(window[2])
-    })?;
-    Some(format!(
-        "{} x {} {object} tilings",
-        dimensions[0], dimensions[2]
+        .copied()
+        .take_while(|token| token.chars().count() > 2)
+        .collect::<Vec<_>>()
+        .join(" ");
+    if objects.is_empty() {
+        return None;
+    }
+    Some(template(
+        "oeis_dimension_query",
+        &[
+            ("left", dimensions[0]),
+            ("right", dimensions[2]),
+            ("objects", &objects),
+        ],
     ))
 }
 
@@ -307,7 +321,9 @@ fn arithmetic_formula(name: &str) -> Option<String> {
         .replace('^', "**");
     let compact = expression.replace(' ', "");
     if !compact.contains('n')
-        || compact.contains("a(")
+        || compact
+            .split_once('(')
+            .is_some_and(|(callee, _)| callee == "a")
         || !compact.chars().all(|character| {
             character.is_ascii_digit()
                 || matches!(character, 'n' | '+' | '-' | '*' | '/' | '(' | ')')
@@ -320,8 +336,14 @@ fn arithmetic_formula(name: &str) -> Option<String> {
 
 fn formula_membership_body(parameter: &str, formula: &str, start: usize) -> String {
     let expression = replace_variable(formula, "source_index");
-    format!(
-        "for source_index in range({start}, 100000):\n    candidate = {expression}\n    if candidate >= {parameter}:\n        return candidate == {parameter}\nreturn False"
+    let start = start.to_string();
+    template(
+        "oeis_formula_membership",
+        &[
+            ("start", &start),
+            ("expression", &expression),
+            ("parameter", parameter),
+        ],
     )
 }
 
@@ -413,13 +435,33 @@ fn recurrence_body(
         .coefficients
         .iter()
         .enumerate()
-        .map(|(index, coefficient)| format!("({coefficient} * values[-{}])", index + 1))
+        .map(|(index, coefficient)| {
+            let coefficient = coefficient.to_string();
+            let index = (index + 1).to_string();
+            template(
+                "oeis_recurrence_term",
+                &[("coefficient", &coefficient), ("index", &index)],
+            )
+        })
         .collect::<Vec<_>>()
         .join(" + ");
-    format!(
-        "if {parameter} < 0 or {parameter} % {divisor} != 0:\n    return 0\nsource_index = {parameter} // {divisor} + ({offset})\nif source_index < 0:\n    return 0\nvalues = {initial:?}\nwhile len(values) <= source_index:\n    values.append({transition})\nreturn values[source_index]",
-        initial = recurrence.initial,
+    let divisor = divisor.to_string();
+    let offset = offset.to_string();
+    let initial = format!("{:?}", recurrence.initial);
+    template(
+        "oeis_linear_recurrence",
+        &[
+            ("parameter", parameter),
+            ("divisor", &divisor),
+            ("offset", &offset),
+            ("initial", &initial),
+            ("transition", &transition),
+        ],
     )
+}
+
+fn template(id: &str, values: &[(&str, &str)]) -> String {
+    runtime_template(id, values).unwrap_or_else(|| panic!("missing runtime template {id}"))
 }
 
 fn record_label(record: &Record) -> String {

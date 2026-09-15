@@ -705,7 +705,7 @@ fn render_failure_trail(
     )
 }
 
-fn template(id: &str, values: &[(&str, &str)]) -> String {
+pub(super) fn template(id: &str, values: &[(&str, &str)]) -> String {
     runtime_template(id, values).unwrap_or_else(|| panic!("missing runtime template {id}"))
 }
 

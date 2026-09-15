@@ -521,7 +521,15 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         if (!marker_leads || first_action_cue_end(&toks).is_some())
             && let Some(content) = marker_span
                 .and_then(clean_content)
-                .filter(|content| is_literal_content(content))
+                .filter(|content| {
+                    is_literal_content(content)
+                        && (!names_deferred_work_product(content)
+                            || first_prefix_lead_end(
+                                &lowered,
+                                seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
+                            )
+                            .is_some())
+                })
             {
                 return Some((target, content));
             }
@@ -664,11 +672,16 @@ fn is_non_referential_content(content: &str) -> bool {
 /// modifiers in front of it ("observable", "final") are the caller's, not the
 /// lexicon's.
 ///
-/// Deliberately not applied to marker-led content. "Create `a.txt` containing 42
-/// is the answer" states, with the marker, that the span *is* the payload; only
-/// the shapes that infer a payload from position need the check.
+/// Applied to marker-led content too: “with the observed result” uses a content
+/// marker syntactically, but still names work that has not happened. Explicit
+/// bytes remain expressible through the authoritative-content marker, whose
+/// distinct role is routed before derived-delivery planning.
 fn names_deferred_work_product(content: &str) -> bool {
-    let lower = content.to_lowercase();
+    let lower = content
+        .trim()
+        .trim_end_matches(['.', '!', '?', '。', '！', '？'])
+        .trim_end()
+        .to_lowercase();
     seed::lexicon()
         .role_word_forms(seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE)
         .iter()
@@ -843,16 +856,12 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let new = super::positional_edit::literal_text(new_span)?;
     Some((target, old, new))
 }
-
-
 /// Whether `text` carries a software-authoring verb (implement, resolve,
 /// develop, …) in any seeded language.
 #[must_use]
 pub fn mentions_software_authoring(text: &str) -> bool {
     mentions_bare_role(text, seed::ROLE_SOFTWARE_AUTHORING_ACTION)
 }
-
-
 const fn capability_slug(capability: Capability) -> &'static str {
     match capability {
         Capability::Search => "Search",

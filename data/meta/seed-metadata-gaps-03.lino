@@ -123,6 +123,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "issue_report_trace_heading"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_c4ef5335d02e8ba3
+    source "data/seed/closure-generated-03.lino"
+    record "mapping_entry"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d63828d5453a5383
     source "data/seed/closure-generated-03.lino"
     record "response_coding_synthesis_verified_answer_ru"

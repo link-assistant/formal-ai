@@ -771,6 +771,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "greatest"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_45edf33e50fc2d2d
+    source "data/seed/closure-generated-14.lino"
+    record "ordering_entry"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_915b91832cbdb95d
     source "data/seed/closure-generated-14.lino"
     record "response_lexeme_import_invalid_qid_en"

@@ -5,7 +5,7 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::coding::composition;
-use crate::coding::concept_discovery::{CatalogFunction, DiscoveryCatalog};
+use crate::coding::concept_discovery::{CatalogFunction, ConceptMap, DiscoveryCatalog, discover};
 use crate::coding::discovered_procedures::DiscoveredProcedureLedger;
 use crate::coding::function_catalog::oeis::discover_programs;
 use crate::coding::function_catalog::python_docs::{StdlibIndex, fetch_index};
@@ -15,6 +15,7 @@ use crate::coding::function_catalog::wikifunctions::{
 };
 use crate::coding::recurrence::formalize;
 use crate::coding::task_spec::{CodingTaskSpec, Example};
+use crate::engine::{ExecutionRecipe, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
@@ -198,6 +199,58 @@ pub fn extend_with_sequence_programs(
     catalog.with_source_candidates(source_candidates)
 }
 
+/// Discover candidate parts, compose them, and expand to sequence sources only
+/// when the first bounded pass cannot verify a draft.
+pub fn discover_and_compose(
+    spec: &CodingTaskSpec,
+    log: &mut EventLog,
+    live: bool,
+) -> (ConceptMap, composition::CompositionOutcome) {
+    let mut catalog = discovery_catalog(spec, log, live);
+    let mut concepts = discover(spec, &catalog);
+    let mut outcome = composition::compose(spec, &concepts);
+    if outcome.selected.is_none() {
+        catalog = extend_with_sequence_programs(catalog, spec, log, live);
+        if !catalog.source_candidates.is_empty() {
+            concepts = discover(spec, &catalog);
+            outcome = composition::compose(spec, &concepts);
+        }
+    }
+    (concepts, outcome)
+}
+
+/// Preserve a verified artifact as a typed execution recipe so every agent
+/// protocol can select its own advertised write and execution capabilities.
+pub fn attach_execution_recipe(
+    mut answer: SymbolicAnswer,
+    spec: &CodingTaskSpec,
+    selected: composition::VerifiedDraft,
+) -> SymbolicAnswer {
+    let program = spec.artifact_shape == crate::coding::task_spec::ArtifactShape::Program;
+    let language = crate::coding::program_language_by_slug(&spec.language);
+    let path = language.map_or_else(
+        || format!("main.{}", spec.language),
+        |language| language.save_as.to_owned(),
+    );
+    let commands = language.map_or_else(Vec::new, |language| {
+        language
+            .execution
+            .check_command
+            .into_iter()
+            .chain(program.then_some(language.execution.run_command))
+            .map(str::to_owned)
+            .collect()
+    });
+    answer.execution_recipe = Some(Box::new(ExecutionRecipe {
+        language: spec.language.clone(),
+        source: selected.source,
+        path,
+        supporting_files: Vec::new(),
+        commands,
+    }));
+    answer
+}
+
 fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
     let lexicon = crate::seed::lexicon();
     let grammatical_roles = [
@@ -291,10 +344,8 @@ pub fn research_trail_line(language: Language, trail: &str) -> String {
 
 pub fn render_answer(selected: &composition::VerifiedDraft, language: Language) -> String {
     let count = selected.assertion_count.to_string();
-    let values = [
-        ("source", selected.source.as_str()),
-        ("count", count.as_str()),
-    ];
+    let source = selected.source.trim_end();
+    let values = [("source", source), ("count", count.as_str())];
     let mut body =
         crate::seed::render_response("coding_synthesis_verified_answer", language.slug(), &values)
             .or_else(|| {

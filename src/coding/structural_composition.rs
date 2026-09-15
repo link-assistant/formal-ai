@@ -4,7 +4,7 @@
 //! solutions. It combines language-independent meanings selected from the task
 //! prose, then the caller executes every candidate against the task's examples.
 
-use crate::coding::composition::{Draft, idiom};
+use crate::coding::composition::{Draft, idiom, template};
 use crate::coding::concept_discovery::{ConceptMap, structural_meanings};
 use crate::coding::python_render::render_function;
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec};
@@ -89,18 +89,12 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
     }
 
     if has("balanced_delimiter_groups") && names.len() == 1 {
-        let body = format!(
-            "groups = []\ncurrent = []\ndepth = 0\nfor symbol in {}:\n    if symbol.isspace():\n        continue\n    current.append(symbol)\n    depth += 1 if symbol == '(' else -1\n    if depth == 0:\n        groups.append(''.join(current))\n        current = []\nreturn groups",
-            names[0]
-        );
+        let body = template("balanced_delimiter_groups", &[("items", names[0])]);
         drafts.push(draft(spec, "balanced_delimiter_groups", body, []));
     }
 
     if has("group_max_nesting") && names.len() == 1 {
-        let body = format!(
-            "depths = []\nfor group in {}.split():\n    depth = 0\n    maximum = 0\n    for symbol in group:\n        depth += 1 if symbol == '(' else -1\n        maximum = max(maximum, depth)\n    depths.append(maximum)\nreturn depths",
-            names[0]
-        );
+        let body = template("group_max_nesting", &[("items", names[0])]);
         drafts.push(draft(spec, "group_max_nesting", body, []));
     }
 
@@ -135,9 +129,9 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
     }
 
     if has("aligned_binary_xor") && names.len() >= 2 {
-        let expression = format!(
-            "''.join('0' if left == right else '1' for left, right in zip({}, {}))",
-            names[0], names[1]
+        let expression = template(
+            "aligned_binary_xor",
+            &[("left", names[0]), ("right", names[1])],
         );
         drafts.push(draft(
             spec,
@@ -156,9 +150,9 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
         && names.len() == 1
         && let Some(mapping) = explicit_numeric_mapping(spec)
     {
-        let body = format!(
-            "mapping = {mapping}\nreturn [mapping[item] for item in {}.split()]",
-            names[0]
+        let body = template(
+            "explicit_value_mapping",
+            &[("mapping", &mapping), ("items", names[0])],
         );
         drafts.push(draft(
             spec,
@@ -173,9 +167,9 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
         && names.len() == 1
         && let Some(order) = explicit_order(spec)
     {
-        let body = format!(
-            "order = {order}\nreturn ' '.join(sorted({}.split(), key=order.__getitem__))",
-            names[0]
+        let body = template(
+            "explicit_ordering",
+            &[("order", &order), ("items", names[0])],
         );
         drafts.push(draft(
             spec,
@@ -240,7 +234,11 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
         && names.len() == 1
         && let Some(minimum) = first_positive_integer(&spec.requirement_sentences)
     {
-        let expression = format!(r"re.findall(r'\b\w{{{minimum},}}\b', {})", names[0]);
+        let minimum = minimum.to_string();
+        let expression = template(
+            "regex_minimum_word_length",
+            &[("minimum", &minimum), ("text", names[0])],
+        );
         drafts.push(draft(
             spec,
             "regex_minimum_word_length",
@@ -250,7 +248,7 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
     }
 
     if has("regex_lowercase_chunks") && names.len() == 1 {
-        let expression = format!(r"re.findall(r'[a-z][^a-z]*', {})", names[0]);
+        let expression = template("regex_lowercase_chunks", &[("text", names[0])]);
         drafts.push(draft(
             spec,
             "regex_lowercase_chunks",
@@ -263,9 +261,13 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
         && names.len() == 1
         && let Some((matched, unmatched)) = inferred_match_labels(spec)
     {
-        let body = format!(
-            "return {matched} if re.fullmatch(r'[a-z]+_[a-z]+', {}) else {unmatched}",
-            names[0]
+        let body = template(
+            "regex_lowercase_underscore",
+            &[
+                ("matched", &matched),
+                ("text", names[0]),
+                ("unmatched", &unmatched),
+            ],
         );
         drafts.push(draft(
             spec,
@@ -299,10 +301,7 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
     }
 
     if has("composite_number") && names.len() == 1 {
-        let expression = format!(
-            "{} > 1 and any({} % divisor == 0 for divisor in range(2, math.isqrt({}) + 1))",
-            names[0], names[0], names[0]
-        );
+        let expression = template("composite_number", &[("value", names[0])]);
         drafts.push(draft(
             spec,
             "composite_number",
@@ -312,9 +311,9 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
     }
 
     if has("one_bit_difference") && names.len() >= 2 {
-        let body = format!(
-            "difference = {} ^ {}\nreturn bool(difference and not (difference & (difference - 1)))",
-            names[0], names[1]
+        let body = template(
+            "one_bit_difference",
+            &[("left", names[0]), ("right", names[1])],
         );
         drafts.push(draft(spec, "one_bit_difference", body, []));
     }
@@ -324,18 +323,15 @@ pub(super) fn additional_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) ->
     }
 
     if has("remove_boundary_occurrences") && names.len() >= 2 {
-        let body = format!(
-            "first = {0}.find({1})\nif first != -1:\n    {0} = {0}[:first] + {0}[first + 1:]\nlast = {0}.rfind({1})\nif last != -1:\n    {0} = {0}[:last] + {0}[last + 1:]\nreturn {0}",
-            names[0], names[1]
+        let body = template(
+            "remove_boundary_occurrences",
+            &[("text", names[0]), ("marker", names[1])],
         );
         drafts.push(draft(spec, "remove_boundary_occurrences", body, []));
     }
 
     if has("rotation_period") && names.len() == 1 {
-        let body = format!(
-            "for offset in range(1, len({0}) + 1):\n    if {0}[offset:] + {0}[:offset] == {0}:\n        return offset\nreturn 0",
-            names[0]
-        );
+        let body = template("rotation_period", &[("text", names[0])]);
         drafts.push(draft(spec, "rotation_period", body, []));
     }
 
@@ -374,7 +370,11 @@ fn example_guided_arithmetic(spec: &CodingTaskSpec) -> Vec<Draft> {
             [],
         ));
         for divisor in 2..=4 {
-            let expression = format!("({product}) / {divisor}");
+            let divisor = divisor.to_string();
+            let expression = template(
+                "example_arithmetic_divide",
+                &[("product", &product), ("divisor", &divisor)],
+            );
             drafts.push(draft(
                 spec,
                 &format!("geometric_measure(example_guided_arithmetic(product_divide_{divisor}))"),
@@ -397,11 +397,14 @@ fn grid_minimum_cost_path_drafts(spec: &CodingTaskSpec, names: &[&str]) -> Vec<D
     ]
     .into_iter()
     .map(|(relation, offsets)| {
-        let body = format!(
-            "rows = {row} + 1\ncolumns = {column} + 1\ncosts = [[float('inf')] * columns for _ in range(rows)]\ncosts[0][0] = {grid}[0][0]\nfor row_index in range(rows):\n    for column_index in range(columns):\n        if row_index == 0 and column_index == 0:\n            continue\n        predecessors = [costs[row_index + row_offset][column_index + column_offset] for row_offset, column_offset in ({offsets}) if row_index + row_offset >= 0 and column_index + column_offset >= 0]\n        costs[row_index][column_index] = min(predecessors) + {grid}[row_index][column_index]\nreturn costs[{row}][{column}]",
-            grid = names[0],
-            row = names[1],
-            column = names[2],
+        let body = template(
+            "grid_minimum_cost_path",
+            &[
+                ("grid", names[0]),
+                ("row", names[1]),
+                ("column", names[2]),
+                ("offsets", offsets),
+            ],
         );
         draft(
             spec,
@@ -446,7 +449,7 @@ fn source_urls(composition: &str) -> Vec<String> {
 }
 
 fn return_value(expression: &str) -> String {
-    format!("return {expression}")
+    template("python_return", &[("expression", expression)])
 }
 
 fn first_positive_integer(sentences: &[String]) -> Option<usize> {
@@ -548,7 +551,7 @@ fn explicit_numeric_mapping(spec: &CodingTaskSpec) -> Option<String> {
         .into_iter()
         .map(|(key, value)| {
             let key = serde_json::to_string(key).expect("string literal serializes");
-            format!("{key}: {value}")
+            template("mapping_entry", &[("key", &key), ("value", &value)])
         })
         .collect::<Vec<_>>()
         .join(", ");
@@ -574,7 +577,11 @@ fn explicit_order(spec: &CodingTaskSpec) -> Option<String> {
         .enumerate()
         .map(|(index, literal)| {
             let literal = serde_json::to_string(literal).expect("string literal serializes");
-            format!("{literal}: {index}")
+            let index = index.to_string();
+            template(
+                "ordering_entry",
+                &[("literal", &literal), ("index", &index)],
+            )
         })
         .collect::<Vec<_>>()
         .join(", ");

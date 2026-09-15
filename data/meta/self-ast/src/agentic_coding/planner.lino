@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 39462
-  line_count 827
-  content_id source_module_01a64eb7fb7149c8
+  byte_len 39538
+  line_count 828
+  content_id source_module_5933c2d14021f302
   symbol_count 21
   symbols
     enum AgenticPlan 65 70
@@ -17,24 +17,24 @@ self_ast_census
     function stop_repeated_failure 183 204
     const REPEATED_FAILURES_THAT_STOP 184 184
     function plan_chat_step_routes 206 284
-    function plan_settled_routes 300 638
-    function plan_shell_step 641 660
-    function plan_one 662 667
-    function write_arguments 675 683
-    function fetch_arguments 692 698
-    function is_continuation_cue 706 708
-    function continued_agent_task 719 735
-    function compacted_agent_task 739 765
-    function repair_compacted_dot_paths 773 803
-    function preserved_first_user_turn 811 817
-    function trace_route 823 827
+    function plan_settled_routes 300 639
+    function plan_shell_step 642 661
+    function plan_one 663 668
+    function write_arguments 676 684
+    function fetch_arguments 693 699
+    function is_continuation_cue 707 709
+    function continued_agent_task 720 736
+    function compacted_agent_task 740 766
+    function repair_compacted_dot_paths 774 804
+    function preserved_first_user_turn 812 818
+    function trace_route 824 828
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18368
-    named_node_count 3673
+    total_link_count 18377
+    named_node_count 3674
     distinct_node_kinds 77
     node_kinds
       arguments 277
@@ -77,7 +77,7 @@ self_ast_census
       let_condition 49
       let_declaration 28
       lifetime 2
-      line_comment 274
+      line_comment 275
       macro_invocation 10
       match_arm 28
       match_block 2

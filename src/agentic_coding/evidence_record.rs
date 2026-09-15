@@ -262,7 +262,7 @@ pub(super) fn plan_evidence_record_step(
     // disqualifies the delivery -- a request may spell out one file's bytes and
     // ask for another file's findings, and the second obligation is still this
     // route's.
-    if let Some(reason) = later_route_delivering(task, &obligation.target, tool_names) {
+    if let Some(reason) = later_route_delivering(task, &obligation, tool_names) {
         trace_route("evidence_record", reason);
         return None;
     }
@@ -362,11 +362,28 @@ const DELIVERY_PROBE_TURNS: usize = 4;
 /// accumulates results: a recipe that owns a destination owns it on every turn,
 /// and its mid-run plan to read the file back would otherwise look like nobody
 /// owning it.
-fn later_route_delivering(task: &str, target: &str, tool_names: &[&str]) -> Option<&'static str> {
-    if compose_general_change_plan(task).is_some_and(|plan| plan.target == target) {
+fn later_route_delivering(
+    task: &str,
+    obligation: &Obligation,
+    tool_names: &[&str],
+) -> Option<&'static str> {
+    // A schema or opening-line declaration constrains bytes that still have to
+    // be derived from the residual investigation; it is not itself the file's
+    // payload. The broad literal parser can nevertheless recover the words
+    // after "with"/"exactly" as content. Do not let that lossy interpretation
+    // displace the evidence transaction. A true literal write has no residual
+    // finding to derive, so it never reaches this function.
+    let derived_delivery = obligation.first_line.is_some() || !obligation.field_lines.is_empty();
+    if derived_delivery {
+        return None;
+    }
+    if let Some(plan) = compose_general_change_plan(task)
+        && plan.target == obligation.target
+    {
         return Some("declined_composed_target");
     }
-    settled_route_delivers(task, target, tool_names).then_some("declined_settled_route")
+    settled_route_delivers(task, &obligation.target, tool_names)
+        .then_some("declined_settled_route")
 }
 
 /// Whether planning the whole request through the routes below this one walks

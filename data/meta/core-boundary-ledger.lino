@@ -2,9 +2,9 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 45
-  source_lines_max 18469
+  source_lines_max 18466
   outside_core_file_count_max 45
-  outside_core_lines_max 18469
+  outside_core_lines_max 18466
   source src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
@@ -152,7 +152,7 @@ core_boundary_ledger
     reason "Blueprint selection is coding-domain policy interpreted by generic construction machinery."
   source src/solver_handlers/program_synthesis.rs
     disposition migrate
-    baseline_lines 146
+    baseline_lines 143
     data_target "coding-task discovery, structural meanings, and localized synthesis labels"
     reason "The handler now only orchestrates specification, discovery, composition, verification, and rendering; task bodies were removed and the baseline ratcheted from 531 lines."
   source src/solver_handlers/research_table.rs

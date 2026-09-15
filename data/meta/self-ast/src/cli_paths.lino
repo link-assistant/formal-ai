@@ -2,12 +2,9 @@ self_ast_census
   target src/cli_paths.rs
   language rust
   fidelity signature
-  byte_len 1622
-  line_count 45
-  content_id source_module_efc0b9e653b67853
-  symbol_count 4
+  byte_len 996
+  line_count 23
+  content_id source_module_2469ced97263e7d5
+  symbol_count 1
   symbols
     function resolve_root 14 23
-    module tests 26 45
-    function a_relative_root_is_resolved_before_a_child_changes_directory 31 35
-    function an_absolute_root_keeps_its_identity 38 44

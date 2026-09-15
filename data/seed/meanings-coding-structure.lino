@@ -17,6 +17,9 @@ meanings
   predicate
     defined-by concept
     grounding "https://docs.python.org/3.12/glossary.html#term-expression"
+  optimization
+    defined-by concept
+    grounding "https://plato.stanford.edu/entries/optimization/"
   tuple
     defined-by concept
     grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
