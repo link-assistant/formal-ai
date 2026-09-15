@@ -14,7 +14,7 @@ contracts each of them must implement against.
 | `UnknownConceptLookup` has one implementation, `NoLookup`; production `discover()` calls it | `src/coding/concept_discovery.rs:87`, `:189` | B1 |
 | The universal solver's external-search step logs `policy:no_fetch_capability` and returns | `src/solver.rs:874-884` | B1 |
 | 13 trusted source kinds with licenses, APIs, cache paths and settings opt-outs already exist, used live only by the how-to handler | `data/seed/sources-registry.lino`; #991 | B1, B4 |
-| Composition draws on roughly 150 named per-language template programs, 82 seeded structural meanings and 25 embedded snippets | `src/coding/catalog/templates_*.rs`, `blueprint_programs.rs`, `data/seed/meanings-coding-structure.lino`, `src/knowledge.rs` `CodingOracle` | B2 |
+| Composition draws on 151 named per-language template programs (12 tasks, 14 languages), 82 seeded structural meanings, 40 hand-written composition arms and 7 embedded oracle snapshots (the issue said 25; plan 02 counted) | `src/coding/catalog/templates_*.rs`, `blueprint_programs.rs`, `data/seed/meanings-coding-structure.lino`, `src/knowledge.rs` `CodingOracle` | B2 |
 | HumanEval and MBPP are 20/20 on the first 20 tasks only; tasks 21–164 and 21–500 have never been run | `data/benchmarks/external-results.lino` | B2 |
 | A SWE-bench instance becomes one prompt asking for a diff; no clone, no checkout, no base commit anywhere in the harness | `src/external_benchmarks/cases.rs:152-166` | B3 |
 | An open-ended refactor of this repository produced a byte-identical file; a regression-authoring request read a nonexistent file and stopped | `docs/case-studies/issue-710/plans/07-*.md` "Live source-edit probe", `06-*.md` | B3 |
