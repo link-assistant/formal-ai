@@ -1,4 +1,4 @@
-use formal_ai::coding_task_spec::{CodingTaskSpec, Example, Parameter};
+use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
 use formal_ai::composition::compose;
 use formal_ai::concept_discovery::{
     CandidatePart, ConceptMap, ConceptNeed, StructuralMeaning, structural_meanings,
@@ -21,12 +21,29 @@ fn example(arguments: &[&str], expected: &str) -> Example {
 fn spec(name: &str, parameters: Vec<Parameter>, examples: Vec<Example>) -> CodingTaskSpec {
     CodingTaskSpec {
         language: "python".to_owned(),
+        artifact_shape: ArtifactShape::Function,
         name: name.to_owned(),
         parameters,
         return_annotation: None,
         imports: Vec::new(),
         requirement_sentences: Vec::new(),
         examples,
+        expected_stdout: None,
+        prose_language: "en".to_owned(),
+    }
+}
+
+fn program(requirement: &str, expected_stdout: Option<&str>) -> CodingTaskSpec {
+    CodingTaskSpec {
+        language: "python".to_owned(),
+        artifact_shape: ArtifactShape::Program,
+        name: "main".to_owned(),
+        parameters: Vec::new(),
+        return_annotation: None,
+        imports: Vec::new(),
+        requirement_sentences: vec![requirement.to_owned()],
+        examples: Vec::new(),
+        expected_stdout: expected_stdout.map(str::to_owned),
         prose_language: "en".to_owned(),
     }
 }
@@ -199,4 +216,25 @@ fn failed_parts_return_no_answer_and_name_the_failed_example() {
         "{}",
         outcome.research_trail
     );
+}
+
+#[test]
+fn runnable_programs_are_composed_from_output_and_range_observations() {
+    let literal = compose(
+        &program("Print Alpha, beta!", Some("Alpha, beta!")),
+        &map(&["print_stdout"], Vec::new()),
+    )
+    .selected
+    .expect("an exact stdout observation should verify a runnable program");
+    assert_eq!(literal.source, "print(\"Alpha, beta!\")");
+    assert_eq!(literal.assertion_count, 1);
+
+    let range = compose(
+        &program("Count to five inclusive.", None),
+        &map(&["range_inclusive"], Vec::new()),
+    )
+    .selected
+    .expect("a seeded cardinal and inclusive range should derive stdout");
+    assert!(range.source.contains("for number in range(1, 5 + 1):"));
+    assert!(range.source.contains("print(number)"));
 }

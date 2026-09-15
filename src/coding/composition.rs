@@ -6,7 +6,7 @@ use std::time::Duration;
 use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::coding::concept_discovery::{CandidatePart, ConceptMap, structural_meanings};
 use crate::coding::python_render::{render_function, runtime_template};
-use crate::coding::task_spec::{CodingTaskSpec, Example};
+use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DraftAttempt {
@@ -52,7 +52,11 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
     } else {
         spec.examples.clone()
     };
-    let mut drafts = candidate_drafts(spec, concepts);
+    let mut drafts = if spec.artifact_shape == ArtifactShape::Function {
+        candidate_drafts(spec, concepts)
+    } else {
+        Vec::new()
+    };
     drafts.extend(structural_drafts(spec, concepts));
     let mut attempts = Vec::new();
     let mut passing = Vec::new();
@@ -65,7 +69,7 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
             });
             continue;
         }
-        let (passed, detail) = verify(spec, &draft, &examples);
+        let (passed, detail) = verify(spec, &draft, &examples, concepts);
         attempts.push(DraftAttempt {
             id: draft.id.clone(),
             passed,
@@ -84,7 +88,11 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
     let selected = passing.into_iter().next().map(|draft| VerifiedDraft {
         id: draft.id,
         source: draft.source,
-        assertion_count: examples.len(),
+        assertion_count: if spec.artifact_shape == ArtifactShape::Program {
+            1
+        } else {
+            examples.len()
+        },
         source_urls: draft.source_urls,
         composition: draft.composition,
     });
@@ -155,6 +163,31 @@ fn structural_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Draft>
         .map(|parameter| parameter.name.as_str())
         .collect::<Vec<_>>();
     let mut drafts = Vec::new();
+    if spec.artifact_shape == ArtifactShape::Program {
+        if has("print_stdout")
+            && let Some(expected) = &spec.expected_stdout
+            && let Ok(literal) = serde_json::to_string(expected)
+        {
+            let source = idiom("print_stdout", &[("value", &literal)]);
+            drafts.push(structural_program_draft("print_stdout(literal)", source));
+        }
+        if has("range_inclusive") {
+            let bound = first_positive_integer(&spec.requirement_sentences);
+            if let Some(bound) = bound {
+                let range = idiom("range_inclusive", &[("bound", &bound)]);
+                let output = idiom("print_stdout", &[("value", "number")]);
+                let source = template(
+                    "python_for_each",
+                    &[("item", "number"), ("items", &range), ("body", &output)],
+                );
+                drafts.push(structural_program_draft(
+                    "for_each(range_inclusive,print_stdout)",
+                    source,
+                ));
+            }
+        }
+        return drafts;
+    }
     if has("tuple_of") && has("reduce_sum") && has("reduce_product") && names.len() == 1 {
         let sum = idiom("reduce_sum", &[("items", names[0])]);
         let product = idiom("reduce_product", &[("items", names[0])]);
@@ -275,6 +308,16 @@ fn structural_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Draft>
     drafts
 }
 
+fn structural_program_draft(composition: &str, source: String) -> Draft {
+    Draft {
+        id: format!("structure:{composition}"),
+        source,
+        source_urls: structural_source_urls(composition),
+        composition: composition.to_owned(),
+        action_cost: composition.matches(['(', ',']).count() + 2,
+    }
+}
+
 fn structural_draft(
     spec: &CodingTaskSpec,
     composition: &str,
@@ -282,16 +325,7 @@ fn structural_draft(
     imports: impl IntoIterator<Item = String>,
     _concepts: &ConceptMap,
 ) -> Draft {
-    let composition_ids = composition
-        .split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
-        .collect::<std::collections::BTreeSet<_>>();
-    let source_urls = structural_meanings()
-        .into_iter()
-        .filter(|structure| {
-            !structure.grounding.is_empty() && composition_ids.contains(structure.id.as_str())
-        })
-        .map(|structure| structure.grounding)
-        .collect();
+    let source_urls = structural_source_urls(composition);
     Draft {
         id: format!("structure:{composition}"),
         source: render_function(spec, body, imports),
@@ -299,6 +333,19 @@ fn structural_draft(
         composition: composition.to_owned(),
         action_cost: composition.matches(['(', ',']).count() + 2,
     }
+}
+
+fn structural_source_urls(composition: &str) -> Vec<String> {
+    let composition_ids = composition
+        .split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
+        .collect::<std::collections::BTreeSet<_>>();
+    structural_meanings()
+        .into_iter()
+        .filter(|structure| {
+            !structure.grounding.is_empty() && composition_ids.contains(structure.id.as_str())
+        })
+        .map(|structure| structure.grounding)
+        .collect()
 }
 
 fn adapt_implementation(code: &str, spec: &CodingTaskSpec) -> Option<String> {
@@ -334,20 +381,27 @@ fn adapt_implementation(code: &str, spec: &CodingTaskSpec) -> Option<String> {
     Some(body)
 }
 
-fn verify(spec: &CodingTaskSpec, draft: &Draft, examples: &[Example]) -> (bool, String) {
-    if examples.is_empty() {
+fn verify(
+    spec: &CodingTaskSpec,
+    draft: &Draft,
+    examples: &[Example],
+    concepts: &ConceptMap,
+) -> (bool, String) {
+    if spec.artifact_shape == ArtifactShape::Function && examples.is_empty() {
         return (false, "no executable examples or derived tests".to_owned());
     }
     let mut script = draft.source.clone();
-    script.push_str(&template("python_test_entrypoint", &[]));
-    for example in examples {
-        let _ = writeln!(
-            script,
-            "    assert {}({}) == {}",
-            spec.name,
-            example.arguments.join(", "),
-            example.expected
-        );
+    if spec.artifact_shape == ArtifactShape::Function {
+        script.push_str(&template("python_test_entrypoint", &[]));
+        for example in examples {
+            let _ = writeln!(
+                script,
+                "    assert {}({}) == {}",
+                spec.name,
+                example.arguments.join(", "),
+                example.expected
+            );
+        }
     }
     let config = AgentWorkspaceConfig {
         time_budget: Duration::from_secs(5),
@@ -362,11 +416,22 @@ fn verify(spec: &CodingTaskSpec, draft: &Draft, examples: &[Example]) -> (bool, 
     workspace.create_file("solution.py", &script);
     workspace.run_command("python3 solution.py");
     let run = workspace.finish();
-    let passed = run.status == AgentRunStatus::Completed
+    let command_succeeded = run.status == AgentRunStatus::Completed
         && run
             .command_results
             .iter()
             .any(|result| result.status_code == Some(0) && !result.timed_out);
+    let expected_stdout = program_stdout_expectation(spec, concepts);
+    let output_matches = if spec.artifact_shape == ArtifactShape::Program {
+        expected_stdout.is_some_and(|expected| {
+            run.command_results
+                .last()
+                .is_some_and(|result| result.stdout.trim_end() == expected)
+        })
+    } else {
+        true
+    };
+    let passed = command_succeeded && output_matches;
     let detail = run.command_results.last().map_or_else(
         || "no command result".to_owned(),
         |result| {
@@ -379,6 +444,28 @@ fn verify(spec: &CodingTaskSpec, draft: &Draft, examples: &[Example]) -> (bool, 
         },
     );
     (passed, detail)
+}
+
+fn program_stdout_expectation(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Option<String> {
+    if let Some(expected) = &spec.expected_stdout {
+        return Some(expected.clone());
+    }
+    if concepts
+        .structure_ids()
+        .iter()
+        .any(|structure| structure == "range_inclusive")
+    {
+        let bound = first_positive_integer(&spec.requirement_sentences)?
+            .parse::<usize>()
+            .ok()?;
+        return Some(
+            (1..=bound)
+                .map(|value| value.to_string())
+                .collect::<Vec<_>>()
+                .join("\n"),
+        );
+    }
+    None
 }
 
 fn derived_examples(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Example> {
@@ -437,11 +524,24 @@ fn derived_examples(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Example
 }
 
 fn first_positive_integer(sentences: &[String]) -> Option<String> {
-    sentences
+    let numeric = sentences
         .iter()
         .flat_map(|sentence| sentence.split(|character: char| !character.is_ascii_digit()))
         .find(|token| token.parse::<usize>().is_ok_and(|number| number > 0))
-        .map(str::to_owned)
+        .map(str::to_owned);
+    if numeric.is_some() {
+        return numeric;
+    }
+    let normalized = crate::engine::normalize_prompt(&sentences.join(" "));
+    crate::seed::lexicon()
+        .arithmetic_normalization_tables()
+        .0
+        .into_iter()
+        .find(|(surface, value)| {
+            value.parse::<usize>().is_ok_and(|number| number > 0)
+                && normalized.split_whitespace().any(|word| word == surface)
+        })
+        .map(|(_, value)| value)
 }
 
 fn render_comparison(attempts: &[DraftAttempt]) -> String {

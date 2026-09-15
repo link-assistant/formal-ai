@@ -9,5 +9,7 @@ coding_discovery_runtime
     text "tuple({items})"
   template python_test_entrypoint
     text "\nif __name__ == '__main__':\n"
+  template python_for_each
+    text "for {item} in {items}:\n    {body}"
   template python_doc_probe
     text "print(({expression}).__doc__ or '')"

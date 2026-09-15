@@ -262,23 +262,23 @@ multilingual_responses
   response response_coding_synthesis_verified_answer_en
     intent coding_synthesis_verified_answer
     language en
-    text "Here is a derived Python function reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\n{source}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {count}/{count} assertions passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget."
+    text "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\n{source}\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {count}/{count} executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget."
   response response_coding_synthesis_verified_answer_ru
     intent coding_synthesis_verified_answer
     language ru
-    text "Ниже приведена выведенная функция Python, собранная из найденных частей и проверенная в изолированной рабочей среде:\n\n```python\n{source}```\n\nСтатус выполнения: тесты пройдены в изолированной ограниченной рабочей среде агента.\nКоманда проверки: `python3 solution.py`\nРезультат тестов: пройдено {count}/{count} утверждений.\nИзоляция: временная рабочая среда агента без унаследованного окружения и с ограниченным бюджетом команд."
+    text "Ниже приведён выведенный артефакт Python, собранный из найденных частей и проверенный в изолированной рабочей среде:\n\n```python\n{source}\n```\n\nСтатус выполнения: тесты пройдены в изолированной ограниченной рабочей среде агента.\nКоманда проверки: `python3 solution.py`\nРезультат тестов: пройдено {count}/{count} исполняемых проверок.\nИзоляция: временная рабочая среда агента без унаследованного окружения и с ограниченным бюджетом команд."
   response response_coding_synthesis_verified_answer_hi
     intent coding_synthesis_verified_answer
     language hi
-    text "यह खोजे गए भागों से पुनर्निर्मित और पृथक workspace में सत्यापित Python function है:\n\n```python\n{source}```\n\nExecution status: सीमित पृथक agent workspace में tests pass हुए।\nजाँच command: `python3 solution.py`\nTest outcome: {count}/{count} assertions pass हुए।\nWorkspace isolation: inherited environment के बिना अस्थायी agent workspace और सीमित command budget।"
+    text "यह खोजे गए भागों से पुनर्निर्मित और पृथक workspace में सत्यापित Python artifact है:\n\n```python\n{source}\n```\n\nExecution status: सीमित पृथक agent workspace में tests pass हुए।\nजाँच command: `python3 solution.py`\nTest outcome: {count}/{count} executable checks pass हुए।\nWorkspace isolation: inherited environment के बिना अस्थायी agent workspace और सीमित command budget।"
   response response_coding_synthesis_verified_answer_zh
     intent coding_synthesis_verified_answer
     language zh
-    text "这是由发现的部件重建并在隔离工作区中验证的 Python 函数：\n\n```python\n{source}```\n\n执行状态：测试已在受限的隔离代理工作区中通过。\n检查命令：`python3 solution.py`\n测试结果：{count}/{count} 个断言通过。\n工作区隔离：临时代理工作区不继承环境，并受命令预算限制。"
+    text "这是由发现的部件重建并在隔离工作区中验证的 Python 构件：\n\n```python\n{source}\n```\n\n执行状态：测试已在受限的隔离代理工作区中通过。\n检查命令：`python3 solution.py`\n测试结果：{count}/{count} 个可执行检查通过。\n工作区隔离：临时代理工作区不继承环境，并受命令预算限制。"
   response response_coding_synthesis_verified_answer_es
     intent coding_synthesis_verified_answer
     language es
-    text "Esta es una función de Python derivada, reconstruida a partir de partes descubiertas y verificada en un espacio aislado:\n\n```python\n{source}```\n\nEstado de ejecución: las pruebas pasaron en el espacio aislado y limitado del agente.\nComando de comprobación: `python3 solution.py`\nResultado: {count}/{count} aserciones pasaron.\nAislamiento: espacio temporal sin entorno heredado y con un presupuesto de comandos limitado."
+    text "Este es un artefacto de Python derivado, reconstruido a partir de partes descubiertas y verificado en un espacio aislado:\n\n```python\n{source}\n```\n\nEstado de ejecución: las pruebas pasaron en el espacio aislado y limitado del agente.\nComando de comprobación: `python3 solution.py`\nResultado: {count}/{count} comprobaciones ejecutables pasaron.\nAislamiento: espacio temporal sin entorno heredado y con un presupuesto de comandos limitado."
   response response_coding_rosetta_answer_en
     intent coding_rosetta_answer
     language en

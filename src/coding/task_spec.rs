@@ -9,6 +9,25 @@ use crate::coding::python_signature::{
     import_preamble, matching_close_paren, split_top_level_commas,
 };
 use crate::links_format::push_lino_node;
+use crate::seed::Slot;
+
+/// The observable artifact requested by a coding task.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArtifactShape {
+    /// A named callable whose behavior is checked by examples.
+    Function,
+    /// A runnable script whose process output is the observable result.
+    Program,
+}
+
+impl ArtifactShape {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::Function => "function",
+            Self::Program => "program",
+        }
+    }
+}
 
 /// One parameter in the requested callable.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -28,12 +47,17 @@ pub struct Example {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CodingTaskSpec {
     pub language: String,
+    pub artifact_shape: ArtifactShape,
     pub name: String,
     pub parameters: Vec<Parameter>,
     pub return_annotation: Option<String>,
     pub imports: Vec<String>,
     pub requirement_sentences: Vec<String>,
     pub examples: Vec<Example>,
+    /// Exact requested process output when the prompt exposes one through a
+    /// seed-declared output slot. `None` means discovery must derive another
+    /// executable observation (for example an inclusive counting range).
+    pub expected_stdout: Option<String>,
     pub prose_language: String,
 }
 
@@ -60,6 +84,12 @@ impl CodingTaskSpec {
         let mut out = String::new();
         push_lino_node(&mut out, 0, "coding_task_spec", None);
         push_lino_node(&mut out, 2, "language", Some(&self.language));
+        push_lino_node(
+            &mut out,
+            2,
+            "artifact_shape",
+            Some(self.artifact_shape.slug()),
+        );
         push_lino_node(&mut out, 2, "name", Some(&self.name));
         for parameter in &self.parameters {
             push_lino_node(&mut out, 2, "parameter", Some(&parameter.name));
@@ -83,6 +113,9 @@ impl CodingTaskSpec {
             }
             push_lino_node(&mut out, 4, "expected", Some(&example.expected));
         }
+        if let Some(expected) = &self.expected_stdout {
+            push_lino_node(&mut out, 2, "expected_stdout", Some(expected));
+        }
         push_lino_node(&mut out, 2, "prose_language", Some(&self.prose_language));
         out.trim_end().to_owned()
     }
@@ -102,12 +135,14 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         let (requirement_sentences, examples) = docstring_contract(prompt, &name);
         return Some(CodingTaskSpec {
             language: "python".to_owned(),
+            artifact_shape: ArtifactShape::Function,
             name,
             parameters,
             return_annotation,
             imports,
             requirement_sentences,
             examples,
+            expected_stdout: None,
             prose_language: detected_prose_language,
         });
     }
@@ -133,17 +168,24 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
             .unwrap_or_default();
         return Some(CodingTaskSpec {
             language: "python".to_owned(),
+            artifact_shape: ArtifactShape::Function,
             name,
             parameters,
             return_annotation: None,
             imports,
             requirement_sentences,
             examples,
+            expected_stdout: None,
             prose_language: detected_prose_language,
         });
     }
 
-    let normalized = crate::engine::normalize_prompt(prompt);
+    // A conversational request is governed by the outer instruction, not by
+    // words that happen to occur inside a fenced document it asks another
+    // handler to transform. Definition/assertion benchmark shapes were already
+    // parsed above from the complete payload.
+    let conversational_prompt = outside_markdown_fences(prompt);
+    let normalized = crate::engine::normalize_prompt(&conversational_prompt);
     let lexicon = crate::seed::lexicon();
     let is_conversational_request = lexicon
         .mentions_role(crate::seed::ROLE_CODING_REQUEST_VERB, &normalized)
@@ -153,13 +195,14 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         return None;
     }
     let signature = backtick_signature(prompt).or_else(|| inline_function_signature(prompt));
-    let (name, parameters, return_annotation) = if let Some(signature) = signature {
-        parse_signature(signature)?
+    let (artifact_shape, name, parameters, return_annotation) = if let Some(signature) = signature {
+        let (name, parameters, return_annotation) = parse_signature(signature)?;
+        (ArtifactShape::Function, name, parameters, return_annotation)
     } else if lexicon
         .meaning("coding_request_program")
         .is_some_and(|meaning| meaning.evidenced_in(&normalized))
     {
-        ("main".to_owned(), Vec::new(), None)
+        (ArtifactShape::Program, "main".to_owned(), Vec::new(), None)
     } else {
         return None;
     };
@@ -176,14 +219,75 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         .map_or(detected_prose_language, str::to_owned);
     Some(CodingTaskSpec {
         language: "python".to_owned(),
+        artifact_shape,
         name,
         parameters,
         return_annotation,
         imports,
         requirement_sentences: split_sentences(prompt.trim()),
         examples: Vec::new(),
+        expected_stdout: (artifact_shape == ArtifactShape::Program)
+            .then(|| extract_expected_stdout(prompt))
+            .flatten(),
         prose_language,
     })
+}
+
+fn outside_markdown_fences(prompt: &str) -> String {
+    let mut outside = true;
+    prompt
+        .lines()
+        .filter_map(|line| {
+            if line.trim_start().starts_with("```") {
+                outside = !outside;
+                return None;
+            }
+            outside.then_some(line)
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// Capture a program's requested stdout through the same multilingual slot
+/// records used by the software-project surface. Prefix and circumfix forms
+/// cover natural word order without putting any output literal in code.
+fn extract_expected_stdout(prompt: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let mut forms = crate::seed::lexicon()
+        .role_word_forms(crate::seed::ROLE_OUTPUT_DISPLAY_REQUEST)
+        .into_iter()
+        .filter(|form| form.slot() != Slot::Bare)
+        .collect::<Vec<_>>();
+    forms.sort_by_key(|form| std::cmp::Reverse(form.text.chars().count()));
+    for form in forms {
+        let before = form.before_slot();
+        let after = form.after_slot();
+        let start = if before.is_empty() {
+            0
+        } else if let Some(found) = lower.find(before) {
+            found + before.len()
+        } else {
+            continue;
+        };
+        let Some(tail) = prompt.get(start..) else {
+            continue;
+        };
+        let end = if after.is_empty() {
+            tail.len()
+        } else if let Some(found) = tail.to_lowercase().find(after) {
+            found
+        } else {
+            continue;
+        };
+        let value = tail[..end]
+            .trim()
+            .trim_end_matches(['.', '?', '。', '？'])
+            .trim();
+        if !value.is_empty() {
+            return Some(value.to_owned());
+        }
+    }
+    None
 }
 
 fn python_definition_signature(prompt: &str) -> Option<&str> {

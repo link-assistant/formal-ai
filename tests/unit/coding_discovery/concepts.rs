@@ -4,7 +4,7 @@ use formal_ai::coding_function_catalog::python_docs::{StdlibIndex, StdlibPart};
 use formal_ai::coding_function_catalog::wikifunctions::{
     FunctionMatch, FunctionPart, Implementation,
 };
-use formal_ai::coding_task_spec::{CodingTaskSpec, Parameter};
+use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Parameter};
 use formal_ai::concept_discovery::{
     CatalogFunction, ConceptEvidence, DiscoveryBounds, DiscoveryCatalog, UnknownConceptLookup,
     discover, discover_with_lookup,
@@ -94,6 +94,7 @@ fn discovery_catalog() -> DiscoveryCatalog {
 fn spec(name: &str, sentence: &str, prose_language: &str) -> CodingTaskSpec {
     CodingTaskSpec {
         language: "python".to_owned(),
+        artifact_shape: ArtifactShape::Function,
         name: name.to_owned(),
         parameters: vec![Parameter {
             name: "items".to_owned(),
@@ -103,6 +104,7 @@ fn spec(name: &str, sentence: &str, prose_language: &str) -> CodingTaskSpec {
         imports: Vec::new(),
         requirement_sentences: vec![sentence.to_owned()],
         examples: Vec::new(),
+        expected_stdout: None,
         prose_language: prose_language.to_owned(),
     }
 }

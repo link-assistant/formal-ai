@@ -47,6 +47,41 @@ meanings
   character_class
     defined-by concept
     grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
+  print_stdout
+    defined-by output
+    role coding_structure
+    role output_display_request
+    idiom "print({value})"
+    grounding "https://docs.python.org/3.12/library/functions.html#print"
+    lexeme en
+      surface
+        text print
+      surface
+        text prints
+      surface
+        text "print …"
+      surface
+        text "prints …"
+    lexeme ru
+      surface
+        text выводит
+      surface
+        text "выводит …"
+    lexeme hi
+      surface
+        text प्रिंट
+      surface
+        text "जो … प्रिंट करता है"
+    lexeme zh
+      surface
+        text 打印
+      surface
+        text "打印 … 的"
+    lexeme es
+      surface
+        text imprime
+      surface
+        text "imprime …"
   quantifier_any
     defined-by quantifier
     role coding_structure
@@ -685,6 +720,8 @@ meanings
     lexeme en
       surface
         text "count to"
+      surface
+        text "counts to"
       surface
         text "up to"
       surface

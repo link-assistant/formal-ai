@@ -118,6 +118,11 @@ Tests:
 No production consumer may learn raw test spellings as a side effect of the
 format repair.
 
+Completed locally in 7432a6807. Every structural surface now uses the nested
+fact form and each formerly identical genus has a distinct official Python
+documentation grounding. The two initially failing data-file tests now pass,
+as do all 15 `meaning_` tests and the full 31-test coding-discovery unit slice.
+
 ## L19 — Preserve artifact-to-tool routing across every API
 
 Separate two decisions:
@@ -137,6 +142,13 @@ Tests:
 - the other three issue-716 protocol tests
 - a held-out dynamically composed Python function routed to write_file
 - a non-coding answer never routed to a file-write tool
+
+Completed locally in the runnable-program repair. A verified synthesis now
+retains a typed `ExecutionRecipe`; the shared protocol boundary selects the
+client-advertised write tool without scraping the rendered Markdown or knowing
+which producer made the artifact. All six issue-716 tests pass: the four API
+protocols, a held-out dynamically composed `count_vowels(text)` function, and
+a non-coding explanation that must not write a file.
 
 ## L20 — Generalize discovery from functions to runnable programs and recurrences
 
@@ -179,15 +191,31 @@ show the discovered artifact and evidence as unverified, but it must not lose
 an already established, deterministic program surface. Native execution must
 remain bounded.
 
+The first runnable-program slice is complete locally. `CodingTaskSpec` now
+models function versus program artifacts and exact stdout; stdout is extracted
+through seeded multilingual slots rather than prompt literals in code. Program
+candidates compose seeded print/range/loop structures, execute in the bounded
+workspace, and must match exact stdout. Held-out punctuation and cardinal-word
+tests pass in English, Russian, Hindi, and Chinese. A fresh real Python box run
+also exposed and fixed an outer-instruction-versus-fenced-payload precedence
+bug. Recurrence discovery and the second target language remain open below.
+
 ## L21 — Make the real surfaces prove L19 and L20
 
-- [ ] Python box generation passes in en, ru, hi, and zh with byte-identical
+- [x] Python box generation passes in en, ru, hi, and zh with byte-identical
       program artifacts
 - [ ] all box-language project generation and container verification jobs pass
 - [ ] all issue-334 tests pass locally, including agent decomposition and every
       supported language
 - [ ] npm web tests and the entire local Playwright suite pass
 - [ ] Agent CLI E2E passes with the branch binary
+
+The isolated Python box corpus passed in all four prompt languages. Every
+generated `main.py` was byte-identical with SHA-256
+`51d2693342000ac090e8817796032592050e0f0b88d4d3a7ab1112058a169673` and
+contained the independently derived `print("Hello, world!")` program. The
+remaining checkboxes deliberately stay open until their complete real-surface
+runs finish.
 
 Generated bundles are rebuilt only with the pinned Bun version and verified
 byte-for-byte after Playwright.

@@ -10,7 +10,10 @@ use crate::coding::synthesis_runtime::{
 };
 use crate::coding::task_spec::recognise;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
-use crate::{engine::SymbolicAnswer, event_log::EventLog};
+use crate::{
+    engine::{ExecutionRecipe, SymbolicAnswer},
+    event_log::EventLog,
+};
 
 use super::finalize_simple;
 
@@ -126,14 +129,41 @@ pub fn try_program_synthesis_with_online(
         }
     }
     let body = render_answer(&selected, response_language(&spec));
-    Some(finalize_simple(
+    let mut answer = finalize_simple(
         prompt,
         log,
         "write_program",
         "response:write_program:synthesized:python",
         &body,
         1.0,
-    ))
+    );
+    // A verified artifact keeps its typed source when it crosses into agent
+    // mode. Protocol adapters can therefore select the client's advertised
+    // write capability without scraping Markdown or knowing which discovery
+    // producer built the program.
+    let program = spec.artifact_shape == crate::coding::task_spec::ArtifactShape::Program;
+    let language = crate::coding::program_language_by_slug(&spec.language);
+    let path = language.map_or_else(
+        || format!("main.{}", spec.language),
+        |language| language.save_as.to_owned(),
+    );
+    let commands = language.map_or_else(Vec::new, |language| {
+        language
+            .execution
+            .check_command
+            .into_iter()
+            .chain(program.then_some(language.execution.run_command))
+            .map(str::to_owned)
+            .collect()
+    });
+    answer.execution_recipe = Some(Box::new(ExecutionRecipe {
+        language: spec.language.clone(),
+        source: selected.source.clone(),
+        path,
+        supporting_files: Vec::new(),
+        commands,
+    }));
+    Some(answer)
 }
 
 /// Does the prompt carry a structural coding-task specification?
