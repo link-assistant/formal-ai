@@ -273,6 +273,24 @@ pub enum RoutingOutcome {
     Ask { readings: Vec<String> },
 }
 
+/// The fully-grounded routing decision for one request.
+///
+/// Keeping the three axes beside the outcome lets every execution surface use
+/// the same decision *and* record why it was selected.  In particular, the
+/// symbolic solver must not re-derive a handler from the prompt after the
+/// agentic planner has already derived a capability from these axes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RoutingDecision {
+    /// Highest-ranked object whose table row resolved.
+    pub object: ObjectType,
+    /// Most-specific evidenced act whose table row resolved.
+    pub act: Act,
+    /// The derived effect locus for `object`.
+    pub locus: Locus,
+    /// Capability availability after resolving the selected table row.
+    pub outcome: RoutingOutcome,
+}
+
 /// Whether any surface of `role` occurs in `prompt`.
 ///
 /// Both the token-bounded and the raw-substring readings are consulted, because
@@ -800,6 +818,17 @@ pub fn routing_table_from(text: &str) -> Result<Vec<RouteRow>, String> {
 /// where "the prompt" lands would force one answer on both.
 #[must_use]
 pub fn route(prompt: &str, advertised: &[&str]) -> RoutingOutcome {
+    route_decision(prompt, advertised).outcome
+}
+
+/// Resolve one prompt and retain the `(object, act, locus)` that selected the
+/// outcome.
+///
+/// [`route`] remains the compact compatibility projection.  Runtime dispatchers
+/// use this form so the event log proves that a capability came from the shared
+/// table rather than from a second phrase recognizer.
+#[must_use]
+pub fn route_decision(prompt: &str, advertised: &[&str]) -> RoutingDecision {
     let table = routing_table();
     let objects = object_type(prompt);
     let acts = acts(prompt);
@@ -808,13 +837,24 @@ pub fn route(prompt: &str, advertised: &[&str]) -> RoutingOutcome {
         for act in &acts {
             let outcome = route_with(&table, *object, *act, locus, advertised);
             if !matches!(outcome, RoutingOutcome::Ask { .. }) {
-                return outcome;
+                return RoutingDecision {
+                    object: *object,
+                    act: *act,
+                    locus,
+                    outcome,
+                };
             }
         }
     }
     let highest = objects.first().copied().unwrap_or(ObjectType::None);
     let act = acts.first().copied().unwrap_or(Act::Unresolved);
-    route_with(&table, highest, act, locus_of(highest, prompt), advertised)
+    let locus = locus_of(highest, prompt);
+    RoutingDecision {
+        object: highest,
+        act,
+        locus,
+        outcome: route_with(&table, highest, act, locus, advertised),
+    }
 }
 
 /// Resolve one triple against a supplied table.

@@ -734,6 +734,41 @@ impl NeedLedger {
         }
     }
 
+    /// Merge needs discovered while recursively formalizing source material
+    /// into the universal loop's existing ledger.
+    ///
+    /// Need ids are content addressed, so a second pass updates the existing
+    /// row instead of duplicating it. Formalization carries evidence state but
+    /// no work-unit route; consequently a new row has no invented unit or
+    /// method links. Later planning/execution may add those through the normal
+    /// ledger path.
+    pub fn extend_from_formalization(
+        &mut self,
+        graph: &crate::formalization::concept_links::ConceptGraph,
+    ) {
+        for need in &graph.needs {
+            let status = match need.state {
+                crate::needs::NeedState::Open => NeedStatus::Pending,
+                crate::needs::NeedState::Planned => NeedStatus::Planned,
+                crate::needs::NeedState::Satisfied => NeedStatus::Satisfied,
+                crate::needs::NeedState::Unsatisfiable => NeedStatus::Blocked,
+            };
+            if let Some(row) = self.rows.iter_mut().find(|row| row.need_id == need.need_id) {
+                row.source_span.clone_from(&need.source_span);
+                row.status = status;
+                continue;
+            }
+            self.rows.push(LedgerRow {
+                need_id: need.need_id.clone(),
+                source_span: need.source_span.clone(),
+                status,
+                leaf_reason: None,
+                unit_id: None,
+                route: None,
+            });
+        }
+    }
+
     /// Number of rows with the given status.
     #[must_use]
     pub fn count_with(&self, status: NeedStatus) -> usize {

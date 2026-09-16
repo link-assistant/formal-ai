@@ -8,10 +8,10 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
-    lexicon, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
-    ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_QUESTION,
-    ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME,
-    ROLE_CALENDAR_TIMEZONE_ALIAS, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
+    ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS,
+    ROLE_CALENDAR_EVENT, ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_RELATIVE_DATE,
+    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_TIMEZONE_ALIAS,
+    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, lexicon,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -509,6 +509,21 @@ pub fn try_calendar_create_event(
         return None;
     }
 
+    try_routed_calendar_create_event(prompt, normalized, log)
+}
+
+/// Build the event selected by the shared capability-routing table.
+///
+/// The ordinary handler above retains its standalone recognizer for legacy
+/// callers.  Solver dispatch calls this entry point only after
+/// `(time_expression, schedule, dialogue)` has selected
+/// `calendar_create_event`, so asking the old verb list a second time would
+/// undo the generalized decision for held-out paraphrases.
+pub fn try_routed_calendar_create_event(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
     let base = current_utc_date()?;
     log.append("calendar:clock", "system_utc".to_owned());
 
@@ -629,7 +644,7 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     if has_clock && has_timezone && has_participant {
         return true;
     }
-    
+
     [
         "забей",
         "поставь",
@@ -660,9 +675,10 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
                 }
             }
             if let Ok(n) = digits.parse::<u32>()
-                && (1..=31).contains(&n) {
-                    return Some(n);
-                }
+                && (1..=31).contains(&n)
+            {
+                return Some(n);
+            }
         }
     }
     let mut num = String::new();
@@ -676,9 +692,10 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
         }
     }
     if let Ok(n) = num.parse::<u32>()
-        && (1..=31).contains(&n) {
-            return Some(n);
-        }
+        && (1..=31).contains(&n)
+    {
+        return Some(n);
+    }
     None
 }
 
@@ -770,9 +787,10 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
             }
         }
         if let Ok(h) = num.parse::<u32>()
-            && h <= 23 {
-                return Some((h, 0));
-            }
+            && h <= 23
+        {
+            return Some((h, 0));
+        }
     }
     None
 }
@@ -801,9 +819,10 @@ fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
                 continue;
             }
             if let Ok(hour) = prefix[start..].parse::<u32>()
-                && hour <= 23 {
-                    return Some((hour, 0));
-                }
+                && hour <= 23
+            {
+                return Some((hour, 0));
+            }
         }
     }
     None
@@ -849,9 +868,10 @@ fn extract_title(normalized: &str) -> Option<String> {
         if let Some(pos) = normalized.find(verb) {
             let after = normalized[pos + verb.len()..].trim_start();
             if let Some(title) = tidy_title(after)
-                && title.chars().count() < 60 {
-                    return Some(title);
-                }
+                && title.chars().count() < 60
+            {
+                return Some(title);
+            }
         }
     }
     None

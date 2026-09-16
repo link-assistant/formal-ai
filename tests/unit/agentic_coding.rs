@@ -118,27 +118,23 @@ fn formalization_is_deterministic() {
 #[test]
 fn arbitrary_text_still_produces_a_valid_knowledge_base() {
     // Open-domain text the lexicon does not recognise: every sentence still
-    // becomes an annotation plus a natural-language assertion. No work matched,
-    // so there are no lexicon-sourced concepts/procedures/contexts — and we do
-    // not pretend otherwise.
+    // becomes an annotation plus a preserved span. No work matched, so there
+    // are no assertions or lexicon-sourced concepts/procedures/contexts — and
+    // we do not pretend otherwise.
     let formalized = formalize_text_to_links("A cat sat on a mat. Then it slept.", "doc:demo");
     let summary = &formalized.summary;
 
     assert_eq!(summary.doc_id, "doc:demo");
     assert_eq!(summary.annotations, 2);
-    assert_eq!(summary.assertions, 2);
+    assert_eq!(summary.assertions, 0);
     assert_eq!(summary.procedures, 0);
     assert_eq!(summary.contexts, 0);
     assert!(!summary.covers_all_nine());
+    assert!(!formalized.links_notation.contains("pred:states"));
     assert!(
         formalized
             .links_notation
-            .contains("predicate \"pred:states\"")
-    );
-    assert!(
-        formalized
-            .links_notation
-            .contains("natural_language \"A cat sat on a mat.\"")
+            .contains("preserved_span\n  id \"preserved:0\"")
     );
     // Language detection falls back to English for non-Cyrillic input.
     assert!(formalized.links_notation.contains("language \"en\""));
@@ -775,7 +771,9 @@ fn a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale() {
         "a custom requirement is not the canonical tale"
     );
     assert!(
-        !formalized.links_notation.contains("tale:fisherman-and-fish"),
+        !formalized
+            .links_notation
+            .contains("tale:fisherman-and-fish"),
         "the seeded tale may not leak into an unrelated formalization: {}",
         formalized.links_notation
     );

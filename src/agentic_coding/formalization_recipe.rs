@@ -1,9 +1,9 @@
 //! The issue-#468 text → Links Notation formalization recipe.
 //!
-//! State machine: `web_search` → `web_fetch` → `write_file(formalize)` →
-//! `run_command(verify)` → final. The canonical task formalizes «Сказка о рыбаке
-//! и рыбке»; a task that quotes its own source text (issue #956) skips the
-//! search/fetch steps and formalizes the quoted text instead.
+//! State machine: discover missing terms when necessary → bind the requested
+//! source → `write_file(formalize)` → `run_command(verify)` → final. The
+//! canonical task may still use its historical source as a last-resort fixture;
+//! every other task formalizes its own bytes rather than substituting that tale.
 
 use serde_json::json;
 
@@ -55,6 +55,36 @@ fn inline_formalization_source(task: &str) -> Option<String> {
     (!is_supported_reference).then(|| source.to_owned())
 }
 
+/// Bind an unquoted request to the document it actually asks us to formalize.
+///
+/// A recognised catalogue work remains a reference that may be fetched. Every
+/// other request is itself the only authoritative source available: when it
+/// uses the conventional `instruction: document` shape, the right-hand side is
+/// the document; otherwise the full request is preserved.
+fn requested_formalization_source(task: &str) -> Option<String> {
+    if Lexicon::standard()
+        .best_work_for(task)
+        .is_some_and(|work| work.doc_id == FISHERMAN_DOC_ID)
+    {
+        return None;
+    }
+    let source = task
+        .split_once(':')
+        .map_or(task, |(_, document)| document)
+        .trim();
+    (!source.is_empty()).then(|| source.to_owned())
+}
+
+/// The first unresolved surface is the next discovery query. Which sources
+/// answer it remains the source registry's decision; the recipe contributes no
+/// domain noun or pinned URL.
+fn discovery_query(source: &str) -> Option<String> {
+    let language = crate::language::detect(source).slug();
+    crate::concept_lookup::unknown_surfaces(source, language)
+        .into_iter()
+        .next()
+}
+
 /// Plan the next formalization step from the conversation and advertised tools.
 // State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
 pub(super) fn plan_formalization_step(
@@ -72,20 +102,29 @@ pub(super) fn plan_formalization_step(
     // Before this route existed the custom `--task` was silently discarded in
     // favour of the seeded fairy tale (issue #956).
     let inline_source = inline_formalization_source(task);
+    let requested_source = inline_source
+        .clone()
+        .or_else(|| requested_formalization_source(task));
     trace_route(
         "formalization_source",
-        inline_source.as_deref().unwrap_or(FISHERMAN_DOC_ID),
+        requested_source.as_deref().unwrap_or(FISHERMAN_DOC_ID),
     );
 
     if inline_source.is_none() {
-        // Step 1: search for the source text.
+        // An unfamiliar document searches for what it does not understand;
+        // the recognised catalogue work alone retains its source-text fetch as
+        // a compatibility fallback.
         if let Some(tool) = tool_for(tool_names, Capability::Search)
             && !progress.done(Capability::Search)
         {
-            return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
+            let query = requested_source
+                .as_deref()
+                .and_then(discovery_query)
+                .unwrap_or_else(|| SEARCH_QUERY.to_owned());
+            return plan_one(tool, json!({ "query": query }).to_string());
         }
-        // Step 2: fetch the source text.
-        if let Some(tool) = tool_for(tool_names, Capability::Fetch)
+        if requested_source.is_none()
+            && let Some(tool) = tool_for(tool_names, Capability::Fetch)
             && !progress.done(Capability::Fetch)
         {
             return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
@@ -95,7 +134,7 @@ pub(super) fn plan_formalization_step(
     // The source text for the knowledge base: the text quoted in the task if
     // there is one, else the latest non-errored fetch result, else the
     // canonical synopsis (the determinism fallback).
-    let source = inline_source
+    let source = requested_source
         .as_deref()
         .or(progress.fetched_text.as_deref())
         .unwrap_or(CANONICAL_FISHERMAN_SYNOPSIS);

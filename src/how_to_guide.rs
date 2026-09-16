@@ -116,6 +116,26 @@ pub struct GuideStep {
 }
 
 impl GuideStep {
+    /// Project a synthesised guide step into the shared ordered-step record.
+    ///
+    /// This is the same shape capture extraction emits, so procedure
+    /// formalization has one constructor regardless of where the ordered text
+    /// came from.
+    #[must_use]
+    pub fn to_step_record(&self) -> crate::procedure_text::ProcedureStepRecord {
+        crate::procedure_text::ProcedureStepRecord {
+            ordinal: self.position,
+            text: self.text.clone(),
+            source_id: self.source_id.clone(),
+            source_url: self.source_url.clone(),
+            sha256: self.sha256.clone(),
+            fetched_at: self.fetched_at.clone(),
+            license_name: self.license_name.clone(),
+            license_url: self.license_url.clone(),
+            depth: self.depth,
+        }
+    }
+
     /// Exact provenance for one step, in the order a reviewer checks it.
     #[must_use]
     pub fn provenance(&self) -> String {

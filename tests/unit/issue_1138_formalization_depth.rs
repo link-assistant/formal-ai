@@ -21,7 +21,7 @@ use formal_ai::concept_lookup::{ConceptSense, LookupOutcome, RegistrySourceLooku
 use formal_ai::formalization::concept_links::{ConceptGraph, formalize_deeply};
 use formal_ai::formalization::concepts::concept_from_sense;
 use formal_ai::formalization::procedures::ExtractedProcedure;
-use formal_ai::how_to_guide::ServicePreferences;
+use formal_ai::how_to_guide::{GuideStep, ServicePreferences};
 use formal_ai::needs::{Need, NeedKind, NeedState};
 use formal_ai::procedure_text::ProcedureStepRecord;
 use formal_ai::relative_meta_logic::SourceTier;
@@ -375,6 +375,31 @@ fn an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure() {
         None,
         "one instruction is not a procedure"
     );
+}
+
+#[test]
+fn a_guide_step_and_a_captured_step_produce_the_same_record_shape() {
+    let captured = step(
+        2,
+        "Confirm the forbidden letter never appears.",
+        "CC BY-SA 4.0",
+    );
+    let guide = GuideStep {
+        text: captured.text.clone(),
+        source_id: captured.source_id.clone(),
+        source_name: "wikiHow".to_owned(),
+        source_url: captured.source_url.clone(),
+        sha256: captured.sha256.clone(),
+        fetched_at: captured.fetched_at.clone(),
+        cached: true,
+        tier: SourceTier::IndependentCorroboration,
+        license_name: captured.license_name.clone(),
+        license_url: captured.license_url.clone(),
+        depth: captured.depth,
+        position: captured.ordinal,
+    };
+
+    assert_eq!(guide.to_step_record(), captured);
 }
 
 #[test]

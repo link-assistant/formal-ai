@@ -366,16 +366,47 @@ pub(super) fn plan_settled_routes(
     // Unambiguous is the operative word: a request that also pins the target
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
-    // A request that names several artifacts is planned one artifact at a time,
-    // and is not finished until none is outstanding (issue #1099). With a
-    // single artifact named -- the overwhelmingly common case -- this yields
-    // nothing and the composer below plans the request whole, unchanged.
-    if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
-        .and_then(|_| task_obligations::outstanding(task, messages))
-        .and_then(|obligation| compose_general_change_plan(&obligation.request))
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    // An enumerated request is planned one obligation at a time, and is not
+    // successfully finished until the runtime ledger has discharged every
+    // node with at least one execution record (issues #1099 and #1138 B5).
+    // Single-clause requests deliberately bypass this path and keep the
+    // established whole-request composer below.
+    if capability_router::workspace_creation_tool(tool_names).is_some()
+        && let Some(obligations) = task_obligations::obligations(task)
     {
-        return Some(plan);
+        match task_obligations::next_step(task, messages) {
+            Some(task_obligations::ObligationStep::Observe(node))
+            | Some(task_obligations::ObligationStep::Decompose(node)) => {
+                // Observable artifact nodes re-enter the ordinary composer;
+                // underivable nodes have already been recursively split by
+                // `ObligationNode::build`. If no executable plan can be
+                // derived, decline instead of turning an unobserved node into
+                // completion prose.
+                return compose_general_change_plan(&node.clause)
+                    .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+            }
+            Some(task_obligations::ObligationStep::ReportGap {
+                node_id,
+                clause,
+                span,
+                reason,
+            }) => {
+                return Some(AgenticPlan::Final(task_obligations::gap_answer(
+                    &node_id, &clause, span, &reason,
+                )));
+            }
+            None if task_obligations::successfully_discharged(task, messages) => {
+                // Re-enter the final executable obligation's ordinary state
+                // machine so the completion wording and verification report
+                // stay identical to a single-target request.
+                return obligations
+                    .iter()
+                    .rev()
+                    .find_map(|obligation| compose_general_change_plan(&obligation.clause))
+                    .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+            }
+            None => return None,
+        }
     }
     if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
         .and_then(|_| compose_general_change_plan(task))

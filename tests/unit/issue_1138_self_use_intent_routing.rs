@@ -24,6 +24,8 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use formal_ai::SymbolicAnswer;
+use formal_ai::capability_routing::{RoutingOutcome, route};
 use formal_ai::solver::solve;
 
 const CORPUS: &str = "data/benchmarks/self-use-intent-routing.lino";
@@ -36,6 +38,23 @@ const CAPABILITY_DESCRIPTION: &str = "Providers considered";
 /// detected in every language rather than only in the two the English marker
 /// happens to cover.
 const SEARCH_OPENERS: &[&str] = &["Web search requested", "Поиск в интернете запрошен"];
+
+const ROUTED_CAPABILITIES: &[&str] = &[
+    "web_fetch",
+    "web_search",
+    "read_file",
+    "write_file",
+    "list_dir",
+    "grep",
+    "shell",
+    "calendar_create_event",
+    "response_language_demonstration",
+    "concept_measurement_lookup",
+    "compose_from_sources",
+    "explain_previous_turn",
+    "report_issue",
+    "ask_user",
+];
 
 #[derive(Debug, Clone)]
 struct Case {
@@ -66,7 +85,7 @@ fn corpus() -> String {
 /// Every paraphrase of one family, in file order.
 fn family(id: &str) -> Vec<Case> {
     let text = corpus();
-    let mut out = Vec::new();
+    let mut out: Vec<Case> = Vec::new();
     let mut current = String::new();
     let mut language = String::new();
     let mut names_language = String::new();
@@ -77,7 +96,19 @@ fn family(id: &str) -> Vec<Case> {
         } else if let Some(value) = trimmed.strip_prefix("language ") {
             language = unquote(value);
         } else if let Some(value) = trimmed.strip_prefix("names_language ") {
-            names_language = unquote(value);
+            let value = unquote(value);
+            // The corpus keeps record attributes beneath their prompt.  Accept
+            // that natural Lino order as well as a predeclared attribute so a
+            // later case cannot inherit the preceding case's language object.
+            if current == id
+                && let Some(case) = out.last_mut()
+                && case.family == current
+                && case.names_language.is_empty()
+            {
+                case.names_language = value;
+            } else {
+                names_language = value;
+            }
         } else if let Some(value) = trimmed.strip_prefix("prompt ") {
             if current == id {
                 out.push(Case {
@@ -89,7 +120,10 @@ fn family(id: &str) -> Vec<Case> {
             }
         }
     }
-    assert!(!out.is_empty(), "corpus family `{id}` must exist in {CORPUS}");
+    assert!(
+        !out.is_empty(),
+        "corpus family `{id}` must exist in {CORPUS}"
+    );
     out
 }
 
@@ -116,11 +150,34 @@ fn is_a_search_instead_of_an_answer(answer: &str) -> bool {
         || SEARCH_OPENERS.iter().any(|opener| answer.contains(opener))
 }
 
+/// Solve through the production entry point and prove its answer carries the
+/// exact capability selected by the shared object/act/locus table.
+fn solve_through_capability_table(prompt: &str) -> SymbolicAnswer {
+    let capability = match route(prompt, ROUTED_CAPABILITIES) {
+        RoutingOutcome::Routed { capability } | RoutingOutcome::Lowered { capability, .. } => {
+            capability
+        }
+        other => {
+            panic!("held-out self-use prompt must have a table route: {prompt:?} -> {other:?}")
+        }
+    };
+    let answer = solve(prompt);
+    let marker = format!("capability={capability}");
+    assert!(
+        answer.links_notation.contains(&marker),
+        "solver::solve must execute the shared object/act/locus decision for {prompt:?}; \
+         expected trace marker {marker:?}, got intent {:?}\n{}",
+        answer.intent,
+        answer.links_notation,
+    );
+    answer
+}
+
 fn misrouted(id: &str) -> Vec<String> {
     family(id)
         .into_iter()
         .filter_map(|case| {
-            let answer = solve(&case.prompt).answer;
+            let answer = solve_through_capability_table(&case.prompt).answer;
             is_a_search_instead_of_an_answer(&answer).then(|| {
                 let head: String = answer.trim().chars().take(100).collect();
                 format!("{}/{}: {head}", case.family, case.language)
@@ -162,7 +219,7 @@ fn a_statement_of_non_understanding_routes_by_act_not_by_memorized_phrase() {
 fn a_speak_in_language_request_keeps_the_language_it_names() {
     let mut offenders = Vec::new();
     for case in family("speak_in_language") {
-        let answer = solve(&case.prompt).answer;
+        let answer = solve_through_capability_table(&case.prompt).answer;
         if is_a_search_instead_of_an_answer(&answer) {
             offenders.push(format!("{}: sent to the web", case.language));
         }
@@ -201,14 +258,19 @@ fn a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses() {
     let marker = field("schedule_paraphrase", "expected_marker");
     let reported = field("schedule_paraphrase", "reported_prompt");
     assert!(
-        solve(&reported).answer.contains(&marker),
+        solve_through_capability_table(&reported)
+            .answer
+            .contains(&marker),
         "the reported #869 prompt produced a calendar event when wave F was recorded; \
          losing that is a regression, not progress"
     );
 
     let mut offenders = Vec::new();
     for case in family("schedule_paraphrase") {
-        if !solve(&case.prompt).answer.contains(&marker) {
+        if !solve_through_capability_table(&case.prompt)
+            .answer
+            .contains(&marker)
+        {
             offenders.push(case.language);
         }
     }

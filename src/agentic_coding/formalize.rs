@@ -18,10 +18,9 @@
 //! * **Annotations** are produced for *every* sentence of *any* input, with real
 //!   character offsets — fully general, never guessed.
 //! * **Assertions** use a closed-class lexicon stored as data (see
-//!   `super::lexicon`) — recognised subject/predicate/object triples become
-//!   structured assertion links; unrecognised sentences become natural-language
-//!   assertion links that still carry the raw span. The recogniser does not
-//!   hallucinate relations it cannot ground.
+//!   `super::lexicon`) — only recognised subject/predicate/object triples become
+//!   assertion links. Unrecognised sentences remain `preserved_span` records:
+//!   useful source evidence, but never a relation the recogniser did not ground.
 //! * Concept / procedure / context catalogue records for a *recognised work* are
 //!   declared from the lexicon and marked `source "lexicon:<work>"`, kept
 //!   distinct from the text-derived assertions.
@@ -213,21 +212,9 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
             }
             None => {
                 preserved.push(index);
-                assertions.push(Assertion {
-                id: format!("a:{index}"),
-                subject: Term::literal("—"),
-                predicate: PredicateUse {
-                    id: "pred:states".to_owned(),
-                    label: "states".to_owned(),
-                },
-                object: Term::literal(&sentence.text),
-                time: None,
-                modal: None,
-                context: None,
-                annotation: annotation_id,
-                provenance,
-                natural_language: Some(sentence.text.clone()),
-                });
+                // Preservation is evidence, not an assertion. In particular,
+                // do not manufacture `pred:states` merely because a sentence
+                // was copied losslessly into the knowledge base.
             }
         }
     }
@@ -282,8 +269,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
         .iter()
         .filter_map(|index| byte_segments.get(*index).cloned())
         .collect();
-    let raised =
-        crate::formalization::needs::emit_needs(&resolved_doc_id, &unread, &grounded, 0);
+    let raised = crate::formalization::needs::emit_needs(&resolved_doc_id, &unread, &grounded, 0);
 
     let summary = FormalizationSummary {
         doc_id: resolved_doc_id.clone(),
@@ -325,6 +311,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
             ("temporals", summary.temporals.to_string()),
             ("modals", summary.modals.to_string()),
             ("annotations", summary.annotations.to_string()),
+            ("preserved_spans", preserved.len().to_string()),
         ],
     );
     push_record(&mut document, &header);
@@ -434,6 +421,23 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
                     ("span", format!("{}:{}", annotation.start, annotation.end)),
                     ("text", annotation.text.clone()),
                     ("language", annotation.language.clone()),
+                ],
+            ),
+        );
+    }
+    for index in &preserved {
+        let annotation = &annotations[*index];
+        push_record(
+            &mut document,
+            &format_lino_record(
+                "preserved_span",
+                &[
+                    ("id", format!("preserved:{}", index)),
+                    ("doc", annotation.doc.clone()),
+                    ("span", format!("{}:{}", annotation.start, annotation.end)),
+                    ("text", annotation.text.clone()),
+                    ("language", annotation.language.clone()),
+                    ("annotation", annotation.id.clone()),
                 ],
             ),
         );

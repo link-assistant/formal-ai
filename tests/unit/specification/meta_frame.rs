@@ -10,12 +10,44 @@
 use formal_ai::IntentKind;
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_frame::{AtomicityReason, NeedLedger, NeedStatus, ProblemFrame, WorkUnit};
+use formal_ai::needs::{Need, NeedKind, NeedState};
 use formal_ai::translation::formalize_prompt;
 
 fn frame_for(prompt: &str) -> ProblemFrame {
     let candidate = formalize_prompt(prompt, "en");
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
     ProblemFrame::from_formalization(&formalization)
+}
+
+#[test]
+fn formalization_needs_join_the_universal_ledger_without_parallel_statuses() {
+    let mut ledger = NeedLedger {
+        frame_id: "frame:requirement".to_owned(),
+        rows: Vec::new(),
+    };
+    let mut grounded = Need::raised(NeedKind::Concept, "isogram", "en", "doc:requirement");
+    grounded.source_span = "doc:requirement@30:37".to_owned();
+    grounded.state = NeedState::Satisfied;
+    grounded.satisfied_by = Some("sense:fixture".to_owned());
+    let mut unresolved = Need::raised(NeedKind::Concept, "grapheme", "en", &grounded.need_id);
+    unresolved.source_span = "sense:fixture@23:31".to_owned();
+    unresolved.depth = 1;
+    unresolved.state = NeedState::Unsatisfiable;
+    let graph = formal_ai::formalization::concept_links::ConceptGraph {
+        doc_id: "doc:requirement".to_owned(),
+        needs: vec![grounded.clone(), unresolved.clone()],
+        ..Default::default()
+    };
+
+    ledger.extend_from_formalization(&graph);
+    ledger.extend_from_formalization(&graph);
+
+    assert_eq!(ledger.rows.len(), 2, "replaying a graph is idempotent");
+    assert_eq!(ledger.rows[0].need_id, grounded.need_id);
+    assert_eq!(ledger.rows[0].status, NeedStatus::Satisfied);
+    assert_eq!(ledger.rows[1].need_id, unresolved.need_id);
+    assert_eq!(ledger.rows[1].status, NeedStatus::Blocked);
+    assert!(ledger.rows.iter().all(|row| row.route.is_none()));
 }
 
 fn frame_for_lang(prompt: &str, language: &str) -> ProblemFrame {

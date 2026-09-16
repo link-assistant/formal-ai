@@ -6,7 +6,9 @@ pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
     try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
-pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
+pub use calendar::{
+    try_calendar_create_event, try_calendar_reasoning, try_routed_calendar_create_event,
+};
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
@@ -45,7 +47,8 @@ pub use user_intent::{try_proof_request, try_proof_request_with_config};
 pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
     try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
-    try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
+    try_routed_http_fetch_with_offline, try_url_navigate, try_web_search,
+    try_web_search_with_client, try_web_search_with_offline,
 };
 pub use world_state::try_world_state;
 pub use {

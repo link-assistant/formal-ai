@@ -1,12 +1,12 @@
 //! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, projects_registry, ProjectRecord};
+use crate::seed::{self, ProjectRecord, projects_registry};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
-use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
+use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
@@ -16,7 +16,7 @@ mod live_search;
 use super::curated_project_fetch::try_curated_http_fetch;
 use super::finalize_simple;
 use super::installation_conversion::is_install_conversion_request;
-use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
+use super::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
 
 pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
 
@@ -43,43 +43,60 @@ pub fn try_http_fetch_with_offline(
     offline: bool,
 ) -> Option<SymbolicAnswer> {
     let url = extract_http_fetch_url(prompt, normalized)?;
-    log.append("http_fetch:request", url.clone());
-    if let Some(answer) = try_curated_http_fetch(prompt, &url, log) {
-        return Some(answer);
+    Some(answer_http_fetch_url(prompt, &url, log, offline))
+}
+
+/// Execute the URL selected by the shared object/act/locus capability table.
+///
+/// Unlike [`try_http_fetch_with_offline`], this entry point does not ask a
+/// second verb recognizer whether the already-routed request really meant
+/// fetch.  The URL remains structural and is parsed from the original prompt;
+/// all execution, cache, provenance, and offline behaviour is the same.
+pub fn try_routed_http_fetch_with_offline(
+    prompt: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    let url = crate::capability_routing::first_url(prompt)?;
+    Some(answer_http_fetch_url(prompt, &url, log, offline))
+}
+
+fn answer_http_fetch_url(
+    prompt: &str,
+    url: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> SymbolicAnswer {
+    log.append("http_fetch:request", url);
+    if let Some(answer) = try_curated_http_fetch(prompt, url, log) {
+        return answer;
     }
     if offline {
-        log.append("policy:offline", url.clone());
+        log.append("policy:offline", url);
         let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
             .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
-            .replace("{qid}", &url);
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "http_fetch",
-            "response:http_fetch",
-            &body,
-            1.0,
-        ));
+            .replace("{qid}", url);
+        return finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0);
     }
     let cache_dir =
         std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(true);
-    let capture = match client.fetch(&url) {
+    let capture = match client.fetch(url) {
         Ok(capture) => capture,
         Err(error) => {
             log.append("error:fetch", error.to_string());
             let body = seed::response_for("lexeme_import_fetch_failed", "en")
                 .unwrap_or_else(|| String::from("lexeme_import_fetch_failed"))
-                .replace("{qid}", &url)
+                .replace("{qid}", url)
                 .replace(&["{", "error", "}"].concat(), &error.to_string());
-            return Some(finalize_simple(
+            return finalize_simple(
                 prompt,
                 log,
                 "http_fetch",
                 "response:http_fetch_failed",
                 &body,
                 0.0,
-            ));
+            );
         }
     };
     capture.record(log);
@@ -87,14 +104,7 @@ pub fn try_http_fetch_with_offline(
         .chars()
         .take(8_000)
         .collect::<String>();
-    Some(finalize_simple(
-        prompt,
-        log,
-        "http_fetch",
-        "response:http_fetch",
-        &body,
-        1.0,
-    ))
+    finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
 }
 
 /// Match prompts that ask the assistant to navigate to or display a URL
@@ -414,14 +424,15 @@ fn try_project_lookup_internal(
     }
     if let Some(repo) = repository_from_prompt(lookup_prompt) {
         if promote_associative_repositories
-            && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name) {
-                return Some(render_project_lookup(
-                    prompt,
-                    log,
-                    project,
-                    response_language,
-                ));
-            }
+            && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name)
+        {
+            return Some(render_project_lookup(
+                prompt,
+                log,
+                project,
+                response_language,
+            ));
+        }
         return Some(render_generic_repository_lookup(
             prompt,
             log,
